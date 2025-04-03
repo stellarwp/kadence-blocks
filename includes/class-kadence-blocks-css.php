@@ -1502,6 +1502,135 @@ class Kadence_Blocks_CSS {
 
 		return $shadow_string;
 	}
+
+	/**
+	 * Renders the text shadow styles across desktop, tablet, and mobile devices based on the provided attributes.
+	 *
+	 * @param array $attributes An array of attributes containing text shadow properties for different breakpoints (desktop, tablet, and mobile).
+	 * @return void
+	 */
+	public function render_text_shadow( $attributes ) {
+
+		if (!empty($attributes['textShadow']) &&
+			is_array($attributes['textShadow'][0]) &&
+			(!empty($attributes['enableTextShadow']) || !empty($attributes['textShadow'][0]['enable']))
+		) {
+			$textShadow = $attributes['textShadow'][0] ?? [];
+			$textShadow['hOffset'] = $textShadow['hOffset'] ?? 1;
+			$textShadow['vOffset'] = $textShadow['vOffset'] ?? 1;
+			$textShadow['blur']    = $textShadow['blur'] ?? 1;
+			$textShadow['color']   = $textShadow['color'] ?? null;
+			$textShadow['opacity'] = $textShadow['opacity'] ?? 0.2;
+		}
+
+		if (!empty($attributes['textShadowTablet']) && is_array($attributes['textShadowTablet'][0])) {
+			$textShadowTablet = $attributes['textShadowTablet'][0] ?? [];
+			$textShadowTablet['hOffset'] = $this->get_cascading_value(
+				null, // No mobile value is considered here for tablet logic
+				$textShadowTablet['hOffset'] ?? null,
+				$attributes['textShadow'][0]['hOffset'] ?? null,
+				1
+			);
+			$textShadowTablet['vOffset'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['vOffset'] ?? null,
+				$attributes['textShadow'][0]['vOffset'] ?? null,
+				1
+			);
+			$textShadowTablet['blur'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['blur'] ?? null,
+				$attributes['textShadow'][0]['blur'] ?? null,
+				1
+			);
+			$textShadowTablet['color'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['color'] ?? null,
+				$attributes['textShadow'][0]['color'] ?? null,
+				null // Default fallback value for color
+			);
+			$textShadowTablet['opacity'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['opacity'] ?? null,
+				$attributes['textShadow'][0]['opacity'] ?? null,
+				0.2
+			);
+		}
+		if (!empty($attributes['textShadowMobile']) && is_array($attributes['textShadowMobile'][0])) {
+			$textShadowMobile = $attributes['textShadowMobile'][0] ?? [];
+			$textShadowMobile['hOffset'] = $this->get_cascading_value(
+				$textShadowMobile['hOffset'] ?? null,
+				$attributes['textShadowTablet'][0]['hOffset'] ?? null,
+				$attributes['textShadow'][0]['hOffset'] ?? null,
+				1
+			);
+			$textShadowMobile['vOffset'] = $this->get_cascading_value(
+				$textShadowMobile['vOffset'] ?? null,
+				$attributes['textShadowTablet'][0]['vOffset'] ?? null,
+				$attributes['textShadow'][0]['vOffset'] ?? null,
+				1
+			);
+			$textShadowMobile['blur'] = $this->get_cascading_value(
+				$textShadowMobile['blur'] ?? null,
+				$attributes['textShadowTablet'][0]['blur'] ?? null,
+				$attributes['textShadow'][0]['blur'] ?? null,
+				1
+			);
+			$textShadowMobile['color'] = $this->get_cascading_value(
+				$textShadowMobile['color'] ?? null,
+				$attributes['textShadowTablet'][0]['color'] ?? null,
+				$attributes['textShadow'][0]['color'] ?? null,
+				null
+			);
+			$textShadowMobile['opacity'] = $this->get_cascading_value(
+				$textShadowMobile['opacity'] ?? null,
+				$attributes['textShadowTablet'][0]['opacity'] ?? null,
+				$attributes['textShadow'][0]['opacity'] ?? null,
+				0.2
+			);
+		}
+
+		$responsiveTextShadow = [$textShadow, $textShadowTablet ?? null, $textShadowMobile ?? null];
+
+		foreach ($responsiveTextShadow as $key => $textShadow) {
+			if (!empty($textShadow)) {
+				if ( $this->is_rgba($textShadow['color']) ) {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $this->render_color( $textShadow['color'] )
+							: $this->render_color( '#000000', $textShadow['opacity'] )
+						);
+				} else {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $this->render_color( $textShadow['color'], $textShadow['opacity'] )
+							: $this->render_color( '#000000', $textShadow['opacity'] )
+						);
+				}
+
+				switch ($key) {
+					case 0: $this->set_media_state('desktop'); break;
+					case 1: $this->set_media_state('tablet'); break;
+					case 2: $this->set_media_state('mobile'); break;
+				}
+
+				$this->add_property('text-shadow', $shadow_string);
+			}
+		}
+	}
+	/**
+	 * Determines if a given color string is in RGBA format. This is needed for backwards compatibility.
+	 *
+	 * @param string $color The color string to evaluate.
+	 * @return int|false Returns 1 if the string matches the RGBA format, 0 if it does not, or false if an error occurred.
+	 */
+	function is_rgba($color) {
+		return preg_match('/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*(\d*\.?\d+)\s*\)/', $color);
+	}
 	/**
 	 * Generates the border radius color output.
 	 *
@@ -2914,6 +3043,25 @@ class Kadence_Blocks_CSS {
 		}
 
 		return $sized_array;
+	}
+
+	/**
+	 * Retrieve the cascading value based on device-specific settings.
+	 *
+	 * @param mixed $mobile The value specifically set for mobile devices.
+	 * @param mixed $tablet The value specifically set for tablet devices.
+	 * @param mixed $default The default value if mobile and tablet values are not provided.
+	 * @param mixed $fallback The fallback value if none of the other values are set.
+	 */
+	public function get_cascading_value($mobile, $tablet, $default, $fallback) {
+		if (isset($mobile) && $mobile !== '') {
+			return $mobile;
+		} elseif (isset($tablet) && $tablet !== '') {
+			return $tablet;
+		} elseif (isset($default) && $default !== '') {
+			return $default;
+		}
+		return $fallback;
 	}
 }
 Kadence_Blocks_CSS::get_instance();
