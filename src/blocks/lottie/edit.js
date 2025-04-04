@@ -93,6 +93,14 @@ export function Edit(props) {
 
 	const [rerenderKey, setRerenderKey] = useState('static');
 	const [lottieAnimationsCacheKey, setLottieAnimationsCacheKey] = useState({ key: Math.random() });
+	const [isOpen, setOpen] = useState(false);
+	const [lottieJsonError, setLottieJsonError] = useState(false);
+	const [newAnimationTitle, setNewAnimationTitle] = useState('');
+	const [lottieJsonFile, setLottieJsonFile] = useState();
+
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
+
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -217,6 +225,7 @@ export function Edit(props) {
 						setAttributes({ localFile: [response], fileSrc: 'local' });
 						setRerenderKey(Math.random());
 						setLottieAnimationsCacheKey(Math.random());
+						setOpen(false);
 					} else if (has(response, 'error') && has(response, 'message')) {
 						setLottieJsonError(response.message);
 					} else {
@@ -245,16 +254,7 @@ export function Edit(props) {
 		return url;
 	};
 
-	const UploadModal = () => {
-		const [isOpen, setOpen] = useState(false);
-		const [lottieJsonError, setLottieJsonError] = useState(false);
-		const [newAnimationTitle, setNewAnimationTitle] = useState('');
-		const [lottieJsonFile, setLottieJsonFile] = useState();
-
-		const openModal = () => setOpen(true);
-		const closeModal = () => setOpen(false);
-
-		return (
+	const UploadModal = (
 			<>
 				<Button variant="primary" className={'is-primary'} onClick={openModal}>
 					{__('Upload a Lottie file', 'kadence-blocks')}
@@ -296,12 +296,11 @@ export function Edit(props) {
 							disabled={!lottieJsonFile}
 							onClick={() => parseAndUpload(lottieJsonFile, newAnimationTitle, setLottieJsonError)}
 							text={__('Upload', 'kadence-blocks')}
-						/>
-					</Modal>
-				)}
-			</>
-		);
-	};
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
 	const playerProps = {};
 
@@ -453,8 +452,8 @@ export function Edit(props) {
 											setRerenderKey(Math.random());
 										}}
 									/>
-
-									<UploadModal />
+									
+									{UploadModal}
 
 									<br />
 									<br />
