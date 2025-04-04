@@ -338,7 +338,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 	// Create the final category list, adding "New" if applicable.
 	const sidebarCategoryListOptions = useMemo(() => {
-		if (!hasNewPatterns) {
+		if(!hasNewPatterns || selectedSubTab !== 'patterns' ){
 			return categoryListOptions;
 		}
 
@@ -347,7 +347,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		options.splice(1, 0, newOption);
 
 		return options;
-	}, [categoryListOptions, patterns]); // Depend on original list and patterns data
+	}, [categoryListOptions, patterns, selectedSubTab]); // Depend on original list and patterns data
 
 	const {
 		getAIContentData,
@@ -1277,7 +1277,37 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 											)}
 										</>
 									) : (
-										<>{/* Content for non-design context tab */}</>
+										<>
+											{/* Content for non-design context tab */}
+											{!search && (
+												<>
+													{contextListOptions.map((category, index) => (
+														<Button
+															key={`${category.value}-${index}`}
+															className={
+																'kb-category-button' +
+																(selectedContext === category.value ? ' is-pressed' : '')
+															}
+															aria-pressed={selectedContext === category.value}
+															onClick={() => {
+																const tempActiveStorage = SafeParseJSON(
+																	localStorage.getItem('kadenceBlocksPrebuilt'),
+																	true
+																);
+																tempActiveStorage.kbContextCat = category.value;
+																localStorage.setItem(
+																	'kadenceBlocksPrebuilt',
+																	JSON.stringify(tempActiveStorage)
+																);
+																setContext(category.value);
+															}}
+														>
+															{category.label}
+														</Button>
+													))}
+												</>
+											)}
+										</>
 									)}
 								</>
 							)}
