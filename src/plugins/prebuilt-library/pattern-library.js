@@ -338,7 +338,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 	// Create the final category list, adding "New" if applicable.
 	const sidebarCategoryListOptions = useMemo(() => {
-		if(!hasNewPatterns || selectedSubTab !== 'patterns' ){
+		if (!hasNewPatterns || selectedSubTab !== 'patterns') {
 			return categoryListOptions;
 		}
 
@@ -1286,7 +1286,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 															key={`${category.value}-${index}`}
 															className={
 																'kb-category-button' +
-																(selectedContext === category.value ? ' is-pressed' : '')
+																(selectedContext === category.value
+																	? ' is-pressed'
+																	: '')
 															}
 															aria-pressed={selectedContext === category.value}
 															onClick={() => {
