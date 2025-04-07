@@ -298,8 +298,9 @@ function KadenceAdvancedHeading(props) {
 
 			const filteredBlocks = rawBlocks.filter((block) => {
 				const isFreeformBlock = block.name === 'core/freeform';
-				const hasFragmentContent = block.attributes?.content?.includes('<!--StartFragment-->')
-					|| block.attributes?.content?.includes('<!--EndFragment-->');
+				const hasFragmentContent =
+					block.attributes?.content?.includes('<!--StartFragment-->') ||
+					block.attributes?.content?.includes('<!--EndFragment-->');
 				return !(isFreeformBlock && hasFragmentContent);
 			});
 
