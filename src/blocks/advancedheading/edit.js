@@ -303,8 +303,8 @@ function KadenceAdvancedHeading(props) {
 				return !(isFreeformBlock && hasFragmentContent);
 			});
 
-			const { insertBlocks } = wp.data.dispatch('core/block-editor');
-			insertBlocks(filteredBlocks);
+			replaceBlocks(clientId, filteredBlocks);
+			event.preventDefault();
 		}
 
 		if (pastedText) {
