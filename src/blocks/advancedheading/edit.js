@@ -287,12 +287,7 @@ function KadenceAdvancedHeading(props) {
 
 	const handlePaste = (event) => {
 		const pastedHTML = event.clipboardData.getData('text/html');
-		const pastedText = event.clipboardData.getData('text/plain');
-		let fragments = [];
-
-		// Regex to match complete serialized Text(Adv) blocks
-		// const serializedBlockRegex = /<!-- wp:kadence\/advancedheading[\s\S]*?-->[\s\S]*?<!-- \/wp:kadence\/advancedheading -->/g;
-		const serializedBlockRegex = /<!-- wp:[^ ]+[\s\S]*?-->[\s\S]*?<!-- \/wp:[^ ]+ -->/g;
+		const pastedText = event.clipboardData.getData('text/plain'); // Get plain text data
 
 		if (pastedHTML) {
 			const tempDiv = document.createElement('div');
