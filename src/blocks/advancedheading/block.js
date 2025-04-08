@@ -95,7 +95,6 @@ registerBlockType('kadence/advancedheading', {
 							htmlTag: tag,
 						})
 					);
-
 				},
 			},
 		],
