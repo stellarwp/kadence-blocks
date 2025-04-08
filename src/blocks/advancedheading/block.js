@@ -23,6 +23,12 @@ import backwardCompatibility from './deprecated';
  */
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
+
+import { get } from 'lodash';
+
+const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
+const isDefaultEditorBlock =
+	undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 /**
  * Register: a Gutenberg Block.
  *
@@ -63,6 +69,33 @@ registerBlockType('kadence/advancedheading', {
 						content,
 						level,
 					});
+				},
+			},
+			{
+				type: 'raw',
+				selector: isDefaultEditorBlock ? 'p,h1,h2,h3,h4,h5,h6,div,span' : '',
+				transform: (node) => {
+					const tag = node.nodeName.toLowerCase();
+					let fragments = node.innerHTML.split(/<br\s*\/?>/i);
+
+					// Sanitize fragments to remove block comments or unnecessary markup
+					fragments = fragments
+						.map(
+							(fragment) =>
+								fragment
+									.replace(/<!--[\s\S]*?-->/g, '') // Remove Gutenberg block comments
+									.replace(/<[^>]*>/g, '') // Remove any remaining HTML tags
+									.trim() // Trim whitespaces
+						)
+						.filter(Boolean); // Remove empty fragments
+
+					return fragments.map((fragment) =>
+						createBlock('kadence/advancedheading', {
+							content: fragment,
+							htmlTag: tag,
+						})
+					);
+
 				},
 			},
 		],
