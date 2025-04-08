@@ -294,7 +294,7 @@ function KadenceAdvancedHeading(props) {
 			replaceBlocks(clientId, rawBlocks);
 			event.preventDefault();
 		} else if (pastedText) {
-			const paragraphs = pastedText.split(/\n\s*\n/);
+			const paragraphs = pastedText.split(/\n\s*\n/).flatMap(paragraph => paragraph.split(/\r\s*/));
 
 			const newBlocks = paragraphs
 				.map((paragraph) => {
