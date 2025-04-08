@@ -285,33 +285,39 @@ function KadenceAdvancedHeading(props) {
 
 	const { replaceBlocks } = useDispatch('core/block-editor');
 	const handlePaste = (event) => {
-		const pastedHTML = event.clipboardData.getData('text/html');
-		const pastedText = event.clipboardData.getData('text/plain'); // Get plain text data
+		const pastedText = event.clipboardData.getData('text/plain');
+				
+		const containsBlocks = pastedText && (
+			pastedText.includes('<!-- wp:') || 
+			pastedText.includes('wp-block-')
+		);
 
-		if (pastedHTML) {
-			const parser = new DOMParser();
-			const doc = parser.parseFromString(pastedHTML, 'text/html');
-			const bodyContent = doc.body.innerHTML;
-
-			const sanitizedBodyContent = bodyContent.replace(/<!--StartFragment-->|<!--EndFragment-->/g, '');
-			const rawBlocks = wp.blocks.rawHandler({ HTML: sanitizedBodyContent });
-
-			const filteredBlocks = rawBlocks.filter((block) => {
-				const isFreeformBlock = block.name === 'core/freeform';
-				const hasFragmentContent =
-					block.attributes?.content?.includes('<!--StartFragment-->') ||
-					block.attributes?.content?.includes('<!--EndFragment-->');
-				return !(isFreeformBlock && hasFragmentContent);
-			});
-
-			replaceBlocks(clientId, filteredBlocks);
-			event.preventDefault();
-		}
-
-		if (pastedText) {
+		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
 			replaceBlocks(clientId, rawBlocks);
 			event.preventDefault();
+		} else if (pastedText) {
+			const paragraphs = pastedText.split(/\n\s*\n/);
+			
+			const newBlocks = paragraphs.map(paragraph => {
+				const trimmedParagraph = paragraph.trim();
+				if (!trimmedParagraph) {
+					return null;
+				}
+
+				const newAttributes = attributes;
+				delete newAttributes.uniqueID;
+				
+				return wp.blocks.createBlock('kadence/advancedheading', {
+					...newAttributes,
+					content: trimmedParagraph,
+				});
+			}).filter(Boolean);
+			
+			if (newBlocks.length > 0) {
+				replaceBlocks(clientId, newBlocks);
+				event.preventDefault();
+			}
 		}
 	};
 
