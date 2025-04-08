@@ -317,9 +317,6 @@ function KadenceAdvancedHeading(props) {
 				replaceBlocks(clientId, newBlocks);
 				event.preventDefault();
 			}
-		} else if (pastedText && !isDefaultEditorBlock) {
-			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
-			replaceBlocks(clientId, rawBlocks);
 		}
 	};
 
