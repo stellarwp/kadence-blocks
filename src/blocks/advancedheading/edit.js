@@ -286,11 +286,8 @@ function KadenceAdvancedHeading(props) {
 	const { replaceBlocks } = useDispatch('core/block-editor');
 	const handlePaste = (event) => {
 		const pastedText = event.clipboardData.getData('text/plain');
-				
-		const containsBlocks = pastedText && (
-			pastedText.includes('<!-- wp:') || 
-			pastedText.includes('wp-block-')
-		);
+
+		const containsBlocks = pastedText && (pastedText.includes('<!-- wp:') || pastedText.includes('wp-block-'));
 
 		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
@@ -298,22 +295,24 @@ function KadenceAdvancedHeading(props) {
 			event.preventDefault();
 		} else if (pastedText) {
 			const paragraphs = pastedText.split(/\n\s*\n/);
-			
-			const newBlocks = paragraphs.map(paragraph => {
-				const trimmedParagraph = paragraph.trim();
-				if (!trimmedParagraph) {
-					return null;
-				}
 
-				const newAttributes = attributes;
-				delete newAttributes.uniqueID;
-				
-				return wp.blocks.createBlock('kadence/advancedheading', {
-					...newAttributes,
-					content: trimmedParagraph,
-				});
-			}).filter(Boolean);
-			
+			const newBlocks = paragraphs
+				.map((paragraph) => {
+					const trimmedParagraph = paragraph.trim();
+					if (!trimmedParagraph) {
+						return null;
+					}
+
+					const newAttributes = attributes;
+					delete newAttributes.uniqueID;
+
+					return wp.blocks.createBlock('kadence/advancedheading', {
+						...newAttributes,
+						content: trimmedParagraph,
+					});
+				})
+				.filter(Boolean);
+
 			if (newBlocks.length > 0) {
 				replaceBlocks(clientId, newBlocks);
 				event.preventDefault();
