@@ -293,7 +293,7 @@ function KadenceAdvancedHeading(props) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
 			replaceBlocks(clientId, rawBlocks);
 			event.preventDefault();
-		} else if (pastedText) {
+		} else if (pastedText && isDefaultEditorBlock) {
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap(paragraph => paragraph.split(/\r\s*/));
 
 			const newBlocks = paragraphs
@@ -313,10 +313,13 @@ function KadenceAdvancedHeading(props) {
 				})
 				.filter(Boolean);
 
-			if (newBlocks.length > 0) {
+			if (newBlocks.length > 0 && isDefaultEditorBlock) {
 				replaceBlocks(clientId, newBlocks);
 				event.preventDefault();
 			}
+		} else if (pastedText && !isDefaultEditorBlock) {
+			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
+			replaceBlocks(clientId, rawBlocks);
 		}
 	};
 
