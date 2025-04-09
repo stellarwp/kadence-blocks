@@ -203,8 +203,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kb-svg-icon-wrap' );
 			if ( true == $attributes['onlyText'][0] ) {
 				$css->add_property( 'display', 'none' );
-			} elseif ( false == $attributes['onlyText'][0] ) {
-				$css->add_property( 'display', 'block' );
 			}
 		}
 		if ( isset( $attributes['onlyIcon'][2] ) && '' !== $attributes['onlyIcon'][2] ) {
@@ -212,8 +210,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
 			if ( true == $attributes['onlyIcon'][2] ) {
 				$css->add_property( 'display', 'none' );
-			} elseif ( false == $attributes['onlyIcon'][2] ) {
-				$css->add_property( 'display', 'block' );
 			}
 		}
 		if ( isset( $attributes['onlyText'][1] ) && '' !== $attributes['onlyText'][1] ) {
