@@ -570,6 +570,44 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					}
 					$content .= '</ul>';
 					break;
+				case 'mosaic':
+					$content .= '<div class="mosaic-gallery">';
+
+					$grouped_images = array_chunk($images, 3);
+
+					foreach ($grouped_images as $group_index => $image_group) {
+
+						$is_reverse = $group_index % 2 !== 0;
+
+						$content .= '<div class="mosaic-gallery-row">';
+
+						foreach ($image_group as $image_index => $image) {
+							// Determine position class based on index and reverse state
+							switch ($image_index) {
+								case 0:
+									$position_class = $is_reverse ? 'small-left' : 'large';
+									break;
+								case 1:
+									$position_class = $is_reverse ? 'large-reverse' : 'small-right';
+									break;
+								case 2:
+									$position_class = $is_reverse ? 'small-left' : 'small-right';
+									break;
+								default:
+									$position_class = '';
+									break;
+							}
+
+							$content .= '<div class="kadence-mosaic-gallery-item ' . esc_attr($position_class) . '">';
+							$content .= $this->render_gallery_images($image, $attributes);
+							$content .= '</div>';
+						}
+
+						$content .= '</div>';
+					}
+
+					$content .= '</div>';
+					break;
 				default:
 					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-item-selector=".kadence-blocks-gallery-item" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '">';
 					foreach ( $images as $key => $image ) {

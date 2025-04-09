@@ -338,6 +338,10 @@
 		"kbVersion": {
 			"type": "number",
 			"default": ""
+		},
+		"mosaicType": {
+			"type": "string",
+			"default": "first"
 		}
 	},
 	"supports": {
