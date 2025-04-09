@@ -23,6 +23,7 @@ import backwardCompatibility from './deprecated';
  */
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
+
 /**
  * Register: a Gutenberg Block.
  *
