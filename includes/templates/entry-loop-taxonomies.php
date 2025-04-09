@@ -46,11 +46,8 @@ if ( $enabled ) {
 				if (preg_match('/<a[^>]*>(.*?)<\/a>/i', $link, $matches)) {
 					$anchor_content = $matches[1]; // Get the anchor text
 
-					// Convert the anchor text to lowercase to match the slug
-					$term_slug = sanitize_title($anchor_content);
-
 					// Get the term object by slug (using the taxonomy, e.g., 'category')
-					$term = get_term_by('slug', $term_slug, 'category'); // Replace 'category' with your taxonomy
+					$term = get_term_by('name', $anchor_content, 'category'); // Replace 'category' with your taxonomy
 
 					if ($term) {
 						$term_id = $term->term_id;
