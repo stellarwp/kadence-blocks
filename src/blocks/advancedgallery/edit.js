@@ -132,14 +132,13 @@ const typeOptions = [
 		isDisabled: true,
 	},
 	{ value: 'tiles', label: __('Tiles (Pro addon)', 'kadence-blocks'), icon: galleryTilesIcon, isDisabled: true },
-	{ value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galleryMasonryIcon, isDisabled: true },
+	{ value: 'mosaic', label: __('Mosaic (Pro only)', 'kadence-blocks'), icon: galleryMasonryIcon, isDisabled: true },
 ];
 
 const mosaicTypes = [
-	{value:"first", label:__('First', 'kadence-blocks')},
-	{value:"last", label:__('Last', 'kadence-blocks')}
+	{ value: 'first', label: __('First', 'kadence-blocks') },
+	{ value: 'last', label: __('Last', 'kadence-blocks') },
 ];
-
 
 const ALLOWED_MEDIA_TYPES = ['image'];
 
@@ -2417,40 +2416,42 @@ export default function GalleryEdit(props) {
 			)}
 			{type && type === 'mosaic' && mosaicType === 'first' && (
 				<div className="mosaic-gallery">
-					{theImages.reduce((acc, img, index) => {
-						// Group images into sets of three
-						const groupIndex = Math.floor(index / 3);
+					{theImages
+						.reduce((acc, img, index) => {
+							// Group images into sets of three
+							const groupIndex = Math.floor(index / 3);
 
-						if (!acc[groupIndex]) {
-							acc[groupIndex] = [];
-						}
-						acc[groupIndex].push(img);
+							if (!acc[groupIndex]) {
+								acc[groupIndex] = [];
+							}
+							acc[groupIndex].push(img);
 
-						return acc;
-					}, []).map((imageGroup, groupIndex) => {
-						const isReverse = groupIndex % 2 !== 0; // Alternate every group of 3 images
+							return acc;
+						}, [])
+						.map((imageGroup, groupIndex) => {
+							const isReverse = groupIndex % 2 !== 0; // Alternate every group of 3 images
 
-						return (
-							<div className="mosaic-gallery-row" key={`group-${groupIndex}`}>
-								{imageGroup.map((img, index) => {
-									const positionClass = (() => {
-										if (index === 0) return isReverse ? 'small-left' : 'large';
-										if (index === 1) return isReverse ? 'large-reverse' : 'small-right';
-										if (index === 2) return isReverse ? 'small-left' : 'small-right';
-									})();
+							return (
+								<div className="mosaic-gallery-row" key={`group-${groupIndex}`}>
+									{imageGroup.map((img, index) => {
+										const positionClass = (() => {
+											if (index === 0) return isReverse ? 'small-left' : 'large';
+											if (index === 1) return isReverse ? 'large-reverse' : 'small-right';
+											if (index === 2) return isReverse ? 'small-left' : 'small-right';
+										})();
 
-									return (
-										<div
-											className={`kadence-mosaic-gallery-item ${positionClass}`}
-											key={img.id || img.url}
-										>
-											{renderGalleryImages(img, index)}
-										</div>
-									);
-								})}
-							</div>
-						);
-					})}
+										return (
+											<div
+												className={`kadence-mosaic-gallery-item ${positionClass}`}
+												key={img.id || img.url}
+											>
+												{renderGalleryImages(img, index)}
+											</div>
+										);
+									})}
+								</div>
+							);
+						})}
 				</div>
 			)}
 		</div>
