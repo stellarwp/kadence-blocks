@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.2 =
 Release Date: TBD
 * Add: Enhance Text(Adv) copy/paste.
+* Fix: TOC block margin unit type.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
