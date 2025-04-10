@@ -270,85 +270,88 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	// Extract sidebarHeadings and newCategories from patterns
 	useEffect(() => {
 		if (!patterns || typeof patterns !== 'object' || selectedSubTab !== 'patterns') return;
-		
+
 		// Extract unique sidebarHeadings with their order
 		const headingsMap = new Map();
 		// Extract newCategories and their associated headings
 		const newCategoriesMap = new Map();
-		
-		Object.values(patterns).forEach(pattern => {
+
+		Object.values(patterns).forEach((pattern) => {
 			if (pattern.sidebarHeading) {
 				const { name, order } = pattern.sidebarHeading;
 				if (!headingsMap.has(name)) {
 					headingsMap.set(name, { name, order });
 				}
 			}
-			
+
 			if (pattern.newCategory) {
 				const categorySlug = Object.keys(pattern.newCategory)[0];
 				// Decode HTML entities in the category label
 				const categoryLabel = decodeHTMLEntities(pattern.newCategory[categorySlug]);
 				const headingName = pattern.sidebarHeading?.name || 'Other';
-				
+
 				if (!newCategoriesMap.has(categorySlug)) {
 					newCategoriesMap.set(categorySlug, {
 						slug: categorySlug,
 						label: categoryLabel,
-						heading: headingName
+						heading: headingName,
 					});
 				}
 			}
 		});
-		
+
 		// Convert to arrays and sort
-		const sortedHeadings = Array.from(headingsMap.values())
-			.sort((a, b) => a.order - b.order);
-		
+		const sortedHeadings = Array.from(headingsMap.values()).sort((a, b) => a.order - b.order);
+
 		// If no headings found, add an "Other" heading
 		if (sortedHeadings.length === 0 && newCategoriesMap.size > 0) {
 			sortedHeadings.push({ name: 'Other', order: 999 });
 		}
-		
+
 		const categoriesByHeadingObj = {};
-		sortedHeadings.forEach(heading => {
+		sortedHeadings.forEach((heading) => {
 			categoriesByHeadingObj[heading.name] = [];
 		});
-		
+
 		// Group categories by heading
-		Array.from(newCategoriesMap.values()).forEach(category => {
+		Array.from(newCategoriesMap.values()).forEach((category) => {
 			if (categoriesByHeadingObj[category.heading]) {
 				categoriesByHeadingObj[category.heading].push(category);
 			} else {
-				if (!categoriesByHeadingObj['Other']) {
-					categoriesByHeadingObj['Other'] = [];
+				if (!categoriesByHeadingObj.Other) {
+					categoriesByHeadingObj.Other = [];
 					// Add "Other" to sorted headings if it doesn't exist
-					if (!sortedHeadings.find(h => h.name === 'Other')) {
+					if (!sortedHeadings.find((h) => h.name === 'Other')) {
 						sortedHeadings.push({ name: 'Other', order: 999 });
 					}
 				}
-				categoriesByHeadingObj['Other'].push(category);
+				categoriesByHeadingObj.Other.push(category);
 			}
 		});
-		
+
 		// Sort categories alphabetically within each heading
-		Object.keys(categoriesByHeadingObj).forEach(heading => {
+		Object.keys(categoriesByHeadingObj).forEach((heading) => {
 			categoriesByHeadingObj[heading].sort((a, b) => a.label.localeCompare(b.label));
 		});
-		
+
 		// Store the structured data
 		setHeadings(sortedHeadings);
 		setCategoriesByHeading(categoriesByHeadingObj);
-		
+
 		// Set default newCategory if not already set
-		if (!newCategory && sortedHeadings.length && Object.values(categoriesByHeadingObj).some(arr => arr.length > 0)) {
+		if (
+			!newCategory &&
+			sortedHeadings.length &&
+			Object.values(categoriesByHeadingObj).some((arr) => arr.length > 0)
+		) {
 			const activeStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 			let savedNewCategory = activeStorage?.kbNewCat || '';
-			
+
 			// If saved category doesn't exist in current categories, use first available
 			if (savedNewCategory && !Array.from(newCategoriesMap.keys()).includes(savedNewCategory)) {
 				savedNewCategory = '';
 			}
-			
+
 			setNewCategory(savedNewCategory);
 		}
 	}, [patterns, selectedSubTab]);
@@ -1295,35 +1298,43 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 													<hr className="kb-sidebar-category-divider" />
 
 													{/* Render headings and their categories */}
-													{headings.map(heading => (
+													{headings.map((heading) => (
 														<div key={heading.name} className="kb-category-group">
 															<h4 className="kb-category-group-heading">
 																{heading.name}
 															</h4>
-															{categoriesByHeading[heading.name]?.map((category, index) => (
-																<Button
-																	key={`${category.slug}-${index}`}
-																	className={
-																		'kb-category-button' +
-																		(selectedNewCategory === category.slug ? ' is-pressed' : '')
-																	}
-																	aria-pressed={selectedNewCategory === category.slug}
-																	onClick={() => {
-																		const tempActiveStorage = SafeParseJSON(
-																			localStorage.getItem('kadenceBlocksPrebuilt'),
-																			true
-																		);
-																		tempActiveStorage.kbNewCat = category.slug;
-																		localStorage.setItem(
-																			'kadenceBlocksPrebuilt',
-																			JSON.stringify(tempActiveStorage)
-																		);
-																		setNewCategory(category.slug);
-																	}}
-																>
-																	{decodeHTMLEntities(category.label)}
-																</Button>
-															))}
+															{categoriesByHeading[heading.name]?.map(
+																(category, index) => (
+																	<Button
+																		key={`${category.slug}-${index}`}
+																		className={
+																			'kb-category-button' +
+																			(selectedNewCategory === category.slug
+																				? ' is-pressed'
+																				: '')
+																		}
+																		aria-pressed={
+																			selectedNewCategory === category.slug
+																		}
+																		onClick={() => {
+																			const tempActiveStorage = SafeParseJSON(
+																				localStorage.getItem(
+																					'kadenceBlocksPrebuilt'
+																				),
+																				true
+																			);
+																			tempActiveStorage.kbNewCat = category.slug;
+																			localStorage.setItem(
+																				'kadenceBlocksPrebuilt',
+																				JSON.stringify(tempActiveStorage)
+																			);
+																			setNewCategory(category.slug);
+																		}}
+																	>
+																		{decodeHTMLEntities(category.label)}
+																	</Button>
+																)
+															)}
 														</div>
 													))}
 												</>

@@ -813,7 +813,7 @@ function PatternList({
 			temp.contexts = patterns[key].contexts ? Object.keys(patterns[key].contexts) : [];
 			temp.hpcontexts = patterns[key].hpcontexts ? Object.keys(patterns[key].hpcontexts) : [];
 			temp.keywords = patterns[key].keywords ? patterns[key].keywords : [];
-			
+
 			// Process newCategory with decoded HTML entities if needed
 			temp.newCategory = patterns[key]?.newCategory ? { ...patterns[key].newCategory } : null;
 			if (temp.newCategory) {
@@ -821,7 +821,7 @@ function PatternList({
 				// Ensure the category label is decoded
 				temp.newCategory[slug] = decodeHTMLEntities(temp.newCategory[slug]);
 			}
-			
+
 			temp.sidebarHeading = patterns[key]?.sidebarHeading || null;
 			if (patterns[key]?.html) {
 				temp.html = replaceMasks(patterns[key].html);
@@ -936,7 +936,7 @@ function PatternList({
 				allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(selectedCategory));
 			}
 		}
-		
+
 		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
 				return pattern.layout && Object.keys(pattern.layout).some((key) => layoutFilter.includes(key));
