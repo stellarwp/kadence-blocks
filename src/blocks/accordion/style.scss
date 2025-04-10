@@ -45,6 +45,9 @@
 	background-color: var(--global-palette8, #f2f2f2);
 	color: var(--global-palette5, #555555);
 }
+.kt-blocks-accordion-header:active {
+	box-shadow: none;
+}
 .kt-blocks-accordion-header:hover {
 	background-color: var(--global-palette7, #eeeeee);
 	color: var(--global-palette5, #444444);
