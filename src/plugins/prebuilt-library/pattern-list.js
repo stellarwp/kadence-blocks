@@ -38,6 +38,13 @@ import { CONTEXT_PROMPTS } from './data-fetch/constants';
 import { sendEvent } from '../../extension/analytics/send-event';
 import { getAsyncData } from './data-fetch/get-async-data';
 
+const decodeHTMLEntities = (text) => {
+	if (!text) return '';
+	const textarea = document.createElement('textarea');
+	textarea.innerHTML = text;
+	return textarea.value;
+};
+
 function PatternsListHeader({ filterValue, filteredBlockPatternsLength }) {
 	if (!filterValue) {
 		return null;
@@ -645,6 +652,7 @@ function PatternList({
 	patterns,
 	filterValue,
 	selectedCategory,
+	selectedNewCategory,
 	selectedStyle = 'light',
 	breakpointCols,
 	onSelect,
@@ -805,6 +813,16 @@ function PatternList({
 			temp.contexts = patterns[key].contexts ? Object.keys(patterns[key].contexts) : [];
 			temp.hpcontexts = patterns[key].hpcontexts ? Object.keys(patterns[key].hpcontexts) : [];
 			temp.keywords = patterns[key].keywords ? patterns[key].keywords : [];
+			
+			// Process newCategory with decoded HTML entities if needed
+			temp.newCategory = patterns[key]?.newCategory ? { ...patterns[key].newCategory } : null;
+			if (temp.newCategory) {
+				const slug = Object.keys(temp.newCategory)[0];
+				// Ensure the category label is decoded
+				temp.newCategory[slug] = decodeHTMLEntities(temp.newCategory[slug]);
+			}
+			
+			temp.sidebarHeading = patterns[key]?.sidebarHeading || null;
 			if (patterns[key]?.html) {
 				temp.html = replaceMasks(patterns[key].html);
 			}
@@ -900,14 +918,25 @@ function PatternList({
 		}
 		let allPatterns = thePatterns;
 
-		if (!filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory) {
-			console.log('selectedCategory', selectedCategory);
-			if (selectedCategory === 'new') {
+		if (!filterValue && contextTab === 'design') {
+			if (selectedCategory && 'all' !== selectedCategory && selectedCategory === 'new') {
+				// Filter for "New" patterns
 				allPatterns = allPatterns.filter((pattern) => pattern.labels?.new);
-			} else {
+			} else if (selectedNewCategory && selectedNewCategory !== '') {
+				// Filter by newCategory
+				allPatterns = allPatterns.filter((pattern) => {
+					if (pattern.newCategory) {
+						const categorySlug = Object.keys(pattern.newCategory)[0];
+						return categorySlug === selectedNewCategory;
+					}
+					return false;
+				});
+			} else if (selectedCategory && 'all' !== selectedCategory) {
+				// Legacy category filtering as a fallback
 				allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(selectedCategory));
 			}
 		}
+		
 		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
 				return pattern.layout && Object.keys(pattern.layout).some((key) => layoutFilter.includes(key));
@@ -1021,6 +1050,7 @@ function PatternList({
 	}, [
 		filterValue,
 		selectedCategory,
+		selectedNewCategory,
 		thePatterns,
 		aiContext,
 		contextTab,
