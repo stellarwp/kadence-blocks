@@ -894,11 +894,12 @@ export function EditInner(props) {
 		let orientationValue = metaAttributes['orientation' + size];
 		if ('' === orientationValue) {
 			if (size === 'Tablet') {
-				orientationValue = metaAttributes['orientation'];
+				orientationValue = metaAttributes.orientation;
 			} else if (size === 'Mobile') {
-				orientationValue = metaAttributes['orientationTablet'] !== ''
-					? metaAttributes['orientationTablet']
-					: metaAttributes['orientation'];
+				orientationValue =
+					metaAttributes.orientationTablet !== ''
+						? metaAttributes.orientationTablet
+						: metaAttributes.orientation;
 			}
 		}
 
