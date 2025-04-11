@@ -179,6 +179,7 @@ Release Date: TBD
 * Add: Enhance Text(Adv) copy/paste.
 * Fix: TOC block margin unit type.
 * Fix: Design Library removed from new Row Layout when Design Library is disabled.
+* Fix: Accordion header buttons no longer inherit box shadow from theme on active.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
