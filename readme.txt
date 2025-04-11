@@ -178,6 +178,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: TBD
 * Add: Enhance Text(Adv) copy/paste.
 * Fix: TOC block margin unit type.
+* Fix: Design Library removed from new Row Layout when Design Library is disabled.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
