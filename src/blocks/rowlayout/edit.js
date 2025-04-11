@@ -1684,9 +1684,11 @@ function RowLayoutEditContainer(props) {
 								/>
 							))}
 						</ButtonGroup>
-						<Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
-							{__('Design Library', 'kadence-blocks')}
-						</Button>
+						{showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary && (
+							<Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+								{__('Design Library', 'kadence-blocks')}
+							</Button>
+						)}
 					</div>
 				)}
 				{colLayout && 'none' !== topSep && '' !== topSep && (
