@@ -129,7 +129,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//submenu link descriptions only, do not bleed
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .menu-item > .kb-link-wrap .kb-nav-label-description' );
 		$css->render_typography( $nav_attributes, 'dropdownDescriptionTypography' );
-		
+
 		return $css->css_output();
 	}
 
@@ -373,24 +373,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$orientation = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
 		$orientation_tablet = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
 		$orientation_mobile = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
-		$collapse_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
-		$collapse_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
-		$collapse_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
-		$dropdown_reveal = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Desktop' );
-		$dropdown_reveal_tablet = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Tablet' );
-		$dropdown_reveal_mobile = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Mobile' );
-		$style = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
-		$style_tablet = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
-		$style_mobile = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
-		$parent_toggles_menus = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Desktop' );
-		$parent_toggles_menus_tablet = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Tablet' );
-		$parent_toggles_menus_mobile = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Mobile' );
-		$collapse_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
-		$collapse_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
-		$collapse_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
-		$parent_active = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Desktop' );
-		$parent_active_tablet = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Tablet' );
-		$parent_active_mobile = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Mobile' );
 
 		// Wrapper Attributes.
 		$wrapper_classes = array();
@@ -399,6 +381,39 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_classes[] = 'kb-nav-tablet-horizontal-layout-' . ( $horizontal_layout_tablet );
 		$wrapper_classes[] = 'kb-nav-mobile-horizontal-layout-' . ( $horizontal_layout_mobile );
 		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( 'fill' === $fill_stretch ? 'true' : 'false' );
+		$orientation_tablet_bool = isset( $nav_attributes['collapseSubMenusTablet'] )
+			? ( $nav_attributes['collapseSubMenusTablet'] === '' ? false : $nav_attributes['collapseSubMenusTablet'] )
+			: '';
+		$orientation_mobile_bool = isset( $nav_attributes['collapseSubMenusMobile'] )
+			? ( $nav_attributes['collapseSubMenusMobile'] === '' ? false : $nav_attributes['collapseSubMenusMobile'] )
+			: '';
+		$collapse_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $orientation_tablet_bool, $orientation_mobile_bool, 'Desktop' );
+		$collapse_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $orientation_tablet_bool, $orientation_mobile_bool, 'Tablet' );
+		$collapse_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $orientation_tablet_bool, $orientation_mobile_bool, 'Mobile' );
+		$dropdown_reveal = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Desktop' );
+		$dropdown_reveal_tablet = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Tablet' );
+		$dropdown_reveal_mobile = $css->get_inherited_value( $nav_attributes['dropdownReveal'], $nav_attributes['dropdownRevealTablet'], $nav_attributes['dropdownRevealMobile'], 'Mobile' );
+		$style = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
+		$style_tablet = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
+		$style_mobile = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
+		$parent_toggles_menus_tablet_bool = isset( $nav_attributes['parentTogglesMenusTablet'] )
+			? ( $nav_attributes['parentTogglesMenusTablet'] === '' ? false : $nav_attributes['parentTogglesMenusTablet'] )
+			: '';
+		$parent_toggles_menus_mobile_bool = isset( $nav_attributes['parentTogglesMenusMobile'] )
+			? ( $nav_attributes['parentTogglesMenusMobile'] === '' ? false : $nav_attributes['parentTogglesMenusMobile'] )
+			: '';
+		$parent_toggles_menus = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $parent_toggles_menus_tablet_bool, $parent_toggles_menus_mobile_bool, 'Desktop' );
+		$parent_toggles_menus_tablet = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $parent_toggles_menus_tablet_bool, $parent_toggles_menus_mobile_bool, 'Tablet' );
+		$parent_toggles_menus_mobile = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $parent_toggles_menus_tablet_bool, $parent_toggles_menus_mobile_bool, 'Mobile' );
+		$parent_active_tablet_bool = isset( $nav_attributes['parentActiveTablet'] )
+			? ( $nav_attributes['parentActiveTablet'] === '' ? false : $nav_attributes['parentActiveTablet'] )
+			: '';
+		$parent_active_mobile_bool = isset( $nav_attributes['parentActiveMobile'] )
+			? ( $nav_attributes['parentActiveMobile'] === '' ? false : $nav_attributes['parentActiveMobile'] )
+			: '';
+		$parent_active = $css->get_inherited_value( $nav_attributes['parentActive'], $parent_active_tablet_bool, $parent_active_mobile_bool, 'Desktop' );
+		$parent_active_tablet = $css->get_inherited_value( $nav_attributes['parentActive'], $parent_active_tablet_bool, $parent_active_mobile_bool, 'Tablet' );
+		$parent_active_mobile = $css->get_inherited_value( $nav_attributes['parentActive'], $parent_active_tablet_bool, $parent_active_mobile_bool, 'Mobile' );
 		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( 'fill' === $fill_stretch_tablet ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( 'fill' === $fill_stretch_mobile ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ? $orientation : 'horizontal' );
