@@ -93,6 +93,13 @@ export function Edit(props) {
 
 	const [rerenderKey, setRerenderKey] = useState('static');
 	const [lottieAnimationsCacheKey, setLottieAnimationsCacheKey] = useState({ key: Math.random() });
+	const [isOpen, setOpen] = useState(false);
+	const [lottieJsonError, setLottieJsonError] = useState(false);
+	const [newAnimationTitle, setNewAnimationTitle] = useState('');
+	const [lottieJsonFile, setLottieJsonFile] = useState();
+
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -217,6 +224,7 @@ export function Edit(props) {
 						setAttributes({ localFile: [response], fileSrc: 'local' });
 						setRerenderKey(Math.random());
 						setLottieAnimationsCacheKey(Math.random());
+						setOpen(false);
 					} else if (has(response, 'error') && has(response, 'message')) {
 						setLottieJsonError(response.message);
 					} else {
@@ -245,63 +253,53 @@ export function Edit(props) {
 		return url;
 	};
 
-	const UploadModal = () => {
-		const [isOpen, setOpen] = useState(false);
-		const [lottieJsonError, setLottieJsonError] = useState(false);
-		const [newAnimationTitle, setNewAnimationTitle] = useState('');
-		const [lottieJsonFile, setLottieJsonFile] = useState();
-
-		const openModal = () => setOpen(true);
-		const closeModal = () => setOpen(false);
-
-		return (
-			<>
-				<Button variant="primary" className={'is-primary'} onClick={openModal}>
-					{__('Upload a Lottie file', 'kadence-blocks')}
-				</Button>
-				{isOpen && (
-					<Modal
-						title={__('Upload Lottie JSON file', 'kadence-blocks')}
-						onRequestClose={closeModal}
-						shouldCloseOnClickOutside={false}
+	const UploadModal = (
+		<>
+			<Button variant="primary" className={'is-primary'} onClick={openModal}>
+				{__('Upload a Lottie file', 'kadence-blocks')}
+			</Button>
+			{isOpen && (
+				<Modal
+					title={__('Upload Lottie JSON file', 'kadence-blocks')}
+					onRequestClose={closeModal}
+					shouldCloseOnClickOutside={false}
+				>
+					{lottieJsonError !== false ? (
+						<Notice status="error" onRemove={() => setLottieJsonError(false)}>
+							<p>{lottieJsonError}</p>
+						</Notice>
+					) : null}
+					<TextControl
+						label={__('Animation title', 'kadence-blocks')}
+						value={newAnimationTitle}
+						onChange={(value) => setNewAnimationTitle(value)}
+					/>
+					<br />
+					<FormFileUpload
+						accept="application/json"
+						className={'is-primary'}
+						align={'center'}
+						onChange={(event) => {
+							setLottieJsonFile(event.target.files[0]);
+						}}
 					>
-						{lottieJsonError !== false ? (
-							<Notice status="error" onRemove={() => setLottieJsonError(false)}>
-								<p>{lottieJsonError}</p>
-							</Notice>
-						) : null}
-						<TextControl
-							label={__('Animation title', 'kadence-blocks')}
-							value={newAnimationTitle}
-							onChange={(value) => setNewAnimationTitle(value)}
-						/>
-						<br />
-						<FormFileUpload
-							accept="application/json"
-							className={'is-primary'}
-							align={'center'}
-							onChange={(event) => {
-								setLottieJsonFile(event.target.files[0]);
-							}}
-						>
-							{__('Browse', 'kadence-blocks')}
-						</FormFileUpload>
-						{lottieJsonFile ? null : __('Select a file', 'kadence-blocks')}
-						<br />
-						<br />
-						<Button className={'is-secondary'} onClick={closeModal} text={__('Cancel', 'kadence-blocks')} />
-						&nbsp;&nbsp;&nbsp;
-						<Button
-							className={'is-primary'}
-							disabled={!lottieJsonFile}
-							onClick={() => parseAndUpload(lottieJsonFile, newAnimationTitle, setLottieJsonError)}
-							text={__('Upload', 'kadence-blocks')}
-						/>
-					</Modal>
-				)}
-			</>
-		);
-	};
+						{__('Browse', 'kadence-blocks')}
+					</FormFileUpload>
+					{lottieJsonFile ? null : __('Select a file', 'kadence-blocks')}
+					<br />
+					<br />
+					<Button className={'is-secondary'} onClick={closeModal} text={__('Cancel', 'kadence-blocks')} />
+					&nbsp;&nbsp;&nbsp;
+					<Button
+						className={'is-primary'}
+						disabled={!lottieJsonFile}
+						onClick={() => parseAndUpload(lottieJsonFile, newAnimationTitle, setLottieJsonError)}
+						text={__('Upload', 'kadence-blocks')}
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
 	const playerProps = {};
 
@@ -454,7 +452,7 @@ export function Edit(props) {
 										}}
 									/>
 
-									<UploadModal />
+									{UploadModal}
 
 									<br />
 									<br />

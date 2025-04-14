@@ -195,6 +195,22 @@ function kadence_blocks_get_current_license_email() {
 }
 
 /**
+ * Get the current environment.
+ */
+function kadence_blocks_get_current_env() {
+	if ( defined( 'STELLARWP_UPLINK_API_BASE_URL' ) ) {
+		switch ( STELLARWP_UPLINK_API_BASE_URL ) {
+			case 'https://licensing-dev.stellarwp.com':
+				return 'dev';
+			case 'https://licensing-staging.stellarwp.com':
+				return 'staging';
+				
+		}
+	}
+	return '';
+}
+
+/**
  * Get the current license key for the plugin.
  *
  * @return array{key: string, email: string, product: string}
@@ -210,6 +226,7 @@ function kadence_blocks_get_current_license_data(): array {
 		'key'     => kadence_blocks_get_current_license_key(),
 		'email'   => kadence_blocks_get_current_license_email(),
 		'product' => kadence_blocks_get_current_product_slug(),
+		'env'     => kadence_blocks_get_current_env(),
 	];
 
 	return $cache = $license_data;

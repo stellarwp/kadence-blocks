@@ -392,6 +392,7 @@ class Editor_Assets {
 				'hasKadencePro'          => ( is_plugin_active( 'kadence-pro/kadence-pro.php' ) ? true : false ),
 				'adminUrl'               => get_admin_url(),
 				'aiLang'                 => ( ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '' ),
+				'env'                    => ( ! empty( $pro_data['env'] ) ? $pro_data['env'] : '' ),
 				'kadenceBlocksUrl'       => KADENCE_BLOCKS_URL,
 			]
 		);

@@ -89,6 +89,15 @@
 	.kt-inner-column-height-full.kt-tab-layout-row > .wp-block-kadence-column > .kt-inside-inner-col {
 		height: auto;
 	}
+	// Add support for tablet equal layout even when desktop is row layout
+	.kt-inner-column-height-full.kt-tab-layout-equal,
+	.kt-inner-column-height-full:not(.kt-tab-layout-inherit):not(.kt-tab-layout-row) {
+		grid-auto-rows: minmax(0, 1fr);
+	}
+	.kt-inner-column-height-full.kt-tab-layout-equal > .wp-block-kadence-column > .kt-inside-inner-col,
+	.kt-inner-column-height-full:not(.kt-tab-layout-inherit):not(.kt-tab-layout-row) > .wp-block-kadence-column > .kt-inside-inner-col {
+		height: 100%;
+	}
 }
 //mobile collapsed columns
 @media screen and (max-width: 767px) {
@@ -98,6 +107,15 @@
 	}
 	.kt-inner-column-height-full.kt-mobile-layout-row > .wp-block-kadence-column > .kt-inside-inner-col {
 		height: auto;
+	}
+	// Add support for mobile equal layout even when desktop/tablet is row layout
+	.kt-inner-column-height-full.kt-mobile-layout-equal,
+	.kt-inner-column-height-full:not(.kt-mobile-layout-inherit):not(.kt-mobile-layout-row) {
+		grid-auto-rows: minmax(0, 1fr);
+	}
+	.kt-inner-column-height-full.kt-mobile-layout-equal > .wp-block-kadence-column > .kt-inside-inner-col,
+	.kt-inner-column-height-full:not(.kt-mobile-layout-inherit):not(.kt-mobile-layout-row) > .wp-block-kadence-column > .kt-inside-inner-col {
+		height: 100%;
 	}
 }
 .kt-row-layout-overlay {

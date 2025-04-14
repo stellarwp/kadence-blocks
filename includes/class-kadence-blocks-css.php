@@ -1502,6 +1502,8 @@ class Kadence_Blocks_CSS {
 
 		return $shadow_string;
 	}
+
+	
 	/**
 	 * Generates the border radius color output.
 	 *

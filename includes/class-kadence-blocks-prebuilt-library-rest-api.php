@@ -299,6 +299,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	];
 
 	/**
+	 * The environment.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	public $env = '';
+	/**
 	 * @var Block_Library_Cache
 	 */
 	protected $block_library_cache;
@@ -758,6 +765,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $data['product'] ) ) {
 			$this->product_slug = $data['product'];
 		}
+		if ( ! empty( $data['env'] ) ) {
+			$this->env = $data['env'];
+		}
 	}
 
 	/**
@@ -1001,6 +1011,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				}
 				if ( 'iThemes' === $this->api_email ) {
 					$args['site_url'] = $args['site'];
+				}
+				if ( ! empty( $this->env ) ) {
+					$args['env'] = $this->env;
 				}
 			}
 			// Get the response.
@@ -1846,7 +1859,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
-
+			if ( ! empty( $this->env ) ) {
+				$args['env'] = $this->env;
+			}
 			if ( 'iThemes' === $this->api_email ) {
 				$args['site_url'] = $site_url;
 			}
@@ -1897,7 +1912,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
-
+			if ( ! empty( $this->env ) ) {
+				$args['env'] = $this->env;
+			}
 			if ( 'iThemes' === $this->api_email ) {
 				$args['site_url'] = $site_url;
 			}
@@ -2057,6 +2074,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $this->api_email ) ) {
 			// Send in case we need to verify with old api.
 			$args['email'] = $this->api_email;
+		}
+		if ( ! empty( $this->env ) ) {
+			$args['env'] = $this->env;
 		}
 		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
 		$response = wp_safe_remote_get(
@@ -2551,6 +2571,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', $product_slug ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
+		if ( ! empty( $license_data['env'] ) ) {
+			$defaults['env'] = $license_data['env'];
+		}
 
 		$parsed_args = wp_parse_args( $args, $defaults );
 

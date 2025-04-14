@@ -215,6 +215,7 @@ export default function KadenceButtonEdit(props) {
 		shadowStickyHover,
 		tooltip,
 		tooltipPlacement,
+		buttonRole,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -2407,6 +2408,15 @@ export default function KadenceButtonEdit(props) {
 												value={label ? label : ''}
 												onChange={(value) => setAttributes({ label: value })}
 												className={'kb-textbox-style'}
+											/>
+											<ToggleControl
+												label={__('Button Role', 'kadence-blocks')}
+												help={__(
+													'If the button is used to trigger something in javascript enable this to apply the button role.',
+													'kadence-blocks'
+												)}
+												checked={buttonRole}
+												onChange={(value) => setAttributes({ buttonRole: value })}
 											/>
 										</KadencePanelBody>
 

@@ -891,7 +891,17 @@ export function EditInner(props) {
 		const collapseSubMenusValue = metaAttributes['collapseSubMenus' + size];
 		const parentTogglesMenusValue = metaAttributes['parentTogglesMenus' + size];
 		const parentActiveValue = metaAttributes['parentActive' + size];
-		const orientationValue = metaAttributes['orientation' + size];
+		let orientationValue = metaAttributes['orientation' + size];
+		if ('' === orientationValue) {
+			if (size === 'Tablet') {
+				orientationValue = metaAttributes.orientation;
+			} else if (size === 'Mobile') {
+				orientationValue =
+					metaAttributes.orientationTablet !== ''
+						? metaAttributes.orientationTablet
+						: metaAttributes.orientation;
+			}
+		}
 
 		return (
 			<>

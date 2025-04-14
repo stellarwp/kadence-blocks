@@ -36,6 +36,7 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 	CopyPasteAttributes,
+	DynamicTextInputControl,
 } from '@kadence/components';
 
 /**
@@ -53,6 +54,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	getPostOrFseId,
+	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
 import './editor.scss';
@@ -1109,6 +1111,7 @@ function SectionEdit(props) {
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const classes = classnames({
 		[className]: className,
 		'kadence-column': true,
@@ -1118,6 +1121,7 @@ function SectionEdit(props) {
 		'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		'kadence-has-custom-css': hasCustomCss,
 	});
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
 	const hasBackgroundImage =
@@ -2353,11 +2357,20 @@ function SectionEdit(props) {
 											onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
 											linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
 											onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
-											linkTitle={linkTitle}
-											onChangeTitle={(value) => {
-												setAttributes({ linkTitle: value });
-											}}
 											dynamicAttribute={'link'}
+											allowClear={true}
+											isSelected={isSelected}
+											attributes={attributes}
+											setAttributes={setAttributes}
+											name={'kadence/column'}
+											clientId={clientId}
+											context={context}
+										/>
+										<DynamicTextInputControl
+											label={__('Link Title', 'kadence-blocks')}
+											value={linkTitle}
+											onChange={(value) => setAttributes({ linkTitle: value })}
+											dynamicAttribute={'linkTitle'}
 											allowClear={true}
 											isSelected={isSelected}
 											attributes={attributes}

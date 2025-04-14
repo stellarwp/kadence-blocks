@@ -41,6 +41,11 @@
 			"default": false,
 			"__experimentalRole": "content"
 		},
+		"buttonRole": {
+			"type": "boolean",
+			"default": false,
+			"__experimentalRole": "content"
+		},
 		"style": {
 			"type": "string",
 			"default": "basic"

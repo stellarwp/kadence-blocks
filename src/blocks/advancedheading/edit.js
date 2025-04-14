@@ -283,6 +283,43 @@ function KadenceAdvancedHeading(props) {
 		[clientId]
 	);
 
+	const { replaceBlocks } = useDispatch('core/block-editor');
+	const handlePaste = (event) => {
+		const pastedText = event.clipboardData.getData('text/plain');
+
+		const containsBlocks = pastedText && (pastedText.includes('<!-- wp:') || pastedText.includes('wp-block-'));
+
+		if (containsBlocks) {
+			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
+			replaceBlocks(clientId, rawBlocks);
+			event.preventDefault();
+		} else if (pastedText && isDefaultEditorBlock) {
+			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
+
+			const newBlocks = paragraphs
+				.map((paragraph) => {
+					const trimmedParagraph = paragraph.trim();
+					if (!trimmedParagraph) {
+						return null;
+					}
+
+					const newAttributes = attributes;
+					delete newAttributes.uniqueID;
+
+					return wp.blocks.createBlock('kadence/advancedheading', {
+						...newAttributes,
+						content: trimmedParagraph,
+					});
+				})
+				.filter(Boolean);
+
+			if (newBlocks.length > 0 && isDefaultEditorBlock) {
+				replaceBlocks(clientId, newBlocks);
+				event.preventDefault();
+			}
+		}
+	};
+
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
@@ -396,7 +433,8 @@ function KadenceAdvancedHeading(props) {
 					default: [
 						{
 							enable: false,
-							color: 'rgba(0, 0, 0, 0.2)',
+							color: '#000000',
+							opacity: 0.2,
 							blur: 1,
 							hOffset: 1,
 							vOffset: 1,
@@ -561,9 +599,19 @@ function KadenceAdvancedHeading(props) {
 	);
 	const previewColorTextShadow = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow?.[0]?.color ? textShadow[0].color : 'rgba(0, 0, 0, 0.2)',
+		undefined !== textShadow?.[0]?.color ? textShadow[0].color : '#000000',
 		undefined !== textShadowTablet?.[0]?.color ? textShadowTablet[0].color : '',
 		undefined !== textShadowMobile?.[0]?.color ? textShadowMobile[0].color : ''
+	);
+	function isRGBA(color) {
+		const rgbaRegex = /rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d+)\s*\)/;
+		return rgbaRegex.test(color);
+	}
+	const previewTextShadowOpacity = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow?.[0]?.opacity ? textShadow[0].opacity : 1,
+		undefined !== textShadowTablet?.[0]?.opacity ? textShadowTablet[0].opacity : '',
+		undefined !== textShadowMobile?.[0]?.opacity ? textShadowMobile[0].opacity : ''
 	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
@@ -1033,10 +1081,13 @@ function KadenceAdvancedHeading(props) {
 						textTransform: textTransform ? textTransform : undefined,
 						fontFamily: typography ? renderTypography : '',
 						textShadow: enableTextShadow
-							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
-									previewColorTextShadow
-							  )}`
+							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${
+									isRGBA(previewColorTextShadow)
+										? previewColorTextShadow // If rgba, use the color as is
+										: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
+							  }`
 							: undefined,
+
 						writingMode:
 							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
 								? 'vertical-lr'
@@ -1047,6 +1098,8 @@ function KadenceAdvancedHeading(props) {
 						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
+					isSelected={isSelected}
+					onPaste={handlePaste}
 				/>
 			)}
 			{isDynamicReplaced && (
@@ -1785,7 +1838,11 @@ function KadenceAdvancedHeading(props) {
 										label={__('Text Shadow', 'kadence-blocks')}
 										enable={enableTextShadow}
 										color={previewColorTextShadow}
-										colorDefault={'rgba(0, 0, 0, 0.2)'}
+										colorDefault={'#000000'}
+										onArrayChange={(color, opacity) => {
+											saveShadow({ color, opacity });
+										}}
+										opacity={previewTextShadowOpacity}
 										hOffset={previewHOffset}
 										vOffset={previewVOffset}
 										blur={previewBlur}
@@ -1794,6 +1851,9 @@ function KadenceAdvancedHeading(props) {
 										}}
 										onColorChange={(value) => {
 											saveShadow({ color: value });
+										}}
+										onOpacityChange={(value) => {
+											saveShadow({ opacity: value });
 										}}
 										onHOffsetChange={(value) => {
 											saveShadow({ hOffset: value });
