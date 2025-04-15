@@ -20,6 +20,11 @@
         flex: 1 0 fit-content;
         width: 100%;
     }
+
+    //patch for WP 6.8 adding width: 100% to theme buttons
+    &.wp-block-button__link {
+        width: auto;
+    }
 }
 .kb-blocks-button-aos.kb-btn-width-type-full {
     flex: 1 0 fit-content;
