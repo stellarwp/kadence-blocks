@@ -34,12 +34,12 @@ if ( $enabled ) {
 	if ( 'pill' === $style ) {
 		$separator = ' ';
 	}
-	$categories = get_the_category(get_the_ID());
 	?>
 	<div class="entry-taxonomies">
 		<span class="category-links term-links category-style-<?php echo esc_attr( $style ); ?>">
 			<?php
 				if (function_exists( '\Kadence\kadence')) {
+					$categories = get_the_category();
 					if( ! empty( $categories ) ) {
 						foreach ( $categories as $key => $category ) {
 							$color = get_term_meta( $category->term_id, 'archive_category_color', true );
