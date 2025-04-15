@@ -12,9 +12,15 @@ class KBStickyImage {
 		this.stickyElem = this.root.querySelector('.kb-img-sticky');
 		this.transparentElem = this.root.querySelector('.kb-img-transparent');
 		this.isSticking = false;
-		this.isTransparentDesktop = this.root.closest('.wp-block-kadence-header')?.classList?.contains('header-desktop-transparent');
-		this.isTransparentTablet = this.root.closest('.wp-block-kadence-header')?.classList?.contains('header-tablet-transparent');
-		this.isTransparentMobile = this.root.closest('.wp-block-kadence-header')?.classList?.contains('header-mobile-transparent');
+		this.isTransparentDesktop = this.root
+			.closest('.wp-block-kadence-header')
+			?.classList?.contains('header-desktop-transparent');
+		this.isTransparentTablet = this.root
+			.closest('.wp-block-kadence-header')
+			?.classList?.contains('header-tablet-transparent');
+		this.isTransparentMobile = this.root
+			.closest('.wp-block-kadence-header')
+			?.classList?.contains('header-mobile-transparent');
 
 		if (this.stickyElem) {
 			this.initStickyTracking();
@@ -51,8 +57,11 @@ class KBStickyImage {
 
 	setStandardStyles() {
 		//TODO check if the header is transparent at this screensize and use the transparent image instead
-		const activeSize = this.getActiveSize()
-		const isTransparentAtActiveSize = activeSize == 'desktop' && this.isTransparentDesktop || activeSize == 'tablet' && this.isTransparentTablet || activeSize == 'mobile' && this.isTransparentMobile
+		const activeSize = this.getActiveSize();
+		const isTransparentAtActiveSize =
+			(activeSize == 'desktop' && this.isTransparentDesktop) ||
+			(activeSize == 'tablet' && this.isTransparentTablet) ||
+			(activeSize == 'mobile' && this.isTransparentMobile);
 
 		if (this.stickyElem) {
 			this.stickyElem.style.display = 'none';
@@ -61,28 +70,24 @@ class KBStickyImage {
 		if (this.transparentElem && !this.isLogo) {
 			this.transparentElem.style.display = 'none';
 		}
-		
-		if( isTransparentAtActiveSize ){
+
+		if (isTransparentAtActiveSize) {
 			// Keep transparent image visible for logo blocks
 			if (this.transparentElem) {
 				this.transparentElem.style.display = 'initial';
 			}
-		} else {
-			if (this.standardElem) {
-				this.standardElem.style.display = 'initial';
-			}
+		} else if (this.standardElem) {
+			this.standardElem.style.display = 'initial';
 		}
 	}
-
 
 	getActiveSize() {
 		if (parseInt(kadenceHeaderConfig.breakPoints.desktop) < window.innerWidth) {
 			return 'desktop';
 		} else if (parseInt(kadenceHeaderConfig.breakPoints.tablet) < window.innerWidth) {
 			return 'tablet';
-		} else {
-			return 'mobile';
 		}
+		return 'mobile';
 	}
 
 	get state() {
