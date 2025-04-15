@@ -816,10 +816,13 @@ function PatternList({
 
 			// Process newCategory with decoded HTML entities if needed
 			temp.newCategory = patterns[key]?.newCategory ? { ...patterns[key].newCategory } : null;
-			if (temp.newCategory) {
-				const slug = Object.keys(temp.newCategory)[0];
-				// Ensure the category label is decoded
-				temp.newCategory[slug] = decodeHTMLEntities(temp.newCategory[slug]);
+			if (temp.newCategory && typeof temp.newCategory === 'object') {
+				// Decode category labels within the newCategory object
+				Object.keys(temp.newCategory).forEach((slug) => {
+					if (temp.newCategory[slug]?.name) {
+						temp.newCategory[slug].name = decodeHTMLEntities(temp.newCategory[slug].name);
+					}
+				});
 			}
 
 			temp.sidebarHeading = patterns[key]?.sidebarHeading || null;
@@ -925,11 +928,8 @@ function PatternList({
 			} else if (selectedNewCategory && selectedNewCategory !== '') {
 				// Filter by newCategory
 				allPatterns = allPatterns.filter((pattern) => {
-					if (pattern.newCategory) {
-						const categorySlug = Object.keys(pattern.newCategory)[0];
-						return categorySlug === selectedNewCategory;
-					}
-					return false;
+					// Check if the selectedNewCategory exists as a key in the pattern's newCategory object
+					return pattern.newCategory && pattern.newCategory.hasOwnProperty(selectedNewCategory);
 				});
 			} else if (selectedCategory && 'all' !== selectedCategory) {
 				// Legacy category filtering as a fallback
@@ -1163,15 +1163,6 @@ function PatternList({
 			.single-iframe-content .has-theme-palette-7-color { color: var(--global-palette7); }
 			.single-iframe-content .has-theme-palette-8-color { color: var(--global-palette8); }
 			.single-iframe-content .has-theme-palette-9-color { color: var(--global-palette9); }
-			.single-iframe-content .has-theme-palette1-color { color: var(--global-palette1); }
-			.single-iframe-content .has-theme-palette2-color { color: var(--global-palette2); }
-			.single-iframe-content .has-theme-palette3-color { color: var(--global-palette3); }
-			.single-iframe-content .has-theme-palette4-color { color: var(--global-palette4); }
-			.single-iframe-content .has-theme-palette5-color { color: var(--global-palette5); }
-			.single-iframe-content .has-theme-palette6-color { color: var(--global-palette6); }
-			.single-iframe-content .has-theme-palette7-color { color: var(--global-palette7); }
-			.single-iframe-content .has-theme-palette8-color { color: var(--global-palette8); }
-			.single-iframe-content .has-theme-palette9-color { color: var(--global-palette9); }
 			.single-iframe-content .has-theme-palette1-background-color { background-color: var(--global-palette1); }
 			.single-iframe-content .has-theme-palette2-background-color { background-color: var(--global-palette2); }
 			.single-iframe-content .has-theme-palette3-background-color { background-color: var(--global-palette3); }

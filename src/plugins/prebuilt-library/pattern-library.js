@@ -277,36 +277,38 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		const newCategoriesMap = new Map();
 
 		Object.values(patterns).forEach((pattern) => {
-			if (pattern.sidebarHeading) {
-				const { name, order } = pattern.sidebarHeading;
-				if (!headingsMap.has(name)) {
-					headingsMap.set(name, { name, order });
-				}
-			}
+			// Process newCategory structure
+			if (pattern.newCategory && typeof pattern.newCategory === 'object') {
+				Object.keys(pattern.newCategory).forEach((categorySlug) => {
+					const categoryData = pattern.newCategory[categorySlug];
+					if (!categoryData) return;
 
-			if (pattern.newCategory) {
-				const categorySlug = Object.keys(pattern.newCategory)[0];
-				// Decode HTML entities in the category label
-				const categoryLabel = decodeHTMLEntities(pattern.newCategory[categorySlug]);
-				const headingName = pattern.sidebarHeading?.name || 'Other';
+					const sidebarParent = categoryData.sidebar_parent;
+					const headingName = sidebarParent?.name;
+					const headingOrder = sidebarParent?.order;
+					const categoryLabel = decodeHTMLEntities(categoryData.name);
 
-				if (!newCategoriesMap.has(categorySlug)) {
-					newCategoriesMap.set(categorySlug, {
-						slug: categorySlug,
-						label: categoryLabel,
-						heading: headingName,
-					});
-				}
+					// Populate headingsMap if heading info exists
+					if (headingName && typeof headingOrder !== 'undefined') {
+						if (!headingsMap.has(headingName)) {
+							headingsMap.set(headingName, { name: headingName, order: headingOrder });
+						}
+					}
+
+					// Populate newCategoriesMap
+					if (!newCategoriesMap.has(categorySlug)) {
+						newCategoriesMap.set(categorySlug, {
+							slug: categorySlug,
+							label: categoryLabel,
+							heading: headingName, // Associate with the heading it belongs to
+						});
+					}
+				});
 			}
 		});
 
-		// Convert to arrays and sort
+		// Convert to arrays and sort headings
 		const sortedHeadings = Array.from(headingsMap.values()).sort((a, b) => a.order - b.order);
-
-		// If no headings found, add an "Other" heading
-		if (sortedHeadings.length === 0 && newCategoriesMap.size > 0) {
-			sortedHeadings.push({ name: 'Other', order: 999 });
-		}
 
 		const categoriesByHeadingObj = {};
 		sortedHeadings.forEach((heading) => {
@@ -317,21 +319,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		Array.from(newCategoriesMap.values()).forEach((category) => {
 			if (categoriesByHeadingObj[category.heading]) {
 				categoriesByHeadingObj[category.heading].push(category);
-			} else {
-				if (!categoriesByHeadingObj.Other) {
-					categoriesByHeadingObj.Other = [];
-					// Add "Other" to sorted headings if it doesn't exist
-					if (!sortedHeadings.find((h) => h.name === 'Other')) {
-						sortedHeadings.push({ name: 'Other', order: 999 });
-					}
-				}
-				categoriesByHeadingObj.Other.push(category);
 			}
-		});
-
-		// Sort categories alphabetically within each heading
-		Object.keys(categoriesByHeadingObj).forEach((heading) => {
-			categoriesByHeadingObj[heading].sort((a, b) => a.label.localeCompare(b.label));
 		});
 
 		// Store the structured data
