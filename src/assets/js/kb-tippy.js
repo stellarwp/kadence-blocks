@@ -2763,6 +2763,11 @@
 						const content = reference.getAttribute('data-kb-tooltip-content');
 						return window.kadenceTippy.strip_tags(content);
 					},
+					onCreate: (instance) => {
+						if( instance?.reference?.role == null ) {
+							instance.reference.role = 'note';
+						}
+					},
 				});
 				const idElements = document.querySelectorAll('[data-tooltip-id]:not([href])');
 
@@ -2777,6 +2782,11 @@
 						const id = reference.getAttribute('data-tooltip-id');
 						const toolContent = document.getElementById(id);
 						return toolContent ? window.kadenceTippy.strip_tags(toolContent.innerHTML) : '';
+					},
+					onCreate: (instance) => {
+						if( instance?.reference?.role == null ) {
+							instance.reference.role = 'note';
+						}
 					},
 				});
 			}
