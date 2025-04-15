@@ -183,6 +183,7 @@ Release Date: 17th April 2025
 * Fix: PHP warning in Table of contents block in some situations.
 * Fix: Advanced nav uncollapsed vertical sub menues on frontend for tablet and mobile.
 * Fix: Lottie animation upload modal disappearing mid-upload.
+* Add: Custom theme category colors for Posts blocks.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
