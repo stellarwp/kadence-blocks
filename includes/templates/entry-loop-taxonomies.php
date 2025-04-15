@@ -39,7 +39,9 @@ if ( $enabled ) {
 		<span class="category-links term-links category-style-<?php echo esc_attr( $style ); ?>">
 			<?php
 				if (function_exists( '\Kadence\kadence')) {
-					$categories = get_the_category();
+					$post_id = get_the_ID();
+					$categories = apply_filters( 'the_category_list', get_the_category(), $post_id );
+					
 					if( ! empty( $categories ) ) {
 						foreach ( $categories as $key => $category ) {
 							$color = get_term_meta( $category->term_id, 'archive_category_color', true );
