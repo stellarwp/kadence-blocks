@@ -1250,20 +1250,22 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 														key="all"
 														className={
 															'kb-category-button' +
-															(selectedNewCategory === '' ? ' is-pressed' : '')
+															(selectedNewCategory === '' && selectedCategory !== 'new' ? ' is-pressed' : '')
 														}
-														aria-pressed={selectedNewCategory === ''}
+														aria-pressed={selectedNewCategory === '' && selectedCategory !== 'new'}
 														onClick={() => {
 															const tempActiveStorage = SafeParseJSON(
 																localStorage.getItem('kadenceBlocksPrebuilt'),
 																true
 															);
 															tempActiveStorage.kbNewCat = '';
+															tempActiveStorage.kbCat = 'all';
 															localStorage.setItem(
 																'kadenceBlocksPrebuilt',
 																JSON.stringify(tempActiveStorage)
 															);
 															setNewCategory('');
+															setCategory('all');
 														}}
 													>
 														{__('All', 'kadence-blocks')}
@@ -1283,6 +1285,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 																	true
 																);
 																tempActiveStorage.kbCat = 'new';
+																tempActiveStorage.kbNewCat = '';
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(tempActiveStorage)
@@ -1324,11 +1327,13 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 																				true
 																			);
 																			tempActiveStorage.kbNewCat = category.slug;
+																			tempActiveStorage.kbCat = 'all';
 																			localStorage.setItem(
 																				'kadenceBlocksPrebuilt',
 																				JSON.stringify(tempActiveStorage)
 																			);
 																			setNewCategory(category.slug);
+																			setCategory('all');
 																		}}
 																	>
 																		{decodeHTMLEntities(category.label)}
