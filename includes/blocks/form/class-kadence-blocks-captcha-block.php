@@ -137,13 +137,25 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 
 		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . esc_attr( $unique_id ) . '" />';
 
-		$hide_v3 = $captcha_settings->get_kadence_captcha_stored_value( 'hide_v3_badge', false );
-		$add_notice = $captcha_settings->get_kadence_captcha_stored_value( 'show_v3_notice', false );
-		if ( $captcha_settings->using_kadence_captcha && $hide_v3 && $add_notice ) {
-			$default = __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
-			$custom_notice = $captcha_settings->get_kadence_captcha_stored_value( 'v3_notice', $default );
+		// Handle Kadence Captcha plugin settings
+		$recaptcha_notice_html = '<span style="max-width: 100%%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">%s</span>';
+		if ( $captcha_settings->using_kadence_captcha ) {
+			$hide_v3 = $captcha_settings->get_kadence_captcha_stored_value( 'hide_v3_badge', false );
+			$add_notice = $captcha_settings->get_kadence_captcha_stored_value( 'show_v3_notice', false );
+			if ( $hide_v3 && $add_notice ) {
+				$default = __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
+				$custom_notice = $captcha_settings->get_kadence_captcha_stored_value( 'v3_notice', $default );
 
-			$output .= '<span style="max-width: 100%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">' . $custom_notice . '</span>';
+				$output .= sprintf( $recaptcha_notice_html, $custom_notice );
+			}
+		} elseif ( isset( $captcha_settings->hideRecaptcha ) && $captcha_settings->hideRecaptcha && 
+				 isset( $captcha_settings->showRecaptchaNotice ) && $captcha_settings->showRecaptchaNotice ) {
+				
+				$default = __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
+				$custom_notice = isset( $captcha_settings->recaptchaNotice ) && ! empty( $captcha_settings->recaptchaNotice ) ? $captcha_settings->recaptchaNotice : $default;
+				
+				$output .= sprintf( $recaptcha_notice_html, $custom_notice );
+			
 		}
 
 		return $output;

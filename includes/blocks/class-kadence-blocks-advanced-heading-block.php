@@ -736,7 +736,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				null,
 				$textShadowTablet['opacity'] ?? null,
 				$attributes['textShadow'][0]['opacity'] ?? null,
-				0.2
+				1
 			);
 		}
 		if (!empty($attributes['textShadowMobile']) && is_array($attributes['textShadowMobile'][0])) {
@@ -769,7 +769,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$textShadowMobile['opacity'] ?? null,
 				$attributes['textShadowTablet'][0]['opacity'] ?? null,
 				$attributes['textShadow'][0]['opacity'] ?? null,
-				0.2
+				1
 			);
 		}
 
@@ -805,7 +805,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 	}
-	
+
 	/**
 	 * Retrieve the cascading value based on device-specific settings.
 	 *

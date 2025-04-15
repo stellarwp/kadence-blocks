@@ -175,11 +175,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.2 =
-Release Date: TBD
-* Add: Enhance Text(Adv) copy/paste.
-* Fix: TOC block margin unit type.
-* Fix: Design Library removed from new Row Layout when Design Library is disabled.
+Release Date: 17th April 2025
+* Add: Advanced Text copy/paste now behavies like paragraph block when set as default.
 * Fix: Accordion header buttons no longer inherit box shadow from theme on active.
+* Fix: Design Library now hidden in Row Layout when hidden in block visibility.
+* Fix: Row layout inner column height of 100% on mobile/tablet when desktop is collapsed to rows.
+* Fix: PHP warning in Table of contents block in some situations.
+* Fix: Advanced nav uncollapsed vertical sub menues on frontend for tablet and mobile.
+* Fix: Lottie animation upload modal disappearing mid-upload.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
