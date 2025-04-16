@@ -72,21 +72,27 @@ class Kadence_Blocks_Svg_Render {
 			$replaced_block_content = preg_replace_callback(
 				'/<span\s+((?:data-[\w\-]+=["\']+.*["\']+[\s]+)+)class=["\'].*kadence-dynamic-icon.*["\']\s*>(.*)<\/span>/U',
 				function ( $matches ) {
-					$options = explode( ' ', str_replace( 'data-', '', $matches[1] ) );
+					$data_attributes_string = $matches[1];
 					$args = array( 'title' => '' );
-					foreach ( $options as $key => $value ) {
-						$value = trim( $value );
-						if ( empty( $value ) ) {
-							continue;
-						}
-						$data_split = explode( '=', $value, 2 );
-						if ( ! empty( $data_split[0] ) && ( $data_split[0] === 'title' || $data_split[0] === 'class' ) ) {
-							if ( ! empty( $data_split[1] ) ) {
-								$data_split[1] = str_replace( '_', ' ', $data_split[1] );
+					// Use preg_match_all to correctly parse data attributes, respecting quotes.
+					preg_match_all('/data-([\w\-]+)=["\']([^"\']*)["\']\s*/', $data_attributes_string, $data_matches, PREG_SET_ORDER);
+
+					foreach ($data_matches as $match) {
+						if (count($match) === 3) {
+							$key = $match[1];
+							$value = $match[2];
+
+							// Replace underscores in title
+							if ($key === 'title') {
+								$value = str_replace('_', ' ', $value);
 							}
-						}
-						if ( ! empty( $data_split[1] ) ) {
-							$args[ $data_split[0] ] = str_replace( '"', '', $data_split[1] );
+
+							// Append class values if the key already exists
+							if (isset($args[$key]) && $key === 'class') {
+								$args[$key] .= ' ' . $value;
+							} else {
+								$args[$key] = $value;
+							}
 						}
 					}
 					$type = substr( $args['name'] , 0, 2 );
