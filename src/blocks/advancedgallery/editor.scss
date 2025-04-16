@@ -591,87 +591,174 @@
 	max-width: 100%;
 }
 
-// mosaic gallery
-.mosaic-gallery {
-	display: flex; /* Use flex display to allow row stacking */
-	flex-direction: column; /* Ensure rows stack vertically */
-	gap: 10px; /* Adjust spacing between rows */
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
+// mosaic
 
-.mosaic-gallery-row {
-	display: grid; /* Use grid for individual rows */
-	grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
-	grid-auto-rows: 150px; /* Default height for rows */
-	gap: 10px; /* Space between items within a row */
-}
+//.mosaic-gallery {
+//	display: flex; /* Use flex display to allow row stacking */
+//	flex-direction: column; /* Ensure rows stack vertically */
+//	gap: 10px; /* Adjust spacing between rows */
+//	list-style: none;
+//	padding: 0;
+//	margin: 0;
+//}
+//
+//.mosaic-gallery-row {
+//	display: grid; /* Use grid for individual rows */
+//	grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
+//	grid-auto-rows: 150px; /* Default height for rows */
+//	gap: 10px; /* Space between items within a row */
+//}
+//
+//.kadence-mosaic-gallery-item {
+//	position: relative; /* Enable relative positioning for child elements */
+//	background: #ccc; /* Placeholder in case there's no image available (optional) */
+//	height: 100%; /* Make sure the item stretches fully */
+//	width: 100%; /* Ensure width is constrained to grid container */
+//	overflow: hidden; /* Prevent content from overflowing */
+//	display: flex; /* Ensure flexible alignment for its content */
+//	align-items: stretch; /* Force the image to stretch vertically */
+//	justify-content: stretch; /* Force the image to stretch horizontally */
+//}
+//
+//.kadence-mosaic-gallery-item img {
+//	width: 100%; /* Stretch the image to fit the grid item's width */
+//	height: 100%; /* Stretch the image to fit the grid item's height */
+//	object-fit: cover; /* Maintain aspect ratio and crop excess */
+//	display: block; /* Remove inline spacing for images inside the elements */
+//}
+//
+///* Large image configuration */
+//.kadence-mosaic-gallery-item.large {
+//	grid-column: 1; /* Large image occupies the first column */
+//	grid-row: span 2; /* Spans two rows */
+//}
+//
+///* Small images on the right column */
+//.kadence-mosaic-gallery-item.small-right {
+//	grid-column: 2; /* Place in the second column */
+//	grid-row: auto; /* Dynamically align to the available space */
+//}
+//
+///* Small images on the left column in reverse pattern */
+//.kadence-mosaic-gallery-item.small-left {
+//	grid-column: 1; /* Place in the first column when reversed */
+//	grid-row: auto; /* Dynamically align to the available space */
+//}
+//
+///* Large image in reverse configuration */
+//.kadence-mosaic-gallery-item.large-reverse {
+//	grid-column: 2; /* Take the second column in the reverse pattern */
+//	grid-row: span 2; /* Spans two rows */
+//}
+//
+//.kadence-mosaic-gallery-item .kadence-blocks-gallery-item-inner {
+//	height: 100%;
+//	margin: auto;
+//	width: 100%;
+//	.kb-gallery-figure{
+//		height: 100%;
+//		width: 100%;
+//		.kb-gal-image-radius {
+//			height: 100%;
+//			width: 100%;
+//			.kb-gallery-image-contain {
+//				height: 100%;
+//				width: 100%;
+//			}
+//		}
+//	}
+//}
 
-.kadence-mosaic-gallery-item {
-	position: relative; /* Enable relative positioning for child elements */
-	background: #ccc; /* Placeholder in case there's no image available (optional) */
-	height: 100%; /* Make sure the item stretches fully */
-	width: 100%; /* Ensure width is constrained to grid container */
-	overflow: hidden; /* Prevent content from overflowing */
-	display: flex; /* Ensure flexible alignment for its content */
-	align-items: stretch; /* Force the image to stretch vertically */
-	justify-content: stretch; /* Force the image to stretch horizontally */
-}
+//.kadence-mosaic-gallery-item:not(.large, .large-reverse) .kadence-blocks-gallery-item-inner .kb-gallery-figure {
+//	height: unset;
+//}
 
-.kadence-mosaic-gallery-item img {
-	width: 100%; /* Stretch the image to fit the grid item's width */
-	height: 100%; /* Stretch the image to fit the grid item's height */
-	object-fit: cover; /* Maintain aspect ratio and crop excess */
-	display: block; /* Remove inline spacing for images inside the elements */
-}
-
-/* Large image configuration */
-.kadence-mosaic-gallery-item.large {
-	grid-column: 1; /* Large image occupies the first column */
-	grid-row: span 2; /* Spans two rows */
-}
-
-/* Small images on the right column */
-.kadence-mosaic-gallery-item.small-right {
-	grid-column: 2; /* Place in the second column */
-	grid-row: auto; /* Dynamically align to the available space */
-}
-
-/* Small images on the left column in reverse pattern */
-.kadence-mosaic-gallery-item.small-left {
-	grid-column: 1; /* Place in the first column when reversed */
-	grid-row: auto; /* Dynamically align to the available space */
-}
-
-/* Large image in reverse configuration */
-.kadence-mosaic-gallery-item.large-reverse {
-	grid-column: 2; /* Take the second column in the reverse pattern */
-	grid-row: span 2; /* Spans two rows */
-}
-
-.kadence-mosaic-gallery-item .kadence-blocks-gallery-item-inner {
-	height: 100%;
-	margin: auto;
-	width: 100%;
-	.kb-gallery-figure{
-		height: 100%;
+.grid-pattern-gallery {
+	.grid-pattern-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		grid-auto-rows: 200px; // Fixed row height
+		grid-gap: 10px;
 		width: 100%;
-		.kb-gal-image-radius {
-			height: 100%;
+
+		// Updated class name here
+		.kadence-blocks-gallery-item {
+			overflow: hidden;
+			position: relative;
 			width: 100%;
-			.kb-gallery-image-contain {
+			height: 100%;
+
+			// Grid item styles
+			&.grid-item-wide {
+				grid-column: span 2;
+				grid-row: span 1;
+			}
+
+			&.grid-item-large {
+				grid-column: span 2;
+				grid-row: span 2;
+			}
+
+			&.grid-item-tall {
+				grid-column: span 1;
+				grid-row: span 2;
+			}
+
+			&.grid-item-small {
+				grid-column: span 1;
+				grid-row: span 1;
+			}
+
+			// All nested elements need 100% height
+			.kadence-blocks-gallery-item-inner,
+			.kb-gallery-figure,
+			.kb-gal-image-radius,
+			.kb-gallery-image-contain,
+			.kadence-blocks-gallery-intrinsic {
 				height: 100%;
 				width: 100%;
+				display: block;
+			}
+
+			// Figure needs proper box sizing and margin removal
+			.kb-gallery-figure {
+				margin: 0;
+				box-sizing: border-box;
+			}
+
+			// Button styling
+			.kb-gallery-image-contain {
+				padding: 0;
+				background: none;
+				border: none;
+				cursor: pointer;
+
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					display: block;
+				}
+			}
+
+			// Controls positioning for UI elements
+			.kadence-blocks-library-gallery-item__move-menu,
+			.kadence-blocks-library-gallery-item__inline-menu {
+				position: absolute;
+				z-index: 5;
+			}
+
+			// Prevents the intrinsic aspect ratio from affecting layout
+			.kadence-blocks-gallery-intrinsic {
+				position: relative;
+
+				&::before {
+					content: none !important;
+				}
 			}
 		}
 	}
 }
-
-.kadence-mosaic-gallery-item:not(.large, .large-reverse) .kadence-blocks-gallery-item-inner .kb-gallery-figure {
-	height: unset;
-}
-
 
 // .wp-block-kadence-advancedgallery {
 // 	// Fix Slider Overflow Issue.

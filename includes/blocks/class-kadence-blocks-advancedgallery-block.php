@@ -571,42 +571,53 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					$content .= '</ul>';
 					break;
 				case 'mosaic':
-					$content .= '<div class="mosaic-gallery">';
+					$content .= '<div class="kb-mosaic-gallery grid-pattern-gallery">';
+					$content .= '<div class="grid-pattern-container" style="' . esc_attr('grid-auto-rows: ' . $attributes['mosaicRowHeight'][0] . ($attributes['mosaicRowHeightUnit'] ? $attributes['mosaicRowHeightUnit'] : 'px') . '; grid-gap: ' . $attributes['gutter'][0] . ($attributes['gutterUnit'] ? $attributes['gutterUnit'] : 'px') . '; gap: ' . $attributes['gutter'][0] . ($attributes['gutterUnit'] ? $attributes['gutterUnit'] : 'px') . ';') . '">';
 
-					$grouped_images = array_chunk($images, 3);
+					$grouped_images = array_chunk($images, 8);
 
-					foreach ($grouped_images as $group_index => $image_group) {
+					foreach ($grouped_images as $group) {
+						foreach ($group as $image_index => $image) {
+							// Determine which grid item pattern to use (patterns repeat every 8 images)
+							$pattern_index = $image_index % 8;
 
-						$is_reverse = $group_index % 2 !== 0;
+							// Define grid classes based on pattern index
+							$grid_class = '';
 
-						$content .= '<div class="mosaic-gallery-row">';
-
-						foreach ($image_group as $image_index => $image) {
-							// Determine position class based on index and reverse state
-							switch ($image_index) {
-								case 0:
-									$position_class = $is_reverse ? 'small-left' : 'large';
+							switch ($pattern_index) {
+								case 0: // First image: 1 row, 2 columns
+									$grid_class = 'grid-item-wide';
 									break;
-								case 1:
-									$position_class = $is_reverse ? 'large-reverse' : 'small-right';
+								case 1: // Second image: 2 columns, 2 rows
+									$grid_class = 'grid-item-large';
 									break;
-								case 2:
-									$position_class = $is_reverse ? 'small-left' : 'small-right';
+								case 2: // Third image: 2 rows, 1 column
+									$grid_class = 'grid-item-tall';
+									break;
+								case 3: // Fourth image: 1 row, 1 column
+									$grid_class = 'grid-item-small';
+									break;
+								case 4: // Fifth image: 2 columns, 2 rows
+									$grid_class = 'grid-item-large';
+									break;
+								case 5: // Sixth image: 1 row, 1 column
+								case 6: // Seventh image: 1 row, 1 column
+								case 7: // Eighth image: 1 row, 1 column
+									$grid_class = 'grid-item-small';
 									break;
 								default:
-									$position_class = '';
-									break;
+									$grid_class = 'grid-item-small';
 							}
 
-							$content .= '<div class="kadence-mosaic-gallery-item ' . esc_attr($position_class) . '">';
+							$content .= '<div class="kadence-blocks-gallery-item ' . esc_attr($grid_class) . '">';
 							$content .= $this->render_gallery_images($image, $attributes);
 							$content .= '</div>';
 						}
-
-						$content .= '</div>';
 					}
 
 					$content .= '</div>';
+					$content .= '</div>';
+
 					break;
 				default:
 					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-item-selector=".kadence-blocks-gallery-item" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '">';
