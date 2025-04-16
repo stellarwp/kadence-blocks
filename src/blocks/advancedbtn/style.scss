@@ -1,82 +1,81 @@
 /**
  * #.# Styles
  */
- .kb-buttons-wrap {
+.kb-buttons-wrap {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
 	gap: var(--global-kb-gap-xs, 0.5rem);
- }
- .kb-button {
+}
+.kb-button {
 	z-index: 1;
-    position: relative;
-    overflow: hidden;
+	position: relative;
+	overflow: hidden;
 	display: inline-flex;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
-    &.kt-btn-width-type-full {
-        flex: 1 0 fit-content;
-        width: 100%;
-    }
-
-    //patch for WP 6.8 adding width: 100% to theme buttons
-    &.wp-block-button__link {
-        width: auto;
-    }
+	//patch for WP 6.8 adding width: 100% to theme buttons
+	&.wp-block-button__link {
+		width: auto;
+	}
+	&.kt-btn-width-type-full {
+		flex: 1 0 fit-content;
+		width: 100%;
+	}
 }
 .kb-blocks-button-aos.kb-btn-width-type-full {
-    flex: 1 0 fit-content;
-    width: 100%;
+	flex: 1 0 fit-content;
+	width: 100%;
 }
 .wp-block-kadence-advancedbtn .kb-button:not(.specificity):not(.extra-specificity) {
-    text-decoration: none;
+	text-decoration: none;
 }
 .kb-button:not(.kb-btn-global-inherit) {
-    border: 0 solid transparent;
-    padding: 0.4em 1em;
-    cursor: pointer;
+	border: 0 solid transparent;
+	padding: 0.4em 1em;
+	cursor: pointer;
 	font-size: 1.125rem;
-    border-radius: 3px;
-    transition: all .3s ease-in-out;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
 	box-shadow: none;
-    &:hover {
-        box-shadow: none;
-    }
+	&:hover {
+		box-shadow: none;
+	}
 }
 .kb-button.kb-btn-global-fill {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 	border-radius: 3px;
-    background: var(--global-palette-btn-bg, #3633E1);
-    color: var(--global-palette-btn, #FFFFFF);
-    &:hover {
-        color: var(--global-palette-btn-hover, #FFFFFF);
-        background: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
-    &:focus {
-      color: var(--global-palette-btn-hover, #FFFFFF);
-      background: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
+	background: var(--global-palette-btn-bg, #3633e1);
+	color: var(--global-palette-btn, #ffffff);
+	&:hover {
+		color: var(--global-palette-btn-hover, #ffffff);
+		background: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
+	&:focus {
+		color: var(--global-palette-btn-hover, #ffffff);
+		background: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
 }
 .kb-button.kb-btn-global-outline {
-    border: 2px solid var(--global-palette-btn-bg, #3633E1);
-	background:transparent;
-	color: var(--global-palette-btn-bg, #3633E1);
-    padding: calc( 0.4em - 2px ) calc( 1em - 2px );
-    &:hover {
-        border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
-        background: transparent;
-        color: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
-    &:focus {
-      border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
-      background: transparent;
-      color: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
+	border: 2px solid var(--global-palette-btn-bg, #3633e1);
+	background: transparent;
+	color: var(--global-palette-btn-bg, #3633e1);
+	padding: calc(0.4em - 2px) calc(1em - 2px);
+	&:hover {
+		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
+		background: transparent;
+		color: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
+	&:focus {
+		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
+		background: transparent;
+		color: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
 }
 .kb-button::before {
-    position: absolute;
+	position: absolute;
 	content: "";
 	top: 0;
 	right: 0;
@@ -84,40 +83,41 @@
 	left: 0;
 	z-index: -1;
 	opacity: 0;
-	background:transparent;
+	background: transparent;
 	//transition: opacity .3s ease-in-out;
 }
-.kb-button:hover::before, .kb-button:focus::before{
+.kb-button:hover::before,
+.kb-button:focus::before {
 	opacity: 1;
 }
-.wp-block-kadence-advancedbtn .kb-button.kt-btn-size-small{
-    font-size: 0.9rem;
+.wp-block-kadence-advancedbtn .kb-button.kt-btn-size-small {
+	font-size: 0.9rem;
 }
 .wp-block-kadence-advancedbtn .kb-button.kt-btn-size-large {
-    font-size: 1.35rem;
+	font-size: 1.35rem;
 }
 .wp-block-kadence-advancedbtn .kb-button.kt-btn-size-xlarge {
-    font-size: 1.65rem;
+	font-size: 1.65rem;
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-xlarge {
-    border-width: 4px;
+	border-width: 4px;
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-large {
-    border-width: 3px;
-    padding: calc( 0.4em - 3px ) calc( 1em - 3px );
+	border-width: 3px;
+	padding: calc(0.4em - 3px) calc(1em - 3px);
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-small {
-    border-width: 1px;
-    padding: calc( 0.4em - 1px ) calc( 1em - 1px );
+	border-width: 1px;
+	padding: calc(0.4em - 1px) calc(1em - 1px);
 }
 .kb-button.kt-btn-has-svg-true {
-    gap: 0.5em;
-    display: inline-flex;
+	gap: 0.5em;
+	display: inline-flex;
 }
 .wp-block-kadence-advancedbtn .kb-svg-icon-wrap {
 	display: inline-flex;
-    justify-content: center;
-    align-items: center;
+	justify-content: center;
+	align-items: center;
 	svg {
 		width: 1em;
 		height: 1em;
