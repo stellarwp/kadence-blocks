@@ -131,6 +131,7 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 		borderRadiusOverflow,
 		displayBoxShadow,
 		boxShadow,
+		kadenceDynamic,
 	} = attributes;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
@@ -582,10 +583,15 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 								className="kb-blocks-bg-video"
 								playsinline=""
 								loop=""
+								poster={
+									kadenceDynamic?.['backgroundVideo:0:local']?.enable
+										? '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png'
+										: undefined
+								}
 								src={
-									undefined !== backgroundVideo &&
-									undefined !== backgroundVideo[0] &&
-									undefined !== backgroundVideo[0].local
+									kadenceDynamic?.['backgroundVideo:0:local']?.enable
+										? undefined
+										: backgroundVideo?.[0]?.local
 										? backgroundVideo[0].local
 										: undefined
 								}
