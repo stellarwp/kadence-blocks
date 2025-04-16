@@ -343,6 +343,7 @@ function KadenceForm(props) {
 	const [siteKey, setSiteKey] = useState('');
 	const [secretKey, setSecretKey] = useState('');
 	const [recaptchaLanguage, setRecaptchaLanguage] = useState('');
+	const formProStyleControls = null;
 
 	const [isSavedKey, setIsSavedKey] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -2867,6 +2868,8 @@ function KadenceForm(props) {
 								saveMap={(value, i) => saveFluentCRMMap(value, i)}
 							/>
 						)}
+
+						{applyFilters('kadence.formGeneralControls', formProStyleControls, props)}
 					</>
 				)}
 

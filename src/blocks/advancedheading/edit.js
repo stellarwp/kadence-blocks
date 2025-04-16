@@ -283,6 +283,43 @@ function KadenceAdvancedHeading(props) {
 		[clientId]
 	);
 
+	const { replaceBlocks } = useDispatch('core/block-editor');
+	const handlePaste = (event) => {
+		const pastedText = event.clipboardData.getData('text/plain');
+
+		const containsBlocks = pastedText && (pastedText.includes('<!-- wp:') || pastedText.includes('wp-block-'));
+
+		if (containsBlocks) {
+			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
+			replaceBlocks(clientId, rawBlocks);
+			event.preventDefault();
+		} else if (pastedText && isDefaultEditorBlock) {
+			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
+
+			const newBlocks = paragraphs
+				.map((paragraph) => {
+					const trimmedParagraph = paragraph.trim();
+					if (!trimmedParagraph) {
+						return null;
+					}
+
+					const newAttributes = attributes;
+					delete newAttributes.uniqueID;
+
+					return wp.blocks.createBlock('kadence/advancedheading', {
+						...newAttributes,
+						content: trimmedParagraph,
+					});
+				})
+				.filter(Boolean);
+
+			if (newBlocks.length > 0 && isDefaultEditorBlock) {
+				replaceBlocks(clientId, newBlocks);
+				event.preventDefault();
+			}
+		}
+	};
+
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
@@ -1062,6 +1099,7 @@ function KadenceAdvancedHeading(props) {
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 					isSelected={isSelected}
+					onPaste={handlePaste}
 				/>
 			)}
 			{isDynamicReplaced && (

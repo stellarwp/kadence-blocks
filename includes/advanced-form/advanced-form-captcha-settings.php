@@ -61,6 +61,13 @@ class Kadence_Blocks_Form_Captcha_Settings {
 
 	public $size = 'normal';
 
+	// Properties for custom recaptcha notice settings
+	public $hideRecaptcha = false;
+	
+	public $showRecaptchaNotice = false;
+	
+	public $recaptchaNotice = '';
+
 	public function __construct( $attributes ) {
 		$this->is_using_kadence_captcha_settings( $attributes );
 		$this->is_using_kadence_blocks_settings( $attributes );
@@ -69,6 +76,7 @@ class Kadence_Blocks_Form_Captcha_Settings {
 		$this->get_secret_key( $attributes );
 		$this->get_captcha_language( $attributes );
 		$this->get_styles( $attributes );
+		$this->get_notice_settings( $attributes );
 		$this->has_valid_settings();
 	}
 
@@ -280,6 +288,21 @@ class Kadence_Blocks_Form_Captcha_Settings {
 			if ( ! empty( $attributes['size'] ) ) {
 				$this->size = $attributes['size'];
 			}
+		}
+	}
+
+	// Get notice settings from attributes
+	private function get_notice_settings( $attributes ) {
+		if ( isset( $attributes['hideRecaptcha'] ) ) {
+			$this->hideRecaptcha = $attributes['hideRecaptcha'];
+		}
+		
+		if ( isset( $attributes['showRecaptchaNotice'] ) ) {
+			$this->showRecaptchaNotice = $attributes['showRecaptchaNotice'];
+		}
+		
+		if ( isset( $attributes['recaptchaNotice'] ) ) {
+			$this->recaptchaNotice = $attributes['recaptchaNotice'];
 		}
 	}
 }
