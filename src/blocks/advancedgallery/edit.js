@@ -2459,7 +2459,10 @@ export default function GalleryEdit(props) {
 							// For older browsers that might not support grid-gap
 							gap: `${previewGutter}${previewGutterUnit}`,
 							// Add the grid-auto-rows style for the mosaic layout
-							gridAutoRows: type === 'mosaic' ? `${previewMosaicRowHeight}${previewMosaicRowHeightUnit}` : undefined
+							gridAutoRows:
+								type === 'mosaic'
+									? `${previewMosaicRowHeight}${previewMosaicRowHeightUnit}`
+									: undefined,
 						}}
 					>
 						{theImages.map((img, index) => {
@@ -2495,10 +2498,7 @@ export default function GalleryEdit(props) {
 							}
 
 							return (
-								<div
-									className={`kadence-blocks-gallery-item ${gridClass}`}
-									key={img.id || img.url}
-								>
+								<div className={`kadence-blocks-gallery-item ${gridClass}`} key={img.id || img.url}>
 									{renderGalleryImages(img, index)}
 								</div>
 							);
@@ -2506,7 +2506,6 @@ export default function GalleryEdit(props) {
 					</div>
 				</div>
 			)}
-
 		</div>
 	);
 }
