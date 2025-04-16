@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.2
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.5.2 =
+= 3.5.3 =
 Release Date: 17th April 2025
 * Add: Advanced Text copy/paste now behavies like paragraph block when set as default.
 * Fix: Accordion header buttons no longer inherit box shadow from theme on active.
@@ -184,6 +184,10 @@ Release Date: 17th April 2025
 * Fix: Advanced nav uncollapsed vertical sub menues on frontend for tablet and mobile.
 * Fix: Lottie animation upload modal disappearing mid-upload.
 * Add: Custom theme category colors for Posts blocks.
+
+= 3.5.2 =
+Release Date: 16th April 2025
+* Fix: WP 6.8 button size issue.
 
 = 3.5.1 =
 Release Date: 3rd April 2025
