@@ -272,16 +272,25 @@ class KB_Ajax_Form {
 							}
 							$cc_headers = '';
 							if ( isset( $form_args['email'][0]['cc'] ) && ! empty( trim( $form_args['email'][0]['cc'] ) ) ) {
-								$cc_headers = 'Cc: ' . sanitize_email( trim( $form_args['email'][0]['cc'] ) ) . "\r\n";
+								$cc_emails = explode( ',', trim( $form_args['email'][0]['cc'] ) );
+								$sanitized_cc_emails = array();
+								foreach ( $cc_emails as $cc_email ) {
+									$sanitized_cc_emails[] = sanitize_email( trim( $cc_email ) );
+								}
+								$cc_headers = 'Cc: ' . implode( ',', $sanitized_cc_emails ) . "\r\n";
 							}
 
-							wp_mail( $to, $subject, $body, $headers . $cc_headers );
+							$bcc_headers = '';
 							if ( isset( $form_args['email'][0]['bcc'] ) && ! empty( trim( $form_args['email'][0]['bcc'] ) ) ) {
-								$bcc_emails = explode( ',', $form_args['email'][0]['bcc'] );
+								$bcc_emails = explode( ',', trim( $form_args['email'][0]['bcc'] ) );
+								$sanitized_bcc_emails = array();
 								foreach ( $bcc_emails as $bcc_email ) {
-									wp_mail( sanitize_email( trim( $bcc_email ) ), $subject, $body, $headers );
+									$sanitized_bcc_emails[] = sanitize_email( trim( $bcc_email ) );
 								}
+								$bcc_headers = 'Bcc: ' . implode( ',', $sanitized_bcc_emails ) . "\r\n";
 							}
+
+							wp_mail( $to, $subject, $body, $headers . $cc_headers . $bcc_headers );
 							break;
 						case 'redirect':
 							if ( isset( $form_args['redirect'] ) && ! empty( trim( $form_args['redirect'] ) ) ) {
