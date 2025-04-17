@@ -26,6 +26,7 @@ import {
 	ColorGroup,
 	ResponsiveBorderControl,
 	BoxShadowControl,
+	DynamicTextInputControl,
 } from '@kadence/components';
 import { showSettings } from '@kadence/helpers';
 
@@ -47,7 +48,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Build the row edit
  */
-function StyleControls({ clientId, attributes, setAttributes, isSelected, context }) {
+function StyleControls(props) {
+	const { clientId, attributes, setAttributes, isSelected, context } = props;
 	const {
 		uniqueID,
 		columns,
@@ -1185,7 +1187,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 									hasBackgroundVideoContent && backgroundVideo[0].local ? true : false
 								}
 							/>
-							<TextControl
+							<DynamicTextInputControl
 								label={__('HTML5 Video File URL', 'kadence-blocks')}
 								value={
 									hasBackgroundVideoContent && backgroundVideo[0].local
@@ -1193,6 +1195,9 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 										: ''
 								}
 								onChange={(value) => saveVideoSettings({ local: value })}
+								dynamicAttribute={'backgroundVideo:0:local'}
+								allowClear={true}
+								{...props}
 							/>
 						</Fragment>
 					)}

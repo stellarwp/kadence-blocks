@@ -122,6 +122,7 @@ function RowLayoutEditContainer(props) {
 		toggleSelection,
 		isSelected,
 		clientId,
+		name,
 	} = props;
 	const {
 		uniqueID,
@@ -1183,6 +1184,7 @@ function RowLayoutEditContainer(props) {
 								setAttributes={setAttributes}
 								isSelected={isSelected}
 								context={context}
+								name={name}
 							/>
 						)}
 						{activeTab === 'advanced' && (
