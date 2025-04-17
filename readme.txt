@@ -181,7 +181,7 @@ Release Date: 17th April 2025
 * Fix: Design Library now hidden in Row Layout when hidden in block visibility.
 * Fix: Row layout inner column height of 100% on mobile/tablet when desktop is collapsed to rows.
 * Fix: PHP warning in Table of contents block in some situations.
-* Fix: Advanced nav uncollapsed vertical sub menues on frontend for tablet and mobile.
+* Fix: Advanced nav uncollapsed vertical sub menus on frontend for tablet and mobile.
 * Fix: Lottie animation upload modal disappearing mid-upload.
 
 = 3.5.2 =
