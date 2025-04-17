@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
-Tested up to: 6.7.2
+Tested up to: 6.8.0
 Stable tag: 3.5.3
 Requires PHP: 7.4
 License: GPLv2 or later
