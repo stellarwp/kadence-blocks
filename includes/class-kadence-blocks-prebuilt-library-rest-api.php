@@ -1302,7 +1302,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$context           = $request->get_param( self::PROP_CONTEXT );
 		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
 		$available_prompts = get_option( 'kb_design_library_prompts', [] );
-
 		// Check if we have captured prompt.
 		if ( ! empty( $available_prompts[ $context ] ) && ! $reload ) {
 
@@ -1325,7 +1324,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			// Check if we have a remote file.
 			$response = $this->get_remote_contents( $available_prompts[ $context ] );
 			$body     = wp_remote_retrieve_body( $response );
-
 			if ( is_wp_error( $response ) ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', [] );
 				if ( isset( $current_prompts[ $context ] ) ) {
@@ -1364,7 +1362,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				// Note: This event is logged on an external server.
 				return rest_ensure_response( 'error' );
 			}
-
+			if ( empty( $body ) ) {
+				return rest_ensure_response( 'error' );
+			}
+			if ( 'error' === $body ) {
+				return rest_ensure_response( 'error' );
+			}
 			// Cache the AI content.
 			$this->ai_cache->cache( $available_prompts[ $context ], $body );
 
@@ -1384,7 +1387,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
 			$data     = json_decode( $response, true );
-
 			if ( $response === 'error' || $response === 'credits' ) {
 				return rest_ensure_response( $response );
 			} elseif ( isset( $data['data']['job_id'] ) ) {
