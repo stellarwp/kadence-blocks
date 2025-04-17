@@ -246,9 +246,11 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$mask = ! empty( $attributes['maskSvg'] ) ? $attributes['maskSvg'] : 'star';
 		if ( ! empty( $attributes['ariaLabel'] ) ) {
 			$progress_args['aria-label'] = $attributes['ariaLabel'];
+			$progress_args['role'] = 'note';
 		} elseif ( ! empty( $attributes['barType'] ) && $attributes['barType'] === 'line-mask' && 'star' === $mask ) {
 			// translators: %1$s is the current progress amount, %2$s is the max progress amount.
 			$progress_args['aria-label'] = sprintf( __( '%1$s out of %2$s Stars', 'kadence-blocks' ), $progress_amount, $progress_max );
+			$progress_args['role'] = 'note';
 		}
 		$progress_div_attributes = [];
 		foreach ( $progress_args as $key => $value ) {
