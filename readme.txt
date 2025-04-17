@@ -175,6 +175,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.3 =
+Release Date: tba
+* Fix: Button Block icon padding in the editor.
+
+= 3.5.3 =
 Release Date: 17th April 2025
 * Add: Advanced Text copy/paste now behaves like paragraph block when set as default.
 * Fix: Accordion header buttons no longer inherit box shadow from theme on active.
