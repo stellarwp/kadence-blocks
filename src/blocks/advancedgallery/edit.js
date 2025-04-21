@@ -2451,7 +2451,7 @@ export default function GalleryEdit(props) {
 				</ul>
 			)}
 			{type && type === 'mosaic' && (
-				<div className="kb-mosaic-gallery grid-pattern-gallery">
+				<ul style={spacingSettings} className={`kb-gallery-id-${uniqueID} kb-gallery-main-contain kb-mosaic-gallery grid-pattern-gallery ${galleryClassNames}`}>
 					<div
 						className="grid-pattern-container"
 						style={{
@@ -2469,26 +2469,33 @@ export default function GalleryEdit(props) {
 							// Determine which grid item pattern to use (patterns repeat every 8 images)
 							const patternIndex = index % 8;
 
-							// Define grid classes based on pattern index
+							// Define grid classes based on the pattern index.
 							let gridClass = '';
+							const isLastImage = index === theImages.length - 1;
+							const isNextToLastImage = index === theImages.length - 2;
 
 							switch (patternIndex) {
 								case 0: // First image: 1 row, 2 columns
-									gridClass = 'grid-item-wide';
+									gridClass = isLastImage ? 'grid-item-wide only-one' : 'grid-item-wide';
 									break;
 								case 1: // Second image: 2 columns, 2 rows
-									gridClass = 'grid-item-large';
+									gridClass = isLastImage ? 'grid-item-large only-two' : 'grid-item-large';
 									break;
 								case 2: // Third image: 2 rows, 1 column
 									gridClass = 'grid-item-tall';
+									gridClass = isLastImage ? 'grid-item-tall only-three' : gridClass;
+									gridClass = isNextToLastImage ? 'grid-item-tall only-four' : gridClass;
 									break;
 								case 3: // Fourth image: 1 row, 1 column
 									gridClass = 'grid-item-small';
 									break;
 								case 4: // Fifth image: 2 columns, 2 rows
-									gridClass = 'grid-item-large';
+									gridClass = isLastImage ? 'grid-item-large only-five' : 'grid-item-large';
+									gridClass = isNextToLastImage ? 'grid-item-large only-six' : gridClass;
 									break;
-								case 5: // Sixth image: 1 row, 1 column
+								case 5: // Sixth image: 1 row, 1
+									gridClass = isNextToLastImage ? 'grid-item-small only-seven' : 'grid-item-small';
+									break;
 								case 6: // Seventh image: 1 row, 1 column
 								case 7: // Eighth image: 1 row, 1 column
 									gridClass = 'grid-item-small';
@@ -2504,7 +2511,7 @@ export default function GalleryEdit(props) {
 							);
 						})}
 					</div>
-				</div>
+				</ul>
 			)}
 		</div>
 	);
