@@ -2451,7 +2451,10 @@ export default function GalleryEdit(props) {
 				</ul>
 			)}
 			{type && type === 'mosaic' && (
-				<ul style={spacingSettings} className={`kb-gallery-id-${uniqueID} kb-gallery-main-contain kb-mosaic-gallery grid-pattern-gallery ${galleryClassNames}`}>
+				<ul
+					style={spacingSettings}
+					className={`kb-gallery-id-${uniqueID} kb-gallery-main-contain kb-mosaic-gallery grid-pattern-gallery ${galleryClassNames}`}
+				>
 					<div
 						className="grid-pattern-container"
 						style={{
