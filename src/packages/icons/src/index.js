@@ -153,6 +153,7 @@ export { default as galleryMasonryIcon } from './block-icons/advanced-gallery/ga
 export { default as gallerySliderIcon } from './block-icons/advanced-gallery/gal-slider';
 export { default as galleryTilesIcon } from './block-icons/advanced-gallery/gal-tiles';
 export { default as galleryThumbSliderIcon } from './thumbs-slider';
+export { default as galleryMosaicIcon } from './block-icons/advanced-gallery/gal-mosaic';
 
 // Table of contents
 export { default as noneIcon } from './block-icons/table-of-contents/none';

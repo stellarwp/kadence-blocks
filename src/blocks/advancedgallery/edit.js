@@ -62,6 +62,7 @@ import {
 	gallerySliderIcon,
 	galleryTilesIcon,
 	galleryThumbSliderIcon,
+	galleryMosaicIcon,
 } from '@kadence/icons';
 
 /**
@@ -132,7 +133,7 @@ const typeOptions = [
 		isDisabled: true,
 	},
 	{ value: 'tiles', label: __('Tiles (Pro addon)', 'kadence-blocks'), icon: galleryTilesIcon, isDisabled: true },
-	{ value: 'mosaic', label: __('Mosaic (Pro only)', 'kadence-blocks'), icon: galleryMasonryIcon, isDisabled: true },
+	{ value: 'mosaic', label: __('Mosaic (Pro only)', 'kadence-blocks'), icon: galleryMosaicIcon, isDisabled: true },
 ];
 
 const mosaicTypes = [
