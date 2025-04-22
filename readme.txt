@@ -1,10 +1,10 @@
 === Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
-Contributors: britner, oakesjosh, woodardmc
+Contributors: britner, oakesjosh, woodardmc, gilbert-hernandez
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.0
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,9 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.5.3 =
+= 3.5.4 =
 Release Date: tba
 * Fix: Button Block icon padding in the editor.
+* Fix: Video Popup spacing for tablet/mobile.
 
 = 3.5.3 =
 Release Date: 17th April 2025
