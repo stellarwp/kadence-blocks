@@ -2466,6 +2466,10 @@ export default function KadenceButtonEdit(props) {
 												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
 										  )
 										: undefined,
+									paddingTop: previewIconPaddingTop,
+									paddingBottom: previewIconPaddingBottom,
+									paddingLeft: previewIconPaddingLeft,
+									paddingRight: previewIconPaddingRight,
 								}}
 							/>
 						)}
@@ -2508,6 +2512,10 @@ export default function KadenceButtonEdit(props) {
 												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
 										  )
 										: undefined,
+									paddingTop: previewIconPaddingTop,
+									paddingBottom: previewIconPaddingBottom,
+									paddingLeft: previewIconPaddingLeft,
+									paddingRight: previewIconPaddingRight,
 								}}
 							/>
 						)}
