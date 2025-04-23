@@ -2763,6 +2763,14 @@
 						const content = reference.getAttribute('data-kb-tooltip-content');
 						return window.kadenceTippy.strip_tags(content);
 					},
+					onCreate: (instance) => {
+						if (
+							instance?.reference?.role == null &&
+							!window.kadenceTippy.isInteractiveElement(instance.reference)
+						) {
+							instance.reference.role = 'note';
+						}
+					},
 				});
 				const idElements = document.querySelectorAll('[data-tooltip-id]:not([href])');
 
@@ -2778,8 +2786,43 @@
 						const toolContent = document.getElementById(id);
 						return toolContent ? window.kadenceTippy.strip_tags(toolContent.innerHTML) : '';
 					},
+					onCreate: (instance) => {
+						if (
+							instance?.reference?.role == null &&
+							!window.kadenceTippy.isInteractiveElement(instance.reference)
+						) {
+							instance.reference.role = 'note';
+						}
+					},
 				});
 			}
+		},
+		isInteractiveElement(element) {
+			console.log(element, element.role);
+			const { nodeName } = element;
+
+			if (['BUTTON', 'DETAILS', 'EMBED', 'IFRAME', 'KEYGEN', 'LABEL', 'SELECT', 'TEXTAREA'].includes(nodeName)) {
+				console.log(1);
+				return true;
+			}
+
+			if (nodeName === 'A' && element.hasAttribute('href')) {
+				console.log(2);
+				return true;
+			}
+
+			if (['AUDIO', 'VIDEO'].includes(nodeName) && element.hasAttribute('controls')) {
+				console.log(3);
+				return true;
+			}
+
+			if (['IMG', 'OBJECT'].includes(nodeName) && element.hasAttribute('usemap')) {
+				console.log(4);
+				return true;
+			}
+			console.log(5);
+
+			return false;
 		},
 	};
 	if ('loading' === document.readyState) {
