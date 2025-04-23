@@ -1059,44 +1059,48 @@ function KadencePosts(props) {
 						{postType === 'post' && aboveCategories && post.category_info && (
 							<div className="entry-taxonomies">
 								<span className={`category-links term-links category-style-${categoriesStyle}`}>
-									{post.category_info && post.category_info.map((category, index, arr) => {
-										const slug = category.slug || '';
-										const hasColorData = categoryColors && categoryColors[slug];
-										const styleProperty = categoriesStyle === 'pill' ? 'background-color' : 'color';
+									{post.category_info &&
+										post.category_info.map((category, index, arr) => {
+											const slug = category.slug || '';
+											const hasColorData = categoryColors && categoryColors[slug];
+											const styleProperty =
+												categoriesStyle === 'pill' ? 'background-color' : 'color';
 
-										const categoryStyle = {};
-										if (hasColorData && categoryColors[slug].color) {
-											categoryStyle[styleProperty] = categoryColors[slug].color;
-										}
+											const categoryStyle = {};
+											if (hasColorData && categoryColors[slug].color) {
+												categoryStyle[styleProperty] = categoryColors[slug].color;
+											}
 
-										return (
-											<Fragment key={category.id || index}>
-												<a
-													className={`kb-posts-block-category-link category-link-${slug}`}
-													href={category.link || '#'}
-													style={categoryStyle}
-													onMouseEnter={(e) => {
-														if (hasColorData && categoryColors[slug].hover_color) {
-															e.currentTarget.style[styleProperty] = categoryColors[slug].hover_color;
-														}
-													}}
-													onMouseLeave={(e) => {
-														if (hasColorData && categoryColors[slug].color) {
-															e.currentTarget.style[styleProperty] = categoryColors[slug].color;
-														} else {
-															e.currentTarget.style[styleProperty] = '';
-														}
-													}}
-												>
-													{category.name}
-												</a>
+											return (
+												<Fragment key={category.id || index}>
+													<a
+														className={`kb-posts-block-category-link category-link-${slug}`}
+														href={category.link || '#'}
+														style={categoryStyle}
+														onMouseEnter={(e) => {
+															if (hasColorData && categoryColors[slug].hover_color) {
+																e.currentTarget.style[styleProperty] =
+																	categoryColors[slug].hover_color;
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (hasColorData && categoryColors[slug].color) {
+																e.currentTarget.style[styleProperty] =
+																	categoryColors[slug].color;
+															} else {
+																e.currentTarget.style[styleProperty] = '';
+															}
+														}}
+													>
+														{category.name}
+													</a>
 
-												{(index < arr.length - 1 && categoriesStyle !== 'pill') && (
-													<span> {aboveSymbol} </span>
-												)}
-											</Fragment>
-										);
-									})}
+													{index < arr.length - 1 && categoriesStyle !== 'pill' && (
+														<span> {aboveSymbol} </span>
+													)}
+												</Fragment>
+											);
+										})}
 								</span>
 							</div>
 						)}
