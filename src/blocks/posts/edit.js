@@ -175,6 +175,26 @@ function KadencePosts(props) {
 	};
 	const debouncedGetTaxonomyTerms = debounce(getTaxonomyTerms, 200);
 
+	const [categoryColors, setCategoryColors] = useState({});
+
+	useEffect(() => {
+		if (loaded && latestPosts && latestPosts.length > 0 && kbpData.isKadenceT === '1') {
+			const postId = latestPosts[0].id;
+
+			apiFetch({
+				path: `/wp/v2/posts/${postId}`,
+			})
+				.then((post) => {
+					if (post && post.category_colors) {
+						setCategoryColors(post.category_colors);
+					}
+				})
+				.catch((error) => {
+					console.error('Error fetching category colors:', error);
+				});
+		}
+	}, [loaded, latestPosts]);
+
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -1039,28 +1059,41 @@ function KadencePosts(props) {
 						{postType === 'post' && aboveCategories && post.category_info && (
 							<div className="entry-taxonomies">
 								<span className={`category-links term-links category-style-${categoriesStyle}`}>
-									{post.category_info.map((category, index, arr) => {
-										if (arr.length - 1 === index || categoriesStyle === 'pill') {
-											return (
-												<a
-													key={category.id}
-													className="kb-posts-block-category-link"
-													href={'#category'}
-												>
-													{category.name}
-												</a>
-											);
+									{post.category_info && post.category_info.map((category, index, arr) => {
+										const slug = category.slug || '';
+										const hasColorData = categoryColors && categoryColors[slug];
+										const styleProperty = categoriesStyle === 'pill' ? 'background-color' : 'color';
+
+										const categoryStyle = {};
+										if (hasColorData && categoryColors[slug].color) {
+											categoryStyle[styleProperty] = categoryColors[slug].color;
 										}
+
 										return (
-											<Fragment key={category.id}>
+											<Fragment key={category.id || index}>
 												<a
-													key={category.id}
-													className="kb-posts-block-category-link"
-													href={'#category'}
+													className={`kb-posts-block-category-link category-link-${slug}`}
+													href={category.link || '#'}
+													style={categoryStyle}
+													onMouseEnter={(e) => {
+														if (hasColorData && categoryColors[slug].hover_color) {
+															e.currentTarget.style[styleProperty] = categoryColors[slug].hover_color;
+														}
+													}}
+													onMouseLeave={(e) => {
+														if (hasColorData && categoryColors[slug].color) {
+															e.currentTarget.style[styleProperty] = categoryColors[slug].color;
+														} else {
+															e.currentTarget.style[styleProperty] = '';
+														}
+													}}
 												>
 													{category.name}
 												</a>
-												<span> {aboveSymbol} </span>
+
+												{(index < arr.length - 1 && categoriesStyle !== 'pill') && (
+													<span> {aboveSymbol} </span>
+												)}
 											</Fragment>
 										);
 									})}
