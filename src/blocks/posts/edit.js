@@ -741,7 +741,9 @@ function KadencePosts(props) {
 											<ToggleControl
 												label={__('Enable Custom Kadence Archive Colors', 'kadence-blocks')}
 												checked={customKadenceArchiveColors}
-												onChange={(value) => setAttributes({ customKadenceArchiveColors: value })}
+												onChange={(value) =>
+													setAttributes({ customKadenceArchiveColors: value })
+												}
 											/>
 										)}
 
@@ -1065,13 +1067,21 @@ function KadencePosts(props) {
 														href={category.link || '#'}
 														style={categoryStyle}
 														onMouseEnter={(e) => {
-															if (customKadenceArchiveColors && category.archive_category_hover_color) {
-																e.currentTarget.style[styleProperty] = category.archive_category_hover_color;
+															if (
+																customKadenceArchiveColors &&
+																category.archive_category_hover_color
+															) {
+																e.currentTarget.style[styleProperty] =
+																	category.archive_category_hover_color;
 															}
 														}}
 														onMouseLeave={(e) => {
-															if (customKadenceArchiveColors && category.archive_category_color) {
-																e.currentTarget.style[styleProperty] = category.archive_category_color;
+															if (
+																customKadenceArchiveColors &&
+																category.archive_category_color
+															) {
+																e.currentTarget.style[styleProperty] =
+																	category.archive_category_color;
 															} else {
 																e.currentTarget.style[styleProperty] = '';
 															}
