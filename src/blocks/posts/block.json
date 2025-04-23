@@ -77,6 +77,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"customKadenceArchiveColors": {
+			"type": "boolean",
+			"default": true
+		},
 		"categoriesDivider": {
 			"type": "string",
 			"default": "vline"

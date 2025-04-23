@@ -104,6 +104,7 @@ function KadencePosts(props) {
 		titleFont,
 		excerptCustomLength,
 		excerptLength,
+		customKadenceArchiveColors,
 	} = attributes;
 
 	const [latestPosts, setLatestPosts] = useState({});
@@ -174,27 +175,6 @@ function KadencePosts(props) {
 		}
 	};
 	const debouncedGetTaxonomyTerms = debounce(getTaxonomyTerms, 200);
-
-	const [categoryColors, setCategoryColors] = useState({});
-
-	useEffect(() => {
-		if (loaded && latestPosts && latestPosts.length > 0 && kbpData.isKadenceT === '1') {
-			const postId = latestPosts[0].id;
-
-			apiFetch({
-				path: `/wp/v2/posts/${postId}`,
-			})
-				.then((post) => {
-					if (post && post.category_colors) {
-						setCategoryColors(post.category_colors);
-					}
-				})
-				.catch((error) => {
-					console.error('Error fetching category colors:', error);
-				});
-		}
-	}, [loaded, latestPosts]);
-
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -757,6 +737,14 @@ function KadencePosts(props) {
 								/>
 								{aboveCategories && (
 									<>
+										{kbpData.isKadenceT === '1' && (
+											<ToggleControl
+												label={__('Enable Custom Kadence Archive Colors', 'kadence-blocks')}
+												checked={customKadenceArchiveColors}
+												onChange={(value) => setAttributes({ customKadenceArchiveColors: value })}
+											/>
+										)}
+
 										<SelectControl
 											label={__('Category Style', 'kadence-blocks')}
 											options={[
@@ -1062,13 +1050,12 @@ function KadencePosts(props) {
 									{post.category_info &&
 										post.category_info.map((category, index, arr) => {
 											const slug = category.slug || '';
-											const hasColorData = categoryColors && categoryColors[slug];
 											const styleProperty =
 												categoriesStyle === 'pill' ? 'background-color' : 'color';
 
 											const categoryStyle = {};
-											if (hasColorData && categoryColors[slug].color) {
-												categoryStyle[styleProperty] = categoryColors[slug].color;
+											if (customKadenceArchiveColors && category.archive_category_color) {
+												categoryStyle[styleProperty] = category.archive_category_color;
 											}
 
 											return (
@@ -1078,15 +1065,13 @@ function KadencePosts(props) {
 														href={category.link || '#'}
 														style={categoryStyle}
 														onMouseEnter={(e) => {
-															if (hasColorData && categoryColors[slug].hover_color) {
-																e.currentTarget.style[styleProperty] =
-																	categoryColors[slug].hover_color;
+															if (customKadenceArchiveColors && category.archive_category_hover_color) {
+																e.currentTarget.style[styleProperty] = category.archive_category_hover_color;
 															}
 														}}
 														onMouseLeave={(e) => {
-															if (hasColorData && categoryColors[slug].color) {
-																e.currentTarget.style[styleProperty] =
-																	categoryColors[slug].color;
+															if (customKadenceArchiveColors && category.archive_category_color) {
+																e.currentTarget.style[styleProperty] = category.archive_category_color;
 															} else {
 																e.currentTarget.style[styleProperty] = '';
 															}
