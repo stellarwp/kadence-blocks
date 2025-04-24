@@ -175,9 +175,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.4 =
-Release Date: tba
-* Fix: Button Block icon padding in the editor.
-* Fix: Video Popup spacing for tablet/mobile.
+Release Date: April 25th
+* Fix: Button Block height when stacked vertically in section in some situations
+* Fix: Navigation (Adv) top left border radius for active state does not reflect
 
 = 3.5.3 =
 Release Date: 17th April 2025
