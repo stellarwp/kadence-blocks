@@ -178,6 +178,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: April 25th
 * Fix: Button Block height when stacked vertically in section in some situations
 * Fix: Navigation (Adv) top left border radius for active state does not reflect
+* Fix: Video Popup padding for tablet and desktop is not reflecting the frontend
+* Update: Tooltips and Progress Bar (stars) Aria roles for accessibility
 
 = 3.5.3 =
 Release Date: 17th April 2025
