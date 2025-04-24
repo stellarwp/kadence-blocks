@@ -272,12 +272,7 @@ class KB_Ajax_Form {
 							}
 							$cc_headers = '';
 							if ( isset( $form_args['email'][0]['cc'] ) && ! empty( trim( $form_args['email'][0]['cc'] ) ) ) {
-								$cc_emails = explode( ',', trim( $form_args['email'][0]['cc'] ) );
-								$sanitized_cc_emails = array();
-								foreach ( $cc_emails as $cc_email ) {
-									$sanitized_cc_emails[] = sanitize_email( trim( $cc_email ) );
-								}
-								$cc_headers = 'Cc: ' . implode( ',', $sanitized_cc_emails ) . "\r\n";
+								$cc_headers = 'Cc: ' . sanitize_email( trim( $form_args['email'][0]['cc'] ) ) . "\r\n";
 							}
 
 							$bcc_headers = '';
