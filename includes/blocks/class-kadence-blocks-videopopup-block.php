@@ -99,8 +99,8 @@ class Kadence_Blocks_Videopopup_Block extends Kadence_Blocks_Abstract_Block {
 			$padding = $attributes['padding'][0];
 			$padding_attr = array(
 				'padding'       => ( isset( $padding['desk'] ) && is_array( $padding['desk'] ) ) ? $padding['desk'] : array(),
-				'paddingTablet' => ( isset( $padding['tablet'] ) && is_array( $padding['tablet'] ) ) ? $padding['tablet'] : array(),
-				'paddingMobile' => ( isset( $padding['mobile'] ) && is_array( $padding['mobile'] ) ) ? $padding['mobile'] : array(),
+				'tabletPadding' => ( isset( $padding['tablet'] ) && is_array( $padding['tablet'] ) ) ? $padding['tablet'] : array(),
+				'mobilePadding' => ( isset( $padding['mobile'] ) && is_array( $padding['mobile'] ) ) ? $padding['mobile'] : array(),
 				'paddingType'   => ( ! empty( $attributes['paddingUnit'] ) ) ? $attributes['paddingUnit'] : 'px',
 			);
 
@@ -111,8 +111,8 @@ class Kadence_Blocks_Videopopup_Block extends Kadence_Blocks_Abstract_Block {
 			$margin = $attributes['margin'][0];
 			$margin_attr = array(
 				'margin'       => ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) ) ? $margin['desk'] : array(),
-				'marginTablet' => ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) ) ? $margin['tablet'] : array(),
-				'marginMobile' => ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) ) ? $margin['mobile'] : array(),
+				'tabletMargin' => ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) ) ? $margin['tablet'] : array(),
+				'mobileMargin' => ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) ) ? $margin['mobile'] : array(),
 				'marginType'   => ( ! empty( $attributes['marginUnit'] ) ) ? $attributes['marginUnit'] : 'px',
 			);
 

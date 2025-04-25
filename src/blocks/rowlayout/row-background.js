@@ -487,6 +487,7 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 					: undefined,
 		},
 		'data-align': 'full' === align || 'wide' === align || 'center' === align ? align : undefined,
+		draggable: false,
 	});
 	return (
 		<>

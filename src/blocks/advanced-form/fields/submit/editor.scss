@@ -13,44 +13,44 @@
 // NEW CSS.
 .kt-button {
 	z-index: 1;
-    position: relative;
-    overflow: hidden;
-    border: 0 solid transparent;
-    display: flex;
+	position: relative;
+	overflow: hidden;
+	border: 0 solid transparent;
+	display: flex;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
 }
 .kt-button:not(.kb-btn-global-inherit) {
-    padding: 0.4em 1em;
-    cursor: pointer;
+	padding: 0.4em 1em;
+	cursor: pointer;
 	font-size: 1.125rem;
-    border-radius: 3px;
-    transition: all .3s ease-in-out;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
 	box-shadow: none;
 }
 .kt-button.kb-btn-global-fill {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 	border-radius: 3px;
-    background: var(--global-palette-btn-bg, #3633E1);
-    color: var(--global-palette-btn, #FFFFFF);
-    &:hover {
-        color: var(--global-palette-btn-hover, #FFFFFF);
-    }
+	background: var(--global-palette-btn-bg, #3633e1);
+	color: var(--global-palette-btn, #ffffff);
+	&:hover {
+		color: var(--global-palette-btn-hover, #ffffff);
+	}
 }
 .kt-button.kb-btn-global-outline {
-    border: 2px solid var(--global-palette-btn-bg, #3633E1);
-	background:transparent;
-    padding: calc( 0.4em - 2px ) calc( 1em - 2px );
-	color: var(--global-palette-btn-bg, #3633E1);
-    &:hover {
-        border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
-        background: transparent;
-        color: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
+	border: 2px solid var(--global-palette-btn-bg, #3633e1);
+	background: transparent;
+	padding: calc(0.4em - 2px) calc(1em - 2px);
+	color: var(--global-palette-btn-bg, #3633e1);
+	&:hover {
+		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
+		background: transparent;
+		color: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
 }
 .kt-button::before {
-    position: absolute;
+	position: absolute;
 	content: "";
 	top: 0;
 	right: 0;
@@ -58,45 +58,51 @@
 	left: 0;
 	z-index: -1;
 	opacity: 0;
-	background:transparent;
-	transition: all .3s ease-in-out;
+	background: transparent;
+	transition: all 0.3s ease-in-out;
 }
 .kt-button.kb-btn-global-fill::before {
-    background: var(--global-palette-btn-bg-hover, #2F2FFC);
+	background: var(--global-palette-btn-bg-hover, #2f2ffc);
 }
 .editor-styles-wrapper .wp-block-kadence-advanced-form-submit .kt-button:not(.kb-btn-global-inherit):hover {
-    box-shadow: none;
+	box-shadow: none;
 }
 .kt-button:hover::before {
 	opacity: 1;
 }
 .kt-btn-width-type-fixed .kt-button {
-    width: 100%;
+	width: 100%;
 }
-.editor-styles-wrapper .wp-block-kadence-advanced-form-submit .kt-button.kt-btn-size-small{
-    font-size: 0.9rem;
+.editor-styles-wrapper .wp-block-kadence-advanced-form-submit .kt-button.kt-btn-size-small {
+	font-size: 0.9rem;
 }
 .editor-styles-wrapper .wp-block-kadence-advanced-form-submit .kt-button.kt-btn-size-large {
-    font-size: 1.35rem;
+	font-size: 1.35rem;
 }
 .editor-styles-wrapper .wp-block-kadence-advanced-form-submit .kt-button.kt-btn-size-xlarge {
-    font-size: 1.65rem;
+	font-size: 1.65rem;
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-xlarge {
-    border-width: 4px;
+	border-width: 4px;
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
-    border-width: 3px;
-    padding: calc( 0.4em - 3px ) calc( 1em - 3px );
+	border-width: 3px;
+	padding: calc(0.4em - 3px) calc(1em - 3px);
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
-    border-width: 1px;
-    padding: calc( 0.4em - 1px ) calc( 1em - 1px );
+	border-width: 1px;
+	padding: calc(0.4em - 1px) calc(1em - 1px);
 }
 .wp-block-kadence-advanced-form-submit {
 	display: inline-flex;
 	margin-left: 0;
 	margin-right: 0;
+
+	.wp-block-button__link {
+		width: auto;
+		height: auto;
+	}
+
 	&.kt-btn-width-type-full {
 		flex: 1 0 fit-content;
 		width: 100%;
@@ -110,55 +116,55 @@
 }
 // Button Alignment.
 .wp-block-kadence-advanced-form-submit .kt-btn-align-center {
-    justify-content: center;
+	justify-content: center;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-left {
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-right {
-    justify-content: flex-end;
+	justify-content: flex-end;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-space-between {
-    justify-content: space-between;
+	justify-content: space-between;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-center.kb-direction-columns {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-left.kb-direction-columns {
-    align-items: flex-start;
+	align-items: flex-start;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-right.kb-direction-columns {
-    align-items: flex-end;
+	align-items: flex-end;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-align-space-between.kb-direction-columns {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-center {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-top {
-   align-items: flex-start;
+	align-items: flex-start;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-bottom {
-   align-items: flex-end;
+	align-items: flex-end;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-center.kb-direction-columns {
-    justify-content: center;
+	justify-content: center;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-top.kb-direction-columns {
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 .wp-block-kadence-advanced-form-submit .kt-btn-valign-bottom.kb-direction-columns {
-    justify-content: flex-end;
+	justify-content: flex-end;
 }
 .btn-inner-wrap {
-    display: flex;
-    width: 100%;
+	display: flex;
+	width: 100%;
 }
 // Icon Settings.
 .kb-btn-has-icon {
-    gap: 0.5em;
+	gap: 0.5em;
 }
 .kb-btn-only-icon .kt-button-text {
-    display:none;
+	display: none;
 }

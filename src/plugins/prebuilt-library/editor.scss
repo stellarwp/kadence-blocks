@@ -1603,3 +1603,7 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
 		min-height: 1px;
 	}
 }
+
+.modal-open .components-snackbar-list.components-editor-notices__snackbar {
+	z-index: 99999999;
+}
