@@ -56,7 +56,6 @@ class KBStickyImage {
 	}
 
 	setStandardStyles() {
-		//TODO check if the header is transparent at this screensize and use the transparent image instead
 		const activeSize = this.getActiveSize();
 		const isTransparentAtActiveSize =
 			(activeSize == 'desktop' && this.isTransparentDesktop) ||
