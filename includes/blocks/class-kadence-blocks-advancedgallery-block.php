@@ -424,6 +424,33 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				}
 			}
 		}
+		$gallery_type = ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry';
+
+		// Add CSS for the grid-pattern-container class.
+		if ( 'mosaic' === $gallery_type ) {
+			$mosaic_row_height_unit = isset( $attributes['mosaicRowHeightUnit'] ) ? $attributes['mosaicRowHeightUnit'] : 'px';
+			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . ' .kb-gallery-ul.kb-gallery-type-mosaic .grid-pattern-container');
+			$css->render_responsive_range(
+				$attributes,
+				'mosaicRowHeight',
+				'grid-auto-rows',
+				$mosaic_row_height_unit,
+			);
+			$grid_gap_unit = isset( $attributes['gridGapUnit'] ) ? $attributes['gridGapUnit'] : 'px';
+			$css->render_responsive_range(
+				$attributes,
+				'gutter',
+				'grid-gap',
+				$grid_gap_unit,
+			);
+			$css->render_responsive_range(
+				$attributes,
+				'gutter',
+				'gap',
+				$grid_gap_unit,
+			);
+		}
+
 
 		return $css->css_output();
 	}
@@ -572,7 +599,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					break;
 				case 'mosaic':
 					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '"kb-mosaic-gallery grid-pattern-gallery">';
-					$content .= '<div class="grid-pattern-container" style="' . esc_attr('grid-auto-rows: ' . $attributes['mosaicRowHeight'][0] . ($attributes['mosaicRowHeightUnit'] ? $attributes['mosaicRowHeightUnit'] : 'px') . '; grid-gap: ' . $attributes['gutter'][0] . ($attributes['gutterUnit'] ? $attributes['gutterUnit'] : 'px') . '; gap: ' . $attributes['gutter'][0] . ($attributes['gutterUnit'] ? $attributes['gutterUnit'] : 'px') . ';') . '">';
+					$content .= '<div class="grid-pattern-container">';
 
 					$grouped_images = array_chunk($images, 8);
 
