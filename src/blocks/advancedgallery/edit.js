@@ -1792,7 +1792,7 @@ export default function GalleryEdit(props) {
 									/>
 								</KadencePanelBody>
 							)}
-							{showSettings('shadowSettings', 'kadence/advancedgallery') && (
+							{showSettings('shadowSettings', 'kadence/advancedgallery') && type !== 'mosaic' && (
 								<KadencePanelBody
 									title={__('Image Shadow', 'kadence-blocks')}
 									initialOpen={false}
@@ -2099,7 +2099,7 @@ export default function GalleryEdit(props) {
 							: ''
 					}
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${
-				displayShadow
+				displayShadow && type !== 'mosaic'
 					? shadow[0].hOffset +
 					  'px ' +
 					  shadow[0].vOffset +
@@ -2112,7 +2112,7 @@ export default function GalleryEdit(props) {
 					: 'none'
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${
-				displayShadow
+				displayShadow && type !== 'mosaic'
 					? shadowHover[0].hOffset +
 					  'px ' +
 					  shadowHover[0].vOffset +
