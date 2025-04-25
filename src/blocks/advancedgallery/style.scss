@@ -709,9 +709,13 @@
 	display: flex;
 	flex-direction: column;
 
-	figure.kb-gallery-figure {
+	figure.kb-gallery-figure a {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+
+		.kadence-blocks-gallery-item__caption {
+			overflow-y: visible;
+		}
 	}
 }
