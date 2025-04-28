@@ -737,7 +737,7 @@ function KadencePosts(props) {
 								/>
 								{aboveCategories && (
 									<>
-										{kbpData.isKadenceT === '1' && (
+										{kadence_blocks_params?.isKadenceT === '1' && (
 											<ToggleControl
 												label={__('Enable Custom Kadence Archive Colors', 'kadence-blocks')}
 												checked={customKadenceArchiveColors}
