@@ -5,6 +5,7 @@
  */
 
 import SvgPattern from './svg-pattern';
+import classnames from 'classnames';
 import {
 	KadenceColorOutput,
 	showSettings,
@@ -44,7 +45,7 @@ import {
 import { ToggleControl, RangeControl, SelectControl, ResizableBox } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Build the spacer edit
@@ -119,7 +120,14 @@ function KadenceSpacerDivider(props) {
 	const [activeTab, setActiveTab] = useState('general');
 
 	const blockProps = useBlockProps({
-		className,
+		className: classnames(className, {
+			'wp-block': true,
+		}),
+		draggable: false,
+		'data-align':
+			'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment
+				? blockAlignment
+				: undefined,
 	});
 
 	let alp;
@@ -165,7 +173,7 @@ function KadenceSpacerDivider(props) {
 	return (
 		<div {...blockProps}>
 			{showSettings('spacerDivider', 'kadence/spacer') && (
-				<Fragment>
+				<>
 					<BlockControls key="controls">
 						<BlockAlignmentToolbar
 							value={blockAlignment}
@@ -230,7 +238,7 @@ function KadenceSpacerDivider(props) {
 										/>
 									)}
 									{dividerEnable && showSettings('dividerStyles', 'kadence/spacer') && (
-										<Fragment>
+										<>
 											<ResponsiveAlignControls
 												label={__('Alignment', 'kadence-blocks')}
 												value={hAlign ? hAlign : ''}
@@ -265,7 +273,7 @@ function KadenceSpacerDivider(props) {
 												opacityUnit={100}
 											/>
 											{'stripe' === dividerStyle && (
-												<Fragment>
+												<>
 													<RangeControl
 														label={__('Stripe Angle', 'kadence-blocks')}
 														value={rotate}
@@ -287,7 +295,7 @@ function KadenceSpacerDivider(props) {
 														min={1}
 														max={30}
 													/>
-												</Fragment>
+												</>
 											)}
 											<ResponsiveRangeControls
 												label={__('Divider Height', 'kadence-blocks')}
@@ -321,7 +329,7 @@ function KadenceSpacerDivider(props) {
 												onUnit={(value) => setAttributes({ dividerWidthUnits: value })}
 												units={['px', '%']}
 											/>
-										</Fragment>
+										</>
 									)}
 								</KadencePanelBody>
 							</>
@@ -358,11 +366,11 @@ function KadenceSpacerDivider(props) {
 							</>
 						)}
 					</InspectorControls>
-				</Fragment>
+				</>
 			)}
 			<div className={`kt-block-spacer kt-block-spacer-halign-${previewHAlign}`}>
 				{dividerEnable && (
-					<Fragment>
+					<>
 						{dividerStyle === 'stripe' && (
 							<span
 								className="kt-divider-stripe"
@@ -392,7 +400,7 @@ function KadenceSpacerDivider(props) {
 								}}
 							/>
 						)}
-					</Fragment>
+					</>
 				)}
 				{spacerHeightUnits && 'vh' === spacerHeightUnits && (
 					<div

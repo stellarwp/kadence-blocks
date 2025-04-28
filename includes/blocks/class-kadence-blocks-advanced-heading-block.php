@@ -195,7 +195,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				];
 			}
 
-			$css->render_text_shadow( $attributes ); // This should be all that is required.
+			$this->render_text_shadow( $attributes, $css ); // This should be all that is required.
 			$css->set_media_state('desktop');
 		}
 
@@ -686,6 +686,144 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 	}
 
+	/**
+	 * Renders the text shadow styles across desktop, tablet, and mobile devices based on the provided attributes.
+	 *
+	 * @param array $attributes An array of attributes containing text shadow properties for different breakpoints (desktop, tablet, and mobile).
+	 * @return void
+	 */
+	public function render_text_shadow( $attributes, $css ) {
+
+		if (!empty($attributes['textShadow']) &&
+			is_array($attributes['textShadow'][0]) &&
+			(!empty($attributes['enableTextShadow']) || !empty($attributes['textShadow'][0]['enable']))
+		) {
+			$textShadow = $attributes['textShadow'][0] ?? [];
+			$textShadow['hOffset'] = $textShadow['hOffset'] ?? 1;
+			$textShadow['vOffset'] = $textShadow['vOffset'] ?? 1;
+			$textShadow['blur']    = $textShadow['blur'] ?? 1;
+			$textShadow['color']   = $textShadow['color'] ?? null;
+			$textShadow['opacity'] = $textShadow['opacity'] ?? 1.0; // Default is 0.2, but if it's undefed they set it at a time when the block defaults it to 1.0
+		}
+
+		if (!empty($attributes['textShadowTablet']) && is_array($attributes['textShadowTablet'][0])) {
+			$textShadowTablet = $attributes['textShadowTablet'][0] ?? [];
+			$textShadowTablet['hOffset'] = $this->get_cascading_value(
+				null, // No mobile value is considered here for tablet logic
+				$textShadowTablet['hOffset'] ?? null,
+				$attributes['textShadow'][0]['hOffset'] ?? null,
+				1
+			);
+			$textShadowTablet['vOffset'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['vOffset'] ?? null,
+				$attributes['textShadow'][0]['vOffset'] ?? null,
+				1
+			);
+			$textShadowTablet['blur'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['blur'] ?? null,
+				$attributes['textShadow'][0]['blur'] ?? null,
+				1
+			);
+			$textShadowTablet['color'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['color'] ?? null,
+				$attributes['textShadow'][0]['color'] ?? null,
+				null // Default fallback value for color
+			);
+			$textShadowTablet['opacity'] = $this->get_cascading_value(
+				null,
+				$textShadowTablet['opacity'] ?? null,
+				$attributes['textShadow'][0]['opacity'] ?? null,
+				1
+			);
+		}
+		if (!empty($attributes['textShadowMobile']) && is_array($attributes['textShadowMobile'][0])) {
+			$textShadowMobile = $attributes['textShadowMobile'][0] ?? [];
+			$textShadowMobile['hOffset'] = $this->get_cascading_value(
+				$textShadowMobile['hOffset'] ?? null,
+				$attributes['textShadowTablet'][0]['hOffset'] ?? null,
+				$attributes['textShadow'][0]['hOffset'] ?? null,
+				1
+			);
+			$textShadowMobile['vOffset'] = $this->get_cascading_value(
+				$textShadowMobile['vOffset'] ?? null,
+				$attributes['textShadowTablet'][0]['vOffset'] ?? null,
+				$attributes['textShadow'][0]['vOffset'] ?? null,
+				1
+			);
+			$textShadowMobile['blur'] = $this->get_cascading_value(
+				$textShadowMobile['blur'] ?? null,
+				$attributes['textShadowTablet'][0]['blur'] ?? null,
+				$attributes['textShadow'][0]['blur'] ?? null,
+				1
+			);
+			$textShadowMobile['color'] = $this->get_cascading_value(
+				$textShadowMobile['color'] ?? null,
+				$attributes['textShadowTablet'][0]['color'] ?? null,
+				$attributes['textShadow'][0]['color'] ?? null,
+				null
+			);
+			$textShadowMobile['opacity'] = $this->get_cascading_value(
+				$textShadowMobile['opacity'] ?? null,
+				$attributes['textShadowTablet'][0]['opacity'] ?? null,
+				$attributes['textShadow'][0]['opacity'] ?? null,
+				1
+			);
+		}
+
+		$responsiveTextShadow = [$textShadow, $textShadowTablet ?? null, $textShadowMobile ?? null];
+
+		foreach ($responsiveTextShadow as $key => $textShadow) {
+			if (!empty($textShadow)) {
+				if ( strpos($textShadow['color'], 'rgba') !== false ) {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $css->render_color( $textShadow['color'] )
+							: $css->render_color( '#000000', $textShadow['opacity'] )
+						);
+				} else {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $css->render_color( $textShadow['color'], $textShadow['opacity'] )
+							: $css->render_color( '#000000', $textShadow['opacity'] )
+						);
+				}
+
+				switch ($key) {
+					case 0: $css->set_media_state('desktop'); break;
+					case 1: $css->set_media_state('tablet'); break;
+					case 2: $css->set_media_state('mobile'); break;
+				}
+
+				$css->add_property('text-shadow', $shadow_string);
+			}
+		}
+	}
+
+	/**
+	 * Retrieve the cascading value based on device-specific settings.
+	 *
+	 * @param mixed $mobile The value specifically set for mobile devices.
+	 * @param mixed $tablet The value specifically set for tablet devices.
+	 * @param mixed $default The default value if mobile and tablet values are not provided.
+	 * @param mixed $fallback The fallback value if none of the other values are set.
+	 */
+	public function get_cascading_value($mobile, $tablet, $default, $fallback) {
+		if (isset($mobile) && $mobile !== '') {
+			return $mobile;
+		} elseif (isset($tablet) && $tablet !== '') {
+			return $tablet;
+		} elseif (isset($default) && $default !== '') {
+			return $default;
+		}
+		return $fallback;
+	}
 }
 
 Kadence_Blocks_Advancedheading_Block::get_instance();

@@ -36,6 +36,7 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 	CopyPasteAttributes,
+	DynamicTextInputControl,
 } from '@kadence/components';
 
 /**
@@ -2356,11 +2357,20 @@ function SectionEdit(props) {
 											onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
 											linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
 											onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
-											linkTitle={linkTitle}
-											onChangeTitle={(value) => {
-												setAttributes({ linkTitle: value });
-											}}
 											dynamicAttribute={'link'}
+											allowClear={true}
+											isSelected={isSelected}
+											attributes={attributes}
+											setAttributes={setAttributes}
+											name={'kadence/column'}
+											clientId={clientId}
+											context={context}
+										/>
+										<DynamicTextInputControl
+											label={__('Link Title', 'kadence-blocks')}
+											value={linkTitle}
+											onChange={(value) => setAttributes({ linkTitle: value })}
+											dynamicAttribute={'linkTitle'}
 											allowClear={true}
 											isSelected={isSelected}
 											attributes={attributes}

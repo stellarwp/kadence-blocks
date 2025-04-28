@@ -20,11 +20,6 @@ import './style.scss';
 export { metadata, name };
 
 registerBlockType('kadence/spacer', {
-	getEditWrapperProps({ blockAlignment }) {
-		if ('full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment) {
-			return { 'data-align': blockAlignment };
-		}
-	},
 	...metadata,
 	title: _x('Spacer / Divider', 'block title', 'kadence-blocks'),
 	keywords: [

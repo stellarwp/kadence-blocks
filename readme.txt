@@ -1,10 +1,10 @@
 === Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
-Contributors: britner, oakesjosh, woodardmc
+Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
-Tested up to: 6.7.2
-Stable tag: 3.5.1
+Tested up to: 6.8.0
+Stable tag: 3.5.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,6 +174,38 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.5.6 =
+Release Date: May 1st 2025
+* Fix: Comma separated CC field not sending to multiple users
+* Fix: Transparent Logo Reverts to Default Logo After Scrolling Back Up with Sticky Header Enabled
+* Update: Connect custom post category colors with relevant blocks (posts, post grid)
+* Enhancement: Improved design library navigation, filtering, and sorting
+
+= 3.5.5 =
+Release Date: April 28th 2025
+* Fix: Added more safety checks to telemetry opt-ins/opt-outs.
+
+= 3.5.4 =
+Release Date: April 25th 2025
+* Fix: Button Block height when stacked vertically in section in some situations
+* Fix: Navigation (Adv) top left border radius for active state does not reflect
+* Fix: Video Popup padding for tablet and desktop is not reflecting the frontend
+* Update: Tooltips and Progress Bar (stars) Aria roles for accessibility
+
+= 3.5.3 =
+Release Date: 17th April 2025
+* Add: Advanced Text copy/paste now behaves like paragraph block when set as default.
+* Fix: Accordion header buttons no longer inherit box shadow from theme on active.
+* Fix: Design Library now hidden in Row Layout when hidden in block visibility.
+* Fix: Row layout inner column height of 100% on mobile/tablet when desktop is collapsed to rows.
+* Fix: PHP warning in Table of contents block in some situations.
+* Fix: Advanced nav uncollapsed vertical sub menus on frontend for tablet and mobile.
+* Fix: Lottie animation upload modal disappearing mid-upload.
+
+= 3.5.2 =
+Release Date: 16th April 2025
+* Fix: WP 6.8 button size issue.
+
 = 3.5.1 =
 Release Date: 3rd April 2025
 * Add: Preset options for box shadow.
@@ -181,10 +213,10 @@ Release Date: 3rd April 2025
 * Fix: Focus in Text (Adv) input when is selected or inserted.
 * Fix: Captions in gallery lightbox when caption text contains a link.
 * Fix: Advanced navigation in footer not inheriting styles from settings.
-* Fix: Add aria-required to required fields in class form block.
+* Fix: Add aria-required to required fields in classic form block.
 * Fix: FAQ schema on accordions containing CSS.
 * Fix: Add aria-label to Gallery carousels.
-* Fix: Text shadow opacity now updates correctly.
+* Fix: Updating text shadow opacity in advanced text block.
 
 = 3.5.0 =
 Release Date: 18th March 2025

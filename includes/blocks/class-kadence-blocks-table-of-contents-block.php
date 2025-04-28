@@ -71,7 +71,7 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array(
 			'tablet_key'  => 'containerTabletMargin',
 			'mobile_key'  => 'containerMobileMargin',
-			'unit_key' => 'containerMargin',
+			'unit_key' => 'containerMarginUnit',
 		) );
 		$css->render_measure_output(
 			$attributes,

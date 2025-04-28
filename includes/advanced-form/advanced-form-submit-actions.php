@@ -122,7 +122,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 		$subject = isset( $this->form_args['attributes']['email']['subject'] ) && ! empty( trim( $this->form_args['attributes']['email']['subject'] ) ) ? $this->form_args['attributes']['email']['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
 		$from_email = isset( $this->form_args['attributes']['email']['fromEmail'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ? sanitize_email( $this->do_field_replacements( trim( $this->form_args['attributes']['email']['fromEmail'] ) ) ) : '';
 		$from_name = ( isset( $this->form_args['attributes']['email']['fromName'] ) && ! empty( trim( $this->form_args['attributes']['email']['fromName'] ) ) ? trim( $this->form_args['attributes']['email']['fromName'] ) . ' ' : '' );
-		$email_cc = isset( $this->form_args['attributes']['email']['cc'] ) && ! empty( trim( $this->form_args['attributes']['email']['cc'] ) ) ? sanitize_email( $this->do_field_replacements( trim( $this->form_args['attributes']['email']['cc'] ) ) ) : '';
+		$email_cc = isset( $this->form_args['attributes']['email']['cc'] ) && ! empty( trim( $this->form_args['attributes']['email']['cc'] ) ) ? $this->do_field_replacements( trim( $this->form_args['attributes']['email']['cc'] ) ) : '';
 		$email_bcc = isset( $this->form_args['attributes']['email']['bcc'] ) && ! empty( trim( $this->form_args['attributes']['email']['bcc'] ) ) ? $this->form_args['attributes']['email']['bcc'] : '';
 
 		$to = $this->do_field_replacements( $to );
@@ -168,15 +168,25 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
 		$cc_headers = '';
 		if ( $email_cc ) {
-			$cc_headers = 'Cc: ' . $email_cc . "\r\n";
+			$cc_emails = explode( ',', $email_cc );
+			$sanitized_cc_emails = array();
+			foreach ( $cc_emails as $cc_email ) {
+				$sanitized_cc_emails[] = sanitize_email( trim( $cc_email ) );
+			}
+			$cc_headers = 'Cc: ' . implode( ',', $sanitized_cc_emails ) . "\r\n";
 		}
-		$mail = wp_mail( $to, $subject, $body, $headers . $cc_headers );
+
+		$bcc_headers = '';
 		if ( $email_bcc ) {
 			$bcc_emails = explode( ',', $email_bcc );
+			$sanitized_bcc_emails = array();
 			foreach ( $bcc_emails as $bcc_email ) {
-				wp_mail( sanitize_email( trim( $bcc_email ) ), $subject, $body, $headers );
+				$sanitized_bcc_emails[] = sanitize_email( trim( $bcc_email ) );
 			}
+			$bcc_headers = 'Bcc: ' . implode( ',', $sanitized_bcc_emails ) . "\r\n";
 		}
+		
+		wp_mail( $to, $subject, $body, $headers . $cc_headers . $bcc_headers );
 	}
 	/**
 	 * Mailerlite rest call.

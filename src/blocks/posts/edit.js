@@ -104,6 +104,7 @@ function KadencePosts(props) {
 		titleFont,
 		excerptCustomLength,
 		excerptLength,
+		customKadenceArchiveColors,
 	} = attributes;
 
 	const [latestPosts, setLatestPosts] = useState({});
@@ -174,7 +175,6 @@ function KadencePosts(props) {
 		}
 	};
 	const debouncedGetTaxonomyTerms = debounce(getTaxonomyTerms, 200);
-
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -737,6 +737,16 @@ function KadencePosts(props) {
 								/>
 								{aboveCategories && (
 									<>
+										{kadence_blocks_params?.isKadenceT === '1' && (
+											<ToggleControl
+												label={__('Enable Custom Kadence Archive Colors', 'kadence-blocks')}
+												checked={customKadenceArchiveColors}
+												onChange={(value) =>
+													setAttributes({ customKadenceArchiveColors: value })
+												}
+											/>
+										)}
+
 										<SelectControl
 											label={__('Category Style', 'kadence-blocks')}
 											options={[
@@ -1039,31 +1049,53 @@ function KadencePosts(props) {
 						{postType === 'post' && aboveCategories && post.category_info && (
 							<div className="entry-taxonomies">
 								<span className={`category-links term-links category-style-${categoriesStyle}`}>
-									{post.category_info.map((category, index, arr) => {
-										if (arr.length - 1 === index || categoriesStyle === 'pill') {
+									{post.category_info &&
+										post.category_info.map((category, index, arr) => {
+											const slug = category.slug || '';
+											const styleProperty =
+												categoriesStyle === 'pill' ? 'background-color' : 'color';
+
+											const categoryStyle = {};
+											if (customKadenceArchiveColors && category.archive_category_color) {
+												categoryStyle[styleProperty] = category.archive_category_color;
+											}
+
 											return (
-												<a
-													key={category.id}
-													className="kb-posts-block-category-link"
-													href={'#category'}
-												>
-													{category.name}
-												</a>
+												<Fragment key={category.id || index}>
+													<a
+														className={`kb-posts-block-category-link category-link-${slug}`}
+														href={category.link || '#'}
+														style={categoryStyle}
+														onMouseEnter={(e) => {
+															if (
+																customKadenceArchiveColors &&
+																category.archive_category_hover_color
+															) {
+																e.currentTarget.style[styleProperty] =
+																	category.archive_category_hover_color;
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (
+																customKadenceArchiveColors &&
+																category.archive_category_color
+															) {
+																e.currentTarget.style[styleProperty] =
+																	category.archive_category_color;
+															} else {
+																e.currentTarget.style[styleProperty] = '';
+															}
+														}}
+													>
+														{category.name}
+													</a>
+
+													{index < arr.length - 1 && categoriesStyle !== 'pill' && (
+														<span> {aboveSymbol} </span>
+													)}
+												</Fragment>
 											);
-										}
-										return (
-											<Fragment key={category.id}>
-												<a
-													key={category.id}
-													className="kb-posts-block-category-link"
-													href={'#category'}
-												>
-													{category.name}
-												</a>
-												<span> {aboveSymbol} </span>
-											</Fragment>
-										);
-									})}
+										})}
 								</span>
 							</div>
 						)}

@@ -563,3 +563,159 @@
 		gap: 10px;
 	}
 }
+
+// Mosaic gallery layout styles
+.kb-gallery-ul.kb-gallery-type-mosaic {
+	.grid-pattern-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		grid-gap: 10px;
+		gap: 10px;
+		width: 100%;
+	}
+
+	.kadence-blocks-gallery-item {
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		height: 100%;
+
+		// Default grid item sizing for mobile (767px and below)
+		@media (max-width: 767px) {
+			&.grid-item-wide,
+			&.grid-item-large,
+			&.grid-item-tall,
+			&.grid-item-small,
+			&.last {
+				grid-column: span 4;
+				grid-row: span 2;
+			}
+
+			// Extra styles for the last images to prevent white spacing
+			&.only-one,
+			&.only-two,
+			&.only-three,
+			&.only-four,
+			&.only-five,
+			&.only-six,
+			&.only-seven {
+				grid-column: span 4;
+				grid-row: span 2;
+			}
+		}
+
+		@media (min-width: 768px) {
+
+			// Grid item patterns
+			&.grid-item-wide {
+				grid-column: span 2;
+				grid-row: span 1;
+			}
+
+			&.grid-item-large {
+				grid-column: span 2;
+				grid-row: span 2;
+			}
+
+			&.grid-item-tall {
+				grid-column: span 1;
+				grid-row: span 2;
+			}
+
+			&.grid-item-small {
+				grid-column: span 1;
+				grid-row: span 1;
+			}
+
+			// Extra styles for the last images to prevent white spacing
+			&.only-one {
+				grid-column: span 4;
+				grid-row: span 2;
+			}
+			&.only-two {
+				grid-row: span 1;
+			}
+			&.only-three {
+				grid-column: span 2;
+				grid-row: span 1;
+			}
+			&.only-four {
+				grid-row: span 1;
+			}
+			&.only-five {
+				grid-column: span 3;
+				grid-row: span 1;
+			}
+			&.only-six {
+				grid-row: span 1;
+			}
+			&.only-seven {
+				grid-row: span 2;
+			}
+		}
+		li.kadence-blocks-gallery-item {
+			list-style: none;
+		}
+
+		// All nested elements need 100% height
+		.kadence-blocks-gallery-item-inner,
+		figure.kb-gallery-figure,
+		.kb-gal-image-radius,
+		.kb-gallery-image-contain,
+		.kadence-blocks-gallery-item-inner figure.kb-gallery-figure .kadence-blocks-gallery-intrinsic {
+			height: 100%;
+			width: 100%;
+			display: block;
+		}
+
+		.kadence-blocks-gallery-item-inner figcaption.kadence-blocks-gallery-item__caption {
+			overflow: hidden;
+		}
+
+		// Figure needs proper box sizing and margin removal
+		.kb-gallery-figure {
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		// Image styling
+		.kb-gallery-image-contain {
+			padding: 0;
+			background: none;
+			border: none;
+			cursor: pointer;
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+			}
+		}
+
+		// Prevents the intrinsic aspect ratio from affecting layout
+		.kadence-blocks-gallery-intrinsic {
+			position: relative;
+
+			&::before {
+				content: none !important;
+			}
+		}
+	}
+}
+
+// Styles for the Mosaic caption when below the image
+.kb-gallery-type-mosaic.kb-gallery-caption-style-below .grid-pattern-container .kadence-blocks-gallery-item {
+	display: flex;
+	flex-direction: column;
+
+	figure.kb-gallery-figure a {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+
+		.kadence-blocks-gallery-item__caption {
+			overflow-y: visible;
+		}
+	}
+}

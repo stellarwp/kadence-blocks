@@ -122,6 +122,7 @@ function RowLayoutEditContainer(props) {
 		toggleSelection,
 		isSelected,
 		clientId,
+		name,
 	} = props;
 	const {
 		uniqueID,
@@ -1183,6 +1184,7 @@ function RowLayoutEditContainer(props) {
 								setAttributes={setAttributes}
 								isSelected={isSelected}
 								context={context}
+								name={name}
 							/>
 						)}
 						{activeTab === 'advanced' && (
@@ -1684,9 +1686,11 @@ function RowLayoutEditContainer(props) {
 								/>
 							))}
 						</ButtonGroup>
-						<Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
-							{__('Design Library', 'kadence-blocks')}
-						</Button>
+						{showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary && (
+							<Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+								{__('Design Library', 'kadence-blocks')}
+							</Button>
+						)}
 					</div>
 				)}
 				{colLayout && 'none' !== topSep && '' !== topSep && (

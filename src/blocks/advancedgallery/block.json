@@ -161,6 +161,14 @@
 			"type": "string",
 			"default": "px"
 		},
+		"mosaicRowHeight": {
+			"type": "array",
+			"default": [150, "", ""]
+		},
+		"mosaicRowHeightUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"carouselHeight": {
 			"type": "array",
 			"default": [300, "", ""]
@@ -338,6 +346,10 @@
 		"kbVersion": {
 			"type": "number",
 			"default": ""
+		},
+		"mosaicType": {
+			"type": "string",
+			"default": "first"
 		}
 	},
 	"supports": {
