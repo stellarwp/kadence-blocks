@@ -374,7 +374,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
-		if ( isset( $attributes['displayShadow'] ) && ! empty( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
+		if ( isset( $attributes['displayShadow'] ) && ! empty( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] &&
+			( (isset( $attributes['type'] ) && $attributes['type'] !== 'mosaic') || ! isset( $attributes['type'] ) )
+		) {
 			$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
 			$css->add_property('overflow', 'visible' );
 
@@ -424,6 +426,33 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				}
 			}
 		}
+		$gallery_type = ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry';
+
+		// Add CSS for the grid-pattern-container class.
+		if ( 'mosaic' === $gallery_type ) {
+			$mosaic_row_height_unit = isset( $attributes['mosaicRowHeightUnit'] ) ? $attributes['mosaicRowHeightUnit'] : 'px';
+			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . ' .kb-gallery-ul.kb-gallery-type-mosaic .grid-pattern-container');
+			$css->render_responsive_range(
+				$attributes,
+				'mosaicRowHeight',
+				'grid-auto-rows',
+				$mosaic_row_height_unit,
+			);
+			$grid_gap_unit = isset( $attributes['gridGapUnit'] ) ? $attributes['gridGapUnit'] : 'px';
+			$css->render_responsive_range(
+				$attributes,
+				'gutter',
+				'grid-gap',
+				$grid_gap_unit,
+			);
+			$css->render_responsive_range(
+				$attributes,
+				'gutter',
+				'gap',
+				$grid_gap_unit,
+			);
+		}
+
 
 		return $css->css_output();
 	}
@@ -569,6 +598,63 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 						$content .= $this->render_gallery_images( $image, $attributes );
 					}
 					$content .= '</ul>';
+					break;
+				case 'mosaic':
+					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '"kb-mosaic-gallery grid-pattern-gallery">';
+					$content .= '<div class="grid-pattern-container">';
+
+					$grouped_images = array_chunk($images, 8);
+
+					foreach ($grouped_images as $group) {
+						foreach ($group as $image_index => $image) {
+							// Determine which grid item pattern to use (patterns repeat every 8 images)
+							$pattern_index = $image_index % 8;
+
+							$grid_class = '';
+							$is_last_image = $image_index === count($group) - 1;
+							$next_to_last_image = $image_index === count($group) - 2;
+
+							switch ($pattern_index) {
+								case 0: // First image: 1 row, 2 columns
+									$grid_class = $is_last_image ? 'grid-item-wide only-one' : 'grid-item-wide';
+									break;
+								case 1: // Second image: 2 columns, 2 rows
+									$grid_class = 'grid-item-large';
+									$grid_class .= $is_last_image ? ' only-two' : '';
+									break;
+								case 2: // Third image: 2 rows, 1 column
+									$grid_class = 'grid-item-tall';
+									$grid_class .= $is_last_image ? ' only-three' : '';
+									$grid_class .= $next_to_last_image ? ' only-four' : '';
+									break;
+								case 3: // Fourth image: 1 row, 1 column
+									$grid_class = 'grid-item-small';
+									break;
+								case 4: // Fifth image: 2 columns, 2 rows
+									$grid_class = 'grid-item-large';
+									$grid_class .= $is_last_image ? ' only-five' : '';
+									$grid_class .= $next_to_last_image ? ' only-six' : '';
+									break;
+								case 5: // Sixth image: 1 row, 1 column
+									$grid_class = $next_to_last_image ? 'grid-item-small only-seven' : 'grid-item-small';
+									break;
+								case 6: // Seventh image: 1 row, 1 column
+								case 7: // Eighth image: 1 row, 1 column
+									$grid_class = 'grid-item-small';
+									break;
+								default:
+									$grid_class = 'grid-item-small';
+							}
+
+							$content .= '<div class="kadence-blocks-gallery-item ' . esc_attr($grid_class) . '">';
+							$content .= $this->render_gallery_images($image, $attributes);
+							$content .= '</div>';
+						}
+					}
+
+					$content .= '</div>';
+					$content .= '</div>';
+
 					break;
 				default:
 					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-item-selector=".kadence-blocks-gallery-item" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '">';

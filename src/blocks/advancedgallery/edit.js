@@ -62,6 +62,7 @@ import {
 	gallerySliderIcon,
 	galleryTilesIcon,
 	galleryThumbSliderIcon,
+	galleryMosaicIcon,
 } from '@kadence/icons';
 
 /**
@@ -132,8 +133,14 @@ const typeOptions = [
 		isDisabled: true,
 	},
 	{ value: 'tiles', label: __('Tiles (Pro addon)', 'kadence-blocks'), icon: galleryTilesIcon, isDisabled: true },
-	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: true },
+	{ value: 'mosaic', label: __('Mosaic (Pro only)', 'kadence-blocks'), icon: galleryMosaicIcon, isDisabled: true },
 ];
+
+const mosaicTypes = [
+	{ value: 'first', label: __('First', 'kadence-blocks') },
+	{ value: 'last', label: __('Last', 'kadence-blocks') },
+];
+
 const ALLOWED_MEDIA_TYPES = ['image'];
 
 export default function GalleryEdit(props) {
@@ -142,6 +149,7 @@ export default function GalleryEdit(props) {
 
 	const { attributes, isSelected, className, noticeUI, context, clientId, setAttributes } = props;
 	const {
+		mosaicType,
 		inQueryBlock,
 		uniqueID,
 		images,
@@ -191,6 +199,8 @@ export default function GalleryEdit(props) {
 		gutterUnit,
 		lazyLoad,
 		slideType,
+		mosaicRowHeight,
+		mosaicRowHeightUnit,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -345,6 +355,14 @@ export default function GalleryEdit(props) {
 		undefined !== gutter[2] ? gutter[2] : ''
 	);
 	const previewGutterUnit = gutterUnit ? gutterUnit : 'px';
+
+	const previewMosaicRowHeight = getPreviewSize(
+		previewDevice,
+		undefined !== mosaicRowHeight[0] ? mosaicRowHeight[0] : '',
+		undefined !== mosaicRowHeight[1] ? mosaicRowHeight[1] : '',
+		undefined !== mosaicRowHeight[2] ? mosaicRowHeight[2] : ''
+	);
+	const previewMosaicRowHeightUnit = mosaicRowHeightUnit ? mosaicRowHeightUnit : 'px';
 
 	const previewHeight = getPreviewSize(
 		previewDevice,
@@ -1200,6 +1218,47 @@ export default function GalleryEdit(props) {
 										)}
 									</>
 								)}
+								{type && type === 'mosaic' && (
+									<ResponsiveRangeControls
+										label={__('Mosaic Single Row Height', 'kadence-blocks')}
+										value={'' !== mosaicRowHeight?.[0] ? mosaicRowHeight[0] : ''}
+										onChange={(value) =>
+											setAttributes({
+												mosaicRowHeight: [
+													value,
+													'' !== mosaicRowHeight?.[1] ? mosaicRowHeight[1] : '',
+													'' !== mosaicRowHeight?.[2] ? mosaicRowHeight[2] : '',
+												],
+											})
+										}
+										tabletValue={'' !== mosaicRowHeight?.[1] ? mosaicRowHeight[1] : ''}
+										onChangeTablet={(value) =>
+											setAttributes({
+												mosaicRowHeight: [
+													'' !== mosaicRowHeight?.[0] ? mosaicRowHeight[0] : '',
+													value,
+													'' !== mosaicRowHeight?.[2] ? mosaicRowHeight[2] : '',
+												],
+											})
+										}
+										mobileValue={'' !== mosaicRowHeight?.[2] ? mosaicRowHeight[2] : ''}
+										onChangeMobile={(value) =>
+											setAttributes({
+												mosaicRowHeight: [
+													'' !== mosaicRowHeight?.[0] ? mosaicRowHeight[0] : '',
+													'' !== mosaicRowHeight?.[1] ? mosaicRowHeight[1] : '',
+													value,
+												],
+											})
+										}
+										min={0}
+										max={mosaicRowHeightUnit !== 'px' ? 50 : 500}
+										step={mosaicRowHeightUnit !== 'px' ? 0.1 : 1}
+										unit={mosaicRowHeightUnit}
+										onUnit={(value) => setAttributes({ mosaicRowHeightUnit: value })}
+										units={['px', 'em', 'rem']}
+									/>
+								)}
 								{type !== 'slider' && showSettings('gutterSettings', 'kadence/advancedgallery') && (
 									<>
 										<ResponsiveRangeControls
@@ -1733,7 +1792,7 @@ export default function GalleryEdit(props) {
 									/>
 								</KadencePanelBody>
 							)}
-							{showSettings('shadowSettings', 'kadence/advancedgallery') && (
+							{showSettings('shadowSettings', 'kadence/advancedgallery') && type !== 'mosaic' && (
 								<KadencePanelBody
 									title={__('Image Shadow', 'kadence-blocks')}
 									initialOpen={false}
@@ -2040,7 +2099,7 @@ export default function GalleryEdit(props) {
 							: ''
 					}
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${
-				displayShadow
+				displayShadow && type !== 'mosaic'
 					? shadow[0].hOffset +
 					  'px ' +
 					  shadow[0].vOffset +
@@ -2053,7 +2112,7 @@ export default function GalleryEdit(props) {
 					: 'none'
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${
-				displayShadow
+				displayShadow && type !== 'mosaic'
 					? shadowHover[0].hOffset +
 					  'px ' +
 					  shadowHover[0].vOffset +
@@ -2390,6 +2449,72 @@ export default function GalleryEdit(props) {
 							</li>
 						);
 					})}
+				</ul>
+			)}
+			{type && type === 'mosaic' && (
+				<ul
+					style={spacingSettings}
+					className={`kb-gallery-id-${uniqueID} kb-gallery-main-contain kb-mosaic-gallery grid-pattern-gallery ${galleryClassNames}`}
+				>
+					<div
+						className="grid-pattern-container"
+						style={{
+							gridGap: `${previewGutter}${previewGutterUnit}`,
+							// For older browsers that might not support grid-gap
+							gap: `${previewGutter}${previewGutterUnit}`,
+							// Add the grid-auto-rows style for the mosaic layout
+							gridAutoRows:
+								type === 'mosaic'
+									? `${previewMosaicRowHeight}${previewMosaicRowHeightUnit}`
+									: undefined,
+						}}
+					>
+						{theImages.map((img, index) => {
+							// Determine which grid item pattern to use (patterns repeat every 8 images)
+							const patternIndex = index % 8;
+
+							// Define grid classes based on the pattern index.
+							let gridClass = '';
+							const isLastImage = index === theImages.length - 1;
+							const isNextToLastImage = index === theImages.length - 2;
+
+							switch (patternIndex) {
+								case 0: // First image: 1 row, 2 columns
+									gridClass = isLastImage ? 'grid-item-wide only-one' : 'grid-item-wide';
+									break;
+								case 1: // Second image: 2 columns, 2 rows
+									gridClass = isLastImage ? 'grid-item-large only-two' : 'grid-item-large';
+									break;
+								case 2: // Third image: 2 rows, 1 column
+									gridClass = 'grid-item-tall';
+									gridClass = isLastImage ? 'grid-item-tall only-three' : gridClass;
+									gridClass = isNextToLastImage ? 'grid-item-tall only-four' : gridClass;
+									break;
+								case 3: // Fourth image: 1 row, 1 column
+									gridClass = 'grid-item-small';
+									break;
+								case 4: // Fifth image: 2 columns, 2 rows
+									gridClass = isLastImage ? 'grid-item-large only-five' : 'grid-item-large';
+									gridClass = isNextToLastImage ? 'grid-item-large only-six' : gridClass;
+									break;
+								case 5: // Sixth image: 1 row, 1
+									gridClass = isNextToLastImage ? 'grid-item-small only-seven' : 'grid-item-small';
+									break;
+								case 6: // Seventh image: 1 row, 1 column
+								case 7: // Eighth image: 1 row, 1 column
+									gridClass = 'grid-item-small';
+									break;
+								default:
+									gridClass = 'grid-item-small';
+							}
+
+							return (
+								<div className={`kadence-blocks-gallery-item ${gridClass}`} key={img.id || img.url}>
+									{renderGalleryImages(img, index)}
+								</div>
+							);
+						})}
+					</div>
 				</ul>
 			)}
 		</div>
