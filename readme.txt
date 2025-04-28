@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.0
-Stable tag: 3.5.5
+Stable tag: 3.5.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,13 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.6 =
+Release Date: May 1st 2025
+* Fix: Comma separated CC field not sending to multiple users
+* Fix: Transparent Logo Reverts to Default Logo After Scrolling Back Up with Sticky Header Enabled
+* Update: Connect custom post category colors with relevant blocks (posts, post grid)
+* Enhancement: Improved design library navigation, filtering, and sorting
 
 = 3.5.5 =
 Release Date: April 28th 2025
