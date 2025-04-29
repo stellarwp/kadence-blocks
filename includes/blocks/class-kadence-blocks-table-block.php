@@ -145,8 +145,23 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $attributes, 'headerTypography' );
 		$css->render_measure_output( $attributes, 'cellPadding', 'padding' );
 
+		$text_align_args = array(
+			'desktop_key' => 'headerAlign',
+			'tablet_key'  => 'headerAlignTablet',
+			'mobile_key'  => 'headerAlignMobile',
+		);
+		$css->render_text_align( $attributes, 'headerAlign', $text_align_args );
+		
+
 		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td' );
 		$css->render_measure_output( $attributes, 'cellPadding', 'padding' );
+
+		$text_align_args = array(
+			'desktop_key' => 'textAlign',
+			'tablet_key'  => 'textAlignTablet',
+			'mobile_key'  => 'textAlignMobile',
+		);
+		$css->render_text_align( $attributes, 'textAlign', $text_align_args );
 
 
 		if ( !empty( $attributes['evenOddBackground'] ) ) {

@@ -738,8 +738,8 @@ export function Edit(props) {
 								mobileValue={textAlignMobile}
 								tabletValue={textAlignTablet}
 								onChange={(nextAlign) => setAttributes({ textAlign: nextAlign })}
-								onChangeTablet={(nextAlign) => setAttributes({ textAlignMobile: nextAlign })}
-								onChangeMobile={(nextAlign) => setAttributes({ textAlignTablet: nextAlign })}
+								onChangeTablet={(nextAlign) => setAttributes({ textAlignTablet: nextAlign })}
+								onChangeMobile={(nextAlign) => setAttributes({ textAlignMobile: nextAlign })}
 							/>
 							<PopColorControl
 								label={__('Text Color', 'kadence-blocks')}
@@ -795,8 +795,8 @@ export function Edit(props) {
 								mobileValue={headerAlignMobile}
 								tabletValue={headerAlignTablet}
 								onChange={(nextAlign) => setAttributes({ headerAlign: nextAlign })}
-								onChangeTablet={(nextAlign) => setAttributes({ headerAlignMobile: nextAlign })}
-								onChangeMobile={(nextAlign) => setAttributes({ headerAlignTablet: nextAlign })}
+								onChangeTablet={(nextAlign) => setAttributes({ headerAlignTablet: nextAlign })}
+								onChangeMobile={(nextAlign) => setAttributes({ headerAlignMobile: nextAlign })}
 							/>
 							<PopColorControl
 								label={__('Header Color', 'kadence-blocks')}
