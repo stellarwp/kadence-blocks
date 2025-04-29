@@ -590,18 +590,6 @@ function ProOnlyHeader({ launchWizard }) {
 		'kadence-blocks'
 	);
 
-	const clearFilter = () => {
-		setComponentOptions(componentOptions.map((component) => ({ ...component, checked: false })));
-	};
-
-	const updateSelection = (bool, index) => {
-		setComponentOptions((prevOptions) => {
-			const cloned = [...prevOptions];
-			cloned[index] = { ...cloned[index], checked: bool };
-			return cloned;
-		});
-	};
-
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
