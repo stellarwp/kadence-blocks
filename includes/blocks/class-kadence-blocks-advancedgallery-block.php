@@ -430,26 +430,24 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		// Add CSS for the grid-pattern-container class.
 		if ( 'mosaic' === $gallery_type ) {
-			$mosaic_row_height_unit = isset( $attributes['mosaicRowHeightUnit'] ) ? $attributes['mosaicRowHeightUnit'] : 'px';
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . ' .kb-gallery-ul.kb-gallery-type-mosaic .grid-pattern-container');
 			$css->render_responsive_range(
 				$attributes,
 				'mosaicRowHeight',
 				'grid-auto-rows',
-				$mosaic_row_height_unit,
+				'mosaicRowHeightUnit',
 			);
-			$grid_gap_unit = isset( $attributes['gridGapUnit'] ) ? $attributes['gridGapUnit'] : 'px';
 			$css->render_responsive_range(
 				$attributes,
 				'gutter',
 				'grid-gap',
-				$grid_gap_unit,
+				'gutterUnit',
 			);
 			$css->render_responsive_range(
 				$attributes,
 				'gutter',
 				'gap',
-				$grid_gap_unit,
+				'gutterUnit',
 			);
 		}
 
