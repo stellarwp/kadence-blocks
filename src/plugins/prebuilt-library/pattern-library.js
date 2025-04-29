@@ -70,6 +70,13 @@ import { sendEvent } from '../../extension/analytics/send-event';
 // @todo: Get page style terms dynamically.
 const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
 
+const decodeHTMLEntities = (text) => {
+	if (!text) return '';
+	const textarea = document.createElement('textarea');
+	textarea.innerHTML = text;
+	return textarea.value;
+};
+
 /**
  * Prebuilt Sections.
  */
@@ -92,6 +99,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [teamCollection, setTeamCollection] = useState({});
 	const [categories, setCategories] = useState(PATTERN_CATEGORIES);
 	const [categoryListOptions, setCategoryListOptions] = useState([]);
+	const [newCategory, setNewCategory] = useState('');
+	const [headings, setHeadings] = useState([]);
+	const [categoriesByHeading, setCategoriesByHeading] = useState({});
 	const [styleListOptions, setStyleListOptions] = useState([]);
 	const [contextOptions, setContextOptions] = useState(PATTERN_CONTEXTS);
 	const [contextStatesRef, setContextStatesRef] = useState(false);
@@ -202,6 +212,8 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns';
 	const savedSelectedCategory =
 		undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all';
+	const savedSelectedNewCategory =
+		undefined !== activeStorage?.kbNewCat && '' !== activeStorage?.kbNewCat ? activeStorage.kbNewCat : '';
 	const savedSelectedPageCategory =
 		undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'home';
 	const savedSelectedPageStyles =
@@ -230,6 +242,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			: 'fetch';
 	const currentCredits = '' !== credits ? credits : savedCredits;
 	const selectedCategory = category ? category : savedSelectedCategory;
+	const selectedNewCategory = newCategory ? newCategory : savedSelectedNewCategory;
 	const selectedPageCategory = pageCategory ? pageCategory : savedSelectedPageCategory;
 	const selectedPageStyles = pageStyles ? pageStyles : savedSelectedPageStyles;
 	const selectedPreviewMode = previewMode ? previewMode : savedPreviewMode;
@@ -253,6 +266,83 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			})
 		);
 	}, [categories]);
+
+	// Extract sidebarHeadings and newCategories from patterns
+	useEffect(() => {
+		if (!patterns || typeof patterns !== 'object' || selectedSubTab !== 'patterns') return;
+
+		// Extract unique sidebarHeadings with their order
+		const headingsMap = new Map();
+		// Extract newCategories and their associated headings
+		const newCategoriesMap = new Map();
+
+		Object.values(patterns).forEach((pattern) => {
+			// Process newCategory structure
+			if (pattern.newCategory && typeof pattern.newCategory === 'object') {
+				Object.keys(pattern.newCategory).forEach((categorySlug) => {
+					const categoryData = pattern.newCategory[categorySlug];
+					if (!categoryData) return;
+
+					const sidebarParent = categoryData.sidebar_parent;
+					const headingName = sidebarParent?.name;
+					const headingOrder = sidebarParent?.order;
+					const categoryLabel = decodeHTMLEntities(categoryData.name);
+
+					// Populate headingsMap if heading info exists
+					if (headingName && typeof headingOrder !== 'undefined') {
+						if (!headingsMap.has(headingName)) {
+							headingsMap.set(headingName, { name: headingName, order: headingOrder });
+						}
+					}
+
+					// Populate newCategoriesMap
+					if (!newCategoriesMap.has(categorySlug)) {
+						newCategoriesMap.set(categorySlug, {
+							slug: categorySlug,
+							label: categoryLabel,
+							heading: headingName, // Associate with the heading it belongs to
+						});
+					}
+				});
+			}
+		});
+
+		// Convert to arrays and sort headings
+		const sortedHeadings = Array.from(headingsMap.values()).sort((a, b) => a.order - b.order);
+
+		const categoriesByHeadingObj = {};
+		sortedHeadings.forEach((heading) => {
+			categoriesByHeadingObj[heading.name] = [];
+		});
+
+		// Group categories by heading
+		Array.from(newCategoriesMap.values()).forEach((category) => {
+			if (categoriesByHeadingObj[category.heading]) {
+				categoriesByHeadingObj[category.heading].push(category);
+			}
+		});
+
+		// Store the structured data
+		setHeadings(sortedHeadings);
+		setCategoriesByHeading(categoriesByHeadingObj);
+
+		// Set default newCategory if not already set
+		if (
+			!newCategory &&
+			sortedHeadings.length &&
+			Object.values(categoriesByHeadingObj).some((arr) => arr.length > 0)
+		) {
+			const activeStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
+			let savedNewCategory = activeStorage?.kbNewCat || '';
+
+			// If saved category doesn't exist in current categories, use first available
+			if (savedNewCategory && !Array.from(newCategoriesMap.keys()).includes(savedNewCategory)) {
+				savedNewCategory = '';
+			}
+
+			setNewCategory(savedNewCategory);
+		}
+	}, [patterns, selectedSubTab]);
 
 	// Setting style options
 	useEffect(() => {
@@ -306,6 +396,16 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		});
 		setPageContextListOptions(tempPageContexts);
 	}, [pagesCategories]);
+
+	// Define category groups based on the screenshot
+	const patternCategoryGroups = {
+		CONTENT: ['accordion', 'cards', 'counter-stats', 'hero', 'page-title', 'table', 'testimonials'],
+		MEDIA: ['gallery', 'image-text', 'logo-farm', 'video-text'],
+		OTHER: ['header', 'footer', 'navigation'],
+	};
+	// Generate a flat list of all grouped category keys for filtering later
+	const groupedCategoryKeys = Object.values(patternCategoryGroups).flat();
+
 	useEffect(() => {
 		setContextListOptions(
 			Object.keys(contextOptions).map(function (key, index) {
@@ -321,6 +421,24 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 		setPageStyles(activePageStyles);
 	}, [filterChoices]);
+
+	const hasNewPatterns = useMemo(() => {
+		return Object.values(patterns).some((pattern) => pattern.label?.new === 'New');
+	}, [patterns]);
+
+	// Create the final category list, adding "New" if applicable.
+	const sidebarCategoryListOptions = useMemo(() => {
+		if (!hasNewPatterns || selectedSubTab !== 'patterns') {
+			return categoryListOptions;
+		}
+
+		const options = [...categoryListOptions];
+		const newOption = { value: 'new', label: __('New', 'kadence-blocks') };
+		options.splice(1, 0, newOption);
+
+		return options;
+	}, [categoryListOptions, patterns, selectedSubTab]); // Depend on original list and patterns data
+
 	const {
 		getAIContentData,
 		getAIContentDataReload,
@@ -1037,13 +1155,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					</div>
 				</div>
 				<div className="kb-prebuilt-sidebar-body-wrap">
-					<div className="kb-library-sidebar-search">
-						<SearchControl
-							value={search}
-							placeholder={__('Search', 'kadence-blocks')}
-							onChange={(value) => setSearch(value)}
-						/>
-					</div>
 					<div className="kb-library-sidebar-bottom-wrap">
 						<div
 							className={`kb-library-sidebar-bottom ${
@@ -1122,27 +1233,136 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 										<>
 											{!search && (
 												<>
-													{categoryListOptions.map((category, index) => (
+													{/* Render 'All' button */}
+													<Button
+														key="all"
+														className={
+															'kb-category-button' +
+															(selectedNewCategory === '' && selectedCategory !== 'new'
+																? ' is-pressed'
+																: '')
+														}
+														aria-pressed={
+															selectedNewCategory === '' && selectedCategory !== 'new'
+														}
+														onClick={() => {
+															const tempActiveStorage = SafeParseJSON(
+																localStorage.getItem('kadenceBlocksPrebuilt'),
+																true
+															);
+															tempActiveStorage.kbNewCat = '';
+															tempActiveStorage.kbCat = 'all';
+															localStorage.setItem(
+																'kadenceBlocksPrebuilt',
+																JSON.stringify(tempActiveStorage)
+															);
+															setNewCategory('');
+															setCategory('all');
+														}}
+													>
+														{__('All', 'kadence-blocks')}
+													</Button>
+													{/* Render 'New' button if applicable */}
+													{hasNewPatterns && (
 														<Button
-															key={`${category.value}-${index}`}
+															key="new"
 															className={
 																'kb-category-button' +
-																(selectedCategory === category.value
-																	? ' is-pressed'
-																	: '')
+																(selectedCategory === 'new' ? ' is-pressed' : '')
 															}
-															aria-pressed={selectedCategory === category.value}
+															aria-pressed={selectedCategory === 'new'}
 															onClick={() => {
 																const tempActiveStorage = SafeParseJSON(
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																tempActiveStorage.kbCat = category.value;
+																tempActiveStorage.kbCat = 'new';
+																tempActiveStorage.kbNewCat = '';
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(tempActiveStorage)
 																);
-																setCategory(category.value);
+																setCategory('new');
+																setNewCategory('');
+															}}
+														>
+															{__('New', 'kadence-blocks')}
+														</Button>
+													)}
+													{/* Divider */}
+													<hr className="kb-sidebar-category-divider" />
+
+													{/* Render headings and their categories */}
+													{headings.map((heading) => (
+														<div key={heading.name} className="kb-category-group">
+															<h4 className="kb-category-group-heading">
+																{heading.name}
+															</h4>
+															{categoriesByHeading[heading.name]?.map(
+																(category, index) => (
+																	<Button
+																		key={`${category.slug}-${index}`}
+																		className={
+																			'kb-category-button' +
+																			(selectedNewCategory === category.slug
+																				? ' is-pressed'
+																				: '')
+																		}
+																		aria-pressed={
+																			selectedNewCategory === category.slug
+																		}
+																		onClick={() => {
+																			const tempActiveStorage = SafeParseJSON(
+																				localStorage.getItem(
+																					'kadenceBlocksPrebuilt'
+																				),
+																				true
+																			);
+																			tempActiveStorage.kbNewCat = category.slug;
+																			tempActiveStorage.kbCat = 'all';
+																			localStorage.setItem(
+																				'kadenceBlocksPrebuilt',
+																				JSON.stringify(tempActiveStorage)
+																			);
+																			setNewCategory(category.slug);
+																			setCategory('all');
+																		}}
+																	>
+																		{decodeHTMLEntities(category.label)}
+																	</Button>
+																)
+															)}
+														</div>
+													))}
+												</>
+											)}
+										</>
+									) : (
+										<>
+											{/* Content for non-design context tab */}
+											{!search && (
+												<>
+													{contextListOptions.map((category, index) => (
+														<Button
+															key={`${category.value}-${index}`}
+															className={
+																'kb-category-button' +
+																(selectedContext === category.value
+																	? ' is-pressed'
+																	: '')
+															}
+															aria-pressed={selectedContext === category.value}
+															onClick={() => {
+																const tempActiveStorage = SafeParseJSON(
+																	localStorage.getItem('kadenceBlocksPrebuilt'),
+																	true
+																);
+																tempActiveStorage.kbContextCat = category.value;
+																localStorage.setItem(
+																	'kadenceBlocksPrebuilt',
+																	JSON.stringify(tempActiveStorage)
+																);
+																setContext(category.value);
 															}}
 														>
 															{category.label}
@@ -1150,110 +1370,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 													))}
 												</>
 											)}
-										</>
-									) : (
-										<>
-											{contextListOptions.map((contextCategory, index) => (
-												<div
-													key={`${contextCategory.value}-${index}`}
-													className={`context-category-wrap${
-														(!isAIDisabled &&
-															localContexts &&
-															localContexts.includes(contextCategory.value)) ||
-														(!isAIDisabled && isContextRunning(contextCategory.value))
-															? ' has-content'
-															: ''
-													}`}
-												>
-													<Button
-														className={`kb-category-button${
-															selectedContext === contextCategory.value
-																? ' is-pressed'
-																: ''
-														}`}
-														aria-pressed={selectedContext === contextCategory.value}
-														onClick={() => {
-															const tempActiveStorage = SafeParseJSON(
-																localStorage.getItem('kadenceBlocksPrebuilt'),
-																true
-															);
-															tempActiveStorage.context = contextCategory.value;
-															localStorage.setItem(
-																'kadenceBlocksPrebuilt',
-																JSON.stringify(tempActiveStorage)
-															);
-															setContext(contextCategory.value);
-														}}
-													>
-														{isContextRunning(contextCategory.value) ? <Spinner /> : ''}
-														{contextCategory.label}
-													</Button>
-													{!isAIDisabled && selectedContext === contextCategory.value && (
-														<>
-															<Button
-																className={
-																	'kb-reload-context-popover-toggle' +
-																	(isContextReloadVisible ? ' is-pressed' : '')
-																}
-																aria-pressed={isContextReloadVisible}
-																ref={setPopoverContextAnchor}
-																icon={update}
-																disabled={isContextReloadVisible}
-																onClick={debounce(toggleReloadVisible, 100)}
-															></Button>
-															{isContextReloadVisible && (
-																<Popover
-																	className="kb-library-extra-settings"
-																	placement="top-end"
-																	onClose={debounce(toggleReloadVisible, 100)}
-																	anchor={popoverContextAnchor}
-																>
-																	<p>
-																		{sprintf(
-																			/* translators: %s is the credit amount */
-																			__(
-																				'You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?',
-																				'kadence-blocks'
-																			),
-																			CONTEXT_PROMPTS?.[contextCategory.value]
-																				? CONTEXT_PROMPTS[contextCategory.value]
-																				: '1'
-																		)}
-																	</p>
-																	<div className="kt-remaining-credits">
-																		{currentCredits}{' '}
-																		{__('Credits Remaining', 'kadence-blocks')}
-																	</div>
-																	<Button
-																		variant="primary"
-																		icon={aiIcon}
-																		iconSize={16}
-																		disabled={isContextRunning(
-																			contextCategory.value
-																		)}
-																		iconPosition="right"
-																		text={sprintf(
-																			/* translators: %s is the credit amount */
-																			__(
-																				'Regenerate Content (%s Credits)',
-																				'kadence-blocks'
-																			),
-																			CONTEXT_PROMPTS?.[contextCategory.value]
-																				? CONTEXT_PROMPTS[contextCategory.value]
-																				: '1'
-																		)}
-																		className={'kb-reload-context-confirm'}
-																		onClick={() => {
-																			setIsContextReloadVisible(false);
-																			reloadAI(selectedContext);
-																		}}
-																	/>
-																</Popover>
-															)}
-														</>
-													)}
-												</div>
-											))}
 										</>
 									)}
 								</>
@@ -1419,16 +1535,12 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							pages={pages}
 							filterValue={search}
 							selectedCategory={selectedPageCategory}
-							selectedStyle={selectedStyle}
 							selectedPageStyles={selectedPageStyles}
-							selectedFontSize={selectedFontSize}
+							selectedStyle={selectedStyle}
 							breakpointCols={breakpointColumnsObj}
-							aiContent={aiContent}
-							aiContext={selectedContext}
-							contextTab={selectedContextTab}
 							imageCollection={imageCollection}
+							contextTab={selectedContextTab}
 							useImageReplace={selectedReplaceImages}
-							userData={aIUserData}
 							onSelect={(pattern) => onInsertContent(pattern)}
 							launchWizard={() => {
 								setWizardState({
@@ -1436,6 +1548,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									photographyOnly: false,
 								});
 							}}
+							setSearch={setSearch}
 						/>
 					)}
 				</>
@@ -1496,6 +1609,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							patterns={patterns}
 							filterValue={search}
 							selectedCategory={selectedCategory}
+							selectedNewCategory={selectedNewCategory}
 							selectedStyle={selectedStyle}
 							selectedFontSize={selectedFontSize}
 							breakpointCols={breakpointColumnsObj}
@@ -1522,6 +1636,8 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							}}
 							categories={categoryListOptions}
 							styles={styleListOptions}
+							search={search}
+							setSearch={setSearch}
 						/>
 					)}
 				</>

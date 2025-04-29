@@ -14,7 +14,7 @@ const { localStorage } = window;
 /**
  * WordPress dependencies
  */
-import { Button, Spinner, Icon, __experimentalHeading as Heading } from '@wordpress/components';
+import { Button, Spinner, Icon, SearchControl, __experimentalHeading as Heading } from '@wordpress/components';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
@@ -221,6 +221,7 @@ function PageList({
 	useImageReplace,
 	onSelect,
 	launchWizard,
+	setSearch,
 }) {
 	const debouncedSpeak = useDebounce(speak, 500);
 	const [rootScroll, setRootScroll] = useState();
@@ -254,10 +255,11 @@ function PageList({
 		// 	onSelect( newInfo );
 		// }
 	};
-	const { getAllContext, hasAllPageContext } = useSelect((select) => {
+	const { getAllContext, hasAllPageContext, isContextRunning } = useSelect((select) => {
 		return {
 			getAllContext: () => select('kadence/library').getAllContext(),
 			hasAllPageContext: () => select('kadence/library').hasAllPageContext(),
+			isContextRunning: (value) => select('kadence/library').isContextRunning(value),
 		};
 	}, []);
 	const thePages = useMemo(() => {
@@ -521,6 +523,7 @@ function PageList({
 	}, [selectedStyle]);
 	const hasItems = !!filteredBlockPatterns?.length;
 	const allPageContext = hasAllPageContext();
+	const allContextIsProcessing = isContextRunning('all');
 	if (isAIDisabled && contextTab === 'context') {
 		return (
 			<div className="kb-ai-dropdown-container-content-wrap activation-needed">
@@ -533,18 +536,46 @@ function PageList({
 	return (
 		<div ref={setRootScroll} className="block-editor-block-patterns-explorer__wrap">
 			<div className="block-editor-block-patterns-explorer__list">
-				{hasItems && (
-					<PatternsListHeader
-						filterValue={filterValue}
-						filteredBlockPatternsLength={filteredBlockPatterns.length}
-					/>
-				)}
 				{contextTab === 'context' && isAuthorized && data_key && !allPageContext && (
 					<PageListNotice type={'mising-context'} />
 				)}
 				{contextTab === 'context' && (!isAuthorized || !data_key) && (
 					<ProOnlyHeader launchWizard={launchWizard} />
 				)}
+				{contextTab === 'context' && allContextIsProcessing && !allPageContext && (
+					<PageListNotice type={'processing'} />
+				)}
+				{/* {contextTab === 'context' && allContextIsProcessing === 'loading' && <PageListNotice type={'loading'} />} */}
+
+				<div className="kb-patterns-filter-wrapper kb-page-list-search">
+					<SearchControl
+						className="kb-pattern-search-control"
+						value={filterValue}
+						placeholder={__('Search Pages', 'kadence-blocks')}
+						onChange={(value) => setSearch(value)}
+					/>
+					{hasItems && (
+						<span className="kb-patterns-count-message">
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of pages. %s: block pattern search query */
+										_n(
+											'%1$d page found for "%2$s"',
+											'%1$d pages for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of pages. */
+										_n('%d page available', '%d pages', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
+						</span>
+					)}
+				</div>
+
 				{hasItems && (
 					<KadenceBlockPatternList
 						selectedCategory={selectedCategory}
