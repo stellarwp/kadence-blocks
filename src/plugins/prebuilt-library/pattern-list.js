@@ -469,7 +469,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 					</div>
 				</Button>
 			)}
-			renderContent={( { onToggle}) => (
+			renderContent={({ onToggle }) => (
 				<div>
 					<div className="kb-patterns-filter-dropdown-content-inner">
 						{layoutOptions.map((group, groupIndex) => (
@@ -504,7 +504,13 @@ function PatternLayoutDropdown({ selectedItems }) {
 							</div>
 						))}
 					</div>
-					<div className="kb-pattern-filter-dropdown-content-clear" onClick={(_e) => { clearFilter(); onToggle(); }}>
+					<div
+						className="kb-pattern-filter-dropdown-content-clear"
+						onClick={(_e) => {
+							clearFilter();
+							onToggle();
+						}}
+					>
 						{__('Clear All', 'kadence-blocks')}
 					</div>
 				</div>
@@ -556,7 +562,7 @@ function PatternSortDropdown({ selectedItems }) {
 					</div>
 				</Button>
 			)}
-			renderContent={( { onToggle } ) => (
+			renderContent={({ onToggle }) => (
 				<div>
 					<div className="kb-patterns-filter-dropdown-sort-inner">
 						{sortOptions.map((option) => (
