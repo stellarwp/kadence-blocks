@@ -380,6 +380,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 
 			// If the Kadence theme exists, get the custom archive category colors.
 			if ( class_exists( 'Kadence\Theme' ) ) {
+				$item_category_color = get_theme_mod( 'post_archive_item_category_color' );
+				$data['kt_archive_item_category_color'] = $item_category_color;
 				foreach ( $categories as $key => $category ) {
 					$categories[ $key ]->archive_category_color = get_term_meta( $category->term_id, 'archive_category_color', true );
 					$categories[ $key ]->archive_category_hover_color = get_term_meta( $category->term_id, 'archive_category_hover_color', true );
