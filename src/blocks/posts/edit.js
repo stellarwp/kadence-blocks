@@ -1057,7 +1057,8 @@ function KadencePosts(props) {
 
 											const categoryStyle = {};
 											if (kadence_blocks_params?.isKadenceT === '1') {
-												categoryStyle[styleProperty] = post.kt_archive_item_category_color?.color ?? '';
+												categoryStyle[styleProperty] =
+													post.kt_archive_item_category_color?.color ?? '';
 											}
 											if (customKadenceArchiveColors && category.archive_category_color) {
 												categoryStyle[styleProperty] = category.archive_category_color;
@@ -1077,7 +1078,8 @@ function KadencePosts(props) {
 																e.currentTarget.style[styleProperty] =
 																	category.archive_category_hover_color;
 															} else {
-																e.currentTarget.style[styleProperty] = post.kt_archive_item_category_color?.hover ?? '';
+																e.currentTarget.style[styleProperty] =
+																	post.kt_archive_item_category_color?.hover ?? '';
 															}
 														}}
 														onMouseLeave={(e) => {
@@ -1088,7 +1090,8 @@ function KadencePosts(props) {
 																e.currentTarget.style[styleProperty] =
 																	category.archive_category_color;
 															} else {
-																e.currentTarget.style[styleProperty] = post.kt_archive_item_category_color?.color ?? '';
+																e.currentTarget.style[styleProperty] =
+																	post.kt_archive_item_category_color?.color ?? '';
 															}
 														}}
 													>
@@ -1096,7 +1099,14 @@ function KadencePosts(props) {
 													</a>
 
 													{index < arr.length - 1 && categoriesStyle !== 'pill' && (
-														<span style={{color: post.kt_archive_item_category_color?.color ?? ''}}> {aboveSymbol} </span>
+														<span
+															style={{
+																color: post.kt_archive_item_category_color?.color ?? '',
+															}}
+														>
+															{' '}
+															{aboveSymbol}{' '}
+														</span>
 													)}
 												</Fragment>
 											);
