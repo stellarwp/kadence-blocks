@@ -88,6 +88,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [search, setSearch] = useState(null);
 	const [subTab, setSubTab] = useState('');
 	const [patterns, setPatterns] = useState(false);
+	const [patternsHTML, setPatternsHTML] = useState(false);
 	const [pages, setPages] = useState(false);
 	const [aiContent, setAIContent] = useState({});
 	const [context, setContext] = useState('');
@@ -453,18 +454,43 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		getInitialAIContent,
 		getAvailableCredits,
 	} = getAsyncData();
+	async function getLibraryHTMLContent(tempReload) {
+		const response = await getPatterns('section', tempReload, null, null, 'html');
+		if (response === 'failed') {
+			console.log('Permissions Error getting library htmlContent');
+			setPatternsHTML([]);
+		} else if (response === 'error') {
+			console.log('Error getting library htmlContent.');
+			setPatternsHTML([]);
+		} else {
+			const o = SafeParseJSON(response, false);
+			if (o) {
+				console.log('Library HTML Content', o);
+				setPatternsHTML(o);
+			} else {
+				setPatternsHTML([]);
+			}
+		}
+	}
 	async function getLibraryContent(tempSubTab, tempReload) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
 		//console.log( 'Getting Library Content', Date.now().toString().slice( 8 ) );
-		const response = await getPatterns(tempSubTab === 'pages' ? 'pages' : 'section', tempReload);
+		const response = await getPatterns(
+			tempSubTab === 'pages' ? 'pages' : 'section',
+			tempReload,
+			null,
+			null,
+			tempSubTab !== 'pages' ? 'info' : ''
+		);
 		if (response === 'failed') {
 			console.log('Permissions Error getting library Content');
 			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
+				setPatternsHTML([]);
 			}
 			setIsError(true);
 			setIsErrorType('reload');
@@ -475,6 +501,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				setPages('error');
 			} else {
 				setPatterns('error');
+				setPatternsHTML([]);
 			}
 			setIsError(true);
 			setIsLoading(false);
@@ -484,7 +511,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			if (o) {
 				if (tempSubTab === 'pages') {
 					const pageCats = PAGE_CATEGORIES;
-					kadence_blocks_params.library_pages = o;
 					{
 						Object.keys(o).map(function (key, index) {
 							if (o[key].categories && typeof o[key].categories === 'object') {
@@ -502,7 +528,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
 				} else {
 					const cats = PATTERN_CATEGORIES;
-					kadence_blocks_params.library_sections = o;
 					{
 						Object.keys(o).map(function (key, index) {
 							if (o[key].categories && typeof o[key].categories === 'object') {
@@ -534,8 +559,14 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		if (reload && !isLoading) {
 			onReload();
 			getLibraryContent(selectedSubTab, true);
+			if (selectedSubTab === 'patterns') {
+				getLibraryHTMLContent(true);
+			}
 		} else if (!isLoading) {
 			getLibraryContent(selectedSubTab, false);
+			if (selectedSubTab === 'patterns') {
+				getLibraryHTMLContent(false);
+			}
 		}
 	}, [reload, selectedSubTab]);
 	const forceRefreshLibrary = () => {
@@ -1607,6 +1638,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					) : (
 						<PatternList
 							patterns={patterns}
+							patternsHTML={patternsHTML}
 							filterValue={search}
 							selectedCategory={selectedCategory}
 							selectedNewCategory={selectedNewCategory}

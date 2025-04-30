@@ -95,7 +95,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Handle image Industry.
 	 */
 	const PROP_INDUSTRY = 'industry';
-
+	/**
+	 * Handle image Industry.
+	 */
+	const PROP_META = 'meta';
 	/**
 	 * The library folder.
 	 *
@@ -1126,7 +1129,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get the section data if available locally.
 	 */
-	public function get_local_library_data() {
+	public function get_local_library_data( $type = '' ) {
 		$this->get_license_keys();
 		$reload      = false;
 		$library     = 'section';
@@ -1137,7 +1140,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( 'section' === $library ) {
 			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
 		}
-
+		if ( ! empty( $type ) ) {
+			$identifier .= '_' . $type;
+		}
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
 		}
@@ -1164,6 +1169,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$library     = $request->get_param( self::PROP_LIBRARY );
 		$library_url = $request->get_param( self::PROP_LIBRARY_URL );
 		$key         = $request->get_param( self::PROP_KEY );
+		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
 			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
@@ -1177,6 +1183,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$identifier = 'library' . $library;
 		if ( 'section' === $library ) {
 			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
+		}
+		if ( ! empty( $meta ) ) {
+			$identifier .= '_' . $meta;
 		}
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
@@ -1220,7 +1229,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			wp_json_encode( apply_filters( 'kadence_block_library_custom_array', [] ) );
 		}
 		// Access via remote.
-		$response = $this->get_remote_library_contents( $library, $library_url, $key );
+		$response = $this->get_remote_library_contents( $library, $library_url, $key, $meta );
 
 		if ( is_wp_error( $response ) ) {
 			return rest_ensure_response( $response );
@@ -1851,7 +1860,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
-	public function get_remote_library_contents( $library, $library_url, $key ) {
+	public function get_remote_library_contents( $library, $library_url, $key, $meta ) {
 		$site_url = get_original_domain();
 		$args     = [
 			'key'  => $key,
@@ -1870,6 +1879,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		if ( 'templates' === $library ) {
 			$args['request'] = 'blocks';
+		}
+		if ( ! empty( $meta ) ) {
+			$args['meta'] = $meta;
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
@@ -2068,7 +2080,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_remaining_credits() {
 		$product_slug = ( ! empty( $this->product_slug ) && $this->product_slug === 'kadence-blocks-pro' ? 'kadence-blocks-pro' : 'kadence-blocks' );
-		$args = [
+		$args         = [
 			'site'        => get_license_domain(),
 			'key'         => $this->api_key,
 			'plugin_slug' => apply_filters( 'kadence-blocks-auth-slug', $product_slug ),
@@ -2323,6 +2335,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => [ $this, 'sanitize_image_sizes_array' ],
+		];
+		$query_params[ self::PROP_META ]          = [
+			'description'       => __( 'The meta to return', 'kadence-blocks' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
 		];
 		return $query_params;
 	}

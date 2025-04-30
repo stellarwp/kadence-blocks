@@ -647,6 +647,7 @@ function ProOnlyHeader({ launchWizard }) {
 
 function PatternList({
 	patterns,
+	patternsHTML,
 	filterValue,
 	selectedCategory,
 	selectedNewCategory,
@@ -1363,6 +1364,7 @@ function PatternList({
 					<KadenceBlockPatternList
 						selectedCategory={selectedCategory}
 						blockPatterns={filteredBlockPatterns}
+						patternsHTML={patternsHTML}
 						onClickPattern={onSelectBlockPattern}
 						showTitlesAsTooltip={false}
 						customStyles={customStyles}
@@ -1370,7 +1372,6 @@ function PatternList({
 						breakpointCols={breakpointCols}
 						previewMode={previewMode}
 						selectedStyle={selectedStyle}
-						renderType={hasHTml ? 'shadow' : 'iframe'}
 						rootScroll={rootScroll}
 					/>
 				)}

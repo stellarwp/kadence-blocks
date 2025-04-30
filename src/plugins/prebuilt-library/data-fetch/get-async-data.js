@@ -435,8 +435,8 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatterns(library, reload, library_url = null, key = null) {
-		if ('section' === library && !reload) {
+	async function getPatterns(library, reload, library_url = null, key = null, meta = null) {
+		if ('section' === library && !reload && 'html' !== meta) {
 			const preloadPatterns =
 				window?.kadence_blocks_params_library?.library_sections &&
 				window?.kadence_blocks_params_library?.library_sections.length > 0
@@ -447,6 +447,17 @@ export function getAsyncData() {
 				return preloadPatterns;
 			}
 		}
+		if ('section' === library && !reload && 'html' === meta) {
+			const preloadPatternHTML =
+				window?.kadence_blocks_params_library?.library_sections_html &&
+				window?.kadence_blocks_params_library?.library_sections_html.length > 0
+					? window.kadence_blocks_params_library.library_sections_html
+					: false;
+			if (preloadPatternHTML) {
+				console.log('Preloaded Patterns HTML');
+				return preloadPatternHTML;
+			}
+		}
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library', {
@@ -454,9 +465,16 @@ export function getAsyncData() {
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
+					meta: meta ? meta : '',
 				}),
 			});
-			if ('section' === library) {
+			if ('section' === library && 'html' === meta && response) {
+				if (!window?.kadence_blocks_params_library) {
+					window.kadence_blocks_params_library = {};
+				}
+				window.kadence_blocks_params_library.library_sections_html = response;
+			}
+			if ('section' === library && 'html' !== meta && response) {
 				if (!window?.kadence_blocks_params_library) {
 					window.kadence_blocks_params_library = {};
 				}

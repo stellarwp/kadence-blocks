@@ -965,6 +965,10 @@ button.components-button.kb-trigger-ai.has-icon {
 		box-shadow: none;
 		transition: border-color 0.2s ease;
 		border: 1px solid rgba(0, 0, 0, 0.2);
+		&::after {
+			outline: 0px;
+			border-radius: 0;
+		}
 	}
 	.block-editor-block-patterns-list__item:hover .block-editor-block-preview__container {
 		// box-shadow: 0 0 0 2px #000;

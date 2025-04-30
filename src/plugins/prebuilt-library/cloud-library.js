@@ -309,7 +309,6 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 					const catOrder = SafeParseJSON(patternCategories, false);
 					if (subTab === 'pages') {
 						const pageCats = catOrder ? catOrder : {};
-						kadence_blocks_params.library_pages = o;
 						{
 							Object.keys(o).map(function (key, index) {
 								if (o[key].categories && typeof o[key].categories === 'object') {
@@ -328,7 +327,6 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 					} else {
 						const newCatOrder = catOrder ? catOrder : {};
 						const tempCats = {};
-						kadence_blocks_params.library_sections = o;
 						{
 							Object.keys(o).map(function (key, index) {
 								if (o[key].categories && typeof o[key].categories === 'object') {
