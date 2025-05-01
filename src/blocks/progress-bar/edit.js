@@ -626,7 +626,20 @@ export function Edit(props) {
 	}
 
 	return (
-		<div {...blockProps}>
+		<div
+			{...blockProps}
+			style={{
+				position: 'relative',
+				marginTop: '' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined,
+				marginRight:
+					'' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined,
+				marginBottom:
+					'' !== previewMarginBottom ? getSpacingOptionOutput(previewMarginBottom, marginType) : undefined,
+				marginLeft:
+					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
+				width: previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none',
+			}}
+		>
 			<BlockControls group="block">
 				<BlockAlignmentControl value={align} onChange={(value) => setAttributes({ align: value })} />
 			</BlockControls>
@@ -1291,22 +1304,7 @@ export function Edit(props) {
 				)}
 			</InspectorControls>
 			<style>{maskStyles}</style>
-			<div
-				style={{
-					position: 'relative',
-					marginTop:
-						'' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined,
-					marginRight:
-						'' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined,
-					marginBottom:
-						'' !== previewMarginBottom
-							? getSpacingOptionOutput(previewMarginBottom, marginType)
-							: undefined,
-					marginLeft:
-						'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
-					width: previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none',
-				}}
-			>
+			<div>
 				{'above' === labelPosition && (displayLabel || displayPercent) && RenderLabel('above')}
 
 				<div id={'kb-progress-bar' + uniqueID} class="kb-progress-bar"></div>
