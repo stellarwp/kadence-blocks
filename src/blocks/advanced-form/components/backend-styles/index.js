@@ -142,7 +142,15 @@ export default function BackendStyles({
 			}
 
 			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-label .kb-adv-form-required {;
-				${fieldStyle?.requiredColor ? 'color:' + ( /^palette\d+$/.test(fieldStyle.requiredColor) ? 'var(--global-' + fieldStyle.requiredColor + ')' : fieldStyle.requiredColor ) + ';' : ''}
+				${
+					fieldStyle?.requiredColor
+						? 'color:' +
+						  (/^palette\d+$/.test(fieldStyle.requiredColor)
+								? 'var(--global-' + fieldStyle.requiredColor + ')'
+								: fieldStyle.requiredColor) +
+						  ';'
+						: ''
+				}
 			}
 
 			`}
