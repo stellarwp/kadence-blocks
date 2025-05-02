@@ -68,6 +68,8 @@ function KadenceBlockPattern({
 	let htmlContent = html;
 	if (!html && patternHTML) {
 		htmlContent = replaceMasks(patternHTML);
+	} else if (!html) {
+		htmlContent = ' ';
 	}
 	//const instanceId = useInstanceId(KadenceBlockPattern);
 	const descriptionId = `block-editor-block-patterns-list__item-description-${key}`;

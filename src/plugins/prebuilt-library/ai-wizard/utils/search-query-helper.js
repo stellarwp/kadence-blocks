@@ -22,7 +22,6 @@ export function searchQueryHelper() {
 					description,
 				},
 			});
-			console.log('response', response);
 			const responseData = SafeParseJSON(response, false);
 			return Promise.resolve(responseData);
 		} catch (error) {

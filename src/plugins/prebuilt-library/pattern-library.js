@@ -465,7 +465,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		} else {
 			const o = SafeParseJSON(response, false);
 			if (o) {
-				console.log('Library HTML Content', o);
 				setPatternsHTML(o);
 			} else {
 				setPatternsHTML([]);
@@ -543,6 +542,21 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					}
 					setPatterns(o);
 					setCategories(JSON.parse(JSON.stringify(cats)));
+					const htmlPatternsResponse = await getPatterns('section', tempReload, null, null, 'html');
+					if (htmlPatternsResponse === 'failed') {
+						console.log('Permissions Error getting library htmlContent');
+						setPatternsHTML([]);
+					} else if (htmlPatternsResponse === 'error') {
+						console.log('Error getting library htmlContent.');
+						setPatternsHTML([]);
+					} else {
+						const o = SafeParseJSON(htmlPatternsResponse, false);
+						if (o) {
+							setPatternsHTML(o);
+						} else {
+							setPatternsHTML([]);
+						}
+					}
 				}
 			} else {
 				if (tempSubTab === 'pages') {
@@ -559,14 +573,8 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		if (reload && !isLoading) {
 			onReload();
 			getLibraryContent(selectedSubTab, true);
-			if (selectedSubTab === 'patterns') {
-				getLibraryHTMLContent(true);
-			}
 		} else if (!isLoading) {
 			getLibraryContent(selectedSubTab, false);
-			if (selectedSubTab === 'patterns') {
-				getLibraryHTMLContent(false);
-			}
 		}
 	}, [reload, selectedSubTab]);
 	const forceRefreshLibrary = () => {
@@ -895,8 +903,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	}, [aIUserData]);
 	async function onInsertContent(pattern) {
 		setIsImporting(true);
-		const patternBlocks = pattern?.content ? pattern.content : '';
-		processImportContent(patternBlocks);
+		processImportContent(pattern);
 	}
 	const ajaxImportProcess = (blockcode) => {
 		const data = new FormData();
@@ -928,11 +935,17 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				setIsImporting(false);
 			});
 	};
-	async function processImportContent(blockCode) {
-		const response = await processPattern(blockCode, imageCollection);
+	async function processImportContent(pattern) {
+		const patternBlocks = pattern?.content ? pattern.content : '';
+		const response = await processPattern(
+			patternBlocks,
+			imageCollection,
+			pattern?.cpt_blocks ? pattern.cpt_blocks : [],
+			pattern?.style ? pattern.style : ''
+		);
 		if (response === 'failed') {
 			// It could fail because cloudflare is blocking the request. Lets try with ajax.
-			ajaxImportProcess(blockCode, imageCollection);
+			ajaxImportProcess(patternBlocks, imageCollection);
 			console.log('Import Process Failed when processing data through rest api... Trying ajax.');
 		} else {
 			importContent(response, clientId);

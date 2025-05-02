@@ -107,7 +107,6 @@ export function getAsyncData() {
 				: false;
 		if (!reload && preloadData) {
 			setLoadingWizard(false);
-			console.log('Preloaded Wizard Data');
 			return preloadData;
 		}
 		try {
@@ -443,7 +442,6 @@ export function getAsyncData() {
 					? window.kadence_blocks_params_library.library_sections
 					: false;
 			if (preloadPatterns) {
-				console.log('Preloaded Patterns');
 				return preloadPatterns;
 			}
 		}
@@ -454,7 +452,6 @@ export function getAsyncData() {
 					? window.kadence_blocks_params_library.library_sections_html
 					: false;
 			if (preloadPatternHTML) {
-				console.log('Preloaded Patterns HTML');
 				return preloadPatternHTML;
 			}
 		}
@@ -580,7 +577,7 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function processPattern(content, imageCollection = '', forms = '') {
+	async function processPattern(content, imageCollection = '', cpt_blocks = '', style = '') {
 		try {
 			const response = await apiFetch({
 				path: '/kb-design-library/v1/process_pattern',
@@ -588,7 +585,8 @@ export function getAsyncData() {
 				data: {
 					content,
 					image_library: imageCollection,
-					forms,
+					cpt_blocks: cpt_blocks,
+					style: style,
 				},
 			});
 			return response;

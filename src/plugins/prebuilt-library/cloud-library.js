@@ -224,7 +224,12 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			});
 	};
 	async function processImportContent(pattern) {
-		const response = await processPattern(pattern.content, imageCollection, pattern?.forms ? pattern.forms : []);
+		const response = await processPattern(
+			pattern.content,
+			imageCollection,
+			pattern?.cpt_blocks ? pattern.cpt_blocks : [],
+			pattern?.style ? pattern.style : ''
+		);
 		if (response === 'failed') {
 			// It could fail because cloudflare is blocking the request. Lets try with ajax.
 			ajaxImportProcess(blockCode, imageCollection);

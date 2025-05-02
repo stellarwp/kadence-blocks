@@ -724,7 +724,14 @@ function PatternList({
 				try {
 					const tempContent = JSON.parse(response);
 					if (tempContent) {
-						newInfo = tempContent;
+						if (tempContent?.content) {
+							newInfo = tempContent.content;
+							if (tempContent?.cpt_blocks) {
+								patternSend.cpt_blocks = tempContent.cpt_blocks;
+							}
+						} else {
+							newInfo = response;
+						}
 					}
 				} catch (e) {}
 			}

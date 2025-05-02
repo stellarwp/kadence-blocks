@@ -417,7 +417,7 @@ class Editor_Assets {
 				'kadence-blocks-js',
 				'kadence_blocks_params_library',
 				[
-					'library_sections' => apply_filters( 'kadence_blocks_preload_design_library_data', $design_library_controller_upload->get_local_library_data( 'info' ) ),
+					'library_sections'      => apply_filters( 'kadence_blocks_preload_design_library_data', $design_library_controller_upload->get_local_library_data( 'info' ) ),
 					'library_sections_html' => apply_filters( 'kadence_blocks_preload_design_library_html', $design_library_controller_upload->get_local_library_data( 'html' ) ),
 				]
 			);
