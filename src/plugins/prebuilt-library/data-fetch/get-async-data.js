@@ -585,8 +585,8 @@ export function getAsyncData() {
 				data: {
 					content,
 					image_library: imageCollection,
-					cpt_blocks: cpt_blocks,
-					style: style,
+					cpt_blocks,
+					style,
 				},
 			});
 			return response;
