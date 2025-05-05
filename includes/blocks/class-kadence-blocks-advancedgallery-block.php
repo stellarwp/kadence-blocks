@@ -105,7 +105,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$gallery_type = ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry';
 
-		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
+		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' .kb-gallery-ul' );
 
 		if ( isset( $attributes['margin'][0] ) ) {
 			// Fix for this margin unit being in a non-standard locaiton in array, should be updated.
@@ -455,8 +455,6 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		// Overflow for carousel
 		if ( 'carousel' === $gallery_type && ( isset( $attributes['overflow'] ) && $attributes['overflow'] ) ) {
-			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery');
-			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel');
 			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel .splide__track');
