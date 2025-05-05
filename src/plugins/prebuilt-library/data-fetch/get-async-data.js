@@ -107,7 +107,6 @@ export function getAsyncData() {
 				: false;
 		if (!reload && preloadData) {
 			setLoadingWizard(false);
-			console.log('Preloaded Wizard Data');
 			return preloadData;
 		}
 		try {
@@ -435,16 +434,25 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatterns(library, reload, library_url = null, key = null) {
-		if ('section' === library && !reload) {
+	async function getPatterns(library, reload, library_url = null, key = null, meta = null) {
+		if ('section' === library && !reload && 'html' !== meta) {
 			const preloadPatterns =
 				window?.kadence_blocks_params_library?.library_sections &&
 				window?.kadence_blocks_params_library?.library_sections.length > 0
 					? window.kadence_blocks_params_library.library_sections
 					: false;
 			if (preloadPatterns) {
-				console.log('Preloaded Patterns');
 				return preloadPatterns;
+			}
+		}
+		if ('section' === library && !reload && 'html' === meta) {
+			const preloadPatternHTML =
+				window?.kadence_blocks_params_library?.library_sections_html &&
+				window?.kadence_blocks_params_library?.library_sections_html.length > 0
+					? window.kadence_blocks_params_library.library_sections_html
+					: false;
+			if (preloadPatternHTML) {
+				return preloadPatternHTML;
 			}
 		}
 		try {
@@ -454,9 +462,16 @@ export function getAsyncData() {
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
+					meta: meta ? meta : '',
 				}),
 			});
-			if ('section' === library) {
+			if ('section' === library && 'html' === meta && response) {
+				if (!window?.kadence_blocks_params_library) {
+					window.kadence_blocks_params_library = {};
+				}
+				window.kadence_blocks_params_library.library_sections_html = response;
+			}
+			if ('section' === library && 'html' !== meta && response) {
 				if (!window?.kadence_blocks_params_library) {
 					window.kadence_blocks_params_library = {};
 				}
@@ -562,7 +577,7 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function processPattern(content, imageCollection = '', forms = '') {
+	async function processPattern(content, imageCollection = '', cpt_blocks = '', style = '') {
 		try {
 			const response = await apiFetch({
 				path: '/kb-design-library/v1/process_pattern',
@@ -570,7 +585,8 @@ export function getAsyncData() {
 				data: {
 					content,
 					image_library: imageCollection,
-					forms,
+					cpt_blocks,
+					style,
 				},
 			});
 			return response;

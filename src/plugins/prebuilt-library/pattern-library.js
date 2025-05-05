@@ -88,6 +88,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [search, setSearch] = useState(null);
 	const [subTab, setSubTab] = useState('');
 	const [patterns, setPatterns] = useState(false);
+	const [patternsHTML, setPatternsHTML] = useState(false);
 	const [pages, setPages] = useState(false);
 	const [aiContent, setAIContent] = useState({});
 	const [context, setContext] = useState('');
@@ -453,18 +454,42 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		getInitialAIContent,
 		getAvailableCredits,
 	} = getAsyncData();
+	async function getLibraryHTMLContent(tempReload) {
+		const response = await getPatterns('section', tempReload, null, null, 'html');
+		if (response === 'failed') {
+			console.log('Permissions Error getting library htmlContent');
+			setPatternsHTML([]);
+		} else if (response === 'error') {
+			console.log('Error getting library htmlContent.');
+			setPatternsHTML([]);
+		} else {
+			const o = SafeParseJSON(response, false);
+			if (o) {
+				setPatternsHTML(o);
+			} else {
+				setPatternsHTML([]);
+			}
+		}
+	}
 	async function getLibraryContent(tempSubTab, tempReload) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
 		//console.log( 'Getting Library Content', Date.now().toString().slice( 8 ) );
-		const response = await getPatterns(tempSubTab === 'pages' ? 'pages' : 'section', tempReload);
+		const response = await getPatterns(
+			tempSubTab === 'pages' ? 'pages' : 'section',
+			tempReload,
+			null,
+			null,
+			tempSubTab !== 'pages' ? 'info' : ''
+		);
 		if (response === 'failed') {
 			console.log('Permissions Error getting library Content');
 			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
+				setPatternsHTML([]);
 			}
 			setIsError(true);
 			setIsErrorType('reload');
@@ -475,6 +500,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				setPages('error');
 			} else {
 				setPatterns('error');
+				setPatternsHTML([]);
 			}
 			setIsError(true);
 			setIsLoading(false);
@@ -484,7 +510,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			if (o) {
 				if (tempSubTab === 'pages') {
 					const pageCats = PAGE_CATEGORIES;
-					kadence_blocks_params.library_pages = o;
 					{
 						Object.keys(o).map(function (key, index) {
 							if (o[key].categories && typeof o[key].categories === 'object') {
@@ -502,7 +527,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
 				} else {
 					const cats = PATTERN_CATEGORIES;
-					kadence_blocks_params.library_sections = o;
 					{
 						Object.keys(o).map(function (key, index) {
 							if (o[key].categories && typeof o[key].categories === 'object') {
@@ -518,6 +542,21 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					}
 					setPatterns(o);
 					setCategories(JSON.parse(JSON.stringify(cats)));
+					const htmlPatternsResponse = await getPatterns('section', tempReload, null, null, 'html');
+					if (htmlPatternsResponse === 'failed') {
+						console.log('Permissions Error getting library htmlContent');
+						setPatternsHTML([]);
+					} else if (htmlPatternsResponse === 'error') {
+						console.log('Error getting library htmlContent.');
+						setPatternsHTML([]);
+					} else {
+						const o = SafeParseJSON(htmlPatternsResponse, false);
+						if (o) {
+							setPatternsHTML(o);
+						} else {
+							setPatternsHTML([]);
+						}
+					}
 				}
 			} else {
 				if (tempSubTab === 'pages') {
@@ -864,8 +903,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	}, [aIUserData]);
 	async function onInsertContent(pattern) {
 		setIsImporting(true);
-		const patternBlocks = pattern?.content ? pattern.content : '';
-		processImportContent(patternBlocks);
+		processImportContent(pattern);
 	}
 	const ajaxImportProcess = (blockcode) => {
 		const data = new FormData();
@@ -897,11 +935,17 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				setIsImporting(false);
 			});
 	};
-	async function processImportContent(blockCode) {
-		const response = await processPattern(blockCode, imageCollection);
+	async function processImportContent(pattern) {
+		const patternBlocks = pattern?.content ? pattern.content : '';
+		const response = await processPattern(
+			patternBlocks,
+			imageCollection,
+			pattern?.cpt_blocks ? pattern.cpt_blocks : [],
+			pattern?.style ? pattern.style : ''
+		);
 		if (response === 'failed') {
 			// It could fail because cloudflare is blocking the request. Lets try with ajax.
-			ajaxImportProcess(blockCode, imageCollection);
+			ajaxImportProcess(patternBlocks, imageCollection);
 			console.log('Import Process Failed when processing data through rest api... Trying ajax.');
 		} else {
 			importContent(response, clientId);
@@ -1607,6 +1651,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					) : (
 						<PatternList
 							patterns={patterns}
+							patternsHTML={patternsHTML}
 							filterValue={search}
 							selectedCategory={selectedCategory}
 							selectedNewCategory={selectedNewCategory}

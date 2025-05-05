@@ -15,7 +15,7 @@ function ScaledPatternShadowPreview({
 	html,
 	viewportWidth,
 	containerWidth,
-	minHeight = 50,
+	minHeight = 70,
 	additionalStyles = [],
 	title,
 	ratio,

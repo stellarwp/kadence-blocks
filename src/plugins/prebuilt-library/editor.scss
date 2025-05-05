@@ -965,6 +965,10 @@ button.components-button.kb-trigger-ai.has-icon {
 		box-shadow: none;
 		transition: border-color 0.2s ease;
 		border: 1px solid rgba(0, 0, 0, 0.2);
+		&::after {
+			outline: 0px;
+			border-radius: 0;
+		}
 	}
 	.block-editor-block-patterns-list__item:hover .block-editor-block-preview__container {
 		// box-shadow: 0 0 0 2px #000;
@@ -1238,6 +1242,8 @@ button.components-button.kb-trigger-ai.has-icon {
 	.kb-library-sidebar-bottom button.components-button.kb-category-button {
 		color: #333;
 		font-weight: 500;
+		height: auto;
+		line-height: 1.6;
 	}
 	.kb-library-sidebar-bottom .context-category-wrap:not(.has-content) {
 		order: 10;
@@ -1259,7 +1265,6 @@ button.components-button.kb-trigger-ai.has-icon {
 					var(--kb-patterns-sidebar-general-spacing, 24px) + 32px +
 						var(--kb-patterns-outer-wrap-spacing, 45px) + 32px + 36px +
 						var(--kb-patterns-sidebar-general-spacing, 24px) +
-						var(--kb-patterns-sidebar-general-spacing, 24px) + 36px +
 						var(--kb-patterns-sidebar-general-spacing, 24px) + 50px
 				)
 		);

@@ -12,14 +12,9 @@ export function ButtonList({ items = [], selectedItems = [], onChange }) {
 	useEffect(() => {
 		setAllItems(items);
 	}, [items]);
-	useEffect(() => {
-		console.log('selectedItems', selectedItems);
-	}, [selectedItems]);
 
 	function updateSelected(selectedItemValue) {
 		const tempSelected = [...selectedItems];
-		console.log('tempSelected', tempSelected);
-		console.log('item Selected', selectedItemValue);
 		// Find the index of the item
 		const index = tempSelected.indexOf(selectedItemValue);
 		// Ensure the item exists in the array
@@ -34,16 +29,12 @@ export function ButtonList({ items = [], selectedItems = [], onChange }) {
 	}
 	function updatePrimary(selectedItemValue) {
 		const tempSelected = [...selectedItems];
-		console.log('tempSelected', tempSelected);
-		console.log('item Selected', selectedItemValue);
 		// Find the index of the item
 		const index = tempSelected.indexOf(selectedItemValue);
-		console.log('item index', index);
 		// Ensure the item exists in the array
 		if (index !== -1) {
 			// Remove the item from the array and store it in a variable
 			const [item] = tempSelected.splice(index, 1);
-			console.log('item', item);
 			// Insert the item at the beginning of the array
 			tempSelected.unshift(item);
 			console.log(

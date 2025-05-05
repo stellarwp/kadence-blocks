@@ -647,6 +647,7 @@ function ProOnlyHeader({ launchWizard }) {
 
 function PatternList({
 	patterns,
+	patternsHTML,
 	filterValue,
 	selectedCategory,
 	selectedNewCategory,
@@ -723,7 +724,14 @@ function PatternList({
 				try {
 					const tempContent = JSON.parse(response);
 					if (tempContent) {
-						newInfo = tempContent;
+						if (tempContent?.content) {
+							newInfo = tempContent.content;
+							if (tempContent?.cpt_blocks) {
+								patternSend.cpt_blocks = tempContent.cpt_blocks;
+							}
+						} else {
+							newInfo = response;
+						}
 					}
 				} catch (e) {}
 			}
@@ -1363,6 +1371,7 @@ function PatternList({
 					<KadenceBlockPatternList
 						selectedCategory={selectedCategory}
 						blockPatterns={filteredBlockPatterns}
+						patternsHTML={patternsHTML}
 						onClickPattern={onSelectBlockPattern}
 						showTitlesAsTooltip={false}
 						customStyles={customStyles}
@@ -1370,7 +1379,6 @@ function PatternList({
 						breakpointCols={breakpointCols}
 						previewMode={previewMode}
 						selectedStyle={selectedStyle}
-						renderType={hasHTml ? 'shadow' : 'iframe'}
 						rootScroll={rootScroll}
 					/>
 				)}
