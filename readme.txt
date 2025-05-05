@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.7 =
-Release Date: May 2nd 2025
+Release Date: May 5th 2025
 * Update: Improve design library performance.
 * Update: Fix import with advanced forms.
 * Update: Improve cache of is_authorized request.
