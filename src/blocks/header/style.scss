@@ -38,6 +38,17 @@
 	.item-is-stuck.kb-header-row-layout-contained .kadence-header-row-inner {
 		background: var(--kb-stuck-header-bg, var(--kb-header-bg, #fff));
 	}
+
+	//Makes site identity images and core images shrink a bit more naturally
+	&[data-shrink-main="1"] .item-is-stuck .wp-block-kadence-header-section,
+	&[data-shrink-main="1"] .item-is-stuck .wp-block-kadence-header-column {
+		& > .kb-identity,
+		& > .wp-block-image {
+			img {
+				object-fit: contain;
+			}
+		}
+	}
 }
 
 .wp-block-kadence-header {
