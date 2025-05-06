@@ -141,6 +141,33 @@ const mosaicTypes = [
 	{ value: 'last', label: __('Last', 'kadence-blocks') },
 ];
 
+const arrowOptions = [
+	{
+		label: __( 'Center', 'kadence-blocks-pro' ),
+		value: 'center',
+	},
+	{
+		label: __( 'Bottom Left (Pro only)', 'kadence-blocks-pro' ),
+		value: 'bottom-left',
+		disabled: true,
+	},
+	{
+		label: __( 'Bottom Right (Pro only)', 'kadence-blocks-pro' ),
+		value: 'bottom-right',
+		disabled: true,
+	},
+	{
+		label: __( 'Top Left (Pro only)', 'kadence-blocks-pro' ),
+		value: 'top-left',
+		disabled: true,
+	},
+	{
+		label: __( 'Top Right (Pro only)', 'kadence-blocks-pro' ),
+		value: 'top-right',
+		disabled: true,
+	},
+];
+
 const ALLOWED_MEDIA_TYPES = ['image'];
 
 export default function GalleryEdit(props) {
@@ -201,6 +228,7 @@ export default function GalleryEdit(props) {
 		slideType,
 		mosaicRowHeight,
 		mosaicRowHeightUnit,
+		arrowPosition,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -573,6 +601,7 @@ export default function GalleryEdit(props) {
 	// };
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
+	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = (value) => {
@@ -1510,6 +1539,12 @@ export default function GalleryEdit(props) {
 													value={arrowStyle}
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
+												<SelectControl
+													label={ __( 'Arrow Position', 'kadence-blocks-pro' ) }
+													options={ galleryArrows }
+													value={ arrowPosition }
+													onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
+												/>
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
@@ -2396,7 +2431,9 @@ export default function GalleryEdit(props) {
 						<Splide
 							options={carouselSettings}
 							ref={mainRef}
-							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
+								'center' !== arrowPosition ? 'arrows' : 'arrow'
+							} kb-slider-arrow-position-${ arrowPosition }`}
 						>
 							{theImages.map((img, index) => {
 								return (

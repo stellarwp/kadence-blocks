@@ -350,6 +350,10 @@
 		"mosaicType": {
 			"type": "string",
 			"default": "first"
+		},
+		"arrowPosition": {
+			"type": "string",
+			"default": "center"
 		}
 	},
 	"supports": {
