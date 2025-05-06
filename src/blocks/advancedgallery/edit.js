@@ -143,26 +143,26 @@ const mosaicTypes = [
 
 const arrowOptions = [
 	{
-		label: __( 'Center', 'kadence-blocks-pro' ),
+		label: __('Center', 'kadence-blocks-pro'),
 		value: 'center',
 	},
 	{
-		label: __( 'Bottom Left (Pro only)', 'kadence-blocks-pro' ),
+		label: __('Bottom Left (Pro only)', 'kadence-blocks-pro'),
 		value: 'bottom-left',
 		disabled: true,
 	},
 	{
-		label: __( 'Bottom Right (Pro only)', 'kadence-blocks-pro' ),
+		label: __('Bottom Right (Pro only)', 'kadence-blocks-pro'),
 		value: 'bottom-right',
 		disabled: true,
 	},
 	{
-		label: __( 'Top Left (Pro only)', 'kadence-blocks-pro' ),
+		label: __('Top Left (Pro only)', 'kadence-blocks-pro'),
 		value: 'top-left',
 		disabled: true,
 	},
 	{
-		label: __( 'Top Right (Pro only)', 'kadence-blocks-pro' ),
+		label: __('Top Right (Pro only)', 'kadence-blocks-pro'),
 		value: 'top-right',
 		disabled: true,
 	},
@@ -1540,10 +1540,10 @@ export default function GalleryEdit(props) {
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
 												<SelectControl
-													label={ __( 'Arrow Position', 'kadence-blocks-pro' ) }
-													options={ galleryArrows }
-													value={ arrowPosition }
-													onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
+													label={__('Arrow Position', 'kadence-blocks-pro')}
+													options={galleryArrows}
+													value={arrowPosition}
+													onChange={(value) => setAttributes({ arrowPosition: value })}
 												/>
 												{type !== 'thumbslider' && (
 													<SelectControl
@@ -2433,7 +2433,7 @@ export default function GalleryEdit(props) {
 							ref={mainRef}
 							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
 								'center' !== arrowPosition ? 'arrows' : 'arrow'
-							} kb-slider-arrow-position-${ arrowPosition }`}
+							} kb-slider-arrow-position-${arrowPosition}`}
 						>
 							{theImages.map((img, index) => {
 								return (
