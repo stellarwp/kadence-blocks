@@ -11,12 +11,21 @@
 	}
 }
 
+@mixin header-sticky-styles {
+	//Makes site identity images and core images shrink a bit more naturally
+	&[data-shrink-main="1"] .item-is-stuck {
+		.kb-identity,
+		.wp-block-image {
+			img {
+				object-fit: contain;
+			}
+		}
+	}
+}
 
 .kb-identity {
-	width: fit-content;
-	max-width: 100%;
-
-	.kb-img-transparent, .kb-img-sticky {
+	.kb-img-transparent,
+	.kb-img-sticky {
 		display: none;
 	}
 
@@ -73,7 +82,6 @@
 			.kb-identity-tagline {
 				order: 3;
 			}
-
 		}
 
 		.wp-block-kadence-advancedheading {
@@ -83,7 +91,6 @@
 		p {
 			margin-bottom: unset;
 		}
-
 	}
 }
 
@@ -105,5 +112,26 @@
 .header-mobile-transparent {
 	@media (max-width: $phone-minus-query) {
 		@include header-transparent-styles();
+	}
+}
+
+//In the editor we just look for these classes as they will come and go as the preview device changes.
+//In the frontend, they will all be present, so must each be wrapped in a media query
+//Desktop transparent styles
+.header-desktop-sticky {
+	@media (min-width: $laptop-plus-query) {
+		@include header-sticky-styles();
+	}
+}
+//Tablet transparent styles
+.header-tablet-sticky {
+	@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+		@include header-sticky-styles();
+	}
+}
+//Mobile transparent styles
+.header-mobile-sticky {
+	@media (max-width: $phone-minus-query) {
+		@include header-sticky-styles();
 	}
 }
