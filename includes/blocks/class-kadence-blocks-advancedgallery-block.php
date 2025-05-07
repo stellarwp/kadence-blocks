@@ -176,6 +176,35 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
 				$css->add_property( 'padding-left', ( $desk_gutter / 2 ) . $gutter_unit );
 				$css->add_property( 'padding-right', ( $desk_gutter / 2 ) . $gutter_unit );
+
+				// Pro Arrow Settings
+				if ( ! empty( $attributes['arrowSize'][0] ) ) {
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .splide__arrow' );
+					$css->add_property( 'font-size', $css->get_font_size( $attributes['arrowSize'][0], ( ! empty( $attributes['arrowSizeUnit'] ) ? $attributes['arrowSizeUnit'] : 'px' ) ) );
+				}
+				if ( ! empty( $attributes['arrowSize'][1] ) ) {
+					$css->set_media_state( 'tablet' );
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .splide__arrow' );
+					$css->add_property( 'font-size', $css->get_font_size( $attributes['arrowSize'][1], ( ! empty( $attributes['arrowSizeUnit'] ) ? $attributes['arrowSizeUnit'] : 'px' ) ) );
+				}
+				if ( ! empty( $attributes['arrowSize'][2] ) ) {
+					$css->set_media_state( 'mobile' );
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .splide__arrow' );
+					$css->add_property( 'font-size', $css->get_font_size( $attributes['arrowSize'][2], ( ! empty( $attributes['arrowSizeUnit'] ) ? $attributes['arrowSizeUnit'] : 'px' ) ) );
+				}
+				if ( ! empty( $attributes['arrowPosition'] ) && 'center' !== $attributes['arrowPosition'] ) {
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .splide__arrows' );
+				} else {
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .splide__arrow' );
+				}
+				$arrow_margin_unit = ( ! empty( $attributes['arrowMarginUnit'] ) ? $attributes['arrowMarginUnit'] : 'px' );
+				$arrow_margin      = array(
+					'margin'       => ! empty( $attributes['arrowMargin'][0]['desk'] ) ? $attributes['arrowMargin'][0]['desk'] : [ '', '', '', '' ],
+					'tabletMargin' => ! empty( $attributes['arrowMargin'][0]['tablet'] ) ? $attributes['arrowMargin'][0]['tablet'] : [ '', '', '', '' ],
+					'mobileMargin' => ! empty( $attributes['arrowMargin'][0]['mobile'] ) ? $attributes['arrowMargin'][0]['mobile'] : [ '', '', '', '' ],
+					'marginType'   => $arrow_margin_unit,
+				);
+				$css->render_measure_output( $arrow_margin, 'margin', 'margin' );
 			}
 		} else if ( 'fluidcarousel' === $gallery_type ) {
 			if ( ! $updated_version ) {
@@ -485,6 +514,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$image_filter = ( ! empty( $attributes['imageFilter'] ) ? $attributes['imageFilter'] : 'none' );
 			$dot_style    = ( ! empty( $attributes['dotStyle'] ) ? $attributes['dotStyle'] : 'dark' );
 			$arrow_style  = ( ! empty( $attributes['arrowStyle'] ) ? $attributes['arrowStyle'] : 'dark' );
+			$arrow_position     = ! empty( $attributes['arrowPosition'] ) ? $attributes['arrowPosition'] : 'center';
 			$link_to      = ( ! empty( $attributes['linkTo'] ) ? $attributes['linkTo'] : 'none' );
 			$lightbox     = ( ! empty( $attributes['lightbox'] ) ? $attributes['lightbox'] : 'none' );
 			$lightbox_cap = ( ! empty( $attributes['lightboxCaption'] ) && $attributes['lightboxCaption'] ? true : false );
@@ -542,7 +572,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				case 'carousel':
 					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
 					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
-					$content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '" aria-label="' . esc_attr( __( 'Photo Gallery Carousel', 'kadence-blocks' ) ) . '">';
+					$content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . ' kb-slider-group-' . esc_attr( 'center' !== $arrow_position ? 'arrows' : 'arrow' ) . ' kb-slider-arrow-position-' . esc_attr( $arrow_position ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '" aria-label="' . esc_attr( __( 'Photo Gallery Carousel', 'kadence-blocks' ) ) . '">';
 
 					foreach ( $images as $key => $image ) {
 						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';

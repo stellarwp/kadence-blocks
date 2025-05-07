@@ -19,6 +19,7 @@ import {
 	setBlockDefaults,
 	isRTL,
 	getPostOrFseId,
+	getFontSizeOptionOutput,
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -40,6 +41,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 	BoxShadowControl,
+	ResponsiveFontSizeControl,
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { applyFilters } from '@wordpress/hooks';
@@ -143,26 +145,26 @@ const mosaicTypes = [
 
 const arrowOptions = [
 	{
-		label: __('Center', 'kadence-blocks-pro'),
+		label: __( 'Center', 'kadence-blocks' ),
 		value: 'center',
 	},
 	{
-		label: __('Bottom Left (Pro only)', 'kadence-blocks-pro'),
+		label: __( 'Bottom Left (Pro only)', 'kadence-blocks' ),
 		value: 'bottom-left',
 		disabled: true,
 	},
 	{
-		label: __('Bottom Right (Pro only)', 'kadence-blocks-pro'),
+		label: __( 'Bottom Right (Pro only)', 'kadence-blocks' ),
 		value: 'bottom-right',
 		disabled: true,
 	},
 	{
-		label: __('Top Left (Pro only)', 'kadence-blocks-pro'),
+		label: __( 'Top Left (Pro only)', 'kadence-blocks' ),
 		value: 'top-left',
 		disabled: true,
 	},
 	{
-		label: __('Top Right (Pro only)', 'kadence-blocks-pro'),
+		label: __( 'Top Right (Pro only)', 'kadence-blocks' ),
 		value: 'top-right',
 		disabled: true,
 	},
@@ -229,6 +231,10 @@ export default function GalleryEdit(props) {
 		mosaicRowHeight,
 		mosaicRowHeightUnit,
 		arrowPosition,
+		arrowMargin,
+		arrowMarginUnit,
+		arrowSize,
+		arrowSizeUnit,
 		overflow,
 	} = attributes;
 	const mainRef = useRef(null);
@@ -603,6 +609,74 @@ export default function GalleryEdit(props) {
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
 	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
+	const saveArrowMargin = ( value ) => {
+		const newUpdate = arrowMargin.map( ( item, index ) => {
+			if ( 0 === index ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+		setAttributes( {
+			arrowMargin: newUpdate,
+		} );
+	};
+	const previewArrowSize = getPreviewSize(
+		previewDevice,
+		undefined !== arrowSize ? arrowSize[ 0 ] : '',
+		undefined !== arrowSize ? arrowSize[ 1 ] : '',
+		undefined !== arrowSize ? arrowSize[ 2 ] : ''
+	);
+	const previewArrowSizeUnit = arrowSizeUnit ? arrowSizeUnit : 'px';
+	const previewArrowMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[ 0 ]?.desk?.[ 0 ] && '' !== arrowMargin?.[ 0 ]?.desk?.[ 0 ]
+			? arrowMargin[ 0 ].desk[ 0 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.tablet?.[ 0 ] && '' !== arrowMargin?.[ 0 ]?.tablet?.[ 0 ]
+			? arrowMargin[ 0 ].tablet[ 0 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.mobile?.[ 0 ] && '' !== arrowMargin?.[ 0 ]?.mobile?.[ 0 ]
+			? arrowMargin?.[ 0 ]?.mobile?.[ 0 ]
+			: ''
+	);
+	const previewArrowMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[ 0 ]?.desk?.[ 1 ] && '' !== arrowMargin?.[ 0 ]?.desk?.[ 1 ]
+			? arrowMargin[ 0 ].desk[ 1 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.tablet?.[ 1 ] && '' !== arrowMargin?.[ 0 ]?.tablet?.[ 1 ]
+			? arrowMargin[ 0 ].tablet[ 1 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.mobile?.[ 1 ] && '' !== arrowMargin?.[ 0 ]?.mobile?.[ 1 ]
+			? margin[ 0 ].mobile[ 1 ]
+			: ''
+	);
+	const previewArrowMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[ 0 ]?.desk?.[ 2 ] && '' !== arrowMargin?.[ 0 ]?.desk?.[ 2 ]
+			? arrowMargin[ 0 ].desk[ 2 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.tablet?.[ 2 ] && '' !== arrowMargin?.[ 0 ]?.tablet?.[ 2 ]
+			? arrowMargin[ 0 ].tablet[ 2 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.mobile?.[ 2 ] && '' !== arrowMargin?.[ 0 ]?.mobile?.[ 2 ]
+			? arrowMargin[ 0 ].mobile[ 2 ]
+			: ''
+	);
+	const previewArrowMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[ 0 ]?.desk?.[ 3 ] && '' !== arrowMargin?.[ 0 ]?.desk?.[ 3 ]
+			? arrowMargin[ 0 ].desk[ 3 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.tablet?.[ 3 ] && '' !== arrowMargin?.[ 0 ]?.tablet?.[ 3 ]
+			? arrowMargin[ 0 ].tablet[ 3 ]
+			: '',
+		undefined !== arrowMargin?.[ 0 ]?.mobile?.[ 3 ] && '' !== arrowMargin?.[ 0 ]?.mobile?.[ 3 ]
+			? arrowMargin[ 0 ].mobile[ 3 ]
+			: ''
+	);
+	const previewArrowMarginUnit = arrowMarginUnit ? arrowMarginUnit : 'px';
+
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = (value) => {
@@ -1541,11 +1615,77 @@ export default function GalleryEdit(props) {
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
 												<SelectControl
-													label={__('Arrow Position', 'kadence-blocks-pro')}
-													options={galleryArrows}
-													value={arrowPosition}
-													onChange={(value) => setAttributes({ arrowPosition: value })}
+													label={ __( 'Arrow Position', 'kadence-blocks-pro' ) }
+													options={ galleryArrows }
+													value={ arrowPosition }
+													onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
 												/>
+												{kadence_blocks_params.pro === 'true' && 
+													<>
+														<ResponsiveFontSizeControl
+															label={ __( 'Arrow Size', 'kadence-blocks' ) }
+															value={ undefined !== arrowSize?.[ 0 ] ? arrowSize[ 0 ] : '' }
+															onChange={ ( value ) =>
+																setAttributes( {
+																	arrowSize: [
+																		value,
+																		undefined !== arrowSize[ 1 ] ? arrowSize[ 1 ] : '',
+																		undefined !== arrowSize[ 2 ] ? arrowSize[ 2 ] : '',
+																	],
+																} )
+															}
+															tabletValue={ undefined !== arrowSize?.[ 1 ] ? arrowSize[ 1 ] : '' }
+															onChangeTablet={ ( value ) =>
+																setAttributes( {
+																	arrowSize: [
+																		undefined !== arrowSize[ 0 ] ? arrowSize[ 0 ] : '',
+																		value,
+																		undefined !== arrowSize[ 2 ] ? arrowSize[ 2 ] : '',
+																	],
+																} )
+															}
+															mobileValue={ undefined !== arrowSize?.[ 2 ] ? arrowSize[ 2 ] : '' }
+															onChangeMobile={ ( value ) =>
+																setAttributes( {
+																	arrowSize: [
+																		undefined !== arrowSize[ 0 ] ? arrowSize[ 0 ] : '',
+																		undefined !== arrowSize[ 1 ] ? arrowSize[ 1 ] : '',
+																		value,
+																	],
+																} )
+															}
+															min={ 0 }
+															max={ arrowSizeUnit === 'px' ? 200 : 12 }
+															step={ arrowSizeUnit === 'px' ? 1 : 0.001 }
+															unit={ arrowSizeUnit ? arrowSizeUnit : 'px' }
+															onUnit={ ( value ) => {
+																setAttributes( { arrowSizeUnit: value } );
+															} }
+															units={ [ 'px', 'em', 'rem', 'vw' ] }
+														/>
+														<ResponsiveMeasureRangeControl
+															label={ __( 'Arrow Margin', 'kadence-blocks-pro' ) }
+															value={ arrowMargin?.[ 0 ]?.desk ? arrowMargin[ 0 ].desk : [ '', '', '', '' ] }
+															tabletValue={
+																arrowMargin?.[ 0 ]?.tablet ? arrowMargin[ 0 ].tablet : [ '', '', '', '' ]
+															}
+															mobileValue={
+																arrowMargin?.[ 0 ]?.mobile ? arrowMargin[ 0 ].mobile : [ '', '', '', '' ]
+															}
+															onChange={ ( value ) => {
+																saveArrowMargin( { desk: value } );
+															} }
+															onChangeTablet={ ( value ) => saveArrowMargin( { tablet: value } ) }
+															onChangeMobile={ ( value ) => saveArrowMargin( { mobile: value } ) }
+															min={ arrowMarginUnit === 'em' || arrowMarginUnit === 'rem' ? -400 : -400 }
+															max={ arrowMarginUnit === 'em' || arrowMarginUnit === 'rem' ? 12 : 400 }
+															step={ arrowMarginUnit === 'em' || arrowMarginUnit === 'rem' ? 0.1 : 1 }
+															unit={ arrowMarginUnit }
+															units={ [ 'px', 'em', 'rem', '%' ] }
+															onUnit={ ( value ) => setAttributes( { arrowMarginUnit: value } ) }
+														/>	
+													</>
+												}
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
@@ -2192,6 +2332,44 @@ export default function GalleryEdit(props) {
 					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
 					}
+					.kb-gallery-id-${ uniqueID } ${ 'center' !== arrowPosition ? '.splide__arrows' : '.splide__arrows .splide__arrow' } {
+						${
+							previewArrowMarginTop
+								? 'margin-top:' +
+								getSpacingOptionOutput( previewArrowMarginTop, previewArrowMarginUnit ) +
+								';'
+								: ''
+						}
+						${
+							previewArrowMarginRight
+								? 'margin-right:' +
+								getSpacingOptionOutput( previewArrowMarginRight, previewArrowMarginUnit ) +
+								';'
+								: ''
+						}
+						${
+							previewArrowMarginBottom
+								? 'margin-bottom:' +
+								getSpacingOptionOutput( previewArrowMarginBottom, previewArrowMarginUnit ) +
+								';'
+								: ''
+						}
+						${
+							previewArrowMarginLeft
+								? 'margin-left:' +
+								getSpacingOptionOutput( previewArrowMarginLeft, previewArrowMarginUnit ) +
+								';'
+								: ''
+						}
+					}
+					${
+						previewArrowSize
+							? `.kb-gallery-id-${ uniqueID } .splide__arrow { font-size:${ getFontSizeOptionOutput(
+									previewArrowSize,
+									previewArrowSizeUnit
+							) };`
+							: ''
+					}	
 			`}
 		</style>
 	);

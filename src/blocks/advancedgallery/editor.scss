@@ -743,39 +743,12 @@
 	}
 }
 
-.kt-blocks-carousel .splide.kb-slider-arrow-position-top-right .splide__arrows {
-	right: 1rem;
-	top: 1rem;
-}
 
-.kt-blocks-carousel .splide.kb-slider-arrow-position-top-left .splide__arrows {
-	left: 1rem;
-	top: 1rem;
-}
-
-.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-left .splide__arrows {
-	bottom: 1rem;
-	left: 1rem;
-}
-
-.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-right .splide__arrows {
-	bottom: 1rem;
-	right: 1rem;
-}
-.kt-blocks-carousel .splide.kb-slider-group-arrows .splide__arrows {
-	display: flex;
-	gap: 1rem;
-	position: absolute;
-	z-index: 1;
-	flex-direction: row-reverse;
-}
 //.kt-blocks-carousel .splide .splide__arrow--prev svg {
 //	transform: scaleX(-1)
 //}
 //
-.kt-blocks-carousel .splide:not(.kb-slider-arrow-position-center) .splide__arrow--next {
-	right: -100px;
-}
+
 
 // .wp-block-kadence-advancedgallery {
 // 	// Fix Slider Overflow Issue.
