@@ -9,6 +9,10 @@
 		"uniqueID": {
 			"type": "string"
 		},
+		"overflow": {
+			"type": "boolean",
+			"default": false
+		},
 		"columns": {
 			"type": "array",
 			"default": [3, 3, 3, 2, 1, 1]
