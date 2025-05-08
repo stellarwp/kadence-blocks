@@ -2521,8 +2521,8 @@ export default function GalleryEdit(props) {
 							<Splide
 								options={fluidCarouselSettings}
 								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-								'center' !== arrowPosition ? 'arrows' : 'arrow'
-							} kb-slider-arrow-position-${arrowPosition}`}
+									'center' !== arrowPosition ? 'arrows' : 'arrow'
+								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
 									return (
@@ -2551,8 +2551,8 @@ export default function GalleryEdit(props) {
 							<Splide
 								options={sliderSettings}
 								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-								'center' !== arrowPosition ? 'arrows' : 'arrow'
-							} kb-slider-arrow-position-${arrowPosition}`}
+									'center' !== arrowPosition ? 'arrows' : 'arrow'
+								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
 									return (
@@ -2583,8 +2583,8 @@ export default function GalleryEdit(props) {
 									options={thumbsliderSettings}
 									ref={mainRef}
 									className={`splide kt-blocks-carousel-main kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-								'center' !== arrowPosition ? 'arrows' : 'arrow'
-							} kb-slider-arrow-position-${arrowPosition}`}
+										'center' !== arrowPosition ? 'arrows' : 'arrow'
+									} kb-slider-arrow-position-${arrowPosition}`}
 								>
 									{theImages.map((img, index) => {
 										return (
