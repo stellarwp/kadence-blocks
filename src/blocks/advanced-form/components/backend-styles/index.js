@@ -1,5 +1,5 @@
 import { GetHelpStyles, GetInputStyles, GetLabelStyles, GetRadioLabelStyles } from '../';
-import { getPreviewSize } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
 
 export default function BackendStyles({
 	uniqueID,
@@ -142,7 +142,7 @@ export default function BackendStyles({
 			}
 
 			.wp-block-kadence-advanced-form${uniqueID} .kb-advanced-form .kb-adv-form-label .kb-adv-form-required {;
-				${fieldStyle?.requiredColor ? 'color:' + fieldStyle.requiredColor + ';' : ''}
+				${fieldStyle?.requiredColor ? 'color:' + KadenceColorOutput(fieldStyle.requiredColor) + ';' : ''}
 			}
 
 			`}
