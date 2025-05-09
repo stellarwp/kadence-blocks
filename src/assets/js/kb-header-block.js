@@ -482,7 +482,7 @@ class KBHeader {
 				// 	}
 				// }
 				const shrinkLogos = this.activeHeaderContainer.querySelectorAll(
-					'.kb-img, .wp-block-kadence-identity img'
+					'.kb-img, .wp-block-kadence-identity img, .wp-block-image img'
 				);
 				const shrinkHeader = this.activeHeaderContainer.querySelector(
 					'.wp-block-kadence-header-row-center .kadence-header-row-inner'

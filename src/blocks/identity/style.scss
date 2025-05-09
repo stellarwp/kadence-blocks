@@ -11,12 +11,9 @@
 	}
 }
 
-
 .kb-identity {
-	width: fit-content;
-	max-width: 100%;
-
-	.kb-img-transparent, .kb-img-sticky {
+	.kb-img-transparent,
+	.kb-img-sticky {
 		display: none;
 	}
 
@@ -73,7 +70,6 @@
 			.kb-identity-tagline {
 				order: 3;
 			}
-
 		}
 
 		.wp-block-kadence-advancedheading {
@@ -83,7 +79,6 @@
 		p {
 			margin-bottom: unset;
 		}
-
 	}
 }
 
