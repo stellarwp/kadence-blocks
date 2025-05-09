@@ -8,6 +8,7 @@
     margin-bottom: 0;
     margin-top: 0;
 	flex: 1;
+	 overflow: hidden;
 }
 .kt-blocks-carousel-thumbnails.splide:not( .is-overflow ) .splide__slide:last-child {
 	margin: 0 !important;

@@ -201,6 +201,7 @@ export default function GalleryEdit(props) {
 		slideType,
 		mosaicRowHeight,
 		mosaicRowHeightUnit,
+		overflow,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -1544,6 +1545,13 @@ export default function GalleryEdit(props) {
 													checked={lazyLoad}
 													onChange={(value) => setAttributes({ lazyLoad: value })}
 												/>
+												{type === 'carousel' && (
+													<ToggleControl
+														label={__('Enable Carousel Overflow', 'kadence-blocks')}
+														checked={overflow}
+														onChange={(value) => setAttributes({ overflow: value })}
+													/>
+												)}
 											</KadencePanelBody>
 										)}
 									</>
@@ -2062,7 +2070,7 @@ export default function GalleryEdit(props) {
 					.kb-gallery-id-${uniqueID}.kb-gallery-type-thumbslider .kt-blocks-carousel-main {
 						${previewGutter ? 'margin-bottom:' + previewGutter + previewGutterUnit + ';' : ''}
 					}
-
+					${type === 'carousel' && overflow ? `.kb-gallery-id-${uniqueID} .splide__track { overflow: visible; }` : ``}
 					${
 						captionStyles && undefined !== captionStyles[0] && undefined !== captionStyles[0].background
 							? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` +
