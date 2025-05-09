@@ -75,9 +75,10 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kb-progress-bar-container' . $unique_id );
-
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id . ',  .kt-inside-inner-col > .aligncenter.kb-progress-bar-container' . $unique_id );
 		$css->render_responsive_size( $attributes, [ 'containerMaxWidth', 'tabletContainerMaxWidth', 'mobileContainerMaxWidth' ], 'width', 'containerMaxWidthUnits' );
+
+		$css->set_selector( '.kb-progress-bar-container' . $unique_id );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
 		if ( ! isset( $attributes['barType'] ) || ( isset( $attributes['barType'] ) && 'line' === $attributes['barType'] ) ) {

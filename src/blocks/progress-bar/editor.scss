@@ -4,10 +4,18 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .block-editor-block-list__block[data-type="kadence/progress-bar"] {
+.block-editor-block-list__block[data-type="kadence/progress-bar"] {
 	margin-bottom: 0;
 	margin-top: 0;
-  }
+}
+
+//fix for core stlye forcing non-aligned progress bars centered in the editor
+.editor-styles-wrapper :where(:not(.is-layout-flex, .is-layout-grid)) > .kb-progress-bar-align,
+.block-editor-block-list__layout.is-root-container > .kb-progress-bar-align {
+	margin-left: initial;
+	margin-right: initial;
+}
+
 .kb-progress-bar-alignleft {
 	float: left;
 }
@@ -25,14 +33,14 @@
 .kb-progress-label-wrap {
 	display: flex;
 	flex-wrap: wrap;
-	gap:0.3em 0.5em;
+	gap: 0.3em 0.5em;
 }
 
 .kb-progress-bar-type-line .kt-progress-label-inside,
 .kb-progress-bar-type-line-mask .kt-progress-label-inside {
 	position: absolute;
 	top: 50%;
-	transform: translateY(-55%)
+	transform: translateY(-55%);
 }
 
 .kb-progress-bar-type-circle .kt-progress-label-inside {
@@ -53,7 +61,7 @@
 	.kb-progress-bar {
 		height: 80px;
 		max-width: 100%;
-		
+
 		& > svg {
 			height: 100%;
 			width: 100%;
