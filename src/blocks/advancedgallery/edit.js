@@ -169,12 +169,12 @@ const arrowOptions = [
 		disabled: true,
 	},
 	{
-		label: __( 'Above Left {Pro only)', 'kadence-blocks-pro' ),
+		label: __('Above Left {Pro only)', 'kadence-blocks-pro'),
 		value: 'above-left',
 		disabled: true,
 	},
 	{
-		label: __( 'Above Right (Pro only)', 'kadence-blocks-pro' ),
+		label: __('Above Right (Pro only)', 'kadence-blocks-pro'),
 		value: 'above-right',
 		disabled: true,
 	},
@@ -630,7 +630,12 @@ export default function GalleryEdit(props) {
 			arrowMargin: newUpdate,
 		});
 	};
-	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes, saveArrowMargin);
+	const galleryArrowOptions = applyFilters(
+		'kadence.galleryArrowsBlockOptions',
+		attributes,
+		setAttributes,
+		saveArrowMargin
+	);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
 		undefined !== arrowSize ? arrowSize[0] : '',
@@ -1621,9 +1626,7 @@ export default function GalleryEdit(props) {
 													value={arrowPosition}
 													onChange={(value) => setAttributes({ arrowPosition: value })}
 												/>
-												{kadence_blocks_params.pro === 'true' && (
-													galleryArrowOptions
-												)}
+												{kadence_blocks_params.pro === 'true' && galleryArrowOptions}
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
@@ -2305,7 +2308,7 @@ export default function GalleryEdit(props) {
 							? `.kb-gallery-id-${uniqueID} .splide__arrow { font-size:${getFontSizeOptionOutput(
 									previewArrowSize,
 									previewArrowSizeUnit
-					)}; }`
+							  )}; }`
 							: ''
 					}
 					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {
