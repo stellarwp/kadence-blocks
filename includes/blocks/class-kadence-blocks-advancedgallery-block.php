@@ -452,14 +452,22 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		// Overflow for carousel
-		// if ( 'carousel' === $gallery_type && ( isset( $attributes['overflow'] ) && $attributes['overflow'] ) ) {
-		if ( 'carousel' === $gallery_type || 'fluidcarousel' === $gallery_type || 'thumbslider' === $gallery_type || 'slider' === $gallery_type ) {
+		if ( 'carousel' === $gallery_type && ( isset( $attributes['overflow'] ) && $attributes['overflow'] ) ) {
+			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery');
+			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel');
 			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel .splide__track');
 			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel .splide__pagination');
 			$css->add_property('overflow', 'hidden' );
+		}
+
+		if ( 'carousel' === $gallery_type || 'fluidcarousel' === $gallery_type || 'slider' === $gallery_type ) {
+			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery');
+			$css->add_property('overflow', 'visible' );
+			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel');
+			$css->add_property('overflow', 'visible' );
 		}
 
 		// Pro Arrow Settings

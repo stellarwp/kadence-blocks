@@ -168,6 +168,16 @@ const arrowOptions = [
 		value: 'top-right',
 		disabled: true,
 	},
+	{
+		label: __( 'Above Left {Pro only)', 'kadence-blocks-pro' ),
+		value: 'above-left',
+		disabled: true,
+	},
+	{
+		label: __( 'Above Right (Pro only)', 'kadence-blocks-pro' ),
+		value: 'above-right',
+		disabled: true,
+	},
 ];
 
 const ALLOWED_MEDIA_TYPES = ['image'];
@@ -620,6 +630,7 @@ export default function GalleryEdit(props) {
 			arrowMargin: newUpdate,
 		});
 	};
+	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes, saveArrowMargin);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
 		undefined !== arrowSize ? arrowSize[0] : '',
@@ -1611,100 +1622,7 @@ export default function GalleryEdit(props) {
 													onChange={(value) => setAttributes({ arrowPosition: value })}
 												/>
 												{kadence_blocks_params.pro === 'true' && (
-													<>
-														<ResponsiveFontSizeControl
-															label={__('Arrow Size', 'kadence-blocks')}
-															value={undefined !== arrowSize?.[0] ? arrowSize[0] : ''}
-															onChange={(value) =>
-																setAttributes({
-																	arrowSize: [
-																		value,
-																		undefined !== arrowSize[1] ? arrowSize[1] : '',
-																		undefined !== arrowSize[2] ? arrowSize[2] : '',
-																	],
-																})
-															}
-															tabletValue={
-																undefined !== arrowSize?.[1] ? arrowSize[1] : ''
-															}
-															onChangeTablet={(value) =>
-																setAttributes({
-																	arrowSize: [
-																		undefined !== arrowSize[0] ? arrowSize[0] : '',
-																		value,
-																		undefined !== arrowSize[2] ? arrowSize[2] : '',
-																	],
-																})
-															}
-															mobileValue={
-																undefined !== arrowSize?.[2] ? arrowSize[2] : ''
-															}
-															onChangeMobile={(value) =>
-																setAttributes({
-																	arrowSize: [
-																		undefined !== arrowSize[0] ? arrowSize[0] : '',
-																		undefined !== arrowSize[1] ? arrowSize[1] : '',
-																		value,
-																	],
-																})
-															}
-															min={0}
-															max={arrowSizeUnit === 'px' ? 200 : 12}
-															step={arrowSizeUnit === 'px' ? 1 : 0.001}
-															unit={arrowSizeUnit ? arrowSizeUnit : 'px'}
-															onUnit={(value) => {
-																setAttributes({ arrowSizeUnit: value });
-															}}
-															units={['px', 'em', 'rem', 'vw']}
-														/>
-														<ResponsiveMeasureRangeControl
-															label={__('Arrow Margin', 'kadence-blocks-pro')}
-															value={
-																arrowMargin?.[0]?.desk
-																	? arrowMargin[0].desk
-																	: ['', '', '', '']
-															}
-															tabletValue={
-																arrowMargin?.[0]?.tablet
-																	? arrowMargin[0].tablet
-																	: ['', '', '', '']
-															}
-															mobileValue={
-																arrowMargin?.[0]?.mobile
-																	? arrowMargin[0].mobile
-																	: ['', '', '', '']
-															}
-															onChange={(value) => {
-																saveArrowMargin({ desk: value });
-															}}
-															onChangeTablet={(value) =>
-																saveArrowMargin({ tablet: value })
-															}
-															onChangeMobile={(value) =>
-																saveArrowMargin({ mobile: value })
-															}
-															min={
-																arrowMarginUnit === 'em' || arrowMarginUnit === 'rem'
-																	? -400
-																	: -400
-															}
-															max={
-																arrowMarginUnit === 'em' || arrowMarginUnit === 'rem'
-																	? 12
-																	: 400
-															}
-															step={
-																arrowMarginUnit === 'em' || arrowMarginUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
-															unit={arrowMarginUnit}
-															units={['px', 'em', 'rem', '%']}
-															onUnit={(value) =>
-																setAttributes({ arrowMarginUnit: value })
-															}
-														/>
-													</>
+													galleryArrowOptions
 												)}
 												{type !== 'thumbslider' && (
 													<SelectControl
@@ -2387,9 +2305,13 @@ export default function GalleryEdit(props) {
 							? `.kb-gallery-id-${uniqueID} .splide__arrow { font-size:${getFontSizeOptionOutput(
 									previewArrowSize,
 									previewArrowSizeUnit
-							  )};`
+					)}; }`
 							: ''
-					}	
+					}
+					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {
+						overflow: visible;
+					}
+					
 			`}
 		</style>
 	);

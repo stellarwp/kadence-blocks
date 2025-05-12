@@ -364,7 +364,7 @@
 	// }
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-top-right .splide__arrows {
 		right: 1rem;
-		top: 1rem;
+		top: 2rem;
 		.splide__arrow--prev {
 			left: unset;
 			right: 4em;
@@ -373,14 +373,14 @@
 	
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-top-left .splide__arrows {
 		left: 1rem;
-		top: 1rem;
+		top: 2rem;
 		.splide__arrow--next {
 			left: 4em;
 		}
 	}
 	
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-left .splide__arrows {
-		bottom: 1rem;
+		bottom: 2rem;
 		left: 1rem;
 		.splide__arrow--next {
 			left: 4em;
@@ -388,19 +388,35 @@
 	}
 	
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-right .splide__arrows {
-		bottom: 1rem;
+		bottom: 2rem;
 		right: 1rem;
 		.splide__arrow--prev {
 			left: unset;
 			right: 4em;
 		}
 	}
+	.kt-blocks-carousel .splide.kb-slider-arrow-position-above-right .splide__arrows {
+		right: 1rem;
+		top: -2rem;
+		.splide__arrow--prev {
+			left: unset;
+			right: 4em;
+		}
+	}
+	
+	.kt-blocks-carousel .splide.kb-slider-arrow-position-above-left .splide__arrows {
+		left: 1rem;
+		top: -2rem;
+		.splide__arrow--next {
+			left: 4em;
+		}
+	}
+
 	.kt-blocks-carousel .splide.kb-slider-group-arrows .splide__arrows {
 		display: flex;
 		gap: 1rem;
 		position: absolute;
 		z-index: 1;
-		flex-direction: row-reverse;
 	}
 
 }
