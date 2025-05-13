@@ -105,7 +105,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$gallery_type = ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry';
 
-		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' .kb-gallery-ul' );
+		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
 
 		if ( isset( $attributes['margin'][0] ) ) {
 			// Fix for this margin unit being in a non-standard locaiton in array, should be updated.
