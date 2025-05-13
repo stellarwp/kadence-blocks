@@ -4306,7 +4306,7 @@ function KadenceInfoBox(props) {
 								>
 									<div
 										className={'kadence-info-box-icon-inner-container'}
-										style={{ fontSize: previewMediaIconSize + mediaIcon[0].unit }}
+										style={{ fontSize: previewMediaIconSize + (mediaIcon[0].unit ?? 'px')}}
 									>
 										<IconRender
 											className={`kt-info-svg-icon kt-info-svg-icon-${mediaIcon[0].icon}`}
