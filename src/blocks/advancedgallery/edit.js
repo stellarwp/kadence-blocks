@@ -621,11 +621,7 @@ export default function GalleryEdit(props) {
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
 	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
-	const galleryArrowOptions = applyFilters(
-		'kadence.galleryArrowsBlockOptions',
-		attributes,
-		setAttributes
-	);
+	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
 		undefined !== arrowSize ? arrowSize[0] : '',
