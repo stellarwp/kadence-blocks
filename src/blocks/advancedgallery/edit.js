@@ -242,6 +242,8 @@ export default function GalleryEdit(props) {
 		mosaicRowHeightUnit,
 		arrowPosition,
 		arrowMargin,
+		tabletArrowMargin,
+		mobileArrowMargin,
 		arrowMarginUnit,
 		arrowSize,
 		arrowSizeUnit,
@@ -619,22 +621,10 @@ export default function GalleryEdit(props) {
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
 	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
-	const saveArrowMargin = (value) => {
-		const newUpdate = arrowMargin.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			arrowMargin: newUpdate,
-		});
-	};
 	const galleryArrowOptions = applyFilters(
 		'kadence.galleryArrowsBlockOptions',
 		attributes,
-		setAttributes,
-		saveArrowMargin
+		setAttributes
 	);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
@@ -645,41 +635,27 @@ export default function GalleryEdit(props) {
 	const previewArrowSizeUnit = arrowSizeUnit ? arrowSizeUnit : 'px';
 	const previewArrowMarginTop = getPreviewSize(
 		previewDevice,
-		undefined !== arrowMargin?.[0]?.desk?.[0] && '' !== arrowMargin?.[0]?.desk?.[0] ? arrowMargin[0].desk[0] : '',
-		undefined !== arrowMargin?.[0]?.tablet?.[0] && '' !== arrowMargin?.[0]?.tablet?.[0]
-			? arrowMargin[0].tablet[0]
-			: '',
-		undefined !== arrowMargin?.[0]?.mobile?.[0] && '' !== arrowMargin?.[0]?.mobile?.[0]
-			? arrowMargin?.[0]?.mobile?.[0]
-			: ''
+		undefined !== arrowMargin?.[0] && '' !== arrowMargin?.[0] ? arrowMargin[0] : '',
+		undefined !== tabletArrowMargin?.[0] && '' !== tabletArrowMargin?.[0] ? tabletArrowMargin[0] : '',
+		undefined !== mobileArrowMargin?.[0] && '' !== mobileArrowMargin?.[0] ? mobileArrowMargin[0] : ''
 	);
 	const previewArrowMarginRight = getPreviewSize(
 		previewDevice,
-		undefined !== arrowMargin?.[0]?.desk?.[1] && '' !== arrowMargin?.[0]?.desk?.[1] ? arrowMargin[0].desk[1] : '',
-		undefined !== arrowMargin?.[0]?.tablet?.[1] && '' !== arrowMargin?.[0]?.tablet?.[1]
-			? arrowMargin[0].tablet[1]
-			: '',
-		undefined !== arrowMargin?.[0]?.mobile?.[1] && '' !== arrowMargin?.[0]?.mobile?.[1] ? margin[0].mobile[1] : ''
+		undefined !== arrowMargin?.[1] && '' !== arrowMargin?.[1] ? arrowMargin[1] : '',
+		undefined !== tabletArrowMargin?.[1] && '' !== tabletArrowMargin?.[1] ? tabletArrowMargin[1] : '',
+		undefined !== mobileArrowMargin?.[1] && '' !== mobileArrowMargin?.[1] ? mobileArrowMargin[1] : ''
 	);
 	const previewArrowMarginBottom = getPreviewSize(
 		previewDevice,
-		undefined !== arrowMargin?.[0]?.desk?.[2] && '' !== arrowMargin?.[0]?.desk?.[2] ? arrowMargin[0].desk[2] : '',
-		undefined !== arrowMargin?.[0]?.tablet?.[2] && '' !== arrowMargin?.[0]?.tablet?.[2]
-			? arrowMargin[0].tablet[2]
-			: '',
-		undefined !== arrowMargin?.[0]?.mobile?.[2] && '' !== arrowMargin?.[0]?.mobile?.[2]
-			? arrowMargin[0].mobile[2]
-			: ''
+		undefined !== arrowMargin?.[2] && '' !== arrowMargin?.[2] ? arrowMargin[2] : '',
+		undefined !== tabletArrowMargin?.[2] && '' !== tabletArrowMargin?.[2] ? tabletArrowMargin[2] : '',
+		undefined !== mobileArrowMargin?.[2] && '' !== mobileArrowMargin?.[2] ? mobileArrowMargin[2] : ''
 	);
 	const previewArrowMarginLeft = getPreviewSize(
 		previewDevice,
-		undefined !== arrowMargin?.[0]?.desk?.[3] && '' !== arrowMargin?.[0]?.desk?.[3] ? arrowMargin[0].desk[3] : '',
-		undefined !== arrowMargin?.[0]?.tablet?.[3] && '' !== arrowMargin?.[0]?.tablet?.[3]
-			? arrowMargin[0].tablet[3]
-			: '',
-		undefined !== arrowMargin?.[0]?.mobile?.[3] && '' !== arrowMargin?.[0]?.mobile?.[3]
-			? arrowMargin[0].mobile[3]
-			: ''
+		undefined !== arrowMargin?.[3] && '' !== arrowMargin?.[3] ? arrowMargin[3] : '',
+		undefined !== tabletArrowMargin?.[3] && '' !== tabletArrowMargin?.[3] ? tabletArrowMargin[3] : '',
+		undefined !== mobileArrowMargin?.[3] && '' !== mobileArrowMargin?.[3] ? mobileArrowMargin[3] : ''
 	);
 	const previewArrowMarginUnit = arrowMarginUnit ? arrowMarginUnit : 'px';
 

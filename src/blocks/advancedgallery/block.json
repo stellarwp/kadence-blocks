@@ -361,13 +361,15 @@
 		},
 		"arrowMargin": {
 			"type": "array",
-			"default": [
-				{
-					"desk": [ "", "", "", "" ],
-					"tablet": [ "", "", "", "" ],
-					"mobile": [ "", "", "", "" ]
-				}
-			]
+			"default": ["", "", "", ""]
+		},
+		"tabletArrowMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileArrowMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
 		},
 		"arrowMarginUnit": {
 			"type": "string",

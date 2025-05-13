@@ -490,14 +490,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		} else {
 			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__arrow' );
 		}
-		$arrow_margin_unit = ( ! empty( $attributes['arrowMarginUnit'] ) ? $attributes['arrowMarginUnit'] : 'px' );
-		$arrow_margin      = array(
-			'margin'       => ! empty( $attributes['arrowMargin'][0]['desk'] ) ? $attributes['arrowMargin'][0]['desk'] : [ '', '', '', '' ],
-			'tabletMargin' => ! empty( $attributes['arrowMargin'][0]['tablet'] ) ? $attributes['arrowMargin'][0]['tablet'] : [ '', '', '', '' ],
-			'mobileMargin' => ! empty( $attributes['arrowMargin'][0]['mobile'] ) ? $attributes['arrowMargin'][0]['mobile'] : [ '', '', '', '' ],
-			'marginType'   => $arrow_margin_unit,
-		);
-		$css->render_measure_output( $arrow_margin, 'margin', 'margin' );
+		$css->render_measure_output( $attributes, 'arrowMargin', 'margin', array( 'unit_key' => 'arrowMarginUnit' ) );
 		
 
 		return $css->css_output();
