@@ -169,12 +169,12 @@ const arrowOptions = [
 		disabled: true,
 	},
 	{
-		label: __('Above Left {Pro only)', 'kadence-blocks-pro'),
+		label: __('Above Left {Pro only)', 'kadence-blocks'),
 		value: 'above-left',
 		disabled: true,
 	},
 	{
-		label: __('Above Right (Pro only)', 'kadence-blocks-pro'),
+		label: __('Above Right (Pro only)', 'kadence-blocks'),
 		value: 'above-right',
 		disabled: true,
 	},
@@ -1593,7 +1593,7 @@ export default function GalleryEdit(props) {
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
 												<SelectControl
-													label={__('Arrow Position', 'kadence-blocks-pro')}
+													label={__('Arrow Position', 'kadence-blocks')}
 													options={galleryArrows}
 													value={arrowPosition}
 													onChange={(value) => setAttributes({ arrowPosition: value })}
