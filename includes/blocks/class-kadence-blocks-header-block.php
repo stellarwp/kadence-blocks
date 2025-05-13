@@ -92,8 +92,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $header_attributes );
 
 		if ( ! empty( $header_attributes['pro_backdropFilterString'] ) && class_exists( 'Kadence_Blocks_Pro' ) ) {
+			$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container:not(:has(.item-is-stuck)), .wp-block-kadence-header' . $unique_id . ' .item-is-stuck' );
 			$css->add_property( 'backdrop-filter', $header_attributes['pro_backdropFilterString'] );
-			$css->add_property( '-webkit-backdrop-filter', $header_attributes['pro_backdropFilterString'] );
 		}
 
 		return $css->css_output();
@@ -272,6 +272,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'class' => implode( ' ', $wrapper_classes ),
 				'role'  => 'banner',
 		);
+		if ( $header_attributes['anchor'] ) {
+			$wrapper_args['id'] = $header_attributes['anchor'];
+		}
 		if ( $header_attributes['autoTransparentSpacing'] ) {
 			$wrapper_args['data-auto-transparent-spacing'] = $header_attributes['autoTransparentSpacing'];
 		}

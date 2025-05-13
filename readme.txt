@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.1
-Stable tag: 3.5.7
+Stable tag: 3.5.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,18 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.8 =
+Release Date: 15th May 2025
+* Add: Image border radius to post grid/carousel block.
+* Add: Option to overflow gallery block.
+* Fix: Better resizing of images when shrinking row in advanced header.
+* Fix: Sticky sections when backdrop filter is enabled.
+* Fix: Asterisk color for required fields in advanced form when using color palette.
+* Fix: HTML anchor for advanced header not applying on frontend.
+* Fix: Advanced header max width limited to 600px.
+* Fix: Vector block alignment when inside a section.
+* Fix: Circular progress bar alignment and max-width fixes.
 
 = 3.5.7 =
 Release Date: May 5th 2025

@@ -81,8 +81,6 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 		
 		// Center the SVG when alignment is not set
 		if ( empty( $attributes['align'] ) ) {
-			$css->add_property( 'margin-left', 'auto' );
-			$css->add_property( 'margin-right', 'auto' );
 			$css->add_property( 'display', 'flex' );
 			$css->add_property( 'justify-content', 'center' );
 		}
