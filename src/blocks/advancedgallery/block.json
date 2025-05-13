@@ -354,6 +354,34 @@
 		"mosaicType": {
 			"type": "string",
 			"default": "first"
+		},
+		"arrowPosition": {
+			"type": "string",
+			"default": "center"
+		},
+		"arrowMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletArrowMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileArrowMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"arrowMarginUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"arrowSize": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"arrowSizeUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"supports": {

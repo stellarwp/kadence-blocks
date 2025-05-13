@@ -19,6 +19,7 @@ import {
 	setBlockDefaults,
 	isRTL,
 	getPostOrFseId,
+	getFontSizeOptionOutput,
 } from '@kadence/helpers';
 import {
 	PopColorControl,
@@ -40,6 +41,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 	BoxShadowControl,
+	ResponsiveFontSizeControl,
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { applyFilters } from '@wordpress/hooks';
@@ -141,6 +143,43 @@ const mosaicTypes = [
 	{ value: 'last', label: __('Last', 'kadence-blocks') },
 ];
 
+const arrowOptions = [
+	{
+		label: __('Center', 'kadence-blocks'),
+		value: 'center',
+	},
+	{
+		label: __('Bottom Left (Pro only)', 'kadence-blocks'),
+		value: 'bottom-left',
+		disabled: true,
+	},
+	{
+		label: __('Bottom Right (Pro only)', 'kadence-blocks'),
+		value: 'bottom-right',
+		disabled: true,
+	},
+	{
+		label: __('Top Left (Pro only)', 'kadence-blocks'),
+		value: 'top-left',
+		disabled: true,
+	},
+	{
+		label: __('Top Right (Pro only)', 'kadence-blocks'),
+		value: 'top-right',
+		disabled: true,
+	},
+	{
+		label: __('Above Left {Pro only)', 'kadence-blocks'),
+		value: 'above-left',
+		disabled: true,
+	},
+	{
+		label: __('Above Right (Pro only)', 'kadence-blocks'),
+		value: 'above-right',
+		disabled: true,
+	},
+];
+
 const ALLOWED_MEDIA_TYPES = ['image'];
 
 export default function GalleryEdit(props) {
@@ -201,6 +240,13 @@ export default function GalleryEdit(props) {
 		slideType,
 		mosaicRowHeight,
 		mosaicRowHeightUnit,
+		arrowPosition,
+		arrowMargin,
+		tabletArrowMargin,
+		mobileArrowMargin,
+		arrowMarginUnit,
+		arrowSize,
+		arrowSizeUnit,
 		overflow,
 	} = attributes;
 	const mainRef = useRef(null);
@@ -574,6 +620,41 @@ export default function GalleryEdit(props) {
 	// };
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
+	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
+	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes);
+	const previewArrowSize = getPreviewSize(
+		previewDevice,
+		undefined !== arrowSize ? arrowSize[0] : '',
+		undefined !== arrowSize ? arrowSize[1] : '',
+		undefined !== arrowSize ? arrowSize[2] : ''
+	);
+	const previewArrowSizeUnit = arrowSizeUnit ? arrowSizeUnit : 'px';
+	const previewArrowMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[0] && '' !== arrowMargin?.[0] ? arrowMargin[0] : '',
+		undefined !== tabletArrowMargin?.[0] && '' !== tabletArrowMargin?.[0] ? tabletArrowMargin[0] : '',
+		undefined !== mobileArrowMargin?.[0] && '' !== mobileArrowMargin?.[0] ? mobileArrowMargin[0] : ''
+	);
+	const previewArrowMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[1] && '' !== arrowMargin?.[1] ? arrowMargin[1] : '',
+		undefined !== tabletArrowMargin?.[1] && '' !== tabletArrowMargin?.[1] ? tabletArrowMargin[1] : '',
+		undefined !== mobileArrowMargin?.[1] && '' !== mobileArrowMargin?.[1] ? mobileArrowMargin[1] : ''
+	);
+	const previewArrowMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[2] && '' !== arrowMargin?.[2] ? arrowMargin[2] : '',
+		undefined !== tabletArrowMargin?.[2] && '' !== tabletArrowMargin?.[2] ? tabletArrowMargin[2] : '',
+		undefined !== mobileArrowMargin?.[2] && '' !== mobileArrowMargin?.[2] ? mobileArrowMargin[2] : ''
+	);
+	const previewArrowMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== arrowMargin?.[3] && '' !== arrowMargin?.[3] ? arrowMargin[3] : '',
+		undefined !== tabletArrowMargin?.[3] && '' !== tabletArrowMargin?.[3] ? tabletArrowMargin[3] : '',
+		undefined !== mobileArrowMargin?.[3] && '' !== mobileArrowMargin?.[3] ? mobileArrowMargin[3] : ''
+	);
+	const previewArrowMarginUnit = arrowMarginUnit ? arrowMarginUnit : 'px';
+
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = (value) => {
@@ -1511,6 +1592,13 @@ export default function GalleryEdit(props) {
 													value={arrowStyle}
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
+												<SelectControl
+													label={__('Arrow Position', 'kadence-blocks')}
+													options={galleryArrows}
+													value={arrowPosition}
+													onChange={(value) => setAttributes({ arrowPosition: value })}
+												/>
+												{kadence_blocks_params.pro === 'true' && galleryArrowOptions}
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
@@ -2157,6 +2245,48 @@ export default function GalleryEdit(props) {
 					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
 					}
+					.kb-gallery-id-${uniqueID} ${'center' !== arrowPosition ? '.splide__arrows' : '.splide__arrows .splide__arrow'} {
+						${
+							previewArrowMarginTop
+								? 'margin-top:' +
+								  getSpacingOptionOutput(previewArrowMarginTop, previewArrowMarginUnit) +
+								  ';'
+								: ''
+						}
+						${
+							previewArrowMarginRight
+								? 'margin-right:' +
+								  getSpacingOptionOutput(previewArrowMarginRight, previewArrowMarginUnit) +
+								  ';'
+								: ''
+						}
+						${
+							previewArrowMarginBottom
+								? 'margin-bottom:' +
+								  getSpacingOptionOutput(previewArrowMarginBottom, previewArrowMarginUnit) +
+								  ';'
+								: ''
+						}
+						${
+							previewArrowMarginLeft
+								? 'margin-left:' +
+								  getSpacingOptionOutput(previewArrowMarginLeft, previewArrowMarginUnit) +
+								  ';'
+								: ''
+						}
+					}
+					${
+						previewArrowSize
+							? `.kb-gallery-id-${uniqueID} .splide__arrow { font-size:${getFontSizeOptionOutput(
+									previewArrowSize,
+									previewArrowSizeUnit
+							  )}; }`
+							: ''
+					}
+					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {
+						overflow: visible;
+					}
+					
 			`}
 		</style>
 	);
@@ -2287,7 +2417,9 @@ export default function GalleryEdit(props) {
 						{theImages.length !== 1 && (
 							<Splide
 								options={fluidCarouselSettings}
-								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
+									'center' !== arrowPosition ? 'arrows' : 'arrow'
+								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
 									return (
@@ -2315,7 +2447,9 @@ export default function GalleryEdit(props) {
 						{theImages.length !== 1 && (
 							<Splide
 								options={sliderSettings}
-								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
+									'center' !== arrowPosition ? 'arrows' : 'arrow'
+								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
 									return (
@@ -2345,7 +2479,9 @@ export default function GalleryEdit(props) {
 								<Splide
 									options={thumbsliderSettings}
 									ref={mainRef}
-									className={`splide kt-blocks-carousel-main kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+									className={`splide kt-blocks-carousel-main kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
+										'center' !== arrowPosition ? 'arrows' : 'arrow'
+									} kb-slider-arrow-position-${arrowPosition}`}
 								>
 									{theImages.map((img, index) => {
 										return (
@@ -2404,7 +2540,9 @@ export default function GalleryEdit(props) {
 						<Splide
 							options={carouselSettings}
 							ref={mainRef}
-							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`}
+							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
+								'center' !== arrowPosition ? 'arrows' : 'arrow'
+							} kb-slider-arrow-position-${arrowPosition}`}
 						>
 							{theImages.map((img, index) => {
 								return (
