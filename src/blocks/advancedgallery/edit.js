@@ -1613,7 +1613,11 @@ export default function GalleryEdit(props) {
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
 												<SelectControl
-													label={ 'thumbslider' === type ? __('Main Arrow Position', 'kadence-blocks') : __('Arrow Position', 'kadence-blocks')}
+													label={
+														'thumbslider' === type
+															? __('Main Arrow Position', 'kadence-blocks')
+															: __('Arrow Position', 'kadence-blocks')
+													}
 													options={galleryArrows}
 													value={arrowPosition}
 													onChange={(value) => setAttributes({ arrowPosition: value })}
@@ -2265,7 +2269,11 @@ export default function GalleryEdit(props) {
 					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
 					}
-					.kb-gallery-id-${uniqueID} ${'center' !== arrowPosition && 'outside-top' !== arrowPosition && 'outside-bottom' !== arrowPosition ? '.splide__arrows' : '.splide__arrows .splide__arrow'} {
+					.kb-gallery-id-${uniqueID} ${
+				'center' !== arrowPosition && 'outside-top' !== arrowPosition && 'outside-bottom' !== arrowPosition
+					? '.splide__arrows'
+					: '.splide__arrows .splide__arrow'
+			} {
 						${
 							previewArrowMarginTop
 								? 'margin-top:' +
@@ -2438,7 +2446,11 @@ export default function GalleryEdit(props) {
 							<Splide
 								options={fluidCarouselSettings}
 								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-									'center' !== arrowPosition && 'outside-top-center' !== arrowPosition && 'outside-bottom-center' !== arrowPosition ? 'arrows' : 'arrow'
+									'center' !== arrowPosition &&
+									'outside-top-center' !== arrowPosition &&
+									'outside-bottom-center' !== arrowPosition
+										? 'arrows'
+										: 'arrow'
 								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
@@ -2468,7 +2480,11 @@ export default function GalleryEdit(props) {
 							<Splide
 								options={sliderSettings}
 								className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-									'center' !== arrowPosition && 'outside-top-center' !== arrowPosition && 'outside-bottom-center' !== arrowPosition ? 'arrows' : 'arrow'
+									'center' !== arrowPosition &&
+									'outside-top-center' !== arrowPosition &&
+									'outside-bottom-center' !== arrowPosition
+										? 'arrows'
+										: 'arrow'
 								} kb-slider-arrow-position-${arrowPosition}`}
 							>
 								{theImages.map((img, index) => {
@@ -2500,7 +2516,11 @@ export default function GalleryEdit(props) {
 									options={thumbsliderSettings}
 									ref={mainRef}
 									className={`splide kt-blocks-carousel-main kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-										'center' !== arrowPosition && 'outside-top-center' !== arrowPosition && 'outside-bottom-center' !== arrowPosition ? 'arrows' : 'arrow'
+										'center' !== arrowPosition &&
+										'outside-top-center' !== arrowPosition &&
+										'outside-bottom-center' !== arrowPosition
+											? 'arrows'
+											: 'arrow'
 									} kb-slider-arrow-position-${arrowPosition}`}
 								>
 									{theImages.map((img, index) => {
@@ -2561,7 +2581,11 @@ export default function GalleryEdit(props) {
 							options={carouselSettings}
 							ref={mainRef}
 							className={`splide kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle} kb-slider-group-${
-								'center' !== arrowPosition && 'outside-top-center' !== arrowPosition && 'outside-bottom-center' !== arrowPosition ? 'arrows' : 'arrow'
+								'center' !== arrowPosition &&
+								'outside-top-center' !== arrowPosition &&
+								'outside-bottom-center' !== arrowPosition
+									? 'arrows'
+									: 'arrow'
 							} kb-slider-arrow-position-${arrowPosition}`}
 						>
 							{theImages.map((img, index) => {
