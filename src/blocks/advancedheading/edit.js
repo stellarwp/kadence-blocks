@@ -291,7 +291,16 @@ function KadenceAdvancedHeading(props) {
 
 		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
-			replaceBlocks(clientId, rawBlocks);
+
+			if( !content ||content === '' ) {
+				replaceBlocks(clientId, rawBlocks);
+			} else {
+				const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
+				const currentBlockIndex = getBlockIndex(clientId);
+				const parentBlockClientId = getBlockRootClientId(clientId);
+
+				insertBlocks(rawBlocks, currentBlockIndex + 1, parentBlockClientId);
+			}
 			event.preventDefault();
 		} else if (pastedText && isDefaultEditorBlock) {
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
