@@ -314,7 +314,7 @@ function KadenceAdvancedHeading(props) {
 				.filter(Boolean);
 
 			if (newBlocks.length > 0 && isDefaultEditorBlock) {
-				if ( !content ||content === '') {
+				if (!content || content === '') {
 					replaceBlocks(clientId, newBlocks);
 				} else {
 					// Append the content of the first new block to the existing content.
