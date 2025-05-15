@@ -283,7 +283,7 @@ function KadenceAdvancedHeading(props) {
 		[clientId]
 	);
 
-	const { replaceBlocks } = useDispatch('core/block-editor');
+	const { replaceBlocks, insertBlocks } = useDispatch('core/block-editor');
 	const handlePaste = (event) => {
 		const pastedText = event.clipboardData.getData('text/plain');
 
@@ -314,7 +314,25 @@ function KadenceAdvancedHeading(props) {
 				.filter(Boolean);
 
 			if (newBlocks.length > 0 && isDefaultEditorBlock) {
-				replaceBlocks(clientId, newBlocks);
+				if ( !content ||content === '') {
+					replaceBlocks(clientId, newBlocks);
+				} else {
+					// Append the content of the first new block to the existing content.
+					const firstPastedBlock = newBlocks[0];
+					setAttributes({
+						content: content + ' ' + firstPastedBlock.attributes.content,
+					});
+
+					// Insert new blocks below for the remaining paragraphs, if there are any.
+					const remainingPastedBlocks = newBlocks.slice(1);
+					if (remainingPastedBlocks.length > 0) {
+						const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
+						const currentBlockIndex = getBlockIndex(clientId);
+						const parentBlockClientId = getBlockRootClientId(clientId);
+
+						insertBlocks(remainingPastedBlocks, currentBlockIndex + 1, parentBlockClientId);
+					}
+				}
 				event.preventDefault();
 			}
 		}
