@@ -292,7 +292,7 @@ function KadenceAdvancedHeading(props) {
 		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
 
-			if( !content ||content === '' ) {
+			if (!content || content === '') {
 				replaceBlocks(clientId, rawBlocks);
 			} else {
 				const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
