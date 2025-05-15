@@ -320,7 +320,7 @@ function KadenceAdvancedHeading(props) {
 					// Append the content of the first new block to the existing content.
 					const firstPastedBlock = newBlocks[0];
 					setAttributes({
-						content: content + ' ' + firstPastedBlock.attributes.content,
+						content: content + firstPastedBlock.attributes.content,
 					});
 
 					// Insert new blocks below for the remaining paragraphs, if there are any.
