@@ -46,7 +46,6 @@
 						: false;
 
 				if (isLocalMedia) {
-					console.log(1, effect);
 					kadenceBlocksProVideoLightbox.wrapper[i] = document.getElementById(popupId);
 					kadenceBlocksProVideoLightbox.cache[i].addEventListener('click', function (event) {
 						event.preventDefault();
@@ -82,7 +81,6 @@
 						kadenceBlocksProVideoLightbox.trigger[i].open();
 					});
 				} else {
-					console.log(2, effect);
 					const lightbox = GLightbox({
 						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
 						touchNavigation: true,
