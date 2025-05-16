@@ -773,7 +773,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 		// Update honeypot autocomplete value.
 		if( ( !isset( $attributes['honeyPot']) || isset( $attributes['honeyPot'] ) && $attributes['honeyPot'] ) ) {
 			$default = '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="off" aria-hidden="true" placeholder="Email" tabindex="-1"/>';
-			$new     = '<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="new-password" aria-hidden="true" placeholder="Email" tabindex="-1" data-1p-ignore="true" data-lpignore="true" />';
+			$new     = '<label class="kadence-verify-label">Email<input class="kadence-blocks-field verify" type="text" name="_kb_verify_email" autocomplete="new-password" aria-hidden="true" placeholder="Email" tabindex="-1" data-1p-ignore="true" data-lpignore="true" /></label>';
 			$content = str_replace( $default, $new, $content );
 		}
 
