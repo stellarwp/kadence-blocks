@@ -1359,6 +1359,19 @@ export default function GalleryEdit(props) {
 										unit={mosaicRowHeightUnit}
 										onUnit={(value) => setAttributes({ mosaicRowHeightUnit: value })}
 										units={['px', 'em', 'rem']}
+										reset={() => {
+											switch (previewDevice) {
+												case 'Desktop':
+													setAttributes({ mosaicRowHeight: [150, mosaicRowHeight[1], mosaicRowHeight[2]] });
+													break;
+												case 'Tablet':
+													setAttributes({ mosaicRowHeight: [mosaicRowHeight[0], '', mosaicRowHeight[2]] });
+													break;
+												case 'Mobile':
+													setAttributes({ mosaicRowHeight: [mosaicRowHeight[0], mosaicRowHeight[1], ''] });
+													break;
+											}
+										}}
 									/>
 								)}
 								{type !== 'slider' && showSettings('gutterSettings', 'kadence/advancedgallery') && (
