@@ -233,14 +233,11 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
                 %2$s
             </button>
             <div class="kb-search-modal-content">
-                <label class="screen-reader-text" for="kb-search-input%3$s">%4$s</label>
-                <form class="kb-search-form" role="search" method="get" action="%5$s">%6$s</form>
+                <form class="kb-search-form" role="search" method="get" action="%3$s">%4$s</form>
             </div>
         </div>',
-			esc_attr__( 'Close search', 'text-domain' ),
+			esc_attr__( 'Close search', 'kadence-blocks' ),
 			$close_icon,
-			esc_attr( $unique_id ),
-			esc_html__( 'Search for:', 'text-domain' ),
 			$form_action,
 			$this->build_input( $attributes )
 		);
@@ -258,7 +255,7 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 	private function build_input( $attributes ) {
 		$input = '<div class="kb-search-input-wrapper">';
 		$placeholder = ! empty( $attributes['inputPlaceholder'] ) ? $attributes['inputPlaceholder'] : '';
-		$aria_label = !empty($attributes['label']) ? sprintf( 'aria-label="%s"', esc_attr( $attributes['label'] ) ) : '';
+		$aria_label = !empty($attributes['label']) ? sprintf( 'aria-label="%s"', esc_attr( $attributes['label'] ) ) : 'aria-label="' . esc_html__( 'Search', 'kadence-blocks' ) . '"';
 
 		$input .= sprintf(
 			'<input name="s" type="text" class="kb-search-input" placeholder="%s" %s>',
