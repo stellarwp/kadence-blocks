@@ -1362,13 +1362,19 @@ export default function GalleryEdit(props) {
 										reset={() => {
 											switch (previewDevice) {
 												case 'Desktop':
-													setAttributes({ mosaicRowHeight: [150, mosaicRowHeight[1], mosaicRowHeight[2]] });
+													setAttributes({
+														mosaicRowHeight: [150, mosaicRowHeight[1], mosaicRowHeight[2]],
+													});
 													break;
 												case 'Tablet':
-													setAttributes({ mosaicRowHeight: [mosaicRowHeight[0], '', mosaicRowHeight[2]] });
+													setAttributes({
+														mosaicRowHeight: [mosaicRowHeight[0], '', mosaicRowHeight[2]],
+													});
 													break;
 												case 'Mobile':
-													setAttributes({ mosaicRowHeight: [mosaicRowHeight[0], mosaicRowHeight[1], ''] });
+													setAttributes({
+														mosaicRowHeight: [mosaicRowHeight[0], mosaicRowHeight[1], ''],
+													});
 													break;
 											}
 										}}
