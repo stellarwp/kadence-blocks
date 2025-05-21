@@ -382,6 +382,54 @@
 		"arrowSizeUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"arrowCustomColor": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBackgroundHover": {
+			"type": "string",
+			"default": ""	
+		},
+		"arrowCustomColorBackgroundActive": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColor": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorRadius": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorRadiusHover": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorRadiusActive": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
