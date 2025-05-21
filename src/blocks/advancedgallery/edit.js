@@ -697,7 +697,10 @@ export default function GalleryEdit(props) {
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
 	const galleryArrowsStyle = useMemo(() => applyFilters('kadence.galleryArrowsStyle', arrowStyleOptions), []);
-	const galleryArrowsPosition = useMemo(() => applyFilters('kadence.galleryArrowsPosition', arrowPositionOptions), []);
+	const galleryArrowsPosition = useMemo(
+		() => applyFilters('kadence.galleryArrowsPosition', arrowPositionOptions),
+		[]
+	);
 	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
