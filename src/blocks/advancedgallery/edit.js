@@ -143,7 +143,7 @@ const mosaicTypes = [
 	{ value: 'last', label: __('Last', 'kadence-blocks') },
 ];
 
-const arrowOptions = [
+const arrowPositionOptions = [
 	{
 		label: __('Center', 'kadence-blocks'),
 		value: 'center',
@@ -196,6 +196,62 @@ const arrowOptions = [
 	{
 		label: __('Outside Bottom Right (Pro only)', 'kadence-blocks'),
 		value: 'outside-bottom-right',
+		disabled: true,
+	},
+];
+
+const arrowStyleOptions = [
+	{
+		label: __('White on Dark', 'kadence-blocks'),
+		value: 'whiteondark',
+	},
+	{
+		label: __('Black on Light', 'kadence-blocks'),
+		value: 'blackonlight',
+	},
+	{
+		label: __('Outline Black', 'kadence-blocks'),
+		value: 'outlineblack',
+	},
+	{
+		label: __('Outline White', 'kadence-blocks'),
+		value: 'outlinewhite',
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
+	},
+	{
+		label: __('Custom (Pro only)', 'kadence-blocks'),
+		value: 'custom',
+		disabled: true,
+	},
+];
+
+const dotStyleOptions = [
+	{
+		label: __('Dark', 'kadence-blocks'),
+		value: 'dark',
+	},
+	{
+		label: __('Light', 'kadence-blocks'),
+		value: 'light',
+	},
+	{
+		label: __('Outline Dark', 'kadence-blocks'),
+		value: 'outlinedark',
+	},
+	{
+		label: __('Outline Light', 'kadence-blocks'),
+		value: 'outlinelight',
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
+	},
+	{
+		label: __('Custom (Pro only)', 'kadence-blocks'),
+		value: 'custom',
 		disabled: true,
 	},
 ];
@@ -640,7 +696,8 @@ export default function GalleryEdit(props) {
 	// };
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
-	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
+	const galleryArrowsStyle = useMemo(() => applyFilters('kadence.galleryArrowsStyle', arrowStyleOptions), []);
+	const galleryArrowsPosition = useMemo(() => applyFilters('kadence.galleryArrowsPosition', arrowPositionOptions), []);
 	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
@@ -674,6 +731,8 @@ export default function GalleryEdit(props) {
 		undefined !== mobileArrowMargin?.[3] && '' !== mobileArrowMargin?.[3] ? mobileArrowMargin[3] : ''
 	);
 	const previewArrowMarginUnit = arrowMarginUnit ? arrowMarginUnit : 'px';
+
+	const galleryDotStyle = useMemo(() => applyFilters('kadence.galleryDotStyle', dotStyleOptions), []);
 
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
@@ -1587,28 +1646,7 @@ export default function GalleryEdit(props) {
 												)}
 												<SelectControl
 													label={__('Arrow Style', 'kadence-blocks')}
-													options={[
-														{
-															label: __('White on Dark', 'kadence-blocks'),
-															value: 'whiteondark',
-														},
-														{
-															label: __('Black on Light', 'kadence-blocks'),
-															value: 'blackonlight',
-														},
-														{
-															label: __('Outline Black', 'kadence-blocks'),
-															value: 'outlineblack',
-														},
-														{
-															label: __('Outline White', 'kadence-blocks'),
-															value: 'outlinewhite',
-														},
-														{
-															label: __('None', 'kadence-blocks'),
-															value: 'none',
-														},
-													]}
+													options={galleryArrowsStyle}
 													value={arrowStyle}
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
@@ -1618,7 +1656,7 @@ export default function GalleryEdit(props) {
 															? __('Main Arrow Position', 'kadence-blocks')
 															: __('Arrow Position', 'kadence-blocks')
 													}
-													options={galleryArrows}
+													options={galleryArrowsPosition}
 													value={arrowPosition}
 													onChange={(value) => setAttributes({ arrowPosition: value })}
 												/>
@@ -1626,28 +1664,7 @@ export default function GalleryEdit(props) {
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
-														options={[
-															{
-																label: __('Dark', 'kadence-blocks'),
-																value: 'dark',
-															},
-															{
-																label: __('Light', 'kadence-blocks'),
-																value: 'light',
-															},
-															{
-																label: __('Outline Dark', 'kadence-blocks'),
-																value: 'outlinedark',
-															},
-															{
-																label: __('Outline Light', 'kadence-blocks'),
-																value: 'outlinelight',
-															},
-															{
-																label: __('None', 'kadence-blocks'),
-																value: 'none',
-															},
-														]}
+														options={galleryDotStyle}
 														value={dotStyle}
 														onChange={(value) => setAttributes({ dotStyle: value })}
 													/>
