@@ -418,18 +418,6 @@
 		"dotCustomColorActive": {
 			"type": "string",
 			"default": ""
-		},
-		"dotCustomColorRadius": {
-			"type": "string",
-			"default": ""
-		},
-		"dotCustomColorRadiusHover": {
-			"type": "string",
-			"default": ""
-		},
-		"dotCustomColorRadiusActive": {
-			"type": "string",
-			"default": ""
 		}
 	},
 	"supports": {

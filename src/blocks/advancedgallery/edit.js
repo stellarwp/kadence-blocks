@@ -333,9 +333,6 @@ export default function GalleryEdit(props) {
 		dotCustomColor,
 		dotCustomColorHover,
 		dotCustomColorActive,
-		dotCustomColorRadius,
-		dotCustomColorRadiusHover,
-		dotCustomColorRadiusActive,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -1750,26 +1747,6 @@ export default function GalleryEdit(props) {
 																setAttributes({ dotCustomColorActive: value });
 															}}		
 														/>
-														<PopColorControl
-															label={__('Dot Radius Color', 'kadence-blocks')}
-															value= {dotCustomColorRadius ? dotCustomColorRadius : ''}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ dotCustomColorRadius: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={dotCustomColorRadiusHover ? dotCustomColorRadiusHover : ''}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({ dotCustomColorRadiusHover: value });
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={dotCustomColorRadiusActive ? dotCustomColorRadiusActive : ''}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({ dotCustomColorRadiusActive: value });
-															}}		
-														/>
 													</>
 												) }
 												<ToggleControl
@@ -2434,7 +2411,45 @@ export default function GalleryEdit(props) {
 					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {
 						overflow: visible;
 					}
-					
+					${
+						arrowStyle === 'custom' ?
+							`
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow {
+								${arrowCustomColor ? `color: ${KadenceColorOutput(arrowCustomColor)};` : ''}
+								${arrowCustomColorBackground ? `background-color: ${KadenceColorOutput(arrowCustomColorBackground)};` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:hover {
+								${arrowCustomColorHover ? `color: ${KadenceColorOutput(arrowCustomColorHover)};` : ''}
+								${arrowCustomColorBackgroundHover ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundHover)};` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:active {
+								${arrowCustomColorActive ? `color: ${KadenceColorOutput(arrowCustomColorActive)};` : ''}
+								${arrowCustomColorBackgroundActive ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundActive)};` : ''}
+								opacity: unset;
+							}
+							`
+						: ''
+					}
+					${
+						dotStyle === 'custom' ?
+							`
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page {
+								${dotCustomColor ? `background-color: ${KadenceColorOutput(dotCustomColor)};` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page:hover {
+								${dotCustomColorHover ? `background-color: ${KadenceColorOutput(dotCustomColorHover)};` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page.is-active {
+								${dotCustomColorActive ? `background-color: ${KadenceColorOutput(dotCustomColorActive)};` : ''}
+								opacity: unset;
+							}
+							`
+						: ''
+					}
 			`}
 		</style>
 	);

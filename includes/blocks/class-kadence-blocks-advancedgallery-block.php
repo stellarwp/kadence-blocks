@@ -492,6 +492,56 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->render_measure_output( $attributes, 'arrowMargin', 'margin', array( 'unit_key' => 'arrowMarginUnit' ) );
 
+		$is_carousel = ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type']  || 'slider' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) );
+		// Arrow Custom Color
+		if ( ! empty( $attributes['arrowCustomColor'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow' );
+			$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColor'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorHover'] ) && $is_carousel ) {	
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:hover' );
+			$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColorHover'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorActive'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:active' );
+			$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColorActive'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorBackground'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackground'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorBackgroundHover'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:hover' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackgroundHover'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorBackgroundActive'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:active' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackgroundActive'] ) );
+		}
+
+		// Dot Custom Color
+		if ( ! empty( $attributes['dotCustomColor'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['dotCustomColor'] ) );
+		}
+
+		if ( ! empty( $attributes['dotCustomColorHover'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:hover' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['dotCustomColorHover'] ) );
+		}
+
+		if ( ! empty( $attributes['dotCustomColorActive'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:active' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['dotCustomColorActive'] ) );
+		}
+		
+
+
 		return $css->css_output();
 	}
 	/**
