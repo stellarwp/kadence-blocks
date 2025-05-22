@@ -2430,8 +2430,8 @@ export default function GalleryEdit(props) {
 						overflow: visible;
 					}
 					${
-						arrowStyle === 'custom' ?
-							`
+						arrowStyle === 'custom'
+							? `
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow {
 								${arrowCustomColor ? `color: ${KadenceColorOutput(arrowCustomColor)};` : ''}
 								${arrowCustomColorBackground ? `background-color: ${KadenceColorOutput(arrowCustomColorBackground)};` : ''}
@@ -2448,11 +2448,11 @@ export default function GalleryEdit(props) {
 								opacity: unset;
 							}
 							`
-						: ''
+							: ''
 					}
 					${
-						dotStyle === 'custom' ?
-							`
+						dotStyle === 'custom'
+							? `
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page {
 								${dotCustomColor ? `background-color: ${KadenceColorOutput(dotCustomColor)};` : ''}
 								opacity: unset;
@@ -2466,7 +2466,7 @@ export default function GalleryEdit(props) {
 								opacity: unset;
 							}
 							`
-						: ''
+							: ''
 					}
 			`}
 		</style>
