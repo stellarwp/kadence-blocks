@@ -23,13 +23,13 @@ jobs:
                 wordpress:
                     - nightly
                     - latest
-                    - '6.5.5'
-                    - '6.4.5'
+                    - '6.6.2'
+                    - '6.7.2'
                 php:
                     - '7.4'
                     - '8.0'
-                    - '8.1'
                     - '8.2'
+                    - '8.3'
 
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
@@ -40,7 +40,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   repository: stellarwp/slic
-                  ref: 1.7.2
+                  ref: 1.9.2
                   path: slic
                   fetch-depth: 1
 
