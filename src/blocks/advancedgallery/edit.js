@@ -1662,11 +1662,11 @@ export default function GalleryEdit(props) {
 													value={arrowStyle}
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
-												{kadence_blocks_params.pro === 'true' &&  'custom' === arrowStyle && (
+												{kadence_blocks_params.pro === 'true' && 'custom' === arrowStyle && (
 													<>
 														<PopColorControl
 															label={__('Arrow Color', 'kadence-blocks')}
-															value= {arrowCustomColor ? arrowCustomColor : ''}
+															value={arrowCustomColor ? arrowCustomColor : ''}
 															default={''}
 															onChange={(value) => {
 																setAttributes({ arrowCustomColor: value });
@@ -1678,34 +1678,52 @@ export default function GalleryEdit(props) {
 																setAttributes({ arrowCustomColorHover: value });
 															}}
 															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={arrowCustomColorActive ? arrowCustomColorActive : ''}
+															value3={
+																arrowCustomColorActive ? arrowCustomColorActive : ''
+															}
 															default3={''}
 															onChange3={(value) => {
 																setAttributes({ arrowCustomColorActive: value });
-															}}		
+															}}
 														/>
 														<PopColorControl
 															label={__('Arrow Background Color', 'kadence-blocks')}
-															value= {arrowCustomColorBackground ? arrowCustomColorBackground : ''}
+															value={
+																arrowCustomColorBackground
+																	? arrowCustomColorBackground
+																	: ''
+															}
 															default={''}
 															onChange={(value) => {
 																setAttributes({ arrowCustomColorBackground: value });
 															}}
 															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={arrowCustomColorBackgroundHover ? arrowCustomColorBackgroundHover : ''}
+															value2={
+																arrowCustomColorBackgroundHover
+																	? arrowCustomColorBackgroundHover
+																	: ''
+															}
 															default2={''}
 															onChange2={(value) => {
-																setAttributes({ arrowCustomColorBackgroundHover: value });
+																setAttributes({
+																	arrowCustomColorBackgroundHover: value,
+																});
 															}}
 															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={arrowCustomColorBackgroundActive ? arrowCustomColorBackgroundActive : ''}
+															value3={
+																arrowCustomColorBackgroundActive
+																	? arrowCustomColorBackgroundActive
+																	: ''
+															}
 															default3={''}
 															onChange3={(value) => {
-																setAttributes({ arrowCustomColorBackgroundActive: value });
-															}}		
+																setAttributes({
+																	arrowCustomColorBackgroundActive: value,
+																});
+															}}
 														/>
 													</>
-												) }
+												)}
 												<SelectControl
 													label={
 														'thumbslider' === type
@@ -1725,11 +1743,11 @@ export default function GalleryEdit(props) {
 														onChange={(value) => setAttributes({ dotStyle: value })}
 													/>
 												)}
-												{kadence_blocks_params.pro === 'true' &&  'custom' === dotStyle && (
+												{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && (
 													<>
 														<PopColorControl
 															label={__('Dot Color', 'kadence-blocks')}
-															value= {dotCustomColor ? dotCustomColor : ''}
+															value={dotCustomColor ? dotCustomColor : ''}
 															default={''}
 															onChange={(value) => {
 																setAttributes({ dotCustomColor: value });
@@ -1745,10 +1763,10 @@ export default function GalleryEdit(props) {
 															default3={''}
 															onChange3={(value) => {
 																setAttributes({ dotCustomColorActive: value });
-															}}		
+															}}
 														/>
 													</>
-												) }
+												)}
 												<ToggleControl
 													label={__('Enable Image Lazy Load', 'kadence-blocks')}
 													checked={lazyLoad}
