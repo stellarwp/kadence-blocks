@@ -28,8 +28,8 @@ jobs:
                 php:
                     - '7.4'
                     - '8.0'
+                    - '8.2'
                     - '8.3'
-                    - '8.4'
 
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
@@ -40,7 +40,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   repository: stellarwp/slic
-                  ref: 1.7.2
+                  ref: 1.9.2
                   path: slic
                   fetch-depth: 1
 
