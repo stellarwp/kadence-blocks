@@ -28,8 +28,8 @@ jobs:
                 php:
                     - '7.4'
                     - '8.0'
+                    - '8.2'
                     - '8.3'
-                    - '8.4'
 
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
