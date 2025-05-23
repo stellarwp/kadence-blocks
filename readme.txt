@@ -181,6 +181,7 @@ Release Date: 29th May 2025
 * Fix: Image file size for the image block default settings.
 * Fix: Mosaic (pro) gallery items accessibility issue.
 * Fix: Mosaic (pro) gallery default row height and reset.
+* Fix: Gallery fluid carousel overflow issue when gutter set.
 
 = 3.5.8 =
 Release Date: 15th May 2025
