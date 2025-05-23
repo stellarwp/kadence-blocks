@@ -180,6 +180,7 @@ Release Date: 29th May 2025
 * Update: Default aria-label for Search block input field.
 * Fix: Image file size for the image block default settings.
 * Fix: Mosaic (pro) gallery items accessibility issue.
+* Fix: Mosaic (pro) gallery default row height and reset.
 
 = 3.5.8 =
 Release Date: 15th May 2025
