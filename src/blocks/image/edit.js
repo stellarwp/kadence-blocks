@@ -317,10 +317,17 @@ export function ImageEdit(props) {
 	}, [caption]);
 
 	const ref = useRef();
-	const { imageDefaultSize, mediaUpload } = useSelect((select) => {
-		const { getSettings } = select(blockEditorStore);
-		return pick(getSettings(), ['imageDefaultSize', 'mediaUpload']);
-	}, []);
+	const { imageDefaultSize, mediaUpload } = useSelect(
+		(select) => {
+			const { getSettings } = select(blockEditorStore);
+			const settings = pick(getSettings(), ['imageDefaultSize', 'mediaUpload']);
+			return {
+				...settings,
+				imageDefaultSize: attributes.sizeSlug || settings.imageDefaultSize,
+			};
+		},
+		[attributes.sizeSlug]
+	);
 	function onUploadError(message) {
 		noticeOperations.removeAllNotices();
 		noticeOperations.createErrorNotice(message);
