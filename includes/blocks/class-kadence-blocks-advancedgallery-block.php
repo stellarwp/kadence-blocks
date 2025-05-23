@@ -468,6 +468,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel');
 			$css->add_property('overflow', 'visible' );
+			if ( 'fluidcarousel' === $gallery_type ) {
+				$css->add_property('max-width', '100%' );
+			}
 		}
 
 		// Pro Arrow Settings

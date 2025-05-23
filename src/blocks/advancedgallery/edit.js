@@ -2332,6 +2332,7 @@ export default function GalleryEdit(props) {
 					}
 					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {
 						overflow: visible;
+						overflow-x: clip;
 					}
 					
 			`}
