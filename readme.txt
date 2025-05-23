@@ -178,6 +178,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 29th May 2025
 * Fix: Icon size preview for the Infobox block.
 * Update: Default aria-label for Search block input field.
+* Fix: Image file size for the image block default settings.
+* Fix: Mosaic (pro) gallery items accessibility issue.
 
 = 3.5.8 =
 Release Date: 15th May 2025
