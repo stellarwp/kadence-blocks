@@ -37,11 +37,11 @@
 	"require": {
 		"composer/installers": "^2.0",
 		"enshrined/svg-sanitize": "^0.21.0",
-		"lucatume/di52": "^3.3",
+		"lucatume/di52": "^4.0",
 		"psr/container": "^1.0",
-		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.5",
-		"stellarwp/prophecy-storage": "^1.1",
+		"stellarwp/container-contract": "^1.1",
+		"stellarwp/prophecy-image-downloader": "^3.0",
+		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
 		"symfony/translation-contracts": "^2.5"
@@ -68,6 +68,8 @@
 	"autoload-dev": {
 		"psr-4": {
 			"Tests\\": "tests/",
+			"Tests\\Acceptance\\": "tests/acceptance/",
+			"Tests\\Support\\": "tests/_support/",
 			"Tests\\Support\\Classes\\": "tests/_support/Classes"
 		}
 	},
@@ -110,12 +112,14 @@
 		"compatibility:php-8.1": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.1 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
 		"compatibility:php-8.2": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.2 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
 		"compatibility:php-8.3": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.3 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
+		"compatibility:php-8.4": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.4 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
 		"compatibility": [
 			"@compatibility:php-7.4",
 			"@compatibility:php-8.0",
 			"@compatibility:php-8.1",
 			"@compatibility:php-8.2",
-			"@compatibility:php-8.3"
+			"@compatibility:php-8.3",
+			"@compatibility:php-8.4"
 		],
 		"phpcs": "phpcs --standard=phpcs.xml"
 	},
