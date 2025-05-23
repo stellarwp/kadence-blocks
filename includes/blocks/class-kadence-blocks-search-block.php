@@ -274,10 +274,19 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$input_icon = Kadence_Blocks_Svg_Render::render( $icon, $fill, $stroke_width, '', false );
 
-			$input .= sprintf(
-				'<span class="kb-search-icon">%s</span>',
-				$input_icon
-			);
+			// If not showing a submit button, make the icon a submit button.
+			if ( empty( $attributes['showButton'] ) || ( !empty( $attributes['displayStyle'] ) && 'modal' === $attributes['displayStyle'] ) ) {
+				$input .= sprintf(
+					'<button type="submit" class="kb-search-icon-submit" aria-label="%1$s"><span class="kb-search-icon">%2$s</span></button>',
+					esc_attr__( 'Search', 'text-domain' ),
+					$input_icon
+				);
+			} else {
+				$input .= sprintf(
+					'<span class="kb-search-icon">%s</span>',
+					$input_icon
+				);
+			}
 		}
 
 		if ( ! empty( $attributes['searchProductsOnly'] ) ) {
