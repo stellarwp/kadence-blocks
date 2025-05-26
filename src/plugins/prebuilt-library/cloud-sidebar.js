@@ -27,8 +27,18 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { SafeParseJSON } from '@kadence/helpers';
 
-function CloudLibrarySidebar({ connection, setSubTab, subTab, pageCategory, setPageCategory, pageCategories, categories, category, setCategory, search}) {
-
+function CloudLibrarySidebar({
+	connection,
+	setSubTab,
+	subTab,
+	pageCategory,
+	setPageCategory,
+	pageCategories,
+	categories,
+	category,
+	setCategory,
+	search,
+}) {
 	const [popoverAnchor, setPopoverAnchor] = useState();
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisible = () => {
@@ -38,13 +48,12 @@ function CloudLibrarySidebar({ connection, setSubTab, subTab, pageCategory, setP
 	const activePageCategorySlug = pageCategory?.[connection.slug];
 	const activeCategorySlug = category?.[connection.slug];
 
-	
 	return (
 		<div className="kt-prebuilt-sidebar kb-section-sidebar">
 			<div className="kb-prebuilt-sidebar-header-wrap">
 				<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
 					<span className="kb-prebuilt-header-logo">{connection?.logo || cloud}</span>
-					{ false && (
+					{false && (
 						<div className="kb-library-style-popover">
 							<Button
 								className={'kb-trigger-extra-settings'}
@@ -96,8 +105,7 @@ function CloudLibrarySidebar({ connection, setSubTab, subTab, pageCategory, setP
 						</Button>
 						<Button
 							className={
-								'kb-context-tab-button kb-trigger-pages' +
-								(subTab === 'pages' ? ' is-pressed' : '')
+								'kb-context-tab-button kb-trigger-pages' + (subTab === 'pages' ? ' is-pressed' : '')
 							}
 							aria-pressed={subTab === 'pages'}
 							onClick={() => {
@@ -117,9 +125,7 @@ function CloudLibrarySidebar({ connection, setSubTab, subTab, pageCategory, setP
 			</div>
 			<div className="kb-prebuilt-sidebar-body-wrap">
 				<div className="kb-library-sidebar-bottom-wrap">
-					<div
-						className='kb-library-sidebar-bottom kb-design-library-categories'
-					>
+					<div className="kb-library-sidebar-bottom kb-design-library-categories">
 						{subTab === 'pages' ? (
 							<>
 								{!search && (
@@ -153,7 +159,10 @@ function CloudLibrarySidebar({ connection, setSubTab, subTab, pageCategory, setP
 										{categories.map((tempCat, index) => (
 											<Button
 												key={`${tempCat.value}-${index}`}
-												className={'kb-category-button' + (activeCategorySlug === tempCat.value ? ' is-pressed' : '')}
+												className={
+													'kb-category-button' +
+													(activeCategorySlug === tempCat.value ? ' is-pressed' : '')
+												}
 												aria-pressed={activeCategorySlug === tempCat.value}
 												onClick={() => {
 													const newCat = category;

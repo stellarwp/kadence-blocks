@@ -521,7 +521,7 @@ export function getAsyncData() {
 				path: addQueryArgs('/kb-design-library/v1/get_connection', {
 					library,
 					library_url: url ? url : '',
-					key: key ? key : '',	
+					key: key ? key : '',
 				}),
 			});
 			return response;

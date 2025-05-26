@@ -54,14 +54,20 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 	const [isError, setIsError] = useState(false);
 	const [isErrorType, setIsErrorType] = useState('general');
 
-	const currentLibrary = useMemo(() => libraries.filter((obj) => {
-		return obj.slug === tab;
-	}), [tab, libraries]);
+	const currentLibrary = useMemo(
+		() =>
+			libraries.filter((obj) => {
+				return obj.slug === tab;
+			}),
+		[tab, libraries]
+	);
 	const hasPages = currentLibrary?.[0]?.pages;
 
 	const activeStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 	const savedSelectedSubTab =
-	hasPages && undefined !== activeStorage?.kbSubTab && '' !== activeStorage?.kbSubTab ? activeStorage.kbSubTab : 'patterns';
+		hasPages && undefined !== activeStorage?.kbSubTab && '' !== activeStorage?.kbSubTab
+			? activeStorage.kbSubTab
+			: 'patterns';
 	const selectedSubTab = subTab ? subTab : savedSelectedSubTab;
 
 	const { createErrorNotice } = useDispatch(noticesStore);
@@ -130,7 +136,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 	// 	} );
 	// 	setPageContextListOptions( tempPageContexts );
 	// }, [ pagesCategories ] );
-	const { getPatterns, getPattern, processPattern, getPatternCategories, getConnection, updateConnections } = getAsyncData();
+	const { getPatterns, getPattern, processPattern, getPatternCategories, getConnection, updateConnections } =
+		getAsyncData();
 
 	async function onInsertContent(pattern) {
 		setIsImporting(true);
@@ -297,7 +304,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		} else {
 			const o = SafeParseJSON(response, false);
 			if (o) {
-				if ( tempReload ) {
+				if (tempReload) {
 					const tempCloudSettings = kadence_blocks_params?.cloud_settings
 						? JSON.parse(kadence_blocks_params.cloud_settings)
 						: {};
@@ -305,7 +312,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 						const currentConnectionKey = tempCloudSettings.connections.findIndex((obj) => {
 							return obj.slug === tab;
 						});
-						if ( tempCloudSettings?.connections?.[currentConnectionKey] ) {
+						if (tempCloudSettings?.connections?.[currentConnectionKey]) {
 							const getConnectionData = await getConnection(
 								tab,
 								action?.[0]?.url ? action[0].url : '',
@@ -314,23 +321,26 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 							const conData = SafeParseJSON(getConnectionData, false);
 							let shouldUpdate = false;
 							// Update the connection data name and pages if they are different.
-							if ( conData?.name && tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name ) {
-								tempCloudSettings.connections[currentConnectionKey].title =  conData.name;
+							if (
+								conData?.name &&
+								tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name
+							) {
+								tempCloudSettings.connections[currentConnectionKey].title = conData.name;
 								shouldUpdate = true;
 							}
-							if ( tempCloudSettings.connections[currentConnectionKey]?.pages !== conData?.pages ) {
-								if ( ! conData?.pages ) {
+							if (tempCloudSettings.connections[currentConnectionKey]?.pages !== conData?.pages) {
+								if (!conData?.pages) {
 									tempCloudSettings.connections[currentConnectionKey].pages = '';
 								} else {
 									tempCloudSettings.connections[currentConnectionKey].pages = conData.pages;
 								}
 								shouldUpdate = true;
 							}
-							if ( shouldUpdate ) {
+							if (shouldUpdate) {
 								// Update the cloud settings.
 								kadence_blocks_params.cloud_settings = JSON.stringify(tempCloudSettings);
 								const getConnectionUpdate = await updateConnections(tempCloudSettings);
-								if ( getConnectionUpdate !== 'failed' ) {
+								if (getConnectionUpdate !== 'failed') {
 									onLibraryUpdate();
 								}
 							}
