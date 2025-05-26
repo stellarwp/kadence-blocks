@@ -1718,3 +1718,13 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
 .modal-open .components-snackbar-list.components-editor-notices__snackbar {
 	z-index: 99999999;
 }
+
+.kb-cloud-pattern-library{
+
+	.kb-prebuilt-sidebar-header-wrap {
+		min-height: 80px;
+	}
+	.kt-prebuilt-sidebar.kb-section-sidebar .kb-library-sidebar-bottom {
+		max-height: calc(95vh - (var(--kb-patterns-sidebar-general-spacing, 24px) + 80px));
+	}
+}

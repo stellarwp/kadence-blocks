@@ -426,6 +426,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
+			'/get_connection',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_connection' ],
+					'permission_callback' => [ $this, 'get_items_permission_check' ],
+					'args'                => $this->get_collection_params(),
+				],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
 			'/get_local_contexts',
 			[
 				[
@@ -1372,6 +1384,62 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		return rest_ensure_response( 'error' );
+	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 */
+	public function get_connection( WP_REST_Request $request ) {
+		$library = $request->get_param( self::PROP_LIBRARY );
+		$library_url = $request->get_param( self::PROP_LIBRARY_URL );
+		$key = $request->get_param( self::PROP_KEY );
+		if ( empty( $library_url ) || empty( $key ) ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+		}
+		$url = empty( $library_url ) ? '' : rtrim( sanitize_text_field( $library_url ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
+		// Do you have the data?
+		$site_url = get_original_domain();
+		$args     = [
+			'key'  => $key,
+			'site' => $site_url,
+		];
+		// Get the response.
+		$api_url  = add_query_arg( $args, $url );
+		$response = wp_safe_remote_get(
+			$api_url,
+			[
+				'timeout' => 20,
+			]
+		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) ) {
+			// Return the error.
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Response', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+		}
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Response Content', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+		}
+		$contents = json_decode( $contents, true );
+		if ( isset( $contents['error'] ) && $contents['error'] ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Response Content: Error', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+		} else {
+			if ( ! is_array( $contents ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Response Content: Missing Data', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+			}
+			$final_data            = [];
+			$final_data['name']    = ! empty( $contents['name'] ) ? sanitize_text_field( $contents['name'] ) : '';
+			$final_data['slug']    = ! empty( $contents['slug'] ) ? sanitize_text_field( $contents['slug'] ) : '';
+			$final_data['refresh'] = ! empty( $contents['refresh'] ) ? sanitize_text_field( $contents['refresh'] ) : '';
+			$final_data['expires'] = ! empty( $contents['expires'] ) ? sanitize_text_field( $contents['expires'] ) : '';
+			$final_data['pages']     = ! empty( $contents['pages'] ) ? sanitize_text_field( $contents['pages'] ) : '';
+			return rest_ensure_response( $final_data );
+		}
 	}
 	/**
 	 * Retrieves a collection of objects.

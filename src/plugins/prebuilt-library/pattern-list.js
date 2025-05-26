@@ -521,6 +521,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 
 function PatternSortDropdown({ selectedItems }) {
 	const sortOptions = [
+		{ value: 'normal', label: __('Popular', 'kadence-blocks') },
 		{ value: 'id_desc', label: __('Latest', 'kadence-blocks') },
 		{ value: 'name_asc', label: __('Pattern Name A-Z', 'kadence-blocks') },
 		{ value: 'name_desc', label: __('Pattern Name Z-A', 'kadence-blocks') },
@@ -1046,7 +1047,7 @@ function PatternList({
 			allPatterns.sort((a, b) => a.name.localeCompare(b.name));
 		} else if (sortBy === 'name_desc') {
 			allPatterns.sort((a, b) => b.name.localeCompare(a.name));
-		} else {
+		} else if (sortBy === 'id_desc') {
 			// Default sort: id_desc (Last Added)
 			allPatterns.sort((a, b) => b.id - a.id);
 		}
