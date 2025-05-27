@@ -1757,4 +1757,14 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
 			}
 		}
 	}
+	.kb-css-masonry .kb-css-masonry_column {
+		.kb-css-masonry-btn-inner img {
+			transform-origin: top;
+			transform: translateY(0);
+			transition: var(--scroll-height-speed, transform 0.3s linear);
+		}
+		.kb-css-masonry-btn-max-height:hover img {
+			transform: translateY(var(--scroll-height-offset, 0));
+		}
+	}
 }
