@@ -26,7 +26,7 @@ class Container implements ContainerInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function bind( string $id, $implementation = null, array $afterBuildMethods = null ) {
+	public function bind( string $id, $implementation = null, ?array $afterBuildMethods = null ) {
 		$this->container->bind( $id, $implementation, $afterBuildMethods );
 	}
 
@@ -47,7 +47,7 @@ class Container implements ContainerInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function singleton( string $id, $implementation = null, array $afterBuildMethods = null ) {
+	public function singleton( string $id, $implementation = null, ?array $afterBuildMethods = null ) {
 		$this->container->singleton( $id, $implementation, $afterBuildMethods );
 	}
 
