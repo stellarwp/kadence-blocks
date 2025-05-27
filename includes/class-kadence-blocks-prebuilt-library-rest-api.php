@@ -1315,9 +1315,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$pattern_type     = $request->get_param( self::PROP_PATTERN_TYPE );
 		$pattern_id       = $request->get_param( self::PROP_PATTERN_ID );
 		$pattern_style    = $request->get_param( self::PROP_PATTERN_STYLE );
+		$extra            = '';
 
 		if ( ! empty( $library_url ) ) {
-			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
+			if ( 'page' === $pattern_type ) {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page/';
+				$extra = 'page-item';
+			} else {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
+			}
 		} else {
 			$library_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/';
 		}
@@ -1326,9 +1332,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args = [
 				'type' => ( ! empty( $pattern_type ) ? $pattern_type : 'pattern' ),
 				'key'  => $key,
-				'id'   => $pattern_id,
 				'site' => get_original_domain(),
 			];
+			if ( ! empty( $extra ) && 'page-item' === $extra ) {
+				$args['page-item'] = $pattern_id;
+			} else {
+				$args['id'] = $pattern_id;
+			}
 			if ( ! empty( $pattern_style ) ) {
 				$args['style'] = $pattern_style;
 			}
@@ -1368,16 +1378,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				if ( ! empty( $contents['code'] ) && $contents['code'] === 'invalid_access' ) {
 					return rest_ensure_response( new WP_Error( 'invalid_access', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 				}
-				return rest_ensure_response( 'error' );
+				return rest_ensure_response( new WP_Error( 'invalid_access', __( 'Invalid Request, Connection Error', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 			}
 			// Get the CSS from our response.
 			$contents = wp_remote_retrieve_body( $response );
 			// Early exit if there was an error.
 			if ( is_wp_error( $contents ) ) {
-				return rest_ensure_response( 'error' );
+				return rest_ensure_response( new WP_Error( 'invalid_content', __( 'Invalid Content, content body error', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 			}
 			if ( ! $contents ) {
-				return rest_ensure_response( 'error' );
+				return rest_ensure_response( new WP_Error( 'invalid_content', __( 'Invalid Content, Empty Content', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 			} else {
 				return rest_ensure_response( $contents );
 			}
@@ -1453,9 +1463,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$library     = $request->get_param( self::PROP_LIBRARY );
 		$library_url = $request->get_param( self::PROP_LIBRARY_URL );
 		$key         = $request->get_param( self::PROP_KEY );
+		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+			if ( ! empty( $meta ) && 'pages' === $meta ) {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page-categories/';
+			} else {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_cat_url;
 			$key         = 'new-pages';
@@ -1560,7 +1575,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
+			if ( ! empty( $meta ) && 'pages' === $meta ) {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/pages/';
+			} else {
+				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
+			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_url;
 			$key         = 'new-pages';

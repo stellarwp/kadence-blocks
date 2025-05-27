@@ -3,10 +3,6 @@
  */
 const { localStorage } = window;
 
-/**
- * External dependencies
- */
-import Masonry from 'react-masonry-css';
 
 /**
  * WordPress dependencies
@@ -30,10 +26,27 @@ import { SafeParseJSON } from '@kadence/helpers';
 import CloudLibrarySidebar from './cloud-sidebar';
 import CloudLibraryPatterns from './cloud-patterns';
 
+function StitchPageContent(rows) {
+	if (!rows) {
+		return '';
+	}
+	let tempArray = [];
+	let tempContent = '';
+	tempArray = Object.keys(rows).map(function (key, index) {
+		let rowContent = rows[key]?.pattern_content || '';
+		return rowContent;
+	});
+	Object.keys(tempArray).map(function (key, index) {
+		tempContent = tempContent.concat(tempArray[key]);
+	});
+	return tempContent;
+}
+
 function CloudSections({ importContent, clientId, reload = false, onReload, onLibraryUpdate, tab, libraries }) {
 	const [category, setCategory] = useState({});
 	const [categorySlug, setCategorySlug] = useState('');
-	const [pageCategory, setPageCategory] = useState([]);
+	const [pageCategorySlug, setPageCategorySlug] = useState('');
+	const [pageCategory, setPageCategory] = useState({});
 	const [search, setSearch] = useState(null);
 	const [subTab, setSubTab] = useState('');
 	const [patterns, setPatterns] = useState(false);
@@ -43,12 +56,9 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 	const [sortBy, setSortBy] = useState('');
 	const [categories, setCategories] = useState({});
 	const [categoryListOptions, setCategoryListOptions] = useState([]);
-	const [styleListOptions, setStyleListOptions] = useState([]);
 	const [stateGridSize, setGridSize] = useState('');
-	const [contextListOptions, setContextListOptions] = useState([]);
 	const [pagesCategories, setPagesCategories] = useState({});
 	const [pageCategoryListOptions, setPageCategoryListOptions] = useState([]);
-	const [pageContextListOptions, setPageContextListOptions] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isImporting, setIsImporting] = useState(false);
 	const [isError, setIsError] = useState(false);
@@ -84,62 +94,20 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		);
 	}, [categories]);
 
-	// Setting style options
-	useEffect(() => {
-		const patternStyles = Object.keys(patterns).map(function (key) {
-			return patterns[key].styles;
-		});
-
-		// If array is empty, return
-		if (!patternStyles.length) {
-			return;
-		}
-
-		// Clear duplicates
-		const uniqueMap = new Map();
-		patternStyles.forEach((item) => {
-			if (!item) {
-				return;
-			}
-			const key = Object.keys(item)[0];
-			const value = item[key];
-			uniqueMap.set(value, item);
-		});
-
-		const uniqueArray = Array.from(uniqueMap.values());
-		const styleOptions = uniqueArray.map(function (key) {
-			const keyValue = Object.keys(key)[0];
-			const keyName = key[keyValue];
-			return { value: keyValue, label: keyName };
-		});
-
-		setStyleListOptions(styleOptions);
-	}, [patterns]);
-
-	// useEffect( () => {
-	// 	setPageCategoryListOptions(
-	// 		Object.keys( pagesCategories ).map( function ( key, index ) {
-	// 			return {
-	// 				value: 'category' === key ? 'all' : key,
-	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
-	// 			};
-	// 		} )
-	// 	);
-	// 	const tempPageContexts = [];
-	// 	Object.keys( pagesCategories ).map( function ( key, index ) {
-	// 		if ( 'category' !== key ) {
-	// 			tempPageContexts.push( {
-	// 				value: 'category' === key ? 'all' : key,
-	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
-	// 			} );
-	// 		}
-	// 	} );
-	// 	setPageContextListOptions( tempPageContexts );
-	// }, [ pagesCategories ] );
+	useEffect( () => {
+		setPageCategoryListOptions(
+			Object.keys( pagesCategories ).map( function ( key, index ) {
+				return {
+					value: 'category' === key ? 'all' : key,
+					label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+				};
+			} )
+		);
+	}, [ pagesCategories ] );
 	const { getPatterns, getPattern, processPattern, getPatternCategories, getConnection, updateConnections } =
 		getAsyncData();
 
-	async function onInsertContent(pattern) {
+	async function onInsertContent(pattern, type = 'pattern') {
 		setIsImporting(true);
 		// const patternSend = {
 		// 	id: pattern.id,
@@ -174,7 +142,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		if (action?.[0]?.url && pattern?.id) {
 			const response = await getPattern(
 				tab,
-				'pattern',
+				type,
 				pattern?.id ? pattern.id : '',
 				'light',
 				action?.[0]?.url ? action[0].url : '',
@@ -183,10 +151,20 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 			if (response) {
 				try {
 					const tempContent = JSON.parse(response);
-					if (tempContent) {
+					// Check if the content is an array of objects.
+					if ('page' === type && tempContent?.rows) {
+						pattern.content = StitchPageContent( tempContent.rows );
+					} else {
 						pattern.content = tempContent;
 					}
-				} catch (e) {}
+				} catch (e) {
+					console.log('error', e);
+					if ( ! pattern?.content ) {
+						setIsError(true);
+						setIsErrorType('general');
+						setIsImporting(false);
+					}
+				}
 			}
 		}
 		if (pattern?.content) {
@@ -240,7 +218,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		}
 	}
 
-	async function getLibraryContent(tempReload) {
+	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
@@ -280,11 +258,12 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 			tab,
 			tempReload,
 			action?.[0]?.url ? action[0].url : '',
-			action?.[0]?.key ? action[0].key : ''
+			action?.[0]?.key ? action[0].key : '',
+			tempSubTab === 'pages' ? 'pages' : ''
 		);
 		if (response === 'failed') {
 			console.log('Permissions Error getting library Content');
-			if (subTab === 'pages') {
+			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
@@ -294,7 +273,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 			setIsLoading(false);
 		} else if (response === 'error') {
 			console.log('Error getting library Content.');
-			if (subTab === 'pages') {
+			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
@@ -304,7 +283,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		} else {
 			const o = SafeParseJSON(response, false);
 			if (o) {
-				if (tempReload) {
+				if (tempReload && tempSubTab !== 'pages') {
 					const tempCloudSettings = kadence_blocks_params?.cloud_settings
 						? JSON.parse(kadence_blocks_params.cloud_settings)
 						: {};
@@ -321,27 +300,29 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 							const conData = SafeParseJSON(getConnectionData, false);
 							let shouldUpdate = false;
 							// Update the connection data name and pages if they are different.
-							if (
-								conData?.name &&
-								tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name
-							) {
-								tempCloudSettings.connections[currentConnectionKey].title = conData.name;
-								shouldUpdate = true;
-							}
-							if (tempCloudSettings.connections[currentConnectionKey]?.pages !== conData?.pages) {
-								if (!conData?.pages) {
-									tempCloudSettings.connections[currentConnectionKey].pages = '';
-								} else {
-									tempCloudSettings.connections[currentConnectionKey].pages = conData.pages;
+							if ( conData ) {
+								if (
+									conData?.name &&
+									tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name
+								) {
+									tempCloudSettings.connections[currentConnectionKey].title = conData.name;
+									shouldUpdate = true;
 								}
-								shouldUpdate = true;
-							}
-							if (shouldUpdate) {
-								// Update the cloud settings.
-								kadence_blocks_params.cloud_settings = JSON.stringify(tempCloudSettings);
-								const getConnectionUpdate = await updateConnections(tempCloudSettings);
-								if (getConnectionUpdate !== 'failed') {
-									onLibraryUpdate();
+								if (tempCloudSettings.connections[currentConnectionKey]?.pages !== conData?.pages) {
+									if (!conData?.pages) {
+										tempCloudSettings.connections[currentConnectionKey].pages = '';
+									} else {
+										tempCloudSettings.connections[currentConnectionKey].pages = conData.pages;
+									}
+									shouldUpdate = true;
+								}
+								if (shouldUpdate) {
+									// Update the cloud settings.
+									kadence_blocks_params.cloud_settings = JSON.stringify(tempCloudSettings);
+									const getConnectionUpdate = await updateConnections(tempCloudSettings);
+									if (getConnectionUpdate !== 'failed') {
+										onLibraryUpdate();
+									}
 								}
 							}
 						}
@@ -351,27 +332,35 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 					tab,
 					tempReload,
 					action?.[0]?.url ? action[0].url : '',
-					action?.[0]?.key ? action[0].key : ''
+					action?.[0]?.key ? action[0].key : '',
+					tempSubTab === 'pages' ? 'pages' : ''
 				);
 				if (patternCategories) {
 					const catOrder = SafeParseJSON(patternCategories, false);
-					if (subTab === 'pages') {
+					if (tempSubTab === 'pages') {
 						const pageCats = catOrder ? catOrder : {};
+						const tempCats = {};
 						{
 							Object.keys(o).map(function (key, index) {
 								if (o[key].categories && typeof o[key].categories === 'object') {
 									{
 										Object.keys(o[key].categories).map(function (ckey, i) {
-											if (!pageCats.hasOwnProperty(ckey)) {
-												pageCats[ckey] = o[key].categories[ckey];
+											if (!tempCats.hasOwnProperty(ckey)) {
+												tempCats[ckey] = o[key].categories[ckey];
 											}
 										});
 									}
 								}
 							});
 						}
+						Object.keys(pageCats).map(function (key, index) {
+							if (!tempCats.hasOwnProperty(key)) {
+								delete pageCats[key];
+							}
+						});
+						const cats = { ...{ all: 'All' }, ...pageCats, ...tempCats };
 						setPages(o);
-						setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
+						setPagesCategories(JSON.parse(JSON.stringify(cats)));
 					} else {
 						const newCatOrder = catOrder ? catOrder : {};
 						const tempCats = {};
@@ -398,7 +387,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 						setCategories(JSON.parse(JSON.stringify(cats)));
 					}
 				} else {
-					if (subTab === 'pages') {
+					if (tempSubTab === 'pages') {
 						setPages('error');
 					} else {
 						setPatterns('error');
@@ -407,7 +396,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 				}
 			} else {
 				console.log('error, library content incorrect', response);
-				if (subTab === 'pages') {
+				if (tempSubTab === 'pages') {
 					setPages('error');
 				} else {
 					setPatterns('error');
@@ -420,59 +409,11 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 	useEffect(() => {
 		if (reload && !isLoading) {
 			onReload();
-			getLibraryContent(true);
+			getLibraryContent(selectedSubTab, true);
 		} else if (!isLoading) {
-			getLibraryContent(false);
+			getLibraryContent(selectedSubTab, false);
 		}
-	}, [reload, tab]);
-	const activePanel = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-	const sidebar_saved_enabled = activePanel && activePanel.sidebar ? activePanel.sidebar : 'show';
-	const sidebarEnabled = sidebar ? sidebar : sidebar_saved_enabled;
-	const roundAccurately = (number, decimalPlaces) =>
-		Number(Math.round(Number(number + 'e' + decimalPlaces)) + 'e' + decimalPlaces * -1);
-	const categoryItems = categories;
-	const savedGridSize = activePanel && activePanel.grid ? activePanel.grid : 'normal';
-	const gridSize = stateGridSize ? stateGridSize : savedGridSize;
-	const catOptions = Object.keys(categoryItems).map(function (key, index) {
-		return { value: 'category' === key ? 'all' : key, label: categoryItems[key] };
-	});
-	const sideCatOptions = Object.keys(categoryItems).map(function (key, index) {
-		return {
-			value: 'category' === key ? 'all' : key,
-			label: 'category' === key ? __('All', 'kadence-blocks') : categoryItems[key],
-		};
-	});
-	const getActiveCat = category?.[activePanel.activeTab] ? category[activePanel.activeTab] : 'all';
-	let breakpointColumnsObj = {
-		default: 5,
-		1600: 4,
-		1200: 3,
-		500: 2,
-	};
-	if (gridSize === 'large') {
-		breakpointColumnsObj = {
-			default: 4,
-			1600: 3,
-			1200: 2,
-			500: 1,
-		};
-	}
-	if (sidebarEnabled === 'show') {
-		breakpointColumnsObj = {
-			default: 4,
-			1600: 3,
-			1200: 2,
-			500: 1,
-		};
-		if (gridSize === 'large') {
-			breakpointColumnsObj = {
-				default: 3,
-				1600: 2,
-				1200: 2,
-				500: 1,
-			};
-		}
-	}
+	}, [reload, tab, selectedSubTab]);
 	return (
 		<div className={`kt-prebuilt-content kb-prebuilt-has-sidebar kb-cloud-pattern-library`}>
 			<CloudLibrarySidebar
@@ -481,9 +422,12 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 				category={category || {}}
 				subTab={selectedSubTab}
 				setSubTab={setSubTab}
-				setPageCategory={setPageCategory}
-				pageCategories={pagesCategories}
-				categories={sideCatOptions}
+				setPageCategory={ (newCat) => {
+					setPageCategory(newCat);
+					setPageCategorySlug(newCat[currentLibrary?.[0]?.slug]);
+				}}
+				pageCategories={pageCategoryListOptions}
+				categories={categoryListOptions}
 				setCategory={(newCat) => {
 					setCategory(newCat);
 					// This is required to refresh the patterns when the category is changed.
@@ -491,46 +435,111 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 				}}
 				search={search}
 			/>
-			{isImporting || isLoading || false === patterns || isError ? (
+			{selectedSubTab === 'pages' ? (
 				<>
-					{!isError && isLoading && <Spinner />}
-					{!isError && isImporting && (
-						<div className="preparing-importing-images">
-							<Spinner />
-							<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
-						</div>
-					)}
-					{isError && (
-						<div>
-							<h2 style={{ textAlign: 'center' }}>
-								{__(
-									'Error, Unable to access library database, please try re-syncing',
-									'kadence-blocks'
-								)}
-							</h2>
-							<div style={{ textAlign: 'center' }}>
-								<Button
-									className="kt-reload-templates"
-									icon={update}
-									onClick={() => getLibraryContent(true)}
-								>
-									{__(' Sync with Cloud', 'kadence-blocks')}
-								</Button>
-							</div>
-						</div>
+					{isImporting || isLoading || false === pages || isError ? (
+						<>
+							{!isError && isLoading && (
+								<div className="kb-loading-library">
+									<Spinner />
+								</div>
+							)}
+							{!isError && isImporting && (
+								<div className="preparing-importing-images">
+									<Spinner />
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
+								</div>
+							)}
+							{isError && isErrorType === 'general' && (
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										)}
+									</h2>
+									<div style={{ textAlign: 'center' }}>
+										<Button
+											className="kt-reload-templates"
+											icon={update}
+											onClick={() =>
+												!isLoading ? getLibraryContent(selectedSubTab, true) : null
+											}
+										>
+											{__(' Sync with Cloud', 'kadence-blocks')}
+										</Button>
+									</div>
+								</div>
+							)}
+							{isError && isErrorType === 'reload' && (
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library, please reload this page in your browser.',
+											'kadence-blocks'
+										)}
+									</h2>
+								</div>
+							)}
+							{/* { false === pages && (
+								<>{ loadPagesData() }</>
+							) } */}
+						</>
+					) : (
+						<CloudLibraryPatterns
+							connection={currentLibrary?.[0]}
+							category={pageCategory || {}}
+							patterns={pages}
+							search={search}
+							onInsertContent={ (pattern) => onInsertContent(pattern, 'page') }
+							setSearch={setSearch}
+						/>
 					)}
 				</>
 			) : (
-				<CloudLibraryPatterns
-					connection={currentLibrary?.[0]}
-					category={category || {}}
-					patterns={patterns}
-					search={search}
-					onInsertContent={onInsertContent}
-					sortBy={sortBy}
-					setSearch={setSearch}
-					setSortBy={setSortBy}
-				/>
+				<>
+					{isImporting || isLoading || false === patterns || isError ? (
+						<>
+							{!isError && isLoading && <Spinner />}
+							{!isError && isImporting && (
+								<div className="preparing-importing-images">
+									<Spinner />
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
+								</div>
+							)}
+							{isError && (
+								<div>
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										)}
+									</h2>
+									<div style={{ textAlign: 'center' }}>
+										<Button
+											className="kt-reload-templates"
+											icon={update}
+											onClick={() => getLibraryContent(selectedSubTab, true)}
+										>
+											{__(' Sync with Cloud', 'kadence-blocks')}
+										</Button>
+									</div>
+								</div>
+							)}
+						</>
+					) : (
+						<CloudLibraryPatterns
+							connection={currentLibrary?.[0]}
+							category={category || {}}
+							patterns={patterns}
+							search={search}
+							onInsertContent={onInsertContent}
+							sortBy={sortBy}
+							setSearch={setSearch}
+							setSortBy={setSortBy}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	);

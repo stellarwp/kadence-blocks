@@ -125,7 +125,7 @@ function CloudLibraryPatterns({
 		500: 1,
 	};
 	const [rootScroll, setRootScroll] = useState();
-	const activeCategorySlug = connection?.slug && category?.[connection.slug] ? category?.[connection.slug] : '';
+	const activeCategorySlug = connection?.slug && category?.[connection.slug] ? category?.[connection.slug] : 'all';
 	const thePatterns = useMemo(() => {
 		const allPatterns = [];
 		let variation = 0;
@@ -176,8 +176,7 @@ function CloudLibraryPatterns({
 	const filteredPatterns = useMemo(() => {
 		let allPatterns = thePatterns;
 
-		if (!search && activeCategorySlug) {
-			console.log(activeCategorySlug);
+		if (!search && activeCategorySlug && activeCategorySlug !== 'all') {
 			allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(activeCategorySlug));
 		}
 		// Apply Sorting
@@ -198,101 +197,105 @@ function CloudLibraryPatterns({
 
 	return (
 		<div ref={setRootScroll} className="kb-cloud-patterns-explorer__wrap">
-			<div className="kb-patterns-filter-wrapper">
-				<SearchControl
-					className="kb-pattern-search-control"
-					value={search}
-					placeholder={__('Search Patterns', 'kadence-blocks')}
-					onChange={(value) => setSearch(value)}
-				/>
-				<span className="kb-patterns-count-message">
-					{search
-						? sprintf(
-								/* translators: %d: number of patterns. %s: block pattern search query */
-								_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredPatterns.length),
-								filteredPatterns.length,
-								search
-						  )
-						: sprintf(
-								/* translators: %d: number of patterns. */
-								_n('%d pattern', '%d patterns', filteredPatterns.length),
-								filteredPatterns.length
-						  )}
-				</span>
-				<div className="kb-patterns-filter-wrapper-sort-by">
-					<span className="kb-pattern-filter-label">{__('Sort by:', 'kadence-blocks')}</span>
-					<PatternSortDropdown selectedItems={setSortBy} />
+			<div className="kb-cloud-patterns-explorer">
+				<div className="kb-patterns-filter-wrapper">
+					<SearchControl
+						className="kb-pattern-search-control"
+						value={search}
+						placeholder={__('Search Patterns', 'kadence-blocks')}
+						onChange={(value) => setSearch(value)}
+					/>
+					<span className="kb-patterns-count-message">
+						{search
+							? sprintf(
+									/* translators: %d: number of patterns. %s: block pattern search query */
+									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredPatterns.length),
+									filteredPatterns.length,
+									search
+							)
+							: sprintf(
+									/* translators: %d: number of patterns. */
+									_n('%d pattern', '%d patterns', filteredPatterns.length),
+									filteredPatterns.length
+							)}
+					</span>
+					{ setSortBy && (
+						<div className="kb-patterns-filter-wrapper-sort-by">
+							<span className="kb-pattern-filter-label">{__('Sort by:', 'kadence-blocks')}</span>
+							<PatternSortDropdown selectedItems={setSortBy} />
+						</div>
+					)}
 				</div>
-			</div>
-			<div className="kb-cloud-library-outer-wrap">
-				<Masonry
-					breakpointCols={breakpointColumnsObj}
-					className={`kb-css-masonry kb-cloud-library-wrap`}
-					columnClassName="kb-css-masonry_column"
-					// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
-					// elementType={ 'div' }
-					// options={ {
-					// 	transitionDuration: 0,
-					// } }
-					// disableImagesLoaded={ false }
-					// enableResizableChildren={ true }
-					// updateOnEachImageLoad={ false }
-				>
-					{filteredPatterns.map((pattern, index) => {
-						const name = pattern.name;
-						const slug = pattern.slug;
-						const image = pattern.image;
-						const imageWidth = pattern.imageWidth;
-						const imageHeight = pattern.imageHeight;
-						const description = pattern.description;
-						const pro = pattern.pro;
-						const locked = pattern.locked;
-						const descriptionId = `${slug}_kb_cloud__item-description`;
-						return (
-							<div className="kb-css-masonry-inner" key={index}>
-								<Button
-									key={index}
-									className="kb-css-masonry-btn"
-									aria-label={sprintf(
-										/* translators: %s is Prebuilt Name */
-										__('Add %s', 'kadence-blocks'),
-										name
-									)}
-									aria-describedby={description ? descriptionId : undefined}
-									isDisabled={locked}
-									onClick={() => (!locked ? onInsertContent(pattern) : '')}
-								>
-									<div
-										className="kb-css-masonry-btn-inner"
-										style={{
-											paddingBottom:
-												imageWidth && imageHeight
-													? roundAccurately((imageHeight / imageWidth) * 100, 2) + '%'
-													: undefined,
-										}}
-									>
-										<img src={image} loading={'lazy'} alt={name} />
-										<span
-											className="kb-import-btn-title"
-											dangerouslySetInnerHTML={{ __html: name }}
-										/>
-									</div>
-								</Button>
-								{!!description && <VisuallyHidden id={descriptionId}>{description}</VisuallyHidden>}
-								{undefined !== pro && pro && (
-									<>
-										<span className="kb-pro-template">{__('Pro', 'kadence-blocks')}</span>
-										{locked && (
-											<div className="kb-popover-pro-notice">
-												<h2>{__('Pro required for this item', 'kadence-blocks')} </h2>
-											</div>
+				<div className="kb-cloud-library-outer-wrap">
+					<Masonry
+						breakpointCols={breakpointColumnsObj}
+						className={`kb-css-masonry kb-cloud-library-wrap`}
+						columnClassName="kb-css-masonry_column"
+						// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
+						// elementType={ 'div' }
+						// options={ {
+						// 	transitionDuration: 0,
+						// } }
+						// disableImagesLoaded={ false }
+						// enableResizableChildren={ true }
+						// updateOnEachImageLoad={ false }
+					>
+						{filteredPatterns.map((pattern, index) => {
+							const name = pattern.name;
+							const slug = pattern.slug;
+							const image = pattern.image;
+							const imageWidth = pattern.imageWidth;
+							const imageHeight = pattern.imageHeight;
+							const description = pattern.description;
+							const pro = pattern.pro;
+							const locked = pattern.locked;
+							const descriptionId = `${slug}_kb_cloud__item-description`;
+							return (
+								<div className="kb-css-masonry-inner" key={index}>
+									<Button
+										key={index}
+										className="kb-css-masonry-btn"
+										aria-label={sprintf(
+											/* translators: %s is Prebuilt Name */
+											__('Add %s', 'kadence-blocks'),
+											name
 										)}
-									</>
-								)}
-							</div>
-						);
-					})}
-				</Masonry>
+										aria-describedby={description ? descriptionId : undefined}
+										isDisabled={locked}
+										onClick={() => (!locked ? onInsertContent(pattern) : '')}
+									>
+										<div
+											className="kb-css-masonry-btn-inner"
+											style={{
+												paddingBottom:
+													imageWidth && imageHeight
+														? roundAccurately((imageHeight / imageWidth) * 100, 2) + '%'
+														: undefined,
+											}}
+										>
+											<img src={image} loading={'lazy'} alt={name} />
+											<span
+												className="kb-import-btn-title"
+												dangerouslySetInnerHTML={{ __html: name }}
+											/>
+										</div>
+									</Button>
+									{!!description && <VisuallyHidden id={descriptionId}>{description}</VisuallyHidden>}
+									{undefined !== pro && pro && (
+										<>
+											<span className="kb-pro-template">{__('Pro', 'kadence-blocks')}</span>
+											{locked && (
+												<div className="kb-popover-pro-notice">
+													<h2>{__('Pro required for this item', 'kadence-blocks')} </h2>
+												</div>
+											)}
+										</>
+									)}
+								</div>
+							);
+						})}
+					</Masonry>
+				</div>
 			</div>
 		</div>
 	);

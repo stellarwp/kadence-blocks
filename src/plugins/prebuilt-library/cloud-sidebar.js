@@ -45,14 +45,16 @@ function CloudLibrarySidebar({
 		setIsVisible((state) => !state);
 	};
 
-	const activePageCategorySlug = pageCategory?.[connection.slug];
-	const activeCategorySlug = category?.[connection.slug];
+	const activePageCategorySlug = pageCategory?.[connection.slug] || 'all';
+	const activeCategorySlug = category?.[connection.slug] || 'all';
 
 	return (
 		<div className="kt-prebuilt-sidebar kb-section-sidebar">
 			<div className="kb-prebuilt-sidebar-header-wrap">
 				<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
-					<span className="kb-prebuilt-header-logo">{connection?.logo || cloud}</span>
+					{ ! connection?.pages && (
+						<span className="kb-prebuilt-header-logo">{cloud}</span>
+					)}
 					{false && (
 						<div className="kb-library-style-popover">
 							<Button
@@ -167,7 +169,6 @@ function CloudLibrarySidebar({
 												onClick={() => {
 													const newCat = category;
 													newCat[connection?.slug] = tempCat.value;
-													console.log(newCat);
 													setCategory(newCat);
 												}}
 											>

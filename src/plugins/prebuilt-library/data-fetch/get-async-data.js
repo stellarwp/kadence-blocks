@@ -491,7 +491,7 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatternCategories(library, reload, library_url = null, key = null) {
+	async function getPatternCategories(library, reload, library_url = null, key = null, meta = null) {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library_categories', {
@@ -499,6 +499,7 @@ export function getAsyncData() {
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
+					meta: meta ? meta : '',
 				}),
 			});
 			return response;
