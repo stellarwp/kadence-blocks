@@ -20,6 +20,7 @@
 				const modalDiv = rootElement.querySelector('.kb-search-modal');
 				const closeModalButton = rootElement.querySelector('.kb-search-modal .kb-search-close-btn');
 				const searchInput = rootElement.querySelector('.kb-search-input');
+				const iconSubmitButton = rootElement.querySelector('.kb-search-modal .kb-search-icon-submit');
 
 				// Initialize listener
 				if (openModalButton) {
@@ -49,6 +50,13 @@
 							hideModalButton(e);
 						}
 					});
+
+					// Prevent modal from closing when icon submit is clicked.
+					if (iconSubmitButton) {
+						iconSubmitButton.addEventListener('click', function (event) {
+							event.stopPropagation();
+						});
+					}
 
 					document.addEventListener('keydown', function (e) {
 						if (e.key === 'Escape' && modalDiv.classList.contains('active')) {
