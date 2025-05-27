@@ -250,22 +250,33 @@ function CloudLibraryPatterns({
 							const pro = pattern.pro;
 							const locked = pattern.locked;
 							const descriptionId = `${slug}_kb_cloud__item-description`;
-							let paddingBottom = imageWidth && imageHeight ? roundAccurately((imageHeight / imageWidth) * 100, 2) : 61;
-							let paddingOnBottom = paddingBottom;
+							let paddingBottom =
+								imageWidth && imageHeight ? roundAccurately((imageHeight / imageWidth) * 100, 2) : 61;
+							const paddingOnBottom = paddingBottom;
 							let paddingOffset = 0;
 							let hasMaxHeight = false;
-							if ( paddingBottom > 140 ) {
-								paddingOffset = (( paddingBottom - 140 ) / paddingBottom) * 100;
+							if (paddingBottom > 140) {
+								paddingOffset = ((paddingBottom - 140) / paddingBottom) * 100;
 								paddingBottom = 140;
 								hasMaxHeight = true;
 							}
-							const trans_scroll_speed = paddingOnBottom > 140 ? ((paddingOnBottom - paddingOffset) / 100) * 600 : 800;
+							const trans_scroll_speed =
+								paddingOnBottom > 140 ? ((paddingOnBottom - paddingOffset) / 100) * 600 : 800;
 							const transitionSpeed = `transform ${trans_scroll_speed}ms linear`;
 							return (
-								<div className="kb-css-masonry-inner" style={{ '--scroll-height-offset': '-' + paddingOffset + '%', '--scroll-height-speed': transitionSpeed }} key={index}>
+								<div
+									className="kb-css-masonry-inner"
+									style={{
+										'--scroll-height-offset': '-' + paddingOffset + '%',
+										'--scroll-height-speed': transitionSpeed,
+									}}
+									key={index}
+								>
 									<Button
 										key={index}
-										className={`kb-css-masonry-btn${hasMaxHeight ? ' kb-css-masonry-btn-max-height' : ''}`}
+										className={`kb-css-masonry-btn${
+											hasMaxHeight ? ' kb-css-masonry-btn-max-height' : ''
+										}`}
 										aria-label={sprintf(
 											/* translators: %s is Prebuilt Name */
 											__('Add %s', 'kadence-blocks'),
@@ -279,9 +290,7 @@ function CloudLibraryPatterns({
 											className="kb-css-masonry-btn-inner"
 											style={{
 												paddingBottom:
-													imageWidth && imageHeight
-														? paddingBottom + '%'
-														: undefined,
+													imageWidth && imageHeight ? paddingBottom + '%' : undefined,
 											}}
 										>
 											<img src={image} loading={'lazy'} alt={name} />
