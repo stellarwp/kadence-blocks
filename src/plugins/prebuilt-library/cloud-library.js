@@ -3,7 +3,6 @@
  */
 const { localStorage } = window;
 
-
 /**
  * WordPress dependencies
  */
@@ -33,7 +32,7 @@ function StitchPageContent(rows) {
 	let tempArray = [];
 	let tempContent = '';
 	tempArray = Object.keys(rows).map(function (key, index) {
-		let rowContent = rows[key]?.pattern_content || '';
+		const rowContent = rows[key]?.pattern_content || '';
 		return rowContent;
 	});
 	Object.keys(tempArray).map(function (key, index) {
@@ -94,16 +93,16 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		);
 	}, [categories]);
 
-	useEffect( () => {
+	useEffect(() => {
 		setPageCategoryListOptions(
-			Object.keys( pagesCategories ).map( function ( key, index ) {
+			Object.keys(pagesCategories).map(function (key, index) {
 				return {
 					value: 'category' === key ? 'all' : key,
-					label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+					label: 'category' === key ? __('All', 'kadence-blocks') : pagesCategories[key],
 				};
-			} )
+			})
 		);
-	}, [ pagesCategories ] );
+	}, [pagesCategories]);
 	const { getPatterns, getPattern, processPattern, getPatternCategories, getConnection, updateConnections } =
 		getAsyncData();
 
@@ -153,13 +152,13 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 					const tempContent = JSON.parse(response);
 					// Check if the content is an array of objects.
 					if ('page' === type && tempContent?.rows) {
-						pattern.content = StitchPageContent( tempContent.rows );
+						pattern.content = StitchPageContent(tempContent.rows);
 					} else {
 						pattern.content = tempContent;
 					}
 				} catch (e) {
 					console.log('error', e);
-					if ( ! pattern?.content ) {
+					if (!pattern?.content) {
 						setIsError(true);
 						setIsErrorType('general');
 						setIsImporting(false);
@@ -218,7 +217,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 		}
 	}
 
-	async function getLibraryContent( tempSubTab, tempReload ) {
+	async function getLibraryContent(tempSubTab, tempReload) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
@@ -300,7 +299,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 							const conData = SafeParseJSON(getConnectionData, false);
 							let shouldUpdate = false;
 							// Update the connection data name and pages if they are different.
-							if ( conData ) {
+							if (conData) {
 								if (
 									conData?.name &&
 									tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name
@@ -422,7 +421,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 				category={category || {}}
 				subTab={selectedSubTab}
 				setSubTab={setSubTab}
-				setPageCategory={ (newCat) => {
+				setPageCategory={(newCat) => {
 					setPageCategory(newCat);
 					setPageCategorySlug(newCat[currentLibrary?.[0]?.slug]);
 				}}
@@ -491,7 +490,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 							category={pageCategory || {}}
 							patterns={pages}
 							search={search}
-							onInsertContent={ (pattern) => onInsertContent(pattern, 'page') }
+							onInsertContent={(pattern) => onInsertContent(pattern, 'page')}
 							setSearch={setSearch}
 						/>
 					)}

@@ -212,14 +212,14 @@ function CloudLibraryPatterns({
 									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredPatterns.length),
 									filteredPatterns.length,
 									search
-							)
+							  )
 							: sprintf(
 									/* translators: %d: number of patterns. */
 									_n('%d pattern', '%d patterns', filteredPatterns.length),
 									filteredPatterns.length
-							)}
+							  )}
 					</span>
-					{ setSortBy && (
+					{setSortBy && (
 						<div className="kb-patterns-filter-wrapper-sort-by">
 							<span className="kb-pattern-filter-label">{__('Sort by:', 'kadence-blocks')}</span>
 							<PatternSortDropdown selectedItems={setSortBy} />

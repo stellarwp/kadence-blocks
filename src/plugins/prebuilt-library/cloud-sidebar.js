@@ -52,9 +52,7 @@ function CloudLibrarySidebar({
 		<div className="kt-prebuilt-sidebar kb-section-sidebar">
 			<div className="kb-prebuilt-sidebar-header-wrap">
 				<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
-					{ ! connection?.pages && (
-						<span className="kb-prebuilt-header-logo">{cloud}</span>
-					)}
+					{!connection?.pages && <span className="kb-prebuilt-header-logo">{cloud}</span>}
 					{false && (
 						<div className="kb-library-style-popover">
 							<Button
