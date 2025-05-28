@@ -218,13 +218,13 @@ const arrowStyleOptions = [
 		value: 'outlinewhite',
 	},
 	{
-		label: __('None', 'kadence-blocks'),
-		value: 'none',
-	},
-	{
 		label: __('Custom (Pro only)', 'kadence-blocks'),
 		value: 'custom',
 		disabled: true,
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
 	},
 ];
 
@@ -246,13 +246,13 @@ const dotStyleOptions = [
 		value: 'outlinelight',
 	},
 	{
-		label: __('None', 'kadence-blocks'),
-		value: 'none',
-	},
-	{
 		label: __('Custom (Pro only)', 'kadence-blocks'),
 		value: 'custom',
 		disabled: true,
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
 	},
 ];
 
@@ -330,9 +330,17 @@ export default function GalleryEdit(props) {
 		arrowCustomColorBackground,
 		arrowCustomColorBackgroundHover,
 		arrowCustomColorBackgroundActive,
+		arrowCustomColorBorder,
+		arrowCustomColorBorderHover,
+		arrowCustomColorBorderActive,
+		arrowCustomBorderWidth,
 		dotCustomColor,
 		dotCustomColorHover,
 		dotCustomColorActive,
+		dotCustomColorBorder,
+		dotCustomColorBorderHover,
+		dotCustomColorBorderActive,
+		dotCustomBorderWidth,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -1665,7 +1673,7 @@ export default function GalleryEdit(props) {
 												{kadence_blocks_params.pro === 'true' && 'custom' === arrowStyle && (
 													<>
 														<PopColorControl
-															label={__('Arrow Color', 'kadence-blocks')}
+															label={__('Icon Color', 'kadence-blocks')}
 															value={arrowCustomColor ? arrowCustomColor : ''}
 															default={''}
 															onChange={(value) => {
@@ -1687,7 +1695,7 @@ export default function GalleryEdit(props) {
 															}}
 														/>
 														<PopColorControl
-															label={__('Arrow Background Color', 'kadence-blocks')}
+															label={__('Background Color', 'kadence-blocks')}
 															value={
 																arrowCustomColorBackground
 																	? arrowCustomColorBackground
@@ -1721,6 +1729,50 @@ export default function GalleryEdit(props) {
 																	arrowCustomColorBackgroundActive: value,
 																});
 															}}
+														/>
+														<PopColorControl
+															label={__('Border Color', 'kadence-blocks')}
+															value={
+																arrowCustomColorBorder
+																	? arrowCustomColorBorder
+																	: ''
+															}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ arrowCustomColorBorder: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={
+																arrowCustomColorBorderHover
+																	? arrowCustomColorBorderHover
+																	: ''
+															}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({
+																	arrowCustomColorBorderHover: value,
+																});
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={
+																arrowCustomColorBorderActive
+																	? arrowCustomColorBorderActive
+																	: ''
+															}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({
+																	arrowCustomColorBorderActive: value,
+																});
+															}}
+														/>
+														<RangeControl
+															label={__('Border Width', 'kadence-blocks')}
+															value={arrowCustomBorderWidth}
+															onChange={(value) => setAttributes({ arrowCustomBorderWidth: value })}
+															min={0}
+															max={10}
+															step={1}
 														/>
 													</>
 												)}
@@ -1764,6 +1816,34 @@ export default function GalleryEdit(props) {
 															onChange3={(value) => {
 																setAttributes({ dotCustomColorActive: value });
 															}}
+														/>
+														<PopColorControl
+															label={__('Border Color', 'kadence-blocks')}
+															value={dotCustomColorBorder ? dotCustomColorBorder : ''}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ dotCustomColorBorder: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={dotCustomColorBorderHover ? dotCustomColorBorderHover : ''}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({ dotCustomColorBorderHover: value });
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={dotCustomColorBorderActive ? dotCustomColorBorderActive : ''}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({ dotCustomColorBorderActive: value });
+															}}
+														/>
+														<RangeControl
+															label={__('Border Width', 'kadence-blocks')}
+															value={dotCustomBorderWidth}
+															onChange={(value) => setAttributes({ dotCustomBorderWidth: value })}
+															min={0}
+															max={10}
+															step={1}
 														/>
 													</>
 												)}
@@ -2435,16 +2515,22 @@ export default function GalleryEdit(props) {
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow {
 								${arrowCustomColor ? `color: ${KadenceColorOutput(arrowCustomColor)};` : ''}
 								${arrowCustomColorBackground ? `background-color: ${KadenceColorOutput(arrowCustomColorBackground)};` : ''}
+								${arrowCustomColorBorder ? `border-color: ${KadenceColorOutput(arrowCustomColorBorder)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
 								opacity: unset;
 							}
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:hover {
 								${arrowCustomColorHover ? `color: ${KadenceColorOutput(arrowCustomColorHover)};` : ''}
 								${arrowCustomColorBackgroundHover ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundHover)};` : ''}
+								${arrowCustomColorBorderHover ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderHover)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
 								opacity: unset;
 							}
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:active {
 								${arrowCustomColorActive ? `color: ${KadenceColorOutput(arrowCustomColorActive)};` : ''}
 								${arrowCustomColorBackgroundActive ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundActive)};` : ''}
+								${arrowCustomColorBorderActive ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderActive)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
 								opacity: unset;
 							}
 							`
@@ -2455,14 +2541,20 @@ export default function GalleryEdit(props) {
 							? `
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page {
 								${dotCustomColor ? `background-color: ${KadenceColorOutput(dotCustomColor)};` : ''}
+								${dotCustomColorBorder ? `border-color: ${KadenceColorOutput(dotCustomColorBorder)};` : ''}
+								${dotCustomColorBorder ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
 								opacity: unset;
 							}
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page:hover {
 								${dotCustomColorHover ? `background-color: ${KadenceColorOutput(dotCustomColorHover)};` : ''}
+								${dotCustomColorBorderHover ? `border-color: ${KadenceColorOutput(dotCustomColorBorderHover)};` : ''}
+								${dotCustomColorBorderHover ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
 								opacity: unset;
 							}
 							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page.is-active {
 								${dotCustomColorActive ? `background-color: ${KadenceColorOutput(dotCustomColorActive)};` : ''}
+								${dotCustomColorBorderActive ? `border-color: ${KadenceColorOutput(dotCustomColorBorderActive)};` : ''}
+								${dotCustomColorBorderActive ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
 								opacity: unset;
 							}
 							`

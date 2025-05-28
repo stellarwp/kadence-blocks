@@ -524,6 +524,26 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackgroundActive'] ) );
 		}
 
+		if ( ! empty( $attributes['arrowCustomColorBorder'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorder'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorBorderHover'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:hover' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorderHover'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomColorBorderActive'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow:active' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorderActive'] ) );
+		}
+
+		if ( ! empty( $attributes['arrowCustomBorderWidth'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide .splide__arrow' );
+			$css->add_property( 'border-width', $attributes['arrowCustomBorderWidth'] . 'px' );
+		}
+
 		// Dot Custom Color
 		if ( ! empty( $attributes['dotCustomColor'] ) && $is_carousel ) {
 			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
@@ -539,8 +559,27 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:active' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['dotCustomColorActive'] ) );
 		}
-		
 
+		if ( ! empty( $attributes['dotCustomColorBorder'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['dotCustomColorBorder'] ) );
+		}
+		
+		if ( ! empty( $attributes['dotCustomColorBorderHover'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:hover' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['dotCustomColorBorderHover'] ) );
+		}
+
+		if ( ! empty( $attributes['dotCustomColorBorderActive'] ) && $is_carousel ) {	
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:active' );
+			$css->add_property( 'border-color', $css->render_color( $attributes['dotCustomColorBorderActive'] ) );
+		}
+
+		if ( ! empty( $attributes['dotCustomBorderWidth'] ) && $is_carousel ) {
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
+			$css->add_property( 'border-width', $attributes['dotCustomBorderWidth'] . 'px' );
+			$css->add_property( 'border-style', 'solid' );
+		}
 
 		return $css->css_output();
 	}
