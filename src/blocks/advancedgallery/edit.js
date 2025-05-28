@@ -1732,11 +1732,7 @@ export default function GalleryEdit(props) {
 														/>
 														<PopColorControl
 															label={__('Border Color', 'kadence-blocks')}
-															value={
-																arrowCustomColorBorder
-																	? arrowCustomColorBorder
-																	: ''
-															}
+															value={arrowCustomColorBorder ? arrowCustomColorBorder : ''}
 															default={''}
 															onChange={(value) => {
 																setAttributes({ arrowCustomColorBorder: value });
@@ -1769,7 +1765,9 @@ export default function GalleryEdit(props) {
 														<RangeControl
 															label={__('Border Width', 'kadence-blocks')}
 															value={arrowCustomBorderWidth}
-															onChange={(value) => setAttributes({ arrowCustomBorderWidth: value })}
+															onChange={(value) =>
+																setAttributes({ arrowCustomBorderWidth: value })
+															}
 															min={0}
 															max={10}
 															step={1}
@@ -1825,13 +1823,21 @@ export default function GalleryEdit(props) {
 																setAttributes({ dotCustomColorBorder: value });
 															}}
 															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={dotCustomColorBorderHover ? dotCustomColorBorderHover : ''}
+															value2={
+																dotCustomColorBorderHover
+																	? dotCustomColorBorderHover
+																	: ''
+															}
 															default2={''}
 															onChange2={(value) => {
 																setAttributes({ dotCustomColorBorderHover: value });
 															}}
 															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={dotCustomColorBorderActive ? dotCustomColorBorderActive : ''}
+															value3={
+																dotCustomColorBorderActive
+																	? dotCustomColorBorderActive
+																	: ''
+															}
 															default3={''}
 															onChange3={(value) => {
 																setAttributes({ dotCustomColorBorderActive: value });
@@ -1840,7 +1846,9 @@ export default function GalleryEdit(props) {
 														<RangeControl
 															label={__('Border Width', 'kadence-blocks')}
 															value={dotCustomBorderWidth}
-															onChange={(value) => setAttributes({ dotCustomBorderWidth: value })}
+															onChange={(value) =>
+																setAttributes({ dotCustomBorderWidth: value })
+															}
 															min={0}
 															max={10}
 															step={1}
