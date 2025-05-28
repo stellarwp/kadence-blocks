@@ -704,16 +704,18 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
 		}
 
+		$tag = !empty($link_url) ? 'a' : 'span';
+		$tag_attributes = !empty($link_url) ? $link_url . ' ' . $link_target . ' ' . $link_rel : '';
+
 		return sprintf(
-			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s>%6$s</a>%7$s</div>%8$s</li>',
+			'<li %1$s><div class="kb-link-wrap"><%5$s class="%2$s"%3$s>%4$s</%5$s>%6$s</div>%7$s</li>',
 			$wrapper_attributes,
 			$link_class,
-			$link_url,
-			$link_target,
-			$link_rel,
+			$tag_attributes,
 			$title_html,
+			$tag,
 			$sub_menu_btn,
-			$sub_menu_content,
+			$sub_menu_content
 		);
 	}
 
