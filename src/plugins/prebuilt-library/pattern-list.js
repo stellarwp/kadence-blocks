@@ -1028,10 +1028,20 @@ function PatternList({
 					variation = 0;
 				}
 				if (patternsHTML?.[item?.slug]?.html) {
-					patternsHTML[item.slug].html = replaceContent(patternsHTML[item.slug].html, allContext, item.categories, aiContext, item.variation, true);
+					patternsHTML[item.slug].html = replaceContent(
+						patternsHTML[item.slug].html,
+						allContext,
+						item.categories,
+						aiContext,
+						item.variation,
+						true
+					);
 					// item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 					if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
-						patternsHTML[item?.slug].html = replaceAddressContent(patternsHTML[item.slug].html, userData.locationInput);
+						patternsHTML[item?.slug].html = replaceAddressContent(
+							patternsHTML[item.slug].html,
+							userData.locationInput
+						);
 					}
 				} else {
 					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
