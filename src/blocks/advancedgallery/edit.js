@@ -143,7 +143,7 @@ const mosaicTypes = [
 	{ value: 'last', label: __('Last', 'kadence-blocks') },
 ];
 
-const arrowOptions = [
+const arrowPositionOptions = [
 	{
 		label: __('Center', 'kadence-blocks'),
 		value: 'center',
@@ -197,6 +197,62 @@ const arrowOptions = [
 		label: __('Outside Bottom Right (Pro only)', 'kadence-blocks'),
 		value: 'outside-bottom-right',
 		disabled: true,
+	},
+];
+
+const arrowStyleOptions = [
+	{
+		label: __('White on Dark', 'kadence-blocks'),
+		value: 'whiteondark',
+	},
+	{
+		label: __('Black on Light', 'kadence-blocks'),
+		value: 'blackonlight',
+	},
+	{
+		label: __('Outline Black', 'kadence-blocks'),
+		value: 'outlineblack',
+	},
+	{
+		label: __('Outline White', 'kadence-blocks'),
+		value: 'outlinewhite',
+	},
+	{
+		label: __('Custom (Pro only)', 'kadence-blocks'),
+		value: 'custom',
+		disabled: true,
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
+	},
+];
+
+const dotStyleOptions = [
+	{
+		label: __('Dark', 'kadence-blocks'),
+		value: 'dark',
+	},
+	{
+		label: __('Light', 'kadence-blocks'),
+		value: 'light',
+	},
+	{
+		label: __('Outline Dark', 'kadence-blocks'),
+		value: 'outlinedark',
+	},
+	{
+		label: __('Outline Light', 'kadence-blocks'),
+		value: 'outlinelight',
+	},
+	{
+		label: __('Custom (Pro only)', 'kadence-blocks'),
+		value: 'custom',
+		disabled: true,
+	},
+	{
+		label: __('None', 'kadence-blocks'),
+		value: 'none',
 	},
 ];
 
@@ -268,6 +324,23 @@ export default function GalleryEdit(props) {
 		arrowSize,
 		arrowSizeUnit,
 		overflow,
+		arrowCustomColor,
+		arrowCustomColorHover,
+		arrowCustomColorActive,
+		arrowCustomColorBackground,
+		arrowCustomColorBackgroundHover,
+		arrowCustomColorBackgroundActive,
+		arrowCustomColorBorder,
+		arrowCustomColorBorderHover,
+		arrowCustomColorBorderActive,
+		arrowCustomBorderWidth,
+		dotCustomColor,
+		dotCustomColorHover,
+		dotCustomColorActive,
+		dotCustomColorBorder,
+		dotCustomColorBorderHover,
+		dotCustomColorBorderActive,
+		dotCustomBorderWidth,
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
@@ -640,7 +713,11 @@ export default function GalleryEdit(props) {
 	// };
 
 	const galleryTypes = useMemo(() => applyFilters('kadence.galleryTypes', typeOptions), []);
-	const galleryArrows = useMemo(() => applyFilters('kadence.galleryArrows', arrowOptions), []);
+	const galleryArrowsStyle = useMemo(() => applyFilters('kadence.galleryArrowsStyle', arrowStyleOptions), []);
+	const galleryArrowsPosition = useMemo(
+		() => applyFilters('kadence.galleryArrowsPosition', arrowPositionOptions),
+		[]
+	);
 	const galleryArrowOptions = applyFilters('kadence.galleryArrowsBlockOptions', attributes, setAttributes);
 	const previewArrowSize = getPreviewSize(
 		previewDevice,
@@ -674,6 +751,8 @@ export default function GalleryEdit(props) {
 		undefined !== mobileArrowMargin?.[3] && '' !== mobileArrowMargin?.[3] ? mobileArrowMargin[3] : ''
 	);
 	const previewArrowMarginUnit = arrowMarginUnit ? arrowMarginUnit : 'px';
+
+	const galleryDotStyle = useMemo(() => applyFilters('kadence.galleryDotStyle', dotStyleOptions), []);
 
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
@@ -1606,38 +1685,121 @@ export default function GalleryEdit(props) {
 												)}
 												<SelectControl
 													label={__('Arrow Style', 'kadence-blocks')}
-													options={[
-														{
-															label: __('White on Dark', 'kadence-blocks'),
-															value: 'whiteondark',
-														},
-														{
-															label: __('Black on Light', 'kadence-blocks'),
-															value: 'blackonlight',
-														},
-														{
-															label: __('Outline Black', 'kadence-blocks'),
-															value: 'outlineblack',
-														},
-														{
-															label: __('Outline White', 'kadence-blocks'),
-															value: 'outlinewhite',
-														},
-														{
-															label: __('None', 'kadence-blocks'),
-															value: 'none',
-														},
-													]}
+													options={galleryArrowsStyle}
 													value={arrowStyle}
 													onChange={(value) => setAttributes({ arrowStyle: value })}
 												/>
+												{kadence_blocks_params.pro === 'true' && 'custom' === arrowStyle && (
+													<>
+														<PopColorControl
+															label={__('Icon Color', 'kadence-blocks')}
+															value={arrowCustomColor ? arrowCustomColor : ''}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ arrowCustomColor: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={arrowCustomColorHover ? arrowCustomColorHover : ''}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({ arrowCustomColorHover: value });
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={
+																arrowCustomColorActive ? arrowCustomColorActive : ''
+															}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({ arrowCustomColorActive: value });
+															}}
+														/>
+														<PopColorControl
+															label={__('Background Color', 'kadence-blocks')}
+															value={
+																arrowCustomColorBackground
+																	? arrowCustomColorBackground
+																	: ''
+															}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ arrowCustomColorBackground: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={
+																arrowCustomColorBackgroundHover
+																	? arrowCustomColorBackgroundHover
+																	: ''
+															}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({
+																	arrowCustomColorBackgroundHover: value,
+																});
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={
+																arrowCustomColorBackgroundActive
+																	? arrowCustomColorBackgroundActive
+																	: ''
+															}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({
+																	arrowCustomColorBackgroundActive: value,
+																});
+															}}
+														/>
+														<PopColorControl
+															label={__('Border Color', 'kadence-blocks')}
+															value={arrowCustomColorBorder ? arrowCustomColorBorder : ''}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ arrowCustomColorBorder: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={
+																arrowCustomColorBorderHover
+																	? arrowCustomColorBorderHover
+																	: ''
+															}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({
+																	arrowCustomColorBorderHover: value,
+																});
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={
+																arrowCustomColorBorderActive
+																	? arrowCustomColorBorderActive
+																	: ''
+															}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({
+																	arrowCustomColorBorderActive: value,
+																});
+															}}
+														/>
+														<RangeControl
+															label={__('Border Width', 'kadence-blocks')}
+															value={arrowCustomBorderWidth}
+															onChange={(value) =>
+																setAttributes({ arrowCustomBorderWidth: value })
+															}
+															min={0}
+															max={10}
+															step={1}
+														/>
+													</>
+												)}
 												<SelectControl
 													label={
 														'thumbslider' === type
 															? __('Main Arrow Position', 'kadence-blocks')
 															: __('Arrow Position', 'kadence-blocks')
 													}
-													options={galleryArrows}
+													options={galleryArrowsPosition}
 													value={arrowPosition}
 													onChange={(value) => setAttributes({ arrowPosition: value })}
 												/>
@@ -1645,31 +1807,72 @@ export default function GalleryEdit(props) {
 												{type !== 'thumbslider' && (
 													<SelectControl
 														label={__('Dot Style', 'kadence-blocks')}
-														options={[
-															{
-																label: __('Dark', 'kadence-blocks'),
-																value: 'dark',
-															},
-															{
-																label: __('Light', 'kadence-blocks'),
-																value: 'light',
-															},
-															{
-																label: __('Outline Dark', 'kadence-blocks'),
-																value: 'outlinedark',
-															},
-															{
-																label: __('Outline Light', 'kadence-blocks'),
-																value: 'outlinelight',
-															},
-															{
-																label: __('None', 'kadence-blocks'),
-																value: 'none',
-															},
-														]}
+														options={galleryDotStyle}
 														value={dotStyle}
 														onChange={(value) => setAttributes({ dotStyle: value })}
 													/>
+												)}
+												{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && (
+													<>
+														<PopColorControl
+															label={__('Dot Color', 'kadence-blocks')}
+															value={dotCustomColor ? dotCustomColor : ''}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ dotCustomColor: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={dotCustomColorHover ? dotCustomColorHover : ''}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({ dotCustomColorHover: value });
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={dotCustomColorActive ? dotCustomColorActive : ''}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({ dotCustomColorActive: value });
+															}}
+														/>
+														<PopColorControl
+															label={__('Border Color', 'kadence-blocks')}
+															value={dotCustomColorBorder ? dotCustomColorBorder : ''}
+															default={''}
+															onChange={(value) => {
+																setAttributes({ dotCustomColorBorder: value });
+															}}
+															swatchLabel2={__('Hover Color', 'kadence-blocks')}
+															value2={
+																dotCustomColorBorderHover
+																	? dotCustomColorBorderHover
+																	: ''
+															}
+															default2={''}
+															onChange2={(value) => {
+																setAttributes({ dotCustomColorBorderHover: value });
+															}}
+															swatchLabel3={__('Active Color', 'kadence-blocks')}
+															value3={
+																dotCustomColorBorderActive
+																	? dotCustomColorBorderActive
+																	: ''
+															}
+															default3={''}
+															onChange3={(value) => {
+																setAttributes({ dotCustomColorBorderActive: value });
+															}}
+														/>
+														<RangeControl
+															label={__('Border Width', 'kadence-blocks')}
+															value={dotCustomBorderWidth}
+															onChange={(value) =>
+																setAttributes({ dotCustomBorderWidth: value })
+															}
+															min={0}
+															max={10}
+															step={1}
+														/>
+													</>
 												)}
 												<ToggleControl
 													label={__('Enable Image Lazy Load', 'kadence-blocks')}
@@ -2334,7 +2537,57 @@ export default function GalleryEdit(props) {
 						overflow: visible;
 						overflow-x: clip;
 					}
-					
+					${
+						arrowStyle === 'custom'
+							? `
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow {
+								${arrowCustomColor ? `color: ${KadenceColorOutput(arrowCustomColor)};` : ''}
+								${arrowCustomColorBackground ? `background-color: ${KadenceColorOutput(arrowCustomColorBackground)};` : ''}
+								${arrowCustomColorBorder ? `border-color: ${KadenceColorOutput(arrowCustomColorBorder)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:hover {
+								${arrowCustomColorHover ? `color: ${KadenceColorOutput(arrowCustomColorHover)};` : ''}
+								${arrowCustomColorBackgroundHover ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundHover)};` : ''}
+								${arrowCustomColorBorderHover ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderHover)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__arrow:active {
+								${arrowCustomColorActive ? `color: ${KadenceColorOutput(arrowCustomColorActive)};` : ''}
+								${arrowCustomColorBackgroundActive ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundActive)};` : ''}
+								${arrowCustomColorBorderActive ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderActive)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
+								opacity: unset;
+							}
+							`
+							: ''
+					}
+					${
+						dotStyle === 'custom'
+							? `
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page {
+								${dotCustomColor ? `background-color: ${KadenceColorOutput(dotCustomColor)};` : ''}
+								${dotCustomColorBorder ? `border-color: ${KadenceColorOutput(dotCustomColorBorder)};` : ''}
+								${dotCustomColorBorder ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page:hover {
+								${dotCustomColorHover ? `background-color: ${KadenceColorOutput(dotCustomColorHover)};` : ''}
+								${dotCustomColorBorderHover ? `border-color: ${KadenceColorOutput(dotCustomColorBorderHover)};` : ''}
+								${dotCustomColorBorderHover ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
+								opacity: unset;
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .splide .splide__pagination__page.is-active {
+								${dotCustomColorActive ? `background-color: ${KadenceColorOutput(dotCustomColorActive)};` : ''}
+								${dotCustomColorBorderActive ? `border-color: ${KadenceColorOutput(dotCustomColorBorderActive)};` : ''}
+								${dotCustomColorBorderActive ? `border-width: ${dotCustomBorderWidth ?? '2'}px; border-style: solid;` : ''}
+								opacity: unset;
+							}
+							`
+							: ''
+					}
 			`}
 		</style>
 	);
