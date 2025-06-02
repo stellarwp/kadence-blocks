@@ -111,7 +111,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback, proVersion }
 													'kadence-blocks',
 												)}
 												&nbsp;
-												<a href={'https://www.kadencewp.com/help-center/?post_type=docs&p=8510'}>
+												<a href={'https://www.kadencewp.com/help-center/docs/kadence-blocks/custom-icons/'}>
 													{__( 'Learn more about SVG security and supported SVG formatting.', 'kadence-blocks' )}
 												</a>
 											</p>

@@ -468,6 +468,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property('overflow', 'visible' );
 			$css->set_selector('.kb-gallery-wrap-id-' . $unique_id . '.wp-block-kadence-advancedgallery .kt-blocks-carousel');
 			$css->add_property('overflow', 'visible' );
+			if ( 'fluidcarousel' === $gallery_type ) {
+				$css->add_property('max-width', '100%' );
+			}
 		}
 
 		// Pro Arrow Settings
@@ -959,7 +962,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $image_ratio ) && ( 'grid' === $type || 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type ) ) {
 			$image_contain_classes[] = 'kb-has-image-ratio-' . $image_ratio;
 		}
-		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
+		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type || 'mosaic' === $type ) ? 'div' : 'li' );
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? wp_kses_post( $caption ) : '' ) . '</' . $fig_tag . '>';
 

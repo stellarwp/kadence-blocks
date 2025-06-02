@@ -173,12 +173,18 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.10 =
+Release Date: 5 June 2025
+* Fix: Broken link while uploading custom icons.
 
 = 3.5.9 =
 Release Date: 29th May 2025
 * Fix: Icon size preview for the Infobox block.
 * Update: Default aria-label for Search block input field.
 * Fix: Image file size for the image block default settings.
+* Fix: Mosaic (pro) gallery items accessibility issue.
+* Fix: Mosaic (pro) gallery default row height and reset.
+* Fix: Gallery fluid carousel overflow issue when gutter set.
 
 = 3.5.8 =
 Release Date: 15th May 2025
@@ -191,6 +197,7 @@ Release Date: 15th May 2025
 * Fix: Advanced header max width limited to 600px.
 * Fix: Vector block alignment when inside a section.
 * Fix: Circular progress bar alignment and max-width fixes.
+* Fix: Overflow issue in some mega menus.
 
 = 3.5.7 =
 Release Date: May 5th 2025
