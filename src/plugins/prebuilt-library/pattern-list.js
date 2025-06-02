@@ -521,6 +521,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 
 function PatternSortDropdown({ selectedItems }) {
 	const sortOptions = [
+		{ value: 'normal', label: __('Popular', 'kadence-blocks') },
 		{ value: 'id_desc', label: __('Latest', 'kadence-blocks') },
 		{ value: 'name_asc', label: __('Pattern Name A-Z', 'kadence-blocks') },
 		{ value: 'name_desc', label: __('Pattern Name Z-A', 'kadence-blocks') },
@@ -989,9 +990,9 @@ function PatternList({
 				if (variation === 11) {
 					variation = 0;
 				}
-				if (item?.html) {
-					item.html = replaceImages(
-						item.html,
+				if (patternsHTML?.[item?.slug]?.html) {
+					patternsHTML[item?.slug].html = replaceImages(
+						patternsHTML[item?.slug].html,
 						imageCollection,
 						item.categories,
 						item.id,
@@ -1027,11 +1028,21 @@ function PatternList({
 				if (variation === 11) {
 					variation = 0;
 				}
-				if (item?.html) {
-					item.html = replaceContent(item.html, allContext, item.categories, aiContext, item.variation, true);
+				if (patternsHTML?.[item?.slug]?.html) {
+					patternsHTML[item.slug].html = replaceContent(
+						patternsHTML[item.slug].html,
+						allContext,
+						item.categories,
+						aiContext,
+						item.variation,
+						true
+					);
 					// item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 					if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
-						item.html = replaceAddressContent(item.html, userData.locationInput);
+						patternsHTML[item?.slug].html = replaceAddressContent(
+							patternsHTML[item.slug].html,
+							userData.locationInput
+						);
 					}
 				} else {
 					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
@@ -1046,7 +1057,7 @@ function PatternList({
 			allPatterns.sort((a, b) => a.name.localeCompare(b.name));
 		} else if (sortBy === 'name_desc') {
 			allPatterns.sort((a, b) => b.name.localeCompare(a.name));
-		} else {
+		} else if (sortBy === 'id_desc') {
 			// Default sort: id_desc (Last Added)
 			allPatterns.sort((a, b) => b.id - a.id);
 		}

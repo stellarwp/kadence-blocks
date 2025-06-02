@@ -299,6 +299,7 @@ class PrebuiltModal extends Component {
 									clientId={this.props.clientId}
 									tab={active_tab}
 									libraries={actions}
+									onLibraryUpdate={() => this.setState({ reloadActions: true })}
 									reload={this.state.reload}
 									onReload={() => this.setState({ reload: false })}
 								/>
