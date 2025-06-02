@@ -244,7 +244,7 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			}
 		}
 		// Add filter to suppress query modifications for tribe_events when using post__in ordering
-		if ( $allow_multiple && in_array( 'tribe_events', $prop_array ) && $request->get_param( self::PROP_ORDER_BY ) === 'post__in' ) {
+		if ( $allow_multiple && is_array( $prop_array ) && in_array( 'tribe_events', $prop_array ) && $request->get_param( self::PROP_ORDER_BY ) === 'post__in' ) {
 			add_filter( 'pre_get_posts', function( $query ) {
 				$query->set( 'suppress_filters', true );
 				return $query;
