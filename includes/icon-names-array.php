@@ -269,6 +269,8 @@ return array(
 		'fe_zapOff',
 		'fe_zoomIn',
 		'fe_zoomOut',
+		'kb_amazon_outline',
+		'kb_bluesky_outline',
 	),
 	'Solid Icons' => array(
 		'ic_alignBottom',
@@ -1619,5 +1621,8 @@ return array(
 		'fas_wrench',
 		'fas_x-ray',
 		'fas_yen-sign',
+		'kb_amazon_black_circle_round',
+		'kb_bluesky_solid',
+		'kb_bluesky_round_circle',
 	),
 );
