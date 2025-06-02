@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.1
-Stable tag: 3.5.9
+Stable tag: 3.5.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.10 =
 Release Date: 5 June 2025
 * Fix: Broken link while uploading custom icons.
+* Add: Custom styles for carousel arrows and dots. (requires Pro)
 
 = 3.5.9 =
 Release Date: 29th May 2025
