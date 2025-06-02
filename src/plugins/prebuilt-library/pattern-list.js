@@ -989,9 +989,9 @@ function PatternList({
 				if (variation === 11) {
 					variation = 0;
 				}
-				if (item?.html) {
-					item.html = replaceImages(
-						item.html,
+				if (patternsHTML?.[item?.slug]?.html) {
+					patternsHTML[item?.slug].html = replaceImages(
+						patternsHTML[item?.slug].html,
 						imageCollection,
 						item.categories,
 						item.id,
@@ -1027,11 +1027,21 @@ function PatternList({
 				if (variation === 11) {
 					variation = 0;
 				}
-				if (item?.html) {
-					item.html = replaceContent(item.html, allContext, item.categories, aiContext, item.variation, true);
+				if (patternsHTML?.[item?.slug]?.html) {
+					patternsHTML[item.slug].html = replaceContent(
+						patternsHTML[item.slug].html,
+						allContext,
+						item.categories,
+						aiContext,
+						item.variation,
+						true
+					);
 					// item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 					if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
-						item.html = replaceAddressContent(item.html, userData.locationInput);
+						patternsHTML[item?.slug].html = replaceAddressContent(
+							patternsHTML[item.slug].html,
+							userData.locationInput
+						);
 					}
 				} else {
 					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
