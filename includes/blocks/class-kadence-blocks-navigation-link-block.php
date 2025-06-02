@@ -280,6 +280,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'height', $attributes['highlightIcon'][0]['size'] . 'px' );
 			$css->add_property( 'width', $attributes['highlightIcon'][0]['size'] . 'px' );
 		}
+
+		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .kb-nav-link-content[aria-disabled="true"]' );
+		$css->add_property( 'cursor', 'not-allowed' );
+		$css->add_property( 'pointer-events', 'none' );
+
 		return $css->css_output();
 	}
 
@@ -689,7 +694,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$link_class = implode( ' ', $link_classes );
 
-		$link_url = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
+		$is_disabled = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] );
+		$link_url = $is_disabled ? ' href="' . esc_url( $url ) . '" tabindex="-1" aria-disabled="true"' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
 			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}
@@ -704,18 +710,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
 		}
 
-		$tag = !empty($link_url) ? 'a' : 'span';
-		$tag_attributes = !empty($link_url) ? $link_url . ' ' . $link_target . ' ' . $link_rel : '';
-
 		return sprintf(
-			'<li %1$s><div class="kb-link-wrap"><%5$s class="%2$s"%3$s>%4$s</%5$s>%6$s</div>%7$s</li>',
+			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s>%6$s</a>%7$s</div>%8$s</li>',
 			$wrapper_attributes,
 			$link_class,
-			$tag_attributes,
+			$link_url,
+			$link_target,
+			$link_rel,
 			$title_html,
-			$tag,
 			$sub_menu_btn,
-			$sub_menu_content
+			$sub_menu_content,
 		);
 	}
 
