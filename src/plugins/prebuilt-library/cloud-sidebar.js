@@ -18,8 +18,8 @@ import { store as noticesStore } from '@wordpress/notices';
 import { useEffect, useState, useMemo } from '@wordpress/element';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { getAsyncData } from './data-fetch/get-async-data';
-import { Button, TextControl, SelectControl, VisuallyHidden, Spinner } from '@wordpress/components';
-import { previous, update, next, cloud, settings, sync } from '@wordpress/icons';
+import { Button, TextControl, SelectControl, VisuallyHidden, Spinner, Popover } from '@wordpress/components';
+import { previous, update, next, cloud, settings, update } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -72,7 +72,7 @@ function CloudLibrarySidebar({
 								>
 									<Button
 										iconPosition="left"
-										icon={sync}
+										icon={update}
 										text={__('Resync Connection Info', 'kadence-blocks')}
 										onClick={() => {
 											console.log('resync');

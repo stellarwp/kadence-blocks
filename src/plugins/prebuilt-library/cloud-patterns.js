@@ -27,7 +27,7 @@ import {
 	Spinner,
 	Dropdown,
 } from '@wordpress/components';
-import { previous, update, next, cloud, settings, sync } from '@wordpress/icons';
+import { previous, update, next, cloud, settings } from '@wordpress/icons';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { searchItems } from './search-items';
 import replaceMasks from './replace/replace-masks';
