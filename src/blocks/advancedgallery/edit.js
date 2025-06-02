@@ -2040,205 +2040,183 @@ export default function GalleryEdit(props) {
 										</TabPanel>
 									)}
 								</KadencePanelBody>
-								
 							)}
-							{(type === 'carousel' || type === 'fluidcarousel' || type ==='slider' || type === 'thumbslider') && (
+							{(type === 'carousel' ||
+								type === 'fluidcarousel' ||
+								type === 'slider' ||
+								type === 'thumbslider') && (
 								<KadencePanelBody
 									title={__('Arrow Settings', 'kadence-blocks')}
 									initialOpen={false}
 									panelName={'kb-gallery-carousel-settings'}
 								>
-																					<SelectControl
-													label={__('Arrow Style', 'kadence-blocks')}
-													options={galleryArrowsStyle}
-													value={arrowStyle}
-													onChange={(value) => setAttributes({ arrowStyle: value })}
-												/>
-												{kadence_blocks_params.pro === 'true' && 'custom' === arrowStyle && (
-													<>
-														<PopColorControl
-															label={__('Icon Color', 'kadence-blocks')}
-															value={arrowCustomColor ? arrowCustomColor : ''}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ arrowCustomColor: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={arrowCustomColorHover ? arrowCustomColorHover : ''}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({ arrowCustomColorHover: value });
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={
-																arrowCustomColorActive ? arrowCustomColorActive : ''
-															}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({ arrowCustomColorActive: value });
-															}}
-														/>
-														<PopColorControl
-															label={__('Background Color', 'kadence-blocks')}
-															value={
-																arrowCustomColorBackground
-																	? arrowCustomColorBackground
-																	: ''
-															}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ arrowCustomColorBackground: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={
-																arrowCustomColorBackgroundHover
-																	? arrowCustomColorBackgroundHover
-																	: ''
-															}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({
-																	arrowCustomColorBackgroundHover: value,
-																});
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={
-																arrowCustomColorBackgroundActive
-																	? arrowCustomColorBackgroundActive
-																	: ''
-															}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({
-																	arrowCustomColorBackgroundActive: value,
-																});
-															}}
-														/>
-														<PopColorControl
-															label={__('Border Color', 'kadence-blocks')}
-															value={arrowCustomColorBorder ? arrowCustomColorBorder : ''}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ arrowCustomColorBorder: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={
-																arrowCustomColorBorderHover
-																	? arrowCustomColorBorderHover
-																	: ''
-															}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({
-																	arrowCustomColorBorderHover: value,
-																});
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={
-																arrowCustomColorBorderActive
-																	? arrowCustomColorBorderActive
-																	: ''
-															}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({
-																	arrowCustomColorBorderActive: value,
-																});
-															}}
-														/>
-														<RangeControl
-															label={__('Border Width', 'kadence-blocks')}
-															value={arrowCustomBorderWidth}
-															onChange={(value) =>
-																setAttributes({ arrowCustomBorderWidth: value })
-															}
-															min={0}
-															max={10}
-															step={1}
-														/>
-													</>
-												)}
-												<SelectControl
-													label={
-														'thumbslider' === type
-															? __('Main Arrow Position', 'kadence-blocks')
-															: __('Arrow Position', 'kadence-blocks')
-													}
-													options={galleryArrowsPosition}
-													value={arrowPosition}
-													onChange={(value) => setAttributes({ arrowPosition: value })}
-												/>
-												{kadence_blocks_params.pro === 'true' && galleryArrowOptions}
-												{type !== 'thumbslider' && (
-													<SelectControl
-														label={__('Dot Style', 'kadence-blocks')}
-														options={galleryDotStyle}
-														value={dotStyle}
-														onChange={(value) => setAttributes({ dotStyle: value })}
-													/>
-												)}
-												{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && (
-													<>
-														<PopColorControl
-															label={__('Dot Color', 'kadence-blocks')}
-															value={dotCustomColor ? dotCustomColor : ''}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ dotCustomColor: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={dotCustomColorHover ? dotCustomColorHover : ''}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({ dotCustomColorHover: value });
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={dotCustomColorActive ? dotCustomColorActive : ''}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({ dotCustomColorActive: value });
-															}}
-														/>
-														<PopColorControl
-															label={__('Border Color', 'kadence-blocks')}
-															value={dotCustomColorBorder ? dotCustomColorBorder : ''}
-															default={''}
-															onChange={(value) => {
-																setAttributes({ dotCustomColorBorder: value });
-															}}
-															swatchLabel2={__('Hover Color', 'kadence-blocks')}
-															value2={
-																dotCustomColorBorderHover
-																	? dotCustomColorBorderHover
-																	: ''
-															}
-															default2={''}
-															onChange2={(value) => {
-																setAttributes({ dotCustomColorBorderHover: value });
-															}}
-															swatchLabel3={__('Active Color', 'kadence-blocks')}
-															value3={
-																dotCustomColorBorderActive
-																	? dotCustomColorBorderActive
-																	: ''
-															}
-															default3={''}
-															onChange3={(value) => {
-																setAttributes({ dotCustomColorBorderActive: value });
-															}}
-														/>
-														<RangeControl
-															label={__('Border Width', 'kadence-blocks')}
-															value={dotCustomBorderWidth}
-															onChange={(value) =>
-																setAttributes({ dotCustomBorderWidth: value })
-															}
-															min={0}
-															max={10}
-															step={1}
-														/>
-													</>
-												)}
+									<SelectControl
+										label={__('Arrow Style', 'kadence-blocks')}
+										options={galleryArrowsStyle}
+										value={arrowStyle}
+										onChange={(value) => setAttributes({ arrowStyle: value })}
+									/>
+									{kadence_blocks_params.pro === 'true' && 'custom' === arrowStyle && (
+										<>
+											<PopColorControl
+												label={__('Icon Color', 'kadence-blocks')}
+												value={arrowCustomColor ? arrowCustomColor : ''}
+												default={''}
+												onChange={(value) => {
+													setAttributes({ arrowCustomColor: value });
+												}}
+												swatchLabel2={__('Hover Color', 'kadence-blocks')}
+												value2={arrowCustomColorHover ? arrowCustomColorHover : ''}
+												default2={''}
+												onChange2={(value) => {
+													setAttributes({ arrowCustomColorHover: value });
+												}}
+												swatchLabel3={__('Active Color', 'kadence-blocks')}
+												value3={arrowCustomColorActive ? arrowCustomColorActive : ''}
+												default3={''}
+												onChange3={(value) => {
+													setAttributes({ arrowCustomColorActive: value });
+												}}
+											/>
+											<PopColorControl
+												label={__('Background Color', 'kadence-blocks')}
+												value={arrowCustomColorBackground ? arrowCustomColorBackground : ''}
+												default={''}
+												onChange={(value) => {
+													setAttributes({ arrowCustomColorBackground: value });
+												}}
+												swatchLabel2={__('Hover Color', 'kadence-blocks')}
+												value2={
+													arrowCustomColorBackgroundHover
+														? arrowCustomColorBackgroundHover
+														: ''
+												}
+												default2={''}
+												onChange2={(value) => {
+													setAttributes({
+														arrowCustomColorBackgroundHover: value,
+													});
+												}}
+												swatchLabel3={__('Active Color', 'kadence-blocks')}
+												value3={
+													arrowCustomColorBackgroundActive
+														? arrowCustomColorBackgroundActive
+														: ''
+												}
+												default3={''}
+												onChange3={(value) => {
+													setAttributes({
+														arrowCustomColorBackgroundActive: value,
+													});
+												}}
+											/>
+											<PopColorControl
+												label={__('Border Color', 'kadence-blocks')}
+												value={arrowCustomColorBorder ? arrowCustomColorBorder : ''}
+												default={''}
+												onChange={(value) => {
+													setAttributes({ arrowCustomColorBorder: value });
+												}}
+												swatchLabel2={__('Hover Color', 'kadence-blocks')}
+												value2={arrowCustomColorBorderHover ? arrowCustomColorBorderHover : ''}
+												default2={''}
+												onChange2={(value) => {
+													setAttributes({
+														arrowCustomColorBorderHover: value,
+													});
+												}}
+												swatchLabel3={__('Active Color', 'kadence-blocks')}
+												value3={
+													arrowCustomColorBorderActive ? arrowCustomColorBorderActive : ''
+												}
+												default3={''}
+												onChange3={(value) => {
+													setAttributes({
+														arrowCustomColorBorderActive: value,
+													});
+												}}
+											/>
+											<RangeControl
+												label={__('Border Width', 'kadence-blocks')}
+												value={arrowCustomBorderWidth}
+												onChange={(value) => setAttributes({ arrowCustomBorderWidth: value })}
+												min={0}
+												max={10}
+												step={1}
+											/>
+										</>
+									)}
+									<SelectControl
+										label={
+											'thumbslider' === type
+												? __('Main Arrow Position', 'kadence-blocks')
+												: __('Arrow Position', 'kadence-blocks')
+										}
+										options={galleryArrowsPosition}
+										value={arrowPosition}
+										onChange={(value) => setAttributes({ arrowPosition: value })}
+									/>
+									{kadence_blocks_params.pro === 'true' && galleryArrowOptions}
+									{type !== 'thumbslider' && (
+										<SelectControl
+											label={__('Dot Style', 'kadence-blocks')}
+											options={galleryDotStyle}
+											value={dotStyle}
+											onChange={(value) => setAttributes({ dotStyle: value })}
+										/>
+									)}
+									{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && (
+										<>
+											<PopColorControl
+												label={__('Dot Color', 'kadence-blocks')}
+												value={dotCustomColor ? dotCustomColor : ''}
+												default={''}
+												onChange={(value) => {
+													setAttributes({ dotCustomColor: value });
+												}}
+												swatchLabel2={__('Hover Color', 'kadence-blocks')}
+												value2={dotCustomColorHover ? dotCustomColorHover : ''}
+												default2={''}
+												onChange2={(value) => {
+													setAttributes({ dotCustomColorHover: value });
+												}}
+												swatchLabel3={__('Active Color', 'kadence-blocks')}
+												value3={dotCustomColorActive ? dotCustomColorActive : ''}
+												default3={''}
+												onChange3={(value) => {
+													setAttributes({ dotCustomColorActive: value });
+												}}
+											/>
+											<PopColorControl
+												label={__('Border Color', 'kadence-blocks')}
+												value={dotCustomColorBorder ? dotCustomColorBorder : ''}
+												default={''}
+												onChange={(value) => {
+													setAttributes({ dotCustomColorBorder: value });
+												}}
+												swatchLabel2={__('Hover Color', 'kadence-blocks')}
+												value2={dotCustomColorBorderHover ? dotCustomColorBorderHover : ''}
+												default2={''}
+												onChange2={(value) => {
+													setAttributes({ dotCustomColorBorderHover: value });
+												}}
+												swatchLabel3={__('Active Color', 'kadence-blocks')}
+												value3={dotCustomColorBorderActive ? dotCustomColorBorderActive : ''}
+												default3={''}
+												onChange3={(value) => {
+													setAttributes({ dotCustomColorBorderActive: value });
+												}}
+											/>
+											<RangeControl
+												label={__('Border Width', 'kadence-blocks')}
+												value={dotCustomBorderWidth}
+												onChange={(value) => setAttributes({ dotCustomBorderWidth: value })}
+												min={0}
+												max={10}
+												step={1}
+											/>
+										</>
+									)}
 								</KadencePanelBody>
 							)}
 						</>
