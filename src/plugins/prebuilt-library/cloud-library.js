@@ -4,18 +4,13 @@
 const { localStorage } = window;
 
 /**
- * External dependencies
- */
-import Masonry from 'react-masonry-css';
-
-/**
  * WordPress dependencies
  */
 import { useSelect, withDispatch, useDispatch } from '@wordpress/data';
 import { parse, rawHandler } from '@wordpress/blocks';
 import { debounce, isEqual } from 'lodash';
 import { store as noticesStore } from '@wordpress/notices';
-import { Fragment, useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useMemo } from '@wordpress/element';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { getAsyncData } from './data-fetch/get-async-data';
 import { Button, TextControl, SelectControl, VisuallyHidden, Spinner } from '@wordpress/components';
@@ -27,42 +22,62 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { SafeParseJSON } from '@kadence/helpers';
 
-function CloudSections({ importContent, clientId, reload = false, onReload, tab, libraries }) {
-	const [category, setCategory] = useState([]);
-	const [pageCategory, setPageCategory] = useState('');
-	const [pageStyles, setPageStyles] = useState();
+import CloudLibrarySidebar from './cloud-sidebar';
+import CloudLibraryPatterns from './cloud-patterns';
+
+function StitchPageContent(rows) {
+	if (!rows) {
+		return '';
+	}
+	let tempArray = [];
+	let tempContent = '';
+	tempArray = Object.keys(rows).map(function (key, index) {
+		const rowContent = rows[key]?.pattern_content || '';
+		return rowContent;
+	});
+	Object.keys(tempArray).map(function (key, index) {
+		tempContent = tempContent.concat(tempArray[key]);
+	});
+	return tempContent;
+}
+
+function CloudSections({ importContent, clientId, reload = false, onReload, onLibraryUpdate, tab, libraries }) {
+	const [category, setCategory] = useState({});
+	const [categorySlug, setCategorySlug] = useState('');
+	const [pageCategorySlug, setPageCategorySlug] = useState('');
+	const [pageCategory, setPageCategory] = useState({});
 	const [search, setSearch] = useState(null);
 	const [subTab, setSubTab] = useState('');
 	const [patterns, setPatterns] = useState(false);
 	const [pages, setPages] = useState(false);
 	const [sidebar, setSidebar] = useState('');
-	const [context, setContext] = useState('');
-	const [credits, setCredits] = useState('');
-	const [contextTab, setContextTab] = useState('');
-	const [localContexts, setLocalContexts] = useState(false);
 	const [imageCollection, setImageCollection] = useState({});
-	const [teamCollection, setTeamCollection] = useState({});
+	const [sortBy, setSortBy] = useState('');
 	const [categories, setCategories] = useState({});
 	const [categoryListOptions, setCategoryListOptions] = useState([]);
-	const [styleListOptions, setStyleListOptions] = useState([]);
 	const [stateGridSize, setGridSize] = useState('');
-	const [contextListOptions, setContextListOptions] = useState([]);
 	const [pagesCategories, setPagesCategories] = useState({});
 	const [pageCategoryListOptions, setPageCategoryListOptions] = useState([]);
-	const [pageContextListOptions, setPageContextListOptions] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isImporting, setIsImporting] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const [isErrorType, setIsErrorType] = useState('general');
 
+	const currentLibrary = useMemo(
+		() =>
+			libraries.filter((obj) => {
+				return obj.slug === tab;
+			}),
+		[tab, libraries]
+	);
+	const hasPages = currentLibrary?.[0]?.pages;
+
 	const activeStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-	const savedSelectedCategory =
-		undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all';
-	const savedSelectedPageCategory =
-		undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'home';
-	const selectedCategory = category ? category : savedSelectedCategory;
-	const selectedPageCategory = pageCategory ? pageCategory : savedSelectedPageCategory;
-	const selectedSubTab = subTab ? subTab : 'patterns';
+	const savedSelectedSubTab =
+		hasPages && undefined !== activeStorage?.kbSubTab && '' !== activeStorage?.kbSubTab
+			? activeStorage.kbSubTab
+			: 'patterns';
+	const selectedSubTab = subTab ? subTab : savedSelectedSubTab;
 
 	const { createErrorNotice } = useDispatch(noticesStore);
 
@@ -78,68 +93,20 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		);
 	}, [categories]);
 
-	// Setting style options
 	useEffect(() => {
-		const patternStyles = Object.keys(patterns).map(function (key) {
-			return patterns[key].styles;
-		});
+		setPageCategoryListOptions(
+			Object.keys(pagesCategories).map(function (key, index) {
+				return {
+					value: 'category' === key ? 'all' : key,
+					label: 'category' === key ? __('All', 'kadence-blocks') : pagesCategories[key],
+				};
+			})
+		);
+	}, [pagesCategories]);
+	const { getPatterns, getPattern, processPattern, getPatternCategories, getConnection, updateConnections } =
+		getAsyncData();
 
-		// If array is empty, return
-		if (!patternStyles.length) {
-			return;
-		}
-
-		// Clear duplicates
-		const uniqueMap = new Map();
-		patternStyles.forEach((item) => {
-			if (!item) {
-				return;
-			}
-			const key = Object.keys(item)[0];
-			const value = item[key];
-			uniqueMap.set(value, item);
-		});
-
-		const uniqueArray = Array.from(uniqueMap.values());
-		const styleOptions = uniqueArray.map(function (key) {
-			const keyValue = Object.keys(key)[0];
-			const keyName = key[keyValue];
-			return { value: keyValue, label: keyName };
-		});
-
-		setStyleListOptions(styleOptions);
-	}, [patterns]);
-
-	// useEffect( () => {
-	// 	setPageCategoryListOptions(
-	// 		Object.keys( pagesCategories ).map( function ( key, index ) {
-	// 			return {
-	// 				value: 'category' === key ? 'all' : key,
-	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
-	// 			};
-	// 		} )
-	// 	);
-	// 	const tempPageContexts = [];
-	// 	Object.keys( pagesCategories ).map( function ( key, index ) {
-	// 		if ( 'category' !== key ) {
-	// 			tempPageContexts.push( {
-	// 				value: 'category' === key ? 'all' : key,
-	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
-	// 			} );
-	// 		}
-	// 	} );
-	// 	setPageContextListOptions( tempPageContexts );
-	// }, [ pagesCategories ] );
-	const { getPatterns, getPattern, processPattern, getPatternCategories } = getAsyncData();
-	const forceRefreshLibrary = () => {
-		if (!isLoading && patterns) {
-			setPatterns(JSON.parse(JSON.stringify(patterns)));
-		}
-		if (!isLoading && pages) {
-			setPages(JSON.parse(JSON.stringify(pages)));
-		}
-	};
-	async function onInsertContent(pattern) {
+	async function onInsertContent(pattern, type = 'pattern') {
 		setIsImporting(true);
 		// const patternSend = {
 		// 	id: pattern.id,
@@ -174,7 +141,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		if (action?.[0]?.url && pattern?.id) {
 			const response = await getPattern(
 				tab,
-				'pattern',
+				type,
 				pattern?.id ? pattern.id : '',
 				'light',
 				action?.[0]?.url ? action[0].url : '',
@@ -183,10 +150,20 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			if (response) {
 				try {
 					const tempContent = JSON.parse(response);
-					if (tempContent) {
+					// Check if the content is an array of objects.
+					if ('page' === type && tempContent?.rows) {
+						pattern.content = StitchPageContent(tempContent.rows);
+					} else {
 						pattern.content = tempContent;
 					}
-				} catch (e) {}
+				} catch (e) {
+					console.log('error', e);
+					if (!pattern?.content) {
+						setIsError(true);
+						setIsErrorType('general');
+						setIsImporting(false);
+					}
+				}
 			}
 		}
 		if (pattern?.content) {
@@ -240,7 +217,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		}
 	}
 
-	async function getLibraryContent(tempReload) {
+	async function getLibraryContent(tempSubTab, tempReload) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
@@ -280,11 +257,12 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			tab,
 			tempReload,
 			action?.[0]?.url ? action[0].url : '',
-			action?.[0]?.key ? action[0].key : ''
+			action?.[0]?.key ? action[0].key : '',
+			tempSubTab === 'pages' ? 'pages' : ''
 		);
 		if (response === 'failed') {
 			console.log('Permissions Error getting library Content');
-			if (subTab === 'pages') {
+			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
@@ -294,7 +272,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			setIsLoading(false);
 		} else if (response === 'error') {
 			console.log('Error getting library Content.');
-			if (subTab === 'pages') {
+			if (tempSubTab === 'pages') {
 				setPages('error');
 			} else {
 				setPatterns('error');
@@ -304,31 +282,84 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		} else {
 			const o = SafeParseJSON(response, false);
 			if (o) {
+				if (tempReload && tempSubTab !== 'pages') {
+					const tempCloudSettings = kadence_blocks_params?.cloud_settings
+						? JSON.parse(kadence_blocks_params.cloud_settings)
+						: {};
+					if (tempCloudSettings && tempCloudSettings?.connections) {
+						const currentConnectionKey = tempCloudSettings.connections.findIndex((obj) => {
+							return obj.slug === tab;
+						});
+						if (tempCloudSettings?.connections?.[currentConnectionKey]) {
+							const getConnectionData = await getConnection(
+								tab,
+								action?.[0]?.url ? action[0].url : '',
+								action?.[0]?.key ? action[0].key : ''
+							);
+							const conData = SafeParseJSON(getConnectionData, false);
+							let shouldUpdate = false;
+							// Update the connection data name and pages if they are different.
+							if (conData) {
+								if (
+									conData?.name &&
+									tempCloudSettings.connections[currentConnectionKey]?.title !== conData.name
+								) {
+									tempCloudSettings.connections[currentConnectionKey].title = conData.name;
+									shouldUpdate = true;
+								}
+								if (tempCloudSettings.connections[currentConnectionKey]?.pages !== conData?.pages) {
+									if (!conData?.pages) {
+										tempCloudSettings.connections[currentConnectionKey].pages = '';
+									} else {
+										tempCloudSettings.connections[currentConnectionKey].pages = conData.pages;
+									}
+									shouldUpdate = true;
+								}
+								if (shouldUpdate) {
+									// Update the cloud settings.
+									kadence_blocks_params.cloud_settings = JSON.stringify(tempCloudSettings);
+									const getConnectionUpdate = await updateConnections(tempCloudSettings);
+									if (getConnectionUpdate !== 'failed') {
+										onLibraryUpdate();
+									}
+								}
+							}
+						}
+					}
+				}
 				const patternCategories = await getPatternCategories(
 					tab,
 					tempReload,
 					action?.[0]?.url ? action[0].url : '',
-					action?.[0]?.key ? action[0].key : ''
+					action?.[0]?.key ? action[0].key : '',
+					tempSubTab === 'pages' ? 'pages' : ''
 				);
 				if (patternCategories) {
 					const catOrder = SafeParseJSON(patternCategories, false);
-					if (subTab === 'pages') {
+					if (tempSubTab === 'pages') {
 						const pageCats = catOrder ? catOrder : {};
+						const tempCats = {};
 						{
 							Object.keys(o).map(function (key, index) {
 								if (o[key].categories && typeof o[key].categories === 'object') {
 									{
 										Object.keys(o[key].categories).map(function (ckey, i) {
-											if (!pageCats.hasOwnProperty(ckey)) {
-												pageCats[ckey] = o[key].categories[ckey];
+											if (!tempCats.hasOwnProperty(ckey)) {
+												tempCats[ckey] = o[key].categories[ckey];
 											}
 										});
 									}
 								}
 							});
 						}
+						Object.keys(pageCats).map(function (key, index) {
+							if (!tempCats.hasOwnProperty(key)) {
+								delete pageCats[key];
+							}
+						});
+						const cats = { ...{ all: 'All' }, ...pageCats, ...tempCats };
 						setPages(o);
-						setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
+						setPagesCategories(JSON.parse(JSON.stringify(cats)));
 					} else {
 						const newCatOrder = catOrder ? catOrder : {};
 						const tempCats = {};
@@ -355,7 +386,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 						setCategories(JSON.parse(JSON.stringify(cats)));
 					}
 				} else {
-					if (subTab === 'pages') {
+					if (tempSubTab === 'pages') {
 						setPages('error');
 					} else {
 						setPatterns('error');
@@ -364,7 +395,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 				}
 			} else {
 				console.log('error, library content incorrect', response);
-				if (subTab === 'pages') {
+				if (tempSubTab === 'pages') {
 					setPages('error');
 				} else {
 					setPatterns('error');
@@ -377,294 +408,137 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 	useEffect(() => {
 		if (reload && !isLoading) {
 			onReload();
-			getLibraryContent(true);
+			getLibraryContent(selectedSubTab, true);
 		} else if (!isLoading) {
-			getLibraryContent(false);
+			getLibraryContent(selectedSubTab, false);
 		}
-	}, [reload, tab]);
-	const activePanel = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-	const sidebar_saved_enabled = activePanel && activePanel.sidebar ? activePanel.sidebar : 'show';
-	const sidebarEnabled = sidebar ? sidebar : sidebar_saved_enabled;
-	const roundAccurately = (number, decimalPlaces) =>
-		Number(Math.round(Number(number + 'e' + decimalPlaces)) + 'e' + decimalPlaces * -1);
-	const categoryItems = categories;
-	const savedGridSize = activePanel && activePanel.grid ? activePanel.grid : 'normal';
-	const gridSize = stateGridSize ? stateGridSize : savedGridSize;
-	const catOptions = Object.keys(categoryItems).map(function (key, index) {
-		return { value: 'category' === key ? 'all' : key, label: categoryItems[key] };
-	});
-	const sideCatOptions = Object.keys(categoryItems).map(function (key, index) {
-		return {
-			value: 'category' === key ? 'all' : key,
-			label: 'category' === key ? __('All', 'kadence-blocks') : categoryItems[key],
-		};
-	});
-	const getActiveCat = category?.[activePanel.activeTab] ? category[activePanel.activeTab] : 'all';
-	let breakpointColumnsObj = {
-		default: 5,
-		1600: 4,
-		1200: 3,
-		500: 2,
-	};
-	if (gridSize === 'large') {
-		breakpointColumnsObj = {
-			default: 4,
-			1600: 3,
-			1200: 2,
-			500: 1,
-		};
-	}
-	if (sidebarEnabled === 'show') {
-		breakpointColumnsObj = {
-			default: 4,
-			1600: 3,
-			1200: 2,
-			500: 1,
-		};
-		if (gridSize === 'large') {
-			breakpointColumnsObj = {
-				default: 3,
-				1600: 2,
-				1200: 2,
-				500: 1,
-			};
-		}
-	}
+	}, [reload, tab, selectedSubTab]);
 	return (
-		<div className={`kt-prebuilt-content${sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : ''}`}>
-			{sidebarEnabled === 'show' && (
-				<div className="kt-prebuilt-sidebar kb-cloud-library-sidebar">
-					<div className="kb-library-sidebar-top">
-						<TextControl
-							type="text"
-							value={search}
-							placeholder={__('Search')}
-							onChange={(value) => setSearch(value)}
-						/>
-						<Button
-							className={'kb-trigger-sidebar'}
-							icon={previous}
-							onClick={() => {
-								const activeSidebar = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								activeSidebar.sidebar = 'hide';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
-								setSidebar('hide');
-							}}
-						/>
-					</div>
-					<div className="kb-library-sidebar-bottom">
-						{sideCatOptions.map((tempCat, index) => (
-							<Button
-								key={`${tempCat.value}-${index}`}
-								className={'kb-category-button' + (getActiveCat === tempCat.value ? ' is-pressed' : '')}
-								aria-pressed={getActiveCat === tempCat.value}
-								onClick={() => {
-									const newCat = category;
-									newCat[activePanel.activeTab] = tempCat.value;
-									setCategory(newCat);
-									forceRefreshLibrary();
-								}}
-							>
-								{tempCat.label}
-							</Button>
-						))}
-					</div>
-				</div>
-			)}
-			{sidebarEnabled !== 'show' && (
-				<div className="kt-prebuilt-header kb-library-header">
-					<div className="kb-library-header-left">
-						<Button
-							className={'kb-trigger-sidebar'}
-							icon={next}
-							onClick={() => {
-								const activeSidebar = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								activeSidebar.sidebar = 'show';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
-								setSidebar('show');
-							}}
-						/>
-						<SelectControl
-							className={'kb-library-header-cat-select'}
-							value={getActiveCat}
-							options={catOptions}
-							onChange={(value) => {
-								const newCat = category;
-								newCat[activePanel.activeTab] = value;
-								setCategory(newCat);
-								forceRefreshLibrary();
-							}}
-						/>
-					</div>
-					<div className="kb-library-header-right">
-						<Button
-							icon={
-								<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-									<path d="M8 15h7V8H8v7zm9-7v7h7V8h-7zm0 16h7v-7h-7v7zm-9 0h7v-7H8v7z"></path>
-								</svg>
-							}
-							className={
-								'kb-grid-btns kb-trigger-large-grid-size' + (gridSize === 'large' ? ' is-pressed' : '')
-							}
-							aria-pressed={gridSize === 'large'}
-							onClick={() => {
-								const activeSidebar = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								activeSidebar.grid = 'large';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
-								setGridSize('large');
-							}}
-						/>
-						<Button
-							icon={
-								<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-									<path d="M8 12h4V8H8v4zm6 0h4V8h-4v4zm6-4v4h4V8h-4zM8 18h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4zM8 24h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4z"></path>
-								</svg>
-							}
-							className={
-								'kb-grid-btns kb-trigger-normal-grid-size' +
-								(gridSize === 'normal' ? ' is-pressed' : '')
-							}
-							aria-pressed={gridSize === 'normal'}
-							onClick={() => {
-								const activeSidebar = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								activeSidebar.grid = 'normal';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
-								setGridSize('normal');
-							}}
-						/>
-						<TextControl
-							type="text"
-							value={search}
-							placeholder={__('Search')}
-							onChange={(value) => setSearch(value)}
-						/>
-					</div>
-				</div>
-			)}
-			{isImporting || isLoading || false === patterns || isError ? (
+		<div className={`kt-prebuilt-content kb-prebuilt-has-sidebar kb-cloud-pattern-library`}>
+			<CloudLibrarySidebar
+				connection={currentLibrary?.[0]}
+				pageCategory={pageCategory || {}}
+				category={category || {}}
+				subTab={selectedSubTab}
+				setSubTab={setSubTab}
+				setPageCategory={(newCat) => {
+					setPageCategory(newCat);
+					setPageCategorySlug(newCat[currentLibrary?.[0]?.slug]);
+				}}
+				pageCategories={pageCategoryListOptions}
+				categories={categoryListOptions}
+				setCategory={(newCat) => {
+					setCategory(newCat);
+					// This is required to refresh the patterns when the category is changed.
+					setCategorySlug(newCat[currentLibrary?.[0]?.slug]);
+				}}
+				search={search}
+			/>
+			{selectedSubTab === 'pages' ? (
 				<>
-					{!isError && isLoading && <Spinner />}
-					{!isError && isImporting && (
-						<div className="preparing-importing-images">
-							<Spinner />
-							<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
-						</div>
-					)}
-					{isError && (
-						<div>
-							<h2 style={{ textAlign: 'center' }}>
-								{__(
-									'Error, Unable to access library database, please try re-syncing',
-									'kadence-blocks'
-								)}
-							</h2>
-							<div style={{ textAlign: 'center' }}>
-								<Button
-									className="kt-reload-templates"
-									icon={update}
-									onClick={() => getLibraryContent(true)}
-								>
-									{__(' Sync with Cloud', 'kadence-blocks')}
-								</Button>
-							</div>
-						</div>
+					{isImporting || isLoading || false === pages || isError ? (
+						<>
+							{!isError && isLoading && (
+								<div className="kb-loading-library">
+									<Spinner />
+								</div>
+							)}
+							{!isError && isImporting && (
+								<div className="preparing-importing-images">
+									<Spinner />
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
+								</div>
+							)}
+							{isError && isErrorType === 'general' && (
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										)}
+									</h2>
+									<div style={{ textAlign: 'center' }}>
+										<Button
+											className="kt-reload-templates"
+											icon={update}
+											onClick={() =>
+												!isLoading ? getLibraryContent(selectedSubTab, true) : null
+											}
+										>
+											{__(' Sync with Cloud', 'kadence-blocks')}
+										</Button>
+									</div>
+								</div>
+							)}
+							{isError && isErrorType === 'reload' && (
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library, please reload this page in your browser.',
+											'kadence-blocks'
+										)}
+									</h2>
+								</div>
+							)}
+							{/* { false === pages && (
+								<>{ loadPagesData() }</>
+							) } */}
+						</>
+					) : (
+						<CloudLibraryPatterns
+							connection={currentLibrary?.[0]}
+							category={pageCategory || {}}
+							patterns={pages}
+							search={search}
+							onInsertContent={(pattern) => onInsertContent(pattern, 'page')}
+							setSearch={setSearch}
+						/>
 					)}
 				</>
 			) : (
-				<div className="kb-cloud-library-outer-wrap">
-					<Masonry
-						breakpointCols={breakpointColumnsObj}
-						className={`kb-css-masonry kb-cloud-library-wrap`}
-						columnClassName="kb-css-masonry_column"
-						// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
-						// elementType={ 'div' }
-						// options={ {
-						// 	transitionDuration: 0,
-						// } }
-						// disableImagesLoaded={ false }
-						// enableResizableChildren={ true }
-						// updateOnEachImageLoad={ false }
-					>
-						{Object.keys(patterns).map(function (key, index) {
-							const name = patterns[key].name;
-							const slug = patterns[key].slug;
-							const image = patterns[key].image;
-							const imageWidth = patterns[key].imageW;
-							const imageHeight = patterns[key].imageH;
-							const itemCategories = patterns[key].categories;
-							const keywords = patterns[key].keywords;
-							const description = patterns[key].description;
-							const pro = patterns[key].pro;
-							const locked = patterns[key].locked;
-							const descriptionId = `${slug}_kb_cloud__item-description`;
-							if (
-								('all' === getActiveCat || Object.keys(itemCategories).includes(getActiveCat)) &&
-								(!search ||
-									(keywords &&
-										keywords.some((x) => x.toLowerCase().includes(search.toLowerCase()))) ||
-									(name && name.toLowerCase().includes(search.toLowerCase())))
-							) {
-								return (
-									<div className="kb-css-masonry-inner" key={index}>
+				<>
+					{isImporting || isLoading || false === patterns || isError ? (
+						<>
+							{!isError && isLoading && <Spinner />}
+							{!isError && isImporting && (
+								<div className="preparing-importing-images">
+									<Spinner />
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
+								</div>
+							)}
+							{isError && (
+								<div>
+									<h2 style={{ textAlign: 'center' }}>
+										{__(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										)}
+									</h2>
+									<div style={{ textAlign: 'center' }}>
 										<Button
-											key={key}
-											className="kb-css-masonry-btn"
-											aria-label={sprintf(
-												/* translators: %s is Prebuilt Name */
-												__('Add %s', 'kadence-blocks'),
-												name
-											)}
-											aria-describedby={description ? descriptionId : undefined}
-											isDisabled={locked}
-											onClick={() => (!locked ? onInsertContent(patterns[key]) : '')}
+											className="kt-reload-templates"
+											icon={update}
+											onClick={() => getLibraryContent(selectedSubTab, true)}
 										>
-											<div
-												className="kb-css-masonry-btn-inner"
-												style={{
-													paddingBottom:
-														imageWidth && imageHeight
-															? roundAccurately((imageHeight / imageWidth) * 100, 2) + '%'
-															: undefined,
-												}}
-											>
-												<img src={image} loading={'lazy'} alt={name} />
-												<span
-													className="kb-import-btn-title"
-													dangerouslySetInnerHTML={{ __html: name }}
-												/>
-											</div>
+											{__(' Sync with Cloud', 'kadence-blocks')}
 										</Button>
-										{!!description && (
-											<VisuallyHidden id={descriptionId}>{description}</VisuallyHidden>
-										)}
-										{undefined !== pro && pro && (
-											<>
-												<span className="kb-pro-template">{__('Pro', 'kadence-blocks')}</span>
-												{locked && (
-													<div className="kb-popover-pro-notice">
-														<h2>{__('Pro required for this item', 'kadence-blocks')} </h2>
-													</div>
-												)}
-											</>
-										)}
 									</div>
-								);
-							}
-						})}
-					</Masonry>
-				</div>
+								</div>
+							)}
+						</>
+					) : (
+						<CloudLibraryPatterns
+							connection={currentLibrary?.[0]}
+							category={category || {}}
+							patterns={patterns}
+							search={search}
+							onInsertContent={onInsertContent}
+							sortBy={sortBy}
+							setSearch={setSearch}
+							setSortBy={setSortBy}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	);
