@@ -129,6 +129,12 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			$css->set_selector( 'ul.menu .kb-submit-field .kb-btn' . $class_id . '.kb-button' );
 			$css->add_property( 'width', 'initial' );
 		}
+
+		if( $width_type === 'fixed' && !empty( $attributes['inheritStyles'] ) && 'inherit' === $attributes['inheritStyles'] ) {
+			$css->set_selector( '.kb-submit-field.kb-field' . $class_id );
+			$css->add_property( 'display', 'contents' );
+		}
+
 		$css->set_selector( '.kb-submit-field .kb-btn' . $class_id . '.kb-button' );
 		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
