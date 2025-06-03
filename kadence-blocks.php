@@ -187,6 +187,6 @@ add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
  * Load the plugin textdomain
  */
 function kadence_blocks_lang(): void {
-	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain( 'kadence-blocks', false, basename( __DIR__ ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );
