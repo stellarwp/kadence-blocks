@@ -131,7 +131,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'second_prop' => '--kb-nav-dropdown-border-top-right-radius',
 				'third_prop'  => '--kb-nav-dropdown-border-bottom-right-radius',
 				'fourth_prop' => '--kb-nav-dropdown-border-bottom-left-radius',
-			] 
+			]
 		);
 		$css->render_border_styles(
 			$attributes,
@@ -140,7 +140,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			[
 				'renderAsVars' => true,
 				'varBase'      => '--kb-nav-dropdown-',
-			] 
+			]
 		);
 		if ( ! empty( $attributes['mediaStyle'][0] ) ) {
 			$css->render_measure_output(
@@ -156,7 +156,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					'second_prop' => '--kb-nav-link-media-container-padding-right',
 					'third_prop'  => '--kb-nav-link-media-container-padding-bottom',
 					'fourth_prop' => '--kb-nav-link-media-container-padding-left',
-				] 
+				]
 			);
 		}
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu' );
@@ -197,7 +197,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					[
 						'renderAsVars' => true,
 						'varBase'      => '--kb-nav-link-highlight-',
-					] 
+					]
 				);
 				$css->render_measure_output(
 					$attributes['highlightSpacing'][0],
@@ -208,12 +208,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 						'second_prop' => '--kb-nav-link-highlight-border-top-right-radius',
 						'third_prop'  => '--kb-nav-link-highlight-border-bottom-right-radius',
 						'fourth_prop' => '--kb-nav-link-highlight-border-bottom-left-radius',
-					] 
+					]
 				);
 				$css->render_gap(
-					$attributes['highlightSpacing'][0], 
+					$attributes['highlightSpacing'][0],
 					'gap',
-					'gap', 
+					'gap',
 					'gapUnit',
 					[
 						'renderAsVars' => true,
@@ -673,7 +673,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
 		}
-		
+
 		$title_html = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
 		if ( $has_highlight_label && $highlight_with_title ) {
 			$title .= $highlight_label;
@@ -704,13 +704,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
 		}
 
+		$link_role = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? 'role="button"' : '';
+
 		return sprintf(
-			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s>%6$s</a>%7$s</div>%8$s</li>',
+			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s %6$s>%7$s</a>%8$s</div>%9$s</li>',
 			$wrapper_attributes,
 			$link_class,
 			$link_url,
 			$link_target,
 			$link_rel,
+			$link_role,
 			$title_html,
 			$sub_menu_btn,
 			$sub_menu_content,
