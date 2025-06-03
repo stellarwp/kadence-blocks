@@ -314,6 +314,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['data-sticky-mobile'] = $is_sticky_mobile;
 			$wrapper_args['data-sticky-section-mobile'] = $header_attributes['stickySectionMobile'] ?: '';
 		}
+		if ( $header_attributes['mobileBreakpoint'] && $header_attributes['mobileBreakpoint'] !== 0 ) {
+			$wrapper_args['data-mobile-breakpoint'] = $header_attributes['mobileBreakpoint'];
+		}
 
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
