@@ -281,10 +281,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'width', $attributes['highlightIcon'][0]['size'] . 'px' );
 		}
 
-		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! $attributes['dropdownClick']) {
+		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! $attributes['dropdownClick'] ) {
 			$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > .kb-nav-link-content' );
-			$css->add_property( 'cursor', 'not-allowed' );
-			$css->add_property( 'pointer-events', 'none' );
+			$css->add_property( 'cursor', 'default' );
 		}
 
 		return $css->css_output();
@@ -516,7 +515,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @param $attributes
 	 * @param $unique_id
 	 * @param $content
-	 * @param WP_Block   $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -573,7 +572,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( $has_children ) {
 			$wrapper_classes[] = 'menu-item-has-children';
 		}
-		if ( $has_children && isset( $attributes['dropdownClick']) && true === $attributes['dropdownClick'] ) {
+		if ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) {
 			$wrapper_classes[] = 'kb-nav-link-sub-click';
 		}
 		if ( $is_active ) {
@@ -693,34 +692,44 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! $highlight_with_title ) {
 			$title_html .= $highlight_label;
 		}
+		$link_tag  = 'a';
+		$link_args = [
+			'class' => implode( ' ', $link_classes ),
+			'href'  => $url,
+		];
 
-		$link_class = implode( ' ', $link_classes );
-
-		$link_url = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? ' href="javascript:;"' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
-			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
+			$link_args['aria-label'] = $attributes['name'];
+		}
+		if ( ! empty( $attributes['target'] ) ) {
+			$link_args['target'] = $attributes['target'];
+		}
+		if ( ! empty( $attributes['rel'] ) ) {
+			$link_args['rel'] = $attributes['rel'];
+		}
+		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ) {
+			$link_tag = 'span';
+			unset( $link_args['href'] );
+			unset( $link_args['aria-label'] );
+			unset( $link_args['target'] );
+			unset( $link_args['rel'] );
+		}
+		if ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) {
+			$link_args['role'] = 'button';
+			unset( $link_args['href'] );
 		}
 
-		$link_target = '';
-		if ( !empty( $attributes['target'] ) ) {
-			$link_target .= 'target="' . esc_attr( $attributes['target'] ) . '"';
+		$link_args             = apply_filters( 'kadence_blocks_navigation_link_args', $link_args, $attributes );
+		$inner_link_attributes = [];
+		foreach ( $link_args as $key => $value ) {
+			$inner_link_attributes[] = $key . '="' . ( 'href' === $key ? esc_url( $value ) : esc_attr( $value ) ) . '"';
 		}
-
-		$link_rel = '';
-		if ( !empty( $attributes['rel'] ) ) {
-			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
-		}
-
-		$link_role = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? 'role="button"' : '';
-
+		$inner_attributes = implode( ' ', $inner_link_attributes );
 		return sprintf(
-			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s %6$s>%7$s</a>%8$s</div>%9$s</li>',
+			'<li %1$s><div class="kb-link-wrap"><%2$s %3$s>%4$s</%2$s>%5$s</div>%6$s</li>',
 			$wrapper_attributes,
-			$link_class,
-			$link_url,
-			$link_target,
-			$link_rel,
-			$link_role,
+			$link_tag,
+			$inner_attributes,
 			$title_html,
 			$sub_menu_btn,
 			$sub_menu_content,
