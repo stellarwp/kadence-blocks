@@ -178,6 +178,7 @@ Release Date: 5th June 2025
 * Add: Ability to customize breakpoint for mobile advacned header to appear.
 * Fix: Broken link while uploading custom icons.
 * Fix: Advanced form submit button width when inherit styles is enabled.
+* Fix: Links not crawlable when disabled in Navigation block.
 
 = 3.5.9 =
 Release Date: 29th May 2025

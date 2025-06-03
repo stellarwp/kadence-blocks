@@ -280,6 +280,13 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'height', $attributes['highlightIcon'][0]['size'] . 'px' );
 			$css->add_property( 'width', $attributes['highlightIcon'][0]['size'] . 'px' );
 		}
+
+		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! $attributes['dropdownClick']) {
+			$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > .kb-nav-link-content' );
+			$css->add_property( 'cursor', 'not-allowed' );
+			$css->add_property( 'pointer-events', 'none' );
+		}
+
 		return $css->css_output();
 	}
 
@@ -566,7 +573,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( $has_children ) {
 			$wrapper_classes[] = 'menu-item-has-children';
 		}
-		if ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) {
+		if ( $has_children && isset( $attributes['dropdownClick']) && true === $attributes['dropdownClick'] ) {
 			$wrapper_classes[] = 'kb-nav-link-sub-click';
 		}
 		if ( $is_active ) {
@@ -689,7 +696,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$link_class = implode( ' ', $link_classes );
 
-		$link_url = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
+		$link_url = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? ' href="javascript:;"' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
 			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}

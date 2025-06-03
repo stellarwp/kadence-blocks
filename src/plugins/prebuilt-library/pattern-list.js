@@ -1054,9 +1054,47 @@ function PatternList({
 
 		// Apply Sorting
 		if (sortBy === 'name_asc') {
-			allPatterns.sort((a, b) => a.name.localeCompare(b.name));
+			// Names like Hero 2 should be After Hero 1 but before Hero 11.
+			allPatterns.sort((a, b) => {
+				// Extract the base name and number separately
+				const aMatch = a.name.match(/^(.*?)(\d+)?$/);
+				const bMatch = b.name.match(/^(.*?)(\d+)?$/);
+
+				const aBase = aMatch[1].trim();
+				const bBase = bMatch[1].trim();
+
+				// If base names are different, sort by base name
+				if (aBase !== bBase) {
+					return aBase.localeCompare(bBase);
+				}
+
+				// If base names are the same, sort by number
+				const aNum = aMatch[2] ? parseInt(aMatch[2], 10) : 0;
+				const bNum = bMatch[2] ? parseInt(bMatch[2], 10) : 0;
+
+				return aNum - bNum;
+			});
 		} else if (sortBy === 'name_desc') {
-			allPatterns.sort((a, b) => b.name.localeCompare(a.name));
+			// Names like Hero 2 should be After Hero 1 but before Hero 11.
+			allPatterns.sort((a, b) => {
+				// Extract the base name and number separately
+				const aMatch = a.name.match(/^(.*?)(\d+)?$/);
+				const bMatch = b.name.match(/^(.*?)(\d+)?$/);
+
+				const aBase = aMatch[1].trim();
+				const bBase = bMatch[1].trim();
+
+				// If base names are different, sort by base name
+				if (aBase !== bBase) {
+					return bBase.localeCompare(aBase);
+				}
+
+				// If base names are the same, sort by number
+				const aNum = aMatch[2] ? parseInt(aMatch[2], 10) : 0;
+				const bNum = bMatch[2] ? parseInt(bMatch[2], 10) : 0;
+
+				return bNum - aNum;
+			});
 		} else if (sortBy === 'id_desc') {
 			// Default sort: id_desc (Last Added)
 			allPatterns.sort((a, b) => b.id - a.id);
