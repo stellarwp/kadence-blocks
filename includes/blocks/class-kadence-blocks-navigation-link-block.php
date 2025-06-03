@@ -696,8 +696,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$link_class = implode( ' ', $link_classes );
 
-		$is_disabled = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] );
-		$link_url = $is_disabled ? ' href="' . esc_url( $url ) . '"' : ' href="' . esc_url( $url ) . '"';
+		$link_url = ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
 			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}
