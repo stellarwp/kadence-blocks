@@ -578,10 +578,13 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'border-color', $css->render_color( $attributes['dotCustomColorBorderActive'] ) );
 		}
 
+		$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
 		if ( ! empty( $attributes['dotCustomBorderWidth'] ) && $is_carousel ) {
-			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
 			$css->add_property( 'border-width', $attributes['dotCustomBorderWidth'] . 'px' );
 			$css->add_property( 'border-style', 'solid' );
+		} elseif ( ( !empty( $attributes['dotCustomColorBorder'] ) || !empty( $attributes['dotCustomColorBorderHover'] ) || !empty( $attributes['dotCustomColorBorderActive'] ) ) && $is_carousel ) {
+			$css->add_property( 'border-width', '2px' );
+			$css->add_property( 'border-style', 'solid');
 		}
 
 		return $css->css_output();
