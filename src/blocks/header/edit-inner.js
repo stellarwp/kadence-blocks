@@ -1392,7 +1392,7 @@ export function EditInner(props) {
 								units={['px', '%', 'vw']}
 							/>
 							<RangeControl
-								label={__('Screen size to switch to mobile header', 'kadence-blocks-pro')}
+								label={__('Screen size to switch to mobile header', 'kadence-blocks')}
 								value={mobileBreakpoint === 0 ? null : mobileBreakpoint}
 								onChange={(value) => {
 									setMetaAttribute(value, 'mobileBreakpoint');
@@ -1401,6 +1401,10 @@ export function EditInner(props) {
 								min={1}
 								max={2000}
 								reset={true}
+								help={__(
+									"Note: this ONLY affects when the header changes to it's mobile content. It DOES NOT affect responsive breakpoints for any other blocks or settings.",
+									'kadence-blocks'
+								)}
 							/>
 						</KadencePanelBody>
 					</>
