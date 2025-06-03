@@ -707,16 +707,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['rel'] ) ) {
 			$link_args['rel'] = $attributes['rel'];
 		}
-		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ) {
+		// Link with disabled link and no children or dropdown click.
+		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && ! $has_children && ! ( isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ) {
 			$link_tag = 'span';
 			unset( $link_args['href'] );
 			unset( $link_args['aria-label'] );
 			unset( $link_args['target'] );
 			unset( $link_args['rel'] );
 		}
+		// Link with disabled link and children but no dropdown click.
+		if ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] && $has_children && ! ( isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ) {
+			unset( $link_args['href'] );
+			unset( $link_args['aria-label'] );
+			unset( $link_args['target'] );
+			unset( $link_args['rel'] );
+			$link_args['role'] = 'button';
+		}
 		if ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) {
 			$link_args['role'] = 'button';
 			unset( $link_args['href'] );
+			unset( $link_args['target'] );
+			unset( $link_args['rel'] );
 		}
 
 		$link_args             = apply_filters( 'kadence_blocks_navigation_link_args', $link_args, $attributes );
