@@ -528,6 +528,8 @@ class Kadence_Blocks_Prebuilt_Library {
 			$final_data['slug']    = ! empty( $temp_data['slug'] ) ? sanitize_text_field( $temp_data['slug'] ) : '';
 			$final_data['refresh'] = ! empty( $temp_data['refresh'] ) ? sanitize_text_field( $temp_data['refresh'] ) : '';
 			$final_data['expires'] = ! empty( $temp_data['expires'] ) ? sanitize_text_field( $temp_data['expires'] ) : '';
+			$final_data['pages']     = ! empty( $temp_data['pages'] ) ? sanitize_text_field( $temp_data['pages'] ) : '';
+			
 			if ( ! empty( $final_data['name'] ) ) {
 				wp_send_json( $final_data );
 			}

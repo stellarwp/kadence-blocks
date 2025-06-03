@@ -87,6 +87,7 @@ class CloudConnect extends Component {
 						newConnect.key = control.state.newKey;
 						newConnect.expires = o.expires;
 						newConnect.refresh = o.refresh;
+						newConnect.pages = o.pages;
 						cloudSettings.connections.push(newConnect);
 						control.saveSettings(cloudSettings);
 					} else {

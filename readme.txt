@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.1
-Stable tag: 3.5.9
+Stable tag: 3.5.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,11 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.10 =
+Release Date: 5th June 2025
+* Add: Ability to customize breakpoint for mobile advacned header to appear.
+* Fix: Broken link while uploading custom icons.
+* Fix: Advanced form submit button width when inherit styles is enabled.
 
 = 3.5.9 =
 Release Date: 29th May 2025
@@ -194,6 +199,7 @@ Release Date: 15th May 2025
 * Fix: Advanced header max width limited to 600px.
 * Fix: Vector block alignment when inside a section.
 * Fix: Circular progress bar alignment and max-width fixes.
+* Fix: Overflow issue in some mega menus.
 
 = 3.5.7 =
 Release Date: May 5th 2025
