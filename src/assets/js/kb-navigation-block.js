@@ -461,18 +461,23 @@
 				}
 				const scrollSpyId = scrollSpyTarget.dataset?.scrollSpyId;
 				// Initialize Gumshoe
-				new Gumshoe('.wp-block-kadence-navigation[data-scroll-spy-id="' + scrollSpyId + '"] .kb-navigation .kb-nav-link-content', {
-					nested: true,
-					nestedClass: 'current-menu-ancestor',
-					navClass: 'current-menu-item',
-					offset: offsetManual
-						? offsetManual
-						: offsetTarget
-						? function () {
-								return offsetTarget?.getBoundingClientRect().height;
-						  }
-						: 0,
-				});
+				new Gumshoe(
+					'.wp-block-kadence-navigation[data-scroll-spy-id="' +
+						scrollSpyId +
+						'"] .kb-navigation .kb-nav-link-content',
+					{
+						nested: true,
+						nestedClass: 'current-menu-ancestor',
+						navClass: 'current-menu-item',
+						offset: offsetManual
+							? offsetManual
+							: offsetTarget
+							? function () {
+									return offsetTarget?.getBoundingClientRect().height;
+							  }
+							: 0,
+					}
+				);
 			});
 		}
 	};
