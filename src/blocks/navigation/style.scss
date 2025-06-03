@@ -335,7 +335,7 @@ $link-color-property: var(
 	.sub-menu {
 		--kb-nav-dropdown-margin-left: 1em;
 		box-shadow: none;
-		.menu-item > .kb-link-wrap > a {
+		.menu-item > .kb-link-wrap > .kb-nav-link-content {
 			width: 100%;
 		}
 	}
@@ -385,7 +385,7 @@ $link-color-property: var(
 	}
 
 	//vertical link padding on the right no longer needs to account for the drop down icon
-	.menu-item-has-children > .kb-link-wrap > a {
+	.menu-item-has-children > .kb-link-wrap > .kb-nav-link-content {
 		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em));
 	}
 }
@@ -470,7 +470,7 @@ $link-color-property: var(
 			}
 			&.current-menu-item,
 			&.menu-item--toggled-on {
-				> .kb-link-wrap > a:after {
+				> .kb-link-wrap > .kb-nav-link-content:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
 			}
@@ -935,10 +935,10 @@ $link-color-property: var(
 			//nav items sitting alone in a mega menu container
 			> .menu-item {
 				border-bottom: 0;
-				> .kb-link-wrap > a {
+				> .kb-link-wrap > .kb-nav-link-content {
 					border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 				}
-				&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
+				&:not(.menu-item-has-children):last-child > .kb-link-wrap > .kb-nav-link-content {
 					border-bottom: 0;
 				}
 			}
@@ -1044,6 +1044,9 @@ $link-color-property: var(
 		&:not([href]) {
 			cursor: default;
 		}
+		&[role="button"] {
+			cursor: pointer;
+		}
 		&:hover,
 		&:focus {
 			//color copied here for specifity reasons in non-iframe editors
@@ -1106,7 +1109,7 @@ $link-color-property: var(
 	}
 
 	//link padding on the right added to make space for the dropdown toggle
-	.menu-item-has-children > .kb-link-wrap > a {
+	.menu-item-has-children > .kb-link-wrap > .kb-nav-link-content {
 		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em) + var(--kb-nav-drop-icon-width, 1.6em));
 	}
 
