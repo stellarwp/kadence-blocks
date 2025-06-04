@@ -2184,7 +2184,7 @@ export default function GalleryEdit(props) {
 											onChange={(value) => setAttributes({ dotStyle: value })}
 										/>
 									)}
-									{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && (
+									{kadence_blocks_params.pro === 'true' && 'custom' === dotStyle && type !== 'thumbslider' && (
 										<>
 											<PopColorControl
 												label={__('Dot Color', 'kadence-blocks')}
