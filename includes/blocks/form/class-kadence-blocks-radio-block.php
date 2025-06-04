@@ -48,7 +48,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
@@ -68,41 +68,41 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$type = 'radio';
-		$is_required = $this->is_required( $attributes );
-		$class_id = $this->class_id( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-field' . $class_id );
-		$wrapper_args = array(
+		$type               = 'radio';
+		$is_required        = $this->is_required( $attributes );
+		$class_id           = $this->class_id( $attributes );
+		$outer_classes      = [ 'kb-adv-form-field', 'kb-field' . $class_id ];
+		$wrapper_args       = [
 			'class' => implode( ' ', $outer_classes ),
-		);
+		];
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
-		$inner_content  = '';
+		$inner_content      = '';
 
-		$radio_label = $attributes;
+		$radio_label              = $attributes;
 		$radio_label['inputName'] = 'rb' . $class_id;
-		$inline_class = '';
+		$inline_class             = '';
 		if ( isset( $attributes['inline'] ) && true === $attributes['inline'] ) {
 			$inline_class = ' kb-radio-check-items-inline';
 		}
 		$inner_content .= '<fieldset class="kb-radio-check-item-wrap' . esc_attr( $inline_class ) . '" id="' . esc_attr( $this->field_name( $radio_label ) ) . '" data-type="radio" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
-		$inner_content      .= $this->field_legend( $radio_label );
-		$inner_content      .= $this->field_aria_label( $attributes );
+		$inner_content .= $this->field_legend( $radio_label );
+		$inner_content .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
-			$id         = 'field' . $class_id . '_' . $key;
-			$option_value = $this->get_option_value( $option );
-			$is_checked_from_param = ! empty( $option_value ) && $option_value && in_array( $option_value, explode( ',', $this->get_default( $attributes ) ) );
+			$id                     = 'field' . $class_id . '_' . $key;
+			$option_value           = $this->get_option_value( $option );
+			$is_checked_from_param  = ! empty( $option_value ) && $option_value && in_array( $option_value, explode( ',', $this->get_default( $attributes ) ) );
 			$is_checked_from_editor = ! empty( $option['selected'] );
-			$is_checked = $is_checked_from_editor || $is_checked_from_param;
+			$is_checked             = $is_checked_from_editor || $is_checked_from_param;
 
 			$inner_content .= '<div class="kb-radio-check-item">';
-			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . esc_attr( $id ) . '" name="' . esc_attr( $this->field_name( $attributes ) ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . esc_attr( $option_value ) . '">';
+			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . esc_attr( $id ) . '" name="' . esc_attr( $this->field_name( $attributes ) ) . '" ' . ( $is_checked ? 'checked' : '' ) . ' value="' . esc_attr( $option_value ) . '">';
 
 			$inner_content .= '<label for="' . esc_attr( $id ) . '">' . $option['label'] . '</label>';
 
-			$description   = array(
+			$description    = [
 				'uniqueID' => $id,
 				'label'    => ! empty( $attributes['description'] ) ? ' ' . $attributes['description'] : '',
-			);
+			];
 			$inner_content .= $this->field_label( $description );
 
 			$inner_content .= '</div>';

@@ -1320,7 +1320,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $library_url ) ) {
 			if ( 'page' === $pattern_type ) {
 				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page/';
-				$extra = 'page-item';
+				$extra       = 'page-item';
 			} else {
 				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
 			}
@@ -1402,9 +1402,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
 	public function get_connection( WP_REST_Request $request ) {
-		$library = $request->get_param( self::PROP_LIBRARY );
+		$library     = $request->get_param( self::PROP_LIBRARY );
 		$library_url = $request->get_param( self::PROP_LIBRARY_URL );
-		$key = $request->get_param( self::PROP_KEY );
+		$key         = $request->get_param( self::PROP_KEY );
 		if ( empty( $library_url ) || empty( $key ) ) {
 			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 		}
@@ -1447,7 +1447,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$final_data['slug']    = ! empty( $contents['slug'] ) ? sanitize_text_field( $contents['slug'] ) : '';
 			$final_data['refresh'] = ! empty( $contents['refresh'] ) ? sanitize_text_field( $contents['refresh'] ) : '';
 			$final_data['expires'] = ! empty( $contents['expires'] ) ? sanitize_text_field( $contents['expires'] ) : '';
-			$final_data['pages']     = ! empty( $contents['pages'] ) ? sanitize_text_field( $contents['pages'] ) : '';
+			$final_data['pages']   = ! empty( $contents['pages'] ) ? sanitize_text_field( $contents['pages'] ) : '';
 			return rest_ensure_response( $final_data );
 		}
 	}

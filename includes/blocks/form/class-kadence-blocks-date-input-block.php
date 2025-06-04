@@ -48,7 +48,7 @@ class Kadence_Blocks_Date_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
@@ -68,23 +68,23 @@ class Kadence_Blocks_Date_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$type = 'date';
-		$is_required = $this->is_required( $attributes );
-		$class_id = $this->class_id( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
-		$wrapper_args = array(
+		$type          = 'date';
+		$is_required   = $this->is_required( $attributes );
+		$class_id      = $this->class_id( $attributes );
+		$outer_classes = [ 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id ];
+		$wrapper_args  = [
 			'class' => implode( ' ', $outer_classes ),
-		);
+		];
 		if ( ! empty( $attributes['defaultValue'] ) && $attributes['defaultValue'] === 'today' ) {
 			$default_value = wp_date( 'Y-m-d' );
 		} else {
 			$default_value = $this->get_default( $attributes );
 		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
-		$inner_content  = '';
-		$inner_content .= $this->field_label( $attributes );
-		$inner_content .= $this->field_aria_label( $attributes );
-		$inner_content .= '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" value="' . esc_attr( $default_value ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
+		$inner_content      = '';
+		$inner_content     .= $this->field_label( $attributes );
+		$inner_content     .= $this->field_aria_label( $attributes );
+		$inner_content     .= '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" value="' . esc_attr( $default_value ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

@@ -53,7 +53,7 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
@@ -72,13 +72,13 @@ class Kadence_Blocks_Text_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$type = 'text';
-		$is_required = $this->is_required( $attributes );
-		$class_id = $this->class_id( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
-		$wrapper_args = array(
+		$type               = 'text';
+		$is_required        = $this->is_required( $attributes );
+		$class_id           = $this->class_id( $attributes );
+		$outer_classes      = [ 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id ];
+		$wrapper_args       = [
 			'class' => implode( ' ', $outer_classes ),
-		);
+		];
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 		$inner_content  = '';

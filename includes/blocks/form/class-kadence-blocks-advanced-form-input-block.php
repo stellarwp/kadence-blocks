@@ -70,6 +70,31 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		return $block_class_array;
 	}
+
+	/**
+	 * Get default attributes for a block.
+	 *
+	 * @return array
+	 */
+	protected function get_block_default_attributes() {
+		$block_name = 'kadence/advanced-form-' . $this->block_name;
+		if ( ! isset( $this->default_attributes_cache[ $block_name ] ) ) {
+			$registry           = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+			$default_attributes = [];
+
+			if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
+				foreach ( $registry->attributes as $key => $value ) {
+					if ( isset( $value['default'] ) ) {
+						$default_attributes[ $key ] = $value['default'];
+					}
+				}
+			}
+
+			$this->default_attributes_cache[ $block_name ] = $default_attributes;
+		}
+
+		return $this->default_attributes_cache[ $block_name ];
+	}
 	/**
 	 * Add help text for given block to the response
 	 *

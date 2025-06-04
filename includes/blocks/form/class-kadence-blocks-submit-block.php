@@ -119,7 +119,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$width_type = ! empty( $attributes['widthType'] ) ? $attributes['widthType'] : 'auto';
 		if ( 'fixed' === $width_type ) {

@@ -45,6 +45,22 @@
 			"type": "string",
 			"default": ""
 		},
+		"maxWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "%"
+		},
+		"minWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"minWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"helpText": {
 			"type": "string",
 			"default": ""

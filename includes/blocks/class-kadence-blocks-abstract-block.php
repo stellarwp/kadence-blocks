@@ -82,6 +82,20 @@ class Kadence_Blocks_Abstract_Block {
 		'identity',
 		'table',
 		'vector',
+		'select',
+		'email',
+		'text',
+		'textarea',
+		'number',
+		'date',
+		'time',
+		'radio',
+		'checkbox',
+		'file',
+		'telephone',
+		'accept',
+		'captcha',
+		'submit',
 	];
 	
 	/**
