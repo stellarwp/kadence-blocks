@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 = 3.5.10 =
 Release Date: 5th June 2025
-* Add: Ability to customize breakpoint for mobile advacned header to appear.
+* Add: Ability to customize breakpoint for mobile advanced header to appear.
 * Fix: Broken link while uploading custom icons.
 * Fix: Advanced form submit button width when inherit styles is enabled.
 * Fix: Links not crawlable when disabled in Navigation block.
