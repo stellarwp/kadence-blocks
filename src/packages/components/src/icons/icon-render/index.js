@@ -38,7 +38,7 @@ class IconRender extends Component {
 		};
 	}
 	componentDidMount() {
-		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons, ...kadence_blocks_params_kbcustomicons.icons };
 		this.setState( { iconOptions: applyFilters( 'kadence.icon_options', icons ) } );
 		if( this.props.name.startsWith('kb-custom') ) {
 		 	this.getCustomSvg( this.props.name.replace('kb-custom-', '') );
@@ -87,7 +87,7 @@ class IconRender extends Component {
 		this.setState( { isLoading:false });
 	};
 	updateIcons() {
-		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons, ...kadence_blocks_params_kbcustomicons.icons };
 		const filteredIcons = applyFilters( 'kadence.icon_options', icons );
 		return filteredIcons;
 	}
