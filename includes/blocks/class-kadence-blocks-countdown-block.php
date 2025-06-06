@@ -602,7 +602,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			'stopWatch'    => ( isset( $attributes['timeNumbers'] ) && $attributes['timeNumbers'] ? true : false ),
 			'dividers'     => ( isset( $attributes['countdownDivider'] ) && $attributes['countdownDivider'] ? true : false ),
 			'action'       => ( isset( $attributes['expireAction'] ) ? esc_attr( $attributes['expireAction'] ) : 'none' ),
-			'redirect'     => ( isset( $attributes['redirectURL'] ) ? esc_attr( $attributes['redirectURL'] ) : '' ),
+			'redirect'     => ( isset( $attributes['redirectURL'] ) ? esc_url( $attributes['redirectURL'] ) : '' ),
 			'repeat'       => ( isset( $attributes['repeat'] ) && $attributes['repeat'] ? true : false ),
 			'frequency'    => ( isset( $attributes['frequency'] ) ? esc_attr( $attributes['frequency'] ) : '' ),
 			'stopCount'    => ( isset( $attributes['stopRepeating'] ) && $attributes['stopRepeating'] ? true : false ),
