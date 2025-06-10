@@ -15,3 +15,27 @@
     justify-content: center;
     align-items: center;
 }
+
+.kb-screen-reader-text {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 4px 0;
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    color: #666;
+    font-size: 0.9em;
+    font-style: italic;
+    border-radius: 3px;
+    position: relative;
+    
+    &::before {
+        content: "Screen Reader Text";
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        background: #fff;
+        padding: 0 4px;
+        font-size: 0.7em;
+        color: #999;
+    }
+}

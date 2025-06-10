@@ -71,6 +71,7 @@ import './formats/markformat';
 import './formats/typed-text';
 import './formats/tooltips';
 import AIText from './ai-text/ai-text.js';
+import './formats/screen-reader-text';
 
 import Typed from 'typed.js';
 

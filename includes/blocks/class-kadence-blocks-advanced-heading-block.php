@@ -422,6 +422,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
+		$css->set_selector( '.kb-screen-reader-text' );
+		$css->add_property( 'position', 'absolute' );
+		$css->add_property( 'width', '1px' );
+		$css->add_property( 'height', '1px' );
+		$css->add_property( 'padding', '0' );
+		$css->add_property( 'margin', '-1px' );
+		$css->add_property( 'overflow', 'hidden' );
+		$css->add_property( 'clip', 'rect(0, 0, 0, 0)' );
+
 		return $css->css_output();
 	}
 	/**
