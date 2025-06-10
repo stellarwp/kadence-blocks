@@ -53,4 +53,4 @@ const kadenceScreenReaderText = {
 	},
 };
 
-registerFormatType(name, kadenceScreenReaderText); 
+registerFormatType(name, kadenceScreenReaderText);
