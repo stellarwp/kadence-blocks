@@ -871,6 +871,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
+				'key'     => '_kad_header_mobileBreakpoint',
+				'type' => 'number',
+				'default' => 0,
+			),
+			array(
 				'key'     => '_kad_header_pro_backdropFilterType',
 				'type' => 'string',
 				'default' => '',

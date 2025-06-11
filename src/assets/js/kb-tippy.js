@@ -2798,29 +2798,23 @@
 			}
 		},
 		isInteractiveElement(element) {
-			console.log(element, element.role);
 			const { nodeName } = element;
 
 			if (['BUTTON', 'DETAILS', 'EMBED', 'IFRAME', 'KEYGEN', 'LABEL', 'SELECT', 'TEXTAREA'].includes(nodeName)) {
-				console.log(1);
 				return true;
 			}
 
 			if (nodeName === 'A' && element.hasAttribute('href')) {
-				console.log(2);
 				return true;
 			}
 
 			if (['AUDIO', 'VIDEO'].includes(nodeName) && element.hasAttribute('controls')) {
-				console.log(3);
 				return true;
 			}
 
 			if (['IMG', 'OBJECT'].includes(nodeName) && element.hasAttribute('usemap')) {
-				console.log(4);
 				return true;
 			}
-			console.log(5);
 
 			return false;
 		},

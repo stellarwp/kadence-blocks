@@ -30,6 +30,7 @@ import {
 	ToolbarGroup,
 	ToolbarButton,
 	SelectControl,
+	RangeControl,
 } from '@wordpress/components';
 import { headerBlockIcon } from '@kadence/icons';
 import {
@@ -202,6 +203,7 @@ export function EditInner(props) {
 		backdropFilterType: meta?._kad_header_pro_backdropFilterType,
 		backdropFilterSize: meta?._kad_header_pro_backdropFilterSize,
 		backdropFilterString: meta?._kad_header_pro_backdropFilterString,
+		mobileBreakpoint: meta?._kad_header_mobileBreakpoint,
 	};
 
 	const {
@@ -291,6 +293,7 @@ export function EditInner(props) {
 		disableTransparentOverrides,
 		backdropFilterType,
 		backdropFilterSize,
+		mobileBreakpoint,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -1387,6 +1390,21 @@ export function EditInner(props) {
 									setMetaAttribute(['', '', ''], 'width');
 								}}
 								units={['px', '%', 'vw']}
+							/>
+							<RangeControl
+								label={__('Screen size to switch to mobile header', 'kadence-blocks')}
+								value={mobileBreakpoint === 0 ? null : mobileBreakpoint}
+								onChange={(value) => {
+									setMetaAttribute(value, 'mobileBreakpoint');
+								}}
+								step={1}
+								min={1}
+								max={2000}
+								reset={true}
+								help={__(
+									"Note: this ONLY affects when the header changes to it's mobile content. It DOES NOT affect responsive breakpoints for any other blocks or settings.",
+									'kadence-blocks'
+								)}
 							/>
 						</KadencePanelBody>
 					</>

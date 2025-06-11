@@ -382,6 +382,72 @@
 		"arrowSizeUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"arrowCustomColor": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBackgroundHover": {
+			"type": "string",
+			"default": ""	
+		},
+		"arrowCustomColorBackgroundActive": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBorder": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBorderHover": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomColorBorderActive": {
+			"type": "string",
+			"default": ""
+		},
+		"arrowCustomBorderWidth": {
+			"type": "number"
+		},
+		"dotCustomColor": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorBorder": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomColorBorderHover": {
+			"type": "string",
+			"default": ""	
+		},
+		"dotCustomColorBorderActive": {
+			"type": "string",
+			"default": ""
+		},
+		"dotCustomBorderWidth": {
+			"type": "number"
 		}
 	},
 	"supports": {

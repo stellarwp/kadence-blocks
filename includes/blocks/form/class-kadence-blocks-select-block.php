@@ -48,7 +48,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$class_id = $this->class_id( $attributes );
-		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
+		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advanced-form .kb-field' . $class_id );
 
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
@@ -68,16 +68,16 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$is_required = $this->is_required( $attributes, 'required', '' );
-		$is_multiselect = ( isset( $attributes['multiSelect'] ) && $attributes['multiSelect'] === true ) ? 'multiple' : '';
-		$class_id = $this->class_id( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
-		$wrapper_args = array(
+		$is_required        = $this->is_required( $attributes, 'required', '' );
+		$is_multiselect     = ( isset( $attributes['multiSelect'] ) && $attributes['multiSelect'] === true ) ? 'multiple' : '';
+		$class_id           = $this->class_id( $attributes );
+		$outer_classes      = [ 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id ];
+		$wrapper_args       = [
 			'class' => implode( ' ', $outer_classes ),
-		);
+		];
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
-		$default_value = $this->get_default( $attributes );
-		$show_placeholder = true;
+		$default_value      = $this->get_default( $attributes );
+		$show_placeholder   = true;
 		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
 			foreach ( $attributes['options'] as $option ) {
 				$option_value = $this->get_option_value( $option );
@@ -86,7 +86,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 				}
 			}
 		}
-		$inner_content  = '';
+		$inner_content = '';
 
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
@@ -99,11 +99,11 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		}
 		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
 			foreach ( $attributes['options'] as $option ) {
-				$option_value = $this->get_option_value( $option );
-				$is_selected_from_param = ! empty( $option_value ) && $option_value && in_array( $option_value, explode( ',', $default_value ) );
+				$option_value              = $this->get_option_value( $option );
+				$is_selected_from_param    = ! empty( $option_value ) && $option_value && in_array( $option_value, explode( ',', $default_value ) );
 				$has_multiple_param_values = count( explode( ',', $default_value ) ) > 1;
-				//if you have multiple values coming in from the default value, then this field must be a multi select to preselect options
-				$selected = ( $has_multiple_param_values && $is_multiselect && $is_selected_from_param ) || ( ! $has_multiple_param_values && $is_selected_from_param );
+				// if you have multiple values coming in from the default value, then this field must be a multi select to preselect options
+				$selected       = ( $has_multiple_param_values && $is_multiselect && $is_selected_from_param ) || ( ! $has_multiple_param_values && $is_selected_from_param );
 				$inner_content .= '<option value="' . esc_attr( $option_value ) . '"' . ( $selected ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
 			}
 		}

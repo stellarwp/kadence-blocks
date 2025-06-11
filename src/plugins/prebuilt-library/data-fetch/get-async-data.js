@@ -491,7 +491,7 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatternCategories(library, reload, library_url = null, key = null) {
+	async function getPatternCategories(library, reload, library_url = null, key = null, meta = null) {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library_categories', {
@@ -499,7 +499,53 @@ export function getAsyncData() {
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
+					meta: meta ? meta : '',
 				}),
+			});
+			return response;
+		} catch (error) {
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${message}`);
+			return 'failed';
+		}
+	}
+	/**
+	 * Get connection data.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function getConnection(library, url, key) {
+		try {
+			const response = await apiFetch({
+				path: addQueryArgs('/kb-design-library/v1/get_connection', {
+					library,
+					library_url: url ? url : '',
+					key: key ? key : '',
+				}),
+			});
+			return response;
+		} catch (error) {
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${message}`);
+			return 'failed';
+		}
+	}
+
+	/**
+	 * Get connection data.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
+	async function updateConnections(cloudSettings) {
+		try {
+			const response = await apiFetch({
+				path: '/wp/v2/settings',
+				method: 'POST',
+				data: { kadence_blocks_cloud: JSON.stringify(cloudSettings) },
 			});
 			return response;
 		} catch (error) {
@@ -614,5 +660,7 @@ export function getAsyncData() {
 		getAllAIContentData,
 		getAIContentRemaining,
 		getAvailableCredits,
+		getConnection,
+		updateConnections,
 	};
 }

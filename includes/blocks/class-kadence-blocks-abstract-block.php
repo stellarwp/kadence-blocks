@@ -56,6 +56,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Cache for default attributes by block name.
 	 * Stored as: blockName => attributes
+	 *
 	 * @var array
 	 */
 	protected $default_attributes_cache = [];
@@ -81,6 +82,20 @@ class Kadence_Blocks_Abstract_Block {
 		'identity',
 		'table',
 		'vector',
+		'select',
+		'email',
+		'text',
+		'textarea',
+		'number',
+		'date',
+		'time',
+		'radio',
+		'checkbox',
+		'file',
+		'telephone',
+		'accept',
+		'captcha',
+		'submit',
 	];
 	
 	/**
@@ -100,8 +115,8 @@ class Kadence_Blocks_Abstract_Block {
 	 * Class Constructor.
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'on_init' ), 20 );
-		add_filter( 'kadence_blocks_blocks_to_generate_post_css', array( $this, 'add_block_to_post_generate_css' ) );
+		add_action( 'init', [ $this, 'on_init' ], 20 );
+		add_filter( 'kadence_blocks_blocks_to_generate_post_css', [ $this, 'add_block_to_post_generate_css' ] );
 	}
 
 	/**
@@ -111,11 +126,11 @@ class Kadence_Blocks_Abstract_Block {
 		if ( $this->should_register() ) {
 			register_block_type(
 				KADENCE_BLOCKS_PATH . 'dist/blocks/' . $this->block_name . '/block.json',
-				array(
-					'render_callback' => array( $this, 'render_css' ),
+				[
+					'render_callback' => [ $this, 'render_css' ],
 					'editor_script'   => 'kadence-blocks-' . $this->block_name,
 					'editor_style'    => 'kadence-blocks-' . $this->block_name,
-				)
+				]
 			);
 		}
 	}
@@ -159,7 +174,7 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function render_styles_footer( $name, $css ) {
 		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
-			wp_register_style( $name, false, array(), false );
+			wp_register_style( $name, false, [], false );
 			wp_add_inline_style( $name, $css );
 			wp_enqueue_style( $name );
 		}
@@ -236,8 +251,8 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS
 	 *
-	 * @param array $attributes the blocks attribtues.
-	 * @param string $content the blocks content.
+	 * @param array    $attributes the blocks attribtues.
+	 * @param string   $content the blocks content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 */
 	public function render_css( $attributes, $content, $block_instance ) {
@@ -251,9 +266,9 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 		}
 		if ( ! empty( $unique_id ) ) {
-			$unique_id = str_replace( '/', '-', $unique_id );
+			$unique_id       = str_replace( '/', '-', $unique_id );
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $unique_id, $this->block_name, $attributes );
-			$css_class = Kadence_Blocks_CSS::get_instance();
+			$css_class       = Kadence_Blocks_CSS::get_instance();
 
 			if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
 				$attributes = $this->get_attributes_with_defaults( $unique_id . get_locale(), $attributes, false );
@@ -264,13 +279,13 @@ class Kadence_Blocks_Abstract_Block {
 
 			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
-				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
+				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
 			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
-				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
+				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) ) {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
@@ -294,7 +309,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
+	 * @param array  $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
@@ -328,7 +343,7 @@ class Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-		wp_register_style( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'dist/style-blocks-' . $this->block_name . '.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'dist/style-blocks-' . $this->block_name . '.css', [], KADENCE_BLOCKS_VERSION );
 	}
 
 	/**
@@ -360,20 +375,20 @@ class Kadence_Blocks_Abstract_Block {
 	 * Gets the HTML tag from the attributes.
 	 * If the tag provided isn't allowed, return the default value.
 	 *
-	 * @param array $attributes Array of the blocks attributes.
+	 * @param array  $attributes Array of the blocks attributes.
 	 * @param string $tag_key Offest on $attributes where the tag is set.
 	 * @param string $default Default tag to use if $tag_key attribue is undefined or invalid.
-	 * @param array $allowed_tags Array of allowed tags.
+	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
 	 * @return string
 	 */
-	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = array(), $level_key = '' ) {
+	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = [], $level_key = '' ) {
 
-		if( !empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
+		if ( ! empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
 
-			if( $attributes[ $tag_key ] === 'heading' ) {
-				$level = !empty( $attributes[ $level_key ] ) ? $attributes[ $level_key ] : 2;
+			if ( $attributes[ $tag_key ] === 'heading' ) {
+				$level = ! empty( $attributes[ $level_key ] ) ? $attributes[ $level_key ] : 2;
 				return 'h' . $level;
 			}
 
@@ -389,7 +404,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * Get this blocks attributes merged with defaults from the registration.
 	 *
 	 * @param string $cache_key The cache key (usually unique id).
-	 * @param array $attributes The block's attributes.
+	 * @param array  $attributes The block's attributes.
 	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
@@ -415,13 +430,13 @@ class Kadence_Blocks_Abstract_Block {
 	protected function get_block_default_attributes() {
 		$block_name = 'kadence/' . $this->block_name;
 		if ( ! isset( $this->default_attributes_cache[ $block_name ] ) ) {
-			$registry = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+			$registry           = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
 			$default_attributes = [];
 
 			if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
 				foreach ( $registry->attributes as $key => $value ) {
 					if ( isset( $value['default'] ) ) {
-						$default_attributes[$key] = $value['default'];
+						$default_attributes[ $key ] = $value['default'];
 					}
 				}
 			}
@@ -439,18 +454,18 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $default_attributes The default attributes.
 	 * @return array
 	 */
-	protected function merge_attributes_with_defaults($attributes, $default_attributes) {
+	protected function merge_attributes_with_defaults( $attributes, $default_attributes ) {
 		$merged_attributes = $default_attributes;
 
-		foreach ($attributes as $key => $value) {
-			if (isset($merged_attributes[$key]) && is_array($merged_attributes[$key]) &&
-			    count($merged_attributes[$key]) == 1 && isset($merged_attributes[$key][0]) &&
-			    is_array($merged_attributes[$key][0]) &&
-			    is_array($value) && count($value) == 1 && isset($value[0])) {
+		foreach ( $attributes as $key => $value ) {
+			if ( isset( $merged_attributes[ $key ] ) && is_array( $merged_attributes[ $key ] ) &&
+				count( $merged_attributes[ $key ] ) == 1 && isset( $merged_attributes[ $key ][0] ) &&
+				is_array( $merged_attributes[ $key ][0] ) &&
+				is_array( $value ) && count( $value ) == 1 && isset( $value[0] ) ) {
 				// Handle attributes that are an array with a single object
-				$merged_attributes[$key][0] = array_merge($merged_attributes[$key][0], $value[0]);
+				$merged_attributes[ $key ][0] = array_merge( $merged_attributes[ $key ][0], $value[0] );
 			} else {
-				$merged_attributes[$key] = $value;
+				$merged_attributes[ $key ] = $value;
 			}
 		}
 
@@ -460,7 +475,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get this blocks attributes merged with defaults from the registration for post type based blocks.
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int    $post_id Post ID.
 	 * @param string $cpt_name Custom post type name.
 	 * @param string $meta_prefix Meta prefix.
 	 * @return array
@@ -498,12 +513,12 @@ class Kadence_Blocks_Abstract_Block {
 		$cache_key = $cpt_name . '_' . $meta_prefix;
 
 		if ( ! isset( $this->default_attributes_cache[ $cache_key ] ) ) {
-			$meta_keys = get_registered_meta_keys( 'post', $cpt_name );
+			$meta_keys          = get_registered_meta_keys( 'post', $cpt_name );
 			$default_attributes = [];
 
 			foreach ( $meta_keys as $key => $value ) {
 				if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
-					$attr_name = str_replace( $meta_prefix, '', $key );
+					$attr_name                        = str_replace( $meta_prefix, '', $key );
 					$default_attributes[ $attr_name ] = $value['default'];
 				}
 			}
@@ -529,6 +544,6 @@ class Kadence_Blocks_Abstract_Block {
 	 * @return string|null
 	 */
 	protected function get_pro_version() {
-		return defined('KBP_VERSION') ? KBP_VERSION : null;
+		return defined( 'KBP_VERSION' ) ? KBP_VERSION : null;
 	}
 }
