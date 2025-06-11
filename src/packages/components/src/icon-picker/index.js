@@ -119,8 +119,8 @@ export default function KadenceIconPicker({
 	}, [ kadence_blocks_params.icon_names, icons, customSvgs ] );
 
 	const iconOptions = useMemo( () => {
-		return applyFilters( 'kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons } )
-	}, [ kadence_blocks_params_ico.icons, kadence_blocks_params_fa.icons, customSvgs ] )
+		return applyFilters( 'kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons, ...kadence_blocks_params_kbcustomicons.icons } )
+	}, [ kadence_blocks_params_ico.icons, kadence_blocks_params_fa.icons, kadence_blocks_params_kbcustomicons.icons, customSvgs ] )
 	const iconFilterOptions = useMemo( () => {
 		let options = Object.keys( iconNames ).map( ( label, index ) => {
 			return { value: index, label: label }
