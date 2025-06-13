@@ -531,6 +531,7 @@ function KadenceAdvancedHeading(props) {
 			'core/superscript',
 			'core/superscript',
 			'toolset/inline-field',
+			'kadence/screen-reader-text',
 		],
 		'kadence/advancedheading'
 	);

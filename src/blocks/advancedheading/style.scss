@@ -17,25 +17,11 @@
 }
 
 .kb-screen-reader-text {
-    display: inline-block;
-    padding: 4px 8px;
-    margin: 4px 0;
-    background-color: #f0f0f0;
-    border: 1px dashed #ccc;
-    color: #666;
-    font-size: 0.9em;
-    font-style: italic;
-    border-radius: 3px;
-    position: relative;
-    
-    &::before {
-        content: "Screen Reader Text";
-        position: absolute;
-        top: -8px;
-        left: 8px;
-        background: #fff;
-        padding: 0 4px;
-        font-size: 0.7em;
-        color: #999;
-    }
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
 }

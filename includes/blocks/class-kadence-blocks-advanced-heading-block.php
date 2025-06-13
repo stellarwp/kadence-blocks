@@ -422,14 +422,14 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
-		$css->set_selector( '.kb-screen-reader-text' );
-		$css->add_property( 'position', 'absolute' );
-		$css->add_property( 'width', '1px' );
-		$css->add_property( 'height', '1px' );
-		$css->add_property( 'padding', '0' );
-		$css->add_property( 'margin', '-1px' );
-		$css->add_property( 'overflow', 'hidden' );
-		$css->add_property( 'clip', 'rect(0, 0, 0, 0)' );
+		// $css->set_selector( '.kb-screen-reader-text' );
+		// $css->add_property( 'position', 'absolute' );
+		// $css->add_property( 'width', '1px' );
+		// $css->add_property( 'height', '1px' );
+		// $css->add_property( 'padding', '0' );
+		// $css->add_property( 'margin', '-1px' );
+		// $css->add_property( 'overflow', 'hidden' );
+		// $css->add_property( 'clip', 'rect(0, 0, 0, 0)' );
 
 		return $css->css_output();
 	}
@@ -573,10 +573,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	 * Registers scripts and styles.
 	 */
 	public function register_scripts() {
-
-		// Skip calling parent because this block does not have a dedicated CSS file.
-		// parent::register_scripts();
-
 		// If in the backend, bail out.
 		if ( is_admin() ) {
 			return;
@@ -584,13 +580,23 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-		wp_register_style( 'kadence-blocks-' . $this->block_name, false );
-		$heading_css = '.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;} .is-layout-constrained > .kb-advanced-heading-link {display: block;}';
+
+		// Register the main style file
+		wp_register_style(
+			'kadence-blocks-' . $this->block_name,
+			KADENCE_BLOCKS_URL . 'dist/style-blocks-advancedheading.css',
+			array(),
+			KADENCE_BLOCKS_VERSION
+		);
+
+		// Add any additional inline styles
+		$heading_css = '.is-layout-constrained > .kb-advanced-heading-link {display: block;}';
 		// Short term fix for an issue with heading wrapping.
 		if ( class_exists( '\Kadence\Theme' ) ) {
 			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
 		}
 		wp_add_inline_style( 'kadence-blocks-' . $this->block_name, $heading_css );
+
 		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array( 'kadence-blocks-typed-js' ), KADENCE_BLOCKS_VERSION, true );
 

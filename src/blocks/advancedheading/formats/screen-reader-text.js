@@ -24,7 +24,8 @@ const kadenceScreenReaderText = {
 	title: __('Screen Reader Text', 'kadence-blocks'),
 	tagName: 'span',
 	className: 'kb-screen-reader-text',
-	edit({ isActive, value, onChange }) {
+	attributes: { 'data-rich-text-format-boundary': 'true' },
+	edit({ isActive, value, onChange, contentRef }) {
 		const selectedBlock = useSelect((select) => {
 			return select('core/block-editor').getSelectedBlock();
 		}, []);
@@ -34,7 +35,13 @@ const kadenceScreenReaderText = {
 		if (selectedBlock && !allowedBlocks.includes(selectedBlock.name)) {
 			return null;
 		}
-		const onToggle = () => onChange(toggleFormat(value, { type: name }));
+		const onToggle = () => {
+			const newAttributes = { 'data-rich-text-format-boundary': !isActive ? 'true' : 'false' };
+			onChange(toggleFormat(value, { type: name, attributes: newAttributes }));
+			if (contentRef && contentRef.current && typeof contentRef.current.focus === 'function') {
+				contentRef.current.focus();
+			}
+		};
 
 		return (
 			<Fragment>

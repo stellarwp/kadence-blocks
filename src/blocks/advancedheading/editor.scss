@@ -617,15 +617,19 @@ button.components-button.kt-font-clear-btn {
     font-style: italic;
     border-radius: 3px;
     position: relative;
+    min-width: 20px;
     
     &::before {
         content: "Screen Reader Text";
         position: absolute;
         top: -8px;
-        left: 8px;
-        background: #fff;
+        left: 0px;
+        background: #ffffffb4;
         padding: 0 4px;
         font-size: 0.7em;
         color: #999;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 1;
     }
 }
