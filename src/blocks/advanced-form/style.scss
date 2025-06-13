@@ -394,6 +394,10 @@
 	--kb-form-error-background: #be001b;
 	--kb-form-success-color: #fff;
 	--kb-form-success-background: #2b6cb0;
+
+	.kb-adv-form-field select option {
+		color: var(--global-palette9, #ffffff);
+	}
 }
 .kb-adv-form-message.kb-adv-form-warning {
 	padding: 1em;
@@ -498,8 +502,4 @@
 .kb-date-field::before {
 	// content: "a";
 	// content: attr(placeholder);
-}
-
-.kb-form-is-dark .kb-adv-form-field.kb-adv-form-infield-type-input.wp-block-kadence-advanced-form-select select option {
-	color: var(--global-palette9, #ffffff);
 }
