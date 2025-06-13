@@ -605,6 +605,31 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'vertical' === $tablet_direction || 'vertical-reverse' === $tablet_direction ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'vertical-reverse' === $tablet_direction ? 'column-reverse' : 'column' ) );
+			$justify = ! empty( $tablet_vertical_align ) ? $tablet_vertical_align : 'center';
+			switch ( $justify ) {
+				case 'top':
+					$justify = 'flex-start';
+					break;
+				case 'bottom':
+					$justify = 'flex-end';
+					break;
+				case 'space-between':
+					$justify = 'space-between';
+					break;
+				case 'space-around':
+					$justify = 'space-around';
+					break;
+				case 'space-evenly':
+					$justify = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify = 'stretch';
+					break;
+				default:
+					$justify = 'center';
+					break;
+			}
+			$css->add_property( 'justify-content', $justify );
 			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && empty( $attributes['justifyContent'][1] ) ) {
 				$css->add_property( 'align-items', 'stretch' );
 			} elseif ( ! empty( $tablet_horizontal_align ) ) {
@@ -644,7 +669,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'horizontal-reverse' === $tablet_direction ? 'row-reverse' : 'row' ) );
 			$css->add_property( 'flex-wrap', 'wrap' );
-			if ( ! empty( $tablet_vertical_align ) ) {
 				$align = $tablet_vertical_align;
 				switch ( $align ) {
 					case 'top':
@@ -661,7 +685,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 						break;
 				}
 				$css->add_property( 'align-items', $align );
-			}
 			if ( ! empty( $tablet_horizontal_align ) ) {
 				$css->add_property( 'justify-content', $tablet_horizontal_align );
 			} elseif ( ! $is_version_two && ! empty( $tablet_text_align ) ) {
@@ -730,6 +753,31 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'vertical' === $mobile_direction || 'vertical-reverse' === $mobile_direction ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'vertical-reverse' === $mobile_direction ? 'column-reverse' : 'column' ) );
+			$justify = ! empty( $mobile_vertical_align ) ? $mobile_vertical_align : 'center';
+			switch ( $justify ) {
+				case 'top':
+					$justify = 'flex-start';
+					break;
+				case 'bottom':
+					$justify = 'flex-end';
+					break;
+				case 'space-between':
+					$justify = 'space-between';
+					break;
+				case 'space-around':
+					$justify = 'space-around';
+					break;
+				case 'space-evenly':
+					$justify = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify = 'stretch';
+					break;
+				default:
+					$justify = 'center';
+					break;
+			}
+			$css->add_property( 'justify-content', $justify );
 			if ( ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && empty( $attributes['justifyContent'][2] ) ) || ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && empty( $attributes['justifyContent'][1] ) && empty( $attributes['justifyContent'][2] ) ) ) {
 				$css->add_property( 'align-items', 'stretch' );
 			} elseif ( ! empty( $mobile_horizontal_align ) ) {
@@ -768,6 +816,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'horizontal-reverse' === $mobile_direction ? 'row-reverse' : 'row' ) );
 			$css->add_property( 'flex-wrap', 'wrap' );
+			$css->add_property( 'justify-content', 'flex-start' );
 			if ( 'vertical' === $tablet_direction || 'vertical-reverse' === $tablet_direction ) {
 				$align = $mobile_vertical_align;
 				switch ( $align ) {
