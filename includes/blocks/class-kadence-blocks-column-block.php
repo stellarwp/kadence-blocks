@@ -669,7 +669,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'horizontal-reverse' === $tablet_direction ? 'row-reverse' : 'row' ) );
 			$css->add_property( 'flex-wrap', 'wrap' );
-			if ( ! empty( $tablet_vertical_align ) ) {
 				$align = $tablet_vertical_align;
 				switch ( $align ) {
 					case 'top':
@@ -686,7 +685,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 						break;
 				}
 				$css->add_property( 'align-items', $align );
-			}
 			if ( ! empty( $tablet_horizontal_align ) ) {
 				$css->add_property( 'justify-content', $tablet_horizontal_align );
 			} elseif ( ! $is_version_two && ! empty( $tablet_text_align ) ) {
@@ -818,6 +816,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'flex-direction', ( 'horizontal-reverse' === $mobile_direction ? 'row-reverse' : 'row' ) );
 			$css->add_property( 'flex-wrap', 'wrap' );
+			$css->add_property( 'justify-content', 'flex-start' );
 			if ( 'vertical' === $tablet_direction || 'vertical-reverse' === $tablet_direction ) {
 				$align = $mobile_vertical_align;
 				switch ( $align ) {
