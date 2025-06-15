@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 19th June 2025
 * Fix: Escape redirect URL in countdown block.
 * Add: Additional social network icons.
+* Fix: Form select option color for Windows.
 
 = 3.5.10 =
 Release Date: 5th June 2025
