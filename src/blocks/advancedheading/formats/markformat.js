@@ -23,7 +23,8 @@ const kadenceMarkHighlight = {
 	title: __('Adv Highlight', 'kadence-blocks'),
 	tagName: 'mark',
 	className: 'kt-highlight',
-	edit({ isActive, value, onChange }) {
+	attributes: { 'data-rich-text-format-boundary': 'true' },
+	edit({ isActive, value, onChange, contentRef }) {
 		const selectedBlock = useSelect((select) => {
 			return select('core/block-editor').getSelectedBlock();
 		}, []);
@@ -33,7 +34,13 @@ const kadenceMarkHighlight = {
 		if (selectedBlock && !allowedBlocks.includes(selectedBlock.name)) {
 			return null;
 		}
-		const onToggle = () => onChange(toggleFormat(value, { type: name }));
+		const onToggle = () => {
+			const newAttributes = { 'data-rich-text-format-boundary': !isActive ? 'true' : 'false' };
+			onChange(toggleFormat(value, { type: name, attributes: newAttributes }));
+			if (contentRef && contentRef.current && typeof contentRef.current.focus === 'function') {
+				contentRef.current.focus();
+			}
+		};
 
 		return (
 			<Fragment>
