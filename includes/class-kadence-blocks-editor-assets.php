@@ -307,6 +307,7 @@ class Editor_Assets {
 		$icon_names_path  = KADENCE_BLOCKS_PATH . 'includes/icon-names-array.php';
 		$icon_ico_path    = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
 		$icons_path       = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
+		$icons_kbcustom_path = KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
 		$current_user     = wp_get_current_user();
 		$user_email       = $current_user->user_email;
 		$recent_posts     = wp_get_recent_posts( [ 'numberposts' => '1' ] );
@@ -408,6 +409,13 @@ class Editor_Assets {
 			'kadence_blocks_params_fa',
 			[
 				'icons' => file_exists( $icons_path ) ? include $icons_path : [],
+			]
+		);
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_kbcustomicons',
+			[
+				'icons' => file_exists( $icons_kbcustom_path ) ? include $icons_kbcustom_path : [],
 			]
 		);
 		$fast_load_patterns = class_exists( 'GFForms' ) ? false : true;
