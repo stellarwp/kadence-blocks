@@ -2,7 +2,9 @@
  * #.# Styles
  *
  * CSS for both Frontend
+ *
  * This style sheet does not load in the frontend.
+ * We do this to save a request; all styles are loaded in the class-kadence-blocks-advanced-heading-block.php file
  */
 // Item
 .wp-block-kadence-advancedheading mark {
