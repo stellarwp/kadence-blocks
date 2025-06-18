@@ -422,15 +422,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
-		$css->set_selector( '.kb-screen-reader-text' );
-		$css->add_property( 'position', 'absolute' );
-		$css->add_property( 'width', '1px' );
-		$css->add_property( 'height', '1px' );
-		$css->add_property( 'padding', '0' );
-		$css->add_property( 'margin', '-1px' );
-		$css->add_property( 'overflow', 'hidden' );
-		$css->add_property( 'clip', 'rect(0, 0, 0, 0)' );
-
 		return $css->css_output();
 	}
 	/**
@@ -592,6 +583,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( class_exists( '\Kadence\Theme' ) ) {
 			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
 		}
+		// Add screen reader text styles
+		$heading_css .= '.kb-screen-reader-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);}';
 		wp_add_inline_style( 'kadence-blocks-' . $this->block_name, $heading_css );
 
 		wp_register_script( 'kadence-blocks-typed-js', KADENCE_BLOCKS_URL . 'includes/assets/js/typed.min.js', array(), KADENCE_BLOCKS_VERSION, true );
