@@ -233,8 +233,9 @@ class Kadence_Blocks_Svg_Render {
 	private static function get_icons() {
 		$ico   = include KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
 		$faico = include KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
+		$kbcustom = include KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
 
-		return apply_filters( 'kadence_svg_icons', array_merge( $ico, $faico ) );
+		return apply_filters( 'kadence_svg_icons', array_merge( $ico, $faico, $kbcustom ) );
 	}
 
 	/**

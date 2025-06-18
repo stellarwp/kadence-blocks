@@ -25,8 +25,8 @@ class Kadence_Blocks_Duplicate_Post {
 	public function __construct( $slug = '' ) {
 		if ( ! empty( $slug ) ) {
 			$this->slug = $slug;
-			add_action( "admin_action_kadence_duplicate_{$slug}", array( $this, 'duplicate_action' ) );
-			add_filter( 'post_row_actions', array( $this, 'dupe_link' ), 10, 2 );
+			add_action( "admin_action_kadence_duplicate_{$slug}", [ $this, 'duplicate_action' ] );
+			add_filter( 'post_row_actions', [ $this, 'dupe_link' ], 10, 2 );
 		}
 	}
 
@@ -91,17 +91,19 @@ class Kadence_Blocks_Duplicate_Post {
 	 */
 	public function duplicate( $post ) {
 
-		$new_post_status    = 'draft';
+		$post_content = $this->recursive_duplicate( $post );
+
+		$new_post_status = 'draft';
 		// translators: %s: post title.
 		$title              = sprintf( esc_html__( '%s (Copy)', 'kadence-blocks' ), $post->post_title );
 		$new_post_author    = wp_get_current_user();
 		$new_post_author_id = $new_post_author->ID;
-		$new_post = array(
+		$new_post           = [
 			'menu_order'            => $post->menu_order,
 			'comment_status'        => $post->comment_status,
 			'ping_status'           => $post->ping_status,
 			'post_author'           => $new_post_author_id,
-			'post_content'          => $post->post_content,
+			'post_content'          => $post_content,
 			'post_content_filtered' => $post->post_content_filtered,
 			'post_excerpt'          => $post->post_excerpt,
 			'post_mime_type'        => $post->post_mime_type,
@@ -111,7 +113,7 @@ class Kadence_Blocks_Duplicate_Post {
 			'post_title'            => $title,
 			'post_type'             => $post->post_type,
 			'post_name'             => $post->post_name,
-		);
+		];
 
 		$new_post_id = wp_insert_post( wp_slash( $new_post ), true );
 
@@ -125,6 +127,100 @@ class Kadence_Blocks_Duplicate_Post {
 	}
 
 	/**
+	 * Recursively duplicate a post and any nested kadence_query_card posts.
+	 *
+	 * @param WP_Post $post The post to duplicate.
+	 * @return array Array of old and new post IDs.
+	 */
+	public function recursive_duplicate( $post ) {
+		$id_mapping                  = [];
+		$updated_content             = $post->post_content;
+		$post_types_to_search        = [ 'kadence_query' ];
+		$block_to_find_for_post_type = [
+			'kadence_query' => 'kadence/query-card',
+		];
+		
+		if ( in_array( $post->post_type, $post_types_to_search, true ) ) {
+			$post_content             = $post->post_content;
+			$child_block_to_duplicate = $block_to_find_for_post_type[ $post->post_type ];
+			
+			// Parse blocks from the content.
+			$blocks = parse_blocks( $post_content );
+			
+			// Function to recursively search for kadence_query_card blocks.
+			$find_children_to_duplicate = function ( $blocks ) use ( &$find_children_to_duplicate, $child_block_to_duplicate ) {
+				$card_posts = [];
+				
+				foreach ( $blocks as $block ) {
+					// Check if this is a kadence_query_card block.
+					if ( isset( $block['blockName'] ) && $block['blockName'] === $child_block_to_duplicate ) {
+						if ( isset( $block['attrs']['id'] ) ) {
+							$card_posts[] = $block['attrs']['id'];
+						}
+					}
+					
+					// Recursively check inner blocks.
+					if ( ! empty( $block['innerBlocks'] ) ) {
+						$card_posts = array_merge( $card_posts, $find_children_to_duplicate( $block['innerBlocks'] ) );
+					}
+				}
+				
+				return $card_posts;
+			};
+			
+			// Find all card post IDs.
+			$child_post_ids = $find_children_to_duplicate( $blocks );
+			
+			// Duplicate each card post.
+			foreach ( $child_post_ids as $child_post_id ) {
+				$child_post = get_post( $child_post_id );
+				if ( $child_post ) {
+					$duplicated_post_id = $this->duplicate( $child_post );
+					if ( $duplicated_post_id && ! is_wp_error( $duplicated_post_id ) ) {
+						$id_mapping[ $child_post_id ] = $duplicated_post_id;
+					}
+				}
+			}
+			
+			// Update the post content with new IDs.
+			if ( ! empty( $id_mapping ) ) {
+				$updated_content = $this->update_post_ids_in_content( $post_content, $id_mapping, $child_block_to_duplicate );
+			}
+		}
+		
+		return $updated_content;
+	}
+
+	/**
+	 * Update post IDs in the content with their new duplicated IDs.
+	 *
+	 * @param string $content The post content to update.
+	 * @param array  $id_mapping Array of old ID => new ID mappings.
+	 * @return string Updated content.
+	 */
+	private function update_post_ids_in_content( $content, $id_mapping, $block_name ) {
+		$blocks = parse_blocks( $content );
+		
+		$update_block_ids = function ( $blocks ) use ( &$update_block_ids, $id_mapping, $block_name ) {
+			foreach ( $blocks as &$block ) {
+				if ( isset( $block['blockName'] ) && $block['blockName'] === $block_name ) {
+					if ( isset( $block['attrs']['id'] ) && isset( $id_mapping[ $block['attrs']['id'] ] ) ) {
+						$block['attrs']['id'] = $id_mapping[ $block['attrs']['id'] ];
+					}
+				}
+				
+				if ( ! empty( $block['innerBlocks'] ) ) {
+					$block['innerBlocks'] = $update_block_ids( $block['innerBlocks'] );
+				}
+			}
+			return $blocks;
+		};
+		
+		$updated_blocks = $update_block_ids( $blocks );
+		return serialize_blocks( $updated_blocks );
+	}
+
+	/**
 	 * Copies the meta information of a post to another post
 	 *
 	 * @param int     $new_id The new post ID.
@@ -135,7 +231,7 @@ class Kadence_Blocks_Duplicate_Post {
 		if ( empty( $post_meta_keys ) ) {
 			return;
 		}
-		$meta_blacklist = array();
+		$meta_blacklist   = [];
 		$meta_blacklist[] = '_edit_lock'; // Edit lock.
 		$meta_blacklist[] = '_edit_last'; // Edit lock.
 		/**
