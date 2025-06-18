@@ -180,6 +180,7 @@ Release Date: 19th June 2025
 * Fix: Form select option color for Windows.
 * Fix: Section responsive vertical alignment.
 * Fix: Responsive controls not working in widget editor.
+* Add: Screan reader text styles for Advanced Text block.
 
 = 3.5.10 =
 Release Date: 5th June 2025
