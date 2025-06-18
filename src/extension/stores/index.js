@@ -151,13 +151,12 @@ const controls = {
 };
 
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
-	const editor = select('core/editor');
-
 	// In widgets editor, return the state's preview device
 	if (typeof pagenow !== 'undefined' && pagenow === 'widgets') {
 		return state.previewDevice;
 	}
 
+	const editor = select('core/editor');
 	if (editor && editor?.getDeviceType) {
 		return editor.getDeviceType();
 	}
