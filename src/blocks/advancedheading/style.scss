@@ -2,6 +2,7 @@
  * #.# Styles
  *
  * CSS for both Frontend
+ * This style sheet does not load in the frontend.
  */
 // Item
 .wp-block-kadence-advancedheading mark {
@@ -14,14 +15,4 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-}
-
-.kb-screen-reader-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
 }
