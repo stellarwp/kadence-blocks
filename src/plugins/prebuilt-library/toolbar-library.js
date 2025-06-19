@@ -9,6 +9,7 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { ToolbarButton } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { debounce } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
@@ -74,7 +75,7 @@ function ToolbarLibrary() {
 	};
 	if (showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary) {
 		// Watch for the toolbar to be visible and the design library button to be missing.
-		const unsubscribe = subscribe(() => {
+		const debouncedRender = debounce(() => {
 			const editToolbar = document.querySelector('.edit-post-header-toolbar');
 			if (!editToolbar) {
 				return;
@@ -82,6 +83,11 @@ function ToolbarLibrary() {
 			if (!editToolbar.querySelector('.kadence-toolbar-design-library')) {
 				renderButton(editToolbar);
 			}
+		}, 200);
+		const unsubscribe = subscribe(() => {
+			// This is a fix to prevent the design library button from flickering.
+			// Some plugins will unmount and remount the editor header toolbar, which causes the button to be removed and re-added.
+			debouncedRender();
 		});
 	}
 
