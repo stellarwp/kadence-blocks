@@ -31,3 +31,4 @@ codeception.slic.yml
 .gitattributes
 .gitmodules
 .wordpress-org/
+.npmrc
