@@ -9,11 +9,6 @@
 	list-style: none;
 	padding: 0;
 	display: grid;
-
-	// for default margin bottom
-	.kt-svg-icon-list-items {
-		margin-bottom: var(--global-kb-spacing-sm, 1.5rem);
-	}
 }
 .wp-block-kadence-iconlist
 	ul.kt-svg-icon-list
