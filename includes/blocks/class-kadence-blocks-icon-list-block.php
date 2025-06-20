@@ -72,6 +72,9 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues)' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+		} elseif ( ! isset( $attributes['listMargin'] ) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues)' );
+			$css->add_property( 'margin-bottom', 'var(--global-kb-spacing-sm, 1.5rem)' );
 		}
 
 		$column_gap_props = array(
