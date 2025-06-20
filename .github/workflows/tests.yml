@@ -44,11 +44,14 @@ jobs:
                   path: slic
                   fetch-depth: 1
 
-            - uses: oven-sh/setup-bun@v1
+            - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
 
             - run: bun install --frozen-lockfile
+              env:
+                BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                PUPPETEER_SKIP_DOWNLOAD: true
 
             - name: Build packages
               run: bun run build
