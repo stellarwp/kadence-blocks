@@ -264,16 +264,28 @@ function KadenceCounterUp(props) {
 
 	const previewNumberLineHeight = getPreviewSize(
 		previewDevice,
-		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[0] ? numberFont[0].lineHeight[0] : '',
-		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[1] ? numberFont[0].lineHeight[1] : '',
-		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[2] ? numberFont[0].lineHeight[2] : ''
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[0]
+			? numberFont[0].lineHeight[0]
+			: '',
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[1]
+			? numberFont[0].lineHeight[1]
+			: '',
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[2]
+			? numberFont[0].lineHeight[2]
+			: ''
 	);
 
 	const previewTitleLineHeight = getPreviewSize(
 		previewDevice,
-		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : '',
-		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : '',
-		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0]
+			? titleFont[0].lineHeight[0]
+			: '',
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1]
+			? titleFont[0].lineHeight[1]
+			: '',
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2]
+			? titleFont[0].lineHeight[2]
+			: ''
 	);
 
 	const numberPaddingMouseOver = mouseOverVisualizer();
@@ -325,8 +337,9 @@ function KadenceCounterUp(props) {
 						fontStyle: numberFont[0].style,
 						color: KadenceColorOutput(numberColor),
 						fontSize: getFontSizeOptionOutput(previewNumberFontSize, numberFont[0].sizeType),
-						lineHeight:
-							previewNumberLineHeight ? previewNumberLineHeight + numberFont[0].lineType : undefined,
+						lineHeight: previewNumberLineHeight
+							? previewNumberLineHeight + numberFont[0].lineType
+							: undefined,
 						letterSpacing: numberFont[0].letterSpacing + 'px',
 						fontFamily: numberFont[0].family ? numberFont[0].family : '',
 						minHeight:
@@ -450,8 +463,9 @@ function KadenceCounterUp(props) {
 								fontStyle: titleFont[0].style,
 								color: KadenceColorOutput(titleColor),
 								fontSize: getFontSizeOptionOutput(previewTitleFontSize, titleFont[0].sizeType),
-								lineHeight:
-									previewTitleLineHeight ? previewTitleLineHeight + titleFont[0].lineType : undefined,
+								lineHeight: previewTitleLineHeight
+									? previewTitleLineHeight + titleFont[0].lineType
+									: undefined,
 								letterSpacing: titleFont[0].letterSpacing + 'px',
 								fontFamily: titleFont[0].family ? titleFont[0].family : '',
 								minHeight:
