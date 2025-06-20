@@ -47,8 +47,6 @@ jobs:
             - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
-                  registry-url: 'https://npm.pkg.github.com'
-                  scope: '@stellarwp'
 
             - run: bun install --frozen-lockfile
               env:

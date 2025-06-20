@@ -1,0 +1,8 @@
+[install]
+registry = "https://registry.npmjs.org"
+
+[install.scopes]
+# Configure bun to use GitHub packages.
+# See the root .env.sample for instructions.
+# bun --env-file=../../.env publish
+"@stellarwp" = { url = "https://npm.pkg.github.com", token = "$BUN_AUTH_TOKEN" }
