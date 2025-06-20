@@ -139,7 +139,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		$css->set_media_state( strtolower( $size ) );
 
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id. ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover, .wp-block-kadence-off-canvas-trigger' . $unique_id . ':focus' );
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id. ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
 		if ( ! empty( $sized_attributes['iconBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColor'] ) );
 		}
@@ -148,7 +148,16 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		}
 
 		// Hover styles.
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover, .wp-block-kadence-off-canvas-trigger' . $unique_id . ':focus' );
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
+		if ( ! empty( $sized_attributes['iconBackgroundColorHover'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColorHover'] ) );
+		}
+		if ( ! empty( $sized_attributes['iconColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColorHover'] ) );
+		}
+
+		// Focus styles - only when aria-expanded is not "false"
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':focus:not([aria-expanded="false"])' );
 		if ( ! empty( $sized_attributes['iconBackgroundColorHover'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColorHover'] ) );
 		}
