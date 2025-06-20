@@ -31,6 +31,26 @@
 		<exclude-pattern>./tests/*</exclude-pattern>
 	</rule>
 
+	<rule ref="Squiz.Commenting.VariableComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.ClassComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
 	<rule ref="PHPCompatibilityWP"/>
 	<config name="testVersion" value="7.4-"/>
 
