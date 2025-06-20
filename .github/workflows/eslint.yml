@@ -24,7 +24,7 @@ jobs:
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUPPETEER_SKIP_DOWNLOAD: true
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
