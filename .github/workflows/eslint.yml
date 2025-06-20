@@ -7,21 +7,20 @@ jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
-    env:
-      BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          registry-url: 'https://npm.pkg.github.com'
 
       # ESLint and Prettier must be in `package.json`
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
