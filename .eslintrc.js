@@ -10,7 +10,7 @@ const eslintConfig = {
 			webpack: {
 				config: path.join(__dirname, '/webpack.config.js'),
 			},
-			alias: [['@kadence/optimizer', './includes/resources/Optimizer/js']],
+			alias: [['@kadence/optimizer', './includes/resources/Optimizer/assets/js/optimizer']],
 		},
 	},
 	globals: {

@@ -59,7 +59,7 @@ module.exports = {
 		'extension-image-picker': './src/extension/image-picker/index.js',
 		'admin-kadence-home': './src/home.js',
 		'header-visual-builder': './src/header-visual-builder.js',
-		'kadence-optimizer': './includes/resources/Optimizer/js/index.js',
+		'kadence-optimizer': './includes/resources/Optimizer/assets/js/optimizer/index.js',
 	},
 	output: {
 		...defaultConfig.output,
@@ -69,7 +69,10 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
-			[`${PROJECT_NAMESPACE}optimizer`]: path.resolve(__dirname, 'includes/resources/Optimizer/js/'),
+			[`${PROJECT_NAMESPACE}optimizer`]: path.resolve(
+				__dirname,
+				'includes/resources/Optimizer/assets/js/optimizer'
+			),
 		},
 	},
 	plugins: [
