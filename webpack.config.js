@@ -5,6 +5,8 @@ const EXTERNAL_NAME = 'kadence';
 const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';
 
+const path = require('path');
+
 function camelCaseDash(string) {
 	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
@@ -57,12 +59,18 @@ module.exports = {
 		'extension-image-picker': './src/extension/image-picker/index.js',
 		'admin-kadence-home': './src/home.js',
 		'header-visual-builder': './src/header-visual-builder.js',
+		'kadence-optimizer': './includes/resources/Optimizer/js/index.js',
 	},
 	output: {
 		...defaultConfig.output,
 		path: __dirname + '/dist/',
 		library: ['kadence', '[name]'],
 		libraryTarget: 'this',
+	},
+	resolve: {
+		alias: {
+			[`${PROJECT_NAMESPACE}optimizer`]: path.resolve(__dirname, 'includes/resources/Optimizer/js/'),
+		},
 	},
 	plugins: [
 		new StyleOnlyEntryPlugin(),
