@@ -173,6 +173,7 @@ function KadenceCounterUp(props) {
 		undefined !== numberTabletMargin && undefined !== numberTabletMargin[3] ? numberTabletMargin[3] : '',
 		undefined !== numberMobileMargin && undefined !== numberMobileMargin[3] ? numberMobileMargin[3] : ''
 	);
+
 	const previewNumberPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== numberPadding && undefined !== numberPadding[0] ? numberPadding[0] : '',
@@ -247,6 +248,34 @@ function KadenceCounterUp(props) {
 		undefined !== titleMobilePadding && undefined !== titleMobilePadding[3] ? titleMobilePadding[3] : ''
 	);
 
+	const previewNumberFontSize = getPreviewSize(
+		previewDevice,
+		undefined !== numberFont[0].size[0] ? numberFont[0].size[0] : '',
+		undefined !== numberFont[0].size[1] ? numberFont[0].size[1] : '',
+		undefined !== numberFont[0].size[2] ? numberFont[0].size[2] : ''
+	);
+
+	const previewTitleFontSize = getPreviewSize(
+		previewDevice,
+		undefined !== titleFont[0].size[0] ? titleFont[0].size[0] : '',
+		undefined !== titleFont[0].size[1] ? titleFont[0].size[1] : '',
+		undefined !== titleFont[0].size[2] ? titleFont[0].size[2] : ''
+	);
+
+	const previewNumberLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[0] ? numberFont[0].lineHeight[0] : '',
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[1] ? numberFont[0].lineHeight[1] : '',
+		undefined !== numberFont[0].lineHeight && undefined !== numberFont[0].lineHeight[2] ? numberFont[0].lineHeight[2] : ''
+	);
+
+	const previewTitleLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : '',
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : '',
+		undefined !== titleFont[0].lineHeight && undefined !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : ''
+	);
+
 	const numberPaddingMouseOver = mouseOverVisualizer();
 	const numberMarginMouseOver = mouseOverVisualizer();
 	const titlePaddingMouseOver = mouseOverVisualizer();
@@ -295,11 +324,9 @@ function KadenceCounterUp(props) {
 						fontWeight: numberFont[0].weight,
 						fontStyle: numberFont[0].style,
 						color: KadenceColorOutput(numberColor),
-						fontSize: getFontSizeOptionOutput(numberFont[0].size[0], numberFont[0].sizeType),
+						fontSize: getFontSizeOptionOutput(previewNumberFontSize, numberFont[0].sizeType),
 						lineHeight:
-							numberFont[0].lineHeight && numberFont[0].lineHeight[0]
-								? numberFont[0].lineHeight[0] + numberFont[0].lineType
-								: undefined,
+							previewNumberLineHeight ? previewNumberLineHeight + numberFont[0].lineType : undefined,
 						letterSpacing: numberFont[0].letterSpacing + 'px',
 						fontFamily: numberFont[0].family ? numberFont[0].family : '',
 						minHeight:
@@ -422,11 +449,9 @@ function KadenceCounterUp(props) {
 								fontWeight: titleFont[0].weight,
 								fontStyle: titleFont[0].style,
 								color: KadenceColorOutput(titleColor),
-								fontSize: getFontSizeOptionOutput(titleFont[0].size[0], titleFont[0].sizeType),
+								fontSize: getFontSizeOptionOutput(previewTitleFontSize, titleFont[0].sizeType),
 								lineHeight:
-									titleFont[0].lineHeight && titleFont[0].lineHeight[0]
-										? titleFont[0].lineHeight[0] + titleFont[0].lineType
-										: undefined,
+									previewTitleLineHeight ? previewTitleLineHeight + titleFont[0].lineType : undefined,
 								letterSpacing: titleFont[0].letterSpacing + 'px',
 								fontFamily: titleFont[0].family ? titleFont[0].family : '',
 								minHeight:
