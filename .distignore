@@ -32,3 +32,4 @@ codeception.slic.yml
 .gitmodules
 .wordpress-org/
 .npmrc
+bunfig.toml
