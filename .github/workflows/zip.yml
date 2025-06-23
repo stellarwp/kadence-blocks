@@ -18,9 +18,11 @@ on:
             slack_channel:
                 description: 'Slack channel ID to post to'
                 required: false
+                default: 'none'
             slack_thread:
                 description: 'Slack thread to post to'
                 required: false
+                default: 'none'
 
 jobs:
     set_vars:
