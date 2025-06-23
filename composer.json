@@ -35,6 +35,7 @@
 		}
 	],
 	"require": {
+		"ext-json": "*",
 		"composer/installers": "^2.0",
 		"enshrined/svg-sanitize": "^0.21.0",
 		"lucatume/di52": "^4.0",
