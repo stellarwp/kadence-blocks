@@ -1,8 +1,9 @@
+# This is a config file for https://bun.sh/
 [install]
 registry = "https://registry.npmjs.org"
 
 [install.scopes]
 # Configure bun to use GitHub packages.
-# See the root .env.sample for instructions.
-# bun --env-file=../../.env publish
+# Create a GitHub Personal Access Token (classic) at https://github.com/settings/tokens/new with "read:packages" permissions.
+# Bun will read from a .env file in the root of the package. Add: BUN_AUTH_TOKEN=yourTokenHere
 "@stellarwp" = { url = "https://npm.pkg.github.com", token = "$BUN_AUTH_TOKEN" }
