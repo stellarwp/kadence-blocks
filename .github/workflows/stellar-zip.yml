@@ -339,11 +339,6 @@ jobs:
       # ------------------------------------------------------------------------------
       # Send slack message.
       # ------------------------------------------------------------------------------
-      - name: Print input debug info
-        run: |
-          echo "slack_channel='${{ inputs.slack_channel }}'"
-          echo "slack_thread='${{ inputs.slack_thread }}'"
-
       - name: Trigger Slack message
         if: inputs.slack_channel && inputs.slack_thread
         run: |
