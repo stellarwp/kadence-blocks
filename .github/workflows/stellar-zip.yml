@@ -123,34 +123,9 @@ jobs:
       # ------------------------------------------------------------------------------
       # Setup Node.
       # ------------------------------------------------------------------------------
-      - name: Check for .nvmrc file
-        id: check-nvmrc
-        run: |
-          if [ -f .nvmrc ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - uses: actions/setup-node@v4
-        if: steps.check-nvmrc.outputs.exists == 'true'
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Set up authentication for NODE_AUTH_TOKEN if present
-        run: |
-          if [ -n "${{ secrets.NODE_AUTH_TOKEN }}" ]; then
-            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
-          fi
-
-      # ------------------------------------------------------------------------------
-      # Setup bun.
-      # ------------------------------------------------------------------------------
-      - name: Setup bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+          registry-url: 'https://npm.pkg.github.com'
 
       # ------------------------------------------------------------------------------
       # Setup PHP.
@@ -237,13 +212,13 @@ jobs:
         if: steps.s3_zip_exists.outcome != 'success'
         run: composer -- pup build
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
 
       - name: pup build with composer auth
         if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'true'
         env:
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
         run: composer -- pup build
 
       - name: pup check
