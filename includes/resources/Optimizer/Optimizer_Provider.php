@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 final class Optimizer_Provider extends Provider {
@@ -23,13 +25,18 @@ final class Optimizer_Provider extends Provider {
 			return;
 		}
 
+		$this->register_store();
 		$this->register_optimizer();
 		$this->register_asset_loader();
 	}
 
+	private function register_store(): void {
+		$this->container->bind( Store::class, Meta_Store::class );
+	}
+
 	private function register_optimizer(): void {
 		$this->container->singleton( Optimizer::class, Optimizer::class );
-		
+
 		add_action(
 			'post_row_actions',
 			$this->container->callback( Optimizer::class, 'add_optimize_row_action' ),
