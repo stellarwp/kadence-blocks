@@ -19,7 +19,7 @@ jobs:
         with:
           registry-url: 'https://npm.pkg.github.com'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       # ESLint and Prettier must be in `package.json`
       - name: Install dependencies
