@@ -15,15 +15,16 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          registry-url: 'https://npm.pkg.github.com'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+          bun-version: latest
 
       # ESLint and Prettier must be in `package.json`
       - name: Install dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
+        env:
+          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
