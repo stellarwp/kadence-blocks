@@ -34,6 +34,11 @@ final class Optimizer {
 			return $actions;
 		}
 
+		// Permission check.
+		if ( ! current_user_can( 'edit_post', $post->ID ) ) {
+			return $actions;
+		}
+
 		// Add the optimize action.
 		$actions['optimize'] = sprintf(
 			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">%s</a>',
