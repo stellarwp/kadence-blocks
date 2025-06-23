@@ -18,11 +18,9 @@ on:
             slack_channel:
                 description: 'Slack channel ID to post to'
                 required: false
-                default: 'none'
             slack_thread:
                 description: 'Slack thread to post to'
                 required: false
-                default: 'none'
 
 jobs:
     set_vars:
@@ -38,8 +36,6 @@ jobs:
               run: |
                   echo "JOB_REF=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
                   echo "JOB_PRODUCTION=no" >> $GITHUB_ENV  # Default production to 'no'
-                  echo "JOB_SLACK_CHANNEL=''" >> $GITHUB_ENV  # Default slack_channel
-                  echo "JOB_SLACK_THREAD=''" >> $GITHUB_ENV  # Default slack_thread
 
             - name: If a workflow_dispatch, set ref based on input
               if: github.event_name == 'workflow_dispatch'
