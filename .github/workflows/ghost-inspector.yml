@@ -28,7 +28,7 @@ jobs:
 
       - name: Build plugin
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         run: |
           composer install --no-dev --no-scripts
           composer run strauss-release

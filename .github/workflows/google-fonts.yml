@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install --no-save @octokit/rest axios --legacy-peer-deps
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Update fonts data
         env:
