@@ -50,7 +50,7 @@ jobs:
 
             - run: bun install --frozen-lockfile
               env:
-                BUN_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
                 PUPPETEER_SKIP_DOWNLOAD: true
 
             - name: Build packages
