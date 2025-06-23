@@ -13,3 +13,4 @@ bin/wp-cli.phar
 .pup-build
 .pup-zip
 /tests/codeception.env
+/.env
