@@ -21,7 +21,14 @@ jobs:
       - name: Setup Composer
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+
       - name: Build plugin
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer install --no-dev --no-scripts
           composer run strauss-release
