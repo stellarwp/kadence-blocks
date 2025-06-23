@@ -7,9 +7,6 @@ jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
 
     steps:
       - name: Check out Git repository
