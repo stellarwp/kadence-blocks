@@ -8,6 +8,7 @@ jobs:
     name: Run linters
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: read
 
     steps:
@@ -17,12 +18,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           registry-url: 'https://npm.pkg.github.com'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ESLint and Prettier must be in `package.json`
       - name: Install dependencies
         run: npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
