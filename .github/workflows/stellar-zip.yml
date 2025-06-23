@@ -340,7 +340,7 @@ jobs:
       # Send slack message.
       # ------------------------------------------------------------------------------
       - name: Trigger Slack message
-        if: inputs.slack_channel != '' && inputs.slack_thread != ''
+        if: ${{ inputs.slack_channel && inputs.slack_thread }}
         run: |
           curl -X GET "https://utility.theeventscalendar.com/slack-message.php?channel=${{ inputs.slack_channel }}&thread=${{ inputs.slack_thread }}&file=${{ env.ZIP_NAME }}.zip&secret=${{ secrets.JENKINS_SECRET }}&url=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       # ------------------------------------------------------------------------------
