@@ -200,22 +200,8 @@ jobs:
       # ------------------------------------------------------------------------------
       # Build and zip.
       # ------------------------------------------------------------------------------
-      - name: Determine if COMPOSER_TOKEN was provided
-        run: |
-          if [ -z "${{ secrets.COMPOSER_TOKEN }}" ]; then
-            echo "COMPOSER_TOKEN_AVAILABLE=false" >> $GITHUB_ENV
-          else
-            echo "COMPOSER_TOKEN_AVAILABLE=true" >> $GITHUB_ENV
-          fi
-
-      - name: pup build
-        if: steps.s3_zip_exists.outcome != 'success'
-        run: composer -- pup build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
-
       - name: pup build with composer auth
-        if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'true'
+        if: steps.s3_zip_exists.outcome != 'success'
         env:
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
           NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
@@ -354,7 +340,7 @@ jobs:
       # Send slack message.
       # ------------------------------------------------------------------------------
       - name: Trigger Slack message
-        if: inputs.slack_channel && inputs.slack_thread
+        if: inputs.slack_channel != '' && inputs.slack_thread != ''
         run: |
           curl -X GET "https://utility.theeventscalendar.com/slack-message.php?channel=${{ inputs.slack_channel }}&thread=${{ inputs.slack_thread }}&file=${{ env.ZIP_NAME }}.zip&secret=${{ secrets.JENKINS_SECRET }}&url=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       # ------------------------------------------------------------------------------
