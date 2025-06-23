@@ -33,6 +33,10 @@ final class StoreTest extends TestCase {
 		);
 	}
 
+	public function testItGetsArrayAsEmptyValue(): void {
+		$this->assertSame( [], $this->store->get( $this->post_id ) );
+	}
+
 	public function testItSetsGetsAndDeletesOptimizationData(): void {
 		$data = $this->fixture( 'resources/optimizer/result.json' );
 
