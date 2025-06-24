@@ -179,7 +179,7 @@ function KadenceTestimonials(props) {
 		undefined !== mobileIsize ? mobileIsize : ''
 	);
 
-	const nonTransAttrs = ['url', 'title', 'content'];
+	const nonTransAttrs = ['url', 'title', 'content', 'name', 'occupation'];
 
 	const blockProps = useBlockProps({});
 
