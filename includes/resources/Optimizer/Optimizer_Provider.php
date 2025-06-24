@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
@@ -28,6 +29,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_store();
 		$this->register_optimizer();
 		$this->register_asset_loader();
+		$this->register_rest();
 	}
 
 	private function register_store(): void {
@@ -56,6 +58,15 @@ final class Optimizer_Provider extends Provider {
 		add_action(
 			'admin_print_styles-edit.php',
 			$this->container->callback( Asset_Loader::class, 'enqueue' )
+		);
+	}
+
+	private function register_rest(): void {
+		add_action(
+			'rest_api_init',
+			function (): void {
+				$this->container->get( Optimize_Rest_Controller::class )->register_routes();
+			}
 		);
 	}
 }
