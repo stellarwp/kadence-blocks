@@ -278,7 +278,7 @@ return array(
 		'kb_goodreads-outline',
 		'kb_imgur-outline',
 		'kb_line-outline',
-		'kb_mastadon-outline',
+		'kb_mastodon-outline',
 		'kb_mewe-outline',
 		'kb_parler-outline',
 		'kb_quora-outline',

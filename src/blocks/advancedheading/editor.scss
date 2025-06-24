@@ -605,3 +605,31 @@ button.components-button.kt-font-clear-btn {
 .kb-text-orientation .kadence-radio-container-control.components-button-group button.has-icon svg {
 	margin: 0 0;
 }
+
+.kb-screen-reader-text {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 4px 0;
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    color: #666;
+    font-size: 0.9em;
+    font-style: italic;
+    border-radius: 3px;
+    position: relative;
+    min-width: 20px;
+    
+    &::before {
+        content: "Screen Reader Text";
+        position: absolute;
+        top: -8px;
+        left: 0px;
+        background: #ffffffb4;
+        padding: 0 4px;
+        font-size: 10px;
+        color: #999;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 1;
+    }
+}
