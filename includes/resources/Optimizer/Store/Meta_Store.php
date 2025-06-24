@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Store;
 
+use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 
 /**
@@ -16,32 +17,42 @@ final class Meta_Store implements Store {
 	 *
 	 * @param int $post_id The post ID associated with the data.
 	 *
-	 * @return array
+	 * @return WebsiteAnalysis|null
 	 */
-	public function get( int $post_id ): array {
-		$data = get_post_meta( $post_id, self::KEY, true );
+	public function get( int $post_id ): ?WebsiteAnalysis {
+		$analysis = get_post_meta( $post_id, self::KEY, true );
 
-		if ( ! $data ) {
-			return [];
+		if ( ! $analysis ) {
+			return null;
 		}
 
-		return (array) $data;
+		return $analysis;
 	}
 
 	/**
 	 * Set the optimization data for a post.
 	 *
-	 * @param int    $post_id The post ID to associate with the data.
-	 * @param string $json The JSON optimization data to store.
+	 * @param int             $post_id The post ID to associate with the data.
+	 * @param WebsiteAnalysis $analysis The website analysis data.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, string $json ): bool {
-		return (bool) update_post_meta(
+	public function set( int $post_id, WebsiteAnalysis $analysis ): bool {
+		$result = update_post_meta(
 			$post_id,
 			self::KEY,
-			json_decode( $json, true )
+			$analysis
 		);
+
+		// Don't return false if the value is the same.
+		if ( false === $result ) {
+			$current = $this->get( $post_id );
+			
+			
+			return $current && $current->toArray() === $analysis->toArray();
+		}
+
+		return (bool) $result;
 	}
 
 	/**

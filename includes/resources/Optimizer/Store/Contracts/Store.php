@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Store\Contracts;
 
+use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
+
 interface Store {
 
 	/**
@@ -9,19 +11,19 @@ interface Store {
 	 *
 	 * @param int $post_id The post ID associated with the data.
 	 *
-	 * @return array
+	 * @return WebsiteAnalysis|null
 	 */
-	public function get( int $post_id ): array;
+	public function get( int $post_id ): ?WebsiteAnalysis;
 
 	/**
 	 * Set the optimization data for a post.
 	 *
-	 * @param int    $post_id The post ID to associate with the data.
-	 * @param string $json The JSON optimization data to store.
+	 * @param int             $post_id The post ID to associate with the data.
+	 * @param WebsiteAnalysis $analysis  The website analysis data.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, string $json ): bool;
+	public function set( int $post_id, WebsiteAnalysis $analysis ): bool;
 
 	/**
 	 * Delete the optimization data for a post.
