@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.12 =
 Release Date: 3rd July 2025
 * Fix: Icon List default bottom margin.
+* Fix: Count Up block responsive font/number size/lineheight preview in editor.
 
 = 3.5.11 =
 Release Date: 19th June 2025
