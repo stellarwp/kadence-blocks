@@ -2,9 +2,16 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use WP_Post;
 
 final class Optimizer {
+
+	private Store $store;
+
+	public function __construct( Store $store ) {
+		$this->store = $store;
+	}
 
 	/**
 	 * Add an "Optimize" link to post/page row actions.
@@ -39,13 +46,22 @@ final class Optimizer {
 			return $actions;
 		}
 
+		$class = 'kb-optimize-post';
+		$text  = esc_html__( 'Optimize', 'kadence-blocks' );
+
+		if ( $this->store->get( $post->ID ) ) {
+			$class = 'kb-remove-post-optimization';
+			$text  = esc_html__( 'Remove Optimization', 'kadence-blocks' );
+		}
+
 		// Add the optimize action.
 		$actions['optimize'] = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">%s</a>',
+			'<a href="#" class="%s" data-post-id="%d" data-post-url="%s" data-nonce="%s">%s</a>',
+			esc_attr( $class ),
 			$post->ID,
 			esc_attr( esc_url( $post_url ) ),
 			esc_attr( wp_create_nonce( 'kb_optimize_post_' . $post->ID ) ),
-			esc_html__( 'Optimize', 'kadence-blocks' )
+			$text
 		);
 
 		return $actions;
