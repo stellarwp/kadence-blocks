@@ -92,7 +92,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request_data = $this->getTestAnalysisData();
-		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, '/kb-optimizer/v1/optimize' );
+		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $request_data );
 
@@ -114,7 +114,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->editor_user->ID );
 
 		$request_data = $this->getTestAnalysisData();
-		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, '/kb-optimizer/v1/optimize' );
+		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $request_data );
 
@@ -127,7 +127,7 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testCreateItemPermissionDeniedForSubscriber(): void {
 		wp_set_current_user( $this->subscriber_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->create_item_permissions_check( $request );
@@ -139,13 +139,28 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testCreateItemPermissionDeniedForUnauthenticated(): void {
 		wp_set_current_user( 0 );
 
-		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->create_item_permissions_check( $request );
 
 		$this->assertInstanceOf( WP_Error::class, $permission_result );
 		$this->assertEquals( 'rest_kb_optimizer_create_forbidden', $permission_result->get_error_code() );
+	}
+
+	public function testCreateItemPermissionCheckPostDoesNotExist(): void {
+		wp_set_current_user( $this->admin_user->ID );
+
+		$non_existent_post_id = 999999;
+		$request              = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
+
+		$permission_result = $this->controller->create_item_permissions_check( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $permission_result );
+		$this->assertEquals( 'rest_kb_optimizer_post_does_not_exist', $permission_result->get_error_code() );
+		$this->assertEquals( WP_Http::NOT_FOUND, $permission_result->get_error_data()['status'] );
+		$this->assertEquals( $non_existent_post_id, $permission_result->get_error_data()['post_id'] );
 	}
 
 	public function testGetItemSuccess(): void {
@@ -156,7 +171,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->get_item( $request );
@@ -174,7 +189,7 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testGetItemNotFound(): void {
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->get_item( $request );
@@ -187,13 +202,28 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testGetItemPermissionDeniedForSubscriber(): void {
 		wp_set_current_user( $this->subscriber_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->get_item_permissions_check( $request );
 
 		$this->assertInstanceOf( WP_Error::class, $permission_result );
 		$this->assertEquals( 'rest_kb_optimizer_read_forbidden', $permission_result->get_error_code() );
+	}
+
+	public function testGetItemPermissionCheckPostDoesNotExist(): void {
+		wp_set_current_user( $this->admin_user->ID );
+
+		$non_existent_post_id = 999999;
+		$request              = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
+
+		$permission_result = $this->controller->get_item_permissions_check( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $permission_result );
+		$this->assertEquals( 'rest_kb_optimizer_post_does_not_exist', $permission_result->get_error_code() );
+		$this->assertEquals( WP_Http::NOT_FOUND, $permission_result->get_error_data()['status'] );
+		$this->assertEquals( $non_existent_post_id, $permission_result->get_error_data()['post_id'] );
 	}
 
 	public function testDeleteItemSuccess(): void {
@@ -204,7 +234,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->delete_item( $request );
@@ -223,7 +253,7 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testDeleteItemNonExistentData(): void {
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->delete_item( $request );
@@ -236,7 +266,7 @@ final class OptimizeRestControllerTest extends TestCase {
 	public function testDeleteItemPermissionDeniedForSubscriber(): void {
 		wp_set_current_user( $this->subscriber_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->delete_item_permissions_check( $request );
@@ -245,11 +275,25 @@ final class OptimizeRestControllerTest extends TestCase {
 		$this->assertEquals( 'rest_kb_optimizer_delete_forbidden', $permission_result->get_error_code() );
 	}
 
+	public function testDeleteItemPermissionCheckPostDoesNotExist(): void {
+		wp_set_current_user( $this->admin_user->ID );
+
+		$non_existent_post_id = 999999;
+		$request              = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
+
+		$permission_result = $this->controller->delete_item_permissions_check( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $permission_result );
+		$this->assertEquals( 'rest_kb_optimizer_post_does_not_exist', $permission_result->get_error_code() );
+		$this->assertEquals( WP_Http::NOT_FOUND, $permission_result->get_error_data()['status'] );
+		$this->assertEquals( $non_existent_post_id, $permission_result->get_error_data()['post_id'] );
+	}
 
 	public function testMissingPostIdParameter(): void {
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
 		// Don't set POST_ID parameter.
 
 		$permission_result = $this->controller->get_item_permissions_check( $request );
@@ -261,7 +305,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->admin_user->ID );
 
 		// Test that REST API dispatch automatically sanitizes parameters.
-		$request = new WP_REST_Request( 'GET', '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, 'invalid_string' );
 
 		// Before dispatch, parameter is raw.
@@ -272,11 +316,11 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// After dispatch, parameter should be sanitized by custom callback.
 		$this->assertEquals( 0, $request->get_param( Optimize_Rest_Controller::POST_ID ) );
-		// Should return permission error because current_user_can('read_post', 0) returns false.
-		$this->assertEquals( 403, $response->get_status() );
+		// Should return permission error because the post won't be found.
+		$this->assertEquals( WP_Http::NOT_FOUND, $response->get_status() );
 
 		// Test with numeric string.
-		$request2 = new WP_REST_Request( 'GET', '/kb-optimizer/v1/optimize' );
+		$request2 = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
 		$request2->set_param( Optimize_Rest_Controller::POST_ID, '123abc' );
 		// Before dispatch.
 		$this->assertEquals( '123abc', $request2->get_param( Optimize_Rest_Controller::POST_ID ) );
@@ -284,38 +328,38 @@ final class OptimizeRestControllerTest extends TestCase {
 		$response2 = $this->rest_server->dispatch( $request2 );
 		// After dispatch.
 		$this->assertEquals( 123, $request2->get_param( Optimize_Rest_Controller::POST_ID ) );
-		// Should return permission error because we can't edit post 123.
-		$this->assertEquals( 403, $response2->get_status() );
+		// Should return permission error post 123 does not exist.
+		$this->assertEquals( WP_Http::NOT_FOUND, $response2->get_status() );
 
 		// Test with negative number - should return validation error.
-		$request3 = new WP_REST_Request( 'GET', '/kb-optimizer/v1/optimize' );
+		$request3 = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
 		$request3->set_param( Optimize_Rest_Controller::POST_ID, '-456' );
 		$this->assertEquals( '-456', $request3->get_param( Optimize_Rest_Controller::POST_ID ) );
 
 		$response3 = $this->rest_server->dispatch( $request3 );
 		$this->assertEquals( -456, $request3->get_param( Optimize_Rest_Controller::POST_ID ) );
 		// Should return permission error because current_user_can('read_post', -456) returns false.
-		$this->assertEquals( 403, $response3->get_status() );
+		$this->assertEquals( WP_Http::NOT_FOUND, $response3->get_status() );
 	}
 
 	public function testParameterValidationThroughRestApi(): void {
 		wp_set_current_user( $this->admin_user->ID );
 
 		// Test with invalid POST_ID through actual REST API dispatch.
-		$request = new WP_REST_Request( 'GET', '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, 'invalid_string' );
 
 		$response = $this->rest_server->dispatch( $request );
 
 		// Should get permission error because (int)'invalid_string' = 0,
-		// and current_user_can('read_post', 0) returns false.
-		$this->assertEquals( WP_Http::FORBIDDEN, $response->get_status() );
+		// and the post does not exit.
+		$this->assertEquals( WP_Http::NOT_FOUND, $response->get_status() );
 
 		// Check if response is a WP_Error or if the data contains error information.
 		$response_data = $response->get_data();
 
 		$this->assertArrayHasKey( 'code', $response_data );
-		$this->assertEquals( 'rest_kb_optimizer_read_forbidden', $response_data['code'] );
+		$this->assertEquals( 'rest_kb_optimizer_post_does_not_exist', $response_data['code'] );
 	}
 
 	public function testWithDraftPost(): void {
@@ -327,7 +371,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		wp_set_current_user( $this->admin_user->ID );
 
-		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, '/kb-optimizer/v1/optimize' );
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $draft_post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $this->getTestAnalysisData() );
 
@@ -340,7 +384,7 @@ final class OptimizeRestControllerTest extends TestCase {
 	private function getTestAnalysisData(): array {
 		return json_decode(
 			$this->fixture( 'resources/optimizer/result.json' ),
-			true 
+			true
 		);
 	}
 }

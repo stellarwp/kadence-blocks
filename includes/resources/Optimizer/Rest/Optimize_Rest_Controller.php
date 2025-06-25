@@ -27,6 +27,7 @@ use WP_REST_Server;
  */
 final class Optimize_Rest_Controller extends WP_REST_Controller {
 
+	public const ROUTE   = '/kb-optimizer/v1/optimize';
 	public const POST_ID = 'post_id';
 
 	public const RESULTS = 'results';
@@ -181,6 +182,19 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			return true;
 		}
 
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return new WP_Error(
+				'rest_kb_optimizer_post_does_not_exist',
+				__( 'Sorry, we could not find that post_id.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::NOT_FOUND,
+					'post_id' => $post_id,
+				]
+			);
+		}
+
 		return new WP_Error(
 			'rest_kb_optimizer_create_forbidden',
 			__( 'Sorry, you are not allowed to store optimizer data.', 'kadence-blocks' ),
@@ -203,6 +217,19 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 
 		if ( $post_id && current_user_can( 'edit_post', $post_id ) ) {
 			return true;
+		}
+
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return new WP_Error(
+				'rest_kb_optimizer_post_does_not_exist',
+				__( 'Sorry, we could not find that post_id.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::NOT_FOUND,
+					'post_id' => $post_id,
+				]
+			);
 		}
 
 		return new WP_Error(
@@ -230,9 +257,22 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			return true;
 		}
 
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return new WP_Error(
+				'rest_kb_optimizer_post_does_not_exist',
+				__( 'Sorry, we could not find that post_id.', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::NOT_FOUND,
+					'post_id' => $post_id,
+				]
+			);
+		}
+
 		return new WP_Error(
 			'rest_kb_optimizer_delete_forbidden',
-			__( 'Sorry, you are not allowed to delete optimizer data.', 'kadence-blocks' ),
+			__( 'Sorry, you do not have permission to delete data for this post.', 'kadence-blocks' ),
 			[
 				'status'  => rest_authorization_required_code(),
 				'post_id' => $post_id,
