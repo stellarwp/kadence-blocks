@@ -4,13 +4,19 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 
 final class Optimizer_Renderer implements Renderable {
 
 	private Store $store;
+	private Text_Repository $text_repository;
 
-	public function __construct( Store $store ) {
-		$this->store = $store;
+	public function __construct(
+		Store $store,
+		Text_Repository $text_repository
+	) {
+		$this->store           = $store;
+		$this->text_repository = $text_repository;
 	}
 
 	/**
@@ -25,7 +31,7 @@ final class Optimizer_Renderer implements Renderable {
 		$status   = get_post_status( $post_id );
 
 		if ( ! $post_url || is_wp_error( $post_url ) || $status !== 'publish' ) {
-			echo esc_html__( 'Not Optimizable', 'kadence-blocks' );
+			echo esc_html( $this->text_repository->get( Text_Repository::NOT_OPTIMIZABLE ) );
 
 			return;
 		}
@@ -33,21 +39,21 @@ final class Optimizer_Renderer implements Renderable {
 		// Optimization found.
 		if ( $this->store->get( $post_id ) ) {
 			$class = 'kb-remove-post-optimization';
-			$text  = __( 'Remove Optimization', 'kadence-blocks' );
+			$text  = $this->text_repository->get( Text_Repository::REMOVE_OPTIMIZATION );
 
 			// User can't manage this, just display the status.
 			if ( ! current_user_can( 'delete_post', $post_id ) ) {
-				echo esc_html__( 'Optimized', 'kadence-blocks' );
+				echo esc_html( $this->text_repository->get( Text_Repository::OPTIMIZED ) );
 
 				return;
 			}
 		} else {
 			$class = 'kb-optimize-post';
-			$text  = __( 'Run Optimizer', 'kadence-blocks' );
+			$text  = $this->text_repository->get( Text_Repository::RUN_OPTIMIZER );
 
 			// User can't manage this, just display the status.
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
-				echo esc_html__( 'Not Optimized', 'kadence-blocks' );
+				echo esc_html( $this->text_repository->get( Text_Repository::NOT_OPTIMIZED ) );
 
 				return;
 			}

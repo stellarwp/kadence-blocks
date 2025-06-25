@@ -5,20 +5,23 @@ namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Renderers;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use Tests\Support\Classes\TestCase;
 
 final class OptimizerRendererTest extends TestCase {
 
 	private Store $store;
+	private Text_Repository $text_repository;
 	private Optimizer_Renderer $renderer;
 	private int $post_id;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store    = $this->container->get( Store::class );
-		$this->renderer = new Optimizer_Renderer( $this->store );
-		$this->post_id  = $this->factory()->post->create(
+		$this->store           = $this->container->get( Store::class );
+		$this->text_repository = $this->container->get( Text_Repository::class );
+		$this->renderer        = new Optimizer_Renderer( $this->store, $this->text_repository );
+		$this->post_id         = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
@@ -35,7 +38,7 @@ final class OptimizerRendererTest extends TestCase {
 	}
 
 	public function testItCreatesWithStoreInjection(): void {
-		$renderer = new Optimizer_Renderer( $this->store );
+		$renderer = new Optimizer_Renderer( $this->store, $this->text_repository );
 
 		$this->assertInstanceOf( Optimizer_Renderer::class, $renderer );
 	}

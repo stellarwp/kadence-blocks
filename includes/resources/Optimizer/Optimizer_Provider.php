@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 final class Optimizer_Provider extends Provider {
@@ -33,10 +34,27 @@ final class Optimizer_Provider extends Provider {
 			return;
 		}
 
+		$this->register_translation();
 		$this->register_store();
 		$this->register_asset_loader();
 		$this->register_post_list_table();
 		$this->register_rest();
+	}
+
+	private function register_translation(): void {
+		$this->container->singleton( Text_Repository::class, Text_Repository::class );
+
+		$this->container->when( Text_Repository::class )
+			->needs( '$labels' )
+			->give(
+				fn(): array => [
+					Text_Repository::RUN_OPTIMIZER       => __( 'Run Optimizer', 'kadence-blocks' ),
+					Text_Repository::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
+					Text_Repository::OPTIMIZED           => __( 'Optimized', 'kadence-blocks' ),
+					Text_Repository::NOT_OPTIMIZED       => __( 'Not Optimized', 'kadence-blocks' ),
+					Text_Repository::NOT_OPTIMIZABLE     => __( 'Not Optimizable', 'kadence-blocks' ),
+				]
+			);
 	}
 
 	private function register_store(): void {
