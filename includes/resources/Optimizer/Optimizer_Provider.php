@@ -2,12 +2,19 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 final class Optimizer_Provider extends Provider {
+
+	public const OPTIMIZER_COLUMN = 'kadence_blocks.optimizer.optimizer_column';
 
 	public function register(): void {
 		$this->container->singleton( State::class, State::class );
@@ -27,8 +34,8 @@ final class Optimizer_Provider extends Provider {
 		}
 
 		$this->register_store();
-		$this->register_optimizer();
 		$this->register_asset_loader();
+		$this->register_post_list_table();
 		$this->register_rest();
 	}
 
@@ -36,28 +43,45 @@ final class Optimizer_Provider extends Provider {
 		$this->container->bind( Store::class, Meta_Store::class );
 	}
 
-	private function register_optimizer(): void {
-		$this->container->singleton( Optimizer::class, Optimizer::class );
-
-		add_action(
-			'post_row_actions',
-			$this->container->callback( Optimizer::class, 'add_optimize_row_action' ),
-			10,
-			2
-		);
-
-		add_action(
-			'page_row_actions',
-			$this->container->callback( Optimizer::class, 'add_optimize_row_action' ),
-			10,
-			2
-		);
-	}
-
 	private function register_asset_loader(): void {
 		add_action(
 			'admin_print_styles-edit.php',
 			$this->container->callback( Asset_Loader::class, 'enqueue' )
+		);
+	}
+
+	private function register_post_list_table(): void {
+		$this->container->singleton(
+			self::OPTIMIZER_COLUMN,
+			function (): Column_Registrar {
+				$column = new Column(
+					'kadence_optimizer',
+					__( 'Kadence Optimizer', 'kadence-blocks' ),
+					Meta_Store::KEY
+				);
+
+				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
+				$renderer      = $this->container->get( Optimizer_Renderer::class );
+
+				return new Column_Registrar( $column, $sort_strategy, $renderer );
+			}
+		);
+
+		$this->container
+			->when( Column_Hook_Manager::class )
+			->needs( '$columns' )
+			->give(
+				fn(): array => [
+					$this->container->get( self::OPTIMIZER_COLUMN ),
+				]
+			);
+
+		$this->container->singleton( Column_Hook_Manager::class, Column_Hook_Manager::class );
+
+		// Add post list table columns.
+		add_action(
+			'admin_init',
+			$this->container->callback( Column_Hook_Manager::class, 'register_hooks' )
 		);
 	}
 
