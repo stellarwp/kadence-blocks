@@ -178,6 +178,7 @@ Release Date: 3rd July 2025
 * Fix: Icon List default bottom margin.
 * Fix: Count Up block responsive font/number size/lineheight preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.
+* Update: Header block off canvas trigger focus styles. 
 
 = 3.5.11 =
 Release Date: 19th June 2025
