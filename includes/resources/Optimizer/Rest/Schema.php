@@ -96,7 +96,7 @@ final class Schema {
 			],
 			'heightAttr'    => [
 				'description' => __( 'The img element height attribute value.', 'kadence-blocks' ),
-				'type'        => 'integer',
+				'type'        => 'string',
 				'required'    => false,
 			],
 			'naturalWidth'  => [
