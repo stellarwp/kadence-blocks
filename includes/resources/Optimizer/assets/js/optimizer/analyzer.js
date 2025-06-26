@@ -15,13 +15,13 @@ export async function analyzeSite(url, postId) {
 
 	if (!isSupported()) {
 		console.log('❌ Performance analysis not supported in this browser');
-		throw new Error('Performance analysis not supported in this browser');
+		throw new Error('Performance analysis not supported in this browser.');
 	}
 
 	try {
 		const results = await analyzeWebsite(url);
 
-		const res = await apiFetch({
+		return await apiFetch({
 			path: OPTIMIZE_ROUTE,
 			method: 'POST',
 			data: {
@@ -29,13 +29,7 @@ export async function analyzeSite(url, postId) {
 				results,
 			},
 		});
-
-		console.log(res);
-		console.log(`✅ Analysis complete for post ID ${postId}:`, results);
-
-		return res;
 	} catch (error) {
-		console.error('❌ Analysis failed:', error);
 		throw error;
 	}
 }
@@ -57,7 +51,6 @@ export async function removeOptimization(postId) {
 			},
 		});
 	} catch (error) {
-		console.error(`❌ Failed to remove optimization for post ID ${postId}:`, error);
 		throw error;
 	}
 }
