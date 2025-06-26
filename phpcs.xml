@@ -57,7 +57,7 @@
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
-		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+		<exclude-pattern>./includes/resources/Optimizer/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase">
