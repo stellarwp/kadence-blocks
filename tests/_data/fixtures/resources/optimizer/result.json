@@ -316,6 +316,8 @@
 			],
 			"width": 600,
 			"height": 900,
+			"widthAttr": "700",
+			"heightAttr": "1000",
 			"naturalWidth": 600,
 			"naturalHeight": 900,
 			"aspectRatio": 0.6666666666666666,

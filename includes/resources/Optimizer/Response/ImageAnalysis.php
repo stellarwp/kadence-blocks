@@ -19,6 +19,8 @@ final class ImageAnalysis {
 	public array $srcset;
 	public int $width;
 	public int $height;
+	public string $widthAttr;
+	public string $heightAttr;
 	public int $naturalWidth;
 	public int $naturalHeight;
 	public ?float $aspectRatio;
@@ -41,6 +43,8 @@ final class ImageAnalysis {
 		array $srcset,
 		int $width,
 		int $height,
+		string $widthAttr,
+		string $heightAttr,
 		int $naturalWidth,
 		int $naturalHeight,
 		?float $aspectRatio,
@@ -59,6 +63,8 @@ final class ImageAnalysis {
 		$this->srcset        = $srcset;
 		$this->width         = $width;
 		$this->height        = $height;
+		$this->widthAttr     = $widthAttr;
+		$this->heightAttr    = $heightAttr;
 		$this->naturalWidth  = $naturalWidth;
 		$this->naturalHeight = $naturalHeight;
 		$this->aspectRatio   = $aspectRatio;
@@ -74,7 +80,7 @@ final class ImageAnalysis {
 	}
 
 	/**
-	 * @param array{path: string, src: string, srcset: array, width: int, height: int, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
+	 * @param array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
 	 */
 	public static function from( array $attributes ): self {
 		$srcset = array_map(
@@ -90,6 +96,8 @@ final class ImageAnalysis {
 			$srcset,
 			$attributes['width'] ?? 0,
 			$attributes['height'] ?? 0,
+			$attributes['widthAttr'] ?? '',
+			$attributes['heightAttr'] ?? '',
 			$attributes['naturalWidth'] ?? 0,
 			$attributes['naturalHeight'] ?? 0,
 			$attributes['aspectRatio'] ?? null,

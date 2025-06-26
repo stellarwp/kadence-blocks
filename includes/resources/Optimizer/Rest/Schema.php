@@ -89,6 +89,16 @@ final class Schema {
 				'type'        => 'integer',
 				'required'    => true,
 			],
+			'widthAttr'     => [
+				'description' => __( 'The img element width attribute value.', 'kadence-blocks' ),
+				'type'        => 'string',
+				'required'    => false,
+			],
+			'heightAttr'    => [
+				'description' => __( 'The img element height attribute value.', 'kadence-blocks' ),
+				'type'        => 'integer',
+				'required'    => false,
+			],
 			'naturalWidth'  => [
 				'description' => __( 'The intrinsic width of the image file in pixels.', 'kadence-blocks' ),
 				'type'        => 'integer',
