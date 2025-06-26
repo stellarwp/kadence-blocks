@@ -5,6 +5,7 @@
 /src
 /node_modules
 /tests
+/.cursor
 
 .distignore
 .gitignore

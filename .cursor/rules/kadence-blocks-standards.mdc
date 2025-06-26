@@ -1,0 +1,203 @@
+---
+description: Kadence Blocks WordPress plugin development standards and conventions
+globs: **/*.php
+alwaysApply: false
+---
+
+# Kadence Blocks - PHP Cursor Rules
+
+## Project Overview
+This is a WordPress plugin project (Kadence Blocks) that provides Gutenberg blocks for page building. The codebase follows WordPress VIP-Go coding standards, uses modern PHP 7.4+ features, and includes comprehensive testing with Codeception.
+
+## File Structure & Naming Conventions
+
+### PHP Files
+- Use `<?php declare( strict_types=1 );` at the start of all PHP files
+- Follow PSR-4 autoloading: `KadenceWP\KadenceBlocks\` namespace maps to `includes/resources/`
+- Test files use `Tests\` namespace mapping to `tests/`
+- Class names use Snake_Case, file names match class names
+- REST controllers end with `_Rest_Controller` (underscore convention for WordPress)
+- Response classes use PascalCase without underscores
+
+### Directory Structure
+```
+includes/resources/          # Main application code (PSR-4: KadenceWP\KadenceBlocks\)
+├── Optimizer/              # Performance optimization features
+│   ├── assets/            # Frontend assets specific to this feature
+│   ├── Response/           # Data transfer objects
+│   ├── Rest/              # REST API controllers
+│   └── Store/             # Data persistence layer
+tests/wpunit/               # WordPress unit tests
+├── Resources/             # Mirror of includes/resources structure
+src/                       # Frontend JavaScript/CSS source
+```
+
+## PHP Coding Standards
+
+### General PHP
+- Use strict typing: `declare( strict_types=1 );`
+- Use typed properties and return types
+- Prefer `final` classes unless inheritance is intended
+- Use short array syntax `[]` instead of `array()`
+- Use static anonymous functions: `static fn( $value ) => (int) $value`
+
+### WordPress Integration
+- Follow WordPress VIP-Go coding standards
+- Use WordPress coding conventions for hooks, filters, and function names
+- Prefix custom capabilities and error codes with plugin identifier
+- Use `current_user_can()` for permission checks
+- Use `WP_Error` for error handling in REST APIs
+
+### REST API Controllers
+- Extend `WP_REST_Controller`
+- Use public constants for parameter names: `public const POST_ID = 'post_id';`
+- Implement permission callbacks for all endpoints
+- Use appropriate HTTP status codes from `WP_Http` class
+- Sanitize parameters with callbacks: `'sanitize_callback' => static fn( $value ) => (int) $value`
+
+### Error Handling
+- Use descriptive error codes with plugin prefix: `rest_kb_`
+- Include relevant context in error data (e.g., `post_id`)
+- Use appropriate HTTP status codes
+- Provide user-friendly error messages with `__()` for i18n
+
+## Testing Conventions
+
+### Test Structure
+- Use Codeception with WordPress integration (`wpunit` suite)
+- Extend `Tests\Support\Classes\TestCase` for dependency injection support
+- Use `final class` for test classes
+- Test classes always use PascalCase
+- Test file names always use PascalCase and end with `Test.php`
+
+### Test Setup & Teardown
+```php
+protected function setUp(): void {
+    parent::setUp();
+
+    // Get dependencies from container
+    $this->store = $this->container->get( Store::class );
+
+    // Create test data using factories
+    $this->post_id = $this->factory()->post->create([
+        'post_title' => 'Test Post',
+        'post_status' => 'publish',
+    ]);
+
+    // Initialize REST server
+    global $wp_rest_server;
+    $this->rest_server = new WP_REST_Server();
+    $wp_rest_server = $this->rest_server;
+    do_action( 'rest_api_init' );
+}
+
+protected function tearDown(): void {
+    // Clean up test data
+    $this->store->delete( $this->post_id );
+    wp_set_current_user( 0 );
+
+    // Reset global REST server
+    global $wp_rest_server;
+    $wp_rest_server = null;
+
+    parent::tearDown();
+}
+```
+
+### Test Naming & Organization
+- Use descriptive test method names: `testCreateItemPermissionDeniedForSubscriber`
+- Test both success and failure scenarios
+- Test different user roles and permissions
+- Use constants for parameter names: `Optimize_Rest_Controller::POST_ID`
+
+### Test Patterns
+- Use `wp_set_current_user()` to test different user contexts
+- Use `$this->factory()` for creating test data
+- Use `$this->fixture()` for loading test fixtures
+- Test parameter sanitization through REST API dispatch
+- Verify both response structure and stored data
+
+### Assertions
+- Use specific assertions: `$this->assertInstanceOf()`, `$this->assertEquals()`
+- Test HTTP status codes using `WP_Http` constants
+- Verify error codes and messages
+- Check data integrity after operations
+- Use `$this->assertNotInstanceOf( WP_Error::class, $response )` for success cases
+
+## Dependencies & Architecture
+
+### Dependency Injection
+- Use `lucatume/di52` container
+- Access dependencies via `$this->container->get( Class::class )`
+- Register services in provider classes
+
+### Data Layer
+- Use contracts/interfaces where appropriate
+- Implement repository pattern for data access
+- Use typed response objects for API data
+
+## Code Style Preferences
+
+### Comments
+- End all comments with periods for consistency
+- Use PHPDoc blocks for methods and classes
+- Inline comments should be concise and end with periods
+
+### Formatting
+- Use tabs for indentation (WordPress standard)
+- Align assignments and array elements
+- Put opening braces on same line for methods
+- Use trailing commas in multi-line arrays
+
+### Modern PHP Features
+- Use typed properties and parameters
+- Use arrow functions for simple callbacks
+- Use null coalescing operator `??` when appropriate
+- Use match expressions over switch when suitable
+
+## WordPress Specific
+
+### Hooks & Filters
+- Use descriptive hook names with plugin prefix
+- Document hook parameters and expected values
+- Use priority 10 unless specific ordering needed
+
+### Internationalization
+- Wrap user-facing strings in `__()` or `_e()`
+- Use 'kadence-blocks' text domain consistently
+- Provide context with `_x()` when needed
+
+### Security
+- Sanitize all input data
+- Validate user permissions before operations
+- Use nonces for form submissions
+- Escape output data appropriately
+
+## Build & Development
+
+### Asset Management
+- Source files in `src/` directory
+- Built assets in `includes/assets/`
+- Use webpack for JavaScript bundling
+- Use Gulp for additional build tasks
+
+### Code Quality
+- Run PHPCS with project's phpcs.xml configuration
+- Use PHP 7.4+ compatibility checks
+- Follow WordPress VIP-Go standards
+- Use Prettier for JavaScript formatting
+
+## Testing Commands
+- `slic run wpunit` - Run all WordPress unit/integration tests
+- `slic run wpunit Path/To/ClassName` - Run specific test class
+- `slic run wpunit Path/To/ClassName::testMethod` - Run specific test method
+- `slic run acceptance` - Run all WordPress acceptance tests
+
+## Key Principles
+1. **Type Safety**: Use strict typing throughout
+2. **WordPress Integration**: Follow WordPress conventions and standards
+3. **Test Coverage**: Write comprehensive tests for all functionality
+4. **Error Handling**: Provide clear, actionable error messages
+5. **Security**: Always validate permissions and sanitize data
+6. **Performance**: Consider caching and optimization in data operations
+7. **Maintainability**: Use clear naming and consistent patterns
