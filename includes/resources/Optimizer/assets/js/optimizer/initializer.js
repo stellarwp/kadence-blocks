@@ -1,5 +1,7 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { analyzeSite, removeOptimization } from './analyzer.js';
 import { UI_STATES } from './constants.js';
+import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
 
 /**
  * Update the optimizer link state
@@ -50,8 +52,18 @@ export function initOptimizer() {
 
 				// Update link state to show "Remove Optimization".
 				updateLinkState(event.target, true);
+
+				createNotice(
+					sprintf(
+						// translators: %d: The post ID
+						__('Optimization data successfully saved for Post ID: %d.', 'kadence-blocks'),
+						postId
+					)
+				);
 			} catch (error) {
 				console.error('❌ Optimization failed:', error);
+
+				createNotice(__('Optimization failed', 'kadence-blocks'), NOTICE_TYPES.ERROR, true, error);
 			}
 		} else if (event.target.classList.contains('kb-remove-post-optimization')) {
 			event.preventDefault();
@@ -66,8 +78,23 @@ export function initOptimizer() {
 
 				// Update link state to show "Run Optimizer".
 				updateLinkState(event.target, false);
+
+				createNotice(
+					sprintf(
+						// translators: %d: The post ID
+						__('Optimization data successfully deleted for Post ID: %d.', 'kadence-blocks'),
+						postId
+					)
+				);
 			} catch (error) {
 				console.error('❌ Failed to remove optimization:', error);
+
+				createNotice(
+					__('Failed to remove optimization data', 'kadence-blocks'),
+					NOTICE_TYPES.ERROR,
+					true,
+					error
+				);
 			}
 		}
 	});
