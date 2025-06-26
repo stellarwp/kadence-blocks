@@ -114,7 +114,7 @@ final class ImageAnalysis {
 	}
 
 	/**
-	 * @return array{path: string, src: string, srcset: array, width: int, height: int, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string}
+	 * @return array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string}
 	 */
 	public function toArray(): array {
 		return [
@@ -128,6 +128,8 @@ final class ImageAnalysis {
 			),
 			'width'         => $this->width,
 			'height'        => $this->height,
+			'widthAttr'     => $this->widthAttr,
+			'heightAttr'    => $this->heightAttr,
 			'naturalWidth'  => $this->naturalWidth,
 			'naturalHeight' => $this->naturalHeight,
 			'aspectRatio'   => $this->aspectRatio,
