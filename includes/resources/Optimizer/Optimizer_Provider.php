@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
@@ -35,6 +36,8 @@ final class Optimizer_Provider extends Provider {
 		}
 
 		$this->register_translation();
+		$this->register_nonce();
+		$this->register_request_anonymizer();
 		$this->register_store();
 		$this->register_asset_loader();
 		$this->register_post_list_table();
@@ -55,6 +58,29 @@ final class Optimizer_Provider extends Provider {
 					Text_Repository::NOT_OPTIMIZABLE     => __( 'Not Optimizable', 'kadence-blocks' ),
 				]
 			);
+	}
+
+	private function register_nonce(): void {
+		$this->container->singleton( Nonce::class, Nonce::class );
+
+		add_filter(
+			'nonce_user_logged_out',
+			$this->container->callback( Nonce::class, 'customize_nonce_id' ),
+			10,
+			2
+		);
+	}
+
+	private function register_request_anonymizer(): void {
+		$this->container->singleton( Request_Anonymizer::class, Request_Anonymizer::class );
+
+		add_action(
+			'plugins_loaded',
+			function () {
+				$this->container->get( Request_Anonymizer::class )->force_anonymous_request();
+			},
+			2
+		);
 	}
 
 	private function register_store(): void {
