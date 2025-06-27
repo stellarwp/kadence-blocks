@@ -76,7 +76,7 @@ export function Edit(props) {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-				parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
+				parentClientId: select('core/block-editor').getBlockParentsByBlockName(clientId, 'kadence/table')[0],
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				index: select('core/block-editor').getBlockIndex(clientId),
 				parentData: {
