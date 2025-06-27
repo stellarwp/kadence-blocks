@@ -2,26 +2,27 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Renderers;
 
+use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use Tests\Support\Classes\TestCase;
 
 final class OptimizerRendererTest extends TestCase {
 
 	private Store $store;
-	private Text_Repository $text_repository;
+	private Nonce $nonce;
 	private Optimizer_Renderer $renderer;
 	private int $post_id;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store           = $this->container->get( Store::class );
-		$this->text_repository = $this->container->get( Text_Repository::class );
-		$this->renderer        = new Optimizer_Renderer( $this->store, $this->text_repository );
-		$this->post_id         = $this->factory()->post->create(
+		$this->store    = $this->container->get( Store::class );
+		$this->nonce    = $this->container->get( Nonce::class );
+		$this->renderer = $this->container->get( Optimizer_Renderer::class );
+		$this->post_id  = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
@@ -37,10 +38,8 @@ final class OptimizerRendererTest extends TestCase {
 		parent::tearDown();
 	}
 
-	public function testItCreatesWithStoreInjection(): void {
-		$renderer = new Optimizer_Renderer( $this->store, $this->text_repository );
-
-		$this->assertInstanceOf( Optimizer_Renderer::class, $renderer );
+	public function testItImplementsInterface(): void {
+		$this->assertInstanceOf( Renderable::class, $this->renderer );
 	}
 
 	public function testItRendersNotOptimizableForNonExistentPost(): void {
@@ -120,10 +119,12 @@ final class OptimizerRendererTest extends TestCase {
 		wp_set_current_user( $user_id );
 
 		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s">Run Optimizer</a>',
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Run Optimizer</a>',
 			$this->post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -144,10 +145,12 @@ final class OptimizerRendererTest extends TestCase {
 		$this->store->set( $this->post_id, $this->createTestAnalysis() );
 
 		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-remove-post-optimization" data-post-id="%d" data-post-url="%s">Remove Optimization</a>',
+			'<a href="#" class="kb-remove-post-optimization" data-post-id="%d" data-post-url="%s" data-nonce="%s">Remove Optimization</a>',
 			$this->post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -164,10 +167,12 @@ final class OptimizerRendererTest extends TestCase {
 		wp_set_current_user( $user_id );
 
 		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s">Run Optimizer</a>',
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Run Optimizer</a>',
 			$this->post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -187,10 +192,12 @@ final class OptimizerRendererTest extends TestCase {
 		$this->store->set( $this->post_id, $this->createTestAnalysis() );
 
 		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-remove-post-optimization" data-post-id="%d" data-post-url="%s">Remove Optimization</a>',
+			'<a href="#" class="kb-remove-post-optimization" data-post-id="%d" data-post-url="%s" data-nonce="%s">Remove Optimization</a>',
 			$this->post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -207,10 +214,12 @@ final class OptimizerRendererTest extends TestCase {
 		wp_set_current_user( $user_id );
 
 		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s">Run Optimizer</a>',
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Run Optimizer</a>',
 			$this->post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -235,10 +244,12 @@ final class OptimizerRendererTest extends TestCase {
 		wp_set_current_user( $user_id );
 
 		$post_url        = get_permalink( $special_post_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s">Run Optimizer</a>',
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Run Optimizer</a>',
 			$special_post_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );
@@ -266,10 +277,12 @@ final class OptimizerRendererTest extends TestCase {
 		wp_set_current_user( $user_id );
 
 		$post_url        = get_permalink( $page_id );
+		$nonce_value     = $this->nonce->create();
 		$expected_output = sprintf(
-			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s">Run Optimizer</a>',
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Run Optimizer</a>',
 			$page_id,
-			esc_url( $post_url )
+			esc_url( $post_url ),
+			$nonce_value
 		);
 
 		$this->expectOutputString( $expected_output );

@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 
+use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
@@ -10,13 +11,16 @@ final class Optimizer_Renderer implements Renderable {
 
 	private Store $store;
 	private Text_Repository $text_repository;
+	private Nonce $nonce;
 
 	public function __construct(
 		Store $store,
-		Text_Repository $text_repository
+		Text_Repository $text_repository,
+		Nonce $nonce
 	) {
 		$this->store           = $store;
 		$this->text_repository = $text_repository;
+		$this->nonce           = $nonce;
 	}
 
 	/**
@@ -61,10 +65,11 @@ final class Optimizer_Renderer implements Renderable {
 
 		// Print the URL to manage the optimization data via frontend scripts.
 		printf(
-			'<a href="#" class="%s" data-post-id="%d" data-post-url="%s">%s</a>',
+			'<a href="#" class="%s" data-post-id="%d" data-post-url="%s" data-nonce="%s">%s</a>',
 			esc_attr( $class ),
 			esc_attr( $post_id ),
 			esc_attr( esc_url( $post_url ) ),
+			esc_attr( $this->nonce->create() ),
 			esc_html( $text )
 		);
 	}
