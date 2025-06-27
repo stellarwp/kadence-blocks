@@ -48,3 +48,13 @@ export { blockExists } from './block-exists';
 export { allowOneBlockOfType } from './allow-one-block-of-type';
 
 export { default as hasKadenceCustomCss } from './has-kadence-custom-css';
+
+// Performance monitoring utilities
+export {
+	measureRenderTime,
+	performanceDebounce,
+	trackBlockInit,
+	checkMemoryUsage,
+	observeLongTasks,
+	onRenderProfile,
+} from './performance-monitor';

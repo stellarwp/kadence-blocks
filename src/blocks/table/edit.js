@@ -1,6 +1,6 @@
 import { flow } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
-import React, { useState, useEffect, useMemo } from '@wordpress/element';
+import React, { useState, useEffect, useMemo, useCallback, memo } from '@wordpress/element';
 import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
 import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
 import classnames from 'classnames';
@@ -168,7 +168,7 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const addRow = (position) => {
+	const addRow = useCallback((position) => {
 		let insertIndex;
 
 		switch (position) {
@@ -184,9 +184,9 @@ export function Edit(props) {
 
 		const newRow = createBlock('kadence/table-row', {});
 		insertBlock(newRow, insertIndex, clientId, false);
-	};
+	}, [insertBlock, clientId]);
 
-	const rowControls = [
+	const rowControls = useMemo(() => [
 		{
 			title: __('Add Row at Top', 'kadence-blocks'),
 			onClick: () => addRow('top'),
@@ -195,7 +195,7 @@ export function Edit(props) {
 			title: __('Add Row at Bottom', 'kadence-blocks'),
 			onClick: () => addRow('bottom'),
 		},
-	];
+	], [addRow]);
 
 	const rowCount = select('core/block-editor').getBlocks(clientId);
 
@@ -206,7 +206,7 @@ export function Edit(props) {
 			handleDeleteLastRow();
 		}
 	};
-	const updateColumnBackground = (index, color, isHover = false) => {
+	const updateColumnBackground = useCallback((index, color, isHover = false) => {
 		const arrayToUpdate = isHover ? [...columnBackgroundsHover] : [...columnBackgrounds];
 		if (color === '') {
 			delete arrayToUpdate[index];
@@ -217,12 +217,12 @@ export function Edit(props) {
 		setAttributes({
 			[isHover ? 'columnBackgroundsHover' : 'columnBackgrounds']: arrayToUpdate,
 		});
-	};
+	}, [columnBackgroundsHover, columnBackgrounds, setAttributes]);
 
-	const getColumnBackground = (index, isHover = false) => {
+	const getColumnBackground = useCallback((index, isHover = false) => {
 		const array = isHover ? columnBackgroundsHover : columnBackgrounds;
 		return array && array[index] ? array[index] : '';
-	};
+	}, [columnBackgroundsHover, columnBackgrounds]);
 
 	const innerBlockClassName = useMemo(
 		() =>
@@ -262,20 +262,31 @@ export function Edit(props) {
 			removeBlock(blocks[blocks.length - 1].clientId, false);
 		}
 	};
+	const updateRowsColumns = useCallback((newRows) => {
+		const blocks = select('core/block-editor').getBlocks(clientId);
+		let newBlocks = [...blocks];
 
-	const createTable = () => {
+		const additionalRows = Array(newRows)
+			.fill(null)
+			.map(() => createTableRow());
+		newBlocks = [...newBlocks, ...additionalRows];
+
+		replaceInnerBlocks(clientId, newBlocks, false);
+	}, [clientId, replaceInnerBlocks]);
+
+	const createTable = useCallback(() => {
 		setAttributes({
 			columns: parseInt(placeholderColumns),
 		});
 		updateRowsColumns(placeholderRows);
-	};
+	}, [placeholderColumns, placeholderRows, setAttributes, updateRowsColumns]);
 
-	const getColumnSetting = (index) => {
+	const getColumnSetting = useCallback((index) => {
 		const settings = columnSettings || [];
 		return settings[index] || getColumnDefaults();
-	};
+	}, [columnSettings]);
 
-	const updateColumnSetting = (index, updates) => {
+	const updateColumnSetting = useCallback((index, updates) => {
 		const newSettings = [...(columnSettings || [])];
 		const currentSetting = getColumnSetting(index);
 
@@ -311,19 +322,7 @@ export function Edit(props) {
 		}
 
 		setAttributes({ columnSettings: newSettings });
-	};
-
-	const updateRowsColumns = (newRows) => {
-		const blocks = select('core/block-editor').getBlocks(clientId);
-		let newBlocks = [...blocks];
-
-		const additionalRows = Array(newRows)
-			.fill(null)
-			.map(() => createTableRow());
-		newBlocks = [...newBlocks, ...additionalRows];
-
-		replaceInnerBlocks(clientId, newBlocks, false);
-	};
+	}, [columnSettings, columns, getColumnSetting, setAttributes]);
 
 	const saveDataTypography = (value) => {
 		setAttributes({

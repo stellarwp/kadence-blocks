@@ -79,7 +79,7 @@ import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useState, useRef, useCallback, useMemo, memo } from '@wordpress/element';
 import {
 	InspectorControls,
 	BlockControls,
@@ -300,6 +300,10 @@ function RowLayoutEditContainer(props) {
 		},
 		[clientId]
 	);
+	
+	// Memoize the debounced function
+	const debouncedSetDynamicState = useMemo(() => debounce(setDynamicState, 200), []);
+	
 	useEffect(() => {
 		setBlockDefaults('kadence/rowlayout', attributes);
 		const postOrFseId = getPostOrFseId(props, parentData);
@@ -682,6 +686,7 @@ function RowLayoutEditContainer(props) {
 			setAttributes({ kbVersion: 2 });
 		}
 	}, []);
+	
 	useEffect(() => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
@@ -689,7 +694,7 @@ function RowLayoutEditContainer(props) {
 			const defaults = setBlockDefaults('kadence/rowlayout', attributes);
 			updateColumns(innerItemCount, defaults.columns);
 		}
-	}, [innerItemCount, columns]);
+	}, [innerItemCount, columns, uniqueID, updateColumns, attributes]);
 
 	useEffect(() => {
 		debouncedSetDynamicState(
@@ -702,20 +707,20 @@ function RowLayoutEditContainer(props) {
 			setDynamicBackgroundImg,
 			bgImg ? false : true
 		);
-	}, [bgImg, context]);
+	}, [bgImg, context, attributes, setAttributes, debouncedSetDynamicState]);
 
 	const [contentWidthPop, setContentWidthPop] = useState(false);
 	const [resizingVisually, setResizingVisually] = useState(false);
 	const [resizeColumnWidthNumbers, setResizeColumnWidthNumbers] = useState(null);
 	const timeoutRef = useRef();
-	const clearTimer = () => {
+	const clearTimer = useCallback(() => {
 		if (timeoutRef.current) {
 			window.clearTimeout(timeoutRef.current);
 		}
-	};
+	}, []);
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
-	const debouncedSetDynamicState = debounce(setDynamicState, 200);
+	
 	const previewFirstColumnWidth = getPreviewSize(
 		previewDevice,
 		firstColumnWidth,
@@ -894,7 +899,9 @@ function RowLayoutEditContainer(props) {
 		'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
 		'kadence-has-custom-css': hasCustomCss,
 	});
-	const startlayoutOptions = [
+	
+	// Memoize layout options
+	const startlayoutOptions = useMemo(() => [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
 		{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
 		{ key: 'left-golden', col: 2, name: __('Two: Left Heavy 66/33', 'kadence-blocks'), icon: twoLeftGoldenIcon },
@@ -941,18 +948,22 @@ function RowLayoutEditContainer(props) {
 		{ key: 'equal', col: 5, name: __('Five: Equal', 'kadence-blocks'), icon: fiveColIcon },
 		{ key: 'equal', col: 6, name: __('Six: Equal', 'kadence-blocks'), icon: sixColIcon },
 		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
-	];
+	], []);
 
-	let columnsString = '';
-	for (let column = 0; column < columns; column++) {
-		const columnWidthToUse = resizeColumnWidthNumbers
-			? resizeColumnWidthNumbers[column]
-			: columnWidthNumbers[column];
-		const columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
-			gapTotal ? ' - (' + gapTotal + ' / ' + columns + ')' : ''
-		} ) )`;
-		columnsString += columnString;
-	}
+	// Memoize columns string calculation
+	const columnsString = useMemo(() => {
+		let columnsStr = '';
+		for (let column = 0; column < columns; column++) {
+			const columnWidthToUse = resizeColumnWidthNumbers
+				? resizeColumnWidthNumbers[column]
+				: columnWidthNumbers[column];
+			const columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
+				gapTotal ? ' - (' + gapTotal + ' / ' + columns + ')' : ''
+			} ) )`;
+			columnsStr += columnString;
+		}
+		return columnsStr;
+	}, [columns, resizeColumnWidthNumbers, columnWidthNumbers, gapTotal]);
 
 	const innerClasses = classnames({
 		'innerblocks-wrap': true,
@@ -1002,6 +1013,142 @@ function RowLayoutEditContainer(props) {
 	);
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+	
+	// Memoize event handlers
+	const handleContentWidthPopToggle = useCallback(() => {
+		if (!contentWidthPop) {
+			setContentWidthPop(true);
+		}
+	}, [contentWidthPop]);
+	
+	const handleContentWidthPopClose = useCallback(() => {
+		setContentWidthPop(false);
+	}, []);
+	
+	const handleInheritMaxWidthChange = useCallback((value) => {
+		setAttributes({ inheritMaxWidth: value });
+	}, [setAttributes]);
+	
+	const handleMaxWidthChange = useCallback((value) => {
+		setAttributes({ maxWidth: value });
+	}, [setAttributes]);
+	
+	const handleResponsiveMaxWidthTabletChange = useCallback((value) => {
+		setAttributes({
+			responsiveMaxWidth: [
+				value,
+				undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[1]
+					? responsiveMaxWidth[1]
+					: '',
+			],
+		});
+	}, [setAttributes, responsiveMaxWidth]);
+	
+	const handleResponsiveMaxWidthMobileChange = useCallback((value) => {
+		setAttributes({
+			responsiveMaxWidth: [
+				undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[0]
+					? responsiveMaxWidth[0]
+					: '',
+				value,
+			],
+		});
+	}, [setAttributes, responsiveMaxWidth]);
+	
+	const handleMaxWidthUnitChange = useCallback((value) => {
+		setAttributes({ maxWidthUnit: value });
+	}, [setAttributes]);
+	
+	const handleVerticalAlignmentChange = useCallback((value) => {
+		if (value === 'center') {
+			setAttributes({ verticalAlignment: 'middle' });
+		} else if (value === 'bottom') {
+			setAttributes({ verticalAlignment: 'bottom' });
+		} else {
+			setAttributes({ verticalAlignment: 'top' });
+		}
+	}, [setAttributes]);
+	
+	const handleAddSection = useCallback(() => {
+		const newBlock = createBlock('kadence/column', {});
+		insertSection(newBlock);
+	}, [insertSection]);
+	
+	const handleLayoutButtonClick = useCallback((key, col) => {
+		updateColumns(columns, col);
+		setAttributes({
+			colLayout: key,
+			columns: col,
+			firstColumnWidth: 0,
+			secondColumnWidth: 0,
+			thirdColumnWidth: 0,
+			fourthColumnWidth: 0,
+			fifthColumnWidth: 0,
+			sixthColumnWidth: 0,
+		});
+	}, [columns, updateColumns, setAttributes]);
+	
+	const handleFinishedResizing = useCallback(() => {
+		setResizingVisually(true);
+		clearTimer();
+		timeoutRef.current = setTimeout(() => {
+			setResizingVisually(false);
+		}, 100);
+	}, [clearTimer]);
+	
+	const handleColumnResize = useCallback((newColumnWidths) => {
+		//for performance reasons, we set a temporary state for the widths during resize
+		setResizeColumnWidthNumbers(newColumnWidths);
+	}, []);
+	
+	const handleColumnResizeStop = useCallback((newColumnWidths) => {
+		setAttributes({
+			firstColumnWidth: newColumnWidths?.[0],
+			secondColumnWidth: newColumnWidths?.[1],
+			thirdColumnWidth: newColumnWidths?.[2],
+			fourthColumnWidth: newColumnWidths?.[3],
+			fifthColumnWidth: newColumnWidths?.[4],
+			sixthColumnWidth: newColumnWidths?.[5],
+		});
+		setResizeColumnWidthNumbers(null);
+	}, [setAttributes]);
+	
+	const handleColumnResizeStopTablet = useCallback((newColumnWidths) => {
+		setAttributes({
+			firstColumnWidthTablet: newColumnWidths?.[0],
+			secondColumnWidthTablet: newColumnWidths?.[1],
+			thirdColumnWidthTablet: newColumnWidths?.[2],
+			fourthColumnWidthTablet: newColumnWidths?.[3],
+			fifthColumnWidthTablet: newColumnWidths?.[4],
+			sixthColumnWidthTablet: newColumnWidths?.[5],
+		});
+		setResizeColumnWidthNumbers(null);
+	}, [setAttributes]);
+	
+	const handleColumnResizeStopMobile = useCallback((newColumnWidths) => {
+		setAttributes({
+			firstColumnWidthMobile: newColumnWidths?.[0],
+			secondColumnWidthMobile: newColumnWidths?.[1],
+			thirdColumnWidthMobile: newColumnWidths?.[2],
+			fourthColumnWidthMobile: newColumnWidths?.[3],
+			fifthColumnWidthMobile: newColumnWidths?.[4],
+			sixthColumnWidthMobile: newColumnWidths?.[5],
+		});
+		setResizeColumnWidthNumbers(null);
+	}, [setAttributes]);
+	
+	const handleColumnsUnlockedChange = useCallback((value) => {
+		setAttributes({ columnsUnlocked: value });
+	}, [setAttributes]);
+	
+	const handleAlignChange = useCallback((value) => {
+		setAttributes({ align: value });
+	}, [setAttributes]);
+	
+	const handleOpenPrebuiltModal = useCallback(() => {
+		setAttributes({ isPrebuiltModal: true });
+	}, [setAttributes]);
+	
 	return (
 		<>
 			{'contentOnly' !== templateLock && !isPreviewMode && showSettings('allSettings', 'kadence/rowlayout') && (
@@ -1009,7 +1156,7 @@ function RowLayoutEditContainer(props) {
 					<BlockAlignmentToolbar
 						value={align}
 						controls={['center', 'wide', 'full']}
-						onChange={(value) => setAttributes({ align: value })}
+						onChange={handleAlignChange}
 					/>
 					<ToolbarGroup group="content-width">
 						<ToolbarButton
@@ -1021,11 +1168,7 @@ function RowLayoutEditContainer(props) {
 									<ContentWidthIcon value="normal" />
 								)
 							}
-							onClick={() => {
-								if (!contentWidthPop) {
-									setContentWidthPop(true);
-								}
-							}}
+							onClick={handleContentWidthPopToggle}
 							isPressed={contentWidthPop ? true : false}
 							aria-haspopup="true"
 							aria-expanded={contentWidthPop}
@@ -1038,65 +1181,39 @@ function RowLayoutEditContainer(props) {
 								position="bottom center"
 								onClick={() => {}}
 								expandOnMobile={true}
-								onClose={() => {
-									setContentWidthPop(false);
-								}}
+								onClose={handleContentWidthPopClose}
 							>
 								<div className="kb-content-width-popover-inner-wrap">
 									<ToggleControl
 										label={__('Use Theme Content Inner Width?', 'kadence-blocks')}
 										checked={undefined !== inheritMaxWidth ? inheritMaxWidth : false}
-										onChange={(value) => setAttributes({ inheritMaxWidth: value })}
+										onChange={handleInheritMaxWidthChange}
 									/>
 									{inheritMaxWidth !== true && (
 										<>
 											<ResponsiveRangeControls
 												label={__('Custom Content Max Width', 'kadence-blocks')}
 												value={maxWidth ? maxWidth : ''}
-												onChange={(value) => {
-													setAttributes({ maxWidth: value });
-												}}
+												onChange={handleMaxWidthChange}
 												tabletValue={
 													undefined !== responsiveMaxWidth &&
 													undefined !== responsiveMaxWidth[0]
 														? responsiveMaxWidth[0]
 														: ''
 												}
-												onChangeTablet={(value) => {
-													setAttributes({
-														responsiveMaxWidth: [
-															value,
-															undefined !== responsiveMaxWidth &&
-															undefined !== responsiveMaxWidth[1]
-																? responsiveMaxWidth[1]
-																: '',
-														],
-													});
-												}}
+												onChangeTablet={handleResponsiveMaxWidthTabletChange}
 												mobileValue={
 													undefined !== responsiveMaxWidth &&
 													undefined !== responsiveMaxWidth[1]
 														? responsiveMaxWidth[1]
 														: ''
 												}
-												onChangeMobile={(value) => {
-													setAttributes({
-														responsiveMaxWidth: [
-															undefined !== responsiveMaxWidth &&
-															undefined !== responsiveMaxWidth[0]
-																? responsiveMaxWidth[0]
-																: '',
-															value,
-														],
-													});
-												}}
+												onChangeMobile={handleResponsiveMaxWidthMobileChange}
 												min={0}
 												max={maxWidthUnit === 'px' ? 2000 : 100}
 												step={1}
 												unit={maxWidthUnit ? maxWidthUnit : 'px'}
-												onUnit={(value) => {
-													setAttributes({ maxWidthUnit: value });
-												}}
+												onUnit={handleMaxWidthUnitChange}
 												units={['px', '%', 'vw', 'rem']}
 											/>
 										</>
@@ -1108,25 +1225,14 @@ function RowLayoutEditContainer(props) {
 					<ToolbarGroup group="align">
 						<BlockVerticalAlignmentControl
 							value={verticalAlignment === 'middle' ? 'center' : verticalAlignment}
-							onChange={(value) => {
-								if (value === 'center') {
-									setAttributes({ verticalAlignment: 'middle' });
-								} else if (value === 'bottom') {
-									setAttributes({ verticalAlignment: 'bottom' });
-								} else {
-									setAttributes({ verticalAlignment: 'top' });
-								}
-							}}
+							onChange={handleVerticalAlignmentChange}
 						/>
 					</ToolbarGroup>
 					<ToolbarGroup group="add-block">
 						<ToolbarButton
 							className="kb-row-add-section"
 							icon={plusCircle}
-							onClick={() => {
-								const newBlock = createBlock('kadence/column', {});
-								insertSection(newBlock);
-							}}
+							onClick={handleAddSection}
 							label={__('Add Another Section', 'kadence-blocks')}
 							showTooltip={true}
 						/>
@@ -1670,24 +1776,12 @@ function RowLayoutEditContainer(props) {
 									isSmall
 									label={name}
 									icon={icon}
-									onClick={() => {
-										updateColumns(columns, col);
-										setAttributes({
-											colLayout: key,
-											columns: col,
-											firstColumnWidth: 0,
-											secondColumnWidth: 0,
-											thirdColumnWidth: 0,
-											fourthColumnWidth: 0,
-											fifthColumnWidth: 0,
-											sixthColumnWidth: 0,
-										});
-									}}
+									onClick={() => handleLayoutButtonClick(key, col)}
 								/>
 							))}
 						</ButtonGroup>
 						{showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary && (
-							<Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+							<Button className="kt-prebuilt" onClick={handleOpenPrebuiltModal}>
 								{__('Design Library', 'kadence-blocks')}
 							</Button>
 						)}
@@ -1712,13 +1806,7 @@ function RowLayoutEditContainer(props) {
 						attributes={attributes}
 						setAttributes={setAttributes}
 						toggleSelection={toggleSelection}
-						finishedResizing={() => {
-							setResizingVisually(true);
-							clearTimer();
-							timeoutRef.current = setTimeout(() => {
-								setResizingVisually(false);
-							}, 100);
-						}}
+						finishedResizing={handleFinishedResizing}
 					/>
 				)}
 				{colLayout && (
@@ -1740,50 +1828,13 @@ function RowLayoutEditContainer(props) {
 									}
 									columnGap={columnGap}
 									columnsUnlocked={columnsUnlocked}
-									onColumnsUnlocked={(value) => setAttributes({ columnsUnlocked: value })}
-									onResize={(newColumnWidths) => {
-										//for performance reasons, we set a temporary state for the widths during resize
-										setResizeColumnWidthNumbers(newColumnWidths);
-									}}
-									onResizeTablet={(newColumnWidths) => {
-										setResizeColumnWidthNumbers(newColumnWidths);
-									}}
-									onResizeMobile={(newColumnWidths) => {
-										setResizeColumnWidthNumbers(newColumnWidths);
-									}}
-									onResizeStop={(newColumnWidths) => {
-										setAttributes({
-											firstColumnWidth: newColumnWidths?.[0],
-											secondColumnWidth: newColumnWidths?.[1],
-											thirdColumnWidth: newColumnWidths?.[2],
-											fourthColumnWidth: newColumnWidths?.[3],
-											fifthColumnWidth: newColumnWidths?.[4],
-											sixthColumnWidth: newColumnWidths?.[5],
-										});
-										setResizeColumnWidthNumbers(null);
-									}}
-									onResizeStopTablet={(newColumnWidths) => {
-										setAttributes({
-											firstColumnWidthTablet: newColumnWidths?.[0],
-											secondColumnWidthTablet: newColumnWidths?.[1],
-											thirdColumnWidthTablet: newColumnWidths?.[2],
-											fourthColumnWidthTablet: newColumnWidths?.[3],
-											fifthColumnWidthTablet: newColumnWidths?.[4],
-											sixthColumnWidthTablet: newColumnWidths?.[5],
-										});
-										setResizeColumnWidthNumbers(null);
-									}}
-									onResizeStopMobile={(newColumnWidths) => {
-										setAttributes({
-											firstColumnWidthMobile: newColumnWidths?.[0],
-											secondColumnWidthMobile: newColumnWidths?.[1],
-											thirdColumnWidthMobile: newColumnWidths?.[2],
-											fourthColumnWidthMobile: newColumnWidths?.[3],
-											fifthColumnWidthMobile: newColumnWidths?.[4],
-											sixthColumnWidthMobile: newColumnWidths?.[5],
-										});
-										setResizeColumnWidthNumbers(null);
-									}}
+									onColumnsUnlocked={handleColumnsUnlockedChange}
+									onResize={handleColumnResize}
+									onResizeTablet={handleColumnResize}
+									onResizeMobile={handleColumnResize}
+									onResizeStop={handleColumnResizeStop}
+									onResizeStopTablet={handleColumnResizeStopTablet}
+									onResizeStopMobile={handleColumnResizeStopMobile}
 									active={areColumnsCustom}
 									tempDuringResize={true}
 								/>
@@ -1799,13 +1850,7 @@ function RowLayoutEditContainer(props) {
 						attributes={attributes}
 						setAttributes={setAttributes}
 						toggleSelection={toggleSelection}
-						finishedResizing={() => {
-							setResizingVisually(true);
-							clearTimer();
-							timeoutRef.current = setTimeout(() => {
-								setResizingVisually(false);
-							}, 100);
-						}}
+						finishedResizing={handleFinishedResizing}
 					/>
 				)}
 				{colLayout && 'none' !== bottomSep && '' !== bottomSep && (
@@ -1847,6 +1892,119 @@ function RowLayoutEditContainer(props) {
 		</>
 	);
 }
+
+// Memoize the component with custom comparison
+const MemoizedRowLayoutEditContainer = memo(RowLayoutEditContainer, (prevProps, nextProps) => {
+	// Check if critical props have changed
+	if (prevProps.clientId !== nextProps.clientId) {
+		return false;
+	}
+	if (prevProps.isSelected !== nextProps.isSelected) {
+		return false;
+	}
+	
+	// Check if attributes have changed (deep comparison)
+	const prevAttrs = prevProps.attributes;
+	const nextAttrs = nextProps.attributes;
+	
+	// List of attributes that should trigger re-render
+	const criticalAttributes = [
+		'uniqueID',
+		'columns',
+		'colLayout',
+		'firstColumnWidth',
+		'firstColumnWidthTablet',
+		'firstColumnWidthMobile',
+		'secondColumnWidth',
+		'secondColumnWidthTablet',
+		'secondColumnWidthMobile',
+		'thirdColumnWidth',
+		'thirdColumnWidthTablet',
+		'thirdColumnWidthMobile',
+		'fourthColumnWidth',
+		'fourthColumnWidthTablet',
+		'fourthColumnWidthMobile',
+		'fifthColumnWidth',
+		'fifthColumnWidthTablet',
+		'fifthColumnWidthMobile',
+		'sixthColumnWidth',
+		'sixthColumnWidthTablet',
+		'sixthColumnWidthMobile',
+		'padding',
+		'tabletPadding',
+		'mobilePadding',
+		'margin',
+		'tabletMargin',
+		'mobileMargin',
+		'columnGutter',
+		'tabletGutter',
+		'mobileGutter',
+		'collapseGutter',
+		'tabletRowGutter',
+		'mobileRowGutter',
+		'bgColor',
+		'bgImg',
+		'gradient',
+		'overlay',
+		'overlayGradient',
+		'textColor',
+		'linkColor',
+		'linkHoverColor',
+		'topSep',
+		'topSepColor',
+		'topSepHeight',
+		'bottomSep',
+		'bottomSepColor',
+		'bottomSepHeight',
+		'minHeight',
+		'minHeightTablet',
+		'minHeightMobile',
+		'maxWidth',
+		'responsiveMaxWidth',
+		'inheritMaxWidth',
+		'align',
+		'verticalAlignment',
+		'vsdesk',
+		'vstablet',
+		'vsmobile',
+		'kadenceBlockCSS',
+		'borderRadiusOverflow',
+		'borderRadius',
+	];
+	
+	for (const attr of criticalAttributes) {
+		if (prevAttrs[attr] !== nextAttrs[attr]) {
+			return false;
+		}
+	}
+	
+	// Check array attributes more carefully
+	const arrayAttributes = ['padding', 'tabletPadding', 'mobilePadding', 'margin', 'tabletMargin', 'mobileMargin', 'customGutter', 'customRowGutter', 'responsiveMaxWidth', 'borderRadius'];
+	
+	for (const attr of arrayAttributes) {
+		const prevArray = prevAttrs[attr];
+		const nextArray = nextAttrs[attr];
+		
+		if (prevArray !== nextArray) {
+			if (!prevArray || !nextArray || prevArray.length !== nextArray.length) {
+				return false;
+			}
+			
+			for (let i = 0; i < prevArray.length; i++) {
+				if (prevArray[i] !== nextArray[i]) {
+					return false;
+				}
+			}
+		}
+	}
+	
+	// Check context changes
+	if (JSON.stringify(prevProps.context) !== JSON.stringify(nextProps.context)) {
+		return false;
+	}
+	
+	return true;
+});
 
 const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry) => ({
 	/**
@@ -1916,7 +2074,8 @@ const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry
 		const block = getBlock(clientId);
 		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
 	},
-}))(RowLayoutEditContainer);
+}))(MemoizedRowLayoutEditContainer);
+
 const KadenceRowLayout = (props) => {
 	const { clientId, attributes } = props;
 	const { isPrebuiltModal } = attributes;

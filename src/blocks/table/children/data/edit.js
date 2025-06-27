@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import React, { useEffect, useMemo, useState, memo } from '@wordpress/element';
+import React, { useEffect, useMemo, useState, memo, useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { BlockControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import metadata from './block.json';
@@ -116,7 +116,7 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const addRow = (position) => {
+	const addRow = useCallback((position) => {
 		let insertIndex;
 
 		switch (position) {
@@ -138,9 +138,9 @@ export function Edit(props) {
 
 		const newRow = createBlock('kadence/table-row', {});
 		insertBlock(newRow, insertIndex, parentTableClientId, false);
-	};
+	}, [index, insertBlock, parentTableClientId]);
 
-	const addColumn = (position) => {
+	const addColumn = useCallback((position) => {
 		const newColumnCount = parentColumns + 1;
 
 		let insertIndex;
@@ -169,7 +169,7 @@ export function Edit(props) {
 			replaceInnerBlocks(row.clientId, newCells, false);
 			updateBlockAttributes(parentTableClientId, { columns: newColumnCount });
 		});
-	};
+	}, [columnPosition, parentColumns, siblingRows, replaceInnerBlocks, updateBlockAttributes, parentTableClientId]);
 
 	const Tag =
 		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']

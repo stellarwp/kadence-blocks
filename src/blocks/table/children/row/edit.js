@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useMemo, useCallback } from '@wordpress/element';
+import { useState, useEffect, useMemo, useCallback, memo } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, BlockControls, BlockContextProvider, useInnerBlocksProps } from '@wordpress/block-editor';
 import metadata from './block.json';
