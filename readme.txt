@@ -179,6 +179,7 @@ Release Date: 3rd July 2025
 * Fix: Count Up block responsive font/number size/lineheight preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.
 * Update: Header block off canvas trigger focus styles. 
+* Fix: Warning that content doesn't match template while editing Navigation posts.
 
 = 3.5.11 =
 Release Date: 19th June 2025
