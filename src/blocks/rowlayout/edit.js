@@ -300,10 +300,10 @@ function RowLayoutEditContainer(props) {
 		},
 		[clientId]
 	);
-	
+
 	// Memoize the debounced function
 	const debouncedSetDynamicState = useMemo(() => debounce(setDynamicState, 200), []);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/rowlayout', attributes);
 		const postOrFseId = getPostOrFseId(props, parentData);
@@ -686,7 +686,7 @@ function RowLayoutEditContainer(props) {
 			setAttributes({ kbVersion: 2 });
 		}
 	}, []);
-	
+
 	useEffect(() => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
@@ -720,7 +720,7 @@ function RowLayoutEditContainer(props) {
 	}, []);
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
-	
+
 	const previewFirstColumnWidth = getPreviewSize(
 		previewDevice,
 		firstColumnWidth,
@@ -899,56 +899,69 @@ function RowLayoutEditContainer(props) {
 		'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
 		'kadence-has-custom-css': hasCustomCss,
 	});
-	
+
 	// Memoize layout options
-	const startlayoutOptions = useMemo(() => [
-		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
-		{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
-		{ key: 'left-golden', col: 2, name: __('Two: Left Heavy 66/33', 'kadence-blocks'), icon: twoLeftGoldenIcon },
-		{
-			key: 'right-golden',
-			col: 2,
-			name: __('Two: Right Heavy 33/66', 'kadence-blocks'),
-			icon: twoRightGoldenIcon,
-		},
-		{ key: 'equal', col: 3, name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
-		{ key: 'left-half', col: 3, name: __('Three: Left Heavy 50/25/25', 'kadence-blocks'), icon: leftHalfIcon },
-		{ key: 'right-half', col: 3, name: __('Three: Right Heavy 25/25/50', 'kadence-blocks'), icon: rightHalfIcon },
-		{
-			key: 'center-half',
-			col: 3,
-			name: __('Three: Center Heavy 25/50/25', 'kadence-blocks'),
-			icon: centerHalfIcon,
-		},
-		{
-			key: 'center-wide',
-			col: 3,
-			name: __('Three: Wide Center 20/60/20', 'kadence-blocks'),
-			icon: wideCenterIcon,
-		},
-		{
-			key: 'center-exwide',
-			col: 3,
-			name: __('Three: Wider Center 15/70/15', 'kadence-blocks'),
-			icon: exWideCenterIcon,
-		},
-		{ key: 'equal', col: 4, name: __('Four: Equal', 'kadence-blocks'), icon: fourColIcon },
-		{
-			key: 'left-forty',
-			col: 4,
-			name: __('Four: Left Heavy 40/20/20/20', 'kadence-blocks'),
-			icon: lFourFortyIcon,
-		},
-		{
-			key: 'right-forty',
-			col: 4,
-			name: __('Four: Right Heavy 20/20/20/40', 'kadence-blocks'),
-			icon: rFourFortyIcon,
-		},
-		{ key: 'equal', col: 5, name: __('Five: Equal', 'kadence-blocks'), icon: fiveColIcon },
-		{ key: 'equal', col: 6, name: __('Six: Equal', 'kadence-blocks'), icon: sixColIcon },
-		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
-	], []);
+	const startlayoutOptions = useMemo(
+		() => [
+			{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
+			{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
+			{
+				key: 'left-golden',
+				col: 2,
+				name: __('Two: Left Heavy 66/33', 'kadence-blocks'),
+				icon: twoLeftGoldenIcon,
+			},
+			{
+				key: 'right-golden',
+				col: 2,
+				name: __('Two: Right Heavy 33/66', 'kadence-blocks'),
+				icon: twoRightGoldenIcon,
+			},
+			{ key: 'equal', col: 3, name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
+			{ key: 'left-half', col: 3, name: __('Three: Left Heavy 50/25/25', 'kadence-blocks'), icon: leftHalfIcon },
+			{
+				key: 'right-half',
+				col: 3,
+				name: __('Three: Right Heavy 25/25/50', 'kadence-blocks'),
+				icon: rightHalfIcon,
+			},
+			{
+				key: 'center-half',
+				col: 3,
+				name: __('Three: Center Heavy 25/50/25', 'kadence-blocks'),
+				icon: centerHalfIcon,
+			},
+			{
+				key: 'center-wide',
+				col: 3,
+				name: __('Three: Wide Center 20/60/20', 'kadence-blocks'),
+				icon: wideCenterIcon,
+			},
+			{
+				key: 'center-exwide',
+				col: 3,
+				name: __('Three: Wider Center 15/70/15', 'kadence-blocks'),
+				icon: exWideCenterIcon,
+			},
+			{ key: 'equal', col: 4, name: __('Four: Equal', 'kadence-blocks'), icon: fourColIcon },
+			{
+				key: 'left-forty',
+				col: 4,
+				name: __('Four: Left Heavy 40/20/20/20', 'kadence-blocks'),
+				icon: lFourFortyIcon,
+			},
+			{
+				key: 'right-forty',
+				col: 4,
+				name: __('Four: Right Heavy 20/20/20/40', 'kadence-blocks'),
+				icon: rFourFortyIcon,
+			},
+			{ key: 'equal', col: 5, name: __('Five: Equal', 'kadence-blocks'), icon: fiveColIcon },
+			{ key: 'equal', col: 6, name: __('Six: Equal', 'kadence-blocks'), icon: sixColIcon },
+			//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
+		],
+		[]
+	);
 
 	// Memoize columns string calculation
 	const columnsString = useMemo(() => {
@@ -1013,81 +1026,102 @@ function RowLayoutEditContainer(props) {
 	);
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
-	
+
 	// Memoize event handlers
 	const handleContentWidthPopToggle = useCallback(() => {
 		if (!contentWidthPop) {
 			setContentWidthPop(true);
 		}
 	}, [contentWidthPop]);
-	
+
 	const handleContentWidthPopClose = useCallback(() => {
 		setContentWidthPop(false);
 	}, []);
-	
-	const handleInheritMaxWidthChange = useCallback((value) => {
-		setAttributes({ inheritMaxWidth: value });
-	}, [setAttributes]);
-	
-	const handleMaxWidthChange = useCallback((value) => {
-		setAttributes({ maxWidth: value });
-	}, [setAttributes]);
-	
-	const handleResponsiveMaxWidthTabletChange = useCallback((value) => {
-		setAttributes({
-			responsiveMaxWidth: [
-				value,
-				undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[1]
-					? responsiveMaxWidth[1]
-					: '',
-			],
-		});
-	}, [setAttributes, responsiveMaxWidth]);
-	
-	const handleResponsiveMaxWidthMobileChange = useCallback((value) => {
-		setAttributes({
-			responsiveMaxWidth: [
-				undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[0]
-					? responsiveMaxWidth[0]
-					: '',
-				value,
-			],
-		});
-	}, [setAttributes, responsiveMaxWidth]);
-	
-	const handleMaxWidthUnitChange = useCallback((value) => {
-		setAttributes({ maxWidthUnit: value });
-	}, [setAttributes]);
-	
-	const handleVerticalAlignmentChange = useCallback((value) => {
-		if (value === 'center') {
-			setAttributes({ verticalAlignment: 'middle' });
-		} else if (value === 'bottom') {
-			setAttributes({ verticalAlignment: 'bottom' });
-		} else {
-			setAttributes({ verticalAlignment: 'top' });
-		}
-	}, [setAttributes]);
-	
+
+	const handleInheritMaxWidthChange = useCallback(
+		(value) => {
+			setAttributes({ inheritMaxWidth: value });
+		},
+		[setAttributes]
+	);
+
+	const handleMaxWidthChange = useCallback(
+		(value) => {
+			setAttributes({ maxWidth: value });
+		},
+		[setAttributes]
+	);
+
+	const handleResponsiveMaxWidthTabletChange = useCallback(
+		(value) => {
+			setAttributes({
+				responsiveMaxWidth: [
+					value,
+					undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[1]
+						? responsiveMaxWidth[1]
+						: '',
+				],
+			});
+		},
+		[setAttributes, responsiveMaxWidth]
+	);
+
+	const handleResponsiveMaxWidthMobileChange = useCallback(
+		(value) => {
+			setAttributes({
+				responsiveMaxWidth: [
+					undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[0]
+						? responsiveMaxWidth[0]
+						: '',
+					value,
+				],
+			});
+		},
+		[setAttributes, responsiveMaxWidth]
+	);
+
+	const handleMaxWidthUnitChange = useCallback(
+		(value) => {
+			setAttributes({ maxWidthUnit: value });
+		},
+		[setAttributes]
+	);
+
+	const handleVerticalAlignmentChange = useCallback(
+		(value) => {
+			if (value === 'center') {
+				setAttributes({ verticalAlignment: 'middle' });
+			} else if (value === 'bottom') {
+				setAttributes({ verticalAlignment: 'bottom' });
+			} else {
+				setAttributes({ verticalAlignment: 'top' });
+			}
+		},
+		[setAttributes]
+	);
+
 	const handleAddSection = useCallback(() => {
 		const newBlock = createBlock('kadence/column', {});
 		insertSection(newBlock);
 	}, [insertSection]);
-	
-	const handleLayoutButtonClick = useCallback((key, col) => {
-		updateColumns(columns, col);
-		setAttributes({
-			colLayout: key,
-			columns: col,
-			firstColumnWidth: 0,
-			secondColumnWidth: 0,
-			thirdColumnWidth: 0,
-			fourthColumnWidth: 0,
-			fifthColumnWidth: 0,
-			sixthColumnWidth: 0,
-		});
-	}, [columns, updateColumns, setAttributes]);
-	
+
+	const handleLayoutButtonClick = useCallback(
+		(key, col) => {
+			updateColumns(columns, col);
+			setAttributes({
+				colLayout: key,
+				columns: col,
+				firstColumnWidth: 0,
+				secondColumnWidth: 0,
+				thirdColumnWidth: 0,
+				fourthColumnWidth: 0,
+				fifthColumnWidth: 0,
+				sixthColumnWidth: 0,
+			});
+		},
+		[columns, updateColumns, setAttributes]
+	);
+
 	const handleFinishedResizing = useCallback(() => {
 		setResizingVisually(true);
 		clearTimer();
@@ -1095,60 +1129,75 @@ function RowLayoutEditContainer(props) {
 			setResizingVisually(false);
 		}, 100);
 	}, [clearTimer]);
-	
+
 	const handleColumnResize = useCallback((newColumnWidths) => {
 		//for performance reasons, we set a temporary state for the widths during resize
 		setResizeColumnWidthNumbers(newColumnWidths);
 	}, []);
-	
-	const handleColumnResizeStop = useCallback((newColumnWidths) => {
-		setAttributes({
-			firstColumnWidth: newColumnWidths?.[0],
-			secondColumnWidth: newColumnWidths?.[1],
-			thirdColumnWidth: newColumnWidths?.[2],
-			fourthColumnWidth: newColumnWidths?.[3],
-			fifthColumnWidth: newColumnWidths?.[4],
-			sixthColumnWidth: newColumnWidths?.[5],
-		});
-		setResizeColumnWidthNumbers(null);
-	}, [setAttributes]);
-	
-	const handleColumnResizeStopTablet = useCallback((newColumnWidths) => {
-		setAttributes({
-			firstColumnWidthTablet: newColumnWidths?.[0],
-			secondColumnWidthTablet: newColumnWidths?.[1],
-			thirdColumnWidthTablet: newColumnWidths?.[2],
-			fourthColumnWidthTablet: newColumnWidths?.[3],
-			fifthColumnWidthTablet: newColumnWidths?.[4],
-			sixthColumnWidthTablet: newColumnWidths?.[5],
-		});
-		setResizeColumnWidthNumbers(null);
-	}, [setAttributes]);
-	
-	const handleColumnResizeStopMobile = useCallback((newColumnWidths) => {
-		setAttributes({
-			firstColumnWidthMobile: newColumnWidths?.[0],
-			secondColumnWidthMobile: newColumnWidths?.[1],
-			thirdColumnWidthMobile: newColumnWidths?.[2],
-			fourthColumnWidthMobile: newColumnWidths?.[3],
-			fifthColumnWidthMobile: newColumnWidths?.[4],
-			sixthColumnWidthMobile: newColumnWidths?.[5],
-		});
-		setResizeColumnWidthNumbers(null);
-	}, [setAttributes]);
-	
-	const handleColumnsUnlockedChange = useCallback((value) => {
-		setAttributes({ columnsUnlocked: value });
-	}, [setAttributes]);
-	
-	const handleAlignChange = useCallback((value) => {
-		setAttributes({ align: value });
-	}, [setAttributes]);
-	
+
+	const handleColumnResizeStop = useCallback(
+		(newColumnWidths) => {
+			setAttributes({
+				firstColumnWidth: newColumnWidths?.[0],
+				secondColumnWidth: newColumnWidths?.[1],
+				thirdColumnWidth: newColumnWidths?.[2],
+				fourthColumnWidth: newColumnWidths?.[3],
+				fifthColumnWidth: newColumnWidths?.[4],
+				sixthColumnWidth: newColumnWidths?.[5],
+			});
+			setResizeColumnWidthNumbers(null);
+		},
+		[setAttributes]
+	);
+
+	const handleColumnResizeStopTablet = useCallback(
+		(newColumnWidths) => {
+			setAttributes({
+				firstColumnWidthTablet: newColumnWidths?.[0],
+				secondColumnWidthTablet: newColumnWidths?.[1],
+				thirdColumnWidthTablet: newColumnWidths?.[2],
+				fourthColumnWidthTablet: newColumnWidths?.[3],
+				fifthColumnWidthTablet: newColumnWidths?.[4],
+				sixthColumnWidthTablet: newColumnWidths?.[5],
+			});
+			setResizeColumnWidthNumbers(null);
+		},
+		[setAttributes]
+	);
+
+	const handleColumnResizeStopMobile = useCallback(
+		(newColumnWidths) => {
+			setAttributes({
+				firstColumnWidthMobile: newColumnWidths?.[0],
+				secondColumnWidthMobile: newColumnWidths?.[1],
+				thirdColumnWidthMobile: newColumnWidths?.[2],
+				fourthColumnWidthMobile: newColumnWidths?.[3],
+				fifthColumnWidthMobile: newColumnWidths?.[4],
+				sixthColumnWidthMobile: newColumnWidths?.[5],
+			});
+			setResizeColumnWidthNumbers(null);
+		},
+		[setAttributes]
+	);
+
+	const handleColumnsUnlockedChange = useCallback(
+		(value) => {
+			setAttributes({ columnsUnlocked: value });
+		},
+		[setAttributes]
+	);
+
+	const handleAlignChange = useCallback(
+		(value) => {
+			setAttributes({ align: value });
+		},
+		[setAttributes]
+	);
+
 	const handleOpenPrebuiltModal = useCallback(() => {
 		setAttributes({ isPrebuiltModal: true });
 	}, [setAttributes]);
-	
+
 	return (
 		<>
 			{'contentOnly' !== templateLock && !isPreviewMode && showSettings('allSettings', 'kadence/rowlayout') && (
@@ -1902,11 +1951,11 @@ const MemoizedRowLayoutEditContainer = memo(RowLayoutEditContainer, (prevProps, 
 	if (prevProps.isSelected !== nextProps.isSelected) {
 		return false;
 	}
-	
+
 	// Check if attributes have changed (deep comparison)
 	const prevAttrs = prevProps.attributes;
 	const nextAttrs = nextProps.attributes;
-	
+
 	// List of attributes that should trigger re-render
 	const criticalAttributes = [
 		'uniqueID',
@@ -1971,25 +2020,36 @@ const MemoizedRowLayoutEditContainer = memo(RowLayoutEditContainer, (prevProps, 
 		'borderRadiusOverflow',
 		'borderRadius',
 	];
-	
+
 	for (const attr of criticalAttributes) {
 		if (prevAttrs[attr] !== nextAttrs[attr]) {
 			return false;
 		}
 	}
-	
+
 	// Check array attributes more carefully
-	const arrayAttributes = ['padding', 'tabletPadding', 'mobilePadding', 'margin', 'tabletMargin', 'mobileMargin', 'customGutter', 'customRowGutter', 'responsiveMaxWidth', 'borderRadius'];
-	
+	const arrayAttributes = [
+		'padding',
+		'tabletPadding',
+		'mobilePadding',
+		'margin',
+		'tabletMargin',
+		'mobileMargin',
+		'customGutter',
+		'customRowGutter',
+		'responsiveMaxWidth',
+		'borderRadius',
+	];
+
 	for (const attr of arrayAttributes) {
 		const prevArray = prevAttrs[attr];
 		const nextArray = nextAttrs[attr];
-		
+
 		if (prevArray !== nextArray) {
 			if (!prevArray || !nextArray || prevArray.length !== nextArray.length) {
 				return false;
 			}
-			
+
 			for (let i = 0; i < prevArray.length; i++) {
 				if (prevArray[i] !== nextArray[i]) {
 					return false;
@@ -1997,12 +2057,12 @@ const MemoizedRowLayoutEditContainer = memo(RowLayoutEditContainer, (prevProps, 
 			}
 		}
 	}
-	
+
 	// Check context changes
 	if (JSON.stringify(prevProps.context) !== JSON.stringify(nextProps.context)) {
 		return false;
 	}
-	
+
 	return true;
 });
 

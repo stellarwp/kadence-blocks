@@ -116,60 +116,66 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const addRow = useCallback((position) => {
-		let insertIndex;
+	const addRow = useCallback(
+		(position) => {
+			let insertIndex;
 
-		switch (position) {
-			case 'before':
-				insertIndex = index;
-				break;
-			case 'after':
-				insertIndex = index + 1;
-				break;
-			case 'top':
-				insertIndex = 0;
-				break;
-			case 'bottom':
-				insertIndex = undefined;
-				break;
-			default:
-				return;
-		}
+			switch (position) {
+				case 'before':
+					insertIndex = index;
+					break;
+				case 'after':
+					insertIndex = index + 1;
+					break;
+				case 'top':
+					insertIndex = 0;
+					break;
+				case 'bottom':
+					insertIndex = undefined;
+					break;
+				default:
+					return;
+			}
 
-		const newRow = createBlock('kadence/table-row', {});
-		insertBlock(newRow, insertIndex, parentTableClientId, false);
-	}, [index, insertBlock, parentTableClientId]);
+			const newRow = createBlock('kadence/table-row', {});
+			insertBlock(newRow, insertIndex, parentTableClientId, false);
+		},
+		[index, insertBlock, parentTableClientId]
+	);
 
-	const addColumn = useCallback((position) => {
-		const newColumnCount = parentColumns + 1;
+	const addColumn = useCallback(
+		(position) => {
+			const newColumnCount = parentColumns + 1;
 
-		let insertIndex;
-		switch (position) {
-			case 'before':
-				insertIndex = columnPosition;
-				break;
-			case 'after':
-				insertIndex = columnPosition + 1;
-				break;
-			case 'start':
-				insertIndex = 0;
-				break;
-			case 'end':
-				insertIndex = parentColumns;
-				break;
-			default:
-				return;
-		}
+			let insertIndex;
+			switch (position) {
+				case 'before':
+					insertIndex = columnPosition;
+					break;
+				case 'after':
+					insertIndex = columnPosition + 1;
+					break;
+				case 'start':
+					insertIndex = 0;
+					break;
+				case 'end':
+					insertIndex = parentColumns;
+					break;
+				default:
+					return;
+			}
 
-		siblingRows.forEach((row) => {
-			const newCells = [...row.innerBlocks];
-			const newCell = createBlock('kadence/table-data', {});
-			newCells.splice(insertIndex, 0, newCell);
+			siblingRows.forEach((row) => {
+				const newCells = [...row.innerBlocks];
+				const newCell = createBlock('kadence/table-data', {});
+				newCells.splice(insertIndex, 0, newCell);
 
-			replaceInnerBlocks(row.clientId, newCells, false);
-			updateBlockAttributes(parentTableClientId, { columns: newColumnCount });
-		});
-	}, [columnPosition, parentColumns, siblingRows, replaceInnerBlocks, updateBlockAttributes, parentTableClientId]);
+				replaceInnerBlocks(row.clientId, newCells, false);
+				updateBlockAttributes(parentTableClientId, { columns: newColumnCount });
+			});
+		},
+		[columnPosition, parentColumns, siblingRows, replaceInnerBlocks, updateBlockAttributes, parentTableClientId]
+	);
 
 	const Tag =
 		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']

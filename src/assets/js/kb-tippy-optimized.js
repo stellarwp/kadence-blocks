@@ -3,7 +3,7 @@
  * Uses event delegation and tooltip pooling for better performance
  */
 
-(function() {
+(function () {
 	'use strict';
 
 	// Tooltip configuration
@@ -25,7 +25,7 @@
 	 */
 	function getTooltipElement() {
 		// Try to get from pool
-		const pooled = tooltipPool.find(t => !t.isActive);
+		const pooled = tooltipPool.find((t) => !t.isActive);
 		if (pooled) {
 			return pooled;
 		}
@@ -69,10 +69,10 @@
 
 		return {
 			element: wrapper,
-			content: content,
-			arrow: arrow,
+			content,
+			arrow,
 			isActive: false,
-			popper: null
+			popper: null,
 		};
 	}
 
@@ -82,10 +82,10 @@
 	function positionTooltip(tooltip, target, placement = 'top') {
 		const targetRect = target.getBoundingClientRect();
 		const tooltipRect = tooltip.element.getBoundingClientRect();
-		
+
 		let top = 0;
 		let left = 0;
-		
+
 		// Calculate position based on placement
 		switch (placement) {
 			case 'top':
@@ -105,16 +105,16 @@
 				left = targetRect.right + 8;
 				break;
 		}
-		
+
 		// Adjust for viewport boundaries
 		const viewportWidth = window.innerWidth;
 		const viewportHeight = window.innerHeight;
-		
+
 		if (left < 0) left = 8;
 		if (left + tooltipRect.width > viewportWidth) {
 			left = viewportWidth - tooltipRect.width - 8;
 		}
-		
+
 		if (top < 0) {
 			// Switch to bottom if no room at top
 			if (placement === 'top') {
@@ -123,7 +123,7 @@
 				top = 8;
 			}
 		}
-		
+
 		if (top + tooltipRect.height > viewportHeight) {
 			// Switch to top if no room at bottom
 			if (placement === 'bottom') {
@@ -132,7 +132,7 @@
 				top = viewportHeight - tooltipRect.height - 8;
 			}
 		}
-		
+
 		// Apply position
 		tooltip.element.style.transform = `translate(${left}px, ${top}px)`;
 	}
@@ -155,9 +155,9 @@
 			const content = target.getAttribute('data-kb-tooltip-content');
 			const tooltipId = target.getAttribute('data-tooltip-id');
 			const placement = target.getAttribute('data-tooltip-placement') || 'top';
-			
+
 			let tooltipContent = content;
-			
+
 			// If using tooltip ID, get content from hidden element
 			if (!tooltipContent && tooltipId) {
 				const contentEl = document.getElementById(tooltipId);
@@ -165,31 +165,30 @@
 					tooltipContent = contentEl.innerHTML;
 				}
 			}
-			
+
 			if (!tooltipContent) return;
 
 			// Get tooltip from pool
 			const tooltip = getTooltipElement();
 			tooltip.isActive = true;
 			tooltip.content.innerHTML = stripTags(tooltipContent);
-			
+
 			// Show and position
 			tooltip.element.style.opacity = '0';
 			tooltip.element.style.display = 'block';
-			
+
 			// Force reflow before animation
 			tooltip.element.offsetHeight;
-			
+
 			positionTooltip(tooltip, target, placement);
 			tooltip.element.style.opacity = '1';
-			
+
 			activeTooltip = tooltip;
-			
+
 			// Set ARIA attributes
 			const tooltipDescribedById = 'kb-tooltip-' + Date.now();
 			tooltip.element.id = tooltipDescribedById;
 			target.setAttribute('aria-describedby', tooltipDescribedById);
-			
 		}, TOOLTIP_DELAY);
 	}
 
@@ -202,23 +201,22 @@
 
 		if (activeTooltip) {
 			const tooltip = activeTooltip;
-			
+
 			hideTimeout = setTimeout(() => {
 				tooltip.element.style.opacity = '0';
-				
+
 				setTimeout(() => {
 					tooltip.element.style.display = 'none';
 					tooltip.isActive = false;
-					
+
 					// Clear ARIA attributes
 					const target = document.querySelector(`[aria-describedby="${tooltip.element.id}"]`);
 					if (target) {
 						target.removeAttribute('aria-describedby');
 					}
 				}, 200);
-				
 			}, TOOLTIP_HIDE_DELAY);
-			
+
 			activeTooltip = null;
 		}
 	}
@@ -277,33 +275,39 @@
 	 */
 	function initLazyLoading() {
 		if ('IntersectionObserver' in window) {
-			tooltipObserver = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting && !initializedElements.has(entry.target)) {
-						// Mark as initialized
-						initializedElements.add(entry.target);
-						
-						// Set tabindex for keyboard accessibility if needed
-						if (entry.target.tagName !== 'A' && entry.target.tagName !== 'BUTTON' && 
-							!entry.target.hasAttribute('tabindex')) {
-							entry.target.setAttribute('tabindex', '0');
+			tooltipObserver = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting && !initializedElements.has(entry.target)) {
+							// Mark as initialized
+							initializedElements.add(entry.target);
+
+							// Set tabindex for keyboard accessibility if needed
+							if (
+								entry.target.tagName !== 'A' &&
+								entry.target.tagName !== 'BUTTON' &&
+								!entry.target.hasAttribute('tabindex')
+							) {
+								entry.target.setAttribute('tabindex', '0');
+							}
+
+							// Stop observing this element
+							tooltipObserver.unobserve(entry.target);
 						}
-						
-						// Stop observing this element
-						tooltipObserver.unobserve(entry.target);
-					}
-				});
-			}, {
-				threshold: INTERSECTION_THRESHOLD
-			});
+					});
+				},
+				{
+					threshold: INTERSECTION_THRESHOLD,
+				}
+			);
 
 			// Observe all tooltip triggers
-			document.querySelectorAll('[data-kb-tooltip-content], [data-tooltip-id]').forEach(el => {
+			document.querySelectorAll('[data-kb-tooltip-content], [data-tooltip-id]').forEach((el) => {
 				tooltipObserver.observe(el);
 			});
 		} else {
 			// Fallback for older browsers - initialize all at once
-			document.querySelectorAll('[data-kb-tooltip-content], [data-tooltip-id]').forEach(el => {
+			document.querySelectorAll('[data-kb-tooltip-content], [data-tooltip-id]').forEach((el) => {
 				if (el.tagName !== 'A' && el.tagName !== 'BUTTON' && !el.hasAttribute('tabindex')) {
 					el.setAttribute('tabindex', '0');
 				}
@@ -350,7 +354,7 @@
 		document.addEventListener('mouseleave', handleMouseLeave, true);
 		document.addEventListener('focusin', handleFocus, true);
 		document.addEventListener('focusout', handleBlur, true);
-		
+
 		// Handle scroll and resize to reposition active tooltip
 		let repositionTimeout;
 		const repositionHandler = () => {
@@ -365,21 +369,24 @@
 				}
 			}, 10);
 		};
-		
+
 		window.addEventListener('scroll', repositionHandler, true);
 		window.addEventListener('resize', repositionHandler);
-		
+
 		// Initialize lazy loading
 		initLazyLoading();
-		
+
 		// Handle dynamic content
 		if (window.MutationObserver) {
 			const observer = new MutationObserver((mutations) => {
 				mutations.forEach((mutation) => {
 					mutation.addedNodes.forEach((node) => {
-						if (node.nodeType === 1) { // Element node
-							const tooltipTriggers = node.querySelectorAll('[data-kb-tooltip-content], [data-tooltip-id]');
-							tooltipTriggers.forEach(el => {
+						if (node.nodeType === 1) {
+							// Element node
+							const tooltipTriggers = node.querySelectorAll(
+								'[data-kb-tooltip-content], [data-tooltip-id]'
+							);
+							tooltipTriggers.forEach((el) => {
 								if (tooltipObserver) {
 									tooltipObserver.observe(el);
 								} else {
@@ -393,10 +400,10 @@
 					});
 				});
 			});
-			
+
 			observer.observe(document.body, {
 				childList: true,
-				subtree: true
+				subtree: true,
 			});
 		}
 	}
@@ -410,33 +417,33 @@
 		document.removeEventListener('mouseleave', handleMouseLeave, true);
 		document.removeEventListener('focusin', handleFocus, true);
 		document.removeEventListener('focusout', handleBlur, true);
-		
+
 		// Clear timeouts
 		clearTimeout(hoverTimeout);
 		clearTimeout(hideTimeout);
-		
+
 		// Remove all tooltip elements
-		tooltipPool.forEach(tooltip => {
+		tooltipPool.forEach((tooltip) => {
 			if (tooltip.element && tooltip.element.parentNode) {
 				tooltip.element.parentNode.removeChild(tooltip.element);
 			}
 		});
 		tooltipPool.length = 0;
-		
+
 		// Disconnect observer
 		if (tooltipObserver) {
 			tooltipObserver.disconnect();
 		}
-		
+
 		// Clear initialized elements
 		initializedElements = new WeakSet();
 	}
 
 	// Public API
 	window.kadenceTooltipOptimized = {
-		init: init,
-		destroy: destroy,
-		hideTooltip: hideTooltip
+		init,
+		destroy,
+		hideTooltip,
 	};
 
 	// Auto-initialize
@@ -448,5 +455,4 @@
 
 	// Re-initialize on Kadence reload event
 	document.addEventListener('kadenceJSInitReload', init);
-
 })();

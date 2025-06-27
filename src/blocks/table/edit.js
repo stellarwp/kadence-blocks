@@ -168,34 +168,40 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const addRow = useCallback((position) => {
-		let insertIndex;
+	const addRow = useCallback(
+		(position) => {
+			let insertIndex;
 
-		switch (position) {
-			case 'top':
-				insertIndex = 0;
-				break;
-			case 'bottom':
-				insertIndex = undefined;
-				break;
-			default:
-				return;
-		}
+			switch (position) {
+				case 'top':
+					insertIndex = 0;
+					break;
+				case 'bottom':
+					insertIndex = undefined;
+					break;
+				default:
+					return;
+			}
 
-		const newRow = createBlock('kadence/table-row', {});
-		insertBlock(newRow, insertIndex, clientId, false);
-	}, [insertBlock, clientId]);
-
-	const rowControls = useMemo(() => [
-		{
-			title: __('Add Row at Top', 'kadence-blocks'),
-			onClick: () => addRow('top'),
+			const newRow = createBlock('kadence/table-row', {});
+			insertBlock(newRow, insertIndex, clientId, false);
 		},
-		{
-			title: __('Add Row at Bottom', 'kadence-blocks'),
-			onClick: () => addRow('bottom'),
-		},
-	], [addRow]);
+		[insertBlock, clientId]
+	);
+
+	const rowControls = useMemo(
+		() => [
+			{
+				title: __('Add Row at Top', 'kadence-blocks'),
+				onClick: () => addRow('top'),
+			},
+			{
+				title: __('Add Row at Bottom', 'kadence-blocks'),
+				onClick: () => addRow('bottom'),
+			},
+		],
+		[addRow]
+	);
 
 	const rowCount = select('core/block-editor').getBlocks(clientId);
 
@@ -206,23 +212,29 @@ export function Edit(props) {
 			handleDeleteLastRow();
 		}
 	};
-	const updateColumnBackground = useCallback((index, color, isHover = false) => {
-		const arrayToUpdate = isHover ? [...columnBackgroundsHover] : [...columnBackgrounds];
-		if (color === '') {
-			delete arrayToUpdate[index];
-			arrayToUpdate.length = arrayToUpdate.length || index + 1;
-		} else {
-			arrayToUpdate[index] = color;
-		}
-		setAttributes({
-			[isHover ? 'columnBackgroundsHover' : 'columnBackgrounds']: arrayToUpdate,
-		});
-	}, [columnBackgroundsHover, columnBackgrounds, setAttributes]);
+	const updateColumnBackground = useCallback(
+		(index, color, isHover = false) => {
+			const arrayToUpdate = isHover ? [...columnBackgroundsHover] : [...columnBackgrounds];
+			if (color === '') {
+				delete arrayToUpdate[index];
+				arrayToUpdate.length = arrayToUpdate.length || index + 1;
+			} else {
+				arrayToUpdate[index] = color;
+			}
+			setAttributes({
+				[isHover ? 'columnBackgroundsHover' : 'columnBackgrounds']: arrayToUpdate,
+			});
+		},
+		[columnBackgroundsHover, columnBackgrounds, setAttributes]
+	);
 
-	const getColumnBackground = useCallback((index, isHover = false) => {
-		const array = isHover ? columnBackgroundsHover : columnBackgrounds;
-		return array && array[index] ? array[index] : '';
-	}, [columnBackgroundsHover, columnBackgrounds]);
+	const getColumnBackground = useCallback(
+		(index, isHover = false) => {
+			const array = isHover ? columnBackgroundsHover : columnBackgrounds;
+			return array && array[index] ? array[index] : '';
+		},
+		[columnBackgroundsHover, columnBackgrounds]
+	);
 
 	const innerBlockClassName = useMemo(
 		() =>
@@ -262,17 +274,20 @@ export function Edit(props) {
 			removeBlock(blocks[blocks.length - 1].clientId, false);
 		}
 	};
-	const updateRowsColumns = useCallback((newRows) => {
-		const blocks = select('core/block-editor').getBlocks(clientId);
-		let newBlocks = [...blocks];
+	const updateRowsColumns = useCallback(
+		(newRows) => {
+			const blocks = select('core/block-editor').getBlocks(clientId);
+			let newBlocks = [...blocks];
 
-		const additionalRows = Array(newRows)
-			.fill(null)
-			.map(() => createTableRow());
-		newBlocks = [...newBlocks, ...additionalRows];
+			const additionalRows = Array(newRows)
+				.fill(null)
+				.map(() => createTableRow());
+			newBlocks = [...newBlocks, ...additionalRows];
 
-		replaceInnerBlocks(clientId, newBlocks, false);
-	}, [clientId, replaceInnerBlocks]);
+			replaceInnerBlocks(clientId, newBlocks, false);
+		},
+		[clientId, replaceInnerBlocks]
+	);
 
 	const createTable = useCallback(() => {
 		setAttributes({
@@ -281,48 +296,54 @@ export function Edit(props) {
 		updateRowsColumns(placeholderRows);
 	}, [placeholderColumns, placeholderRows, setAttributes, updateRowsColumns]);
 
-	const getColumnSetting = useCallback((index) => {
-		const settings = columnSettings || [];
-		return settings[index] || getColumnDefaults();
-	}, [columnSettings]);
+	const getColumnSetting = useCallback(
+		(index) => {
+			const settings = columnSettings || [];
+			return settings[index] || getColumnDefaults();
+		},
+		[columnSettings]
+	);
 
-	const updateColumnSetting = useCallback((index, updates) => {
-		const newSettings = [...(columnSettings || [])];
-		const currentSetting = getColumnSetting(index);
+	const updateColumnSetting = useCallback(
+		(index, updates) => {
+			const newSettings = [...(columnSettings || [])];
+			const currentSetting = getColumnSetting(index);
 
-		// If we're changing units, update all columns
-		if (updates.unit || updates.unitTablet || updates.unitMobile) {
-			newSettings.forEach((setting, idx) => {
-				if (setting) {
-					newSettings[idx] = {
-						...setting,
-						...(updates.unit && { unit: updates.unit }),
-						...(updates.unitTablet && { unitTablet: updates.unitTablet }),
-						...(updates.unitMobile && { unitMobile: updates.unitMobile }),
-					};
+			// If we're changing units, update all columns
+			if (updates.unit || updates.unitTablet || updates.unitMobile) {
+				newSettings.forEach((setting, idx) => {
+					if (setting) {
+						newSettings[idx] = {
+							...setting,
+							...(updates.unit && { unit: updates.unit }),
+							...(updates.unitTablet && { unitTablet: updates.unitTablet }),
+							...(updates.unitMobile && { unitMobile: updates.unitMobile }),
+						};
+					}
+				});
+
+				// Fill in missing columns
+				for (let i = 0; i < columns; i++) {
+					if (!newSettings[i]) {
+						newSettings[i] = {
+							...getColumnDefaults(),
+							...(updates.unit && { unit: updates.unit }),
+							...(updates.unitTablet && { unitTablet: updates.unitTablet }),
+							...(updates.unitMobile && { unitMobile: updates.unitMobile }),
+						};
+					}
 				}
-			});
-
-			// Fill in missing columns
-			for (let i = 0; i < columns; i++) {
-				if (!newSettings[i]) {
-					newSettings[i] = {
-						...getColumnDefaults(),
-						...(updates.unit && { unit: updates.unit }),
-						...(updates.unitTablet && { unitTablet: updates.unitTablet }),
-						...(updates.unitMobile && { unitMobile: updates.unitMobile }),
-					};
-				}
+			} else {
+				newSettings[index] = {
+					...currentSetting,
+					...updates,
+				};
 			}
-		} else {
-			newSettings[index] = {
-				...currentSetting,
-				...updates,
-			};
-		}
 
-		setAttributes({ columnSettings: newSettings });
-	}, [columnSettings, columns, getColumnSetting, setAttributes]);
+			setAttributes({ columnSettings: newSettings });
+		},
+		[columnSettings, columns, getColumnSetting, setAttributes]
+	);
 
 	const saveDataTypography = (value) => {
 		setAttributes({
