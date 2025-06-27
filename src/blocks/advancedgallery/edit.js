@@ -2861,15 +2861,38 @@ export default function GalleryEdit(props) {
 				</div>
 			)}
 			{type && type === 'masonry' && (
-				<Masonry style={spacingSettings} className={galleryClassNames}>
-					{theImages.map((img, index) => {
-						return (
-							<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
-								{renderGalleryImages(img, index)}
-							</div>
-						);
-					})}
-				</Masonry>
+				// Workaround for known issue where Marsonry library sometimes fatal errors when 1 column and narrow viewport.
+				// Issue: https://github.com/bogdanpetru/react-masonry/issues/48
+				previewColumns === 1 ? (
+					<div
+						style={spacingSettings}
+						className={galleryClassNames}
+						data-columns-xxl={columns[0]}
+						data-columns-xl={columns[1]}
+						data-columns-lg={columns[2]}
+						data-columns-md={columns[3]}
+						data-columns-sm={columns[4]}
+						data-columns-xs={columns[5]}
+					>
+						{theImages.map((img, index) => {
+							return (
+								<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									{renderGalleryImages(img, index)}
+								</div>
+							);
+						})}
+					</div>
+				) : (
+					<Masonry style={spacingSettings} className={galleryClassNames}>
+						{theImages.map((img, index) => {
+							return (
+								<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
+									{renderGalleryImages(img, index)}
+								</div>
+							);
+						})}
+					</Masonry>
+				)
 			)}
 			{type && type === 'grid' && (
 				<ul
