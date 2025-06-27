@@ -189,9 +189,21 @@ protected function tearDown(): void {
 
 ## Testing Commands
 - `slic run wpunit` - Run all WordPress unit/integration tests
-- `slic run wpunit Path/To/ClassName` - Run specific test class
-- `slic run wpunit Path/To/ClassName::testMethod` - Run specific test method
-- `slic run acceptance` - Run all WordPress acceptance tests
+- `slic run wpunit <path/to/TestClass>` - Run specific test class using **file system path from tests/wpunit/** (without .php extension)
+- `slic run wpunit <path/to/TestClass::testMethod>` - Run specific test method
+- `slic run acceptance` - Run all WordPress acceptance suite tests
+
+### Test Path Examples:
+- For test file `tests/wpunit/Resources/Optimizer/RequestAnonymizerTest.php`: 
+  - Command: `slic run wpunit Resources/Optimizer/RequestAnonymizerTest`
+- For test file `tests/wpunit/Blocks/SomeBlockTest.php`:
+  - Command: `slic run wpunit Blocks/SomeBlockTest`  
+- For specific method in test:
+  - Command: `slic run wpunit Resources/Optimizer/RequestAnonymizerTest::testSpecificMethod`
+- For a test in a different suite:
+  - Command: `slic run acceptance AdvancedFormCest`
+
+**Important**: Use the file system path from the `tests/$suite/` directory, NOT the full namespace or file path with extension.
 
 ## Key Principles
 1. **Type Safety**: Use strict typing throughout
