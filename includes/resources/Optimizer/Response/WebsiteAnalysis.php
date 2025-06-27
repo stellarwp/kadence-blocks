@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Response;
 
+use DateTimeImmutable;
+use DateTimeZone;
+
 /**
  * Data Transfer Object representing comprehensive website performance analysis.
  *
@@ -10,6 +13,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Response;
  */
 final class WebsiteAnalysis {
 
+	public DateTimeImmutable $lastModified;
 	public DeviceAnalysis $desktop;
 	public DeviceAnalysis $mobile;
 
@@ -22,17 +26,21 @@ final class WebsiteAnalysis {
 	 * @param ImageAnalysis[] $images The image analysis collection.
 	 */
 	private function __construct(
+		DateTimeImmutable $lastModified,
 		DeviceAnalysis $desktop,
 		DeviceAnalysis $mobile,
 		array $images = []
 	) {
-		$this->desktop = $desktop;
-		$this->mobile  = $mobile;
-		$this->images  = $images;
+		$this->lastModified = $lastModified;
+		$this->desktop      = $desktop;
+		$this->mobile       = $mobile;
+		$this->images       = $images;
 	}
 
 	/**
-	 * @param array{desktop: array, mobile: array, images: array} $attributes
+	 * @param array{lastModified?: DateTimeImmutable|string, desktop: array, mobile: array, images: array} $attributes
+	 *
+	 * @throws \Exception If we fail to create a DateTimeImmutable object.
 	 */
 	public static function from( array $attributes ): self {
 		$images = array_map(
@@ -42,7 +50,15 @@ final class WebsiteAnalysis {
 			$attributes['images'] ?? []
 		);
 
+		$timestamp = $attributes['lastModified'] ?? null;
+		$timezone  = new DateTimeZone( 'UTC' );
+
+		$lastModified = is_string( $timestamp )
+			? new DateTimeImmutable( $timestamp, $timezone )
+			: ( $timestamp ?? new DateTimeImmutable( 'now', $timezone ) );
+
 		return new self(
+			$lastModified,
 			DeviceAnalysis::from( $attributes['desktop'] ),
 			DeviceAnalysis::from( $attributes['mobile'] ),
 			$images
@@ -50,13 +66,14 @@ final class WebsiteAnalysis {
 	}
 
 	/**
-	 * @return array{desktop: array, mobile: array, images: array}
+	 * @return array{lastModified: string, desktop: array, mobile: array, images: array}
 	 */
 	public function toArray(): array {
 		return [
-			'desktop' => $this->desktop->toArray(),
-			'mobile'  => $this->mobile->toArray(),
-			'images'  => array_map(
+			'lastModified' => $this->lastModified->format( 'Y-m-d H:i:s' ),
+			'desktop'      => $this->desktop->toArray(),
+			'mobile'       => $this->mobile->toArray(),
+			'images'       => array_map(
 				static function ( ImageAnalysis $image ): array {
 					return $image->toArray();
 				},

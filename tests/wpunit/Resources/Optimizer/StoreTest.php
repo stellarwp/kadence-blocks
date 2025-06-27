@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Optimizer;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
@@ -39,9 +41,7 @@ final class StoreTest extends TestCase {
 	}
 
 	public function testItSetsGetsAndDeletesOptimizationData(): void {
-		$data = $this->fixture( 'resources/optimizer/result.json' );
-
-		$analysis = WebsiteAnalysis::from( json_decode( $data, true ) );
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
 		$this->assertEquals( $analysis, $this->store->get( $this->post_id ) );
@@ -50,8 +50,7 @@ final class StoreTest extends TestCase {
 	}
 
 	public function testItReturnsTrueWhenSettingSameValueTwice(): void {
-		$data     = $this->fixture( 'resources/optimizer/result.json' );
-		$analysis = WebsiteAnalysis::from( json_decode( $data, true ) );
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
 
@@ -63,8 +62,7 @@ final class StoreTest extends TestCase {
 	}
 
 	public function testItHandlesInvalidPostId(): void {
-		$data     = $this->fixture( 'resources/optimizer/result.json' );
-		$analysis = WebsiteAnalysis::from( json_decode( $data, true ) );
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		// Using a non-existent post ID should still work (WordPress will handle it).
 		$invalid_post_id = 999999;
@@ -84,8 +82,7 @@ final class StoreTest extends TestCase {
 	}
 
 	public function testItCanSetGetAndDeleteMultiplePosts(): void {
-		$data     = $this->fixture( 'resources/optimizer/result.json' );
-		$analysis = WebsiteAnalysis::from( json_decode( $data, true ) );
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		$post_id_1 = $this->factory()->post->create();
 		$post_id_2 = $this->factory()->post->create();
@@ -117,8 +114,7 @@ final class StoreTest extends TestCase {
 	}
 
 	public function testDataIntegrityAfterSerializationAndDeserialization(): void {
-		$data              = $this->fixture( 'resources/optimizer/result.json' );
-		$original_analysis = WebsiteAnalysis::from( json_decode( $data, true ) );
+		$original_analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		$this->assertTrue( $this->store->set( $this->post_id, $original_analysis ) );
 		$retried_analysis = $this->store->get( $this->post_id );
@@ -135,5 +131,17 @@ final class StoreTest extends TestCase {
 		foreach ( $original_analysis->images as $index => $image ) {
 			$this->assertEquals( $image->toArray(), $retried_analysis->images[ $index ]->toArray() );
 		}
+	}
+
+	/**
+	 * Get the results fixture with the lastModified appended to it.
+	 */
+	private function getResultsFixture(): array {
+		$data    = $this->fixture( 'resources/optimizer/result.json' );
+		$decoded = json_decode( $data, true );
+
+		$decoded['lastModified'] = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+
+		return $decoded;
 	}
 }

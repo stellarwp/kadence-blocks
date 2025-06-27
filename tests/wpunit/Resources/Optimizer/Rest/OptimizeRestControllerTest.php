@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Rest;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -382,9 +384,13 @@ final class OptimizeRestControllerTest extends TestCase {
 	}
 
 	private function getTestAnalysisData(): array {
-		return json_decode(
+		$decoded = json_decode(
 			$this->fixture( 'resources/optimizer/result.json' ),
 			true
 		);
+
+		$decoded['lastModified'] = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+
+		return $decoded;
 	}
 }
