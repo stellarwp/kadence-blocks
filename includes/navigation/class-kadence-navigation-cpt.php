@@ -147,7 +147,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'kadence/navigation',
 			),
 		);
-		$post_type_object->template_lock = 'all';
+		$post_type_object->template_lock = 'insert';
 	}
 
 
