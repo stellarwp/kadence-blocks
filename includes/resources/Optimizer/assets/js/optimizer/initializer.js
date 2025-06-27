@@ -34,6 +34,7 @@ export function initOptimizer() {
 
 			const postId = parseInt(event.target.dataset.postId, 10);
 			const postUrl = event.target.dataset.postUrl;
+			const nonce = event.target.dataset.nonce;
 
 			if (!postUrl) {
 				console.error('❌ No URL found for optimization');
@@ -47,7 +48,7 @@ export function initOptimizer() {
 			);
 
 			try {
-				const response = await analyzeSite(postUrl, postId);
+				const response = await analyzeSite(postUrl, postId, nonce);
 				console.log(response);
 
 				// Update link state to show "Remove Optimization".

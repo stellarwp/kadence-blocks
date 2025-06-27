@@ -3,14 +3,15 @@ import { OPTIMIZE_ROUTE } from './constants';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
- * Analyze a specific website URL
+ * Analyze a specific website URL and collect optimization data.
  *
  * @param {string} url - The URL to analyze.
  * @param {number} postId - The post ID for reference.
+ * @param {string} nonce - The nonce value.
  *
  * @returns {Promise<*>}
  */
-export async function analyzeSite(url, postId) {
+export async function analyzeSite(url, postId, nonce) {
 	console.log(`🎯 Analyzing post ${postId}: ${url}`);
 
 	if (!isSupported()) {
@@ -19,7 +20,7 @@ export async function analyzeSite(url, postId) {
 	}
 
 	try {
-		const results = await analyzeWebsite(url);
+		const results = await analyzeWebsite(url, true, '[Kadence]', nonce);
 
 		const res = await apiFetch({
 			path: OPTIMIZE_ROUTE,
