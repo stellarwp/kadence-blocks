@@ -2860,10 +2860,11 @@ export default function GalleryEdit(props) {
 					</div>
 				</div>
 			)}
-			{type && type === 'masonry' && (
+			{type &&
+				type === 'masonry' &&
 				// Workaround for known issue where Marsonry library sometimes fatal errors when 1 column and narrow viewport.
 				// Issue: https://github.com/bogdanpetru/react-masonry/issues/48
-				previewColumns === 1 ? (
+				(previewColumns === 1 ? (
 					<div
 						style={spacingSettings}
 						className={galleryClassNames}
@@ -2892,8 +2893,7 @@ export default function GalleryEdit(props) {
 							);
 						})}
 					</Masonry>
-				)
-			)}
+				))}
 			{type && type === 'grid' && (
 				<ul
 					style={spacingSettings}
