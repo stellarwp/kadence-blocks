@@ -5,7 +5,7 @@
  * which makes it higher in priority.
  */
 
-@import "assets/css/pattern-filters";
+@use "assets/css/pattern-filters";
 
 .kt-prebuilt-modal {
 	--kadence-ui-color: #0073e6;

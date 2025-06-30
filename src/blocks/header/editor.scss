@@ -1,4 +1,4 @@
-@import "../../assets/css/variables.scss";
+@use "../../assets/css/variables" as vars;
 
 .wp-block[data-align="center"] .wp-block-kadence-header-desktop {
 	margin: 0 auto;

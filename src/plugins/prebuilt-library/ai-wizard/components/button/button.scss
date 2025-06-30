@@ -1,21 +1,21 @@
-@import "../../scss/variables.scss";
+@use "../../scss/variables" as vars;
 
 .stellarwp.components-button {
 	font-size: 14px;
 
 	&.is-primary {
-		background: $color-primary;
+		background: vars.$color-primary;
 
 		&:hover {
-			background: $color-primary-dark;
+			background: vars.$color-primary-dark;
 		}
 	}
 
 	&.is-secondary {
-		background: $color-secondary;
+		background: vars.$color-secondary;
 
 		&:hover {
-			background: $color-secondary-dark;
+			background: vars.$color-secondary-dark;
 		}
 	}
 
@@ -28,34 +28,34 @@
 
 	&.is-primary,
 	&.is-secondary {
-		color: $color-white;
+		color: vars.$color-white;
 		box-shadow: none;
 
 		&:hover {
-			color: $color-white;
+			color: vars.$color-white;
 			box-shadow: none;
 		}
 
 		&:disabled {
-			background: $color-gray-500;
-			color: $color-white;
+			background: vars.$color-gray-500;
+			color: vars.$color-white;
 		}
 	}
 
 	&.is-tertiary {
-		box-shadow: inset 0 0 0 1px $color-primary;
+		box-shadow: inset 0 0 0 1px vars.$color-primary;
 		background: transparent;
-		color: $color-primary;
+		color: vars.$color-primary;
 
 		&:hover {
-			box-shadow: inset 0 0 0 1px $color-primary-dark;
-			background: $color-primary-dark;
-			color: $color-white;
+			box-shadow: inset 0 0 0 1px vars.$color-primary-dark;
+			background: vars.$color-primary-dark;
+			color: vars.$color-white;
 		}
 
 		&:disabled {
-			box-shadow: inset 0 0 0 1px $color-gray-500;
-			color: $color-gray-500;
+			box-shadow: inset 0 0 0 1px vars.$color-gray-500;
+			color: vars.$color-gray-500;
 		}
 	}
 }
