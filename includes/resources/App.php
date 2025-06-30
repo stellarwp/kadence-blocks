@@ -4,9 +4,11 @@ namespace KadenceWP\KadenceBlocks;
 
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Adbar\Dot;
+use KadenceWP\KadenceBlocks\Asset\Asset_Provider;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
+use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
@@ -19,12 +21,12 @@ use RuntimeException;
  */
 final class App {
 
-	private static $instance;
+	private static self $instance;
 
 	/**
 	 * @var Container
 	 */
-	private $container;
+	private Container $container;
 
 	/**
 	 * Add any custom providers here.
@@ -33,14 +35,19 @@ final class App {
 	 *
 	 * @var class-string<Providable>
 	 */
-	private $providers = array(
+	private $providers = [
+		Asset_Provider::class,
 		Uplink_Provider::class,
 		Health_Provider::class,
 		Image_Downloader_Provider::class,
+		Optimizer_Provider::class,
 		Cache_Provider::class,
 		Shutdown_Provider::class,
-	);
+	];
 
+	/**
+	 * @param Container $container
+	 */
 	private function __construct(
 		Container $container
 	) {
@@ -53,7 +60,7 @@ final class App {
 	 * @param Container|null $container
 	 *
 	 * @return self
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException If no container is provided.
 	 */
 	public static function instance( ?Container $container = null ): App {
 		if ( ! isset( self::$instance ) ) {
@@ -91,5 +98,4 @@ final class App {
 	public function __sleep(): array {
 		throw new RuntimeException( 'method not implemented' );
 	}
-
 }
