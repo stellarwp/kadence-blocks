@@ -405,9 +405,6 @@ export default function Edit(props) {
 
 	uniqueIdHelper(props);
 
-	useEffect(() => {
-	}, []);
-
 	//get the most up to date links for links with a post type and id (non custom)
 	useEffect(() => {
 		const postType = kind == 'post-type' ? correctPostType(type) : '';
