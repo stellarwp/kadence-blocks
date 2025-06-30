@@ -1,5 +1,4 @@
 const { src, dest, parallel } = require('gulp');
-const babel = require('gulp-babel');
 const rename = require('gulp-rename');
 const minify = require('gulp-babel-minify');
 const config = require('../config');
