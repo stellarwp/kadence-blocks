@@ -61,6 +61,7 @@ export function createNotice(message, type = NOTICE_TYPES.SUCCESS, isDismissible
 
 	const notice = document.createElement('div');
 	notice.className = `notice notice-${type}${isDismissible ? ' is-dismissible' : ''}`;
+	notice.style.transition = 'opacity 0.5s ease-out';
 	notice.innerHTML = `
 		<p>${fullMessage}</p>
 		${
@@ -81,5 +82,20 @@ export function createNotice(message, type = NOTICE_TYPES.SUCCESS, isDismissible
 		dismissButton?.addEventListener('click', () => {
 			notice.remove();
 		});
+	}
+
+	// Auto-hide success and info notices after 5 seconds with fade-out
+	if (type === NOTICE_TYPES.SUCCESS || type === NOTICE_TYPES.INFO) {
+		setTimeout(() => {
+			if (notice.parentNode) {
+				notice.style.opacity = '0';
+				// Remove from DOM after fade-out animation completes
+				setTimeout(() => {
+					if (notice.parentNode) {
+						notice.remove();
+					}
+				}, 500); // Match the CSS transition duration
+			}
+		}, 5000);
 	}
 }
