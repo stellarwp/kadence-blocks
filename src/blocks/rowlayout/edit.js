@@ -97,7 +97,7 @@ import {
 	ToggleControl,
 	SelectControl,
 } from '@wordpress/components';
-import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { blockDefault, brush, settings, plusCircle } from '@wordpress/icons';
 /**
@@ -110,19 +110,9 @@ const ALLOWED_BLOCKS = ['kadence/column'];
 /**
  * Build the row edit
  */
-function RowLayoutEditContainer(props) {
-	const {
-		attributes,
-		setAttributes,
-		updateAlignment,
-		insertSection,
-		context,
-		updateColumns,
-		toggleSelection,
-		isSelected,
-		clientId,
-		name,
-	} = props;
+const KadenceRowLayout = (props) => {
+	const { clientId, attributes, setAttributes, context, toggleSelection, isSelected, name } = props;
+
 	const {
 		uniqueID,
 		columns,
@@ -270,6 +260,18 @@ function RowLayoutEditContainer(props) {
 		bottomSepHeightUnit,
 		borderRadiusOverflow,
 	} = attributes;
+
+	// Cut everything short if we are just accessing the modal.
+	if (isPrebuiltModal) {
+		return (
+			<PrebuiltModal
+				clientId={clientId}
+				open={isPrebuiltModal ? true : false}
+				onlyModal={isPrebuiltModal ? true : false}
+			/>
+		);
+	}
+
 	const { isPreviewMode } = useSelect((_select) => {
 		const { __unstableIsPreviewMode } = _select(blockEditorStore).getSettings();
 		return {
@@ -286,6 +288,80 @@ function RowLayoutEditContainer(props) {
 		},
 		[clientId]
 	);
+
+	const { updateBlockAttributes, replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
+	const {
+		getBlockOrder: selectGetBlockOrder,
+		getBlocks: selectGetBlocks,
+		getBlock: selectGetBlock,
+	} = useSelect(
+		(select) => ({
+			getBlockOrder: select(blockEditorStore).getBlockOrder,
+			getBlocks: select(blockEditorStore).getBlocks,
+			getBlock: select(blockEditorStore).getBlock,
+		}),
+		[]
+	);
+
+	/**
+	 * Update all child Column blocks with a new vertical alignment setting
+	 * based on whatever alignment is passed in. This allows change to parent
+	 * to overide anything set on a individual column basis.
+	 *
+	 * @param {string} verticalAlignment the vertical alignment setting
+	 */
+	const updateAlignment = (verticalAlignment) => {
+		// Update own alignment.
+		setAttributes({ verticalAlignment });
+
+		// Update all child Column Blocks to match.
+		const innerBlockClientIds = selectGetBlockOrder(clientId);
+		innerBlockClientIds.forEach((innerBlockClientId) => {
+			updateBlockAttributes(innerBlockClientId, {
+				verticalAlignment,
+			});
+		});
+	};
+
+	/**
+	 * Updates the column count, including necessary revisions to child Column
+	 * blocks to grant required or redistribute available space.
+	 *
+	 * @param {number} previousColumns Previous column count.
+	 * @param {number} newColumns      New column count.
+	 */
+	const updateColumns = (previousColumns, newColumns) => {
+		let innerBlocks = selectGetBlocks(clientId);
+		const isAddingColumn = newColumns > previousColumns;
+
+		if (isAddingColumn) {
+			const arrayLength = innerBlocks.length;
+			for (let i = 0; i < arrayLength; i++) {
+				innerBlocks[i].attributes.id = i + 1;
+			}
+			innerBlocks = [
+				...innerBlocks,
+				...times(newColumns - previousColumns, (n) => {
+					return createBlock('kadence/column', {
+						id: previousColumns + n + 1,
+					});
+				}),
+			];
+		} else if (1 === previousColumns - newColumns) {
+			const lastItem = innerBlocks.length - 1;
+			if (!innerBlocks[lastItem].innerBlocks.length) {
+				innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
+			}
+		}
+
+		replaceInnerBlocks(clientId, innerBlocks);
+	};
+	const block = selectGetBlock(clientId);
+
+	const insertSection = (newBlock) => {
+		const block = selectGetBlock(clientId);
+		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
+	};
 	uniqueIdHelper(props);
 
 	useEffect(() => {
@@ -1825,101 +1901,6 @@ function RowLayoutEditContainer(props) {
 			</RowBackground>
 		</>
 	);
-}
-
-const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry) => ({
-	/**
-	 * Update all child Column blocks with a new vertical alignment setting
-	 * based on whatever alignment is passed in. This allows change to parent
-	 * to overide anything set on a individual column basis.
-	 *
-	 * @param {string} verticalAlignment the vertical alignment setting
-	 */
-	updateAlignment(verticalAlignment) {
-		const { clientId, setAttributes } = ownProps;
-		const { updateBlockAttributes } = dispatch(blockEditorStore);
-		const { getBlockOrder } = registry.select(blockEditorStore);
-
-		// Update own alignment.
-		setAttributes({ verticalAlignment });
-
-		// Update all child Column Blocks to match.
-		const innerBlockClientIds = getBlockOrder(clientId);
-		innerBlockClientIds.forEach((innerBlockClientId) => {
-			updateBlockAttributes(innerBlockClientId, {
-				verticalAlignment,
-			});
-		});
-	},
-	/**
-	 * Updates the column count, including necessary revisions to child Column
-	 * blocks to grant required or redistribute available space.
-	 *
-	 * @param {number} previousColumns Previous column count.
-	 * @param {number} newColumns      New column count.
-	 */
-	updateColumns(previousColumns, newColumns) {
-		const { clientId } = ownProps;
-		const { replaceInnerBlocks } = dispatch(blockEditorStore);
-		const { getBlocks } = registry.select(blockEditorStore);
-
-		let innerBlocks = getBlocks(clientId);
-		const isAddingColumn = newColumns > previousColumns;
-
-		if (isAddingColumn) {
-			const arrayLength = innerBlocks.length;
-			for (let i = 0; i < arrayLength; i++) {
-				innerBlocks[i].attributes.id = i + 1;
-			}
-			innerBlocks = [
-				...innerBlocks,
-				...times(newColumns - previousColumns, (n) => {
-					return createBlock('kadence/column', {
-						id: previousColumns + n + 1,
-					});
-				}),
-			];
-		} else if (1 === previousColumns - newColumns) {
-			const lastItem = innerBlocks.length - 1;
-			if (!innerBlocks[lastItem].innerBlocks.length) {
-				innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
-			}
-		}
-
-		replaceInnerBlocks(clientId, innerBlocks);
-	},
-	insertSection(newBlock) {
-		const { clientId } = ownProps;
-		const { insertBlock } = dispatch(blockEditorStore);
-		const { getBlock } = registry.select(blockEditorStore);
-		const block = getBlock(clientId);
-		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
-	},
-}))(RowLayoutEditContainer);
-const KadenceRowLayout = (props) => {
-	const { clientId, attributes } = props;
-	const { isPrebuiltModal } = attributes;
-	// Cut everything short if we are just accessing the modal.
-	if (isPrebuiltModal) {
-		return (
-			<PrebuiltModal
-				clientId={clientId}
-				open={isPrebuiltModal ? true : false}
-				onlyModal={isPrebuiltModal ? true : false}
-			/>
-		);
-	}
-	const { rowBlock, realColumnCount } = useSelect(
-		(select) => {
-			const { getBlock } = select('core/block-editor');
-			const block = getBlock(clientId);
-			return {
-				rowBlock: block,
-				isUniqueBlock: block.innerBlocks.length,
-			};
-		},
-		[clientId]
-	);
-	return <RowLayoutEditContainerWrapper realColumnCount={realColumnCount} rowBlock={rowBlock} {...props} />;
 };
+
 export default KadenceRowLayout;
