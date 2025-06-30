@@ -503,7 +503,7 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 								</>
 							)}
 							{useKcSettings === true && linkToKadenceCaptchaSettings}
-							{useKcSettings === false && (
+							{useKcSettings === false && type !== 'googlev3' && (
 								<SelectControl
 									label={__('Color Theme', 'kadence-blocks')}
 									value={theme}
