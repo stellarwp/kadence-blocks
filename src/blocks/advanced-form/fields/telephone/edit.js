@@ -18,10 +18,11 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
-import { getUniqueId, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
-function FieldTelephone({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldTelephone(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const {
 		uniqueID,
 		required,
@@ -51,14 +52,7 @@ function FieldTelephone({ attributes, setAttributes, isSelected, clientId, conte
 		[clientId]
 	);
 
-	useEffect(() => {
-		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		const uniqueId = getUniqueFieldId(uniqueID, clientId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-		}
-	}, []);
+	uniqueIdHelper(props);
 	const previewMaxWidth = getPreviewSize(
 		previewDevice,
 		maxWidth && maxWidth[0] ? maxWidth[0] : '',

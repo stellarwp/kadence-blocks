@@ -24,7 +24,7 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId, useEditorElement, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, useEditorElement, getPreviewSize } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	KadenceRadioButtons,
@@ -131,47 +131,23 @@ export function Edit(props) {
 		closeIconBorderRadiusUnit,
 	} = attributes;
 
-	const { addUniqueID, setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
+	const { setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
 	const { selectBlock } = useDispatch(blockEditorStore);
 
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, parentClientId, showOffCanvas, childSelected } =
+	const { previewDevice, parentClientId, showOffCanvas, childSelected } =
 		useSelect(
 			(select) => {
 				return {
 					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 					showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
-					isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-					isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
-					parentData: {
-						rootBlock: select('core/block-editor').getBlock(
-							select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-						),
-						postId: select('core/editor')?.getCurrentPostId()
-							? select('core/editor')?.getCurrentPostId()
-							: '',
-						reusableParent: select('core/block-editor').getBlockAttributes(
-							select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-						),
-						editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-					},
 					parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
 				};
 			},
 			[clientId]
 		);
 
-	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
-	}, []);
+	uniqueIdHelper(props);
 
 	const selfOrChildSelected = () => {
 		return isSelected || childSelected;

@@ -20,7 +20,7 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
-import { getUniqueId, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
@@ -35,7 +35,8 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
  */
 import './editor.scss';
 
-function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldCaptcha(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	//usekcsettings is to use settings from the seperate kadence captcha plugin
 	//usekbsettings is to use the global kadence blocks settings for captions
 	const {
@@ -71,14 +72,7 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 		[clientId]
 	);
 
-	useEffect(() => {
-		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		const uniqueId = getUniqueFieldId(uniqueID, clientId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-		}
-	}, []);
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		const neededFields = [

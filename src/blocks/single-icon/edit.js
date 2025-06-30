@@ -20,9 +20,8 @@ import {
 import {
 	KadenceColorOutput,
 	setBlockDefaults,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
-	getPostOrFseId,
 	getPreviewSize,
 } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -80,23 +79,10 @@ function KadenceSingleIcon(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -109,18 +95,10 @@ function KadenceSingleIcon(props) {
 		undefined !== mobileSize ? mobileSize : undefined
 	);
 
+	uniqueIdHelper(props);
+	
 	useEffect(() => {
 		setBlockDefaults('kadence/single-icon', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);

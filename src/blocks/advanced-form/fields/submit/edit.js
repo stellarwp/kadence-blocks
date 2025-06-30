@@ -14,7 +14,7 @@ import {
 	getBorderStyle,
 	setBlockDefaults,
 	getBorderColor,
-	getUniqueId,
+	uniqueIdHelper,
 } from '@kadence/helpers';
 
 import {
@@ -64,7 +64,6 @@ import {
 } from '@wordpress/block-editor';
 import { TextControl, ToolbarGroup, SelectControl } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import { getUniqueFieldId } from '../../components';
 
 export default function KadenceButtonEdit({
 	attributes,
@@ -145,14 +144,7 @@ export default function KadenceButtonEdit({
 		[clientId]
 	);
 
-	useEffect(() => {
-		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		const uniqueId = getUniqueFieldId(uniqueID, clientId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-		}
-	}, []);
+	uniqueIdHelper({ attributes, setAttributes, isSelected, clientId, context, className, name });
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect(() => {

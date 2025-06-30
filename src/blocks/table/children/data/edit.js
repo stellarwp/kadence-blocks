@@ -13,7 +13,7 @@ import {
 	SelectParentBlock,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
-import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
 import { flow } from 'lodash';
 import classnames from 'classnames';
@@ -28,14 +28,10 @@ export function Edit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
 	const { insertBlock, updateBlockAttributes } = useDispatch('core/block-editor');
 
 	const {
-		isUniqueID,
-		isUniqueBlock,
-		parentData,
 		index,
 		parentTableClientId,
 		parentColumns,
@@ -50,8 +46,6 @@ export function Edit(props) {
 			const rowId = blockParents[1];
 			const rowBlocks = select('core/block-editor').getBlockOrder(rowId);
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				index: select('core/block-editor').getBlockIndex(clientId),
 				parentTableClientId: tableClientId,
 				parentColumns: select('core/block-editor').getBlockAttributes(tableClientId).columns,
@@ -60,16 +54,6 @@ export function Edit(props) {
 				siblingRows: select('core/block-editor').getBlocks(tableClientId),
 				hasInnerBlocks: select('core/block-editor').getBlocks(clientId).length > 0,
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -102,18 +86,11 @@ export function Edit(props) {
 		className: classes,
 	});
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/table-data', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
+		// Moved uniqueIdHelper outside of useEffect
 	}, []);
 
 	const addRow = (position) => {

@@ -16,11 +16,12 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
-import { getUniqueId } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
-function FieldHidden({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldHidden(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const { uniqueID, label, defaultValue, defaultParameter, inputName, kadenceDynamic } = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const { previewDevice } = useSelect(
@@ -32,14 +33,7 @@ function FieldHidden({ attributes, setAttributes, isSelected, clientId, context,
 		[clientId]
 	);
 
-	useEffect(() => {
-		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		const uniqueId = getUniqueFieldId(uniqueID, clientId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-		}
-	}, []);
+	uniqueIdHelper(props);
 	const classes = classNames({
 		'kb-adv-form-field': true,
 	});
