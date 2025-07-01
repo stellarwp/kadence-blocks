@@ -412,7 +412,7 @@ export function Edit(props) {
 
 								{mapFilter !== 'standard' && (
 									<RangeControl
-										label={__('Map Filter Strength ', 'kadence-blocks')}
+										label={__('Map Filter Strength', 'kadence-blocks')}
 										value={parseInt(mapFilterAmount)}
 										onChange={(value) => setAttributes({ mapFilterAmount: value })}
 										min={0}
@@ -745,7 +745,7 @@ export function Edit(props) {
 								width={'100%'}
 								height={'100%'}
 								src={'https://www.google.com/maps/embed/v1/place?' + qs}
-								title={__('Google Map of ', 'kadence-blocks') + location}
+								title={__('Google Map of', 'kadence-blocks') + location}
 							></iframe>
 						</div>
 					) : (

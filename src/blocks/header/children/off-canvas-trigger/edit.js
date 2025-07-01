@@ -288,8 +288,8 @@ export function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 25
 										: paddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								ghostDefault={['xxs', 'xxs', 'xxs', 'xxs']}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}

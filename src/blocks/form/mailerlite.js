@@ -244,7 +244,7 @@ class MailerLiteControls extends Component {
 															this.props.settings[0].group[0]
 																? this.props.settings[0].group[0].toString()
 																: '')
-												  )
+													)
 												: ''
 										}
 										onChange={(value) => {

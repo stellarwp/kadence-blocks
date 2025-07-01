@@ -206,9 +206,7 @@ function FieldFile({ attributes, setAttributes, isSelected, clientId, context, n
 									options={getSizeOptions()}
 									max={wpMaxUploadSizeMb}
 									help={
-										__('WordPress max upload size: ', 'kadence-blocks') +
-										' ' +
-										wpMaxUploadSizePretty
+										__('WordPress max upload size:', 'kadence-blocks') + ' ' + wpMaxUploadSizePretty
 									}
 								/>
 

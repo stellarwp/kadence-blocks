@@ -143,10 +143,14 @@ export function Edit(props) {
 
 	const findBlockByName = (blocks, name) => {
 		for (const block of blocks) {
-			if (block.name === name) return block;
+			if (block.name === name) {
+				return block;
+			}
 			if (block.innerBlocks?.length > 0) {
 				const foundBlock = findBlockByName(block.innerBlocks, name);
-				if (foundBlock) return foundBlock;
+				if (foundBlock) {
+					return foundBlock;
+				}
 			}
 		}
 		return null;
@@ -273,8 +277,12 @@ export function Edit(props) {
 		if (showSiteTitle || showSiteTagline) {
 			let titleBlock, taglineBlock;
 
-			if (showSiteTitle) titleBlock = addBlock('core/site-title', newTitleBlock);
-			if (showSiteTagline) taglineBlock = addBlock('core/site-tagline', newTaglineBlock);
+			if (showSiteTitle) {
+				titleBlock = addBlock('core/site-title', newTitleBlock);
+			}
+			if (showSiteTagline) {
+				taglineBlock = addBlock('core/site-tagline', newTaglineBlock);
+			}
 
 			const addBlocksInOrder = (...blocks) => blocks.forEach((block) => block && newInnerBlocks.push(block));
 

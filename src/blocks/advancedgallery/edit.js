@@ -2399,26 +2399,26 @@ export default function GalleryEdit(props) {
 					${
 						captionStyles && undefined !== captionStyles[0] && undefined !== captionStyles[0].background
 							? `.kb-gallery-id-${uniqueID}.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` +
-							  KadenceColorOutput(
+								KadenceColorOutput(
 									captionStyles[0].background ? captionStyles[0].background : '#000000',
 									'' !== captionStyles[0].backgroundOpacity ? captionStyles[0].backgroundOpacity : 0.5
-							  ) +
-							  ' 0, ' +
-							  KadenceColorOutput(
+								) +
+								' 0, ' +
+								KadenceColorOutput(
 									captionStyles[0].background ? captionStyles[0].background : '#000000',
 									0
-							  ) +
-							  ' 100% );}'
+								) +
+								' 100% );}'
 							: ''
 					}
 					${
 						captionStyles && undefined !== captionStyles[0] && undefined !== captionStyles[0].background
 							? `.kb-gallery-id-${uniqueID}.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${uniqueID}.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` +
-							  KadenceColorOutput(
+								KadenceColorOutput(
 									captionStyles[0].background ? captionStyles[0].background : '#000000',
 									'' !== captionStyles[0].backgroundOpacity ? captionStyles[0].backgroundOpacity : 0.5
-							  ) +
-							  ';}'
+								) +
+								';}'
 							: ''
 					}
 					${
@@ -2427,52 +2427,52 @@ export default function GalleryEdit(props) {
 						undefined !== captionStyles[0].color &&
 						'' !== captionStyles[0].color
 							? `.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` +
-							  KadenceColorOutput(captionStyles[0].color) +
-							  ';}'
+								KadenceColorOutput(captionStyles[0].color) +
+								';}'
 							: ''
 					}
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${
-				displayShadow && type !== 'mosaic'
-					? shadow[0].hOffset +
-					  'px ' +
-					  shadow[0].vOffset +
-					  'px ' +
-					  shadow[0].blur +
-					  'px ' +
-					  shadow[0].spread +
-					  'px ' +
-					  KadenceColorOutput(shadow[0].color, shadow[0].opacity)
-					: 'none'
-			}; }
+						displayShadow && type !== 'mosaic'
+							? shadow[0].hOffset +
+								'px ' +
+								shadow[0].vOffset +
+								'px ' +
+								shadow[0].blur +
+								'px ' +
+								shadow[0].spread +
+								'px ' +
+								KadenceColorOutput(shadow[0].color, shadow[0].opacity)
+							: 'none'
+					}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${
-				displayShadow && type !== 'mosaic'
-					? shadowHover[0].hOffset +
-					  'px ' +
-					  shadowHover[0].vOffset +
-					  'px ' +
-					  shadowHover[0].blur +
-					  'px ' +
-					  shadowHover[0].spread +
-					  'px ' +
-					  KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
-					: 'none'
-			}; }
+						displayShadow && type !== 'mosaic'
+							? shadowHover[0].hOffset +
+								'px ' +
+								shadowHover[0].vOffset +
+								'px ' +
+								shadowHover[0].blur +
+								'px ' +
+								shadowHover[0].spread +
+								'px ' +
+								KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
+							: 'none'
+					}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${
 							previewImageRadius
 								? 'border-radius:' +
-								  previewImageRadius[0] +
-								  imageRadiusUnit +
-								  ' ' +
-								  previewImageRadius[1] +
-								  imageRadiusUnit +
-								  ' ' +
-								  previewImageRadius[2] +
-								  imageRadiusUnit +
-								  ' ' +
-								  previewImageRadius[3] +
-								  imageRadiusUnit +
-								  ';'
+									previewImageRadius[0] +
+									imageRadiusUnit +
+									' ' +
+									previewImageRadius[1] +
+									imageRadiusUnit +
+									' ' +
+									previewImageRadius[2] +
+									imageRadiusUnit +
+									' ' +
+									previewImageRadius[3] +
+									imageRadiusUnit +
+									';'
 								: ''
 						}
 					}
@@ -2483,36 +2483,38 @@ export default function GalleryEdit(props) {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
 					}
 					.kb-gallery-id-${uniqueID} ${
-				'center' !== arrowPosition && 'outside-top' !== arrowPosition && 'outside-bottom' !== arrowPosition
-					? '.splide__arrows'
-					: '.splide__arrows .splide__arrow'
-			} {
+						'center' !== arrowPosition &&
+						'outside-top' !== arrowPosition &&
+						'outside-bottom' !== arrowPosition
+							? '.splide__arrows'
+							: '.splide__arrows .splide__arrow'
+					} {
 						${
 							previewArrowMarginTop
 								? 'margin-top:' +
-								  getSpacingOptionOutput(previewArrowMarginTop, previewArrowMarginUnit) +
-								  ';'
+									getSpacingOptionOutput(previewArrowMarginTop, previewArrowMarginUnit) +
+									';'
 								: ''
 						}
 						${
 							previewArrowMarginRight
 								? 'margin-right:' +
-								  getSpacingOptionOutput(previewArrowMarginRight, previewArrowMarginUnit) +
-								  ';'
+									getSpacingOptionOutput(previewArrowMarginRight, previewArrowMarginUnit) +
+									';'
 								: ''
 						}
 						${
 							previewArrowMarginBottom
 								? 'margin-bottom:' +
-								  getSpacingOptionOutput(previewArrowMarginBottom, previewArrowMarginUnit) +
-								  ';'
+									getSpacingOptionOutput(previewArrowMarginBottom, previewArrowMarginUnit) +
+									';'
 								: ''
 						}
 						${
 							previewArrowMarginLeft
 								? 'margin-left:' +
-								  getSpacingOptionOutput(previewArrowMarginLeft, previewArrowMarginUnit) +
-								  ';'
+									getSpacingOptionOutput(previewArrowMarginLeft, previewArrowMarginUnit) +
+									';'
 								: ''
 						}
 					}
@@ -2521,7 +2523,7 @@ export default function GalleryEdit(props) {
 							? `.kb-gallery-id-${uniqueID} .splide__arrow { font-size:${getFontSizeOptionOutput(
 									previewArrowSize,
 									previewArrowSizeUnit
-							  )}; }`
+								)}; }`
 							: ''
 					}
 					.block-editor-block-list__block[data-type="kadence/advancedgallery"] {

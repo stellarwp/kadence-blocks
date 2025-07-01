@@ -403,18 +403,18 @@ function RowLayoutEditContainer(props) {
 										undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
 											? overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${overlayGradLoc}%, ${
+						} ${overlayGradLoc}%, ${
 							overlaySecond
 								? KadenceColorOutput(
 										overlaySecond,
 										undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
 											? overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${overlayGradLocSecond}%)`
+						} ${overlayGradLocSecond}%)`
 					: `linear-gradient(${overlayGradAngle}deg, ${
 							overlay
 								? KadenceColorOutput(
@@ -422,18 +422,18 @@ function RowLayoutEditContainer(props) {
 										undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
 											? overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${overlayGradLoc}%, ${
+						} ${overlayGradLoc}%, ${
 							overlaySecond
 								? KadenceColorOutput(
 										overlaySecond,
 										undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
 											? overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${overlayGradLocSecond}%)`;
+						} ${overlayGradLocSecond}%)`;
 			setAttributes({ overlayGradient: newDeskGradient, currentOverlayTab: 'gradient' });
 		}
 		if (
@@ -463,9 +463,9 @@ function RowLayoutEditContainer(props) {
 											'' !== tabletOverlay[0].overlayFirstOpacity
 											? overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${tabletOverlay[0].overlayGradLoc}%, ${
+						} ${tabletOverlay[0].overlayGradLoc}%, ${
 							tabletOverlay[0].overlaySecond
 								? KadenceColorOutput(
 										tabletOverlay[0].overlaySecond,
@@ -473,9 +473,9 @@ function RowLayoutEditContainer(props) {
 											'' !== tabletOverlay[0].overlaySecondOpacity
 											? tabletOverlay[0].overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${tabletOverlay[0].overlayGradLocSecond}%)`
+						} ${tabletOverlay[0].overlayGradLocSecond}%)`
 					: `linear-gradient(${tabletOverlay[0].overlayGradAngle}deg, ${
 							tabletOverlay[0].overlay
 								? KadenceColorOutput(
@@ -483,9 +483,9 @@ function RowLayoutEditContainer(props) {
 										undefined !== overlayFirstOpacity && '' !== tabletOverlay[0].overlayFirstOpacity
 											? tabletOverlay[0].overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${tabletOverlay[0].overlayGradLoc}%, ${
+						} ${tabletOverlay[0].overlayGradLoc}%, ${
 							tabletOverlay[0].overlaySecond
 								? KadenceColorOutput(
 										tabletOverlay[0].overlaySecond,
@@ -493,9 +493,9 @@ function RowLayoutEditContainer(props) {
 											'' !== tabletOverlay[0].tabletOverlay[0].overlaySecondOpacity
 											? tabletOverlay[0].overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${tabletOverlay[0].overlayGradLocSecond}%)`;
+						} ${tabletOverlay[0].overlayGradLocSecond}%)`;
 			saveTabletOverlay({ gradient: newTabGradient, currentOverlayTab: 'gradient' });
 		}
 		if (
@@ -525,9 +525,9 @@ function RowLayoutEditContainer(props) {
 											'' !== mobileOverlay[0].overlayFirstOpacity
 											? overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${mobileOverlay[0].overlayGradLoc}%, ${
+						} ${mobileOverlay[0].overlayGradLoc}%, ${
 							mobileOverlay[0].overlaySecond
 								? KadenceColorOutput(
 										mobileOverlay[0].overlaySecond,
@@ -535,9 +535,9 @@ function RowLayoutEditContainer(props) {
 											'' !== mobileOverlay[0].overlaySecondOpacity
 											? mobileOverlay[0].overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${mobileOverlay[0].overlayGradLocSecond}%)`
+						} ${mobileOverlay[0].overlayGradLocSecond}%)`
 					: `linear-gradient(${mobileOverlay[0].overlayGradAngle}deg, ${
 							mobileOverlay[0].overlay
 								? KadenceColorOutput(
@@ -545,9 +545,9 @@ function RowLayoutEditContainer(props) {
 										undefined !== overlayFirstOpacity && '' !== mobileOverlay[0].overlayFirstOpacity
 											? mobileOverlay[0].overlayFirstOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${mobileOverlay[0].overlayGradLoc}%, ${
+						} ${mobileOverlay[0].overlayGradLoc}%, ${
 							mobileOverlay[0].overlaySecond
 								? KadenceColorOutput(
 										mobileOverlay[0].overlaySecond,
@@ -555,9 +555,9 @@ function RowLayoutEditContainer(props) {
 											'' !== mobileOverlay[0].mobileOverlay[0].overlaySecondOpacity
 											? mobileOverlay[0].overlaySecondOpacity
 											: 1
-								  )
+									)
 								: ''
-					  } ${mobileOverlay[0].overlayGradLocSecond}%)`;
+						} ${mobileOverlay[0].overlayGradLocSecond}%)`;
 			saveMobileOverlay({ gradient: newMobileGradient, currentOverlayTab: 'gradient' });
 		}
 		// Update from old border settings.
@@ -573,7 +573,7 @@ function RowLayoutEditContainer(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -609,7 +609,7 @@ function RowLayoutEditContainer(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateTabletBorderStyle = false;
@@ -650,7 +650,7 @@ function RowLayoutEditContainer(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateMobileBorderStyle = false;
@@ -862,7 +862,7 @@ function RowLayoutEditContainer(props) {
 		const widthString = attributeColumnWidthToUse || previewColLayout;
 
 		columnWidthNumbers.push(
-			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidthToUse : mappedWidth ?? 0
+			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidthToUse : (mappedWidth ?? 0)
 		);
 		widthStrings.push(`${widthString}`);
 	}
@@ -971,17 +971,17 @@ function RowLayoutEditContainer(props) {
 				minHeight:
 					previewMinHeight && paddingUnit && '%' !== paddingUnit
 						? 'calc(' +
-						  previewMinHeight +
-						  minHeightUnit +
-						  ' - (' +
-						  ('' !== previewPaddingTop
+							previewMinHeight +
+							minHeightUnit +
+							' - (' +
+							('' !== previewPaddingTop
 								? getSpacingOptionOutput(previewPaddingTop, paddingUnit ? paddingUnit : 'px')
 								: '0px') +
-						  ' + ' +
-						  ('' !== previewPaddingBottom
+							' + ' +
+							('' !== previewPaddingBottom
 								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit ? paddingUnit : 'px')
 								: '0px') +
-						  ')'
+							')'
 						: undefined,
 				paddingLeft:
 					'' !== previewPaddingLeft
@@ -1196,10 +1196,10 @@ function RowLayoutEditContainer(props) {
 												hasBG && padding[1] === '' && padding[3] !== ''
 													? 'padding-right-measure-range-control'
 													: hasBG && padding[1] !== '' && padding[3] === ''
-													? 'padding-left-measure-range-control'
-													: hasBG && padding[1] === '' && padding[3] === ''
-													? 'padding-right-measure-range-control padding-left-measure-range-control'
-													: ''
+														? 'padding-left-measure-range-control'
+														: hasBG && padding[1] === '' && padding[3] === ''
+															? 'padding-right-measure-range-control padding-left-measure-range-control'
+															: ''
 											}
 										>
 											<ResponsiveMeasureRangeControl
@@ -1212,8 +1212,8 @@ function RowLayoutEditContainer(props) {
 													padding[3] === ''
 														? [padding[0], '', padding[2], '']
 														: undefined !== padding && undefined !== padding[0]
-														? padding
-														: ['sm', '', 'sm', '']
+															? padding
+															: ['sm', '', 'sm', '']
 												}
 												tabletValue={tabletPadding}
 												mobileValue={
@@ -1521,7 +1521,7 @@ function RowLayoutEditContainer(props) {
 					{textColor
 						? `.kb-row-id-${uniqueID}, .kb-row-id-${uniqueID} p:not(.use-for-specificity), .kb-row-id-${uniqueID} h1:not(.use-for-specificity), .kb-row-id-${uniqueID} h2:not(.use-for-specificity), .kb-row-id-${uniqueID} h3:not(.use-for-specificity), .kb-row-id-${uniqueID} h4:not(.use-for-specificity), .kb-row-id-${uniqueID} h5:not(.use-for-specificity), .kb-row-id-${uniqueID} h6:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								textColor
-						  )}; }`
+							)}; }`
 						: ''}
 					{columns &&
 						columns === 2 &&
@@ -1534,28 +1534,28 @@ function RowLayoutEditContainer(props) {
 								{breakoutRight
 									? `@media (min-width: 1290px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
-											isSelected ? 3 : 2
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 3 : 2
+											}) > .kadence-inner-column-inner {
 												margin-inline-end: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important;
 										}}
 										@media (max-width: 1289px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
-											isSelected ? 3 : 2
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 3 : 2
+											}) > .kadence-inner-column-inner {
 												margin-inline-end: calc( ${paddingRightBreakout} * -1 ) !important;
 										}}`
 									: ''}
 								{breakoutLeft
 									? `@media (min-width: 1290px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
-											isSelected ? 2 : 1
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 2 : 1
+											}) > .kadence-inner-column-inner {
 												margin-inline-start: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important;
 										}}
 										@media (max-width: 1289px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
-											isSelected ? 2 : 1
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 2 : 1
+											}) > .kadence-inner-column-inner {
 												margin-inline-start: calc( ${paddingRightBreakout} * -1 ) !important;
 										}}`
 									: ''}
@@ -1580,12 +1580,12 @@ function RowLayoutEditContainer(props) {
 					{linkColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								linkColor
-						  )}; }`
+							)}; }`
 						: ''}
 					{linkHoverColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity):hover { color: ${KadenceColorOutput(
 								linkHoverColor
-						  )}; }`
+							)}; }`
 						: ''}
 					<>
 						{undefined !== columnGap

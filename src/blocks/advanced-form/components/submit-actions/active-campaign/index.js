@@ -247,8 +247,8 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 		undefined !== settings.listMulti && settings.listMulti
 			? settings.listMulti
 			: undefined !== settings.list && settings.list
-			? [settings.list]
-			: '';
+				? [settings.list]
+				: '';
 	return (
 		<KadencePanelBody
 			title={__('ActiveCampaign Settings', 'kadence-blocks')}

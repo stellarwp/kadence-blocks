@@ -266,18 +266,18 @@ export function migrateToInnerblocks(attributes) {
 						? KadenceColorOutput(
 								'#444444',
 								newAttrs.backgroundOpacity !== undefined ? newAttrs.backgroundOpacity : 1
-						  )
+							)
 						: KadenceColorOutput(
 								newAttrs.background,
 								newAttrs.backgroundOpacity !== undefined ? newAttrs.backgroundOpacity : 1
-						  );
+							);
 				const btnGrad2 =
 					undefined === newAttrs.gradient[0]
 						? KadenceColorOutput('#777777', newAttrs.gradient[1] !== undefined ? newAttrs.gradient[1] : 1)
 						: KadenceColorOutput(
 								newAttrs.gradient[0],
 								newAttrs.gradient[1] !== undefined ? newAttrs.gradient[1] : 1
-						  );
+							);
 				if (undefined !== newAttrs.gradient && 'radial' === newAttrs.gradient[4]) {
 					btnbg = `radial-gradient(at ${
 						undefined === newAttrs.gradient[6] ? 'center center' : newAttrs.gradient[6]
@@ -303,22 +303,22 @@ export function migrateToInnerblocks(attributes) {
 						? KadenceColorOutput(
 								'#444444',
 								newAttrs.backgroundHoverOpacity !== undefined ? newAttrs.backgroundHoverOpacity : 1
-						  )
+							)
 						: KadenceColorOutput(
 								newAttrs.backgroundHover,
 								newAttrs.backgroundHoverOpacity !== undefined ? newAttrs.backgroundHoverOpacity : 1
-						  );
+							);
 				if (undefined !== newAttrs.gradientHover) {
 					const btnGradHover2 =
 						undefined === newAttrs.gradientHover[0]
 							? KadenceColorOutput(
 									'#777777',
 									newAttrs.gradientHover[1] !== undefined ? newAttrs.gradientHover[1] : 1
-							  )
+								)
 							: KadenceColorOutput(
 									newAttrs.gradientHover[0],
 									newAttrs.gradientHover[1] !== undefined ? newAttrs.gradientHover[1] : 1
-							  );
+								);
 					if ('radial' === newAttrs.gradientHover[4]) {
 						btnbgHover = `radial-gradient(at ${
 							undefined === newAttrs.gradientHover[6] ? 'center center' : newAttrs.gradientHover[6]

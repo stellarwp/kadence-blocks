@@ -316,9 +316,9 @@ export function Edit(props) {
 									help={
 										'single' === layoutConfig
 											? __(
-													'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2-5, but your content remains saved and will reappear when you switch back to the Default view.',
+													'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2–5, but your content remains saved and will reappear when you switch back to the Default view.',
 													'kadence-blocks'
-											  )
+												)
 											: ''
 									}
 								/>
@@ -482,8 +482,8 @@ export function Edit(props) {
 										paddingUnit === 'em' || paddingUnit === 'rem'
 											? 25
 											: paddingUnit === 'px'
-											? 400
-											: 100
+												? 400
+												: 100
 									}
 									step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 									unit={paddingUnit}
@@ -504,8 +504,8 @@ export function Edit(props) {
 										marginUnit === 'em' || marginUnit === 'rem'
 											? 25
 											: marginUnit === 'px'
-											? 400
-											: 100
+												? 400
+												: 100
 									}
 									step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 									unit={marginUnit}

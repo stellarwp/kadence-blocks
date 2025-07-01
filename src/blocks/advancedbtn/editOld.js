@@ -471,7 +471,7 @@ function KadenceAdvancedButton(props) {
 					: KadenceColorOutput(
 							btns[index].background,
 							btns[index].backgroundOpacity !== undefined ? btns[index].backgroundOpacity : 1
-					  );
+						);
 			btnGrad2 =
 				undefined !== btns[index].gradient &&
 				undefined !== btns[index].gradient[0] &&
@@ -481,13 +481,13 @@ function KadenceAdvancedButton(props) {
 							undefined !== btns[index].gradient && btns[index].gradient[1] !== undefined
 								? btns[index].gradient[1]
 								: 1
-					  )
+						)
 					: KadenceColorOutput(
 							'#999999',
 							undefined !== btns[index].gradient && btns[index].gradient[1] !== undefined
 								? btns[index].gradient[1]
 								: 1
-					  );
+						);
 			if (undefined !== btns[index].gradient && 'radial' === btns[index].gradient[4]) {
 				btnbg = `radial-gradient(at ${
 					undefined === btns[index].gradient[6] ? 'center center' : btns[index].gradient[6]
@@ -516,7 +516,7 @@ function KadenceAdvancedButton(props) {
 					: KadenceColorOutput(
 							btns[index].background,
 							btns[index].backgroundOpacity !== undefined ? btns[index].backgroundOpacity : 1
-					  );
+						);
 		}
 		//const ariaLabel = sprintf( __( 'Button %1$d of %2$d', 'kadence-blocks' ), ( index + 1 ), btns.length );
 		const ariaLabel = __('Button', 'kadence-blocks') + ' ' + (index + 1) + ' ' + __('Settings', 'kadence-blocks');
@@ -752,7 +752,7 @@ function KadenceAdvancedButton(props) {
 									: KadenceColorOutput(
 											btns[index].border,
 											btns[index].borderOpacity !== undefined ? btns[index].borderOpacity : 1
-									  ),
+										),
 							paddingLeft:
 								undefined !== btns[index].paddingLR && 'custom' === btns[index].btnSize
 									? btns[index].paddingLR + 'px'
@@ -774,28 +774,28 @@ function KadenceAdvancedButton(props) {
 									? getSpacingOptionOutput(
 											topBtnMargin,
 											undefined !== btns[index].marginUnit ? btns[index].marginUnit : 'px'
-									  )
+										)
 									: undefined,
 							marginRight:
 								'' !== rightBtnMargin
 									? getSpacingOptionOutput(
 											rightBtnMargin,
 											undefined !== btns[index].marginUnit ? btns[index].marginUnit : 'px'
-									  )
+										)
 									: undefined,
 							marginBottom:
 								'' !== bottomBtnMargin
 									? getSpacingOptionOutput(
 											bottomBtnMargin,
 											undefined !== btns[index].marginUnit ? btns[index].marginUnit : 'px'
-									  )
+										)
 									: undefined,
 							marginLeft:
 								'' !== leftBtnMargin
 									? getSpacingOptionOutput(
 											leftBtnMargin,
 											undefined !== btns[index].marginUnit ? btns[index].marginUnit : 'px'
-									  )
+										)
 									: undefined,
 							width:
 								undefined !== widthType && 'fixed' === widthType && undefined !== previewFixedWidth
@@ -808,20 +808,20 @@ function KadenceAdvancedButton(props) {
 									? (undefined !== btns[index].boxShadow[7] && btns[index].boxShadow[7]
 											? 'inset '
 											: '') +
-									  (undefined !== btns[index].boxShadow[3] ? btns[index].boxShadow[3] : 1) +
-									  'px ' +
-									  (undefined !== btns[index].boxShadow[4] ? btns[index].boxShadow[4] : 1) +
-									  'px ' +
-									  (undefined !== btns[index].boxShadow[5] ? btns[index].boxShadow[5] : 2) +
-									  'px ' +
-									  (undefined !== btns[index].boxShadow[6] ? btns[index].boxShadow[6] : 0) +
-									  'px ' +
-									  KadenceColorOutput(
+										(undefined !== btns[index].boxShadow[3] ? btns[index].boxShadow[3] : 1) +
+										'px ' +
+										(undefined !== btns[index].boxShadow[4] ? btns[index].boxShadow[4] : 1) +
+										'px ' +
+										(undefined !== btns[index].boxShadow[5] ? btns[index].boxShadow[5] : 2) +
+										'px ' +
+										(undefined !== btns[index].boxShadow[6] ? btns[index].boxShadow[6] : 0) +
+										'px ' +
+										KadenceColorOutput(
 											undefined !== btns[index].boxShadow[1]
 												? btns[index].boxShadow[1]
 												: '#000000',
 											undefined !== btns[index].boxShadow[2] ? btns[index].boxShadow[2] : 1
-									  )
+										)
 									: undefined,
 						}}
 					>
@@ -1860,9 +1860,9 @@ function KadenceAdvancedButton(props) {
 										undefined !== btns[index].onlyIcon && undefined !== btns[index].onlyIcon[1]
 											? btns[index].onlyIcon[1]
 											: undefined !== btns[index].onlyIcon &&
-											  undefined !== btns[index].onlyIcon[0]
-											? btns[index].onlyIcon[0]
-											: false
+												  undefined !== btns[index].onlyIcon[0]
+												? btns[index].onlyIcon[0]
+												: false
 									}
 									onChange={(value) =>
 										saveArrayUpdate(
@@ -1893,9 +1893,9 @@ function KadenceAdvancedButton(props) {
 										'' !== btns[index].onlyIcon[1]
 											? btns[index].onlyIcon[1]
 											: undefined !== btns[index].onlyIcon &&
-											  undefined !== btns[index].onlyIcon[0]
-											? btns[index].onlyIcon[0]
-											: false
+												  undefined !== btns[index].onlyIcon[0]
+												? btns[index].onlyIcon[0]
+												: false
 									}
 									checked={
 										undefined !== btns[index].onlyIcon &&
@@ -1903,12 +1903,12 @@ function KadenceAdvancedButton(props) {
 										'' !== btns[index].onlyIcon[2]
 											? btns[index].onlyIcon[2]
 											: undefined !== btns[index].onlyIcon &&
-											  undefined !== btns[index].onlyIcon[1]
-											? btns[index].onlyIcon[1]
-											: undefined !== btns[index].onlyIcon &&
-											  undefined !== btns[index].onlyIcon[0]
-											? btns[index].onlyIcon[0]
-											: false
+												  undefined !== btns[index].onlyIcon[1]
+												? btns[index].onlyIcon[1]
+												: undefined !== btns[index].onlyIcon &&
+													  undefined !== btns[index].onlyIcon[0]
+													? btns[index].onlyIcon[0]
+													: false
 									}
 									onChange={(value) =>
 										saveArrayUpdate(
@@ -3515,21 +3515,21 @@ function KadenceAdvancedButton(props) {
 					? KadenceColorOutput(
 							'#444444',
 							btns[index].backgroundHoverOpacity !== undefined ? btns[index].backgroundHoverOpacity : 1
-					  )
+						)
 					: KadenceColorOutput(
 							btns[index].backgroundHover,
 							btns[index].backgroundHoverOpacity !== undefined ? btns[index].backgroundHoverOpacity : 1
-					  );
+						);
 			btnGrad2 =
 				undefined === btns[index].gradientHover[0]
 					? KadenceColorOutput(
 							'#777777',
 							btns[index].gradientHover[1] !== undefined ? btns[index].gradientHover[1] : 1
-					  )
+						)
 					: KadenceColorOutput(
 							btns[index].gradientHover[0],
 							btns[index].gradientHover[1] !== undefined ? btns[index].gradientHover[1] : 1
-					  );
+						);
 			if (undefined !== btns[index].gradientHover && 'radial' === btns[index].gradientHover[4]) {
 				btnbg = `radial-gradient(at ${
 					undefined === btns[index].gradientHover[6] ? 'center center' : btns[index].gradientHover[6]
@@ -3558,11 +3558,11 @@ function KadenceAdvancedButton(props) {
 					? KadenceColorOutput(
 							'#444444',
 							btns[index].backgroundHoverOpacity !== undefined ? btns[index].backgroundHoverOpacity : 1
-					  )
+						)
 					: KadenceColorOutput(
 							btns[index].backgroundHover,
 							btns[index].backgroundHoverOpacity !== undefined ? btns[index].backgroundHoverOpacity : 1
-					  );
+						);
 			btnbg = `linear-gradient(180deg, ${btnGrad} 0%, #777777 100%)`;
 		} else {
 			btnbg = KadenceColorOutput(
@@ -3581,18 +3581,18 @@ function KadenceAdvancedButton(props) {
 				undefined !== btns[index].boxShadowHover[0] &&
 				btns[index].boxShadowHover[0]
 					? (undefined !== btns[index].boxShadowHover[7] && btns[index].boxShadowHover[7] ? 'inset ' : '') +
-					  (undefined !== btns[index].boxShadowHover[3] ? btns[index].boxShadowHover[3] : 1) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[4] ? btns[index].boxShadowHover[4] : 1) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[5] ? btns[index].boxShadowHover[5] : 2) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[6] ? btns[index].boxShadowHover[6] : 0) +
-					  'px ' +
-					  KadenceColorOutput(
+						(undefined !== btns[index].boxShadowHover[3] ? btns[index].boxShadowHover[3] : 1) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[4] ? btns[index].boxShadowHover[4] : 1) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[5] ? btns[index].boxShadowHover[5] : 2) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[6] ? btns[index].boxShadowHover[6] : 0) +
+						'px ' +
+						KadenceColorOutput(
 							undefined !== btns[index].boxShadowHover[1] ? btns[index].boxShadowHover[1] : '#000000',
 							undefined !== btns[index].boxShadowHover[2] ? btns[index].boxShadowHover[2] : 1
-					  )
+						)
 					: undefined
 			}`;
 			btnBox2 = 'none';
@@ -3609,18 +3609,18 @@ function KadenceAdvancedButton(props) {
 				undefined !== btns[index].boxShadowHover[0] &&
 				btns[index].boxShadowHover[0]
 					? (undefined !== btns[index].boxShadowHover[7] && btns[index].boxShadowHover[7] ? 'inset ' : '') +
-					  (undefined !== btns[index].boxShadowHover[3] ? btns[index].boxShadowHover[3] : 1) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[4] ? btns[index].boxShadowHover[4] : 1) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[5] ? btns[index].boxShadowHover[5] : 2) +
-					  'px ' +
-					  (undefined !== btns[index].boxShadowHover[6] ? btns[index].boxShadowHover[6] : 0) +
-					  'px ' +
-					  KadenceColorOutput(
+						(undefined !== btns[index].boxShadowHover[3] ? btns[index].boxShadowHover[3] : 1) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[4] ? btns[index].boxShadowHover[4] : 1) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[5] ? btns[index].boxShadowHover[5] : 2) +
+						'px ' +
+						(undefined !== btns[index].boxShadowHover[6] ? btns[index].boxShadowHover[6] : 0) +
+						'px ' +
+						KadenceColorOutput(
 							undefined !== btns[index].boxShadowHover[1] ? btns[index].boxShadowHover[1] : '#000000',
 							undefined !== btns[index].boxShadowHover[2] ? btns[index].boxShadowHover[2] : 1
-					  )
+						)
 					: undefined
 			}`;
 			btnRad = undefined !== btns[index].borderRadius ? btns[index].borderRadius : '3';
@@ -3632,11 +3632,11 @@ function KadenceAdvancedButton(props) {
 						btns[index].borderHover ||
 						(btns[index].borderHoverOpacity && 1 !== btns[index].borderHoverOpacity)
 							? 'border-color:' +
-							  KadenceColorOutput(
+								KadenceColorOutput(
 									undefined === btns[index].borderHover ? '#444444' : btns[index].borderHover,
 									btns[index].borderHoverOpacity !== undefined ? btns[index].borderHoverOpacity : 1
-							  ) +
-							  '!important;'
+								) +
+								'!important;'
 							: ''
 					}
 					${btnBox ? 'box-shadow:' + btnBox + '!important;' : ''}
@@ -3645,7 +3645,7 @@ function KadenceAdvancedButton(props) {
 					btns[index].iconColorHover
 						? `#kt-btns_${uniqueID} .kt-button-${index}:hover .kt-btn-svg-icon { color:${KadenceColorOutput(
 								btns[index].iconColorHover
-						  )} !important;}`
+							)} !important;}`
 						: ''
 				}
 				#kt-btns_${uniqueID} .kt-button-${index}::before {
@@ -3739,7 +3739,7 @@ function KadenceAdvancedButton(props) {
 																			'linear',
 																			180,
 																			'center center',
-																	  ],
+																		],
 																gradientHover: newbtns[0].gradientHover
 																	? newbtns[0].gradientHover
 																	: [
@@ -3750,7 +3750,7 @@ function KadenceAdvancedButton(props) {
 																			'linear',
 																			180,
 																			'center center',
-																	  ],
+																		],
 																btnStyle: newbtns[0].btnStyle
 																	? newbtns[0].btnStyle
 																	: 'basic',

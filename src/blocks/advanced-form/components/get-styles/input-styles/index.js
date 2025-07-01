@@ -194,18 +194,18 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 	styles.boxShadow =
 		undefined !== fieldStyle?.boxShadow && undefined !== fieldStyle?.boxShadow[0] && fieldStyle?.boxShadow[0]
 			? (undefined !== fieldStyle?.boxShadow[7] && fieldStyle?.boxShadow[7] ? 'inset ' : '') +
-			  (undefined !== fieldStyle?.boxShadow[3] ? fieldStyle?.boxShadow[3] : 1) +
-			  'px ' +
-			  (undefined !== fieldStyle?.boxShadow[4] ? fieldStyle?.boxShadow[4] : 1) +
-			  'px ' +
-			  (undefined !== fieldStyle?.boxShadow[5] ? fieldStyle?.boxShadow[5] : 2) +
-			  'px ' +
-			  (undefined !== fieldStyle?.boxShadow[6] ? fieldStyle?.boxShadow[6] : 0) +
-			  'px ' +
-			  KadenceColorOutput(
+				(undefined !== fieldStyle?.boxShadow[3] ? fieldStyle?.boxShadow[3] : 1) +
+				'px ' +
+				(undefined !== fieldStyle?.boxShadow[4] ? fieldStyle?.boxShadow[4] : 1) +
+				'px ' +
+				(undefined !== fieldStyle?.boxShadow[5] ? fieldStyle?.boxShadow[5] : 2) +
+				'px ' +
+				(undefined !== fieldStyle?.boxShadow[6] ? fieldStyle?.boxShadow[6] : 0) +
+				'px ' +
+				KadenceColorOutput(
 					undefined !== fieldStyle?.boxShadow[1] ? fieldStyle?.boxShadow[1] : '#000000',
 					undefined !== fieldStyle?.boxShadow[2] ? fieldStyle?.boxShadow[2] : 1
-			  )
+				)
 			: undefined;
 
 	if (
@@ -222,7 +222,7 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 				: KadenceColorOutput(
 						fieldStyle?.background,
 						fieldStyle?.backgroundOpacity !== undefined ? fieldStyle?.backgroundOpacity : 1
-				  );
+					);
 	}
 
 	if (
@@ -239,7 +239,7 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 				: KadenceColorOutput(
 						fieldStyle?.backgroundActive,
 						fieldStyle?.backgroundActiveOpacity !== undefined ? fieldStyle?.backgroundActiveOpacity : 1
-				  );
+					);
 	}
 
 	return styles;
