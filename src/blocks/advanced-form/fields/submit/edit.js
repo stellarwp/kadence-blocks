@@ -14,7 +14,7 @@ import {
 	getBorderStyle,
 	setBlockDefaults,
 	getBorderColor,
-	uniqueIdHelper,
+	getUniqueId,
 } from '@kadence/helpers';
 import { getUniqueFieldId } from '../../components';
 

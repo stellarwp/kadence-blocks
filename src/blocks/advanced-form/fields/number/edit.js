@@ -24,7 +24,7 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
-import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
+import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 

@@ -25,7 +25,7 @@ import {
 } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
 import { without } from 'lodash';
-import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
+import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
