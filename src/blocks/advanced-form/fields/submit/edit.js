@@ -16,6 +16,7 @@ import {
 	getBorderColor,
 	uniqueIdHelper,
 } from '@kadence/helpers';
+import { getUniqueFieldId } from '../../components';
 
 import {
 	PopColorControl,
@@ -144,7 +145,14 @@ export default function KadenceButtonEdit({
 		[clientId]
 	);
 
-	uniqueIdHelper({ attributes, setAttributes, isSelected, clientId, context, className, name });
+	useEffect(() => {
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		const uniqueId = getUniqueFieldId(uniqueID, clientId);
+		if (uniqueId !== uniqueID) {
+			attributes.uniqueID = uniqueId;
+			setAttributes({ uniqueID: uniqueId });
+		}
+	}, []);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect(() => {
