@@ -66,9 +66,9 @@ function PaneEdit(props) {
 	const updatePaneCount = (value) => {
 		updateBlockAttributes(rootID, { paneCount: value });
 	};
-	
+
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		// Moved uniqueIdHelper outside of useEffect
 		if (!id) {

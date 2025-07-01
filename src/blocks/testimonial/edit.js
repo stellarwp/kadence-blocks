@@ -45,13 +45,7 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 
-import {
-	getPreviewSize,
-	KadenceColorOutput,
-	showSettings,
-	setBlockDefaults,
-	uniqueIdHelper,
-} from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, showSettings, setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
 
 /**
  * Internal block libraries

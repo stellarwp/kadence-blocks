@@ -134,18 +134,17 @@ export function Edit(props) {
 	const { setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
 	const { selectBlock } = useDispatch(blockEditorStore);
 
-	const { previewDevice, parentClientId, showOffCanvas, childSelected } =
-		useSelect(
-			(select) => {
-				return {
-					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-					showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
-					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
-					parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
-				};
-			},
-			[clientId]
-		);
+	const { previewDevice, parentClientId, showOffCanvas, childSelected } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+				parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
+			};
+		},
+		[clientId]
+	);
 
 	uniqueIdHelper(props);
 

@@ -220,7 +220,6 @@ function KadenceTabs(props) {
 	const [showPreset, setShowPreset] = useState(false);
 	const [activeTab, setActiveTab] = useState('general');
 
-
 	useEffect(() => {
 		if (!uniqueID) {
 			const blockConfigObject = kadence_blocks_params.configuration
@@ -253,7 +252,7 @@ function KadenceTabs(props) {
 			});
 		}
 	}, []);
-	
+
 	uniqueIdHelper(props);
 
 	const previewInnerPaddingTop = getPreviewSize(

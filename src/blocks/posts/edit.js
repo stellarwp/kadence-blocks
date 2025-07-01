@@ -162,9 +162,9 @@ function KadencePosts(props) {
 		}
 	};
 	const debouncedGetTaxonomyTerms = debounce(getTaxonomyTerms, 200);
-	
+
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		getPosts();
 

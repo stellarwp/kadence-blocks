@@ -174,7 +174,7 @@ function KadenceForm(props) {
 	);
 
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/form', attributes);
 	}, []);

@@ -168,9 +168,9 @@ function KadenceListItem(props) {
 		},
 		[clientId]
 	);
-	
+
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/listitem', attributes);
 	}, []);
