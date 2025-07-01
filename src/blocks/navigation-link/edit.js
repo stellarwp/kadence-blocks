@@ -363,20 +363,19 @@ export default function Edit(props) {
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
-	const { previewDevice, parentBlockId, currentIndex, childSelected } =
-		useSelect(
-			(select) => {
-				const parentBlocks = select('core/block-editor').getBlockParents(clientId);
+	const { previewDevice, parentBlockId, currentIndex, childSelected } = useSelect(
+		(select) => {
+			const parentBlocks = select('core/block-editor').getBlockParents(clientId);
 
-				return {
-					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-					currentIndex: select('core/block-editor').getBlockIndex(clientId),
-					parentBlockId: last(parentBlocks),
-					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
-				};
-			},
-			[clientId]
-		);
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				currentIndex: select('core/block-editor').getBlockIndex(clientId),
+				parentBlockId: last(parentBlocks),
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+			};
+		},
+		[clientId]
+	);
 
 	const previewMediaIconSize = getPreviewSize(
 		previewDevice,

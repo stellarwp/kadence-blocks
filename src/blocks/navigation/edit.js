@@ -124,7 +124,7 @@ export function Edit(props) {
 	);
 
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		if (currentPostType === 'kadence_navigation') {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.

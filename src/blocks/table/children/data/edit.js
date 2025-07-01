@@ -31,33 +31,26 @@ export function Edit(props) {
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
 	const { insertBlock, updateBlockAttributes } = useDispatch('core/block-editor');
 
-	const {
-		index,
-		parentTableClientId,
-		parentColumns,
-		columnPosition,
-		siblingRows,
-		hasInnerBlocks,
-		previewDevice,
-	} = useSelect(
-		(select) => {
-			const blockParents = select('core/block-editor').getBlockParents(clientId);
-			const tableClientId = blockParents[0];
-			const rowId = blockParents[1];
-			const rowBlocks = select('core/block-editor').getBlockOrder(rowId);
-			return {
-				index: select('core/block-editor').getBlockIndex(clientId),
-				parentTableClientId: tableClientId,
-				parentColumns: select('core/block-editor').getBlockAttributes(tableClientId).columns,
-				currentRowClientId: rowId,
-				columnPosition: rowBlocks.indexOf(clientId),
-				siblingRows: select('core/block-editor').getBlocks(tableClientId),
-				hasInnerBlocks: select('core/block-editor').getBlocks(clientId).length > 0,
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-			};
-		},
-		[clientId]
-	);
+	const { index, parentTableClientId, parentColumns, columnPosition, siblingRows, hasInnerBlocks, previewDevice } =
+		useSelect(
+			(select) => {
+				const blockParents = select('core/block-editor').getBlockParents(clientId);
+				const tableClientId = blockParents[0];
+				const rowId = blockParents[1];
+				const rowBlocks = select('core/block-editor').getBlockOrder(rowId);
+				return {
+					index: select('core/block-editor').getBlockIndex(clientId),
+					parentTableClientId: tableClientId,
+					parentColumns: select('core/block-editor').getBlockAttributes(tableClientId).columns,
+					currentRowClientId: rowId,
+					columnPosition: rowBlocks.indexOf(clientId),
+					siblingRows: select('core/block-editor').getBlocks(tableClientId),
+					hasInnerBlocks: select('core/block-editor').getBlocks(clientId).length > 0,
+					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				};
+			},
+			[clientId]
+		);
 
 	useEffect(() => {
 		if (columnPosition !== column) {

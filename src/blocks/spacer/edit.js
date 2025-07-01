@@ -6,13 +6,7 @@
 
 import SvgPattern from './svg-pattern';
 import classnames from 'classnames';
-import {
-	KadenceColorOutput,
-	showSettings,
-	getPreviewSize,
-	setBlockDefaults,
-	uniqueIdHelper,
-} from '@kadence/helpers';
+import { KadenceColorOutput, showSettings, getPreviewSize, setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
 import {
 	PopColorControl,
 	ResponsiveRangeControls,

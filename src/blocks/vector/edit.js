@@ -74,7 +74,6 @@ export function Edit(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-
 	const [activeTab, setActiveTab] = useState('general');
 	const [isOpen, setOpen] = useState(false);
 	const [vectorError, setVectorError] = useState(false);
@@ -94,7 +93,7 @@ export function Edit(props) {
 	});
 
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/vector', attributes);
 	}, []);

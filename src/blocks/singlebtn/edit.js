@@ -258,9 +258,9 @@ export default function KadenceButtonEdit(props) {
 	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
-	
+
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/singlebtn', attributes);
 

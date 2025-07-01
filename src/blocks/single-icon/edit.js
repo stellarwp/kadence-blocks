@@ -96,7 +96,7 @@ function KadenceSingleIcon(props) {
 	);
 
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/single-icon', attributes);
 

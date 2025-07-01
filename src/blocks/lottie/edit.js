@@ -172,7 +172,7 @@ export function Edit(props) {
 	});
 
 	uniqueIdHelper(props);
-	
+
 	useEffect(() => {
 		setBlockDefaults('kadence/lottie', attributes);
 	}, []);
