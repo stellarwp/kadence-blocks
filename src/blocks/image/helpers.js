@@ -94,7 +94,9 @@ export const createUpgradedEmbedBlock = (props, attributesFromPreview = {}) => {
 	const { preview, attributes = {} } = props;
 	const { url, providerNameSlug, type, ...restAttributes } = attributes;
 
-	if (!url || !getBlockType(DEFAULT_EMBED_BLOCK)) return;
+	if (!url || !getBlockType(DEFAULT_EMBED_BLOCK)) {
+		return;
+	}
 
 	const matchedBlock = findMoreSuitableBlock(url);
 

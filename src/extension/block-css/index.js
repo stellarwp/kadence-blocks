@@ -56,7 +56,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 								props.name.replace('kadence/', '') +
 									select('core/block-editor').getSelectedBlockClientId(),
 								'general'
-						  )
+							)
 						: 'advanced';
 			}
 			return {

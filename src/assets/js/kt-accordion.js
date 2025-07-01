@@ -2,8 +2,8 @@
 	typeof exports === 'object' && typeof module !== 'undefined'
 		? (module.exports = factory())
 		: typeof define === 'function' && define.amd
-		? define(factory)
-		: (global.KadenceAccordion = factory());
+			? define(factory)
+			: (global.KadenceAccordion = factory());
 })(this, function () {
 	'use strict';
 
@@ -18,14 +18,20 @@
 			const descriptor = props[i];
 			descriptor.enumerable = descriptor.enumerable || false;
 			descriptor.configurable = true;
-			if ('value' in descriptor) descriptor.writable = true;
+			if ('value' in descriptor) {
+				descriptor.writable = true;
+			}
 			Object.defineProperty(target, descriptor.key, descriptor);
 		}
 	}
 
 	function _createClass(Constructor, protoProps, staticProps) {
-		if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-		if (staticProps) _defineProperties(Constructor, staticProps);
+		if (protoProps) {
+			_defineProperties(Constructor.prototype, protoProps);
+		}
+		if (staticProps) {
+			_defineProperties(Constructor, staticProps);
+		}
 		return Constructor;
 	}
 
@@ -55,15 +61,18 @@
 
 	function _arrayWithoutHoles(arr) {
 		if (Array.isArray(arr)) {
-			for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+			for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+				arr2[i] = arr[i];
+			}
 
 			return arr2;
 		}
 	}
 
 	function _iterableToArray(iter) {
-		if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]')
+		if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]') {
 			return Array.from(iter);
+		}
 	}
 
 	function _nonIterableSpread() {
@@ -169,12 +178,24 @@
 		const s = el.style;
 		let prefixAnimation = '',
 			prefixTransition = '';
-		if (s.WebkitAnimation == '') prefixAnimation = '-webkit-';
-		if (s.MozAnimation == '') prefixAnimation = '-moz-';
-		if (s.OAnimation == '') prefixAnimation = '-o-';
-		if (s.WebkitTransition == '') prefixTransition = '-webkit-';
-		if (s.MozTransition == '') prefixTransition = '-moz-';
-		if (s.OTransition == '') prefixTransition = '-o-';
+		if (s.WebkitAnimation == '') {
+			prefixAnimation = '-webkit-';
+		}
+		if (s.MozAnimation == '') {
+			prefixAnimation = '-moz-';
+		}
+		if (s.OAnimation == '') {
+			prefixAnimation = '-o-';
+		}
+		if (s.WebkitTransition == '') {
+			prefixTransition = '-webkit-';
+		}
+		if (s.MozTransition == '') {
+			prefixTransition = '-moz-';
+		}
+		if (s.OTransition == '') {
+			prefixTransition = '-o-';
+		}
 		Object.defineProperty(Object.prototype, 'onCSSAnimationEnd', {
 			value: function value(callback) {
 				const runOnce = function runOnce(e) {
@@ -190,8 +211,9 @@
 				if (
 					(prefixAnimation == '' && !('animation' in s)) ||
 					getComputedStyle(this)[prefixAnimation + 'animation-duration'] == '0s'
-				)
+				) {
 					callback();
+				}
 				return this;
 			},
 			enumerable: false,
@@ -212,8 +234,9 @@
 				if (
 					(prefixTransition == '' && !('transition' in s)) ||
 					getComputedStyle(this)[prefixTransition + 'transition-duration'] == '0s'
-				)
+				) {
 					callback();
+				}
 				return this;
 			},
 			enumerable: false,

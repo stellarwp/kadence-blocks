@@ -46,8 +46,8 @@
 				currentDate.getMonth() === 11
 					? 0
 					: futureDayOfMonth >= dayOfMonth
-					? currentDate.getMonth() + 1
-					: currentDate.getMonth();
+						? currentDate.getMonth() + 1
+						: currentDate.getMonth();
 			const futureYear =
 				currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
@@ -241,8 +241,8 @@
 			const stopRepeating = !window.kadenceCountdown.timers[id].stopCount
 				? true
 				: new Date(window.kadenceCountdown.timers[id].endDate) <= new Date()
-				? false
-				: true;
+					? false
+					: true;
 
 			if (window.kadenceCountdown.timers[id].repeat && total <= 0 && stopRepeating) {
 				const futureTimeStamp = window.kadenceCountdown.getRepeaterTimeStamp(id);

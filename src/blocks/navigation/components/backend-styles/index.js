@@ -796,8 +796,8 @@ export default function BackendStyles(props) {
 			previewLinkHorizontalAlignment == 'right'
 				? 'end'
 				: previewLinkHorizontalAlignment == 'center'
-				? 'center'
-				: 'start';
+					? 'center'
+					: 'start';
 		css.add_property('--kb-nav-top-link-flex-justify', previewLinkFlexAlign);
 		css.add_property('--kb-nav-top-link-media-container-align-self', previewLinkFlexAlign);
 	}
@@ -809,8 +809,8 @@ export default function BackendStyles(props) {
 			previewDropdownLinkHorizontalAlignment == 'right'
 				? 'end'
 				: previewDropdownLinkHorizontalAlignment == 'center'
-				? 'center'
-				: 'start';
+					? 'center'
+					: 'start';
 		css.add_property('--kb-nav-dropdown-link-flex-justify', previewDropdownLinkFlexAlign);
 		css.add_property('--kb-nav-dropdown-link-media-container-align-self', previewDropdownLinkFlexAlign);
 	}

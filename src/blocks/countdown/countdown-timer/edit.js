@@ -261,8 +261,8 @@ function KadenceCoundownTimer(props) {
 		const stopRepeating = !parentBlock[0].attributes.stopRepeating
 			? true
 			: new Date(parentBlock[0].attributes.endDate) <= new Date(currentDate)
-			? false
-			: true;
+				? false
+				: true;
 		if (
 			currentDate >= initialDate &&
 			parentBlock[0].attributes.repeat &&
@@ -282,8 +282,8 @@ function KadenceCoundownTimer(props) {
 				currentDate.getMonth() === 11
 					? 0
 					: futureDayOfMonth >= dayOfMonth
-					? currentDate.getMonth() + 1
-					: currentDate.getMonth();
+						? currentDate.getMonth() + 1
+						: currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 

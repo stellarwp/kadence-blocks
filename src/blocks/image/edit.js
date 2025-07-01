@@ -202,7 +202,7 @@ export function ImageEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -242,7 +242,7 @@ export function ImageEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (
@@ -270,7 +270,7 @@ export function ImageEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (

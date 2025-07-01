@@ -118,7 +118,7 @@ function PaneEdit(props) {
 			undefined !== accordionBlock?.[0]?.attributes?.openPane &&
 			accordionBlock[0].attributes.openPane + 1 === id;
 		const isNewPane = !uniqueID;
-		setActivePane(activePane ?? isNewPane ? true : isOpenPane);
+		setActivePane((activePane ?? isNewPane) ? true : isOpenPane);
 	}, []);
 	const blockClasses = classnames({
 		'kt-accordion-pane': true,

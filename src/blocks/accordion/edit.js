@@ -286,7 +286,7 @@ function KadenceAccordionComponent(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateContentBorderStyle = false;
@@ -327,7 +327,7 @@ function KadenceAccordionComponent(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		// Update from old border settings.
@@ -343,7 +343,7 @@ function KadenceAccordionComponent(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		// Update from old border settings.
@@ -359,7 +359,7 @@ function KadenceAccordionComponent(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateTitleStyle = false;
@@ -1303,7 +1303,7 @@ function KadenceAccordionComponent(props) {
 							? `padding-right:${getSpacingOptionOutput(
 									previewTitlePaddingRight,
 									previewTitlePaddingType
-							  )};`
+								)};`
 							: ''
 					}
 					${
@@ -1311,7 +1311,7 @@ function KadenceAccordionComponent(props) {
 							? `padding-bottom:${getSpacingOptionOutput(
 									previewTitlePaddingBottom,
 									previewTitlePaddingType
-							  )};`
+								)};`
 							: ''
 					}
 					${
@@ -1319,7 +1319,7 @@ function KadenceAccordionComponent(props) {
 							? `padding-left:${getSpacingOptionOutput(
 									previewTitlePaddingLeft,
 									previewTitlePaddingType
-							  )};`
+								)};`
 							: ''
 					}
 					${previewTitleSize ? 'font-size:' + getFontSizeOptionOutput(previewTitleSize, titleStyles[0].sizeType) : ''};
@@ -1352,7 +1352,7 @@ function KadenceAccordionComponent(props) {
 							? `padding-bottom:${getSpacingOptionOutput(
 									previewContentPaddingBottom,
 									previewPaddingType
-							  )};`
+								)};`
 							: ''
 					}
 					${

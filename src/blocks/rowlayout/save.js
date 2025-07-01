@@ -282,7 +282,7 @@ function RowLayoutSave({ attributes }) {
 	const thirdColumnClass =
 		secondColumnWidth && firstColumnWidth && 3 === columns
 			? ' kt-custom-third-width-' +
-			  Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
+				Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
 			: '';
 	const layoutClass = !colLayout ? 'equal' : colLayout;
 	const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
@@ -423,7 +423,7 @@ function RowLayoutSave({ attributes }) {
 							loop: true,
 							mute: true,
 						},
-				  ];
+					];
 		return (
 			<>
 				<video

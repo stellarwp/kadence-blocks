@@ -53,7 +53,9 @@
 		const merged = {};
 		Array.prototype.forEach.call(arguments, function (obj) {
 			for (const key in obj) {
-				if (!obj.hasOwnProperty(key)) return;
+				if (!obj.hasOwnProperty(key)) {
+					return;
+				}
 				merged[key] = obj[key];
 			}
 		});
@@ -68,7 +70,9 @@
 	 */
 	const emitEvent = function (type, elem, detail) {
 		// Make sure events are enabled
-		if (!detail.settings.events) return;
+		if (!detail.settings.events) {
+			return;
+		}
 
 		// Create a new event
 		const event = new CustomEvent(type, {
@@ -106,7 +110,9 @@
 			contents.sort(function (item1, item2) {
 				const offset1 = getOffsetTop(item1.content);
 				const offset2 = getOffsetTop(item2.content);
-				if (offset1 < offset2) return -1;
+				if (offset1 < offset2) {
+					return -1;
+				}
 				return 1;
 			});
 		}
@@ -164,7 +170,9 @@
 	 * @return {Boolean} If true, page is at the bottom of the viewport
 	 */
 	const isAtBottom = function () {
-		if (window.innerHeight + window.pageYOffset >= getDocumentHeight()) return true;
+		if (window.innerHeight + window.pageYOffset >= getDocumentHeight()) {
+			return true;
+		}
 		return false;
 	};
 
@@ -175,7 +183,9 @@
 	 * @return {Boolean}         If true, use the last item
 	 */
 	const useLastItem = function (item, settings) {
-		if (isAtBottom() && isInView(item.content, settings, true)) return true;
+		if (isAtBottom() && isInView(item.content, settings, true)) {
+			return true;
+		}
 		return false;
 	};
 
@@ -187,9 +197,13 @@
 	 */
 	const getActive = function (contents, settings) {
 		const last = contents[contents.length - 1];
-		if (useLastItem(last, settings)) return last;
+		if (useLastItem(last, settings)) {
+			return last;
+		}
 		for (let i = contents.length - 1; i >= 0; i--) {
-			if (isInView(contents[i].content, settings)) return contents[i];
+			if (isInView(contents[i].content, settings)) {
+				return contents[i];
+			}
 		}
 	};
 
@@ -200,11 +214,15 @@
 	 */
 	var deactivateNested = function (nav, settings) {
 		// If nesting isn't activated, bail
-		if (!settings.nested || !nav.parentNode) return;
+		if (!settings.nested || !nav.parentNode) {
+			return;
+		}
 
 		// Get the parent navigation
 		const li = nav.parentNode.closest('li');
-		if (!li) return;
+		if (!li) {
+			return;
+		}
 
 		// Remove the active class
 		li.classList.remove(settings.nestedClass);
@@ -220,11 +238,15 @@
 	 */
 	const deactivate = function (items, settings) {
 		// Make sure there are items to deactivate
-		if (!items) return;
+		if (!items) {
+			return;
+		}
 
 		// Get the parent list item
 		const li = items.nav.closest('li');
-		if (!li) return;
+		if (!li) {
+			return;
+		}
 
 		// Remove the active class from the nav and content
 		li.classList.remove(settings.navClass);
@@ -248,11 +270,15 @@
 	 */
 	var activateNested = function (nav, settings) {
 		// If nesting isn't activated, bail
-		if (!settings.nested) return;
+		if (!settings.nested) {
+			return;
+		}
 
 		// Get the parent navigation
 		const li = nav.parentNode.closest('li');
-		if (!li) return;
+		if (!li) {
+			return;
+		}
 
 		// Add the active class
 		li.classList.add(settings.nestedClass);
@@ -268,11 +294,15 @@
 	 */
 	const activate = function (items, settings) {
 		// Make sure there are items to activate
-		if (!items) return;
+		if (!items) {
+			return;
+		}
 
 		// Get the parent list item
 		const li = items.nav.closest('li');
-		if (!li) return;
+		if (!li) {
+			return;
+		}
 
 		// Add the active class to the nav and content
 		li.classList.add(settings.navClass);
@@ -320,7 +350,9 @@
 			Array.prototype.forEach.call(navItems, function (item) {
 				// Get the content for the nav item
 				const content = document.getElementById(decodeURIComponent(item.hash.substr(1)));
-				if (!content) return;
+				if (!content) {
+					return;
+				}
 
 				// Push to the contents array
 				contents.push({
@@ -350,7 +382,9 @@
 			}
 
 			// If the active content is the one currently active, do nothing
-			if (current && active.content === current.content) return;
+			if (current && active.content === current.content) {
+				return;
+			}
 
 			// Deactivate the current content and activate the new content
 			deactivate(current, settings);

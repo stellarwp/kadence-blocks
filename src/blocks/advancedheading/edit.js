@@ -412,7 +412,7 @@ function KadenceAdvancedHeading(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -1012,7 +1012,7 @@ function KadenceAdvancedHeading(props) {
 								? getFontSizeOptionOutput(
 										previewIconSize,
 										undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-								  )
+									)
 								: undefined,
 							color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
 							paddingTop: previewIconPaddingTop
@@ -1114,15 +1114,15 @@ function KadenceAdvancedHeading(props) {
 									isRGBA(previewColorTextShadow)
 										? previewColorTextShadow // If rgba, use the color as is
 										: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
-							  }`
+								}`
 							: undefined,
 
 						writingMode:
 							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
 								? 'vertical-lr'
 								: previewTextOrientation === 'sideways-up'
-								? 'sideways-lr'
-								: '',
+									? 'sideways-lr'
+									: '',
 						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
 						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
@@ -1274,40 +1274,40 @@ function KadenceAdvancedHeading(props) {
 						${
 							'' !== previewMarkBorderRadiusTop
 								? 'border-top-left-radius:' +
-								  previewMarkBorderRadiusTop +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusTop +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusRight
 								? 'border-top-right-radius:' +
-								  previewMarkBorderRadiusRight +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusRight +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusBottom
 								? 'border-bottom-right-radius:' +
-								  previewMarkBorderRadiusBottom +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusBottom +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusLeft
 								? 'border-bottom-left-radius:' +
-								  previewMarkBorderRadiusLeft +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusLeft +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
 							previewMaxWidth + (maxWidthType ? maxWidthType : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewMaxWidth && previewAlign === 'center'
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }`

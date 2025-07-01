@@ -907,7 +907,7 @@ function KadenceTabs(props) {
 							margin: [0, 0, 0, 0],
 							marginControl: 'linked',
 						},
-				  ];
+					];
 		return (
 			<Fragment>
 				<li
@@ -927,8 +927,8 @@ function KadenceTabs(props) {
 							(isLast && 'vtabs' !== layout) || ('tabs' === layout && widthType === 'percent')
 								? '0px'
 								: '' !== previewTitleMarginRight
-								? getSpacingOptionOutput(previewTitleMarginRight, previewTitleMarginUnit)
-								: '',
+									? getSpacingOptionOutput(previewTitleMarginRight, previewTitleMarginUnit)
+									: '',
 						marginBottom:
 							'' !== previewTitleMarginBottom
 								? getSpacingOptionOutput(previewTitleMarginBottom, previewTitleMarginUnit)
@@ -937,8 +937,8 @@ function KadenceTabs(props) {
 							'tabs' === layout && widthType === 'percent'
 								? '0px'
 								: '' !== previewTitleMarginLeft
-								? getSpacingOptionOutput(previewTitleMarginLeft, previewTitleMarginUnit)
-								: '',
+									? getSpacingOptionOutput(previewTitleMarginLeft, previewTitleMarginUnit)
+									: '',
 					}}
 				>
 					<div
@@ -1073,23 +1073,23 @@ function KadenceTabs(props) {
 										fontFamily: subFont[0].family ? subFont[0].family : '',
 										padding: subFont[0].padding
 											? subFont[0].padding[0] +
-											  'px ' +
-											  subFont[0].padding[1] +
-											  'px ' +
-											  subFont[0].padding[2] +
-											  'px ' +
-											  subFont[0].padding[3] +
-											  'px'
+												'px ' +
+												subFont[0].padding[1] +
+												'px ' +
+												subFont[0].padding[2] +
+												'px ' +
+												subFont[0].padding[3] +
+												'px'
 											: '',
 										margin: subFont[0].margin
 											? subFont[0].margin[0] +
-											  'px ' +
-											  subFont[0].margin[1] +
-											  'px ' +
-											  subFont[0].margin[2] +
-											  'px ' +
-											  subFont[0].margin[3] +
-											  'px'
+												'px ' +
+												subFont[0].margin[1] +
+												'px ' +
+												subFont[0].margin[2] +
+												'px ' +
+												subFont[0].margin[3] +
+												'px'
 											: '',
 									}}
 									keepPlaceholderOnFocus

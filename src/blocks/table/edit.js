@@ -980,8 +980,8 @@ export function Edit(props) {
 									paddingType === 'em' || paddingType === 'rem'
 										? 25
 										: paddingType === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
 								unit={paddingType}

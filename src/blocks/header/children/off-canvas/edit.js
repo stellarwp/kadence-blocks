@@ -592,15 +592,15 @@ export function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? -12
 										: paddingUnit === 'px'
-										? -999
-										: -100
+											? -999
+											: -100
 								}
 								max={
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 24
 										: paddingUnit === 'px'
-										? 999
-										: 100
+											? 999
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
@@ -623,8 +623,8 @@ export function Edit(props) {
 									closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem'
 										? 25
 										: closeIconPaddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 0.1 : 1}
 								unit={closeIconPaddingUnit}
@@ -645,8 +645,8 @@ export function Edit(props) {
 									closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem'
 										? 25
 										: closeIconMarginUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem' ? 0.1 : 1}
 								unit={closeIconMarginUnit}
