@@ -13,6 +13,7 @@ final class Section {
 	public string $id;
 	public float $height;
 	public string $tagName;
+	public string $className;
 	public string $path;
 	public bool $isAboveFold;
 	public bool $hasImages;
@@ -22,6 +23,7 @@ final class Section {
 		string $id,
 		float $height,
 		string $tagName,
+		string $className,
 		string $path,
 		bool $isAboveFold,
 		bool $hasImages,
@@ -30,6 +32,7 @@ final class Section {
 		$this->id            = $id;
 		$this->height        = $height;
 		$this->tagName       = $tagName;
+		$this->className     = $className;
 		$this->path          = $path;
 		$this->isAboveFold   = $isAboveFold;
 		$this->hasImages     = $hasImages;
@@ -37,13 +40,14 @@ final class Section {
 	}
 
 	/**
-	 * @param array{id: string, height: float, tagName: string, path: string, isAboveFold: bool, hasImages: bool, hasBackground: bool} $attributes
+	 * @param array{id: string, height: float, tagName: string, className: string, path: string, isAboveFold: bool, hasImages: bool, hasBackground: bool} $attributes
 	 */
 	public static function from( array $attributes ): self {
 		return new self(
 			$attributes['id'],
 			$attributes['height'],
 			$attributes['tagName'],
+			$attributes['className'],
 			$attributes['path'],
 			$attributes['isAboveFold'],
 			$attributes['hasImages'],
@@ -52,13 +56,14 @@ final class Section {
 	}
 
 	/**
-	 * @return array{id: string, height: float, tagName: string, path: string, isAboveFold: bool, hasImages: bool, hasBackground: bool}
+	 * @return array{id: string, height: float, tagName: string, className: string, path: string, isAboveFold: bool, hasImages: bool, hasBackground: bool}
 	 */
 	public function toArray(): array {
 		return [
 			'id'            => $this->id,
 			'height'        => $this->height,
 			'tagName'       => $this->tagName,
+			'className'     => $this->className,
 			'path'          => $this->path,
 			'isAboveFold'   => $this->isAboveFold,
 			'hasImages'     => $this->hasImages,

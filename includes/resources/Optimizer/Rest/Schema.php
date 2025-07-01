@@ -30,6 +30,10 @@ final class Schema {
 				'description' => __( 'The HTML tag name of the section element.', 'kadence-blocks' ),
 				'type'        => 'string',
 			],
+			'className'     => [
+				'description' => __( 'The CSS classes assigned to this section.', 'kadence-blocks' ),
+				'type'        => 'string',
+			],
 			'path'          => [
 				'description' => __( 'The CSS selector path to the element.', 'kadence-blocks' ),
 				'type'        => 'string',
