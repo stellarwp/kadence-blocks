@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 = 3.5.12 =
-Release Date: 2rd July 2025
+Release Date: 2nd July 2025
 * Update: Header block off canvas trigger focus styles. 
 * Fix: Icon List default bottom margin.
 * Fix: Count Up block responsive font/number size/lineheight preview in editor.
