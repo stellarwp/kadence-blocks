@@ -1903,6 +1903,10 @@ function KadenceAdvancedHeading(props) {
 							>
 								<ResponsiveKadenceRadioButtons
 									label={__('Orientation', 'kadence-blocks')}
+									help={ 'horizontal' !== previewTextOrientation 
+										? __( 'The text orientation feature uses the writing-mode CSS property. While it works in most modern browsers, it may not be supported in some older browsers.' ) 
+										: ''
+									}
 									value={previewTextOrientation}
 									tabletValue={previewTextOrientation}
 									mobileValue={previewTextOrientation}
