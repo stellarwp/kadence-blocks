@@ -115,15 +115,6 @@ final class Schema {
 				'description' => __( 'The aspect ratio of the image.', 'kadence-blocks' ),
 				'type'        => 'number',
 			],
-			'isAboveFold'   => [
-				'description' => __( 'Whether the image is located above the fold.', 'kadence-blocks' ),
-				'type'        => 'boolean',
-				'required'    => true,
-			],
-			'isMobile'      => [
-				'description' => __( 'Whether this image data pertains to the mobile view.', 'kadence-blocks' ),
-				'type'        => 'boolean',
-			],
 			'alt'           => [
 				'description' => __( 'The alt text of the image.', 'kadence-blocks' ),
 				'type'        => [ 'string', 'null' ],

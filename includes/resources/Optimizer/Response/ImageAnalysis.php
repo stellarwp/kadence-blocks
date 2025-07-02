@@ -24,8 +24,6 @@ final class ImageAnalysis {
 	public int $naturalWidth;
 	public int $naturalHeight;
 	public ?float $aspectRatio;
-	public bool $isAboveFold;
-	public bool $isMobile;
 	public ?string $alt;
 	public string $className;
 	public string $loading;
@@ -48,8 +46,6 @@ final class ImageAnalysis {
 		int $naturalWidth,
 		int $naturalHeight,
 		?float $aspectRatio,
-		bool $isAboveFold,
-		bool $isMobile,
 		?string $alt,
 		string $className,
 		string $loading,
@@ -68,8 +64,6 @@ final class ImageAnalysis {
 		$this->naturalWidth  = $naturalWidth;
 		$this->naturalHeight = $naturalHeight;
 		$this->aspectRatio   = $aspectRatio;
-		$this->isAboveFold   = $isAboveFold;
-		$this->isMobile      = $isMobile;
 		$this->alt           = $alt;
 		$this->className     = $className;
 		$this->loading       = $loading;
@@ -80,7 +74,7 @@ final class ImageAnalysis {
 	}
 
 	/**
-	 * @param array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
+	 * @param array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
 	 */
 	public static function from( array $attributes ): self {
 		$srcset = array_map(
@@ -101,8 +95,6 @@ final class ImageAnalysis {
 			$attributes['naturalWidth'] ?? 0,
 			$attributes['naturalHeight'] ?? 0,
 			$attributes['aspectRatio'] ?? null,
-			$attributes['isAboveFold'],
-			$attributes['isMobile'],
 			$attributes['alt'],
 			$attributes['class'],
 			$attributes['loading'],
@@ -114,7 +106,7 @@ final class ImageAnalysis {
 	}
 
 	/**
-	 * @return array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, isAboveFold: bool, isMobile: bool, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string}
+	 * @return array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string}
 	 */
 	public function toArray(): array {
 		return [
@@ -133,8 +125,6 @@ final class ImageAnalysis {
 			'naturalWidth'  => $this->naturalWidth,
 			'naturalHeight' => $this->naturalHeight,
 			'aspectRatio'   => $this->aspectRatio,
-			'isAboveFold'   => $this->isAboveFold,
-			'isMobile'      => $this->isMobile,
 			'alt'           => $this->alt,
 			'class'         => $this->className,
 			'loading'       => $this->loading,
