@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Render
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Meta_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
@@ -84,7 +85,13 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_store(): void {
-		$this->container->bind( Store::class, Meta_Store::class );
+		$this->container->bindDecorators(
+			Store::class,
+			[
+				Expired_Meta_Store_Decorator::class,
+				Meta_Store::class,
+			]
+		);
 	}
 
 	private function register_asset_loader(): void {

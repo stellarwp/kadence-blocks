@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Optimizer;
+namespace Tests\wpunit\Resources\Optimizer\Store;
 
 use DateTimeImmutable;
 use DateTimeZone;
@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use Tests\Support\Classes\TestCase;
 
-final class StoreTest extends TestCase {
+final class MetaStoreTest extends TestCase {
 
 	private Store $store;
 	private int $post_id;
@@ -17,7 +17,7 @@ final class StoreTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store   = $this->container->get( Store::class );
+		$this->store   = $this->container->get( Meta_Store::class );
 		$this->post_id = $this->factory()->post->create();
 
 		$this->assertGreaterThan( 0, $this->post_id );
@@ -27,13 +27,6 @@ final class StoreTest extends TestCase {
 		$this->store->delete( $this->post_id );
 
 		parent::tearDown();
-	}
-
-	public function testItBindsToCorrectConcreteClass(): void {
-		$this->assertInstanceOf(
-			Meta_Store::class,
-			$this->store,
-		);
 	}
 
 	public function testItGetsNullValue(): void {
