@@ -177,7 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 2nd July 2025
 * Update: Header block off canvas trigger focus styles. 
 * Fix: Icon List default bottom margin.
-* Fix: Count Up block responsive font/number size/lineheight preview in editor.
+* Fix: Count Up block responsive font, number size, line height preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.
 * Fix: Warning that content doesn't match template while editing Navigation posts.
 * Fix: Inability to insert new row when table block was inside a section.
