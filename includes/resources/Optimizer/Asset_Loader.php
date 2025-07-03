@@ -24,6 +24,8 @@ final class Asset_Loader {
 	/**
 	 * Enqueue the Optimizer JS.
 	 *
+	 * @action admin_print_styles-edit.php
+	 *
 	 * @return void
 	 */
 	public function enqueue(): void {
