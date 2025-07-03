@@ -207,6 +207,7 @@ export default function Edit(props) {
 		kind,
 		isMegaMenu,
 		uniqueID,
+		anchor,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -682,6 +683,7 @@ export default function Edit(props) {
 	const navBuilderisOpen = immediateParentBlock === openNavBuilderClientId;
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
+		id: anchor,
 		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
 			'is-editing': isSelected || isParentOfSelectedBlock,
 			'has-link': !!url,

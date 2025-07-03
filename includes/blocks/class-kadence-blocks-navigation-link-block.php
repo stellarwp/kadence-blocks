@@ -600,6 +600,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$wrapper_classes[] = 'kb-menu-has-media';
 		}
 		$wrapper_args       = [ 'class' => implode( ' ', $wrapper_classes ) ];
+		if ( ! empty( $attributes['anchor'] ) ) {
+			$wrapper_args['id'] = $attributes['anchor'];
+		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 		$down_arrow_icon  = '<svg aria-hidden="true" class="kb-nav-arrow-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">';
