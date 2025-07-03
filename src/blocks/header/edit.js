@@ -25,7 +25,7 @@ import { store as coreStore, EntityProvider, useEntityBlockEditor, useEntityProp
 import { createBlock } from '@wordpress/blocks';
 
 import { useEntityAutoDraft, useEntityPublish, useEntityAutoDraftAndPublish } from './hooks';
-import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 import HeaderName from './components/onboard/name';
 import HeaderDesktop from './components/onboard/desktop';
 import HeaderMobile from './components/onboard/mobile';
@@ -81,24 +81,11 @@ export function Edit(props) {
 		};
 	}, []);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
+	const { previewDevice, isPreviewMode } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -121,16 +108,9 @@ export function Edit(props) {
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 		if (currentPostType === 'kadence_header') {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.
 			window.wp.data.dispatch('core/block-editor').setTemplateValidity(true);

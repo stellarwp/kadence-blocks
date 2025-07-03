@@ -50,10 +50,9 @@ import {
 	showSettings,
 	mouseOverVisualizer,
 	setBlockDefaults,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
-	getPostOrFseId,
 	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
@@ -71,6 +70,7 @@ import renderSVGDivider from './render-svg-divider';
 import GridVisualizer from './gridvisualizer';
 import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
 import { SPACING_SIZES_MAP, COLUMN_WIDTH_MAP } from './constants';
+import { runRowLayoutMigrations } from './migrations';
 /**
  * Import Css
  */
@@ -98,7 +98,7 @@ import {
 	ToggleControl,
 	SelectControl,
 } from '@wordpress/components';
-import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { blockDefault, brush, settings, plusCircle } from '@wordpress/icons';
 /**
@@ -111,19 +111,9 @@ const ALLOWED_BLOCKS = ['kadence/column'];
 /**
  * Build the row edit
  */
-function RowLayoutEditContainer(props) {
-	const {
-		attributes,
-		setAttributes,
-		updateAlignment,
-		insertSection,
-		context,
-		updateColumns,
-		toggleSelection,
-		isSelected,
-		clientId,
-		name,
-	} = props;
+const KadenceRowLayout = (props) => {
+	const { clientId, attributes, setAttributes, context, toggleSelection, isSelected, name } = props;
+
 	const {
 		uniqueID,
 		columns,
@@ -134,41 +124,11 @@ function RowLayoutEditContainer(props) {
 		columnGutter,
 		collapseGutter,
 		collapseOrder,
-		topPadding,
-		bottomPadding,
-		leftPadding,
-		rightPadding,
-		topPaddingM,
-		bottomPaddingM,
-		leftPaddingM,
-		rightPaddingM,
-		topMargin,
-		bottomMargin,
-		topMarginM,
-		bottomMarginM,
 		bgColor,
 		bgImg,
-		bgImgAttachment,
-		bgImgSize,
-		bgImgPosition,
-		bgImgRepeat,
-		bgImgID,
 		verticalAlignment,
-		overlayOpacity,
 		overlayBgImg,
-		overlayBgImgAttachment,
-		overlayBgImgID,
-		overlayBgImgPosition,
-		overlayBgImgRepeat,
-		overlayBgImgSize,
-		currentOverlayTab,
-		overlayBlendMode,
-		overlayGradAngle,
-		overlayGradLoc,
-		overlayGradLocSecond,
-		overlayGradType,
 		overlay,
-		overlaySecond,
 		htmlTag,
 		minHeight,
 		maxWidth,
@@ -195,33 +155,17 @@ function RowLayoutEditContainer(props) {
 		linkColor,
 		linkHoverColor,
 		tabletPadding,
-		topMarginT,
-		bottomMarginT,
 		minHeightUnit,
 		maxWidthUnit,
 		marginUnit,
 		columnsUnlocked,
-		tabletBackground,
-		tabletOverlay,
-		mobileBackground,
-		mobileOverlay,
 		columnsInnerHeight,
 		zIndex,
-		backgroundInline,
-		backgroundSettingTab,
-		backgroundSliderCount,
-		backgroundSlider,
 		inheritMaxWidth,
-		backgroundSliderSettings,
-		backgroundVideo,
-		backgroundVideoType,
-		overlaySecondOpacity,
-		overlayFirstOpacity,
 		paddingUnit,
 		align,
 		minHeightTablet,
 		minHeightMobile,
-		bgColorClass,
 		gradient,
 		overlayGradient,
 		vsdesk,
@@ -234,15 +178,7 @@ function RowLayoutEditContainer(props) {
 		rcpAccess,
 		rcpMembership,
 		rcpMembershipLevel,
-		borderWidth,
-		tabletBorderWidth,
-		mobileBorderWidth,
 		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
-		border,
-		tabletBorder,
-		mobileBorder,
 		isPrebuiltModal,
 		responsiveMaxWidth,
 		kadenceBlockCSS,
@@ -260,10 +196,6 @@ function RowLayoutEditContainer(props) {
 		mobileRowGutter,
 		tabletRowGutter,
 		templateLock,
-		kbVersion,
-		borderStyle,
-		mobileBorderStyle,
-		tabletBorderStyle,
 		inQueryBlock,
 		breakoutLeft,
 		breakoutRight,
@@ -271,6 +203,18 @@ function RowLayoutEditContainer(props) {
 		bottomSepHeightUnit,
 		borderRadiusOverflow,
 	} = attributes;
+
+	// Cut everything short if we are just accessing the modal.
+	if (isPrebuiltModal) {
+		return (
+			<PrebuiltModal
+				clientId={clientId}
+				open={isPrebuiltModal ? true : false}
+				onlyModal={isPrebuiltModal ? true : false}
+			/>
+		);
+	}
+
 	const { isPreviewMode } = useSelect((_select) => {
 		const { __unstableIsPreviewMode } = _select(blockEditorStore).getSettings();
 		return {
@@ -278,409 +222,100 @@ function RowLayoutEditContainer(props) {
 		};
 	}, []);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, innerItemCount, parentData } = useSelect(
+	const { previewDevice, innerItemCount } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				innerItemCount: select(blockEditorStore).getBlockCount(clientId),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
 	);
+
+	const { updateBlockAttributes, replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
+	const {
+		getBlockOrder: selectGetBlockOrder,
+		getBlocks: selectGetBlocks,
+		getBlock: selectGetBlock,
+	} = useSelect(
+		(select) => ({
+			getBlockOrder: select(blockEditorStore).getBlockOrder,
+			getBlocks: select(blockEditorStore).getBlocks,
+			getBlock: select(blockEditorStore).getBlock,
+		}),
+		[]
+	);
+
+	/**
+	 * Update all child Column blocks with a new vertical alignment setting
+	 * based on whatever alignment is passed in. This allows change to parent
+	 * to overide anything set on a individual column basis.
+	 *
+	 * @param {string} verticalAlignment the vertical alignment setting
+	 */
+	const updateAlignment = (verticalAlignment) => {
+		// Update own alignment.
+		setAttributes({ verticalAlignment });
+
+		// Update all child Column Blocks to match.
+		const innerBlockClientIds = selectGetBlockOrder(clientId);
+		innerBlockClientIds.forEach((innerBlockClientId) => {
+			updateBlockAttributes(innerBlockClientId, {
+				verticalAlignment,
+			});
+		});
+	};
+
+	/**
+	 * Updates the column count, including necessary revisions to child Column
+	 * blocks to grant required or redistribute available space.
+	 *
+	 * @param {number} previousColumns Previous column count.
+	 * @param {number} newColumns      New column count.
+	 */
+	const updateColumns = (previousColumns, newColumns) => {
+		let innerBlocks = selectGetBlocks(clientId);
+		const isAddingColumn = newColumns > previousColumns;
+
+		if (isAddingColumn) {
+			const arrayLength = innerBlocks.length;
+			for (let i = 0; i < arrayLength; i++) {
+				innerBlocks[i].attributes.id = i + 1;
+			}
+			innerBlocks = [
+				...innerBlocks,
+				...times(newColumns - previousColumns, (n) => {
+					return createBlock('kadence/column', {
+						id: previousColumns + n + 1,
+					});
+				}),
+			];
+		} else if (1 === previousColumns - newColumns) {
+			const lastItem = innerBlocks.length - 1;
+			if (!innerBlocks[lastItem].innerBlocks.length) {
+				innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
+			}
+		}
+
+		replaceInnerBlocks(clientId, innerBlocks);
+	};
+
+	const insertSection = (newBlock) => {
+		const block = selectGetBlock(clientId);
+		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
+	};
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/rowlayout', attributes);
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes({ inQueryBlock: isInQueryBlock });
 		}
-		// Update from old gutter settings.
-		if (columnGutter == 'wide') {
-			setAttributes({
-				columnGutter: 'custom',
-				customGutter: [
-					40,
-					customGutter && customGutter[1] ? customGutter[1] : '',
-					customGutter && customGutter[2] ? customGutter[2] : '',
-				],
-			});
-		} else if (columnGutter == 'narrow') {
-			setAttributes({
-				columnGutter: 'custom',
-				customGutter: [
-					20,
-					customGutter && customGutter[1] ? customGutter[1] : '',
-					customGutter && customGutter[2] ? customGutter[2] : '',
-				],
-			});
-		} else if (columnGutter == 'widest') {
-			setAttributes({
-				columnGutter: 'custom',
-				customGutter: [
-					80,
-					customGutter && customGutter[1] ? customGutter[1] : '',
-					customGutter && customGutter[2] ? customGutter[2] : '',
-				],
-			});
-		}
-
-		// Update from old padding settings.
-		if ('' !== topPadding || '' !== rightPadding || '' !== bottomPadding || '' !== leftPadding) {
-			setAttributes({
-				padding: [
-					'' !== topPadding ? topPadding : 25,
-					rightPadding,
-					'' !== bottomPadding ? bottomPadding : 25,
-					leftPadding,
-				],
-				topPadding: '',
-				rightPadding: '',
-				bottomPadding: '',
-				leftPadding: '',
-			});
-		}
-		if ('' !== topPaddingM || '' !== rightPaddingM || '' !== bottomPaddingM || '' !== leftPaddingM) {
-			setAttributes({
-				mobilePadding: [topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM],
-				topPaddingM: '',
-				rightPaddingM: '',
-				bottomPaddingM: '',
-				leftPaddingM: '',
-			});
-		}
-		// Update from old margin settings.
-		if ('' !== topMargin || '' !== bottomMargin) {
-			setAttributes({
-				margin: ['' !== topMargin ? topMargin : '', '', '' !== bottomMargin ? bottomMargin : '', ''],
-				topMargin: '',
-				bottomMargin: '',
-			});
-		}
-		if ('' !== topMarginT || '' !== bottomMarginT) {
-			setAttributes({
-				tabletMargin: ['' !== topMarginT ? topMarginT : '', '', '' !== bottomMarginT ? bottomMarginT : '', ''],
-				topMarginT: '',
-				bottomMarginT: '',
-			});
-		}
-		if ('' !== topMarginM || '' !== bottomMarginM) {
-			setAttributes({
-				mobileMargin: ['' !== topMarginM ? topMarginM : '', '', '' !== bottomMarginM ? bottomMarginM : '', ''],
-				topMarginM: '',
-				bottomMarginM: '',
-			});
-		}
-		// Update from old gradient settings.
-		if (currentOverlayTab == 'grad') {
-			const newDeskGradient =
-				'radial' === overlayGradType
-					? `radial-gradient(ellipse at ${overlayBgImgPosition}, ${
-							overlay
-								? KadenceColorOutput(
-										overlay,
-										undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
-											? overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${overlayGradLoc}%, ${
-							overlaySecond
-								? KadenceColorOutput(
-										overlaySecond,
-										undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
-											? overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${overlayGradLocSecond}%)`
-					: `linear-gradient(${overlayGradAngle}deg, ${
-							overlay
-								? KadenceColorOutput(
-										overlay,
-										undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
-											? overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${overlayGradLoc}%, ${
-							overlaySecond
-								? KadenceColorOutput(
-										overlaySecond,
-										undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
-											? overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${overlayGradLocSecond}%)`;
-			setAttributes({ overlayGradient: newDeskGradient, currentOverlayTab: 'gradient' });
-		}
-		if (
-			tabletOverlay &&
-			tabletOverlay[0] &&
-			tabletOverlay[0].currentOverlayTab &&
-			'grad' === tabletOverlay[0].currentOverlayTab
-		) {
-			const saveTabletOverlay = (value) => {
-				const newUpdate = tabletOverlay.map((item, index) => {
-					if (0 === index) {
-						item = { ...item, ...value };
-					}
-					return item;
-				});
-				setAttributes({
-					tabletOverlay: newUpdate,
-				});
-			};
-			const newTabGradient =
-				'radial' === tabletOverlay[0].overlayGradType
-					? `radial-gradient(ellipse at ${tabletOverlay[0].overlayBgImgPosition}, ${
-							tabletOverlay[0].overlay
-								? KadenceColorOutput(
-										tabletOverlay[0].overlay,
-										undefined !== tabletOverlay[0].overlayFirstOpacity &&
-											'' !== tabletOverlay[0].overlayFirstOpacity
-											? overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${tabletOverlay[0].overlayGradLoc}%, ${
-							tabletOverlay[0].overlaySecond
-								? KadenceColorOutput(
-										tabletOverlay[0].overlaySecond,
-										undefined !== tabletOverlay[0].overlaySecondOpacity &&
-											'' !== tabletOverlay[0].overlaySecondOpacity
-											? tabletOverlay[0].overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${tabletOverlay[0].overlayGradLocSecond}%)`
-					: `linear-gradient(${tabletOverlay[0].overlayGradAngle}deg, ${
-							tabletOverlay[0].overlay
-								? KadenceColorOutput(
-										tabletOverlay[0].overlay,
-										undefined !== overlayFirstOpacity && '' !== tabletOverlay[0].overlayFirstOpacity
-											? tabletOverlay[0].overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${tabletOverlay[0].overlayGradLoc}%, ${
-							tabletOverlay[0].overlaySecond
-								? KadenceColorOutput(
-										tabletOverlay[0].overlaySecond,
-										undefined !== tabletOverlay[0].overlaySecondOpacity &&
-											'' !== tabletOverlay[0].tabletOverlay[0].overlaySecondOpacity
-											? tabletOverlay[0].overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${tabletOverlay[0].overlayGradLocSecond}%)`;
-			saveTabletOverlay({ gradient: newTabGradient, currentOverlayTab: 'gradient' });
-		}
-		if (
-			mobileOverlay &&
-			mobileOverlay[0] &&
-			mobileOverlay[0].currentOverlayTab &&
-			'grad' === mobileOverlay[0].currentOverlayTab
-		) {
-			const saveMobileOverlay = (value) => {
-				const newUpdate = mobileOverlay.map((item, index) => {
-					if (0 === index) {
-						item = { ...item, ...value };
-					}
-					return item;
-				});
-				setAttributes({
-					mobileOverlay: newUpdate,
-				});
-			};
-			const newMobileGradient =
-				'radial' === mobileOverlay[0].overlayGradType
-					? `radial-gradient(ellipse at ${mobileOverlay[0].overlayBgImgPosition}, ${
-							mobileOverlay[0].overlay
-								? KadenceColorOutput(
-										mobileOverlay[0].overlay,
-										undefined !== mobileOverlay[0].overlayFirstOpacity &&
-											'' !== mobileOverlay[0].overlayFirstOpacity
-											? overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${mobileOverlay[0].overlayGradLoc}%, ${
-							mobileOverlay[0].overlaySecond
-								? KadenceColorOutput(
-										mobileOverlay[0].overlaySecond,
-										undefined !== mobileOverlay[0].overlaySecondOpacity &&
-											'' !== mobileOverlay[0].overlaySecondOpacity
-											? mobileOverlay[0].overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${mobileOverlay[0].overlayGradLocSecond}%)`
-					: `linear-gradient(${mobileOverlay[0].overlayGradAngle}deg, ${
-							mobileOverlay[0].overlay
-								? KadenceColorOutput(
-										mobileOverlay[0].overlay,
-										undefined !== overlayFirstOpacity && '' !== mobileOverlay[0].overlayFirstOpacity
-											? mobileOverlay[0].overlayFirstOpacity
-											: 1
-									)
-								: ''
-						} ${mobileOverlay[0].overlayGradLoc}%, ${
-							mobileOverlay[0].overlaySecond
-								? KadenceColorOutput(
-										mobileOverlay[0].overlaySecond,
-										undefined !== mobileOverlay[0].overlaySecondOpacity &&
-											'' !== mobileOverlay[0].mobileOverlay[0].overlaySecondOpacity
-											? mobileOverlay[0].overlaySecondOpacity
-											: 1
-									)
-								: ''
-						} ${mobileOverlay[0].overlayGradLocSecond}%)`;
-			saveMobileOverlay({ gradient: newMobileGradient, currentOverlayTab: 'gradient' });
-		}
-		// Update from old border settings.
-		const tempBorderStyle = JSON.parse(
-			JSON.stringify(
-				attributes.borderStyle
-					? attributes.borderStyle
-					: [
-							{
-								top: ['', '', ''],
-								right: ['', '', ''],
-								bottom: ['', '', ''],
-								left: ['', '', ''],
-								unit: 'px',
-							},
-						]
-			)
-		);
-		let updateBorderStyle = false;
-		if ('' !== border) {
-			tempBorderStyle[0].top[0] = border;
-			tempBorderStyle[0].right[0] = border;
-			tempBorderStyle[0].bottom[0] = border;
-			tempBorderStyle[0].left[0] = border;
-			updateBorderStyle = true;
-			setAttributes({ border: '' });
-		}
-		if ('' !== borderWidth?.[0] || '' !== borderWidth?.[1] || '' !== borderWidth?.[2] || '' !== borderWidth?.[3]) {
-			tempBorderStyle[0].top[2] = borderWidth?.[0] || '';
-			tempBorderStyle[0].right[2] = borderWidth?.[1] || '';
-			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
-			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
-			updateBorderStyle = true;
-			setAttributes({ borderWidth: ['', '', '', ''] });
-		}
-		if (updateBorderStyle) {
-			setAttributes({ borderStyle: tempBorderStyle });
-		}
-		// Update from old border settings.
-		const tempTabletBorderStyle = JSON.parse(
-			JSON.stringify(
-				attributes.tabletBorderStyle
-					? attributes.tabletBorderStyle
-					: [
-							{
-								top: ['', '', ''],
-								right: ['', '', ''],
-								bottom: ['', '', ''],
-								left: ['', '', ''],
-								unit: 'px',
-							},
-						]
-			)
-		);
-		let updateTabletBorderStyle = false;
-		if ('' !== tabletBorder) {
-			tempTabletBorderStyle[0].top[0] = tabletBorder;
-			tempTabletBorderStyle[0].right[0] = tabletBorder;
-			tempTabletBorderStyle[0].bottom[0] = tabletBorder;
-			tempTabletBorderStyle[0].left[0] = tabletBorder;
-			updateTabletBorderStyle = true;
-			setAttributes({ tabletBorder: '' });
-		}
-		if (
-			'' !== tabletBorderWidth?.[0] ||
-			'' !== tabletBorderWidth?.[1] ||
-			'' !== tabletBorderWidth?.[2] ||
-			'' !== tabletBorderWidth?.[3]
-		) {
-			tempTabletBorderStyle[0].top[2] = tabletBorderWidth?.[0] || '';
-			tempTabletBorderStyle[0].right[2] = tabletBorderWidth?.[1] || '';
-			tempTabletBorderStyle[0].bottom[2] = tabletBorderWidth?.[2] || '';
-			tempTabletBorderStyle[0].left[2] = tabletBorderWidth?.[3] || '';
-			updateTabletBorderStyle = true;
-			setAttributes({ tabletBorderWidth: ['', '', '', ''] });
-		}
-		if (updateTabletBorderStyle) {
-			setAttributes({ tabletBorderStyle: tempTabletBorderStyle });
-		}
-		// Update from old border settings.
-		const tempMobileBorderStyle = JSON.parse(
-			JSON.stringify(
-				attributes.mobileBorderStyle
-					? attributes.mobileBorderStyle
-					: [
-							{
-								top: ['', '', ''],
-								right: ['', '', ''],
-								bottom: ['', '', ''],
-								left: ['', '', ''],
-								unit: 'px',
-							},
-						]
-			)
-		);
-		let updateMobileBorderStyle = false;
-		if ('' !== mobileBorder) {
-			tempMobileBorderStyle[0].top[0] = mobileBorder;
-			tempMobileBorderStyle[0].right[0] = mobileBorder;
-			tempMobileBorderStyle[0].bottom[0] = mobileBorder;
-			tempMobileBorderStyle[0].left[0] = mobileBorder;
-			updateMobileBorderStyle = true;
-			setAttributes({ mobileBorder: '' });
-		}
-		if (
-			'' !== mobileBorderWidth?.[0] ||
-			'' !== mobileBorderWidth?.[1] ||
-			'' !== mobileBorderWidth?.[2] ||
-			'' !== mobileBorderWidth?.[3]
-		) {
-			tempMobileBorderStyle[0].top[2] = mobileBorderWidth?.[0] || '';
-			tempMobileBorderStyle[0].right[2] = mobileBorderWidth?.[1] || '';
-			tempMobileBorderStyle[0].bottom[2] = mobileBorderWidth?.[2] || '';
-			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
-			updateMobileBorderStyle = true;
-			setAttributes({ mobileBorderWidth: ['', '', '', ''] });
-		}
-		if (updateMobileBorderStyle) {
-			setAttributes({ mobileBorderStyle: tempMobileBorderStyle });
-		}
-		if (!kbVersion || kbVersion < 2) {
-			setAttributes({ kbVersion: 2 });
-		}
+    
+		// Run all attribute migrations
+		runRowLayoutMigrations(attributes, setAttributes);
 	}, []);
 	useEffect(() => {
 		if (innerItemCount < columns && uniqueID) {
@@ -1846,101 +1481,6 @@ function RowLayoutEditContainer(props) {
 			</RowBackground>
 		</>
 	);
-}
-
-const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry) => ({
-	/**
-	 * Update all child Column blocks with a new vertical alignment setting
-	 * based on whatever alignment is passed in. This allows change to parent
-	 * to overide anything set on a individual column basis.
-	 *
-	 * @param {string} verticalAlignment the vertical alignment setting
-	 */
-	updateAlignment(verticalAlignment) {
-		const { clientId, setAttributes } = ownProps;
-		const { updateBlockAttributes } = dispatch(blockEditorStore);
-		const { getBlockOrder } = registry.select(blockEditorStore);
-
-		// Update own alignment.
-		setAttributes({ verticalAlignment });
-
-		// Update all child Column Blocks to match.
-		const innerBlockClientIds = getBlockOrder(clientId);
-		innerBlockClientIds.forEach((innerBlockClientId) => {
-			updateBlockAttributes(innerBlockClientId, {
-				verticalAlignment,
-			});
-		});
-	},
-	/**
-	 * Updates the column count, including necessary revisions to child Column
-	 * blocks to grant required or redistribute available space.
-	 *
-	 * @param {number} previousColumns Previous column count.
-	 * @param {number} newColumns      New column count.
-	 */
-	updateColumns(previousColumns, newColumns) {
-		const { clientId } = ownProps;
-		const { replaceInnerBlocks } = dispatch(blockEditorStore);
-		const { getBlocks } = registry.select(blockEditorStore);
-
-		let innerBlocks = getBlocks(clientId);
-		const isAddingColumn = newColumns > previousColumns;
-
-		if (isAddingColumn) {
-			const arrayLength = innerBlocks.length;
-			for (let i = 0; i < arrayLength; i++) {
-				innerBlocks[i].attributes.id = i + 1;
-			}
-			innerBlocks = [
-				...innerBlocks,
-				...times(newColumns - previousColumns, (n) => {
-					return createBlock('kadence/column', {
-						id: previousColumns + n + 1,
-					});
-				}),
-			];
-		} else if (1 === previousColumns - newColumns) {
-			const lastItem = innerBlocks.length - 1;
-			if (!innerBlocks[lastItem].innerBlocks.length) {
-				innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
-			}
-		}
-
-		replaceInnerBlocks(clientId, innerBlocks);
-	},
-	insertSection(newBlock) {
-		const { clientId } = ownProps;
-		const { insertBlock } = dispatch(blockEditorStore);
-		const { getBlock } = registry.select(blockEditorStore);
-		const block = getBlock(clientId);
-		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
-	},
-}))(RowLayoutEditContainer);
-const KadenceRowLayout = (props) => {
-	const { clientId, attributes } = props;
-	const { isPrebuiltModal } = attributes;
-	// Cut everything short if we are just accessing the modal.
-	if (isPrebuiltModal) {
-		return (
-			<PrebuiltModal
-				clientId={clientId}
-				open={isPrebuiltModal ? true : false}
-				onlyModal={isPrebuiltModal ? true : false}
-			/>
-		);
-	}
-	const { rowBlock, realColumnCount } = useSelect(
-		(select) => {
-			const { getBlock } = select('core/block-editor');
-			const block = getBlock(clientId);
-			return {
-				rowBlock: block,
-				isUniqueBlock: block.innerBlocks.length,
-			};
-		},
-		[clientId]
-	);
-	return <RowLayoutEditContainerWrapper realColumnCount={realColumnCount} rowBlock={rowBlock} {...props} />;
 };
+
 export default KadenceRowLayout;

@@ -8,8 +8,7 @@
 import {
 	KadenceColorOutput,
 	setBlockDefaults,
-	getUniqueId,
-	getPostOrFseId,
+	uniqueIdHelper,
 	showSettings,
 	getFontSizeOptionOutput,
 	getSpacingOptionOutput,
@@ -143,8 +142,6 @@ function KadenceListItem(props) {
 	const displayIcon = icon ? icon : context['kadence/listIcon'];
 	const displayWidth = width ? width : context['kadence/listIconWidth'];
 	const [activeTab, setActiveTab] = useState('general');
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-
 	let richTextFormats = applyFilters(
 		'kadence.whitelist_richtext_formats',
 		[
@@ -163,38 +160,19 @@ function KadenceListItem(props) {
 	richTextFormats = link ? richTextFormats : undefined;
 
 	const textRef = useRef(clientId);
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
 	);
+
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/listitem', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 	}, []);
 
 	const blockProps = useBlockProps({

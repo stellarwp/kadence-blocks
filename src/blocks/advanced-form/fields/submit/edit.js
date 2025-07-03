@@ -16,6 +16,7 @@ import {
 	getBorderColor,
 	getUniqueId,
 } from '@kadence/helpers';
+import { getUniqueFieldId } from '../../components';
 
 import {
 	PopColorControl,
@@ -64,7 +65,6 @@ import {
 } from '@wordpress/block-editor';
 import { TextControl, ToolbarGroup, SelectControl } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import { getUniqueFieldId } from '../../components';
 
 export default function KadenceButtonEdit({
 	attributes,

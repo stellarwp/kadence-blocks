@@ -44,8 +44,7 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	setBlockDefaults,
-	getUniqueId,
-	getPostOrFseId,
+	uniqueIdHelper,
 } from '@kadence/helpers';
 
 export function Edit(props) {
@@ -204,26 +203,7 @@ export function Edit(props) {
 
 	const { createErrorNotice } = useDispatch(noticesStore);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
-		(select) => {
-			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
-			};
-		},
-		[clientId]
-	);
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		/**
@@ -237,16 +217,6 @@ export function Edit(props) {
 		});
 
 		setBlockDefaults('kadence/googlemaps', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		if (!kbVersion || kbVersion < 2) {
 			setAttributes({ kbVersion: 2 });

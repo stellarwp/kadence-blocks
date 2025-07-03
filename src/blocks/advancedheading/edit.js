@@ -58,10 +58,9 @@ import {
 	getFontSizeOptionOutput,
 	getBorderStyle,
 	getBorderColor,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setBlockDefaults,
-	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -261,23 +260,10 @@ function KadenceAdvancedHeading(props) {
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, allowedFormats } = useSelect(
+	const { previewDevice, allowedFormats } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 				allowedFormats: select('core/rich-text').getFormatTypes(),
 			};
 		},
@@ -354,18 +340,10 @@ function KadenceAdvancedHeading(props) {
 	const isDefaultEditorBlock =
 		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedheading', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 

@@ -14,11 +14,10 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getPreviewSize,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setBlockDefaults,
 	isRTL,
-	getPostOrFseId,
 	getFontSizeOptionOutput,
 } from '@kadence/helpers';
 import {
@@ -344,24 +343,11 @@ export default function GalleryEdit(props) {
 	} = attributes;
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const dynamicSource = kadenceDynamic && kadenceDynamic.images && kadenceDynamic.images.enable ? true : false;
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, mediaUpload } = useSelect(
+	const { previewDevice, mediaUpload } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select(blockEditorStore).getBlock(
-						select(blockEditorStore).getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select(blockEditorStore).getBlockAttributes(
-						select(blockEditorStore).getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 				mediaUpload: select(blockEditorStore).getSettings().mediaUpload,
 			};
 		},
@@ -372,18 +358,11 @@ export default function GalleryEdit(props) {
 			mainRef.current.sync(thumbsRef.current.splide);
 		}
 	}, [mainRef.current, thumbsRef.current]);
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedgallery', attributes);
 
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 		// Old Static Image source.
 		if (images?.length && every(images, ({ url }) => isBlobURL(url))) {
