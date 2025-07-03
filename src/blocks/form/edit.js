@@ -167,7 +167,7 @@ function KadenceForm(props) {
 	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType()
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			};
 		},
 		[clientId]

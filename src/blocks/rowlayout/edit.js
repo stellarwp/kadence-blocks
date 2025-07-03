@@ -313,7 +313,7 @@ const KadenceRowLayout = (props) => {
 			attributes.inQueryBlock = isInQueryBlock;
 			setAttributes({ inQueryBlock: isInQueryBlock });
 		}
-    
+
 		// Run all attribute migrations
 		runRowLayoutMigrations(attributes, setAttributes);
 	}, []);
