@@ -2,6 +2,8 @@ export const OPTIMIZE_ROUTE = '/kb-optimizer/v1/optimize';
 
 // Get localized strings from WordPress.
 const l10n = window.kbOptimizerL10n || {};
+// Contains the perf_token.
+export const OPTIMIZER_DATA = window.kbOptimizer || {};
 
 // UI State Constants.
 export const UI_STATES = {
