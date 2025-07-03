@@ -19,7 +19,7 @@ import {
 	ResponsiveRangeControls,
 } from '@kadence/components';
 
-import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
 
 import classnames from 'classnames';
 import BackendStyles from './backend-styles';
@@ -69,26 +69,13 @@ export function Edit(props) {
 	const columns = context['kadence/table/columns'];
 	const isFirstRowHeader = context['kadence/table/isFirstRowHeader'];
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { insertBlock } = useDispatch('core/block-editor');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, index, parentClientId } = useSelect(
+	const { previewDevice, index, parentClientId } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				parentClientId: select('core/block-editor').getBlockParentsByBlockName(clientId, 'kadence/table')[0],
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				index: select('core/block-editor').getBlockIndex(clientId),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -131,18 +118,11 @@ export function Edit(props) {
 
 	const nonTransAttrs = [];
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/table-row', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
+		// Moved uniqueIdHelper outside of useEffect
 	}, []);
 
 	useEffect(() => {

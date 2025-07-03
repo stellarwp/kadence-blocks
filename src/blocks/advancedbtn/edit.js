@@ -22,9 +22,8 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getGapSizeOptionOutput,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
-	getPostOrFseId,
 } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -94,29 +93,16 @@ function KadenceButtons(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { removeBlock } = useDispatch('core/block-editor');
 	const { replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
 
-	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData, thisBlock, isPreviewMode } = useSelect(
+	const { previewDevice, childBlocks, thisBlock, isPreviewMode } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				childBlocks: select('core/block-editor').getBlockOrder(clientId),
 				thisBlock: select('core/block-editor').getBlock(clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -126,18 +112,10 @@ function KadenceButtons(props) {
 		return get(thisBlock, ['innerBlocks', thisBlock.innerBlocks.length - 1, 'attributes'], {});
 	};
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedbtn', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);

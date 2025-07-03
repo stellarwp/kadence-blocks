@@ -35,7 +35,8 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
  */
 import './editor.scss';
 
-function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldCaptcha(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	//usekcsettings is to use settings from the seperate kadence captcha plugin
 	//usekbsettings is to use the global kadence blocks settings for captions
 	const {
