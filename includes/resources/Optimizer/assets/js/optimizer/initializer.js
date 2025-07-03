@@ -1,7 +1,10 @@
 import { __, sprintf } from '@wordpress/i18n';
+import { addAction } from '@wordpress/hooks';
+import { dispatch } from '@wordpress/data';
 import { analyzeSite, removeOptimization } from './analyzer.js';
-import { UI_STATES } from './constants.js';
+import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
+import { POST_SAVED_HOOK } from '../../../../../../src/extension/post-saved-event/constants';
 
 /**
  * Update the optimizer link state
@@ -26,6 +29,45 @@ function updateLinkState(link, isOptimized) {
  * Initialize the optimizer functionality
  */
 export function initOptimizer() {
+	// @TODO: move this into its own file.
+	addAction(POST_SAVED_HOOK, 'kadence', async ({ post, permalink }) => {
+		console.log('Post Saved', post, permalink);
+
+		if (!permalink) {
+			console.error('❌ No URL found for optimization. This is likely not a public post.');
+			return;
+		}
+
+		const postId = post.id;
+		const postUrl = permalink;
+		const nonce = OPTIMIZER_DATA.token;
+
+		console.log('🚀 Starting optimization...', { postId, postUrl });
+		console.log(
+			'%c' + 'Warnings are expected!',
+			'color: #edd144; -webkit-text-stroke: 0.5px black; font-size: 28px; font-weight: bold;'
+		);
+
+		try {
+			const response = await analyzeSite(postUrl, postId, nonce);
+
+			console.log(response);
+
+			dispatch('core/notices').createSuccessNotice(__('Kadence Optimization Data Updated.', 'kadence-blocks'), {
+				type: 'snackbar',
+			});
+		} catch (error) {
+			console.error('❌ Optimization failed:', error);
+
+			dispatch('core/notices').createErrorNotice(
+				__('Failed to update Kadence Optimization Data.', 'kadence-blocks'),
+				{
+					type: 'snackbar',
+				}
+			);
+		}
+	});
+
 	// Add click event listeners to all optimize links
 	document.addEventListener('click', async function (event) {
 		// Check if the clicked element is an optimize link
