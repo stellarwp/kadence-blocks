@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Renderers;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
@@ -291,6 +293,75 @@ final class OptimizerRendererTest extends TestCase {
 		wp_delete_post( $page_id, true );
 	}
 
+	public function testItRendersOutdatedOptimizationStatusForUserWithoutDeletePermission(): void {
+		// Create a subscriber user (limited permissions).
+		$user_id = $this->factory()->user->create(
+			[
+				'role' => 'subscriber',
+			]
+		);
+
+		wp_set_current_user( $user_id );
+
+		// Set outdated optimization data.
+		$this->store->set( $this->post_id, $this->createOutdatedAnalysis() );
+
+		$this->expectOutputString( 'Optimization Outdated' );
+		$this->renderer->render( $this->post_id );
+	}
+
+	public function testItRendersOutdatedOptimizationLinkForUserWithDeletePermission(): void {
+		// Create an editor user (has delete_post permission).
+		$user_id = $this->factory()->user->create(
+			[
+				'role' => 'editor',
+			]
+		);
+
+		wp_set_current_user( $user_id );
+
+		// Set outdated optimization data.
+		$this->store->set( $this->post_id, $this->createOutdatedAnalysis() );
+
+		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
+		$expected_output = sprintf(
+			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-nonce="%s">Optimization Outdated. Run again?</a>',
+			$this->post_id,
+			esc_url( $post_url ),
+			$nonce_value
+		);
+
+		$this->expectOutputString( $expected_output );
+		$this->renderer->render( $this->post_id );
+	}
+
+	public function testItCorrectlyIdentifiesOutdatedOptimization(): void {
+		// Create an editor user (has delete_post permission).
+		$user_id = $this->factory()->user->create(
+			[
+				'role' => 'editor',
+			]
+		);
+
+		wp_set_current_user( $user_id );
+
+		// Set optimization data that is not outdated.
+		$this->store->set( $this->post_id, $this->createTestAnalysis() );
+
+		$post_url        = get_permalink( $this->post_id );
+		$nonce_value     = $this->nonce->create();
+		$expected_output = sprintf(
+			'<a href="#" class="kb-remove-post-optimization" data-post-id="%d" data-post-url="%s" data-nonce="%s">Remove Optimization</a>',
+			$this->post_id,
+			esc_url( $post_url ),
+			$nonce_value
+		);
+
+		$this->expectOutputString( $expected_output );
+		$this->renderer->render( $this->post_id );
+	}
+
 	/**
 	 * Create a website analysis object for testing.
 	 *
@@ -309,6 +380,30 @@ final class OptimizerRendererTest extends TestCase {
 				'sections'         => [],
 			],
 			'images'  => [],
+		];
+
+		return WebsiteAnalysis::from( $analysis_data );
+	}
+
+	/**
+	 * Create an outdated website analysis object for testing.
+	 *
+	 * @return WebsiteAnalysis
+	 */
+	private function createOutdatedAnalysis(): WebsiteAnalysis {
+		$analysis_data = [
+			'lastModified' => new DateTimeImmutable( '-1 hour', new DateTimeZone( 'UTC' ) ),
+			'desktop'      => [
+				'criticalImages'   => 3,
+				'backgroundImages' => [],
+				'sections'         => [],
+			],
+			'mobile'       => [
+				'criticalImages'   => 2,
+				'backgroundImages' => [],
+				'sections'         => [],
+			],
+			'images'       => [],
 		];
 
 		return WebsiteAnalysis::from( $analysis_data );

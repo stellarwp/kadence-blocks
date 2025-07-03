@@ -43,6 +43,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_asset_loader();
 		$this->register_post_list_table();
 		$this->register_rest();
+		$this->register_request();
 	}
 
 	private function register_translation(): void {
@@ -51,12 +52,14 @@ final class Optimizer_Provider extends Provider {
 		$this->container->when( Text_Repository::class )
 			->needs( '$labels' )
 			->give(
-				fn(): array => [
-					Text_Repository::RUN_OPTIMIZER       => __( 'Run Optimizer', 'kadence-blocks' ),
-					Text_Repository::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
-					Text_Repository::OPTIMIZED           => __( 'Optimized', 'kadence-blocks' ),
-					Text_Repository::NOT_OPTIMIZED       => __( 'Not Optimized', 'kadence-blocks' ),
-					Text_Repository::NOT_OPTIMIZABLE     => __( 'Not Optimizable', 'kadence-blocks' ),
+				static fn(): array => [
+					Text_Repository::RUN_OPTIMIZER         => __( 'Run Optimizer', 'kadence-blocks' ),
+					Text_Repository::REMOVE_OPTIMIZATION   => __( 'Remove Optimization', 'kadence-blocks' ),
+					Text_Repository::OPTIMIZED             => __( 'Optimized', 'kadence-blocks' ),
+					Text_Repository::NOT_OPTIMIZED         => __( 'Not Optimized', 'kadence-blocks' ),
+					Text_Repository::NOT_OPTIMIZABLE       => __( 'Not Optimizable', 'kadence-blocks' ),
+					Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),
+					Text_Repository::OPTIMIZATION_OUTDATED_RUN => __( 'Optimization Outdated. Run again?', 'kadence-blocks' ),
 				]
 			);
 	}
@@ -143,5 +146,9 @@ final class Optimizer_Provider extends Provider {
 				$this->container->get( Optimize_Rest_Controller::class )->register_routes();
 			}
 		);
+	}
+
+	private function register_request(): void {
+		$this->container->singleton( Request::class, Request::class );
 	}
 }
