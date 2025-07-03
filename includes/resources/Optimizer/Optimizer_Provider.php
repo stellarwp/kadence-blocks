@@ -50,18 +50,18 @@ final class Optimizer_Provider extends Provider {
 		$this->container->singleton( Text_Repository::class, Text_Repository::class );
 
 		$this->container->when( Text_Repository::class )
-			->needs( '$labels' )
-			->give(
-				static fn(): array => [
-					Text_Repository::RUN_OPTIMIZER         => __( 'Run Optimizer', 'kadence-blocks' ),
-					Text_Repository::REMOVE_OPTIMIZATION   => __( 'Remove Optimization', 'kadence-blocks' ),
-					Text_Repository::OPTIMIZED             => __( 'Optimized', 'kadence-blocks' ),
-					Text_Repository::NOT_OPTIMIZED         => __( 'Not Optimized', 'kadence-blocks' ),
-					Text_Repository::NOT_OPTIMIZABLE       => __( 'Not Optimizable', 'kadence-blocks' ),
-					Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),
-					Text_Repository::OPTIMIZATION_OUTDATED_RUN => __( 'Optimization Outdated. Run again?', 'kadence-blocks' ),
-				]
-			);
+						->needs( '$labels' )
+						->give(
+							static fn(): array => [
+								Text_Repository::RUN_OPTIMIZER => __( 'Run Optimizer', 'kadence-blocks' ),
+								Text_Repository::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
+								Text_Repository::OPTIMIZED => __( 'Optimized', 'kadence-blocks' ),
+								Text_Repository::NOT_OPTIMIZED => __( 'Not Optimized', 'kadence-blocks' ),
+								Text_Repository::NOT_OPTIMIZABLE => __( 'Not Optimizable', 'kadence-blocks' ),
+								Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),
+								Text_Repository::OPTIMIZATION_OUTDATED_RUN => __( 'Optimization Outdated. Run again?', 'kadence-blocks' ),
+							]
+						);
 	}
 
 	private function register_nonce(): void {
@@ -101,6 +101,12 @@ final class Optimizer_Provider extends Provider {
 		add_action(
 			'admin_print_styles-edit.php',
 			$this->container->callback( Asset_Loader::class, 'enqueue' )
+		);
+
+		add_action(
+			'enqueue_block_editor_assets',
+			$this->container->callback( Asset_Loader::class, 'enqueue' ),
+			20
 		);
 	}
 
