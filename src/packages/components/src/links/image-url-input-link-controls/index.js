@@ -20,6 +20,7 @@
  } from '@wordpress/components';
  import { URLPopover } from '@wordpress/block-editor';
  import { link as linkIcon, close } from '@wordpress/icons';
+ import { Fragment } from '@wordpress/element';
 
 
  const LINK_DESTINATION_NONE = 'none';

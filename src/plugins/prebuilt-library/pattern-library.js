@@ -71,7 +71,9 @@ import { sendEvent } from '../../extension/analytics/send-event';
 const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
 
 const decodeHTMLEntities = (text) => {
-	if (!text) return '';
+	if (!text) {
+		return '';
+	}
 	const textarea = document.createElement('textarea');
 	textarea.innerHTML = text;
 	return textarea.value;
@@ -270,7 +272,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 	// Extract sidebarHeadings and newCategories from patterns
 	useEffect(() => {
-		if (!patterns || typeof patterns !== 'object' || selectedSubTab !== 'patterns') return;
+		if (!patterns || typeof patterns !== 'object' || selectedSubTab !== 'patterns') {
+			return;
+		}
 
 		// Extract unique sidebarHeadings with their order
 		const headingsMap = new Map();
@@ -282,7 +286,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			if (pattern.newCategory && typeof pattern.newCategory === 'object') {
 				Object.keys(pattern.newCategory).forEach((categorySlug) => {
 					const categoryData = pattern.newCategory[categorySlug];
-					if (!categoryData) return;
+					if (!categoryData) {
+						return;
+					}
 
 					const sidebarParent = categoryData.sidebar_parent;
 					const headingName = sidebarParent?.name;
@@ -742,9 +748,12 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			});
 			updateMassContextState(tempContextStates, 'processing');
 			response?.context.forEach((key, index) => {
-				setTimeout(() => {
-					getAIContent(key, true);
-				}, 1000 + index * 50);
+				setTimeout(
+					() => {
+						getAIContent(key, true);
+					},
+					1000 + index * 50
+				);
 			});
 			setIsLoading(false);
 		} else {
@@ -754,9 +763,12 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			});
 			updateMassContextState(tempContextStates, 'processing');
 			response.forEach((key, index) => {
-				setTimeout(() => {
-					getAIContent(key, true);
-				}, 1000 + index * 50);
+				setTimeout(
+					() => {
+						getAIContent(key, true);
+					},
+					1000 + index * 50
+				);
 			});
 			getRemoteAvailableCredits();
 			setIsLoading(false);
@@ -1555,7 +1567,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 												!isLoading ? getLibraryContent(selectedSubTab, true) : null
 											}
 										>
-											{__(' Sync with Cloud', 'kadence-blocks')}
+											{__('Sync with Cloud', 'kadence-blocks')}
 										</Button>
 									</div>
 								</div>
@@ -1632,7 +1644,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 												!isLoading ? getLibraryContent(selectedSubTab, true) : null
 											}
 										>
-											{__(' Sync with Cloud', 'kadence-blocks')}
+											{__('Sync with Cloud', 'kadence-blocks')}
 										</Button>
 									</div>
 								</div>

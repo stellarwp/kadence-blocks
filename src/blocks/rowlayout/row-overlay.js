@@ -81,7 +81,7 @@ function Overlay({ attributes, previewDevice }) {
 			? KadenceColorOutput(
 					overlay,
 					undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1
-			  )
+				)
 			: undefined,
 		undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlay && tabletOverlay[0].enable
 			? KadenceColorOutput(tabletOverlay[0].overlay)
@@ -96,7 +96,7 @@ function Overlay({ attributes, previewDevice }) {
 			? KadenceColorOutput(
 					overlaySecond,
 					undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1
-			  )
+				)
 			: undefined,
 		KadenceColorOutput(
 			undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlaySecond && tabletOverlay[0].enable
@@ -349,14 +349,14 @@ function Overlay({ attributes, previewDevice }) {
 							'radial' === previewOverlayGradType
 								? `radial-gradient(at ${previewOverlayPosition}, ${
 										previewOverlayColor ? previewOverlayColor : ''
-								  } ${previewOverlayGradLoc}%, ${
+									} ${previewOverlayGradLoc}%, ${
 										previewOverlaySecondColor ? previewOverlaySecondColor : ''
-								  } ${previewOverlayGradLocSecond}%)`
+									} ${previewOverlayGradLocSecond}%)`
 								: `linear-gradient(${previewOverlayGradAngle}deg, ${
 										previewOverlayColor ? previewOverlayColor : ''
-								  } ${previewOverlayGradLoc}%, ${
+									} ${previewOverlayGradLoc}%, ${
 										previewOverlaySecondColor ? previewOverlaySecondColor : ''
-								  } ${previewOverlayGradLocSecond}%)`,
+									} ${previewOverlayGradLocSecond}%)`,
 						mixBlendMode: previewOverlayBlendMode ? previewOverlayBlendMode : undefined,
 						opacity:
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)

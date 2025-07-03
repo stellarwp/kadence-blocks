@@ -7,6 +7,9 @@ composer.lock   text -diff
 *.jpg			binary
 *.gif			binary
 
+# Bun lock files
+*.lockb binary diff=lockb
+
 # Ignore paths when git creates an archive of this package
 /.gitattributes             export-ignore
 /.gitignore                 export-ignore

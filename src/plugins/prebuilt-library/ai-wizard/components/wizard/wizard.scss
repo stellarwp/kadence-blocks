@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 .stellarwp.components-modal__frame.components-guide {
 	max-width: 95%;
@@ -23,7 +23,7 @@
 			}
 
 			&:hover svg {
-				fill: $color-gray-400;
+				fill: variables.$color-gray-400;
 			}
 		}
 
@@ -61,7 +61,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: $color-white;
+		background: variables.$color-white;
 		box-sizing: border-box;
 		display: flex;
 		align-items: center;
@@ -78,17 +78,17 @@
 	}
 
 	.components-wizard__primary-button {
-		background: $color-success;
+		background: variables.$color-success;
 
 		&:hover {
-			background: $color-success-dark;
+			background: variables.$color-success-dark;
 		}
 	}
 
 	.components-wizard__secondary-button {
-		background: $color-white;
+		background: variables.$color-white;
 		text-decoration: underline;
-		color: $color-black;
+		color: variables.$color-black;
 		font-size: 14px;
 		font-style: normal;
 		font-weight: 500;
@@ -96,7 +96,7 @@
     border-radius: 4px;
 
 		&:hover {
-			background: $color-gray-200;
+			background: variables.$color-gray-200;
 			text-decoration: none;
 		}
 	}
@@ -119,8 +119,8 @@
 		height: 24px;
 		width: 24px;
 		margin-right: 6px;
-		background: $color-disabled;
-		color: $color-white;
+		background: variables.$color-disabled;
+		color: variables.$color-white;
 		border-radius: 12px;
 		line-height: 24px;
 		font-size: 10px;
@@ -136,31 +136,31 @@
 		.components-button {
 			padding: 6px 8px;
 			font-size: 12px;
-			color: $color-disabled;
+			color: variables.$color-disabled;
 
 			&:disabled,
 			&:disabled:hover {
 				opacity: 1;
-				color: $color-disabled !important;
+				color: variables.$color-disabled !important;
 			}
 			
 			.stellarwp.step-count {
-				background: $color-disabled;
+				background: variables.$color-disabled;
 			}
 
 			&.is-complete {
-				color: $color-black;
+				color: variables.$color-black;
 				
 				.stellarwp.step-count {
-					background: $color-black;
+					background: variables.$color-black;
 				}
 			}
 
 			&.is-current {
-				color: $color-primary;
+				color: variables.$color-primary;
 				
 				.stellarwp.step-count {
-					background: $color-primary;
+					background: variables.$color-primary;
 				}
 			}
 		}

@@ -22,7 +22,7 @@ export default function KadenceColorDefault() {
 			: {
 					palette: [],
 					override: false,
-			  }
+				}
 	);
 	const colorPalette = useSetting('color.palette');
 	const disableCustomColors = !useSetting('color.custom');

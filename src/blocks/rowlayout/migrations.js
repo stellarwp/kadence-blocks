@@ -149,18 +149,18 @@ function migrateGradientSettings(attributes, setAttributes) {
 									undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
 										? overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${overlayGradLoc}%, ${
+					} ${overlayGradLoc}%, ${
 						overlaySecond
 							? KadenceColorOutput(
 									overlaySecond,
 									undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
 										? overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${overlayGradLocSecond}%)`
+					} ${overlayGradLocSecond}%)`
 				: `linear-gradient(${overlayGradAngle}deg, ${
 						overlay
 							? KadenceColorOutput(
@@ -168,18 +168,18 @@ function migrateGradientSettings(attributes, setAttributes) {
 									undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity
 										? overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${overlayGradLoc}%, ${
+					} ${overlayGradLoc}%, ${
 						overlaySecond
 							? KadenceColorOutput(
 									overlaySecond,
 									undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity
 										? overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${overlayGradLocSecond}%)`;
+					} ${overlayGradLocSecond}%)`;
 		setAttributes({ overlayGradient: newDeskGradient, currentOverlayTab: 'gradient' });
 	}
 
@@ -211,9 +211,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== tabletOverlay[0].overlayFirstOpacity
 										? overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${tabletOverlay[0].overlayGradLoc}%, ${
+					} ${tabletOverlay[0].overlayGradLoc}%, ${
 						tabletOverlay[0].overlaySecond
 							? KadenceColorOutput(
 									tabletOverlay[0].overlaySecond,
@@ -221,9 +221,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== tabletOverlay[0].overlaySecondOpacity
 										? tabletOverlay[0].overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${tabletOverlay[0].overlayGradLocSecond}%)`
+					} ${tabletOverlay[0].overlayGradLocSecond}%)`
 				: `linear-gradient(${tabletOverlay[0].overlayGradAngle}deg, ${
 						tabletOverlay[0].overlay
 							? KadenceColorOutput(
@@ -231,9 +231,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 									undefined !== overlayFirstOpacity && '' !== tabletOverlay[0].overlayFirstOpacity
 										? tabletOverlay[0].overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${tabletOverlay[0].overlayGradLoc}%, ${
+					} ${tabletOverlay[0].overlayGradLoc}%, ${
 						tabletOverlay[0].overlaySecond
 							? KadenceColorOutput(
 									tabletOverlay[0].overlaySecond,
@@ -241,9 +241,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== tabletOverlay[0].tabletOverlay[0].overlaySecondOpacity
 										? tabletOverlay[0].overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${tabletOverlay[0].overlayGradLocSecond}%)`;
+					} ${tabletOverlay[0].overlayGradLocSecond}%)`;
 		saveTabletOverlay({ gradient: newTabGradient, currentOverlayTab: 'gradient' });
 	}
 
@@ -275,9 +275,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== mobileOverlay[0].overlayFirstOpacity
 										? overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${mobileOverlay[0].overlayGradLoc}%, ${
+					} ${mobileOverlay[0].overlayGradLoc}%, ${
 						mobileOverlay[0].overlaySecond
 							? KadenceColorOutput(
 									mobileOverlay[0].overlaySecond,
@@ -285,9 +285,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== mobileOverlay[0].overlaySecondOpacity
 										? mobileOverlay[0].overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${mobileOverlay[0].overlayGradLocSecond}%)`
+					} ${mobileOverlay[0].overlayGradLocSecond}%)`
 				: `linear-gradient(${mobileOverlay[0].overlayGradAngle}deg, ${
 						mobileOverlay[0].overlay
 							? KadenceColorOutput(
@@ -295,9 +295,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 									undefined !== overlayFirstOpacity && '' !== mobileOverlay[0].overlayFirstOpacity
 										? mobileOverlay[0].overlayFirstOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${mobileOverlay[0].overlayGradLoc}%, ${
+					} ${mobileOverlay[0].overlayGradLoc}%, ${
 						mobileOverlay[0].overlaySecond
 							? KadenceColorOutput(
 									mobileOverlay[0].overlaySecond,
@@ -305,9 +305,9 @@ function migrateGradientSettings(attributes, setAttributes) {
 										'' !== mobileOverlay[0].mobileOverlay[0].overlaySecondOpacity
 										? mobileOverlay[0].overlaySecondOpacity
 										: 1
-							  )
+								)
 							: ''
-				  } ${mobileOverlay[0].overlayGradLocSecond}%)`;
+					} ${mobileOverlay[0].overlayGradLocSecond}%)`;
 		saveMobileOverlay({ gradient: newMobileGradient, currentOverlayTab: 'gradient' });
 	}
 }
@@ -341,7 +341,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 							left: ['', '', ''],
 							unit: 'px',
 						},
-				  ]
+					]
 		)
 	);
 	let updateBorderStyle = false;
@@ -378,7 +378,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 							left: ['', '', ''],
 							unit: 'px',
 						},
-				  ]
+					]
 		)
 	);
 	let updateTabletBorderStyle = false;
@@ -420,7 +420,7 @@ function migrateBorderSettings(attributes, setAttributes) {
 							left: ['', '', ''],
 							unit: 'px',
 						},
-				  ]
+					]
 		)
 	);
 	let updateMobileBorderStyle = false;

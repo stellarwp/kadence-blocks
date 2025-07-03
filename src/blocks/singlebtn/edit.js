@@ -2068,10 +2068,10 @@ export default function KadenceButtonEdit(props) {
 														undefined !== onlyText?.[0] && onlyText[0]
 															? 'text'
 															: undefined !== onlyIcon?.[1] && onlyIcon[1]
-															? 'true'
-															: undefined !== onlyIcon?.[1] && false === onlyIcon[1]
-															? 'false'
-															: ''
+																? 'true'
+																: undefined !== onlyIcon?.[1] && false === onlyIcon[1]
+																	? 'false'
+																	: ''
 													}
 													options={[
 														{ value: '', label: __('Inherit', 'kadence-blocks') },
@@ -2129,10 +2129,10 @@ export default function KadenceButtonEdit(props) {
 														undefined !== onlyText?.[1] && onlyText[1]
 															? 'text'
 															: undefined !== onlyIcon?.[2] && onlyIcon[2]
-															? 'true'
-															: undefined !== onlyIcon?.[2] && false === onlyIcon[2]
-															? 'false'
-															: ''
+																? 'true'
+																: undefined !== onlyIcon?.[2] && false === onlyIcon[2]
+																	? 'false'
+																	: ''
 													}
 													options={[
 														{ value: '', label: __('Inherit', 'kadence-blocks') },
@@ -2443,7 +2443,7 @@ export default function KadenceButtonEdit(props) {
 										? getFontSizeOptionOutput(
 												previewIconSize,
 												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-										  )
+											)
 										: undefined,
 									paddingTop: previewIconPaddingTop,
 									paddingBottom: previewIconPaddingBottom,
@@ -2489,7 +2489,7 @@ export default function KadenceButtonEdit(props) {
 										? getFontSizeOptionOutput(
 												previewIconSize,
 												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-										  )
+											)
 										: undefined,
 									paddingTop: previewIconPaddingTop,
 									paddingBottom: previewIconPaddingBottom,

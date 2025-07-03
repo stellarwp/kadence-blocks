@@ -280,7 +280,7 @@ function KadenceInfoBox(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -332,7 +332,7 @@ function KadenceInfoBox(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if ('' !== containerHoverBorder) {
@@ -1526,7 +1526,7 @@ function KadenceInfoBox(props) {
 						subset: '',
 						loadGoogle: true,
 					},
-			  ];
+				];
 		const newNumberUpdate = newMediaNumber.map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
@@ -1797,7 +1797,7 @@ function KadenceInfoBox(props) {
 			{previewMaxWidth
 				? `.kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} {max-width:${
 						previewMaxWidth + previewMaxWidthUnit
-				  } !important;}
+					} !important;}
 				  .kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} > .kt-blocks-info-box-link-wrap {max-width:none !important;}`
 				: ''}
 			{fullHeight
@@ -1806,37 +1806,37 @@ function KadenceInfoBox(props) {
 			{mediaIcon[0].hoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput(
 						mediaIcon[0].hoverColor
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{mediaStyle[0].borderRadius && mediaStyle[0].padding.some((number) => number > 0)
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${
 						mediaStyle[0].borderRadius
-				  }${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
+					}${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
 				: ''}
 			{titleHoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput(
 						titleHoverColor
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{textHoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${KadenceColorOutput(
 						textHoverColor
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{learnMoreStyles[0].colorHover
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${KadenceColorOutput(
 						learnMoreStyles[0].colorHover
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{learnMoreStyles[0].borderHover
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${KadenceColorOutput(
 						learnMoreStyles[0].borderHover
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{learnMoreStyles[0].backgroundHover
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${KadenceColorOutput(
 						learnMoreStyles[0].backgroundHover
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{previewBorderHoverTopStyle
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top:${previewBorderHoverTopStyle} !important; }`
@@ -1853,27 +1853,27 @@ function KadenceInfoBox(props) {
 			{'' !== previewHoverRadiusTop
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-left-radius:${
 						previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-				  } !important; }`
+					} !important; }`
 				: ''}
 			{'' !== previewHoverRadiusRight
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-right-radius:${
 						previewHoverRadiusRight + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-				  } !important; }`
+					} !important; }`
 				: ''}
 			{'' !== previewHoverRadiusBottom
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-right-radius:${
 						previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-				  } !important; }`
+					} !important; }`
 				: ''}
 			{'' !== previewHoverRadiusLeft
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-bottom-left-radius:${
 						previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-				  } !important; }`
+					} !important; }`
 				: ''}
 			{containerHoverBackground
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background:${KadenceColorOutput(
 						containerHoverBackground
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{displayShadow
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow:
@@ -1882,17 +1882,17 @@ function KadenceInfoBox(props) {
 					} ${previewHOffsetHover}px ${previewVOffsetHover}px ${previewBlurHover}px ${KadenceColorOutput(
 						previewShadowHover,
 						previewOpacityHover
-				  )} !important; }`
+					)} !important; }`
 				: undefined}
 			{mediaStyle[0].hoverBackground
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${KadenceColorOutput(
 						mediaStyle[0].hoverBackground
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{mediaStyle[0].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[0].hoverAnimation
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput(
 						mediaStyle[0].hoverBorder
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{mediaStyle[0].hoverBorder &&
 			'number' === mediaType &&
@@ -1900,12 +1900,12 @@ function KadenceInfoBox(props) {
 			'drawborder' !== mediaNumber[0].hoverAnimation
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput(
 						mediaStyle[0].hoverBorder
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{mediaStyle[0].hoverBorder && 'image' === mediaType && true !== mediaImagedraw
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${KadenceColorOutput(
 						mediaStyle[0].hoverBorder
-				  )} !important; }`
+					)} !important; }`
 				: ''}
 			{'icon' === mediaType &&
 				'drawborder' === mediaIcon[0].hoverAnimation &&
@@ -1913,22 +1913,22 @@ function KadenceInfoBox(props) {
 					mediaStyle[0].borderWidth[0]
 				}px ${KadenceColorOutput(mediaStyle[0].border)}; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${
-					mediaStyle[0].borderRadius
-				}px; }
+						mediaStyle[0].borderRadius
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; }
+						mediaStyle[0].borderWidth[0]
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)} ; border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
+						mediaStyle[0].hoverBorder
+					)} ; border-right-color: ${KadenceColorOutput(
+						mediaStyle[0].hoverBorder
+					)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
+						mediaStyle[0].hoverBorder
+					)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
+						mediaStyle[0].borderWidth[0]
+					}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
 			{'number' === mediaType &&
 				mediaNumber &&
 				mediaNumber[0] &&
@@ -1938,44 +1938,44 @@ function KadenceInfoBox(props) {
 					mediaStyle[0].borderWidth[0]
 				}px ${mediaStyle[0].border}; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${
-					mediaStyle[0].borderRadius
-				}px; }
+						mediaStyle[0].borderRadius
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; }
+						mediaStyle[0].borderWidth[0]
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)} ; border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
+						mediaStyle[0].hoverBorder
+					)} ; border-right-color: ${KadenceColorOutput(
+						mediaStyle[0].hoverBorder
+					)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
+						mediaStyle[0].hoverBorder
+					)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
+						mediaStyle[0].borderWidth[0]
+					}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
 			{'image' === mediaType &&
 				true === mediaImagedraw &&
 				`.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${
 					mediaStyle[0].borderWidth[0]
 				}px ${mediaStyle[0].border}; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${
-					mediaStyle[0].borderRadius
-				}px; }
+						mediaStyle[0].borderRadius
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; }
+						mediaStyle[0].borderWidth[0]
+					}px; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)} ; border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
+						mediaStyle[0].hoverBorder
+					)} ; border-right-color: ${KadenceColorOutput(
+						mediaStyle[0].hoverBorder
+					)}; border-bottom-color: ${KadenceColorOutput(mediaStyle[0].hoverBorder)} }
 					.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${KadenceColorOutput(
-					mediaStyle[0].hoverBorder
-				)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
-					mediaStyle[0].borderWidth[0]
-				}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
+						mediaStyle[0].hoverBorder
+					)}; border-right-width: ${mediaStyle[0].borderWidth[0]}px; border-bottom-width: ${
+						mediaStyle[0].borderWidth[0]
+					}px; border-top-width: ${mediaStyle[0].borderWidth[0]}px; }`}
 		</style>
 	);
 	let imageRatioPadding = isNaN(mediaImage[0].height)
@@ -4082,10 +4082,10 @@ function KadenceInfoBox(props) {
 					boxShadow: displayShadow
 						? `${
 								previewInset ? 'inset' : ''
-						  } ${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
+							} ${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
 								previewShadow,
 								previewOpacity
-						  )}`
+							)}`
 						: undefined,
 					background: containerBackground ? KadenceColorOutput(containerBackground) : undefined,
 					borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
@@ -4146,13 +4146,13 @@ function KadenceInfoBox(props) {
 						style={{
 							margin: mediaStyle[0].margin
 								? mediaStyle[0].margin[0] +
-								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
-								  mediaStyle[0].margin[1] +
-								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
-								  mediaStyle[0].margin[2] +
-								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
-								  mediaStyle[0].margin[3] +
-								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit : 'px')
+									(mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
+									mediaStyle[0].margin[1] +
+									(mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
+									mediaStyle[0].margin[2] +
+									(mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
+									mediaStyle[0].margin[3] +
+									(mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit : 'px')
 								: '',
 						}}
 					>
@@ -4168,26 +4168,26 @@ function KadenceInfoBox(props) {
 								borderRadius: mediaStyle[0].borderRadius + (mediaStyle[0].borderRadiusUnit ?? 'px'),
 								borderWidth: mediaStyle[0].borderWidth
 									? mediaStyle[0].borderWidth[0] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') +
-									  ' ' +
-									  mediaStyle[0].borderWidth[1] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') +
-									  ' ' +
-									  mediaStyle[0].borderWidth[2] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') +
-									  ' ' +
-									  mediaStyle[0].borderWidth[3] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px')
+										(mediaStyle[0].borderWidthUnit ?? 'px') +
+										' ' +
+										mediaStyle[0].borderWidth[1] +
+										(mediaStyle[0].borderWidthUnit ?? 'px') +
+										' ' +
+										mediaStyle[0].borderWidth[2] +
+										(mediaStyle[0].borderWidthUnit ?? 'px') +
+										' ' +
+										mediaStyle[0].borderWidth[3] +
+										(mediaStyle[0].borderWidthUnit ?? 'px')
 									: '',
 								padding: mediaStyle[0].padding
 									? mediaStyle[0].padding[0] +
-									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
-									  mediaStyle[0].padding[1] +
-									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
-									  mediaStyle[0].padding[2] +
-									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
-									  mediaStyle[0].padding[3] +
-									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit : 'px')
+										(mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
+										mediaStyle[0].padding[1] +
+										(mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
+										mediaStyle[0].padding[2] +
+										(mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
+										mediaStyle[0].padding[3] +
+										(mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit : 'px')
 									: '',
 							}}
 						>
@@ -4357,13 +4357,13 @@ function KadenceInfoBox(props) {
 															'core/italic',
 															'core/link',
 															'toolset/inline-field',
-													  ])
+														])
 													: applyFilters('kadence.whitelist_richtext_formats', [
 															'kadence/insert-dynamic',
 															'core/bold',
 															'core/italic',
 															'toolset/inline-field',
-													  ])
+														])
 											}
 											tagName={'div'}
 											placeholder={'1'}
@@ -4390,13 +4390,13 @@ function KadenceInfoBox(props) {
 											'core/italic',
 											'core/link',
 											'toolset/inline-field',
-									  ])
+										])
 									: applyFilters('kadence.whitelist_richtext_formats', [
 											'kadence/insert-dynamic',
 											'core/bold',
 											'core/italic',
 											'toolset/inline-field',
-									  ])
+										])
 							}
 							tagName={titleTagName}
 							placeholder={__('Title', 'kadence-blocks')}
@@ -4413,23 +4413,23 @@ function KadenceInfoBox(props) {
 								fontFamily: titleFont[0].family ? titleFont[0].family : '',
 								padding: titleFont[0].padding
 									? titleFont[0].padding[0] +
-									  'px ' +
-									  titleFont[0].padding[1] +
-									  'px ' +
-									  titleFont[0].padding[2] +
-									  'px ' +
-									  titleFont[0].padding[3] +
-									  'px'
+										'px ' +
+										titleFont[0].padding[1] +
+										'px ' +
+										titleFont[0].padding[2] +
+										'px ' +
+										titleFont[0].padding[3] +
+										'px'
 									: '',
 								margin: titleFont[0].margin
 									? titleFont[0].margin[0] +
-									  'px ' +
-									  titleFont[0].margin[1] +
-									  'px ' +
-									  titleFont[0].margin[2] +
-									  'px ' +
-									  titleFont[0].margin[3] +
-									  'px'
+										'px ' +
+										titleFont[0].margin[1] +
+										'px ' +
+										titleFont[0].margin[2] +
+										'px ' +
+										titleFont[0].margin[3] +
+										'px'
 									: '',
 								minHeight: previewTitleMinHeight + (titleMinHeightUnit ? titleMinHeightUnit : 'px'),
 							}}
@@ -4448,13 +4448,13 @@ function KadenceInfoBox(props) {
 											'core/italic',
 											'core/link',
 											'toolset/inline-field',
-									  ])
+										])
 									: applyFilters('kadence.whitelist_richtext_formats', [
 											'kadence/insert-dynamic',
 											'core/bold',
 											'core/italic',
 											'toolset/inline-field',
-									  ])
+										])
 							}
 							tagName={'p'}
 							placeholder={__(
@@ -4478,24 +4478,24 @@ function KadenceInfoBox(props) {
 								padding:
 									undefined !== textSpacing && undefined !== textSpacing[0] && textSpacing[0].padding
 										? textSpacing[0].padding[0] +
-										  'px ' +
-										  textSpacing[0].padding[1] +
-										  'px ' +
-										  textSpacing[0].padding[2] +
-										  'px ' +
-										  textSpacing[0].padding[3] +
-										  'px'
+											'px ' +
+											textSpacing[0].padding[1] +
+											'px ' +
+											textSpacing[0].padding[2] +
+											'px ' +
+											textSpacing[0].padding[3] +
+											'px'
 										: '',
 								margin:
 									undefined !== textSpacing && undefined !== textSpacing[0] && textSpacing[0].margin
 										? textSpacing[0].margin[0] +
-										  'px ' +
-										  textSpacing[0].margin[1] +
-										  'px ' +
-										  textSpacing[0].margin[2] +
-										  'px ' +
-										  textSpacing[0].margin[3] +
-										  'px'
+											'px ' +
+											textSpacing[0].margin[1] +
+											'px ' +
+											textSpacing[0].margin[2] +
+											'px ' +
+											textSpacing[0].margin[3] +
+											'px'
 										: '',
 								minHeight: previewTextMinHeight + (textMinHeightUnit ? textMinHeightUnit : 'px'),
 							}}
@@ -4538,13 +4538,13 @@ function KadenceInfoBox(props) {
 									fontFamily: learnMoreStyles[0].family ? learnMoreStyles[0].family : '',
 									borderWidth: learnMoreStyles[0].borderWidth
 										? learnMoreStyles[0].borderWidth[0] +
-										  'px ' +
-										  learnMoreStyles[0].borderWidth[1] +
-										  'px ' +
-										  learnMoreStyles[0].borderWidth[2] +
-										  'px ' +
-										  learnMoreStyles[0].borderWidth[3] +
-										  'px'
+											'px ' +
+											learnMoreStyles[0].borderWidth[1] +
+											'px ' +
+											learnMoreStyles[0].borderWidth[2] +
+											'px ' +
+											learnMoreStyles[0].borderWidth[3] +
+											'px'
 										: '',
 									paddingTop:
 										undefined !== learnMoreStyles?.[0]?.padding?.[0] &&

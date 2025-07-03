@@ -241,7 +241,7 @@ function KadenceTestimonials(props) {
 							? KadenceColorOutput(
 									iconStyles[0].background,
 									undefined !== iconStyles[0].backgroundOpacity ? iconStyles[0].backgroundOpacity : 1
-							  )
+								)
 							: undefined,
 					}}
 				/>

@@ -14,7 +14,7 @@ const defaultLinkSettings = Array.isArray(LinkControl?.DEFAULT_LINK_SETTINGS)
 				id: '"opensInNewTab"',
 				title: __('Open in new tab', 'kadence-blocks'),
 			},
-	  ];
+		];
 
 const LINK_SETTINGS = [
 	...defaultLinkSettings,

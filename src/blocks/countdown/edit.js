@@ -1162,7 +1162,7 @@ function KadenceCountdown(props) {
 							? `font-size: ${getFontSizeOptionOutput(
 									previewPostLabelFontSize,
 									previewPostLabelSizeType
-							  )};`
+								)};`
 							: ''}
 						{previewPostLabelLineSize
 							? `line-height: ${previewPostLabelLineSize + previewPostLabelLineType};`

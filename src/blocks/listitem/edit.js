@@ -844,33 +844,33 @@ function KadenceListItem(props) {
 						${
 							'' !== previewMarkBorderRadiusTop
 								? 'border-top-left-radius:' +
-								  previewMarkBorderRadiusTop +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusTop +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusRight
 								? 'border-top-right-radius:' +
-								  previewMarkBorderRadiusRight +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusRight +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusBottom
 								? 'border-bottom-right-radius:' +
-								  previewMarkBorderRadiusBottom +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusBottom +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusLeft
 								? 'border-bottom-left-radius:' +
-								  previewMarkBorderRadiusLeft +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusLeft +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 					}`}

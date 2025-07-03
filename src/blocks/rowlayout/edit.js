@@ -497,7 +497,7 @@ const KadenceRowLayout = (props) => {
 		const widthString = attributeColumnWidthToUse || previewColLayout;
 
 		columnWidthNumbers.push(
-			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidthToUse : mappedWidth ?? 0
+			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidthToUse : (mappedWidth ?? 0)
 		);
 		widthStrings.push(`${widthString}`);
 	}
@@ -606,17 +606,17 @@ const KadenceRowLayout = (props) => {
 				minHeight:
 					previewMinHeight && paddingUnit && '%' !== paddingUnit
 						? 'calc(' +
-						  previewMinHeight +
-						  minHeightUnit +
-						  ' - (' +
-						  ('' !== previewPaddingTop
+							previewMinHeight +
+							minHeightUnit +
+							' - (' +
+							('' !== previewPaddingTop
 								? getSpacingOptionOutput(previewPaddingTop, paddingUnit ? paddingUnit : 'px')
 								: '0px') +
-						  ' + ' +
-						  ('' !== previewPaddingBottom
+							' + ' +
+							('' !== previewPaddingBottom
 								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit ? paddingUnit : 'px')
 								: '0px') +
-						  ')'
+							')'
 						: undefined,
 				paddingLeft:
 					'' !== previewPaddingLeft
@@ -831,10 +831,10 @@ const KadenceRowLayout = (props) => {
 												hasBG && padding[1] === '' && padding[3] !== ''
 													? 'padding-right-measure-range-control'
 													: hasBG && padding[1] !== '' && padding[3] === ''
-													? 'padding-left-measure-range-control'
-													: hasBG && padding[1] === '' && padding[3] === ''
-													? 'padding-right-measure-range-control padding-left-measure-range-control'
-													: ''
+														? 'padding-left-measure-range-control'
+														: hasBG && padding[1] === '' && padding[3] === ''
+															? 'padding-right-measure-range-control padding-left-measure-range-control'
+															: ''
 											}
 										>
 											<ResponsiveMeasureRangeControl
@@ -847,8 +847,8 @@ const KadenceRowLayout = (props) => {
 													padding[3] === ''
 														? [padding[0], '', padding[2], '']
 														: undefined !== padding && undefined !== padding[0]
-														? padding
-														: ['sm', '', 'sm', '']
+															? padding
+															: ['sm', '', 'sm', '']
 												}
 												tabletValue={tabletPadding}
 												mobileValue={
@@ -1156,7 +1156,7 @@ const KadenceRowLayout = (props) => {
 					{textColor
 						? `.kb-row-id-${uniqueID}, .kb-row-id-${uniqueID} p:not(.use-for-specificity), .kb-row-id-${uniqueID} h1:not(.use-for-specificity), .kb-row-id-${uniqueID} h2:not(.use-for-specificity), .kb-row-id-${uniqueID} h3:not(.use-for-specificity), .kb-row-id-${uniqueID} h4:not(.use-for-specificity), .kb-row-id-${uniqueID} h5:not(.use-for-specificity), .kb-row-id-${uniqueID} h6:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								textColor
-						  )}; }`
+							)}; }`
 						: ''}
 					{columns &&
 						columns === 2 &&
@@ -1169,28 +1169,28 @@ const KadenceRowLayout = (props) => {
 								{breakoutRight
 									? `@media (min-width: 1290px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
-											isSelected ? 3 : 2
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 3 : 2
+											}) > .kadence-inner-column-inner {
 												margin-inline-end: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important;
 										}}
 										@media (max-width: 1289px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
-											isSelected ? 3 : 2
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 3 : 2
+											}) > .kadence-inner-column-inner {
 												margin-inline-end: calc( ${paddingRightBreakout} * -1 ) !important;
 										}}`
 									: ''}
 								{breakoutLeft
 									? `@media (min-width: 1290px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
-											isSelected ? 2 : 1
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 2 : 1
+											}) > .kadence-inner-column-inner {
 												margin-inline-start: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important;
 										}}
 										@media (max-width: 1289px) {
 											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
-											isSelected ? 2 : 1
-									  }) > .kadence-inner-column-inner {
+												isSelected ? 2 : 1
+											}) > .kadence-inner-column-inner {
 												margin-inline-start: calc( ${paddingRightBreakout} * -1 ) !important;
 										}}`
 									: ''}
@@ -1215,12 +1215,12 @@ const KadenceRowLayout = (props) => {
 					{linkColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								linkColor
-						  )}; }`
+							)}; }`
 						: ''}
 					{linkHoverColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity):hover { color: ${KadenceColorOutput(
 								linkHoverColor
-						  )}; }`
+							)}; }`
 						: ''}
 					<>
 						{undefined !== columnGap

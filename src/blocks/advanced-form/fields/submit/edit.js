@@ -620,33 +620,33 @@ export default function KadenceButtonEdit({
 			{previewBorderHoverBottomStyle ? 'border-bottom:' + previewBorderHoverBottomStyle + '!important;' : ''}
 			{'' !== previewHoverRadiusTop
 				? 'border-top-left-radius:' +
-				  previewHoverRadiusTop +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
+					previewHoverRadiusTop +
+					(borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
+					'!important;'
 				: ''}
 			{'' !== previewHoverRadiusRight
 				? 'border-top-right-radius:' +
-				  previewHoverRadiusRight +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
+					previewHoverRadiusRight +
+					(borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
+					'!important;'
 				: ''}
 			{'' !== previewHoverRadiusLeft
 				? 'border-bottom-left-radius:' +
-				  previewHoverRadiusLeft +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
+					previewHoverRadiusLeft +
+					(borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
+					'!important;'
 				: ''}
 			{'' !== previewHoverRadiusBottom
 				? 'border-bottom-right-radius:' +
-				  previewHoverRadiusBottom +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
+					previewHoverRadiusBottom +
+					(borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
+					'!important;'
 				: ''}
 			{'}'}
 			{iconColorHover
 				? `.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon { color:${KadenceColorOutput(
 						iconColorHover
-				  )} !important;}`
+					)} !important;}`
 				: ''}
 			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before {`}
 			{btnbgHover ? 'background:' + btnbgHover + ';' : ''}
@@ -1178,8 +1178,8 @@ export default function KadenceButtonEdit({
 														undefined !== onlyIcon?.[1] && onlyIcon[1]
 															? 'true'
 															: undefined !== onlyIcon?.[1] && false === onlyIcon[1]
-															? 'false'
-															: ''
+																? 'false'
+																: ''
 													}
 													options={[
 														{ value: '', label: __('Inherit', 'kadence-blocks') },
@@ -1215,8 +1215,8 @@ export default function KadenceButtonEdit({
 														undefined !== onlyIcon?.[2] && onlyIcon[2]
 															? 'true'
 															: undefined !== onlyIcon?.[2] && false === onlyIcon[2]
-															? 'false'
-															: ''
+																? 'false'
+																: ''
 													}
 													options={[
 														{ value: '', label: __('Inherit', 'kadence-blocks') },
@@ -1501,18 +1501,18 @@ export default function KadenceButtonEdit({
 							undefined !== shadow[0] &&
 							undefined !== shadow[0].color
 								? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-								  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-								  'px ' +
-								  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-								  'px ' +
-								  KadenceColorOutput(
+									(undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+									'px ' +
+									(undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+									'px ' +
+									(undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+									'px ' +
+									(undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+									'px ' +
+									KadenceColorOutput(
 										undefined !== shadow[0].color ? shadow[0].color : '#000000',
 										undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-								  )
+									)
 								: undefined,
 
 						background: undefined !== btnbg ? btnbg : undefined,
@@ -1536,7 +1536,7 @@ export default function KadenceButtonEdit({
 									? getFontSizeOptionOutput(
 											previewIconSize,
 											undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-									  )
+										)
 									: undefined,
 								color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
 								paddingTop: previewIconPaddingTop
@@ -1583,7 +1583,7 @@ export default function KadenceButtonEdit({
 									? getFontSizeOptionOutput(
 											previewIconSize,
 											undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-									  )
+										)
 									: undefined,
 								color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
 								paddingTop: previewIconPaddingTop

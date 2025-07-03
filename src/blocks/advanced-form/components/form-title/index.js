@@ -149,7 +149,7 @@ export default function FormTitle({ setTitle, isAdding, existingTitle, onAdd }) 
 										if (tmpTitle === '') {
 											'skip' === key
 												? setTmpTitle(__('Blank Form', 'kadence-blocks'))
-												: setTmpTitle(name + __(' Form', 'kadence-blocks'));
+												: setTmpTitle(name + __('Form', 'kadence-blocks'));
 										}
 										if ('skip' === key) {
 											setWizardStep('title');

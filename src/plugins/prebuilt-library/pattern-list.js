@@ -39,7 +39,9 @@ import { sendEvent } from '../../extension/analytics/send-event';
 import { getAsyncData } from './data-fetch/get-async-data';
 
 const decodeHTMLEntities = (text) => {
-	if (!text) return '';
+	if (!text) {
+		return '';
+	}
 	const textarea = document.createElement('textarea');
 	textarea.innerHTML = text;
 	return textarea.value;
@@ -1361,12 +1363,12 @@ function PatternList({
 										),
 										filteredBlockPatterns.length,
 										filterValue
-								  )
+									)
 								: sprintf(
 										/* translators: %d: number of patterns. */
 										_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
 										filteredBlockPatterns.length
-								  )}
+									)}
 						</span>
 						<div className="kb-patterns-filter-wrapper-sort-by">
 							<span className="kb-pattern-filter-label">Sort by:</span>
@@ -1403,12 +1405,12 @@ function PatternList({
 										),
 										filteredBlockPatterns.length,
 										filterValue
-								  )
+									)
 								: sprintf(
 										/* translators: %d: number of patterns. */
 										_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
 										filteredBlockPatterns.length
-								  )}
+									)}
 						</span>
 						<div className="kb-patterns-filter-wrapper-sort-by">
 							<span className="kb-pattern-filter-label">Sort by:</span>

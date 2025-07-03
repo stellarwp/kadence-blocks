@@ -511,8 +511,8 @@ class KBHeader {
 				this.activeSize === 'mobile'
 					? this.shrinkMainHeightMobile
 					: this.activeSize === 'tablet'
-					? this.shrinkMainHeightTablet
-					: this.shrinkMainHeight;
+						? this.shrinkMainHeightTablet
+						: this.shrinkMainHeight;
 			if (shrinkHeight) {
 				// Set totalOffsetDelay
 				// var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);

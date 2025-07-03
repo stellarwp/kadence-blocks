@@ -1,3 +1,4 @@
+@use "sass:color";
 /**
  * Custom Properties
  */
@@ -29,8 +30,8 @@ $red: #a00 !default;
 $orange: #ffba00 !default;
 $blue: #2ea2cc !default;
 
-$secondary: desaturate(lighten(#3182ce, 40%), 21%) !default; // Secondary buttons
-$secondarytext: desaturate(darken($secondary, 60%), 21%) !default; // Text on secondary color bg
+$secondary: color.adjust(color.adjust(#3182ce, $lightness: 40%), $saturation: -21%) !default; // Secondary buttons
+$secondarytext: color.adjust(color.adjust($secondary, $lightness: -60%), $saturation: -21%) !default; // Text on secondary color bg
 
 $font-size-small: calc(16 / 20 * 1rem);
 $font-size-regular: calc(20 / 16 * 1rem);

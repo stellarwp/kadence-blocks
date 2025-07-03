@@ -22,7 +22,7 @@ export default function DefaultEditorBlock() {
 	}
 
 	return (
-		<PanelBody title={__('Default Editor Block ', 'kadence-blocks')} initialOpen={false}>
+		<PanelBody title={__('Default Editor Block', 'kadence-blocks')} initialOpen={false}>
 			<KadenceSetting
 				slug={'adv_text_is_default_editor_block'}
 				label={__('Set Advanced Text as default block', 'kadence-blocks')}

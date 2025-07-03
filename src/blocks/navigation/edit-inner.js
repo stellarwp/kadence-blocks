@@ -263,7 +263,7 @@ export function EditInner(props) {
 						subset: '',
 						loadGoogle: true,
 					},
-			  ],
+				],
 		dropdownTypography: meta?._kad_navigation_dropdownTypography
 			? meta?._kad_navigation_dropdownTypography
 			: [
@@ -283,7 +283,7 @@ export function EditInner(props) {
 						subset: '',
 						loadGoogle: true,
 					},
-			  ],
+				],
 		descriptionTypography: meta?._kad_navigation_descriptionTypography
 			? meta?._kad_navigation_descriptionTypography
 			: [
@@ -303,7 +303,7 @@ export function EditInner(props) {
 						subset: '',
 						loadGoogle: true,
 					},
-			  ],
+				],
 		dropdownDescriptionTypography: meta?._kad_navigation_dropdownDescriptionTypography
 			? meta?._kad_navigation_dropdownDescriptionTypography
 			: [
@@ -323,7 +323,7 @@ export function EditInner(props) {
 						subset: '',
 						loadGoogle: true,
 					},
-			  ],
+				],
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
@@ -1330,8 +1330,8 @@ export function EditInner(props) {
 									spacingUnit === 'em' || spacingUnit === 'rem'
 										? 24
 										: spacingUnit === 'px'
-										? 200
-										: 100
+											? 200
+											: 100
 								}
 								step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 								unit={spacingUnit}
@@ -1377,8 +1377,8 @@ export function EditInner(props) {
 										spacingUnit === 'em' || spacingUnit === 'rem'
 											? 24
 											: spacingUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 									unit={spacingUnit}
@@ -1741,8 +1741,8 @@ export function EditInner(props) {
 												dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem'
 													? 24
 													: dropdownWidthUnit === 'px'
-													? 2000
-													: 100
+														? 2000
+														: 100
 											}
 											step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
 											reset={() => setMetaAttribute('', 'dropdownWidth')}
@@ -1774,8 +1774,8 @@ export function EditInner(props) {
 										dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
 											? 24
 											: dropdownVerticalSpacingUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={
 										dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
@@ -1930,8 +1930,8 @@ export function EditInner(props) {
 										paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem'
 											? 24
 											: paddingDropdownUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem' ? 0.1 : 1}
 									unit={paddingDropdownUnit}
@@ -1956,15 +1956,15 @@ export function EditInner(props) {
 										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
 											? -25
 											: marginDropdownUnit === 'px'
-											? -400
-											: -100
+												? -400
+												: -100
 									}
 									max={
 										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
 											? 24
 											: marginDropdownUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={marginDropdownUnit === 'em' || marginDropdownUnit === 'rem' ? 0.1 : 1}
 									unit={marginDropdownUnit}
@@ -2007,8 +2007,8 @@ export function EditInner(props) {
 										paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
 											? 24
 											: paddingDropdownLinkUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={
 										paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1
@@ -2036,8 +2036,8 @@ export function EditInner(props) {
 										marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
 											? 24
 											: marginDropdownLinkUnit === 'px'
-											? 200
-											: 100
+												? 200
+												: 100
 									}
 									step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
 									unit={marginDropdownLinkUnit}
@@ -2168,8 +2168,8 @@ export function EditInner(props) {
 										dropdownDescriptionSpacingUnit === 'rem'
 											? 24
 											: dropdownDescriptionSpacingUnit === 'px'
-											? 2000
-											: 100
+												? 2000
+												: 100
 									}
 									step={
 										dropdownDescriptionSpacingUnit === 'em' ||
@@ -2301,8 +2301,8 @@ export function EditInner(props) {
 									descriptionSpacingUnit === 'em' || descriptionSpacingUnit === 'rem'
 										? 24
 										: descriptionSpacingUnit === 'px'
-										? 2000
-										: 100
+											? 2000
+											: 100
 								}
 								step={descriptionSpacingUnit === 'em' || descriptionSpacingUnit === 'rem' ? 0.1 : 1}
 								reset={() => setMetaAttribute('', 'descriptionSpacing')}
@@ -2391,8 +2391,8 @@ export function EditInner(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 24
 										: paddingUnit === 'px'
-										? 200
-										: 100
+											? 200
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
@@ -2419,8 +2419,8 @@ export function EditInner(props) {
 									marginUnit === 'em' || marginUnit === 'rem'
 										? -25
 										: marginUnit === 'px'
-										? -400
-										: -100
+											? -400
+											: -100
 								}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
@@ -2449,8 +2449,8 @@ export function EditInner(props) {
 									paddingLinkUnit === 'em' || paddingLinkUnit === 'rem'
 										? 24
 										: paddingLinkUnit === 'px'
-										? 200
-										: 100
+											? 200
+											: 100
 								}
 								step={paddingLinkUnit === 'em' || paddingLinkUnit === 'rem' ? 0.1 : 1}
 								unit={paddingLinkUnit}
@@ -2476,8 +2476,8 @@ export function EditInner(props) {
 									marginLinkUnit === 'em' || marginLinkUnit === 'rem'
 										? 24
 										: marginLinkUnit === 'px'
-										? 200
-										: 100
+											? 200
+											: 100
 								}
 								step={marginLinkUnit === 'em' || marginLinkUnit === 'rem' ? 0.1 : 1}
 								unit={marginLinkUnit}

@@ -179,21 +179,21 @@ function FieldCaptcha(props) {
 	const previewRecaptchaSiteKey = useKcSettings
 		? get(kadenceRecaptha, 'v3_re_site_key', '-')
 		: useKbSettings
-		? recaptchaSiteKeyState
-		: recaptchaSiteKey;
+			? recaptchaSiteKeyState
+			: recaptchaSiteKey;
 	const previewRecaptchaSecretKey = useKbSettings ? recaptchaSecretKeyState : recaptchaSecretKey;
 	const previewRecaptchaLanguage = useKbSettings ? recaptchaLanguageState : recaptchaLanguage;
 	const previewTurnstileSiteKey = useKcSettings
 		? get(kadenceRecaptha, 'v3_re_site_key', '-')
 		: useKbSettings
-		? turnstileSiteKeyState
-		: turnstileSiteKey;
+			? turnstileSiteKeyState
+			: turnstileSiteKey;
 	const previewTurnstileSecretKey = useKbSettings ? turnstileSecretKeyState : turnstileSecretKey;
 	const previewhCaptchaSiteKey = useKcSettings
 		? get(kadenceRecaptha, 'v3_re_site_key', '-')
 		: useKbSettings
-		? hCaptchaSiteKeyState
-		: hCaptchaSiteKey;
+			? hCaptchaSiteKeyState
+			: hCaptchaSiteKey;
 	const previewhCaptchaSecretKey = useKbSettings ? hCaptchaSecretKeyState : hCaptchaSecretKey;
 	const previewTheme = useKcSettings ? get(kadenceRecaptha, 'kt_re_theme', 'light') : theme;
 	const previewSize = useKcSettings ? get(kadenceRecaptha, 'kt_re_size', 'normal') : size;
@@ -206,7 +206,7 @@ function FieldCaptcha(props) {
 			: __(
 					'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply',
 					'kadence-blocks'
-			  );
+				);
 
 	const googleV2RerenderKey = theme + size + previewRecaptchaLanguage + previewRecaptchaSiteKey + recaptchaSecretKey;
 
@@ -741,7 +741,7 @@ function FieldCaptcha(props) {
 								'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme
 							}
 						>
-							{__(' Loading Captcha Settings', 'kadence-blocks')}
+							{__('Loading Captcha Settings', 'kadence-blocks')}
 							<Spinner />
 						</div>
 					)}

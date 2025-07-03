@@ -285,8 +285,8 @@ export function Photography(props) {
 									isSearchQueryCleared
 										? ''
 										: localSearchQuery !== ''
-										? localSearchQuery
-										: imageSearchQuery
+											? localSearchQuery
+											: imageSearchQuery
 								}
 								onChange={(value) => {
 									value === '' ? setIsSearchQueryCleared(true) : setIsSearchQueryCleared(false);

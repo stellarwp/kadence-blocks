@@ -207,7 +207,7 @@ function KadenceTableOfContents(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -254,7 +254,7 @@ function KadenceTableOfContents(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateTitleBorderStyle = false;
@@ -1380,18 +1380,18 @@ function KadenceTableOfContents(props) {
 							undefined !== shadow[0] &&
 							undefined !== shadow[0].color
 								? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-								  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-								  'px ' +
-								  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-								  'px ' +
-								  KadenceColorOutput(
+									(undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+									'px ' +
+									(undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+									'px ' +
+									(undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+									'px ' +
+									(undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+									'px ' +
+									KadenceColorOutput(
 										undefined !== shadow[0].color ? shadow[0].color : '#000000',
 										undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-								  )
+									)
 								: undefined,
 						maxWidth: previewMaxWidth ? previewMaxWidth + maxWidthType : undefined,
 					}}
