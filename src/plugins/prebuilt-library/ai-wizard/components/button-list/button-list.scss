@@ -1,4 +1,4 @@
-@import "../../scss/variables.scss";
+@use "../../scss/variables" as vars;
 
 .ai-wizard-button-list {
 	.ai-wizard-button-list_wrapper {
@@ -24,7 +24,7 @@
 			padding: 20px;
 			text-align: left;
 			&.is-selected {
-				border-color: $color-black;
+				border-color: vars.$color-black;
 
 				.dashicon {
 					visibility: visible;
@@ -35,7 +35,7 @@
 				outline: none;
 			}
 			&:hover {
-				color: $color-black;
+				color: vars.$color-black;
 			}
 			.ai-wizard-button-list_item-icon .dashicon {
 				background: #f2f2f2;
@@ -65,8 +65,8 @@
 				}
 			}
 			.ai-wizard-button-list_item-active .dashicon {
-				background: $color-black;
-				color: $color-white;
+				background: vars.$color-black;
+				color: vars.$color-white;
 				border-radius: 40px;
 				visibility: hidden;
 			}

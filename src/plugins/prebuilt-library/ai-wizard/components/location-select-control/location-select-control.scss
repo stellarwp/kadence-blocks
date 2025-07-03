@@ -1,8 +1,8 @@
-@import "../../scss/variables.scss";
-@import '../../scss/mixins.scss';
+@use "../../scss/variables.scss";
+@use '../../scss/mixins.scss';
 
 .location-select-control__label {
-	@include input_label;
+	@include mixins.input_label;
 
   margin-bottom: 0;
 }
@@ -16,7 +16,7 @@
   width: 100%;
   padding: 0;
   border-radius: 4px;
-  border-color: $color-gray-300;
+  border-color: variables.$color-gray-300;
   border-width: 1px;
   border-style: solid;
   text-align: left;
@@ -25,19 +25,19 @@
 
   &:hover,
   &:focus {
-    border-color: $color-black;
+    border-color: variables.$color-black;
   }
   
   &.is-selected {
-    border-color: $color-primary;
+    border-color: variables.$color-primary;
 
     .components-card__header,
     .components-card__body {
-      color: $color-primary
+      color: variables.$color-primary
     }
    
     .components-card__header svg {
-      fill: $color-primary;
+      fill: variables.$color-primary;
     }
   }
 

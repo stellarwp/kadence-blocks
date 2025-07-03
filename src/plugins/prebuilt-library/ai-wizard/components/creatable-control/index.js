@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Creatable } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import classnames from 'classnames';
 
 /**
@@ -26,7 +26,7 @@ export const CreatableControl = forwardRef(function CreatableControl(props, ref)
 			{label ? <label className="components-input-control__label">{label}</label> : null}
 			<div className={containerClasses} ref={ref}>
 				{prefix ? prefix : null}
-				<Creatable
+				<CreatableSelect
 					classNamePrefix="stellarwp-creatable"
 					maxMenuHeight={maxMenuHeight}
 					menuPlacement={menuPlacement}

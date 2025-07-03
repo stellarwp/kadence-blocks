@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 .stellarwp.components-checkbox-control {
 	.components-base-control__field {
@@ -7,21 +7,21 @@
 
 	.components-checkbox-control__label {
 		font-size: 14px;
-		color: $color-black;
+		color: variables.$color-black;
 	}
 
 	.components-checkbox-control__input[type=checkbox] {
 		border-width: 2px;
-		border-color: $color-gray-500;
+		border-color: variables.$color-gray-500;
 		border-radius: 3px;
 
 		&:checked {
-			border-color: $color-black;
-			background-color: $color-black;
+			border-color: variables.$color-black;
+			background-color: variables.$color-black;
 		}
 
 		&:focus {
-			box-shadow: 0 0 0 2px $color-white, 0 0 0 3px $color-black;
+			box-shadow: 0 0 0 2px variables.$color-white, 0 0 0 3px variables.$color-black;
 		}
 	}
 }

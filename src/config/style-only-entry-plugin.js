@@ -30,7 +30,6 @@ StyleOnlyEntryPlugin.prototype.apply = function (compiler) {
 
 		for (const chunk of compilation.chunks) {
 			const entryModules = chunkGraph.getChunkEntryModulesIterable(chunk);
-
 			for (const entryModule of entryModules) {
 				if (entryModule && entryModule.userRequest && this.isFileStyle(entryModule.userRequest)) {
 					for (const file of chunk.files) {

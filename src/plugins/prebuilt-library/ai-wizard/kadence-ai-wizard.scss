@@ -1,6 +1,6 @@
-@import "./scss/variables.scss";
-@import "./scss/mixins";
-@import "./scss/global.scss";
+@use "scss/variables.scss";
+@use "scss/mixins";
+@use "scss/global.scss";
 
 .stellarwp.components-modal__frame.components-guide {
 	/* About Your Site Page Style Overrides */
@@ -10,7 +10,7 @@
 		}
 
 		.stellarwp-show-tips-button {
-			color: $color-black;
+			color: variables.$color-black;
 			padding: 0;
 			flex-direction: row-reverse;
 			gap: 8px;
@@ -19,7 +19,7 @@
 
 			&:hover,
 			&:focus {
-				color: $color-black;
+				color: variables.$color-black;
 				box-shadow: none;
 			}
 
@@ -29,7 +29,7 @@
 		}
 
 		.stellarwp-ai-improve-button {
-			border: 1px solid $color-gray-300;
+			border: 1px solid variables.$color-gray-300;
 			border-radius: 4px;
 			height: 42px;
 			padding-inline: 14px;
@@ -40,7 +40,7 @@
 
 			&:hover,
 			&:focus {
-				color: $color-black;
+				color: variables.$color-black;
 				background-color: #f0f1f9;
 			}
 		}
@@ -63,7 +63,7 @@
 		.stellarwp-ai-photography-library {
 			.components-button.is-link {
 				font-size: 10px;
-				color: $color-black;
+				color: variables.$color-black;
 
 				&:hover {
 					text-decoration: none;
@@ -97,12 +97,12 @@
 
 .kb-images-custom-scroll-bar {
 	&::-webkit-scrollbar {
-		background: $color-gray-300;
+		background: variables.$color-gray-300;
 		border-radius: 10px;
 		width: 2px;
 	}
 	&::-webkit-scrollbar-thumb {
-		background: $color-primary;
+		background: variables.$color-primary;
 		border-radius: 10px;
 	}
 }

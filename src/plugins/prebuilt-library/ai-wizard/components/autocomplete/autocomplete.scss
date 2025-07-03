@@ -1,22 +1,22 @@
-@import '../../scss/mixins.scss';
-@import '../../scss/variables.scss';
+@use '../../scss/mixins.scss';
+@use '../../scss/variables.scss';
 
 .stellarwp-autocomplete-control .components-input-control__label {
-  @include input_label;
+  @include mixins.input_label;
 
   display: block;
 }
 
 /* Form Styles */
 .aa-Autocomplete {
-  @include input_base;
+  @include mixins.input_base;
 
   padding: 0;
 
   &:focus-within {
     .aa-ClearButton,
     .aa-Chevron {
-      color: $color-black;
+      color: variables.$color-black;
     }
   }
 }
@@ -87,7 +87,7 @@
 
   &:hover,
   &:focus {
-    color: $color-black;
+    color: variables.$color-black;
   }
 }
 
@@ -102,10 +102,10 @@
   margin: 8px 0;
   max-height: 175px;
   overflow-y: scroll;
-  background: $color-white;
+  background: variables.$color-white;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
   border-radius: 4px;
-  border: 1px solid $color-gray-300;
+  border: 1px solid variables.$color-gray-300;
 }
 
 .aa-List {
@@ -115,7 +115,7 @@
 .aa-Item {
   margin: 0;
   padding: 8px 12px;
-  background-color: $color-white;
+  background-color: variables.$color-white;
   color: inherit;
   cursor: default;
   display: block;
@@ -128,7 +128,7 @@
 
   mark {
     background: rgb(222, 235, 255);
-    color: $color-primary-dark;
+    color: variables.$color-primary-dark;
   }
 }
 
@@ -137,7 +137,7 @@
   width: 100%;
   margin: 0;
   padding: 8px 12px;
-  background-color: $color-white;
+  background-color: variables.$color-white;
   color: inherit;
   cursor: default;
   font-size: 16px;
@@ -146,6 +146,6 @@
   &:hover,
   &:focus {
     background: rgb(222, 235, 255);
-    color: $color-black;
+    color: variables.$color-black;
   }
 }
