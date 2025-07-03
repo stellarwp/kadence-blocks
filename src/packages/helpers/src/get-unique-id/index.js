@@ -31,7 +31,7 @@ export default function uniqueIdHelper(props) {
 				editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 			},
 		}),
-		[select]
+		[select, clientId]
 	);
 
 	const updateUniqueID = (newUniqueID) => {
