@@ -61,6 +61,7 @@ module.exports = {
 		'admin-kadence-home': './src/home.js',
 		'header-visual-builder': './src/header-visual-builder.js',
 		'kadence-optimizer': './includes/resources/Optimizer/assets/js/optimizer/index.js',
+		'post-saved-event': './src/extension/post-saved-event/index.js',
 	},
 	output: {
 		...defaultConfig.output,
