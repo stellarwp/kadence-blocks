@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
+use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 
 /**
  * Handles the anonymization of authenticated requests for performance optimization.
@@ -13,8 +14,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
  * pages without any user-specific customizations or cached content.
  */
 final class Request_Anonymizer {
-
-	public const QUERY_VAR = 'perf_token';
 
 	private Nonce $nonce;
 
@@ -31,8 +30,7 @@ final class Request_Anonymizer {
 	 * @return void
 	 */
 	public function force_anonymous_request(): void {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$nonce = sanitize_key( $_GET[ self::QUERY_VAR ] ?? '' );
+		$nonce = SG::get_get_var( Request::QUERY_TOKEN );
 
 		if ( ! $nonce ) {
 			return;

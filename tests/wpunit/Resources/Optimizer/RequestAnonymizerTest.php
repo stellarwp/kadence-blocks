@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
+use KadenceWP\KadenceBlocks\Optimizer\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Request_Anonymizer;
 use Tests\Support\Classes\TestCase;
 use WPDieException;
@@ -34,7 +35,7 @@ final class RequestAnonymizerTest extends TestCase {
 		wp_set_current_user( 0 );
 
 		// Clean up globals.
-		unset( $_GET[ Request_Anonymizer::QUERY_VAR ] );
+		unset( $_GET[ Request::QUERY_TOKEN ] );
 
 		parent::tearDown();
 	}
@@ -55,7 +56,7 @@ final class RequestAnonymizerTest extends TestCase {
 		$this->assertFalse( is_user_logged_in() );
 
 		// Set a valid nonce but user is not logged in.
-		$_GET[ Request_Anonymizer::QUERY_VAR ] = $this->nonce->create();
+		$_GET[ Request::QUERY_TOKEN ] = $this->nonce->create();
 
 		$this->anonymizer->force_anonymous_request();
 
@@ -69,7 +70,7 @@ final class RequestAnonymizerTest extends TestCase {
 		$this->assertTrue( is_user_logged_in() );
 
 		// Set an invalid nonce.
-		$_GET[ Request_Anonymizer::QUERY_VAR ] = 'invalid_nonce';
+		$_GET[ Request::QUERY_TOKEN ] = 'invalid_nonce';
 
 		$this->expectException( WPDieException::class );
 		$this->expectExceptionMessage( 'Invalid optimizer nonce.' );
@@ -83,7 +84,7 @@ final class RequestAnonymizerTest extends TestCase {
 		$this->assertEquals( $this->user_id, get_current_user_id() );
 
 		// Set a valid nonce.
-		$_GET[ Request_Anonymizer::QUERY_VAR ] = $this->nonce->create();
+		$_GET[ Request::QUERY_TOKEN ] = $this->nonce->create();
 
 		$this->anonymizer->force_anonymous_request();
 
@@ -104,7 +105,7 @@ final class RequestAnonymizerTest extends TestCase {
 			$this->assertEquals( $user_id, get_current_user_id() );
 
 			// Set a valid nonce.
-			$_GET[ Request_Anonymizer::QUERY_VAR ] = $this->nonce->create();
+			$_GET[ Request::QUERY_TOKEN ] = $this->nonce->create();
 
 			$this->anonymizer->force_anonymous_request();
 
@@ -113,7 +114,7 @@ final class RequestAnonymizerTest extends TestCase {
 			$this->assertEquals( 0, get_current_user_id() );
 
 			// Clean up for next iteration.
-			unset( $_GET[ Request_Anonymizer::QUERY_VAR ] );
+			unset( $_GET[ Request::QUERY_TOKEN ] );
 		}
 	}
 
@@ -121,7 +122,7 @@ final class RequestAnonymizerTest extends TestCase {
 		wp_set_current_user( $this->user_id );
 
 		// Test with array (should be sanitized to string).
-		$_REQUEST[ Request_Anonymizer::QUERY_VAR ] = [ 'malicious_array' ];
+		$_REQUEST[ Request::QUERY_TOKEN ] = [ 'malicious_array' ];
 
 		$this->anonymizer->force_anonymous_request();
 
@@ -132,7 +133,7 @@ final class RequestAnonymizerTest extends TestCase {
 
 	public function testItHandlesEmptyNonceString(): void {
 		wp_set_current_user( $this->user_id );
-		$_REQUEST[ Request_Anonymizer::QUERY_VAR ] = '';
+		$_REQUEST[ Request::QUERY_TOKEN ] = '';
 
 		$this->anonymizer->force_anonymous_request();
 
@@ -142,6 +143,6 @@ final class RequestAnonymizerTest extends TestCase {
 	}
 
 	public function testQueryVarConstant(): void {
-		$this->assertEquals( 'perf_token', Request_Anonymizer::QUERY_VAR );
+		$this->assertEquals( 'perf_token', Request::QUERY_TOKEN );
 	}
 }
