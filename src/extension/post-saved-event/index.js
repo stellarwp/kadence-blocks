@@ -24,7 +24,7 @@ subscribe(() => {
 	if (inProgress && !isSaving) {
 		// Fire only if it was not an autosave
 		if (!wasAutoSave) {
-			const status = editor.getEditedPostVisibility();
+			const status = editor.getEditedPostAttribute('status');
 
 			if (status !== 'draft' && status !== 'auto-draft') {
 				// Fire the custom JS hook
