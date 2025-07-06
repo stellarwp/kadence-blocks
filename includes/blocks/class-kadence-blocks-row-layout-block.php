@@ -1722,6 +1722,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 				}
 			}
+
+			/**
+			 * DO NOT REMOVE: The Optimizer uses this.
+			 *
+			 * @param array<string, mixed> $wrapper_args The wrapper div HTML attributes.
+			 * @param array<string, mixed> $attributes The current block attributes.
+			 */
+			$wrapper_args       = apply_filters( 'kadence_blocks_row_wrapper_args', $wrapper_args, $attributes );
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 			$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 			$content = sprintf( '<%1$s %2$s>%3$s<div %4$s>%5$s</div></%1$s>', $html_tag, $wrapper_attributes, $extra_content, $inner_wrapper_attributes, $content );
