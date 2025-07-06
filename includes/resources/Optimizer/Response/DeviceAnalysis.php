@@ -10,7 +10,12 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Response;
  */
 final class DeviceAnalysis {
 
-	public int $criticalImages;
+	/**
+	 * A list of image src URLs found above the fold.
+	 *
+	 * @var string[]
+	 */
+	public array $criticalImages;
 
 	/**
 	 * @var string[]
@@ -23,11 +28,12 @@ final class DeviceAnalysis {
 	public array $sections;
 
 	/**
+	 * @param string[]  $criticalImages A list of image src URLs found above the fold.
 	 * @param string[]  $backgroundImages The list of URLs of background images found.
 	 * @param Section[] $sections The collection of sections.
 	 */
 	private function __construct(
-		int $criticalImages,
+		array $criticalImages = [],
 		array $backgroundImages = [],
 		array $sections = []
 	) {
@@ -37,7 +43,7 @@ final class DeviceAnalysis {
 	}
 
 	/**
-	 * @param array{criticalImages: int, backgroundImages?: string[], sections?: array} $attributes
+	 * @param array{criticalImages: string[], backgroundImages?: string[], sections?: array} $attributes
 	 */
 	public static function from( array $attributes ): self {
 		$sections = array_map(
@@ -55,7 +61,7 @@ final class DeviceAnalysis {
 	}
 
 	/**
-	 * @return array{criticalImages: int, backgroundImages?: string[], sections?: array}
+	 * @return array{criticalImages: string[], backgroundImages?: string[], sections?: array}
 	 */
 	public function toArray(): array {
 		return [

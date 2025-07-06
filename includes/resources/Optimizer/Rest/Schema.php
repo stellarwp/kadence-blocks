@@ -154,8 +154,12 @@ final class Schema {
 		// Definition for the viewport-specific data (desktop/mobile).
 		$viewport_data_properties = [
 			'criticalImages'   => [
-				'description' => __( 'The number of images deemed critical for the initial viewport.', 'kadence-blocks' ),
-				'type'        => 'integer',
+				'description' => __( 'A list of above the fold image URLs.', 'kadence-blocks' ),
+				'type'        => 'array',
+				'items'       => [
+					'type'   => 'string',
+					'format' => 'uri',
+				],
 				'required'    => true,
 			],
 			'backgroundImages' => [
