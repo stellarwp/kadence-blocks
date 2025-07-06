@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -44,6 +45,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_post_list_table();
 		$this->register_rest();
 		$this->register_request();
+		$this->register_background_lazy_loader();
 	}
 
 	private function register_translation(): void {
@@ -156,5 +158,16 @@ final class Optimizer_Provider extends Provider {
 
 	private function register_request(): void {
 		$this->container->singleton( Request::class, Request::class );
+	}
+
+	private function register_background_lazy_loader(): void {
+		$this->container->singleton( Background_Lazy_Loader::class, Background_Lazy_Loader::class );
+
+		add_filter(
+			'kadence_blocks_row_wrapper_args',
+			$this->container->callback( Background_Lazy_Loader::class, 'modify_row_layout_block_wrapper_args' ),
+			10,
+			2
+		);
 	}
 }

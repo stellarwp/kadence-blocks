@@ -1,0 +1,469 @@
+<?php declare( strict_types=1 );
+
+namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
+
+use DateTimeImmutable;
+use DateTimeZone;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
+use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use Tests\Support\Classes\TestCase;
+use Brain\Monkey;
+
+final class BackgroundLazyLoaderTest extends TestCase {
+
+	private Store $store;
+	private Background_Lazy_Loader $lazy_loader;
+	private int $post_id;
+
+	protected function setUp(): void {
+		Monkey\setUp();
+
+		parent::setUp();
+
+		$this->post_id = $this->factory()->post->create(
+			[
+				'post_title'  => 'Test Post',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->store       = $this->container->get( Store::class );
+		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
+
+		// Set up global $post for testing.
+		global $post;
+		$post = get_post( $this->post_id );
+	}
+
+	protected function tearDown(): void {
+		$this->store->delete( $this->post_id );
+
+		// Clean up global $post.
+		global $post;
+		$post = null;
+
+		parent::tearDown();
+	}
+
+	public function testItReturnsOriginalArgsWhenNoBackgroundImage(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => false,
+		];
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenBackgroundImageIsEmpty(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => '',
+		];
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenBackgroundImageIsNull(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => null,
+		];
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenNoAnalysisData(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenBackgroundImageIsAboveTheFoldOnDesktop(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image.jpg' ] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenBackgroundImageIsAboveTheFoldOnMobile(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis( [], [ 'http://wordpress.test/image.jpg' ] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenNoClassesInArgs(): void {
+		$args = [
+			'id' => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenClassesIsFalse(): void {
+		$args = [
+			'class' => false,
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItAddsLazyLoadingAttributesForDesktopBackgroundImage(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-row-layout-123',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItAddsLazyLoadingAttributesForMobileBackgroundImage(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-row-layout-123',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItPreservesOtherAttributesWhenAddingLazyLoading(): void {
+		$args = [
+			'class'     => 'kb-row-layout',
+			'id'        => 'test-row',
+			'style'     => 'background-color: red;',
+			'data-test' => 'value',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'style'                     => 'background-color: red;',
+			'data-test'                 => 'value',
+			'data-kadence-lazy-class'   => 'kb-row-layout',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleBackgroundImagesInAnalysis(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image3.jpg',
+		];
+
+		$this->createTestAnalysis(
+			[ 'http://wordpress.test/image1.jpg', 'http://wordpress.test/image2.jpg' ]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesEmptyBackgroundImagesArray(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis( [] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesCaseSensitiveBackgroundImageMatching(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/IMAGE.jpg',
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image.jpg' ] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSpecialCharactersInBackgroundImageUrl(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image with spaces.jpg',
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image with spaces.jpg' ] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		// Should not add lazy loading attributes since the image is in the above-the-fold list.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItHandlesUnicodeCharactersInBackgroundImageUrl(): void {
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/🚀-image.jpg',
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/🚀-image.jpg' ] );
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		// Should not add lazy loading attributes since the image is in the above-the-fold list.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItHandlesEmptyClassString(): void {
+		$args = [
+			'class' => '',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItHandlesWhitespaceInClassString(): void {
+		$args = [
+			'class' => '   kb-row-layout   ',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'bgImg' => 'http://wordpress.test/image.jpg',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => '   kb-row-layout   ',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object.
+	 *
+	 * @param string[] $desktop_background_images Desktop background images.
+	 * @param string[] $mobile_background_images  Mobile background images.
+	 */
+	private function createTestAnalysis(
+		array $desktop_background_images = [],
+		array $mobile_background_images = []
+	): void {
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => $desktop_background_images,
+				'sections'         => [],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => $mobile_background_images,
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
+				'desktop'      => $desktop->toArray(),
+				'mobile'       => $mobile->toArray(),
+				'images'       => [],
+			]
+		);
+
+		$this->store->set( $this->post_id, $analysis );
+	}
+}
