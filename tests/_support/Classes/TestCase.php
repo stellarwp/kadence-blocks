@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use RuntimeException;
+use Brain\Monkey;
 
 class TestCase extends WPTestCase {
 
@@ -16,6 +17,12 @@ class TestCase extends WPTestCase {
 		parent::setUp();
 
 		$this->container = App::instance( new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() ) )->container();
+	}
+
+	protected function tearDown(): void {
+		Monkey\tearDown();
+
+		parent::tearDown();
 	}
 
 	/**
