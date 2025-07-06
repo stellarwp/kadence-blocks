@@ -370,12 +370,12 @@ final class OptimizerRendererTest extends TestCase {
 	private function createTestAnalysis(): WebsiteAnalysis {
 		$analysis_data = [
 			'desktop' => [
-				'criticalImages'   => 3,
+				'criticalImages'   => [],
 				'backgroundImages' => [],
 				'sections'         => [],
 			],
 			'mobile'  => [
-				'criticalImages'   => 2,
+				'criticalImages'   => [],
 				'backgroundImages' => [],
 				'sections'         => [],
 			],
@@ -394,12 +394,12 @@ final class OptimizerRendererTest extends TestCase {
 		$analysis_data = [
 			'lastModified' => new DateTimeImmutable( '-1 hour', new DateTimeZone( 'UTC' ) ),
 			'desktop'      => [
-				'criticalImages'   => 3,
+				'criticalImages'   => [],
 				'backgroundImages' => [],
 				'sections'         => [],
 			],
 			'mobile'       => [
-				'criticalImages'   => 2,
+				'criticalImages'   => [],
 				'backgroundImages' => [],
 				'sections'         => [],
 			],
