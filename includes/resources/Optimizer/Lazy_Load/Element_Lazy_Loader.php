@@ -71,6 +71,10 @@ final class Element_Lazy_Loader {
 				continue;
 			}
 
+			if ( $section->height <= 0 ) {
+				continue;
+			}
+
 			$current_style = $args['style'] ?? '';
 
 			$args['style'] = "content-visibility: auto;contain-intrinsic-size: auto {$section->height}px;" . $current_style;
@@ -79,5 +83,14 @@ final class Element_Lazy_Loader {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Flush the memoization cache.
+	 *
+	 * @return void
+	 */
+	public function flush(): void {
+		unset( $this->sections );
 	}
 }
