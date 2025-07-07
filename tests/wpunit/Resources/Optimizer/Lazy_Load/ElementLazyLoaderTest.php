@@ -136,6 +136,8 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$this->createTestAnalysis();
 
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
 		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
