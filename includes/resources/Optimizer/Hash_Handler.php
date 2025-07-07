@@ -62,7 +62,7 @@ final class Hash_Handler {
 	 *
 	 * @return void
 	 */
-	public function manage_hash_state(): void {
+	public function check_hash(): void {
 		if ( ! $this->html ) {
 			return;
 		}
@@ -85,9 +85,19 @@ final class Hash_Handler {
 			return;
 		}
 
-		// Bail on any kind of preview link.
-		if ( SG::get_get_var( 'preview' ) ) {
-			return;
+		// Bypass hash check when these query variables are present.
+		$query_vars = apply_filters(
+			'kadence_blocks_optimizer_query_vars_to_ignore',
+			[
+				'preview',
+			]
+		);
+
+		// If any of the provided query vars are set with truthly values, bypass the hash check.
+		foreach ( $query_vars as $query_var ) {
+			if ( SG::get_get_var( $query_var ) ) {
+				return;
+			}
 		}
 
 		if ( is_user_logged_in() ) {

@@ -208,7 +208,7 @@ final class Optimizer_Provider extends Provider {
 
 		add_action(
 			'shutdown',
-			$this->container->callback( Hash_Handler::class, 'manage_hash_state' ),
+			$this->container->callback( Hash_Handler::class, 'check_hash' ),
 			PHP_INT_MAX - 1,
 			0
 		);
