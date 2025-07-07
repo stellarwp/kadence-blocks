@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
+use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use Throwable;
 use WP_Post;
 
@@ -52,13 +52,6 @@ final class Hash_Handler {
 	 * against the previously stored hash. If the hash differs, this indicates
 	 * that the page content has changed since the last optimization pass.
 	 *
-	 * Behavior:
-	 * - If the content has changed:
-	 *      - Fires an invalidation routine (e.g. clearing cached optimizations).
-	 *      - Stores the new hash for future comparisons.
-	 * - If the content is unchanged:
-	 *      - Skips unnecessary work and leaves existing optimization data intact.
-	 *
 	 * This method is intended to be called AS LATE AS POSSIBLE in the `shutdown` phase, after
 	 * output buffering has captured the full HTML content.
 	 *
@@ -92,9 +85,18 @@ final class Hash_Handler {
 			return;
 		}
 
+		// Bail on any kind of preview link.
+		if ( SG::get_get_var( 'preview' ) ) {
+			return;
+		}
+
+		if ( is_user_logged_in() ) {
+			return;
+		}
+
 		$analysis = $this->store->get( $post->ID );
 
-		// This page isn't optimized or has outdated data.
+		// This page isn't optimized or has outdated optimization data.
 		if ( ! $analysis ) {
 			return;
 		}
@@ -103,9 +105,9 @@ final class Hash_Handler {
 		$hash = $this->hasher->hash( $this->html );
 
 		// The frontend script will pass this get var as a hash set request.
-		$maybe_set_hash = (bool) SuperGlobals::get_get_var( 'kadence_set_optimizer_hash', false );
+		$maybe_set_hash = (bool) SG::get_get_var( 'kadence_set_optimizer_hash', false );
 
-		// If we don't have an existing hash and this is hash set request, store the current hash.
+		// If we don't have an existing hash and this is "hash set request", store the current hash.
 		if ( ! $analysis->hash && $maybe_set_hash ) {
 			$analysis->hash = $hash;
 
@@ -125,7 +127,8 @@ final class Hash_Handler {
 	}
 
 	/**
-	 * Callback that receives the buffer's contents. Capture the full page HTML in our property.
+	 * Callback that receives the buffer's contents. Captures the full page HTML
+	 * in our property for use when we manage the hash state down the line.
 	 *
 	 * @param string $html The final HTML.
 	 * @param int    $phase The bitmask of the PHP_OUTPUT_HANDLER_* constants.
