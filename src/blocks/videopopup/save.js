@@ -22,6 +22,8 @@ function Save(props) {
 			ariaLabel,
 			youtubeCookies,
 			inQueryBlock,
+			posterType,
+			mediaPoster,
 		},
 	} = props;
 	const intrinsic = undefined !== ratio && 'custom' !== ratio ? ratio : undefined;
@@ -69,7 +71,7 @@ function Save(props) {
 						paddingBottom: undefined !== imageRatio ? imageRatio + '%' : undefined,
 					}}
 				>
-					{undefined !== background[0] && undefined !== background[0].img && '' !== background[0].img && (
+					{posterType !== 'video' && (
 						<img
 							src={background[0].img}
 							alt={background[0].imgAlt}
@@ -81,6 +83,20 @@ function Save(props) {
 									: 'kadence-video-poster'
 							}
 						/>
+					)}
+					{posterType === 'video' && (
+						<>
+							{undefined !== mediaPoster && undefined !== mediaPoster[0] && mediaPoster[0].url && (
+								<video
+									src={mediaPoster[0].url}
+									autoPlay={true}
+									loop={true}
+									muted={true}
+									playsInline={true}
+									className={'kadence-video-poster'}
+								/>
+							)}
+						</>
 					)}
 					<div className="kadence-video-overlay"></div>
 					{'local' === type && (
