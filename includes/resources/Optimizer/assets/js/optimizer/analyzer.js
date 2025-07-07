@@ -34,6 +34,10 @@ export async function analyzeSite(url, postId, nonce) {
 		console.log(res);
 		console.log(`✅ Analysis complete for post ID ${postId}:`, results);
 
+		// Send a request to generate a hash of the optimized page and don't wait for the results.
+		// Swallow network errors deliberately.
+		void fetch(url + '?kadence_set_optimizer_hash=1', { credentials: 'omit', keepalive: true }).catch(() => {});
+
 		return res;
 	} catch (error) {
 		console.error('❌ Analysis failed:', error);

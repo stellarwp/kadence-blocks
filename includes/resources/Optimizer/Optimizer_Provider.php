@@ -48,6 +48,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_request();
 		$this->register_element_lazy_loader();
 		$this->register_background_lazy_loader();
+		$this->register_hash_handler();
 	}
 
 	private function register_translation(): void {
@@ -192,6 +193,24 @@ final class Optimizer_Provider extends Provider {
 			$this->container->callback( Background_Lazy_Loader::class, 'modify_row_layout_block_wrapper_args' ),
 			20,
 			2
+		);
+	}
+
+	private function register_hash_handler(): void {
+		$this->container->singleton( Hash_Handler::class, Hash_Handler::class );
+
+		add_action(
+			'template_redirect',
+			$this->container->callback( Hash_Handler::class, 'start_buffering' ),
+			1,
+			0
+		);
+
+		add_action(
+			'shutdown',
+			$this->container->callback( Hash_Handler::class, 'manage_hash_state' ),
+			PHP_INT_MAX - 1,
+			0
 		);
 	}
 }
