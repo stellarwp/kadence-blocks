@@ -824,12 +824,12 @@ export function EditInner(props) {
 								isBorderRadius={true}
 								allowEmpty={true}
 								reset={() => {
-									if ( previewDevice === 'Tablet' ) {
-										setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTablet' );
-									} else if ( previewDevice === 'Mobile' ) {
-										setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusMobile' );
+									if (previewDevice === 'Tablet') {
+										setMetaAttribute([0, 0, 0, 0], 'borderRadiusTablet');
+									} else if (previewDevice === 'Mobile') {
+										setMetaAttribute([0, 0, 0, 0], 'borderRadiusMobile');
 									} else {
-										setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadius' );
+										setMetaAttribute([0, 0, 0, 0], 'borderRadius');
 									}
 								}}
 							/>
@@ -971,12 +971,12 @@ export function EditInner(props) {
 												isBorderRadius={true}
 												allowEmpty={true}
 												reset={() => {
-													if ( previewDevice === 'Tablet' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparentTablet' );
-													} else if ( previewDevice === 'Mobile' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparentMobile' );
+													if (previewDevice === 'Tablet') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusTransparentTablet');
+													} else if (previewDevice === 'Mobile') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusTransparentMobile');
 													} else {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparent' );
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusTransparent');
 													}
 												}}
 											/>
@@ -1036,12 +1036,18 @@ export function EditInner(props) {
 												isBorderRadius={true}
 												allowEmpty={true}
 												reset={() => {
-													if ( previewDevice === 'Tablet' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparentHoverTablet' );
-													} else if ( previewDevice === 'Mobile' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparentHoverMobile' );
+													if (previewDevice === 'Tablet') {
+														setMetaAttribute(
+															[0, 0, 0, 0],
+															'borderRadiusTransparentHoverTablet'
+														);
+													} else if (previewDevice === 'Mobile') {
+														setMetaAttribute(
+															[0, 0, 0, 0],
+															'borderRadiusTransparentHoverMobile'
+														);
 													} else {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusTransparentHover' );
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusTransparentHover');
 													}
 												}}
 											/>
@@ -1105,12 +1111,12 @@ export function EditInner(props) {
 												isBorderRadius={true}
 												allowEmpty={true}
 												reset={() => {
-													if ( previewDevice === 'Tablet' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusStickyTablet' );
-													} else if ( previewDevice === 'Mobile' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusStickyMobile' );
+													if (previewDevice === 'Tablet') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusStickyTablet');
+													} else if (previewDevice === 'Mobile') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusStickyMobile');
 													} else {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusSticky' );
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusSticky');
 													}
 												}}
 											/>
@@ -1168,12 +1174,12 @@ export function EditInner(props) {
 												isBorderRadius={true}
 												allowEmpty={true}
 												reset={() => {
-													if ( previewDevice === 'Tablet' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusStickyHoverTablet' );
-													} else if ( previewDevice === 'Mobile' ) {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusStickyHoverMobile' );
+													if (previewDevice === 'Tablet') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusStickyHoverTablet');
+													} else if (previewDevice === 'Mobile') {
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusStickyHoverMobile');
 													} else {
-														setMetaAttribute( [ 0, 0, 0, 0 ], 'borderRadiusStickyHover' );
+														setMetaAttribute([0, 0, 0, 0], 'borderRadiusStickyHover');
 													}
 												}}
 											/>
