@@ -34,7 +34,7 @@ final class Hash_Handler {
 		Hasher $hasher,
 		Store $store,
 		Rule_Collection $rules,
-		Background_Processor $background_processor 
+		Background_Processor $background_processor
 	) {
 		$this->hasher               = $hasher;
 		$this->store                = $store;
@@ -119,7 +119,7 @@ final class Hash_Handler {
 				$analysis->lastModified = new DateTimeImmutable( '1902-12-13', new DateTimeZone( 'UTC' ) );
 				$this->store->set( $post->ID, $analysis );
 
-				do_action( 'kadence_blocks_optimizer_invalidate_data', $analysis->lastModified, $post->ID );
+				do_action( 'kadence_blocks_optimizer_data_invalidated', $analysis->lastModified, $post->ID );
 			} catch ( Throwable $e ) {
 				// Our DateTimeImmutable should never throw an exception, but this is here just in case.
 				return;
@@ -127,6 +127,8 @@ final class Hash_Handler {
 		}
 
 		$this->html = '';
+
+		do_action( 'kadence_blocks_hash_check_complete' );
 	}
 
 	/**
