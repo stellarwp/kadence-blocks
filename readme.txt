@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 17th July 2025
 * Add: Help text for vertical text setting in Advanced Text block.
 * Fix: Frontend divider style for Countdown block.
+* Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
 
 = 3.5.12 =
 Release Date: 2nd July 2025
