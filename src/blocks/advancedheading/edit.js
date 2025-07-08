@@ -83,7 +83,7 @@ import metadata from './block.json';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
@@ -1903,6 +1903,24 @@ function KadenceAdvancedHeading(props) {
 							>
 								<ResponsiveKadenceRadioButtons
 									label={__('Orientation', 'kadence-blocks')}
+									help={
+										'horizontal' !== previewTextOrientation ? (
+											<p
+												dangerouslySetInnerHTML={{
+													__html: sprintf(
+														/* translators: The %s is for the writing-mode CSS property */
+														__(
+															'The text orientation feature uses the %s CSS property. While it works in most modern browsers, it may not be supported in some older browsers.',
+															'kadence-blocks'
+														),
+														'<code>writing-mode</code>'
+													),
+												}}
+											/>
+										) : (
+											''
+										)
+									}
 									value={previewTextOrientation}
 									tabletValue={previewTextOrientation}
 									mobileValue={previewTextOrientation}

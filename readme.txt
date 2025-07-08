@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.1
-Stable tag: 3.5.12
+Stable tag: 3.5.13
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,11 +173,16 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.13 =
+Release Date: 17th July 2025
+* Add: Help text for vertical text setting in Advanced Text block.
+* Fix: Frontend divider style for Countdown block.
+
 = 3.5.12 =
-Release Date: 2rd July 2025
+Release Date: 2nd July 2025
 * Update: Header block off canvas trigger focus styles. 
 * Fix: Icon List default bottom margin.
-* Fix: Count Up block responsive font/number size/lineheight preview in editor.
+* Fix: Count Up block responsive font, number size, line height preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.
 * Fix: Warning that content doesn't match template while editing Navigation posts.
 * Fix: Inability to insert new row when table block was inside a section.
