@@ -2,6 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Ignored_Query_Var_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Logged_In_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Optimizer_Request_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
@@ -48,7 +53,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_request();
 		$this->register_element_lazy_loader();
 		$this->register_background_lazy_loader();
-		$this->register_hash_handler();
+		$this->register_hash_handling();
 	}
 
 	private function register_translation(): void {
@@ -196,7 +201,36 @@ final class Optimizer_Provider extends Provider {
 		);
 	}
 
-	private function register_hash_handler(): void {
+	private function register_hash_handling(): void {
+		/**
+		 * Filter the list of query variables, that if present and truthy,
+		 * will bypass the hash check.
+		 *
+		 * @param string[] $query_vars The query variable names.
+		 */
+		$query_vars = apply_filters(
+			'kadence_blocks_optimizer_skip_has_check_query_vars',
+			[
+				'preview',
+			]
+		);
+
+		$this->container->when( Ignored_Query_Var_Rule::class )
+			->needs( '$query_vars' )
+			->give(
+				static fn(): array => $query_vars
+			);
+
+		$this->container->when( Rule_Collection::class )
+			->needs( '$rules' )
+			->give(
+				fn(): array => [
+					$this->container->get( Optimizer_Request_Rule::class ),
+					$this->container->get( Ignored_Query_Var_Rule::class ),
+					$this->container->get( Logged_In_Rule::class ),
+				]
+			);
+
 		$this->container->singleton( Hash_Handler::class, Hash_Handler::class );
 
 		add_action(

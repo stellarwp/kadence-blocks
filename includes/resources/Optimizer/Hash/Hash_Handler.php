@@ -1,10 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Optimizer;
+namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
 use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Hasher;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use Throwable;
@@ -26,12 +27,19 @@ final class Hash_Handler {
 	private string $html = '';
 	private Hasher $hasher;
 	private Store $store;
-	private Request $request;
+	private Rule_Collection $rules;
+	private Background_Processor $background_processor;
 
-	public function __construct( Hasher $hasher, Store $store, Request $request ) {
-		$this->hasher  = $hasher;
-		$this->store   = $store;
-		$this->request = $request;
+	public function __construct(
+		Hasher $hasher,
+		Store $store,
+		Rule_Collection $rules,
+		Background_Processor $background_processor 
+	) {
+		$this->hasher               = $hasher;
+		$this->store                = $store;
+		$this->rules                = $rules;
+		$this->background_processor = $background_processor;
 	}
 
 	/**
@@ -68,11 +76,7 @@ final class Hash_Handler {
 		}
 
 		// Return request early, if possible, so we can process this in the background.
-		if ( function_exists( 'fastcgi_finish_request' ) ) {
-			fastcgi_finish_request();
-		} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-			litespeed_finish_request();
-		}
+		$this->background_processor->try_finish();
 
 		global $post, $wp_query;
 
@@ -80,28 +84,11 @@ final class Hash_Handler {
 			return;
 		}
 
-		// Don't compare during optimization requests.
-		if ( $this->request->is_optimizer_request() ) {
-			return;
-		}
-
-		// Bypass hash check when these query variables are present.
-		$query_vars = apply_filters(
-			'kadence_blocks_optimizer_query_vars_to_ignore',
-			[
-				'preview',
-			]
-		);
-
-		// If any of the provided query vars are set with truthly values, bypass the hash check.
-		foreach ( $query_vars as $query_var ) {
-			if ( SG::get_get_var( $query_var ) ) {
+		// Process skip rules and bail if required.
+		foreach ( $this->rules->all() as $rule ) {
+			if ( $rule->should_skip() ) {
 				return;
 			}
-		}
-
-		if ( is_user_logged_in() ) {
-			return;
 		}
 
 		$analysis = $this->store->get( $post->ID );
@@ -122,6 +109,8 @@ final class Hash_Handler {
 			$analysis->hash = $hash;
 
 			$this->store->set( $post->ID, $analysis );
+
+			do_action( 'kadence_blocks_optimizer_set_hash', $hash, $post->ID );
 		}
 
 		// The HTML has been changed somehow, invalidate the optimization data, so that the next request will not have the data.
@@ -129,11 +118,24 @@ final class Hash_Handler {
 			try {
 				$analysis->lastModified = new DateTimeImmutable( '1902-12-13', new DateTimeZone( 'UTC' ) );
 				$this->store->set( $post->ID, $analysis );
+
+				do_action( 'kadence_blocks_optimizer_invalidate_data', $analysis->lastModified, $post->ID );
 			} catch ( Throwable $e ) {
 				// Our DateTimeImmutable should never throw an exception, but this is here just in case.
 				return;
 			}
 		}
+
+		$this->html = '';
+	}
+
+	/**
+	 * Get the HTML, which will differ as the request proceeds.
+	 *
+	 * @return string
+	 */
+	public function html(): string {
+		return $this->html;
 	}
 
 	/**
