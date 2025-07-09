@@ -174,9 +174,8 @@
 			const mobileBreakpoint = 768;
 			if (mobileBreakpoint < window.innerWidth) {
 				return 'desktop';
-			} else {
-				return 'mobile';
 			}
+			return 'mobile';
 		},
 	};
 	if ('loading' === document.readyState) {

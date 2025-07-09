@@ -46,10 +46,10 @@ function Save(props) {
 	const playSizeClass = !playBtn[0].size ? 'auto' : playBtn[0].size;
 	const playAnimationClass = '' !== playBtn[0].animation ? playBtn[0].animation : 'none';
 	const playClasses = `kt-video-svg-icon kt-video-svg-icon-style-${playBtn[0].style} kt-video-svg-icon-${theIcon} kt-video-play-animation-${playAnimationClass} kt-video-svg-icon-size-${playSizeClass}`;
-	let classes =
+	const classes =
 		'kadence-video-popup-link ' + ('local' == type ? 'kadence-video-type-local' : 'kadence-video-type-external');
 
-	let dataAttrs = {
+	const dataAttrs = {
 		'data-popup-class': `kadence-popup-${uniqueID}`,
 		'data-effect': popAnimation,
 		'data-popup-id': `kadence-local-video-${uniqueID}`,
