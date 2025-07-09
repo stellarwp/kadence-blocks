@@ -239,7 +239,7 @@ final class Optimizer_Provider extends Provider {
 		 * @param string[] $query_vars The query variable names.
 		 */
 		$query_vars = apply_filters(
-			'kadence_blocks_optimizer_skip_has_check_query_vars',
+			'kadence_blocks_optimizer_rule_skip_query_vars',
 			[
 				'preview',
 			]

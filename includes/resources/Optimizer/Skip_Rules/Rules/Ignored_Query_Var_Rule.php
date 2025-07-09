@@ -13,7 +13,7 @@ final class Ignored_Query_Var_Rule implements Skip_Rule {
 	private array $query_vars;
 
 	/**
-	 * @filter kadence_blocks_optimizer_skip_has_check_query_vars
+	 * @filter kadence_blocks_optimizer_rule_skip_query_vars
 	 *
 	 * @param string[] $query_vars The query variable names.
 	 */

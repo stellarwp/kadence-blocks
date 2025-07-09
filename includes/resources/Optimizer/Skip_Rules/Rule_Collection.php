@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Skip_Rules;
 
 /**
- * Holds the collection of rules that will skip hash checks.
+ * Holds the collection of rules that determine whether to skip operations.
  */
 final class Rule_Collection {
 
@@ -20,7 +20,7 @@ final class Rule_Collection {
 	}
 
 	/**
-	 * Get all the skip rules.
+	 * Get all the rules in the collection.
 	 *
 	 * @return Skip_Rule[]
 	 */

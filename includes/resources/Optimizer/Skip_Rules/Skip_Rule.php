@@ -3,13 +3,13 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Skip_Rules;
 
 /**
- * Whether to skip the hash check.
+ * Defines a rule for determining whether to skip a specific operation.
  */
 interface Skip_Rule {
 
 	/**
 	 * Whether the result of this rule will skip
-	 * hash checking.
+	 * the associated operation.
 	 *
 	 * @return bool
 	 */
