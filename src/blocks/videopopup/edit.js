@@ -712,6 +712,18 @@ function KadenceVideoPopup(props) {
 
 	const nonTransAttrs = ['background', 'type', 'media', 'url'];
 
+	const videoPopupProLocalVideoPosterControls = (
+		<SelectControl
+			label={__('Poster Type', 'kadence-blocks')}
+			value={posterType}
+			options={[
+				{ value: '', label: __('Image', 'kadence-blocks') },
+				{ value: 'video', label: __('Video (Pro addon)', 'kadence-blocks'), disabled: true },
+			]}
+			onChange={(value) => setAttributes({ posterType: value })}
+		/>
+	);
+
 	return (
 		<div
 			{...blockProps}
@@ -843,7 +855,7 @@ function KadenceVideoPopup(props) {
 
 							{applyFilters(
 								'kadence.videoPopupProLocalVideoPosterControls',
-								'',
+								videoPopupProLocalVideoPosterControls,
 								props,
 								isURLInputVisiblePoster,
 								setIsURLInputVisiblePoster,
