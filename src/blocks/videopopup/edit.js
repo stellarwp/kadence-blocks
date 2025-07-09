@@ -126,9 +126,16 @@ function KadenceVideoPopup(props) {
 		youtubeCookies,
 		inQueryBlock,
 		isVimeoPrivate,
+		mediaRatio,
+		mediaRatioMobile,
+		mediaUseMobile,
+		mediaMobile,
+		urlMobile,
 	} = attributes;
 	const [isURLInputVisible, setIsURLInputVisible] = useState(false);
 	const [localSrc, setLocalSrc] = useState('');
+	const [isURLInputVisibleMobile, setIsURLInputVisibleMobile] = useState(false);
+	const [localSrcMobile, setLocalSrcMobile] = useState('');
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicPosterImg, setDynamicPosterImg] = useState('');
 
@@ -708,6 +715,80 @@ function KadenceVideoPopup(props) {
 
 	const nonTransAttrs = ['background', 'type', 'media', 'url'];
 
+	const mediaRatioOptions = applyFilters(
+		'kadence.videoPopupProMediaRatioOptions',
+		[
+			{ value: '', label: __('Default', 'kadence-blocks') },
+			{ value: '4:3', label: __('Pro - Landscape 4:3', 'kadence-blocks'), disabled: true },
+			{ value: '16:9', label: __('Pro - Wide Landscape 16:9', 'kadence-blocks'), disabled: true },
+			{ value: '3:4', label: __('Pro - Portrait 3:4', 'kadence-blocks'), disabled: true },
+			{ value: '9:16', label: __('Pro - Vertical 9:16', 'kadence-blocks'), disabled: true },
+		],
+		props
+	);
+
+	const MediaControls = ({ device }) => {
+		const urlToUse = device === 'mobile' ? urlMobile : url;
+		const urlString = device === 'mobile' ? 'urlMobile' : 'url';
+		const isURLInputVisibleToUse = device === 'mobile' ? isURLInputVisibleMobile : isURLInputVisible;
+		const setIsURLInputVisibleToUse = device === 'mobile' ? setIsURLInputVisibleMobile : setIsURLInputVisible;
+		const localSrcToUse = device === 'mobile' ? localSrcMobile : localSrc;
+		const setLocalSrcToUse = device === 'mobile' ? setLocalSrcMobile : setLocalSrc;
+
+		const urlLabel =
+			device === 'mobile' ? __('Mobile Video URL', 'kadence-blocks') : __('Video URL', 'kadence-blocks');
+
+		return (
+			<>
+				{'local' !== type && (
+					<Fragment>
+						{/* <URLExtenalInputControl
+										label={__('Video URL', 'kadence-blocks')}
+										value={url}
+										onChange={(value) => setAttributes({ url: value })}
+										dynamicAttribute="url"
+										allowClear={true}
+										{...props}
+									/> */}
+
+						<URLInputControl
+							key={device + 'url'}
+							label={urlLabel}
+							url={urlToUse}
+							onChangeUrl={(value) => setAttributes({ [urlString]: value })}
+							dynamicAttribute={urlString}
+							allowClear={true}
+							isSelected={isSelected}
+							attributes={attributes}
+							setAttributes={setAttributes}
+							name={'kadence/videopopup'}
+							clientId={clientId}
+							context={context}
+						/>
+					</Fragment>
+				)}
+				{applyFilters(
+					'kadence.videoPopupProLocalVideoControls',
+					'',
+					props,
+					isURLInputVisibleToUse,
+					setIsURLInputVisibleToUse,
+					localSrcToUse,
+					setLocalSrcToUse,
+					device
+				)}
+			</>
+		);
+	};
+
+	const videoPopupProMediaMobileControls = (
+		<ToggleControl
+			label={__('Pro - Use Mobile Media', 'kadence-blocks')}
+			checked={mediaUseMobile}
+			disabled={true}
+		/>
+	);
+
 	return (
 		<div
 			{...blockProps}
@@ -772,55 +853,46 @@ function KadenceVideoPopup(props) {
 								options={videoTypeOptions}
 								onChange={(value) => setAttributes({ type: value, isVimeoPrivate: false })}
 							/>
-							{'local' !== type && (
-								<Fragment>
-									{/* <URLExtenalInputControl
-										label={__('Video URL', 'kadence-blocks')}
-										value={url}
-										onChange={(value) => setAttributes({ url: value })}
-										dynamicAttribute="url"
-										allowClear={true}
-										{...props}
-									/> */}
+							<MediaControls device="desktop" />
+							<SelectControl
+								label={__('Video Ratio', 'kadence-blocks')}
+								value={mediaRatio}
+								options={mediaRatioOptions}
+								onChange={(value) => setAttributes({ mediaRatio: value })}
+							/>
 
-									<URLInputControl
-										label={__('Video URL', 'kadence-blocks')}
-										url={url}
-										onChangeUrl={(value) => setAttributes({ url: value })}
-										dynamicAttribute={'url'}
-										allowClear={true}
-										isSelected={isSelected}
-										attributes={attributes}
-										setAttributes={setAttributes}
-										name={'kadence/videopopup'}
-										clientId={clientId}
-										context={context}
-									/>
-
-									{url && url.includes('vimeo.com/') && (
-										<ToggleControl
-											label={__('Is Private or Password Protected', 'kadence-blocks')}
-											checked={isVimeoPrivate}
-											onChange={(value) => setAttributes({ isVimeoPrivate: value })}
-										/>
-									)}
-
-									<ToggleControl
-										label={__('Embed Youtube with no cookies', 'kadence-blocks')}
-										checked={youtubeCookies}
-										onChange={(value) => setAttributes({ youtubeCookies: value })}
-									/>
-								</Fragment>
-							)}
 							{applyFilters(
-								'kadence.videoPopupProLocalVideoControls',
-								'',
-								props,
-								isURLInputVisible,
-								setIsURLInputVisible,
-								localSrc,
-								setLocalSrc
+								'kadence.videoPopupProMediaMobileControls',
+								videoPopupProMediaMobileControls,
+								props
 							)}
+
+							{mediaUseMobile && kadence_blocks_params?.pro && (
+								<KadencePanelBody style={{ marginBottom: '10px' }}>
+									<MediaControls device="mobile" />
+									<SelectControl
+										label={__('Mobile Video Ratio', 'kadence-blocks')}
+										value={mediaRatioMobile}
+										options={mediaRatioOptions}
+										onChange={(value) => setAttributes({ mediaRatioMobile: value })}
+									/>
+								</KadencePanelBody>
+							)}
+
+							{url && url.includes('vimeo.com/') && (
+								<ToggleControl
+									label={__('Is Private or Password Protected', 'kadence-blocks')}
+									checked={isVimeoPrivate}
+									onChange={(value) => setAttributes({ isVimeoPrivate: value })}
+								/>
+							)}
+
+							<ToggleControl
+								label={__('Embed Youtube with no cookies', 'kadence-blocks')}
+								checked={youtubeCookies}
+								onChange={(value) => setAttributes({ youtubeCookies: value })}
+							/>
+
 							<ToggleControl
 								label={__('Auto play video (if able)', 'kadence-blocks')}
 								checked={autoPlay}
