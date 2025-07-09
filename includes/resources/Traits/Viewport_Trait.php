@@ -2,10 +2,14 @@
 
 namespace KadenceWP\KadenceBlocks\Traits;
 
+use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
+
 trait Viewport_Trait {
 
 	/**
 	 * Check if a mobile device is viewing this URL.
+	 *
+	 * @see Optimizer_Provider::register_mobile_override()
 	 *
 	 * @return bool
 	 */

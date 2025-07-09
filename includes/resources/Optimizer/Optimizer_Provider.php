@@ -3,12 +3,14 @@
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Logged_In_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Optimizer_Request_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Image_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -21,6 +23,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Meta_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
+use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
 
 final class Optimizer_Provider extends Provider {
 
@@ -43,7 +46,9 @@ final class Optimizer_Provider extends Provider {
 			return;
 		}
 
+		$this->register_mobile_override();
 		$this->register_translation();
+		$this->register_hash_store();
 		$this->register_nonce();
 		$this->register_request_anonymizer();
 		$this->register_store();
@@ -54,6 +59,27 @@ final class Optimizer_Provider extends Provider {
 		$this->register_element_lazy_loader();
 		$this->register_background_lazy_loader();
 		$this->register_hash_handling();
+		$this->register_image_processor();
+	}
+
+	/**
+	 * Allow force overriding wp_is_mobile with a query string variable.
+	 *
+	 * @return void
+	 */
+	private function register_mobile_override(): void {
+		add_filter(
+			'wp_is_mobile',
+			static function ( bool $is_mobile ): bool {
+				if ( SuperGlobals::get_get_var( 'kadence_is_mobile' ) ) {
+					return true;
+				}
+
+				return $is_mobile;
+			},
+			10,
+			1
+		);
 	}
 
 	private function register_translation(): void {
@@ -72,6 +98,10 @@ final class Optimizer_Provider extends Provider {
 								Text_Repository::OPTIMIZATION_OUTDATED_RUN => __( 'Optimization Outdated. Run again?', 'kadence-blocks' ),
 							]
 						);
+	}
+
+	private function register_hash_store(): void {
+		$this->container->singleton( Hash_Store::class, Hash_Store::class );
 	}
 
 	private function register_nonce(): void {
@@ -244,6 +274,20 @@ final class Optimizer_Provider extends Provider {
 			'shutdown',
 			$this->container->callback( Hash_Handler::class, 'check_hash' ),
 			PHP_INT_MAX - 1,
+			0
+		);
+	}
+
+	private function register_image_processor(): void {
+		// Disable WordPress's lazyloading.
+		add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+
+		$this->container->singleton( Image_Lazy_Loader::class, Image_Lazy_Loader::class );
+
+		add_action(
+			'template_redirect',
+			$this->container->callback( Image_Lazy_Loader::class, 'start_buffering' ),
+			1,
 			0
 		);
 	}

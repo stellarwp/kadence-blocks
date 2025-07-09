@@ -5,7 +5,9 @@ namespace Tests\wpunit\Resources\Optimizer\Hash;
 use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Hasher;
+use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -16,6 +18,7 @@ final class HashHandlerTest extends TestCase {
 	private Store $store;
 	private Hasher $hasher;
 	private Hash_Handler $hash_handler;
+	private Hash_Store $hash_store;
 	private int $post_id;
 
 	protected function setUp(): void {
@@ -27,6 +30,7 @@ final class HashHandlerTest extends TestCase {
 		$this->store        = $this->container->get( Store::class );
 		$this->hasher       = $this->container->get( Hasher::class );
 		$this->hash_handler = $this->container->get( Hash_Handler::class );
+		$this->hash_store   = $this->container->get( Hash_Store::class );
 
 		// Create a test post.
 		$this->post_id = $this->factory()->post->create(
@@ -47,6 +51,7 @@ final class HashHandlerTest extends TestCase {
 		// Clean up test data.
 		if ( $this->post_id ) {
 			$this->store->delete( $this->post_id );
+			$this->hash_store->delete( $this->post_id, Viewport::desktop() );
 		}
 
 		// Clean up globals.
@@ -108,27 +113,24 @@ final class HashHandlerTest extends TestCase {
 		// Assert the correct hash was set.
 		add_action(
 			'kadence_blocks_optimizer_set_hash',
-			function ( string $set_hash, int $post_id ) use ( $hash ): void {
+			function ( string $set_hash, int $post_id, Viewport $viewport ) use ( $hash ): void {
 				$this->assertSame( $hash, $set_hash );
 				$this->assertSame( $this->post_id, $post_id );
 			},
 			10,
-			2
+			3
 		);
 
 		$this->hash_handler->check_hash();
 
-		$analysis = $this->store->get( $this->post_id );
-
-		$this->assertSame( $hash, $analysis->hash );
+		$this->assertSame( $hash, $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
 	}
 
 	public function testItInvalidatesAnalysisData(): void {
-		$html = '<html><body>Test content</body></html>';
+		$html     = '<html><body>Test content</body></html>';
+		$analysis = $this->create_test_analysis();
 
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $this->hasher->hash( 'an old hash' );
-
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), 'an old hash' ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();
@@ -153,6 +155,7 @@ final class HashHandlerTest extends TestCase {
 
 		// Although this record still exists, our decorator will make it return null.
 		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
 	}
 
 	public function testItBypassesHashCheckWithoutPostGlobal(): void {
@@ -160,11 +163,11 @@ final class HashHandlerTest extends TestCase {
 
 		$post = null;
 
-		$html           = '<html><body>Test content</body></html>';
-		$hash           = $this->hasher->hash( $html );
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $hash;
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->hash( $html );
+		$analysis = $this->create_test_analysis();
 
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();
@@ -184,11 +187,11 @@ final class HashHandlerTest extends TestCase {
 
 		$wp_the_query = null;
 
-		$html           = '<html><body>Test content</body></html>';
-		$hash           = $this->hasher->hash( $html );
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $hash;
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->hash( $html );
+		$analysis = $this->create_test_analysis();
 
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();
@@ -207,11 +210,11 @@ final class HashHandlerTest extends TestCase {
 		$_GET[ Request::QUERY_NOCACHE ] = 'ga61tywbag1';
 		$_GET[ Request::QUERY_TOKEN ]   = 'ka82726tgaa';
 
-		$html           = '<html><body>Test content</body></html>';
-		$hash           = $this->hasher->hash( $html );
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $hash;
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->hash( $html );
+		$analysis = $this->create_test_analysis();
 
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();
@@ -229,11 +232,11 @@ final class HashHandlerTest extends TestCase {
 	public function testItBypassesHashCheckDuringPreviewRequest(): void {
 		$_GET['preview'] = '1';
 
-		$html           = '<html><body>Test content</body></html>';
-		$hash           = $this->hasher->hash( $html );
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $hash;
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->hash( $html );
+		$analysis = $this->create_test_analysis();
 
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();
@@ -251,11 +254,11 @@ final class HashHandlerTest extends TestCase {
 	public function testItBypassesHashCheckWhenLoggedIn(): void {
 		wp_set_current_user( 1 );
 
-		$html           = '<html><body>Test content</body></html>';
-		$hash           = $this->hasher->hash( $html );
-		$analysis       = $this->create_test_analysis();
-		$analysis->hash = $hash;
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->hash( $html );
+		$analysis = $this->create_test_analysis();
 
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->post_id, $analysis );
 
 		$this->hash_handler->start_buffering();

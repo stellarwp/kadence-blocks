@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Response;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 
 /**
  * Data Transfer Object representing comprehensive website performance analysis.
@@ -13,7 +14,6 @@ use DateTimeZone;
  */
 final class WebsiteAnalysis {
 
-	public ?string $hash;
 	public DateTimeImmutable $lastModified;
 	public DeviceAnalysis $desktop;
 	public DeviceAnalysis $mobile;
@@ -27,13 +27,11 @@ final class WebsiteAnalysis {
 	 * @param ImageAnalysis[] $images The image analysis collection.
 	 */
 	private function __construct(
-		?string $hash,
 		DateTimeImmutable $lastModified,
 		DeviceAnalysis $desktop,
 		DeviceAnalysis $mobile,
 		array $images = []
 	) {
-		$this->hash         = $hash;
 		$this->lastModified = $lastModified;
 		$this->desktop      = $desktop;
 		$this->mobile       = $mobile;
@@ -61,7 +59,6 @@ final class WebsiteAnalysis {
 			: ( $timestamp ?? new DateTimeImmutable( 'now', $timezone ) );
 
 		return new self(
-			$attributes['hash'] ?? null,
 			$lastModified,
 			DeviceAnalysis::from( $attributes['desktop'] ),
 			DeviceAnalysis::from( $attributes['mobile'] ),
@@ -70,11 +67,10 @@ final class WebsiteAnalysis {
 	}
 
 	/**
-	 * @return array{hash: string|null, lastModified: string, desktop: array, mobile: array, images: array}
+	 * @return array{lastModified: string, desktop: array, mobile: array, images: array}
 	 */
 	public function toArray(): array {
 		return [
-			'hash'         => $this->hash ?? null,
 			'lastModified' => $this->lastModified->format( 'Y-m-d H:i:s' ),
 			'desktop'      => $this->desktop->toArray(),
 			'mobile'       => $this->mobile->toArray(),
@@ -85,5 +81,16 @@ final class WebsiteAnalysis {
 				$this->images
 			),
 		];
+	}
+
+	/**
+	 * Get the device analysis for a specific viewport.
+	 *
+	 * @param Viewport $vp The viewport to fetch data for.
+	 *
+	 * @return DeviceAnalysis|null
+	 */
+	public function getDevice( Viewport $vp ): ?DeviceAnalysis {
+		return $this->{$vp} ?? null;
 	}
 }
