@@ -10,7 +10,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
  */
 final class Meta_Store implements Store {
 
-	public const KEY = '_kadence_blocks_optimizer';
+	public const KEY = '_kb_optimizer';
 
 	/**
 	 * Get the optimization data for a post.
@@ -47,8 +47,8 @@ final class Meta_Store implements Store {
 		// Don't return false if the value is the same.
 		if ( false === $result ) {
 			$current = $this->get( $post_id );
-			
-			
+
+
 			return $current && $current->toArray() === $analysis->toArray();
 		}
 
