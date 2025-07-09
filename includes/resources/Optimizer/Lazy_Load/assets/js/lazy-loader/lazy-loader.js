@@ -4,7 +4,7 @@
  *
  * @param {IntersectionObserverInit} options The IntersectionObserver options.
  */
-export const createLazyLoader = (options = { rootMargin: '200px 0px' }) => {
+export const createLazyLoader = (options = { rootMargin: '300px 0px' }) => {
 	const observer = new IntersectionObserver((entries) => {
 		entries.forEach((e) => {
 			if (e.isIntersecting) {
