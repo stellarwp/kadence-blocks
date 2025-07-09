@@ -2,9 +2,9 @@
  * Use the IntersectionObserver to replace our lazy load attributes with the originals
  * when the element comes into the viewport.
  *
- * @param {{rootMargin: string}} options The lazy loader options.
+ * @param {IntersectionObserverInit} options The IntersectionObserver options.
  */
-export const createLazyLoader = (options = { rootMargin: '300px' }) => {
+export const createLazyLoader = (options = { rootMargin: '200px 0px' }) => {
 	const observer = new IntersectionObserver((entries) => {
 		entries.forEach((e) => {
 			if (e.isIntersecting) {
