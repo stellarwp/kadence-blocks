@@ -59,17 +59,30 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		$classes = $args['class'] ?? false;
+		$classes   = $args['class'] ?? false;
+		$is_inline = $attributes['backgroundInline'] ?? false;
 
-		if ( ! $classes ) {
-			return $args;
+		// Add lazy loading data attributes for CSS backgrounds.
+		if ( $classes ) {
+			$args['data-kadence-lazy-class']   = $classes;
+			$args['data-kadence-lazy-trigger'] = 'viewport';
+			$args['data-kadence-lazy-attrs']   = 'class';
+			unset( $args['class'] );
 		}
 
-		// Add lazy loading data attributes.
-		$args['data-kadence-lazy-class']   = $classes;
-		$args['data-kadence-lazy-trigger'] = 'viewport';
-		$args['data-kadence-lazy-attrs']   = 'class';
-		unset( $args['class'] );
+		// Add lazy loading data attributes for inline style background images.
+		if ( $is_inline ) {
+			$args['data-kadence-lazy-style']     = $args['style'] ?? '';
+			$args['data-kadence-lazy-trigger'] ??= 'viewport';
+
+			if ( ! empty( $args['data-kadence-lazy-attrs'] ) ) {
+				$args['data-kadence-lazy-attrs'] .= ',style';
+			} else {
+				$args['data-kadence-lazy-attrs'] = 'style';
+			}
+
+			unset( $args['style'] );
+		}
 
 		// Enqueue the lazy loader script if we found a bg.
 		$this->asset->enqueue_script( 'lazy-loader', 'dist/lazy-loader' );
