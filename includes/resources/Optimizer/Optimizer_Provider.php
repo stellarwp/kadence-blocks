@@ -4,9 +4,11 @@ namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
-use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Image_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -279,11 +281,21 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_image_processor(): void {
-		$this->container->singleton( Image_Lazy_Loader::class, Image_Lazy_Loader::class );
+		$this->container->singleton( Image_Processor::class, Image_Processor::class );
+
+		$this->container->when( Image_Processor::class )
+			->needs( '$processors' )
+			->give(
+				fn(): array => [
+					// Add additional image processors here.
+					$this->container->get( Lazy_Load_Processor::class ),
+					$this->container->get( Sizes_Attribute_Processor::class ),
+				]
+			);
 
 		add_action(
 			'template_redirect',
-			$this->container->callback( Image_Lazy_Loader::class, 'start_buffering' ),
+			$this->container->callback( Image_Processor::class, 'start_buffering' ),
 			1,
 			0
 		);
