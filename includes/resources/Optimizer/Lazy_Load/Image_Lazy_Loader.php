@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use WP_HTML_Tag_Processor;

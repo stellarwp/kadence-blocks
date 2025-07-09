@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Optimizer\Hash\Rule;
+namespace KadenceWP\KadenceBlocks\Optimizer\Skip_Rules;
 
 /**
  * Whether to skip the hash check.

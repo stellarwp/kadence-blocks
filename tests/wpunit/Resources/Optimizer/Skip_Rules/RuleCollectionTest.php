@@ -1,11 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Optimizer\Hash\Rule;
+namespace Tests\wpunit\Resources\Optimizer\Skip_Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Ignored_Query_Var_Rule;
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Logged_In_Rule;
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Optimizer_Request_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
 use Tests\Support\Classes\TestCase;
 
 final class RuleCollectionTest extends TestCase {

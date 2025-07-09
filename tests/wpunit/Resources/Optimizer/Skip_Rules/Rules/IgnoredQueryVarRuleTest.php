@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Optimizer\Hash\Rule\Rules;
+namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
 use Tests\Support\Classes\TestCase;
 
 final class IgnoredQueryVarRuleTest extends TestCase {

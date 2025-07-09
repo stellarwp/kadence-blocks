@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rules;
+namespace KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Skip_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Skip_Rule;
 
 final class Optimizer_Request_Rule implements Skip_Rule {
 

@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
-use KadenceWP\KadenceBlocks\Optimizer\Hash\Rule\Rule_Collection;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
