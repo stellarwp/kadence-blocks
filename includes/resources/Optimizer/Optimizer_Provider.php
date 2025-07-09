@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
@@ -234,6 +235,8 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_hash_handling(): void {
+		$this->container->singleton( Hash_Builder::class, Hash_Builder::class );
+
 		/**
 		 * Filter the list of query variables, that if present and truthy,
 		 * will bypass the hash check.

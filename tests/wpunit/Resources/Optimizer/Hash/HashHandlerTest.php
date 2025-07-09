@@ -4,8 +4,8 @@ namespace Tests\wpunit\Resources\Optimizer\Hash;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
+use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Request;
@@ -16,7 +16,7 @@ use Tests\Support\Classes\TestCase;
 final class HashHandlerTest extends TestCase {
 
 	private Store $store;
-	private Hasher $hasher;
+	private Hash_Builder $hasher;
 	private Hash_Handler $hash_handler;
 	private Hash_Store $hash_store;
 	private int $post_id;
@@ -28,7 +28,7 @@ final class HashHandlerTest extends TestCase {
 		parent::setUp();
 
 		$this->store        = $this->container->get( Store::class );
-		$this->hasher       = $this->container->get( Hasher::class );
+		$this->hasher       = $this->container->get( Hash_Builder::class );
 		$this->hash_handler = $this->container->get( Hash_Handler::class );
 		$this->hash_store   = $this->container->get( Hash_Store::class );
 
@@ -99,7 +99,7 @@ final class HashHandlerTest extends TestCase {
 		$_GET['kadence_set_optimizer_hash'] = '1';
 
 		$html = '<html><body>Test content</body></html>';
-		$hash = $this->hasher->hash( $html );
+		$hash = $this->hasher->build_hash( $html );
 
 		$this->store->set( $this->post_id, $this->create_test_analysis() );
 
@@ -116,6 +116,7 @@ final class HashHandlerTest extends TestCase {
 			function ( string $set_hash, int $post_id, Viewport $viewport ) use ( $hash ): void {
 				$this->assertSame( $hash, $set_hash );
 				$this->assertSame( $this->post_id, $post_id );
+				$this->assertEquals( Viewport::desktop(), $viewport );
 			},
 			10,
 			3
@@ -164,7 +165,7 @@ final class HashHandlerTest extends TestCase {
 		$post = null;
 
 		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->hash( $html );
+		$hash     = $this->hasher->build_hash( $html );
 		$analysis = $this->create_test_analysis();
 
 		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
@@ -188,7 +189,7 @@ final class HashHandlerTest extends TestCase {
 		$wp_the_query = null;
 
 		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->hash( $html );
+		$hash     = $this->hasher->build_hash( $html );
 		$analysis = $this->create_test_analysis();
 
 		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
@@ -211,7 +212,7 @@ final class HashHandlerTest extends TestCase {
 		$_GET[ Request::QUERY_TOKEN ]   = 'ka82726tgaa';
 
 		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->hash( $html );
+		$hash     = $this->hasher->build_hash( $html );
 		$analysis = $this->create_test_analysis();
 
 		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
@@ -233,7 +234,7 @@ final class HashHandlerTest extends TestCase {
 		$_GET['preview'] = '1';
 
 		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->hash( $html );
+		$hash     = $this->hasher->build_hash( $html );
 		$analysis = $this->create_test_analysis();
 
 		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
@@ -255,7 +256,7 @@ final class HashHandlerTest extends TestCase {
 		wp_set_current_user( 1 );
 
 		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->hash( $html );
+		$hash     = $this->hasher->build_hash( $html );
 		$analysis = $this->create_test_analysis();
 
 		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );

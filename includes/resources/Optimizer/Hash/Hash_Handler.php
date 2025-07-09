@@ -4,7 +4,6 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use KadenceWP\KadenceBlocks\Hasher;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -29,14 +28,14 @@ final class Hash_Handler {
 	 * @var string
 	 */
 	private string $html = '';
-	private Hasher $hasher;
+	private Hash_Builder $hasher;
 	private Store $store;
 	private Rule_Collection $rules;
 	private Background_Processor $background_processor;
 	private Hash_Store $hash_store;
 
 	public function __construct(
-		Hasher $hasher,
+		Hash_Builder $hasher,
 		Store $store,
 		Rule_Collection $rules,
 		Background_Processor $background_processor,
@@ -99,7 +98,7 @@ final class Hash_Handler {
 		}
 
 		// Generate a hash based on the final HTML markup, note this differs for mobile vs desktop.
-		$hash        = $this->hasher->hash( $this->html );
+		$hash        = $this->hasher->build_hash( $this->html );
 		$viewport    = Viewport::current( $this->is_mobile() );
 		$stored_hash = $this->hash_store->get( $post->ID, $viewport );
 
