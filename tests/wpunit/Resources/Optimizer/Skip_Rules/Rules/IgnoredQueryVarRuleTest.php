@@ -39,7 +39,7 @@ final class IgnoredQueryVarRuleTest extends TestCase {
 		$_GET[ self::MY_QUERY_VAR ] = 'true';
 
 		add_filter(
-			'kadence_blocks_optimizer_skip_has_check_query_vars',
+			'kadence_blocks_optimizer_rule_skip_query_vars',
 			static function ( array $query_vars ): array {
 				$query_vars[] = self::MY_QUERY_VAR;
 
