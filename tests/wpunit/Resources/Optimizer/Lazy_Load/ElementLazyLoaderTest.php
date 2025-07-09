@@ -408,7 +408,7 @@ final class ElementLazyLoaderTest extends TestCase {
 		$expected = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
-			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 750.5px;',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 750px;',
 		];
 
 		$this->assertEquals( $expected, $result );

@@ -79,7 +79,7 @@ final class Element_Lazy_Loader {
 
 			// Prepend our content visibility style.
 			$args['style'] = sprintf(
-				'content-visibility: auto;contain-intrinsic-size: auto %fpx;%s',
+				'content-visibility: auto;contain-intrinsic-size: auto %dpx;%s',
 				$section->height,
 				$current_style
 			);
