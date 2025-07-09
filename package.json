@@ -25,7 +25,7 @@
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
 		"@react-google-maps/api": "^2.12.0",
 		"@splidejs/react-splide": "^0.7.12",
-		"@stellarwp/perf-analyzer-client": "^1.0.0-beta.11",
+		"@stellarwp/perf-analyzer-client": "^1.0.0-beta.12",
 		"@wordpress/icons": "^9.25.0",
 		"@wordpress/url": "^3.35.0",
 		"algoliasearch": "^4.19.1",
