@@ -84,23 +84,43 @@ final class Image_Lazy_Loader {
 
 		// Process each image on the page.
 		while ( $p->next_tag( 'img' ) ) {
-			$src             = $p->get_attribute( 'src' );
-			$critical_source = $critical_images[ $counter ] ?? false;
+			$src     = $p->get_attribute( 'src' );
+			$classes = $p->get_attribute( 'class' );
 
-			// TODO: add some filters here.
+			/**
+			 * Filter whether this image will be processed for lazy loading.
+			 *
+			 * Returning false will skip lazy loading for this image.
+			 *
+			 * @param bool $proceed Whether we proceed with processing. Defaults to true.
+			 * @param string $src The image src.
+			 * @param string|null $classes The classes assigned to the img tag.
+			 * @param WP_Post $post The current post object.
+			 */
+			$process_lazy_loading = apply_filters(
+				'kadence_blocks_optimizer_lazy_load_img',
+				true,
+				$src,
+				$classes,
+				$post
+			);
 
-			// Ensure above the fold images do not have a lazy loading attribute.
-			if ( $src === $critical_source ) {
-				if ( 'lazy' === $p->get_attribute( 'loading' ) ) {
-					$p->remove_attribute( 'loading' );
-				}
-			} else {
-				// Ensure below the fold images have native lazy loading.
-				$p->set_attribute( 'loading', 'lazy' );
+			if ( $process_lazy_loading ) {
+				$critical_source = $critical_images[ $counter ] ?? false;
 
-				// If WordPress somehow added a high fetch priority, remove it.
-				if ( 'high' === $p->get_attribute( 'fetchpriority' ) ) {
-					$p->remove_attribute( 'fetchpriority' );
+				// Ensure above the fold images do not have a lazy loading attribute.
+				if ( $src === $critical_source ) {
+					if ( 'lazy' === $p->get_attribute( 'loading' ) ) {
+						$p->remove_attribute( 'loading' );
+					}
+				} else {
+					// Ensure below the fold images have native lazy loading.
+					$p->set_attribute( 'loading', 'lazy' );
+
+					// If WordPress somehow added a high fetch priority, remove it.
+					if ( 'high' === $p->get_attribute( 'fetchpriority' ) ) {
+						$p->remove_attribute( 'fetchpriority' );
+					}
 				}
 			}
 
@@ -111,9 +131,29 @@ final class Image_Lazy_Loader {
 
 			$image = $images[ $counter ] ?? false;
 
-			// Update the sizes attribute with our optimal sizes.
-			if ( $image && $image->optimalSizes && $image->src === $src ) {
-				$p->set_attribute( 'sizes', $image->optimalSizes );
+			/**
+			 * Filter whether this image will be processed for lazy loading.
+			 *
+			 * Returning false will skip replace the optimal sizes attribute for this image.
+			 *
+			 * @param bool $proceed Whether we proceed with processing. Defaults to true.
+			 * @param string $src The image src.
+			 * @param string|null $classes The classes assigned to the img tag.
+			 * @param WP_Post $post The current post object.
+			 */
+			$process_sizes_attribute = apply_filters(
+				'kadence_blocks_optimizer_update_img_sizes_attribute',
+				true,
+				$src,
+				$classes,
+				$post
+			);
+
+			if ( $process_sizes_attribute ) {
+				// Update the sizes attribute with our optimal sizes.
+				if ( $image && $image->optimalSizes && $image->src === $src ) {
+					$p->set_attribute( 'sizes', $image->optimalSizes );
+				}
 			}
 
 			++$counter;
