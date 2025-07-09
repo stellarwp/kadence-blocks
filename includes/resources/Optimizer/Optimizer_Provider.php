@@ -279,9 +279,6 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_image_processor(): void {
-		// Disable WordPress's lazyloading.
-		add_filter( 'wp_lazy_loading_enabled', '__return_false' );
-
 		$this->container->singleton( Image_Lazy_Loader::class, Image_Lazy_Loader::class );
 
 		add_action(

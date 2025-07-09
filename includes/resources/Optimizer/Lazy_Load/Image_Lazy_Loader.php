@@ -40,6 +40,9 @@ final class Image_Lazy_Loader {
 			}
 		}
 
+		// Disable WordPress's lazyloading.
+		add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+
 		ob_start( [ $this, 'process_images' ] );
 	}
 
