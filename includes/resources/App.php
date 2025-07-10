@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Asset\Asset_Provider;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
+use KadenceWP\KadenceBlocks\Log\Log_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
@@ -37,6 +38,7 @@ final class App {
 	 * @var class-string<Providable>
 	 */
 	private $providers = [
+		Log_Provider::class,
 		Asset_Provider::class,
 		Uplink_Provider::class,
 		Health_Provider::class,
