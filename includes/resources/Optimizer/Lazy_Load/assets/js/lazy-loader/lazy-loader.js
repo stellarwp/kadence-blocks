@@ -39,6 +39,13 @@ export const createLazyLoader = (options = { rootMargin: '300px 0px' }) => {
 					[...e.target.attributes]
 						.filter((attr) => attr.name.startsWith('data-kadence-lazy'))
 						.forEach((attr) => e.target.removeAttribute(attr.name));
+
+					// Fire an event so other JS scripts can hook into this and re-run their initialization.
+					window.dispatchEvent(
+						new CustomEvent('kadence-lazy-loaded', {
+							detail: { element: e.target },
+						})
+					);
 				}
 			}
 		});
