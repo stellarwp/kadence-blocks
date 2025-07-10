@@ -85,6 +85,10 @@ final class Optimizer_Provider extends Provider {
 		);
 	}
 
+	/**
+	 * If you update the text repository translations, ensure to match to the
+	 * assets/js/optimizer/constant.js file.
+	 */
 	private function register_translation(): void {
 		$this->container->singleton( Text_Repository::class, Text_Repository::class );
 
@@ -95,7 +99,7 @@ final class Optimizer_Provider extends Provider {
 								Text_Repository::RUN_OPTIMIZER => __( 'Run Optimizer', 'kadence-blocks' ),
 								Text_Repository::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZED => __( 'Optimized', 'kadence-blocks' ),
-								Text_Repository::OPTIMIZING => __( 'Optimizing...', 'kadence-blocks' ),
+								Text_Repository::OPTIMIZING => __( 'Optimizing', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZED => __( 'Not Optimized', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZABLE => __( 'Not Optimizable', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),

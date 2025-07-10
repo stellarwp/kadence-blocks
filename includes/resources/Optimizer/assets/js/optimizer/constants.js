@@ -6,6 +6,7 @@ const l10n = window.kbOptimizerL10n || {};
 export const OPTIMIZER_DATA = window.kbOptimizer || {};
 
 // UI State Constants.
+// If you update this, match to the Optimizer_Provider.php file.
 export const UI_STATES = {
 	OPTIMIZE: {
 		class: 'kb-optimize-post',
@@ -17,7 +18,7 @@ export const UI_STATES = {
 	},
 	OPTIMIZING: {
 		class: 'kb-optimizing',
-		text: l10n.optimizing || 'Optimizing...',
+		text: l10n.optimizing || 'Optimizing',
 	},
 	OPTIMIZED: {
 		text: l10n.optimized || 'Optimized',
