@@ -15,6 +15,10 @@ export const UI_STATES = {
 		class: 'kb-remove-post-optimization',
 		text: l10n.removeOptimization || 'Remove Optimization',
 	},
+	OPTIMIZING: {
+		class: 'kb-optimizing',
+		text: l10n.optimizing || 'Optimizing...',
+	},
 	OPTIMIZED: {
 		text: l10n.optimized || 'Optimized',
 	},

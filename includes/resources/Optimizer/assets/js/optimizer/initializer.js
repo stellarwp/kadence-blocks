@@ -10,19 +10,51 @@ import { POST_SAVED_HOOK } from '../../../../../../src/extension/post-saved-even
  * Update the optimizer link state
  *
  * @param {HTMLElement} link - The link element to update
- * @param {boolean} isOptimized - Whether the post is optimized
+ * @param {{class: string, text: string}} state - The state to set (OPTIMIZE, REMOVE, or OPTIMIZING)
  */
-function updateLinkState(link, isOptimized) {
-	const newState = isOptimized ? UI_STATES.REMOVE : UI_STATES.OPTIMIZE;
+function updateLinkState(link, state) {
+	// Remove all state classes
+	link.className = link.className
+		.replace(UI_STATES.OPTIMIZE.class, '')
+		.replace(UI_STATES.REMOVE.class, '')
+		.replace(UI_STATES.OPTIMIZING.class, '')
+		.trim();
 
-	// Update classes.
-	link.className =
-		link.className.replace(UI_STATES.OPTIMIZE.class, '').replace(UI_STATES.REMOVE.class, '').trim() +
-		' ' +
-		newState.class;
+	// Add the new state class
+	link.className += ' ' + state.class;
 
-	// Update text content.
-	link.textContent = newState.text;
+	// Update text content
+	link.textContent = state.text;
+}
+
+/**
+ * Get the post title from the row containing the given element.
+ *
+ * @param {HTMLElement} element - The element to find the row for.
+ * @param {number} postId - The post ID as fallback.
+ * @returns {string} The post title or fallback text.
+ */
+function getPostTitle(element, postId) {
+	const row = element.closest('tr');
+	const rowTitle = row ? row.querySelector('.row-title')?.textContent?.trim() : null;
+
+	return rowTitle || `Post ID: ${postId}`;
+}
+
+/**
+ * Animate the dots in the "Optimizing..." text
+ *
+ * @param {HTMLElement} link - The link element to animate
+ */
+function animateOptimizingDots(link) {
+	let dots = 0;
+	const baseText = 'Optimizing';
+
+	return setInterval(() => {
+		dots = (dots + 1) % 4;
+		const dotsText = '.'.repeat(dots);
+		link.textContent = baseText + dotsText;
+	}, 500);
 }
 
 /**
@@ -89,30 +121,51 @@ export function initOptimizer() {
 				'color: #edd144; -webkit-text-stroke: 0.5px black; font-size: 28px; font-weight: bold;'
 			);
 
+			const postTitle = getPostTitle(event.target, postId);
+
+			// Show "Optimizing..." state with animated dots
+			updateLinkState(event.target, UI_STATES.OPTIMIZING);
+
+			const animationInterval = animateOptimizingDots(event.target);
+
 			try {
 				const response = await analyzeSite(postUrl, postId, nonce);
 				console.log(response);
 
+				// Clear the animation interval
+				clearInterval(animationInterval);
+
 				// Update link state to show "Remove Optimization".
-				updateLinkState(event.target, true);
+				updateLinkState(event.target, UI_STATES.REMOVE);
 
 				createNotice(
 					sprintf(
-						// translators: %d: The post ID
-						__('Optimization data successfully saved for Post ID: %d.', 'kadence-blocks'),
-						postId
+						// translators: %s: The post title or post ID
+						__('🎉 "%s" is now Optimized!', 'kadence-blocks'),
+						postTitle
 					)
 				);
 			} catch (error) {
 				console.error('❌ Optimization failed:', error);
 
-				createNotice(__('Optimization failed', 'kadence-blocks'), NOTICE_TYPES.ERROR, true, error);
+				// Clear the animation interval
+				clearInterval(animationInterval);
+
+				// Reset to original state
+				updateLinkState(event.target, UI_STATES.OPTIMIZE);
+
+				createNotice(
+					// translators: %s: The post title or post ID
+					sprintf(__('Optimization failed for "%s"', 'kadence-blocks'), postTitle),
+					NOTICE_TYPES.ERROR,
+					true,
+					error
+				);
 			}
 		} else if (event.target.classList.contains('kb-remove-post-optimization')) {
 			event.preventDefault();
 
 			const postId = parseInt(event.target.dataset.postId, 10);
-
 			console.log('Removing optimization...', { postId });
 
 			try {
@@ -120,24 +173,21 @@ export function initOptimizer() {
 				console.log(response);
 
 				// Update link state to show "Run Optimizer".
-				updateLinkState(event.target, false);
+				updateLinkState(event.target, UI_STATES.OPTIMIZE);
+
+				const postTitle = getPostTitle(event.target, postId);
 
 				createNotice(
 					sprintf(
-						// translators: %d: The post ID
-						__('Optimization data successfully deleted for Post ID: %d.', 'kadence-blocks'),
-						postId
+						// translators: %s: The post title or post ID
+						__('Optimization data removed for "%s".', 'kadence-blocks'),
+						postTitle
 					)
 				);
 			} catch (error) {
 				console.error('❌ Failed to remove optimization:', error);
 
-				createNotice(
-					__('Failed to remove optimization data', 'kadence-blocks'),
-					NOTICE_TYPES.ERROR,
-					true,
-					error
-				);
+				createNotice(__('An error occurred', 'kadence-blocks'), NOTICE_TYPES.ERROR, true, error);
 			}
 		}
 	});

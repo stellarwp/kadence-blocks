@@ -95,6 +95,7 @@ final class Optimizer_Provider extends Provider {
 								Text_Repository::RUN_OPTIMIZER => __( 'Run Optimizer', 'kadence-blocks' ),
 								Text_Repository::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZED => __( 'Optimized', 'kadence-blocks' ),
+								Text_Repository::OPTIMIZING => __( 'Optimizing...', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZED => __( 'Not Optimized', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZABLE => __( 'Not Optimizable', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),

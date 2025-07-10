@@ -12,6 +12,7 @@ final class Text_Repository {
 	public const RUN_OPTIMIZER             = 'runOptimizer';
 	public const REMOVE_OPTIMIZATION       = 'removeOptimization';
 	public const OPTIMIZED                 = 'optimized';
+	public const OPTIMIZING                = 'optimizing';
 	public const NOT_OPTIMIZED             = 'notOptimized';
 	public const NOT_OPTIMIZABLE           = 'notOptimizable';
 	public const OPTIMIZATION_OUTDATED     = 'outdated';
