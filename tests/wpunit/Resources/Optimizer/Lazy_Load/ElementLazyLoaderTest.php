@@ -29,8 +29,7 @@ final class ElementLazyLoaderTest extends TestCase {
 			]
 		);
 
-		$this->store       = $this->container->get( Store::class );
-		$this->lazy_loader = $this->container->get( Element_Lazy_Loader::class );
+		$this->store = $this->container->get( Store::class );
 
 		// Set up global $post for testing.
 		global $post;
@@ -38,7 +37,6 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
-		$this->lazy_loader->flush();
 		$this->store->delete( $this->post_id );
 
 		// Clean up global $post.
@@ -48,9 +46,11 @@ final class ElementLazyLoaderTest extends TestCase {
 		parent::tearDown();
 	}
 
-	public function testItReturnsOriginalArgsWhenNoGlobalPost(): void {
+	public function testItReturnsOriginalArgsWhenNoPost(): void {
 		global $post;
 		$post = null;
+
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -58,15 +58,17 @@ final class ElementLazyLoaderTest extends TestCase {
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id',
+			'uniqueID' => 'test-123',
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
 	public function testItReturnsOriginalArgsWhenNoUniqueId(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
@@ -74,12 +76,14 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$attributes = [];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
 	public function testItReturnsOriginalArgsWhenUniqueIdIsFalse(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
@@ -89,132 +93,261 @@ final class ElementLazyLoaderTest extends TestCase {
 			'uniqueID' => false,
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$this->assertEquals( $args, $result );
-	}
-
-	public function testItReturnsOriginalArgsWhenUniqueIdIsEmpty(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => '',
-		];
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
 	public function testItReturnsOriginalArgsWhenNoAnalysisData(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id',
+			'uniqueID' => 'test-123',
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
-	public function testItReturnsOriginalArgsWhenNoSections(): void {
+	public function testItBypassesLazyLoadingWhenExcludedClassIsPresent(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
 		$args = [
-			'class' => 'kb-row-layout',
+			'class' => 'kb-row-layout kt-jarallax',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id',
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenExcludedClassIsPresentWithOtherClasses(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout kt-jarallax kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenMultipleExcludedClassesArePresent(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax', 'no-lazy-load' ] );
+
+		$args = [
+			'class' => 'kb-row-layout no-lazy-load',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItDoesNotBypassLazyLoadingWhenExcludedClassIsNotPresent(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
 		];
 
 		$this->createTestAnalysis();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => 'kb-row-layout kb-row-layout-123',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenExcludedClassIsPartOfLargerClassName(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout my-kt-jarallax-custom',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		// Should NOT bypass, so style should be added.
+		$expected = [
+			'class' => 'kb-row-layout my-kt-jarallax-custom',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenExcludedClassIsCaseSensitive(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout KT-JARALLAX',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		// Should not bypass because str_contains is case-sensitive.
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => 'kb-row-layout KT-JARALLAX',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenExcludedClassHasWhitespace(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout   kt-jarallax   ',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
-	public function testItReturnsOriginalWithZeroHeightSection(): void {
+	public function testItBypassesLazyLoadingWhenNoClassesAndExcludedClassIsEmpty(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ '' ] );
+
+		$args = [
+			'id' => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		// Should NOT bypass, so style should be added.
+		$expected = [
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItBypassesLazyLoadingWhenClassesIsFalseAndExcludedClassIsPresent(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => false,
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		// When class is false, it becomes an empty string, so no excluded class check applies.
+		// The lazy loading should still work normally.
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => false,
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItAddsContentVisibilityStyleForBelowTheFoldSection(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id',
+			'uniqueID' => 'test-123',
 		];
 
-		$this->createTestAnalysis( [ 'test-unique-id' ], false, [], false, 0 );
+		$this->createTestAnalysis();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$this->assertEquals( $args, $result );
-	}
-
-	public function testItReturnsOriginalArgsWhenAllSectionsAreAboveTheFold(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		$this->createTestAnalysis( [ 'test-unique-id' ], true );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$this->assertEquals( $args, $result );
-	}
-
-	public function testItReturnsOriginalArgsWhenUniqueIdNotInSectionClassName(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => 'different-unique-id',
-		];
-
-		$this->createTestAnalysis( [ 'test-unique-id' ] );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$this->assertEquals( $args, $result );
-	}
-
-	public function testItAddsContentVisibilityStyleForDesktopSection(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		$this->createTestAnalysis( [ 'test-unique-id' ] );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -225,32 +358,9 @@ final class ElementLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function testItAddsContentVisibilityStyleForMobileSection(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
+	public function testItAddsContentVisibilityStyleForBelowTheFoldSectionWithExistingStyle(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
 
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		$this->createTestAnalysis( [], false, [ 'test-unique-id' ] );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$expected = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
-		];
-
-		$this->assertEquals( $expected, $result );
-	}
-
-	public function testItPreservesExistingStyleWhenAddingContentVisibility(): void {
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
@@ -258,14 +368,14 @@ final class ElementLazyLoaderTest extends TestCase {
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id',
+			'uniqueID' => 'test-123',
 		];
 
-		$this->createTestAnalysis( [ 'test-unique-id' ], false );
+		$this->createTestAnalysis();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -276,84 +386,113 @@ final class ElementLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function testItHandlesMultipleSectionsWithDifferentUniqueIds(): void {
+	public function testItSkipsAboveTheFoldSections(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'second-unique-id',
+			'uniqueID' => 'above-fold-123',
 		];
 
-		$this->createTestAnalysis( [ 'first-unique-id', 'second-unique-id' ] );
+		$this->createTestAnalysisWithAboveFoldSection();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$expected = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
-		];
-
-		$this->assertEquals( $expected, $result );
-	}
-
-	public function testItHandlesEmptySectionsArray(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		$this->createTestAnalysis( [], false );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
-	public function testItHandlesCaseSensitiveUniqueIdMatching(): void {
+	public function testItSkipsSectionsWithZeroHeight(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'TEST-UNIQUE-ID',
+			'uniqueID' => 'zero-height-123',
 		];
 
-		$this->createTestAnalysis( [ 'test-unique-id' ], false );
+		$this->createTestAnalysisWithZeroHeightSection();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
 
-	public function testItHandlesSpecialCharactersInUniqueId(): void {
+	public function testItSkipsSectionsThatDoNotMatchUniqueId(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id with spaces',
+			'uniqueID' => 'non-matching-123',
 		];
 
-		$this->createTestAnalysis( [ 'test-unique-id with spaces' ], false );
+		$this->createTestAnalysis();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItUsesMobileAnalysisWhenOnMobile(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'mobile-test-123',
+		];
+
+		$this->createTestAnalysisWithMobileSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 300px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItUsesDesktopAnalysisWhenOnDesktop(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -364,21 +503,30 @@ final class ElementLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function testItHandlesUnicodeCharactersInUniqueId(): void {
+	public function testItFlushesMemoizationCache(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+
+		// First call to populate cache.
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
 		];
 
 		$attributes = [
-			'uniqueID' => 'test-unique-id-🚀',
+			'uniqueID' => 'test-123',
 		];
 
-		$this->createTestAnalysis( [ 'test-unique-id-🚀' ], false );
+		$this->createTestAnalysis();
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		// Flush the cache.
+		$lazy_loader->flush();
+
+		// Second call should work the same way.
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -389,68 +537,26 @@ final class ElementLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function testItHandlesDifferentSectionHeights(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
+	/**
+	 * Create a test WebsiteAnalysis object with a below-the-fold section.
+	 */
+	private function createTestAnalysis(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
 		];
 
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		$this->createTestAnalysis( [ 'test-unique-id' ], false, [], false, 750.5 );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		$expected = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 750px;',
-		];
-
-		$this->assertEquals( $expected, $result );
-	}
-
-	public function testItHandlesMixedAboveAndBelowFoldSections(): void {
-		$args = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-		];
-
-		$attributes = [
-			'uniqueID' => 'test-unique-id',
-		];
-
-		// Create analysis with both above and below fold sections.
 		$desktop = DeviceAnalysis::from(
 			[
 				'criticalImages'   => [],
 				'backgroundImages' => [],
-				'sections'         => [
-					[
-						'id'            => 'section1',
-						'height'        => 500,
-						'tagName'       => 'div',
-						'className'     => 'kb-row-layout-wrap kb-row-layout-test-unique-id',
-						'path'          => 'test-path-1',
-						'isAboveFold'   => true,
-						'hasImages'     => false,
-						'hasBackground' => false,
-					],
-					[
-						'id'            => 'section2',
-						'height'        => 300,
-						'tagName'       => 'div',
-						'className'     => 'kb-row-layout-wrap kb-row-layout-test-unique-id',
-						'path'          => 'test-path-2',
-						'isAboveFold'   => false,
-						'hasImages'     => false,
-						'hasBackground' => false,
-					],
-				],
+				'sections'         => [ $section_data ],
 			]
 		);
 
@@ -472,70 +578,28 @@ final class ElementLazyLoaderTest extends TestCase {
 		);
 
 		$this->store->set( $this->post_id, $analysis );
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
-
-		// Should apply the below fold section's height.
-		$expected = [
-			'class' => 'kb-row-layout',
-			'id'    => 'test-row',
-			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 300px;',
-		];
-
-		$this->assertEquals( $expected, $result );
 	}
 
 	/**
-	 * Create a test WebsiteAnalysis object.
-	 *
-	 * @param string[] $desktop_unique_ids Desktop section unique IDs.
-	 * @param bool     $desktop_above_fold Whether desktop sections are above fold.
-	 * @param string[] $mobile_unique_ids  Mobile section unique IDs.
-	 * @param bool     $mobile_above_fold  Whether mobile sections are above fold.
-	 * @param float    $height             Section height.
+	 * Create a test WebsiteAnalysis object with an above-the-fold section.
 	 */
-	private function createTestAnalysis(
-		array $desktop_unique_ids = [],
-		bool $desktop_above_fold = false,
-		array $mobile_unique_ids = [],
-		bool $mobile_above_fold = false,
-		float $height = 500.0
-	): void {
-		$desktop_sections = [];
-		foreach ( $desktop_unique_ids as $unique_id ) {
-			$desktop_sections[] = [
-				'id'            => 'section-' . $unique_id,
-				'height'        => $height,
-				'tagName'       => 'div',
-				'className'     => "kb-row-layout-wrap kb-row-layout-id{$unique_id} alignfull has-theme-palette9-background-color kt-row-has-bg wp-block-kadence-rowlayout",
-				'path'          => "test-path-{$unique_id}",
-				'isAboveFold'   => $desktop_above_fold,
-				'hasImages'     => false,
-				'hasBackground' => false,
-			];
-		}
-
-		$mobile_sections = [];
-		foreach ( $mobile_unique_ids as $unique_id ) {
-			$mobile_sections[] = [
-				'id'            => 'section-' . $unique_id,
-				'height'        => $height,
-				'tagName'       => 'div',
-				'className'     => "kb-row-layout-wrap kb-row-layout-id{$unique_id} alignfull has-theme-palette9-background-color kt-row-has-bg wp-block-kadence-rowlayout",
-				'path'          => "test-path-{$unique_id}",
-				'isAboveFold'   => $mobile_above_fold,
-				'hasImages'     => false,
-				'hasBackground' => false,
-			];
-		}
+	private function createTestAnalysisWithAboveFoldSection(): void {
+		$section_data = [
+			'id'            => 'section-above-fold-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout above-fold-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => true,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
 
 		$desktop = DeviceAnalysis::from(
 			[
 				'criticalImages'   => [],
 				'backgroundImages' => [],
-				'sections'         => $desktop_sections,
+				'sections'         => [ $section_data ],
 			]
 		);
 
@@ -543,7 +607,104 @@ final class ElementLazyLoaderTest extends TestCase {
 			[
 				'criticalImages'   => [],
 				'backgroundImages' => [],
-				'sections'         => $mobile_sections,
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
+				'desktop'      => $desktop->toArray(),
+				'mobile'       => $mobile->toArray(),
+				'images'       => [],
+			]
+		);
+
+		$this->store->set( $this->post_id, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with a zero-height section.
+	 */
+	private function createTestAnalysisWithZeroHeightSection(): void {
+		$section_data = [
+			'id'            => 'section-zero-height-123',
+			'height'        => 0,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout zero-height-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
+				'desktop'      => $desktop->toArray(),
+				'mobile'       => $mobile->toArray(),
+				'images'       => [],
+			]
+		);
+
+		$this->store->set( $this->post_id, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with a mobile section.
+	 */
+	private function createTestAnalysisWithMobileSection(): void {
+		$desktop_section_data = [
+			'id'            => 'section-desktop-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$mobile_section_data = [
+			'id'            => 'section-mobile-test-123',
+			'height'        => 300,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout mobile-test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $desktop_section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $mobile_section_data ],
 			]
 		);
 

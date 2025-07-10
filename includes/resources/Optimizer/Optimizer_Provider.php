@@ -204,6 +204,24 @@ final class Optimizer_Provider extends Provider {
 	private function register_element_lazy_loader(): void {
 		$this->container->singleton( Element_Lazy_Loader::class, Element_Lazy_Loader::class );
 
+		/**
+		 * Filters the list of CSS classes that should be excluded from lazy loading for
+		 * section elements.
+		 *
+		 * @param string[] $excluded_classes An array of CSS class names. If a row has one
+		 *                                   of these classes, it will be excluded from lazy loading.
+		 */
+		$excluded_classes = apply_filters(
+			'kadence_blocks_optimizer_section_lazy_load_excluded_classes',
+			[
+				'kt-jarallax',
+			]
+		);
+
+		$this->container->when( Element_Lazy_Loader::class )
+						->needs( '$excluded_classes' )
+						->give( static fn(): array => $excluded_classes );
+
 		// Do not perform element lazy loading on optimizer requests.
 		if ( $this->container->get( Request::class )->is_optimizer_request() ) {
 			return;

@@ -21,10 +21,22 @@ final class Element_Lazy_Loader {
 	 */
 	private ?array $sections;
 
+	/**
+	 * CSS classes that will exclude a section from being lazy loaded.
+	 *
+	 * @var string[]
+	 */
+	private array $excluded_classes;
+
 	private Store $store;
 
-	public function __construct( Store $store ) {
-		$this->store = $store;
+	/**
+	 * @param Store    $store The optimizer store.
+	 * @param string[] $excluded_classes CSS classes that will exclude a section from being lazy loaded.
+	 */
+	public function __construct( Store $store, array $excluded_classes ) {
+		$this->store            = $store;
+		$this->excluded_classes = $excluded_classes;
 	}
 
 	/**
@@ -48,6 +60,18 @@ final class Element_Lazy_Loader {
 
 		if ( ! $unique_id ) {
 			return $args;
+		}
+
+		$classes = (string) ( $args['class'] ?? '' );
+
+		// Explode class string into array for exact matching.
+		$class_list = array_filter( preg_split( '/\s+/', $classes ) );
+
+		// Bypass lazy loading if we find an excluded class (exact match only).
+		foreach ( $this->excluded_classes as $excluded_class ) {
+			if ( in_array( $excluded_class, $class_list, true ) ) {
+				return $args;
+			}
 		}
 
 		$analysis = $this->store->get( $post->ID );
