@@ -21,12 +21,24 @@ export const createLazyLoader = (options = { rootMargin: '300px 0px' }) => {
 						if (lazyValue) {
 							const existingValue = e.target.getAttribute(attributeName);
 
-							// Merge or set values if the attribute already exists.
-							const mergedValue = existingValue ? `${existingValue} ${lazyValue}` : lazyValue;
+							if (attributeName === 'class') {
+								// Merge class names.
+								e.target.classList.add(...lazyValue.trim().split(/\s+/));
+							} else {
+								// Merge or set values if the attribute already exists.
+								const mergedValue = existingValue
+									? `${existingValue.trim()} ${lazyValue}`.trim()
+									: lazyValue;
 
-							e.target.setAttribute(attributeName, mergedValue);
+								e.target.setAttribute(attributeName, mergedValue);
+							}
 						}
 					});
+
+					// Clean up the lazy data attributes.
+					[...e.target.attributes]
+						.filter((attr) => attr.name.startsWith('data-kadence-lazy'))
+						.forEach((attr) => e.target.removeAttribute(attr.name));
 				}
 			}
 		});
