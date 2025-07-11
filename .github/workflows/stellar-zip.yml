@@ -234,7 +234,7 @@ jobs:
           fi
 
       - name: pup build
-        if: steps.s3_zip_exists.outcome != 'success'
+        if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'false'
         run: composer -- pup build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
