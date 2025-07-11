@@ -118,18 +118,21 @@
 		height: 100%;
 	}
 }
-.kt-row-layout-overlay {
-	top: 0;
-	left: 0;
-	position: absolute;
-	opacity: 0.3;
-	height: 100%;
-	width: 100%;
-	z-index: 0;
-	filter: opacity(100%);
-}
-.kt-row-layout-overlay.kt-jarallax {
-	filter: none;
+.kb-row-layout-wrap {
+	.kt-row-layout-overlay {
+		top: 0;
+		left: 0;
+		position: absolute;
+		opacity: 0.3;
+		height: 100%;
+		width: 100%;
+		z-index: 0;
+		filter: opacity(100%);
+	}
+
+	.kt-row-layout-overlay.kt-jarallax {
+		filter: none;
+	}
 }
 // Tablet specific
 @media (min-width: 768px) and (max-width: 1024px) {
