@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.8.1
-Stable tag: 3.5.12
+Stable tag: 3.5.13
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,14 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.13 =
+Release Date: 17th July 2025
+* Add: Help text for vertical text setting in Advanced Text block.
+* Fix: Frontend divider style for Countdown block.
+* Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
+* Fix: Anchor attribute support for Navigation Link blocks.
+* Fix: Border radius reset values for the Advanced Header block.
+
 = 3.5.12 =
 Release Date: 2nd July 2025
 * Update: Header block off canvas trigger focus styles. 
