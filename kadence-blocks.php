@@ -29,9 +29,6 @@ use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Register;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
 
 /**
  * Add a check before redirecting.
@@ -152,22 +149,6 @@ function kadence_blocks_init(): void {
 	$ai_events = new Kadence_Blocks_AI_Events();
 	$ai_events->register();
 
-	/**
-	 * Uplink.
-	 */
-	UplinkConfig::set_container( $container );
-	UplinkConfig::set_hook_prefix( 'kadence-blocks' );
-	UplinkConfig::set_token_auth_prefix( 'kadence' );
-	UplinkConfig::set_auth_cache_expiration( WEEK_IN_SECONDS );
-	Uplink::init();
-
-	Register::plugin(
-		'kadence-blocks',
-		'Kadence Blocks',
-		KADENCE_BLOCKS_VERSION,
-		'kadence-blocks/kadence-blocks.php',
-		Kadence_Blocks::class
-	);
 
 	do_action( 'kadence_blocks_uplink_loaded' );
 

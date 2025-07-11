@@ -27,7 +27,7 @@ final class Notice_Handler {
 	/**
 	 * Add a notice to the stack.
 	 *
-	 * @param  Notice  $notice
+	 * @param Notice $notice
 	 *
 	 * @return self
 	 */
@@ -67,5 +67,4 @@ final class Notice_Handler {
 
 		return $this;
 	}
-
 }
