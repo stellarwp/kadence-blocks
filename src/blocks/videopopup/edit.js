@@ -222,22 +222,22 @@ function KadenceVideoPopup(props) {
 					${
 						playBtn[0].colorHover
 							? 'color:' +
-								KadenceColorOutput(playBtn[0].colorHover, playBtn[0].opacityHover) +
-								'!important;'
+							  KadenceColorOutput(playBtn[0].colorHover, playBtn[0].opacityHover) +
+							  '!important;'
 							: ''
 					}
 					${
 						playBtn[0].backgroundHover
 							? 'background:' +
-								KadenceColorOutput(playBtn[0].backgroundHover, playBtn[0].backgroundOpacityHover) +
-								'!important;'
+							  KadenceColorOutput(playBtn[0].backgroundHover, playBtn[0].backgroundOpacityHover) +
+							  '!important;'
 							: ''
 					}
 					${
 						playBtn[0].borderHover
 							? 'border-color:' +
-								KadenceColorOutput(playBtn[0].borderHover, playBtn[0].borderOpacityHover) +
-								'!important;'
+							  KadenceColorOutput(playBtn[0].borderHover, playBtn[0].borderOpacityHover) +
+							  '!important;'
 							: ''
 					}
 				}`}
@@ -255,7 +255,7 @@ function KadenceVideoPopup(props) {
 						shadowHover[0].spread +
 						'px ' +
 						KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
-					} !important; }`
+				  } !important; }`
 				: ''}
 		</style>
 	);
@@ -377,7 +377,7 @@ function KadenceVideoPopup(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-						]
+					  ]
 			)
 		);
 		let updateBorderStyle = false;
@@ -616,10 +616,7 @@ function KadenceVideoPopup(props) {
 				<div className="kb-pro-notice">
 					<h2>{__('Play Icon', 'kadence-blocks')} </h2>
 					<p>
-						{__(
-							'Customize the play icon shape color and more with Kadence Blocks Pro!',
-							'kadence-blocks'
-						)}{' '}
+						{__('Customize the play icon shape color and more with Kadence Blocks Pro!', 'kadence-blocks')}{' '}
 					</p>
 					<ExternalLink
 						href={
@@ -728,15 +725,6 @@ function KadenceVideoPopup(props) {
 			<>
 				{'local' !== type && (
 					<Fragment>
-						{/* <URLExtenalInputControl
-										label={__('Video URL', 'kadence-blocks')}
-										value={url}
-										onChange={(value) => setAttributes({ url: value })}
-										dynamicAttribute="url"
-										allowClear={true}
-										{...props}
-									/> */}
-
 						<URLInputControl
 							key={device + 'url'}
 							label={urlLabel}
@@ -750,6 +738,7 @@ function KadenceVideoPopup(props) {
 							name={'kadence/videopopup'}
 							clientId={clientId}
 							context={context}
+							additionalControls={false}
 						/>
 					</Fragment>
 				)}
@@ -1151,14 +1140,14 @@ function KadenceVideoPopup(props) {
 							: undefined,
 					boxShadow: displayShadow
 						? shadow[0].hOffset +
-							'px ' +
-							shadow[0].vOffset +
-							'px ' +
-							shadow[0].blur +
-							'px ' +
-							shadow[0].spread +
-							'px ' +
-							KadenceColorOutput(shadow[0].color, shadow[0].opacity)
+						  'px ' +
+						  shadow[0].vOffset +
+						  'px ' +
+						  shadow[0].blur +
+						  'px ' +
+						  shadow[0].spread +
+						  'px ' +
+						  KadenceColorOutput(shadow[0].color, shadow[0].opacity)
 						: undefined,
 					maxWidth: undefined !== maxWidth ? maxWidth + mwUnit : undefined,
 				}}
@@ -1210,28 +1199,28 @@ function KadenceVideoPopup(props) {
 									'radial' === backgroundOverlay[0].gradType
 										? `radial-gradient(at ${
 												backgroundOverlay[0].gradPosition
-											}, ${KadenceColorOutput(
+										  }, ${KadenceColorOutput(
 												backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000',
 												backgroundOverlay[0].fillOpacity
-											)} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
+										  )} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFill
 													: '#000000',
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFillOpacity
 													: 0
-											)} ${backgroundOverlay[0].gradLocSecond}%)`
+										  )} ${backgroundOverlay[0].gradLocSecond}%)`
 										: `linear-gradient(${backgroundOverlay[0].gradAngle}deg, ${KadenceColorOutput(
 												backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000',
 												backgroundOverlay[0].fillOpacity
-											)} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
+										  )} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFill
 													: '#000000',
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFillOpacity
 													: 0
-											)} ${backgroundOverlay[0].gradLocSecond}%)`,
+										  )} ${backgroundOverlay[0].gradLocSecond}%)`,
 								mixBlendMode: backgroundOverlay[0].blendMode
 									? backgroundOverlay[0].blendMode
 									: undefined,
@@ -1291,26 +1280,26 @@ function KadenceVideoPopup(props) {
 									'' !== playBtn[0].borderWidth[0] &&
 									playBtn[0].style !== 'default'
 										? playBtn[0].borderWidth[0] +
-											'px ' +
-											playBtn[0].borderWidth[1] +
-											'px ' +
-											playBtn[0].borderWidth[2] +
-											'px ' +
-											playBtn[0].borderWidth[3] +
-											'px'
+										  'px ' +
+										  playBtn[0].borderWidth[1] +
+										  'px ' +
+										  playBtn[0].borderWidth[2] +
+										  'px ' +
+										  playBtn[0].borderWidth[3] +
+										  'px'
 										: undefined,
 								borderRadius:
 									playBtn[0].borderRadius &&
 									'' !== playBtn[0].borderRadius[0] &&
 									playBtn[0].style !== 'default'
 										? playBtn[0].borderRadius[0] +
-											'% ' +
-											playBtn[0].borderRadius[1] +
-											'% ' +
-											playBtn[0].borderRadius[2] +
-											'% ' +
-											playBtn[0].borderRadius[3] +
-											'%'
+										  '% ' +
+										  playBtn[0].borderRadius[1] +
+										  '% ' +
+										  playBtn[0].borderRadius[2] +
+										  '% ' +
+										  playBtn[0].borderRadius[3] +
+										  '%'
 										: undefined,
 							}}
 						/>
