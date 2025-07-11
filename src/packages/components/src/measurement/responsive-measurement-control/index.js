@@ -207,7 +207,7 @@ export default function ResponsiveMeasurementControls( {
 										isSmall
 										disabled={ ( ( isEqual( [ '', '', '', '' ], liveValue ) || isEqual( [ '', 'auto', '', 'auto' ], liveValue ) ) ? true : false ) }
 										icon={ undo }
-										onClick={ () => onReset() }
+										onClick={ () => ( typeof reset === 'function' ? reset() : onReset() ) }
 									/>
 								</div>
 							) }
