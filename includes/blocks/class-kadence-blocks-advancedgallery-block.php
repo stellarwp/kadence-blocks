@@ -925,8 +925,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 						'before'       => $attributes['kadenceDynamic']['link']['before'],
 						'after'        => null,
 						'fallback'     => false,
-						'relate'       => ( isset( $blockattr['kadenceDynamic']['link']['relate'] ) ? $blockattr['kadenceDynamic']['link']['relate'] : '' ),
-						'relcustom'    => ( isset( $blockattr['kadenceDynamic']['link']['relcustom'] ) ? $blockattr['kadenceDynamic']['link']['relcustom'] : '' ),
+						'relate'       => ( isset( $attributes['kadenceDynamic']['link']['relate'] ) ? $attributes['kadenceDynamic']['link']['relate'] : '' ),
+						'relcustom'    => ( isset( $attributes['kadenceDynamic']['link']['relcustom'] ) ? $attributes['kadenceDynamic']['link']['relcustom'] : '' ),
 					);
 					if ( class_exists( 'Kadence_Blocks_Pro_Dynamic_Content' ) ) {
 						$dynamic_content_class = Kadence_Blocks_Pro_Dynamic_Content::get_instance();
@@ -992,7 +992,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item">';
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
-		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ). '" ' . ( ! empty( $padding_bottom ) && 'below' === $caption_style ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '">';
+		$figure_style = '';
+		if ( ! empty( $padding_bottom ) && 'below' === $caption_style ) {
+			$figure_style = ' style="max-width:' . $image['width'] . 'px;"';
+		}
+		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '"' . $figure_style . '>';
 		if ( ! empty( $href ) ) {
 			$safe_caption = '';
 			if( $link_to === 'media' && $lightbox === 'magnific' && $lightbox_cap && ! empty( $caption ) && is_string( $caption ) ) {
@@ -1006,7 +1010,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			}
 			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
 		}
-		$output .= '<div class="kb-gal-image-radius"' . ( ! empty( $padding_bottom ) ? ' style="max-width:' . esc_attr( $image['width'] ) . 'px;"' : '' ) . '>';
+		$image_radius_style = '';
+		if ( ! empty( $padding_bottom ) ) {
+			$image_radius_style = ' style="max-width:' . esc_attr( $image['width'] ) . 'px;"';
+		}
+		$output .= '<div class="kb-gal-image-radius"' . $image_radius_style . '>';
 		$output .= $img;
 		if ( $show_caption && ! empty( $caption ) && is_string( $caption ) && 'below' !== $caption_style ) {
 			$output .= $figcap;
@@ -1049,7 +1057,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$output = '<div class="kadence-blocks-gallery-thumb-item">';
 		$output .= '<div class="kadence-blocks-gallery-thumb-item-inner">';
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '">';
-		$output .= '<div class="kb-gal-image-radius" ' . ( ! empty( $padding_bottom ) ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '>';
+		$thumb_image_radius_style = '';
+		if ( ! empty( $padding_bottom ) ) {
+			$thumb_image_radius_style = ' style="max-width:' . $image['width'] . 'px;"';
+		}
+		$output .= '<div class="kb-gal-image-radius"' . $thumb_image_radius_style . '>';
 		$output .= $img;
 		$output .= '</div>';
 		$output .= '</figure>';

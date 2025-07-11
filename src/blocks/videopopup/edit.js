@@ -44,7 +44,7 @@ import {
 } from '@kadence/components';
 
 import {
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setBlockDefaults,
 	getPreviewSize,
@@ -53,7 +53,6 @@ import {
 	getSpacingOptionOutput,
 	KadenceColorOutput,
 	setDynamicState,
-	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -132,33 +131,24 @@ function KadenceVideoPopup(props) {
 		mediaUseMobile,
 		mediaMobile,
 		urlMobile,
+		mediaPoster,
+		posterType,
 	} = attributes;
 	const [isURLInputVisible, setIsURLInputVisible] = useState(false);
 	const [localSrc, setLocalSrc] = useState('');
 	const [isURLInputVisibleMobile, setIsURLInputVisibleMobile] = useState(false);
 	const [localSrcMobile, setLocalSrcMobile] = useState('');
+	const [isURLInputVisiblePoster, setIsURLInputVisiblePoster] = useState(false);
+	const [localSrcPoster, setLocalSrcPoster] = useState('');
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicPosterImg, setDynamicPosterImg] = useState('');
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -181,18 +171,10 @@ function KadenceVideoPopup(props) {
 	};
 	const debouncedUpdateDynamic = debounce(getDynamic, 200);
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/videopopup', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		if (!inQueryBlock) {
 			updatePopupDefaults();
@@ -808,6 +790,18 @@ function KadenceVideoPopup(props) {
 		/>
 	);
 
+	const videoPopupProLocalVideoPosterControls = (
+		<SelectControl
+			label={__('Poster Type', 'kadence-blocks')}
+			value={posterType}
+			options={[
+				{ value: '', label: __('Image', 'kadence-blocks') },
+				{ value: 'video', label: __('Video (Pro addon)', 'kadence-blocks'), disabled: true },
+			]}
+			onChange={(value) => setAttributes({ posterType: value })}
+		/>
+	);
+
 	return (
 		<div
 			{...blockProps}
@@ -927,31 +921,46 @@ function KadenceVideoPopup(props) {
 								}}
 							/>
 							<h2>{__('Video Poster', 'kadence-blocks')}</h2>
-							<KadenceImageControl
-								label={__('Image', 'kadence-blocks')}
-								hasImage={background[0].img ? true : false}
-								imageURL={background[0].img ? background[0].img : ''}
-								imageID={background[0].imgID}
-								onRemoveImage={clearPoster}
-								onSaveImage={onSelectPoster}
-								disableMediaButtons={background[0].img ? true : false}
-								dynamicAttribute="background:0:img"
-								isSelected={isSelected}
-								attributes={attributes}
-								setAttributes={setAttributes}
-								name={'kadence/videopopup'}
-								clientId={clientId}
-								context={context}
-							/>
-							{background[0].imgID && (
-								<ImageSizeControl
-									label={__('Poster Image File Size', 'kadence-blocks')}
-									id={background[0].imgID}
-									url={background[0].img}
-									fullSelection={true}
-									selectByValue={true}
-									onChange={changeImageSize}
-								/>
+
+							{applyFilters(
+								'kadence.videoPopupProLocalVideoPosterControls',
+								videoPopupProLocalVideoPosterControls,
+								props,
+								isURLInputVisiblePoster,
+								setIsURLInputVisiblePoster,
+								localSrcPoster,
+								setLocalSrcPoster
+							)}
+
+							{'video' !== posterType && (
+								<>
+									<KadenceImageControl
+										label={__('Image', 'kadence-blocks')}
+										hasImage={background[0].img ? true : false}
+										imageURL={background[0].img ? background[0].img : ''}
+										imageID={background[0].imgID}
+										onRemoveImage={clearPoster}
+										onSaveImage={onSelectPoster}
+										disableMediaButtons={background[0].img ? true : false}
+										dynamicAttribute="background:0:img"
+										isSelected={isSelected}
+										attributes={attributes}
+										setAttributes={setAttributes}
+										name={'kadence/videopopup'}
+										clientId={clientId}
+										context={context}
+									/>
+									{background[0].imgID && (
+										<ImageSizeControl
+											label={__('Poster Image File Size', 'kadence-blocks')}
+											id={background[0].imgID}
+											url={background[0].img}
+											fullSelection={true}
+											selectByValue={true}
+											onChange={changeImageSize}
+										/>
+									)}
+								</>
 							)}
 							<PopColorControl
 								label={__('Poster Background', 'kadence-blocks')}
@@ -1163,6 +1172,16 @@ function KadenceVideoPopup(props) {
 						backgroundImage: previewPosterImg ? `url(${previewPosterImg})` : undefined,
 					}}
 				>
+					{posterType === 'video' && mediaPoster && mediaPoster[0] && mediaPoster[0].url && (
+						<video
+							src={mediaPoster[0].url}
+							autoPlay={false}
+							muted={true}
+							playsInline={false}
+							className={'kadence-video-poster'}
+							preload="metadata"
+						/>
+					)}
 					{(!backgroundOverlay[0].type || 'gradient' !== backgroundOverlay[0].type) && (
 						<div
 							className="kadence-video-overlay"

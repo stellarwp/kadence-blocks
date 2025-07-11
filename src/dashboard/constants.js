@@ -147,7 +147,7 @@ export const AUTHENTICATED_CONTENT = {
 		},
 	],
 	knowledgeBase: {
-		heading: __(' Need Help Getting Started?', 'kadence-blocks'),
+		heading: __('Need Help Getting Started?', 'kadence-blocks'),
 		articles: [
 			{
 				category: __('Kadence AI', 'kadence-blocks'),
@@ -319,7 +319,7 @@ export const UNAUTHENTICATED_CONTENT = {
 		},
 	],
 	knowledgeBase: {
-		heading: __(' Need Help Getting Started?', 'kadence-blocks'),
+		heading: __('Need Help Getting Started?', 'kadence-blocks'),
 		articles: [
 			{
 				category: __('Kadence Blocks', 'kadence-blocks'),

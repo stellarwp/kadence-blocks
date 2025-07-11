@@ -385,7 +385,9 @@
 			if (!element?.className) {
 				return false;
 			}
-			if (element.className.split(' ').indexOf(classname) >= 0) return element.id;
+			if (element.className.split(' ').indexOf(classname) >= 0) {
+				return element.id;
+			}
 			return element.parentNode && window.kadenceForm.checkParentClass(element.parentNode, classname);
 		},
 		verifySource(form) {

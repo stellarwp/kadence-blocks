@@ -108,8 +108,8 @@ export default function MenuEditor({
 							orientationTablet !== ''
 								? orientationTablet
 								: orientation !== ''
-								? orientation
-								: 'horizontal'
+									? orientation
+									: 'horizontal'
 						}
 						// technically there should be a third option here, 'inherit', as the default. but that doesn't fit into the design well..
 						options={[

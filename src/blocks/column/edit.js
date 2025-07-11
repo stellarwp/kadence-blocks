@@ -50,10 +50,9 @@ import {
 	getSpacingOptionOutput,
 	getBorderStyle,
 	setBlockDefaults,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
-	getPostOrFseId,
 	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
@@ -250,40 +249,19 @@ function SectionEdit(props) {
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
 	);
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/column', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
@@ -359,7 +337,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -394,7 +372,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderHoverStyle = false;
@@ -434,7 +412,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (
@@ -462,7 +440,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (
@@ -493,7 +471,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (
@@ -520,7 +498,7 @@ function SectionEdit(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		if (
@@ -1042,13 +1020,13 @@ function SectionEdit(props) {
 		undefined !== justifyContent?.[1] && '' !== justifyContent?.[1]
 			? justifyContent[1]
 			: 'horizontal' == direction?.[0] && 'vertical' == direction?.[1]
-			? 'stretch'
-			: '',
+				? 'stretch'
+				: '',
 		undefined !== justifyContent?.[2] && '' !== justifyContent?.[2]
 			? justifyContent[2]
 			: 'horizontal' == direction?.[1] && 'vertical' == direction?.[2]
-			? 'stretch'
-			: ''
+				? 'stretch'
+				: ''
 	);
 
 	const previewWrap = getPreviewSize(
@@ -1185,8 +1163,8 @@ function SectionEdit(props) {
 	const actualVerticalAlign = previewVerticalAlign
 		? previewVerticalAlign
 		: previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
-		? 'middle'
-		: 'top';
+			? 'middle'
+			: 'top';
 
 	const styleControlsBackdropFilter = (
 		<KadencePanelBody
@@ -1220,7 +1198,7 @@ function SectionEdit(props) {
 				{overlay
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { background-color: ${KadenceColorOutput(
 							overlay
-					  )}; }`
+						)}; }`
 					: ''}
 				{overlayBlendMode
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { mix-blend-mode: ${overlayBlendMode}; }`
@@ -1244,22 +1222,22 @@ function SectionEdit(props) {
 				{previewRadiusTop
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-left-radius:${
 							previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-					  }; }`
+						}; }`
 					: ''}
 				{previewRadiusRight
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-top-right-radius:${
 							previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-					  }; }`
+						}; }`
 					: ''}
 				{previewRadiusBottom
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-right-radius:${
 							previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-					  }; }`
+						}; }`
 					: ''}
 				{previewRadiusLeft
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { border-bottom-left-radius:${
 							previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-					  }; }`
+						}; }`
 					: ''}
 
 				{overlayHoverOpacity !== undefined && overlayHoverOpacity !== ''
@@ -1268,7 +1246,7 @@ function SectionEdit(props) {
 				{overlayHover
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { background-color: ${KadenceColorOutput(
 							overlayHover
-					  )}; ; }`
+						)}; ; }`
 					: ''}
 				{hoverOverlayBlendMode
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { mix-blend-mode: ${hoverOverlayBlendMode} !important; }`
@@ -1295,28 +1273,28 @@ function SectionEdit(props) {
 				{previewHoverRadiusTop
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-left-radius:${
 							previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusRight
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-top-right-radius:${
 							previewHoverRadiusRight + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusBottom
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-right-radius:${
 							previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusLeft
 					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner:before { border-bottom-left-radius:${
 							previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 
 				{previewMaxWidth
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner { max-width:${
 							previewMaxWidth + previewMaxWidthUnit
-					  }; margin-left: auto; margin-right:auto; }`
+						}; margin-left: auto; margin-right:auto; }`
 					: ''}
 				{previewMaxWidth
 					? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-inner, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }`
@@ -1324,13 +1302,13 @@ function SectionEdit(props) {
 				{previewMaxWidth
 					? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${uniqueID}, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-column.kadence-column-${uniqueID} { flex: 0 1 ${
 							previewMaxWidth + previewMaxWidthUnit
-					  }; }`
+						}; }`
 					: ''}
 				{undefined !== zIndex && '' !== zIndex ? `.kadence-column-${uniqueID} { z-index: ${zIndex}; }` : ''}
 				{textColor
 					? `.kadence-column-${uniqueID}, .kadence-column-${uniqueID} .kt-svg-icon-list-item-wrap, .kadence-column-${uniqueID} p, .kadence-column-${uniqueID} h1, .kadence-column-${uniqueID} h1.kadence-advancedheading-text, .kadence-column-${uniqueID} h2, .kadence-column-${uniqueID} h2.kadence-advancedheading-text, .kadence-column-${uniqueID} h3, .kadence-column-${uniqueID} h3.kadence-advancedheading-text, .kadence-column-${uniqueID} h4, .kadence-column-${uniqueID} h4.kadence-advancedheading-text, .kadence-column-${uniqueID} h5, .kadence-column-${uniqueID} h5.kadence-advancedheading-text, .kadence-column-${uniqueID} h6, .kadence-column-${uniqueID} h6.kadence-advancedheading-text { color: ${KadenceColorOutput(
 							textColor
-					  )}; }`
+						)}; }`
 					: ''}
 				{linkColor ? `.kadence-column-${uniqueID} a { color: ${KadenceColorOutput(linkColor)}; }` : ''}
 				{linkHoverColor
@@ -1342,7 +1320,7 @@ function SectionEdit(props) {
 				{'' !== previewFlexBasis && null !== previewFlexBasis
 					? `.wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > * { flex-basis: ${
 							previewFlexBasis + (flexBasisUnit ? flexBasisUnit : 'px')
-					  }; }.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > .wp-block-kadence-infobox, .kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-infobox { width:0px; }`
+						}; }.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > .wp-block-kadence-infobox, .kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-infobox { width:0px; }`
 					: ''}
 				{'' !== previewFlexBasis
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > .wp-block-kadence-image:not(:last-child), .kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }`
@@ -1389,7 +1367,7 @@ function SectionEdit(props) {
 				{textColorHover
 					? `.kadence-column-${uniqueID}:hover, .kadence-column-${uniqueID}:hover .kt-svg-icon-list-item-wrap, .kadence-column-${uniqueID}:hover p, .kadence-column-${uniqueID}:hover h1, .kadence-column-${uniqueID}:hover h2, .kadence-column-${uniqueID}:hover h3, .kadence-column-${uniqueID}:hover h4, .kadence-column-${uniqueID}:hover h5, .kadence-column-${uniqueID}:hover h6 { color: ${KadenceColorOutput(
 							textColorHover
-					  )}; }`
+						)}; }`
 					: ''}
 				{linkColorHover
 					? `.kadence-column-${uniqueID}:hover a { color: ${KadenceColorOutput(linkColorHover)}; }`
@@ -1400,7 +1378,7 @@ function SectionEdit(props) {
 				{backgroundHover
 					? `.kadence-column-${uniqueID}:hover .kadence-inner-column-inner { background-color: ${KadenceColorOutput(
 							backgroundHover
-					  )}!important; }`
+						)}!important; }`
 					: ''}
 				{previewHoverBackground
 					? `.kadence-column-${uniqueID}:hover .kadence-inner-column-inner { background-image:${previewHoverBackground} !important; }`
@@ -1436,22 +1414,22 @@ function SectionEdit(props) {
 				{previewHoverRadiusTop
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-left-radius:${
 							previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusRight
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-top-right-radius:${
 							previewHoverRadiusRight + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusBottom
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-right-radius:${
 							previewHoverRadiusBottom + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewHoverRadiusLeft
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { border-bottom-left-radius:${
 							previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{collapseOrder && previewDevice === 'Tablet'
 					? `.kt-row-layout-row > .innerblocks-wrap > .kadence-column-${uniqueID} { order:${collapseOrder}; }`
@@ -1478,7 +1456,7 @@ function SectionEdit(props) {
 								undefined !== shadowHover[0].color ? shadowHover[0].color : '#000000',
 								undefined !== shadowHover[0].opacity ? shadowHover[0].opacity : 1
 							)
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{kadenceBlockCSS && <>{kadenceBlockCSS.replace(/selector/g, `.kadence-column-${uniqueID}`)}</>}
 			</style>
@@ -3700,18 +3678,18 @@ function SectionEdit(props) {
 						undefined !== shadow[0] &&
 						undefined !== shadow[0].color
 							? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-							  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-							  'px ' +
-							  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-							  'px ' +
-							  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-							  'px ' +
-							  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-							  'px ' +
-							  KadenceColorOutput(
+								(undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+								'px ' +
+								(undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+								'px ' +
+								(undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+								'px ' +
+								(undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+								'px ' +
+								KadenceColorOutput(
 									undefined !== shadow[0].color ? shadow[0].color : '#000000',
 									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-							  )
+								)
 							: undefined,
 					'-webkit-backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
 					'backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,

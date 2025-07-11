@@ -26,7 +26,7 @@ import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
 import { navigationBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
-import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
@@ -112,40 +112,20 @@ export function Edit(props) {
 			? 'vertical'
 			: 'horizontal'
 		: orientationMobile;
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode, getStash } = useSelect(
+	const { previewDevice, isPreviewMode, getStash } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 				getStash: (value) => select('kadenceblocks/data').getStash(value),
 			};
 		},
 		[clientId]
 	);
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 		if (currentPostType === 'kadence_navigation') {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.
 			window.wp.data.dispatch('core/block-editor').setTemplateValidity(true);

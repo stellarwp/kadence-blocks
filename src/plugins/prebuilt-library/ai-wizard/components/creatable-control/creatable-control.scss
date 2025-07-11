@@ -1,9 +1,9 @@
-@import '../../scss/variables.scss';
-@import '../../scss/mixins.scss';
+@use '../../scss/variables.scss';
+@use '../../scss/mixins.scss';
 
 .stellarwp.components-creatable-control {
   .components-input-control__label {
-    @include input_label;
+    @include mixins.input_label;
 
     margin-bottom: 0;
   }
@@ -54,7 +54,7 @@
 	padding-right: 18px;
 
 	&.stellarwp-creatable__option--is-selected {
-		background-color: $color-primary;
+		background-color: variables.$color-primary;
 	}
 }
 

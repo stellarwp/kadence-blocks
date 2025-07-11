@@ -25,7 +25,7 @@ import { store as coreStore, EntityProvider } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 
 /**
  * Internal dependencies
@@ -60,23 +60,10 @@ export function Edit(props) {
 		[id]
 	);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
+	const { isPreviewMode } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -86,16 +73,9 @@ export function Edit(props) {
 		return <>{formTemplateContactIcon}</>;
 	}
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
 		if (currentPostType === 'kadence_form') {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.
 			window.wp.data.dispatch('core/block-editor').setTemplateValidity(true);

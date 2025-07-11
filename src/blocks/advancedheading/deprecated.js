@@ -1898,12 +1898,12 @@ export default [
 							undefined !== textShadow[0].enable &&
 							textShadow[0].enable
 								? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].color
+									'px ' +
+									(undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) +
+									'px ' +
+									(undefined !== textShadow[0].blur ? textShadow[0].blur : 1) +
+									'px ' +
+									(undefined !== textShadow[0].color
 										? KadenceColorOutput(textShadow[0].color)
 										: 'rgba(0,0,0,0.2)')
 								: undefined,

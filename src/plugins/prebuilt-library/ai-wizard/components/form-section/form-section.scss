@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 .stellarwp.form-section {
   margin-bottom: 16px;
@@ -6,7 +6,7 @@
   .form-section__content {
     margin-bottom: 0;
     font-size: 12px;
-    color: $color-disabled;
+    color: variables.$color-disabled;
   }
 
   &.has-children {

@@ -58,10 +58,9 @@ import {
 	getFontSizeOptionOutput,
 	getBorderStyle,
 	getBorderColor,
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setBlockDefaults,
-	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -261,23 +260,10 @@ function KadenceAdvancedHeading(props) {
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, allowedFormats } = useSelect(
+	const { previewDevice, allowedFormats } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 				allowedFormats: select('core/rich-text').getFormatTypes(),
 			};
 		},
@@ -354,18 +340,10 @@ function KadenceAdvancedHeading(props) {
 	const isDefaultEditorBlock =
 		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedheading', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
@@ -412,7 +390,7 @@ function KadenceAdvancedHeading(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -1012,7 +990,7 @@ function KadenceAdvancedHeading(props) {
 								? getFontSizeOptionOutput(
 										previewIconSize,
 										undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-								  )
+									)
 								: undefined,
 							color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
 							paddingTop: previewIconPaddingTop
@@ -1114,15 +1092,15 @@ function KadenceAdvancedHeading(props) {
 									isRGBA(previewColorTextShadow)
 										? previewColorTextShadow // If rgba, use the color as is
 										: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
-							  }`
+								}`
 							: undefined,
 
 						writingMode:
 							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
 								? 'vertical-lr'
 								: previewTextOrientation === 'sideways-up'
-								? 'sideways-lr'
-								: '',
+									? 'sideways-lr'
+									: '',
 						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
 						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
@@ -1274,40 +1252,40 @@ function KadenceAdvancedHeading(props) {
 						${
 							'' !== previewMarkBorderRadiusTop
 								? 'border-top-left-radius:' +
-								  previewMarkBorderRadiusTop +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusTop +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusRight
 								? 'border-top-right-radius:' +
-								  previewMarkBorderRadiusRight +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusRight +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusBottom
 								? 'border-bottom-right-radius:' +
-								  previewMarkBorderRadiusBottom +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusBottom +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 						${
 							'' !== previewMarkBorderRadiusLeft
 								? 'border-bottom-left-radius:' +
-								  previewMarkBorderRadiusLeft +
-								  markBorderRadiusUnitPreview +
-								  ';'
+									previewMarkBorderRadiusLeft +
+									markBorderRadiusUnitPreview +
+									';'
 								: ''
 						}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
 							previewMaxWidth + (maxWidthType ? maxWidthType : 'px')
-					  } !important; }`
+						} !important; }`
 					: ''}
 				{previewMaxWidth && previewAlign === 'center'
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }`

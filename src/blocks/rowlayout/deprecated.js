@@ -298,7 +298,7 @@ const v5 = {
 		const thirdColumnClass =
 			secondColumnWidth && firstColumnWidth && 3 === columns
 				? ' kt-custom-third-width-' +
-				  Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
+					Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
 				: '';
 		const layoutClass = !colLayout ? 'equal' : colLayout;
 		const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
@@ -440,7 +440,7 @@ const v5 = {
 								loop: true,
 								mute: true,
 							},
-					  ];
+						];
 			return (
 				<Fragment>
 					<video
@@ -1438,7 +1438,7 @@ const v4 = {
 		const thirdColumnClass =
 			secondColumnWidth && firstColumnWidth && 3 === columns
 				? ' kt-custom-third-width-' +
-				  Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
+					Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
 				: '';
 		const layoutClass = !colLayout ? 'equal' : colLayout;
 		const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
@@ -1573,7 +1573,7 @@ const v4 = {
 								loop: true,
 								mute: true,
 							},
-					  ];
+						];
 			return (
 				<Fragment>
 					<video
@@ -2451,7 +2451,7 @@ const v3 = {
 		const thirdColumnClass =
 			secondColumnWidth && firstColumnWidth && 3 === columns
 				? ' kt-custom-third-width-' +
-				  Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
+					Math.round((100 - (parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth))) * 10) / 10
 				: '';
 		const layoutClass = !colLayout ? 'equal' : colLayout;
 		const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
@@ -2567,7 +2567,7 @@ const v3 = {
 								loop: true,
 								mute: true,
 							},
-					  ];
+						];
 			return (
 				<Fragment>
 					<video

@@ -221,7 +221,7 @@ class SingleTemplateLibrary extends Component {
 										icon={update}
 										onClick={() => this.reloadTemplateData()}
 									>
-										{__(' Sync with Cloud', 'kadence-blocks')}
+										{__('Sync with Cloud', 'kadence-blocks')}
 									</Button>
 								</div>
 							</Fragment>

@@ -54,7 +54,7 @@ export default function Block({ block, isPreview = false }) {
 		const style = transform
 			? {
 					transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-			  }
+				}
 			: undefined;
 
 		parentProps.ref = setNodeRef;

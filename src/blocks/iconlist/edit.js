@@ -22,8 +22,7 @@ import {
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
 	setBlockDefaults,
-	getUniqueId,
-	getPostOrFseId,
+	uniqueIdHelper,
 } from '@kadence/helpers';
 
 import {
@@ -135,27 +134,16 @@ function KadenceIconLists(props) {
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
 	);
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setBlockDefaults('kadence/iconlist', attributes);
 
@@ -188,16 +176,6 @@ function KadenceIconLists(props) {
 					});
 				}
 			}
-		}
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
 		}
 	}, []);
 
@@ -799,12 +777,12 @@ function KadenceIconLists(props) {
 				{color
 					? `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single { color: ${KadenceColorOutput(
 							color
-					  )}; }`
+						)}; }`
 					: ''}
 				{background
 					? `.kt-svg-icon-list-items${uniqueID}.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { background-color: ${KadenceColorOutput(
 							background
-					  )}; }`
+						)}; }`
 					: ''}
 				{padding
 					? `.kt-svg-icon-list-items${uniqueID}.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { padding: ${padding}px; }`
@@ -812,7 +790,7 @@ function KadenceIconLists(props) {
 				{border
 					? `.kt-svg-icon-list-items${uniqueID}.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { border-color: ${KadenceColorOutput(
 							border
-					  )}; }`
+						)}; }`
 					: ''}
 				{borderWidth
 					? `.kt-svg-icon-list-items${uniqueID}.kb-icon-list-style-stacked .kt-svg-icon-list-item-wrap:not(.kt-svg-icon-list-style-default) .kt-svg-icon-list-single { border-width: ${borderWidth}px; }`

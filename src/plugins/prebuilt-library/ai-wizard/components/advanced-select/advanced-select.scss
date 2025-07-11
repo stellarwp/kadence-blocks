@@ -1,5 +1,5 @@
-@import '../../scss/variables.scss';
-@import '../../scss/mixins.scss';
+@use '../../scss/variables' as vars;
+@use '../../scss/mixins' as mixins;
 
 
 .stellarwp.components-advanced-select {
@@ -9,7 +9,7 @@
 	gap: 8px;
 
 	.components-input-control__label {
-		@include input_label;
+		@include mixins.input_label;
 		margin-bottom: 0;
 	}
 
@@ -21,9 +21,9 @@
 		}
 		button.stellarwp.components-button {
 			border: 1px solid;
-			border-color: $color-gray-300;
-			background-color: $color-white;
-			color: $color-gray-700;
+			border-color: vars.$color-gray-300;
+			background-color: vars.$color-white;
+			color: vars.$color-gray-700;
 			height: 40px;
 			font-weight: 400;
 			border-radius: 4px;
@@ -32,19 +32,19 @@
 			width: 100%;
 
 			&.is-open {
-				border-color: $color-gray-800;
+				border-color: vars.$color-gray-800;
 				.stellarwp-advancedSelect__button-icon {
-					color: $color-gray-700;
+					color: vars.$color-gray-700;
 				}
 			}
 
 			&:hover {
-				background-color:  $color-white;
-				border-color: $color-gray-800;
-				color: $color-gray-700;
+				background-color:  vars.$color-white;
+				border-color: vars.$color-gray-800;
+				color: vars.$color-gray-700;
 				box-shadow: none;
 				.stellarwp-advancedSelect__button-icon {
-					color: $color-gray-700;
+					color: vars.$color-gray-700;
 				}
 			}
 
@@ -57,14 +57,14 @@
 
 			.stellarwp-advancedSelect__button-label {
 				padding: 2px 8px 2px 8px;
-				border-right: 1px solid $color-gray-300;
+				border-right: 1px solid vars.$color-gray-300;
 				margin-right: 8px;
 				flex: 1;
 				text-align: left;
 			}
 			.stellarwp-advancedSelect__button-icon {
 				margin-right: -5px;
-				color: $color-gray-400;
+				color: vars.$color-gray-400;
 				display: flex;
 				align-items: center;
 			}
@@ -83,9 +83,9 @@
 
 			button.advanced-select-menu__create {
 				border: 1px solid;
-				border-color: $color-gray-300;
-				background-color: $color-white;
-				color: $color-gray-500;
+				border-color: vars.$color-gray-300;
+				background-color: vars.$color-white;
+				color: vars.$color-gray-500;
 				height: 40px;
 				font-weight: 400;
 				border-radius: 4px;
@@ -99,9 +99,9 @@
 				margin-bottom: 8px;
 
 				&:hover {
-					background-color:  $color-primary;
-					border-color: $color-primary;
-					color: $color-white;
+					background-color:  vars.$color-primary;
+					border-color: vars.$color-primary;
+					color: vars.$color-white;
 					box-shadow: none;
 				}
 				&:focus {
@@ -112,14 +112,14 @@
 
 			.advanced-select-menu__create-input {
 				height: 40px;
-				background-color: $color-gray-200;
+				background-color: vars.$color-gray-200;
 				margin-left: -8px;
 				margin-right: -8px;
 				padding: 0 8px;
 				display: flex;
 				align-items: center;
-				border-top: $color-gray-200;
-				border-bottom: $color-gray-200;
+				border-top: vars.$color-gray-200;
+				border-bottom: vars.$color-gray-200;
 				margin-bottom: 8px;
 			}
 			.advanced-select-menu__input {
@@ -152,14 +152,14 @@
 				.advanced-select-menu__option-category {
 					font-size: 13px;
 					font-weight: 600;
-					color: $color-black;
+					color: vars.$color-black;
 					padding: 8px 0 4px 0;
 				}
 				.advanced-select-menu__option-item {
 					font-size: 15px;
 					font-weight: 400;
-					color: $color-gray-900;
-					background-color: $color-white;
+					color: vars.$color-gray-900;
+					background-color: vars.$color-white;
 					cursor: pointer;
 					margin-right: -8px;
 					margin-left: -8px;
@@ -167,11 +167,11 @@
 					justify-content: space-between;
 
 					&.is-active {
-						background-color: $color-gray-200;
+						background-color: vars.$color-gray-200;
 					}
 
 					&:hover {
-						background-color: $color-gray-200;
+						background-color: vars.$color-gray-200;
 
 						.advanced-select-menu__option-item__actions.is-icons {
 							visibility: visible;
@@ -190,7 +190,7 @@
 						align-items: center;
 					}
 					.advanced-select-menu__option-item__label > svg {
-						color: $color-primary;
+						color: vars.$color-primary;
 					}
 					.advanced-select-menu__option-item__actions {
 						display: flex;
@@ -200,11 +200,11 @@
 
 
 						&.is-icons {
-							color: $color-gray-600;
+							color: vars.$color-gray-600;
 							visibility: hidden;
 
 							> *:hover {
-								color: $color-primary;
+								color: vars.$color-primary;
 							}
 						}
 						&.is-edit {
@@ -216,14 +216,14 @@
 							font-size: 12px;
 
 							&.is-destructive {
-								background-color: $color-error;
-								border-color: $color-error;
+								background-color: vars.$color-error;
+								border-color: vars.$color-error;
 								color: white;
 								border-radius: 4px;
 
 								&:hover {
-									background-color: $color-error-dark;
-									border-color: $color-error-dark;
+									background-color: vars.$color-error-dark;
+									border-color: vars.$color-error-dark;
 								}
 							}
 						}
