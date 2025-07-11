@@ -6,7 +6,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Sort_Strategy;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -32,13 +31,12 @@ final class ColumnHookManagerTest extends TestCase {
 		);
 
 		// Create a mock column registrar.
-		$column = new Column( 'test_column', 'Test Column', 'test_meta_key' );
-		/** @var Sort_Strategy $sort_strategy */
-		$sort_strategy = $this->createMock( Sort_Strategy::class );
+		$column = new Column( 'test_column', 'Test Column' );
+
 		/** @var Renderable $renderer */
 		$renderer = $this->createMock( Renderable::class );
 
-		$this->column_registrar = new Column_Registrar( $column, $sort_strategy, $renderer );
+		$this->column_registrar = new Column_Registrar( $column, $renderer );
 		$this->hook_manager     = new Column_Hook_Manager( [ $this->column_registrar ] );
 	}
 
@@ -69,12 +67,6 @@ final class ColumnHookManagerTest extends TestCase {
 			has_filter( "manage_edit-{$this->test_post_type}_sortable_columns" ),
 			'Sortable columns filter should be registered for viewable post type'
 		);
-
-		// Check that the pre_get_posts action was added.
-		$this->assertTrue(
-			has_action( 'pre_get_posts' ),
-			'pre_get_posts action should be registered for sorting'
-		);
 	}
 
 	public function testRegisterHooksSkipsAttachmentPostType(): void {
@@ -95,7 +87,7 @@ final class ColumnHookManagerTest extends TestCase {
 			function ( array $excluded ): array {
 				$excluded[] = $this->test_post_type;
 				return $excluded;
-			} 
+			}
 		);
 
 		$this->hook_manager->register_hooks();
@@ -137,15 +129,12 @@ final class ColumnHookManagerTest extends TestCase {
 
 	public function testRegisterHooksWorksWithMultipleColumns(): void {
 		// Create a second column registrar.
-		$second_column = new Column( 'second_column', 'Second Column', 'second_meta_key' );
-
-		/** @var Sort_Strategy $sort_strategy */
-		$sort_strategy = $this->createMock( Sort_Strategy::class );
+		$second_column = new Column( 'second_column', 'Second Column' );
 
 		/** @var Renderable $renderer */
 		$renderer = $this->createMock( Renderable::class );
 
-		$second_registrar = new Column_Registrar( $second_column, $sort_strategy, $renderer );
+		$second_registrar = new Column_Registrar( $second_column, $renderer );
 
 		// Create hook manager with multiple columns.
 		$multi_hook_manager = new Column_Hook_Manager( [ $this->column_registrar, $second_registrar ] );

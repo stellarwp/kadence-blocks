@@ -6,10 +6,10 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 
 /**
- * A Meta Store Decorator that checks if the data is expired before
+ * A Store Decorator that checks if the data is expired before
  * returning it.
  */
-final class Expired_Meta_Store_Decorator implements Contracts\Store {
+final class Expired_Store_Decorator implements Contracts\Store {
 
 	/**
 	 * The underlying store concrete.

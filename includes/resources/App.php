@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Adbar\Dot;
 use KadenceWP\KadenceBlocks\Admin\Admin_Provider;
 use KadenceWP\KadenceBlocks\Asset\Asset_Provider;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
+use KadenceWP\KadenceBlocks\Database\Database_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Log\Log_Provider;
@@ -39,6 +40,7 @@ final class App {
 	 */
 	private $providers = [
 		Log_Provider::class,
+		Database_Provider::class,
 		Asset_Provider::class,
 		Uplink_Provider::class,
 		Health_Provider::class,
