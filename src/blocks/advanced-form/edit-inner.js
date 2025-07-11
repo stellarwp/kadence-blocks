@@ -299,7 +299,7 @@ export function EditInner(props) {
 	useEffect(() => {
 		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-submit', __('submit button', 'kadence-blocks'));
 		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-captcha', __('captcha', 'kadence-blocks'));
-	}, [formInnerBlocks]);
+	}, [formInnerBlocks, filterDuplicateBlocks]);
 
 	const newBlock = useMemo(() => {
 		return get(blocks, [0], {});
