@@ -79,6 +79,12 @@
 .kb-vide-edit-settings-container {
 	display: flex;
 	margin-bottom: 16px;
+
+	.kt-cta-upload-btn {
+		padding: 4px;
+		font-size: 11px;
+		flex: 1;
+	}
 }
 .is-button.components-button.kt-cta-upload-btn {
 	padding: 4px 8px;
