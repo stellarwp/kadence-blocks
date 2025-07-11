@@ -179,6 +179,7 @@ Release Date: 17th July 2025
 * Fix: Frontend divider style for Countdown block.
 * Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
 * Fix: Anchor attribute support for Navigation Link blocks.
+* Fix: Border radius reset values for the Advanced Header block.
 
 = 3.5.12 =
 Release Date: 2nd July 2025
