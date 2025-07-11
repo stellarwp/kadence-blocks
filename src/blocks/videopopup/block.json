@@ -31,6 +31,23 @@
 				}
 			]
 		},
+		"mediaPoster": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"width": "",
+					"height": "",
+					"alt": "",
+					"subtype": ""
+				}
+			]
+		},
+		"posterType": {
+			"type": "string",
+			"default": ""
+		},
 		"autoPlay": {
 			"type": "boolean",
 			"default": true

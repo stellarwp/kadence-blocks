@@ -131,11 +131,14 @@ function KadenceVideoPopup(props) {
 		mediaUseMobile,
 		mediaMobile,
 		urlMobile,
+		mediaPoster,
+		posterType,
 	} = attributes;
 	const [isURLInputVisible, setIsURLInputVisible] = useState(false);
 	const [localSrc, setLocalSrc] = useState('');
 	const [isURLInputVisibleMobile, setIsURLInputVisibleMobile] = useState(false);
 	const [localSrcMobile, setLocalSrcMobile] = useState('');
+
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicPosterImg, setDynamicPosterImg] = useState('');
 
@@ -789,6 +792,18 @@ function KadenceVideoPopup(props) {
 		/>
 	);
 
+	const videoPopupProLocalVideoPosterControls = (
+		<SelectControl
+			label={__('Poster Type', 'kadence-blocks')}
+			value={posterType}
+			options={[
+				{ value: '', label: __('Image', 'kadence-blocks') },
+				{ value: 'video', label: __('Video (Pro addon)', 'kadence-blocks'), disabled: true },
+			]}
+			onChange={(value) => setAttributes({ posterType: value })}
+		/>
+	);
+
 	return (
 		<div
 			{...blockProps}
@@ -908,31 +923,46 @@ function KadenceVideoPopup(props) {
 								}}
 							/>
 							<h2>{__('Video Poster', 'kadence-blocks')}</h2>
-							<KadenceImageControl
-								label={__('Image', 'kadence-blocks')}
-								hasImage={background[0].img ? true : false}
-								imageURL={background[0].img ? background[0].img : ''}
-								imageID={background[0].imgID}
-								onRemoveImage={clearPoster}
-								onSaveImage={onSelectPoster}
-								disableMediaButtons={background[0].img ? true : false}
-								dynamicAttribute="background:0:img"
-								isSelected={isSelected}
-								attributes={attributes}
-								setAttributes={setAttributes}
-								name={'kadence/videopopup'}
-								clientId={clientId}
-								context={context}
-							/>
-							{background[0].imgID && (
-								<ImageSizeControl
-									label={__('Poster Image File Size', 'kadence-blocks')}
-									id={background[0].imgID}
-									url={background[0].img}
-									fullSelection={true}
-									selectByValue={true}
-									onChange={changeImageSize}
-								/>
+
+							{applyFilters(
+								'kadence.videoPopupProLocalVideoPosterControls',
+								videoPopupProLocalVideoPosterControls,
+								props,
+								isURLInputVisiblePoster,
+								setIsURLInputVisiblePoster,
+								localSrcPoster,
+								setLocalSrcPoster
+							)}
+
+							{'video' !== posterType && (
+								<>
+									<KadenceImageControl
+										label={__('Image', 'kadence-blocks')}
+										hasImage={background[0].img ? true : false}
+										imageURL={background[0].img ? background[0].img : ''}
+										imageID={background[0].imgID}
+										onRemoveImage={clearPoster}
+										onSaveImage={onSelectPoster}
+										disableMediaButtons={background[0].img ? true : false}
+										dynamicAttribute="background:0:img"
+										isSelected={isSelected}
+										attributes={attributes}
+										setAttributes={setAttributes}
+										name={'kadence/videopopup'}
+										clientId={clientId}
+										context={context}
+									/>
+									{background[0].imgID && (
+										<ImageSizeControl
+											label={__('Poster Image File Size', 'kadence-blocks')}
+											id={background[0].imgID}
+											url={background[0].img}
+											fullSelection={true}
+											selectByValue={true}
+											onChange={changeImageSize}
+										/>
+									)}
+								</>
 							)}
 							<PopColorControl
 								label={__('Poster Background', 'kadence-blocks')}
@@ -1144,6 +1174,16 @@ function KadenceVideoPopup(props) {
 						backgroundImage: previewPosterImg ? `url(${previewPosterImg})` : undefined,
 					}}
 				>
+					{posterType === 'video' && mediaPoster && mediaPoster[0] && mediaPoster[0].url && (
+						<video
+							src={mediaPoster[0].url}
+							autoPlay={false}
+							muted={true}
+							playsInline={false}
+							className={'kadence-video-poster'}
+							preload="metadata"
+						/>
+					)}
 					{(!backgroundOverlay[0].type || 'gradient' !== backgroundOverlay[0].type) && (
 						<div
 							className="kadence-video-overlay"

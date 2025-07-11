@@ -95,6 +95,16 @@
 								zoomBack: { in: 'zoomBackIn', out: 'zoomBackOut' },
 							},
 						});
+						kadenceBlocksProVideoLightbox.trigger[i].on('close', () => {
+							document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+								video.play();
+							});
+						});
+						kadenceBlocksProVideoLightbox.trigger[i].on('open', () => {
+							document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+								video.pause();
+							});
+						});
 						kadenceBlocksProVideoLightbox.trigger[i].open();
 					});
 				} else {
@@ -152,6 +162,16 @@
 							const iframe = data.slideNode.querySelector('iframe');
 							iframe.src = iframe.src + '&h=' + found[found.length - 1];
 						}
+					});
+					lightbox.on('close', () => {
+						document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+							video.play();
+						});
+					});
+					lightbox.on('open', () => {
+						document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+							video.pause();
+						});
 					});
 				}
 			}

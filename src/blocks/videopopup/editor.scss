@@ -4,90 +4,90 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .wp-block-kadence-videopopup {
+.wp-block-kadence-videopopup {
 	width: 100%;
 }
- .block-editor-block-list__block[data-type="kadence/videopopup"] {
-    margin-top: 0px;
-    margin-bottom: 0px;
+.block-editor-block-list__block[data-type="kadence/videopopup"] {
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
- .wp-block-kadence-videopopup .components-base-control .components-base-control__field {
-    max-width: 80%;
-    margin: 10px auto;
+.wp-block-kadence-videopopup .components-base-control .components-base-control__field {
+	max-width: 80%;
+	margin: 10px auto;
 }
 .kadence-video-intrinsic button.components-button {
-    position: relative;
-    z-index: 10;
+	position: relative;
+	z-index: 10;
 }
- .kadence-video-intrinsic {
-    padding-bottom: 56.25%;
+.kadence-video-intrinsic {
+	padding-bottom: 56.25%;
 	height: 0;
 	background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 .kadence-video-overlay {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: #000000;
-	opacity: .3;
-	transition: opacity .3s ease;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: #000000;
+	opacity: 0.3;
+	transition: opacity 0.3s ease;
 }
 .kadence-video-popup-link {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .kt-video-svg-icon {
-    color: white;
-    transition: all .3s ease;
+	color: white;
+	transition: all 0.3s ease;
 }
 .kt-video-svg-icon.kt-video-svg-icon-style-stacked {
-    background: rgba(0,0,0,0.7);
+	background: rgba(0, 0, 0, 0.7);
 	border-radius: 50%;
 	padding: 20px;
-    border: 0 solid transparent;
+	border: 0 solid transparent;
 }
 .kadence-video-popup-wrap {
-    border-radius: 10px;
-    overflow: hidden;
+	border-radius: 10px;
+	overflow: hidden;
 	position: relative;
 	border: 0 solid transparent;
-	transition: all .3s ease;
+	transition: all 0.3s ease;
 	margin: 0 auto;
 }
-.kt-video-svg-icon.kt-video-svg-icon-size-auto:not( .kt-video-svg-icon-style-stacked ) svg {
-    width: 100%;
-    height: 100%;
+.kt-video-svg-icon.kt-video-svg-icon-size-auto:not(.kt-video-svg-icon-style-stacked) svg {
+	width: 100%;
+	height: 100%;
 }
-.kt-video-svg-icon.kt-video-svg-icon-size-auto:not( .kt-video-svg-icon-style-stacked ) {
+.kt-video-svg-icon.kt-video-svg-icon-size-auto:not(.kt-video-svg-icon-style-stacked) {
 	width: 10%;
-    height: 10%;
+	height: 10%;
 }
 .kt-video-svg-icon.kt-video-svg-icon-size-auto.kt-video-svg-icon-style-stacked svg {
-   width:40px;
-   height: 40px;
+	width: 40px;
+	height: 40px;
 }
 .kb-vide-edit-settings-container {
-    display: flex;
-    margin-bottom: 16px;
+	display: flex;
+	margin-bottom: 16px;
 }
 .is-button.components-button.kt-cta-upload-btn {
-    padding: 4px 8px;
+	padding: 4px 8px;
 	height: auto;
-	margin:0;
+	margin: 0;
 }
 .kb-vide-edit-settings-container .editor-media-placeholder__url-input-container {
-    width: auto;
-    padding-left: 8px;
+	width: auto;
+	padding-left: 8px;
 }
 .kb-icon-picker-container .rfip {
 	margin: 0 0 10px;
@@ -96,4 +96,11 @@
 
 .kb-icon-picker-container .rfip .rfipbtn {
 	width: 100%;
+}
+
+.kadence-video-poster {
+	pointer-events: none;
+	position: absolute;
+	height: 100%;
+	object-fit: cover;
 }
