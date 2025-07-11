@@ -20,6 +20,7 @@ import {
 	topRightIcon,
 	bottomRightIcon,
 	bottomLeftIcon,
+	proIcon,
 } from '@kadence/icons';
 
 import {
@@ -719,10 +720,10 @@ function KadenceVideoPopup(props) {
 		'kadence.videoPopupProMediaRatioOptions',
 		[
 			{ value: '', label: __('Default', 'kadence-blocks') },
-			{ value: '4:3', label: __('Pro - Landscape 4:3', 'kadence-blocks'), disabled: true },
-			{ value: '16:9', label: __('Pro - Wide Landscape 16:9', 'kadence-blocks'), disabled: true },
-			{ value: '3:4', label: __('Pro - Portrait 3:4', 'kadence-blocks'), disabled: true },
-			{ value: '9:16', label: __('Pro - Vertical 9:16', 'kadence-blocks'), disabled: true },
+			{ value: '4:3', label: __('Landscape 4:3 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '16:9', label: __('Wide Landscape 16:9 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '3:4', label: __('Portrait 3:4 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '9:16', label: __('Vertical 9:16 (Pro addon)', 'kadence-blocks'), disabled: true },
 		],
 		props
 	);
@@ -783,8 +784,26 @@ function KadenceVideoPopup(props) {
 
 	const videoPopupProMediaMobileControls = (
 		<ToggleControl
-			label={__('Pro - Use Mobile Media', 'kadence-blocks')}
+			label={
+				<div
+					style={{
+						display: 'flex',
+						gap: '5px',
+						alignItems: 'center',
+						justifyContent: 'flex-start',
+						width: '100%',
+						fill: 'white',
+					}}
+				>
+					<span>{__('Use Mobile Video', 'kadence-blocks')}</span>
+					{proIcon}
+				</div>
+			}
 			checked={mediaUseMobile}
+			help={__(
+				'Play a different video on smaller screens. You can also set a different video ratio.',
+				'kadence-blocks'
+			)}
 			disabled={true}
 		/>
 	);
