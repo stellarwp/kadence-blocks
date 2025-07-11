@@ -138,6 +138,8 @@ function KadenceVideoPopup(props) {
 	const [localSrc, setLocalSrc] = useState('');
 	const [isURLInputVisibleMobile, setIsURLInputVisibleMobile] = useState(false);
 	const [localSrcMobile, setLocalSrcMobile] = useState('');
+	const [isURLInputVisiblePoster, setIsURLInputVisiblePoster] = useState(false);
+	const [localSrcPoster, setLocalSrcPoster] = useState('');
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicPosterImg, setDynamicPosterImg] = useState('');
