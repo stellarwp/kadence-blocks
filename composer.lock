@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f23ca3ebfc41dbd37ac42e7ddc31194d",
+    "content-hash": "ce9160b46399d2fa5c44cc1614f162c2",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -729,6 +729,62 @@
             "time": "2023-09-05T20:08:29+00:00"
         },
         {
+            "name": "stellarwp/db",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stellarwp/db.git",
+                "reference": "cbaed00b77f212b791263689cb8a24cbdfdf2100"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/db/zipball/cbaed00b77f212b791263689cb8a24cbdfdf2100",
+                "reference": "cbaed00b77f212b791263689cb8a24cbdfdf2100",
+                "shasum": ""
+            },
+            "require-dev": {
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
+                "codeception/module-rest": "^1.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "lucatume/wp-browser": "^3.0.14",
+                "phpunit/phpunit": "~6.0",
+                "symfony/event-dispatcher-contracts": "^2.5.1",
+                "symfony/string": "^5.4",
+                "szepeviktor/phpstan-wordpress": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\DB\\": "src/DB/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "StellarWP",
+                    "email": "dev@stellarwp.com"
+                },
+                {
+                    "name": "Matthew Batchelder",
+                    "email": "matt.batchelder@stellarwp.com"
+                }
+            ],
+            "description": "A WPDB wrapper and query builder library.",
+            "support": {
+                "issues": "https://github.com/stellarwp/db/issues",
+                "source": "https://github.com/stellarwp/db/tree/1.1.1"
+            },
+            "time": "2024-06-06T20:03:23+00:00"
+        },
+        {
             "name": "stellarwp/prophecy-container",
             "version": "3.0.0.74",
             "source": {
@@ -890,6 +946,66 @@
                 "source": "https://github.com/stellarwp/prophecy-storage/tree/3.0.0.74"
             },
             "time": "2025-05-20T15:03:05+00:00"
+        },
+        {
+            "name": "stellarwp/schema",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stellarwp/schema.git",
+                "reference": "09dac4b927ddc085ce8e89a1ef76736b28de5f51"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/schema/zipball/09dac4b927ddc085ce8e89a1ef76736b28de5f51",
+                "reference": "09dac4b927ddc085ce8e89a1ef76736b28de5f51",
+                "shasum": ""
+            },
+            "require": {
+                "psr/container": "^1.0",
+                "stellarwp/container-contract": "^1.0"
+            },
+            "require-dev": {
+                "brianhenryie/strauss": "^0.11.0",
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
+                "codeception/module-rest": "^1.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "lucatume/di52": "^4.0",
+                "lucatume/wp-browser": "^3.0 < 3.5",
+                "php-stubs/wp-cli-stubs": "^2.11",
+                "phpunit/phpunit": "~6.0",
+                "stellarwp/db": "^1.1",
+                "symfony/event-dispatcher-contracts": "^2.5.1",
+                "symfony/string": "^5.4",
+                "szepeviktor/phpstan-wordpress": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\Schema\\": "src/Schema/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "StellarWP",
+                    "email": "dev@stellarwp.com"
+                }
+            ],
+            "description": "A library for simplifying the creation and updates of custom tables within WordPress.",
+            "support": {
+                "issues": "https://github.com/stellarwp/schema/issues",
+                "source": "https://github.com/stellarwp/schema/tree/2.0.0"
+            },
+            "time": "2025-05-20T16:16:09+00:00"
         },
         {
             "name": "stellarwp/superglobals",

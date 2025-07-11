@@ -86,10 +86,5 @@ final class Column_Hook_Manager {
 			"manage_edit-{$post_type}_sortable_columns",
 			[ $column, 'mark_sortable' ]
 		);
-
-		add_action(
-			'pre_get_posts',
-			[ $column, 'sort' ],
-		);
 	}
 }

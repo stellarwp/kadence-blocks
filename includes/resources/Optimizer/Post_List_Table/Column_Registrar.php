@@ -3,8 +3,6 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table;
 
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Sort_Strategy;
-use WP_Query;
 
 /**
  * Registers Post List Table columns.
@@ -12,17 +10,26 @@ use WP_Query;
 final class Column_Registrar {
 
 	private Column $column;
-	private Sort_Strategy $sort_strategy;
 	private Renderable $renderable;
+	private bool $is_sortable;
 
 	public function __construct(
 		Column $column,
-		Sort_Strategy $sort_strategy,
-		Renderable $renderable
+		Renderable $renderable,
+		bool $is_sortable = false
 	) {
-		$this->column        = $column;
-		$this->sort_strategy = $sort_strategy;
-		$this->renderable    = $renderable;
+		$this->column      = $column;
+		$this->renderable  = $renderable;
+		$this->is_sortable = $is_sortable;
+	}
+
+	/**
+	 * Return the underlying column object.
+	 *
+	 * @return Column
+	 */
+	public function column(): Column {
+		return $this->column;
 	}
 
 	/**
@@ -50,6 +57,10 @@ final class Column_Registrar {
 	 * @return array
 	 */
 	public function mark_sortable( array $columns ): array {
+		if ( ! $this->is_sortable ) {
+			return $columns;
+		}
+
 		/* translators: %s: The column label */
 		$ordered_by = sprintf( __( 'Table ordered by %s', 'kadence-blocks' ), $this->column->label );
 
@@ -58,23 +69,10 @@ final class Column_Registrar {
 			true,
 			$this->column->label,
 			$ordered_by,
-			'desc',
+			'asc',
 		];
 
 		return $columns;
-	}
-
-	/**
-	 * Attempt to sort the column by its strategy.
-	 *
-	 * @action pre_get_posts
-	 *
-	 * @param WP_Query $query
-	 *
-	 * @return void
-	 */
-	public function sort( WP_Query $query ): void {
-		$this->sort_strategy->sort( $query, $this->column );
 	}
 
 	/**

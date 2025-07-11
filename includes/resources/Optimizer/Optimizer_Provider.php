@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
@@ -14,23 +16,27 @@ use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Table_Sorter;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Optimizer_Table_Sorter;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Table_Sort;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Meta_Store_Decorator;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Store_Decorator;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
 
 final class Optimizer_Provider extends Provider {
 
-	public const OPTIMIZER_COLUMN = 'kadence_blocks.optimizer.optimizer_column';
+	public const OPTIMIZER_COLUMN           = 'kadence_blocks.optimizer.optimizer_column';
+	public const OPTIMIZER_COLUMN_REGISTRAR = 'kadence_blocks.optimizer.optimizer_column_registrar';
 
 	public function register(): void {
 		$this->container->singleton( State::class, State::class );
@@ -50,6 +56,7 @@ final class Optimizer_Provider extends Provider {
 		}
 
 		$this->register_mobile_override();
+		$this->register_optimizer_query();
 		$this->register_translation();
 		$this->register_hash_store();
 		$this->register_nonce();
@@ -83,6 +90,14 @@ final class Optimizer_Provider extends Provider {
 			10,
 			1
 		);
+	}
+
+	private function register_optimizer_query(): void {
+		$this->container->singleton( Optimizer_Query::class, Optimizer_Query::class );
+
+		$this->container->when( Optimizer_Query::class )
+						->needs( '$table' )
+						->give( static fn(): string => Optimizer_Table::table_name( false ) );
 	}
 
 	/**
@@ -136,11 +151,13 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_store(): void {
+		// Grab from Table > Object Cache > Ensure not Expired.
 		$this->container->bindDecorators(
 			Store::class,
 			[
-				Expired_Meta_Store_Decorator::class,
-				Meta_Store::class,
+				Expired_Store_Decorator::class,
+				Cached_Store_Decorator::class,
+				Table_Store::class,
 			]
 		);
 	}
@@ -159,28 +176,79 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_post_list_table(): void {
+		$this->container->singleton( Optimizer_Renderer::class, Optimizer_Renderer::class );
+
+		// Register the renderer.
+		$this->container->when( Optimizer_Renderer::class )
+						->needs( Store::class )
+						->give(
+							function () {
+								$store = $this->container->get( Table_Store::class );
+
+								return new Cached_Store_Decorator( $store );
+							}
+						);
+
+		// Register the column.
 		$this->container->singleton(
 			self::OPTIMIZER_COLUMN,
+			static fn(): Column  => new Column(
+				'kadence_optimizer',
+				__( 'Kadence Optimizer', 'kadence-blocks' ),
+			)
+		);
+
+		// Register the column registrar for this column.
+		$this->container->singleton(
+			self::OPTIMIZER_COLUMN_REGISTRAR,
 			function (): Column_Registrar {
-				$column = new Column(
-					'kadence_optimizer',
-					__( 'Kadence Optimizer', 'kadence-blocks' ),
-					Meta_Store::KEY
-				);
+				$column   = $this->container->get( self::OPTIMIZER_COLUMN );
+				$renderer = $this->container->get( Optimizer_Renderer::class );
 
-				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
-				$renderer      = $this->container->get( Optimizer_Renderer::class );
-
-				return new Column_Registrar( $column, $sort_strategy, $renderer );
+				return new Column_Registrar( $column, $renderer, true );
 			}
 		);
 
+		// Add custom table sorting for this column.
+		$this->container->singleton( Table_Sort::class, Table_Sort::class );
+
+		$this->container->when( Table_Sort::class )
+						->needs( Column::class )
+						->give( fn(): Column => $this->container->get( self::OPTIMIZER_COLUMN ) );
+
+		$this->container->when( Table_Sort::class )
+						->needs( Table_Sorter::class )
+						->give(
+							fn(): Table_Sorter =>
+							$this->container->get( Optimizer_Table_Sorter::class )
+						);
+
+		add_action(
+			'admin_init',
+			function (): void {
+				add_filter(
+					'posts_orderby',
+					$this->container->callback( Table_Sort::class, 'orderby' ),
+					10,
+					2
+				);
+
+				add_filter(
+					'posts_join_paged',
+					$this->container->callback( Table_Sort::class, 'join' ),
+					10,
+					2
+				);
+			}
+		);
+
+		// Register the hook manager for all configured columns.
 		$this->container
 			->when( Column_Hook_Manager::class )
 			->needs( '$columns' )
 			->give(
 				fn(): array => [
-					$this->container->get( self::OPTIMIZER_COLUMN ),
+					$this->container->get( self::OPTIMIZER_COLUMN_REGISTRAR ),
 				]
 			);
 

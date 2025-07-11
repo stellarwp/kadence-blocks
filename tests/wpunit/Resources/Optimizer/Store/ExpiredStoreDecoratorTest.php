@@ -5,29 +5,21 @@ namespace Tests\wpunit\Resources\Optimizer\Store;
 use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Meta_Store_Decorator;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Store_Decorator;
 use Tests\Support\Classes\TestCase;
 
-final class ExpiredMetaStoreDecoratorTest extends TestCase {
+final class ExpiredStoreDecoratorTest extends TestCase {
 
-	private Expired_Meta_Store_Decorator $store;
+	private Expired_Store_Decorator $store;
 	private int $post_id;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store   = $this->container->get( Store::class );
+		$this->store   = $this->container->get( Expired_Store_Decorator::class );
 		$this->post_id = $this->factory()->post->create();
 
 		$this->assertGreaterThan( 0, $this->post_id );
-	}
-
-	public function testItBindsToCorrectConcreteClass(): void {
-		$this->assertInstanceOf(
-			Expired_Meta_Store_Decorator::class,
-			$this->store,
-		);
 	}
 
 	protected function tearDown(): void {

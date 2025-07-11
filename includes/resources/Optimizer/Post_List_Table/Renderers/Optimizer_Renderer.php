@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 
 final class Optimizer_Renderer implements Renderable {
@@ -14,12 +14,12 @@ final class Optimizer_Renderer implements Renderable {
 	private const ACTION_TEXT  = 'action_text';
 	private const STATUS_TEXT  = 'status_text';
 
-	private Meta_Store $store;
+	private Store $store;
 	private Text_Repository $text_repository;
 	private Nonce $nonce;
 
 	public function __construct(
-		Meta_Store $store,
+		Store $store,
 		Text_Repository $text_repository,
 		Nonce $nonce
 	) {
