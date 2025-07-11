@@ -175,11 +175,15 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 = 3.5.13 =
 Release Date: 15th July 2025
-* Add: Help text for vertical text setting in Advanced Text block.
+* Add: Abilty to style carousel dots and arrows in the Slider block
+* Add: Warning text about browser compatability for vertical text setting in Advanced Text block.
+* Fix: Issue when adding the Advanced Form Submit button in the editor.
+* Fix: Issue with submenu clipping while using backdrop filter on the Header block.
+* Fix: Bad dom content output in Gallery Block in some cases.
 * Fix: Performance improvments for blocks in the editor.
 * Fix: Frontend divider style for Countdown block.
 * Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
-* Fix: Anchor attribute support for Navigation Link blocks.
+* Fix: Anchor attribute support for Navigation and Navigation Link blocks.
 * Fix: Border radius reset values for the Advanced Header block.
 
 = 3.5.12 =
