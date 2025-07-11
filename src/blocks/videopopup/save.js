@@ -22,6 +22,11 @@ function Save(props) {
 			ariaLabel,
 			youtubeCookies,
 			inQueryBlock,
+			mediaUseMobile,
+			urlMobile,
+			mediaMobile,
+			mediaRatio,
+			mediaRatioMobile,
 			posterType,
 			mediaPoster,
 		},
@@ -53,6 +58,14 @@ function Save(props) {
 		'data-popup-auto': autoPlay ? 'true' : 'false',
 		'data-youtube-cookies': youtubeCookies ? 'true' : 'false',
 	};
+
+	if (mediaRatio) {
+		dataAttrs['data-media-ratio'] = mediaRatio;
+	}
+	// console.log(2, mediaUseMobile, mediaRatioMobile);
+	if (mediaUseMobile && mediaRatioMobile) {
+		dataAttrs['data-media-ratio-mobile'] = mediaRatioMobile;
+	}
 
 	const containerClasses = classNames('wp-block-kadence-videopopup', 'kadence-video-popup' + uniqueID);
 
@@ -109,6 +122,7 @@ function Save(props) {
 							className={classes}
 							aria-label={ariaLabel ? ariaLabel : undefined}
 							href={!url ? '#' : url}
+							data-href-mobile={!urlMobile ? null : urlMobile}
 							role="button"
 							{...dataAttrs}
 						>
@@ -127,6 +141,7 @@ function Save(props) {
 						controls={true}
 						preload={'metadata'}
 						src={media[0].url}
+						data-src-mobile={mediaMobile?.[0]?.url ? mediaMobile[0].url : null}
 					/>
 				</div>
 			)}

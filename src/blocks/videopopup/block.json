@@ -280,6 +280,32 @@
 		"isVimeoPrivate": {
 			"type": "boolean",
 			"default": false
+		},
+		"mediaRatio": {
+			"type": "string"
+		},
+		"mediaUseMobile": {
+			"type": "boolean",
+			"default": false
+		},
+		"urlMobile": {
+			"type": "string"
+		},
+		"mediaMobile": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"width": "",
+					"height": "",
+					"alt": "",
+					"subtype": ""
+				}
+			]
+		},
+		"mediaRatioMobile": {
+			"type": "string"
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
