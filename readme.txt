@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 = 3.5.13 =
 Release Date: 15th July 2025
-* Add: Abilty to style carousel dots and arrows in the Slider block
+* Add: Ability to style carousel dots and arrows in the Slider block
 * Add: Warning text about browser compatibility for vertical text setting in Advanced Text block.
 * Fix: Performance improvements for blocks in the editor.
 * Fix: Issue when adding the Advanced Form Submit button in the editor.
