@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Stable tag: 3.5.13
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -177,12 +177,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 15th July 2025
 * Add: Abilty to style carousel dots and arrows in the Slider block
 * Add: Warning text about browser compatability for vertical text setting in Advanced Text block.
+* Fix: Performance improvments for blocks in the editor.
 * Fix: Issue when adding the Advanced Form Submit button in the editor.
 * Fix: Issue with submenu clipping while using backdrop filter on the Header block.
 * Fix: Bad dom content output in Gallery Block in some cases.
-* Fix: Performance improvments for blocks in the editor.
 * Fix: Frontend divider style for Countdown block.
-* Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
 * Fix: Anchor attribute support for Navigation and Navigation Link blocks.
 * Fix: Border radius reset values for the Advanced Header block.
 
