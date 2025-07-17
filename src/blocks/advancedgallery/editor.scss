@@ -728,6 +728,17 @@
 					content: none !important;
 				}
 			}
+
+			// Ensure custom link options are visible in mosaic gallery
+			.kb-gallery-custom-options {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				z-index: 30;
+				background: #fff;
+				border-top: 4px solid var(--wp-admin-theme-color, #00669b);
+			}
 		}
 	}
 }
