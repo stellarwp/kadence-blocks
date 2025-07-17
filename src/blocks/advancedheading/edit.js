@@ -503,6 +503,7 @@ function KadenceAdvancedHeading(props) {
 		[
 			'core/bold',
 			'core/italic',
+			'core/link',
 			'kadence/mark',
 			'kadence/typed',
 			'core/strikethrough',
