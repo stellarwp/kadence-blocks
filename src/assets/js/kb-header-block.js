@@ -673,6 +673,10 @@ class KBHeader {
 			this.stickyWrapper.classList.remove('item-is-fixed');
 			this.stickyWrapper.classList.remove('item-at-start');
 			this.stickyWrapper.classList.remove('item-is-stuck');
+			this.stickyWrapper.style.position = 'initial';
+			this.stickyWrapper.style.width = 'initial';
+			this.stickyWrapper.style.left = 'initial';
+			this.stickyWrapper.style.top = 'initial';
 			this.stickyWrapper.style.height = null;
 			//this.stickyWrapper.style.top = null;
 			parent.classList.remove('child-is-fixed');
