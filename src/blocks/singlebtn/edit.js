@@ -259,8 +259,6 @@ export default function KadenceButtonEdit(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/singlebtn', attributes);
 
@@ -270,6 +268,8 @@ export default function KadenceButtonEdit(props) {
 			doAction('kadence.triggerDynamicUpdate', 'link', 'link', props);
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);

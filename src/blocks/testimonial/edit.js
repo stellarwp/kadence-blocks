@@ -126,8 +126,6 @@ function KadenceTestimonials(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults(metadata.name, attributes);
 
@@ -143,6 +141,8 @@ function KadenceTestimonials(props) {
 			});
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const previewIconSize = getPreviewSize(
 		previewDevice,

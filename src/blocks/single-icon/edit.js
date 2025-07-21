@@ -95,13 +95,13 @@ function KadenceSingleIcon(props) {
 		undefined !== mobileSize ? mobileSize : undefined
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/single-icon', attributes);
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const blockProps = useBlockProps({
 		className,

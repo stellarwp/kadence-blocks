@@ -92,11 +92,11 @@ export function Edit(props) {
 		}),
 	});
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/vector', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	// Fetch SVG content when ID changes
 	useEffect(() => {

@@ -304,7 +304,6 @@ const KadenceRowLayout = (props) => {
 		const block = selectGetBlock(clientId);
 		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
 	};
-	uniqueIdHelper(props);
 
 	useEffect(() => {
 		setBlockDefaults('kadence/rowlayout', attributes);
@@ -317,6 +316,8 @@ const KadenceRowLayout = (props) => {
 		// Run all attribute migrations
 		runRowLayoutMigrations(attributes, setAttributes);
 	}, []);
+
+	uniqueIdHelper(props);
 	useEffect(() => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);

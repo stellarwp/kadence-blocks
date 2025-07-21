@@ -204,8 +204,6 @@ function KadenceCountdown(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/countdown', attributes);
 
@@ -236,6 +234,8 @@ function KadenceCountdown(props) {
 			});
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const [borderWidthControl, setBorderWidthControl] = useState('individual');
 	const [borderRadiusControl, setBorderRadiusControl] = useState('linked');

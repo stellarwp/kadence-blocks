@@ -92,11 +92,11 @@ function KadenceCounterUp(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/countup', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const TitleTagName =
 		titleFont[0].htmlTag && titleFont[0].htmlTag !== 'heading' ? titleFont[0].htmlTag : 'h' + titleFont[0].level;

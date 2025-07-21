@@ -76,13 +76,13 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/show-more', attributes);
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
+
+	uniqueIdHelper(props);
 	const { updateBlockAttributes } = useDispatch(blockEditorStore);
 	const { showMoreBlock } = useSelect(
 		(select) => {

@@ -258,8 +258,6 @@ function SectionEdit(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/column', attributes);
 
@@ -658,6 +656,8 @@ function SectionEdit(props) {
 			setAttributes({ align: '' });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	//set the dynamic image state
 	useEffect(() => {

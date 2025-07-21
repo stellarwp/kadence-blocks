@@ -77,13 +77,13 @@ function KadenceIcons(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/icon', attributes);
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		if (uniqueID && !iconsBlock.innerBlocks.length) {

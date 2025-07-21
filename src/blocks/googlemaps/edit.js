@@ -203,8 +203,6 @@ export function Edit(props) {
 
 	const { createErrorNotice } = useDispatch(noticesStore);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		/**
 		 * Get settings
@@ -222,6 +220,8 @@ export function Edit(props) {
 			setAttributes({ kbVersion: 2 });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	function setGoogleApiKey() {
 		const settingModel = new wp.api.models.Settings({

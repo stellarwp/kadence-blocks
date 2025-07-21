@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.15 =
 Release Date: 23rd July 2025
 * Fix: Mosaic gallery custom link in editor. 
+* Fix: Block defaults not applying to new blocks.
 * Fix: Add link support to advanced text block in some templates.
 
 = 3.5.14 =
