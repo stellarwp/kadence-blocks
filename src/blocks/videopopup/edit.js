@@ -171,8 +171,6 @@ function KadenceVideoPopup(props) {
 	};
 	const debouncedUpdateDynamic = debounce(getDynamic, 200);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/videopopup', attributes);
 
@@ -182,6 +180,8 @@ function KadenceVideoPopup(props) {
 
 		debouncedUpdateDynamic();
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);

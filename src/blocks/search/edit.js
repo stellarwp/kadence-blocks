@@ -134,11 +134,11 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/search', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isShowingModal, setIsShowingModal] = useState(false);

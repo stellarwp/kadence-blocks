@@ -358,7 +358,6 @@ export default function GalleryEdit(props) {
 			mainRef.current.sync(thumbsRef.current.splide);
 		}
 	}, [mainRef.current, thumbsRef.current]);
-	uniqueIdHelper(props);
 
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedgallery', attributes);
@@ -401,6 +400,9 @@ export default function GalleryEdit(props) {
 			setAttributes({ kbVersion: 2 });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
+
 	const previewPaddingUnit = undefined !== paddingUnit ? paddingUnit : 'px';
 	const previewMarginUnit = undefined !== marginUnit ? marginUnit : 'px';
 	const previewMarginTop = getPreviewSize(

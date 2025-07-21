@@ -186,7 +186,6 @@ function KadenceTableOfContents(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const titleMouseOver = mouseOverVisualizer();
 	const contentMouseOver = mouseOverVisualizer();
-	uniqueIdHelper(props);
 
 	useEffect(() => {
 		setBlockDefaults('kadence/tableofcontents', attributes);
@@ -278,6 +277,8 @@ function KadenceTableOfContents(props) {
 			setAttributes({ titleBorderStyle: tempTitleBorderStyle });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useLayoutEffect(() => {
 		let latestHeadings;

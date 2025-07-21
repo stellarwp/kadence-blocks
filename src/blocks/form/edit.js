@@ -173,11 +173,12 @@ function KadenceForm(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/form', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		setActionOptions(applyFilters('kadence.actionOptions', actionOptionsList));
 

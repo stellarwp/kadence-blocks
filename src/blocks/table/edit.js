@@ -141,11 +141,11 @@ export function Edit(props) {
 		className: classes,
 	});
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/table', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const addRow = (position) => {
 		let insertIndex;

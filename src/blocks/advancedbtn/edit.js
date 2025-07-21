@@ -112,13 +112,13 @@ function KadenceButtons(props) {
 		return get(thisBlock, ['innerBlocks', thisBlock.innerBlocks.length - 1, 'attributes'], {});
 	};
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedbtn', attributes);
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		if (uniqueID && !childBlocks.length) {

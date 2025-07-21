@@ -217,7 +217,6 @@ function KadenceInfoBox(props) {
 		},
 		[clientId]
 	);
-	uniqueIdHelper(props);
 
 	useEffect(() => {
 		setBlockDefaults('kadence/infobox', attributes);
@@ -228,6 +227,9 @@ function KadenceInfoBox(props) {
 		}
 		debounce(getDynamic.bind(this), 200);
 	}, []);
+
+	uniqueIdHelper(props);
+
 	useEffect(() => {
 		if (
 			mediaStyle[0].borderWidth[0] === mediaStyle[0].borderWidth[1] &&

@@ -340,8 +340,6 @@ function KadenceAdvancedHeading(props) {
 	const isDefaultEditorBlock =
 		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedheading', attributes);
 
@@ -429,6 +427,8 @@ function KadenceAdvancedHeading(props) {
 			setAttributes({ enableTextShadow: true });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	let newItems;
 	const saveShadow = (value) => {

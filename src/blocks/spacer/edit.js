@@ -83,11 +83,11 @@ function KadenceSpacerDivider(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/spacer', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const [activeTab, setActiveTab] = useState('general');
 

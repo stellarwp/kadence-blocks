@@ -171,11 +171,11 @@ export function Edit(props) {
 		className: classes,
 	});
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/lottie', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 	const containerClasses = classnames({
 		'kb-lottie-container': true,
 		[`kb-lottie-container${uniqueID}`]: true,

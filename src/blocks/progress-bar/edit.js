@@ -123,11 +123,11 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/progress-bar', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const saveLabelFont = (value) => {
 		setAttributes({

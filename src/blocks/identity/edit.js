@@ -69,11 +69,11 @@ export function Edit(props) {
 
 	const siteUrl = siteData?.url ? siteData.url : '';
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/identity', attributes);
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const iconSize = 125;
 	const allItemsLayoutOptions = [

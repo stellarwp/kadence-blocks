@@ -142,7 +142,6 @@ function KadenceIconLists(props) {
 		},
 		[clientId]
 	);
-	uniqueIdHelper(props);
 
 	useEffect(() => {
 		setBlockDefaults('kadence/iconlist', attributes);
@@ -178,6 +177,8 @@ function KadenceIconLists(props) {
 			}
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		if (uniqueID && !listBlock.innerBlocks.length) {

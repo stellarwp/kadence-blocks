@@ -288,8 +288,6 @@ function KadenceTestimonials(props) {
 		});
 	};
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults(metadata.name, attributes);
 
@@ -589,6 +587,8 @@ function KadenceTestimonials(props) {
 			saveRatingStyles({ margin: ['', '', '', ''] });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const innerBlockLength = testimonialBlock?.innerBlocks ? testimonialBlock.innerBlocks.length : 0;
 

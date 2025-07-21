@@ -174,8 +174,6 @@ function KadenceAccordionComponent(props) {
 	const [showPreset, setShowPreset] = useState(false);
 	const [activeTab, setActiveTab] = useState('general');
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/accordion', attributes);
 
@@ -441,6 +439,8 @@ function KadenceAccordionComponent(props) {
 			});
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const startlayoutOptions = [
 		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip', 'kadence-blocks') },

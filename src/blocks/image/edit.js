@@ -160,8 +160,6 @@ export function ImageEdit(props) {
 		[clientId]
 	);
 
-	uniqueIdHelper(props);
-
 	useEffect(() => {
 		setBlockDefaults('kadence/image', attributes);
 
@@ -264,6 +262,8 @@ export function ImageEdit(props) {
 			setAttributes({ mobileBorderStyle: tempMobileBorderStyle, borderWidthMobile: ['', '', '', ''] });
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
