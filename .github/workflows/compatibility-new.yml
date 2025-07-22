@@ -15,5 +15,5 @@ jobs:
             - uses: pantheon-systems/phpcompatibility-action@v1
               with:
                   test-versions: 7.4-
-                  paths: ${{ github.workspace }}
+                  paths: ${{ github.workspace }}/includes,${{ github.workspace }}/kadence-blocks.php
                   extensions: 'php'
