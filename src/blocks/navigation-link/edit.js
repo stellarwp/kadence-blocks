@@ -1253,15 +1253,15 @@ export default function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? -25
 										: paddingUnit === 'px'
-										? -400
-										: -100
+											? -400
+											: -100
 								}
 								max={
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 25
 										: paddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
@@ -1280,8 +1280,8 @@ export default function Edit(props) {
 									marginUnit === 'em' || marginUnit === 'rem'
 										? -25
 										: marginUnit === 'px'
-										? -400
-										: -100
+											? -400
+											: -100
 								}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : marginUnit === 'px' ? 400 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
