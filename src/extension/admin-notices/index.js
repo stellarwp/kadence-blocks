@@ -68,7 +68,7 @@ export function createNotice(message, type = NOTICE_TYPES.SUCCESS, isDismissible
 			isDismissible
 				? `<button type="button" class="notice-dismiss"><span class="screen-reader-text">${__(
 						'Dismiss this notice.'
-				  )}</span></button>`
+					)}</span></button>`
 				: ''
 		}
 	`;
