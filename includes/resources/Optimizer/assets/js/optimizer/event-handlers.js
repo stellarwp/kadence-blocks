@@ -11,8 +11,13 @@ import { updateLinkState, getPostTitle, animateDots } from './ui-manager.js';
  * Handle the post-save hook for automatic optimization.
  */
 export function setupPostSaveHandler() {
-	addAction(POST_SAVED_HOOK, 'kadence', async ({ post, permalink }) => {
-		console.log('Post Saved', post, permalink);
+	addAction(POST_SAVED_HOOK, 'kadence', async ({ post, permalink, suffix = '' }) => {
+		console.log('Post Saved', post, permalink, suffix);
+
+		if (!suffix) {
+			console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
+			return;
+		}
 
 		if (!permalink) {
 			console.error('❌ No URL found for optimization. This is likely not a public post.');

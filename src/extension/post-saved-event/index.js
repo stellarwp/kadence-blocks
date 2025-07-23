@@ -31,6 +31,7 @@ subscribe(() => {
 				doAction(POST_SAVED_HOOK, {
 					post: editor.getCurrentPost(),
 					permalink: editor.getPermalink(),
+					suffix: editor.getPermalinkParts()?.suffix,
 				});
 			}
 		}
