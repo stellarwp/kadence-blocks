@@ -161,7 +161,7 @@ export function Edit(props) {
 	});
 
 	//Directly editing from via kadence_navigation post type
-	if (currentPostType === 'kadence_navigation') {
+	if (currentPostType === 'kadence_navigation' && !id && !templateKey) {
 		return (
 			<div {...blockProps}>
 				<EditInner {...props} direct={true} id={postId} />

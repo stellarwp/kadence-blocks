@@ -1219,13 +1219,14 @@ export default function BackendStyles(props) {
 						'px'
 				);
 			} else {
-				css.add_property('--kb-nav-dropdown-width', 'var(--wp--style--global--content-size, 100%)');
+				css.add_property(
+					'--kb-nav-dropdown-width',
+					'var(--wp--style--global--content-size,var(--global-content-width, 100%))'
+				);
 				css.add_property(
 					'--kb-nav-dropdown-show-left',
-					'calc( (((100vw - var(--wp--style--global--content-size, 100%)) / 2) - ' +
-						Math.abs(
-							currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left
-						).toString() +
+					'calc( (((100vw - var(--wp--style--global--content-size, var(--global-content-width, 100%))) / 2) - ' +
+						Math.abs(currentRef.current.closest('.kb-navigation').clientWidth).toString() +
 						'px))'
 				);
 			}
