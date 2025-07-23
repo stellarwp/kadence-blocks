@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 .stellarwp.chip {
 	display: inline-flex;
@@ -8,8 +8,8 @@
 	border-radius: 16px;
 	padding: 0 8px;
 	font-size: 13px;
-	background: $color-gray-200;
-	color: $color-black;
+	background: variables.$color-gray-200;
+	color: variables.$color-black;
 
 	&.has-icon {
 		padding: 0 4px 0 8px;
@@ -22,13 +22,13 @@
 			border-radius: 8px;
 
 			&:hover {
-				color: color.scale($color-black, $lightness: 25%);
+				color: color.scale(variables.$color-black, $lightness: 25%);
 			}
 		}
 	}
 
 	&--blue {
-		background-color: $color-primary;
+		background-color: variables.$color-primary;
 		color: #fff;
 
 		.components-button {

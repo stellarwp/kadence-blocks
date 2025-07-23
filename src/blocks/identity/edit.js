@@ -16,7 +16,7 @@ import {
 	ImageSizeControl as KadenceImageSizeControl,
 	KadenceImageControl,
 } from '@kadence/components';
-import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
 import { useBlockProps, BlockControls, useInnerBlocksProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { createBlock, unregisterBlockType } from '@wordpress/blocks';
 
@@ -52,23 +52,10 @@ export function Edit(props) {
 		idSticky,
 	} = attributes;
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, innerBlocks } = useSelect(
+	const { previewDevice, innerBlocks } = useSelect(
 		(select) => ({
-			isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-			isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 			previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-			parentData: {
-				rootBlock: select('core/block-editor').getBlock(
-					select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-				),
-				postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-				reusableParent: select('core/block-editor').getBlockAttributes(
-					select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-				),
-				editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-			},
 			innerBlocks: select('core/block-editor').getBlocks(clientId),
 		}),
 		[clientId]
@@ -84,16 +71,9 @@ export function Edit(props) {
 
 	useEffect(() => {
 		setBlockDefaults('kadence/identity', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const iconSize = 125;
 	const allItemsLayoutOptions = [
@@ -143,10 +123,14 @@ export function Edit(props) {
 
 	const findBlockByName = (blocks, name) => {
 		for (const block of blocks) {
-			if (block.name === name) return block;
+			if (block.name === name) {
+				return block;
+			}
 			if (block.innerBlocks?.length > 0) {
 				const foundBlock = findBlockByName(block.innerBlocks, name);
-				if (foundBlock) return foundBlock;
+				if (foundBlock) {
+					return foundBlock;
+				}
 			}
 		}
 		return null;
@@ -273,8 +257,12 @@ export function Edit(props) {
 		if (showSiteTitle || showSiteTagline) {
 			let titleBlock, taglineBlock;
 
-			if (showSiteTitle) titleBlock = addBlock('core/site-title', newTitleBlock);
-			if (showSiteTagline) taglineBlock = addBlock('core/site-tagline', newTaglineBlock);
+			if (showSiteTitle) {
+				titleBlock = addBlock('core/site-title', newTitleBlock);
+			}
+			if (showSiteTagline) {
+				taglineBlock = addBlock('core/site-tagline', newTaglineBlock);
+			}
 
 			const addBlocksInOrder = (...blocks) => blocks.forEach((block) => block && newInnerBlocks.push(block));
 

@@ -47,8 +47,7 @@ import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
 import { last, map, get } from 'lodash';
 import {
-	getUniqueId,
-	getPostOrFseId,
+	uniqueIdHelper,
 	typographyStyle,
 	getSpacingOptionOutput,
 	getBorderStyle,
@@ -365,33 +364,19 @@ export default function Edit(props) {
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, parentBlockId, currentIndex, childSelected } =
-		useSelect(
-			(select) => {
-				const parentBlocks = select('core/block-editor').getBlockParents(clientId);
+	const { previewDevice, parentBlockId, currentIndex, childSelected } = useSelect(
+		(select) => {
+			const parentBlocks = select('core/block-editor').getBlockParents(clientId);
 
-				return {
-					isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-					isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-					currentIndex: select('core/block-editor').getBlockIndex(clientId),
-					parentBlockId: last(parentBlocks),
-					parentData: {
-						rootBlock: select('core/block-editor').getBlock(
-							select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-						),
-						postId: select('core/editor').getCurrentPostId(),
-						reusableParent: select('core/block-editor').getBlockAttributes(
-							select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-						),
-						editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-					},
-					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
-				};
-			},
-			[clientId]
-		);
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				currentIndex: select('core/block-editor').getBlockIndex(clientId),
+				parentBlockId: last(parentBlocks),
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+			};
+		},
+		[clientId]
+	);
 
 	const previewMediaIconSize = getPreviewSize(
 		previewDevice,
@@ -418,17 +403,7 @@ export default function Edit(props) {
 		(undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
 		(undefined !== highlightLabel && '' !== highlightLabel);
 
-	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
-	}, []);
+	uniqueIdHelper(props);
 
 	//get the most up to date links for links with a post type and id (non custom)
 	useEffect(() => {
@@ -956,7 +931,7 @@ export default function Edit(props) {
 					<h2>{__('Higlight Labels', 'kadence-blocks')} </h2>
 					<p>
 						{__(
-							'Add colorful labels to your navigation items. Highlight new content, items on sale, and more! ',
+							'Add colorful labels to your navigation items. Highlight new content, items on sale, and more!',
 							'kadence-blocks'
 						)}{' '}
 					</p>
@@ -1278,15 +1253,15 @@ export default function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? -25
 										: paddingUnit === 'px'
-										? -400
-										: -100
+											? -400
+											: -100
 								}
 								max={
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 25
 										: paddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
@@ -1305,8 +1280,8 @@ export default function Edit(props) {
 									marginUnit === 'em' || marginUnit === 'rem'
 										? -25
 										: marginUnit === 'px'
-										? -400
-										: -100
+											? -400
+											: -100
 								}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : marginUnit === 'px' ? 400 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}

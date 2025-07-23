@@ -511,8 +511,8 @@ class KBHeader {
 				this.activeSize === 'mobile'
 					? this.shrinkMainHeightMobile
 					: this.activeSize === 'tablet'
-					? this.shrinkMainHeightTablet
-					: this.shrinkMainHeight;
+						? this.shrinkMainHeightTablet
+						: this.shrinkMainHeight;
 			if (shrinkHeight) {
 				// Set totalOffsetDelay
 				// var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
@@ -673,6 +673,10 @@ class KBHeader {
 			this.stickyWrapper.classList.remove('item-is-fixed');
 			this.stickyWrapper.classList.remove('item-at-start');
 			this.stickyWrapper.classList.remove('item-is-stuck');
+			this.stickyWrapper.style.position = 'initial';
+			this.stickyWrapper.style.width = 'initial';
+			this.stickyWrapper.style.left = 'initial';
+			this.stickyWrapper.style.top = 'initial';
 			this.stickyWrapper.style.height = null;
 			//this.stickyWrapper.style.top = null;
 			parent.classList.remove('child-is-fixed');

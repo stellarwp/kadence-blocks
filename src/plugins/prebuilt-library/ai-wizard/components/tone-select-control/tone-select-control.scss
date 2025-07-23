@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 div.stellarwp-tone__control {
   min-height: 80px;
@@ -37,7 +37,7 @@ div.stellarwp-tone__control {
 
     svg {
       width: 18px;
-      fill: $color-black;
+      fill: variables.$color-black;
     }
   }
 }

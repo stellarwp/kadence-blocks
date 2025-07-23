@@ -1,4 +1,4 @@
-@import "../../../../assets/css/variables.scss";
+@use "../../../../assets/css/variables" as vars;
 
 $admin-bar-height: 32px;
 $admin-bar-height-mobile: 46px;
@@ -35,17 +35,17 @@ $admin-bar-height-mobile: 46px;
 			-webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
 	}
 	&.open-right {
-		@media (min-width: $laptop-plus-query) {
+		@media (min-width: vars.$laptop-plus-query) {
 			@include open-right-styles();
 		}
 	}
 	&.open-tablet-right {
-		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+		@media (min-width: vars.$before-tablet-plus-query) and (max-width: vars.$tablet-minus-query) {
 			@include open-right-styles();
 		}
 	}
 	&.open-tablet-right {
-		@media (max-width: $phone-minus-query) {
+		@media (max-width: vars.$phone-minus-query) {
 			@include open-right-styles();
 		}
 	}

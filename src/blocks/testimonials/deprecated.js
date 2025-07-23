@@ -166,17 +166,17 @@ const v4 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? KadenceColorOutput(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -185,7 +185,7 @@ const v4 = {
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius:
 				undefined !== containerBorderRadius && '' !== containerBorderRadius && !isNaN(containerBorderRadius)
@@ -270,13 +270,13 @@ const v4 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -322,23 +322,23 @@ const v4 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -393,7 +393,7 @@ const v4 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius && '' !== mediaStyles[0].borderRadius
@@ -401,23 +401,23 @@ const v4 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -504,7 +504,7 @@ const v4 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -533,13 +533,13 @@ const v4 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -724,17 +724,17 @@ const v3 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? KadenceColorOutput(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -743,7 +743,7 @@ const v3 = {
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius:
 				undefined !== containerBorderRadius && '' !== containerBorderRadius && !isNaN(containerBorderRadius)
@@ -808,13 +808,13 @@ const v3 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -860,23 +860,23 @@ const v3 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -931,7 +931,7 @@ const v3 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius && '' !== mediaStyles[0].borderRadius
@@ -939,23 +939,23 @@ const v3 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -1042,7 +1042,7 @@ const v3 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -1071,13 +1071,13 @@ const v3 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -1269,17 +1269,17 @@ const v2 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? KadenceColorOutput(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -1288,7 +1288,7 @@ const v2 = {
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius:
 				undefined !== containerBorderRadius && '' !== containerBorderRadius && !isNaN(containerBorderRadius)
@@ -1353,13 +1353,13 @@ const v2 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -1405,23 +1405,23 @@ const v2 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -1476,7 +1476,7 @@ const v2 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius && '' !== mediaStyles[0].borderRadius
@@ -1484,23 +1484,23 @@ const v2 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -1587,7 +1587,7 @@ const v2 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -1616,13 +1616,13 @@ const v2 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -1810,17 +1810,17 @@ const v1 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? KadenceColorOutput(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -1829,7 +1829,7 @@ const v1 = {
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius:
 				undefined !== containerBorderRadius && '' !== containerBorderRadius && !isNaN(containerBorderRadius)
@@ -1894,13 +1894,13 @@ const v1 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -1946,23 +1946,23 @@ const v1 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -2017,7 +2017,7 @@ const v1 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius && '' !== mediaStyles[0].borderRadius
@@ -2025,23 +2025,23 @@ const v1 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -2128,7 +2128,7 @@ const v1 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -2157,13 +2157,13 @@ const v1 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -2351,17 +2351,17 @@ const v = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -2370,7 +2370,7 @@ const v = {
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: !isNaN(containerBorderRadius) ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth:
@@ -2432,13 +2432,13 @@ const v = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -2484,23 +2484,23 @@ const v = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -2555,7 +2555,7 @@ const v = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -2563,23 +2563,23 @@ const v = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -2666,7 +2666,7 @@ const v = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -2695,13 +2695,13 @@ const v = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -2888,29 +2888,29 @@ const v_1 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  KadenceColorOutput(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					KadenceColorOutput(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? DeprecatedKadenceColorOutput(
 						containerBorder,
 						undefined !== containerBorderOpacity ? containerBorderOpacity : 1
-				  )
+					)
 				: hexToRGBA('#eeeeee', undefined !== containerBorderOpacity ? containerBorderOpacity : 1),
 			background: containerBackground
 				? KadenceColorOutput(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth:
@@ -2972,13 +2972,13 @@ const v_1 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -3024,23 +3024,23 @@ const v_1 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? KadenceColorOutput(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -3095,7 +3095,7 @@ const v_1 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -3103,23 +3103,23 @@ const v_1 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -3204,7 +3204,7 @@ const v_1 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -3233,13 +3233,13 @@ const v_1 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -3426,17 +3426,17 @@ const v_2 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -3445,7 +3445,7 @@ const v_2 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth:
@@ -3507,13 +3507,13 @@ const v_2 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -3559,23 +3559,23 @@ const v_2 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -3630,7 +3630,7 @@ const v_2 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -3638,23 +3638,23 @@ const v_2 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -3737,7 +3737,7 @@ const v_2 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -3766,13 +3766,13 @@ const v_2 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -3959,17 +3959,17 @@ const v_3 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -3978,7 +3978,7 @@ const v_3 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth:
@@ -4040,13 +4040,13 @@ const v_3 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -4092,23 +4092,23 @@ const v_3 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -4163,7 +4163,7 @@ const v_3 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -4171,23 +4171,23 @@ const v_3 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -4270,7 +4270,7 @@ const v_3 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -4299,13 +4299,13 @@ const v_3 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -4492,17 +4492,17 @@ const v_4 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -4511,7 +4511,7 @@ const v_4 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth:
@@ -4532,13 +4532,13 @@ const v_4 = {
 					: undefined,
 			padding: containerPadding
 				? containerPadding[0] +
-				  'px ' +
-				  containerPadding[1] +
-				  'px ' +
-				  containerPadding[2] +
-				  'px ' +
-				  containerPadding[3] +
-				  'px'
+					'px ' +
+					containerPadding[1] +
+					'px ' +
+					containerPadding[2] +
+					'px ' +
+					containerPadding[3] +
+					'px'
 				: '',
 			maxWidth: 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px',
 		};
@@ -4549,13 +4549,13 @@ const v_4 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -4601,23 +4601,23 @@ const v_4 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -4672,7 +4672,7 @@ const v_4 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -4680,23 +4680,23 @@ const v_4 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -4778,7 +4778,7 @@ const v_4 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -4807,13 +4807,13 @@ const v_4 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -5000,17 +5000,17 @@ const v_5 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -5019,7 +5019,7 @@ const v_5 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius + 'px',
 			borderTopWidth:
@@ -5040,13 +5040,13 @@ const v_5 = {
 					: undefined,
 			padding: containerPadding
 				? containerPadding[0] +
-				  'px ' +
-				  containerPadding[1] +
-				  'px ' +
-				  containerPadding[2] +
-				  'px ' +
-				  containerPadding[3] +
-				  'px'
+					'px ' +
+					containerPadding[1] +
+					'px ' +
+					containerPadding[2] +
+					'px ' +
+					containerPadding[3] +
+					'px'
 				: '',
 			maxWidth: 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px',
 		};
@@ -5057,13 +5057,13 @@ const v_5 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -5109,23 +5109,23 @@ const v_5 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -5180,7 +5180,7 @@ const v_5 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -5188,23 +5188,23 @@ const v_5 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -5286,7 +5286,7 @@ const v_5 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -5315,13 +5315,13 @@ const v_5 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -5508,17 +5508,17 @@ const v_6 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -5527,7 +5527,7 @@ const v_6 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius + 'px',
 			borderTopWidth:
@@ -5548,13 +5548,13 @@ const v_6 = {
 					: undefined,
 			padding: containerPadding
 				? containerPadding[0] +
-				  'px ' +
-				  containerPadding[1] +
-				  'px ' +
-				  containerPadding[2] +
-				  'px ' +
-				  containerPadding[3] +
-				  'px'
+					'px ' +
+					containerPadding[1] +
+					'px ' +
+					containerPadding[2] +
+					'px ' +
+					containerPadding[3] +
+					'px'
 				: '',
 			maxWidth: 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px',
 		};
@@ -5565,13 +5565,13 @@ const v_6 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -5617,23 +5617,23 @@ const v_6 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -5688,7 +5688,7 @@ const v_6 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -5696,23 +5696,23 @@ const v_6 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -5794,7 +5794,7 @@ const v_6 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -5823,13 +5823,13 @@ const v_6 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -6016,17 +6016,17 @@ const v_7 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -6035,7 +6035,7 @@ const v_7 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius + 'px',
 			borderTopWidth:
@@ -6056,13 +6056,13 @@ const v_7 = {
 					: undefined,
 			padding: containerPadding
 				? containerPadding[0] +
-				  'px ' +
-				  containerPadding[1] +
-				  'px ' +
-				  containerPadding[2] +
-				  'px ' +
-				  containerPadding[3] +
-				  'px'
+					'px ' +
+					containerPadding[1] +
+					'px ' +
+					containerPadding[2] +
+					'px ' +
+					containerPadding[3] +
+					'px'
 				: '',
 			maxWidth: 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px',
 		};
@@ -6073,13 +6073,13 @@ const v_7 = {
 					style={{
 						margin: iconStyles[0].margin
 							? iconStyles[0].margin[0] +
-							  'px ' +
-							  iconStyles[0].margin[1] +
-							  'px ' +
-							  iconStyles[0].margin[2] +
-							  'px ' +
-							  iconStyles[0].margin[3] +
-							  'px'
+								'px ' +
+								iconStyles[0].margin[1] +
+								'px ' +
+								iconStyles[0].margin[2] +
+								'px ' +
+								iconStyles[0].margin[3] +
+								'px'
 							: '',
 					}}
 				>
@@ -6117,23 +6117,23 @@ const v_7 = {
 										undefined !== iconStyles[0].backgroundOpacity
 											? iconStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderColor: iconStyles[0].border
 								? hexToRGBA(
 										iconStyles[0].border,
 										undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
-								  )
+									)
 								: undefined,
 							padding: iconStyles[0].padding
 								? iconStyles[0].padding[0] +
-								  'px ' +
-								  iconStyles[0].padding[1] +
-								  'px ' +
-								  iconStyles[0].padding[2] +
-								  'px ' +
-								  iconStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									iconStyles[0].padding[1] +
+									'px ' +
+									iconStyles[0].padding[2] +
+									'px ' +
+									iconStyles[0].padding[3] +
+									'px'
 								: '',
 						}}
 					/>
@@ -6188,7 +6188,7 @@ const v_7 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius:
 								undefined !== mediaStyles[0].borderRadius
@@ -6196,23 +6196,23 @@ const v_7 = {
 									: undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -6293,7 +6293,7 @@ const v_7 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -6322,13 +6322,13 @@ const v_7 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -6515,17 +6515,17 @@ const v_8 = {
 		const containerStyles = {
 			boxShadow: displayShadow
 				? shadow[0].hOffset +
-				  'px ' +
-				  shadow[0].vOffset +
-				  'px ' +
-				  shadow[0].blur +
-				  'px ' +
-				  shadow[0].spread +
-				  'px ' +
-				  hexToRGBA(
+					'px ' +
+					shadow[0].vOffset +
+					'px ' +
+					shadow[0].blur +
+					'px ' +
+					shadow[0].spread +
+					'px ' +
+					hexToRGBA(
 						undefined !== shadow[0].color && '' !== shadow[0].color ? shadow[0].color : '#000000',
 						shadow[0].opacity ? shadow[0].opacity : 0.2
-				  )
+					)
 				: undefined,
 			borderColor: containerBorder
 				? hexToRGBA(containerBorder, undefined !== containerBorderOpacity ? containerBorderOpacity : 1)
@@ -6534,7 +6534,7 @@ const v_8 = {
 				? hexToRGBA(
 						containerBackground,
 						undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1
-				  )
+					)
 				: undefined,
 			borderRadius: containerBorderRadius + 'px',
 			borderTopWidth:
@@ -6555,13 +6555,13 @@ const v_8 = {
 					: undefined,
 			padding: containerPadding
 				? containerPadding[0] +
-				  'px ' +
-				  containerPadding[1] +
-				  'px ' +
-				  containerPadding[2] +
-				  'px ' +
-				  containerPadding[3] +
-				  'px'
+					'px ' +
+					containerPadding[1] +
+					'px ' +
+					containerPadding[2] +
+					'px ' +
+					containerPadding[3] +
+					'px'
 				: '',
 			maxWidth: 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px',
 		};
@@ -6613,28 +6613,28 @@ const v_8 = {
 										undefined !== mediaStyles[0].backgroundOpacity
 											? mediaStyles[0].backgroundOpacity
 											: 1
-								  )
+									)
 								: undefined,
 							borderRadius: mediaStyles[0].borderRadius ? mediaStyles[0].borderRadius + 'px' : undefined,
 							borderWidth: mediaStyles[0].borderWidth
 								? mediaStyles[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyles[0].borderWidth[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].borderWidth[1] +
+									'px ' +
+									mediaStyles[0].borderWidth[2] +
+									'px ' +
+									mediaStyles[0].borderWidth[3] +
+									'px'
 								: '',
 							padding: mediaStyles[0].padding
 								? mediaStyles[0].padding[0] +
-								  'px ' +
-								  mediaStyles[0].padding[1] +
-								  'px ' +
-								  mediaStyles[0].padding[2] +
-								  'px ' +
-								  mediaStyles[0].padding[3] +
-								  'px'
+									'px ' +
+									mediaStyles[0].padding[1] +
+									'px ' +
+									mediaStyles[0].padding[2] +
+									'px ' +
+									mediaStyles[0].padding[3] +
+									'px'
 								: '',
 							marginTop:
 								mediaStyles[0].margin && '' !== mediaStyles[0].margin[0]
@@ -6706,7 +6706,7 @@ const v_8 = {
 										iconStyles[0].margin[0] < 0
 											? Math.abs(iconStyles[0].margin[0]) + 'px'
 											: undefined,
-							  }
+								}
 					}
 				>
 					<div
@@ -6719,13 +6719,13 @@ const v_8 = {
 								style={{
 									margin: iconStyles[0].margin
 										? iconStyles[0].margin[0] +
-										  'px ' +
-										  iconStyles[0].margin[1] +
-										  'px ' +
-										  iconStyles[0].margin[2] +
-										  'px ' +
-										  iconStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											iconStyles[0].margin[1] +
+											'px ' +
+											iconStyles[0].margin[2] +
+											'px ' +
+											iconStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>
@@ -6764,7 +6764,7 @@ const v_8 = {
 													undefined !== iconStyles[0].backgroundOpacity
 														? iconStyles[0].backgroundOpacity
 														: 1
-											  )
+												)
 											: undefined,
 										borderColor: iconStyles[0].border
 											? hexToRGBA(
@@ -6772,17 +6772,17 @@ const v_8 = {
 													undefined !== iconStyles[0].borderOpacity
 														? iconStyles[0].borderOpacity
 														: 1
-											  )
+												)
 											: undefined,
 										padding: iconStyles[0].padding
 											? iconStyles[0].padding[0] +
-											  'px ' +
-											  iconStyles[0].padding[1] +
-											  'px ' +
-											  iconStyles[0].padding[2] +
-											  'px ' +
-											  iconStyles[0].padding[3] +
-											  'px'
+												'px ' +
+												iconStyles[0].padding[1] +
+												'px ' +
+												iconStyles[0].padding[2] +
+												'px ' +
+												iconStyles[0].padding[3] +
+												'px'
 											: '',
 									}}
 								/>
@@ -6808,13 +6808,13 @@ const v_8 = {
 								style={{
 									margin: ratingStyles[0].margin
 										? ratingStyles[0].margin[0] +
-										  'px ' +
-										  ratingStyles[0].margin[1] +
-										  'px ' +
-										  ratingStyles[0].margin[2] +
-										  'px ' +
-										  ratingStyles[0].margin[3] +
-										  'px'
+											'px ' +
+											ratingStyles[0].margin[1] +
+											'px ' +
+											ratingStyles[0].margin[2] +
+											'px ' +
+											ratingStyles[0].margin[3] +
+											'px'
 										: '',
 								}}
 							>

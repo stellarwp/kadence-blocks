@@ -21,7 +21,8 @@ import { useEffect, useState, useMemo } from '@wordpress/element';
 import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
-function FieldTime({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldTime(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const {
 		uniqueID,
 		required,

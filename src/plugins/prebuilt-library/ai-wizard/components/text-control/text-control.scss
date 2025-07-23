@@ -1,9 +1,9 @@
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss';
 
 .stellarwp.components-base-control {
 	.components-text-control__input {
 		&[type=text] {
-			@include input_base;
+			@include mixins.input_base;
 		}
 	}
 }

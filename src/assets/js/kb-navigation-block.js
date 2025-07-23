@@ -472,10 +472,10 @@
 						offset: offsetManual
 							? offsetManual
 							: offsetTarget
-							? function () {
-									return offsetTarget?.getBoundingClientRect().height;
-							  }
-							: 0,
+								? function () {
+										return offsetTarget?.getBoundingClientRect().height;
+									}
+								: 0,
 					}
 				);
 			});

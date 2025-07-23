@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss';
 
 .slide-card-row {
   white-space: normal;
@@ -15,7 +15,7 @@
   &__content p {
     margin: 0;
     font-size: clamp(13px, -0.75rem + 3vh, 16px);
-    color: $color-disabled;
+    color: variables.$color-disabled;
 
     + p {
       margin-top: 16px;

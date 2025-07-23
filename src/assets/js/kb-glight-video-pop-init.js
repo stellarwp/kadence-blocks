@@ -45,8 +45,24 @@
 						? true
 						: false;
 
+				const device = kadenceBlocksProVideoLightbox.getActiveSize();
+				const mediaRatio = kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-media-ratio') ?? '16:9';
+				const mediaRatioMobile =
+					kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-media-ratio-mobile') ?? '';
+				const mediaRatioToUse = device === 'mobile' && mediaRatioMobile ? mediaRatioMobile : mediaRatio;
+
 				if (isLocalMedia) {
 					kadenceBlocksProVideoLightbox.wrapper[i] = document.getElementById(popupId);
+
+					if (device === 'mobile') {
+						const videoElement =
+							kadenceBlocksProVideoLightbox.wrapper[i]?.querySelector('.kadence-local-video-popup');
+						const mobileSrc = videoElement?.getAttribute('data-src-mobile');
+						if (videoElement && mobileSrc) {
+							videoElement.setAttribute('src', mobileSrc);
+						}
+					}
+
 					kadenceBlocksProVideoLightbox.cache[i].addEventListener('click', function (event) {
 						event.preventDefault();
 						kadenceBlocksProVideoLightbox.trigger[i] = GLightbox({
@@ -70,6 +86,7 @@
 								css: kadence_pro_video_pop.plyr_css,
 								js: kadence_pro_video_pop.plyr_js,
 								config: {
+									ratio: mediaRatioToUse,
 									hideControls: true,
 								},
 							},
@@ -78,9 +95,26 @@
 								zoomBack: { in: 'zoomBackIn', out: 'zoomBackOut' },
 							},
 						});
+						kadenceBlocksProVideoLightbox.trigger[i].on('close', () => {
+							document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+								video.play();
+							});
+						});
+						kadenceBlocksProVideoLightbox.trigger[i].on('open', () => {
+							document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+								video.pause();
+							});
+						});
 						kadenceBlocksProVideoLightbox.trigger[i].open();
 					});
 				} else {
+					if (device === 'mobile') {
+						const mobileHref = kadenceBlocksProVideoLightbox.cache[i]?.getAttribute('data-href-mobile');
+						if (mobileHref) {
+							kadenceBlocksProVideoLightbox.cache[i].setAttribute('href', mobileHref);
+						}
+					}
+
 					const lightbox = GLightbox({
 						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
 						touchNavigation: true,
@@ -95,6 +129,7 @@
 							js: kadence_pro_video_pop.plyr_js,
 							config: {
 								hideControls: true,
+								ratio: mediaRatioToUse,
 								youtube: {
 									noCookie: youtubeCookies,
 								},
@@ -128,6 +163,16 @@
 							iframe.src = iframe.src + '&h=' + found[found.length - 1];
 						}
 					});
+					lightbox.on('close', () => {
+						document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+							video.play();
+						});
+					});
+					lightbox.on('open', () => {
+						document.querySelectorAll('video.kadence-video-poster').forEach((video) => {
+							video.pause();
+						});
+					});
 				}
 			}
 		},
@@ -143,6 +188,14 @@
 					}
 				}, 200);
 			}
+		},
+
+		getActiveSize() {
+			const mobileBreakpoint = 768;
+			if (mobileBreakpoint < window.innerWidth) {
+				return 'desktop';
+			}
+			return 'mobile';
 		},
 	};
 	if ('loading' === document.readyState) {

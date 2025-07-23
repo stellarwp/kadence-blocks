@@ -62,6 +62,7 @@ export { default as check } from './check';
 export { default as chatBubble } from './chat-bubble';
 export { default as eye } from './eye';
 export { default as tooltip } from './tooltip';
+export { default as proIcon } from './pro';
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu';
@@ -232,9 +233,9 @@ export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle
 export { default as lineMask } from './block-icons/progress-bar/line-mask-layout';
 
 // Table Block
-export { default as tableBlockIcon } from './block-icons/table/table'
-export { default as tableRowBlockIcon } from './block-icons/table/table-row'
-export { default as tableDataBlockIcon } from './block-icons/table/table-data'
+export { default as tableBlockIcon } from './block-icons/table/table';
+export { default as tableRowBlockIcon } from './block-icons/table/table-row';
+export { default as tableDataBlockIcon } from './block-icons/table/table-data';
 
 // Arrows
 export { default as ArrowUp } from './arrow-up';

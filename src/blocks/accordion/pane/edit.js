@@ -6,7 +6,7 @@
 import classnames from 'classnames';
 
 import { KadencePanelBody, KadenceIconPicker, IconRender, SelectParentBlock } from '@kadence/components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
 import { ToggleControl, SelectControl, TextControl } from '@wordpress/components';
@@ -29,25 +29,13 @@ function PaneEdit(props) {
 	const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 	const HtmlTagOut = !titleTag ? 'div' : titleTag;
 	const [activePane, setActivePane] = useState(false);
-	const { addUniqueID, addUniquePane } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, isUniquePane, isUniquePaneBlock, parentData } = useSelect(
+	const { addUniquePane } = useDispatch('kadenceblocks/data');
+	const { isUniquePane, isUniquePaneBlock } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isUniquePane: (value, rootID) => select('kadenceblocks/data').isUniquePane(value, rootID),
 				isUniquePaneBlock: (value, clientId, rootID) =>
 					select('kadenceblocks/data').isUniquePaneBlock(value, clientId, rootID),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -78,16 +66,11 @@ function PaneEdit(props) {
 	const updatePaneCount = (value) => {
 		updateBlockAttributes(rootID, { paneCount: value });
 	};
+
+	uniqueIdHelper(props);
+
 	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
+		// Moved uniqueIdHelper outside of useEffect
 		if (!id) {
 			const newPaneCount = accordionBlock[0].attributes.paneCount + 1;
 			setAttributes({
@@ -118,7 +101,7 @@ function PaneEdit(props) {
 			undefined !== accordionBlock?.[0]?.attributes?.openPane &&
 			accordionBlock[0].attributes.openPane + 1 === id;
 		const isNewPane = !uniqueID;
-		setActivePane(activePane ?? isNewPane ? true : isOpenPane);
+		setActivePane((activePane ?? isNewPane) ? true : isOpenPane);
 	}, []);
 	const blockClasses = classnames({
 		'kt-accordion-pane': true,

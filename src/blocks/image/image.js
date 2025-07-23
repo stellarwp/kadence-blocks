@@ -43,7 +43,6 @@ import { store as coreStore } from '@wordpress/core-data';
  */
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
-//import ImageEditor, { ImageEditingProvider } from './image-editing';
 import {
 	KadenceColorOutput,
 	getPreviewSize,
@@ -1807,8 +1806,8 @@ export default function Image({
 				style={{
 					WebkitMaskImage: hasMask
 						? 'url(' +
-						  (maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg') +
-						  ')'
+							(maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg') +
+							')'
 						: undefined,
 					WebkitMaskRepeat: hasMask ? theMaskRepeat : undefined,
 					WebkitMaskSize: hasMask ? theMaskSize : undefined,
@@ -1816,8 +1815,8 @@ export default function Image({
 
 					maskImage: hasMask
 						? 'url(' +
-						  (maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg') +
-						  ')'
+							(maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg') +
+							')'
 						: undefined,
 					maskRepeat: hasMask ? theMaskRepeat : undefined,
 					maskSize: hasMask ? theMaskSize : undefined,
@@ -1870,39 +1869,39 @@ export default function Image({
 						undefined !== boxShadow[0] &&
 						undefined !== boxShadow[0].color
 							? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
-							  (undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
-							  'px ' +
-							  (undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
-							  'px ' +
-							  (undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
-							  'px ' +
-							  (undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
-							  'px ' +
-							  KadenceColorOutput(
+								(undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
+								'px ' +
+								(undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
+								'px ' +
+								(undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
+								'px ' +
+								(undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
+								'px ' +
+								KadenceColorOutput(
 									undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
 									undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
-							  )
+								)
 							: undefined,
 					filter:
 						undefined !== displayDropShadow && displayDropShadow
 							? 'drop-shadow(' +
-							  (undefined !== displayDropShadow &&
-							  displayDropShadow &&
-							  undefined !== dropShadow &&
-							  undefined !== dropShadow[0] &&
-							  undefined !== dropShadow[0].color
+								(undefined !== displayDropShadow &&
+								displayDropShadow &&
+								undefined !== dropShadow &&
+								undefined !== dropShadow[0] &&
+								undefined !== dropShadow[0].color
 									? (undefined !== dropShadow[0].hOffset ? dropShadow[0].hOffset : 0) +
-									  'px ' +
-									  (undefined !== dropShadow[0].vOffset ? dropShadow[0].vOffset : 0) +
-									  'px ' +
-									  (undefined !== dropShadow[0].blur ? dropShadow[0].blur : 14) +
-									  'px ' +
-									  KadenceColorOutput(
+										'px ' +
+										(undefined !== dropShadow[0].vOffset ? dropShadow[0].vOffset : 0) +
+										'px ' +
+										(undefined !== dropShadow[0].blur ? dropShadow[0].blur : 14) +
+										'px ' +
+										KadenceColorOutput(
 											undefined !== dropShadow[0].color ? dropShadow[0].color : '#000000',
 											undefined !== dropShadow[0].opacity ? dropShadow[0].opacity : 0.2
-									  )
+										)
 									: undefined) +
-							  ')'
+								')'
 							: undefined,
 					objectPosition: imagePosition ? imagePosition : undefined,
 				}}

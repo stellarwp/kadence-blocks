@@ -411,11 +411,11 @@ export const AIText = {
 												? __(
 														'Error, Can not generate AI content because of insufficient credits.',
 														'kadence-blocks'
-												  )
+													)
 												: __(
 														'Error, AI content generation failed, please try again.',
 														'kadence-blocks'
-												  )}
+													)}
 										</div>
 									</div>
 								)}

@@ -27,7 +27,9 @@ jQuery(document).ready(function ($) {
 		if (kt_blocks_params.blockConfigSettings[selectedSlug]) {
 			for (const key in kt_blocks_params.blockConfigSettings[selectedSlug]) {
 				// skip loop if the property is from prototype
-				if (!kt_blocks_params.blockConfigSettings[selectedSlug].hasOwnProperty(key)) continue;
+				if (!kt_blocks_params.blockConfigSettings[selectedSlug].hasOwnProperty(key)) {
+					continue;
+				}
 				const obj = kt_blocks_params.blockConfigSettings[selectedSlug][key];
 				const settingDefault =
 					kt_blocks_params.blockConfig[selectedSlug] &&
@@ -119,7 +121,9 @@ jQuery(document).ready(function ($) {
 							key +
 							'">';
 						for (const option in obj.options) {
-							if (!obj.options.hasOwnProperty(option)) continue;
+							if (!obj.options.hasOwnProperty(option)) {
+								continue;
+							}
 							const selected = settingDefault == obj.options[option].value ? 'selected' : '';
 							settingsContent +=
 								'<option value="' +
@@ -230,7 +234,9 @@ jQuery(document).ready(function ($) {
 					case 'array':
 						settingsContent += '<div class="kt-modal-settings-array"><h4>' + obj.name + '</h4>';
 						for (const option in obj.options) {
-							if (!obj.options.hasOwnProperty(option)) continue;
+							if (!obj.options.hasOwnProperty(option)) {
+								continue;
+							}
 							const inner = kt_blocks_params.blockConfigSettings[selectedSlug][key].options[option];
 							switch (inner.type) {
 								case 'number':

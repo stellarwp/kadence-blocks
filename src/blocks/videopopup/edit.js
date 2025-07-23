@@ -20,6 +20,7 @@ import {
 	topRightIcon,
 	bottomRightIcon,
 	bottomLeftIcon,
+	proIcon,
 } from '@kadence/icons';
 
 import {
@@ -43,7 +44,7 @@ import {
 } from '@kadence/components';
 
 import {
-	getUniqueId,
+	uniqueIdHelper,
 	getInQueryBlock,
 	setBlockDefaults,
 	getPreviewSize,
@@ -52,7 +53,6 @@ import {
 	getSpacingOptionOutput,
 	KadenceColorOutput,
 	setDynamicState,
-	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -126,31 +126,29 @@ function KadenceVideoPopup(props) {
 		youtubeCookies,
 		inQueryBlock,
 		isVimeoPrivate,
+		mediaRatio,
+		mediaRatioMobile,
+		mediaUseMobile,
+		mediaMobile,
+		urlMobile,
+		mediaPoster,
+		posterType,
 	} = attributes;
 	const [isURLInputVisible, setIsURLInputVisible] = useState(false);
 	const [localSrc, setLocalSrc] = useState('');
+	const [isURLInputVisibleMobile, setIsURLInputVisibleMobile] = useState(false);
+	const [localSrcMobile, setLocalSrcMobile] = useState('');
+	const [isURLInputVisiblePoster, setIsURLInputVisiblePoster] = useState(false);
+	const [localSrcPoster, setLocalSrcPoster] = useState('');
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicPosterImg, setDynamicPosterImg] = useState('');
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
@@ -176,22 +174,14 @@ function KadenceVideoPopup(props) {
 	useEffect(() => {
 		setBlockDefaults('kadence/videopopup', attributes);
 
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
-
 		if (!inQueryBlock) {
 			updatePopupDefaults();
 		}
 
 		debouncedUpdateDynamic();
 	}, []);
+
+	uniqueIdHelper(props);
 
 	useEffect(() => {
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
@@ -232,22 +222,22 @@ function KadenceVideoPopup(props) {
 					${
 						playBtn[0].colorHover
 							? 'color:' +
-							  KadenceColorOutput(playBtn[0].colorHover, playBtn[0].opacityHover) +
-							  '!important;'
+								KadenceColorOutput(playBtn[0].colorHover, playBtn[0].opacityHover) +
+								'!important;'
 							: ''
 					}
 					${
 						playBtn[0].backgroundHover
 							? 'background:' +
-							  KadenceColorOutput(playBtn[0].backgroundHover, playBtn[0].backgroundOpacityHover) +
-							  '!important;'
+								KadenceColorOutput(playBtn[0].backgroundHover, playBtn[0].backgroundOpacityHover) +
+								'!important;'
 							: ''
 					}
 					${
 						playBtn[0].borderHover
 							? 'border-color:' +
-							  KadenceColorOutput(playBtn[0].borderHover, playBtn[0].borderOpacityHover) +
-							  '!important;'
+								KadenceColorOutput(playBtn[0].borderHover, playBtn[0].borderOpacityHover) +
+								'!important;'
 							: ''
 					}
 				}`}
@@ -265,7 +255,7 @@ function KadenceVideoPopup(props) {
 						shadowHover[0].spread +
 						'px ' +
 						KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
-				  } !important; }`
+					} !important; }`
 				: ''}
 		</style>
 	);
@@ -387,7 +377,7 @@ function KadenceVideoPopup(props) {
 								left: ['', '', ''],
 								unit: 'px',
 							},
-					  ]
+						]
 			)
 		);
 		let updateBorderStyle = false;
@@ -626,7 +616,10 @@ function KadenceVideoPopup(props) {
 				<div className="kb-pro-notice">
 					<h2>{__('Play Icon', 'kadence-blocks')} </h2>
 					<p>
-						{__('Customize the play icon shape color and more with Kadence Blocks Pro!', 'kadence-blocks')}{' '}
+						{__(
+							'Customize the play icon shape color and more with Kadence Blocks Pro!',
+							'kadence-blocks'
+						)}{' '}
 					</p>
 					<ExternalLink
 						href={
@@ -708,6 +701,102 @@ function KadenceVideoPopup(props) {
 
 	const nonTransAttrs = ['background', 'type', 'media', 'url'];
 
+	const mediaRatioOptions = applyFilters(
+		'kadence.videoPopupProMediaRatioOptions',
+		[
+			{ value: '', label: __('Default', 'kadence-blocks') },
+			{ value: '4:3', label: __('Landscape 4:3 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '16:9', label: __('Wide Landscape 16:9 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '3:4', label: __('Portrait 3:4 (Pro addon)', 'kadence-blocks'), disabled: true },
+			{ value: '9:16', label: __('Vertical 9:16 (Pro addon)', 'kadence-blocks'), disabled: true },
+		],
+		props
+	);
+
+	const MediaControls = ({ device }) => {
+		const urlToUse = device === 'mobile' ? urlMobile : url;
+		const urlString = device === 'mobile' ? 'urlMobile' : 'url';
+		const isURLInputVisibleToUse = device === 'mobile' ? isURLInputVisibleMobile : isURLInputVisible;
+		const setIsURLInputVisibleToUse = device === 'mobile' ? setIsURLInputVisibleMobile : setIsURLInputVisible;
+		const localSrcToUse = device === 'mobile' ? localSrcMobile : localSrc;
+		const setLocalSrcToUse = device === 'mobile' ? setLocalSrcMobile : setLocalSrc;
+
+		const urlLabel =
+			device === 'mobile' ? __('Mobile Video URL', 'kadence-blocks') : __('Video URL', 'kadence-blocks');
+
+		return (
+			<>
+				{'local' !== type && (
+					<Fragment>
+						<URLInputControl
+							key={device + 'url'}
+							label={urlLabel}
+							url={urlToUse}
+							onChangeUrl={(value) => setAttributes({ [urlString]: value })}
+							dynamicAttribute={urlString}
+							allowClear={true}
+							isSelected={isSelected}
+							attributes={attributes}
+							setAttributes={setAttributes}
+							name={'kadence/videopopup'}
+							clientId={clientId}
+							context={context}
+							additionalControls={false}
+						/>
+					</Fragment>
+				)}
+				{applyFilters(
+					'kadence.videoPopupProLocalVideoControls',
+					'',
+					props,
+					isURLInputVisibleToUse,
+					setIsURLInputVisibleToUse,
+					localSrcToUse,
+					setLocalSrcToUse,
+					device
+				)}
+			</>
+		);
+	};
+
+	const videoPopupProMediaMobileControls = (
+		<ToggleControl
+			label={
+				<div
+					style={{
+						display: 'flex',
+						gap: '5px',
+						alignItems: 'center',
+						justifyContent: 'flex-start',
+						width: '100%',
+						fill: 'white',
+					}}
+				>
+					<span>{__('Use Mobile Video', 'kadence-blocks')}</span>
+					{proIcon}
+				</div>
+			}
+			checked={mediaUseMobile}
+			help={__(
+				'Play a different video on smaller screens. You can also set a different video ratio.',
+				'kadence-blocks'
+			)}
+			disabled={true}
+		/>
+	);
+
+	const videoPopupProLocalVideoPosterControls = (
+		<SelectControl
+			label={__('Poster Type', 'kadence-blocks')}
+			value={posterType}
+			options={[
+				{ value: '', label: __('Image', 'kadence-blocks') },
+				{ value: 'video', label: __('Video (Pro addon)', 'kadence-blocks'), disabled: true },
+			]}
+			onChange={(value) => setAttributes({ posterType: value })}
+		/>
+	);
+
 	return (
 		<div
 			{...blockProps}
@@ -772,55 +861,46 @@ function KadenceVideoPopup(props) {
 								options={videoTypeOptions}
 								onChange={(value) => setAttributes({ type: value, isVimeoPrivate: false })}
 							/>
-							{'local' !== type && (
-								<Fragment>
-									{/* <URLExtenalInputControl
-										label={__('Video URL', 'kadence-blocks')}
-										value={url}
-										onChange={(value) => setAttributes({ url: value })}
-										dynamicAttribute="url"
-										allowClear={true}
-										{...props}
-									/> */}
+							<MediaControls device="desktop" />
+							<SelectControl
+								label={__('Video Ratio', 'kadence-blocks')}
+								value={mediaRatio}
+								options={mediaRatioOptions}
+								onChange={(value) => setAttributes({ mediaRatio: value })}
+							/>
 
-									<URLInputControl
-										label={__('Video URL', 'kadence-blocks')}
-										url={url}
-										onChangeUrl={(value) => setAttributes({ url: value })}
-										dynamicAttribute={'url'}
-										allowClear={true}
-										isSelected={isSelected}
-										attributes={attributes}
-										setAttributes={setAttributes}
-										name={'kadence/videopopup'}
-										clientId={clientId}
-										context={context}
-									/>
-
-									{url && url.includes('vimeo.com/') && (
-										<ToggleControl
-											label={__('Is Private or Password Protected', 'kadence-blocks')}
-											checked={isVimeoPrivate}
-											onChange={(value) => setAttributes({ isVimeoPrivate: value })}
-										/>
-									)}
-
-									<ToggleControl
-										label={__('Embed Youtube with no cookies', 'kadence-blocks')}
-										checked={youtubeCookies}
-										onChange={(value) => setAttributes({ youtubeCookies: value })}
-									/>
-								</Fragment>
-							)}
 							{applyFilters(
-								'kadence.videoPopupProLocalVideoControls',
-								'',
-								props,
-								isURLInputVisible,
-								setIsURLInputVisible,
-								localSrc,
-								setLocalSrc
+								'kadence.videoPopupProMediaMobileControls',
+								videoPopupProMediaMobileControls,
+								props
 							)}
+
+							{mediaUseMobile && kadence_blocks_params?.pro && (
+								<KadencePanelBody style={{ marginBottom: '10px' }}>
+									<MediaControls device="mobile" />
+									<SelectControl
+										label={__('Mobile Video Ratio', 'kadence-blocks')}
+										value={mediaRatioMobile}
+										options={mediaRatioOptions}
+										onChange={(value) => setAttributes({ mediaRatioMobile: value })}
+									/>
+								</KadencePanelBody>
+							)}
+
+							{url && url.includes('vimeo.com/') && (
+								<ToggleControl
+									label={__('Is Private or Password Protected', 'kadence-blocks')}
+									checked={isVimeoPrivate}
+									onChange={(value) => setAttributes({ isVimeoPrivate: value })}
+								/>
+							)}
+
+							<ToggleControl
+								label={__('Embed Youtube with no cookies', 'kadence-blocks')}
+								checked={youtubeCookies}
+								onChange={(value) => setAttributes({ youtubeCookies: value })}
+							/>
+
 							<ToggleControl
 								label={__('Auto play video (if able)', 'kadence-blocks')}
 								checked={autoPlay}
@@ -836,31 +916,46 @@ function KadenceVideoPopup(props) {
 								}}
 							/>
 							<h2>{__('Video Poster', 'kadence-blocks')}</h2>
-							<KadenceImageControl
-								label={__('Image', 'kadence-blocks')}
-								hasImage={background[0].img ? true : false}
-								imageURL={background[0].img ? background[0].img : ''}
-								imageID={background[0].imgID}
-								onRemoveImage={clearPoster}
-								onSaveImage={onSelectPoster}
-								disableMediaButtons={background[0].img ? true : false}
-								dynamicAttribute="background:0:img"
-								isSelected={isSelected}
-								attributes={attributes}
-								setAttributes={setAttributes}
-								name={'kadence/videopopup'}
-								clientId={clientId}
-								context={context}
-							/>
-							{background[0].imgID && (
-								<ImageSizeControl
-									label={__('Poster Image File Size', 'kadence-blocks')}
-									id={background[0].imgID}
-									url={background[0].img}
-									fullSelection={true}
-									selectByValue={true}
-									onChange={changeImageSize}
-								/>
+
+							{applyFilters(
+								'kadence.videoPopupProLocalVideoPosterControls',
+								videoPopupProLocalVideoPosterControls,
+								props,
+								isURLInputVisiblePoster,
+								setIsURLInputVisiblePoster,
+								localSrcPoster,
+								setLocalSrcPoster
+							)}
+
+							{'video' !== posterType && (
+								<>
+									<KadenceImageControl
+										label={__('Image', 'kadence-blocks')}
+										hasImage={background[0].img ? true : false}
+										imageURL={background[0].img ? background[0].img : ''}
+										imageID={background[0].imgID}
+										onRemoveImage={clearPoster}
+										onSaveImage={onSelectPoster}
+										disableMediaButtons={background[0].img ? true : false}
+										dynamicAttribute="background:0:img"
+										isSelected={isSelected}
+										attributes={attributes}
+										setAttributes={setAttributes}
+										name={'kadence/videopopup'}
+										clientId={clientId}
+										context={context}
+									/>
+									{background[0].imgID && (
+										<ImageSizeControl
+											label={__('Poster Image File Size', 'kadence-blocks')}
+											id={background[0].imgID}
+											url={background[0].img}
+											fullSelection={true}
+											selectByValue={true}
+											onChange={changeImageSize}
+										/>
+									)}
+								</>
 							)}
 							<PopColorControl
 								label={__('Poster Background', 'kadence-blocks')}
@@ -1048,14 +1143,14 @@ function KadenceVideoPopup(props) {
 							: undefined,
 					boxShadow: displayShadow
 						? shadow[0].hOffset +
-						  'px ' +
-						  shadow[0].vOffset +
-						  'px ' +
-						  shadow[0].blur +
-						  'px ' +
-						  shadow[0].spread +
-						  'px ' +
-						  KadenceColorOutput(shadow[0].color, shadow[0].opacity)
+							'px ' +
+							shadow[0].vOffset +
+							'px ' +
+							shadow[0].blur +
+							'px ' +
+							shadow[0].spread +
+							'px ' +
+							KadenceColorOutput(shadow[0].color, shadow[0].opacity)
 						: undefined,
 					maxWidth: undefined !== maxWidth ? maxWidth + mwUnit : undefined,
 				}}
@@ -1072,6 +1167,16 @@ function KadenceVideoPopup(props) {
 						backgroundImage: previewPosterImg ? `url(${previewPosterImg})` : undefined,
 					}}
 				>
+					{posterType === 'video' && mediaPoster && mediaPoster[0] && mediaPoster[0].url && (
+						<video
+							src={mediaPoster[0].url}
+							autoPlay={false}
+							muted={true}
+							playsInline={false}
+							className={'kadence-video-poster'}
+							preload="metadata"
+						/>
+					)}
 					{(!backgroundOverlay[0].type || 'gradient' !== backgroundOverlay[0].type) && (
 						<div
 							className="kadence-video-overlay"
@@ -1097,28 +1202,28 @@ function KadenceVideoPopup(props) {
 									'radial' === backgroundOverlay[0].gradType
 										? `radial-gradient(at ${
 												backgroundOverlay[0].gradPosition
-										  }, ${KadenceColorOutput(
+											}, ${KadenceColorOutput(
 												backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000',
 												backgroundOverlay[0].fillOpacity
-										  )} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
+											)} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFill
 													: '#000000',
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFillOpacity
 													: 0
-										  )} ${backgroundOverlay[0].gradLocSecond}%)`
+											)} ${backgroundOverlay[0].gradLocSecond}%)`
 										: `linear-gradient(${backgroundOverlay[0].gradAngle}deg, ${KadenceColorOutput(
 												backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000',
 												backgroundOverlay[0].fillOpacity
-										  )} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
+											)} ${backgroundOverlay[0].gradLoc}%, ${KadenceColorOutput(
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFill
 													: '#000000',
 												backgroundOverlay[0].secondFill
 													? backgroundOverlay[0].secondFillOpacity
 													: 0
-										  )} ${backgroundOverlay[0].gradLocSecond}%)`,
+											)} ${backgroundOverlay[0].gradLocSecond}%)`,
 								mixBlendMode: backgroundOverlay[0].blendMode
 									? backgroundOverlay[0].blendMode
 									: undefined,
@@ -1178,26 +1283,26 @@ function KadenceVideoPopup(props) {
 									'' !== playBtn[0].borderWidth[0] &&
 									playBtn[0].style !== 'default'
 										? playBtn[0].borderWidth[0] +
-										  'px ' +
-										  playBtn[0].borderWidth[1] +
-										  'px ' +
-										  playBtn[0].borderWidth[2] +
-										  'px ' +
-										  playBtn[0].borderWidth[3] +
-										  'px'
+											'px ' +
+											playBtn[0].borderWidth[1] +
+											'px ' +
+											playBtn[0].borderWidth[2] +
+											'px ' +
+											playBtn[0].borderWidth[3] +
+											'px'
 										: undefined,
 								borderRadius:
 									playBtn[0].borderRadius &&
 									'' !== playBtn[0].borderRadius[0] &&
 									playBtn[0].style !== 'default'
 										? playBtn[0].borderRadius[0] +
-										  '% ' +
-										  playBtn[0].borderRadius[1] +
-										  '% ' +
-										  playBtn[0].borderRadius[2] +
-										  '% ' +
-										  playBtn[0].borderRadius[3] +
-										  '%'
+											'% ' +
+											playBtn[0].borderRadius[1] +
+											'% ' +
+											playBtn[0].borderRadius[2] +
+											'% ' +
+											playBtn[0].borderRadius[3] +
+											'%'
 										: undefined,
 							}}
 						/>

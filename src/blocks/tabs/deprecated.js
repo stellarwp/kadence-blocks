@@ -101,7 +101,7 @@ export default [
 										titles[index] && titles[index].text
 											? titles[index].text
 											: // Translators: %d is the tab number.
-											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+												sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>
@@ -117,7 +117,7 @@ export default [
 												titles[index] && titles[index].text
 													? titles[index].text
 													: // Translators: %d is the tab number.
-													  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+														sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 											}
 											className={'kt-title-text'}
 										/>
@@ -508,7 +508,7 @@ export default [
 										titles[index] && titles[index].text
 											? titles[index].text
 											: // Translators: %d is the tab number.
-											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+												sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>
@@ -524,7 +524,7 @@ export default [
 												titles[index] && titles[index].text
 													? titles[index].text
 													: // Translators: %d is the tab number.
-													  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+														sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 											}
 											className={'kt-title-text'}
 										/>
@@ -919,7 +919,7 @@ export default [
 											titles[index] && titles[index].text
 												? titles[index].text
 												: // Translators: %d is the tab number.
-												  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+													sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 										}
 										className={'kt-title-text'}
 									/>
@@ -935,7 +935,7 @@ export default [
 													titles[index] && titles[index].text
 														? titles[index].text
 														: // Translators: %d is the tab number.
-														  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+															sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 												}
 												className={'kt-title-text'}
 											/>
@@ -1257,7 +1257,7 @@ export default [
 										titles[index] && titles[index].text
 											? titles[index].text
 											: // Translators: %d is the tab number.
-											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
+												sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>

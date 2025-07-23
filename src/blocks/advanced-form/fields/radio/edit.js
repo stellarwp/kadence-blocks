@@ -24,7 +24,8 @@ import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from 
 import { times, filter } from 'lodash';
 import { plus } from '@wordpress/icons';
 
-function FieldRadio({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldRadio(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const {
 		uniqueID,
 		required,

@@ -24,7 +24,7 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId, useEditorElement, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, useEditorElement, getPreviewSize } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	KadenceRadioButtons,
@@ -131,47 +131,22 @@ export function Edit(props) {
 		closeIconBorderRadiusUnit,
 	} = attributes;
 
-	const { addUniqueID, setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
+	const { setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
 	const { selectBlock } = useDispatch(blockEditorStore);
 
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, parentClientId, showOffCanvas, childSelected } =
-		useSelect(
-			(select) => {
-				return {
-					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-					showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
-					isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-					isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
-					parentData: {
-						rootBlock: select('core/block-editor').getBlock(
-							select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-						),
-						postId: select('core/editor')?.getCurrentPostId()
-							? select('core/editor')?.getCurrentPostId()
-							: '',
-						reusableParent: select('core/block-editor').getBlockAttributes(
-							select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-						),
-						editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-					},
-					parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
-				};
-			},
-			[clientId]
-		);
+	const { previewDevice, parentClientId, showOffCanvas, childSelected } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+				parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
+			};
+		},
+		[clientId]
+	);
 
-	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
-	}, []);
+	uniqueIdHelper(props);
 
 	const selfOrChildSelected = () => {
 		return isSelected || childSelected;
@@ -592,15 +567,15 @@ export function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? -12
 										: paddingUnit === 'px'
-										? -999
-										: -100
+											? -999
+											: -100
 								}
 								max={
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 24
 										: paddingUnit === 'px'
-										? 999
-										: 100
+											? 999
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
@@ -623,8 +598,8 @@ export function Edit(props) {
 									closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem'
 										? 25
 										: closeIconPaddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 0.1 : 1}
 								unit={closeIconPaddingUnit}
@@ -645,8 +620,8 @@ export function Edit(props) {
 									closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem'
 										? 25
 										: closeIconMarginUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								step={closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem' ? 0.1 : 1}
 								unit={closeIconMarginUnit}

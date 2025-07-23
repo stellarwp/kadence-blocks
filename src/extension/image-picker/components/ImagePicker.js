@@ -79,8 +79,8 @@ export default function ImagePicker(props) {
 		imagePickerResults?.images?.[imagePickerSelection]
 			? imagePickerResults.images[imagePickerSelection]
 			: imagePickerResults?.images?.length && imagePickerResults?.images?.[0]
-			? imagePickerResults.images[0]
-			: {};
+				? imagePickerResults.images[0]
+				: {};
 	const currentSelectedMulti =
 		imagePickerResults?.images?.length && imagePickerMultiSelection?.length
 			? extractByIndices(imagePickerResults.images, imagePickerMultiSelection)

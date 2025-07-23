@@ -66,7 +66,7 @@ function KadenceTypographyDefault(props) {
 		typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_font_names
 			? kadence_blocks_params.g_font_names.map((name) => {
 					return { label: name, value: name, google: true };
-			  })
+				})
 			: {};
 	const options = [
 		{

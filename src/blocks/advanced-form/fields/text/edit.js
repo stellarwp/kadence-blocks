@@ -22,7 +22,8 @@ import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
-function FieldText({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldText(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const {
 		uniqueID,
 		required,
