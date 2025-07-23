@@ -163,15 +163,18 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_asset_loader(): void {
-		add_action(
-			'admin_print_styles-edit.php',
-			$this->container->callback( Asset_Loader::class, 'enqueue' )
-		);
+		$this->container->singleton( Asset_Loader::class, Asset_Loader::class );
 
 		add_action(
 			'enqueue_block_editor_assets',
-			$this->container->callback( Asset_Loader::class, 'enqueue' ),
-			20
+			$this->container->callback( Asset_Loader::class, 'enqueue_block_editor_scripts' ),
+			20,
+			0
+		);
+
+		add_action(
+			'admin_enqueue_scripts',
+			$this->container->callback( Asset_Loader::class, 'enqueue_post_list_table' )
 		);
 	}
 
