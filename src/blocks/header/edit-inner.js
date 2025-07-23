@@ -816,8 +816,8 @@ export function EditInner(props) {
 									borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
 										? 24
 										: borderRadiusUnit === 'px'
-										? 500
-										: 100
+											? 500
+											: 100
 								}
 								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
 								min={0}
@@ -958,8 +958,8 @@ export function EditInner(props) {
 													borderRadiusTransparentUnit === 'rem'
 														? 24
 														: borderRadiusTransparentUnit === 'px'
-														? 500
-														: 100
+															? 500
+															: 100
 												}
 												step={
 													borderRadiusTransparentUnit === 'em' ||
@@ -1023,8 +1023,8 @@ export function EditInner(props) {
 													borderRadiusTransparentHoverUnit === 'rem'
 														? 24
 														: borderRadiusTransparentHoverUnit === 'px'
-														? 500
-														: 100
+															? 500
+															: 100
 												}
 												step={
 													borderRadiusTransparentHoverUnit === 'em' ||
@@ -1099,8 +1099,8 @@ export function EditInner(props) {
 													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
 														? 24
 														: borderRadiusStickyUnit === 'px'
-														? 500
-														: 100
+															? 500
+															: 100
 												}
 												step={
 													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
@@ -1161,8 +1161,8 @@ export function EditInner(props) {
 													borderRadiusStickyHoverUnit === 'rem'
 														? 24
 														: borderRadiusStickyHoverUnit === 'px'
-														? 500
-														: 100
+															? 500
+															: 100
 												}
 												step={
 													borderRadiusStickyHoverUnit === 'em' ||
@@ -1307,8 +1307,8 @@ export function EditInner(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 24
 										: paddingUnit === 'px'
-										? 200
-										: 100
+											? 200
+											: 100
 								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}

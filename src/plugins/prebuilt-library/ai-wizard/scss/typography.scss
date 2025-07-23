@@ -1,15 +1,15 @@
-@import './variables.scss';
+@use 'variables.scss';
 
 @mixin stellarwp_font_base {
-	font-family: $fonts-system;
+	font-family: variables.$fonts-system;
 	font-size: 14px;
 	line-height: 1.4;
-	color: $color-black;
+	color: variables.$color-black;
 }
 
 .stellarwp-h1 {
 	margin-bottom: 24px;
-	font-family: $fonts-system;
+	font-family: variables.$fonts-system;
 	font-weight: 500;
 	font-size: 32px;
 	line-height: 1.25;
@@ -17,7 +17,7 @@
 
 .stellarwp-h2 {
 	margin-bottom: 8px;
-	font-family: $fonts-system;
+	font-family: variables.$fonts-system;
 	font-weight: 600;
 	font-size: 22px;
 	line-height: 1.25;
@@ -39,7 +39,7 @@
 	}
 
 	.stellarwp-disabled {
-		color: $color-disabled;
+		color: variables.$color-disabled;
 	}
 }
 

@@ -47,8 +47,7 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getFontSizeOptionOutput,
-	getUniqueId,
-	getPostOrFseId,
+	uniqueIdHelper,
 } from '@kadence/helpers';
 
 /**
@@ -189,28 +188,15 @@ function KadenceCountdown(props) {
 		evergreenStrict,
 	} = attributes;
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { selectBlock } = useDispatch('core/block-editor');
 
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, isNested, parentBlock } = useSelect(
+	const { previewDevice, isNested, parentBlock } = useSelect(
 		(select) => {
 			const { getBlock, getBlockParentsByBlockName } = select('core/block-editor');
 			const parentBlocks = getBlockParentsByBlockName(clientId, 'kadence/countdown');
 			const nested = parentBlocks.length && undefined !== parentBlocks[0] && '' !== parentBlocks[0];
 			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 				isNested: nested,
 				parentBlock: nested ? getBlock(parentBlocks[0]) : '',
 			};
@@ -220,16 +206,6 @@ function KadenceCountdown(props) {
 
 	useEffect(() => {
 		setBlockDefaults('kadence/countdown', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 
 		if (
 			borderRadius &&
@@ -258,6 +234,8 @@ function KadenceCountdown(props) {
 			});
 		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	const [borderWidthControl, setBorderWidthControl] = useState('individual');
 	const [borderRadiusControl, setBorderRadiusControl] = useState('linked');
@@ -1184,7 +1162,7 @@ function KadenceCountdown(props) {
 							? `font-size: ${getFontSizeOptionOutput(
 									previewPostLabelFontSize,
 									previewPostLabelSizeType
-							  )};`
+								)};`
 							: ''}
 						{previewPostLabelLineSize
 							? `line-height: ${previewPostLabelLineSize + previewPostLabelLineType};`

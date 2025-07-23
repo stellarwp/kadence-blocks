@@ -4,7 +4,7 @@
 	"title": "Video Popup",
 	"name": "kadence/videopopup",
 	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow" ],
+	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
 	"description": "",
 	"attributes": {
 		"uniqueID": {
@@ -31,6 +31,23 @@
 				}
 			]
 		},
+		"mediaPoster": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"width": "",
+					"height": "",
+					"alt": "",
+					"subtype": ""
+				}
+			]
+		},
+		"posterType": {
+			"type": "string",
+			"default": ""
+		},
 		"autoPlay": {
 			"type": "boolean",
 			"default": true
@@ -40,7 +57,7 @@
 		},
 		"borderWidth": {
 			"type": "array",
-			"default": [ "", "", "", "" ]
+			"default": ["", "", "", ""]
 		},
 		"borderColor": {
 			"type": "string"
@@ -52,10 +69,10 @@
 			"type": "array",
 			"default": [
 				{
-					"top": [ "rgba(255,255,255,0.8)", "solid", "2" ],
-					"right": [ "rgba(255,255,255,0.8)", "solid", "2" ],
-					"bottom": [ "rgba(255,255,255,0.8)", "solid", "2" ],
-					"left": [ "rgba(255,255,255,0.8)", "solid", "2" ],
+					"top": ["rgba(255,255,255,0.8)", "solid", "2"],
+					"right": ["rgba(255,255,255,0.8)", "solid", "2"],
+					"bottom": ["rgba(255,255,255,0.8)", "solid", "2"],
+					"left": ["rgba(255,255,255,0.8)", "solid", "2"],
 					"unit": "px"
 				}
 			]
@@ -64,10 +81,10 @@
 			"type": "array",
 			"default": [
 				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
 					"unit": "px"
 				}
 			]
@@ -76,25 +93,25 @@
 			"type": "array",
 			"default": [
 				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
 					"unit": "px"
 				}
 			]
 		},
 		"borderRadius": {
 			"type": "array",
-			"default": [ "", "", "", "" ]
+			"default": ["", "", "", ""]
 		},
 		"tabletBorderRadius": {
 			"type": "array",
-			"default": [ "", "", "", "" ]
+			"default": ["", "", "", ""]
 		},
 		"mobileBorderRadius": {
 			"type": "array",
-			"default": [ "", "", "", "" ]
+			"default": ["", "", "", ""]
 		},
 		"borderRadiusUnit": {
 			"type": "string",
@@ -114,8 +131,8 @@
 					"backgroundOpacity": 0.7,
 					"border": "",
 					"borderOpacity": 1,
-					"borderRadius": [ "", "", "", "" ],
-					"borderWidth": [ "", "", "", "" ],
+					"borderRadius": ["", "", "", ""],
+					"borderWidth": ["", "", "", ""],
 					"padding": "",
 					"style": "default",
 					"animation": "none",
@@ -170,9 +187,9 @@
 			"type": "array",
 			"default": [
 				{
-					"desk": [ "", "", "", "" ],
-					"tablet": [ "", "", "", "" ],
-					"mobile": [ "", "", "", "" ]
+					"desk": ["", "", "", ""],
+					"tablet": ["", "", "", ""],
+					"mobile": ["", "", "", ""]
 				}
 			]
 		},
@@ -184,9 +201,9 @@
 			"type": "array",
 			"default": [
 				{
-					"desk": [ "", "", "", "" ],
-					"tablet": [ "", "", "", "" ],
-					"mobile": [ "", "", "", "" ]
+					"desk": ["", "", "", ""],
+					"tablet": ["", "", "", ""],
+					"mobile": ["", "", "", ""]
 				}
 			]
 		},
@@ -263,9 +280,35 @@
 		"isVimeoPrivate": {
 			"type": "boolean",
 			"default": false
+		},
+		"mediaRatio": {
+			"type": "string"
+		},
+		"mediaUseMobile": {
+			"type": "boolean",
+			"default": false
+		},
+		"urlMobile": {
+			"type": "string"
+		},
+		"mediaMobile": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"width": "",
+					"height": "",
+					"alt": "",
+					"subtype": ""
+				}
+			]
+		},
+		"mediaRatioMobile": {
+			"type": "string"
 		}
 	},
-	"usesContext": [ "postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow" ],
+	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
 	"supports": {
 		"anchor": true,
 		"ktanimate": true,
@@ -273,7 +316,7 @@
 		"ktanimatepreview": true,
 		"ktanimateswipe": true,
 		"ktdynamic": true,
-		"align": [ "wide", "full" ],
+		"align": ["wide", "full"],
 		"kbMetadata": true
 	}
 }

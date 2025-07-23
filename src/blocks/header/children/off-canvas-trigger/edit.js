@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	IconRender,
@@ -87,39 +87,16 @@ export function Edit(props) {
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		(select) => {
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
 			};
 		},
 		[clientId]
 	);
 
-	useEffect(() => {
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueId, clientId);
-		}
-	}, []);
+	uniqueIdHelper(props);
 
 	const styleColorControls = (size = '', suffix = '') => {
 		const iconColorValue = attributes['iconColor' + suffix + size];
@@ -288,8 +265,8 @@ export function Edit(props) {
 									paddingUnit === 'em' || paddingUnit === 'rem'
 										? 25
 										: paddingUnit === 'px'
-										? 400
-										: 100
+											? 400
+											: 100
 								}
 								ghostDefault={['xxs', 'xxs', 'xxs', 'xxs']}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}

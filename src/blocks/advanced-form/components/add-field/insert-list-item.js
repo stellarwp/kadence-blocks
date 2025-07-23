@@ -16,7 +16,7 @@ function InserterListItem({ className, item, onSelect, ...props }) {
 		? {
 				backgroundColor: item.icon.background,
 				color: item.icon.foreground,
-		  }
+			}
 		: {};
 
 	return (

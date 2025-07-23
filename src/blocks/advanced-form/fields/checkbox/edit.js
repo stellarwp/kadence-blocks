@@ -25,7 +25,8 @@ import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from 
 import { times, filter } from 'lodash';
 import { plus } from '@wordpress/icons';
 
-function FieldCheckbox({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldCheckbox(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const {
 		uniqueID,
 		required,

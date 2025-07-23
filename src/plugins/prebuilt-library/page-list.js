@@ -566,12 +566,12 @@ function PageList({
 										),
 										filteredBlockPatterns.length,
 										filterValue
-								  )
+									)
 								: sprintf(
 										/* translators: %d: number of pages. */
 										_n('%d page available', '%d pages', filteredBlockPatterns.length),
 										filteredBlockPatterns.length
-								  )}
+									)}
 						</span>
 					)}
 				</div>

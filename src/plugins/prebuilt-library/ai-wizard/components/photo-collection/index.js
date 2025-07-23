@@ -241,10 +241,10 @@ export function PhotoCollection({ photos, loading, isLocal, collectionLink, titl
 										/>
 									)}
 								</FlexBlock>
-						  ))
+							))
 						: Array.from('123456789ABC').map((item) => (
 								<FlexBlock style={{ ...styles.square, ...styles.placeholder }} key={item} />
-						  ))}
+							))}
 				</div>
 			</div>
 			<Flex>

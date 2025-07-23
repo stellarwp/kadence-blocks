@@ -34,7 +34,7 @@ import {
 	CopyPasteAttributes,
 	ResponsiveRangeControls,
 } from '@kadence/components';
-import { setBlockDefaults, mouseOverVisualizer, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { setBlockDefaults, mouseOverVisualizer, uniqueIdHelper } from '@kadence/helpers';
 import BackendStyles from './backend-styles';
 
 const defaultSVG =
@@ -74,27 +74,6 @@ export function Edit(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
-		(select) => {
-			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
-			};
-		},
-		[clientId]
-	);
-
 	const [activeTab, setActiveTab] = useState('general');
 	const [isOpen, setOpen] = useState(false);
 	const [vectorError, setVectorError] = useState(false);
@@ -115,17 +94,9 @@ export function Edit(props) {
 
 	useEffect(() => {
 		setBlockDefaults('kadence/vector', attributes);
-
-		const postOrFseId = getPostOrFseId(props, parentData);
-		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
-		if (uniqueId !== uniqueID) {
-			attributes.uniqueID = uniqueId;
-			setAttributes({ uniqueID: uniqueId });
-			addUniqueID(uniqueId, clientId);
-		} else {
-			addUniqueID(uniqueID, clientId);
-		}
 	}, []);
+
+	uniqueIdHelper(props);
 
 	// Fetch SVG content when ID changes
 	useEffect(() => {

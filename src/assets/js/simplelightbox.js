@@ -310,21 +310,21 @@
 						'">×</button>' +
 						(this.items.length > 1
 							? '<div class="slbArrows">' +
-							  '<button type="button" title="' +
-							  o.prevBtnCaption +
-							  '" class="prev slbArrow' +
-							  o.prevBtnClass +
-							  '">' +
-							  o.prevBtnCaption +
-							  '</button>' +
-							  '<button type="button" title="' +
-							  o.nextBtnCaption +
-							  '" class="next slbArrow' +
-							  o.nextBtnClass +
-							  '">' +
-							  o.nextBtnCaption +
-							  '</button>' +
-							  '</div>'
+								'<button type="button" title="' +
+								o.prevBtnCaption +
+								'" class="prev slbArrow' +
+								o.prevBtnClass +
+								'">' +
+								o.prevBtnCaption +
+								'</button>' +
+								'<button type="button" title="' +
+								o.nextBtnCaption +
+								'" class="next slbArrow' +
+								o.nextBtnClass +
+								'">' +
+								o.nextBtnCaption +
+								'</button>' +
+								'</div>'
 							: '') +
 						'</div>' +
 						'</div>' +

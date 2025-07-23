@@ -4,7 +4,7 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-@import "style";
+@use "style" as style;
 
 .kb-table-container {
 

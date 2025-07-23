@@ -20,7 +20,8 @@ import { getUniqueId } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
 
-function FieldHidden({ attributes, setAttributes, isSelected, clientId, context, name }) {
+function FieldHidden(props) {
+	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
 	const { uniqueID, label, defaultValue, defaultParameter, inputName, kadenceDynamic } = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const { previewDevice } = useSelect(

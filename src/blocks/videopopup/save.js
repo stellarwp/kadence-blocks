@@ -22,6 +22,13 @@ function Save(props) {
 			ariaLabel,
 			youtubeCookies,
 			inQueryBlock,
+			mediaUseMobile,
+			urlMobile,
+			mediaMobile,
+			mediaRatio,
+			mediaRatioMobile,
+			posterType,
+			mediaPoster,
 		},
 	} = props;
 	const intrinsic = undefined !== ratio && 'custom' !== ratio ? ratio : undefined;
@@ -52,6 +59,14 @@ function Save(props) {
 		'data-youtube-cookies': youtubeCookies ? 'true' : 'false',
 	};
 
+	if (mediaRatio) {
+		dataAttrs['data-media-ratio'] = mediaRatio;
+	}
+	// console.log(2, mediaUseMobile, mediaRatioMobile);
+	if (mediaUseMobile && mediaRatioMobile) {
+		dataAttrs['data-media-ratio-mobile'] = mediaRatioMobile;
+	}
+
 	const containerClasses = classNames('wp-block-kadence-videopopup', 'kadence-video-popup' + uniqueID);
 
 	return (
@@ -69,7 +84,7 @@ function Save(props) {
 						paddingBottom: undefined !== imageRatio ? imageRatio + '%' : undefined,
 					}}
 				>
-					{undefined !== background[0] && undefined !== background[0].img && '' !== background[0].img && (
+					{posterType !== 'video' && (
 						<img
 							src={background[0].img}
 							alt={background[0].imgAlt}
@@ -82,6 +97,20 @@ function Save(props) {
 							}
 						/>
 					)}
+					{posterType === 'video' && (
+						<>
+							{undefined !== mediaPoster && undefined !== mediaPoster[0] && mediaPoster[0].url && (
+								<video
+									src={mediaPoster[0].url}
+									autoPlay={true}
+									loop={true}
+									muted={true}
+									playsInline={true}
+									className={'kadence-video-poster'}
+								/>
+							)}
+						</>
+					)}
 					<div className="kadence-video-overlay"></div>
 					{'local' === type && (
 						<button className={classes} aria-label={ariaLabel ? ariaLabel : undefined} {...dataAttrs}>
@@ -93,6 +122,7 @@ function Save(props) {
 							className={classes}
 							aria-label={ariaLabel ? ariaLabel : undefined}
 							href={!url ? '#' : url}
+							data-href-mobile={!urlMobile ? null : urlMobile}
 							role="button"
 							{...dataAttrs}
 						>
@@ -111,6 +141,7 @@ function Save(props) {
 						controls={true}
 						preload={'metadata'}
 						src={media[0].url}
+						data-src-mobile={mediaMobile?.[0]?.url ? mediaMobile[0].url : null}
 					/>
 				</div>
 			)}

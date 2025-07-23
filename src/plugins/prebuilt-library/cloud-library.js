@@ -465,7 +465,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 												!isLoading ? getLibraryContent(selectedSubTab, true) : null
 											}
 										>
-											{__(' Sync with Cloud', 'kadence-blocks')}
+											{__('Sync with Cloud', 'kadence-blocks')}
 										</Button>
 									</div>
 								</div>
@@ -520,7 +520,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 											icon={update}
 											onClick={() => getLibraryContent(selectedSubTab, true)}
 										>
-											{__(' Sync with Cloud', 'kadence-blocks')}
+											{__('Sync with Cloud', 'kadence-blocks')}
 										</Button>
 									</div>
 								</div>

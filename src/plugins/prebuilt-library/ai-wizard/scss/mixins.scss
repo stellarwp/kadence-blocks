@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use 'variables.scss';
 
 @mixin input_label {
 	margin-bottom: 8px;
@@ -7,28 +7,28 @@
 	font-weight: 600;
 	line-height: 1.2;
 	letter-spacing: initial;
-	color: $color-gray-900;
+	color: variables.$color-gray-900;
 }
 
 @mixin input_base {
 	padding: 10px 16px;
 	border-width: 1px;
 	border-style: solid;
-	border-color: $color-gray-300;
+	border-color: variables.$color-gray-300;
 	border-radius: 4px;
 	font-size: 16px;
-	background: $color-white;
+	background: variables.$color-white;
 
 	&:focus,
 	&:focus-within {
 		box-shadow: none;
-		border-color: $color-black;
+		border-color: variables.$color-black;
 	}
 }
 
 @mixin loading_indicator {
 	font-size: 12px;
-	color: $color-primary;
+	color: variables.$color-primary;
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;

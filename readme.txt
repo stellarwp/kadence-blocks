@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.4
-Tested up to: 6.8.1
-Stable tag: 3.5.13
+Requires at least: 6.6
+Tested up to: 6.8.2
+Stable tag: 3.5.15
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,12 +173,26 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.15 =
+Release Date: 23rd July 2025
+* Fix: Mosaic gallery custom link in editor. 
+* Fix: Block defaults not applying to new blocks.
+* Fix: Add link support to advanced text block in some templates.
+
+= 3.5.14 =
+Release Date: 15th July 2025
+* Fix: Issue editing kadence blocks in widget areas
+
 = 3.5.13 =
-Release Date: 17th July 2025
-* Add: Help text for vertical text setting in Advanced Text block.
+Release Date: 15th July 2025
+* Add: Ability to style carousel dots and arrows in the Slider block
+* Add: Warning text about browser compatibility for vertical text setting in Advanced Text block.
+* Fix: Performance improvements for blocks in the editor.
+* Fix: Issue when adding the Advanced Form Submit button in the editor.
+* Fix: Issue with submenu clipping while using backdrop filter on the Header block.
+* Fix: Bad dom content output in Gallery Block in some cases.
 * Fix: Frontend divider style for Countdown block.
-* Fix: Remove light/dark theme selection for Google reCAPTCHA v3 as it doesn't support theme colors.
-* Fix: Anchor attribute support for Navigation Link blocks.
+* Fix: Anchor attribute support for Navigation and Navigation Link blocks.
 * Fix: Border radius reset values for the Advanced Header block.
 
 = 3.5.12 =
