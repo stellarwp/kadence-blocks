@@ -51,7 +51,7 @@ export default function uniqueIdHelper(props) {
 		if (blockPostId === 0) {
 			// Try getting the FSE template slug.
 			if (get(rootBlock, 'name') === 'core/template-part' && has(rootBlock, ['attributes', 'slug'])) {
-				blockPostId = hashString(rootBlock.attributes.slug) % 1000000;
+				blockPostId = hashString(get(rootBlock, 'attributes.slug')) % 1000000;
 			} else if (editedPostId) {
 				blockPostId = hashString(editedPostId) % 1000000;
 			}

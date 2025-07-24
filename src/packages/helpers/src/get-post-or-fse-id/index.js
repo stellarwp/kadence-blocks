@@ -12,7 +12,7 @@ export default function getPostOrFseId( props, parentPostData ) {
 	if ( id === 0 ) {
 		// Try getting the FSE template slug.
 		if ( get( rootBlock, 'name' ) === 'core/template-part' && has( rootBlock, [ 'attributes', 'slug' ] ) ) {
-			return hashString( rootBlock.attributes.slug ) % 1000000;
+			return hashString( get( rootBlock, 'attributes.slug' ) ) % 1000000;
 		} else if( editedPostId ) {
 			return hashString( editedPostId ) % 1000000;
 		}
