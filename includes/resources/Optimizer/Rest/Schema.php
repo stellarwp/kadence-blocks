@@ -121,7 +121,7 @@ final class Schema {
 			],
 			'class'         => [
 				'description' => __( 'The class attribute of the image element.', 'kadence-blocks' ),
-				'type'        => 'string',
+				'type'        => [ 'string', 'null' ],
 			],
 			'loading'       => [
 				'description' => __( 'The loading attribute of the image (e.g., \'lazy\', \'eager\', \'auto\').', 'kadence-blocks' ),
