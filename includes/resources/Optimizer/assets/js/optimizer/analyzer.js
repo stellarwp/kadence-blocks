@@ -20,7 +20,14 @@ export async function analyzeSite(url, postId, nonce) {
 	}
 
 	try {
-		const results = await analyzeWebsite(url, true, '[Kadence]', nonce);
+		let results;
+
+		try {
+			results = await analyzeWebsite(url, true, '[Kadence]', nonce);
+		} catch (analysisError) {
+			console.error('❌ Website analysis failed:', analysisError);
+			throw analysisError;
+		}
 
 		const res = await apiFetch({
 			path: OPTIMIZE_ROUTE,
@@ -35,13 +42,18 @@ export async function analyzeSite(url, postId, nonce) {
 		console.log(`✅ Analysis complete for post ID ${postId}:`, results);
 
 		// Send a request to generate a hash of the optimized page and don't wait for the results.
-		// Swallow network errors deliberately.
-		void fetch(url + '?kadence_set_optimizer_hash=1', { credentials: 'omit', keepalive: true }).catch(() => {});
+		// Log any network errors for debugging.
+		void fetch(url + '?kadence_set_optimizer_hash=1', { credentials: 'omit', keepalive: true }).catch((error) => {
+			console.error('❌ Failed to generate desktop hash:', error);
+		});
+
 		// Send a request as a fake mobile device to generate the mobile hash.
 		void fetch(url + '?kadence_set_optimizer_hash=1&kadence_is_mobile=1', {
 			credentials: 'omit',
 			keepalive: true,
-		}).catch(() => {});
+		}).catch((error) => {
+			console.error('❌ Failed to generate mobile hash:', error);
+		});
 
 		return res;
 	} catch (error) {
