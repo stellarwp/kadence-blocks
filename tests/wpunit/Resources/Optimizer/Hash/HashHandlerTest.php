@@ -280,6 +280,31 @@ final class HashHandlerTest extends TestCase {
 		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 0 );
 	}
 
+	public function testItBypassesHashCheckOn404Page(): void {
+		global $wp_query;
+
+		// Simulate a 404 condition.
+		$wp_query->is_404 = true;
+
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->build_hash( $html );
+		$analysis = $this->create_test_analysis();
+
+		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash ) );
+		$this->store->set( $this->post_id, $analysis );
+
+		$this->hash_handler->start_buffering();
+
+		echo $html;
+
+		// Clear the current output buffer.
+		ob_get_clean();
+
+		$this->hash_handler->check_hash();
+
+		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 0 );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object.
 	 *

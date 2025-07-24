@@ -28,6 +28,11 @@ trait Post_Validation_Trait {
 			return null;
 		}
 
+		// Paginated URLs that are 404's will break the hash.
+		if ( is_404() ) {
+			return null;
+		}
+
 		$post = get_queried_object();
 
 		return $post instanceof WP_Post ? $post : null;
