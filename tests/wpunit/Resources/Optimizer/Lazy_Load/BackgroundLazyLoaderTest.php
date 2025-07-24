@@ -32,17 +32,24 @@ final class BackgroundLazyLoaderTest extends TestCase {
 		$this->store       = $this->container->get( Store::class );
 		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
 
-		// Set up global $post for testing.
-		global $post;
+		// Set this post so get_queried_object() and is_main_query() returns correctly in tests.
+		global $wp_query, $wp_the_query;
 		$post = get_post( $this->post_id );
+
+		$wp_query->post              = $post;
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $post->ID;
+
+		$wp_the_query = $wp_query;
 	}
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->post_id );
 
-		// Clean up global $post.
-		global $post;
-		$post = null;
+		// Clean up $wp_query global
+		global $wp_query, $wp_the_query;
+		$wp_query     = null;
+		$wp_the_query = null;
 
 		parent::tearDown();
 	}

@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use WP_HTML_Tag_Processor;
 use WP_Post;
@@ -20,6 +21,7 @@ use WP_Post;
 final class Image_Processor {
 
 	use Viewport_Trait;
+	use Post_Validation_Trait;
 
 	/**
 	 * Counts the image index to match up what's found
@@ -165,9 +167,9 @@ final class Image_Processor {
 			return $html;
 		}
 
-		global $post, $wp_query;
+		$post = $this->get_optimizable_post();
 
-		if ( ! $post instanceof WP_Post || ! $wp_query->is_main_query() ) {
+		if ( ! $post ) {
 			return $html;
 		}
 

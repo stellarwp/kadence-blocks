@@ -4,8 +4,8 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Asset\Asset;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
-use WP_Post;
 
 /**
  * Handles setting up the Kadence Row Layout Block for background image
@@ -14,6 +14,7 @@ use WP_Post;
 final class Background_Lazy_Loader {
 
 	use Viewport_Trait;
+	use Post_Validation_Trait;
 
 	private Store $store;
 	private Asset $asset;
@@ -34,9 +35,9 @@ final class Background_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		global $post;
+		$post = $this->get_optimizable_post();
 
-		if ( ! $post instanceof WP_Post ) {
+		if ( ! $post ) {
 			return $args;
 		}
 

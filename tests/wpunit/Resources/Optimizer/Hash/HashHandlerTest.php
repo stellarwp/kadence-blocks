@@ -40,11 +40,15 @@ final class HashHandlerTest extends TestCase {
 			]
 		);
 
-		// Set up global post and query.
-		global $post, $wp_query, $wp_the_query;
-		$post                    = get_post( $this->post_id );
-		$wp_query->is_main_query = true;
-		$wp_the_query            = $wp_query;
+		// Set this post so get_queried_object() and is_main_query() returns correctly in tests.
+		global $wp_query, $wp_the_query;
+		$post = get_post( $this->post_id );
+
+		$wp_query->post              = $post;
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $post->ID;
+
+		$wp_the_query = $wp_query;
 	}
 
 	protected function tearDown(): void {
@@ -54,10 +58,10 @@ final class HashHandlerTest extends TestCase {
 			$this->hash_store->delete( $this->post_id, Viewport::desktop() );
 		}
 
-		// Clean up globals.
-		global $post, $wp_query;
-		$post                    = null;
-		$wp_query->is_main_query = false;
+		// Clean up $wp_query global
+		global $wp_query, $wp_the_query;
+		$wp_query     = null;
+		$wp_the_query = null;
 
 		// Clean up GET variables.
 		unset(
@@ -159,10 +163,12 @@ final class HashHandlerTest extends TestCase {
 		$this->assertNull( $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
 	}
 
-	public function testItBypassesHashCheckWithoutPostGlobal(): void {
-		global $post;
+	public function testItBypassesHashCheckWithoutQueriedObject(): void {
+		global $wp_query;
 
-		$post = null;
+		$wp_query->post              = null;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = 0;
 
 		$html     = '<html><body>Test content</body></html>';
 		$hash     = $this->hasher->build_hash( $html );

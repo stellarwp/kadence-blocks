@@ -4,8 +4,8 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Optimizer\Response\Section;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
-use WP_Post;
 
 /**
  * Process section Optimization data to set content visibility on the Kadence row layout block.
@@ -13,6 +13,7 @@ use WP_Post;
 final class Element_Lazy_Loader {
 
 	use Viewport_Trait;
+	use Post_Validation_Trait;
 
 	/**
 	 * Sections cache for this request.
@@ -50,9 +51,9 @@ final class Element_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		global $post;
+		$post = $this->get_optimizable_post();
 
-		if ( ! $post instanceof WP_Post ) {
+		if ( ! $post ) {
 			return $args;
 		}
 

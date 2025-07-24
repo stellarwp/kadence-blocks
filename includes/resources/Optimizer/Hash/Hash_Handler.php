@@ -8,9 +8,9 @@ use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
+use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use Throwable;
-use WP_Post;
 
 /**
  * Handles output‑buffer hashing during the WordPress shutdown phase to detect
@@ -20,6 +20,7 @@ use WP_Post;
 final class Hash_Handler {
 
 	use Viewport_Trait;
+	use Post_Validation_Trait;
 
 	/**
 	 * Captures the final HTML before output buffering is
@@ -84,9 +85,9 @@ final class Hash_Handler {
 		// Return request early, if possible, so we can process this in the background.
 		$this->background_processor->try_finish();
 
-		global $post, $wp_query;
+		$post = $this->get_optimizable_post();
 
-		if ( ! $post instanceof WP_Post || ! $wp_query->is_main_query() ) {
+		if ( ! $post ) {
 			return;
 		}
 
