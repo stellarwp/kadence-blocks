@@ -68,15 +68,17 @@ export async function analyzeSite(url, postId, postPath, nonce) {
  * Delete a post's optimization data.
  *
  * @param {number} postId The post ID to delete the optimization data for.
+ * @param {string} postPath The relative path for the post.
  *
  * @returns {Promise<*>}
  */
-export async function removeOptimization(postId) {
+export async function removeOptimization(postId, postPath) {
 	try {
 		return await apiFetch({
 			path: OPTIMIZE_ROUTE,
 			method: 'DELETE',
 			data: {
+				post_path: postPath,
 				post_id: postId,
 			},
 		});

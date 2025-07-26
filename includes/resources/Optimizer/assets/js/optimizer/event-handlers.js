@@ -138,11 +138,12 @@ export async function handleRemoveOptimizationClick(event) {
 	event.preventDefault();
 
 	const postId = parseInt(event.target.dataset.postId, 10);
+	const postPath = event.target.dataset.postPath;
 
-	console.log('Removing optimization...', { postId });
+	console.log('Removing optimization...', { postId, postPath });
 
 	try {
-		const response = await removeOptimization(postId);
+		const response = await removeOptimization(postId, postPath);
 		console.log(response);
 
 		// Update link state to show "Run Optimizer".
