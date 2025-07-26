@@ -29,9 +29,16 @@ final class Path_Factory {
 	 * @return Path
 	 */
 	public function make(): Path {
-		$query_string = SG::get_server_var( 'QUERY_STRING' ) ?? '';
+		$uri = SG::get_server_var( 'REQUEST_URI' );
 
-		$path = trim( $this->wp->request ?: $query_string, '/' );
+		// Support the home page.
+		if ( $uri === '/' ) {
+			$path = '/';
+		} else {
+			$query_string = SG::get_server_var( 'QUERY_STRING' ) ?? '';
+
+			$path = trim( $this->wp->request ?: $query_string, '/' );
+		}
 
 		return new Path( $path );
 	}

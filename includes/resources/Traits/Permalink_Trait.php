@@ -17,9 +17,11 @@ trait Permalink_Trait {
 	private function get_post_path( $post ): string {
 		$permalink = get_permalink( $post );
 
-		if ( ! $permalink ) {
-			return '';
+		// Page is set to front.
+		if ( $permalink && $permalink === home_url( '/' ) ) {
+			return '/';
 		}
+
 		$home_path = wp_parse_url( home_url(), PHP_URL_PATH );
 
 		if ( ! empty( $home_path ) ) {
