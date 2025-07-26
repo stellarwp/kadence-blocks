@@ -15,11 +15,6 @@ export function setupPostSaveHandler() {
 	addAction(POST_SAVED_HOOK, 'kadence', async ({ post, permalink, suffix = '' }) => {
 		console.log('Post Saved', post, permalink, suffix);
 
-		if (!suffix) {
-			console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
-			return;
-		}
-
 		if (!permalink) {
 			console.error('❌ No URL found for optimization. This is likely not a public post.');
 			return;
@@ -27,8 +22,19 @@ export function setupPostSaveHandler() {
 
 		const postId = post.id;
 		const postUrl = permalink;
-		const postPath = getPath(permalink)?.replace(/\/$/, '');
+		let postPath = getPath(permalink)?.replace(/\/$/, '');
 		const nonce = OPTIMIZER_DATA.token;
+
+		// No suffix means this probably isn't a public post.
+		if (!suffix) {
+			// If these match, that means we're on the home/front page I guess?
+			if (post.permalink_template === permalink) {
+				postPath = '/';
+			} else {
+				console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
+				return;
+			}
+		}
 
 		console.log('🚀 Starting optimization...', { postId, postUrl, postPath });
 		console.log(
