@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Database;
 
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
@@ -29,6 +30,7 @@ final class Database_Provider extends Provider {
 		$this->container->setVar(
 			self::SCHEMA_TABLES,
 			[
+				Viewport_Hash_Table::class,
 				Optimizer_Table::class,
 			]
 		);

@@ -2,36 +2,47 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Store;
 
-use DateTimeImmutable;
-use DateTimeZone;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Support\Classes\TestCase;
 
 final class CachedStoreDecoratorTest extends TestCase {
+
+	use Permalink_Trait;
 
 	private Cached_Store_Decorator $store;
 
 	/** @var Store&MockObject */
 	private $mock_store;
 	private int $post_id;
+	private Path $path;
 
 	protected function setUp(): void {
 		parent::setUp();
+
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
 
 		// Create a mock store for testing.
 		$this->mock_store = $this->createMock( Store::class );
 		$this->store      = new Cached_Store_Decorator( $this->mock_store );
 		$this->post_id    = $this->factory()->post->create();
+		$post_path        = $this->get_post_path( $this->post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
 
 		$this->assertGreaterThan( 0, $this->post_id );
 	}
 
 	protected function tearDown(): void {
 		// Clear any cached data.
-		wp_cache_delete( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 
 		parent::tearDown();
 	}
@@ -39,23 +50,23 @@ final class CachedStoreDecoratorTest extends TestCase {
 	public function testItGetsNullValueWhenNoOptimizationDataExists(): void {
 		$this->mock_store->expects( $this->once() )
 						->method( 'get' )
-						->with( $this->post_id )
+						->with( $this->path )
 						->willReturn( null );
 
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->store->get( $this->path ) );
 	}
 
 	public function testItGetsOptimizationDataFromCache(): void {
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		// Set the cache directly.
-		wp_cache_set( $this->get_cache_key( $this->post_id ), $analysis, Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
+		wp_cache_set( $this->get_cache_key( $this->path ), $analysis, Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
 
 		// Mock store should not be called since data is in cache.
 		$this->mock_store->expects( $this->never() )
 						->method( 'get' );
 
-		$result = $this->store->get( $this->post_id );
+		$result = $this->store->get( $this->path );
 		$this->assertNotNull( $result );
 		$this->assertEquals( $analysis->toArray(), $result->toArray() );
 	}
@@ -65,11 +76,11 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'get' )
-						->with( $this->post_id )
+						->with( $this->path )
 						->willReturn( $analysis );
 
 		// First call should hit the store and cache the result.
-		$result = $this->store->get( $this->post_id );
+		$result = $this->store->get( $this->path );
 		$this->assertNotNull( $result );
 		$this->assertEquals( $analysis->toArray(), $result->toArray() );
 
@@ -77,7 +88,7 @@ final class CachedStoreDecoratorTest extends TestCase {
 		$this->mock_store->expects( $this->never() )
 						->method( 'get' );
 
-		$cached_result = $this->store->get( $this->post_id );
+		$cached_result = $this->store->get( $this->path );
 		$this->assertNotNull( $cached_result );
 		$this->assertEquals( $analysis->toArray(), $cached_result->toArray() );
 	}
@@ -87,14 +98,14 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $analysis )
+						->with( $this->path, $analysis )
 						->willReturn( true );
 
-		$result = $this->store->set( $this->post_id, $analysis );
+		$result = $this->store->set( $this->path, $analysis );
 		$this->assertTrue( $result );
 
 		// Verify the data is cached.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertNotNull( $cached );
 		$this->assertEquals( $analysis->toArray(), $cached->toArray() );
 	}
@@ -104,14 +115,14 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $analysis )
+						->with( $this->path, $analysis )
 						->willReturn( false );
 
-		$result = $this->store->set( $this->post_id, $analysis );
+		$result = $this->store->set( $this->path, $analysis );
 		$this->assertFalse( $result );
 
 		// Verify the data is not cached.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertFalse( $cached );
 	}
 
@@ -119,18 +130,18 @@ final class CachedStoreDecoratorTest extends TestCase {
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		// First, set some data and cache it.
-		wp_cache_set( $this->get_cache_key( $this->post_id ), $analysis, Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
+		wp_cache_set( $this->get_cache_key( $this->path ), $analysis, Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'delete' )
-						->with( $this->post_id )
+						->with( $this->path )
 						->willReturn( true );
 
-		$result = $this->store->delete( $this->post_id );
+		$result = $this->store->delete( $this->path );
 		$this->assertTrue( $result );
 
 		// Verify the cache is cleared.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertFalse( $cached );
 	}
 
@@ -141,22 +152,28 @@ final class CachedStoreDecoratorTest extends TestCase {
 		$post_id_1 = $this->factory()->post->create();
 		$post_id_2 = $this->factory()->post->create();
 
+		$post_path_1 = $this->get_post_path( $post_id_1 );
+		$post_path_2 = $this->get_post_path( $post_id_2 );
+
+		$path_1 = new Path( $post_path_1 );
+		$path_2 = new Path( $post_path_2 );
+
 		// Set up mock expectations for both posts.
 		$this->mock_store->expects( $this->exactly( 2 ) )
 						->method( 'set' )
 						->withConsecutive(
-							[ $post_id_1, $analysis1 ],
-							[ $post_id_2, $analysis2 ]
+							[ $path_1, $analysis1 ],
+							[ $path_2, $analysis2 ]
 						)
 						->willReturn( true );
 
 		// Set data for both posts.
-		$this->assertTrue( $this->store->set( $post_id_1, $analysis1 ) );
-		$this->assertTrue( $this->store->set( $post_id_2, $analysis2 ) );
+		$this->assertTrue( $this->store->set( $path_1, $analysis1 ) );
+		$this->assertTrue( $this->store->set( $path_2, $analysis2 ) );
 
 		// Verify both are cached independently.
-		$cached_1 = wp_cache_get( $this->get_cache_key( $post_id_1 ), Cached_Store_Decorator::GROUP );
-		$cached_2 = wp_cache_get( $this->get_cache_key( $post_id_2 ), Cached_Store_Decorator::GROUP );
+		$cached_1 = wp_cache_get( $this->get_cache_key( $path_1 ), Cached_Store_Decorator::GROUP );
+		$cached_2 = wp_cache_get( $this->get_cache_key( $path_2 ), Cached_Store_Decorator::GROUP );
 
 		$this->assertNotNull( $cached_1 );
 		$this->assertNotNull( $cached_2 );
@@ -164,36 +181,36 @@ final class CachedStoreDecoratorTest extends TestCase {
 		$this->assertEquals( $analysis2->toArray(), $cached_2->toArray() );
 
 		// Clean up.
-		wp_cache_delete( $this->get_cache_key( $post_id_1 ), Cached_Store_Decorator::GROUP );
-		wp_cache_delete( $this->get_cache_key( $post_id_2 ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_cache_key( $path_1 ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_cache_key( $path_2 ), Cached_Store_Decorator::GROUP );
 	}
 
 	public function testItHandlesCacheMissGracefully(): void {
 		// Ensure no cache exists.
-		wp_cache_delete( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'get' )
-						->with( $this->post_id )
+						->with( $this->path )
 						->willReturn( null );
 
-		$result = $this->store->get( $this->post_id );
+		$result = $this->store->get( $this->path );
 		$this->assertNull( $result );
 	}
 
 	public function testItHandlesInvalidCacheData(): void {
 		// Set invalid data in cache.
-		wp_cache_set( $this->get_cache_key( $this->post_id ), 'invalid_data', Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
+		wp_cache_set( $this->get_cache_key( $this->path ), 'invalid_data', Cached_Store_Decorator::GROUP, Cached_Store_Decorator::TTL );
 
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'get' )
-						->with( $this->post_id )
+						->with( $this->path )
 						->willReturn( $analysis );
 
 		// Should fall back to store when cache has invalid data.
-		$result = $this->store->get( $this->post_id );
+		$result = $this->store->get( $this->path );
 		$this->assertNotNull( $result );
 		$this->assertEquals( $analysis->toArray(), $result->toArray() );
 	}
@@ -203,17 +220,17 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $analysis )
+						->with( $this->path, $analysis )
 						->willReturn( true );
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 
 		// Verify cache uses the correct group.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertNotNull( $cached );
 
 		// Verify cache doesn't exist in wrong group.
-		$wrong_group_cached = wp_cache_get( $this->get_cache_key( $this->post_id ), 'wrong_group' );
+		$wrong_group_cached = wp_cache_get( $this->get_cache_key( $this->path ), 'wrong_group' );
 		$this->assertFalse( $wrong_group_cached );
 	}
 
@@ -222,13 +239,13 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $analysis )
+						->with( $this->path, $analysis )
 						->willReturn( true );
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 
 		// Verify the cache key exists with the correct TTL.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertNotNull( $cached );
 
 		// The TTL is set to 43200 seconds (12 hours) in the class.
@@ -236,14 +253,14 @@ final class CachedStoreDecoratorTest extends TestCase {
 	}
 
 	public function testItGeneratesCorrectCacheKeys(): void {
-		$post_id_1 = 123;
-		$post_id_2 = 456;
+		$path_1 = new Path( 'test-post-1' );
+		$path_2 = new Path( 'test-post-2' );
 
-		$key_1 = $this->get_cache_key( $post_id_1 );
-		$key_2 = $this->get_cache_key( $post_id_2 );
+		$key_1 = $this->get_cache_key( $path_1 );
+		$key_2 = $this->get_cache_key( $path_2 );
 
-		$this->assertEquals( 'kb_optimizer_post_123', $key_1 );
-		$this->assertEquals( 'kb_optimizer_post_456', $key_2 );
+		$this->assertEquals( sprintf( 'kb_optimizer_url_%s', $path_1->hash() ), $key_1 );
+		$this->assertEquals( sprintf( 'kb_optimizer_url_%s', $path_2->hash() ), $key_2 );
 		$this->assertNotEquals( $key_1, $key_2 );
 	}
 
@@ -260,13 +277,13 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $large_analysis )
+						->with( $this->path, $large_analysis )
 						->willReturn( true );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $large_analysis ) );
+		$this->assertTrue( $this->store->set( $this->path, $large_analysis ) );
 
 		// Verify large data is cached correctly.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertNotNull( $cached );
 		$this->assertEquals( $large_analysis->toArray(), $cached->toArray() );
 		$this->assertCount( count( $large_analysis->images ), $cached->images );
@@ -283,13 +300,13 @@ final class CachedStoreDecoratorTest extends TestCase {
 
 		$this->mock_store->expects( $this->once() )
 						->method( 'set' )
-						->with( $this->post_id, $analysis )
+						->with( $this->path, $analysis )
 						->willReturn( true );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
 
 		// Verify special characters are preserved in cache.
-		$cached = wp_cache_get( $this->get_cache_key( $this->post_id ), Cached_Store_Decorator::GROUP );
+		$cached = wp_cache_get( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 		$this->assertNotNull( $cached );
 		$this->assertEquals( $analysis->toArray(), $cached->toArray() );
 		$this->assertStringContainsString( 'quotes', $cached->desktop->sections[0]->className );
@@ -299,8 +316,8 @@ final class CachedStoreDecoratorTest extends TestCase {
 	/**
 	 * Get the cache key for a post ID using the decorator's public method.
 	 */
-	private function get_cache_key( int $post_id ): string {
-		return $this->store->get_key( $post_id );
+	private function get_cache_key( Path $path ): string {
+		return $this->store->get_key( $path );
 	}
 
 	/**
@@ -310,7 +327,7 @@ final class CachedStoreDecoratorTest extends TestCase {
 		$data    = $this->fixture( 'resources/optimizer/result.json' );
 		$decoded = json_decode( $data, true );
 
-		$decoded['lastModified'] = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+		$decoded['isStale'] = false;
 
 		return $decoded;
 	}

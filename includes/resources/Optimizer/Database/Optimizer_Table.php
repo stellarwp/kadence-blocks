@@ -10,7 +10,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
  */
 final class Optimizer_Table extends Table {
 
-	public const SCHEMA_VERSION = '1.0.0';
+	public const SCHEMA_VERSION = '2.0.0';
 
 	/**
 	 * @var string The base table name.
@@ -30,7 +30,7 @@ final class Optimizer_Table extends Table {
 	/**
 	 * @var string The field that uniquely identifies a row in the table.
 	 */
-	protected static $uid_column = 'post_id';
+	protected static $uid_column = 'path_hash';
 
 	/**
 	 * Overload the update method to first drop the database as this is a temporary table.
@@ -57,9 +57,9 @@ final class Optimizer_Table extends Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-		    post_id BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY,
-		    analysis LONGTEXT NOT NULL,
-		    FOREIGN KEY (post_id) REFERENCES {$wpdb->posts}(ID) ON DELETE CASCADE
+		    path_hash CHAR(64) PRIMARY KEY COMMENT 'SHA-256 hash of the path (via \$wp->request), used as a unique key for fast lookups',
+		    path TEXT NOT NULL COMMENT 'The relative path (via \$wp->request), stored for reference and debugging',
+		    analysis LONGTEXT NOT NULL COMMENT 'Serialized or JSON-encoded analysis data associated with the path'
 		) {$charset_collate};
 		";
 	}

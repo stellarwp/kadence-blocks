@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Store;
 
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 
@@ -36,21 +37,21 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	 * Only return the optimization if the analysis data is newer than the post's last modified
 	 * date.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return WebsiteAnalysis|null
 	 */
-	public function get( int $post_id ): ?WebsiteAnalysis {
-		$cached = wp_cache_get( $this->get_key( $post_id ), self::GROUP );
+	public function get( Path $path ): ?WebsiteAnalysis {
+		$cached = wp_cache_get( $this->get_key( $path ), self::GROUP );
 
 		if ( $cached instanceof WebsiteAnalysis ) {
 			return $cached;
 		}
 
-		$analysis = $this->store->get( $post_id );
+		$analysis = $this->store->get( $path );
 
 		if ( $analysis ) {
-			wp_cache_set( $this->get_key( $post_id ), $analysis, self::GROUP, self::TTL );
+			wp_cache_set( $this->get_key( $path ), $analysis, self::GROUP, self::TTL );
 		}
 
 		return $analysis;
@@ -59,16 +60,16 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	/**
 	 * Set the optimization data for a post.
 	 *
-	 * @param int             $post_id The post ID to associate with the data.
+	 * @param Path            $path The path object associated with the stored data.
 	 * @param WebsiteAnalysis $analysis The website analysis data.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, WebsiteAnalysis $analysis ): bool {
-		$result = $this->store->set( $post_id, $analysis );
+	public function set( Path $path, WebsiteAnalysis $analysis ): bool {
+		$result = $this->store->set( $path, $analysis );
 
 		if ( $result ) {
-			wp_cache_set( $this->get_key( $post_id ), $analysis, self::GROUP, self::TTL );
+			wp_cache_set( $this->get_key( $path ), $analysis, self::GROUP, self::TTL );
 		}
 
 		return $result;
@@ -77,24 +78,24 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	/**
 	 * Delete the optimization data for a post.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return bool
 	 */
-	public function delete( int $post_id ): bool {
-		wp_cache_delete( $this->get_key( $post_id ), self::GROUP );
+	public function delete( Path $path ): bool {
+		wp_cache_delete( $this->get_key( $path ), self::GROUP );
 
-		return $this->store->delete( $post_id );
+		return $this->store->delete( $path );
 	}
 
 	/**
 	 * Build a cache key.
 	 *
-	 * @param int $post_id The post ID.
+	 * @param Path $path The path object.
 	 *
 	 * @return string
 	 */
-	public function get_key( int $post_id ): string {
-		return sprintf( 'kb_optimizer_post_%d', $post_id );
+	public function get_key( Path $path ): string {
+		return sprintf( 'kb_optimizer_url_%s', $path->hash() );
 	}
 }

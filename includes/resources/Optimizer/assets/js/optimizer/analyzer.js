@@ -7,11 +7,12 @@ import apiFetch from '@wordpress/api-fetch';
  *
  * @param {string} url - The URL to analyze.
  * @param {number} postId - The post ID for reference.
+ * @param {string} postPath - The post path.
  * @param {string} nonce - The nonce value.
  *
  * @returns {Promise<*>}
  */
-export async function analyzeSite(url, postId, nonce) {
+export async function analyzeSite(url, postId, postPath, nonce) {
 	console.log(`🎯 Analyzing post ${postId}: ${url}`);
 
 	if (!isSupported()) {
@@ -33,6 +34,7 @@ export async function analyzeSite(url, postId, nonce) {
 			path: OPTIMIZE_ROUTE,
 			method: 'POST',
 			data: {
+				post_path: postPath,
 				post_id: postId,
 				results,
 			},

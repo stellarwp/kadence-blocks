@@ -2,8 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Response;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 
 /**
@@ -14,7 +12,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
  */
 final class WebsiteAnalysis {
 
-	public DateTimeImmutable $lastModified;
+	public bool $isStale;
 	public DeviceAnalysis $desktop;
 	public DeviceAnalysis $mobile;
 
@@ -27,19 +25,19 @@ final class WebsiteAnalysis {
 	 * @param ImageAnalysis[] $images The image analysis collection.
 	 */
 	private function __construct(
-		DateTimeImmutable $lastModified,
+		bool $isStale,
 		DeviceAnalysis $desktop,
 		DeviceAnalysis $mobile,
 		array $images = []
 	) {
-		$this->lastModified = $lastModified;
-		$this->desktop      = $desktop;
-		$this->mobile       = $mobile;
-		$this->images       = $images;
+		$this->isStale = $isStale;
+		$this->desktop = $desktop;
+		$this->mobile  = $mobile;
+		$this->images  = $images;
 	}
 
 	/**
-	 * @param array{lastModified?: DateTimeImmutable|string, desktop: array, mobile: array, images: array} $attributes
+	 * @param array{isStale?: bool, desktop: array, mobile: array, images: array} $attributes
 	 *
 	 * @throws \Exception If we fail to create a DateTimeImmutable object.
 	 */
@@ -51,15 +49,10 @@ final class WebsiteAnalysis {
 			$attributes['images'] ?? []
 		);
 
-		$timestamp = $attributes['lastModified'] ?? null;
-		$timezone  = new DateTimeZone( 'UTC' );
-
-		$lastModified = is_string( $timestamp )
-			? new DateTimeImmutable( $timestamp, $timezone )
-			: ( $timestamp ?? new DateTimeImmutable( 'now', $timezone ) );
+		$isStale = (bool) ( $attributes['isStale'] ?? false );
 
 		return new self(
-			$lastModified,
+			$isStale,
 			DeviceAnalysis::from( $attributes['desktop'] ),
 			DeviceAnalysis::from( $attributes['mobile'] ),
 			$images
@@ -67,14 +60,14 @@ final class WebsiteAnalysis {
 	}
 
 	/**
-	 * @return array{lastModified: string, desktop: array, mobile: array, images: array}
+	 * @return array{isStale: bool, desktop: array, mobile: array, images: array}
 	 */
 	public function toArray(): array {
 		return [
-			'lastModified' => $this->lastModified->format( 'Y-m-d H:i:s' ),
-			'desktop'      => $this->desktop->toArray(),
-			'mobile'       => $this->mobile->toArray(),
-			'images'       => array_map(
+			'isStale' => $this->isStale,
+			'desktop' => $this->desktop->toArray(),
+			'mobile'  => $this->mobile->toArray(),
+			'images'  => array_map(
 				static function ( ImageAnalysis $image ): array {
 					return $image->toArray();
 				},

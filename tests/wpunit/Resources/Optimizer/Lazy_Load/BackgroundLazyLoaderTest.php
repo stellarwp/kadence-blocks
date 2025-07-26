@@ -5,51 +5,59 @@ namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
 use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use Brain\Monkey;
+use WP;
 
 final class BackgroundLazyLoaderTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Store $store;
 	private Background_Lazy_Loader $lazy_loader;
-	private int $post_id;
+	private Path $path;
 
 	protected function setUp(): void {
 		Monkey\setUp();
 
 		parent::setUp();
 
-		$this->post_id = $this->factory()->post->create(
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
+
+		$post_id = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
+				'post_name'   => 'test-post',
 			]
 		);
 
+		$post_path = $this->get_post_path( $post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
+
+		$wp          = new WP();
+		$wp->request = 'test-post';
+
+		$this->container->when( Path_Factory::class )
+						->needs( WP::class )
+						->give( $wp );
+
 		$this->store       = $this->container->get( Store::class );
 		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
-
-		// Set this post so get_queried_object() and is_main_query() returns correctly in tests.
-		global $wp_query, $wp_the_query;
-		$post = get_post( $this->post_id );
-
-		$wp_query->post              = $post;
-		$wp_query->queried_object    = $post;
-		$wp_query->queried_object_id = $post->ID;
-
-		$wp_the_query = $wp_query;
 	}
 
 	protected function tearDown(): void {
-		$this->store->delete( $this->post_id );
-
-		// Clean up $wp_query global
-		global $wp_query, $wp_the_query;
-		$wp_query     = null;
-		$wp_the_query = null;
+		$this->store->delete( $this->path );
 
 		parent::tearDown();
 	}
@@ -797,6 +805,6 @@ final class BackgroundLazyLoaderTest extends TestCase {
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 	}
 }

@@ -2,9 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Asset\Asset;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 
 /**
@@ -14,14 +15,19 @@ use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 final class Background_Lazy_Loader {
 
 	use Viewport_Trait;
-	use Post_Validation_Trait;
 
 	private Store $store;
 	private Asset $asset;
+	private Path_Factory $path_factory;
 
-	public function __construct( Store $store, Asset $asset ) {
-		$this->store = $store;
-		$this->asset = $asset;
+	public function __construct(
+		Store $store,
+		Asset $asset,
+		Path_Factory $path_factory
+	) {
+		$this->store        = $store;
+		$this->asset        = $asset;
+		$this->path_factory = $path_factory;
 	}
 
 	/**
@@ -35,9 +41,9 @@ final class Background_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		$post = $this->get_optimizable_post();
-
-		if ( ! $post ) {
+		try {
+			$path = $this->path_factory->make();
+		} catch ( InvalidArgumentException $e ) {
 			return $args;
 		}
 
@@ -47,7 +53,7 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		$analysis = $this->store->get( $post->ID );
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return $args;

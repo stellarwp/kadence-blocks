@@ -1,6 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { addAction } from '@wordpress/hooks';
 import { dispatch } from '@wordpress/data';
+import { getPath } from '@wordpress/url';
 import { analyzeSite, removeOptimization } from './analyzer.js';
 import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
@@ -26,16 +27,17 @@ export function setupPostSaveHandler() {
 
 		const postId = post.id;
 		const postUrl = permalink;
+		const postPath = getPath(permalink)?.replace(/\/$/, '');
 		const nonce = OPTIMIZER_DATA.token;
 
-		console.log('🚀 Starting optimization...', { postId, postUrl });
+		console.log('🚀 Starting optimization...', { postId, postUrl, postPath });
 		console.log(
 			'%c' + 'Warnings are expected!',
 			'color: #edd144; -webkit-text-stroke: 0.5px black; font-size: 28px; font-weight: bold;'
 		);
 
 		try {
-			const response = await analyzeSite(postUrl, postId, nonce);
+			const response = await analyzeSite(postUrl, postId, postPath, nonce);
 
 			console.log(response);
 
@@ -64,9 +66,15 @@ export async function handleOptimizeClick(event) {
 	event.preventDefault();
 
 	const postUrl = event.target.dataset.postUrl;
+	const postPath = event.target.dataset.postPath;
 
 	if (!postUrl) {
 		console.error('❌ No URL found for optimization');
+		return;
+	}
+
+	if (!postPath) {
+		console.error('❌ No Post Path found for optimization');
 		return;
 	}
 
@@ -86,7 +94,7 @@ export async function handleOptimizeClick(event) {
 	const postTitle = getPostTitle(event.target, postId);
 
 	try {
-		const response = await analyzeSite(postUrl, postId, nonce);
+		const response = await analyzeSite(postUrl, postId, postPath, nonce);
 		console.log(response);
 
 		// Clear the animation interval

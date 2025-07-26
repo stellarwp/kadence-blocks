@@ -2,53 +2,64 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use Brain\Monkey;
+use WP;
 
 final class ElementLazyLoaderTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Store $store;
-	private Element_Lazy_Loader $lazy_loader;
 	private int $post_id;
+
+	private Path $path;
+	private WP $wp;
+	private Path_Factory $path_factory;
 
 	protected function setUp(): void {
 		Monkey\setUp();
 
 		parent::setUp();
 
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
+
 		$this->post_id = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
+				'post_name'   => 'test-post',
 			]
 		);
 
 		$this->store = $this->container->get( Store::class );
 
-		// Set this post so get_queried_object() and is_main_query() returns correctly in tests.
-		global $wp_query, $wp_the_query;
-		$post = get_post( $this->post_id );
+		$post_path = $this->get_post_path( $this->post_id );
 
-		$wp_query->post              = $post;
-		$wp_query->queried_object    = $post;
-		$wp_query->queried_object_id = $post->ID;
+		$this->assertNotEmpty( $post_path );
 
-		$wp_the_query = $wp_query;
+		$this->path = new Path( $post_path );
+
+		$this->wp          = new WP();
+		$this->wp->request = 'test-post';
+
+		$this->container->when( Path_Factory::class )
+						->needs( WP::class )
+						->give( $this->wp );
+
+		$this->path_factory = $this->container->get( Path_Factory::class );
 	}
 
 	protected function tearDown(): void {
-		$this->store->delete( $this->post_id );
-
-		// Clean up $wp_query global
-		global $wp_query, $wp_the_query;
-		$wp_query     = null;
-		$wp_the_query = null;
+		$this->store->delete( $this->path );
 
 		parent::tearDown();
 	}
@@ -60,7 +71,7 @@ final class ElementLazyLoaderTest extends TestCase {
 		$wp_query->queried_object    = null;
 		$wp_query->queried_object_id = 0;
 
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -77,7 +88,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItReturnsOriginalArgsWhenNoUniqueId(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -92,7 +103,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItReturnsOriginalArgsWhenUniqueIdIsFalse(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -109,7 +120,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItReturnsOriginalArgsWhenNoAnalysisData(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -126,7 +137,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenExcludedClassIsPresent(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout kt-jarallax',
@@ -145,7 +156,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenExcludedClassIsPresentWithOtherClasses(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout kt-jarallax kb-row-layout-123',
@@ -164,7 +175,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenMultipleExcludedClassesArePresent(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax', 'no-lazy-load' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax', 'no-lazy-load' ] );
 
 		$args = [
 			'class' => 'kb-row-layout no-lazy-load',
@@ -183,7 +194,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItDoesNotBypassLazyLoadingWhenExcludedClassIsNotPresent(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout kb-row-layout-123',
@@ -210,7 +221,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenExcludedClassIsPartOfLargerClassName(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout my-kt-jarallax-custom',
@@ -238,7 +249,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenExcludedClassIsCaseSensitive(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout KT-JARALLAX',
@@ -266,7 +277,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenExcludedClassHasWhitespace(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => 'kb-row-layout   kt-jarallax   ',
@@ -287,7 +298,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenNoClassesAndExcludedClassIsEmpty(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ '' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ '' ] );
 
 		$args = [
 			'id' => 'test-row',
@@ -313,7 +324,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenClassesIsFalseAndExcludedClassIsPresent(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [ 'kt-jarallax' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
 
 		$args = [
 			'class' => false,
@@ -342,7 +353,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItAddsContentVisibilityStyleForBelowTheFoldSection(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -369,7 +380,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItAddsContentVisibilityStyleForBelowTheFoldSectionWithExistingStyle(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -397,7 +408,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItSkipsAboveTheFoldSections(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -418,7 +429,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItSkipsSectionsWithZeroHeight(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -439,7 +450,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItSkipsSectionsThatDoNotMatchUniqueId(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -460,7 +471,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItUsesMobileAnalysisWhenOnMobile(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -487,7 +498,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItUsesDesktopAnalysisWhenOnDesktop(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		$args = [
 			'class' => 'kb-row-layout',
@@ -514,7 +525,7 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItFlushesMemoizationCache(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, [] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
 
 		// First call to populate cache.
 		$args = [
@@ -580,14 +591,13 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from(
 			[
-				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
-				'desktop'      => $desktop->toArray(),
-				'mobile'       => $mobile->toArray(),
-				'images'       => [],
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 	}
 
 	/**
@@ -623,14 +633,13 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from(
 			[
-				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
-				'desktop'      => $desktop->toArray(),
-				'mobile'       => $mobile->toArray(),
-				'images'       => [],
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 	}
 
 	/**
@@ -666,14 +675,13 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from(
 			[
-				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
-				'desktop'      => $desktop->toArray(),
-				'mobile'       => $mobile->toArray(),
-				'images'       => [],
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 	}
 
 	/**
@@ -720,13 +728,12 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from(
 			[
-				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
-				'desktop'      => $desktop->toArray(),
-				'mobile'       => $mobile->toArray(),
-				'images'       => [],
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 	}
 }

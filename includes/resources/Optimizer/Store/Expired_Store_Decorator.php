@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Store;
 
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 
@@ -25,42 +26,40 @@ final class Expired_Store_Decorator implements Contracts\Store {
 	/**
 	 * Only return the optimization if the analysis data is newer than the post's last modified date.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return WebsiteAnalysis|null
 	 */
-	public function get( int $post_id ): ?WebsiteAnalysis {
-		$analysis = $this->store->get( $post_id );
+	public function get( Path $path ): ?WebsiteAnalysis {
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return null;
 		}
 
-		$post_last_modified = get_post_datetime( $post_id, 'modified', 'gmt' );
-
-		return $post_last_modified > $analysis->lastModified ? null : $analysis;
+		return $analysis->isStale ? null : $analysis;
 	}
 
 	/**
 	 * Set the optimization data for a post.
 	 *
-	 * @param int             $post_id The post ID to associate with the data.
+	 * @param Path            $path The path object associated with the stored data.
 	 * @param WebsiteAnalysis $analysis The website analysis data.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, WebsiteAnalysis $analysis ): bool {
-		return $this->store->set( $post_id, $analysis );
+	public function set( Path $path, WebsiteAnalysis $analysis ): bool {
+		return $this->store->set( $path, $analysis );
 	}
 
 	/**
 	 * Delete the optimization data for a post.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return bool
 	 */
-	public function delete( int $post_id ): bool {
-		return $this->store->delete( $post_id );
+	public function delete( Path $path ): bool {
+		return $this->store->delete( $path );
 	}
 }

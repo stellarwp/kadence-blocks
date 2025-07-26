@@ -2,9 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
+use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Response\Section;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 
 /**
@@ -13,7 +14,6 @@ use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 final class Element_Lazy_Loader {
 
 	use Viewport_Trait;
-	use Post_Validation_Trait;
 
 	/**
 	 * Sections cache for this request.
@@ -28,15 +28,21 @@ final class Element_Lazy_Loader {
 	 * @var string[]
 	 */
 	private array $excluded_classes;
-
+	private Path_Factory $path_factory;
 	private Store $store;
 
 	/**
-	 * @param Store    $store The optimizer store.
-	 * @param string[] $excluded_classes CSS classes that will exclude a section from being lazy loaded.
+	 * @param Store        $store The optimizer store.
+	 * @param Path_Factory $path_factory The path factory.
+	 * @param string[]     $excluded_classes CSS classes that will exclude a section from being lazy loaded.
 	 */
-	public function __construct( Store $store, array $excluded_classes ) {
+	public function __construct(
+		Store $store,
+		Path_Factory $path_factory,
+		array $excluded_classes
+	) {
 		$this->store            = $store;
+		$this->path_factory     = $path_factory;
 		$this->excluded_classes = $excluded_classes;
 	}
 
@@ -51,9 +57,9 @@ final class Element_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		$post = $this->get_optimizable_post();
-
-		if ( ! $post ) {
+		try {
+			$path = $this->path_factory->make();
+		} catch ( InvalidArgumentException $e ) {
 			return $args;
 		}
 
@@ -75,7 +81,7 @@ final class Element_Lazy_Loader {
 			}
 		}
 
-		$analysis = $this->store->get( $post->ID );
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return $args;

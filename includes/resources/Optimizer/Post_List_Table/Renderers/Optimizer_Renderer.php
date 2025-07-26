@@ -3,12 +3,16 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 
 final class Optimizer_Renderer implements Renderable {
+
+	use Permalink_Trait;
 
 	private const ACTION_CLASS = 'action_class';
 	private const ACTION_TEXT  = 'action_text';
@@ -42,8 +46,12 @@ final class Optimizer_Renderer implements Renderable {
 			return;
 		}
 
-		$analysis    = $this->store->get( $post_id );
-		$render_data = $this->get_render_data( $post_id, $analysis );
+		$post_path = $this->get_post_path( $post_id );
+
+		$path = new Path( $post_path );
+
+		$analysis    = $this->store->get( $path );
+		$render_data = $this->get_render_data( $analysis );
 
 		// User can't perform an action, just show them the status.
 		if ( ! $this->user_can_manage_optimization( $post_id, $analysis ) ) {
@@ -72,12 +80,11 @@ final class Optimizer_Renderer implements Renderable {
 	/**
 	 * Get the render data for the optimization action.
 	 *
-	 * @param int                  $post_id The post ID.
 	 * @param WebsiteAnalysis|null $analysis The optimization analysis data.
 	 *
 	 * @return array{action_class: string, action_text: string, status_text: string}
 	 */
-	private function get_render_data( int $post_id, ?WebsiteAnalysis $analysis ): array {
+	private function get_render_data( ?WebsiteAnalysis $analysis ): array {
 		if ( ! $analysis ) {
 			return [
 				self::ACTION_CLASS => 'kb-optimize-post',
@@ -86,9 +93,7 @@ final class Optimizer_Renderer implements Renderable {
 			];
 		}
 
-		$is_outdated = get_post_datetime( $post_id, 'modified', 'gmt' ) > $analysis->lastModified;
-
-		if ( $is_outdated ) {
+		if ( $analysis->isStale ) {
 			return [
 				self::ACTION_CLASS => 'kb-optimize-post',
 				self::ACTION_TEXT  => $this->text_repository->get( Text_Repository::OPTIMIZATION_OUTDATED_RUN ),
@@ -126,13 +131,15 @@ final class Optimizer_Renderer implements Renderable {
 	 * @return void
 	 */
 	private function render_action_link( int $post_id, array $render_data ): void {
-		$post_url = get_permalink( $post_id );
+		$post_url  = get_permalink( $post_id );
+		$post_path = $this->get_post_path( $post_id );
 
 		printf(
-			'<a href="#" class="%s" data-post-id="%d" data-post-url="%s" data-nonce="%s">%s</a>',
+			'<a href="#" class="%s" data-post-id="%d" data-post-url="%s" data-post-path="%s" data-nonce="%s">%s</a>',
 			esc_attr( $render_data[ self::ACTION_CLASS ] ),
 			esc_attr( $post_id ),
 			esc_attr( esc_url( $post_url ) ),
+			esc_attr( $post_path ),
 			esc_attr( $this->nonce->create() ),
 			esc_html( $render_data[ self::ACTION_TEXT ] )
 		);

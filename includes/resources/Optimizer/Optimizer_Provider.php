@@ -4,6 +4,8 @@ namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
@@ -13,6 +15,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
@@ -32,6 +35,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
+use WP;
 
 final class Optimizer_Provider extends Provider {
 
@@ -55,8 +59,10 @@ final class Optimizer_Provider extends Provider {
 			return;
 		}
 
+		$this->register_path();
 		$this->register_mobile_override();
 		$this->register_optimizer_query();
+		$this->register_viewport_query();
 		$this->register_translation();
 		$this->register_hash_store();
 		$this->register_nonce();
@@ -70,6 +76,17 @@ final class Optimizer_Provider extends Provider {
 		$this->register_background_lazy_loader();
 		$this->register_hash_handling();
 		$this->register_image_processor();
+	}
+
+	private function register_path(): void {
+		add_action(
+			'parse_request',
+			function ( WP $wp ) {
+				$this->container->bind( Path_Factory::class, new Path_Factory( $wp ) );
+			},
+			20,
+			1
+		);
 	}
 
 	/**
@@ -98,6 +115,14 @@ final class Optimizer_Provider extends Provider {
 		$this->container->when( Optimizer_Query::class )
 						->needs( '$table' )
 						->give( static fn(): string => Optimizer_Table::table_name( false ) );
+	}
+
+	private function register_viewport_query(): void {
+		$this->container->singleton( Viewport_Query::class, Viewport_Query::class );
+
+		$this->container->when( Viewport_Query::class )
+						->needs( '$table' )
+						->give( static fn(): string => Viewport_Hash_Table::table_name( false ) );
 	}
 
 	/**

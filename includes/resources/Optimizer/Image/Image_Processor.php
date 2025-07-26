@@ -2,15 +2,16 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Image;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Traits\Post_Validation_Trait;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use WP_HTML_Tag_Processor;
-use WP_Post;
 
 /**
  * Modify HTML img tags before the HTML is sent back to the browser:
@@ -21,7 +22,6 @@ use WP_Post;
 final class Image_Processor {
 
 	use Viewport_Trait;
-	use Post_Validation_Trait;
 
 	/**
 	 * Counts the image index to match up what's found
@@ -32,6 +32,7 @@ final class Image_Processor {
 	private int $counter = 0;
 	private Store $store;
 	private Rule_Collection $rules;
+	private Path_Factory $path_factory;
 
 	/**
 	 * The list of image processors.
@@ -43,16 +44,19 @@ final class Image_Processor {
 	/**
 	 * @param Store           $store The optimization store.
 	 * @param Rule_Collection $rules The rule collection.
+	 * @param Path_Factory    $path_factory The path factory.
 	 * @param Processor[]     $processors The list of image processors.
 	 */
 	public function __construct(
 		Store $store,
 		Rule_Collection $rules,
+		Path_Factory $path_factory,
 		array $processors
 	) {
-		$this->store      = $store;
-		$this->rules      = $rules;
-		$this->processors = $processors;
+		$this->store        = $store;
+		$this->rules        = $rules;
+		$this->path_factory = $path_factory;
+		$this->processors   = $processors;
 	}
 
 	/**
@@ -87,13 +91,13 @@ final class Image_Processor {
 	 *
 	 * @see self::stop_buffering()
 	 *
-	 * @param string  $html The HTML WordPress will render.
-	 * @param WP_Post $post The current post.
+	 * @param string $html The HTML WordPress will render.
+	 * @param Path   $path The current path object.
 	 *
 	 * @return string
 	 */
-	public function process_images( string $html, WP_Post $post ): string {
-		$analysis = $this->store->get( $post->ID );
+	public function process_images( string $html, Path $path ): string {
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return $html;
@@ -129,7 +133,7 @@ final class Image_Processor {
 				 * @param string $src The image src.
 				 * @param string|null $classes The classes assigned to the img tag.
 				 * @param Processor $processor The current processor instance.
-				 * @param WP_Post $post The current post object.
+				 * @param Path $post The current path object.
 				 */
 				$should_process = apply_filters(
 					'kadence_blocks_optimizer_image_processor',
@@ -137,7 +141,7 @@ final class Image_Processor {
 					$src,
 					$classes,
 					$processor,
-					$post
+					$path
 				);
 
 				if ( $should_process ) {
@@ -167,12 +171,12 @@ final class Image_Processor {
 			return $html;
 		}
 
-		$post = $this->get_optimizable_post();
-
-		if ( ! $post ) {
+		try {
+			$path = $this->path_factory->make();
+		} catch ( InvalidArgumentException $e ) {
 			return $html;
 		}
 
-		return $this->process_images( $html, $post );
+		return $this->process_images( $html, $path );
 	}
 }

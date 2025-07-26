@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Rest;
 
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use WP_Error;
@@ -27,10 +28,10 @@ use WP_REST_Server;
  */
 final class Optimize_Rest_Controller extends WP_REST_Controller {
 
-	public const ROUTE   = '/kb-optimizer/v1/optimize';
-	public const POST_ID = 'post_id';
-
-	public const RESULTS = 'results';
+	public const ROUTE     = '/kb-optimizer/v1/optimize';
+	public const POST_PATH = 'post_path';
+	public const POST_ID   = 'post_id';
+	public const RESULTS   = 'results';
 
 	private Store $store;
 	private Schema $schema_loader;
@@ -78,16 +79,20 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
-		$post_id  = $request->get_param( self::POST_ID );
-		$results  = $request->get_param( self::RESULTS );
-		$analysis = WebsiteAnalysis::from( $results );
+		$post_id   = $request->get_param( self::POST_ID );
+		$post_path = $request->get_param( self::POST_PATH );
+		$results   = $request->get_param( self::RESULTS );
+		$analysis  = WebsiteAnalysis::from( $results );
 
-		if ( $this->store->set( $post_id, $analysis ) ) {
+		$path = new Path( $post_path );
+
+		if ( $this->store->set( $path, $analysis ) ) {
 			return new WP_REST_Response(
 				[
 					'data' => [
-						'success' => true,
-						'post_id' => $post_id,
+						'success'   => true,
+						'post_id'   => $post_id,
+						'post_path' => $post_path,
 					],
 				],
 				WP_Http::CREATED
@@ -98,8 +103,9 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			'rest_kb_optimizer_create_failed',
 			__( 'Failed to store optimizer data.', 'kadence-blocks' ),
 			[
-				'status'  => WP_Http::INTERNAL_SERVER_ERROR,
-				'post_id' => $post_id,
+				'status'    => WP_Http::INTERNAL_SERVER_ERROR,
+				'post_id'   => $post_id,
+				'post_path' => $post_path,
 			]
 		);
 	}
@@ -112,17 +118,19 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
-		$post_id = $request->get_param( self::POST_ID );
+		$post_path = $request->get_param( self::POST_PATH );
 
-		$analysis = $this->store->get( $post_id );
+		$path = new Path( $post_path );
+
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return new WP_Error(
 				'rest_kb_optimizer_read_not_found',
 				__( 'Sorry, we couldn\'t find optimizer data.', 'kadence-blocks' ),
 				[
-					'status'  => WP_Http::NOT_FOUND,
-					'post_id' => $post_id,
+					'status'    => WP_Http::NOT_FOUND,
+					'post_path' => $post_path,
 				]
 			);
 		}
@@ -143,14 +151,18 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
-		$post_id = $request->get_param( self::POST_ID );
+		$post_id   = $request->get_param( self::POST_ID );
+		$post_path = $request->get_param( self::POST_PATH );
 
-		if ( $this->store->delete( $post_id ) ) {
+		$path = new Path( $post_path );
+
+		if ( $this->store->delete( $path ) ) {
 			return new WP_REST_Response(
 				[
 					'data' => [
-						'success' => true,
-						'post_id' => $post_id,
+						'success'   => true,
+						'post_id'   => $post_id,
+						'post_path' => $post_path,
 					],
 				],
 				WP_Http::OK
@@ -161,8 +173,9 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			'rest_kb_optimizer_delete_failed',
 			__( 'Failed to delete optimizer data.', 'kadence-blocks' ),
 			[
-				'status'  => WP_Http::INTERNAL_SERVER_ERROR,
-				'post_id' => $post_id,
+				'status'    => WP_Http::INTERNAL_SERVER_ERROR,
+				'post_id'   => $post_id,
+				'post_path' => $post_path,
 			]
 		);
 	}
@@ -293,7 +306,13 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 */
 	private function get_default_params(): array {
 		return [
-			self::POST_ID => [
+			self::POST_PATH => [
+				'type'              => 'string',
+				'description'       => __( 'The relative post path', 'kadence-blocks' ),
+				'required'          => true,
+				'sanitize_callback' => 'sanitize_text_field',
+			],
+			self::POST_ID   => [
 				'type'              => 'integer',
 				'description'       => __( 'The post ID associated with the optimization data.', 'kadence-blocks' ),
 				'minimum'           => 1,
