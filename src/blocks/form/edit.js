@@ -171,7 +171,7 @@ function KadenceForm(props) {
 					.getBlockParentsByBlockName(clientId, 'kadence-insights/ab-test')
 					.slice(-1)[0]
 			);
-			
+
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
@@ -185,7 +185,7 @@ function KadenceForm(props) {
 								select('core/block-editor')
 									.getBlockParentsByBlockName(clientId, 'core/block')
 									.slice(-1)[0]
-						  ),
+							),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
 			};
