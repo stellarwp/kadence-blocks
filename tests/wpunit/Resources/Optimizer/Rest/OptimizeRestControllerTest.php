@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Rest;
 
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
@@ -20,6 +21,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 	private Optimize_Rest_Controller $controller;
 	private Store $store;
+	private Post_Sort_Indexer $post_sort_indexer;
 	private int $post_id;
 	private Path $path;
 	private WP_User $admin_user;
@@ -33,8 +35,9 @@ final class OptimizeRestControllerTest extends TestCase {
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->store      = $this->container->get( Store::class );
-		$this->controller = $this->container->get( Optimize_Rest_Controller::class );
+		$this->store             = $this->container->get( Store::class );
+		$this->post_sort_indexer = $this->container->get( Post_Sort_Indexer::class );
+		$this->controller        = $this->container->get( Optimize_Rest_Controller::class );
 
 		// Create test post.
 		$this->post_id = $this->factory()->post->create(
@@ -81,6 +84,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
+		$this->post_sort_indexer->delete( $this->post_id );
 		wp_set_current_user( 0 );
 
 		// Reset the global REST server.
@@ -123,6 +127,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		// Verify data was stored.
 		$stored_analysis = $this->store->get( $this->path );
 		$this->assertInstanceOf( WebsiteAnalysis::class, $stored_analysis );
+		$this->assertTrue( $this->post_sort_indexer->get( $this->post_id ) );
 	}
 
 	public function testCreateItemAsEditor(): void {
@@ -272,6 +277,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// Verify data was deleted.
 		$this->assertNull( $this->store->get( $this->path ) );
+		$this->assertFalse( $this->post_sort_indexer->get( $this->post_id ) );
 	}
 
 	public function testDeleteItemNonExistentData(): void {

@@ -12,16 +12,15 @@ use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Table_Sorter;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Optimizer_Table_Sorter;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Table_Sort;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
@@ -209,6 +208,7 @@ final class Optimizer_Provider extends Provider {
 			static fn(): Column  => new Column(
 				'kadence_optimizer',
 				__( 'Kadence Optimizer', 'kadence-blocks' ),
+				Post_Sort_Indexer::KEY
 			)
 		);
 
@@ -216,43 +216,11 @@ final class Optimizer_Provider extends Provider {
 		$this->container->singleton(
 			self::OPTIMIZER_COLUMN_REGISTRAR,
 			function (): Column_Registrar {
-				$column   = $this->container->get( self::OPTIMIZER_COLUMN );
-				$renderer = $this->container->get( Optimizer_Renderer::class );
+				$column        = $this->container->get( self::OPTIMIZER_COLUMN );
+				$renderer      = $this->container->get( Optimizer_Renderer::class );
+				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
 
-				return new Column_Registrar( $column, $renderer, true );
-			}
-		);
-
-		// Add custom table sorting for this column.
-		$this->container->singleton( Table_Sort::class, Table_Sort::class );
-
-		$this->container->when( Table_Sort::class )
-						->needs( Column::class )
-						->give( fn(): Column => $this->container->get( self::OPTIMIZER_COLUMN ) );
-
-		$this->container->when( Table_Sort::class )
-						->needs( Table_Sorter::class )
-						->give(
-							fn(): Table_Sorter =>
-							$this->container->get( Optimizer_Table_Sorter::class )
-						);
-
-		add_action(
-			'admin_init',
-			function (): void {
-				add_filter(
-					'posts_orderby',
-					$this->container->callback( Table_Sort::class, 'orderby' ),
-					10,
-					2
-				);
-
-				add_filter(
-					'posts_join_paged',
-					$this->container->callback( Table_Sort::class, 'join' ),
-					10,
-					2
-				);
+				return new Column_Registrar( $column, $renderer, $sort_strategy, true );
 			}
 		);
 

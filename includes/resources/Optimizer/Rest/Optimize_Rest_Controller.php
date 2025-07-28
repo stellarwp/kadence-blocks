@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Rest;
 
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -35,12 +36,18 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 
 	private Store $store;
 	private Schema $schema_loader;
+	private Post_Sort_Indexer $post_sort_indexer;
 
-	public function __construct( Store $store, Schema $schema_loader ) {
-		$this->namespace     = 'kb-optimizer/v1';
-		$this->rest_base     = 'optimize';
-		$this->store         = $store;
-		$this->schema_loader = $schema_loader;
+	public function __construct(
+		Store $store,
+		Schema $schema_loader,
+		Post_Sort_Indexer $post_sort_indexer
+	) {
+		$this->namespace         = 'kb-optimizer/v1';
+		$this->rest_base         = 'optimize';
+		$this->store             = $store;
+		$this->schema_loader     = $schema_loader;
+		$this->post_sort_indexer = $post_sort_indexer;
 	}
 
 	public function register_routes(): void {
@@ -87,6 +94,9 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$path = new Path( $post_path );
 
 		if ( $this->store->set( $path, $analysis ) ) {
+			// Store the meta value so we can sort the Post List Table.
+			$this->post_sort_indexer->set( $post_id );
+
 			return new WP_REST_Response(
 				[
 					'data' => [
@@ -157,6 +167,9 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$path = new Path( $post_path );
 
 		if ( $this->store->delete( $path ) ) {
+			// Remove the meta value so we can sort the Post List Table.
+			$this->post_sort_indexer->delete( $post_id );
+
 			return new WP_REST_Response(
 				[
 					'data' => [

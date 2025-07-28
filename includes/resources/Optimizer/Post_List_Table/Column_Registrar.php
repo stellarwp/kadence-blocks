@@ -3,6 +3,8 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table;
 
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Sort_Strategy;
+use WP_Query;
 
 /**
  * Registers Post List Table columns.
@@ -11,16 +13,19 @@ final class Column_Registrar {
 
 	private Column $column;
 	private Renderable $renderable;
+	private ?Sort_Strategy $sort_strategy;
 	private bool $is_sortable;
 
 	public function __construct(
 		Column $column,
 		Renderable $renderable,
+		?Sort_Strategy $sort_strategy = null,
 		bool $is_sortable = false
 	) {
-		$this->column      = $column;
-		$this->renderable  = $renderable;
-		$this->is_sortable = $is_sortable;
+		$this->column        = $column;
+		$this->renderable    = $renderable;
+		$this->sort_strategy = $sort_strategy;
+		$this->is_sortable   = $is_sortable;
 	}
 
 	/**
@@ -73,6 +78,23 @@ final class Column_Registrar {
 		];
 
 		return $columns;
+	}
+
+	/**
+	 * Attempt to sort the column by its strategy.
+	 *
+	 * @action pre_get_posts
+	 *
+	 * @param WP_Query $query
+	 *
+	 * @return void
+	 */
+	public function sort( WP_Query $query ): void {
+		if ( ! $this->is_sortable || ! isset( $this->sort_strategy ) ) {
+			return;
+		}
+
+		$this->sort_strategy->sort( $query, $this->column );
 	}
 
 	/**

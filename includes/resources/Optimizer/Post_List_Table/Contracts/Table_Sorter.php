@@ -2,32 +2,24 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts;
 
-use InvalidArgumentException;
+use WP_Post;
 
 /**
  * Sort a Post List Table by a custom table.
+ *
+ * @internal
  */
 interface Table_Sorter {
 
 	/**
-	 * Get the order by SQL for a custom table.
+	 * Reorder the posts for the Post List Table before they returned.
 	 *
-	 * @filter posts_orderby
+	 * @filter the_posts
 	 *
-	 * @param string $order The requested sort order: ASC|DESC.
+	 * @param string    $order The sort order: ASC|DESC.
+	 * @param WP_Post[] $posts The posts being listed.
 	 *
-	 * @throws InvalidArgumentException If an invalid sort order is passed.
-	 *
-	 * @return string
+	 * @return WP_Post[] The sorted posts, if applicable.
 	 */
-	public function orderby( string $order ): string;
-
-	/**
-	 * Get the join SQL or a custom table.
-	 *
-	 * @filter posts_join_paged
-	 *
-	 * @return string
-	 */
-	public function join(): string;
+	public function sort( string $order, array $posts ): array;
 }

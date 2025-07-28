@@ -5,12 +5,17 @@ namespace Tests\wpunit\Resources\Optimizer\Post_List_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Sort_Strategy;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Support\Classes\TestCase;
+use WP_Query;
 
 final class ColumnRegistrarTest extends TestCase {
 
 	private Column $column;
+
+	/** @var Sort_Strategy&MockObject */
+	private $sort_strategy;
 
 	/** @var Renderable&MockObject */
 	private $renderable;
@@ -20,17 +25,20 @@ final class ColumnRegistrarTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->column     = new Column( 'optimizer_status', 'Optimizer Status' );
-		$this->renderable = $this->createMock( Renderable::class );
+		$this->column        = new Column( 'optimizer_status', 'Optimizer Status', '_kb_optimizer_has' );
+		$this->sort_strategy = $this->createMock( Sort_Strategy::class );
+		$this->renderable    = $this->createMock( Renderable::class );
 
 		$this->registrar = new Column_Registrar(
 			$this->column,
-			$this->renderable
+			$this->renderable,
+			$this->sort_strategy,
+			true
 		);
 	}
 
 	public function testItCreatesWithDependencyInjection(): void {
-		$column = new Column( 'test_column', 'Test Column' );
+		$column = new Column( 'test_column', 'Test Column', 'test_key' );
 
 		$registrar = new Column_Registrar(
 			$column,
@@ -91,6 +99,7 @@ final class ColumnRegistrarTest extends TestCase {
 		$registrar = new Column_Registrar(
 			$this->column,
 			$this->renderable,
+			null,
 			true
 		);
 
@@ -120,6 +129,7 @@ final class ColumnRegistrarTest extends TestCase {
 		$registrar = new Column_Registrar(
 			$this->column,
 			$this->renderable,
+			null,
 			true
 		);
 
@@ -140,9 +150,20 @@ final class ColumnRegistrarTest extends TestCase {
 		$this->assertEquals( $expected_columns, $result );
 	}
 
+	public function testItDelegatesToSortStrategy(): void {
+		/** @var WP_Query&MockObject $query */
+		$query = $this->createMock( WP_Query::class );
+
+		$this->sort_strategy->expects( $this->once() )
+							->method( 'sort' )
+							->with( $query, $this->column );
+
+		$this->registrar->sort( $query );
+	}
+
 	public function testItHandlesSpecialCharactersInColumnLabel(): void {
-		$column    = new Column( 'special_column', 'Column with "quotes" & <tags>' );
-		$registrar = new Column_Registrar( $column, $this->renderable, true );
+		$column    = new Column( 'special_column', 'Column with "quotes" & <tags>', 'special_key' );
+		$registrar = new Column_Registrar( $column, $this->renderable, null, true );
 
 		$existing_columns = [];
 		$result           = $registrar->mark_sortable( $existing_columns );
@@ -229,7 +250,7 @@ final class ColumnRegistrarTest extends TestCase {
 	}
 
 	public function testItHandlesUnicodeInColumnLabel(): void {
-		$column    = new Column( 'unicode_column', 'Optimización 🚀' );
+		$column    = new Column( 'unicode_column', 'Optimización 🚀', 'unicode_key' );
 		$registrar = new Column_Registrar( $column, $this->renderable );
 
 		$existing_columns = [];
@@ -242,6 +263,7 @@ final class ColumnRegistrarTest extends TestCase {
 		$registrar = new Column_Registrar(
 			$this->column,
 			$this->renderable,
+			null,
 			true
 		);
 

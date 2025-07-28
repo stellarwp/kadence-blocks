@@ -31,7 +31,7 @@ final class ColumnHookManagerTest extends TestCase {
 		);
 
 		// Create a mock column registrar.
-		$column = new Column( 'test_column', 'Test Column' );
+		$column = new Column( 'test_column', 'Test Column', 'test_meta_key' );
 
 		/** @var Renderable $renderer */
 		$renderer = $this->createMock( Renderable::class );
@@ -66,6 +66,12 @@ final class ColumnHookManagerTest extends TestCase {
 		$this->assertTrue(
 			has_filter( "manage_edit-{$this->test_post_type}_sortable_columns" ),
 			'Sortable columns filter should be registered for viewable post type'
+		);
+
+		// Check that the pre_get_posts action was added.
+		$this->assertTrue(
+			has_action( 'pre_get_posts' ),
+			'pre_get_posts action should be registered for sorting'
 		);
 	}
 
@@ -129,7 +135,7 @@ final class ColumnHookManagerTest extends TestCase {
 
 	public function testRegisterHooksWorksWithMultipleColumns(): void {
 		// Create a second column registrar.
-		$second_column = new Column( 'second_column', 'Second Column' );
+		$second_column = new Column( 'second_column', 'Second Column', 'second_column_key' );
 
 		/** @var Renderable $renderer */
 		$renderer = $this->createMock( Renderable::class );
