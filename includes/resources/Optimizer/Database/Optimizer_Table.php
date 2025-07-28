@@ -57,8 +57,8 @@ final class Optimizer_Table extends Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-		    path_hash CHAR(64) PRIMARY KEY COMMENT 'SHA-256 hash of the path (via \$wp->request), used as a unique key for fast lookups',
-		    path TEXT NOT NULL COMMENT 'The relative path (via \$wp->request), stored for reference and debugging',
+		    path_hash CHAR(64) PRIMARY KEY COMMENT 'SHA-256 hash of the relative path of the URL used as a unique key for fast lookups',
+		    path TEXT NOT NULL COMMENT 'The relative path of the URL, stored for reference and debugging',
 		    analysis LONGTEXT NOT NULL COMMENT 'Serialized or JSON-encoded analysis data associated with the path'
 		) {$charset_collate};
 		";
