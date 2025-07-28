@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\lucatume\DI52\Container;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
+use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Handler;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\Schema\Register;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Uninstall;
@@ -23,7 +24,14 @@ Uninstall::run( 'kadence-blocks' );
 
 try {
 	// Boot the Kadence application to set up all providers.
-	App::instance( new ContainerAdapter( new Container() ) );
+	$app = App::instance( new ContainerAdapter( new Container() ) );
+
+	// Remove shutdown handling.
+	remove_action(
+		'shutdown',
+		$app->container()->callback( Shutdown_Handler::class, 'handle' ),
+		1 
+	);
 
 	// Remove optimization tables.
 	Register::remove_table( Viewport_Hash_Table::class );
