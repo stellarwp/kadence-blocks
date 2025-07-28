@@ -19,6 +19,21 @@ final class Table_Store implements Contracts\Store {
 	}
 
 	/**
+	 * Whether a Path has optimization data.
+	 *
+	 * @param Path $path The path object.
+	 *
+	 * @return bool
+	 */
+	public function has( Path $path ): bool {
+		return (bool) $this->q->get_var(
+			$this->q->qb()->select( '1' )
+					->where( 'path_hash', $path->hash() )
+					->limit( 1 )->getSQL()
+		);
+	}
+
+	/**
 	 * Get the optimization data for a path object.
 	 *
 	 * @param Path $path The path object associated with the stored data.

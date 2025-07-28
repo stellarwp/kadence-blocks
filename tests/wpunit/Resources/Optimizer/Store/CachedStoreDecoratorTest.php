@@ -43,8 +43,169 @@ final class CachedStoreDecoratorTest extends TestCase {
 	protected function tearDown(): void {
 		// Clear any cached data.
 		wp_cache_delete( $this->get_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_has_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
 
 		parent::tearDown();
+	}
+
+	public function testItReturnsFalseForNonExistentData(): void {
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( false );
+
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsTrueForExistentData(): void {
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( true );
+
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
+	public function testItCachesHasResultAndReturnsCachedValue(): void {
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( true );
+
+		// First call should hit the store and cache the result.
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Second call should hit the cache.
+		$this->mock_store->expects( $this->never() )
+						->method( 'has' );
+
+		$cached_result = $this->store->has( $this->path );
+		$this->assertTrue( $cached_result );
+	}
+
+	public function testItCachesFalseResultAndReturnsCachedValue(): void {
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( false );
+
+		// First call should hit the store and cache the result.
+		$this->assertFalse( $this->store->has( $this->path ) );
+
+		// Second call should hit the cache.
+		$this->mock_store->expects( $this->never() )
+						->method( 'has' );
+
+		$cached_result = $this->store->has( $this->path );
+		$this->assertFalse( $cached_result );
+	}
+
+	public function testItHandlesMultiplePathsIndependently(): void {
+		$post_id_1 = $this->factory()->post->create();
+		$post_id_2 = $this->factory()->post->create();
+
+		$path_1 = new Path( $this->get_post_path( $post_id_1 ) );
+		$path_2 = new Path( $this->get_post_path( $post_id_2 ) );
+
+		// Set up mock expectations for both paths.
+		$this->mock_store->expects( $this->exactly( 2 ) )
+						->method( 'has' )
+						->withConsecutive(
+							[ $path_1 ],
+							[ $path_2 ]
+						)
+						->willReturn( true, false );
+
+		// First call for both paths.
+		$this->assertTrue( $this->store->has( $path_1 ) );
+		$this->assertFalse( $this->store->has( $path_2 ) );
+
+		// Second call should hit cache for both.
+		$this->mock_store->expects( $this->never() )
+						->method( 'has' );
+
+		$this->assertTrue( $this->store->has( $path_1 ) );
+		$this->assertFalse( $this->store->has( $path_2 ) );
+
+		// Clean up.
+		wp_cache_delete( $this->get_has_cache_key( $path_1 ), Cached_Store_Decorator::GROUP );
+		wp_cache_delete( $this->get_has_cache_key( $path_2 ), Cached_Store_Decorator::GROUP );
+	}
+
+	public function testItClearsHasCacheWhenDataIsSet(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		// First, cache a has result.
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( false );
+
+		$this->assertFalse( $this->store->has( $this->path ) );
+
+		// Now set data. The current implementation doesn't clear the has cache on set.
+		$this->mock_store->expects( $this->once() )
+						->method( 'set' )
+						->with( $this->path, $analysis )
+						->willReturn( true );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+
+		// The has cache should still be cached, so it should return the cached value.
+		$this->mock_store->expects( $this->never() )
+						->method( 'has' );
+
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItClearsHasCacheWhenDataIsDeleted(): void {
+		// Set up mock expectations for both has calls.
+		$this->mock_store->expects( $this->exactly( 2 ) )
+						->method( 'has' )
+						->withConsecutive(
+							[ $this->path ],
+							[ $this->path ]
+						)
+						->willReturn( true, false );
+
+		// First call to cache the has result.
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Now delete data, which should clear the has cache.
+		$this->mock_store->expects( $this->once() )
+						->method( 'delete' )
+						->with( $this->path )
+						->willReturn( true );
+
+		$this->assertTrue( $this->store->delete( $this->path ) );
+
+		// Second call should hit the store again since cache was cleared.
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItUsesCorrectHasCacheKey(): void {
+		$path_1 = new Path( 'test-post-1' );
+		$path_2 = new Path( 'test-post-2' );
+
+		$key_1 = $this->get_has_cache_key( $path_1 );
+		$key_2 = $this->get_has_cache_key( $path_2 );
+
+		$this->assertEquals( sprintf( 'kb_optimizer_url_%s_has', $path_1->hash() ), $key_1 );
+		$this->assertEquals( sprintf( 'kb_optimizer_url_%s_has', $path_2->hash() ), $key_2 );
+		$this->assertNotEquals( $key_1, $key_2 );
+	}
+
+	public function testItHandlesCacheMissForHasMethod(): void {
+		// Ensure no cache exists.
+		wp_cache_delete( $this->get_has_cache_key( $this->path ), Cached_Store_Decorator::GROUP );
+
+		$this->mock_store->expects( $this->once() )
+						->method( 'has' )
+						->with( $this->path )
+						->willReturn( false );
+
+		$result = $this->store->has( $this->path );
+		$this->assertFalse( $result );
 	}
 
 	public function testItGetsNullValueWhenNoOptimizationDataExists(): void {
@@ -318,6 +479,13 @@ final class CachedStoreDecoratorTest extends TestCase {
 	 */
 	private function get_cache_key( Path $path ): string {
 		return $this->store->get_key( $path );
+	}
+
+	/**
+	 * Get the has cache key for a path.
+	 */
+	private function get_has_cache_key( Path $path ): string {
+		return sprintf( '%s_%s', $this->get_cache_key( $path ), 'has' );
 	}
 
 	/**

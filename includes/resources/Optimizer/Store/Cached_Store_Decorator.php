@@ -34,6 +34,27 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	}
 
 	/**
+	 * Whether a Path has optimization data.
+	 *
+	 * @param Path $path The path object.
+	 *
+	 * @return bool
+	 */
+	public function has( Path $path ): bool {
+		$cached = wp_cache_get( $this->get_has_key( $path ), self::GROUP, false, $found );
+
+		if ( $found ) {
+			return $cached;
+		}
+
+		$has = $this->store->has( $path );
+
+		wp_cache_set( $this->get_has_key( $path ), $has, self::GROUP, self::TTL );
+
+		return $has;
+	}
+
+	/**
 	 * Only return the optimization if the analysis data is newer than the post's last modified
 	 * date.
 	 *
@@ -52,6 +73,7 @@ final class Cached_Store_Decorator implements Contracts\Store {
 
 		if ( $analysis ) {
 			wp_cache_set( $this->get_key( $path ), $analysis, self::GROUP, self::TTL );
+			wp_cache_set( $this->get_has_key( $path ), true, self::GROUP, self::TTL );
 		}
 
 		return $analysis;
@@ -84,6 +106,7 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	 */
 	public function delete( Path $path ): bool {
 		wp_cache_delete( $this->get_key( $path ), self::GROUP );
+		wp_cache_delete( $this->get_has_key( $path ), self::GROUP );
 
 		return $this->store->delete( $path );
 	}
@@ -97,5 +120,16 @@ final class Cached_Store_Decorator implements Contracts\Store {
 	 */
 	public function get_key( Path $path ): string {
 		return sprintf( 'kb_optimizer_url_%s', $path->hash() );
+	}
+
+	/**
+	 * Get the cache key for if optimization data exists.
+	 *
+	 * @param Path $path The path object.
+	 *
+	 * @return string
+	 */
+	public function get_has_key( Path $path ): string {
+		return sprintf( '%s_%s', $this->get_key( $path ), '_has' );
 	}
 }

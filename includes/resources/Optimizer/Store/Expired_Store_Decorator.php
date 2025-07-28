@@ -24,6 +24,17 @@ final class Expired_Store_Decorator implements Contracts\Store {
 	}
 
 	/**
+	 * Whether a Path has optimization data, stale or not.
+	 *
+	 * @param Path $path The path object.
+	 *
+	 * @return bool
+	 */
+	public function has( Path $path ): bool {
+		return $this->store->has( $path );
+	}
+
+	/**
 	 * Only return the optimization if the analysis data is newer than the post's last modified date.
 	 *
 	 * @param Path $path The path object associated with the stored data.

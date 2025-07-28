@@ -16,7 +16,6 @@ final class TableStoreTest extends TestCase {
 
 	private Store $store;
 	private Optimizer_Query $query;
-	private int $post_id;
 	private Path $path;
 
 	protected function setUp(): void {
@@ -25,23 +24,113 @@ final class TableStoreTest extends TestCase {
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->query   = $this->container->get( Optimizer_Query::class );
-		$this->store   = $this->container->get( Table_Store::class );
-		$this->post_id = $this->factory()->post->create();
+		$this->query = $this->container->get( Optimizer_Query::class );
+		$this->store = $this->container->get( Table_Store::class );
+		$post_id     = $this->factory()->post->create();
 
-		$post_path = $this->get_post_path( $this->post_id );
+		$post_path = $this->get_post_path( $post_id );
 
 		$this->assertNotEmpty( $post_path );
 
 		$this->path = new Path( $post_path );
 
-		$this->assertGreaterThan( 0, $this->post_id );
+		$this->assertGreaterThan( 0, $post_id );
 	}
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
 
 		parent::tearDown();
+	}
+
+	public function testItReturnsFalseForNonExistentData(): void {
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsTrueForExistentData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsFalseAfterDeletingData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+		$this->assertTrue( $this->store->delete( $this->path ) );
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsFalseForNonExistentPath(): void {
+		$path = new Path( 'path-does-not-exist' );
+
+		$this->assertFalse( $this->store->has( $path ) );
+	}
+
+	public function testItReturnsTrueForMultiplePaths(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$post_id_1 = $this->factory()->post->create();
+		$post_id_2 = $this->factory()->post->create();
+
+		$path_1 = new Path( $this->get_post_path( $post_id_1 ) );
+		$path_2 = new Path( $this->get_post_path( $post_id_2 ) );
+
+		try {
+			// Initially both paths should not have data.
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+
+			// Set data for first path.
+			$this->assertTrue( $this->store->set( $path_1, $analysis ) );
+			$this->assertTrue( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+
+			// Set data for second path.
+			$this->assertTrue( $this->store->set( $path_2, $analysis ) );
+			$this->assertTrue( $this->store->has( $path_1 ) );
+			$this->assertTrue( $this->store->has( $path_2 ) );
+
+			// Delete first path's data.
+			$this->assertTrue( $this->store->delete( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertTrue( $this->store->has( $path_2 ) );
+
+			// Delete second path's data.
+			$this->assertTrue( $this->store->delete( $path_2 ) );
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+		} finally {
+			// Ensure cleanup even if test fails.
+			$this->store->delete( $path_1 );
+			$this->store->delete( $path_2 );
+		}
+	}
+
+	public function testItReturnsTrueAfterUpsertingSameData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Upsert the same data - should still return true.
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsTrueAfterUpdatingData(): void {
+		$analysis1 = WebsiteAnalysis::from( $this->getResultsFixture() );
+		$analysis2 = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		// Set initial data.
+		$this->assertTrue( $this->store->set( $this->path, $analysis1 ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Update with new data - should still return true.
+		$this->assertTrue( $this->store->set( $this->path, $analysis2 ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
 	}
 
 	public function testItGetsNullValueForNonExistentData(): void {
