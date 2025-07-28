@@ -8,6 +8,11 @@ use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
 use KadenceWP\KadenceBlocks\StellarWP\Schema\Register;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Uninstall;
 
+// Prevent direct file access.
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	die;
+}
+
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
