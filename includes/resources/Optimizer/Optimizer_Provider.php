@@ -348,12 +348,15 @@ final class Optimizer_Provider extends Provider {
 			0
 		);
 
-		add_action(
-			'shutdown',
-			$this->container->callback( Hash_Handler::class, 'check_hash' ),
-			PHP_INT_MAX - 1,
-			0
-		);
+		// Don't register the shutdown hook when uninstalling.
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) && ! wp_installing() ) {
+			add_action(
+				'shutdown',
+				$this->container->callback( Hash_Handler::class, 'check_hash' ),
+				PHP_INT_MAX - 1,
+				0
+			);
+		}
 	}
 
 	private function register_image_processor(): void {
