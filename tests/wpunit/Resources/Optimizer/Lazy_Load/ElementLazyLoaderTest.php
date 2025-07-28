@@ -11,17 +11,13 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use Brain\Monkey;
-use WP;
 
 final class ElementLazyLoaderTest extends TestCase {
 
 	use Permalink_Trait;
 
 	private Store $store;
-	private int $post_id;
-
 	private Path $path;
-	private WP $wp;
 	private Path_Factory $path_factory;
 
 	protected function setUp(): void {
@@ -32,7 +28,7 @@ final class ElementLazyLoaderTest extends TestCase {
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->post_id = $this->factory()->post->create(
+		$post_id = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
@@ -42,24 +38,21 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$this->store = $this->container->get( Store::class );
 
-		$post_path = $this->get_post_path( $this->post_id );
+		$post_path = $this->get_post_path( $post_id );
 
 		$this->assertNotEmpty( $post_path );
 
 		$this->path = new Path( $post_path );
 
-		$this->wp          = new WP();
-		$this->wp->request = 'test-post';
-
-		$this->container->when( Path_Factory::class )
-						->needs( WP::class )
-						->give( $this->wp );
+		$_SERVER['REQUEST_URI'] = '/test-post/';
 
 		$this->path_factory = $this->container->get( Path_Factory::class );
 	}
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
+
+		unset( $_SERVER['REQUEST_URI'] );
 
 		parent::tearDown();
 	}

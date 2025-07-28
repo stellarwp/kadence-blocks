@@ -309,7 +309,7 @@ final class OptimizerRendererTest extends TestCase {
 			'<a href="#" class="kb-optimize-post" data-post-id="%d" data-post-url="%s" data-post-path="%s" data-nonce="%s">Run Optimizer</a>',
 			$page_id,
 			esc_url( $post_url ),
-			'test-page',
+			'/test-page/',
 			$nonce_value
 		);
 

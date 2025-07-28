@@ -6,14 +6,12 @@ use DateTimeImmutable;
 use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
-use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use Brain\Monkey;
-use WP;
 
 final class BackgroundLazyLoaderTest extends TestCase {
 
@@ -45,12 +43,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$this->path = new Path( $post_path );
 
-		$wp          = new WP();
-		$wp->request = 'test-post';
-
-		$this->container->when( Path_Factory::class )
-						->needs( WP::class )
-						->give( $wp );
+		$_SERVER['REQUEST_URI'] = '/test-post/';
 
 		$this->store       = $this->container->get( Store::class );
 		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
@@ -58,6 +51,8 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
+
+		unset( $_SERVER['REQUEST_URI'] );
 
 		parent::tearDown();
 	}

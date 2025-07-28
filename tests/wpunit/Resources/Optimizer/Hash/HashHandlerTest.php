@@ -7,19 +7,16 @@ use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
-use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
-use WP;
 
 final class HashHandlerTest extends TestCase {
 
 	use Permalink_Trait;
 
-	private WP $wp;
 	private Store $store;
 	private Hash_Builder $hasher;
 	private Hash_Handler $hash_handler;
@@ -36,12 +33,7 @@ final class HashHandlerTest extends TestCase {
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->wp          = new WP();
-		$this->wp->request = 'test-hash-handler-post';
-
-		$this->container->when( Path_Factory::class )
-						->needs( WP::class )
-						->give( $this->wp );
+		$_SERVER['REQUEST_URI'] = '/test-hash-handler-post/';
 
 		$this->store        = $this->container->get( Store::class );
 		$this->hasher       = $this->container->get( Hash_Builder::class );
@@ -76,7 +68,8 @@ final class HashHandlerTest extends TestCase {
 			$_GET['preview'],
 			$_GET['kadence_set_optimizer_hash'],
 			$_GET[ Request::QUERY_NOCACHE ],
-			$_GET[ Request::QUERY_TOKEN ]
+			$_GET[ Request::QUERY_TOKEN ],
+			$_SERVER['REQUEST_URI'],
 		);
 
 		// Reset user.
@@ -169,17 +162,8 @@ final class HashHandlerTest extends TestCase {
 		$this->assertNull( $this->hash_store->get( $this->path, Viewport::desktop() ) );
 	}
 
-	public function testItBypassesHashCheckWithoutAWpRequest(): void {
-		$this->wp->request = '';
-
-		// Reset the instances in the container.
-		$this->container->when( Path_Factory::class )
-						->needs( WP::class )
-						->give( $this->wp );
-
-		$this->container->bind( Hash_Handler::class, Hash_Handler::class );
-
-		$hash_handler = $this->container->get( Hash_Handler::class );
+	public function testItBypassesHashCheckWithoutARequestUri(): void {
+		$_SERVER['REQUEST_URI'] = '';
 
 		$html     = '<html><body>Test content</body></html>';
 		$hash     = $this->hasher->build_hash( $html );
@@ -188,14 +172,14 @@ final class HashHandlerTest extends TestCase {
 		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $hash ) );
 		$this->store->set( $this->path, $analysis );
 
-		$hash_handler->start_buffering();
+		$this->hash_handler->start_buffering();
 
 		echo $html;
 
 		// Clear the current output buffer.
 		ob_get_clean();
 
-		$hash_handler->check_hash();
+		$this->hash_handler->check_hash();
 
 		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 0 );
 	}

@@ -8,7 +8,7 @@ namespace KadenceWP\KadenceBlocks\Traits;
 trait Permalink_Trait {
 
 	/**
-	 * Get a post's path that would match up to $wp->request.
+	 * Get a post's path relative to the site root.
 	 *
 	 * @param int|\WP_Post $post The post object or ID.
 	 *
@@ -17,23 +17,10 @@ trait Permalink_Trait {
 	private function get_post_path( $post ): string {
 		$permalink = get_permalink( $post );
 
-		// Page is set to front.
-		if ( $permalink && $permalink === home_url( '/' ) ) {
-			return '/';
+		if ( $permalink === false ) {
+			return '';
 		}
 
-		$home_path = wp_parse_url( home_url(), PHP_URL_PATH );
-
-		if ( ! empty( $home_path ) ) {
-			$home_path = '/' . trim( $home_path, '/' );
-		}
-
-		$path = wp_parse_url( $permalink, PHP_URL_PATH );
-
-		if ( ! empty( $home_path ) && str_starts_with( $path, $home_path ) ) {
-			$path = substr( $path, strlen( $home_path ) );
-		}
-
-		return trim( $path, '/' );
+		return trailingslashit( wp_parse_url( $permalink, PHP_URL_PATH ) ?? '/' );
 	}
 }

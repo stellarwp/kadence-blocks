@@ -15,7 +15,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
-use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
@@ -35,7 +34,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
-use WP;
 
 final class Optimizer_Provider extends Provider {
 
@@ -59,7 +57,6 @@ final class Optimizer_Provider extends Provider {
 			return;
 		}
 
-		$this->register_path();
 		$this->register_mobile_override();
 		$this->register_optimizer_query();
 		$this->register_viewport_query();
@@ -76,17 +73,6 @@ final class Optimizer_Provider extends Provider {
 		$this->register_background_lazy_loader();
 		$this->register_hash_handling();
 		$this->register_image_processor();
-	}
-
-	private function register_path(): void {
-		add_action(
-			'parse_request',
-			function ( WP $wp ) {
-				$this->container->bind( Path_Factory::class, new Path_Factory( $wp ) );
-			},
-			20,
-			1
-		);
 	}
 
 	/**
