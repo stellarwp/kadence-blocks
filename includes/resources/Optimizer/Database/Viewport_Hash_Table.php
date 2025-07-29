@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
  */
 final class Viewport_Hash_Table extends Table {
 
-	public const SCHEMA_VERSION = '1.0.0';
+	public const SCHEMA_VERSION = '1.0.1';
 
 	/**
 	 * @var string The base table name.
