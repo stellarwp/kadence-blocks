@@ -14,7 +14,9 @@
 			);
 			this.bootstrapSliders(testimonialSliders);
 
-			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
+			const bgSliders = document.querySelectorAll(
+				'.kb-blocks-has-slider > .kb-blocks-bg-slider > .kt-blocks-carousel-init'
+			);
 			this.bootstrapSliders(bgSliders);
 		},
 		bootstrapSliders(elementList) {
@@ -334,5 +336,13 @@
 	});
 	document.addEventListener('kb-query-loaded', function () {
 		kadenceBlocksSplide.init();
+	});
+
+	// Listen for lazy-loaded elements and initialize when loaded.
+	window.addEventListener('kadence-lazy-loaded', ({ detail }) => {
+		const el = detail.element;
+		if (el.classList.contains('kb-blocks-has-slider')) {
+			kadenceBlocksSplide.init();
+		}
 	});
 })();

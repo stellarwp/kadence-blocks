@@ -47,9 +47,11 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		$bg = $attributes['bgImg'] ?? false;
+		$bg        = $attributes['bgImg'] ?? '';
+		$class     = $args['class'] ?? '';
+		$is_slider = is_string( $class ) && str_contains( $class, 'kb-blocks-has-slider' );
 
-		if ( empty( $bg ) ) {
+		if ( ! $bg && ! $is_slider ) {
 			return $args;
 		}
 
@@ -59,14 +61,44 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
+		if ( $bg ) {
+			$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
 
-		// Exclude above the fold background images.
-		if ( in_array( $bg, $background_images, true ) ) {
-			return $args;
+			// Exclude above the fold background images.
+			if ( in_array( $bg, $background_images, true ) ) {
+				return $args;
+			}
 		}
 
-		$classes   = $args['class'] ?? false;
+		// Lazy load row sliders.
+		if ( $is_slider ) {
+			$id = $attributes['uniqueID'] ?? '';
+
+			if ( ! $id ) {
+				return $args;
+			}
+
+			$sections      = $this->is_mobile() ? $analysis->mobile->sections : $analysis->desktop->sections;
+			$class_to_find = sprintf( 'kb-row-layout-id%s', $id );
+
+			// Find the matching section and check if it's below the fold.
+			$should_lazy_load_slider = false;
+
+			foreach ( $sections as $section ) {
+				if ( str_contains( $section->className, $class_to_find ) ) {
+					// Found our section, check if it's below the fold.
+					$should_lazy_load_slider = ! $section->isAboveFold;
+
+					break;
+				}
+			}
+
+			if ( ! $should_lazy_load_slider ) {
+				return $args;
+			}
+		}
+
+		$classes   = $args['class'] ?? '';
 		$is_inline = $attributes['backgroundInline'] ?? false;
 
 		// Add lazy loading data attributes for CSS backgrounds.
