@@ -75,4 +75,13 @@ final class DeviceAnalysis {
 			),
 		];
 	}
+
+	/**
+	 * Get all the sections that are below the fold.
+	 *
+	 * @return Section[]
+	 */
+	public function getBelowTheFoldSections(): array {
+		return array_filter( $this->sections, static fn( Section $section ): bool => ! $section->isAboveFold );
+	}
 }
