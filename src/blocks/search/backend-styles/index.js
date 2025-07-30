@@ -63,6 +63,7 @@ export default function BackendStyles(props) {
 		searchProductsOnly,
 		modalGradientActive,
 		modalBackgroundType,
+		inputIcon,
 		inputIconColor,
 		inputIconHoverColor,
 		inputMaxWidth,
@@ -309,10 +310,22 @@ export default function BackendStyles(props) {
 
 	// Input SVG Icon
 	css.set_selector(`.kb-search${uniqueID} .kb-search-icon svg`);
-	css.add_property('stroke', KadenceColorOutput(inputIconColor));
+	if (inputIcon && 'fe' === inputIcon.substring(0, 2)) {
+		css.add_property('stroke', KadenceColorOutput(inputIconColor));
+		css.add_property('fill', 'none');
+	} else {
+		css.add_property('fill', KadenceColorOutput(inputIconColor));
+		css.add_property('stroke', 'none');
+	}
 
 	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-icon svg`);
-	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
+	if (inputIcon && 'fe' === inputIcon.substring(0, 2)) {
+		css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
+		css.add_property('fill', 'none');
+	} else {
+		css.add_property('fill', KadenceColorOutput(inputIconHoverColor));
+		css.add_property('stroke', 'none');
+	}
 
 	css.set_selector(`.kb-search${uniqueID} .kb-search-icon`);
 	css.add_property('right', getSpacingOptionOutput(previewInputPaddingRight, inputPaddingType));

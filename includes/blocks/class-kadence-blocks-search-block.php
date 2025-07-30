@@ -109,17 +109,35 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 
 		// SVG colors.
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-icon svg' );
-		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconColor'] ) );
+		if ( !empty( $attributes['inputIcon'] ) && 'fe' === substr( $attributes['inputIcon'], 0, 2 ) ) {
+			$css->add_property( 'stroke', $css->render_color( $attributes['inputIconColor'] ) );
+			$css->add_property( 'fill', 'none' );
+		} else {
+			$css->add_property( 'fill', $css->render_color( $attributes['inputIconColor'] ) );
+			$css->add_property( 'stroke', 'none' );
+		}
 
 		if( !empty($attributes['displayStyle'] ) && $attributes['displayStyle'] === 'modal' ) {
 			$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper:hover .kb-search-icon svg' );
 		} else {
 			$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-icon svg' );
 		}
-		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconHoverColor'] ) );
+		if ( !empty( $attributes['inputIcon'] ) && 'fe' === substr( $attributes['inputIcon'], 0, 2 ) ) {
+			$css->add_property( 'stroke', $css->render_color( $attributes['inputIconHoverColor'] ) );
+			$css->add_property( 'fill', 'none' );
+		} else {
+			$css->add_property( 'fill', $css->render_color( $attributes['inputIconHoverColor'] ) );
+			$css->add_property( 'stroke', 'none' );
+		}
 
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn svg' );
-		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconColor'] ) );
+		if ( !empty( $attributes['closeIcon'] ) && 'fe' === substr( $attributes['closeIcon'], 0, 2 ) ) {
+			$css->add_property( 'stroke', $css->render_color( $attributes['closeIconColor'] ) );
+			$css->add_property( 'fill', 'none' );
+		} else {
+			$css->add_property( 'fill', $css->render_color( $attributes['closeIconColor'] ) );
+			$css->add_property( 'stroke', 'none' );
+		}
 
 		// The closeIconSize is a range control, so we need to render it as a range.
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn' );
@@ -138,7 +156,13 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn:hover svg' );
-		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
+		if ( !empty( $attributes['closeIcon'] ) && 'fe' === substr( $attributes['closeIcon'], 0, 2 ) ) {
+			$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
+			$css->add_property( 'fill', 'none' );
+		} else {
+			$css->add_property( 'fill', $css->render_color( $attributes['closeIconHoverColor'] ) );
+			$css->add_property( 'stroke', 'none' );
+		}
 
 		$css->set_selector( '.kb-search.kb-search' . $unique_id . ' form, .kb-search.kb-search' . $unique_id . ' .kb-search-modal-content form form' );
 		$css->render_responsive_range( $attributes, 'inputMaxWidth', 'max-width', 'inputMaxWidthType' );
