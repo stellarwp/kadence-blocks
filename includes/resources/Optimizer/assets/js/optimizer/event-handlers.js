@@ -1,7 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { addAction } from '@wordpress/hooks';
 import { dispatch } from '@wordpress/data';
-import { getPath } from '@wordpress/url';
+import { getPathAndQueryString } from '@wordpress/url';
 import { analyzeSite, removeOptimization } from './analyzer.js';
 import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
@@ -22,18 +22,13 @@ export function setupPostSaveHandler() {
 
 		const postId = post.id;
 		const postUrl = permalink;
-		let postPath = getPath(permalink)?.replace(/\/$/, '');
+		const postPath = getPathAndQueryString(permalink);
 		const nonce = OPTIMIZER_DATA.token;
 
-		// No suffix means this probably isn't a public post.
-		if (!suffix) {
-			// If these match, that means we're on the home/front page I guess?
-			if (post.permalink_template === permalink) {
-				postPath = '/';
-			} else {
-				console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
-				return;
-			}
+		// No suffix and not the front/home page means this probably isn't a public post.
+		if (!suffix && postPath !== '/') {
+			console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
+			return;
 		}
 
 		console.log('🚀 Starting optimization...', { postId, postUrl, postPath });
