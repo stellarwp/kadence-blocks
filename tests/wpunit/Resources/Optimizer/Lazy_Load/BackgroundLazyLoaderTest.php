@@ -1004,7 +1004,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function testItHandlesSliderSectionNotFound(): void {
+	public function testItLazyLoadsNotFoundSections(): void {
 		$args = [
 			'class' => 'kb-row-layout kb-blocks-has-slider',
 			'id'    => 'test-row',
@@ -1033,7 +1033,14 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
-		$this->assertEquals( $args, $result );
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
 	}
 
 	public function testItHandlesSliderWithPartialClassNameMatch(): void {

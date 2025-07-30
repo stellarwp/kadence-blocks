@@ -81,8 +81,8 @@ final class Background_Lazy_Loader {
 			$sections      = $this->is_mobile() ? $analysis->mobile->sections : $analysis->desktop->sections;
 			$class_to_find = sprintf( 'kb-row-layout-id%s', $id );
 
-			// Find the matching section and check if it's below the fold.
-			$should_lazy_load_slider = false;
+			// Assume we'll lazy load this section in case it wasn't collected.
+			$should_lazy_load_slider = true;
 
 			foreach ( $sections as $section ) {
 				if ( str_contains( $section->className, $class_to_find ) ) {
