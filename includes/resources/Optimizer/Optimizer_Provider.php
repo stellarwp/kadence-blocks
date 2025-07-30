@@ -15,6 +15,8 @@ use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor
 use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Section_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -257,6 +259,8 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_element_lazy_loader(): void {
+		$this->container->singleton( Section_Registry::class, Section_Registry::class );
+		$this->container->singleton( Lazy_Render_Decider::class, Lazy_Render_Decider::class );
 		$this->container->singleton( Element_Lazy_Loader::class, Element_Lazy_Loader::class );
 
 		/**
@@ -273,7 +277,7 @@ final class Optimizer_Provider extends Provider {
 			]
 		);
 
-		$this->container->when( Element_Lazy_Loader::class )
+		$this->container->when( Lazy_Render_Decider::class )
 						->needs( '$excluded_classes' )
 						->give( static fn(): array => $excluded_classes );
 
