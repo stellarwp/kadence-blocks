@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections;
 /**
  * Decide whether we should lazy render a section or not.
  */
-final class Lazy_Render_Decider {
+class Lazy_Render_Decider {
 
 	private Section_Registry $registry;
 

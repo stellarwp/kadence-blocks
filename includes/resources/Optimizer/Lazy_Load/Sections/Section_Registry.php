@@ -13,7 +13,7 @@ use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
  *
  * @phpstan-type HtmlClassHeightMap array<string, float> Class attribute => height in pixels.
  */
-final class Section_Registry {
+class Section_Registry {
 
 	use Viewport_Trait;
 
