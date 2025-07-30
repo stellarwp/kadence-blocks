@@ -25,9 +25,9 @@ export function setupPostSaveHandler() {
 		const postPath = getPathAndQueryString(permalink);
 		const nonce = OPTIMIZER_DATA.token;
 
-		// No suffix and not the front/home page means this probably isn't a public post.
-		if (!suffix && postPath !== '/') {
-			console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
+		// This is a public post without a pretty rewrite rule.
+		if (postPath.includes('?')) {
+			console.error('❌ Unable to optimize. This is a public post, but has no rewrite rules.');
 			return;
 		}
 
