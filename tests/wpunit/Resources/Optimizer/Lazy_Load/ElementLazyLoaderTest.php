@@ -168,7 +168,10 @@ final class ElementLazyLoaderTest extends TestCase {
 	}
 
 	public function testItBypassesLazyLoadingWhenMultipleExcludedClassesArePresent(): void {
-		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax', 'no-lazy-load' ] );
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [
+			'kt-jarallax',
+			'no-lazy-load',
+		] );
 
 		$args = [
 			'class' => 'kb-row-layout no-lazy-load',
@@ -257,7 +260,7 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		// Should not bypass because str_contains is case-sensitive.
+		// Should not bypass because exact matching is case-sensitive.
 		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$expected = [
@@ -551,6 +554,220 @@ final class ElementLazyLoaderTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
+	public function testItReturnsOriginalColumnHtmlWhenNoAnalysisData(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalColumnHtmlWhenNoKadenceColumnClass(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="some-other-class">Column content</div>';
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItAddsContentVisibilityStyleToColumnWithMatchingClass(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123">Column content</div>';
+
+		$this->createTestAnalysisWithColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$expected = '<div style="content-visibility: auto;contain-intrinsic-size: auto 400px;" class="wp-block-kadence-column kb-column-test-123">Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItAddsContentVisibilityStyleToColumnWithExistingStyle(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123" style="background-color: blue;">Column content</div>';
+
+		$this->createTestAnalysisWithColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$expected = '<div class="wp-block-kadence-column kb-column-test-123" style="content-visibility: auto;contain-intrinsic-size: auto 400px;background-color: blue;">Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItSkipsColumnWithNonMatchingClass(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-different-456">Column content</div>';
+
+		$this->createTestAnalysisWithColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItSkipsColumnWithZeroHeight(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-zero-height">Column content</div>';
+
+		$this->createTestAnalysisWithZeroHeightColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItUsesMobileAnalysisForColumnWhenOnMobile(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-mobile-test">Column content</div>';
+
+		$this->createTestAnalysisWithMobileColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$expected = '<div style="content-visibility: auto;contain-intrinsic-size: auto 250px;" class="wp-block-kadence-column kb-column-mobile-test">Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesComplexColumnHtmlStructure(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [] );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123" data-test="value">
+			<div class="inner-content">
+				<p>Some content</p>
+			</div>
+		</div>';
+
+		$this->createTestAnalysisWithColumnSection();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$expected = '<div style="content-visibility: auto;contain-intrinsic-size: auto 400px;" class="wp-block-kadence-column kb-column-test-123" data-test="value">
+			<div class="inner-content">
+				<p>Some content</p>
+			</div>
+		</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	// New tests for exact class matching behavior.
+
+	public function testItBypassesLazyLoadingWhenExcludedClassIsExactMatch(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout kt-jarallax kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItDoesNotBypassLazyLoadingWhenExcludedClassIsSubstring(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout my-kt-jarallax-custom kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => 'kb-row-layout my-kt-jarallax-custom kb-row-layout-123',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleSpacesBetweenClasses(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => 'kb-row-layout    kt-jarallax    kb-row-layout-123',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItHandlesEmptyClassesArray(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->store, $this->path_factory, [ 'kt-jarallax' ] );
+
+		$args = [
+			'class' => '',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'class' => '',
+			'id'    => 'test-row',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object with a below-the-fold section.
 	 */
@@ -697,6 +914,143 @@ final class ElementLazyLoaderTest extends TestCase {
 			'height'        => 300,
 			'tagName'       => 'div',
 			'className'     => 'kb-row-layout mobile-test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $desktop_section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $mobile_section_data ],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with a column section.
+	 */
+	private function createTestAnalysisWithColumnSection(): void {
+		$section_data = [
+			'id'            => 'section-column-test-123',
+			'height'        => 400,
+			'tagName'       => 'div',
+			'className'     => 'wp-block-kadence-column kb-column-test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with a zero-height column section.
+	 */
+	private function createTestAnalysisWithZeroHeightColumnSection(): void {
+		$section_data = [
+			'id'            => 'section-column-zero-height-123',
+			'height'        => 0,
+			'tagName'       => 'div',
+			'className'     => 'wp-block-kadence-column kb-column-zero-height',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with a mobile column section.
+	 */
+	private function createTestAnalysisWithMobileColumnSection(): void {
+		$desktop_section_data = [
+			'id'            => 'section-column-desktop-test-123',
+			'height'        => 400,
+			'tagName'       => 'div',
+			'className'     => 'wp-block-kadence-column kb-column-test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$mobile_section_data = [
+			'id'            => 'section-column-mobile-test-123',
+			'height'        => 250,
+			'tagName'       => 'div',
+			'className'     => 'wp-block-kadence-column kb-column-mobile-test',
 			'path'          => 'test-path',
 			'isAboveFold'   => false,
 			'hasImages'     => false,

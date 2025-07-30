@@ -288,6 +288,13 @@ final class Optimizer_Provider extends Provider {
 			10,
 			2
 		);
+
+		add_filter(
+			'kadence_blocks_column_html',
+			$this->container->callback( Element_Lazy_Loader::class, 'modify_column_html' ),
+			10,
+			1
+		);
 	}
 
 
