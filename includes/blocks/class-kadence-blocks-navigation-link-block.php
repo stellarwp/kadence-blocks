@@ -368,9 +368,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-highlight-order', '3' );
 		}
 		if ( 'left' === $sized_attributes['iconSide'] ) {
-			$css->add_property( '--kb-nav-link-media-container-order', '-1' );
+			$css->add_property( '--kb-nav-link-highlight-icon-order', '-1' );
 		} elseif ( 'right' === $sized_attributes['iconSide'] ) {
-			$css->add_property( '--kb-nav-link-media-container-order', '3' );
+			$css->add_property( '--kb-nav-link-highlight-icon-order', '3' );
 		}
 
 
