@@ -2,54 +2,55 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use Brain\Monkey;
 
 final class BackgroundLazyLoaderTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Store $store;
 	private Background_Lazy_Loader $lazy_loader;
-	private int $post_id;
+	private Path $path;
 
 	protected function setUp(): void {
 		Monkey\setUp();
 
 		parent::setUp();
 
-		$this->post_id = $this->factory()->post->create(
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
+
+		$post_id = $this->factory()->post->create(
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
+				'post_name'   => 'test-post',
 			]
 		);
 
+		$post_path = $this->get_post_path( $post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
+
+		$_SERVER['REQUEST_URI'] = '/test-post/';
+
 		$this->store       = $this->container->get( Store::class );
 		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
-
-		// Set this post so get_queried_object() and is_main_query() returns correctly in tests.
-		global $wp_query, $wp_the_query;
-		$post = get_post( $this->post_id );
-
-		$wp_query->post              = $post;
-		$wp_query->queried_object    = $post;
-		$wp_query->queried_object_id = $post->ID;
-
-		$wp_the_query = $wp_query;
 	}
 
 	protected function tearDown(): void {
-		$this->store->delete( $this->post_id );
+		$this->store->delete( $this->path );
 
-		// Clean up $wp_query global
-		global $wp_query, $wp_the_query;
-		$wp_query     = null;
-		$wp_the_query = null;
+		unset( $_SERVER['REQUEST_URI'] );
 
 		parent::tearDown();
 	}
@@ -762,6 +763,446 @@ final class BackgroundLazyLoaderTest extends TestCase {
 		$this->assertEquals( $args, $result );
 	}
 
+	public function testItReturnsOriginalArgsWhenSliderHasNoUniqueId(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => '',
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenSliderHasNullUniqueId(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => null,
+		];
+
+		$this->createTestAnalysis();
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenSliderSectionIsAboveTheFoldOnDesktop(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => true,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItReturnsOriginalArgsWhenSliderSectionIsAboveTheFoldOnMobile(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[],
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => true,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItAddsLazyLoadingAttributesWhenSliderSectionIsBelowTheFoldOnDesktop(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItAddsLazyLoadingAttributesWhenSliderSectionIsBelowTheFoldOnMobile(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[],
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleSectionsWithSliderSectionBelowTheFold(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idother-456',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => true,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+				[
+					'id'            => 'section-2',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[2]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+				[
+					'id'            => 'section-3',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idanother-789',
+					'path'          => '/html/body/div[3]',
+					'isAboveFold'   => true,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItLazyLoadsNotFoundSections(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idother-456',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSliderWithPartialClassNameMatch(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123-extra',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSliderWithSpecialCharactersInUniqueId(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-123-with-dashes',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123-with-dashes',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSliderWithUnicodeCharactersInUniqueId(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID' => 'slider-🚀-123',
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-🚀-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSliderWithBackgroundImageAndInlineStyle(): void {
+		$args = [
+			'class' => 'kb-row-layout kb-blocks-has-slider',
+			'style' => 'background-image: url(http://wordpress.test/image.jpg);',
+			'id'    => 'test-row',
+		];
+
+		$attributes = [
+			'uniqueID'         => 'slider-123',
+			'bgImg'            => 'http://wordpress.test/image.jpg',
+			'backgroundInline' => true,
+		];
+
+		$this->createTestAnalysisWithSections(
+			[
+				[
+					'id'            => 'section-1',
+					'height'        => 100.0,
+					'tagName'       => 'div',
+					'className'     => 'kb-row-layout-idslider-123',
+					'path'          => '/html/body/div[1]',
+					'isAboveFold'   => false,
+					'hasImages'     => false,
+					'hasBackground' => false,
+				],
+			]
+		);
+
+		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
+
+		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout kb-blocks-has-slider',
+			'data-kadence-lazy-style'   => 'background-image: url(http://wordpress.test/image.jpg);',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class,style',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object.
 	 *
@@ -790,13 +1231,51 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from(
 			[
-				'lastModified' => new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ),
-				'desktop'      => $desktop->toArray(),
-				'mobile'       => $mobile->toArray(),
-				'images'       => [],
+				'isStale' => false,
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
 			]
 		);
 
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with sections.
+	 *
+	 * @param array[] $desktop_sections Desktop sections.
+	 * @param array[] $mobile_sections  Mobile sections.
+	 */
+	private function createTestAnalysisWithSections(
+		array $desktop_sections = [],
+		array $mobile_sections = []
+	): void {
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => $desktop_sections,
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [],
+				'sections'         => $mobile_sections,
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'isStale' => false,
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
 	}
 }

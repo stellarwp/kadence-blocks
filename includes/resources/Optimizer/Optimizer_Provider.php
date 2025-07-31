@@ -4,22 +4,25 @@ namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Section_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Table_Sorter;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Optimizer_Table_Sorter;
-use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Table_Sort;
+use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
@@ -57,6 +60,7 @@ final class Optimizer_Provider extends Provider {
 
 		$this->register_mobile_override();
 		$this->register_optimizer_query();
+		$this->register_viewport_query();
 		$this->register_translation();
 		$this->register_hash_store();
 		$this->register_nonce();
@@ -98,6 +102,14 @@ final class Optimizer_Provider extends Provider {
 		$this->container->when( Optimizer_Query::class )
 						->needs( '$table' )
 						->give( static fn(): string => Optimizer_Table::table_name( false ) );
+	}
+
+	private function register_viewport_query(): void {
+		$this->container->singleton( Viewport_Query::class, Viewport_Query::class );
+
+		$this->container->when( Viewport_Query::class )
+						->needs( '$table' )
+						->give( static fn(): string => Viewport_Hash_Table::table_name( false ) );
 	}
 
 	/**
@@ -198,6 +210,7 @@ final class Optimizer_Provider extends Provider {
 			static fn(): Column  => new Column(
 				'kadence_optimizer',
 				__( 'Kadence Optimizer', 'kadence-blocks' ),
+				Post_Sort_Indexer::KEY
 			)
 		);
 
@@ -205,43 +218,11 @@ final class Optimizer_Provider extends Provider {
 		$this->container->singleton(
 			self::OPTIMIZER_COLUMN_REGISTRAR,
 			function (): Column_Registrar {
-				$column   = $this->container->get( self::OPTIMIZER_COLUMN );
-				$renderer = $this->container->get( Optimizer_Renderer::class );
+				$column        = $this->container->get( self::OPTIMIZER_COLUMN );
+				$renderer      = $this->container->get( Optimizer_Renderer::class );
+				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
 
-				return new Column_Registrar( $column, $renderer, true );
-			}
-		);
-
-		// Add custom table sorting for this column.
-		$this->container->singleton( Table_Sort::class, Table_Sort::class );
-
-		$this->container->when( Table_Sort::class )
-						->needs( Column::class )
-						->give( fn(): Column => $this->container->get( self::OPTIMIZER_COLUMN ) );
-
-		$this->container->when( Table_Sort::class )
-						->needs( Table_Sorter::class )
-						->give(
-							fn(): Table_Sorter =>
-							$this->container->get( Optimizer_Table_Sorter::class )
-						);
-
-		add_action(
-			'admin_init',
-			function (): void {
-				add_filter(
-					'posts_orderby',
-					$this->container->callback( Table_Sort::class, 'orderby' ),
-					10,
-					2
-				);
-
-				add_filter(
-					'posts_join_paged',
-					$this->container->callback( Table_Sort::class, 'join' ),
-					10,
-					2
-				);
+				return new Column_Registrar( $column, $renderer, $sort_strategy, true );
 			}
 		);
 
@@ -278,6 +259,8 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_element_lazy_loader(): void {
+		$this->container->singleton( Section_Registry::class, Section_Registry::class );
+		$this->container->singleton( Lazy_Render_Decider::class, Lazy_Render_Decider::class );
 		$this->container->singleton( Element_Lazy_Loader::class, Element_Lazy_Loader::class );
 
 		/**
@@ -294,7 +277,7 @@ final class Optimizer_Provider extends Provider {
 			]
 		);
 
-		$this->container->when( Element_Lazy_Loader::class )
+		$this->container->when( Lazy_Render_Decider::class )
 						->needs( '$excluded_classes' )
 						->give( static fn(): array => $excluded_classes );
 
@@ -308,6 +291,13 @@ final class Optimizer_Provider extends Provider {
 			$this->container->callback( Element_Lazy_Loader::class, 'modify_row_layout_block_wrapper_args' ),
 			10,
 			2
+		);
+
+		add_filter(
+			'kadence_blocks_column_html',
+			$this->container->callback( Element_Lazy_Loader::class, 'modify_column_html' ),
+			10,
+			1
 		);
 	}
 
@@ -369,12 +359,15 @@ final class Optimizer_Provider extends Provider {
 			0
 		);
 
-		add_action(
-			'shutdown',
-			$this->container->callback( Hash_Handler::class, 'check_hash' ),
-			PHP_INT_MAX - 1,
-			0
-		);
+		// Don't register the shutdown hook when uninstalling.
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) && ! wp_installing() ) {
+			add_action(
+				'shutdown',
+				$this->container->callback( Hash_Handler::class, 'check_hash' ),
+				PHP_INT_MAX - 1,
+				0
+			);
+		}
 	}
 
 	private function register_image_processor(): void {

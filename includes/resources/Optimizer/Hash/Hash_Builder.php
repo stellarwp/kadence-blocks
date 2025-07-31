@@ -2,8 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
-use KadenceWP\KadenceBlocks\Hasher;
-
 /**
  * Builds a hash based off specific parts of an HTML document
  * that could affect which optimizations are in place.
@@ -13,12 +11,6 @@ use KadenceWP\KadenceBlocks\Hasher;
  * to some elements.
  */
 final class Hash_Builder {
-
-	private Hasher $hasher;
-
-	public function __construct( Hasher $hasher ) {
-		$this->hasher = $hasher;
-	}
 
 	/**
 	 * Build the hash based on a selected portion of the HTML.
@@ -35,7 +27,7 @@ final class Hash_Builder {
 			$this->extract_structural_elements( $html ),
 		];
 
-		return $this->hasher->hash( implode( '|', $parts ) );
+		return hash( 'sha256', implode( '|', $parts ) );
 	}
 
 	/**

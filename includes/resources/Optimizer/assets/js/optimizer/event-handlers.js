@@ -1,6 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { addAction } from '@wordpress/hooks';
 import { dispatch } from '@wordpress/data';
+import { getPathAndQueryString } from '@wordpress/url';
 import { analyzeSite, removeOptimization } from './analyzer.js';
 import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
@@ -14,11 +15,6 @@ export function setupPostSaveHandler() {
 	addAction(POST_SAVED_HOOK, 'kadence', async ({ post, permalink, suffix = '' }) => {
 		console.log('Post Saved', post, permalink, suffix);
 
-		if (!suffix) {
-			console.error('❌ No suffix found for optimization. This is a public post, but has no rewrite rules.');
-			return;
-		}
-
 		if (!permalink) {
 			console.error('❌ No URL found for optimization. This is likely not a public post.');
 			return;
@@ -26,16 +22,23 @@ export function setupPostSaveHandler() {
 
 		const postId = post.id;
 		const postUrl = permalink;
+		const postPath = getPathAndQueryString(permalink);
 		const nonce = OPTIMIZER_DATA.token;
 
-		console.log('🚀 Starting optimization...', { postId, postUrl });
+		// This is a public post without a pretty rewrite rule.
+		if (postPath.includes('?')) {
+			console.error('❌ Unable to optimize. This is a public post, but has no rewrite rules.');
+			return;
+		}
+
+		console.log('🚀 Starting optimization...', { postId, postUrl, postPath });
 		console.log(
 			'%c' + 'Warnings are expected!',
 			'color: #edd144; -webkit-text-stroke: 0.5px black; font-size: 28px; font-weight: bold;'
 		);
 
 		try {
-			const response = await analyzeSite(postUrl, postId, nonce);
+			const response = await analyzeSite(postUrl, postId, postPath, nonce);
 
 			console.log(response);
 
@@ -64,9 +67,15 @@ export async function handleOptimizeClick(event) {
 	event.preventDefault();
 
 	const postUrl = event.target.dataset.postUrl;
+	const postPath = event.target.dataset.postPath;
 
 	if (!postUrl) {
 		console.error('❌ No URL found for optimization');
+		return;
+	}
+
+	if (!postPath) {
+		console.error('❌ No Post Path found for optimization');
 		return;
 	}
 
@@ -86,7 +95,7 @@ export async function handleOptimizeClick(event) {
 	const postTitle = getPostTitle(event.target, postId);
 
 	try {
-		const response = await analyzeSite(postUrl, postId, nonce);
+		const response = await analyzeSite(postUrl, postId, postPath, nonce);
 		console.log(response);
 
 		// Clear the animation interval
@@ -130,11 +139,12 @@ export async function handleRemoveOptimizationClick(event) {
 	event.preventDefault();
 
 	const postId = parseInt(event.target.dataset.postId, 10);
+	const postPath = event.target.dataset.postPath;
 
-	console.log('Removing optimization...', { postId });
+	console.log('Removing optimization...', { postId, postPath });
 
 	try {
-		const response = await removeOptimization(postId);
+		const response = await removeOptimization(postId, postPath);
 		console.log(response);
 
 		// Update link state to show "Run Optimizer".

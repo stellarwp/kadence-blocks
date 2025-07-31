@@ -2,88 +2,194 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Store;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 
 final class TableStoreTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Store $store;
 	private Optimizer_Query $query;
-	private int $post_id;
+	private Path $path;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->query   = $this->container->get( Optimizer_Query::class );
-		$this->store   = $this->container->get( Table_Store::class );
-		$this->post_id = $this->factory()->post->create();
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->assertGreaterThan( 0, $this->post_id );
+		$this->query = $this->container->get( Optimizer_Query::class );
+		$this->store = $this->container->get( Table_Store::class );
+		$post_id     = $this->factory()->post->create();
+
+		$post_path = $this->get_post_path( $post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
+
+		$this->assertGreaterThan( 0, $post_id );
 	}
 
 	protected function tearDown(): void {
-		$this->store->delete( $this->post_id );
+		$this->store->delete( $this->path );
 
 		parent::tearDown();
 	}
 
+	public function testItReturnsFalseForNonExistentData(): void {
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsTrueForExistentData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsFalseAfterDeletingData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+		$this->assertTrue( $this->store->delete( $this->path ) );
+		$this->assertFalse( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsFalseForNonExistentPath(): void {
+		$path = new Path( 'path-does-not-exist' );
+
+		$this->assertFalse( $this->store->has( $path ) );
+	}
+
+	public function testItReturnsTrueForMultiplePaths(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$post_id_1 = $this->factory()->post->create();
+		$post_id_2 = $this->factory()->post->create();
+
+		$path_1 = new Path( $this->get_post_path( $post_id_1 ) );
+		$path_2 = new Path( $this->get_post_path( $post_id_2 ) );
+
+		try {
+			// Initially both paths should not have data.
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+
+			// Set data for first path.
+			$this->assertTrue( $this->store->set( $path_1, $analysis ) );
+			$this->assertTrue( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+
+			// Set data for second path.
+			$this->assertTrue( $this->store->set( $path_2, $analysis ) );
+			$this->assertTrue( $this->store->has( $path_1 ) );
+			$this->assertTrue( $this->store->has( $path_2 ) );
+
+			// Delete first path's data.
+			$this->assertTrue( $this->store->delete( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertTrue( $this->store->has( $path_2 ) );
+
+			// Delete second path's data.
+			$this->assertTrue( $this->store->delete( $path_2 ) );
+			$this->assertFalse( $this->store->has( $path_1 ) );
+			$this->assertFalse( $this->store->has( $path_2 ) );
+		} finally {
+			// Ensure cleanup even if test fails.
+			$this->store->delete( $path_1 );
+			$this->store->delete( $path_2 );
+		}
+	}
+
+	public function testItReturnsTrueAfterUpsertingSameData(): void {
+		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Upsert the same data - should still return true.
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
+	public function testItReturnsTrueAfterUpdatingData(): void {
+		$analysis1 = WebsiteAnalysis::from( $this->getResultsFixture() );
+		$analysis2 = WebsiteAnalysis::from( $this->getResultsFixture() );
+
+		// Set initial data.
+		$this->assertTrue( $this->store->set( $this->path, $analysis1 ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+
+		// Update with new data - should still return true.
+		$this->assertTrue( $this->store->set( $this->path, $analysis2 ) );
+		$this->assertTrue( $this->store->has( $this->path ) );
+	}
+
 	public function testItGetsNullValueForNonExistentData(): void {
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->store->get( $this->path ) );
 	}
 
 	public function testItSetsGetsAndDeletesOptimizationData(): void {
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
-		$retrieved_analysis = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$retrieved_analysis = $this->store->get( $this->path );
 		$this->assertNotNull( $retrieved_analysis );
 		$this->assertEquals( $analysis->toArray(), $retrieved_analysis->toArray() );
-		$this->assertTrue( $this->store->delete( $this->post_id ) );
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertTrue( $this->store->delete( $this->path ) );
+		$this->assertNull( $this->store->get( $this->path ) );
 	}
 
 	public function testItReturnsTrueWhenSettingSameValueTwice(): void {
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
 
 		// Set the same value again - should return true for upsert operation.
-		$result = $this->store->set( $this->post_id, $analysis );
+		$result = $this->store->set( $this->path, $analysis );
 		$this->assertIsBool( $result );
 
 		// Verify the value is still correct.
-		$retrieved_analysis = $this->store->get( $this->post_id );
+		$retrieved_analysis = $this->store->get( $this->path );
 		$this->assertNotNull( $retrieved_analysis );
 		$this->assertEquals( $analysis->toArray(), $retrieved_analysis->toArray() );
 	}
 
-	public function testItHandlesInvalidPostId(): void {
+	public function testItHandlesInvalidPath(): void {
 		$analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		// Create a valid post ID for testing.
 		$valid_post_id = $this->factory()->post->create();
-		$this->assertTrue( $this->store->set( $valid_post_id, $analysis ) );
-		$retrieved_analysis = $this->store->get( $valid_post_id );
+		$valid_path    = new Path( $this->get_post_path( $valid_post_id ) );
+
+		$this->assertTrue( $this->store->set( $valid_path, $analysis ) );
+
+
+		$retrieved_analysis = $this->store->get( $valid_path );
 		$this->assertNotNull( $retrieved_analysis );
 		$this->assertEquals( $analysis->toArray(), $retrieved_analysis->toArray() );
-		$this->assertTrue( $this->store->delete( $valid_post_id ) );
+		$this->assertTrue( $this->store->delete( $valid_path ) );
 	}
 
 	public function testItReturnsNullForNonExistentPost(): void {
-		$non_existent_post_id = 999999;
-		$this->assertNull( $this->store->get( $non_existent_post_id ) );
+		$path = new Path( 'path-does-not-exist' );
+
+		$this->assertNull( $this->store->get( $path ) );
 	}
 
 	public function testDeleteReturnsTrueForNonExistentData(): void {
-		$non_existent_post_id = 999999;
+		$path = new Path( 'path-does-not-exist' );
 		// Table_Store delete should return true even for non-existent data (no rows affected).
 		// Note: This may return false if the database query fails, which is acceptable.
-		$result = $this->store->delete( $non_existent_post_id );
+		$result = $this->store->delete( $path );
 		$this->assertIsBool( $result );
 	}
 
@@ -93,43 +199,46 @@ final class TableStoreTest extends TestCase {
 		$post_id_1 = $this->factory()->post->create();
 		$post_id_2 = $this->factory()->post->create();
 
+		$path_1 = new Path( $this->get_post_path( $post_id_1 ) );
+		$path_2 = new Path( $this->get_post_path( $post_id_2 ) );
+
 		try {
 			// Set data for both posts.
-			$this->assertTrue( $this->store->set( $post_id_1, $analysis ) );
-			$this->assertTrue( $this->store->set( $post_id_2, $analysis ) );
+			$this->assertTrue( $this->store->set( $path_1, $analysis ) );
+			$this->assertTrue( $this->store->set( $path_2, $analysis ) );
 
 			// Verify both posts have the correct data.
-			$retrieved_1 = $this->store->get( $post_id_1 );
-			$retrieved_2 = $this->store->get( $post_id_2 );
+			$retrieved_1 = $this->store->get( $path_1 );
+			$retrieved_2 = $this->store->get( $path_2 );
 			$this->assertNotNull( $retrieved_1 );
 			$this->assertNotNull( $retrieved_2 );
 			$this->assertEquals( $analysis->toArray(), $retrieved_1->toArray() );
 			$this->assertEquals( $analysis->toArray(), $retrieved_2->toArray() );
 
 			// Delete first post's data.
-			$this->assertTrue( $this->store->delete( $post_id_1 ) );
-			$this->assertNull( $this->store->get( $post_id_1 ) );
+			$this->assertTrue( $this->store->delete( $path_1 ) );
+			$this->assertNull( $this->store->get( $path_1 ) );
 
 			// Verify second post's data is still there.
-			$retrieved_2_after_delete = $this->store->get( $post_id_2 );
+			$retrieved_2_after_delete = $this->store->get( $path_2 );
 			$this->assertNotNull( $retrieved_2_after_delete );
 			$this->assertEquals( $analysis->toArray(), $retrieved_2_after_delete->toArray() );
 
 			// Clean up second post.
-			$this->assertTrue( $this->store->delete( $post_id_2 ) );
-			$this->assertNull( $this->store->get( $post_id_2 ) );
+			$this->assertTrue( $this->store->delete( $path_2 ) );
+			$this->assertNull( $this->store->get( $path_2 ) );
 		} finally {
 			// Ensure cleanup even if test fails.
-			$this->store->delete( $post_id_1 );
-			$this->store->delete( $post_id_2 );
+			$this->store->delete( $path_1 );
+			$this->store->delete( $path_2 );
 		}
 	}
 
 	public function testDataIntegrityAfterSerializationAndDeserialization(): void {
 		$original_analysis = WebsiteAnalysis::from( $this->getResultsFixture() );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $original_analysis ) );
-		$retried_analysis = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $original_analysis ) );
+		$retried_analysis = $this->store->get( $this->path );
 
 		// Verify the data structure integrity.
 		$this->assertInstanceOf( WebsiteAnalysis::class, $retried_analysis );
@@ -149,40 +258,44 @@ final class TableStoreTest extends TestCase {
 		// Insert invalid JSON directly into the database to test error handling.
 		$this->query->qb()->upsert(
 			[
-				'post_id'  => $this->post_id,
-				'analysis' => 'invalid json data',
+				'path_hash' => $this->path->hash(),
+				'path'      => $this->path->path(),
+				'analysis'  => 'invalid json data',
 			],
 			[
-				'post_id',
+				'path_hash',
 			],
 			[
-				'%d',
+				'%s',
+				'%s',
 				'%s',
 			]
 		);
 
 		// Should return null when JSON decode fails.
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->store->get( $this->path ) );
 	}
 
 	public function testItHandlesEmptyJsonData(): void {
 		// Insert empty JSON data.
 		$this->query->qb()->upsert(
 			[
-				'post_id'  => $this->post_id,
-				'analysis' => '{}',
+				'path_hash' => $this->path->hash(),
+				'path'      => $this->path->path(),
+				'analysis'  => '{}',
 			],
 			[
-				'post_id',
+				'path_hash',
 			],
 			[
-				'%d',
+				'%s',
+				'%s',
 				'%s',
 			]
 		);
 
 		// Should return null when JSON is empty or invalid structure.
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->store->get( $this->path ) );
 	}
 
 	public function testItUpdatesExistingDataWithUpsert(): void {
@@ -194,15 +307,15 @@ final class TableStoreTest extends TestCase {
 		$analysis2 = WebsiteAnalysis::from( $this->getResultsFixture() );
 
 		// Set initial data.
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis1 ) );
-		$retrieved_1 = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $analysis1 ) );
+		$retrieved_1 = $this->store->get( $this->path );
 		$this->assertNotNull( $retrieved_1 );
 		$this->assertEquals( $analysis1->toArray(), $retrieved_1->toArray() );
 
 		// Update with new data (should use upsert to update existing record).
-		$result = $this->store->set( $this->post_id, $analysis2 );
+		$result = $this->store->set( $this->path, $analysis2 );
 		$this->assertIsBool( $result );
-		$retrieved_2 = $this->store->get( $this->post_id );
+		$retrieved_2 = $this->store->get( $this->path );
 		$this->assertNotNull( $retrieved_2 );
 		$this->assertEquals( $analysis2->toArray(), $retrieved_2->toArray() );
 
@@ -221,8 +334,8 @@ final class TableStoreTest extends TestCase {
 
 		$large_analysis = WebsiteAnalysis::from( $large_fixture );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $large_analysis ) );
-		$retrieved_analysis = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $large_analysis ) );
+		$retrieved_analysis = $this->store->get( $this->path );
 
 		$this->assertInstanceOf( WebsiteAnalysis::class, $retrieved_analysis );
 		$this->assertEquals( $large_analysis->toArray(), $retrieved_analysis->toArray() );
@@ -238,8 +351,8 @@ final class TableStoreTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from( $fixture );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
-		$retrieved_analysis = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$retrieved_analysis = $this->store->get( $this->path );
 
 		$this->assertNotNull( $retrieved_analysis );
 		$this->assertEquals( $analysis->toArray(), $retrieved_analysis->toArray() );
@@ -256,8 +369,8 @@ final class TableStoreTest extends TestCase {
 
 		$analysis = WebsiteAnalysis::from( $fixture );
 
-		$this->assertTrue( $this->store->set( $this->post_id, $analysis ) );
-		$retrieved_analysis = $this->store->get( $this->post_id );
+		$this->assertTrue( $this->store->set( $this->path, $analysis ) );
+		$retrieved_analysis = $this->store->get( $this->path );
 
 		$this->assertNotNull( $retrieved_analysis );
 		$this->assertEquals( $analysis->toArray(), $retrieved_analysis->toArray() );
@@ -272,7 +385,7 @@ final class TableStoreTest extends TestCase {
 		$data    = $this->fixture( 'resources/optimizer/result.json' );
 		$decoded = json_decode( $data, true );
 
-		$decoded['lastModified'] = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+		$decoded['isStale'] = false;
 
 		return $decoded;
 	}

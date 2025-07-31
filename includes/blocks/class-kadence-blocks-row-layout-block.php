@@ -1696,7 +1696,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$extra_content = '';
 			if ( 'slider' === $background_type ) {
-				$extra_content .= $this->get_slider_render( $attributes );
+				$slider_markup = $this->get_slider_render( $attributes );
+
+				// Add class for lazy loading use.
+				if ( $slider_markup ) {
+					$wrapper_args['class'] .= ' kb-blocks-has-slider';
+				}
+
+				$extra_content .= $slider_markup;
 			}
 			if ( 'video' === $background_type ) {
 				$extra_content .= $this->get_video_render( $attributes );

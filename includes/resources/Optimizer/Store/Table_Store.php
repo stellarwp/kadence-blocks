@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Store;
 
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use Throwable;
 
@@ -18,16 +19,31 @@ final class Table_Store implements Contracts\Store {
 	}
 
 	/**
-	 * Get the optimization data for a post.
+	 * Whether a Path has optimization data.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object.
+	 *
+	 * @return bool
+	 */
+	public function has( Path $path ): bool {
+		return (bool) $this->q->get_var(
+			$this->q->qb()->select( '1' )
+					->where( 'path_hash', $path->hash() )
+					->limit( 1 )->getSQL()
+		);
+	}
+
+	/**
+	 * Get the optimization data for a path object.
+	 *
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return WebsiteAnalysis|null
 	 */
-	public function get( int $post_id ): ?WebsiteAnalysis {
+	public function get( Path $path ): ?WebsiteAnalysis {
 		$json = $this->q->get_var(
 			$this->q->qb()->select( 'analysis' )
-					->where( 'post_id', $post_id )
+					->where( 'path_hash', $path->hash() )
 					->getSQL()
 		);
 
@@ -43,41 +59,43 @@ final class Table_Store implements Contracts\Store {
 	}
 
 	/**
-	 * Set the optimization data for a post.
+	 * Set the optimization data for a path object.
 	 *
-	 * @param int             $post_id The post ID to associate with the data.
+	 * @param Path            $path The path object associated with the stored data.
 	 * @param WebsiteAnalysis $analysis The website analysis data.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, WebsiteAnalysis $analysis ): bool {
+	public function set( Path $path, WebsiteAnalysis $analysis ): bool {
 		$json = wp_json_encode( $analysis->toArray(), JSON_UNESCAPED_SLASHES );
 
-		return (bool) $this->q->qb()->upsert(
+		return false !== $this->q->qb()->upsert(
 			[
-				'post_id'  => $post_id,
-				'analysis' => $json,
+				'path_hash' => $path->hash(),
+				'path'      => $path->path(),
+				'analysis'  => $json,
 			],
 			[
-				'post_id',
+				'path_hash',
 			],
 			[
-				'%d',
+				'%s',
+				'%s',
 				'%s',
 			]
 		);
 	}
 
 	/**
-	 * Delete the optimization data for a post.
+	 * Delete the optimization data for a path object.
 	 *
-	 * @param int $post_id The post ID associated with the data.
+	 * @param Path $path The path object associated with the stored data.
 	 *
 	 * @return bool
 	 */
-	public function delete( int $post_id ): bool {
+	public function delete( Path $path ): bool {
 		return (bool) $this->q->qb()
-								->where( 'post_id', $post_id )
+								->where( 'path_hash', $path->hash() )
 								->delete();
 	}
 }

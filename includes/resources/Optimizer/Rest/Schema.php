@@ -184,24 +184,25 @@ final class Schema {
 
 		// The main schema structure.
 		return [
-			'lastModified' => [
-				'description' => __( 'The last modified date in UTC/GMT time in the Y-m-d H:i:s format.', 'kadence-blocks' ),
-				'type'        => 'string',
+			'isStale' => [
+				'description' => __( 'Whether this data is stale or expired.', 'kadence-blocks' ),
+				'type'        => 'boolean',
 				'required'    => false,
+				'default'     => false,
 			],
-			'desktop'      => [
+			'desktop' => [
 				'description' => __( 'Performance and layout data for the desktop viewport.', 'kadence-blocks' ),
 				'type'        => 'object',
 				'properties'  => $viewport_data_properties,
 				'required'    => true,
 			],
-			'mobile'       => [
+			'mobile'  => [
 				'description' => __( 'Performance and layout data for the mobile viewport.', 'kadence-blocks' ),
 				'type'        => 'object',
 				'properties'  => $viewport_data_properties,
 				'required'    => true,
 			],
-			'images'       => [
+			'images'  => [
 				'description' => __( 'An array of all image objects found on the page.', 'kadence-blocks' ),
 				'type'        => 'array',
 				'items'       => [
