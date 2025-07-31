@@ -6,6 +6,35 @@
 		clearForm(form) {
 			form.reset();
 		},
+		ensureLiveRegion(form) {
+			let liveRegion = form.querySelector('.kb-form-live-region');
+			if (!liveRegion) {
+				liveRegion = document.createElement('div');
+				liveRegion.className = 'kb-form-live-region';
+				liveRegion.setAttribute('aria-live', 'polite');
+				liveRegion.setAttribute('aria-atomic', 'true');
+				liveRegion.setAttribute('role', 'status');
+				// Screen reader only - visually hidden
+				liveRegion.style.position = 'absolute';
+				liveRegion.style.left = '-10000px';
+				liveRegion.style.width = '1px';
+				liveRegion.style.height = '1px';
+				liveRegion.style.overflow = 'hidden';
+				form.appendChild(liveRegion);
+			}
+			return liveRegion;
+		},
+		announceMessage(form, message, priority = 'polite') {
+			const liveRegion = window.kadenceAdvancedForm.ensureLiveRegion(form);
+			// Clear previous message
+			liveRegion.textContent = '';
+			// Set priority
+			liveRegion.setAttribute('aria-live', priority);
+			// Small delay to ensure screen reader picks up the change
+			setTimeout(() => {
+				liveRegion.textContent = message;
+			}, 100);
+		},
 		insertAfter(newNode, referenceNode) {
 			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 		},
@@ -67,6 +96,7 @@
 				el.classList.add('kb-adv-form-message');
 				el.classList.add('kb-adv-form-warning');
 				el.setAttribute('role', 'alert');
+				el.setAttribute('aria-live', 'assertive');
 				el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_string, '<div><a><b><i><u><p><ol><ul>');
 				if (item.classList.contains('kb-accept-field')) {
 					item.parentNode.parentNode.append(el);
@@ -89,7 +119,14 @@
 			const el = document.createElement('div');
 			el.classList.add('kb-adv-form-message');
 			el.classList.add('kb-adv-form-warning');
+			el.setAttribute('role', 'alert');
+			el.setAttribute('aria-live', 'assertive');
 			el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_message, '<div><a><b><i><u><p><ol><ul>');
+			
+			// Announce to screen readers using live region
+			window.kadenceAdvancedForm.announceMessage(form, error_message, 'assertive');
+			
+			// Insert visual message
 			window.kadenceAdvancedForm.insertAfter(el, form);
 		},
 		isValidEmail(email) {
@@ -343,6 +380,11 @@
 			// Change this to div.childNodes to support multiple top-level nodes
 			return div.firstChild;
 		},
+		extractTextFromHTML(htmlString) {
+			const div = document.createElement('div');
+			div.innerHTML = htmlString;
+			return div.textContent || div.innerText || '';
+		},
 		submit(e, form) {
 			e.preventDefault();
 			const event = new Event('kb-adv-form-start-submit');
@@ -396,6 +438,11 @@
 							if (response.redirect) {
 								window.location.replace(response.redirect);
 							} else {
+								// Announce success message to screen readers
+								const successText = window.kadenceAdvancedForm.extractTextFromHTML(response.html);
+								window.kadenceAdvancedForm.announceMessage(form, successText, 'polite');
+								
+								// Insert visual message
 								window.kadenceAdvancedForm.insertAfter(
 									window.kadenceAdvancedForm.createElementFromHTML(response.html),
 									form
@@ -407,6 +454,12 @@
 							}
 						} else if (response.data) {
 							window.kadenceAdvancedForm.event('failed', form);
+							
+							// Announce error message to screen readers
+							const errorText = window.kadenceAdvancedForm.extractTextFromHTML(response.data.html);
+							window.kadenceAdvancedForm.announceMessage(form, errorText, 'assertive');
+							
+							// Insert visual message
 							window.kadenceAdvancedForm.insertAfter(
 								window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
 								form
