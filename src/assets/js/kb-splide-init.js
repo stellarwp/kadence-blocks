@@ -14,7 +14,9 @@
 			);
 			this.bootstrapSliders(testimonialSliders);
 
-			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
+			const bgSliders = document.querySelectorAll(
+				'.kb-row-has-slider > .kb-blocks-bg-slider > .kt-blocks-carousel-init'
+			);
 			this.bootstrapSliders(bgSliders);
 		},
 
@@ -23,7 +25,7 @@
 			const allSliders = document.querySelectorAll(
 				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init, ' +
 					'.wp-block-kadence-testimonials .kt-blocks-carousel-init, ' +
-					'.kb-blocks-bg-slider > .kt-blocks-carousel-init'
+					'.kb-row-has-slider > .kb-blocks-bg-slider > .kt-blocks-carousel-init'
 			);
 
 			if (allSliders.length === 0) {
