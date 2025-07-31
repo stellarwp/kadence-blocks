@@ -2,19 +2,19 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Lazy_Load\Sections;
 
+use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
-use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Section_Registry;
 use Tests\Support\Classes\TestCase;
 
 final class LazyRenderDeciderTest extends TestCase {
 
-	private Section_Registry $registry;
+	private Analysis_Registry $registry;
 	private Lazy_Render_Decider $decider;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->registry = $this->createMock( Section_Registry::class );
+		$this->registry = $this->createMock( Analysis_Registry::class );
 		$this->decider  = new Lazy_Render_Decider( $this->registry, [] );
 	}
 
@@ -52,7 +52,7 @@ final class LazyRenderDeciderTest extends TestCase {
 			[
 				'kt-jarallax',
 				'no-lazy-load',
-			] 
+			]
 		);
 
 		$class_list = [ 'kb-row-layout', 'no-lazy-load' ];
@@ -109,7 +109,7 @@ final class LazyRenderDeciderTest extends TestCase {
 							[
 								'kb-row-layout test-123' => 500.0,
 								'kb-row-layout test-456' => 300.0,
-							] 
+							]
 						);
 
 		$result = $this->decider->get_section_height_by_unique_id( 'test-123' );
@@ -123,7 +123,7 @@ final class LazyRenderDeciderTest extends TestCase {
 						->willReturn(
 							[
 								'kb-row-layout test-123' => 500.0,
-							] 
+							]
 						);
 
 		$result = $this->decider->get_section_height_by_unique_id( 'test-456' );
@@ -147,7 +147,7 @@ final class LazyRenderDeciderTest extends TestCase {
 						->willReturn(
 							[
 								'wp-block-kadence-column kb-column-test-123' => 400.0,
-							] 
+							]
 						);
 
 		$result = $this->decider->get_section_height_by_class_attr( 'wp-block-kadence-column kb-column-test-123' );
@@ -161,7 +161,7 @@ final class LazyRenderDeciderTest extends TestCase {
 						->willReturn(
 							[
 								'wp-block-kadence-column kb-column-test-123' => 400.0,
-							] 
+							]
 						);
 
 		$result = $this->decider->get_section_height_by_class_attr( 'wp-block-kadence-column kb-column-different' );

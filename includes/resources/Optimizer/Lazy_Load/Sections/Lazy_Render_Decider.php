@@ -2,12 +2,14 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections;
 
+use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
+
 /**
  * Decide whether we should lazy render a section or not.
  */
 class Lazy_Render_Decider {
 
-	private Section_Registry $registry;
+	private Analysis_Registry $registry;
 
 	/**
 	 * A list of CSS classes that will bypass lazy rendering.
@@ -17,7 +19,7 @@ class Lazy_Render_Decider {
 	private array $excluded_classes;
 
 	public function __construct(
-		Section_Registry $registry,
+		Analysis_Registry $registry,
 		array $excluded_classes
 	) {
 		$this->registry         = $registry;
