@@ -17,7 +17,7 @@ final class Column {
 	 * @param string $slug The column slug.
 	 * @param string $label The i18n friendly label.
 	 * @param string $meta_key The meta key to sort by.
-	 * 
+	 *
 	 * @throws InvalidArgumentException If slug or label are empty or whitespace-only.
 	 */
 	public function __construct(

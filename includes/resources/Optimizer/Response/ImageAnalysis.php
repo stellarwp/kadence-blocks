@@ -74,7 +74,7 @@ final class ImageAnalysis {
 	}
 
 	/**
-	 * @param array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, alt: ?string, class: string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
+	 * @param array{path: string, src: string, srcset: array, width: int, height: int, widthAttr: string, heightAttr: string, naturalWidth: int, naturalHeight: int, aspectRatio: float, alt: ?string, class: ?string, loading: string, decoding: string, sizes: ?string, computedStyle: array, optimalSizes: string} $attributes
 	 */
 	public static function from( array $attributes ): self {
 		$srcset = array_map(
@@ -96,7 +96,7 @@ final class ImageAnalysis {
 			$attributes['naturalHeight'] ?? 0,
 			$attributes['aspectRatio'] ?? null,
 			$attributes['alt'],
-			$attributes['class'],
+			$attributes['class'] ?? '',
 			$attributes['loading'],
 			$attributes['decoding'],
 			$attributes['sizes'],

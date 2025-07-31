@@ -2,10 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Asset\Asset;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
-use WP_Post;
 
 /**
  * Handles setting up the Kadence Row Layout Block for background image
@@ -17,10 +18,16 @@ final class Background_Lazy_Loader {
 
 	private Store $store;
 	private Asset $asset;
+	private Path_Factory $path_factory;
 
-	public function __construct( Store $store, Asset $asset ) {
-		$this->store = $store;
-		$this->asset = $asset;
+	public function __construct(
+		Store $store,
+		Asset $asset,
+		Path_Factory $path_factory
+	) {
+		$this->store        = $store;
+		$this->asset        = $asset;
+		$this->path_factory = $path_factory;
 	}
 
 	/**
@@ -34,32 +41,64 @@ final class Background_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		global $post;
-
-		if ( ! $post instanceof WP_Post ) {
+		try {
+			$path = $this->path_factory->make();
+		} catch ( InvalidArgumentException $e ) {
 			return $args;
 		}
 
-		$bg = $attributes['bgImg'] ?? false;
+		$bg        = $attributes['bgImg'] ?? '';
+		$class     = $args['class'] ?? '';
+		$is_slider = is_string( $class ) && str_contains( $class, 'kb-blocks-has-slider' );
 
-		if ( empty( $bg ) ) {
+		if ( ! $bg && ! $is_slider ) {
 			return $args;
 		}
 
-		$analysis = $this->store->get( $post->ID );
+		$analysis = $this->store->get( $path );
 
 		if ( ! $analysis ) {
 			return $args;
 		}
 
-		$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
+		if ( $bg ) {
+			$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
 
-		// Exclude above the fold background images.
-		if ( in_array( $bg, $background_images, true ) ) {
-			return $args;
+			// Exclude above the fold background images.
+			if ( in_array( $bg, $background_images, true ) ) {
+				return $args;
+			}
 		}
 
-		$classes   = $args['class'] ?? false;
+		// Lazy load row sliders.
+		if ( $is_slider ) {
+			$id = $attributes['uniqueID'] ?? '';
+
+			if ( ! $id ) {
+				return $args;
+			}
+
+			$sections      = $this->is_mobile() ? $analysis->mobile->sections : $analysis->desktop->sections;
+			$class_to_find = sprintf( 'kb-row-layout-id%s', $id );
+
+			// Assume we'll lazy load this section in case it wasn't collected.
+			$should_lazy_load_slider = true;
+
+			foreach ( $sections as $section ) {
+				if ( str_contains( $section->className, $class_to_find ) ) {
+					// Found our section, check if it's below the fold.
+					$should_lazy_load_slider = ! $section->isAboveFold;
+
+					break;
+				}
+			}
+
+			if ( ! $should_lazy_load_slider ) {
+				return $args;
+			}
+		}
+
+		$classes   = $args['class'] ?? '';
 		$is_inline = $attributes['backgroundInline'] ?? false;
 
 		// Add lazy loading data attributes for CSS backgrounds.

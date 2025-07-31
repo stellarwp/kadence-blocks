@@ -2,41 +2,22 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
-use KadenceWP\KadenceBlocks\Optimizer\Response\Section;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
-use WP_Post;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
+use WP_HTML_Tag_Processor;
 
 /**
- * Process section Optimization data to set content visibility on the Kadence row layout block.
+ * Process section Optimization data to set content visibility on the Kadence row layout and column block.
+ *
+ * @phpstan-type HtmlClassHeightMap array<string, float> Class attribute => height in pixels.
  */
 final class Element_Lazy_Loader {
 
-	use Viewport_Trait;
+	private Lazy_Render_Decider $decider;
 
-	/**
-	 * Sections cache for this request.
-	 *
-	 * @var array<int, Section>
-	 */
-	private ?array $sections;
-
-	/**
-	 * CSS classes that will exclude a section from being lazy loaded.
-	 *
-	 * @var string[]
-	 */
-	private array $excluded_classes;
-
-	private Store $store;
-
-	/**
-	 * @param Store    $store The optimizer store.
-	 * @param string[] $excluded_classes CSS classes that will exclude a section from being lazy loaded.
-	 */
-	public function __construct( Store $store, array $excluded_classes ) {
-		$this->store            = $store;
-		$this->excluded_classes = $excluded_classes;
+	public function __construct(
+		Lazy_Render_Decider $decider
+	) {
+		$this->decider = $decider;
 	}
 
 	/**
@@ -50,12 +31,6 @@ final class Element_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		global $post;
-
-		if ( ! $post instanceof WP_Post ) {
-			return $args;
-		}
-
 		$unique_id = $attributes['uniqueID'] ?? false;
 
 		if ( ! $unique_id ) {
@@ -67,59 +42,70 @@ final class Element_Lazy_Loader {
 		// Explode class string into array for exact matching.
 		$class_list = array_filter( preg_split( '/\s+/', $classes ) );
 
-		// Bypass lazy loading if we find an excluded class (exact match only).
-		foreach ( $this->excluded_classes as $excluded_class ) {
-			if ( in_array( $excluded_class, $class_list, true ) ) {
-				return $args;
-			}
-		}
-
-		$analysis = $this->store->get( $post->ID );
-
-		if ( ! $analysis ) {
+		// Bypass lazy rendering if we find an excluded class (exact match only).
+		if ( ! $this->decider->should_lazy_render( $class_list ) ) {
 			return $args;
 		}
 
-		$sections = $this->sections ??= $this->is_mobile() ? $analysis->mobile->sections : $analysis->desktop->sections;
+		$height = $this->decider->get_section_height_by_unique_id( $unique_id );
 
-		foreach ( $sections as $key => $section ) {
-			// Skip above the fold sections.
-			if ( $section->isAboveFold ) {
-				unset( $this->sections[ $key ] );
-
-				continue;
-			}
-
-			// Search for the unique ID in the class attribute.
-			if ( ! str_contains( $section->className, $unique_id ) ) {
-				continue;
-			}
-
-			if ( $section->height <= 0 ) {
-				continue;
-			}
-
-			$current_style = $args['style'] ?? '';
-
-			// Prepend our content visibility style.
-			$args['style'] = sprintf(
-				'content-visibility: auto;contain-intrinsic-size: auto %dpx;%s',
-				$section->height,
-				$current_style
-			);
-
-			unset( $this->sections[ $key ] );
+		if ( $height <= 0 ) {
+			return $args;
 		}
+
+		$current_style = (string) ( $args['style'] ?? '' );
+		$args['style'] = $this->prepend_style( $height, $current_style );
 
 		return $args;
 	}
 
 	/**
-	 * Flush the memoization cache.
+	 * Set content visibility on found kadence/column sections.
 	 *
-	 * @return void
+	 * @filter kadence_blocks_column_html
+	 *
+	 * @param string $html The kadence/column html.
+	 *
+	 * @return string
 	 */
-	public function flush(): void {
-		unset( $this->sections );
+	public function modify_column_html( string $html ): string {
+		$p = new WP_HTML_Tag_Processor( $html );
+
+		if ( ! $p->next_tag( [ 'class' => 'wp-block-kadence-column' ] ) ) {
+			return $html;
+		}
+
+		$class_attr = $p->get_attribute( 'class' );
+
+		if ( ! $class_attr ) {
+			return $html;
+		}
+
+		$height = $this->decider->get_section_height_by_class_attr( $class_attr );
+
+		if ( $height <= 0 ) {
+			return $html;
+		}
+
+		$current_style = (string) $p->get_attribute( 'style' );
+		$p->set_attribute( 'style', $this->prepend_style( $height, $current_style ) );
+
+		return $p->get_updated_html();
+	}
+
+	/**
+	 * Prepend the content-visibility styles to an existing style string.
+	 *
+	 * @param float  $height The section height.
+	 * @param string $current_style The current style.
+	 *
+	 * @return string
+	 */
+	private function prepend_style( float $height, string $current_style ): string {
+		return sprintf(
+			'content-visibility: auto;contain-intrinsic-size: auto %dpx;%s',
+			$height,
+			trim( $current_style )
+		);
 	}
 }

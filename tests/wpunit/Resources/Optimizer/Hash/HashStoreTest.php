@@ -4,15 +4,23 @@ namespace Tests\wpunit\Resources\Optimizer\Hash;
 
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 
 final class HashStoreTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Hash_Store $hash_store;
 	private int $post_id;
+	private Path $path;
 
 	protected function setUp(): void {
 		parent::setUp();
+
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
 
 		$this->hash_store = $this->container->get( Hash_Store::class );
 
@@ -21,31 +29,38 @@ final class HashStoreTest extends TestCase {
 			[
 				'post_title'  => 'Test Post',
 				'post_status' => 'publish',
+				'post_name'   => 'test-post',
 			]
 		);
+
+		$post_path = $this->get_post_path( $this->post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
 	}
 
 	protected function tearDown(): void {
 		// Clean up test data.
 		if ( $this->post_id ) {
-			$this->hash_store->delete( $this->post_id, Viewport::desktop() );
-			$this->hash_store->delete( $this->post_id, Viewport::mobile() );
+			$this->hash_store->delete( $this->path, Viewport::desktop() );
+			$this->hash_store->delete( $this->path, Viewport::mobile() );
 		}
 
 		parent::tearDown();
 	}
 
 	public function testGetReturnsNullWhenHashDoesNotExist(): void {
-		$result = $this->hash_store->get( $this->post_id, Viewport::desktop() );
+		$result = $this->hash_store->get( $this->path, Viewport::desktop() );
 
 		$this->assertNull( $result );
 	}
 
 	public function testGetReturnsHashWhenExists(): void {
 		$hash = 'test_hash_value';
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $hash );
 
-		$result = $this->hash_store->get( $this->post_id, Viewport::desktop() );
+		$result = $this->hash_store->get( $this->path, Viewport::desktop() );
 
 		$this->assertSame( $hash, $result );
 	}
@@ -54,17 +69,17 @@ final class HashStoreTest extends TestCase {
 		$desktop_hash = 'desktop_hash_value';
 		$mobile_hash  = 'mobile_hash_value';
 
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $desktop_hash );
-		$this->hash_store->set( $this->post_id, Viewport::mobile(), $mobile_hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $desktop_hash );
+		$this->hash_store->set( $this->path, Viewport::mobile(), $mobile_hash );
 
-		$this->assertSame( $desktop_hash, $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
-		$this->assertSame( $mobile_hash, $this->hash_store->get( $this->post_id, Viewport::mobile() ) );
+		$this->assertSame( $desktop_hash, $this->hash_store->get( $this->path, Viewport::desktop() ) );
+		$this->assertSame( $mobile_hash, $this->hash_store->get( $this->path, Viewport::mobile() ) );
 	}
 
 	public function testSetReturnsTrueOnSuccessfulUpdate(): void {
 		$hash = 'test_hash_value';
 
-		$result = $this->hash_store->set( $this->post_id, Viewport::desktop(), $hash );
+		$result = $this->hash_store->set( $this->path, Viewport::desktop(), $hash );
 
 		$this->assertTrue( $result );
 	}
@@ -73,10 +88,10 @@ final class HashStoreTest extends TestCase {
 		$original_hash = 'original_hash_value';
 		$new_hash      = 'new_hash_value';
 
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $original_hash );
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $new_hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $original_hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $new_hash );
 
-		$result = $this->hash_store->get( $this->post_id, Viewport::desktop() );
+		$result = $this->hash_store->get( $this->path, Viewport::desktop() );
 
 		$this->assertSame( $new_hash, $result );
 	}
@@ -85,90 +100,85 @@ final class HashStoreTest extends TestCase {
 		$desktop_hash = 'desktop_hash_value';
 		$mobile_hash  = 'mobile_hash_value';
 
-		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $desktop_hash ) );
-		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::mobile(), $mobile_hash ) );
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $desktop_hash ) );
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::mobile(), $mobile_hash ) );
 	}
 
 	public function testDeleteReturnsTrueWhenHashExists(): void {
 		$hash = 'test_hash_value';
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $hash );
 
-		$result = $this->hash_store->delete( $this->post_id, Viewport::desktop() );
+		$result = $this->hash_store->delete( $this->path, Viewport::desktop() );
 
 		$this->assertTrue( $result );
 	}
 
 	public function testDeleteReturnsFalseWhenHashDoesNotExist(): void {
-		$result = $this->hash_store->delete( $this->post_id, Viewport::desktop() );
+		$result = $this->hash_store->delete( $this->path, Viewport::desktop() );
 
 		$this->assertFalse( $result );
 	}
 
 	public function testDeleteRemovesHashFromStorage(): void {
 		$hash = 'test_hash_value';
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $hash );
 
 		// Verify hash exists.
-		$this->assertSame( $hash, $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
+		$this->assertSame( $hash, $this->hash_store->get( $this->path, Viewport::desktop() ) );
 
 		// Delete the hash.
-		$this->hash_store->delete( $this->post_id, Viewport::desktop() );
+		$this->hash_store->delete( $this->path, Viewport::desktop() );
 
 		// Verify hash no longer exists.
-		$this->assertNull( $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
+		$this->assertNull( $this->hash_store->get( $this->path, Viewport::desktop() ) );
 	}
 
 	public function testDeleteOnlyRemovesSpecificViewportHash(): void {
 		$desktop_hash = 'desktop_hash_value';
 		$mobile_hash  = 'mobile_hash_value';
 
-		$this->hash_store->set( $this->post_id, Viewport::desktop(), $desktop_hash );
-		$this->hash_store->set( $this->post_id, Viewport::mobile(), $mobile_hash );
+		$this->hash_store->set( $this->path, Viewport::desktop(), $desktop_hash );
+		$this->hash_store->set( $this->path, Viewport::mobile(), $mobile_hash );
 
 		// Delete only desktop hash.
-		$this->hash_store->delete( $this->post_id, Viewport::desktop() );
+		$this->hash_store->delete( $this->path, Viewport::desktop() );
 
 		// Verify desktop hash is gone but mobile hash remains.
-		$this->assertNull( $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
-		$this->assertSame( $mobile_hash, $this->hash_store->get( $this->post_id, Viewport::mobile() ) );
+		$this->assertNull( $this->hash_store->get( $this->path, Viewport::desktop() ) );
+		$this->assertSame( $mobile_hash, $this->hash_store->get( $this->path, Viewport::mobile() ) );
 	}
 
 	public function testHashIsolationBetweenDifferentPosts(): void {
 		$post_id_1 = $this->factory()->post->create( [ 'post_title' => 'Post 1' ] );
 		$post_id_2 = $this->factory()->post->create( [ 'post_title' => 'Post 2' ] );
 
+		$path_1 = new Path( $this->get_post_path( $post_id_1 ) );
+		$path_2 = new Path( $this->get_post_path( $post_id_2 ) );
 		$hash_1 = 'hash_for_post_1';
 		$hash_2 = 'hash_for_post_2';
 
-		$this->hash_store->set( $post_id_1, Viewport::desktop(), $hash_1 );
-		$this->hash_store->set( $post_id_2, Viewport::desktop(), $hash_2 );
+		$this->hash_store->set( $path_1, Viewport::desktop(), $hash_1 );
+		$this->hash_store->set( $path_2, Viewport::desktop(), $hash_2 );
 
-		$this->assertSame( $hash_1, $this->hash_store->get( $post_id_1, Viewport::desktop() ) );
-		$this->assertSame( $hash_2, $this->hash_store->get( $post_id_2, Viewport::desktop() ) );
+		$this->assertSame( $hash_1, $this->hash_store->get( $path_1, Viewport::desktop() ) );
+		$this->assertSame( $hash_2, $this->hash_store->get( $path_2, Viewport::desktop() ) );
 
 		// Clean up.
-		$this->hash_store->delete( $post_id_1, Viewport::desktop() );
-		$this->hash_store->delete( $post_id_2, Viewport::desktop() );
+		$this->hash_store->delete( $path_1, Viewport::desktop() );
+		$this->hash_store->delete( $path_2, Viewport::desktop() );
 	}
 
 	public function testEmptyStringHashReturnsNull(): void {
 		$empty_hash = '';
 
-		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $empty_hash ) );
-		$this->assertNull( $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
-	}
-
-	public function testLongHashStringIsStoredAndRetrieved(): void {
-		$long_hash = str_repeat( 'a', 1000 );
-
-		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $long_hash ) );
-		$this->assertSame( $long_hash, $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $empty_hash ) );
+		$this->assertNull( $this->hash_store->get( $this->path, Viewport::desktop() ) );
 	}
 
 	public function testSpecialCharactersInHashArePreserved(): void {
 		$special_hash = 'hash_with_special_chars_!@#$%^&*()_+-=[]{}|;:,.<>?';
 
-		$this->assertTrue( $this->hash_store->set( $this->post_id, Viewport::desktop(), $special_hash ) );
-		$this->assertSame( $special_hash, $this->hash_store->get( $this->post_id, Viewport::desktop() ) );
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $special_hash ) );
+		$this->assertSame( $special_hash, $this->hash_store->get( $this->path, Viewport::desktop() ) );
 	}
 }

@@ -25,23 +25,23 @@ final class ColumnRegistrarTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->column        = new Column( 'optimizer_status', 'Optimizer Status', '_optimizer_meta_key' );
+		$this->column        = new Column( 'optimizer_status', 'Optimizer Status', '_kb_optimizer_has' );
 		$this->sort_strategy = $this->createMock( Sort_Strategy::class );
 		$this->renderable    = $this->createMock( Renderable::class );
 
 		$this->registrar = new Column_Registrar(
 			$this->column,
+			$this->renderable,
 			$this->sort_strategy,
-			$this->renderable
+			true
 		);
 	}
 
 	public function testItCreatesWithDependencyInjection(): void {
-		$column = new Column( 'test_column', 'Test Column', '_test_meta' );
-		
+		$column = new Column( 'test_column', 'Test Column', 'test_key' );
+
 		$registrar = new Column_Registrar(
 			$column,
-			$this->sort_strategy,
 			$this->renderable
 		);
 
@@ -95,13 +95,20 @@ final class ColumnRegistrarTest extends TestCase {
 		$this->assertEquals( $expected_columns, $result );
 	}
 
-	public function testItMarksColumnAsSortable(): void {
+	public function testItMarksColumnAsSortableWithIsSortable(): void {
+		$registrar = new Column_Registrar(
+			$this->column,
+			$this->renderable,
+			null,
+			true
+		);
+
 		$existing_columns = [
 			'title' => 'title',
 			'date'  => 'date',
 		];
 
-		$result = $this->registrar->mark_sortable( $existing_columns );
+		$result = $registrar->mark_sortable( $existing_columns );
 
 		$expected_columns = [
 			'title'            => 'title',
@@ -111,7 +118,7 @@ final class ColumnRegistrarTest extends TestCase {
 				true,
 				'Optimizer Status',
 				'Table ordered by Optimizer Status',
-				'desc',
+				'asc',
 			],
 		];
 
@@ -119,9 +126,16 @@ final class ColumnRegistrarTest extends TestCase {
 	}
 
 	public function testItMarksColumnAsSortableWithEmptyColumns(): void {
+		$registrar = new Column_Registrar(
+			$this->column,
+			$this->renderable,
+			null,
+			true
+		);
+
 		$existing_columns = [];
 
-		$result = $this->registrar->mark_sortable( $existing_columns );
+		$result = $registrar->mark_sortable( $existing_columns );
 
 		$expected_columns = [
 			'optimizer_status' => [
@@ -129,21 +143,11 @@ final class ColumnRegistrarTest extends TestCase {
 				true,
 				'Optimizer Status',
 				'Table ordered by Optimizer Status',
-				'desc',
+				'asc',
 			],
 		];
 
 		$this->assertEquals( $expected_columns, $result );
-	}
-
-	public function testItHandlesSpecialCharactersInColumnLabel(): void {
-		$column    = new Column( 'special_column', 'Column with "quotes" & <tags>', '_special_meta' );
-		$registrar = new Column_Registrar( $column, $this->sort_strategy, $this->renderable );
-		
-		$existing_columns = [];
-		$result           = $registrar->mark_sortable( $existing_columns );
-
-		$this->assertStringContainsString( 'Table ordered by Column with "quotes" & <tags>', $result['special_column'][3] );
 	}
 
 	public function testItDelegatesToSortStrategy(): void {
@@ -151,10 +155,20 @@ final class ColumnRegistrarTest extends TestCase {
 		$query = $this->createMock( WP_Query::class );
 
 		$this->sort_strategy->expects( $this->once() )
-			->method( 'sort' )
-			->with( $query, $this->column );
+							->method( 'sort' )
+							->with( $query, $this->column );
 
 		$this->registrar->sort( $query );
+	}
+
+	public function testItHandlesSpecialCharactersInColumnLabel(): void {
+		$column    = new Column( 'special_column', 'Column with "quotes" & <tags>', 'special_key' );
+		$registrar = new Column_Registrar( $column, $this->renderable, null, true );
+
+		$existing_columns = [];
+		$result           = $registrar->mark_sortable( $existing_columns );
+
+		$this->assertStringContainsString( 'Table ordered by Column with "quotes" & <tags>', $result['special_column'][3] );
 	}
 
 	public function testItRendersColumnWhenSlugMatches(): void {
@@ -236,9 +250,9 @@ final class ColumnRegistrarTest extends TestCase {
 	}
 
 	public function testItHandlesUnicodeInColumnLabel(): void {
-		$column    = new Column( 'unicode_column', 'Optimización 🚀', '_unicode_meta' );
-		$registrar = new Column_Registrar( $column, $this->sort_strategy, $this->renderable );
-		
+		$column    = new Column( 'unicode_column', 'Optimización 🚀', 'unicode_key' );
+		$registrar = new Column_Registrar( $column, $this->renderable );
+
 		$existing_columns = [];
 		$result           = $registrar->add_header( $existing_columns );
 
@@ -246,9 +260,16 @@ final class ColumnRegistrarTest extends TestCase {
 	}
 
 	public function testItCreatesCorrectSortableColumnStructure(): void {
+		$registrar = new Column_Registrar(
+			$this->column,
+			$this->renderable,
+			null,
+			true
+		);
+
 		$existing_columns = [];
 
-		$result = $this->registrar->mark_sortable( $existing_columns );
+		$result = $registrar->mark_sortable( $existing_columns );
 
 		$sortable_column = $result['optimizer_status'];
 
@@ -259,6 +280,6 @@ final class ColumnRegistrarTest extends TestCase {
 		$this->assertTrue( $sortable_column[1] ); // is_descending_first
 		$this->assertEquals( 'Optimizer Status', $sortable_column[2] ); // label
 		$this->assertStringContainsString( 'Table ordered by', $sortable_column[3] ); // description
-		$this->assertEquals( 'desc', $sortable_column[4] ); // default_order
+		$this->assertEquals( 'asc', $sortable_column[4] ); // default_order
 	}
-} 
+}

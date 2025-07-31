@@ -55,6 +55,10 @@ final class Column_Hook_Manager {
 			'kadence_blocks_excluded_optimizer_post_types',
 			[
 				'attachment',
+				'advanced_page',
+				'kadence_element',
+				'kt_reviews',
+				'kt_size_chart',
 			]
 		);
 

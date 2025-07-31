@@ -48,7 +48,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -88,7 +88,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -141,7 +141,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '',
-				] 
+				]
 			),
 		];
 
@@ -181,7 +181,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -222,7 +222,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -263,13 +263,55 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
 		$this->processor->process( $p, $critical_images, $images, 0 );
 
 		$this->assertNull( $p->get_attribute( 'sizes' ) );
+	}
+
+	public function testItHandlesMissingClassAttribute(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Image with no classes"></div></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [];
+		$image_analysis  = ImageAnalysis::from(
+			[
+				'path'          => 'div.header > img.logo',
+				'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
+				'srcset'        => [],
+				'width'         => 800,
+				'height'        => 600,
+				'widthAttr'     => '800',
+				'heightAttr'    => '600',
+				'naturalWidth'  => 800,
+				'naturalHeight' => 600,
+				'aspectRatio'   => 1.33,
+				'alt'           => 'Test image',
+				'loading'       => 'lazy',
+				'decoding'      => 'async',
+				'sizes'         => null,
+				'computedStyle' => [
+					'width'          => '100%',
+					'height'         => 'auto',
+					'objectFit'      => 'cover',
+					'objectPosition' => 'center',
+				],
+				'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
+			]
+		);
+
+		$this->assertSame( '', $image_analysis->className );
+		$this->assertSame( '', $image_analysis->toArray()['class'] );
+
+		$images = [ $image_analysis ];
+
+		$this->processor->process( $p, $critical_images, $images, 0 );
+
+		$this->assertNull( $p->get_attribute( 'class' ) );
 	}
 
 	public function testItHandlesEmptySrcAttribute(): void {
@@ -303,7 +345,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -342,7 +384,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '100vw',
-				] 
+				]
 			),
 			ImageAnalysis::from(
 				[
@@ -368,7 +410,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 			ImageAnalysis::from(
 				[
@@ -394,7 +436,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -453,7 +495,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 
@@ -493,7 +535,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 						'objectPosition' => 'center',
 					],
 					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
-				] 
+				]
 			),
 		];
 

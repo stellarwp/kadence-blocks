@@ -2,11 +2,12 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Rest;
 
-use DateTimeImmutable;
-use DateTimeZone;
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
 use WP_Error;
 use WP_Http;
@@ -16,9 +17,13 @@ use WP_User;
 
 final class OptimizeRestControllerTest extends TestCase {
 
+	use Permalink_Trait;
+
 	private Optimize_Rest_Controller $controller;
 	private Store $store;
+	private Post_Sort_Indexer $post_sort_indexer;
 	private int $post_id;
+	private Path $path;
 	private WP_User $admin_user;
 	private WP_User $editor_user;
 	private WP_User $subscriber_user;
@@ -27,8 +32,12 @@ final class OptimizeRestControllerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store      = $this->container->get( Store::class );
-		$this->controller = $this->container->get( Optimize_Rest_Controller::class );
+		// Set pretty permalinks.
+		update_option( 'permalink_structure', '/%postname%/' );
+
+		$this->store             = $this->container->get( Store::class );
+		$this->post_sort_indexer = $this->container->get( Post_Sort_Indexer::class );
+		$this->controller        = $this->container->get( Optimize_Rest_Controller::class );
 
 		// Create test post.
 		$this->post_id = $this->factory()->post->create(
@@ -37,6 +46,12 @@ final class OptimizeRestControllerTest extends TestCase {
 				'post_status' => 'publish',
 			]
 		);
+
+		$post_path = $this->get_post_path( $this->post_id );
+
+		$this->assertNotEmpty( $post_path );
+
+		$this->path = new Path( $post_path );
 
 		// Create test users with different capabilities.
 		$this->admin_user = $this->factory()->user->create_and_get(
@@ -64,11 +79,12 @@ final class OptimizeRestControllerTest extends TestCase {
 		do_action( 'rest_api_init' );
 
 		// Clean up any existing optimizer data.
-		$this->store->delete( $this->post_id );
+		$this->store->delete( $this->path );
 	}
 
 	protected function tearDown(): void {
-		$this->store->delete( $this->post_id );
+		$this->store->delete( $this->path );
+		$this->post_sort_indexer->delete( $this->post_id );
 		wp_set_current_user( 0 );
 
 		// Reset the global REST server.
@@ -95,6 +111,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		$request_data = $this->getTestAnalysisData();
 		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $request_data );
 
@@ -108,8 +125,9 @@ final class OptimizeRestControllerTest extends TestCase {
 		$this->assertEquals( $this->post_id, $data['data'][ Optimize_Rest_Controller::POST_ID ] );
 
 		// Verify data was stored.
-		$stored_analysis = $this->store->get( $this->post_id );
+		$stored_analysis = $this->store->get( $this->path );
 		$this->assertInstanceOf( WebsiteAnalysis::class, $stored_analysis );
+		$this->assertTrue( $this->post_sort_indexer->get( $this->post_id ) );
 	}
 
 	public function testCreateItemAsEditor(): void {
@@ -117,6 +135,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		$request_data = $this->getTestAnalysisData();
 		$request      = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $request_data );
 
@@ -130,6 +149,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->subscriber_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->create_item_permissions_check( $request );
@@ -142,6 +162,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( 0 );
 
 		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->create_item_permissions_check( $request );
@@ -155,6 +176,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		$non_existent_post_id = 999999;
 		$request              = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
 
 		$permission_result = $this->controller->create_item_permissions_check( $request );
@@ -169,11 +191,12 @@ final class OptimizeRestControllerTest extends TestCase {
 		// First store some data.
 		$test_data = $this->getTestAnalysisData();
 		$analysis  = WebsiteAnalysis::from( $test_data );
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->get_item( $request );
@@ -192,6 +215,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->get_item( $request );
@@ -205,6 +229,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->subscriber_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->get_item_permissions_check( $request );
@@ -218,6 +243,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		$non_existent_post_id = 999999;
 		$request              = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, 'random-path' );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
 
 		$permission_result = $this->controller->get_item_permissions_check( $request );
@@ -232,11 +258,12 @@ final class OptimizeRestControllerTest extends TestCase {
 		// First store some data.
 		$test_data = $this->getTestAnalysisData();
 		$analysis  = WebsiteAnalysis::from( $test_data );
-		$this->store->set( $this->post_id, $analysis );
+		$this->store->set( $this->path, $analysis );
 
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->delete_item( $request );
@@ -249,13 +276,15 @@ final class OptimizeRestControllerTest extends TestCase {
 		$this->assertEquals( $this->post_id, $data['data'][ Optimize_Rest_Controller::POST_ID ] );
 
 		// Verify data was deleted.
-		$this->assertNull( $this->store->get( $this->post_id ) );
+		$this->assertNull( $this->store->get( $this->path ) );
+		$this->assertFalse( $this->post_sort_indexer->get( $this->post_id ) );
 	}
 
 	public function testDeleteItemNonExistentData(): void {
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$response = $this->controller->delete_item( $request );
@@ -269,6 +298,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->subscriber_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $this->post_id );
 
 		$permission_result = $this->controller->delete_item_permissions_check( $request );
@@ -282,6 +312,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		$non_existent_post_id = 999999;
 		$request              = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, 'random-path' );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $non_existent_post_id );
 
 		$permission_result = $this->controller->delete_item_permissions_check( $request );
@@ -308,6 +339,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// Test that REST API dispatch automatically sanitizes parameters.
 		$request = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, 'invalid_string' );
 
 		// Before dispatch, parameter is raw.
@@ -323,6 +355,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// Test with numeric string.
 		$request2 = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
+		$request2->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request2->set_param( Optimize_Rest_Controller::POST_ID, '123abc' );
 		// Before dispatch.
 		$this->assertEquals( '123abc', $request2->get_param( Optimize_Rest_Controller::POST_ID ) );
@@ -335,6 +368,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// Test with negative number - should return validation error.
 		$request3 = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
+		$request3->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
 		$request3->set_param( Optimize_Rest_Controller::POST_ID, '-456' );
 		$this->assertEquals( '-456', $request3->get_param( Optimize_Rest_Controller::POST_ID ) );
 
@@ -349,6 +383,7 @@ final class OptimizeRestControllerTest extends TestCase {
 
 		// Test with invalid POST_ID through actual REST API dispatch.
 		$request = new WP_REST_Request( 'GET', Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, 'random-path' );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, 'invalid_string' );
 
 		$response = $this->rest_server->dispatch( $request );
@@ -374,6 +409,7 @@ final class OptimizeRestControllerTest extends TestCase {
 		wp_set_current_user( $this->admin_user->ID );
 
 		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, '?draft' );
 		$request->set_param( Optimize_Rest_Controller::POST_ID, $draft_post_id );
 		$request->set_param( Optimize_Rest_Controller::RESULTS, $this->getTestAnalysisData() );
 
@@ -389,7 +425,7 @@ final class OptimizeRestControllerTest extends TestCase {
 			true
 		);
 
-		$decoded['lastModified'] = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+		$decoded['isStale'] = false;
 
 		return $decoded;
 	}

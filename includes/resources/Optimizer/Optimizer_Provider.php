@@ -2,14 +2,21 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Section_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -21,16 +28,18 @@ use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Meta_Store_Decorator;
-use KadenceWP\KadenceBlocks\Optimizer\Store\Meta_Store;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Store_Decorator;
+use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
 
 final class Optimizer_Provider extends Provider {
 
-	public const OPTIMIZER_COLUMN = 'kadence_blocks.optimizer.optimizer_column';
+	public const OPTIMIZER_COLUMN           = 'kadence_blocks.optimizer.optimizer_column';
+	public const OPTIMIZER_COLUMN_REGISTRAR = 'kadence_blocks.optimizer.optimizer_column_registrar';
 
 	public function register(): void {
 		$this->container->singleton( State::class, State::class );
@@ -50,6 +59,8 @@ final class Optimizer_Provider extends Provider {
 		}
 
 		$this->register_mobile_override();
+		$this->register_optimizer_query();
+		$this->register_viewport_query();
 		$this->register_translation();
 		$this->register_hash_store();
 		$this->register_nonce();
@@ -83,6 +94,22 @@ final class Optimizer_Provider extends Provider {
 			10,
 			1
 		);
+	}
+
+	private function register_optimizer_query(): void {
+		$this->container->singleton( Optimizer_Query::class, Optimizer_Query::class );
+
+		$this->container->when( Optimizer_Query::class )
+						->needs( '$table' )
+						->give( static fn(): string => Optimizer_Table::table_name( false ) );
+	}
+
+	private function register_viewport_query(): void {
+		$this->container->singleton( Viewport_Query::class, Viewport_Query::class );
+
+		$this->container->when( Viewport_Query::class )
+						->needs( '$table' )
+						->give( static fn(): string => Viewport_Hash_Table::table_name( false ) );
 	}
 
 	/**
@@ -136,51 +163,76 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_store(): void {
+		// Grab from Table > Object Cache > Ensure not Expired.
 		$this->container->bindDecorators(
 			Store::class,
 			[
-				Expired_Meta_Store_Decorator::class,
-				Meta_Store::class,
+				Expired_Store_Decorator::class,
+				Cached_Store_Decorator::class,
+				Table_Store::class,
 			]
 		);
 	}
 
 	private function register_asset_loader(): void {
-		add_action(
-			'admin_print_styles-edit.php',
-			$this->container->callback( Asset_Loader::class, 'enqueue' )
-		);
+		$this->container->singleton( Asset_Loader::class, Asset_Loader::class );
 
 		add_action(
 			'enqueue_block_editor_assets',
-			$this->container->callback( Asset_Loader::class, 'enqueue' ),
-			20
+			$this->container->callback( Asset_Loader::class, 'enqueue_block_editor_scripts' ),
+			20,
+			0
+		);
+
+		add_action(
+			'admin_enqueue_scripts',
+			$this->container->callback( Asset_Loader::class, 'enqueue_post_list_table' )
 		);
 	}
 
 	private function register_post_list_table(): void {
+		$this->container->singleton( Optimizer_Renderer::class, Optimizer_Renderer::class );
+
+		// Register the renderer.
+		$this->container->when( Optimizer_Renderer::class )
+						->needs( Store::class )
+						->give(
+							function () {
+								$store = $this->container->get( Table_Store::class );
+
+								return new Cached_Store_Decorator( $store );
+							}
+						);
+
+		// Register the column.
 		$this->container->singleton(
 			self::OPTIMIZER_COLUMN,
+			static fn(): Column  => new Column(
+				'kadence_optimizer',
+				__( 'Kadence Optimizer', 'kadence-blocks' ),
+				Post_Sort_Indexer::KEY
+			)
+		);
+
+		// Register the column registrar for this column.
+		$this->container->singleton(
+			self::OPTIMIZER_COLUMN_REGISTRAR,
 			function (): Column_Registrar {
-				$column = new Column(
-					'kadence_optimizer',
-					__( 'Kadence Optimizer', 'kadence-blocks' ),
-					Meta_Store::KEY
-				);
-
-				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
+				$column        = $this->container->get( self::OPTIMIZER_COLUMN );
 				$renderer      = $this->container->get( Optimizer_Renderer::class );
+				$sort_strategy = $this->container->get( Meta_Sort_Exists::class );
 
-				return new Column_Registrar( $column, $sort_strategy, $renderer );
+				return new Column_Registrar( $column, $renderer, $sort_strategy, true );
 			}
 		);
 
+		// Register the hook manager for all configured columns.
 		$this->container
 			->when( Column_Hook_Manager::class )
 			->needs( '$columns' )
 			->give(
 				fn(): array => [
-					$this->container->get( self::OPTIMIZER_COLUMN ),
+					$this->container->get( self::OPTIMIZER_COLUMN_REGISTRAR ),
 				]
 			);
 
@@ -207,6 +259,8 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_element_lazy_loader(): void {
+		$this->container->singleton( Section_Registry::class, Section_Registry::class );
+		$this->container->singleton( Lazy_Render_Decider::class, Lazy_Render_Decider::class );
 		$this->container->singleton( Element_Lazy_Loader::class, Element_Lazy_Loader::class );
 
 		/**
@@ -223,7 +277,7 @@ final class Optimizer_Provider extends Provider {
 			]
 		);
 
-		$this->container->when( Element_Lazy_Loader::class )
+		$this->container->when( Lazy_Render_Decider::class )
 						->needs( '$excluded_classes' )
 						->give( static fn(): array => $excluded_classes );
 
@@ -237,6 +291,13 @@ final class Optimizer_Provider extends Provider {
 			$this->container->callback( Element_Lazy_Loader::class, 'modify_row_layout_block_wrapper_args' ),
 			10,
 			2
+		);
+
+		add_filter(
+			'kadence_blocks_column_html',
+			$this->container->callback( Element_Lazy_Loader::class, 'modify_column_html' ),
+			10,
+			1
 		);
 	}
 
@@ -298,12 +359,15 @@ final class Optimizer_Provider extends Provider {
 			0
 		);
 
-		add_action(
-			'shutdown',
-			$this->container->callback( Hash_Handler::class, 'check_hash' ),
-			PHP_INT_MAX - 1,
-			0
-		);
+		// Don't register the shutdown hook when uninstalling.
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) && ! wp_installing() ) {
+			add_action(
+				'shutdown',
+				$this->container->callback( Hash_Handler::class, 'check_hash' ),
+				PHP_INT_MAX - 1,
+				0
+			);
+		}
 	}
 
 	private function register_image_processor(): void {

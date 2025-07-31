@@ -4,7 +4,7 @@ const stylesTasks = require('./styles');
 
 function miscStyles() {
 	stylesTasks.miscStyles();
-	watch(['src/assets/css/*.scss'], stylesTasks.miscStyles);
+	watch(['src/assets/css/*.scss', 'includes/resources/Optimizer/assets/css/*.scss'], stylesTasks.miscStyles);
 }
 function miscJs() {
 	jsTasks.miscJs();

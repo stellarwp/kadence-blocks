@@ -52,8 +52,8 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( false );
+				->method( 'is_main_query' )
+				->willReturn( false );
 		$query->expects( $this->never() )->method( 'get' );
 		$query->expects( $this->never() )->method( 'set' );
 
@@ -70,12 +70,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'different_column' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'different_column' );
 		$query->expects( $this->never() )->method( 'set' );
 
 		$column        = new Column( 'test_column', 'Test Column', 'test_meta_key' );
@@ -91,12 +91,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'test_column' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'test_column' );
 
 		// Expect meta_query to be set with correct structure.
 		$expected_meta_query = [
@@ -112,21 +112,21 @@ final class MetaSortExistsTest extends TestCase {
 		];
 
 		$query->expects( $this->exactly( 2 ) )
-			->method( 'set' )
-			->willReturnCallback(
-				function ( $key, $value ) use ( $expected_meta_query ) {
-					switch ( $key ) {
-						case 'meta_query':
-							$this->assertEquals( $expected_meta_query, $value );
-							break;
-						case 'orderby':
-							$this->assertEquals( 'meta_value title', $value );
-							break;
-						default:
-							$this->fail( "Unexpected key: $key" );
+				->method( 'set' )
+				->willReturnCallback(
+					function ( $key, $value ) use ( $expected_meta_query ) {
+						switch ( $key ) {
+							case 'meta_query':
+								$this->assertEquals( $expected_meta_query, $value );
+								break;
+							case 'orderby':
+								$this->assertEquals( 'meta_value title', $value );
+								break;
+							default:
+								$this->fail( "Unexpected key: $key" );
+						}
 					}
-				}
-			);
+				);
 
 		$column        = new Column( 'test_column', 'Test Column', 'test_meta_key' );
 		$sort_strategy = new Meta_Sort_Exists();
@@ -141,12 +141,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'test_column' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'test_column' );
 
 		$expected_meta_query = [
 			'relation' => 'OR',
@@ -161,21 +161,21 @@ final class MetaSortExistsTest extends TestCase {
 		];
 
 		$query->expects( $this->exactly( 2 ) )
-			->method( 'set' )
-			->willReturnCallback(
-				function ( $key, $value ) use ( $expected_meta_query ) {
-					switch ( $key ) {
-						case 'meta_query':
-							$this->assertEquals( $expected_meta_query, $value );
-							break;
-						case 'orderby':
-							$this->assertEquals( 'meta_value date menu_order title', $value );
-							break;
-						default:
-							$this->fail( "Unexpected key: $key" );
+				->method( 'set' )
+				->willReturnCallback(
+					function ( $key, $value ) use ( $expected_meta_query ) {
+						switch ( $key ) {
+							case 'meta_query':
+								$this->assertEquals( $expected_meta_query, $value );
+								break;
+							case 'orderby':
+								$this->assertEquals( 'meta_value date menu_order title', $value );
+								break;
+							default:
+								$this->fail( "Unexpected key: $key" );
+						}
 					}
-				}
-			);
+				);
 
 		$column        = new Column( 'test_column', 'Test Column', 'test_meta_key' );
 		$sort_strategy = new Meta_Sort_Exists( [ 'date', 'menu_order', 'title' ] );
@@ -190,12 +190,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'test_column' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'test_column' );
 
 		$expected_meta_query = [
 			'relation' => 'OR',
@@ -210,21 +210,21 @@ final class MetaSortExistsTest extends TestCase {
 		];
 
 		$query->expects( $this->exactly( 2 ) )
-			->method( 'set' )
-			->willReturnCallback(
-				function ( $key, $value ) use ( $expected_meta_query ) {
-					switch ( $key ) {
-						case 'meta_query':
-							$this->assertEquals( $expected_meta_query, $value );
-							break;
-						case 'orderby':
-							$this->assertEquals( 'meta_value', $value );
-							break;
-						default:
-							$this->fail( "Unexpected key: $key" );
+				->method( 'set' )
+				->willReturnCallback(
+					function ( $key, $value ) use ( $expected_meta_query ) {
+						switch ( $key ) {
+							case 'meta_query':
+								$this->assertEquals( $expected_meta_query, $value );
+								break;
+							case 'orderby':
+								$this->assertEquals( 'meta_value', $value );
+								break;
+							default:
+								$this->fail( "Unexpected key: $key" );
+						}
 					}
-				}
-			);
+				);
 
 		$column        = new Column( 'test_column', 'Test Column', 'test_meta_key' );
 		$sort_strategy = new Meta_Sort_Exists( [] );
@@ -239,12 +239,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'optimizer_status' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'optimizer_status' );
 
 		$expected_meta_query = [
 			'relation' => 'OR',
@@ -259,21 +259,21 @@ final class MetaSortExistsTest extends TestCase {
 		];
 
 		$query->expects( $this->exactly( 2 ) )
-			->method( 'set' )
-			->willReturnCallback(
-				function ( $key, $value ) use ( $expected_meta_query ) {
-					switch ( $key ) {
-						case 'meta_query':
-							$this->assertEquals( $expected_meta_query, $value );
-							break;
-						case 'orderby':
-							$this->assertEquals( 'meta_value title', $value );
-							break;
-						default:
-							$this->fail( "Unexpected key: $key" );
+				->method( 'set' )
+				->willReturnCallback(
+					function ( $key, $value ) use ( $expected_meta_query ) {
+						switch ( $key ) {
+							case 'meta_query':
+								$this->assertEquals( $expected_meta_query, $value );
+								break;
+							case 'orderby':
+								$this->assertEquals( 'meta_value title', $value );
+								break;
+							default:
+								$this->fail( "Unexpected key: $key" );
+						}
 					}
-				}
-			);
+				);
 
 		$column        = new Column( 'optimizer_status', 'Optimizer Status', '_kb_optimizer_analysis' );
 		$sort_strategy = new Meta_Sort_Exists();
@@ -288,12 +288,12 @@ final class MetaSortExistsTest extends TestCase {
 		/** @var WP_Query&MockObject $query */
 		$query = $this->createMock( WP_Query::class );
 		$query->expects( $this->once() )
-			->method( 'is_main_query' )
-			->willReturn( true );
+				->method( 'is_main_query' )
+				->willReturn( true );
 		$query->expects( $this->once() )
-			->method( 'get' )
-			->with( 'orderby' )
-			->willReturn( 'special_column' );
+				->method( 'get' )
+				->with( 'orderby' )
+				->willReturn( 'special_column' );
 
 		$expected_meta_query = [
 			'relation' => 'OR',
@@ -308,21 +308,21 @@ final class MetaSortExistsTest extends TestCase {
 		];
 
 		$query->expects( $this->exactly( 2 ) )
-			->method( 'set' )
-			->willReturnCallback(
-				function ( $key, $value ) use ( $expected_meta_query ) {
-					switch ( $key ) {
-						case 'meta_query':
-							$this->assertEquals( $expected_meta_query, $value );
-							break;
-						case 'orderby':
-							$this->assertEquals( 'meta_value title', $value );
-							break;
-						default:
-							$this->fail( "Unexpected key: $key" );
+				->method( 'set' )
+				->willReturnCallback(
+					function ( $key, $value ) use ( $expected_meta_query ) {
+						switch ( $key ) {
+							case 'meta_query':
+								$this->assertEquals( $expected_meta_query, $value );
+								break;
+							case 'orderby':
+								$this->assertEquals( 'meta_value title', $value );
+								break;
+							default:
+								$this->fail( "Unexpected key: $key" );
+						}
 					}
-				}
-			);
+				);
 
 		$column        = new Column( 'special_column', 'Special Column', '_special-meta.key_with$chars' );
 		$sort_strategy = new Meta_Sort_Exists();

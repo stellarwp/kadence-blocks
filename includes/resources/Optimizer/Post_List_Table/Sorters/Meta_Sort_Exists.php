@@ -69,7 +69,7 @@ final class Meta_Sort_Exists implements Sort_Strategy {
 				sprintf(
 					'meta_value %s',
 					implode( ' ', $this->secondary_order_fields )
-				) 
+				)
 			)
 		);
 	}

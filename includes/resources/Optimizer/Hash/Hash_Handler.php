@@ -2,15 +2,14 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
-use DateTimeImmutable;
-use DateTimeZone;
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use Throwable;
-use WP_Post;
 
 /**
  * Handles output‑buffer hashing during the WordPress shutdown phase to detect
@@ -33,19 +32,30 @@ final class Hash_Handler {
 	private Rule_Collection $rules;
 	private Background_Processor $background_processor;
 	private Hash_Store $hash_store;
+	private Path_Factory $path_factory;
 
+	/**
+	 * @param Hash_Builder         $hasher
+	 * @param Store                $store
+	 * @param Rule_Collection      $rules
+	 * @param Background_Processor $background_processor
+	 * @param Hash_Store           $hash_store
+	 * @param Path_Factory         $path_factory
+	 */
 	public function __construct(
 		Hash_Builder $hasher,
 		Store $store,
 		Rule_Collection $rules,
 		Background_Processor $background_processor,
-		Hash_Store $hash_store
+		Hash_Store $hash_store,
+		Path_Factory $path_factory
 	) {
 		$this->hasher               = $hasher;
 		$this->store                = $store;
 		$this->rules                = $rules;
 		$this->background_processor = $background_processor;
 		$this->hash_store           = $hash_store;
+		$this->path_factory         = $path_factory;
 	}
 
 	/**
@@ -81,14 +91,13 @@ final class Hash_Handler {
 			return;
 		}
 
-		// Return request early, if possible, so we can process this in the background.
-		$this->background_processor->try_finish();
-
-		global $post, $wp_query;
-
-		if ( ! $post instanceof WP_Post || ! $wp_query->is_main_query() ) {
+		// Don't check hashes on 404 requests.
+		if ( is_404() ) {
 			return;
 		}
+
+		// Return request early, if possible, so we can process this in the background.
+		$this->background_processor->try_finish();
 
 		// Process skip rules and bail if required.
 		foreach ( $this->rules->all() as $rule ) {
@@ -97,19 +106,25 @@ final class Hash_Handler {
 			}
 		}
 
+		try {
+			$path = $this->path_factory->make();
+		} catch ( InvalidArgumentException $e ) {
+			return;
+		}
+
 		// Generate a hash based on the final HTML markup, note this differs for mobile vs desktop.
 		$hash        = $this->hasher->build_hash( $this->html );
 		$viewport    = Viewport::current( $this->is_mobile() );
-		$stored_hash = $this->hash_store->get( $post->ID, $viewport );
+		$stored_hash = $this->hash_store->get( $path, $viewport );
 
 		// The frontend script will pass this get var as a hash set request.
 		$maybe_set_hash = (bool) SG::get_get_var( 'kadence_set_optimizer_hash', false );
 
 		if ( $maybe_set_hash ) {
 			// Store the hash for the current viewport.
-			$this->hash_store->set( $post->ID, $viewport, $hash );
+			$this->hash_store->set( $path, $viewport, $hash );
 
-			do_action( 'kadence_blocks_optimizer_set_hash', $hash, $post->ID, $viewport );
+			do_action( 'kadence_blocks_optimizer_set_hash', $hash, $path, $viewport );
 
 			return;
 		}
@@ -117,21 +132,21 @@ final class Hash_Handler {
 		// The HTML has been changed somehow, invalidate the optimization data, so that the next request will not have the data.
 		if ( $stored_hash && $stored_hash !== $hash ) {
 			// Delete the viewport hash.
-			$this->hash_store->delete( $post->ID, $viewport );
+			$this->hash_store->delete( $path, $viewport );
 
-			$analysis = $this->store->get( $post->ID );
+			$analysis = $this->store->get( $path );
 
 			// This page isn't optimized or the data is already invalidated.
 			if ( ! $analysis ) {
 				return;
 			}
 
-			// Set the lastModified time way in the past to force invalidate data for all viewports.
+			// Set data to stale to force invalidate data for all viewports.
 			try {
-				$analysis->lastModified = new DateTimeImmutable( '1902-12-13', new DateTimeZone( 'UTC' ) );
-				$this->store->set( $post->ID, $analysis );
+				$analysis->isStale = true;
+				$this->store->set( $path, $analysis );
 
-				do_action( 'kadence_blocks_optimizer_data_invalidated', $analysis->lastModified, $post->ID );
+				do_action( 'kadence_blocks_optimizer_data_invalidated', $analysis->isStale, $path );
 			} catch ( Throwable $e ) {
 				// Our DateTimeImmutable should never throw an exception, but this is here just in case.
 				return;

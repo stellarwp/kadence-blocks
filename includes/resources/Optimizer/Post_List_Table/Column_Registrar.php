@@ -12,17 +12,29 @@ use WP_Query;
 final class Column_Registrar {
 
 	private Column $column;
-	private Sort_Strategy $sort_strategy;
 	private Renderable $renderable;
+	private ?Sort_Strategy $sort_strategy;
+	private bool $is_sortable;
 
 	public function __construct(
 		Column $column,
-		Sort_Strategy $sort_strategy,
-		Renderable $renderable
+		Renderable $renderable,
+		?Sort_Strategy $sort_strategy = null,
+		bool $is_sortable = false
 	) {
 		$this->column        = $column;
-		$this->sort_strategy = $sort_strategy;
 		$this->renderable    = $renderable;
+		$this->sort_strategy = $sort_strategy;
+		$this->is_sortable   = $is_sortable;
+	}
+
+	/**
+	 * Return the underlying column object.
+	 *
+	 * @return Column
+	 */
+	public function column(): Column {
+		return $this->column;
 	}
 
 	/**
@@ -50,6 +62,10 @@ final class Column_Registrar {
 	 * @return array
 	 */
 	public function mark_sortable( array $columns ): array {
+		if ( ! $this->is_sortable ) {
+			return $columns;
+		}
+
 		/* translators: %s: The column label */
 		$ordered_by = sprintf( __( 'Table ordered by %s', 'kadence-blocks' ), $this->column->label );
 
@@ -58,7 +74,7 @@ final class Column_Registrar {
 			true,
 			$this->column->label,
 			$ordered_by,
-			'desc',
+			'asc',
 		];
 
 		return $columns;
@@ -74,6 +90,10 @@ final class Column_Registrar {
 	 * @return void
 	 */
 	public function sort( WP_Query $query ): void {
+		if ( ! $this->is_sortable || ! isset( $this->sort_strategy ) ) {
+			return;
+		}
+
 		$this->sort_strategy->sort( $query, $this->column );
 	}
 

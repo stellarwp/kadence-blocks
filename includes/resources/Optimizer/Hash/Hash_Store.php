@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
+use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 
 /**
  * Stores a hash based on the rendered HTML for each viewport
@@ -10,16 +12,27 @@ use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
  */
 final class Hash_Store {
 
+	private Viewport_Query $q;
+
+	public function __construct( Viewport_Query $query ) {
+		$this->q = $query;
+	}
+
 	/**
 	 * Get the hash for a viewport.
 	 *
-	 * @param int      $post_id The post ID.
+	 * @param Path     $path The current path object.
 	 * @param Viewport $vp The viewport enum.
 	 *
 	 * @return string|null
 	 */
-	public function get( int $post_id, Viewport $vp ): ?string {
-		$hash = get_post_meta( $post_id, $this->get_key( $vp ), true );
+	public function get( Path $path, Viewport $vp ): ?string {
+		$hash = $this->q->get_var(
+			$this->q->qb()->select( 'html_hash' )
+					->where( 'path_hash', $path->hash() )
+					->where( 'viewport', $vp->value() )
+					->getSQL()
+		);
 
 		return $hash ?: null;
 	}
@@ -27,40 +40,43 @@ final class Hash_Store {
 	/**
 	 * Set the hash for a viewport.
 	 *
-	 * @param int      $post_id The post ID.
+	 * @param Path     $path The current path object.
 	 * @param Viewport $vp The viewport enum.
 	 * @param string   $hash The hash to store.
 	 *
 	 * @return bool
 	 */
-	public function set( int $post_id, Viewport $vp, string $hash ): bool {
-		return (bool) update_post_meta(
-			$post_id,
-			$this->get_key( $vp ),
-			$hash
+	public function set( Path $path, Viewport $vp, string $hash ): bool {
+		return (bool) $this->q->qb()->upsert(
+			[
+				'path_hash' => $path->hash(),
+				'viewport'  => $vp->value(),
+				'html_hash' => $hash,
+			],
+			[
+				'path_hash',
+				'viewport',
+			],
+			[
+				'%s',
+				'%s',
+				'%s',
+			]
 		);
 	}
 
 	/**
 	 * Delete a viewport hash.
 	 *
-	 * @param int      $post_id The post ID.
+	 * @param Path     $path The current path object.
 	 * @param Viewport $vp The viewport enum.
 	 *
 	 * @return bool
 	 */
-	public function delete( int $post_id, Viewport $vp ): bool {
-		return delete_post_meta( $post_id, $this->get_key( $vp ) );
-	}
-
-	/**
-	 * Generate a viewport hash key.
-	 *
-	 * @param Viewport $vp The viewport enum.
-	 *
-	 * @return string
-	 */
-	private function get_key( Viewport $vp ): string {
-		return sprintf( '_kb_optimizer_%s_hash', $vp );
+	public function delete( Path $path, Viewport $vp ): bool {
+		return (bool) $this->q->qb()
+								->where( 'path_hash', $path->hash() )
+								->where( 'viewport', $vp->value() )
+								->delete();
 	}
 }

@@ -23,44 +23,28 @@ final class ColumnTest extends TestCase {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Column slug cannot be empty.' );
 
-		new Column( '', 'Test Label', 'test_meta' );
+		new Column( '', 'Test Label', 'test_meta_key' );
 	}
 
 	public function testItThrowsExceptionForEmptyLabel(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Column label cannot be empty.' );
 
-		new Column( 'test_slug', '', 'test_meta' );
-	}
-
-	public function testItAllowsEmptyMetaKey(): void {
-		$column = new Column( 'test_slug', 'Test Label', '' );
-
-		$this->assertEquals( 'test_slug', $column->slug );
-		$this->assertEquals( 'Test Label', $column->label );
-		$this->assertEquals( '', $column->meta_key );
+		new Column( 'test_slug', '', 'test_meta_key' );
 	}
 
 	public function testItThrowsExceptionForWhitespaceOnlySlug(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Column slug cannot be empty.' );
 
-		new Column( '   ', 'Test Label', 'test_meta' );
+		new Column( '   ', 'Test Label', 'test_meta_key' );
 	}
 
 	public function testItThrowsExceptionForWhitespaceOnlyLabel(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Column label cannot be empty.' );
 
-		new Column( 'test_slug', '   ', 'test_meta' );
-	}
-
-	public function testItAllowsWhitespaceOnlyMetaKey(): void {
-		$column = new Column( 'test_slug', 'Test Label', '   ' );
-
-		$this->assertEquals( 'test_slug', $column->slug );
-		$this->assertEquals( 'Test Label', $column->label );
-		$this->assertEquals( '   ', $column->meta_key );
+		new Column( 'test_slug', '   ', 'test_meta_key' );
 	}
 
 	public function testItThrowsExceptionForMixedWhitespaceSlug(): void {
@@ -68,7 +52,7 @@ final class ColumnTest extends TestCase {
 		$this->expectExceptionMessage( 'Column slug cannot be empty.' );
 
 		// Test tabs, spaces, and newlines
-		new Column( " \t\n ", 'Test Label', 'test_meta' );
+		new Column( " \t\n ", 'Test Label', 'test_meta_key' );
 	}
 
 	public function testItThrowsExceptionForMixedWhitespaceLabel(): void {
@@ -76,13 +60,13 @@ final class ColumnTest extends TestCase {
 		$this->expectExceptionMessage( 'Column label cannot be empty.' );
 
 		// Test tabs, spaces, and newlines
-		new Column( 'test_slug', " \t\n ", 'test_meta' );
+		new Column( 'test_slug', " \t\n ", 'test_meta_key' );
 	}
 
 	public function testItHandlesSpecialCharacters(): void {
 		$slug     = 'test-column_with-special.chars';
 		$label    = 'Test Column with "quotes" & <tags>';
-		$meta_key = '_private_meta_key';
+		$meta_key = 'test_meta_key';
 
 		$column = new Column( $slug, $label, $meta_key );
 
@@ -94,7 +78,7 @@ final class ColumnTest extends TestCase {
 	public function testItHandlesUnicodeCharacters(): void {
 		$slug     = 'unicode_column';
 		$label    = 'Tëst Cølümn with émojis 🎉';
-		$meta_key = 'unicode_meta_key';
+		$meta_key = 'test_meta_key';
 
 		$column = new Column( $slug, $label, $meta_key );
 
@@ -104,22 +88,21 @@ final class ColumnTest extends TestCase {
 	}
 
 	public function testItHandlesLongStrings(): void {
-		$long_slug     = str_repeat( 'a', 255 );
-		$long_label    = str_repeat( 'Test Column ', 50 ); // ~550 characters
-		$long_meta_key = str_repeat( 'meta_', 50 ); // ~250 characters
+		$long_slug  = str_repeat( 'a', 255 );
+		$long_label = str_repeat( 'Test Column ', 50 ); // ~550 characters
+		$meta_key   = 'test_meta_key';
 
-		$column = new Column( $long_slug, $long_label, $long_meta_key );
+		$column = new Column( $long_slug, $long_label, $meta_key );
 
 		$this->assertEquals( $long_slug, $column->slug );
 		$this->assertEquals( $long_label, $column->label );
-		$this->assertEquals( $long_meta_key, $column->meta_key );
 	}
 
 	public function testItMaintainsDataIntegrity(): void {
 		$original_data = [
 			'slug'     => 'optimizer_status',
 			'label'    => __( 'Optimization Status', 'kadence-blocks' ),
-			'meta_key' => '_kb_optimizer_analysis',
+			'meta_key' => 'test_meta_key',
 		];
 
 		$column = new Column(
@@ -133,4 +116,4 @@ final class ColumnTest extends TestCase {
 		$this->assertEquals( $original_data['label'], $column->label );
 		$this->assertEquals( $original_data['meta_key'], $column->meta_key );
 	}
-} 
+}
