@@ -47,11 +47,9 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		$bg        = $attributes['bgImg'] ?? '';
-		$class     = $args['class'] ?? '';
-		$is_slider = is_string( $class ) && str_contains( $class, 'kb-blocks-has-slider' );
+		$bg = $attributes['bgImg'] ?? '';
 
-		if ( ! $bg && ! $is_slider ) {
+		if ( ! $bg ) {
 			return $args;
 		}
 
@@ -61,41 +59,11 @@ final class Background_Lazy_Loader {
 			return $args;
 		}
 
-		if ( $bg ) {
-			$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
+		$background_images = $this->is_mobile() ? $analysis->mobile->backgroundImages : $analysis->desktop->backgroundImages;
 
-			// Exclude above the fold background images.
-			if ( in_array( $bg, $background_images, true ) ) {
-				return $args;
-			}
-		}
-
-		// Lazy load row sliders.
-		if ( $is_slider ) {
-			$id = $attributes['uniqueID'] ?? '';
-
-			if ( ! $id ) {
-				return $args;
-			}
-
-			$sections      = $this->is_mobile() ? $analysis->mobile->sections : $analysis->desktop->sections;
-			$class_to_find = sprintf( 'kb-row-layout-id%s', $id );
-
-			// Assume we'll lazy load this section in case it wasn't collected.
-			$should_lazy_load_slider = true;
-
-			foreach ( $sections as $section ) {
-				if ( str_contains( $section->className, $class_to_find ) ) {
-					// Found our section, check if it's below the fold.
-					$should_lazy_load_slider = ! $section->isAboveFold;
-
-					break;
-				}
-			}
-
-			if ( ! $should_lazy_load_slider ) {
-				return $args;
-			}
+		// Exclude above the fold background images.
+		if ( in_array( $bg, $background_images, true ) ) {
+			return $args;
 		}
 
 		$classes   = $args['class'] ?? '';
