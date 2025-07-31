@@ -2,8 +2,11 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
 
+use KadenceWP\KadenceBlocks\Asset\Asset;
+use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
+use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -18,6 +21,8 @@ final class BackgroundLazyLoaderTest extends TestCase {
 	private Store $store;
 	private Background_Lazy_Loader $lazy_loader;
 	private Path $path;
+	private Analysis_Registry $registry;
+	private Asset $asset;
 
 	protected function setUp(): void {
 		Monkey\setUp();
@@ -43,12 +48,21 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$_SERVER['REQUEST_URI'] = '/test-post/';
 
-		$this->store       = $this->container->get( Store::class );
-		$this->lazy_loader = $this->container->get( Background_Lazy_Loader::class );
+		$this->store = $this->container->get( Store::class );
+		$this->asset = $this->container->get( Asset::class );
+
+		// Create the registry for desktop testing.
+		$path_factory   = $this->container->get( Path_Factory::class );
+		$this->registry = new Analysis_Registry( $this->store, $path_factory, false );
+
+		// Create a custom lazy loader with our test registry.
+		$this->lazy_loader = new Background_Lazy_Loader( $this->asset, $this->registry );
 	}
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
+
+		$this->registry->flush();
 
 		unset( $_SERVER['REQUEST_URI'] );
 
@@ -100,7 +114,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 		$this->assertEquals( $args, $result );
 	}
 
-	public function testItReturnsOriginalArgsWhenNoAnalysisData(): void {
+	public function testItAddsLazyLoadingAttributesWhenNoAboveTheFoldBackgroundImages(): void {
 		$args = [
 			'class' => 'kb-row-layout',
 			'id'    => 'test-row',
@@ -112,7 +126,14 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
-		$this->assertEquals( $args, $result );
+		$expected = [
+			'id'                        => 'test-row',
+			'data-kadence-lazy-class'   => 'kb-row-layout',
+			'data-kadence-lazy-trigger' => 'viewport',
+			'data-kadence-lazy-attrs'   => 'class',
+		];
+
+		$this->assertEquals( $expected, $result );
 	}
 
 	public function testItReturnsOriginalArgsWhenBackgroundImageIsAboveTheFoldOnDesktop(): void {
@@ -146,9 +167,14 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$this->createTestAnalysis( [], [ 'http://wordpress.test/image.jpg' ] );
 
+		// Create mobile registry and lazy loader for this test.
+		$path_factory       = $this->container->get( Path_Factory::class );
+		$mobile_registry    = new Analysis_Registry( $this->store, $path_factory, true );
+		$mobile_lazy_loader = new Background_Lazy_Loader( $this->asset, $mobile_registry );
+
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $mobile_lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -755,9 +781,14 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$this->createTestAnalysis( [], [ 'http://wordpress.test/image.jpg' ] );
 
+		// Create mobile registry and lazy loader for this test.
+		$path_factory       = $this->container->get( Path_Factory::class );
+		$mobile_registry    = new Analysis_Registry( $this->store, $path_factory, true );
+		$mobile_lazy_loader = new Background_Lazy_Loader( $this->asset, $mobile_registry );
+
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $mobile_lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
 
 		// Should not add lazy loading attributes since the image is in the above-the-fold list.
 		$this->assertEquals( $args, $result );
@@ -767,7 +798,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 	 * Create a test WebsiteAnalysis object.
 	 *
 	 * @param string[] $desktop_background_images Desktop background images.
-	 * @param string[] $mobile_background_images  Mobile background images.
+	 * @param string[] $mobile_background_images Mobile background images.
 	 */
 	private function createTestAnalysis(
 		array $desktop_background_images = [],
