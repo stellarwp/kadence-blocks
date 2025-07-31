@@ -193,12 +193,6 @@
 }
 
 // Background Slider
-
-// Hide the slider before initialized for lazy loading
-.kb-blocks-bg-slider-init:not(.splide-initialized) {
-	display: none;
-}
-
 .kt-row-layout-inner > .kb-blocks-bg-slider,
 .kb-row-layout-wrap > .kb-blocks-bg-slider {
 	position: absolute;
