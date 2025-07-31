@@ -30,8 +30,12 @@ final class Lazy_Load_Processor implements Processor {
 				$p->remove_attribute( 'loading' );
 			}
 		} else {
+			$is_slider_image = $p->get_attribute( 'data-splide-lazy' );
+
 			// Ensure below the fold images have native lazy loading.
-			$p->set_attribute( 'loading', 'lazy' );
+			if ( ! $is_slider_image ) {
+				$p->set_attribute( 'loading', 'lazy' );
+			}
 
 			// If WordPress somehow added a high fetch priority, remove it.
 			if ( 'high' === $p->get_attribute( 'fetchpriority' ) ) {

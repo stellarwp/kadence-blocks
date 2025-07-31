@@ -197,4 +197,19 @@ final class LazyLoadProcessorTest extends TestCase {
 		$this->assertEquals( 'low', $p->get_attribute( 'fetchpriority' ) );
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
+
+	public function testItSkipsSplideLazyLoadImages(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img data-splide-lazy="http://wordpress.test/wp-content/uploads/image.jpg" fetchpriority="high" alt="Image with high priority"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [];
+		$images          = [];
+
+		$this->processor->process( $p, $critical_images, $images, 0 );
+
+		// Should not have lazy loading attribute and no fetchpriority.
+		$this->assertNull( $p->get_attribute( 'fetchpriority' ) );
+		$this->assertNull( $p->get_attribute( 'loading' ) );
+	}
 }
