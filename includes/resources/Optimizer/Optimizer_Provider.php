@@ -35,8 +35,11 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
+use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 
 final class Optimizer_Provider extends Provider {
+
+	use Viewport_Trait;
 
 	public const OPTIMIZER_COLUMN           = 'kadence_blocks.optimizer.optimizer_column';
 	public const OPTIMIZER_COLUMN_REGISTRAR = 'kadence_blocks.optimizer.optimizer_column_registrar';
@@ -66,6 +69,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_nonce();
 		$this->register_request_anonymizer();
 		$this->register_store();
+		$this->register_analysis_registry();
 		$this->register_asset_loader();
 		$this->register_post_list_table();
 		$this->register_rest();
@@ -172,6 +176,14 @@ final class Optimizer_Provider extends Provider {
 				Table_Store::class,
 			]
 		);
+	}
+
+	private function register_analysis_registry(): void {
+		$this->container->singleton( Analysis_Registry::class, Analysis_Registry::class );
+
+		$this->container->when( Analysis_Registry::class )
+						->needs( '$is_mobile' )
+						->give( fn(): bool => $this->is_mobile() );
 	}
 
 	private function register_asset_loader(): void {
