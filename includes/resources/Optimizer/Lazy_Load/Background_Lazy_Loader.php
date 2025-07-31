@@ -33,20 +33,23 @@ final class Background_Lazy_Loader {
 	 * @return array<string, mixed>
 	 */
 	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		$bg = $attributes['bgImg'] ?? '';
+		$bg             = $attributes['bgImg'] ?? '';
+		$classes        = (string) ( $args['class'] ?? '' );
+		$has_row_slider = str_contains( $classes, 'kb-row-has-slider' );
 
-		if ( ! $bg ) {
+		if ( ! $bg && ! $has_row_slider ) {
 			return $args;
 		}
 
-		$background_images = $this->registry->get_background_images();
+		if ( $bg ) {
+			$background_images = $this->registry->get_background_images();
 
-		// Exclude above the fold background images.
-		if ( in_array( $bg, $background_images, true ) ) {
-			return $args;
+			// Exclude above the fold background images.
+			if ( in_array( $bg, $background_images, true ) ) {
+				return $args;
+			}
 		}
 
-		$classes   = $args['class'] ?? '';
 		$is_inline = $attributes['backgroundInline'] ?? false;
 
 		// Add lazy loading data attributes for CSS backgrounds.
