@@ -122,10 +122,10 @@
 			el.setAttribute('role', 'alert');
 			el.setAttribute('aria-live', 'assertive');
 			el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_message, '<div><a><b><i><u><p><ol><ul>');
-			
+
 			// Announce to screen readers using live region
 			window.kadenceAdvancedForm.announceMessage(form, error_message, 'assertive');
-			
+
 			// Insert visual message
 			window.kadenceAdvancedForm.insertAfter(el, form);
 		},
@@ -441,7 +441,7 @@
 								// Announce success message to screen readers
 								const successText = window.kadenceAdvancedForm.extractTextFromHTML(response.html);
 								window.kadenceAdvancedForm.announceMessage(form, successText, 'polite');
-								
+
 								// Insert visual message
 								window.kadenceAdvancedForm.insertAfter(
 									window.kadenceAdvancedForm.createElementFromHTML(response.html),
@@ -454,11 +454,11 @@
 							}
 						} else if (response.data) {
 							window.kadenceAdvancedForm.event('failed', form);
-							
+
 							// Announce error message to screen readers
 							const errorText = window.kadenceAdvancedForm.extractTextFromHTML(response.data.html);
 							window.kadenceAdvancedForm.announceMessage(form, errorText, 'assertive');
-							
+
 							// Insert visual message
 							window.kadenceAdvancedForm.insertAfter(
 								window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
