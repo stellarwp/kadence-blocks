@@ -32,7 +32,7 @@ final class Background_Lazy_Loader {
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function modify_row_layout_block_wrapper_args( array $attrs, array $attributes ): array {
+	public function lazy_load_row_background_images( array $attrs, array $attributes ): array {
 		$bg      = $attributes['bgImg'] ?? '';
 		$classes = (string) ( $attrs['class'] ?? '' );
 

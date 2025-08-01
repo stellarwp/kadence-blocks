@@ -339,7 +339,7 @@ final class Optimizer_Provider extends Provider {
 
 		add_filter(
 			'kadence_blocks_row_wrapper_args',
-			$this->container->callback( Background_Lazy_Loader::class, 'modify_row_layout_block_wrapper_args' ),
+			$this->container->callback( Background_Lazy_Loader::class, 'lazy_load_row_background_images' ),
 			20,
 			2
 		);

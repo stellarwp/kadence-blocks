@@ -79,7 +79,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 			'bgImg' => false,
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -94,7 +94,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 			'bgImg' => '',
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -109,7 +109,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 			'bgImg' => null,
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -124,7 +124,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 			'bgImg' => 'http://wordpress.test/image.jpg',
 		];
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -143,7 +143,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -167,7 +167,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $mobile_lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $mobile_lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -185,7 +185,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -204,7 +204,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -223,7 +223,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -249,7 +249,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -277,7 +277,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -307,7 +307,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -333,7 +333,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -359,7 +359,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -385,7 +385,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		// Should not add lazy loading attributes since the image is in the above-the-fold list.
 		$this->assertEquals( $args, $result );
@@ -405,7 +405,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		// Should not add lazy loading attributes since the image is in the above-the-fold list.
 		$this->assertEquals( $args, $result );
@@ -425,7 +425,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -444,7 +444,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -471,7 +471,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -498,7 +498,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -524,7 +524,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -552,7 +552,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -579,7 +579,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -599,7 +599,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -619,7 +619,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -646,7 +646,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -673,7 +673,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -700,7 +700,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -727,7 +727,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		$expected = [
 			'id'                        => 'test-row',
@@ -754,7 +754,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
 
-		$result = $this->lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $this->lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		// Should not add lazy loading attributes since the image is in the above-the-fold list.
 		$this->assertEquals( $args, $result );
@@ -781,7 +781,7 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( true );
 
-		$result = $mobile_lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $mobile_lazy_loader->lazy_load_row_background_images( $args, $attributes );
 
 		// Should not add lazy loading attributes since the image is in the above-the-fold list.
 		$this->assertEquals( $args, $result );
@@ -823,4 +823,5 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$this->store->set( $this->path, $analysis );
 	}
+
 }
