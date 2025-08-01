@@ -1481,7 +1481,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			/**
 			 * DO NOT REMOVE: The optimizer uses this.
 			 *
-			 * @param array<string, mixed> The HTML attributes.
+			 * @param array<string, mixed> $attrs The HTML attributes.
+			 * @param array<string, mixed> $attributes The row block attributes.
 			 */
 			$attrs = apply_filters( 'kadence_blocks_row_slider_attrs', $attrs, $attributes );
 
@@ -1575,6 +1576,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $video_args['muted'] ) && $video_args['muted'] == 'false' ) {
 			unset( $video_args['muted'] );
 		}
+
+		/**
+		 * DO NOT REMOVE: The optimizer uses this.
+		 *
+		 * @param array<string, mixed> $video_args The HTML attributes.
+		 * @param array<string, mixed> $attributes The row block attributes.
+		 */
+		$video_args = apply_filters( 'kadence_blocks_row_video_attrs', $video_args, $attributes );
+
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
 			if ( empty( $value ) ) {

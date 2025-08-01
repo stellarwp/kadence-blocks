@@ -314,6 +314,154 @@ final class AnalysisRegistryTest extends TestCase {
 		$this->assertTrue( $result2 );
 	}
 
+	// Critical Images Tests
+
+	public function testItReturnsEmptyArrayForCriticalImagesWhenNoPath(): void {
+		$registry = new Analysis_Registry( $this->store, $this->container->get( Path_Factory::class ), false );
+
+		$result = $registry->get_critical_images();
+
+		$this->assertEquals( [], $result );
+	}
+
+	public function testItReturnsEmptyArrayForCriticalImagesWhenNoAnalysisData(): void {
+		$result = $this->registry->get_critical_images();
+
+		$this->assertEquals( [], $result );
+	}
+
+	public function testItReturnsCriticalImagesForDesktop(): void {
+		$this->createTestAnalysis();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [ 'desktop-critical1.jpg' ];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItReturnsCriticalImagesForMobile(): void {
+		$registry = new Analysis_Registry( $this->store, $this->container->get( Path_Factory::class ), true );
+
+		$this->createTestAnalysis();
+
+		$result = $registry->get_critical_images();
+
+		$expected = [ 'mobile-critical1.jpg' ];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleCriticalImages(): void {
+		$this->createTestAnalysisWithMultipleCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [ 'desktop-critical1.jpg', 'desktop-critical2.jpg', 'desktop-critical3.jpg' ];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesEmptyCriticalImages(): void {
+		$this->createTestAnalysisWithEmptyCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$this->assertEquals( [], $result );
+	}
+
+	public function testItCachesCriticalImagesResults(): void {
+		$this->createTestAnalysis();
+
+		// First call to populate cache.
+		$result1 = $this->registry->get_critical_images();
+
+		// Second call should use cache.
+		$result2 = $this->registry->get_critical_images();
+
+		$expected = [ 'desktop-critical1.jpg' ];
+
+		$this->assertEquals( $expected, $result1 );
+		$this->assertEquals( $expected, $result2 );
+	}
+
+	public function testItClearsCriticalImagesCacheOnFlush(): void {
+		$this->createTestAnalysis();
+
+		// First call to populate cache.
+		$this->registry->get_critical_images();
+
+		// Flush the cache.
+		$this->registry->flush();
+
+		// Second call should work correctly after flush.
+		$critical_images = $this->registry->get_critical_images();
+
+		$this->assertIsArray( $critical_images );
+		$this->assertEquals( [ 'desktop-critical1.jpg' ], $critical_images );
+	}
+
+	public function testItHandlesSpecialCharactersInCriticalImageUrls(): void {
+		$this->createTestAnalysisWithSpecialCharacterCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [ 'desktop-critical with spaces.jpg', 'desktop-critical-🚀.jpg' ];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesQueryParametersInCriticalImageUrls(): void {
+		$this->createTestAnalysisWithQueryParameterCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [ 'desktop-critical.jpg?v=123&w=800', 'desktop-critical.jpg?v=456&h=600' ];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesHttpsCriticalImageUrls(): void {
+		$this->createTestAnalysisWithHttpsCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [
+			'https://wordpress.test/desktop-critical1.jpg',
+			'https://wordpress.test/desktop-critical2.jpg',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesRelativeCriticalImageUrls(): void {
+		$this->createTestAnalysisWithRelativeCriticalImages();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [
+			'/wp-content/uploads/desktop-critical1.jpg',
+			'/wp-content/uploads/desktop-critical2.jpg',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMixedCriticalImageUrlTypes(): void {
+		$this->createTestAnalysisWithMixedCriticalImageUrls();
+
+		$result = $this->registry->get_critical_images();
+
+		$expected = [
+			'http://wordpress.test/desktop-critical1.jpg',
+			'https://wordpress.test/desktop-critical2.jpg',
+			'/wp-content/uploads/desktop-critical3.jpg',
+			'desktop-critical4.jpg',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object with desktop and mobile data.
 	 */
@@ -684,6 +832,321 @@ final class AnalysisRegistryTest extends TestCase {
 			[
 				'criticalImages'   => [],
 				'backgroundImages' => [],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with multiple critical images.
+	 */
+	private function createTestAnalysisWithMultipleCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'desktop-critical1.jpg',
+					'desktop-critical2.jpg',
+					'desktop-critical3.jpg',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with empty critical images.
+	 */
+	private function createTestAnalysisWithEmptyCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with special character critical images.
+	 */
+	private function createTestAnalysisWithSpecialCharacterCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'desktop-critical with spaces.jpg',
+					'desktop-critical-🚀.jpg',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with query parameter critical images.
+	 */
+	private function createTestAnalysisWithQueryParameterCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'desktop-critical.jpg?v=123&w=800',
+					'desktop-critical.jpg?v=456&h=600',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with HTTPS critical images.
+	 */
+	private function createTestAnalysisWithHttpsCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'https://wordpress.test/desktop-critical1.jpg',
+					'https://wordpress.test/desktop-critical2.jpg',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with relative critical images.
+	 */
+	private function createTestAnalysisWithRelativeCriticalImages(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'/wp-content/uploads/desktop-critical1.jpg',
+					'/wp-content/uploads/desktop-critical2.jpg',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
+				'sections'         => [],
+			]
+		);
+
+		$analysis = WebsiteAnalysis::from(
+			[
+				'desktop' => $desktop->toArray(),
+				'mobile'  => $mobile->toArray(),
+				'images'  => [],
+			]
+		);
+
+		$this->store->set( $this->path, $analysis );
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with mixed critical image URL types.
+	 */
+	private function createTestAnalysisWithMixedCriticalImageUrls(): void {
+		$section_data = [
+			'id'            => 'section-test-123',
+			'height'        => 500,
+			'tagName'       => 'div',
+			'className'     => 'kb-row-layout test-123',
+			'path'          => 'test-path',
+			'isAboveFold'   => false,
+			'hasImages'     => false,
+			'hasBackground' => false,
+		];
+
+		$desktop = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [
+					'http://wordpress.test/desktop-critical1.jpg',
+					'https://wordpress.test/desktop-critical2.jpg',
+					'/wp-content/uploads/desktop-critical3.jpg',
+					'desktop-critical4.jpg',
+				],
+				'backgroundImages' => [ 'desktop-bg1.jpg', 'desktop-bg2.jpg' ],
+				'sections'         => [ $section_data ],
+			]
+		);
+
+		$mobile = DeviceAnalysis::from(
+			[
+				'criticalImages'   => [ 'mobile-critical1.jpg' ],
+				'backgroundImages' => [ 'mobile-bg1.jpg', 'mobile-bg2.jpg' ],
 				'sections'         => [],
 			]
 		);

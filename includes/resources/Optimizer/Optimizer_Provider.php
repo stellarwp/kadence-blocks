@@ -17,6 +17,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Background_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Slider_Lazy_Loader;
+use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Video_Poster_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
@@ -76,6 +77,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_request();
 		$this->register_element_lazy_loader();
 		$this->register_slider_lazy_loader();
+		$this->register_video_poster_lazy_loader();
 		$this->register_background_lazy_loader();
 		$this->register_hash_handling();
 		$this->register_image_processor();
@@ -326,6 +328,22 @@ final class Optimizer_Provider extends Provider {
 			$this->container->callback( Slider_Lazy_Loader::class, 'lazy_load_row_slider' ),
 			10,
 			2
+		);
+	}
+
+	private function register_video_poster_lazy_loader(): void {
+		$this->container->singleton( Video_Poster_Lazy_Loader::class, Video_Poster_Lazy_Loader::class );
+
+		// Do not perform slider lazy loading on optimizer requests.
+		if ( $this->container->get( Request::class )->is_optimizer_request() ) {
+			return;
+		}
+
+		add_filter(
+			'kadence_blocks_row_video_attrs',
+			$this->container->callback( Video_Poster_Lazy_Loader::class, 'lazy_load_row_video_poster' ),
+			10,
+			1
 		);
 	}
 

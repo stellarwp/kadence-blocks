@@ -95,6 +95,19 @@ class Analysis_Registry {
 	}
 
 	/**
+	 * Get the list of the above the fold image URLs.
+	 *
+	 * @return string[]
+	 */
+	public function get_critical_images(): array {
+		$analysis = $this->get_analysis();
+
+		return $analysis
+			? ( $this->is_mobile ? $analysis->mobile->criticalImages : $analysis->desktop->criticalImages )
+			: [];
+	}
+
+	/**
 	 * For the current viewport, get all the "below the fold" sections that have a height
 	 * greater than 0.
 	 *
