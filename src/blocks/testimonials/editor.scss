@@ -378,3 +378,45 @@
     flex-direction: column;
     justify-content: flex-end;
 }
+
+// Pause Button Editor Styles
+.wp-block-kadence-testimonials {
+	.kt-blocks-carousel:hover .kb-gallery-pause-button {
+		opacity: 0.75;
+	}
+	
+	.kb-gallery-pause-button {
+		position: absolute;
+		bottom: 40px;
+		right: 10px;
+		background: var(--splide-nav-background, rgba(0, 0, 0, 0.8));
+		color: var(--splide-nav-color, #fff);
+		border: var(--splide-nav-border, 2px solid transparent);
+		border-radius: 4px;
+		padding: 8px 12px;
+		cursor: pointer;
+		font-size: 14px;
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0.25;
+		transition: opacity 0.4s ease-in-out;
+		
+		&:hover {
+			opacity: 1;
+		}
+		
+		svg {
+			width: 24px;
+			height: 24px;
+			display: block;
+		}
+		
+		.kb-gallery-pause-icon,
+		.kb-gallery-play-icon {
+			fill: currentColor;
+			line-height: 0;
+		}
+	}
+}

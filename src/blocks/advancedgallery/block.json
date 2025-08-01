@@ -448,6 +448,10 @@
 		},
 		"dotCustomBorderWidth": {
 			"type": "number"
+		},
+		"showPauseButton": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

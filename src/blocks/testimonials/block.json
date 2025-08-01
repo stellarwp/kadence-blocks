@@ -63,6 +63,10 @@
 			"type": "number",
 			"default": 7000
 		},
+		"showPauseButton": {
+			"type": "boolean",
+			"default": false
+		},
 		"transSpeed": {
 			"type": "number",
 			"default": 400
