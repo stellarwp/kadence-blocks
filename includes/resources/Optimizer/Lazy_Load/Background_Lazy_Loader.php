@@ -27,26 +27,31 @@ final class Background_Lazy_Loader {
 	 *
 	 * @filter kadence_blocks_row_wrapper_args
 	 *
-	 * @param array<string, mixed> $args The wrapper div HTML attributes.
+	 * @param array<string, mixed> $attrs The wrapper div HTML attributes.
 	 * @param array<string, mixed> $attributes The current block attributes.
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
-		$bg             = $attributes['bgImg'] ?? '';
-		$classes        = (string) ( $args['class'] ?? '' );
-		$has_row_slider = str_contains( $classes, 'kb-row-has-slider' );
+	public function modify_row_layout_block_wrapper_args( array $attrs, array $attributes ): array {
+		$bg      = $attributes['bgImg'] ?? '';
+		$classes = (string) ( $attrs['class'] ?? '' );
 
-		if ( ! $bg && ! $has_row_slider ) {
-			return $args;
+		if ( ! $bg ) {
+			return $attrs;
 		}
 
-		if ( $bg ) {
-			$background_images = $this->registry->get_background_images();
+		if ( ! $this->registry->is_optimized() ) {
+			return $attrs;
+		}
+
+		$background_images = $this->registry->get_background_images();
+
+		if ( $background_images ) {
+			$lookup = array_flip( $background_images );
 
 			// Exclude above the fold background images.
-			if ( in_array( $bg, $background_images, true ) ) {
-				return $args;
+			if ( isset( $lookup[ $bg ] ) ) {
+				return $attrs;
 			}
 		}
 
@@ -54,29 +59,77 @@ final class Background_Lazy_Loader {
 
 		// Add lazy loading data attributes for CSS backgrounds.
 		if ( $classes ) {
-			$args['data-kadence-lazy-class']   = $classes;
-			$args['data-kadence-lazy-trigger'] = 'viewport';
-			$args['data-kadence-lazy-attrs']   = 'class';
-			unset( $args['class'] );
+			$attrs['data-kadence-lazy-class']   = $classes;
+			$attrs['data-kadence-lazy-trigger'] = 'viewport';
+			$attrs['data-kadence-lazy-attrs']   = 'class';
+			unset( $attrs['class'] );
 		}
 
 		// Add lazy loading data attributes for inline style background images.
 		if ( $is_inline ) {
-			$args['data-kadence-lazy-style']     = $args['style'] ?? '';
-			$args['data-kadence-lazy-trigger'] ??= 'viewport';
+			$attrs['data-kadence-lazy-style']     = $attrs['style'] ?? '';
+			$attrs['data-kadence-lazy-trigger'] ??= 'viewport';
 
-			if ( ! empty( $args['data-kadence-lazy-attrs'] ) ) {
-				$args['data-kadence-lazy-attrs'] .= ',style';
+			if ( ! empty( $attrs['data-kadence-lazy-attrs'] ) ) {
+				$attrs['data-kadence-lazy-attrs'] .= ',style';
 			} else {
-				$args['data-kadence-lazy-attrs'] = 'style';
+				$attrs['data-kadence-lazy-attrs'] = 'style';
 			}
 
-			unset( $args['style'] );
+			unset( $attrs['style'] );
 		}
 
 		// Enqueue the lazy loader script if we found a bg.
-		$this->asset->enqueue_script( 'lazy-loader', 'dist/lazy-loader' );
+		$this->enqueue_scripts();
 
-		return $args;
+		return $attrs;
+	}
+
+	/**
+	 * Lazy load the row slider background image.
+	 *
+	 * @filter kadence_blocks_row_slider_attrs
+	 *
+	 * @param array<string, mixed> $attrs The HTML attributes.
+	 * @param array<string, mixed> $attributes The row block's attributes.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function lazy_load_row_slider( array $attrs, array $attributes ): array {
+		if ( ! $this->registry->is_optimized() ) {
+			return $attrs;
+		}
+
+		$sliders = $attributes['backgroundSlider'] ?? [];
+
+		// Exclude sliders with above the fold background images.
+		if ( $sliders ) {
+			$background_images = $this->registry->get_background_images();
+
+			if ( $background_images ) {
+				$lookup = array_flip( $background_images );
+
+				foreach ( $sliders as $slide ) {
+					$bg = $slide['bgImg'] ?? '';
+
+					if ( $bg && isset( $lookup[ $bg ] ) ) {
+						return $attrs;
+					}
+				}
+			}
+		}
+
+		$attrs['class'] = trim( ( $attrs['class'] ?? '' ) . ' kb-lazy-bg-pending' );
+
+		return $attrs;
+	}
+
+	/**
+	 * Enqueue the lazy loading frontend script.
+	 *
+	 * @return void
+	 */
+	private function enqueue_scripts(): void {
+		$this->asset->enqueue_script( 'lazy-loader', 'dist/lazy-loader' );
 	}
 }

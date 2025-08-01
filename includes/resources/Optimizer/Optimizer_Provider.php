@@ -326,6 +326,13 @@ final class Optimizer_Provider extends Provider {
 			20,
 			2
 		);
+
+		add_filter(
+			'kadence_blocks_row_slider_attrs',
+			$this->container->callback( Background_Lazy_Loader::class, 'lazy_load_row_slider' ),
+			10,
+			2
+		);
 	}
 
 	private function register_hash_handling(): void {
