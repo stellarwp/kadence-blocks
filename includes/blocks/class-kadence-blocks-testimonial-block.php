@@ -357,14 +357,16 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$extras = '';
 		}
-		// translators: %d is the number for the star rating.
-		$svg_title = sprintf( esc_html__( '%d star rating', 'kadence-blocks' ), $attributes['rating'] );
-		$svg       = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty( $ratingStyles[0]['size'] ) ? $ratingStyles[0]['size'] : '' ), $svg_title, false, $extras );
+		// Remove title from individual SVGs since we'll use aria-label on container
+		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty( $ratingStyles[0]['size'] ) ? $ratingStyles[0]['size'] : '' ), '', false, $extras . ' aria-hidden="true"' );
 
-		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-' . esc_attr( $attributes['rating'] ) . '">';
+		// translators: %1$d is the rating number, %2$d is the total number of stars.
+		$aria_label = sprintf( esc_attr__( '%1$d out of %2$d stars', 'kadence-blocks' ), $attributes['rating'], 5 );
+		
+		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-' . esc_attr( $attributes['rating'] ) . '" role="img" aria-label="' . $aria_label . '">';
 
 		for ( $i = 0; $i < $attributes['rating']; $i++ ) {
-			$rating .= '<div class="kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-' . ( $i + 1 ) . '">';
+			$rating .= '<div class="kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-' . ( $i + 1 ) . '" aria-hidden="true">';
 			$rating .= $svg;
 			$rating .= '</div>';
 		}
