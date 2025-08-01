@@ -54,6 +54,34 @@ class Analysis_Registry {
 	}
 
 	/**
+	 * Build the WebsiteAnalysis DTO based on the current path.
+	 *
+	 * @return WebsiteAnalysis|null
+	 */
+	public function get_analysis(): ?WebsiteAnalysis {
+		if ( $this->analysis !== null ) {
+			return $this->analysis;
+		}
+
+		if ( ! $this->path ) {
+			return null;
+		}
+
+		$this->analysis = $this->store->get( $this->path );
+
+		return $this->analysis;
+	}
+
+	/**
+	 * Check if this request is optimized.
+	 *
+	 * @return bool
+	 */
+	public function is_optimized(): bool {
+		return $this->get_analysis() instanceof WebsiteAnalysis;
+	}
+
+	/**
 	 * Get the above the fold background images for the current viewport.
 	 *
 	 * @return string[]
@@ -100,24 +128,5 @@ class Analysis_Registry {
 		$this->cache[ self::SECTIONS ] = $results;
 
 		return $this->cache[ self::SECTIONS ];
-	}
-
-	/**
-	 * Build the WebsiteAnalysis DTO based on the current path.
-	 *
-	 * @return WebsiteAnalysis|null
-	 */
-	private function get_analysis(): ?WebsiteAnalysis {
-		if ( $this->analysis !== null ) {
-			return $this->analysis;
-		}
-
-		if ( ! $this->path ) {
-			return null;
-		}
-
-		$this->analysis = $this->store->get( $this->path );
-
-		return $this->analysis;
 	}
 }

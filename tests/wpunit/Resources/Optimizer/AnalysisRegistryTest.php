@@ -240,6 +240,80 @@ final class AnalysisRegistryTest extends TestCase {
 		$this->assertEquals( [], $result );
 	}
 
+	public function testItReturnsNullForGetAnalysisWhenNoPath(): void {
+		$registry = new Analysis_Registry( $this->store, $this->container->get( Path_Factory::class ), false );
+
+		$result = $registry->get_analysis();
+
+		$this->assertNull( $result );
+	}
+
+	public function testItReturnsNullForGetAnalysisWhenNoAnalysisData(): void {
+		$result = $this->registry->get_analysis();
+
+		$this->assertNull( $result );
+	}
+
+	public function testItReturnsWebsiteAnalysisForGetAnalysisWhenDataExists(): void {
+		$this->createTestAnalysis();
+
+		$result = $this->registry->get_analysis();
+
+		$this->assertInstanceOf( WebsiteAnalysis::class, $result );
+	}
+
+	public function testItCachesGetAnalysisResult(): void {
+		$this->createTestAnalysis();
+
+		// First call to populate cache.
+		$result1 = $this->registry->get_analysis();
+
+		// Second call should use cached result.
+		$result2 = $this->registry->get_analysis();
+
+		$this->assertInstanceOf( WebsiteAnalysis::class, $result1 );
+		$this->assertInstanceOf( WebsiteAnalysis::class, $result2 );
+		$this->assertSame( $result1, $result2 );
+	}
+
+	public function testItReturnsFalseForIsOptimizedWhenNoPath(): void {
+		$registry = new Analysis_Registry( $this->store, $this->container->get( Path_Factory::class ), false );
+
+		$result = $registry->is_optimized();
+
+		$this->assertFalse( $result );
+	}
+
+	public function testItReturnsFalseForIsOptimizedWhenNoAnalysisData(): void {
+		$result = $this->registry->is_optimized();
+
+		$this->assertFalse( $result );
+	}
+
+	public function testItReturnsTrueForIsOptimizedWhenAnalysisDataExists(): void {
+		$this->createTestAnalysis();
+
+		$result = $this->registry->is_optimized();
+
+		$this->assertTrue( $result );
+	}
+
+	public function testItReturnsFalseForIsOptimizedAfterFlush(): void {
+		$this->createTestAnalysis();
+
+		// First call should return true.
+		$result1 = $this->registry->is_optimized();
+
+		// Flush the cache.
+		$this->registry->flush();
+
+		// Second call should still return true since data exists in store.
+		$result2 = $this->registry->is_optimized();
+
+		$this->assertTrue( $result1 );
+		$this->assertTrue( $result2 );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object with desktop and mobile data.
 	 */
