@@ -263,9 +263,9 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return string
 	 */
 	public function get_auto_complete( $attributes ) {
-
 		if ( ! empty( $attributes['auto'] ) ) {
-			return ' autocomplete="' . esc_attr( $attributes['auto'] ) . '"';
+			$value = $attributes['auto'] === 'custom' ? ( ! empty( $attributes['autoCustom'] ) ? $attributes['autoCustom'] : '' ) : $attributes['auto'];
+			return ' autocomplete="' . esc_attr( $value ) . '"';
 		}
 
 		return '';

@@ -67,6 +67,12 @@
 		"inputName": {
 			"type": "string"
 		},
+		"auto": {
+			"type": "string"
+		},
+		"autoCustom": {
+			"type": "string"
+		},
 		"requiredMessage": {
 			"type": "string"
 		},

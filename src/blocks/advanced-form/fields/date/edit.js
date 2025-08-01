@@ -22,6 +22,7 @@ import { useEffect, useState, useMemo } from '@wordpress/element';
 import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import classNames from 'classnames';
 import { DuplicateField, FieldBlockAppender, FieldName, getUniqueFieldId } from '../../components';
+import { fieldAutoFillOptions } from '../../constants';
 
 function FieldDate(props) {
 	const { attributes, setAttributes, isSelected, clientId, context, name } = props;
@@ -39,6 +40,7 @@ function FieldDate(props) {
 		minWidthUnit,
 		defaultParameter,
 		auto,
+		autoCustom,
 		inputName,
 		requiredMessage,
 		kadenceDynamic,
@@ -277,23 +279,16 @@ function FieldDate(props) {
 								<SelectControl
 									label={__('Field Auto Fill', 'kadence-blocks')}
 									value={auto}
-									options={[
-										{ value: '', label: __('Default', 'kadence-blocks') },
-										{ value: 'name', label: __('Name', 'kadence-blocks') },
-										{ value: 'given-name', label: __('First Name', 'kadence-blocks') },
-										{ value: 'family-name', label: __('Last Name', 'kadence-blocks') },
-										{ value: 'email', label: __('Email', 'kadence-blocks') },
-										{ value: 'organization', label: __('Organization', 'kadence-blocks') },
-										{ value: 'street-address', label: __('Street Address', 'kadence-blocks') },
-										{ value: 'address-line1', label: __('Address Line 1', 'kadence-blocks') },
-										{ value: 'address-line2', label: __('Address Line 1', 'kadence-blocks') },
-										{ value: 'country-name', label: __('Country Name', 'kadence-blocks') },
-										{ value: 'postal-code', label: __('Postal Code', 'kadence-blocks') },
-										{ value: 'tel', label: __('Telephone', 'kadence-blocks') },
-										{ value: 'off', label: __('Off', 'kadence-blocks') },
-									]}
+									options={fieldAutoFillOptions}
 									onChange={(value) => setAttributes({ auto: value })}
 								/>
+								{auto === 'custom' && (
+									<TextControl
+										label={__('Auto Fill Value', 'kadence-blocks')}
+										value={autoCustom}
+										onChange={(value) => setAttributes({ autoCustom: value })}
+									/>
+								)}
 								<TextControl
 									label={__('Input aria description', 'kadence-blocks')}
 									value={ariaDescription}
