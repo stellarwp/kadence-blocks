@@ -293,14 +293,14 @@ function KadenceAdvancedHeading(props) {
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
 
 			const newBlocks = paragraphs
-				.map((paragraph) => {
+				.map((paragraph, thisIndex) => {
 					const trimmedParagraph = paragraph.trim();
 					if (!trimmedParagraph) {
 						return null;
 					}
 
-					const newAttributes = attributes;
-					delete newAttributes.uniqueID;
+					const newAttributes =  { ...attributes };
+					newAttributes.uniqueID = attributes.uniqueID + '_' + thisIndex;
 
 					return wp.blocks.createBlock('kadence/advancedheading', {
 						...newAttributes,
