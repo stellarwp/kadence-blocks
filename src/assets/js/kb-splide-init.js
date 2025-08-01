@@ -218,7 +218,7 @@
 			const splideTrack = document.createElement('div');
 			splideTrack.classList.add('splide__track');
 
-			const splideList = document.createElement('div');
+			const splideList = document.createElement('ul');
 			splideList.classList.add('splide__list');
 			// The slides go inside the list element
 			splideList.innerHTML = wrapperElem.innerHTML;
