@@ -57,6 +57,9 @@
 		"auto": {
 			"type": "string"
 		},
+		"autoCustom": {
+			"type": "string"
+		},
 		"errorMessage": {
 			"type": "string"
 		},
