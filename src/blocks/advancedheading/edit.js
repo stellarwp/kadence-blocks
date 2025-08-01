@@ -299,7 +299,7 @@ function KadenceAdvancedHeading(props) {
 						return null;
 					}
 
-					const newAttributes =  { ...attributes };
+					const newAttributes = { ...attributes };
 					newAttributes.uniqueID = attributes.uniqueID + '_' + thisIndex;
 
 					return wp.blocks.createBlock('kadence/advancedheading', {
