@@ -17,6 +17,39 @@
 			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
+
+		initAllOptimized() {
+			// Use intersection observer for optimized pages.
+			const allSliders = document.querySelectorAll(
+				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init, ' +
+					'.wp-block-kadence-testimonials .kt-blocks-carousel-init, ' +
+					'.kb-blocks-bg-slider > .kt-blocks-carousel-init'
+			);
+
+			if (allSliders.length === 0) {
+				return;
+			}
+
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							const slider = entry.target;
+							observer.unobserve(slider);
+							this.bootstrapSliders([slider]);
+						}
+					});
+				},
+				{
+					rootMargin: '250px 0px',
+				}
+			);
+
+			allSliders.forEach((slider) => {
+				observer.observe(slider);
+			});
+		},
+
 		bootstrapSliders(elementList) {
 			if (!elementList || elementList.length === 0) {
 				return;
@@ -123,7 +156,7 @@
 					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type =
-						mainSliderParsedData.sliderFade || undefined == mainSliderParsedData.sliderFade
+						mainSliderParsedData.sliderFade || undefined === mainSliderParsedData.sliderFade
 							? 'fade'
 							: 'slide';
 					mainSliderOptions.rewind = true;
@@ -144,7 +177,7 @@
 							arrows: navSliderOptions.arrows ? isOverflow : false,
 							pagination: navSliderOptions.pagination ? isOverflow : false,
 							drag: navSliderOptions.drag ? isOverflow : false,
-							rewind: !isOverflow ? true : false,
+							rewind: !isOverflow,
 							type: !isOverflow ? 'slide' : navSliderOptions.type,
 							clones: isOverflow ? undefined : 0, // Toggle clones
 						};
@@ -309,11 +342,19 @@
 		// Initiate the menus when the DOM loads.
 		init() {
 			if (typeof Splide === 'function') {
-				kadenceBlocksSplide.initAll();
+				if (document.body.classList.contains('kb-optimized')) {
+					kadenceBlocksSplide.initAllOptimized();
+				} else {
+					kadenceBlocksSplide.initAll();
+				}
 			} else {
 				var initLoadDelay = setInterval(function () {
 					if (typeof Splide === 'function') {
-						kadenceBlocksSplide.initAll();
+						if (document.body.classList.contains('kb-optimized')) {
+							kadenceBlocksSplide.initAllOptimized();
+						} else {
+							kadenceBlocksSplide.initAll();
+						}
 						clearInterval(initLoadDelay);
 					} else {
 						console.log('No Splide found');
