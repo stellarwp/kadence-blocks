@@ -1466,14 +1466,30 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$style_args['background-repeat'] = $attributes['bgImgRepeat'];
 				}
 			}
-			$style_output = array();
+
+			$style_output = [];
+
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
-			$output .= '<div class="kb-bg-slide-contain">';
-			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
-			$output .= '</div>';
-			$output .= '</div>';
+
+			$attrs = [
+				'class' => 'kb-bg-slide kb-bg-slide-' . $key,
+				'style' => implode( ' ', $style_output ),
+			];
+
+			/**
+			 * DO NOT REMOVE: The optimizer uses this.
+			 *
+			 * @param array<string, mixed> The HTML attributes.
+			 */
+			$attrs = apply_filters( 'kadence_blocks_row_slider_attrs', $attrs, $attributes );
+
+			$output .= sprintf(
+				'<div class="kb-bg-slide-contain"><div %s></div></div>',
+				$this->build_escaped_html_attributes( $attrs )
+			);
+
 			if ( $attributes['backgroundSliderCount'] == $item ) {
 				break;
 			}
@@ -1696,14 +1712,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$extra_content = '';
 			if ( 'slider' === $background_type ) {
-				$slider_markup = $this->get_slider_render( $attributes );
-
-				// Add class for lazy loading use.
-				if ( $slider_markup ) {
-					$wrapper_args['class'] .= ' kb-row-has-slider';
-				}
-
-				$extra_content .= $slider_markup;
+				$extra_content .= $this->get_slider_render( $attributes );
 			}
 			if ( 'video' === $background_type ) {
 				$extra_content .= $this->get_video_render( $attributes );
