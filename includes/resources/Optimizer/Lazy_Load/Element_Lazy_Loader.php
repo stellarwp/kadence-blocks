@@ -30,7 +30,7 @@ final class Element_Lazy_Loader {
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function modify_row_layout_block_wrapper_args( array $args, array $attributes ): array {
+	public function set_content_visibility_for_row( array $args, array $attributes ): array {
 		$unique_id = $attributes['uniqueID'] ?? false;
 
 		if ( ! $unique_id ) {

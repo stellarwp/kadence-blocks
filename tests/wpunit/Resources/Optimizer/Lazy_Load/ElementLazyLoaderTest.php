@@ -29,7 +29,7 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$attributes = [];
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -46,7 +46,7 @@ final class ElementLazyLoaderTest extends TestCase {
 			'uniqueID' => false,
 		];
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -68,7 +68,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( [ 'kb-row-layout', 'kt-jarallax' ] )
 						->willReturn( false );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -95,7 +95,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( 'test-123' )
 						->willReturn( 0.0 );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
@@ -122,7 +122,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( 'test-123' )
 						->willReturn( 500.0 );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -156,7 +156,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( 'test-123' )
 						->willReturn( 500.0 );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$expected = [
 			'class' => 'kb-row-layout',
@@ -189,7 +189,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( 'test-123' )
 						->willReturn( 500.0 );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$expected = [
 			'class' => '',
@@ -222,7 +222,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( 'test-123' )
 						->willReturn( 500.0 );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$expected = [
 			'class' => false,
@@ -250,7 +250,7 @@ final class ElementLazyLoaderTest extends TestCase {
 						->with( [ 'kb-row-layout', 'kt-jarallax', 'kb-row-layout-123' ] )
 						->willReturn( false );
 
-		$result = $lazy_loader->modify_row_layout_block_wrapper_args( $args, $attributes );
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
 
 		$this->assertEquals( $args, $result );
 	}
