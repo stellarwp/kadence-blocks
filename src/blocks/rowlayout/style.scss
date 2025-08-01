@@ -118,7 +118,8 @@
 		height: 100%;
 	}
 }
-.wp-block-kadence-rowlayout {
+// Ensure the overlay doesn't take up the entire viewport if it hasn't been lazy loaded yet.
+.kb-row-layout-wrap {
 	.kt-row-layout-overlay {
 		top: 0;
 		left: 0;
@@ -129,7 +130,8 @@
 		z-index: 0;
 		filter: opacity(100%);
 	}
-
+}
+.wp-block-kadence-rowlayout {
 	.kt-row-layout-overlay.kt-jarallax {
 		filter: none;
 	}
@@ -242,6 +244,12 @@
 .kb-blocks-bg-slider-init.splide .splide__arrow {
 	z-index: 100;
 }
+
+// Optimizer: Hide background slider images until lazy loaded.
+.kb-blocks-bg-slider-init:not(.splide-initialized) .kb-bg-slide-contain .kb-lazy-bg-pending {
+	background-image: none !important;
+}
+
 // background Video
 .kb-blocks-bg-video-container {
 	bottom: 0;
