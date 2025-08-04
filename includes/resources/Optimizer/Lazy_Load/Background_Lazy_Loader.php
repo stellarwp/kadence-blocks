@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Asset\Asset;
 use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
+use WP_HTML_Tag_Processor;
 
 /**
  * Handles setting up the Kadence Row Layout Block for background image
@@ -83,6 +84,62 @@ final class Background_Lazy_Loader {
 		$this->enqueue_scripts();
 
 		return $attrs;
+	}
+
+	/**
+	 * Lazy load columns with background images.
+	 *
+	 * @filter kadence_blocks_column_html
+	 *
+	 * @param string $html The kadence/column html.
+	 * @param array  $attributes The block attributes.
+	 *
+	 * @return string
+	 */
+	public function lazy_load_column_backgrounds( string $html, array $attributes ): string {
+		$bg = $attributes['backgroundImg'][0]['bgImg'] ?? false;
+
+		if ( ! $bg ) {
+			return $html;
+		}
+
+		if ( ! $this->registry->is_optimized() ) {
+			return $html;
+		}
+
+		$background_images = $this->registry->get_background_images();
+
+		if ( $background_images ) {
+			$lookup = array_flip( $background_images );
+
+			// Exclude above the fold background images.
+			if ( isset( $lookup[ $bg ] ) ) {
+				return $html;
+			}
+		}
+
+		$p = new WP_HTML_Tag_Processor( $html );
+
+		if ( ! $p->next_tag( [ 'class_name' => 'wp-block-kadence-column' ] ) ) {
+			return $html;
+		}
+
+		$class_attr = $p->get_attribute( 'class' );
+
+		if ( ! $class_attr ) {
+			return $html;
+		}
+
+		$p->set_attribute( 'data-kadence-lazy-class', $class_attr );
+		$p->set_attribute( 'data-kadence-lazy-trigger', 'viewport' );
+		$p->set_attribute( 'data-kadence-lazy-attrs', 'class' );
+
+		$p->remove_attribute( 'class' );
+
+		// Enqueue the lazy loader script if we found a bg.
+		$this->enqueue_scripts();
+
+		return $p->get_updated_html();
 	}
 
 	/**

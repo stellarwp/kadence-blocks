@@ -787,6 +787,435 @@ final class BackgroundLazyLoaderTest extends TestCase {
 		$this->assertEquals( $args, $result );
 	}
 
+	// Column background lazy loading tests.
+	public function testItReturnsOriginalHtmlWhenNoBackgroundImageForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [],
+		];
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenBackgroundImageIsEmptyForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => '',
+				],
+			],
+		];
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenBackgroundImageIsFalseForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => false,
+				],
+			],
+		];
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenBackgroundImageIsNullForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => null,
+				],
+			],
+		];
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenNoAnalysisDataForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		// Should return original HTML since registry is not optimized.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenBackgroundImageIsAboveTheFoldForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image.jpg' ] );
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenNoKadenceColumnClassForColumn(): void {
+		$html = '<div class="some-other-class">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItReturnsOriginalHtmlWhenNoClassAttributeForColumn(): void {
+		$html = '<div>Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItAddsLazyLoadingAttributesForColumnBackgroundForColumn(): void {
+		$html = '<div class="wp-block-kadence-column kb-column-layout-123">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column kb-column-layout-123" data-kadence-lazy-trigger="viewport" >Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItPreservesOtherAttributesWhenAddingLazyLoadingToColumn(): void {
+		$html = '<div class="wp-block-kadence-column" id="test-column" style="background-color: red;" data-test="value">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport"  id="test-column" style="background-color: red;" data-test="value">Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleBackgroundImagesInAnalysisForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image3.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis(
+			[ 'http://wordpress.test/image1.jpg', 'http://wordpress.test/image2.jpg' ]
+		);
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport" >Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesEmptyBackgroundImagesArrayForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [] );
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport" >Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesCaseSensitiveBackgroundImageMatchingForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/IMAGE.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image.jpg' ] );
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport" >Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesSpecialCharactersInBackgroundImageUrlForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image with spaces.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/image with spaces.jpg' ] );
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		// Should not add lazy loading attributes since the image is in the above-the-fold list.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesUnicodeCharactersInBackgroundImageUrlForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/🚀-image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [ 'http://wordpress.test/🚀-image.jpg' ] );
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		// Should not add lazy loading attributes since the image is in the above-the-fold list.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesEmptyClassStringForColumn(): void {
+		$html = '<div class="">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesWhitespaceInClassStringForColumn(): void {
+		$html = '<div class="   wp-block-kadence-column   ">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="   wp-block-kadence-column   " data-kadence-lazy-trigger="viewport" >Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesComplexHtmlStructureForColumn(): void {
+		$html = '<div class="wp-block-kadence-column" id="test-column">
+			<div class="inner-content">
+				<p>Some content</p>
+			</div>
+		</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport"  id="test-column">
+			<div class="inner-content">
+				<p>Some content</p>
+			</div>
+		</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMultipleKadenceColumnsInHtmlForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">First column</div><div class="wp-block-kadence-column">Second column</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		// Should only modify the first kadence column found.
+		$expected = '<div data-kadence-lazy-attrs="class" data-kadence-lazy-class="wp-block-kadence-column" data-kadence-lazy-trigger="viewport" >First column</div><div class="wp-block-kadence-column">Second column</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItHandlesMobileAnalysisForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'bgImg' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis( [], [ 'http://wordpress.test/image.jpg' ] );
+
+		// Create mobile registry and lazy loader for this test.
+		$path_factory       = $this->container->get( Path_Factory::class );
+		$mobile_registry    = new Analysis_Registry( $this->store, $path_factory, true );
+		$mobile_lazy_loader = new Background_Lazy_Loader( $this->asset, $mobile_registry );
+
+		$result = $mobile_lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		// Should not add lazy loading attributes since the image is in the above-the-fold list.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesMissingBackgroundImgKeyForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [
+				[
+					'someOtherKey' => 'http://wordpress.test/image.jpg',
+				],
+			],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesEmptyBackgroundImgArrayForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => [],
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItHandlesNonArrayBackgroundImgForColumn(): void {
+		$html = '<div class="wp-block-kadence-column">Column content</div>';
+
+		$attributes = [
+			'backgroundImg' => 'not-an-array',
+		];
+
+		$this->createTestAnalysis();
+
+		$result = $this->lazy_loader->lazy_load_column_backgrounds( $html, $attributes );
+
+		$this->assertEquals( $html, $result );
+	}
+
 	/**
 	 * Create a test WebsiteAnalysis object.
 	 *
@@ -823,5 +1252,4 @@ final class BackgroundLazyLoaderTest extends TestCase {
 
 		$this->store->set( $this->path, $analysis );
 	}
-
 }

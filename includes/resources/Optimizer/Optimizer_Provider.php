@@ -361,6 +361,13 @@ final class Optimizer_Provider extends Provider {
 			20,
 			2
 		);
+
+		add_filter(
+			'kadence_blocks_column_html',
+			$this->container->callback( Background_Lazy_Loader::class, 'lazy_load_column_backgrounds' ),
+			20,
+			2
+		);
 	}
 
 	private function register_hash_handling(): void {
