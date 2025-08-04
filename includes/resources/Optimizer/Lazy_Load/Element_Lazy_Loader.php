@@ -71,7 +71,7 @@ final class Element_Lazy_Loader {
 	public function modify_column_html( string $html ): string {
 		$p = new WP_HTML_Tag_Processor( $html );
 
-		if ( ! $p->next_tag( [ 'class' => 'wp-block-kadence-column' ] ) ) {
+		if ( ! $p->next_tag( [ 'class_name' => 'wp-block-kadence-column' ] ) ) {
 			return $html;
 		}
 
