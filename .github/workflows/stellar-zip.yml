@@ -99,7 +99,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: timestamp_pre
         run: |
-          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          raw_time=$(TZ='America/Chicago' date '+%m/%d %I:%M %p')
           clean_timestamp="${raw_time} CST"
           encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
           badge_url="https://img.shields.io/badge/Built%20Start-${encoded_timestamp}-blue"
