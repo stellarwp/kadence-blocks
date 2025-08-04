@@ -5,7 +5,6 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Image;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
-use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
@@ -120,11 +119,6 @@ final class Image_Processor {
 			$classes = $p->get_attribute( 'class' );
 
 			foreach ( $this->processors as $processor ) {
-				// We don't collect images without a srcset, skip counting/processing if processing the sizes attr.
-				if ( $processor instanceof Sizes_Attribute_Processor && ! $p->get_attribute( 'srcset' ) ) {
-					continue;
-				}
-
 				/**
 				 * Allow short-circuiting of processing this image for the
 				 * current processor.

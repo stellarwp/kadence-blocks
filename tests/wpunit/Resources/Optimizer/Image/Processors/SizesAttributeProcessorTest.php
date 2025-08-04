@@ -17,8 +17,8 @@ final class SizesAttributeProcessorTest extends TestCase {
 		$this->processor = new Sizes_Attribute_Processor();
 	}
 
-	public function testItSetsOptimalSizesForMatchingImage(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+	public function testItSetsOptimalSizesForMatchingImageWithSrcset(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -28,7 +28,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -57,8 +66,8 @@ final class SizesAttributeProcessorTest extends TestCase {
 		$this->assertEquals( '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px', $p->get_attribute( 'sizes' ) );
 	}
 
-	public function testItDoesNotSetSizesForNonMatchingImage(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/different-image.jpg" alt="Different image"></div></body></html>';
+	public function testItDoesNotProcessImagesWithoutSrcset(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -68,7 +77,65 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
+					'width'         => 800,
+					'height'        => 600,
+					'widthAttr'     => '800',
+					'heightAttr'    => '600',
+					'naturalWidth'  => 800,
+					'naturalHeight' => 600,
+					'aspectRatio'   => 1.33,
+					'alt'           => 'Test image',
+					'class'         => '',
+					'loading'       => 'lazy',
+					'decoding'      => 'async',
+					'sizes'         => null,
+					'computedStyle' => [
+						'width'          => '100%',
+						'height'         => 'auto',
+						'objectFit'      => 'cover',
+						'objectPosition' => 'center',
+					],
+					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
+				]
+			),
+		];
+
+		$this->processor->process( $p, $critical_images, $images, 0 );
+
+		$this->assertNull( $p->get_attribute( 'sizes' ) );
+	}
+
+	public function testItDoesNotSetSizesForNonMatchingImage(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/different-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Different image"></div></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [];
+		$images          = [
+			ImageAnalysis::from(
+				[
+					'path'          => 'div.header > img.logo',
+					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -98,7 +165,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItDoesNotSetSizesWhenImageAnalysisIsMissing(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -111,7 +178,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItDoesNotSetSizesWhenOptimalSizesIsEmpty(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -121,7 +188,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -151,7 +227,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItHandlesIndexOutOfBoundsForImagesArray(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -160,8 +236,18 @@ final class SizesAttributeProcessorTest extends TestCase {
 			ImageAnalysis::from(
 				[
 					'path'          => 'div.header > img.logo',
-					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'src'           => 'http://wordpress.test/wp-content/uploads/different-image.jpg',
+					// Different src
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -185,14 +271,15 @@ final class SizesAttributeProcessorTest extends TestCase {
 			),
 		];
 
-		// Index 1 is out of bounds for array with 1 element.
+		// Index 1 is out of bounds for array with 1 element, but new logic doesn't use index for matching
 		$this->processor->process( $p, $critical_images, $images, 1 );
 
+		// Should not set sizes since the src doesn't match
 		$this->assertNull( $p->get_attribute( 'sizes' ) );
 	}
 
 	public function testItHandlesImagesWithoutSrcAttribute(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" alt="Image without src"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Image without src"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -202,7 +289,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -233,7 +329,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItHandlesNullSrcAttribute(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src alt="Image with null src"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Image with null src"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -243,7 +339,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -273,7 +378,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItHandlesMissingClassAttribute(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Image with no classes"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Image with no classes"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -282,7 +387,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 			[
 				'path'          => 'div.header > img.logo',
 				'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-				'srcset'        => [],
+				'srcset'        => [
+					[
+						'url'   => 'test-300w.jpg',
+						'width' => 300,
+					],
+					[
+						'url'   => 'test-600w.jpg',
+						'width' => 600,
+					],
+				],
 				'width'         => 800,
 				'height'        => 600,
 				'widthAttr'     => '800',
@@ -315,7 +429,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItHandlesEmptySrcAttribute(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="" alt="Image with empty src"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" src="" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Image with empty src"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -325,7 +439,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -355,7 +478,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItHandlesMultipleImagesWithDifferentSizes(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="hero-section"><img class="hero-image" src="http://wordpress.test/wp-content/uploads/hero-image.jpg" alt="Hero image"></div><p>Some content here with text and links.</p><div class="content-section"><h2>Article Title</h2><p>More content with <a href="#">links</a> and <strong>bold text</strong>.</p><img class="content-image" src="http://wordpress.test/wp-content/uploads/content-image.jpg" alt="Content image"></div><footer><img class="footer-image" src="http://wordpress.test/wp-content/uploads/footer-image.jpg" alt="Footer image"></footer></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="hero-section"><img class="hero-image" src="http://wordpress.test/wp-content/uploads/hero-image.jpg" srcset="hero-300w.jpg 300w, hero-600w.jpg 600w" alt="Hero image"></div><p>Some content here with text and links.</p><div class="content-section"><h2>Article Title</h2><p>More content with <a href="#">links</a> and <strong>bold text</strong>.</p><img class="content-image" src="http://wordpress.test/wp-content/uploads/content-image.jpg" srcset="content-300w.jpg 300w, content-600w.jpg 600w" alt="Content image"></div><footer><img class="footer-image" src="http://wordpress.test/wp-content/uploads/footer-image.jpg" srcset="footer-300w.jpg 300w, footer-600w.jpg 600w" alt="Footer image"></footer></body></html>';
 
 		$p               = new WP_HTML_Tag_Processor( $html );
 		$critical_images = [];
@@ -364,7 +487,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.hero-section > img.hero-image',
 					'src'           => 'http://wordpress.test/wp-content/uploads/hero-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'hero-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'hero-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 1200,
 					'height'        => 600,
 					'widthAttr'     => '1200',
@@ -390,7 +522,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.content-section > img.content-image',
 					'src'           => 'http://wordpress.test/wp-content/uploads/content-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'content-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'content-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -416,7 +557,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'footer > img.footer-image',
 					'src'           => 'http://wordpress.test/wp-content/uploads/footer-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'footer-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'footer-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 400,
 					'height'        => 300,
 					'widthAttr'     => '400',
@@ -465,7 +615,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItPreservesExistingSizesAttributeWhenNoMatch(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" sizes="(max-width: 600px) 100vw, 300px" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" sizes="(max-width: 600px) 100vw, 300px" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -475,7 +625,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/different-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -505,7 +664,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 	}
 
 	public function testItOverwritesExistingSizesAttributeWhenMatch(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" sizes="(max-width: 600px) 100vw, 300px" src="http://wordpress.test/wp-content/uploads/test-image.jpg" alt="Test image"></div></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" sizes="(max-width: 600px) 100vw, 300px" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
@@ -515,7 +674,16 @@ final class SizesAttributeProcessorTest extends TestCase {
 				[
 					'path'          => 'div.header > img.logo',
 					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
-					'srcset'        => [],
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
 					'width'         => 800,
 					'height'        => 600,
 					'widthAttr'     => '800',
@@ -527,7 +695,7 @@ final class SizesAttributeProcessorTest extends TestCase {
 					'class'         => '',
 					'loading'       => 'lazy',
 					'decoding'      => 'async',
-					'sizes'         => null,
+					'sizes'         => '(max-width: 600px) 100vw, 300px',
 					'computedStyle' => [
 						'width'          => '100%',
 						'height'         => 'auto',
@@ -542,5 +710,56 @@ final class SizesAttributeProcessorTest extends TestCase {
 		$this->processor->process( $p, $critical_images, $images, 0 );
 
 		$this->assertEquals( '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px', $p->get_attribute( 'sizes' ) );
+	}
+
+	public function testItDoesNotUpdateSizesWhenCurrentSizesDoesNotMatchAnalysisSizes(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><div class="header"><img class="logo" sizes="(max-width: 600px) 100vw, 300px" src="http://wordpress.test/wp-content/uploads/test-image.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test image"></div></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [];
+		$images          = [
+			ImageAnalysis::from(
+				[
+					'path'          => 'div.header > img.logo',
+					'src'           => 'http://wordpress.test/wp-content/uploads/test-image.jpg',
+					'srcset'        => [
+						[
+							'url'   => 'test-300w.jpg',
+							'width' => 300,
+						],
+						[
+							'url'   => 'test-600w.jpg',
+							'width' => 600,
+						],
+					],
+					'width'         => 800,
+					'height'        => 600,
+					'widthAttr'     => '800',
+					'heightAttr'    => '600',
+					'naturalWidth'  => 800,
+					'naturalHeight' => 600,
+					'aspectRatio'   => 1.33,
+					'alt'           => 'Test image',
+					'class'         => '',
+					'loading'       => 'lazy',
+					'decoding'      => 'async',
+					'sizes'         => '(max-width: 500px) 100vw, 400px',
+					// Different from current sizes
+					'computedStyle' => [
+						'width'          => '100%',
+						'height'         => 'auto',
+						'objectFit'      => 'cover',
+						'objectPosition' => 'center',
+					],
+					'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
+				]
+			),
+		];
+
+		$this->processor->process( $p, $critical_images, $images, 0 );
+
+		// Should preserve the original sizes attribute since it doesn't match the analysis sizes
+		$this->assertEquals( '(max-width: 600px) 100vw, 300px', $p->get_attribute( 'sizes' ) );
 	}
 }

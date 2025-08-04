@@ -19,13 +19,31 @@ final class Sizes_Attribute_Processor implements Processor {
 	 * @return void
 	 */
 	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images, int $index ): void {
-		$image = $images[ $index ] ?? false;
+		// The analyzer doesn't collect images without a srcset.
+		$srcset = $p->get_attribute( 'srcset' );
 
-		$src = $p->get_attribute( 'src' );
+		if ( $srcset ) {
+			$src = $p->get_attribute( 'src' );
 
-		// Update the sizes attribute with our optimal sizes.
-		if ( $image && $image->optimalSizes && $image->src === $src ) {
-			$p->set_attribute( 'sizes', $image->optimalSizes );
+			// Search for an image match.
+			foreach ( $images as $image ) {
+				if ( ! $image->optimalSizes ) {
+					continue;
+				}
+
+				if ( $image->src !== $src ) {
+					continue;
+				}
+
+				$sizes = $p->get_attribute( 'sizes' );
+
+				if ( $sizes !== $image->sizes ) {
+					continue;
+				}
+
+				// Update the sizes attribute with our optimal sizes.
+				$p->set_attribute( 'sizes', $image->optimalSizes );
+			}
 		}
 	}
 }

@@ -141,8 +141,9 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should still process lazy loading even without srcset
+		// Should still process lazy loading even without srcset, but not sizes
 		$this->assertStringContainsString( '<img loading="lazy" src="test.jpg"', $result );
+		$this->assertStringNotContainsString( 'sizes="', $result );
 	}
 
 	public function testItProcessesImagesWithSrcset(): void {
@@ -154,8 +155,36 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have both lazy loading and sizes attribute
+		// Should have both lazy loading and sizes attribute since current sizes (null) matches analysis sizes (null)
 		$this->assertStringContainsString( '<img loading="lazy" sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px" src="test.jpg"', $result );
+	}
+
+	public function testItDoesNotUpdateSizesWhenCurrentSizesDoesNotMatchAnalysisSizes(): void {
+		// Create analysis data to enable processing
+		$analysis = $this->create_test_analysis_with_srcset_and_different_sizes();
+		$this->store->set( $this->path, $analysis );
+
+		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" sizes="(max-width: 600px) 100vw, 300px" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test"></body></html>';
+
+		$result = $this->processor->process_images( $html, $this->path );
+
+		// Should have lazy loading but preserve original sizes since current sizes doesn't match analysis sizes
+		// The analysis has sizes="(max-width: 500px) 100vw, 400px" but the HTML has "(max-width: 600px) 100vw, 300px",
+		// so they don't match and the processor should preserve the original sizes.
+		$this->assertStringContainsString( 'sizes="(max-width: 600px) 100vw, 300px"', $result );
+	}
+
+	public function testItUpdatesSizesWhenCurrentSizesMatchesAnalysisSizes(): void {
+		// Create analysis data to enable processing
+		$analysis = $this->create_test_analysis_with_srcset_and_matching_sizes();
+		$this->store->set( $this->path, $analysis );
+
+		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" sizes="(max-width: 600px) 100vw, 300px" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test"></body></html>';
+
+		$result = $this->processor->process_images( $html, $this->path );
+
+		// Should have lazy loading and updated sizes since current sizes matches analysis sizes
+		$this->assertStringContainsString( 'sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px"', $result );
 	}
 
 	public function testItHandlesEmptyHtml(): void {
@@ -344,6 +373,169 @@ final class ImageProcessorTest extends TestCase {
 						'loading'       => 'lazy',
 						'decoding'      => 'async',
 						'sizes'         => null,
+						'computedStyle' => [
+							'width'          => '100%',
+							'height'         => 'auto',
+							'objectFit'      => 'cover',
+							'objectPosition' => 'center',
+						],
+						'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with srcset image data and different sizes.
+	 *
+	 * @return WebsiteAnalysis
+	 */
+	private function create_test_analysis_with_srcset_and_different_sizes(): WebsiteAnalysis {
+		return WebsiteAnalysis::from(
+			[
+				'hash'         => null,
+				'lastModified' => 'now',
+				'desktop'      => [
+					'criticalImages'   => [ 'image1.jpg' ],
+					'backgroundImages' => [ 'bg1.jpg' ],
+					'sections'         => [
+						[
+							'id'            => 'section1',
+							'height'        => 100.0,
+							'tagName'       => 'div',
+							'className'     => 'test-class',
+							'path'          => 'body > div',
+							'isAboveFold'   => true,
+							'hasImages'     => true,
+							'hasBackground' => false,
+						],
+					],
+				],
+				'mobile'       => [
+					'criticalImages'   => [ 'image2.jpg' ],
+					'backgroundImages' => [ 'bg2.jpg' ],
+					'sections'         => [
+						[
+							'id'            => 'section2',
+							'height'        => 200.0,
+							'tagName'       => 'div',
+							'className'     => 'test-class-mobile',
+							'path'          => 'body > div',
+							'isAboveFold'   => false,
+							'hasImages'     => false,
+							'hasBackground' => true,
+						],
+					],
+				],
+				'images'       => [
+					[
+						'path'          => 'body > img',
+						'src'           => 'test.jpg',
+						'srcset'        => [
+							[
+								'url'   => 'test-300w.jpg',
+								'width' => 300,
+							],
+							[
+								'url'   => 'test-600w.jpg',
+								'width' => 600,
+							],
+						],
+						'width'         => 800,
+						'height'        => 600,
+						'widthAttr'     => '800',
+						'heightAttr'    => '600',
+						'naturalWidth'  => 800,
+						'naturalHeight' => 600,
+						'aspectRatio'   => 1.33,
+						'alt'           => 'Test',
+						'class'         => '',
+						'loading'       => 'lazy',
+						'decoding'      => 'async',
+						'sizes'         => '(max-width: 500px) 100vw, 400px',
+						// Different from HTML sizes
+						'computedStyle' => [
+							'width'          => '100%',
+							'height'         => 'auto',
+							'objectFit'      => 'cover',
+							'objectPosition' => 'center',
+						],
+						'optimalSizes'  => '(max-width: 480px) 120px, (max-width: 900px) 240px, 240px',
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Create a test WebsiteAnalysis object with srcset image data and matching sizes.
+	 *
+	 * @return WebsiteAnalysis
+	 */
+	private function create_test_analysis_with_srcset_and_matching_sizes(): WebsiteAnalysis {
+		return WebsiteAnalysis::from(
+			[
+				'hash'         => null,
+				'lastModified' => 'now',
+				'desktop'      => [
+					'criticalImages'   => [ 'image1.jpg' ],
+					'backgroundImages' => [ 'bg1.jpg' ],
+					'sections'         => [
+						[
+							'id'            => 'section1',
+							'height'        => 100.0,
+							'tagName'       => 'div',
+							'className'     => 'test-class',
+							'path'          => 'body > div',
+							'isAboveFold'   => true,
+							'hasImages'     => true,
+							'hasBackground' => false,
+						],
+					],
+				],
+				'mobile'       => [
+					'criticalImages'   => [ 'image2.jpg' ],
+					'backgroundImages' => [ 'bg2.jpg' ],
+					'sections'         => [
+						[
+							'id'            => 'section2',
+							'height'        => 200.0,
+							'tagName'       => 'div',
+							'className'     => 'test-class-mobile',
+							'path'          => 'body > div',
+							'isAboveFold'   => false,
+							'hasImages'     => false,
+							'hasBackground' => true,
+						],
+					],
+				],
+				'images'       => [
+					[
+						'path'          => 'body > img',
+						'src'           => 'test.jpg',
+						'srcset'        => [
+							[
+								'url'   => 'test-300w.jpg',
+								'width' => 300,
+							],
+							[
+								'url'   => 'test-600w.jpg',
+								'width' => 600,
+							],
+						],
+						'width'         => 800,
+						'height'        => 600,
+						'widthAttr'     => '800',
+						'heightAttr'    => '600',
+						'naturalWidth'  => 800,
+						'naturalHeight' => 600,
+						'aspectRatio'   => 1.33,
+						'alt'           => 'Test',
+						'class'         => '',
+						'loading'       => 'lazy',
+						'decoding'      => 'async',
+						'sizes'         => '(max-width: 600px) 100vw, 300px',
 						'computedStyle' => [
 							'width'          => '100%',
 							'height'         => 'auto',
