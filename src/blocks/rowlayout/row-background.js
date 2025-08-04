@@ -6,6 +6,7 @@ import { times } from 'lodash';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { KadenceColorOutput, getPreviewSize, getBorderStyle } from '@kadence/helpers';
 import { useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 import { getSpacingOptionOutput } from './utils';
 
@@ -417,6 +418,38 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 				: true,
 	};
 
+	const getPauseButtonStyles = () => {
+		const arrowStyle = backgroundSliderSettings?.[0]?.arrowStyle || 'none';
+		
+		switch (arrowStyle) {
+			case 'blackonlight':
+				return {
+					backgroundColor: 'rgba(255, 255, 255, 0.8)',
+					color: '#000',
+					border: 'none',
+				};
+			case 'outlineblack':
+				return {
+					backgroundColor: 'transparent',
+					color: '#000',
+					border: '2px solid #000',
+				};
+			case 'outlinewhite':
+				return {
+					backgroundColor: 'transparent',
+					color: '#fff',
+					border: '2px solid #fff',
+				};
+			case 'none':
+			default:
+				return {
+					backgroundColor: 'rgba(0, 0, 0, 0.8)',
+					color: '#fff',
+					border: 'none',
+				};
+		}
+	};
+
 	const renderSliderImages = (index) => {
 		return (
 			<div className="kb-bg-slide-contain">
@@ -567,6 +600,42 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 						{(undefined !== backgroundSliderCount ? backgroundSliderCount : 1) === 1 &&
 							times(undefined !== backgroundSliderCount ? backgroundSliderCount : 1, (n) =>
 								renderSliderImages(n)
+							)}
+						{sliderSettings.autoplay &&
+							backgroundSliderSettings &&
+							backgroundSliderSettings[0] &&
+							backgroundSliderSettings[0].showPauseButton && (
+								<button
+									className="kb-gallery-pause-button splide__toggle"
+									type="button"
+									onClick={(e) => e.preventDefault()}
+									aria-label={__('Toggle autoplay', 'kadence-blocks')}
+									style={getPauseButtonStyles()}
+								>
+									<span className="kb-gallery-pause-icon splide__toggle__pause">
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect x="6" y="4" width="4" height="16" fill="currentColor" />
+											<rect x="14" y="4" width="4" height="16" fill="currentColor" />
+										</svg>
+									</span>
+									<span className="kb-gallery-play-icon splide__toggle__play">
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path d="M8 5v14l11-7z" fill="currentColor" />
+										</svg>
+									</span>
+								</button>
 							)}
 					</div>
 				)}

@@ -1612,7 +1612,7 @@ export default function GalleryEdit(props) {
 													label={__('Carousel Auto Play', 'kadence-blocks')}
 													checked={autoPlay}
 													onChange={(value) =>
-														setAttributes({ autoPlay: value, showPauseButton: value })
+														setAttributes({ autoPlay: value })
 													}
 												/>
 												{autoPlay && (

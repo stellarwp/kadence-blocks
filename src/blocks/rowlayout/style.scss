@@ -360,3 +360,56 @@
 :where(header .kb-row-layout-wrap:has(.wp-block-kadence-navigation)) {
 	z-index: 1000;
 }
+// Pause Button Styles for Row Layout Background Slider
+.kb-blocks-bg-slider {
+	.kb-gallery-pause-button {
+		display: none;
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
+		z-index: 2;
+	}
+
+	&:has(.kb-blocks-bg-slider-init[data-show-pause-button="true"]) .kb-gallery-pause-button {
+		display: block;
+	}
+
+	.kb-gallery-pause-button {
+		padding: 8px;
+		cursor: pointer;
+		border-radius: 3px;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		opacity: 0.25;
+
+		&:hover {
+			opacity: 0.75;
+		}
+
+		&:focus {
+			outline: 2px solid rgba(255, 255, 255, 0.5);
+			outline-offset: 2px;
+			opacity: 1;
+		}
+	}
+
+	&:hover .kb-gallery-pause-button {
+		opacity: 1;
+	}
+
+	@media (max-width: 767px) {
+		.kb-gallery-pause-button {
+			opacity: 1;
+		}
+	}
+
+	@media (hover: none) {
+		.kb-gallery-pause-button {
+			opacity: 1;
+		}
+	}
+}
