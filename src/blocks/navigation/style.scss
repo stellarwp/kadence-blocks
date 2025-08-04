@@ -462,7 +462,9 @@ $link-color-property: var(
 					right: 50%;
 					background: currentColor;
 					transform: var(--kb-nav-link-underline-transform, scale(0, 0) translate(-50%, 0));
-					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
+					transition:
+						transform 0.2s ease-in-out,
+						color 0s ease-in-out;
 				}
 			}
 			&:hover > .kb-link-wrap > .kb-nav-link-content:after {
@@ -1243,7 +1245,9 @@ $link-color-property: var(
 --------------------------------------------------------------*/
 .wp-block-kadence-navigation-link {
 	.link-highlight-label {
-		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+		transition:
+			color 0.35s ease-in-out,
+			background-color 0.35s ease-in-out;
 		font-size: 0.7em;
 		//margin-left: 0.2em;
 		line-height: normal;
@@ -1316,8 +1320,9 @@ $link-color-property: var(
 		gap: var(--kb-nav-link-highlight-gap, 0.5em);
 		order: var(--kb-nav-link-highlight-order);
 
-		.kt-svg-icon {
-			padding-left: 5px;
+		.link-highlight-icon-wrap {
+			order: var(--kb-nav-link-highlight-icon-order);
+
 			svg {
 				width: 1em;
 				height: 1em;

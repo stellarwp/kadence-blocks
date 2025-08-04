@@ -31,7 +31,7 @@
 						if (!isAccordion) {
 							contentTab.setAttribute('aria-labelledby', parentId);
 							parentListItem.setAttribute('role', 'presentation');
-							subElem.setAttribute('role', 'tab');
+							subElem.setAttribute('role', 'button');
 							subElem.setAttribute('aria-controls', parentId);
 							subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 						} else {
@@ -49,6 +49,10 @@
 						listItem.addEventListener('keydown', function (evt) {
 							//const listItem = this.parentElement;
 							switch (evt.which) {
+								case 32: // Space bar
+									evt.preventDefault();
+									listItem.querySelector('a').click();
+									break;
 								case 37:
 									if (listItem.previousElementSibling) {
 										listItem.previousElementSibling.querySelector('a').click();
