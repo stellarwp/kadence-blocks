@@ -35,7 +35,7 @@ import {
 	uniqueIdHelper,
 	setBlockDefaults,
 	getFontSizeOptionOutput,
-	getPostOrWidgetId,
+	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -164,10 +164,30 @@ function KadenceForm(props) {
 		hAlignFormFeilds,
 	} = attributes;
 
-	const { previewDevice } = useSelect(
+	const { previewDevice, parentData } = useSelect(
 		(select) => {
+			const abTestBlock = select('core/block-editor').getBlockAttributes(
+				select('core/block-editor')
+					.getBlockParentsByBlockName(clientId, 'kadence-insights/ab-test')
+					.slice(-1)[0]
+			);
+
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select('core/block-editor').getBlock(
+						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
+					),
+					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
+					reusableParent: abTestBlock
+						? abTestBlock
+						: select('core/block-editor').getBlockAttributes(
+								select('core/block-editor')
+									.getBlockParentsByBlockName(clientId, 'core/block')
+									.slice(-1)[0]
+							),
+					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
+				},
 			};
 		},
 		[clientId]
@@ -175,6 +195,13 @@ function KadenceForm(props) {
 
 	useEffect(() => {
 		setBlockDefaults('kadence/form', attributes);
+
+		const postOrFseId = getPostOrFseId(props, parentData);
+		if (postID.toString() !== postOrFseId.toString()) {
+			setAttributes({
+				postID: postOrFseId.toString(),
+			});
+		}
 	}, []);
 
 	uniqueIdHelper(props);

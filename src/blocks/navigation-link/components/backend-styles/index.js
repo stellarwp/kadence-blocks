@@ -898,7 +898,7 @@ export default function BackendStyles(props) {
 		css.add_property('--kb-nav-link-highlight-order', '-1');
 	}
 	if ('left' === previewIconSide) {
-		css.add_property('--kb-nav-link-media-container-order', '-1');
+		css.add_property('--kb-nav-link-highlight-icon-order', '-1');
 	}
 	css.render_measure_output(
 		padding,
