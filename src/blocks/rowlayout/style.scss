@@ -118,22 +118,29 @@
 		height: 100%;
 	}
 }
-// Ensure the overlay doesn't take up the entire viewport if it hasn't been lazy loaded yet.
-.kb-row-layout-wrap {
+// Only apply overlay styles when lazy-loaded or not using lazy load at all
+.wp-block-kadence-rowlayout {
 	.kt-row-layout-overlay {
+		opacity: 0.3;
+
+		&.kt-jarallax {
+			filter: none;
+		}
+	}
+
+	&.kb-row-layout-wrap .kt-row-layout-overlay,
+	&:not([data-kadence-lazy-class]) .kt-row-layout-overlay {
 		top: 0;
 		left: 0;
 		position: absolute;
-		opacity: 0.3;
 		height: 100%;
 		width: 100%;
 		z-index: 0;
 		filter: opacity(100%);
-	}
-}
-.wp-block-kadence-rowlayout {
-	.kt-row-layout-overlay.kt-jarallax {
-		filter: none;
+
+		&.kt-jarallax {
+			filter: none;
+		}
 	}
 }
 // Tablet specific
