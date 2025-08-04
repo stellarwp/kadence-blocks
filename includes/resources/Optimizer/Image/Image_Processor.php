@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Image;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
+use KadenceWP\KadenceBlocks\Optimizer\Image\Traits\Image_Key_Generator_Trait;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
@@ -21,14 +22,8 @@ use WP_HTML_Tag_Processor;
 final class Image_Processor {
 
 	use Viewport_Trait;
+	use Image_Key_Generator_Trait;
 
-	/**
-	 * Counts the image index to match up what's found
-	 * with our parsed images.
-	 *
-	 * @var int
-	 */
-	private int $counter = 0;
 	private Store $store;
 	private Rule_Collection $rules;
 	private Path_Factory $path_factory;
@@ -56,15 +51,6 @@ final class Image_Processor {
 		$this->rules        = $rules;
 		$this->path_factory = $path_factory;
 		$this->processors   = $processors;
-	}
-
-	/**
-	 * Reset the static counter, helpful for tests.
-	 *
-	 * @return void
-	 */
-	public function reset_counter(): void {
-		$this->counter = 0;
 	}
 
 	/**
@@ -106,6 +92,19 @@ final class Image_Processor {
 		$critical_images = $device ? $device->criticalImages : [];
 		$images          = $analysis->images;
 
+		$images_by_key = [];
+
+		// Reshape the array so we can do O(1) lookups.
+		foreach ( $images as $image ) {
+			if ( isset( $image->src, $image->sizes ) ) {
+				$key = $this->generate_image_key( $image->src, $image->sizes );
+
+				if ( $key !== null ) {
+					$images_by_key[ $key ] = $image;
+				}
+			}
+		}
+
 		$p = new WP_HTML_Tag_Processor( $html );
 
 		// Add the kb-optimized class to the body.
@@ -119,6 +118,7 @@ final class Image_Processor {
 			$classes = $p->get_attribute( 'class' );
 
 			foreach ( $this->processors as $processor ) {
+
 				/**
 				 * Allow short-circuiting of processing this image for the
 				 * current processor.
@@ -139,11 +139,9 @@ final class Image_Processor {
 				);
 
 				if ( $should_process ) {
-					$processor->process( $p, $critical_images, $images, $this->counter );
+					$processor->process( $p, $critical_images, $images_by_key );
 				}
 			}
-
-			++$this->counter;
 		}
 
 		return $p->get_updated_html();

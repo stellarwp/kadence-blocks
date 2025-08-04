@@ -14,12 +14,11 @@ interface Processor {
 	/**
 	 * Manipulates img tags.
 	 *
-	 * @param WP_HTML_Tag_Processor $p The HTML Tag Processor, set on the current image it's processing.
-	 * @param string[]              $critical_images The array of critical image src's.
-	 * @param ImageAnalysis[]       $images The array of all collected images.
-	 * @param int                   $index The current index of the image being processed.
+	 * @param WP_HTML_Tag_Processor        $p The HTML Tag Processor, set on the current image it's processing.
+	 * @param string[]                     $critical_images The array of critical image src's.
+	 * @param array<string, ImageAnalysis> $images The array of all collected images indexed by a unique key.
 	 *
 	 * @return void
 	 */
-	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images, int $index ): void;
+	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images ): void;
 }

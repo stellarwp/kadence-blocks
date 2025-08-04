@@ -114,24 +114,6 @@ final class ImageProcessorTest extends TestCase {
 		$this->assertEquals( $html, $result );
 	}
 
-	public function testItResetsCounterCorrectly(): void {
-		// Create analysis data to enable processing
-		$analysis = $this->create_test_analysis();
-		$this->store->set( $this->path, $analysis );
-
-		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" alt="Test"></body></html>';
-
-		// Process images first time
-		$this->processor->process_images( $html, $this->path );
-
-		// Reset counter
-		$this->processor->reset_counter();
-
-		// Process again - should work the same
-		$result = $this->processor->process_images( $html, $this->path );
-		$this->assertStringContainsString( '<img loading="lazy" src="test.jpg"', $result );
-	}
-
 	public function testItHandlesImagesWithoutSrcsetForSizesProcessor(): void {
 		// Create analysis data to enable processing
 		$analysis = $this->create_test_analysis();
@@ -151,12 +133,12 @@ final class ImageProcessorTest extends TestCase {
 		$analysis = $this->create_test_analysis_with_srcset();
 		$this->store->set( $this->path, $analysis );
 
-		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" alt="Test"></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" sizes="(max-width: 600px) 100vw, 300px" alt="Test"></body></html>';
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have both lazy loading and sizes attribute since current sizes (null) matches analysis sizes (null)
-		$this->assertStringContainsString( '<img loading="lazy" sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px" src="test.jpg"', $result );
+		// Should have both lazy loading and sizes attribute since current sizes matches analysis sizes
+		$this->assertStringContainsString( 'loading="lazy" src="test.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px"', $result );
 	}
 
 	public function testItDoesNotUpdateSizesWhenCurrentSizesDoesNotMatchAnalysisSizes(): void {
@@ -372,7 +354,7 @@ final class ImageProcessorTest extends TestCase {
 						'class'         => '',
 						'loading'       => 'lazy',
 						'decoding'      => 'async',
-						'sizes'         => null,
+						'sizes'         => '(max-width: 600px) 100vw, 300px',
 						'computedStyle' => [
 							'width'          => '100%',
 							'height'         => 'auto',

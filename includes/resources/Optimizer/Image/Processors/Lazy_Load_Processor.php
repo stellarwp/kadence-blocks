@@ -10,37 +10,49 @@ use WP_HTML_Tag_Processor;
 final class Lazy_Load_Processor implements Processor {
 
 	/**
+	 * Count how many above the fold images we've found.
+	 *
+	 * @var int
+	 */
+	private int $found = 0;
+
+	/**
 	 * Add or remove the appropriate lazy loading attributes.
 	 *
-	 * @param WP_HTML_Tag_Processor $p The HTML Tag Processor, set on the current image it's processing.
-	 * @param string[]              $critical_images The list of the above the fold image URLs.
-	 * @param ImageAnalysis[]       $images The array of all collected images.
-	 * @param int                   $index The current index of the image being processed.
+	 * @param WP_HTML_Tag_Processor        $p The HTML Tag Processor, set on the current image it's processing.
+	 * @param string[]                     $critical_images The list of the above the fold image URLs.
+	 * @param array<string, ImageAnalysis> $images The array of all collected images indexed by a unique key.
 	 *
 	 * @return void
 	 */
-	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images, int $index ): void {
+	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images ): void {
 		$src = $p->get_attribute( 'src' );
 
-		$critical_source = $critical_images[ $index ] ?? false;
+		$critical_image_count          = count( $critical_images );
+		$processed_all_critical_images = $this->found >= $critical_image_count;
 
-		// Ensure above the fold images do not have a lazy loading attribute.
-		if ( $src === $critical_source ) {
-			if ( 'lazy' === $p->get_attribute( 'loading' ) ) {
-				$p->remove_attribute( 'loading' );
-			}
-		} else {
-			$is_slider_image = $p->get_attribute( 'data-splide-lazy' );
+		// If the critical images haven't been processed, check if this image is above the fold.
+		if ( ! $processed_all_critical_images ) {
+			$is_above_the_fold = in_array( $src, $critical_images, true );
 
-			// Ensure below the fold images have native lazy loading.
-			if ( ! $is_slider_image ) {
-				$p->set_attribute( 'loading', 'lazy' );
-			}
+			// Ensure above the fold images do not have a lazy loading attribute.
+			if ( $is_above_the_fold ) {
+				if ( 'lazy' === $p->get_attribute( 'loading' ) ) {
+					$p->remove_attribute( 'loading' );
+				}
 
-			// If WordPress somehow added a high fetch priority, remove it.
-			if ( 'high' === $p->get_attribute( 'fetchpriority' ) ) {
-				$p->remove_attribute( 'fetchpriority' );
+				++$this->found;
+
+				return;
 			}
+		}
+
+		// Below the fold logic (or after all critical images processed).
+		$p->set_attribute( 'loading', 'lazy' );
+
+		// If WordPress somehow added a high fetch priority, remove it.
+		if ( 'high' === $p->get_attribute( 'fetchpriority' ) ) {
+			$p->remove_attribute( 'fetchpriority' );
 		}
 	}
 }

@@ -24,7 +24,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertNull( $p->get_attribute( 'loading' ) );
 	}
@@ -37,7 +37,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -50,7 +50,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertNull( $p->get_attribute( 'fetchpriority' ) );
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
@@ -64,7 +64,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -78,7 +78,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$images          = [];
 
 		// Should not throw an error.
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -91,7 +91,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -104,8 +104,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		// Index 1 is out of bounds for array with 1 element.
-		$this->processor->process( $p, $critical_images, $images, 1 );
+		// Should not throw an error even though the image is not in critical images.
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -118,7 +118,7 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
@@ -131,42 +131,34 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
 
 	public function testItHandlesMultipleImagesWithDifferentCriticalStatus(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><div class="hero-section"><img src="http://wordpress.test/wp-content/uploads/critical1.jpg" loading="lazy" alt="Hero image"></div><p>Some content here with text and links.</p><div class="content-section"><h2>Article Title</h2><p>More content with <a href="#">links</a> and <strong>bold text</strong>.</p><img src="http://wordpress.test/wp-content/uploads/non-critical.jpg" alt="Content image"></div><footer><img src="http://wordpress.test/wp-content/uploads/critical2.jpg" loading="lazy" alt="Footer image"></footer></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/critical-image.jpg" loading="lazy" alt="Critical image"><img src="http://wordpress.test/wp-content/uploads/below-fold-image.jpg" alt="Below fold image"><img src="http://wordpress.test/wp-content/uploads/another-image.jpg" fetchpriority="high" alt="Another image"></body></html>';
 
-		$p = new WP_HTML_Tag_Processor( $html );
-
-		$critical_images = [
-			'http://wordpress.test/wp-content/uploads/critical1.jpg',
-			false,
-			'http://wordpress.test/wp-content/uploads/critical2.jpg',
-		];
-
-		$images = [];
+		$p               = new WP_HTML_Tag_Processor( $html );
+		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
+		$images          = [];
 
 		// Process all images in sequence
-		$index = 0;
 		while ( $p->next_tag( 'img' ) ) {
-			$this->processor->process( $p, $critical_images, $images, $index );
-			++$index;
+			$this->processor->process( $p, $critical_images, $images );
 		}
 
 		$updated_html = $p->get_updated_html();
 
-		// Verify critical images have loading removed
-		$this->assertStringNotContainsString( 'src="http://wordpress.test/wp-content/uploads/critical1.jpg" loading="lazy"', $updated_html );
-		$this->assertStringNotContainsString( 'src="http://wordpress.test/wp-content/uploads/critical2.jpg" loading="lazy"', $updated_html );
+		// Critical image should not have lazy loading.
+		$this->assertStringNotContainsString( 'src="http://wordpress.test/wp-content/uploads/critical-image.jpg" loading="lazy"', $updated_html );
 
-		// Verify non-critical image has lazy loading
-		$this->assertMatchesRegularExpression(
-			'/<img[^>]*loading="lazy"[^>]*src="http:\/\/wordpress\.test\/wp-content\/uploads\/non-critical\.jpg"[^>]*>/i',
-			$updated_html
-		);
+		// Below fold images should have lazy loading.
+		$this->assertStringContainsString( 'loading="lazy" src="http://wordpress.test/wp-content/uploads/below-fold-image.jpg"', $updated_html );
+		$this->assertStringContainsString( 'loading="lazy" src="http://wordpress.test/wp-content/uploads/another-image.jpg"', $updated_html );
+
+		// Below fold images should not have fetchpriority.
+		$this->assertStringNotContainsString( 'fetchpriority="high"', $updated_html );
 	}
 
 	public function testItHandlesImagesWithDifferentLoadingAttributes(): void {
@@ -177,39 +169,24 @@ final class LazyLoadProcessorTest extends TestCase {
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		// Should change eager to lazy for non-critical images.
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
 
 	public function testItHandlesImagesWithDifferentFetchPriorityValues(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/image.jpg" fetchpriority="low" alt="Image with low priority"></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/image.jpg" fetchpriority="low" alt="Image with low fetch priority"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
-		$this->processor->process( $p, $critical_images, $images, 0 );
+		$this->processor->process( $p, $critical_images, $images );
 
 		// Should only remove 'high' fetchpriority, not 'low'.
 		$this->assertEquals( 'low', $p->get_attribute( 'fetchpriority' ) );
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
-	}
-
-	public function testItSkipsSplideLazyLoadImages(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><img data-splide-lazy="http://wordpress.test/wp-content/uploads/image.jpg" fetchpriority="high" alt="Image with high priority"></body></html>';
-		$p    = new WP_HTML_Tag_Processor( $html );
-		$p->next_tag( 'img' );
-
-		$critical_images = [];
-		$images          = [];
-
-		$this->processor->process( $p, $critical_images, $images, 0 );
-
-		// Should not have lazy loading attribute and no fetchpriority.
-		$this->assertNull( $p->get_attribute( 'fetchpriority' ) );
-		$this->assertNull( $p->get_attribute( 'loading' ) );
 	}
 }
