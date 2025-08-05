@@ -29,6 +29,7 @@ function kadence_blocks_get_post_types( $other_args = array() ) {
 		'public'       => true,
 		'show_in_rest' => true,
 	);
+
 	if ( ! empty( $other_args ) ) {
 		$args = array_merge( $args, $other_args );
 	}
@@ -665,7 +666,7 @@ add_filter( 'tribe_events_excerpt_blocks_removal', 'kadence_blocks_events_custom
 
 /**
  * Remove Filter to remove block rendering when events builds their custom excerpts.
- * 
+ *
  * @param bool $remove_blocks Whether to remove blocks or not.
  * @param WP_Post $post The post object.
  */
