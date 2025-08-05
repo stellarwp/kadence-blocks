@@ -191,7 +191,7 @@ final class VideoPosterLazyLoaderTest extends TestCase {
 			[
 				'http://wordpress.test/other-image.jpg',
 				'http://wordpress.test/another-image.jpg',
-			] 
+			]
 		);
 
 		$result = $this->lazy_loader->lazy_load_row_video_poster( $args );
@@ -448,25 +448,25 @@ final class VideoPosterLazyLoaderTest extends TestCase {
 	/**
 	 * Create a test WebsiteAnalysis object.
 	 *
-	 * @param string[] $desktop_critical_images Desktop critical images.
-	 * @param string[] $mobile_critical_images Mobile critical images.
+	 * @param string[] $desktop_background_images Desktop background images (video posters are included here).
+	 * @param string[] $mobile_background_images Mobile critical images (video posters are included here)..
 	 */
 	private function createTestAnalysis(
-		array $desktop_critical_images = [],
-		array $mobile_critical_images = []
+		array $desktop_background_images = [],
+		array $mobile_background_images = []
 	): void {
 		$desktop = DeviceAnalysis::from(
 			[
-				'criticalImages'   => $desktop_critical_images,
-				'backgroundImages' => [],
+				'criticalImages'   => [],
+				'backgroundImages' => $desktop_background_images,
 				'sections'         => [],
 			]
 		);
 
 		$mobile = DeviceAnalysis::from(
 			[
-				'criticalImages'   => $mobile_critical_images,
-				'backgroundImages' => [],
+				'criticalImages'   => [],
+				'backgroundImages' => $mobile_background_images,
 				'sections'         => [],
 			]
 		);

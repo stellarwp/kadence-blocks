@@ -40,7 +40,7 @@ final class Video_Poster_Lazy_Loader {
 			return $attrs;
 		}
 
-		$critical_images = $this->registry->get_critical_images();
+		$critical_images = $this->registry->get_background_images();
 		$lookup          = array_flip( $critical_images );
 
 		// Bypass above the fold images.
