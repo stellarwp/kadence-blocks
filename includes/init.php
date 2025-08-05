@@ -29,7 +29,6 @@ function kadence_blocks_get_post_types( $other_args = array() ) {
 		'public'       => true,
 		'show_in_rest' => true,
 	);
-
 	if ( ! empty( $other_args ) ) {
 		$args = array_merge( $args, $other_args );
 	}
