@@ -665,7 +665,7 @@ add_filter( 'tribe_events_excerpt_blocks_removal', 'kadence_blocks_events_custom
 
 /**
  * Remove Filter to remove block rendering when events builds their custom excerpts.
- * 
+ *
  * @param bool $remove_blocks Whether to remove blocks or not.
  * @param WP_Post $post The post object.
  */
