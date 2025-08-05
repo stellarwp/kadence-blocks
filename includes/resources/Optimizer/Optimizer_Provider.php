@@ -24,6 +24,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
+use KadenceWP\KadenceBlocks\Optimizer\Resource_Hints\Google_Font_Preconnector;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
@@ -81,6 +82,7 @@ final class Optimizer_Provider extends Provider {
 		$this->register_background_lazy_loader();
 		$this->register_hash_handling();
 		$this->register_image_processor();
+		$this->register_resource_hints();
 	}
 
 	/**
@@ -440,6 +442,28 @@ final class Optimizer_Provider extends Provider {
 			$this->container->callback( Image_Processor::class, 'start_buffering' ),
 			1,
 			0
+		);
+	}
+
+	private function register_resource_hints(): void {
+		/**
+		 * Allow resource hints to be disabled.
+		 *
+		 * @param bool $enabled Whether this feature is enabled.
+		 */
+		$enabled = (bool) apply_filters( 'kadence_blocks_enable_resource_hits', true );
+
+		if ( ! $enabled ) {
+			return;
+		}
+
+		$this->container->singleton( Google_Font_Preconnector::class, Google_Font_Preconnector::class );
+
+		add_filter(
+			'wp_resource_hints',
+			$this->container->callback( Google_Font_Preconnector::class, 'preconnect' ),
+			10,
+			2
 		);
 	}
 }
