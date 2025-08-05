@@ -28,6 +28,8 @@ final class Background_Lazy_Loader {
 	 *
 	 * @filter kadence_blocks_row_wrapper_args
 	 *
+	 * @note Video posters come in as a bgImg as well.
+	 *
 	 * @param array<string, mixed> $attrs The wrapper div HTML attributes.
 	 * @param array<string, mixed> $attributes The current block attributes.
 	 *
