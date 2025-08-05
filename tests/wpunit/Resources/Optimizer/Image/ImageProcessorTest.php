@@ -3,11 +3,7 @@
 namespace Tests\wpunit\Resources\Optimizer\Image;
 
 use KadenceWP\KadenceBlocks\Optimizer\Image\Image_Processor;
-use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
-use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
-use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
-use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
@@ -17,10 +13,9 @@ final class ImageProcessorTest extends TestCase {
 
 	use Permalink_Trait;
 
+	private int $post_id;
 	private Image_Processor $processor;
 	private Store $store;
-	private Rule_Collection $rules;
-	private int $post_id;
 	private Path $path;
 
 	protected function setUp(): void {
@@ -41,29 +36,16 @@ final class ImageProcessorTest extends TestCase {
 
 		$this->assertNotEmpty( $post_path );
 
-		$this->path = new Path( $post_path );
-
-		$this->store = $this->container->get( Store::class );
-		$this->rules = $this->container->get( Rule_Collection::class );
-
-		$path_factory = $this->container->get( Path_Factory::class );
-
-		$this->processor = new Image_Processor(
-			$this->store,
-			$this->rules,
-			$path_factory,
-			[
-				new Lazy_Load_Processor(),
-				new Sizes_Attribute_Processor(),
-			],
-		);
+		$this->path      = new Path( $post_path );
+		$this->store     = $this->container->get( Store::class );
+		$this->processor = $this->container->get( Image_Processor::class );
 	}
 
 	protected function tearDown(): void {
 		// Clean up test data
 		$this->store->delete( $this->path );
 
-		wp_delete_post( $this->path, true );
+		wp_delete_post( $this->post_id, true );
 		parent::tearDown();
 	}
 
@@ -80,19 +62,20 @@ final class ImageProcessorTest extends TestCase {
 	}
 
 	public function testItProcessesImagesWithLazyLoading(): void {
-		// Create analysis data to enable processing
-		$analysis = $this->create_test_analysis();
+		// Create analysis data to enable processing.
+		$analysis = $this->create_test_analysis_with_srcset();
 		$this->store->set( $this->path, $analysis );
 
-		$html = '<!DOCTYPE html><html><head></head><body><img src="test.jpg" alt="Test"></body></html>';
+		$html = '<!DOCTYPE html><html><head></head><body><img loading="lazy" src="http://wordpress.test/wp-content/uploads/image1.jpg" alt="Above the fold"><img src="http://wordpress.test/wp-content/uploads/image2.jpg" alt="Below the fold"></body></html>';
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		$this->assertStringContainsString( '<img loading="lazy" src="test.jpg"', $result );
+		$this->assertStringNotContainsString( '<img loading="lazy" src="http://wordpress.test/wp-content/uploads/image1.jpg"', $result );
+		$this->assertStringContainsString( '<img loading="lazy" src="http://wordpress.test/wp-content/uploads/image2.jpg"', $result );
 	}
 
 	public function testItHandlesMultipleImages(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis();
 		$this->store->set( $this->path, $analysis );
 
@@ -100,7 +83,7 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have lazy loading on both images
+		// Should have lazy loading on both images.
 		$this->assertStringContainsString( '<img loading="lazy" src="test1.jpg', $result );
 		$this->assertStringContainsString( '<img loading="lazy" src="test2.jpg', $result );
 	}
@@ -110,12 +93,12 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should return original HTML unchanged when no analysis exists
+		// Should return original HTML unchanged when no analysis exists.
 		$this->assertEquals( $html, $result );
 	}
 
 	public function testItHandlesImagesWithoutSrcsetForSizesProcessor(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis();
 		$this->store->set( $this->path, $analysis );
 
@@ -123,13 +106,13 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should still process lazy loading even without srcset, but not sizes
+		// Should still process lazy loading even without srcset, but not sizes.
 		$this->assertStringContainsString( '<img loading="lazy" src="test.jpg"', $result );
 		$this->assertStringNotContainsString( 'sizes="', $result );
 	}
 
 	public function testItProcessesImagesWithSrcset(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis_with_srcset();
 		$this->store->set( $this->path, $analysis );
 
@@ -137,12 +120,12 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have both lazy loading and sizes attribute since current sizes matches analysis sizes
+		// Should have both lazy loading and sizes attribute since current sizes matches analysis sizes.
 		$this->assertStringContainsString( 'loading="lazy" src="test.jpg" srcset="test-300w.jpg 300w, test-600w.jpg 600w" sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px"', $result );
 	}
 
 	public function testItDoesNotUpdateSizesWhenCurrentSizesDoesNotMatchAnalysisSizes(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis_with_srcset_and_different_sizes();
 		$this->store->set( $this->path, $analysis );
 
@@ -150,14 +133,14 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have lazy loading but preserve original sizes since current sizes doesn't match analysis sizes
+		// Should have lazy loading but preserve original sizes since current sizes doesn't match analysis sizes.
 		// The analysis has sizes="(max-width: 500px) 100vw, 400px" but the HTML has "(max-width: 600px) 100vw, 300px",
 		// so they don't match and the processor should preserve the original sizes.
 		$this->assertStringContainsString( 'sizes="(max-width: 600px) 100vw, 300px"', $result );
 	}
 
 	public function testItUpdatesSizesWhenCurrentSizesMatchesAnalysisSizes(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis_with_srcset_and_matching_sizes();
 		$this->store->set( $this->path, $analysis );
 
@@ -165,7 +148,7 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should have lazy loading and updated sizes since current sizes matches analysis sizes
+		// Should have lazy loading and updated sizes since current sizes matches analysis sizes.
 		$this->assertStringContainsString( 'sizes="(max-width: 480px) 120px, (max-width: 900px) 240px, 240px"', $result );
 	}
 
@@ -182,12 +165,12 @@ final class ImageProcessorTest extends TestCase {
 
 		$result = $this->processor->process_images( $html, $this->path );
 
-		// Should return original HTML unchanged
+		// Should return original HTML unchanged.
 		$this->assertEquals( $html, $result );
 	}
 
 	public function testItHandlesHtmlWithoutImages(): void {
-		// Create analysis data to enable processing
+		// Create analysis data to enable processing.
 		$analysis = $this->create_test_analysis();
 		$this->store->set( $this->path, $analysis );
 
@@ -198,21 +181,6 @@ final class ImageProcessorTest extends TestCase {
 		// Should add kb-optimized class but not process any images
 		$this->assertStringContainsString( '<body class="kb-optimized"', $result );
 		$this->assertStringNotContainsString( 'loading="lazy"', $result );
-	}
-
-	public function testItIncrementsCounterForEachImage(): void {
-		// Create analysis data to enable processing
-		$analysis = $this->create_test_analysis();
-		$this->store->set( $this->path, $analysis );
-
-		$html = '<!DOCTYPE html><html><head></head><body><img src="test1.jpg" alt="Test 1"><img src="test2.jpg" alt="Test 2"><img src="test3.jpg" alt="Test 3"></body></html>';
-
-		$result = $this->processor->process_images( $html, $this->path );
-
-		// Should process all 3 images
-		$this->assertStringContainsString( '<img loading="lazy" src="test1.jpg"', $result );
-		$this->assertStringContainsString( '<img loading="lazy" src="test2.jpg"', $result );
-		$this->assertStringContainsString( '<img loading="lazy" src="test3.jpg"', $result );
 	}
 
 	/**
@@ -226,8 +194,8 @@ final class ImageProcessorTest extends TestCase {
 				'hash'         => null,
 				'lastModified' => 'now',
 				'desktop'      => [
-					'criticalImages'   => [ 'image1.jpg' ],
-					'backgroundImages' => [ 'bg1.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image1.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg1.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section1',
@@ -242,8 +210,8 @@ final class ImageProcessorTest extends TestCase {
 					],
 				],
 				'mobile'       => [
-					'criticalImages'   => [ 'image2.jpg' ],
-					'backgroundImages' => [ 'bg2.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image2.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg2.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section2',
@@ -298,8 +266,8 @@ final class ImageProcessorTest extends TestCase {
 				'hash'         => null,
 				'lastModified' => 'now',
 				'desktop'      => [
-					'criticalImages'   => [ 'image1.jpg' ],
-					'backgroundImages' => [ 'bg1.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image1.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg1.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section1',
@@ -314,8 +282,8 @@ final class ImageProcessorTest extends TestCase {
 					],
 				],
 				'mobile'       => [
-					'criticalImages'   => [ 'image2.jpg' ],
-					'backgroundImages' => [ 'bg2.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image2.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg2.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section2',
@@ -379,8 +347,8 @@ final class ImageProcessorTest extends TestCase {
 				'hash'         => null,
 				'lastModified' => 'now',
 				'desktop'      => [
-					'criticalImages'   => [ 'image1.jpg' ],
-					'backgroundImages' => [ 'bg1.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image1.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg1.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section1',
@@ -395,8 +363,8 @@ final class ImageProcessorTest extends TestCase {
 					],
 				],
 				'mobile'       => [
-					'criticalImages'   => [ 'image2.jpg' ],
-					'backgroundImages' => [ 'bg2.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image2.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg2.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section2',
@@ -461,8 +429,8 @@ final class ImageProcessorTest extends TestCase {
 				'hash'         => null,
 				'lastModified' => 'now',
 				'desktop'      => [
-					'criticalImages'   => [ 'image1.jpg' ],
-					'backgroundImages' => [ 'bg1.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image1.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg1.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section1',
@@ -477,8 +445,8 @@ final class ImageProcessorTest extends TestCase {
 					],
 				],
 				'mobile'       => [
-					'criticalImages'   => [ 'image2.jpg' ],
-					'backgroundImages' => [ 'bg2.jpg' ],
+					'criticalImages'   => [ 'http://wordpress.test/wp-content/uploads/image2.jpg' ],
+					'backgroundImages' => [ 'http://wordpress.test/wp-content/uploads/bg2.jpg' ],
 					'sections'         => [
 						[
 							'id'            => 'section2',

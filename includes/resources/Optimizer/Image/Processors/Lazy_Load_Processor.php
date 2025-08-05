@@ -4,20 +4,20 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Image\Processors;
 
 use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Response\ImageAnalysis;
-
 use WP_HTML_Tag_Processor;
 
 final class Lazy_Load_Processor implements Processor {
 
 	/**
-	 * Count how many above the fold images we've found.
+	 * A queue of URLs that are above the fold.
 	 *
-	 * @var int
+	 * @var string[]|null
 	 */
-	private int $found = 0;
+	private ?array $critical_image_queue = null;
 
 	/**
-	 * Add or remove the appropriate lazy loading attributes.
+	 * Add or remove the appropriate lazy loading attributes. It's important to note that WordPress
+	 * may have already added a loading=lazy attribute to an image that shouldn't have it.
 	 *
 	 * @param WP_HTML_Tag_Processor        $p The HTML Tag Processor, set on the current image it's processing.
 	 * @param string[]                     $critical_images The list of the above the fold image URLs.
@@ -26,27 +26,30 @@ final class Lazy_Load_Processor implements Processor {
 	 * @return void
 	 */
 	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images ): void {
-		$src = $p->get_attribute( 'src' );
+		$src = (string) $p->get_attribute( 'src' );
 
 		// Don't lazy load data URLs.
-		if ( is_string( $src ) && str_starts_with( $src, 'data:' ) ) {
+		if ( str_starts_with( $src, 'data:' ) ) {
 			return;
 		}
 
-		$critical_image_count          = count( $critical_images );
-		$processed_all_critical_images = $this->found >= $critical_image_count;
+		// Initialize the queue on first run.
+		if ( ! isset( $this->critical_image_queue ) ) {
+			$this->critical_image_queue = $critical_images;
+		}
 
-		// If the critical images haven't been processed, check if this image is above the fold.
-		if ( ! $processed_all_critical_images ) {
-			$is_above_the_fold = in_array( $src, $critical_images, true );
+		// Check if this image is next in our critical queue.
+		if ( $this->critical_image_queue ) {
+			$queue_index = array_search( $src, $this->critical_image_queue, true );
 
-			// Ensure above the fold images do not have a lazy loading attribute.
-			if ( $is_above_the_fold ) {
+			if ( $queue_index !== false ) {
+				// Remove lazy loading for critical image.
 				if ( 'lazy' === $p->get_attribute( 'loading' ) ) {
 					$p->remove_attribute( 'loading' );
 				}
 
-				++$this->found;
+				// Remove this occurrence from the queue.
+				unset( $this->critical_image_queue[ $queue_index ] );
 
 				return;
 			}

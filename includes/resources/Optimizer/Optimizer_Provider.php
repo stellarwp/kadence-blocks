@@ -425,6 +425,7 @@ final class Optimizer_Provider extends Provider {
 	}
 
 	private function register_image_processor(): void {
+		$this->container->singleton( Lazy_Load_Processor::class, Lazy_Load_Processor::class );
 		$this->container->singleton( Image_Processor::class, Image_Processor::class );
 
 		$this->container->when( Image_Processor::class )

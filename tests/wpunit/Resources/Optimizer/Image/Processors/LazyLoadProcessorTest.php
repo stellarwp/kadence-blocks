@@ -21,6 +21,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
+		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
+
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
@@ -34,6 +36,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
+		$this->assertNull( $p->get_attribute( 'loading' ) );
+
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
@@ -46,6 +50,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/below-fold-image.jpg" fetchpriority="high" alt="Below fold image"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
+
+		$this->assertSame( 'high', $p->get_attribute( 'fetchpriority' ) );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
@@ -61,6 +67,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
 
+		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
+
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
 
@@ -73,6 +81,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$html = '<!DOCTYPE html><html><head></head><body><img alt="Image without src"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
+
+		$this->assertNull( $p->get_attribute( 'src' ) );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
@@ -96,24 +106,12 @@ final class LazyLoadProcessorTest extends TestCase {
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
 
-	public function testItHandlesIndexOutOfBoundsForCriticalImages(): void {
-		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/image.jpg" alt="Image"></body></html>';
-		$p    = new WP_HTML_Tag_Processor( $html );
-		$p->next_tag( 'img' );
-
-		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
-		$images          = [];
-
-		// Should not throw an error even though the image is not in critical images.
-		$this->processor->process( $p, $critical_images, $images );
-
-		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
-	}
-
 	public function testItHandlesNullSrcAttribute(): void {
 		$html = '<!DOCTYPE html><html><head></head><body><img src alt="Image with null src"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
+
+		$this->assertTrue( $p->get_attribute( 'src' ) );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
@@ -127,6 +125,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$html = '<!DOCTYPE html><html><head></head><body><img src="" alt="Image with empty src"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
+
+		$this->assertSame( '', $p->get_attribute( 'src' ) );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
@@ -165,6 +165,8 @@ final class LazyLoadProcessorTest extends TestCase {
 		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/image.jpg" loading="eager" alt="Image with eager loading"></body></html>';
 		$p    = new WP_HTML_Tag_Processor( $html );
 		$p->next_tag( 'img' );
+
+		$this->assertSame( 'eager', $p->get_attribute( 'loading' ) );
 
 		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
 		$images          = [];
@@ -235,5 +237,65 @@ final class LazyLoadProcessorTest extends TestCase {
 
 		// Data URLs should keep their fetchpriority attribute unchanged.
 		$this->assertEquals( 'high', $p->get_attribute( 'fetchpriority' ) );
+	}
+
+	public function testItProcessesNonCriticalImagesAfterAllCriticalImagesFound(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/critical-image-1.jpg" alt="Critical image 1" loading="lazy"><img src="http://wordpress.test/wp-content/uploads/critical-image-2.jpg" alt="Critical image 2"><img src="http://wordpress.test/wp-content/uploads/critical-image-3.jpg" alt="Critical image 3"><img src="http://wordpress.test/wp-content/uploads/critical-image-4.jpg" alt="Critical image 4"><img src="http://wordpress.test/wp-content/uploads/critical-image-5.jpg" alt="Critical image 5"><img src="http://wordpress.test/wp-content/uploads/non-critical-image.jpg" alt="Non-critical image"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+
+		$critical_images = [
+			'http://wordpress.test/wp-content/uploads/critical-image-1.jpg',
+			'http://wordpress.test/wp-content/uploads/critical-image-2.jpg',
+			'http://wordpress.test/wp-content/uploads/critical-image-3.jpg',
+			'http://wordpress.test/wp-content/uploads/critical-image-4.jpg',
+			'http://wordpress.test/wp-content/uploads/critical-image-5.jpg',
+		];
+		$images          = [];
+
+		// Process first 5 images, which are critical - should not have lazy loading.
+		for ( $i = 0; $i < 5; $i++ ) {
+			$p->next_tag( 'img' );
+			$this->assertStringContainsString( 'critical-image-', $p->get_attribute( 'src' ) );
+			$this->processor->process( $p, $critical_images, $images );
+			$this->assertNull( $p->get_attribute( 'loading' ) );
+		}
+
+		// Process image 6 non-critical image after all critical images found - should have lazy loading
+		$p->next_tag( 'img' );
+		$this->assertSame( 'http://wordpress.test/wp-content/uploads/non-critical-image.jpg', $p->get_attribute( 'src' ) );
+		$this->processor->process( $p, $critical_images, $images );
+		$this->assertSame( 'lazy', $p->get_attribute( 'loading' ) );
+	}
+
+	public function testItProcessesNonCriticalImagesWhenCriticalImageCountIsZero(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/any-image.jpg" alt="Any image"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = []; // Empty critical images array
+		$images          = [];
+
+		$this->processor->process( $p, $critical_images, $images );
+
+		// When no critical images, all images should get lazy loading
+		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
+	}
+
+	public function testItProcessesNonCriticalImagesWhenCriticalImageCountIsOne(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="http://wordpress.test/wp-content/uploads/critical-image.jpg" alt="Critical image"><img src="http://wordpress.test/wp-content/uploads/non-critical-image.jpg" alt="Non-critical image"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+
+		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
+		$images          = [];
+
+		// Process critical image.
+		$p->next_tag( 'img' );
+		$this->processor->process( $p, $critical_images, $images );
+		$this->assertNull( $p->get_attribute( 'loading' ) );
+
+		// Process non-critical image after critical image found.
+		$p->next_tag( 'img' );
+		$this->processor->process( $p, $critical_images, $images );
+		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
 }
