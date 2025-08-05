@@ -45,7 +45,7 @@ export default function uniqueIdHelper(props) {
 		setAttributes({ uniqueID: newUniqueID });
 		addUniqueID(newUniqueID, clientId);
 	};
-	useEffect(() => {
+	const getBlockPostId = (parentData) => {
 		const { postId, reusableParent, rootBlock, editedPostId } = parentData;
 		let blockPostId = getPostOrWidgetId(props, postId, reusableParent, 0);
 		if (blockPostId === 0) {
@@ -56,7 +56,20 @@ export default function uniqueIdHelper(props) {
 				blockPostId = hashString(editedPostId) % 1000000;
 			}
 		}
+		
+		return blockPostId;
+	};
 
+	// Set uniqueID immediately if not defined
+	if (!attributes?.uniqueID ) {
+		const blockPostId = getBlockPostId(parentData);
+		const blockPostIdPrefix = blockPostId ? blockPostId + '_' : '';
+		const newUniqueID = blockPostIdPrefix + clientId.substr(2, 9);
+		updateUniqueID(newUniqueID);
+	}
+
+	useEffect(() => {
+		const blockPostId = getBlockPostId(parentData);
 		const hasBlockPostIdPrefix = attributes?.uniqueID && attributes?.uniqueID.split('_').length === 2;
 		const blockPostIdPrefix = blockPostId ? blockPostId + '_' : '';
 		const newUniqueID = blockPostIdPrefix + clientId.substr(2, 9);
