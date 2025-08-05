@@ -420,7 +420,7 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 
 	const getPauseButtonStyles = () => {
 		const arrowStyle = backgroundSliderSettings?.[0]?.arrowStyle || 'none';
-		
+
 		switch (arrowStyle) {
 			case 'blackonlight':
 				return {

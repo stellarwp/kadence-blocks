@@ -1611,9 +1611,7 @@ export default function GalleryEdit(props) {
 												<ToggleControl
 													label={__('Carousel Auto Play', 'kadence-blocks')}
 													checked={autoPlay}
-													onChange={(value) =>
-														setAttributes({ autoPlay: value })
-													}
+													onChange={(value) => setAttributes({ autoPlay: value })}
 												/>
 												{autoPlay && (
 													<>

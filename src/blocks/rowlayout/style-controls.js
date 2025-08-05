@@ -1035,7 +1035,10 @@ function StyleControls(props) {
 											: false
 									}
 									onChange={(value) => saveSliderSettings({ showPauseButton: value })}
-									help={__('Display a pause/play button in the bottom right corner.', 'kadence-blocks')}
+									help={__(
+										'Display a pause/play button in the bottom right corner.',
+										'kadence-blocks'
+									)}
 								/>
 							</>
 						)}
