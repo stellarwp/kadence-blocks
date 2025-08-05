@@ -2385,7 +2385,9 @@ export default function GalleryEdit(props) {
 				position: 'absolute',
 				bottom: '10px',
 				right: '10px',
-				background: arrowCustomColorBackground ? KadenceColorOutput(arrowCustomColorBackground) : 'rgba(0, 0, 0, 0.5)',
+				background: arrowCustomColorBackground
+					? KadenceColorOutput(arrowCustomColorBackground)
+					: 'rgba(0, 0, 0, 0.5)',
 				color: arrowCustomColor ? KadenceColorOutput(arrowCustomColor) : 'white',
 				border: arrowCustomBorderWidth ? `${arrowCustomBorderWidth}px solid` : 'none',
 				borderColor: arrowCustomColorBorder ? KadenceColorOutput(arrowCustomColorBorder) : 'transparent',
