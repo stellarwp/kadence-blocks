@@ -2378,6 +2378,45 @@ export default function GalleryEdit(props) {
 			notices={hasImages ? undefined : noticeUI}
 		/>
 	);
+	// Helper function to get pause button styles based on arrow style
+	const getPauseButtonStyles = () => {
+		if (arrowStyle === 'custom') {
+			return {
+				position: 'absolute',
+				bottom: '10px',
+				right: '10px',
+				background: arrowCustomColorBackground ? KadenceColorOutput(arrowCustomColorBackground) : 'rgba(0, 0, 0, 0.5)',
+				color: arrowCustomColor ? KadenceColorOutput(arrowCustomColor) : 'white',
+				border: arrowCustomBorderWidth ? `${arrowCustomBorderWidth}px solid` : 'none',
+				borderColor: arrowCustomColorBorder ? KadenceColorOutput(arrowCustomColorBorder) : 'transparent',
+				borderRadius: '4px',
+				padding: '8px 12px',
+				cursor: 'pointer',
+				fontSize: '14px',
+				zIndex: 10,
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+			};
+		}
+		return {
+			position: 'absolute',
+			bottom: '10px',
+			right: '10px',
+			background: 'rgba(0, 0, 0, 0.5)',
+			color: 'white',
+			border: 'none',
+			borderRadius: '4px',
+			padding: '8px 12px',
+			cursor: 'pointer',
+			fontSize: '14px',
+			zIndex: 10,
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+		};
+	};
+
 	const buildCSS = (
 		<style>
 			{`
@@ -2545,6 +2584,24 @@ export default function GalleryEdit(props) {
 								${arrowCustomColorBackgroundActive ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundActive)};` : ''}
 								${arrowCustomColorBorderActive ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderActive)};` : ''}
 								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px;` : ''}
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .kb-gallery-pause-button {
+								${arrowCustomColor ? `color: ${KadenceColorOutput(arrowCustomColor)};` : ''}
+								${arrowCustomColorBackground ? `background-color: ${KadenceColorOutput(arrowCustomColorBackground)};` : ''}
+								${arrowCustomColorBorder ? `border-color: ${KadenceColorOutput(arrowCustomColorBorder)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px; border-style: solid;` : ''}
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .kb-gallery-pause-button:hover {
+								${arrowCustomColorHover ? `color: ${KadenceColorOutput(arrowCustomColorHover)};` : ''}
+								${arrowCustomColorBackgroundHover ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundHover)};` : ''}
+								${arrowCustomColorBorderHover ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderHover)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px; border-style: solid;` : ''}
+							}
+							.wp-block-kadence-advancedgallery .kb-gallery-id-${uniqueID} .kb-gallery-pause-button:active {
+								${arrowCustomColorActive ? `color: ${KadenceColorOutput(arrowCustomColorActive)};` : ''}
+								${arrowCustomColorBackgroundActive ? `background-color: ${KadenceColorOutput(arrowCustomColorBackgroundActive)};` : ''}
+								${arrowCustomColorBorderActive ? `border-color: ${KadenceColorOutput(arrowCustomColorBorderActive)};` : ''}
+								${arrowCustomBorderWidth ? `border-width: ${arrowCustomBorderWidth}px; border-style: solid;` : ''}
 							}
 							`
 							: ''
@@ -2732,22 +2789,7 @@ export default function GalleryEdit(props) {
 					{autoPlay && showPauseButton && (
 						<button
 							className="kb-gallery-pause-button"
-							style={{
-								position: 'absolute',
-								bottom: '10px',
-								right: '10px',
-								background: 'rgba(0, 0, 0, 0.5)',
-								color: 'white',
-								border: 'none',
-								borderRadius: '4px',
-								padding: '8px 12px',
-								cursor: 'pointer',
-								fontSize: '14px',
-								zIndex: 10,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
+							style={getPauseButtonStyles()}
 							onClick={(e) => e.preventDefault()}
 							aria-label={__('Pause carousel', 'kadence-blocks')}
 						>
@@ -2801,22 +2843,7 @@ export default function GalleryEdit(props) {
 					{autoPlay && showPauseButton && (
 						<button
 							className="kb-gallery-pause-button"
-							style={{
-								position: 'absolute',
-								bottom: '10px',
-								right: '10px',
-								background: 'rgba(0, 0, 0, 0.5)',
-								color: 'white',
-								border: 'none',
-								borderRadius: '4px',
-								padding: '8px 12px',
-								cursor: 'pointer',
-								fontSize: '14px',
-								zIndex: 10,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
+							style={getPauseButtonStyles()}
 							onClick={(e) => e.preventDefault()}
 							aria-label={__('Pause carousel', 'kadence-blocks')}
 						>
@@ -2894,22 +2921,7 @@ export default function GalleryEdit(props) {
 					{autoPlay && showPauseButton && (
 						<button
 							className="kb-gallery-pause-button"
-							style={{
-								position: 'absolute',
-								bottom: '10px',
-								right: '10px',
-								background: 'rgba(0, 0, 0, 0.5)',
-								color: 'white',
-								border: 'none',
-								borderRadius: '4px',
-								padding: '8px 12px',
-								cursor: 'pointer',
-								fontSize: '14px',
-								zIndex: 10,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
+							style={getPauseButtonStyles()}
 							onClick={(e) => e.preventDefault()}
 							aria-label={__('Pause carousel', 'kadence-blocks')}
 						>
@@ -2963,22 +2975,7 @@ export default function GalleryEdit(props) {
 					{autoPlay && showPauseButton && (
 						<button
 							className="kb-gallery-pause-button"
-							style={{
-								position: 'absolute',
-								bottom: '10px',
-								right: '10px',
-								background: 'rgba(0, 0, 0, 0.5)',
-								color: 'white',
-								border: 'none',
-								borderRadius: '4px',
-								padding: '8px 12px',
-								cursor: 'pointer',
-								fontSize: '14px',
-								zIndex: 10,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
+							style={getPauseButtonStyles()}
 							onClick={(e) => e.preventDefault()}
 							aria-label={__('Pause carousel', 'kadence-blocks')}
 						>

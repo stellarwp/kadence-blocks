@@ -547,6 +547,63 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'border-width', $attributes['arrowCustomBorderWidth'] . 'px' );
 		}
 
+		// Apply same custom arrow styles to pause button when arrowStyle is 'custom'
+		if ( ! empty( $attributes['arrowStyle'] ) && 'custom' === $attributes['arrowStyle'] && $is_carousel ) {
+			// Pause button color styles
+			if ( ! empty( $attributes['arrowCustomColor'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button' );
+				$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColor'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorHover'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:hover' );
+				$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColorHover'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorActive'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:active' );
+				$css->add_property( 'color', $css->render_color( $attributes['arrowCustomColorActive'] ) );
+			}
+			
+			// Pause button background styles
+			if ( ! empty( $attributes['arrowCustomColorBackground'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button' );
+				$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackground'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorBackgroundHover'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:hover' );
+				$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackgroundHover'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorBackgroundActive'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:active' );
+				$css->add_property( 'background-color', $css->render_color( $attributes['arrowCustomColorBackgroundActive'] ) );
+			}
+			
+			// Pause button border styles
+			if ( ! empty( $attributes['arrowCustomColorBorder'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button' );
+				$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorder'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorBorderHover'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:hover' );
+				$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorderHover'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomColorBorderActive'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button:active' );
+				$css->add_property( 'border-color', $css->render_color( $attributes['arrowCustomColorBorderActive'] ) );
+			}
+			
+			if ( ! empty( $attributes['arrowCustomBorderWidth'] ) ) {
+				$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .kb-gallery-pause-button' );
+				$css->add_property( 'border-width', $attributes['arrowCustomBorderWidth'] . 'px' );
+				$css->add_property( 'border-style', 'solid' );
+			}
+		}
+
 		// Dot Custom Color
 		if ( ! empty( $attributes['dotCustomColor'] ) && $is_carousel ) {
 			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page' );
