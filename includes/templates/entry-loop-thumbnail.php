@@ -22,18 +22,18 @@ if ( $enabled ) {
 	$alt = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
 	if ( $img_link ) {
 		?>
-		<a class="post-thumbnail kadence-thumbnail-ratio-<?php echo esc_attr( $ratio ); ?>" href="<?php the_permalink(); ?>">
+		<a aria-hidden="true" tabindex="-1" role="presentation" class="post-thumbnail kadence-thumbnail-ratio-<?php echo esc_attr( $ratio ); ?>" href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
 			<div class="post-thumbnail-inner">
 				<?php
 				the_post_thumbnail(
 					$size,
-					array(
+					[
 						'alt' => $alt ? $alt : the_title_attribute(
-							array(
+							[
 								'echo' => false,
-							)
+							]
 						),
-					)
+					]
 				);
 				?>
 			</div>
@@ -46,13 +46,13 @@ if ( $enabled ) {
 				<?php
 				the_post_thumbnail(
 					$size,
-					array(
+					[
 						'alt' => $alt ? $alt : the_title_attribute(
-							array(
+							[
 								'echo' => false,
-							)
+							]
 						),
-					)
+					]
 				);
 				?>
 			</div>
