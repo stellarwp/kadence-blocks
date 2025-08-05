@@ -135,7 +135,7 @@ class KB_Ajax_Advanced_Form {
 			if ( ! $success ) {
 				$this->process_bail( $messages['error'], __( 'Third Party Failed', 'kadence-blocks' ) );
 			} else {
-				$final_data['html'] = '<div class="kb-adv-form-message kb-adv-form-success" role="status" aria-live="polite">' . $messages['success'] . '</div>';
+				$final_data['html'] = '<div class="kb-adv-form-message kb-adv-form-success">' . $messages['success'] . '</div>';
 				$this->send_json( $final_data );
 			}
 		} else {
@@ -420,7 +420,7 @@ class KB_Ajax_Advanced_Form {
 		$html = '';
 		foreach ( $notices as $note_type => $notice ) {
 			if ( ! empty( $notice['note'] ) ) {
-				$html .= '<div class="kb-adv-form-message kb-adv-form-warning" role="alert" aria-live="assertive">' . $notice['note'] . '</div>';
+				$html .= '<div class="kb-adv-form-message kb-adv-form-warning">' . $notice['note'] . '</div>';
 			}
 		}
 
