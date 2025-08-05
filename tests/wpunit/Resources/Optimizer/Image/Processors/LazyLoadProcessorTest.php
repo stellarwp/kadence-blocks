@@ -189,4 +189,51 @@ final class LazyLoadProcessorTest extends TestCase {
 		$this->assertEquals( 'low', $p->get_attribute( 'fetchpriority' ) );
 		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
 	}
+
+	public function testItSkipsDataUrls(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" alt="Data URL image"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
+		$images          = [];
+
+		// Store original attributes before processing.
+		$original_loading       = $p->get_attribute( 'loading' );
+		$original_fetchpriority = $p->get_attribute( 'fetchpriority' );
+
+		$this->processor->process( $p, $critical_images, $images );
+
+		// Data URLs should not be modified - they should keep their original attributes.
+		$this->assertEquals( $original_loading, $p->get_attribute( 'loading' ) );
+		$this->assertEquals( $original_fetchpriority, $p->get_attribute( 'fetchpriority' ) );
+	}
+
+	public function testItSkipsDataUrlsWithLazyLoading(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=" loading="lazy" alt="Data URL image with lazy loading"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
+		$images          = [];
+
+		$this->processor->process( $p, $critical_images, $images );
+
+		// Data URLs should keep their lazy loading attribute unchanged.
+		$this->assertEquals( 'lazy', $p->get_attribute( 'loading' ) );
+	}
+
+	public function testItSkipsDataUrlsWithFetchPriority(): void {
+		$html = '<!DOCTYPE html><html><head></head><body><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" fetchpriority="high" alt="Data URL image with fetch priority"></body></html>';
+		$p    = new WP_HTML_Tag_Processor( $html );
+		$p->next_tag( 'img' );
+
+		$critical_images = [ 'http://wordpress.test/wp-content/uploads/critical-image.jpg' ];
+		$images          = [];
+
+		$this->processor->process( $p, $critical_images, $images );
+
+		// Data URLs should keep their fetchpriority attribute unchanged.
+		$this->assertEquals( 'high', $p->get_attribute( 'fetchpriority' ) );
+	}
 }

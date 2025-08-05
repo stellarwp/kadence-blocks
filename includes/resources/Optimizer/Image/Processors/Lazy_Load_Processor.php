@@ -28,6 +28,11 @@ final class Lazy_Load_Processor implements Processor {
 	public function process( WP_HTML_Tag_Processor $p, array $critical_images, array $images ): void {
 		$src = $p->get_attribute( 'src' );
 
+		// Don't lazy load data URLs.
+		if ( is_string( $src ) && str_starts_with( $src, 'data:' ) ) {
+			return;
+		}
+
 		$critical_image_count          = count( $critical_images );
 		$processed_all_critical_images = $this->found >= $critical_image_count;
 
