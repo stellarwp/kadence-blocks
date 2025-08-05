@@ -57,7 +57,7 @@
 					// Check if the target time has already passed today
 					const todayTargetTime = new Date();
 					todayTargetTime.setHours(hours, minutes, seconds, 0);
-					
+
 					if (currentDate.getTime() >= todayTargetTime.getTime()) {
 						// Target time has passed today, set for tomorrow
 						offsetDays = 1;
@@ -65,7 +65,7 @@
 						// Target time hasn't passed today, set for today
 						offsetDays = 0;
 					}
-					
+
 					futureDate.setDate(currentDate.getDate() + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
@@ -75,10 +75,12 @@
 					// Check if the target time has already passed today
 					const todayWeeklyTargetTime = new Date();
 					todayWeeklyTargetTime.setHours(hours, minutes, seconds, 0);
-					
+
 					// Calculate days since the initial date
-					const daysSinceInitial = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
-					
+					const daysSinceInitial = Math.floor(
+						(currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24)
+					);
+
 					if (currentDate.getTime() >= todayWeeklyTargetTime.getTime()) {
 						// Target time has passed today, find next week's occurrence
 						offsetDays = 7 - (daysSinceInitial % 7);
@@ -93,7 +95,7 @@
 							offsetDays = 7 - dayOfWeekDiff;
 						}
 					}
-					
+
 					futureDate.setDate(currentDate.getDate() + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
