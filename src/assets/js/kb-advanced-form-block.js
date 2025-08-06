@@ -236,8 +236,9 @@
 		},
 		validateForm(self) {
 			let error = false,
-				error_type = '',
-				fieldErrorMessages = [];
+				error_type = '';
+
+			const fieldErrorMessages = [];
 			// remove all initial errors if any.
 			window.kadenceAdvancedForm.removeErrors(self);
 			// ===== Validate: Text and Textarea ========
