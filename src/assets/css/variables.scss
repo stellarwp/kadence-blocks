@@ -117,3 +117,11 @@ $color-error-dark: #aa0000;
 $color-error-light: #ff9492;
 
 $color-disabled: $color-gray-500;
+
+// Splide arrow and pause button opacity variables
+// used across all slider and carousel components
+$splide-arrow-opacity: 0.75;
+$splide-arrow-opacity-hover: 1;
+$splide-arrow-opacity-grouped: 0.7;
+$splide-arrow-opacity-disabled: 0.2;
+$splide-pagination-opacity: 0.5;

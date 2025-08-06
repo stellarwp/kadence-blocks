@@ -5,6 +5,7 @@
  * which makes it higher in priority.
  */
 
+@import '../../assets/css/variables';
 //@import './splide.scss';
 .wp-block-kadence-testimonials {
 	.kt-testimonial-rating-wrap {
@@ -65,11 +66,11 @@
 		z-index: 10;
 		align-items: center;
 		justify-content: center;
-		opacity: 0.25;
+		opacity: $splide-arrow-opacity;
 		transition: opacity 0.4s ease-in-out;
 		
 		&:hover, &:focus {
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 		
 		&:focus {
@@ -95,7 +96,7 @@
 	}
 	
 	.kt-blocks-carousel:hover .kb-gallery-pause-button {
-		opacity: 0.75;
+		opacity: $splide-arrow-opacity;
 	}
 	
 	&:has(.kt-carousel-arrowstyle-none) {
