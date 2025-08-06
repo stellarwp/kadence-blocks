@@ -517,15 +517,7 @@
 						} else if (response.data) {
 							window.kadenceAdvancedForm.event('failed', form);
 
-							// // Announce error message to screen readers
-							// const errorText = window.kadenceAdvancedForm.extractTextFromHTML(response.data.html);
-							// window.kadenceAdvancedForm.announceMessage(form, errorText, 'assertive');
-
-							// // Insert visual message
-							// window.kadenceAdvancedForm.insertAfter(
-							// 	window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
-							// 	form
-							// );
+							// Insert visual messages
 							const fieldErrorMessages = [];
 							if (response.data.fieldErrors) {
 								for (const serverFieldError of response.data.fieldErrors) {
@@ -541,6 +533,7 @@
 									}
 								}
 							}
+							// Announce error message to screen readers
 							window.kadenceAdvancedForm.addErrorNotice(form, fieldErrorMessages, response.data.message);
 						}
 					})
