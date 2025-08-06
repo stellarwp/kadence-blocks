@@ -734,61 +734,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					$content .= '</div>';
 					break;
 				case 'mosaic':
-					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '"kb-mosaic-gallery grid-pattern-gallery">';
-					$content .= '<div class="grid-pattern-container">';
-
-					$grouped_images = array_chunk($images, 8);
-
-					foreach ($grouped_images as $group) {
-						foreach ($group as $image_index => $image) {
-							// Determine which grid item pattern to use (patterns repeat every 8 images)
-							$pattern_index = $image_index % 8;
-
-							$grid_class = '';
-							$is_last_image = $image_index === count($group) - 1;
-							$next_to_last_image = $image_index === count($group) - 2;
-
-							switch ($pattern_index) {
-								case 0: // First image: 1 row, 2 columns
-									$grid_class = $is_last_image ? 'grid-item-wide only-one' : 'grid-item-wide';
-									break;
-								case 1: // Second image: 2 columns, 2 rows
-									$grid_class = 'grid-item-large';
-									$grid_class .= $is_last_image ? ' only-two' : '';
-									break;
-								case 2: // Third image: 2 rows, 1 column
-									$grid_class = 'grid-item-tall';
-									$grid_class .= $is_last_image ? ' only-three' : '';
-									$grid_class .= $next_to_last_image ? ' only-four' : '';
-									break;
-								case 3: // Fourth image: 1 row, 1 column
-									$grid_class = 'grid-item-small';
-									break;
-								case 4: // Fifth image: 2 columns, 2 rows
-									$grid_class = 'grid-item-large';
-									$grid_class .= $is_last_image ? ' only-five' : '';
-									$grid_class .= $next_to_last_image ? ' only-six' : '';
-									break;
-								case 5: // Sixth image: 1 row, 1 column
-									$grid_class = $next_to_last_image ? 'grid-item-small only-seven' : 'grid-item-small';
-									break;
-								case 6: // Seventh image: 1 row, 1 column
-								case 7: // Eighth image: 1 row, 1 column
-									$grid_class = 'grid-item-small';
-									break;
-								default:
-									$grid_class = 'grid-item-small';
-							}
-
-							$content .= '<div class="kadence-blocks-gallery-item ' . esc_attr($grid_class) . '">';
-							$content .= $this->render_gallery_images($image, $attributes);
-							$content .= '</div>';
-						}
-					}
-
-					$content .= '</div>';
-					$content .= '</div>';
-
+					$content .= $this->render_mosaic_gallery( $images, $attributes, $gallery_classes, $image_filter, $lightbox_cap );
 					break;
 				default:
 					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-item-selector=".kadence-blocks-gallery-item" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '">';
@@ -807,6 +753,79 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		return $content;
 	}
+	/**
+	 * Render mosaic gallery layout.
+	 * 
+	 * This function can be used by Kadence Blocks Pro for dynamic content.
+	 * It creates a mosaic pattern layout for gallery images with specific grid classes.
+	 *
+	 * @param array $images Array of image objects with image data.
+	 * @param array $attributes Gallery block attributes.
+	 * @param array $gallery_classes Array of CSS classes for the gallery container.
+	 * @param string $image_filter Image filter setting.
+	 * @param bool $lightbox_cap Whether lightbox captions are enabled.
+	 * @return string HTML markup for the mosaic gallery.
+	 */
+	public function render_mosaic_gallery( $images, $attributes, $gallery_classes = array(), $image_filter = 'none', $lightbox_cap = false ) {
+		$content = '';
+		$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '"kb-mosaic-gallery grid-pattern-gallery">';
+		$content .= '<div class="grid-pattern-container">';
+
+		$grouped_images = array_chunk($images, 8);
+
+		foreach ($grouped_images as $group) {
+			foreach ($group as $image_index => $image) {
+				// Determine which grid item pattern to use (patterns repeat every 8 images)
+				$pattern_index = $image_index % 8;
+
+				$grid_class = '';
+				$is_last_image = $image_index === count($group) - 1;
+				$next_to_last_image = $image_index === count($group) - 2;
+
+				switch ($pattern_index) {
+					case 0: // First image: 1 row, 2 columns
+						$grid_class = $is_last_image ? 'grid-item-wide only-one' : 'grid-item-wide';
+						break;
+					case 1: // Second image: 2 columns, 2 rows
+						$grid_class = 'grid-item-large';
+						$grid_class .= $is_last_image ? ' only-two' : '';
+						break;
+					case 2: // Third image: 2 rows, 1 column
+						$grid_class = 'grid-item-tall';
+						$grid_class .= $is_last_image ? ' only-three' : '';
+						$grid_class .= $next_to_last_image ? ' only-four' : '';
+						break;
+					case 3: // Fourth image: 1 row, 1 column
+						$grid_class = 'grid-item-small';
+						break;
+					case 4: // Fifth image: 2 columns, 2 rows
+						$grid_class = 'grid-item-large';
+						$grid_class .= $is_last_image ? ' only-five' : '';
+						$grid_class .= $next_to_last_image ? ' only-six' : '';
+						break;
+					case 5: // Sixth image: 1 row, 1 column
+						$grid_class = $next_to_last_image ? 'grid-item-small only-seven' : 'grid-item-small';
+						break;
+					case 6: // Seventh image: 1 row, 1 column
+					case 7: // Eighth image: 1 row, 1 column
+						$grid_class = 'grid-item-small';
+						break;
+					default:
+						$grid_class = 'grid-item-small';
+				}
+
+				$content .= '<div class="kadence-blocks-gallery-item ' . esc_attr($grid_class) . '">';
+				$content .= $this->render_gallery_images($image, $attributes);
+				$content .= '</div>';
+			}
+		}
+
+		$content .= '</div>';
+		$content .= '</div>';
+
+		return $content;
+	}
+
 	/**
 	 * Get the image srcset.
 	 *

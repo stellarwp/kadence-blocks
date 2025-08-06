@@ -378,9 +378,9 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 	private function render_content( $attributes ) {
 		$content  = '<div class="kt-testimonial-content-wrap">';
-		$content .= '<div class="kt-testimonial-content">';
+		$content .= '<blockquote class="kt-testimonial-content">';
 		$content .= $attributes['content'];
-		$content .= '</div>';
+		$content .= '</blockquote>';
 		$content .= '</div>';
 
 		return $content;
