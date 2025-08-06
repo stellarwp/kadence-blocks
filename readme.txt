@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.8.2
-Stable tag: 3.5.17
+Stable tag: 3.6.0-beta.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -184,7 +184,7 @@ Release Date: 28th July 2025
 
 = 3.5.15 =
 Release Date: 23rd July 2025
-* Fix: Mosaic gallery custom link in editor. 
+* Fix: Mosaic gallery custom link in editor.
 * Fix: Block defaults not applying to new blocks.
 * Fix: Add link support to advanced text block in some templates.
 
@@ -206,7 +206,7 @@ Release Date: 15th July 2025
 
 = 3.5.12 =
 Release Date: 2nd July 2025
-* Update: Header block off canvas trigger focus styles. 
+* Update: Header block off canvas trigger focus styles.
 * Fix: Icon List default bottom margin.
 * Fix: Count Up block responsive font, number size, line height preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.
