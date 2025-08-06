@@ -81,6 +81,7 @@
 					// 	};
 					// } );
 					splideSlider.mount();
+
 					var resizeTimer;
 					window.addEventListener('resize', function (e) {
 						clearTimeout(resizeTimer);
@@ -206,9 +207,19 @@
 		},
 
 		createSplideElements(wrapperElem) {
-			const slideCount = wrapperElem.children.length;
+			// Extract the pause button if it exists
+			const pauseButton = wrapperElem.querySelector('.kb-gallery-pause-button');
+			if (pauseButton) {
+				pauseButton.remove();
+			}
+
+			let slideCount = 0;
 			for (const slide of wrapperElem.children) {
-				slide.classList.add('splide__slide');
+				// Only add slide class to actual slides, not the pause button
+				if (!slide.classList.contains('kb-gallery-pause-button')) {
+					slide.classList.add('splide__slide');
+					slideCount++;
+				}
 				//slide.classList.add("slick-slide");
 				if (slide.classList.contains('last')) {
 					slide.classList.remove('last');
@@ -227,6 +238,12 @@
 			// The track goes inside them argument elem
 			wrapperElem.innerHTML = splideTrack.outerHTML;
 			wrapperElem.classList.add('splide');
+
+			// Re-append the pause button after the track
+			if (pauseButton) {
+				wrapperElem.appendChild(pauseButton);
+			}
+
 			return slideCount;
 		},
 

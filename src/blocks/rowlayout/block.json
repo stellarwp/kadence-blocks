@@ -534,7 +534,8 @@
 					"autoPlay": true,
 					"speed": 7000,
 					"fade": true,
-					"tranSpeed": 400
+					"tranSpeed": 400,
+					"showPauseButton": false
 				}
 			]
 		},

@@ -1069,3 +1069,59 @@ div.kb-blocks-bg-video {
 	width: 100%;
 	z-index: 1;
 }
+
+// Pause Button Editor Styles for Row Layout Background Slider
+.wp-block-kadence-rowlayout {
+	.kb-blocks-bg-slider .kb-gallery-pause-button {
+		opacity: 0.25;
+	}
+	
+	.kb-blocks-bg-slider:hover .kb-gallery-pause-button {
+		opacity: 1;
+	}
+
+	.kb-gallery-pause-button {
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
+		z-index: 10;
+		padding: 8px;
+		cursor: pointer;
+		border-radius: 3px;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+
+		&:hover {
+			opacity: 1;
+		}
+
+		&:focus {
+			outline: 2px solid rgba(255, 255, 255, 0.5);
+			outline-offset: 2px;
+			opacity: 1;
+		}
+
+		.kb-gallery-pause-icon,
+		.kb-gallery-play-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 24px;
+			height: 24px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+			}
+		}
+
+		// Editor always shows pause icon since it's not playing
+		.kb-gallery-play-icon {
+			display: none;
+		}
+	}
+}

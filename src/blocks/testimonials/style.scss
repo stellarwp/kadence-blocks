@@ -5,6 +5,7 @@
  * which makes it higher in priority.
  */
 
+@import '../../assets/css/variables';
 //@import './splide.scss';
 .wp-block-kadence-testimonials {
 	.kt-testimonial-rating-wrap {
@@ -23,6 +24,7 @@
 	}
 	.kt-blocks-carousel {
 		padding-bottom: 35px;
+		position: relative;
 	}
 	.kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
@@ -40,6 +42,67 @@
 	}
 	.kt-blocks-carousel-init .splide__pagination {
 		bottom: 6px;
+	}
+	
+	.kb-gallery-pause-button {
+		display: none;
+	}
+	
+	&:has(.kt-blocks-carousel-init[data-show-pause-button="true"]) .kb-gallery-pause-button {
+		display: flex;
+	}
+	
+	.kb-gallery-pause-button {
+		position: absolute;
+		bottom: 10px;
+		right: 10px;
+		background: var(--splide-nav-background, rgba(0, 0, 0, 0.8));
+		color: var(--splide-nav-color, #fff);
+		border: var(--splide-nav-border, 2px solid transparent);
+		border-radius: 4px;
+		padding: 8px 12px;
+		cursor: pointer;
+		font-size: 14px;
+		z-index: 10;
+		align-items: center;
+		justify-content: center;
+		opacity: $splide-arrow-opacity;
+		transition: opacity 0.4s ease-in-out;
+		
+		&:hover, &:focus {
+			opacity: $splide-arrow-opacity-hover;
+		}
+		
+		&:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 2px;
+		}
+		
+		svg {
+			width: 24px;
+			height: 24px;
+			display: block;
+		}
+		
+		.kb-gallery-pause-icon,
+		.kb-gallery-play-icon {
+			fill: currentColor;
+			line-height: 0;
+		}
+		
+		// Splide's toggle system handles visibility automatically
+		// When autoplay is running, pause icon is shown
+		// When autoplay is paused, play icon is shown
+	}
+	
+	.kt-blocks-carousel:hover .kb-gallery-pause-button {
+		opacity: $splide-arrow-opacity;
+	}
+	
+	&:has(.kt-carousel-arrowstyle-none) {
+		.kb-gallery-pause-button {
+			right: 10px;
+		}
 	}
 }
 .kt-testimonial-grid-wrap {

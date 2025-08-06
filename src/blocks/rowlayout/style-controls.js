@@ -1016,14 +1016,31 @@ function StyleControls(props) {
 						backgroundSliderSettings[0] &&
 						undefined !== backgroundSliderSettings[0].autoPlay &&
 						backgroundSliderSettings[0].autoPlay && (
-							<RangeControl
-								label={__('Autoplay Speed', 'kadence-blocks')}
-								value={backgroundSliderSettings[0].speed}
-								onChange={(value) => saveSliderSettings({ speed: value })}
-								min={500}
-								max={15000}
-								step={10}
-							/>
+							<>
+								<RangeControl
+									label={__('Autoplay Speed', 'kadence-blocks')}
+									value={backgroundSliderSettings[0].speed}
+									onChange={(value) => saveSliderSettings({ speed: value })}
+									min={500}
+									max={15000}
+									step={10}
+								/>
+								<ToggleControl
+									label={__('Show Pause Button', 'kadence-blocks')}
+									checked={
+										backgroundSliderSettings &&
+										backgroundSliderSettings[0] &&
+										undefined !== backgroundSliderSettings[0].showPauseButton
+											? backgroundSliderSettings[0].showPauseButton
+											: false
+									}
+									onChange={(value) => saveSliderSettings({ showPauseButton: value })}
+									help={__(
+										'Display a pause/play button in the bottom right corner.',
+										'kadence-blocks'
+									)}
+								/>
+							</>
 						)}
 					<SelectControl
 						label={__('Transition Style', 'kadence-blocks')}

@@ -1,3 +1,5 @@
+@import '../../assets/css/variables';
+
 .wp-block-kadence-testimonials {
 	.splide__container {
 		box-sizing: border-box;
@@ -193,7 +195,7 @@
 			display: flex;
 			height: 3em;
 			justify-content: center;
-			opacity: 0.25;
+			opacity: $splide-arrow-opacity;
 			padding: 0;
 			color: var(--splide-nav-color);
 			position: absolute;
@@ -205,7 +207,7 @@
 		}
 
 		&:hover .splide__arrow {
-			opacity: .75;
+			opacity: $splide-arrow-opacity;
 		}
 
 		.splide__arrow {
@@ -216,13 +218,13 @@
 			}
 
 			&:hover, &:focus {
-				opacity: 1;
+				opacity: $splide-arrow-opacity-hover;
 				background: var(--splide-nav-background);
 				color: var(--splide-nav-color);
 			}
 
 			&:disabled {
-				opacity: 0.1;
+				opacity: $splide-arrow-opacity-disabled;
 				cursor: not-allowed;
 			}
 		}
@@ -256,7 +258,7 @@
 			display: inline-block;
 			height: 10px;
 			margin: 3px;
-			opacity: 0.25;
+			opacity: $splide-pagination-opacity;
 			padding: 0;
 			transition: opacity .2s ease-in-out;
 			width: 10px;
@@ -264,12 +266,12 @@
 
 		.splide__pagination__page.is-active {
 			background: var(--splide-pagination-background);
-			opacity: 0.75;
+			opacity: $splide-arrow-opacity;
 		}
 
 		.splide__pagination__page:hover {
 			cursor: pointer;
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 
 		.splide__pagination__page:focus-visible {
