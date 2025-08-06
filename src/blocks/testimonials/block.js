@@ -23,7 +23,12 @@ export { metadata, name };
 registerBlockType('kadence/testimonials', {
 	...metadata,
 	title: _x('Testimonials', 'block title', 'kadence-blocks'),
-	keywords: [__('testimonials', 'kadence-blocks'), __('rating', 'kadence-blocks'), 'KB'],
+	keywords: [
+		__('testimonials', 'kadence-blocks'),
+		__('rating', 'kadence-blocks'),
+		'KB',
+		__('carousel', 'kadence-blocks'),
+	],
 	icon: {
 		src: testimonialBlockIcon,
 	},

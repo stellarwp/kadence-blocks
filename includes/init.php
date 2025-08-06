@@ -113,13 +113,13 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 	$css .= '}';
 	if ( isset( $content_width ) ) {
 		if ( class_exists( 'Kadence\Theme' ) ) {
-			$css .= '.kb-header-container { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			$css .= '.kb-header-container, .wp-block-kadence-navigation-link { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
 			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
 			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 				max-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';
 			}';
 		} else {
-			$css .= '.kb-header-container { --global-content-width: ' . absint( $content_width ) . 'px;}';
+			$css .= '.kb-header-container, .wp-block-kadence-navigation-link { --global-content-width: ' . absint( $content_width ) . 'px;}';
 			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
 			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 				max-width:' . esc_attr( $content_width ) . 'px;
@@ -665,7 +665,7 @@ add_filter( 'tribe_events_excerpt_blocks_removal', 'kadence_blocks_events_custom
 
 /**
  * Remove Filter to remove block rendering when events builds their custom excerpts.
- * 
+ *
  * @param bool $remove_blocks Whether to remove blocks or not.
  * @param WP_Post $post The post object.
  */
