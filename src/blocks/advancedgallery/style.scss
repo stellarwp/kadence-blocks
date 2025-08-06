@@ -3,6 +3,7 @@
  *
  * CSS for Frontend.
  */
+@import '../../assets/css/variables';
 .kb-gallery-ul * {
 	box-sizing: border-box;
 }
@@ -838,11 +839,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		opacity: 0.25;
+		opacity: $splide-arrow-opacity;
 		transition: opacity 0.4s ease-in-out;
 		
 		&:hover, &:focus {
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 		
 		&:focus {
@@ -868,7 +869,7 @@
 	}
 	
 	.kt-blocks-carousel:hover .kb-gallery-pause-button {
-		opacity: 0.75;
+		opacity: $splide-arrow-opacity;
 	}
 	
 	&:has(.kb-slider-arrow-position-bottom-right) {

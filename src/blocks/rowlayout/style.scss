@@ -3,6 +3,7 @@
  *
  * CSS for both Frontend+Backend.
  */
+@import '../../assets/css/variables';
 // Item
 // Defaults
 
@@ -389,32 +390,32 @@
 		align-items: center;
 		justify-content: center;
 		transition: all 0.3s ease;
-		opacity: 0.25;
+		opacity: $splide-arrow-opacity;
 
 		&:hover {
-			opacity: 0.75;
+			opacity: $splide-arrow-opacity;
 		}
 
 		&:focus {
 			outline: 2px solid rgba(255, 255, 255, 0.5);
 			outline-offset: 2px;
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 	}
 
 	&:hover .kb-gallery-pause-button {
-		opacity: 1;
+		opacity: $splide-arrow-opacity-hover;
 	}
 
 	@media (max-width: 767px) {
 		.kb-gallery-pause-button {
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 	}
 
 	@media (hover: none) {
 		.kb-gallery-pause-button {
-			opacity: 1;
+			opacity: $splide-arrow-opacity-hover;
 		}
 	}
 }
