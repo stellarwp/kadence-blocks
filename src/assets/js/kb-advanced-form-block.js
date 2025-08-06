@@ -233,7 +233,7 @@
 			window.kadenceAdvancedForm.removeErrors(self);
 			// ===== Validate: Text and Textarea ========
 			const required = self.querySelectorAll('[data-required="yes"]:not([disabled])');
-			if (false) {
+			if (required.length) {
 				for (let n = 0; n < required.length; n++) {
 					var data_type = required[n].getAttribute('data-type'),
 						val = '';
@@ -458,7 +458,6 @@
 					method: 'POST',
 					body: form_data,
 				};
-				console.log('fetching');
 
 				fetch(kb_adv_form_params.ajaxurl, fetchOptions)
 					.then((response) => {
@@ -507,7 +506,6 @@
 								}
 							}
 						} else if (response.data) {
-							console.log('failed');
 							window.kadenceAdvancedForm.event('failed', form);
 
 							// // Announce error message to screen readers
