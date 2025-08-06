@@ -172,7 +172,6 @@
 			window.kadenceAdvancedForm.announceMessage(form, fullErrorMessage, 'assertive');
 
 			// Insert visual message
-			// window.kadenceAdvancedForm.insertAfter(el, form);
 			form.parentNode.insertBefore(el, form);
 		},
 		isValidEmail(email) {

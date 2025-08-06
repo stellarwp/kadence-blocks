@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.8.2
-Stable tag: 3.5.16
+Stable tag: 3.5.17
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,13 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.17 =
+Release Date: 14th August 2025
+* Fix: Icon color in search block.
+* Fix: Testimonial content changed to a blockquote element for accessibility.
+* Fix: Countdown block logic for daily and weekly repeating.
+* Add: Mosaic gallery support for pro features. 
 
 = 3.5.16 =
 Release Date: 28th July 2025
