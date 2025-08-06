@@ -97,6 +97,13 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			// Store the meta value so we can sort the Post List Table.
 			$this->post_sort_indexer->set( $post_id );
 
+			$ref = wp_get_referer();
+
+			// If we're coming from the edit post page, don't double update the post.
+			if ( $ref && ! str_contains( $ref, 'post.php' ) ) {
+				$this->update_post( $post_id );
+			}
+
 			return new WP_REST_Response(
 				[
 					'data' => [
@@ -169,6 +176,9 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		if ( $this->store->delete( $path ) ) {
 			// Remove the meta value so we can sort the Post List Table.
 			$this->post_sort_indexer->delete( $post_id );
+
+			// Run wp_update post to signal to caching plugins to update their cache.
+			$this->update_post( $post_id );
 
 			return new WP_REST_Response(
 				[
@@ -356,5 +366,29 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		];
 
 		return $params;
+	}
+
+	/**
+	 * Update a post to hopefully force caching plugins to refresh their cache.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return int|WP_Error
+	 */
+	private function update_post( int $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return new WP_Error(
+				'rest_kb_optimizer_update_post_failed',
+				__( 'Unable to find post to update', 'kadence-blocks' ),
+				[
+					'status'  => WP_Http::INTERNAL_SERVER_ERROR,
+					'post_id' => $post_id,
+				]
+			);
+		}
+
+		return wp_update_post( $post );
 	}
 }
