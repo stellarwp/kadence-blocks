@@ -348,4 +348,264 @@ final class ElementLazyLoaderTest extends TestCase {
 
 		$this->assertEquals( $expected, $result );
 	}
+
+	public function testItDoesNotModifyRowStyleWithExistingContentVisibility(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => 'content-visibility: auto;',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should return original args without modification since content-visibility already exists.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItDoesNotModifyRowStyleWithExistingContainIntrinsicSize(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => 'contain-intrinsic-size: auto 300px;',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should return original args without modification since contain-intrinsic-size already exists.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItDoesNotModifyRowStyleWithExistingContentVisibilityAndIntrinsicSize(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 300px;',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should return original args without modification since both properties already exist.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItDoesNotModifyRowStyleWithExistingContentVisibilityAndOtherStyles(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => 'background-color: red;content-visibility: auto;color: blue;',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should return original args without modification since content-visibility already exists.
+		$this->assertEquals( $args, $result );
+	}
+
+	public function testItModifiesRowStyleWithoutContentVisibilityStyles(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => 'background-color: red;color: blue;',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should add content-visibility style since it doesn't exist.
+		$expected = [
+			'class' => 'kb-row-layout',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;background-color: red;color: blue;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItModifiesRowStyleWithEmptyStyleAttribute(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => '',
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should add content-visibility style since style is empty.
+		$expected = [
+			'class' => 'kb-row-layout',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItModifiesRowStyleWithNullStyle(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$args = [
+			'class' => 'kb-row-layout',
+			'style' => null,
+		];
+
+		$attributes = [
+			'uniqueID' => 'test-123',
+		];
+
+		$this->decider->expects( $this->once() )
+						->method( 'should_lazy_render' )
+						->with( [ 'kb-row-layout' ] )
+						->willReturn( true );
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_unique_id' )
+						->with( 'test-123' )
+						->willReturn( 500.0 );
+
+		$result = $lazy_loader->set_content_visibility_for_row( $args, $attributes );
+
+		// Should add content-visibility style since style is null.
+		$expected = [
+			'class' => 'kb-row-layout',
+			'style' => 'content-visibility: auto;contain-intrinsic-size: auto 500px;',
+		];
+
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function testItDoesNotModifyColumnStyleWithExistingContentVisibility(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123" style="content-visibility: auto;">Column content</div>';
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_class_attr' )
+						->with( 'wp-block-kadence-column kb-column-test-123' )
+						->willReturn( 400.0 );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		// Should return original html without modification since content-visibility already exists.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItDoesNotModifyColumnStyleWithExistingContainIntrinsicSize(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123" style="contain-intrinsic-size: auto 300px;">Column content</div>';
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_class_attr' )
+						->with( 'wp-block-kadence-column kb-column-test-123' )
+						->willReturn( 400.0 );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		// Should return original html without modification since contain-intrinsic-size already exists.
+		$this->assertEquals( $html, $result );
+	}
+
+	public function testItModifiesColumnStyleWithoutContentVisibility(): void {
+		$lazy_loader = new Element_Lazy_Loader( $this->decider );
+
+		$html = '<div class="wp-block-kadence-column kb-column-test-123" style="background-color: red;">Column content</div>';
+
+		$this->decider->expects( $this->once() )
+						->method( 'get_section_height_by_class_attr' )
+						->with( 'wp-block-kadence-column kb-column-test-123' )
+						->willReturn( 400.0 );
+
+		$result = $lazy_loader->modify_column_html( $html );
+
+		$expected = '<div class="wp-block-kadence-column kb-column-test-123" style="content-visibility: auto;contain-intrinsic-size: auto 400px;background-color: red;">Column content</div>';
+
+		$this->assertEquals( $expected, $result );
+	}
 }

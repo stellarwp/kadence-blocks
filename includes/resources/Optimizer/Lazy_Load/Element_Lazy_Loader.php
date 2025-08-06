@@ -6,11 +6,15 @@ use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
 use WP_HTML_Tag_Processor;
 
 /**
- * Process section Optimization data to set content visibility on the Kadence row layout and column block.
+ * Process section Optimization data to set content visibility on the Kadence row layout and column
+ * block.
  *
  * @phpstan-type HtmlClassHeightMap array<string, float> Class attribute => height in pixels.
  */
 final class Element_Lazy_Loader {
+
+	private const CONTENT_VISIBILITY     = 'content-visibility';
+	private const CONTAIN_INTRINSIC_SIZE = 'contain-intrinsic-size';
 
 	private Lazy_Render_Decider $decider;
 
@@ -54,6 +58,11 @@ final class Element_Lazy_Loader {
 		}
 
 		$current_style = (string) ( $args['style'] ?? '' );
+
+		if ( $this->has_content_visibility( $current_style ) ) {
+			return $args;
+		}
+
 		$args['style'] = $this->prepend_style( $height, $current_style );
 
 		return $args;
@@ -88,9 +97,26 @@ final class Element_Lazy_Loader {
 		}
 
 		$current_style = (string) $p->get_attribute( 'style' );
+
+		if ( $this->has_content_visibility( $current_style ) ) {
+			return $html;
+		}
+
 		$p->set_attribute( 'style', $this->prepend_style( $height, $current_style ) );
 
 		return $p->get_updated_html();
+	}
+
+	/**
+	 * Check if a style attribute already has content-visibility.
+	 *
+	 * @param string $current_style The current style attribute value.
+	 *
+	 * @return bool
+	 */
+	private function has_content_visibility( string $current_style ): bool {
+		return str_contains( $current_style, self::CONTENT_VISIBILITY ) ||
+				str_contains( $current_style, self::CONTAIN_INTRINSIC_SIZE );
 	}
 
 	/**
@@ -103,7 +129,9 @@ final class Element_Lazy_Loader {
 	 */
 	private function prepend_style( float $height, string $current_style ): string {
 		return sprintf(
-			'content-visibility: auto;contain-intrinsic-size: auto %dpx;%s',
+			'%s: auto;%s: auto %dpx;%s',
+			self::CONTENT_VISIBILITY,
+			self::CONTAIN_INTRINSIC_SIZE,
 			$height,
 			trim( $current_style )
 		);
