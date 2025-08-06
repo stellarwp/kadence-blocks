@@ -95,13 +95,16 @@
 		grid-auto-rows: minmax(0, 1fr);
 	}
 	.kt-inner-column-height-full.kt-tab-layout-equal > .wp-block-kadence-column > .kt-inside-inner-col,
-	.kt-inner-column-height-full:not(.kt-tab-layout-inherit):not(.kt-tab-layout-row) > .wp-block-kadence-column > .kt-inside-inner-col {
+	.kt-inner-column-height-full:not(.kt-tab-layout-inherit):not(.kt-tab-layout-row)
+		> .wp-block-kadence-column
+		> .kt-inside-inner-col {
 		height: 100%;
 	}
 }
 //mobile collapsed columns
 @media screen and (max-width: 767px) {
-	.kt-inner-column-height-full.kt-mobile-layout-row {
+	//needs to be specific enough to override the tablet grid auto rows style
+	.kt-inner-column-height-full.kt-mobile-layout-row.kt-mobile-layout-row {
 		/* autoprefixer: ignore next */
 		grid-auto-rows: minmax(min-content, max-content);
 	}
@@ -114,7 +117,9 @@
 		grid-auto-rows: minmax(0, 1fr);
 	}
 	.kt-inner-column-height-full.kt-mobile-layout-equal > .wp-block-kadence-column > .kt-inside-inner-col,
-	.kt-inner-column-height-full:not(.kt-mobile-layout-inherit):not(.kt-mobile-layout-row) > .wp-block-kadence-column > .kt-inside-inner-col {
+	.kt-inner-column-height-full:not(.kt-mobile-layout-inherit):not(.kt-mobile-layout-row)
+		> .wp-block-kadence-column
+		> .kt-inside-inner-col {
 		height: 100%;
 	}
 }
