@@ -541,7 +541,6 @@
 									}
 								}
 							}
-							console.log('fieldErrorMessages', fieldErrorMessages, response.data);
 							window.kadenceAdvancedForm.addErrorNotice(form, fieldErrorMessages, response.data.message);
 						}
 					})
