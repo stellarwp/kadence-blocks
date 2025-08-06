@@ -1,0 +1,21 @@
+name: PHP Compatibility (new)
+
+on:
+    workflow_dispatch:
+    push:
+        paths:
+            - '**.php'
+
+jobs:
+    php-compatibility:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pantheon-systems/phpcompatibility-action@v1
+              with:
+                  test-versions: 7.4-
+                  paths: |
+                    ${{ github.workspace }}/includes
+                    ${{ github.workspace }}/kadence-blocks.php
+                  extensions: 'php'
