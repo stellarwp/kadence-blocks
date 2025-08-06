@@ -38,7 +38,7 @@
 		insertAfter(newNode, referenceNode) {
 			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 		},
-		markError(item, error_type, form, fieldErrorMessages = null) {
+		markError(item, error_type, form, fieldErrorMessages = null, serverFieldError = null) {
 			let error_string = '';
 			if (!form.classList.contains('kb-adv-form-has-error')) {
 				form.classList.add('kb-adv-form-has-error');
@@ -80,6 +80,14 @@
 								error_string = kb_adv_form_params.item;
 							}
 							error_string = error_string + ' ' + kb_adv_form_params[error_type];
+						}
+						break;
+					case 'custom':
+						const customMessage = serverFieldError?.message;
+						if (customMessage) {
+							error_string = customMessage;
+						} else {
+							error_string = item.getAttribute('data-label') + ' has an issue';
 						}
 						break;
 				}
@@ -164,7 +172,8 @@
 			window.kadenceAdvancedForm.announceMessage(form, fullErrorMessage, 'assertive');
 
 			// Insert visual message
-			window.kadenceAdvancedForm.insertAfter(el, form);
+			// window.kadenceAdvancedForm.insertAfter(el, form);
+			form.parentNode.insertBefore(el, form);
 		},
 		isValidEmail(email) {
 			const pattern = new RegExp(
@@ -519,17 +528,20 @@
 							// );
 							const fieldErrorMessages = [];
 							if (response.data.fieldErrors) {
-								for (const fieldError of response.data.fieldErrors) {
-									if (form.querySelector('[name="' + fieldError.field + '"]')) {
+								for (const serverFieldError of response.data.fieldErrors) {
+									if (form.querySelector('[name="' + serverFieldError.field + '"]')) {
+										const type = serverFieldError.type || 'required';
 										window.kadenceAdvancedForm.markError(
-											form.querySelector('[name="' + fieldError.field + '"]'),
-											'required',
+											form.querySelector('[name="' + serverFieldError.field + '"]'),
+											type,
 											form,
-											fieldErrorMessages
+											fieldErrorMessages,
+											serverFieldError
 										);
 									}
 								}
 							}
+							console.log('fieldErrorMessages', fieldErrorMessages, response.data);
 							window.kadenceAdvancedForm.addErrorNotice(form, fieldErrorMessages, response.data.message);
 						}
 					})

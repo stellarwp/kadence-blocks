@@ -318,8 +318,9 @@ class KB_Ajax_Advanced_Form {
 						$max_count  = ! empty( $field['multipleLimit'] ) ? absint( $field['multipleLimit'] ) : 5;
 						if ( isset( $field['multiple'] ) && $field['multiple'] && $file_count > $max_count ) {
 							$field_errors[] = [
-								'message' => __( 'Submission Failed. Trying to include too many files.', 'kadence-blocks' ),
+								'message' => __( 'Trying to include too many files.', 'kadence-blocks' ),
 								'field' => $expected_field,
+								'type' => 'custom',
 							];
 							continue;
 						}
@@ -343,16 +344,18 @@ class KB_Ajax_Advanced_Form {
 							// Is file too big.
 							if ( $file['size'] > $max_upload_size_bytes ) {
 								$field_errors[] = [
-									'message' => __( 'Submission Failed. File too large', 'kadence-blocks' ),
+									'message' => __( 'File too large', 'kadence-blocks' ),
 									'field' => $expected_field,
+									'type' => 'custom',
 								];
 								continue 2; // Skip to next field.
 							}
 
 							if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
 								$field_errors[] = [
-									'message' => __( 'Submission Failed. File could not be uploaded', 'kadence-blocks' ),
+									'message' => __( 'File could not be uploaded', 'kadence-blocks' ),
 									'field' => $expected_field,
+									'type' => 'custom',
 								];
 								continue 2; // Skip to next field.
 							}
@@ -370,8 +373,9 @@ class KB_Ajax_Advanced_Form {
 								$space = get_upload_space_available();
 								if ( $space < $file_size || upload_is_user_over_quota( false ) ) {
 									$field_errors[] = [
-										'message' => __( 'Submission Failed. Not enough disk quota on this website.', 'kadence-blocks' ),
+										'message' => __( 'Not enough disk quota on this website.', 'kadence-blocks' ),
 										'field' => $expected_field,
+										'type' => 'custom',
 									];
 									continue 2; // Skip to next field.
 								}
@@ -401,8 +405,9 @@ class KB_Ajax_Advanced_Form {
 									];
 								} else {
 									$field_errors[] = [
-										'message' => __( 'Submission Failed. Failed to upload file', 'kadence-blocks' ),
+										'message' => __( 'Failed to upload file', 'kadence-blocks' ),
 										'field' => $expected_field,
+										'type' => 'custom',
 									];
 								}
 								continue 2; // Skip to next field.
