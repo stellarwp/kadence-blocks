@@ -38,7 +38,7 @@
 		insertAfter(newNode, referenceNode) {
 			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 		},
-		markError(item, error_type, form) {
+		markError(item, error_type, form, fieldErrorMessages = null, serverFieldError = null) {
 			let error_string = '';
 			if (!form.classList.contains('kb-adv-form-has-error')) {
 				form.classList.add('kb-adv-form-has-error');
@@ -82,6 +82,14 @@
 							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
+					case 'custom':
+						const customMessage = serverFieldError?.message;
+						if (customMessage) {
+							error_string = customMessage;
+						} else {
+							error_string = item.getAttribute('data-label') + ' has an issue';
+						}
+						break;
 				}
 				const next = item.parentNode.querySelector('.kb-adv-form-error-msg');
 				if (next) {
@@ -105,29 +113,66 @@
 				} else {
 					window.kadenceAdvancedForm.insertAfter(el, item);
 				}
+
+				// Add error message and item reference to collection array if provided
+				if (fieldErrorMessages && error_string) {
+					fieldErrorMessages.push({
+						message: error_string,
+						item,
+					});
+				}
 			}
 			if (1 === window.kadenceAdvancedForm.error_item) {
 				item.focus();
 			}
 			window.kadenceAdvancedForm.error_item++;
 		},
-		addErrorNotice(form) {
+		addErrorNotice(form, fieldErrorMessages = [], customErrorMessage = '') {
 			let error_message = form.getAttribute('data-error-message');
 			if (!error_message || '' === error_message || undefined === error_message) {
 				error_message = kb_adv_form_params.error_message;
 			}
+
+			// Combine main error message with field error messages
+			let fullErrorMessage = customErrorMessage || error_message;
+			if (fieldErrorMessages.length > 0) {
+				fullErrorMessage += '<ul class="kb-adv-form-field-errors">';
+				fieldErrorMessages.forEach(function (errorObj) {
+					const errorMsg = errorObj.message;
+					const errorItem = errorObj.item;
+					const itemId = errorItem.getAttribute('id') || errorItem.getAttribute('name');
+
+					if (itemId) {
+						fullErrorMessage +=
+							'<li><a href="#' +
+							itemId +
+							'" class="kb-adv-form-error-link" data-field-id="' +
+							itemId +
+							'">' +
+							window.kadenceAdvancedForm.strip_tags(errorMsg, '<div><a><b><i><u><p><ol><ul>') +
+							'</a></li>';
+					} else {
+						fullErrorMessage +=
+							'<li>' +
+							window.kadenceAdvancedForm.strip_tags(errorMsg, '<div><a><b><i><u><p><ol><ul>') +
+							'</li>';
+					}
+				});
+				fullErrorMessage += '</ul>';
+			}
+
 			const el = document.createElement('div');
 			el.classList.add('kb-adv-form-message');
 			el.classList.add('kb-adv-form-warning');
 			el.setAttribute('role', 'alert');
 			el.setAttribute('aria-live', 'assertive');
-			el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_message, '<div><a><b><i><u><p><ol><ul>');
+			el.innerHTML = window.kadenceAdvancedForm.strip_tags(fullErrorMessage, '<div><a><b><i><u><p><ol><ul><li>');
 
 			// Announce to screen readers using live region
-			window.kadenceAdvancedForm.announceMessage(form, error_message, 'assertive');
+			window.kadenceAdvancedForm.announceMessage(form, fullErrorMessage, 'assertive');
 
 			// Insert visual message
-			window.kadenceAdvancedForm.insertAfter(el, form);
+			form.parentNode.insertBefore(el, form);
 		},
 		isValidEmail(email) {
 			const pattern = new RegExp(
@@ -191,6 +236,8 @@
 		validateForm(self) {
 			let error = false,
 				error_type = '';
+
+			const fieldErrorMessages = [];
 			// remove all initial errors if any.
 			window.kadenceAdvancedForm.removeErrors(self);
 			// ===== Validate: Text and Textarea ========
@@ -208,8 +255,8 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 						case 'tel':
@@ -226,16 +273,16 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 						case 'accept':
 							if (required[n].checked == false) {
 								error = true;
 								error_type = 'required';
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 
@@ -247,15 +294,20 @@
 									error = true;
 									error_type = 'required';
 
-									// mark the error in the field.
-									window.kadenceAdvancedForm.markError(required[n], error_type, self);
+									// mark the error in the field and collect error message.
+									window.kadenceAdvancedForm.markError(
+										required[n],
+										error_type,
+										self,
+										fieldErrorMessages
+									);
 								}
 							} else if (!val || val === '-1') {
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 
@@ -266,8 +318,8 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 
@@ -278,8 +330,8 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 
@@ -292,15 +344,20 @@
 									error = true;
 									error_type = 'validation';
 
-									// mark the error in the field.
-									window.kadenceAdvancedForm.markError(required[n], error_type, self);
+									// mark the error in the field and collect error message.
+									window.kadenceAdvancedForm.markError(
+										required[n],
+										error_type,
+										self,
+										fieldErrorMessages
+									);
 								}
 							} else if (val === '') {
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 						case 'url':
@@ -312,15 +369,20 @@
 									error = true;
 									error_type = 'validation';
 
-									// mark the error in the field.
-									window.kadenceAdvancedForm.markError(required[n], error_type, self);
+									// mark the error in the field and collect error message.
+									window.kadenceAdvancedForm.markError(
+										required[n],
+										error_type,
+										self,
+										fieldErrorMessages
+									);
 								}
 							} else if (val === '') {
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 						case 'file':
@@ -330,8 +392,8 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 
@@ -342,8 +404,8 @@
 								error = true;
 								error_type = 'required';
 
-								// mark the error in the field.
-								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+								// mark the error in the field and collect error message.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self, fieldErrorMessages);
 							}
 							break;
 					}
@@ -352,8 +414,8 @@
 
 			// if already some error found, bail out
 			if (error) {
-				// add error notice
-				window.kadenceAdvancedForm.addErrorNotice(self);
+				// add error notice with collected field error messages
+				window.kadenceAdvancedForm.addErrorNotice(self, fieldErrorMessages);
 
 				return false;
 			}
@@ -455,24 +517,24 @@
 						} else if (response.data) {
 							window.kadenceAdvancedForm.event('failed', form);
 
-							// Announce error message to screen readers
-							const errorText = window.kadenceAdvancedForm.extractTextFromHTML(response.data.html);
-							window.kadenceAdvancedForm.announceMessage(form, errorText, 'assertive');
-
-							// Insert visual message
-							window.kadenceAdvancedForm.insertAfter(
-								window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
-								form
-							);
-							if (response.data.required) {
-								if (form.querySelector('[name="' + response.data.required + '"]')) {
-									window.kadenceAdvancedForm.markError(
-										form.querySelector('[name="' + response.data.required + '"]'),
-										'required',
-										form
-									);
+							// Insert visual messages
+							const fieldErrorMessages = [];
+							if (response.data.fieldErrors) {
+								for (const serverFieldError of response.data.fieldErrors) {
+									if (form.querySelector('[name="' + serverFieldError.field + '"]')) {
+										const type = serverFieldError.type || 'required';
+										window.kadenceAdvancedForm.markError(
+											form.querySelector('[name="' + serverFieldError.field + '"]'),
+											type,
+											form,
+											fieldErrorMessages,
+											serverFieldError
+										);
+									}
 								}
 							}
+							// Announce error message to screen readers
+							window.kadenceAdvancedForm.addErrorNotice(form, fieldErrorMessages, response.data.message);
 						}
 					})
 					.catch(function (error) {
