@@ -179,6 +179,7 @@ Release Date: 14th August 2025
 * Fix: Icon color in search block.
 * Fix: Testimonial content changed to a blockquote element for accessibility.
 * Fix: Countdown block logic for daily and weekly repeating.
+* Add: Mosaic gallery support for pro features. 
 
 = 3.5.16 =
 Release Date: 28th July 2025
