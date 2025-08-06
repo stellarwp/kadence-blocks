@@ -510,3 +510,9 @@
 .rtl .kt-testimonial-meta-wrap .kt-testimonial-meta-name-wrap {
 	text-align: right;
 }
+
+blockquote.kt-testimonial-content {
+	margin: unset;
+	padding-left:unset;
+	border-left: unset;
+}
