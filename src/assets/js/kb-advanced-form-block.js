@@ -110,7 +110,7 @@
 				if (fieldErrorMessages && error_string) {
 					fieldErrorMessages.push({
 						message: error_string,
-						item: item,
+						item,
 					});
 				}
 			}
@@ -519,7 +519,7 @@
 							// 	window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
 							// 	form
 							// );
-							let fieldErrorMessages = [];
+							const fieldErrorMessages = [];
 							if (response.data.fieldErrors) {
 								for (const fieldError of response.data.fieldErrors) {
 									if (form.querySelector('[name="' + fieldError.field + '"]')) {
