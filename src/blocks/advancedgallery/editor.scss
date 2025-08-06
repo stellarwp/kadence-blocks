@@ -838,3 +838,8 @@
 		}
 	}
 }
+
+// Add margin-right to pause button in thumbnail slider mode (editor)
+.kb-gallery-main-contain.kb-gallery-type-thumbslider .kb-gallery-pause-button {
+	margin-right: 25px;
+}

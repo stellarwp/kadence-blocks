@@ -882,4 +882,9 @@
 			bottom: 80px;
 		}
 	}
+	
+	// Add margin-right to pause button in thumbnail slider mode
+	.kb-blocks-slider[data-slider-type="thumbnail"] .kb-gallery-pause-button {
+		margin-right: 25px;
+	}
 }
