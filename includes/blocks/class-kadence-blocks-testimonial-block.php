@@ -82,7 +82,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$ratingStyles      = $this->get_context( $block_instance->context, 'ratingStyles' );
 		$content           = '';
 		if ( $layout === 'carousel' ) {
-			$content .= '<div class="kt-blocks-testimonial-carousel-item kb-slide-item">';
+			$content .= '<li class="kt-blocks-testimonial-carousel-item kb-slide-item">';
 		}
 
 		$classes = [
@@ -173,7 +173,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= '</div>';
 
 		if ( $layout === 'carousel' ) {
-			$content .= '</div>';
+			$content .= '</li>';
 		}
 
 		return $content;
@@ -378,9 +378,9 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 	private function render_content( $attributes ) {
 		$content  = '<div class="kt-testimonial-content-wrap">';
-		$content .= '<div class="kt-testimonial-content">';
+		$content .= '<blockquote class="kt-testimonial-content">';
 		$content .= $attributes['content'];
-		$content .= '</div>';
+		$content .= '</blockquote>';
 		$content .= '</div>';
 
 		return $content;

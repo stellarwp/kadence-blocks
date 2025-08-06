@@ -13,3 +13,5 @@ bin/wp-cli.phar
 .pup-build
 .pup-zip
 /tests/codeception.env
+# Remove this when fully transitioning to bun.
+/bun.lock*

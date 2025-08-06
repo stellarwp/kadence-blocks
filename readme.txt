@@ -177,6 +177,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.17 =
 Release Date: 14th August 2025
 * Fix: Icon color in search block.
+* Fix: Testimonial content changed to a blockquote element for accessibility.
+* Fix: Countdown block logic for daily and weekly repeating.
 
 = 3.5.16 =
 Release Date: 28th July 2025
