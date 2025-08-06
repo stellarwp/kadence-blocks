@@ -36,17 +36,46 @@
 						if (entry.isIntersecting) {
 							const slider = entry.target;
 							observer.unobserve(slider);
-							this.bootstrapSliders([slider]);
+							this.deferSliderInit(slider);
 						}
 					});
 				},
 				{
-					rootMargin: '250px 0px',
+					rootMargin: '150px 0px',
 				}
 			);
 
 			allSliders.forEach((slider) => {
 				observer.observe(slider);
+			});
+		},
+
+		/**
+		 * Defers slider initialization until the browser's execution stack is clear
+		 * and the browser is idle, helping ensure 3rd party scripts have completed
+		 * their DOM modifications before initializing sliders.
+		 *
+		 * @param {Element} slider - The slider element to initialize
+		 */
+		deferSliderInit(slider) {
+			// Wait for current execution stack to clear
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					// Wait for browser to be idle
+					if ('requestIdleCallback' in window) {
+						requestIdleCallback(
+							() => {
+								this.bootstrapSliders([slider]);
+							},
+							{ timeout: 1000 }
+						);
+					} else {
+						// Fallback for browsers without requestIdleCallback
+						setTimeout(() => {
+							this.bootstrapSliders([slider]);
+						}, 100);
+					}
+				});
 			});
 		},
 

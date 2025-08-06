@@ -62,6 +62,8 @@ const eslintConfig = {
 		Image: 'readable',
 		Masonry: 'readable',
 		IntersectionObserver: 'readable',
+		requestAnimationFrame: 'readable',
+		requestIdleCallback: 'readable',
 		getComputedStyle: 'readable',
 		ScrollMagic: 'readable',
 		kadence_pro_video_pop: 'readable',
