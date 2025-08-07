@@ -1,4 +1,4 @@
-@import '../../assets/css/variables';
+@import "../../assets/css/variables";
 
 .wp-block-kadence-testimonials {
 	.splide__container {
@@ -44,12 +44,17 @@
 		width: 0;
 	}
 
-	.splide__toggle.is-active .splide__toggle__play, .splide__toggle__pause {
+	.splide__toggle__play {
+		display: inline-flex;
+	}
+
+	.splide__toggle.is-active .splide__toggle__play,
+	.splide__toggle__pause {
 		display: none;
 	}
 
 	.splide__toggle.is-active .splide__toggle__pause {
-		display: inline;
+		display: inline-flex;
 	}
 
 	.splide {
@@ -177,7 +182,6 @@
 
 	.splide--rtl {
 		direction: rtl;
-
 	}
 
 	.splide--ttb.is-active > .splide__slider > .splide__track > .splide__list,
@@ -203,7 +207,7 @@
 			transform: translateY(-50%);
 			width: 2em;
 			z-index: 1;
-			transition: opacity .4s ease-in-out;
+			transition: opacity 0.4s ease-in-out;
 		}
 
 		&:hover .splide__arrow {
@@ -217,7 +221,8 @@
 				width: 1em;
 			}
 
-			&:hover, &:focus {
+			&:hover,
+			&:focus {
 				opacity: $splide-arrow-opacity-hover;
 				background: var(--splide-nav-background);
 				color: var(--splide-nav-color);
@@ -260,7 +265,7 @@
 			margin: 3px;
 			opacity: $splide-pagination-opacity;
 			padding: 0;
-			transition: opacity .2s ease-in-out;
+			transition: opacity 0.2s ease-in-out;
 			width: 10px;
 		}
 
@@ -315,12 +320,12 @@
 		box-shadow: inset 0 0 0 8px #fff;
 	}
 
-	@supports (outline-offset:-3px) {
+	@supports (outline-offset: -3px) {
 		.splide__slide:focus-visible {
 			outline-offset: -3px;
 		}
 	}
-	@supports (outline-offset:-3px) {
+	@supports (outline-offset: -3px) {
 		.splide.is-focus-in .splide__slide:focus {
 			outline-offset: -3px;
 		}

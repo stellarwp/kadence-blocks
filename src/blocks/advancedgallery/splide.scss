@@ -1,4 +1,4 @@
-@import '../../assets/css/variables';
+@import "../../assets/css/variables";
 
 .wp-block-kadence-advancedgallery {
 	.splide__container {
@@ -13,7 +13,7 @@
 		padding: 0 !important;
 	}
 	.splide.splide-initial .splide__list {
-		gap:0;
+		gap: 0;
 		display: flex;
 	}
 	.splide.is-initialized:not(.is-active) .splide__list {
@@ -37,18 +37,22 @@
 	.splide__progress__bar {
 		width: 0;
 	}
-	.splide__toggle.is-active .splide__toggle__play, .splide__toggle__pause {
+	.splide__toggle__play {
+		display: inline-flex;
+	}
+	.splide__toggle.is-active .splide__toggle__play,
+	.splide__toggle__pause {
 		display: none;
 	}
 	.splide__toggle.is-active .splide__toggle__pause {
-		display: inline;
+		display: inline-flex;
 	}
 	.splide {
 		outline: none;
 		position: relative;
 		//visibility: hidden;
 		--splide-nav-color: #fff;
-		--splide-nav-background: rgba(0,0,0,0.8);
+		--splide-nav-background: rgba(0, 0, 0, 0.8);
 		--splide-nav-border: 2px solid transparent;
 		--splide-pagination-background: #000;
 		&[data-slider-dots="true"] {
@@ -57,7 +61,7 @@
 	}
 	.splide.kt-carousel-arrowstyle-blackonlight {
 		--splide-nav-color: #000;
-		--splide-nav-background: rgba(255,255,255,0.8);
+		--splide-nav-background: rgba(255, 255, 255, 0.8);
 	}
 	.splide.kt-carousel-arrowstyle-outlineblack {
 		--splide-nav-color: #000;
@@ -159,8 +163,8 @@
 	.splide {
 		.splide__arrow {
 			align-items: center;
-			background: var( --splide-nav-background );
-			border: var( --splide-nav-border );
+			background: var(--splide-nav-background);
+			border: var(--splide-nav-border);
 			border-radius: 3px;
 			cursor: pointer;
 			display: flex;
@@ -168,13 +172,13 @@
 			justify-content: center;
 			opacity: $splide-arrow-opacity;
 			padding: 0;
-			color: var( --splide-nav-color );
+			color: var(--splide-nav-color);
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);
 			width: 2em;
 			z-index: 1;
-			transition: opacity .4s ease-in-out;
+			transition: opacity 0.4s ease-in-out;
 		}
 		&:hover .splide__arrow {
 			opacity: $splide-arrow-opacity;
@@ -185,10 +189,11 @@
 				height: 1em;
 				width: 1em;
 			}
-			&:hover, &:focus {
+			&:hover,
+			&:focus {
 				opacity: $splide-arrow-opacity-hover;
-				background: var( --splide-nav-background );
-				color: var( --splide-nav-color );
+				background: var(--splide-nav-background);
+				color: var(--splide-nav-color);
 			}
 			&:disabled {
 				opacity: $splide-arrow-opacity-disabled;
@@ -196,7 +201,7 @@
 			}
 		}
 		.splide__arrow--prev {
-			left:0;
+			left: 0;
 		}
 		.splide__arrow--prev svg {
 			transform: scaleX(-1);
@@ -214,7 +219,7 @@
 			margin: 0;
 		}
 		.splide__pagination__page {
-			background: var( --splide-pagination-background );
+			background: var(--splide-pagination-background);
 			border: 0;
 			border-radius: 50%;
 			display: inline-block;
@@ -222,11 +227,11 @@
 			margin: 3px;
 			opacity: $splide-pagination-opacity;
 			padding: 0;
-			transition: opacity .2s ease-in-out;
+			transition: opacity 0.2s ease-in-out;
 			width: 10px;
 		}
 		.splide__pagination__page.is-active {
-			background: var( --splide-pagination-background );
+			background: var(--splide-pagination-background);
 			opacity: $splide-arrow-opacity;
 		}
 		.splide__pagination__page:hover {
@@ -268,12 +273,12 @@
 		background-color: transparent;
 		box-shadow: inset 0 0 0 8px #fff;
 	}
-	@supports(outline-offset:-3px) {
+	@supports (outline-offset: -3px) {
 		.splide__slide:focus-visible {
 			outline-offset: -3px;
 		}
 	}
-	@supports(outline-offset:-3px) {
+	@supports (outline-offset: -3px) {
 		.splide.is-focus-in .splide__slide:focus {
 			outline-offset: -3px;
 		}
@@ -372,7 +377,7 @@
 			right: 4em;
 		}
 	}
-	
+
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-top-left .splide__arrows {
 		left: 1rem;
 		top: 2rem;
@@ -380,7 +385,7 @@
 			left: 4em;
 		}
 	}
-	
+
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-left .splide__arrows {
 		bottom: 2rem;
 		left: 1rem;
@@ -388,7 +393,7 @@
 			left: 4em;
 		}
 	}
-	
+
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-bottom-right .splide__arrows {
 		bottom: 2rem;
 		right: 1rem;
@@ -411,7 +416,7 @@
 			right: 4em;
 		}
 	}
-	
+
 	.kt-blocks-carousel .splide.kb-slider-arrow-position-outside-top-left .splide__arrows {
 		left: 1rem;
 		top: -2rem;
@@ -449,5 +454,4 @@
 		position: absolute;
 		z-index: 1;
 	}
-
 }

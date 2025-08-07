@@ -1,4 +1,4 @@
-@import './variables';
+@import "./variables";
 
 .kb-splide.splide__container {
 	box-sizing: border-box;
@@ -12,14 +12,15 @@
 	padding: 0 !important;
 }
 .kb-splide.splide-initial .splide__list {
-	gap:0;
+	gap: 0;
 	display: flex;
 }
 .kb-splide.is-initialized:not(.is-active) .splide__list {
 	display: block;
 }
 .kb-splide {
-	.splide__pagination, ul.menu ul.splide__pagination.splide__pagination {
+	.splide__pagination,
+	ul.menu ul.splide__pagination.splide__pagination {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
@@ -37,11 +38,15 @@
 	.splide__progress__bar {
 		width: 0;
 	}
-	.splide__toggle.is-active .splide__toggle__play, .splide__toggle__pause {
+	.splide__toggle__play {
+		display: inline-flex;
+	}
+	.splide__toggle.is-active .splide__toggle__play,
+	.splide__toggle__pause {
 		display: none;
 	}
 	.splide__toggle.is-active .splide__toggle__pause {
-		display: inline;
+		display: inline-flex;
 	}
 }
 .kb-splide {
@@ -49,7 +54,7 @@
 	position: relative;
 	//visibility: hidden;
 	--splide-nav-color: #fff;
-	--splide-nav-background: rgba(0,0,0,0.8);
+	--splide-nav-background: rgba(0, 0, 0, 0.8);
 	--splide-nav-border: 2px solid transparent;
 	--splide-pagination-background: #000;
 	&[data-slider-dots="true"] {
@@ -58,7 +63,7 @@
 }
 .kb-splide.kt-carousel-arrowstyle-blackonlight {
 	--splide-nav-color: #000;
-	--splide-nav-background: rgba(255,255,255,0.8);
+	--splide-nav-background: rgba(255, 255, 255, 0.8);
 }
 .kb-splide.kt-carousel-arrowstyle-outlineblack {
 	--splide-nav-color: #000;
@@ -189,7 +194,7 @@
 .kb-splide.splide--rtl {
 	direction: rtl;
 	&.splide--fade {
-		> .splide__track .splide__list  {
+		> .splide__track .splide__list {
 			direction: rtl;
 			flex-direction: row-reverse;
 		}
@@ -203,8 +208,8 @@
 	.splide__arrow {
 		font-size: 1rem;
 		align-items: center;
-		background: var( --splide-nav-background );
-		border: var( --splide-nav-border );
+		background: var(--splide-nav-background);
+		border: var(--splide-nav-border);
 		border-radius: 3px;
 		cursor: pointer;
 		display: flex;
@@ -213,13 +218,13 @@
 		justify-content: center;
 		opacity: $splide-arrow-opacity;
 		padding: 0;
-		color: var( --splide-nav-color );
+		color: var(--splide-nav-color);
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
 		z-index: 1;
 		box-shadow: none;
-		transition: opacity .3s ease-in-out;
+		transition: opacity 0.3s ease-in-out;
 	}
 	&.kb-slider-group-arrows {
 		.splide__arrows {
@@ -231,7 +236,8 @@
 				position: static;
 				opacity: $splide-arrow-opacity-grouped;
 				transform: none;
-				&:hover, &:focus {
+				&:hover,
+				&:focus {
 					opacity: $splide-arrow-opacity-hover;
 				}
 				&:disabled {
@@ -273,10 +279,11 @@
 			height: 1em;
 			width: 1em;
 		}
-		&:hover, &:focus {
+		&:hover,
+		&:focus {
 			opacity: $splide-arrow-opacity-hover;
-			background: var( --splide-nav-background );
-			color: var( --splide-nav-color );
+			background: var(--splide-nav-background);
+			color: var(--splide-nav-color);
 		}
 		&:disabled {
 			opacity: $splide-arrow-opacity-disabled;
@@ -292,7 +299,8 @@
 	.splide__arrow--next {
 		right: clamp(0.05rem, 1vw, 1rem);
 	}
-	.splide__pagination, ul.splide__pagination.splide__pagination {
+	.splide__pagination,
+	ul.splide__pagination.splide__pagination {
 		bottom: -25px;
 		left: 0;
 		padding: 0 1em;
@@ -301,7 +309,7 @@
 		z-index: 1;
 	}
 	.splide__pagination__page {
-		background: var( --splide-pagination-background );
+		background: var(--splide-pagination-background);
 		border: 0;
 		border-radius: 50%;
 		display: inline-block;
@@ -309,11 +317,11 @@
 		margin: 3px;
 		opacity: $splide-pagination-opacity;
 		padding: 0;
-		transition: opacity .2s ease-in-out;
+		transition: opacity 0.2s ease-in-out;
 		width: 10px;
 	}
 	.splide__pagination__page.is-active {
-		background: var( --splide-pagination-background );
+		background: var(--splide-pagination-background);
 		opacity: $splide-arrow-opacity;
 	}
 	.splide__pagination__page:hover {
@@ -331,12 +339,12 @@
 		height: 3px;
 	}
 }
-@supports(outline-offset:-3px) {
+@supports (outline-offset: -3px) {
 	.kb-splide .splide__slide:focus-visible {
 		outline-offset: -3px;
 	}
 }
-@supports(outline-offset:-3px) {
+@supports (outline-offset: -3px) {
 	.kb-splide .splide.is-focus-in .splide__slide:focus {
 		outline-offset: -3px;
 	}
