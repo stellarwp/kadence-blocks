@@ -284,13 +284,13 @@
 		}
 	}
 	.splide__arrow--prev {
-		left: 1rem;
+		left: clamp(0.05rem, 1vw, 1rem);
 	}
 	.splide__arrow--prev svg {
 		transform: scaleX(-1);
 	}
 	.splide__arrow--next {
-		right: 1rem;
+		right: clamp(0.05rem, 1vw, 1rem);
 	}
 	.splide__pagination, ul.splide__pagination.splide__pagination {
 		bottom: -25px;
@@ -370,7 +370,7 @@
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--rtl > .splide__track > .splide__arrows .splide__arrow--prev {
 	left: auto;
-	right: 1em;
+	right: clamp(0.05rem, 1vw, 1rem);
 }
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--prev svg,
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev svg,
@@ -380,7 +380,7 @@
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--rtl > .splide__track > .splide__arrows .splide__arrow--next {
-	left: 1em;
+	left: clamp(0.05rem, 1vw, 1rem);
 	right: auto;
 }
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--next svg,
@@ -397,7 +397,7 @@
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--ttb > .splide__track > .splide__arrows .splide__arrow--prev {
-	top: 1em;
+	top: clamp(0.05rem, 1vw, 1rem);
 }
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--prev svg,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev svg,
@@ -407,7 +407,7 @@
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--ttb > .splide__track > .splide__arrows .splide__arrow--next {
-	bottom: 1em;
+	bottom: clamp(0.05rem, 1vw, 1rem);
 	top: auto;
 }
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--next svg,
