@@ -69,6 +69,25 @@
 						drag: childCount > 1 ? splideOptions.drag : false,
 						clones: childCount > 1 ? undefined : 0, // Toggle clones
 					});
+					splideSlider.on( 'pagination:mounted', function () {
+						var paginationButtons =
+						thisSlider.querySelectorAll( '.splide__pagination__page' );
+						paginationButtons.forEach( function ( button ) {
+							button.addEventListener( 'keydown', function ( event ) {
+								// Check if space bar or return/enter is pressed
+								if ( event.key === ' ' || event.key === 'Enter' ) {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide =
+										splideSlider?.Components?.Slides?.getAt( activeSlideIndex )?.slide;
+									if ( activeSlide ) {
+										activeSlide.setAttribute( 'tabindex', '0' );
+										activeSlide.focus();
+									}
+								}
+							} );
+						} );
+					} );
 					// splideSlider.on( 'overflow', function ( isOverflow ) {
 					// 	// Reset the carousel position
 					// 	splideSlider.go( 0 );
@@ -106,6 +125,25 @@
 							drag: slideCount === 1 ? false : splideOptions.drag,
 						};
 					});
+					splideSlider.on( 'pagination:mounted', function () {
+						var paginationButtons =
+						thisSlider.querySelectorAll( '.splide__pagination__page' );
+						paginationButtons.forEach( function ( button ) {
+							button.addEventListener( 'keydown', function ( event ) {
+								// Check if space bar or return/enter is pressed
+								if ( event.key === ' ' || event.key === 'Enter' ) {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide =
+										splideSlider?.Components?.Slides?.getAt( activeSlideIndex )?.slide;
+									if ( activeSlide ) {
+										activeSlide.setAttribute( 'tabindex', '0' );
+										activeSlide.focus();
+									}
+								}
+							} );
+						} );
+					} );
 					splideSlider.mount();
 				} else if (sliderType && sliderType === 'thumbnail') {
 					const navSliderId = parsedData.sliderNav;
@@ -170,6 +208,25 @@
 							};
 						});
 					}
+					splideSlider.on( 'pagination:mounted', function () {
+						var paginationButtons =
+						thisSlider.querySelectorAll( '.splide__pagination__page' );
+						paginationButtons.forEach( function ( button ) {
+							button.addEventListener( 'keydown', function ( event ) {
+								// Check if space bar or return/enter is pressed
+								if ( event.key === ' ' || event.key === 'Enter' ) {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide =
+										splideSlider?.Components?.Slides?.getAt( activeSlideIndex )?.slide;
+									if ( activeSlide ) {
+										activeSlide.setAttribute( 'tabindex', '0' );
+										activeSlide.focus();
+									}
+								}
+							} );
+						} );
+					} );
 					splideSlider.mount();
 				} else {
 					const splideSlider = new Splide(thisSlider, splideOptions);
@@ -186,6 +243,25 @@
 							};
 						});
 					}
+					splideSlider.on( 'pagination:mounted', function () {
+						var paginationButtons =
+						thisSlider.querySelectorAll( '.splide__pagination__page' );
+						paginationButtons.forEach( function ( button ) {
+							button.addEventListener( 'keydown', function ( event ) {
+								// Check if space bar or return/enter is pressed
+								if ( event.key === ' ' || event.key === 'Enter' ) {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide =
+										splideSlider?.Components?.Slides?.getAt( activeSlideIndex )?.slide;
+									if ( activeSlide ) {
+										activeSlide.setAttribute( 'tabindex', '0' );
+										activeSlide.focus();
+									}
+								}
+							} );
+						} );
+					} );
 					splideSlider.mount();
 				}
 			}
