@@ -302,7 +302,7 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 			if ( empty( $attributes['showButton'] ) || ( !empty( $attributes['displayStyle'] ) && 'modal' === $attributes['displayStyle'] ) ) {
 				$input .= sprintf(
 					'<button type="submit" class="kb-search-icon-submit" aria-label="%1$s"><span class="kb-search-icon">%2$s</span></button>',
-					esc_attr__( 'Search', 'text-domain' ),
+					esc_attr__( 'Search', 'kadence-blocks' ),
 					$input_icon
 				);
 			} else {
