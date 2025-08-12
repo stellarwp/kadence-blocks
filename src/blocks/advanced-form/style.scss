@@ -393,6 +393,16 @@
 	width: 100%;
 	margin-top: 3px;
 	color: var(--kb-form-error-color, #be001b);
+	h2.kb-adv-form-error-title {
+		font-size: 1rem;
+		font-weight: bold;
+		color: inherit;
+		margin-top: 0;
+		margin-bottom: 0.5em;
+	}
+	ol.kb-adv-form-field-errors > li {
+		list-style-type: disc;
+	}
 }
 .kb-form-is-dark {
 	--kb-form-error-color: #fff;

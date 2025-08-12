@@ -122,9 +122,10 @@
 					});
 				}
 			}
-			if (1 === window.kadenceAdvancedForm.error_item) {
-				item.focus();
-			}
+			// Don't focus on the first error item instead focus on the error message.
+			// if (1 === window.kadenceAdvancedForm.error_item) {
+			// 	item.focus();
+			// }
 			window.kadenceAdvancedForm.error_item++;
 		},
 		addErrorNotice(form, fieldErrorMessages = [], customErrorMessage = '') {
@@ -134,9 +135,11 @@
 			}
 
 			// Combine main error message with field error messages
-			let fullErrorMessage = customErrorMessage || error_message;
+			const errorTitle = customErrorMessage || error_message;
+			let fullErrorMessage = '<h2 class="kb-adv-form-error-title">' + errorTitle + '</h2>';
+			console.log(fullErrorMessage);
 			if (fieldErrorMessages.length > 0) {
-				fullErrorMessage += '<ul class="kb-adv-form-field-errors">';
+				fullErrorMessage += '<ol class="kb-adv-form-field-errors">';
 				fieldErrorMessages.forEach(function (errorObj) {
 					const errorMsg = errorObj.message;
 					const errorItem = errorObj.item;
@@ -158,7 +161,7 @@
 							'</li>';
 					}
 				});
-				fullErrorMessage += '</ul>';
+				fullErrorMessage += '</ol>';
 			}
 
 			const el = document.createElement('div');
@@ -166,13 +169,19 @@
 			el.classList.add('kb-adv-form-warning');
 			el.setAttribute('role', 'alert');
 			el.setAttribute('aria-live', 'assertive');
-			el.innerHTML = window.kadenceAdvancedForm.strip_tags(fullErrorMessage, '<div><a><b><i><u><p><ol><ul><li>');
+			el.setAttribute('tabindex', '-1');
+			el.innerHTML = window.kadenceAdvancedForm.strip_tags(
+				fullErrorMessage,
+				'<div><a><b><i><u><p><ol><ul><li><h2><h3><h4><h5><h6>'
+			);
 
-			// Announce to screen readers using live region
-			window.kadenceAdvancedForm.announceMessage(form, fullErrorMessage, 'assertive');
+			// // Announce to screen readers using live region
+			// window.kadenceAdvancedForm.announceMessage(form, fullErrorMessage, 'assertive');
 
 			// Insert visual message
 			form.parentNode.insertBefore(el, form);
+			// Set focus to the error message
+			el.focus();
 		},
 		isValidEmail(email) {
 			const pattern = new RegExp(
@@ -500,17 +509,23 @@
 							if (response.redirect) {
 								window.location.replace(response.redirect);
 							} else {
-								// Announce success message to screen readers
-								const successText = window.kadenceAdvancedForm.extractTextFromHTML(response.html);
-								window.kadenceAdvancedForm.announceMessage(form, successText, 'polite');
-
 								// Insert visual message
 								window.kadenceAdvancedForm.insertAfter(
 									window.kadenceAdvancedForm.createElementFromHTML(response.html),
 									form
 								);
+								// Announce success message to screen readers
+								const successText = window.kadenceAdvancedForm.extractTextFromHTML(response.html);
+								window.kadenceAdvancedForm.announceMessage(form, successText, 'polite');
+
 								window.kadenceAdvancedForm.clearForm(form);
 								if (response?.hide) {
+									// Focus on the announcement message
+									const announcementMessage = form.parentNode.querySelector('.kb-adv-form-message');
+									if (announcementMessage) {
+										announcementMessage.setAttribute('tabindex', '-1');
+										announcementMessage.focus();
+									}
 									form.remove();
 								}
 							}
