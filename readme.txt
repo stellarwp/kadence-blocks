@@ -176,10 +176,32 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.5.17 =
 Release Date: 14th August 2025
+* Add: Option to reveal icons for buttons on hover.
+* Add: Mosaic gallery support for pro features. 
+* Add: Custom option for autofill value on advanced form input fields.
+* Add: Pause button option for sliders with autoplay
+* Update: Slides in sliders are now semantic list items
+* Update: Grouped testimonials are now semantic list items
+* Update: Remove "aria-hidden="true"" in post title in Post Loop block
+* Update: Screen reader announces success in Form block
+* Update: Make error messages persistent on Form block
+* Update: Improve error notices for screen readers (in ADV form)
+* Update: Improve error notice announcements for screen readers (in ADV form)
+* Update: Carousel arrows improved contrast ratios
+* Update: Improved accessibility of star rating in testimonial block
+* Update: Testimonial quote is now a semantic blockquote
+* Update: Improved accessability for post block labels
+* Update: Improve slide functionality at high zoom levels.
 * Fix: Icon color in search block.
 * Fix: Testimonial content changed to a blockquote element for accessibility.
 * Fix: Countdown block logic for daily and weekly repeating.
-* Add: Mosaic gallery support for pro features. 
+* Fix: Search block - Wrong text domain
+* Fix: bad class name in heading block
+* Fix: Row Layout Block Tablet/Mobile Spacing Issue
+* Fix: Nested Navigation Block does not work properly in Dashboard > Kadence > Navigations
+* Fix: Countdown Block repeater date is wrong in some sitiuations
+* Fix: Icon color issue in search block
+
 
 = 3.5.16 =
 Release Date: 28th July 2025
