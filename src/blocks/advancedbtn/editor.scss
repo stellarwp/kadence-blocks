@@ -64,10 +64,15 @@
 	margin-bottom: 0;
 }
 .kt-advanced-color-settings-container .kt-has-alpha {
-	background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0),
+	background-image:
+		linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0),
 		linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
 	background-size: 10px 10px;
-	background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+	background-position:
+		0 0,
+		0 5px,
+		5px -5px,
+		-5px 0;
 }
 .kt-advanced-color-settings-container .kt-color-icon-indicate {
 	height: auto;
@@ -259,7 +264,8 @@
 .kt-button:hover::before {
 	opacity: 1;
 }
-.kt-btn-width-type-fixed .kt-button, .kt-btn-width-type-fixed .tooltip-ref-wrap {
+.kt-btn-width-type-fixed .kt-button,
+.kt-btn-width-type-fixed .tooltip-ref-wrap {
 	width: 100%;
 }
 .editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-small {
@@ -371,6 +377,27 @@
 // Icon Settings.
 .kb-btn-has-icon {
 	gap: 0.5em;
+
+	&.icon-reveal {
+		$icon-size: var(--kb-button-icon-size, 24px);
+
+		.kt-btn-svg-icon {
+			transition:
+				transform 0.3s ease-in-out,
+				width 0.3s ease-in-out,
+				opacity 0.3s ease-in-out;
+
+			width: 0;
+			opacity: 0;
+		}
+
+		&:hover {
+			.kt-btn-svg-icon {
+				width: $icon-size;
+				opacity: 1;
+			}
+		}
+	}
 }
 .kb-btn-only-icon .kt-button-text {
 	display: none;
