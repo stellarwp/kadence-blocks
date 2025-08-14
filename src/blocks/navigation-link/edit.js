@@ -334,10 +334,11 @@ export default function Edit(props) {
 		dropdownShadow,
 		kadenceDynamic,
 		dropdownClick,
+		freezeSubMenuPreview,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
-	const [showSubMenus, setShowSubMenus] = useState(false);
+	const [showSubMenus, setShowSubMenus] = useState(freezeSubMenuPreview || false);
 	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 	const [activePreview, setActivePreview] = useState(false);
@@ -1300,7 +1301,10 @@ export default function Edit(props) {
 											: __('Freeze Sub Menu Preview', 'kadence-blocks')
 									}
 									checked={showSubMenus}
-									onChange={(value) => setShowSubMenus(value)}
+									onChange={(value) => {
+										setShowSubMenus(value);
+										setAttributes({ freezeSubMenuPreview: value });
+									}}
 								/>
 							)}
 						</KadencePanelBody>

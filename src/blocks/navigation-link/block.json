@@ -1586,6 +1586,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"freezeSubMenuPreview": {
+			"type": "boolean",
+			"default": false
+		},
 		"anchor": {
 			"type": "string"
 		}
