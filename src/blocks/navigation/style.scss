@@ -1550,3 +1550,17 @@ $link-color-property: var(
 	max-height: calc(98vh - var(--kb-sticky-mega-overflow-header-offset, 0px));
 	overflow-y: auto;
 }
+
+//dealing with specificity issues for navigations in the theme header toggle widget area
+#widget-drawer .header-widget2 .wp-block-kadence-navigation-link {
+	.kb-link-wrap {
+		&:hover {
+			.kb-nav-link-content {
+				color: $link-color-property;
+			}
+		}
+	}
+	.kb-nav-link-content {
+		color: $link-color-property;
+	}
+}
