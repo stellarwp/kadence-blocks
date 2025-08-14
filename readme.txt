@@ -201,7 +201,7 @@ Release Date: 14th August 2025
 * Fix: Nested Navigation Block does not work properly in Dashboard > Kadence > Navigations
 * Fix: Countdown Block repeater date is wrong in some sitiuations
 * Fix: Icon color issue in search block
-
+* Fix: Freeze submenu preview setting for hover to open
 
 = 3.5.16 =
 Release Date: 28th July 2025

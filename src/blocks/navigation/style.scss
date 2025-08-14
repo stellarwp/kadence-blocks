@@ -946,11 +946,6 @@ $link-color-property: var(
 			}
 		}
 	}
-	// Fix for mega menu overflow for some FSE themes
-	.kadence-menu-mega-enabled.kb-nav-link-sub-click:not(.menu-item--toggled-on),
-	.kadence-menu-mega-enabled:not(.kb-nav-link-sub-click):not(:hover) {
-		overflow: clip;
-	}
 
 	.kb-link-wrap {
 		transition: all 0.2s ease-in-out;
