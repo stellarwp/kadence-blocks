@@ -334,10 +334,10 @@ export default function Edit(props) {
 		dropdownShadow,
 		kadenceDynamic,
 		dropdownClick,
-		freezeSubMenuPreview,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
+	const [showSubMenus, setShowSubMenus] = useState(false);
 	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 	const [activePreview, setActivePreview] = useState(false);
@@ -653,7 +653,7 @@ export default function Edit(props) {
 	}
 
 	const megaMenuWidthClass = 'kb-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
-	const showSubMenusWithLogic = freezeSubMenuPreview || isSelected || childSelected;
+	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 	const immediateParentBlock = parentBlocks?.[parentBlocks.length - 1];
 	const navBuilderisOpen = immediateParentBlock === openNavBuilderClientId;
 	const blockProps = useBlockProps({
@@ -1299,8 +1299,8 @@ export default function Edit(props) {
 											? __('Freeze Mega Menu Preview', 'kadence-blocks')
 											: __('Freeze Sub Menu Preview', 'kadence-blocks')
 									}
-									checked={freezeSubMenuPreview || false}
-									onChange={(value) => setAttributes({ freezeSubMenuPreview: value })}
+									checked={showSubMenus}
+									onChange={(value) => setShowSubMenus(value)}
 								/>
 							)}
 						</KadencePanelBody>
