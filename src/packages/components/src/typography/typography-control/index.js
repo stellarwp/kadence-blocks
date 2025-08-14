@@ -84,6 +84,7 @@ class TypographyControls extends Component {
 			const newOptions = [];
 			Object.keys( kadence_blocks_params.c_fonts ).forEach(function ( font ) {
 				const name = kadence_blocks_params.c_fonts[font].name;
+				const label = kadence_blocks_params.c_fonts[font].label ? kadence_blocks_params.c_fonts[font].label : name;
 				const weights = [];
 				Object.keys( kadence_blocks_params.c_fonts[font].weights ).forEach(function ( weight ) {
 					weights.push( {
@@ -99,7 +100,7 @@ class TypographyControls extends Component {
 					} );
 				} );
 				newOptions.push( {
-					label: name,
+					label: label,
 					value: name,
 					google: false,
 					weights: weights,
