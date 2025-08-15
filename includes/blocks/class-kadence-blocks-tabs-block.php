@@ -294,6 +294,24 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'background', '#ffffff' );
 		}
 
+		/*
+		 * Subtitle Colors
+		 */
+		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-title-sub-text' );
+		if ( isset( $attributes['subtitleColor'] ) && ! empty( $attributes['subtitleColor'] ) ) {
+			$css->add_property( 'color', $css->sanitize_color( $attributes['subtitleColor'] ) );
+		}
+
+		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title:hover .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title:hover .kt-title-sub-text' );
+		if ( ! empty( $attributes['subtitleColorHover'] ) ) {
+			$css->add_property( 'color', $css->sanitize_color( $attributes['subtitleColorHover'] ) );
+		}
+
+		$css->set_selector( '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li.kt-tab-title-active .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tab-title-active .kt-title-sub-text' );
+		if ( ! empty( $attributes['subtitleColorActive'] ) ) {
+			$css->add_property( 'color', $css->sanitize_color( $attributes['subtitleColorActive'] ) );
+		}
+
 
 		if ( isset( $attributes['tabSize'] ) || isset( $attributes['tabLineHeight'] ) ) {
 			$css->set_media_state( 'tablet' );
