@@ -2759,6 +2759,7 @@
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
 					interactive: true,
+					appendTo: document.body,
 					content: (reference) => {
 						const content = reference.getAttribute('data-kb-tooltip-content');
 						return window.kadenceTippy.strip_tags(content);
@@ -2781,6 +2782,7 @@
 				tippy('[data-tooltip-id]', {
 					allowHTML: true,
 					interactive: true,
+					appendTo: document.body,
 					content: (reference) => {
 						const id = reference.getAttribute('data-tooltip-id');
 						const toolContent = document.getElementById(id);
