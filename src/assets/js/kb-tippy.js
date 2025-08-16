@@ -2759,6 +2759,16 @@
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
 					interactive: true,
+					popperOptions: {
+						modifiers: [
+							{
+								name: 'flip',
+								options: {
+									fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+								},
+							},
+						],
+					},
 					content: (reference) => {
 						const content = reference.getAttribute('data-kb-tooltip-content');
 						return window.kadenceTippy.strip_tags(content);
@@ -2781,6 +2791,16 @@
 				tippy('[data-tooltip-id]', {
 					allowHTML: true,
 					interactive: true,
+					popperOptions: {
+						modifiers: [
+							{
+								name: 'flip',
+								options: {
+									fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+								},
+							},
+						],
+					},
 					content: (reference) => {
 						const id = reference.getAttribute('data-tooltip-id');
 						const toolContent = document.getElementById(id);
