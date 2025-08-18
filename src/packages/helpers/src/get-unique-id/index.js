@@ -4,6 +4,7 @@ import getPostOrWidgetId from '../get-post-or-widget-id';
 import { useEffect, useMemo } from '@wordpress/element';
 import { get, has } from 'lodash';
 import { default as hashString } from '../hash-string';
+import getBlockDefaults from '../set-block-defaults';
 
 /**
  * Creates or keeps a uniqueId for a block depending on it's status.
@@ -35,14 +36,30 @@ export default function uniqueIdHelper(props) {
 		[select, clientId]
 	);
 
-	const updateUniqueID = (newUniqueID) => {
+	const updateUniqueID = (newUniqueID, isNewBlock = false) => {
 		if (!isUniqueID(newUniqueID)) {
 			// Solves for rare case where the client id matches enough that our unique id is not unique.
 			newUniqueID = uniqueId(newUniqueID);
 		}
-		// Set the unique ID in the attributes and the store. On the attribute variable is important for race conditions.
-		attributes.uniqueID = newUniqueID;
-		setAttributes({ uniqueID: newUniqueID });
+		
+		let updatedAttributes = { uniqueID: newUniqueID };
+		
+		// Apply block defaults for new blocks
+		if (isNewBlock) {
+			const defaultedAttributes = getBlockDefaults(props.name, attributes);
+			updatedAttributes = {
+				...defaultedAttributes,
+				uniqueID: newUniqueID
+			};
+		}
+		
+		// Update attributes on the object for race conditions
+		Object.assign(attributes, updatedAttributes);
+		
+		// Set all attributes in one call
+		setAttributes(updatedAttributes);
+		
+		// Add to store
 		addUniqueID(newUniqueID, clientId);
 	};
 	const getBlockPostId = (parentData) => {
@@ -65,7 +82,9 @@ export default function uniqueIdHelper(props) {
 		const blockPostId = getBlockPostId(parentData);
 		const blockPostIdPrefix = blockPostId ? blockPostId + '_' : '';
 		const newUniqueID = blockPostIdPrefix + clientId.substr(2, 9);
-		updateUniqueID(newUniqueID);
+		
+		// This is a new block
+		updateUniqueID(newUniqueID, true);
 	}
 
 	useEffect(() => {
@@ -79,10 +98,10 @@ export default function uniqueIdHelper(props) {
 			(hasBlockPostIdPrefix && attributes?.uniqueID.split('_')[0] !== blockPostId.toString())
 		) {
 			// New block
-			return updateUniqueID(newUniqueID);
+			return updateUniqueID(newUniqueID, true);
 		} else if (!isUniqueID(attributes?.uniqueID) && !isUniqueBlock(attributes?.uniqueID, clientId)) {
 			// This checks if we are just switching views, client ID the same means we don't need to update but otherwise we assume it's a duplicate block.
-			return updateUniqueID(newUniqueID);
+			return updateUniqueID(newUniqueID, false);
 		}
 		// This just logs the block in the store and it doesn't need to be updated.
 		addUniqueID(attributes?.uniqueID, clientId);
