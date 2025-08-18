@@ -36,7 +36,7 @@ import {
 	ResponsiveAlignControls,
 } from '@kadence/components';
 
-import { setBlockDefaults, uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
+import { uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 import BackendStyles from './components/backend-styles';
 import { applyFilters } from '@wordpress/hooks';
 import { plus } from '@wordpress/icons';
@@ -140,10 +140,6 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: classes,
 	});
-
-	useEffect(() => {
-		setBlockDefaults('kadence/table', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

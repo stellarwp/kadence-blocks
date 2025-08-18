@@ -49,7 +49,6 @@ import {
 	getPreviewSize,
 	showSettings,
 	mouseOverVisualizer,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
@@ -306,7 +305,6 @@ const KadenceRowLayout = (props) => {
 	};
 
 	useEffect(() => {
-		setBlockDefaults('kadence/rowlayout', attributes);
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -322,8 +320,8 @@ const KadenceRowLayout = (props) => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
 		} else if (innerItemCount < columns && !uniqueID) {
-			const defaults = setBlockDefaults('kadence/rowlayout', attributes);
-			updateColumns(innerItemCount, defaults.columns);
+			// For new blocks, columns should already have defaults applied by uniqueIdHelper
+			updateColumns(innerItemCount, columns);
 		}
 	}, [innerItemCount, columns]);
 

@@ -13,7 +13,7 @@ import {
 	SelectParentBlock,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
-import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
 import { flow } from 'lodash';
 import classnames from 'classnames';
@@ -82,7 +82,6 @@ export function Edit(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/table-data', attributes);
 		// Moved uniqueIdHelper outside of useEffect
 	}, []);
 

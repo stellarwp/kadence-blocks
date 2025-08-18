@@ -18,8 +18,7 @@ import {
 	SelectParentBlock,
 	ResponsiveRangeControls,
 } from '@kadence/components';
-
-import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 
 import classnames from 'classnames';
 import BackendStyles from './backend-styles';
@@ -121,7 +120,6 @@ export function Edit(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/table-row', attributes);
 		// Moved uniqueIdHelper outside of useEffect
 	}, []);
 

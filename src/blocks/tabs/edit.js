@@ -28,7 +28,6 @@ import {
 	getPreviewSize,
 	getFontSizeOptionOutput,
 	getBorderStyle,
-	setBlockDefaults,
 	uniqueIdHelper,
 } from '@kadence/helpers';
 import {
@@ -229,7 +228,6 @@ function KadenceTabs(props) {
 				blockConfigObject['kadence/tabs'] !== undefined &&
 				typeof blockConfigObject['kadence/tabs'] === 'object'
 			) {
-				setBlockDefaults('kadence/tabs', attributes);
 			} else {
 				setShowPreset(true);
 			}

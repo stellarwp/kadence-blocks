@@ -16,7 +16,6 @@ import {
 	getPreviewSize,
 	uniqueIdHelper,
 	getInQueryBlock,
-	setBlockDefaults,
 	isRTL,
 	getFontSizeOptionOutput,
 } from '@kadence/helpers';
@@ -361,8 +360,6 @@ export default function GalleryEdit(props) {
 	}, [mainRef.current, thumbsRef.current]);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/advancedgallery', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 		// Old Static Image source.
 		if (images?.length && every(images, ({ url }) => isBlobURL(url))) {
