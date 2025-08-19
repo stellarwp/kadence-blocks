@@ -175,9 +175,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.18 =
-Release Date: 18th August 2025
+Release Date: 19th August 2025
 * Update: Tweak form aria attributes.
 * Update: Tweak tab aria attributes.
+* Fix: Block defaults not applying to new blocks.
 
 = 3.5.17 =
 Release Date: 14th August 2025
