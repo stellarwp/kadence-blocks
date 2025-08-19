@@ -53,7 +53,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	hasKadenceCustomCss,
-	getBlockDefaults
+	getBlockDefaults,
 } from '@kadence/helpers';
 
 /**
