@@ -16,6 +16,7 @@ export { default as getUnitIcon } from './get-unit-icon';
 export { default as typographyStyle } from './typography-style';
 export { default as linkedOrIndividual } from './is-linked-or-individual';
 export { default as setBlockDefaults } from './set-block-defaults';
+export { default as getBlockDefaults } from './get-block-defaults';
 export { default as uniqueIdHelper } from './get-unique-id';
 export { default as getTransferableAttributes } from './get-transferable-attributes';
 export { default as getInQueryBlock } from './get-in-query-block';

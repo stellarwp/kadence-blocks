@@ -46,7 +46,6 @@ import {
 import {
 	uniqueIdHelper,
 	getInQueryBlock,
-	setBlockDefaults,
 	getPreviewSize,
 	getBorderStyle,
 	mouseOverVisualizer,
@@ -172,8 +171,6 @@ function KadenceVideoPopup(props) {
 	const debouncedUpdateDynamic = debounce(getDynamic, 200);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/videopopup', attributes);
-
 		if (!inQueryBlock) {
 			updatePopupDefaults();
 		}

@@ -51,7 +51,6 @@ import {
 	getPreviewSize,
 	KadenceColorOutput,
 	showSettings,
-	setBlockDefaults,
 	mouseOverVisualizer,
 	getGapSizeOptionOutput,
 	getSpacingOptionOutput,
@@ -290,8 +289,6 @@ function KadenceTestimonials(props) {
 	};
 
 	useEffect(() => {
-		setBlockDefaults(metadata.name, attributes);
-
 		// Update from old gutter settings.
 		if (columnGap !== '') {
 			setAttributes({ gap: [columnGap, '', ''], columnGap: '' });

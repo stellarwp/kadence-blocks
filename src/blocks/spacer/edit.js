@@ -6,7 +6,7 @@
 
 import SvgPattern from './svg-pattern';
 import classnames from 'classnames';
-import { KadenceColorOutput, showSettings, getPreviewSize, setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
+import { KadenceColorOutput, showSettings, getPreviewSize, uniqueIdHelper } from '@kadence/helpers';
 import {
 	PopColorControl,
 	ResponsiveRangeControls,
@@ -82,10 +82,6 @@ function KadenceSpacerDivider(props) {
 		},
 		[clientId]
 	);
-
-	useEffect(() => {
-		setBlockDefaults('kadence/spacer', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

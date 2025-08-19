@@ -24,13 +24,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	setBlockDefaults,
-	mouseOverVisualizer,
-	getSpacingOptionOutput,
-	uniqueIdHelper,
-	getInQueryBlock,
-} from '@kadence/helpers';
+import { mouseOverVisualizer, getSpacingOptionOutput, uniqueIdHelper, getInQueryBlock } from '@kadence/helpers';
 
 import { useBlockProps, useInnerBlocksProps, BlockControls, store as blockEditorStore } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
@@ -77,8 +71,6 @@ export function Edit(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/show-more', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
 

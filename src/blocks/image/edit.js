@@ -29,7 +29,6 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
@@ -161,8 +160,6 @@ export function ImageEdit(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/image', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		// Update from old border settings.
