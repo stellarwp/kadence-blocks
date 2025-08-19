@@ -53,6 +53,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	hasKadenceCustomCss,
+	getBlockDefaults
 } from '@kadence/helpers';
 
 /**
@@ -320,8 +321,10 @@ const KadenceRowLayout = (props) => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
 		} else if (innerItemCount < columns && !uniqueID) {
-			// For new blocks, columns should already have defaults applied by uniqueIdHelper
-			updateColumns(innerItemCount, columns);
+			const defaults = getBlockDefaults('kadence/rowlayout', attributes);
+			const newColumns = defaults?.columns ? defaults.columns : columns;
+
+			updateColumns(innerItemCount, newColumns);
 		}
 	}, [innerItemCount, columns]);
 
