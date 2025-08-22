@@ -124,3 +124,23 @@
 		height: 1em;
 	}
 }
+.kb-button.icon-reveal {
+	$icon-size: var(--kb-button-icon-size, 24px);
+
+	.kb-svg-icon-wrap {
+		transition:
+			transform 0.3s ease-in-out,
+			width 0.3s ease-in-out,
+			opacity 0.3s ease-in-out;
+
+		width: 0;
+		opacity: 0;
+	}
+
+	&:hover {
+		.kb-svg-icon-wrap {
+			width: $icon-size;
+			opacity: 1;
+		}
+	}
+}

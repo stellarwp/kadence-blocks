@@ -109,6 +109,7 @@
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 30px 30px;
+	list-style: none;
 }
 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap {
 	margin: 0 auto;

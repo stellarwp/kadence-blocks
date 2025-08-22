@@ -60,7 +60,6 @@ import {
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
-	setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -341,8 +340,6 @@ function KadenceAdvancedHeading(props) {
 		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
 	useEffect(() => {
-		setBlockDefaults('kadence/advancedheading', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		// Update Old Styles
