@@ -83,6 +83,8 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$content           = '';
 		if ( $layout === 'carousel' ) {
 			$content .= '<li class="kt-blocks-testimonial-carousel-item kb-slide-item">';
+		} elseif ( $layout === 'grid' ) {
+			$content .= '<li class="kt-testimonial-grid-item">';
 		}
 
 		$classes = [
@@ -172,7 +174,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 		$content .= '</div>';
 
-		if ( $layout === 'carousel' ) {
+		if ( $layout === 'carousel' || $layout === 'grid' ) {
 			$content .= '</li>';
 		}
 

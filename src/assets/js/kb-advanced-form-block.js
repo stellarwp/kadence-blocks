@@ -103,8 +103,6 @@
 				el.classList.add('kb-adv-form-error-msg');
 				el.classList.add('kb-adv-form-message');
 				el.classList.add('kb-adv-form-warning');
-				el.setAttribute('role', 'alert');
-				el.setAttribute('aria-live', 'assertive');
 				el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_string, '<div><a><b><i><u><p><ol><ul>');
 				if (item.classList.contains('kb-accept-field')) {
 					item.parentNode.parentNode.append(el);

@@ -7,7 +7,6 @@
  */
 import {
 	KadenceColorOutput,
-	setBlockDefaults,
 	uniqueIdHelper,
 	showSettings,
 	getFontSizeOptionOutput,
@@ -168,10 +167,6 @@ function KadenceListItem(props) {
 		},
 		[clientId]
 	);
-
-	useEffect(() => {
-		setBlockDefaults('kadence/listitem', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

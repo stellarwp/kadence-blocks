@@ -31,7 +31,7 @@
 						if (!isAccordion) {
 							contentTab.setAttribute('aria-labelledby', parentId);
 							parentListItem.setAttribute('role', 'presentation');
-							subElem.setAttribute('role', 'button');
+							subElem.setAttribute('role', 'tab');
 							subElem.setAttribute('aria-controls', parentId);
 							subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 						} else {

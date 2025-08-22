@@ -140,6 +140,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'iconPadding', 'padding', [ 'unit_key' => 'iconPaddingUnit' ] );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
+		$css->render_responsive_range( $attributes, 'iconSize', '--kb-button-icon-size', 'iconSizeUnit' );
 		// Icon Hover-Focus.
 		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap, .kb-btn' . $unique_id . '.kb-button:focus .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColorHover'] ) ) {
@@ -349,6 +350,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $attributes['inheritStyles'] : 'kb-btn-global-fill';
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
+		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
+
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
 		}

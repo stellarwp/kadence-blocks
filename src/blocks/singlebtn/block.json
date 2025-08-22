@@ -749,6 +749,10 @@
 		"isSubmit": {
 			"type": "boolean",
 			"default": false
+		},
+		"iconReveal": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

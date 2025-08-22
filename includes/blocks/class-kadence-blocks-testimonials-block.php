@@ -844,7 +844,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 				$carousel_content = '';
 
-				$carousel_content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-type="' . esc_attr( $slider_type ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $this->get_usable_value( $css_class, $gap, $gap_unit ) ) . '" data-slider-gap-tablet="' . esc_attr( $this->get_usable_value( $css_class, $tablet_gap, $gap_unit ) ) . '" data-slider-gap-mobile="' . esc_attr( $this->get_usable_value( $css_class, $mobile_gap, $gap_unit ) ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
+				$carousel_content .= '<ul class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-type="' . esc_attr( $slider_type ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $this->get_usable_value( $css_class, $gap, $gap_unit ) ) . '" data-slider-gap-tablet="' . esc_attr( $this->get_usable_value( $css_class, $tablet_gap, $gap_unit ) ) . '" data-slider-gap-mobile="' . esc_attr( $this->get_usable_value( $css_class, $mobile_gap, $gap_unit ) ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
 				$carousel_content .= $content;
 				if ( $autoplay && $show_pause_button ) {
 					$carousel_content .= '<button class="kb-gallery-pause-button splide__toggle" type="button" aria-label="' . esc_attr( __( 'Toggle autoplay', 'kadence-blocks' ) ) . '">';
@@ -852,7 +852,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 					$carousel_content .= '<span class="kb-gallery-play-icon splide__toggle__play"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>';
 					$carousel_content .= '</button>';
 				}
-				$carousel_content .= '</div>';
+				$carousel_content .= '</ul>';
 				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $carousel_content );
 			} else {
 				$inner_args = array(
@@ -863,7 +863,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 					$inner_wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 				}
 				$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
-				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $content );
+				$inner_content = sprintf( '<ul %1$s>%2$s</ul>', $inner_wrapper_attributes, $content );
 			}
 			$wrapper_args = array(
 				'class' => implode( ' ', $outer_classes ),
