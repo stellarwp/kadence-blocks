@@ -47,13 +47,7 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	setBlockDefaults,
-	mouseOverVisualizer,
-	getSpacingOptionOutput,
-	uniqueIdHelper,
-	getPreviewSize,
-} from '@kadence/helpers';
+import { mouseOverVisualizer, getSpacingOptionOutput, uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
@@ -170,10 +164,6 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: classes,
 	});
-
-	useEffect(() => {
-		setBlockDefaults('kadence/lottie', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 	const containerClasses = classnames({

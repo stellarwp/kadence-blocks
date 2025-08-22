@@ -35,7 +35,6 @@ import {
 	SelectChildBlock,
 } from '@kadence/components';
 import {
-	setBlockDefaults,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	uniqueIdHelper,
@@ -133,10 +132,6 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
-
-	useEffect(() => {
-		setBlockDefaults('kadence/search', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

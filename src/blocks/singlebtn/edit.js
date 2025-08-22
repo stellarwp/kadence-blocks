@@ -12,7 +12,6 @@ import {
 	getFontSizeOptionOutput,
 	typographyStyle,
 	getBorderStyle,
-	setBlockDefaults,
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
@@ -261,8 +260,6 @@ export default function KadenceButtonEdit(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 
 	useEffect(() => {
-		setBlockDefaults('kadence/singlebtn', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		if (!inQueryBlock) {

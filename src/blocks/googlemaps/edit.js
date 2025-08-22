@@ -43,7 +43,6 @@ import {
 	showSettings,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
-	setBlockDefaults,
 	uniqueIdHelper,
 } from '@kadence/helpers';
 
@@ -213,8 +212,6 @@ export function Edit(props) {
 		}).then((response) => {
 			setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
 		});
-
-		setBlockDefaults('kadence/googlemaps', attributes);
 
 		if (!kbVersion || kbVersion < 2) {
 			setAttributes({ kbVersion: 2 });

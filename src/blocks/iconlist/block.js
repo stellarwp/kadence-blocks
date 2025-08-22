@@ -42,7 +42,7 @@ registerBlockType('kadence/iconlist', {
 	...metadata,
 	title: _x('Icon List', 'block title', 'kadence-blocks'),
 	description: _x('Create engaging lists with icons for bullets.', 'block description', 'kadence-blocks'),
-	keywords: [__('icon', 'kadence-blocks'), __('svg', 'kadence-blocks'), 'KB'],
+	keywords: [__('list', 'kadence-blocks'), __('svg', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: iconListBlockIcon,
 	},

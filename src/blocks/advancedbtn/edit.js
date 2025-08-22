@@ -17,7 +17,6 @@ import {
 } from '@kadence/components';
 import {
 	getPreviewSize,
-	setBlockDefaults,
 	showSettings,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
@@ -113,8 +112,6 @@ function KadenceButtons(props) {
 	};
 
 	useEffect(() => {
-		setBlockDefaults('kadence/advancedbtn', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
 

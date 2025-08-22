@@ -49,7 +49,6 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getBorderStyle,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
@@ -259,8 +258,6 @@ function SectionEdit(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/column', attributes);
-
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;

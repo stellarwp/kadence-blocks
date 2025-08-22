@@ -25,7 +25,6 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
-	setBlockDefaults,
 	uniqueIdHelper,
 } from '@kadence/helpers';
 
@@ -122,10 +121,6 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
-
-	useEffect(() => {
-		setBlockDefaults('kadence/progress-bar', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

@@ -13,9 +13,8 @@ import metadata from './block.json';
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { useBlockProps, BlockControls } from '@wordpress/block-editor';
-const { rest_url } = kadence_blocks_params;
 import { has } from 'lodash';
 
 const { apiFetch } = wp;
@@ -34,7 +33,7 @@ import {
 	CopyPasteAttributes,
 	ResponsiveRangeControls,
 } from '@kadence/components';
-import { setBlockDefaults, mouseOverVisualizer, uniqueIdHelper } from '@kadence/helpers';
+import { mouseOverVisualizer, uniqueIdHelper } from '@kadence/helpers';
 import BackendStyles from './backend-styles';
 
 const defaultSVG =
@@ -91,10 +90,6 @@ export function Edit(props) {
 			[`align${align}`]: align,
 		}),
 	});
-
-	useEffect(() => {
-		setBlockDefaults('kadence/vector', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 
