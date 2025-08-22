@@ -56,22 +56,27 @@ function kadence_blocks_convert_custom_fonts() {
 	if ( ! is_admin() ) {
 		return;
 	}
-	$convert_fonts = apply_filters( 'kadence_blocks_add_custom_fonts', array() );
+	$convert_fonts = apply_filters( 'kadence_blocks_add_custom_fonts', [] );
 	if ( ! empty( $convert_fonts ) && is_array( $convert_fonts ) ) {
 		add_filter(
 			'kadence_blocks_custom_fonts',
 			function( $custom_fonts ) use( $convert_fonts ) {
 				foreach ( $convert_fonts as $font_name => $args ) {
-					$weights_arg = array();
+					$weights_arg = [];
 					if ( is_array( $args ) && isset( $args['weights'] ) && is_array( $args['weights'] ) ) {
 						$weights_arg = $args['weights'];
 					}
 					$font_slug = ( is_array( $args ) && isset( $args['fallback'] ) && ! empty( $args['fallback'] ) ? '"' . $font_name . '", ' . $args['fallback'] : $font_name );
-					$custom_fonts[ $font_slug  ] = array(
+
+					$font_entry = [
 						'name'    => $font_slug,
 						'weights' => $weights_arg,
-						'styles'  => array(),
-					);
+						'styles'  => [],
+					];
+					if ( is_array( $args ) && isset( $args['label'] ) && ! empty( $args['label'] ) ) {
+						$font_entry['label'] = $args['label'];
+					}
+					$custom_fonts[ $font_slug ] = $font_entry;
 				}
 				return $custom_fonts;
 			},

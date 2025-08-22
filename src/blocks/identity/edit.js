@@ -16,7 +16,7 @@ import {
 	ImageSizeControl as KadenceImageSizeControl,
 	KadenceImageControl,
 } from '@kadence/components';
-import { setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
+import { uniqueIdHelper } from '@kadence/helpers';
 import { useBlockProps, BlockControls, useInnerBlocksProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { createBlock, unregisterBlockType } from '@wordpress/blocks';
 
@@ -68,10 +68,6 @@ export function Edit(props) {
 	}, []);
 
 	const siteUrl = siteData?.url ? siteData.url : '';
-
-	useEffect(() => {
-		setBlockDefaults('kadence/identity', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

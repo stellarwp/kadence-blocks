@@ -21,7 +21,6 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
-	setBlockDefaults,
 	uniqueIdHelper,
 } from '@kadence/helpers';
 
@@ -144,8 +143,6 @@ function KadenceIconLists(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/iconlist', attributes);
-
 		if (!uniqueID) {
 			// Check for old block defaults before 3.0
 			const blockConfigObject = kadence_blocks_params.configuration

@@ -17,13 +17,7 @@ import {
 	KadenceIconPicker,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	KadenceColorOutput,
-	setBlockDefaults,
-	uniqueIdHelper,
-	getInQueryBlock,
-	getPreviewSize,
-} from '@kadence/helpers';
+import { KadenceColorOutput, uniqueIdHelper, getInQueryBlock, getPreviewSize } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
@@ -96,8 +90,6 @@ function KadenceSingleIcon(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/single-icon', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
 

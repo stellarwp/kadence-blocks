@@ -43,7 +43,6 @@ import {
 	KadenceColorOutput,
 	showSettings,
 	getPreviewSize,
-	setBlockDefaults,
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	getFontSizeOptionOutput,
@@ -205,8 +204,6 @@ function KadenceCountdown(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/countdown', attributes);
-
 		if (
 			borderRadius &&
 			borderRadius[0] === borderRadius[1] &&

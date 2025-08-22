@@ -15,13 +15,7 @@ import {
 	KadenceInspectorControls,
 	ResponsiveGapSizeControl,
 } from '@kadence/components';
-import {
-	getPreviewSize,
-	setBlockDefaults,
-	uniqueIdHelper,
-	getInQueryBlock,
-	getGapSizeOptionOutput,
-} from '@kadence/helpers';
+import { getPreviewSize, uniqueIdHelper, getInQueryBlock, getGapSizeOptionOutput } from '@kadence/helpers';
 import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 /**
@@ -78,8 +72,6 @@ function KadenceIcons(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/icon', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
 

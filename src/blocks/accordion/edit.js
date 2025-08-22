@@ -54,7 +54,6 @@ import {
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
 	uniqueIdHelper,
-	setBlockDefaults,
 	getBorderColor,
 	getBorderStyle,
 	getGapSizeOptionOutput,
@@ -175,8 +174,6 @@ function KadenceAccordionComponent(props) {
 	const [activeTab, setActiveTab] = useState('general');
 
 	useEffect(() => {
-		setBlockDefaults('kadence/accordion', attributes);
-
 		// This runs when we switch from desktop to tablet.
 		if (!uniqueID) {
 			const blockConfigObject = kadence_blocks_params.configuration

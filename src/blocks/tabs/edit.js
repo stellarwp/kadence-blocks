@@ -28,7 +28,6 @@ import {
 	getPreviewSize,
 	getFontSizeOptionOutput,
 	getBorderStyle,
-	setBlockDefaults,
 	uniqueIdHelper,
 } from '@kadence/helpers';
 import {
@@ -201,6 +200,9 @@ function KadenceTabs(props) {
 		startTab,
 		enableSubtitle,
 		subtitleFont,
+		subtitleColor,
+		subtitleColorHover,
+		subtitleColorActive,
 		tabWidth,
 		gutter,
 		widthType,
@@ -229,7 +231,6 @@ function KadenceTabs(props) {
 				blockConfigObject['kadence/tabs'] !== undefined &&
 				typeof blockConfigObject['kadence/tabs'] === 'object'
 			) {
-				setBlockDefaults('kadence/tabs', attributes);
 			} else {
 				setShowPreset(true);
 			}
@@ -1262,6 +1263,37 @@ function KadenceTabs(props) {
 		</Fragment>
 	);
 
+	const subtitleNormalSettings = (
+		<Fragment>
+			<PopColorControl
+				label={__('Subtitle Color', 'kadence-blocks')}
+				value={subtitleColor ? subtitleColor : ''}
+				default={''}
+				onChange={(value) => setAttributes({ subtitleColor: value })}
+			/>
+		</Fragment>
+	);
+	const subtitleHoverSettings = (
+		<Fragment>
+			<PopColorControl
+				label={__('Hover Color', 'kadence-blocks')}
+				value={subtitleColorHover ? subtitleColorHover : ''}
+				default={''}
+				onChange={(value) => setAttributes({ subtitleColorHover: value })}
+			/>
+		</Fragment>
+	);
+	const subtitleActiveSettings = (
+		<Fragment>
+			<PopColorControl
+				label={__('Active Color', 'kadence-blocks')}
+				value={subtitleColorActive ? subtitleColorActive : ''}
+				default={''}
+				onChange={(value) => setAttributes({ subtitleColorActive: value })}
+			/>
+		</Fragment>
+	);
+
 	const percentDesktopContent = (
 		<Fragment>
 			<RangeControl
@@ -1350,6 +1382,15 @@ function KadenceTabs(props) {
 					${titleColorActive ? 'color:' + KadenceColorOutput(titleColorActive) + '!important;' : ''}
 					${titleBorderActive ? 'border-color:' + KadenceColorOutput(titleBorderActive) + '!important;' : ''}
 					${titleBgActive ? 'background-color:' + KadenceColorOutput(titleBgActive) + '!important;' : ''}
+				}
+				.kt-tabs-id${uniqueID} .kt-title-item .kt-title-sub-text {
+					${subtitleColor ? 'color:' + KadenceColorOutput(subtitleColor) + '!important;' : ''}
+				}
+				.kt-tabs-id${uniqueID} .kt-title-item:hover .kt-title-sub-text {
+					${subtitleColorHover ? 'color:' + KadenceColorOutput(subtitleColorHover) + '!important;' : ''}
+				}
+				.kt-tabs-id${uniqueID} .kt-title-item.kt-tab-title-active .kt-title-sub-text, .kt-tabs-id${uniqueID} .kt-title-item.kt-tab-title-active:hover .kt-title-sub-text {
+					${subtitleColorActive ? 'color:' + KadenceColorOutput(subtitleColorActive) + '!important;' : ''}
 				}
 				.kt-tabs-id${uniqueID} > .kt-tabs-wrap > .kt-tabs-content-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-tab="${currentTab}"] {
 					display: block;
@@ -1608,6 +1649,52 @@ function KadenceTabs(props) {
 													tabout = activeSettings;
 												} else {
 													tabout = normalSettings;
+												}
+											}
+											return (
+												<div className={tab.className} key={tab.className}>
+													{tabout}
+												</div>
+											);
+										}}
+									</TabPanel>
+								</KadencePanelBody>
+							)}
+							{showSettings('subtitle', 'kadence/tabs') && enableSubtitle && (
+								<KadencePanelBody
+									title={__('Tab Subtitle Color Settings', 'kadence-blocks')}
+									panelName={'kb-tab-subtitle-color'}
+								>
+									<TabPanel
+										className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+										activeClass="active-tab"
+										tabs={[
+											{
+												name: 'normal',
+												title: __('Normal', 'kadence-blocks'),
+												className: 'kt-normal-tab',
+											},
+											{
+												name: 'hover',
+												title: __('Hover', 'kadence-blocks'),
+												className: 'kt-hover-tab',
+											},
+											{
+												name: 'active',
+												title: __('Active', 'kadence-blocks'),
+												className: 'kt-active-tab',
+											},
+										]}
+									>
+										{(tab) => {
+											let tabout;
+											if (tab.name) {
+												if ('hover' === tab.name) {
+													tabout = subtitleHoverSettings;
+												} else if ('active' === tab.name) {
+													tabout = subtitleActiveSettings;
+												} else {
+													tabout = subtitleNormalSettings;
 												}
 											}
 											return (

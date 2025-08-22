@@ -9,7 +9,6 @@ import Inspector from './inspector';
 import {
 	getPreviewSize,
 	KadenceColorOutput,
-	setBlockDefaults,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	uniqueIdHelper,
@@ -91,10 +90,6 @@ function KadenceCounterUp(props) {
 		},
 		[clientId]
 	);
-
-	useEffect(() => {
-		setBlockDefaults('kadence/countup', attributes);
-	}, []);
 
 	uniqueIdHelper(props);
 

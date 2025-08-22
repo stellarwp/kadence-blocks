@@ -63,7 +63,6 @@ import {
 	getSpacingOptionOutput,
 	ConvertColor,
 	getBorderStyle,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	getFontSizeOptionOutput,
@@ -219,8 +218,6 @@ function KadenceInfoBox(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/infobox', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 		if (!kbVersion || kbVersion < 2) {
 			setAttributes({ kbVersion: 2 });
