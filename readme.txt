@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.6.0 =
 Release Date: 28th August 2025
 * Add: Subtitle color settings for Tabs block.
+* Fix: Border color problem in the editor.
 
 = 3.5.18 =
 Release Date: 19th August 2025

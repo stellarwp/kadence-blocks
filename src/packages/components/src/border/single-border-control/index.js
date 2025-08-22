@@ -171,6 +171,7 @@ export default function SingleBorderControl({
 				)}
 				<div className={'kadence-single-border-control-wrap'}>
 					<PopColorControl
+						key={`border-color-${currentColor}-${instanceId}`}
 						value={currentColor}
 						default={''}
 						hideClear={true}
