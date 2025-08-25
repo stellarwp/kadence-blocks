@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.8.2
-Stable tag: 3.6.0
+Stable tag: 3.5.19
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.6.0 =
+= 3.5.19 =
 Release Date: 28th August 2025
 * Add: Subtitle color settings for Tabs block.
 * Add: Custom fonts added via filters now support labels.
