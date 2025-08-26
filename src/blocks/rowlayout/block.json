@@ -152,7 +152,7 @@
 			"default": ""
 		},
 		"bgImgID": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"bgImgSize": {
@@ -208,7 +208,7 @@
 			"default": ""
 		},
 		"overlayBgImgID": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"overlayBgImgSize": {
