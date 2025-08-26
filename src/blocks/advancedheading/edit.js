@@ -289,7 +289,14 @@ function KadenceAdvancedHeading(props) {
 			}
 			event.preventDefault();
 		} else if (pastedText && isDefaultEditorBlock) {
+			// Only handle multi-paragraph text when it's the default editor block
+			// For simple text pasting, let the default behavior handle cursor position
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
+			
+			// If it's just a single paragraph, let the default paste behavior handle it
+			if (paragraphs.length <= 1) {
+				return; // Don't prevent default, let RichText handle it
+			}
 
 			const newBlocks = paragraphs
 				.map((paragraph, thisIndex) => {
@@ -312,8 +319,25 @@ function KadenceAdvancedHeading(props) {
 				if (!content || content === '') {
 					replaceBlocks(clientId, newBlocks);
 				} else {
-					// Append the content of the first new block to the existing content.
+					// For multi-paragraph content, we need to handle it differently
+					// Insert the first paragraph at cursor position and create new blocks for the rest
 					const firstPastedBlock = newBlocks[0];
+					
+					// Get the current selection to determine cursor position
+					const selection = window.getSelection();
+					if (selection && selection.rangeCount > 0) {
+						const range = selection.getRangeAt(0);
+						const container = range.commonAncestorContainer;
+						
+						// If we're inside the RichText element, let the default behavior handle it
+						if (container.nodeType === Node.TEXT_NODE || 
+							(container.nodeType === Node.ELEMENT_NODE && 
+							 container.closest('.kb-adv-heading-inner'))) {
+							return; // Don't prevent default, let RichText handle it
+						}
+					}
+					
+					// Fallback: append to end if we can't determine cursor position
 					setAttributes({
 						content: content + firstPastedBlock.attributes.content,
 					});
