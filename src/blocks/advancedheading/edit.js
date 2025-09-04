@@ -272,40 +272,40 @@ function KadenceAdvancedHeading(props) {
 	const { replaceBlocks, insertBlocks } = useDispatch('core/block-editor');
 	const handlePaste = (event) => {
 		const pastedText = event.clipboardData.getData('text/plain');
-	
+
 		const containsBlocks = pastedText && (pastedText.includes('<!-- wp:') || pastedText.includes('wp-block-'));
-	
+
 		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
-	
+
 			// Separate text blocks (paragraphs) from other blocks
 			const textBlocks = [];
 			const otherBlocks = [];
-	
-			rawBlocks.forEach(block => {
+
+			rawBlocks.forEach((block) => {
 				if (block.name === 'core/paragraph' || block.name === 'kadence/advancedheading') {
 					textBlocks.push(block);
 				} else {
 					otherBlocks.push(block);
 				}
 			});
-	
+
 			if (!content || content === '') {
 				replaceBlocks(clientId, rawBlocks);
 			} else {
 				// Handle text blocks at cursor position
 				if (textBlocks.length > 0) {
-					const allTextContent = textBlocks.map(block => block.attributes.content || '').join(' ');
-	
+					const allTextContent = textBlocks.map((block) => block.attributes.content || '').join(' ');
+
 					const selection = window.getSelection();
 					if (selection && selection.rangeCount > 0) {
 						const range = selection.getRangeAt(0);
 						const cursorOffset = range.startOffset;
-						
+
 						// Insert text at the cursor position
 						const beforeCursor = content.substring(0, cursorOffset);
 						const afterCursor = content.substring(cursorOffset);
-						
+
 						const newContent = beforeCursor + allTextContent + afterCursor;
 						setAttributes({ content: newContent });
 					} else {
@@ -315,13 +315,13 @@ function KadenceAdvancedHeading(props) {
 						});
 					}
 				}
-	
+
 				// Insert other blocks after the current heading
 				if (otherBlocks.length > 0) {
 					const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
 					const currentBlockIndex = getBlockIndex(clientId);
 					const parentBlockClientId = getBlockRootClientId(clientId);
-	
+
 					insertBlocks(otherBlocks, currentBlockIndex + 1, parentBlockClientId);
 				}
 			}
@@ -329,10 +329,10 @@ function KadenceAdvancedHeading(props) {
 		} else if (pastedText && isDefaultEditorBlock) {
 			// Handle plain text pasting
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
-	
+
 			// For multiple paragraphs, insert all text at cursor position
-			const allPastedContent = paragraphs.filter(p => p.trim()).join(' ');
-	
+			const allPastedContent = paragraphs.filter((p) => p.trim()).join(' ');
+
 			if (!content || content === '') {
 				setAttributes({ content: allPastedContent });
 			} else {
@@ -341,11 +341,11 @@ function KadenceAdvancedHeading(props) {
 				if (selection && selection.rangeCount > 0) {
 					const range = selection.getRangeAt(0);
 					const cursorOffset = range.startOffset;
-					
+
 					// Insert all paragraphs at the cursor position
 					const beforeCursor = content.substring(0, cursorOffset);
 					const afterCursor = content.substring(cursorOffset);
-					
+
 					const newContent = beforeCursor + allPastedContent + afterCursor;
 					setAttributes({ content: newContent });
 				} else {
