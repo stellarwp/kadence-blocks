@@ -11,7 +11,7 @@
 		height: 0;
 		position: relative;
 
-		dotlottie-player {
+		canvas {
 			position: absolute;
 			height: 100%;
 			width: 100%;
@@ -21,7 +21,8 @@
 		}
 	}
 
-	dotlottie-player {
-		margin: 0 auto
+	canvas {
+		margin: 0 auto;
+		display: block;
 	}
 }
