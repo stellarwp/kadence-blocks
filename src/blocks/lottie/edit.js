@@ -51,14 +51,7 @@ import { mouseOverVisualizer, getSpacingOptionOutput, uniqueIdHelper, getPreview
 /**
  * Lottie Animation Component
  */
-function LottieAnimation({
-	playerProps,
-	animationUrl,
-	uniqueID,
-	rerenderKey,
-	useRatio,
-	previewMaxWidth,
-}) {
+function LottieAnimation({ playerProps, animationUrl, uniqueID, rerenderKey, useRatio, previewMaxWidth }) {
 	return (
 		<DotLottieReact
 			{...playerProps}
