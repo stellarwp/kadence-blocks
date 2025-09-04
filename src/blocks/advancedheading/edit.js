@@ -272,89 +272,90 @@ function KadenceAdvancedHeading(props) {
 	const { replaceBlocks, insertBlocks } = useDispatch('core/block-editor');
 	const handlePaste = (event) => {
 		const pastedText = event.clipboardData.getData('text/plain');
-
+	
 		const containsBlocks = pastedText && (pastedText.includes('<!-- wp:') || pastedText.includes('wp-block-'));
-
+	
 		if (containsBlocks) {
 			const rawBlocks = wp.blocks.rawHandler({ HTML: pastedText });
-
+	
+			// Separate text blocks (paragraphs) from other blocks
+			const textBlocks = [];
+			const otherBlocks = [];
+	
+			rawBlocks.forEach(block => {
+				if (block.name === 'core/paragraph' || block.name === 'kadence/advancedheading') {
+					textBlocks.push(block);
+				} else {
+					otherBlocks.push(block);
+				}
+			});
+	
 			if (!content || content === '') {
 				replaceBlocks(clientId, rawBlocks);
 			} else {
-				const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
-				const currentBlockIndex = getBlockIndex(clientId);
-				const parentBlockClientId = getBlockRootClientId(clientId);
-
-				insertBlocks(rawBlocks, currentBlockIndex + 1, parentBlockClientId);
-			}
-			event.preventDefault();
-		} else if (pastedText && isDefaultEditorBlock) {
-			// Only handle multi-paragraph text when it's the default editor block
-			// For simple text pasting, let the default behavior handle cursor position
-			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
-
-			// If it's just a single paragraph, let the default paste behavior handle it
-			if (paragraphs.length <= 1) {
-				return; // Don't prevent default, let RichText handle it
-			}
-
-			const newBlocks = paragraphs
-				.map((paragraph, thisIndex) => {
-					const trimmedParagraph = paragraph.trim();
-					if (!trimmedParagraph) {
-						return null;
-					}
-
-					const newAttributes = { ...attributes };
-					newAttributes.uniqueID = attributes.uniqueID + '_' + thisIndex;
-
-					return wp.blocks.createBlock('kadence/advancedheading', {
-						...newAttributes,
-						content: trimmedParagraph,
-					});
-				})
-				.filter(Boolean);
-
-			if (newBlocks.length > 0 && isDefaultEditorBlock) {
-				if (!content || content === '') {
-					replaceBlocks(clientId, newBlocks);
-				} else {
-					// For multi-paragraph content, we need to handle it differently
-					// Insert the first paragraph at cursor position and create new blocks for the rest
-					const firstPastedBlock = newBlocks[0];
-
-					// Get the current selection to determine cursor position
+				// Handle text blocks at cursor position
+				if (textBlocks.length > 0) {
+					const allTextContent = textBlocks.map(block => block.attributes.content || '').join(' ');
+	
 					const selection = window.getSelection();
 					if (selection && selection.rangeCount > 0) {
 						const range = selection.getRangeAt(0);
-						const container = range.commonAncestorContainer;
-
-						// If we're inside the RichText element, let the default behavior handle it
-						if (
-							container.nodeType === Node.TEXT_NODE ||
-							(container.nodeType === Node.ELEMENT_NODE && container.closest('.kb-adv-heading-inner'))
-						) {
-							return; // Don't prevent default, let RichText handle it
-						}
-					}
-
-					// Fallback: append to end if we can't determine cursor position
-					setAttributes({
-						content: content + firstPastedBlock.attributes.content,
-					});
-
-					// Insert new blocks below for the remaining paragraphs, if there are any.
-					const remainingPastedBlocks = newBlocks.slice(1);
-					if (remainingPastedBlocks.length > 0) {
-						const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
-						const currentBlockIndex = getBlockIndex(clientId);
-						const parentBlockClientId = getBlockRootClientId(clientId);
-
-						insertBlocks(remainingPastedBlocks, currentBlockIndex + 1, parentBlockClientId);
+						const cursorOffset = range.startOffset;
+						
+						// Insert text at the cursor position
+						const beforeCursor = content.substring(0, cursorOffset);
+						const afterCursor = content.substring(cursorOffset);
+						
+						const newContent = beforeCursor + allTextContent + afterCursor;
+						setAttributes({ content: newContent });
+					} else {
+						// Fallback: append to end if we can't determine cursor position
+						setAttributes({
+							content: content + allTextContent,
+						});
 					}
 				}
-				event.preventDefault();
+	
+				// Insert other blocks after the current heading
+				if (otherBlocks.length > 0) {
+					const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
+					const currentBlockIndex = getBlockIndex(clientId);
+					const parentBlockClientId = getBlockRootClientId(clientId);
+	
+					insertBlocks(otherBlocks, currentBlockIndex + 1, parentBlockClientId);
+				}
 			}
+			event.preventDefault();
+		} else if (pastedText && isDefaultEditorBlock) {
+			// Handle plain text pasting
+			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
+	
+			// For multiple paragraphs, insert all text at cursor position
+			const allPastedContent = paragraphs.filter(p => p.trim()).join(' ');
+	
+			if (!content || content === '') {
+				setAttributes({ content: allPastedContent });
+			} else {
+				// Get the current selection to determine cursor position
+				const selection = window.getSelection();
+				if (selection && selection.rangeCount > 0) {
+					const range = selection.getRangeAt(0);
+					const cursorOffset = range.startOffset;
+					
+					// Insert all paragraphs at the cursor position
+					const beforeCursor = content.substring(0, cursorOffset);
+					const afterCursor = content.substring(cursorOffset);
+					
+					const newContent = beforeCursor + allPastedContent + afterCursor;
+					setAttributes({ content: newContent });
+				} else {
+					// Fallback: append to end if we can't determine cursor position
+					setAttributes({
+						content: content + allPastedContent,
+					});
+				}
+			}
+			event.preventDefault();
 		}
 	};
 
