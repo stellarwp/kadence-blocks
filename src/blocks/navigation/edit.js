@@ -144,6 +144,18 @@ export function Edit(props) {
 		previewOrientationTablet,
 		previewOrientationMobile
 	);
+	const previewOrientationTabletInherited = getPreviewSize(
+		'tablet',
+		previewOrientationDesktop ? previewOrientationDesktop : 'horizontal',
+		previewOrientationTablet,
+		previewOrientationMobile
+	);
+	const previewOrientationMobileInherited = getPreviewSize(
+		'mobile',
+		previewOrientationDesktop ? previewOrientationDesktop : 'horizontal',
+		previewOrientationTablet,
+		previewOrientationMobile
+	);
 	const blockClasses = classnames({
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
 		[`kb-navigation-horizontal-layout-${previewHorizontalLayout}`]: previewHorizontalLayout,
@@ -151,9 +163,9 @@ export function Edit(props) {
 		'kb-navigation-layout-stretch-fill': 'fill' === previewStretchFill,
 		[`navigation-desktop-orientation-${previewOrientationDesktop ? previewOrientationDesktop : 'horizontal'}`]:
 			!previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-orientation-${previewOrientationTablet ? previewOrientationTablet : 'horizontal'}`]:
+		[`navigation-tablet-orientation-${previewOrientationTabletInherited ? previewOrientationTabletInherited : 'horizontal'}`]:
 			previewDevice == 'Tablet',
-		[`navigation-mobile-orientation-${previewOrientationMobile ? previewOrientationMobile : 'horizontal'}`]:
+		[`navigation-mobile-orientation-${previewOrientationMobileInherited ? previewOrientationMobileInherited : 'horizontal'}`]:
 			previewDevice == 'Mobile',
 	});
 	const blockProps = useBlockProps({
