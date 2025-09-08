@@ -197,7 +197,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $navigation_horizontal_spacing ) && is_numeric( $navigation_horizontal_spacing ) ) {
 			$css->add_property( '--kb-nav-column-gap', $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		}
-		if ( $sized_attributes['orientation'] != 'vertical' ) {
+		if ( $sized_attributes_inherit['orientation'] != 'vertical' ) {
 			if ( ! empty( $sized_attributes['horizontalGrid'] ) ) {
 				$css->add_property( '--kb-nav-grid-columns', 'repeat(' . $sized_attributes['horizontalGrid'] . ', 1fr)');
 			}
@@ -260,7 +260,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '--kb-nav-top-link-background-active', $css->render_color( $sized_attributes['backgroundTransparentActive']) );
 		$css->add_property( '--kb-nav-top-link-background-active-ancestor', $css->render_color( $sized_attributes['backgroundTransparentActive']), $sized_attributes['parentActive'] );
 
-		if ( $sized_attributes['orientation'] != 'vertical' ) {
+		if ( $sized_attributes_inherit['orientation'] != 'vertical' ) {
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['transparentDivider'], 'bottom' ) );
 			$css->add_property( '--kb-nav-dropdown-toggle-border-left', 'var(--kb-nav-link-border-left)' );
 			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', 'var(--kb-nav-link-border-bottom)' );
@@ -281,7 +281,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '--kb-nav-top-link-background-active', $css->render_color( $sized_attributes['backgroundStickyActive']) );
 		$css->add_property( '--kb-nav-top-link-background-active-ancestor', $css->render_color( $sized_attributes['backgroundStickyActive']), $sized_attributes['parentActive'] );
 
-		if ( $sized_attributes['orientation'] != 'vertical' ) {
+		if ( $sized_attributes_inherit['orientation'] != 'vertical' ) {
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['stickyDivider'], 'bottom' ) );
 			$css->add_property( '--kb-nav-dropdown-toggle-border-left', 'var(--kb-nav-link-border-left)' );
 			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', 'var(--kb-nav-link-border-bottom)' );
