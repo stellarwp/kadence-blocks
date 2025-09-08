@@ -288,7 +288,7 @@ function KadenceAdvancedHeading(props) {
 				insertBlocks(rawBlocks, currentBlockIndex + 1, parentBlockClientId);
 			}
 			event.preventDefault();
-		} else if (pastedText && isDefaultEditorBlock && (!content || content === '')) {
+		} else if (pastedText && isDefaultEditorBlock) {
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
 
 			const newBlocks = paragraphs
