@@ -28,6 +28,7 @@
 					const ktTabContentAreas = thisElem.querySelectorAll(
 						':scope > .kt-tabs-content-wrap > .kt-tab-inner-content'
 					);
+					const noAllowMultipleOpen = thisElem?.dataset?.noAllowMultipleOpen;
 
 					ktTabList.forEach((subElem) => {
 						subElem.setAttribute('role', 'tablist');
@@ -66,6 +67,7 @@
 						}
 					});
 
+					let hasActiveListItems = false;
 					ktTabListItems.forEach((listItem) => {
 						listItem.addEventListener('keydown', function (evt) {
 							//const listItem = this.parentElement;
@@ -90,7 +92,19 @@
 									break;
 							}
 						});
+
+						// Keep track if there are any active list items.
+						// The active one might be gone due to conditional display.
+						if (listItem.classList.contains('kt-tab-title-active')) {
+							hasActiveListItems = true;
+						}
 					});
+
+					// If there are no active list items, set the first one active.
+					if (!hasActiveListItems) {
+						window.KBTabs.setActiveAccordion(undefined, ktTabButtons?.[0], noAllowMultipleOpen);
+					}
+
 					const resizeEvent = new Event('resize');
 					window.dispatchEvent(resizeEvent);
 
@@ -136,8 +150,6 @@
 
 					const ktAccordionAnchor = thisElem.querySelectorAll('.kt-tabs-accordion-title a');
 					ktAccordionAnchor.forEach((accordionTitleElem) => {
-						const noAllowMultipleOpen =
-							accordionTitleElem.closest('.kt-create-accordion')?.dataset?.noAllowMultipleOpen;
 						accordionTitleElem.addEventListener('click', function (evt) {
 							window.KBTabs.setActiveAccordion(evt, accordionTitleElem, noAllowMultipleOpen);
 						});
@@ -187,7 +199,7 @@
 			return window.innerWidth > 767 && window.innerWidth <= 1024;
 		},
 		setActiveAccordion(evt, thisElem, noAllowMultipleOpen) {
-			evt.preventDefault();
+			evt?.preventDefault();
 
 			const clickedTabId = thisElem.getAttribute('data-tab');
 			const accTitle = thisElem.parentElement;
