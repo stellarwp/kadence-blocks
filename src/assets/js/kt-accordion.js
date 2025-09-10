@@ -994,9 +994,10 @@
 						}
 					}
 				}
+				console.log('init5', openPanel, openPanels);
 				accordionsArray[i].addEventListener('initialized', window.KadenceBlocksAccordion.anchor, false);
 				new KadenceAccordion(accordionsArray[i], {
-					openHeadersOnLoad: openPanel ? [parseInt(openPanel)] : [],
+					openHeadersOnLoad: openPanel || parseInt(openPanel) === 0 ? [parseInt(openPanel)] : [],
 					headerClass: '.kt-blocks-accordion-header',
 					panelClass: '.kt-accordion-panel',
 					panelInnerClass: '.kt-accordion-panel-inner',
