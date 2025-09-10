@@ -3,7 +3,7 @@
  *
  * Registering a basic block with Gutenberg.
  */
-import { InspectorControlTabs, SelectParentBlock } from '@kadence/components';
+import { InspectorControlTabs, SelectParentBlock, KadencePanelBody } from '@kadence/components';
 
 import {
 	InnerBlocks,
@@ -49,6 +49,11 @@ function KadenceTab(props) {
 					activeTab={activeTab}
 					allowedTabs={['general', 'advanced']}
 				/>
+				{activeTab === 'general' && (
+					<KadencePanelBody>
+						<div className="components-base-control">No general settings available.</div>
+					</KadencePanelBody>
+				)}
 			</InspectorControls>
 			<div {...innerBlocksProps} />
 		</div>
