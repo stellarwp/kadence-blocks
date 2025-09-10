@@ -48,6 +48,7 @@
 		"anchor": true,
 		"lock": false,
 		"kbMetadata": true,
-		"kbContentLabel": "title"
+		"kbContentLabel": "title",
+		"ktdynamic": true
 	}
 }
