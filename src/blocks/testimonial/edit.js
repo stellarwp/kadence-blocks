@@ -557,7 +557,7 @@ function KadenceTestimonials(props) {
 						<InspectorControls>
 							<SelectParentBlock clientId={clientId} />
 							<InspectorControlTabs
-								panelName={'icon'}
+								panelName={'testimonial'}
 								allowedTabs={['general', 'advanced']}
 								setActiveTab={(value) => setActiveTab(value)}
 								activeTab={activeTab}

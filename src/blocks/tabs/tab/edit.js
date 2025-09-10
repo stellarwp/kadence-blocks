@@ -3,9 +3,16 @@
  *
  * Registering a basic block with Gutenberg.
  */
-import { useEffect } from '@wordpress/element';
+import { InspectorControlTabs, SelectParentBlock } from '@kadence/components';
 
-import { InnerBlocks, useBlockProps, useInnerBlocksProps, store as blockEditorStore } from '@wordpress/block-editor';
+import {
+	InnerBlocks,
+	useBlockProps,
+	useInnerBlocksProps,
+	store as blockEditorStore,
+	InspectorControls,
+} from '@wordpress/block-editor';
+import { useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { uniqueIdHelper } from '@kadence/helpers';
 
@@ -15,7 +22,7 @@ import { uniqueIdHelper } from '@kadence/helpers';
 function KadenceTab(props) {
 	const { attributes, setAttributes, clientId } = props;
 	const { id, uniqueID } = attributes;
-
+	const [activeTab, setActiveTab] = useState('advanced');
 	uniqueIdHelper(props);
 	const hasChildBlocks = useSelect((select) => select(blockEditorStore).getBlocks(clientId).length > 0, [clientId]);
 	const blockProps = useBlockProps({
@@ -33,6 +40,16 @@ function KadenceTab(props) {
 
 	return (
 		<div {...blockProps} data-tab={id}>
+			<InspectorControls>
+				<SelectParentBlock clientId={clientId} />
+
+				<InspectorControlTabs
+					panelName={'tab'}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
+					allowedTabs={['general', 'advanced']}
+				/>
+			</InspectorControls>
 			<div {...innerBlocksProps} />
 		</div>
 	);

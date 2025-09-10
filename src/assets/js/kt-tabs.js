@@ -6,17 +6,38 @@
 
 			ktTabWraps.forEach((thisElem) => {
 				if (!thisElem.classList.contains('initialized')) {
-					thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
+					const ktTabListItemsBeforeCheck = thisElem.querySelectorAll(':scope > .kt-tabs-title-list li');
+
+					// Before we initialize this tab, remove the tab if the content tab is not found.
+					// This can happen due to conditional display.
+					ktTabListItemsBeforeCheck.forEach((subElem) => {
+						const listItemButton = subElem.querySelector('a');
+						const tabId = listItemButton.getAttribute('data-tab');
+						const contentTab = thisElem.querySelector(
+							':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
+						);
+
+						if (!contentTab) {
+							subElem.remove();
+						}
+					});
+
+					const ktTabList = thisElem.querySelectorAll(':scope > .kt-tabs-title-list');
+					const ktTabListItems = thisElem.querySelectorAll(':scope > .kt-tabs-title-list li');
+					const ktTabButtons = thisElem.querySelectorAll('.kt-tabs-title-list li a');
+					const ktTabContentAreas = thisElem.querySelectorAll(
+						':scope > .kt-tabs-content-wrap > .kt-tab-inner-content'
+					);
+
+					ktTabList.forEach((subElem) => {
 						subElem.setAttribute('role', 'tablist');
 					});
-					thisElem
-						.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content')
-						.forEach((subElem) => {
-							subElem.setAttribute('role', 'tabpanel');
-							subElem.setAttribute('aria-hidden', 'true');
-						});
+					ktTabContentAreas.forEach((subElem) => {
+						subElem.setAttribute('role', 'tabpanel');
+						subElem.setAttribute('aria-hidden', 'true');
+					});
 
-					thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
+					ktTabButtons.forEach((subElem) => {
 						const parentListItem = subElem.parentElement;
 						const parentId = parentListItem.getAttribute('id');
 						const isActive = parentListItem.classList.contains('kt-tab-title-active');
@@ -45,7 +66,7 @@
 						}
 					});
 
-					thisElem.querySelectorAll(':scope > .kt-tabs-title-list li').forEach((listItem) => {
+					ktTabListItems.forEach((listItem) => {
 						listItem.addEventListener('keydown', function (evt) {
 							//const listItem = this.parentElement;
 							switch (evt.which) {
@@ -73,7 +94,6 @@
 					const resizeEvent = new Event('resize');
 					window.dispatchEvent(resizeEvent);
 
-					const ktTabButtons = thisElem.querySelectorAll('.kt-tabs-title-list li a');
 					ktTabButtons.forEach((tabButtonElem) => {
 						tabButtonElem.addEventListener('click', function (evt) {
 							evt.preventDefault();
@@ -217,9 +237,12 @@
 		setActiveTab(wrapper, tabNumber, moveFocus = true) {
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
 			const prevActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
-			prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
-			prevActiveAnchor.setAttribute('tabindex', '-1');
-			prevActiveAnchor.setAttribute('aria-selected', 'false');
+
+			if (prevActiveListItem && prevActiveAnchor) {
+				prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+				prevActiveAnchor.setAttribute('tabindex', '-1');
+				prevActiveAnchor.setAttribute('aria-selected', 'false');
+			}
 
 			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
 			const newActiveAnchor = wrapper.querySelector(
