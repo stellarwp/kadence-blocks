@@ -38,6 +38,8 @@ function KadenceTab(props) {
 		}
 	);
 
+	const dispatch = useDispatch('kadenceblocks/data').switchEditorTabOpened('tab' + clientId, 'advanced');
+
 	return (
 		<div {...blockProps} data-tab={id}>
 			<InspectorControls>
@@ -47,6 +49,7 @@ function KadenceTab(props) {
 					panelName={'tab'}
 					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
+					initialOpen={'advanced'}
 					allowedTabs={['general', 'advanced']}
 				/>
 				{activeTab === 'general' && (
