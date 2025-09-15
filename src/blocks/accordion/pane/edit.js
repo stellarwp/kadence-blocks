@@ -5,7 +5,13 @@
  */
 import classnames from 'classnames';
 
-import { KadencePanelBody, KadenceIconPicker, IconRender, SelectParentBlock } from '@kadence/components';
+import {
+	KadencePanelBody,
+	KadenceIconPicker,
+	IconRender,
+	SelectParentBlock,
+	InspectorControlTabs,
+} from '@kadence/components';
 import { uniqueIdHelper } from '@kadence/helpers';
 
 import { __ } from '@wordpress/i18n';
@@ -29,6 +35,7 @@ function PaneEdit(props) {
 	const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 	const HtmlTagOut = !titleTag ? 'div' : titleTag;
 	const [activePane, setActivePane] = useState(false);
+	const [activeTab, setActiveTab] = useState('general');
 	const { addUniquePane } = useDispatch('kadenceblocks/data');
 	const { isUniquePane, isUniquePaneBlock } = useSelect(
 		(select) => {
@@ -125,36 +132,47 @@ function PaneEdit(props) {
 		<div {...blockProps}>
 			<InspectorControls>
 				<SelectParentBlock clientId={clientId} />
-				<KadencePanelBody
-					title={__('Title Icon Settings', 'kadence-blocks')}
-					initialOpen={false}
-					panelName={'kb-pane-title-icon'}
-				>
-					<KadenceIconPicker
-						value={icon}
-						onChange={(value) => setAttributes({ icon: value })}
-						allowClear={true}
-					/>
-					<SelectControl
-						label={__('Icon Side', 'kadence-blocks')}
-						value={iconSide}
-						options={[
-							{ value: 'right', label: __('Right', 'kadence-blocks') },
-							{ value: 'left', label: __('Left', 'kadence-blocks') },
-						]}
-						onChange={(value) => setAttributes({ iconSide: value })}
-					/>
-					<ToggleControl
-						label={__('Show only Icon', 'kadence-blocks')}
-						checked={hideLabel}
-						onChange={(value) => setAttributes({ hideLabel: value })}
-					/>
-					<TextControl
-						label={__('Button Label Attribute for Accessibility', 'kadence-blocks')}
-						value={ariaLabel}
-						onChange={(value) => setAttributes({ ariaLabel: value })}
-					/>
-				</KadencePanelBody>
+
+				<InspectorControlTabs
+					panelName={'pane'}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
+					allowedTabs={['general', 'advanced']}
+				/>
+				{activeTab === 'general' && (
+					<>
+						<KadencePanelBody
+							title={__('Title Icon Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'kb-pane-title-icon'}
+						>
+							<KadenceIconPicker
+								value={icon}
+								onChange={(value) => setAttributes({ icon: value })}
+								allowClear={true}
+							/>
+							<SelectControl
+								label={__('Icon Side', 'kadence-blocks')}
+								value={iconSide}
+								options={[
+									{ value: 'right', label: __('Right', 'kadence-blocks') },
+									{ value: 'left', label: __('Left', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({ iconSide: value })}
+							/>
+							<ToggleControl
+								label={__('Show only Icon', 'kadence-blocks')}
+								checked={hideLabel}
+								onChange={(value) => setAttributes({ hideLabel: value })}
+							/>
+							<TextControl
+								label={__('Button Label Attribute for Accessibility', 'kadence-blocks')}
+								value={ariaLabel}
+								onChange={(value) => setAttributes({ ariaLabel: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
 			</InspectorControls>
 			<HtmlTagOut className={`kt-accordion-header-wrap`}>
 				<div

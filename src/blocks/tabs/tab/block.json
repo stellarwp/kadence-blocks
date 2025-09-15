@@ -20,7 +20,8 @@
 		"inserter": false,
 		"reusable": false,
 		"html": false,
-		"lock": false
+		"lock": false,
+		"ktdynamic": true
 	},
 	"editorScript": "file:editor.js"
 }
