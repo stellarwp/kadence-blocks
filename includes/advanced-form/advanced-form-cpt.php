@@ -150,7 +150,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 		$rewrite = apply_filters( 'kadence_blocks_form_post_type_url_rewrite', array( 'slug' => 'kadence-form' ) );
 		$args    = array(
 			'labels'                => $labels,
-			'description'           => __( 'Contact forms, subscribe forms and others for your site.', 'kadence_conversions' ),
+			'description'           => __( 'Contact forms, subscribe forms and others for your site.', 'kadence-blocks' ),
 			'public'                => false,
 			'publicly_queryable'    => false,
 			'has_archive'           => false,
