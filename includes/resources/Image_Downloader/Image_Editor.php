@@ -75,7 +75,7 @@ final class Image_Editor extends WP_Image_Editor {
 	 */
 	public function load() {
 		if ( $this->file === null ) {
-			return new WP_Error( 'error_loading_image', __( 'File cannot be null.' ) );
+			return new WP_Error( 'error_loading_image', __( 'File cannot be null.', 'kadence-blocks' ) );
 		}
 
 		$this->logger = kadence_blocks()->get( LoggerInterface::class );
@@ -108,7 +108,7 @@ final class Image_Editor extends WP_Image_Editor {
 				'file' => $this->file,
 			] );
 
-			return new WP_Error( 'error_loading_image', __( 'Cannot find downloaded file.' ), $this->file );
+			return new WP_Error( 'error_loading_image', __( 'Cannot find downloaded file.', 'kadence-blocks' ), $this->file );
 		}
 
 		return true;
@@ -256,7 +256,7 @@ final class Image_Editor extends WP_Image_Editor {
 				'requested_height' => $size_data['height'],
 			] );
 
-			return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.' ) );
+			return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.', 'kadence-blocks' ) );
 		}
 
 		// Find the matching file for the requested thumbnail size and get its metadata.
@@ -285,7 +285,7 @@ final class Image_Editor extends WP_Image_Editor {
 			'requested_height' => $size_data['height'],
 		] );
 
-		return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.' ) );
+		return new WP_Error( 'image_subsize_create_error', __( 'Cannot resize the image.', 'kadence-blocks' ) );
 	}
 
 }

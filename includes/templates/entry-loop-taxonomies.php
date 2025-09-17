@@ -20,15 +20,15 @@ if ( $enabled ) {
 			break;
 		case 'slash':
 			/* translators: separator between taxonomy terms */
-			$separator = _x( ' / ', 'list item separator', 'kadence' );
+			$separator = _x( ' / ', 'list item separator', 'kadence-blocks' );
 			break;
 		case 'dash':
 			/* translators: separator between taxonomy terms */
-			$separator = _x( ' - ', 'list item separator', 'kadence' );
+			$separator = _x( ' - ', 'list item separator', 'kadence-blocks' );
 			break;
 		default:
 			/* translators: separator between taxonomy terms */
-			$separator = _x( ' | ', 'list item separator', 'kadence' );
+			$separator = _x( ' | ', 'list item separator', 'kadence-blocks' );
 			break;
 	}
 	if ( 'pill' === $style ) {
@@ -65,7 +65,7 @@ if ( $enabled ) {
 								}
 								echo '</style>';
 							}
-							echo '<a href="' . esc_url( get_term_link( $category->term_id ) ) . '" class="category-link-' . esc_attr( $category->slug ) . '" rel="tag">' . esc_attr__( $category->name) . '</a>';
+							echo '<a href="' . esc_url( get_term_link( $category->term_id ) ) . '" class="category-link-' . esc_attr( $category->slug ) . '" rel="tag">' . esc_attr( $category->name) . '</a>';
 							if ( $key < count($categories) - 1 ) {
 								echo esc_html( $separator );
 							}

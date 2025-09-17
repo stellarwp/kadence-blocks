@@ -469,7 +469,7 @@ function kadence_blocks_get_icon( $icon = 'arrow-right-alt', $icon_title = '', $
 		case 'arrow-right-alt':
 			$output .= '<svg' . ( ! $aria ? ' aria-hidden="true"' : '' ) . ' class="kadence-svg-icon kadence-arrow-right-alt-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28">';
 			if ( $display_title ) {
-				$output .= '<title>' . ( ! empty( $icon_title ) ? $icon_title : esc_html__( 'Continue', 'kadence' ) ) . '</title>';
+				$output .= '<title>' . ( ! empty( $icon_title ) ? $icon_title : esc_html__( 'Continue', 'kadence-blocks' ) ) . '</title>';
 			}
 			$output .= '<path d="M27 13.953c0 0.141-0.063 0.281-0.156 0.375l-6 5.531c-0.156 0.141-0.359 0.172-0.547 0.094-0.172-0.078-0.297-0.25-0.297-0.453v-3.5h-19.5c-0.281 0-0.5-0.219-0.5-0.5v-3c0-0.281 0.219-0.5 0.5-0.5h19.5v-3.5c0-0.203 0.109-0.375 0.297-0.453s0.391-0.047 0.547 0.078l6 5.469c0.094 0.094 0.156 0.219 0.156 0.359v0z"></path>
 			</svg>';
@@ -556,8 +556,8 @@ function kadence_blocks_register_lottie_custom_post_type() {
 	register_post_type(
 		'kadence_lottie',
 		array(
-			'label'        => _x( 'Lottie Animations', 'Lottie animation' ),
-			'description'  => __( 'Lottie Animations imported in Kadence' ),
+			'label'        => _x( 'Lottie Animations', 'Lottie animation', 'kadence-blocks' ),
+			'description'  => __( 'Lottie Animations imported in Kadence', 'kadence-blocks' ),
 			'public'       => false,
 			'show_ui'      => true,
 			'show_in_menu' => false,
