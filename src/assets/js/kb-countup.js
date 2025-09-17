@@ -81,7 +81,7 @@
 			if (window.kadenceCountUp.isInViewport(window.kadenceCountUp.countUpItems[index])) {
 				if (!window.kadenceCountUp.cache[index].error) {
 					const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-					
+
 					if (prefersReducedMotion) {
 						window.kadenceCountUp.cache[index].printValue(window.kadenceCountUp.cache[index].endVal);
 					} else {
