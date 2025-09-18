@@ -268,17 +268,15 @@
 
 			const tocBlocks = document.querySelectorAll('.wp-block-kadence-tableofcontents');
 
-			tocBlocks.forEach(tocBlock => {
-				missingHeadings.forEach(missingHeading => {
+			tocBlocks.forEach((tocBlock) => {
+				missingHeadings.forEach((missingHeading) => {
 					const tocLinks = tocBlock.querySelectorAll('a.kb-table-of-contents__entry');
 
-					tocLinks.forEach(link => {
+					tocLinks.forEach((link) => {
 						const linkHref = link.getAttribute('href');
 						const linkText = link.textContent.trim();
 
-						if (linkHref === missingHeading.anchor ||
-							linkText === missingHeading.content) {
-
+						if (linkHref === missingHeading.anchor || linkText === missingHeading.content) {
 							const listItem = link.closest('li');
 							if (listItem) {
 								listItem.remove();
@@ -295,12 +293,12 @@
 		 */
 		cleanupEmptyLists(tocBlock) {
 			const emptyLists = tocBlock.querySelectorAll('.kb-table-of-contents-list-sub:empty');
-			emptyLists.forEach(emptyList => {
+			emptyLists.forEach((emptyList) => {
 				emptyList.remove();
 			});
 
 			const listItems = tocBlock.querySelectorAll('.kb-table-of-content-list li');
-			listItems.forEach(listItem => {
+			listItems.forEach((listItem) => {
 				const nestedList = listItem.querySelector('.kb-table-of-contents-list-sub');
 				if (nestedList && nestedList.children.length === 0) {
 					nestedList.remove();
