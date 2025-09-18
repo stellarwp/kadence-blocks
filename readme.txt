@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.21 =
 Release Date: 18th September 2025
 * Update: added support for conditional display (pro feature) for accordion pane, tab, and testimonial.
+* Fix: a few text domain issues
 
 = 3.5.20 =
 Release Date: 11th September 2025
