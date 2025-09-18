@@ -209,6 +209,8 @@
 		 */
 		initAddAnchors() {
 			const headings = JSON.parse(kadence_blocks_toc.headings);
+			const missingHeadings = [];
+
 			for (let i = 0; i < headings.length; i++) {
 				const heading_items = document.querySelectorAll('h' + headings[i].level);
 				if (!heading_items.length) {
@@ -218,6 +220,9 @@
 					.toString()
 					.normalize()
 					.replace(/[^\w\s]/gi, '');
+
+				let heading_found = false;
+
 				for (let n = 0; n < heading_items.length; n++) {
 					let second_string = heading_items[n].textContent
 						.replace(/×/g, 'x')
@@ -240,15 +245,67 @@
 					if (first_string === second_string || first_string === alt_string) {
 						if (!heading_items[n].getAttribute('id')) {
 							heading_items[n].setAttribute('id', headings[i].anchor);
+							heading_found = true;
 							break;
 						}
 					}
-					// if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') === headings[ i ].content.replace(/[^\w\s]/gi, '') ) {
-					// heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
-					// break;
-					// }
+				}
+
+				if (!heading_found) {
+					missingHeadings.push(headings[i]);
 				}
 			}
+
+			this.removeMissingTocLinks(missingHeadings);
+		},
+		/**
+		 * Remove TOC links for headings that don't exist in the DOM
+		 */
+		removeMissingTocLinks(missingHeadings) {
+			if (missingHeadings.length === 0) {
+				return;
+			}
+
+			const tocBlocks = document.querySelectorAll('.wp-block-kadence-tableofcontents');
+
+			tocBlocks.forEach(tocBlock => {
+				missingHeadings.forEach(missingHeading => {
+					const tocLinks = tocBlock.querySelectorAll('a.kb-table-of-contents__entry');
+
+					tocLinks.forEach(link => {
+						const linkHref = link.getAttribute('href');
+						const linkText = link.textContent.trim();
+
+						if (linkHref === missingHeading.anchor ||
+							linkText === missingHeading.content) {
+
+							const listItem = link.closest('li');
+							if (listItem) {
+								listItem.remove();
+							}
+						}
+					});
+				});
+
+				this.cleanupEmptyLists(tocBlock);
+			});
+		},
+		/**
+		 * Clean up empty nested lists after removing missing links
+		 */
+		cleanupEmptyLists(tocBlock) {
+			const emptyLists = tocBlock.querySelectorAll('.kb-table-of-contents-list-sub:empty');
+			emptyLists.forEach(emptyList => {
+				emptyList.remove();
+			});
+
+			const listItems = tocBlock.querySelectorAll('.kb-table-of-content-list li');
+			listItems.forEach(listItem => {
+				const nestedList = listItem.querySelector('.kb-table-of-contents-list-sub');
+				if (nestedList && nestedList.children.length === 0) {
+					nestedList.remove();
+				}
+			});
 		},
 		/**
 		 * Toggle an attribute.
