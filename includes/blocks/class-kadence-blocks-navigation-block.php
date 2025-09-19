@@ -574,10 +574,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			'kadenceNavigationConfig',
 			array(
 				'screenReader' => array(
-					'expand'     => __( 'Child menu', 'kadence' ),
-					'expandOf'   => __( 'Child menu of', 'kadence' ),
-					'collapse'   => __( 'Child menu', 'kadence' ),
-					'collapseOf' => __( 'Child menu of', 'kadence' ),
+					'expand'     => __( 'Child menu', 'kadence-blocks' ),
+					'expandOf'   => __( 'Child menu of', 'kadence-blocks' ),
+					'collapse'   => __( 'Child menu', 'kadence-blocks' ),
+					'collapseOf' => __( 'Child menu of', 'kadence-blocks' ),
 				),
 				'breakPoints' => array(
 					'desktop' => 1024,

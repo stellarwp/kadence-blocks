@@ -161,7 +161,7 @@ $link-color-property: var(
 		background: var(--kb-nav-dropdown-background, #fff);
 		margin-left: 0;
 		z-index: 1000;
-		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
+		box-shadow: var(--kb-nav-dropdown-box-shadow);
 
 		&.sub-menu-right-edge {
 			--kb-nav-dropdown-show-left: auto;
