@@ -809,11 +809,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					$content .= '</div>';
 					break;
 				case 'tiles':
-					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
+					$content .= '<ul class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
 					foreach ( $images as $key => $image ) {
 						$content .= $this->render_gallery_images( $image, $attributes );
 					}
-					$content .= '</div>';
+					$content .= '</ul>';
 					break;
 				case 'mosaic':
 					$content .= $this->render_mosaic_gallery( $images, $attributes, $gallery_classes, $image_filter, $lightbox_cap );
