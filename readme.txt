@@ -174,9 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 = 3.5.22 =
-Release Date: TBD 2025
+Release Date: 25th September 2025
 * Fix: Removed default navigation submenu box shadow when disabled.
 * Update: When prefers-reduced-motion is enabled, Countup block now only shows the end value. 
+* Update: Gallery tiles layout outer div updated to ul.
 
 = 3.5.21 =
 Release Date: 18th September 2025
