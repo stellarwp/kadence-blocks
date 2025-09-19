@@ -983,6 +983,7 @@
 				const openPanels = accordionsArray[i].getAttribute('data-start-open');
 				let openPanel;
 				if (openPanels !== 'none') {
+					openPanel = 0;
 					for (let b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
 						if (
 							accordionsArray[i].children[b].classList.contains(
@@ -994,7 +995,6 @@
 						}
 					}
 				}
-				console.log('init5', openPanel, openPanels);
 				accordionsArray[i].addEventListener('initialized', window.KadenceBlocksAccordion.anchor, false);
 				new KadenceAccordion(accordionsArray[i], {
 					openHeadersOnLoad: openPanel || parseInt(openPanel) === 0 ? [parseInt(openPanel)] : [],
