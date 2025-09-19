@@ -80,7 +80,13 @@
 		startCountUp(index) {
 			if (window.kadenceCountUp.isInViewport(window.kadenceCountUp.countUpItems[index])) {
 				if (!window.kadenceCountUp.cache[index].error) {
-					window.kadenceCountUp.cache[index].start();
+					const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+					if (prefersReducedMotion) {
+						window.kadenceCountUp.cache[index].printValue(window.kadenceCountUp.cache[index].endVal);
+					} else {
+						window.kadenceCountUp.cache[index].start();
+					}
 				}
 				document.removeEventListener('scroll', window.kadenceCountUp.listenerCache[index], false);
 			}
