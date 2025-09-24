@@ -9,7 +9,6 @@ import FormFieldLabel from '../../label';
 import {
 	TextControl,
 	TextareaControl,
-	SelectControl,
 	ToggleControl,
 	CheckboxControl,
 	RangeControl,
@@ -101,18 +100,6 @@ function FieldFile(props) {
 		},
 	});
 
-	const getSizeOptions = () => {
-		const sizeOptions = [];
-
-		for (let i = 1; i * 5 <= Math.min(25, wpMaxUploadSizeMb); i++) {
-			sizeOptions.push({
-				value: i * 5,
-				label: i * 5 + ' MB',
-			});
-		}
-		return sizeOptions;
-	};
-
 	const toggleAllowedTypes = (type) => {
 		let newTypes = [];
 
@@ -198,14 +185,13 @@ function FieldFile(props) {
 								)}
 							</KadencePanelBody>
 							<KadencePanelBody title={__('File Options', 'kadence-blocks')}>
-								<SelectControl
+								<RangeControl
 									label={__('File Size Limit', 'kadence-blocks')}
-									value={maxSizeMb}
-									onChange={(value) => {
-										setAttributes({ maxSizeMb: parseInt(value) });
-									}}
-									options={getSizeOptions()}
+									value={maxSizeMb ? maxSizeMb : 10}
+									onChange={(value) => setAttributes({ maxSizeMb: value })}
+									min={1}
 									max={wpMaxUploadSizeMb}
+									step={1}
 									help={
 										__('WordPress max upload size:', 'kadence-blocks') + ' ' + wpMaxUploadSizePretty
 									}
