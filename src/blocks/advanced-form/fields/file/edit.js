@@ -6,13 +6,7 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import {
-	TextControl,
-	TextareaControl,
-	ToggleControl,
-	CheckboxControl,
-	RangeControl,
-} from '@wordpress/components';
+import { TextControl, TextareaControl, ToggleControl, CheckboxControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
