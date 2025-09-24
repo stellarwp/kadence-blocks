@@ -102,15 +102,26 @@ function FieldFile(props) {
 	});
 
 	const getSizeOptions = () => {
-		const sizeOptions = [];
+		const max = Math.min(1024, wpMaxUploadSizeMb);
+		const sizes = new Set();
+		
+		const ranges = [
+			{ start: 5, end: 25, step: 5 },
+			{ start: 30, end: 50, step: 10 },
+			{ start: 100, end: max, step: 100 }
+		];
+		
+		ranges.forEach(({ start, end, step }) => {
+			for (let mb = start; mb <= Math.min(end, max); mb += step) {
+				if (mb <= max) sizes.add(mb);
+			}
+		});
 
-		for (let i = 1; i * 5 <= Math.min(25, wpMaxUploadSizeMb); i++) {
-			sizeOptions.push({
-				value: i * 5,
-				label: i * 5 + ' MB',
-			});
-		}
-		return sizeOptions;
+		sizes.add(max);
+		
+		return Array.from(sizes)
+			.sort((a, b) => a - b)
+			.map(mb => ({ value: mb, label: `${mb} MB` }));
 	};
 
 	const toggleAllowedTypes = (type) => {
