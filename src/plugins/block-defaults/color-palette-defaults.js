@@ -335,7 +335,7 @@ export default function KadenceColorDefault() {
 						onChange={(value) => {
 							let newColors;
 							const newKadenceColors = { ...kadenceColors };
-							
+
 							if (true === value) {
 								newColors = [...(newKadenceColors.palette || [])];
 								newKadenceColors.override = true;
@@ -343,8 +343,9 @@ export default function KadenceColorDefault() {
 								newKadenceColors.override = false;
 								const themeColorsArray = Array.isArray(colorPalette) ? colorPalette : [];
 								const customColors = newKadenceColors.palette || [];
-								const uniqueCustomColors = customColors.filter(customColor => 
-									!themeColorsArray.some(themeColor => themeColor.slug === customColor.slug)
+								const uniqueCustomColors = customColors.filter(
+									(customColor) =>
+										!themeColorsArray.some((themeColor) => themeColor.slug === customColor.slug)
 								);
 								newColors = [...themeColorsArray, ...uniqueCustomColors];
 								setShowMessage(true);
