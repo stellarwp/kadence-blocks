@@ -1108,19 +1108,19 @@ function KadenceAccordionComponent(props) {
 				titleBorderRadius: [0, 0, 0, 0],
 				titleBorder: [
 					{
-						top: ['#f2f2f2', '', 0],
-						right: ['#f2f2f2', '', 0],
-						bottom: ['#f2f2f2', '', 4],
-						left: ['#f2f2f2', '', 0],
+						top: ['#949494', '', 0],
+						right: ['#949494', '', 0],
+						bottom: ['#949494', '', 4],
+						left: ['#949494', '', 0],
 						unit: 'px',
 					},
 				],
 				titleBorderHover: [
 					{
-						top: ['#eeeeee', '', ''],
-						right: ['#eeeeee', '', ''],
-						bottom: ['#eeeeee', '', ''],
-						left: ['#eeeeee', '', ''],
+						top: ['#7D7D7D', '', ''],
+						right: ['#7D7D7D', '', ''],
+						bottom: ['#7D7D7D', '', ''],
+						left: ['#7D7D7D', '', ''],
 						unit: 'px',
 					},
 				],
