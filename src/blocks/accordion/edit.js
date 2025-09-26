@@ -1824,6 +1824,55 @@ function KadenceAccordionComponent(props) {
 									</TabPanel>
 								</KadencePanelBody>
 							)}
+							{showSettings('titleTag', 'kadence/accordion') && (
+								<>
+									<KadencePanelBody
+										title={__('Title Tag Settings', 'kadence-blocks')}
+										panelName={'kb-accordion-title-tag-settings'}
+										initialOpen={false}
+									>
+										<SelectControl
+											label={__('Title Tag', 'kadence-blocks')}
+											value={titleTag}
+											options={[
+												{ value: 'div', label: __('div') },
+												{ value: 'h2', label: __('h2') },
+												{ value: 'h3', label: __('h3') },
+												{ value: 'h4', label: __('h4') },
+												{ value: 'h5', label: __('h5') },
+												{ value: 'h6', label: __('h6') },
+											]}
+											onChange={(value) => {
+												updatePaneTag(value);
+												setTitleTag(value);
+											}}
+										/>
+									</KadencePanelBody>
+									{'div' === titleTag && (
+										<KadencePanelBody>
+											<div
+												class="components-base-control"
+												style={{
+													backgroundColor: '#fcf9e8',
+													padding: '8px',
+													border: '1px solid #dba617',
+												}}
+											>
+												{__(
+													'Accessibility Note: The title tag is not currently a heading. This block might be more accessible if you choose an',
+													'kadence-blocks'
+												)}{' '}
+												<a
+													href="https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/H42.html"
+													target="_blank"
+												>
+													{__('appropriate heading level.', 'kadence-blocks')}
+												</a>
+											</div>
+										</KadencePanelBody>
+									)}
+								</>
+							)}
 						</>
 					)}
 					{activeTab === 'style' && (
@@ -2239,30 +2288,6 @@ function KadenceAccordionComponent(props) {
 										unit={contentPaddingType}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ contentPaddingType: value })}
-									/>
-								</KadencePanelBody>
-							)}
-							{showSettings('titleTag', 'kadence/accordion') && (
-								<KadencePanelBody
-									title={__('Title Tag Settings', 'kadence-blocks')}
-									panelName={'kb-accordion-title-tag-settings'}
-									initialOpen={false}
-								>
-									<SelectControl
-										label={__('Title Tag', 'kadence-blocks')}
-										value={titleTag}
-										options={[
-											{ value: 'div', label: __('div') },
-											{ value: 'h2', label: __('h2') },
-											{ value: 'h3', label: __('h3') },
-											{ value: 'h4', label: __('h4') },
-											{ value: 'h5', label: __('h5') },
-											{ value: 'h6', label: __('h6') },
-										]}
-										onChange={(value) => {
-											updatePaneTag(value);
-											setTitleTag(value);
-										}}
 									/>
 								</KadencePanelBody>
 							)}
