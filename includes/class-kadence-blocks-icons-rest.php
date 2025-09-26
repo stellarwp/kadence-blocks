@@ -1,0 +1,162 @@
+<?php
+/**
+ * REST API for Kadence icon data.
+ *
+ * @package Kadence Blocks
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Registers an endpoint that returns the icon collections used in Kadence Blocks.
+ */
+class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->namespace = 'kb-icons/v1';
+		$this->rest_base = 'icons';
+	}
+
+	/**
+	 * Registers the REST API routes.
+	 *
+	 * @see register_rest_route()
+	 */
+	public function register_routes() {
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_icons' ),
+					'permission_callback' => '__return_true',
+				),
+			)
+		);
+	}
+
+	/**
+	 * Returns the icon data collections.
+	 *
+	 * @param WP_REST_Request $request The current request (unused).
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function get_icons( $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		$icons = array(
+			'solidIcons' => $this->get_solid_icons(),
+			'lineIcons'  => $this->get_line_icons(),
+			'custom'     => $this->get_custom_icons(),
+		);
+
+		$icons['cache_key'] = md5( wp_json_encode( $icons ) );
+
+		sleep( 10 );
+
+		return rest_ensure_response( $icons );
+	}
+
+	/**
+	 * Retrieves the solid icon collection (Font Awesome based).
+	 *
+	 * @return array
+	 */
+	private function get_solid_icons() {
+		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
+		if ( file_exists( $icons_file ) ) {
+			include $icons_file;
+			return isset( $faico ) && is_array( $faico ) ? $faico : array();
+		}
+
+		return array();
+	}
+
+	/**
+	 * Retrieves the line icon collection (Feather icons).
+	 *
+	 * @return array
+	 */
+	private function get_line_icons() {
+		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
+		if ( file_exists( $icons_file ) ) {
+			include $icons_file;
+			return isset( $ico ) && is_array( $ico ) ? $ico : array();
+		}
+
+		return array();
+	}
+
+	/**
+	 * Retrieves bundled custom icons and user uploaded icons (Pro).
+	 *
+	 * @return array
+	 */
+	private function get_custom_icons() {
+		$custom_icons = array();
+		$icons_file   = KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
+
+		if ( file_exists( $icons_file ) ) {
+			include $icons_file;
+			if ( isset( $kbcustom ) && is_array( $kbcustom ) ) {
+				$custom_icons = $kbcustom;
+			}
+		}
+
+		if ( ! $this->has_pro_support() ) {
+			return $custom_icons;
+		}
+
+		$custom_posts = get_posts(
+			array(
+				'post_type'      => 'kadence_custom_svg',
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'fields'         => 'ids',
+			)
+		);
+
+		if ( empty( $custom_posts ) ) {
+			return $custom_icons;
+		}
+
+		foreach ( $custom_posts as $svg_id ) {
+			$post = get_post( $svg_id );
+			if ( empty( $post ) || is_wp_error( $post ) ) {
+				continue;
+			}
+
+			$raw_content = $post->post_content;
+			if ( empty( $raw_content ) ) {
+				continue;
+			}
+
+			$svg_content = str_replace( array( '<p>', '</p>' ), '', $raw_content );
+			$svg_content = str_replace( array( '&#8220;', '&#8221;', '&#8222;', '&#8243;' ), '"', $svg_content );
+
+			$svg_data = json_decode( $svg_content, true );
+			if ( empty( $svg_data ) || ! is_array( $svg_data ) ) {
+				continue;
+			}
+
+			$custom_icons[ 'kb-custom-' . $svg_id ] = $svg_data;
+		}
+
+		return $custom_icons;
+	}
+
+	/**
+	 * Determines if the environment supports user uploaded custom icons.
+	 *
+	 * @return bool
+	 */
+	private function has_pro_support() {
+		return defined( 'KADENCE_BLOCKS_PRO' ) && KADENCE_BLOCKS_PRO;
+	}
+}
+

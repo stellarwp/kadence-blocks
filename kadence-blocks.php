@@ -128,6 +128,7 @@ function kadence_blocks_init(): void {
 
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-icons-rest.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-local-gfonts.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-image-picker-rest.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-image-picker.php';

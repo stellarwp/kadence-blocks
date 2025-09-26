@@ -64,7 +64,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 
-import { Fragment, useState, useEffect } from '@wordpress/element';
+import { Fragment, useState, useEffect, useMemo } from '@wordpress/element';
 
 import { MediaUpload, InspectorControls, BlockControls, useBlockProps } from '@wordpress/block-editor';
 
@@ -80,8 +80,8 @@ import {
 } from '@wordpress/components';
 
 import { useDispatch, useSelect } from '@wordpress/data';
-import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
+import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
 
 /**
  * Build the overlay edit
@@ -144,16 +144,39 @@ function KadenceVideoPopup(props) {
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-	const { previewDevice } = useSelect(
+	const { previewDevice, combinedIcons, areIconsLoaded } = useSelect(
 		(select) => {
+			const dataStore = select('kadenceblocks/data');
+
+			if (!dataStore) {
+				return {
+					previewDevice: 'Desktop',
+					combinedIcons: {},
+					areIconsLoaded: false,
+				};
+			}
+
+			const icons = dataStore.getIcons();
+
 			return {
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				previewDevice: dataStore.getPreviewDeviceType(),
+				combinedIcons: icons?.combinedIcons || {},
+				areIconsLoaded: dataStore.areIconsLoaded(),
 			};
 		},
 		[clientId]
 	);
 
-	const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+	const iconDispatcher = useDispatch('kadenceblocks/data');
+	const fetchIcons = iconDispatcher?.fetchIcons;
+
+	useEffect(() => {
+		if (typeof fetchIcons === 'function' && !areIconsLoaded) {
+			fetchIcons();
+		}
+	}, [areIconsLoaded, fetchIcons]);
+
+	const allIcons = useMemo(() => applyFilters('kadence.icon_options', combinedIcons), [combinedIcons]);
 
 	const getDynamic = () => {
 		let contextPost = null;
