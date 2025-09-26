@@ -34,7 +34,11 @@ export default function KadenceColorDefault() {
 	const { updateSettings } = useDispatch(blockEditorStore);
 	useEffect(() => {
 		if (!colors) {
-			setColors(colorPalette);
+			if (undefined !== kadenceColors.override && true === kadenceColors.override) {
+				setColors(kadenceColors.palette || []);
+			} else {
+				setColors(colorPalette);
+			}
 		}
 
 		if (undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[0]) {
@@ -48,10 +52,10 @@ export default function KadenceColorDefault() {
 		}
 	}, []);
 
-	const saveConfig = async () => {
+	const saveConfig = async (configToSave = null) => {
 		if (false === isSaving) {
 			setIsSaving(true);
-			const config = kadenceColors;
+			const config = configToSave || kadenceColors;
 			try {
 				const response = await apiFetch({
 					path: '/wp/v2/settings',
@@ -61,7 +65,9 @@ export default function KadenceColorDefault() {
 
 				if (response) {
 					setIsSaving(false);
-					setKadenceColors(config);
+					if (!configToSave) {
+						setKadenceColors(config);
+					}
 					kadence_blocks_params.colors = JSON.stringify(config);
 					createErrorNotice(__('Colors saved!', 'kadence-blocks'), {
 						type: 'snackbar',
@@ -328,19 +334,24 @@ export default function KadenceColorDefault() {
 						checked={undefined !== kadenceColors.override ? kadenceColors.override : false}
 						onChange={(value) => {
 							let newColors;
-							const newKadenceColors = kadenceColors;
+							const newKadenceColors = { ...kadenceColors };
+							
 							if (true === value) {
-								newColors = newKadenceColors.palette;
+								newColors = [...(newKadenceColors.palette || [])];
 								newKadenceColors.override = true;
 							} else {
 								newKadenceColors.override = false;
-								newColors = newKadenceColors.palette;
-
+								const themeColorsArray = Array.isArray(colorPalette) ? colorPalette : [];
+								const customColors = newKadenceColors.palette || [];
+								const uniqueCustomColors = customColors.filter(customColor => 
+									!themeColorsArray.some(themeColor => themeColor.slug === customColor.slug)
+								);
+								newColors = [...themeColorsArray, ...uniqueCustomColors];
 								setShowMessage(true);
 							}
 							setKadenceColors(newKadenceColors);
 							setColors(newColors);
-							saveConfig();
+							saveConfig(newKadenceColors);
 						}}
 					/>
 					{undefined !== kadenceColors.override &&
