@@ -339,6 +339,7 @@ export default function KadenceColorDefault() {
 							if (true === value) {
 								newColors = [...(newKadenceColors.palette || [])];
 								newKadenceColors.override = true;
+								setShowMessage(true);
 							} else {
 								newKadenceColors.override = false;
 								const themeColorsArray = Array.isArray(colorPalette) ? colorPalette : [];
@@ -355,7 +356,6 @@ export default function KadenceColorDefault() {
 						}}
 					/>
 					{undefined !== kadenceColors.override &&
-						false === kadenceColors.override &&
 						true === showMessage && (
 							<p className="kb-colors-show-notice">
 								{__('Refresh page to reload theme defined colors', 'kadence-blocks')}
