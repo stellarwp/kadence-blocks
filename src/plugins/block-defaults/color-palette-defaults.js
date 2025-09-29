@@ -356,12 +356,11 @@ export default function KadenceColorDefault() {
 							saveConfig(newKadenceColors);
 						}}
 					/>
-					{undefined !== kadenceColors.override &&
-						true === showMessage && (
-							<p className="kb-colors-show-notice">
-								{__('Refresh page to reload theme defined colors', 'kadence-blocks')}
-							</p>
-						)}
+					{undefined !== kadenceColors.override && true === showMessage && (
+						<p className="kb-colors-show-notice">
+							{__('Refresh page to reload theme defined colors', 'kadence-blocks')}
+						</p>
+					)}
 				</>
 			)}
 		</div>
