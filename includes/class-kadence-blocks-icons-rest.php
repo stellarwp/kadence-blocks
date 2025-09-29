@@ -57,7 +57,7 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 
 		$icons['cache_key'] = md5( wp_json_encode( $icons ) );
 
-		sleep( 10 );
+		sleep( 4 );
 
 		return rest_ensure_response( $icons );
 	}

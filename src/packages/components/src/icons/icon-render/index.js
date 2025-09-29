@@ -47,8 +47,26 @@ const setCachedCustomSvg = (id, svg) => {
 	}
 };
 
+const normalizeDimension = (value) => {
+	if (typeof value === 'number') {
+		return value;
+	}
+
+	if (typeof value === 'string') {
+		if (value.endsWith('px')) {
+			const parsedPx = parseFloat(value);
+			return Number.isNaN(parsedPx) ? null : parsedPx;
+		}
+
+		const numeric = Number(value);
+		return Number.isNaN(numeric) ? null : numeric;
+	}
+
+	return null;
+};
+
 const IconRender = (props) => {
-	const { name, ...rest } = props;
+	const { name, className, style, size, ...rest } = props;
 
 	const { combinedIcons, areIconsLoaded } = useSelect((select) => {
 		const dataStore = select('kadenceblocks/data');
@@ -76,6 +94,11 @@ const IconRender = (props) => {
 			fetchIcons();
 		}
 	}, [areIconsLoaded, fetchIcons]);
+
+	const iconsAvailable = useMemo(
+		() => combinedIcons && Object.keys(combinedIcons).length > 0,
+		[combinedIcons]
+	);
 
 	const iconOptions = useMemo(() => applyFilters('kadence.icon_options', combinedIcons), [combinedIcons]);
 
@@ -143,24 +166,36 @@ const IconRender = (props) => {
 		};
 	}, [name, iconOptions]);
 
+	const spinnerDimension = normalizeDimension(size) ?? normalizeDimension(style?.fontSize) ?? 24;
+	const spinnerStyle = { width: `${spinnerDimension}px`, height: `${spinnerDimension}px` };
+	const wrapperClassName = className ? `${className} kadence-icon-loading` : 'kadence-icon-loading';
+
 	if (!name) {
 		return null;
 	}
 
 	if (name.startsWith('kb-custom')) {
 		if (customSvg) {
-			return <GenIcon name={name} icon={customSvg} {...rest} />;
+			return <GenIcon name={name} icon={customSvg} className={className} style={style} size={size} {...rest} />;
 		}
 
-		if (isFetchingCustom || !areIconsLoaded) {
-			return <Spinner />;
+		if (isFetchingCustom || (!iconsAvailable && !areIconsLoaded)) {
+			return (
+				<span className={wrapperClassName} style={style}>
+					<Spinner style={spinnerStyle} />
+				</span>
+			);
 		}
 
 		return null;
 	}
 
-	if (!areIconsLoaded) {
-		return <Spinner />;
+	if (!iconsAvailable && !areIconsLoaded) {
+		return (
+			<span className={wrapperClassName} style={style}>
+				<Spinner style={spinnerStyle} />
+			</span>
+		);
 	}
 
 	const icon = iconOptions[name];
@@ -169,7 +204,7 @@ const IconRender = (props) => {
 		return null;
 	}
 
-	return <GenIcon name={name} icon={icon} {...rest} />;
+	return <GenIcon name={name} icon={icon} className={className} style={style} size={size} {...rest} />;
 };
 
 export default IconRender;
