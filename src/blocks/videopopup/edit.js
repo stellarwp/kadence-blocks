@@ -24,22 +24,22 @@ import {
 } from '@kadence/icons';
 
 import {
-    InspectorControlTabs,
-    MeasurementControls,
-    KadencePanelBody,
-    ImageSizeControl,
-    BoxShadowControl,
-    KadenceImageControl,
-    PopColorControl,
-    URLInputControl,
-    SpacingVisualizer,
-    CopyPasteAttributes,
-    KadenceBlockDefaults,
-    ResponsiveMeasureRangeControl,
-    ResponsiveRangeControls,
-    ResponsiveBorderControl,
-    ResponsiveMeasurementControls,
-    IconRender,
+	InspectorControlTabs,
+	MeasurementControls,
+	KadencePanelBody,
+	ImageSizeControl,
+	BoxShadowControl,
+	KadenceImageControl,
+	PopColorControl,
+	URLInputControl,
+	SpacingVisualizer,
+	CopyPasteAttributes,
+	KadenceBlockDefaults,
+	ResponsiveMeasureRangeControl,
+	ResponsiveRangeControls,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
+	IconRender,
 } from '@kadence/components';
 
 import {
@@ -143,22 +143,22 @@ function KadenceVideoPopup(props) {
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-    const { previewDevice } = useSelect(
-        (select) => {
-            const dataStore = select('kadenceblocks/data');
+	const { previewDevice } = useSelect(
+		(select) => {
+			const dataStore = select('kadenceblocks/data');
 
-            if (!dataStore) {
-                return {
-                    previewDevice: 'Desktop',
-                };
-            }
+			if (!dataStore) {
+				return {
+					previewDevice: 'Desktop',
+				};
+			}
 
-            return {
-                previewDevice: dataStore.getPreviewDeviceType(),
-            };
-        },
-        [clientId]
-    );
+			return {
+				previewDevice: dataStore.getPreviewDeviceType(),
+			};
+		},
+		[clientId]
+	);
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -1254,20 +1254,20 @@ function KadenceVideoPopup(props) {
 							'local' === type ? 'kadence-video-type-local' : 'kadence-video-type-external'
 						}`}
 					>
-                    <IconRender
-                        className={`kt-video-svg-icon  kt-video-svg-icon-style-${
-                            playBtn[0].style
-                        } kt-video-svg-icon-${theIcon} kt-video-play-animation-${
-                            '' !== playBtn[0].animation ? playBtn[0].animation : 'none'
-                        } kt-video-svg-icon-size-${!playBtn[0].size ? 'auto' : playBtn[0].size}`}
-                        name={theIcon}
-                        size={!playBtn[0].size ? '30' : playBtn[0].size}
-                        strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
-                        style={{
-                            color: playBtn[0].color
-                                ? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)
-                                : undefined,
-                            backgroundColor:
+						<IconRender
+							className={`kt-video-svg-icon  kt-video-svg-icon-style-${
+								playBtn[0].style
+							} kt-video-svg-icon-${theIcon} kt-video-play-animation-${
+								'' !== playBtn[0].animation ? playBtn[0].animation : 'none'
+							} kt-video-svg-icon-size-${!playBtn[0].size ? 'auto' : playBtn[0].size}`}
+							name={theIcon}
+							size={!playBtn[0].size ? '30' : playBtn[0].size}
+							strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
+							style={{
+								color: playBtn[0].color
+									? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)
+									: undefined,
+								backgroundColor:
 									playBtn[0].background && playBtn[0].style !== 'default'
 										? KadenceColorOutput(playBtn[0].background, playBtn[0].backgroundOpacity)
 										: undefined,
@@ -1306,7 +1306,7 @@ function KadenceVideoPopup(props) {
 											'%'
 										: undefined,
 							}}
-                    />
+						/>
 					</div>
 				</div>
 			</div>
