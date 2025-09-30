@@ -7,11 +7,16 @@ import { Spinner } from '@wordpress/components';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 
+let hasRequestedStoreIcons = false;
+let frontendIconsCache = null;
+let frontendIconsFetchPromise = null;
+const customSvgPromises = new Map();
+
 const fetchCustomSvg = async (id) => {
-	const restUrl = kadence_blocks_params?.rest_url || window?.kadence_blocks_params?.rest_url;
-	if (!restUrl) {
-		throw new Error('Kadence Blocks REST URL not available');
-	}
+    const restUrl = kadence_blocks_params?.rest_url || window?.kadence_blocks_params?.rest_url;
+    if (!restUrl) {
+        throw new Error('Kadence Blocks REST URL not available');
+    }
 
 	const response = await fetch(`${restUrl}wp/v2/kadence_custom_svg/${id}`, {
 		method: 'GET',
@@ -21,7 +26,29 @@ const fetchCustomSvg = async (id) => {
 		throw new Error('Network response was not ok');
 	}
 
-	return response.json();
+    return response.json();
+};
+
+const fetchAllIconsViaRest = async () => {
+    const restUrl = kadence_blocks_params?.rest_url || window?.kadence_blocks_params?.rest_url;
+    if (!restUrl) {
+        return {};
+    }
+    try {
+        const response = await fetch(`${restUrl}kb-icons/v1/icons`, { method: 'GET' });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const combined = {
+            ...(data?.solidIcons || {}),
+            ...(data?.lineIcons || {}),
+            ...(data?.custom || {}),
+        };
+        return combined;
+    } catch (e) {
+        return {};
+    }
 };
 
 const getCachedCustomSvg = (id) => {
@@ -66,105 +93,164 @@ const normalizeDimension = (value) => {
 };
 
 const IconRender = (props) => {
-	const { name, className, style, size, ...rest } = props;
+    const { name, className, style, size, ...rest } = props;
 
-	const { combinedIcons, areIconsLoaded } = useSelect((select) => {
-		const dataStore = select('kadenceblocks/data');
+    const { combinedIcons, areIconsLoaded, hasDataStore } = useSelect((select) => {
+        const dataStore = select('kadenceblocks/data');
 
-		if (!dataStore) {
-			return {
-				combinedIcons: {},
-				areIconsLoaded: false,
-			};
-		}
+        if (!dataStore) {
+            return {
+                combinedIcons: {},
+                areIconsLoaded: false,
+                hasDataStore: false,
+            };
+        }
 
-		const icons = dataStore.getIcons();
+        const icons = dataStore.getIcons();
 
-		return {
-			combinedIcons: icons?.combinedIcons || {},
-			areIconsLoaded: dataStore.areIconsLoaded(),
-		};
-	}, []);
+        return {
+            combinedIcons: icons?.combinedIcons || {},
+            areIconsLoaded: dataStore.areIconsLoaded(),
+            hasDataStore: true,
+        };
+    }, []);
 
-	const dispatchers = useDispatch('kadenceblocks/data');
-	const fetchIcons = dispatchers?.fetchIcons;
+    const dispatchers = useDispatch('kadenceblocks/data');
+    const fetchIcons = dispatchers?.fetchIcons;
 
-	useEffect(() => {
-		if (typeof fetchIcons === 'function' && !areIconsLoaded) {
-			fetchIcons();
-		}
-	}, [areIconsLoaded, fetchIcons]);
+    useEffect(() => {
+        if (typeof fetchIcons === 'function' && !areIconsLoaded && !hasRequestedStoreIcons) {
+            hasRequestedStoreIcons = true;
+            fetchIcons();
+        }
+    }, [areIconsLoaded, fetchIcons]);
 
-	const iconsAvailable = useMemo(
-		() => combinedIcons && Object.keys(combinedIcons).length > 0,
-		[combinedIcons]
-	);
+    const [extraIcons, setExtraIcons] = useState(null);
 
-	const iconOptions = useMemo(() => applyFilters('kadence.icon_options', combinedIcons), [combinedIcons]);
+    useEffect(() => {
+        if (hasDataStore) {
+            return;
+        }
+        if (frontendIconsCache) {
+            setExtraIcons(frontendIconsCache);
+            return;
+        }
+        if (!frontendIconsFetchPromise) {
+            frontendIconsFetchPromise = fetchAllIconsViaRest()
+                .then((icons) => {
+                    frontendIconsCache = icons;
+                    setExtraIcons(icons);
+                })
+                .finally(() => {
+                    frontendIconsFetchPromise = null;
+                });
+        } else {
+            frontendIconsFetchPromise.then(() => {
+                if (frontendIconsCache) {
+                    setExtraIcons(frontendIconsCache);
+                }
+            });
+        }
+    }, [hasDataStore]);
+
+    const iconOptions = useMemo(() => {
+        const storeOptions = applyFilters('kadence.icon_options', combinedIcons);
+        return {
+            ...(storeOptions || {}),
+            ...(extraIcons || {}),
+        };
+    }, [combinedIcons, extraIcons]);
+
+    const iconsAvailable = useMemo(
+        () => iconOptions && Object.keys(iconOptions).length > 0,
+        [iconOptions]
+    );
 
 	const [customSvg, setCustomSvg] = useState(null);
 	const [isFetchingCustom, setIsFetchingCustom] = useState(false);
 
-	useEffect(() => {
-		if (!name || !name.startsWith('kb-custom')) {
-			setCustomSvg(null);
-			setIsFetchingCustom(false);
-			return;
-		}
+    useEffect(() => {
+        if (!name || !name.startsWith('kb-custom')) {
+            setCustomSvg(null);
+            setIsFetchingCustom(false);
+            return;
+        }
 
-		if (iconOptions[name]) {
-			setCustomSvg(iconOptions[name]);
-			setIsFetchingCustom(false);
-			return;
-		}
+        if (iconOptions[name]) {
+            setCustomSvg(iconOptions[name]);
+            setIsFetchingCustom(false);
+            return;
+        }
 
-		const id = name.replace('kb-custom-', '');
-		const cached = getCachedCustomSvg(id);
-		if (cached) {
-			setCustomSvg(cached);
-			setIsFetchingCustom(false);
-			return;
-		}
+        if (hasDataStore && !areIconsLoaded) {
+            setIsFetchingCustom(true);
+            return;
+        }
+        if (!hasDataStore && frontendIconsFetchPromise) {
+            setIsFetchingCustom(true);
+            return;
+        }
 
-		let isCancelled = false;
+        const id = name.replace('kb-custom-', '');
+        const cached = getCachedCustomSvg(id);
+        if (cached) {
+            setCustomSvg(cached);
+            setIsFetchingCustom(false);
+            return;
+        }
 
-		const loadSvg = async () => {
-			setIsFetchingCustom(true);
-			try {
-				const response = await fetchCustomSvg(id);
-				const svgContent = response?.content?.rendered || '';
-				const parsed = JSON.parse(
-					svgContent
-						.replace('<p>', '')
-						.replace('</p>', '')
-						.replace(/&#8220;/g, '"')
-						.replace(/&#8221;/g, '"')
-						.replace(/&#8222;/g, '"')
-						.replace(/&#8243;/g, '"')
-				);
+        let isCancelled = false;
 
-				if (!isCancelled) {
-					setCachedCustomSvg(id, parsed);
-					setCustomSvg(parsed);
-				}
-			} catch (error) {
-				if (!isCancelled) {
-					setCustomSvg(null);
-					console.error('Failed to fetch custom SVGs:', error);
-				}
-			} finally {
-				if (!isCancelled) {
-					setIsFetchingCustom(false);
-				}
-			}
-		};
+        const loadSvg = async () => {
+            setIsFetchingCustom(true);
+            try {
+                let promise = customSvgPromises.get(id);
+                if (!promise) {
+                    promise = fetchCustomSvg(id);
+                    customSvgPromises.set(id, promise);
+                }
+                const response = await promise;
+                const svgContent = response?.content?.rendered || '';
+                const parsed = JSON.parse(
+                    svgContent
+                        .replace('<p>', '')
+                        .replace('</p>', '')
+                        .replace(/&#8220;/g, '"')
+                        .replace(/&#8221;/g, '"')
+                        .replace(/&#8222;/g, '"')
+                        .replace(/&#8243;/g, '"')
+                );
 
-		loadSvg();
+                if (!isCancelled) {
+                    setCachedCustomSvg(id, parsed);
+                    setCustomSvg(parsed);
+                    const slug = `kb-custom-${id}`;
+                    if (!iconOptions[slug]) {
+                        if (!frontendIconsCache) {
+                            frontendIconsCache = {};
+                        }
+                        frontendIconsCache[slug] = parsed;
+                        setExtraIcons({ ...(frontendIconsCache || {}) });
+                    }
+                }
+            } catch (error) {
+                if (!isCancelled) {
+                    setCustomSvg(null);
+                    console.error('Failed to fetch custom SVGs:', error);
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsFetchingCustom(false);
+                }
+            }
+        };
 
-		return () => {
-			isCancelled = true;
-		};
-	}, [name, iconOptions]);
+        loadSvg();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [name, iconOptions]);
 
 	const spinnerDimension = normalizeDimension(size) ?? normalizeDimension(style?.fontSize) ?? 24;
 	const spinnerStyle = { width: `${spinnerDimension}px`, height: `${spinnerDimension}px` };

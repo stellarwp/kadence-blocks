@@ -831,14 +831,13 @@ class Editor_Assets {
 	 */
 	public function potentially_return_icons( $path ) {
 		$has_pro = class_exists( 'Kadence_Blocks_Pro' );
-		$has_pro_version = defined( 'KBP_VERSION' );
-		$pro_version_compare = $has_pro_version && version_compare( KBP_VERSION, '2.8.2', '>' );
+		$pro_version_compare = defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.8.3', '<' );
 
-		if( ! $has_pro || ! $has_pro_version || $pro_version_compare || ! file_exists( $path ) ) {
-			return [];
+		if( $has_pro && $pro_version_compare && file_exists( $path ) ) {
+			return include $path;
 		}
 		
-		return include $path;
+		return [];
 	}
 
 }
