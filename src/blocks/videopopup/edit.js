@@ -7,7 +7,7 @@
 /**
  * Import External
  */
-import { debounce, map } from 'lodash';
+import { debounce } from 'lodash';
 import metadata from './block.json';
 
 /**
@@ -24,23 +24,22 @@ import {
 } from '@kadence/icons';
 
 import {
-	InspectorControlTabs,
-	MeasurementControls,
-	KadencePanelBody,
-	ImageSizeControl,
-	BoxShadowControl,
-	KadenceImageControl,
-	PopColorControl,
-	URLInputControl,
-	SpacingVisualizer,
-	CopyPasteAttributes,
-	KadenceBlockDefaults,
-	ResponsiveMeasureRangeControl,
-	ResponsiveRangeControls,
-	ResponsiveBorderControl,
-	ResponsiveMeasurementControls,
-	KadenceIconPicker,
-	GenIcon,
+    InspectorControlTabs,
+    MeasurementControls,
+    KadencePanelBody,
+    ImageSizeControl,
+    BoxShadowControl,
+    KadenceImageControl,
+    PopColorControl,
+    URLInputControl,
+    SpacingVisualizer,
+    CopyPasteAttributes,
+    KadenceBlockDefaults,
+    ResponsiveMeasureRangeControl,
+    ResponsiveRangeControls,
+    ResponsiveBorderControl,
+    ResponsiveMeasurementControls,
+    IconRender,
 } from '@kadence/components';
 
 import {
@@ -64,7 +63,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 
-import { Fragment, useState, useEffect, useMemo } from '@wordpress/element';
+import { Fragment, useState, useEffect } from '@wordpress/element';
 
 import { MediaUpload, InspectorControls, BlockControls, useBlockProps } from '@wordpress/block-editor';
 
@@ -79,7 +78,7 @@ import {
 	ExternalLink,
 } from '@wordpress/components';
 
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
 
@@ -144,39 +143,22 @@ function KadenceVideoPopup(props) {
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
 
-	const { previewDevice, combinedIcons, areIconsLoaded } = useSelect(
-		(select) => {
-			const dataStore = select('kadenceblocks/data');
+    const { previewDevice } = useSelect(
+        (select) => {
+            const dataStore = select('kadenceblocks/data');
 
-			if (!dataStore) {
-				return {
-					previewDevice: 'Desktop',
-					combinedIcons: {},
-					areIconsLoaded: false,
-				};
-			}
+            if (!dataStore) {
+                return {
+                    previewDevice: 'Desktop',
+                };
+            }
 
-			const icons = dataStore.getIcons();
-
-			return {
-				previewDevice: dataStore.getPreviewDeviceType(),
-				combinedIcons: icons?.combinedIcons || {},
-				areIconsLoaded: dataStore.areIconsLoaded(),
-			};
-		},
-		[clientId]
-	);
-
-	const iconDispatcher = useDispatch('kadenceblocks/data');
-	const fetchIcons = iconDispatcher?.fetchIcons;
-
-	useEffect(() => {
-		if (typeof fetchIcons === 'function' && !areIconsLoaded) {
-			fetchIcons();
-		}
-	}, [areIconsLoaded, fetchIcons]);
-
-	const allIcons = useMemo(() => applyFilters('kadence.icon_options', combinedIcons), [combinedIcons]);
+            return {
+                previewDevice: dataStore.getPreviewDeviceType(),
+            };
+        },
+        [clientId]
+    );
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -1272,21 +1254,20 @@ function KadenceVideoPopup(props) {
 							'local' === type ? 'kadence-video-type-local' : 'kadence-video-type-external'
 						}`}
 					>
-						<GenIcon
-							className={`kt-video-svg-icon  kt-video-svg-icon-style-${
-								playBtn[0].style
-							} kt-video-svg-icon-${theIcon} kt-video-play-animation-${
-								'' !== playBtn[0].animation ? playBtn[0].animation : 'none'
-							} kt-video-svg-icon-size-${!playBtn[0].size ? 'auto' : playBtn[0].size}`}
-							name={theIcon}
-							size={!playBtn[0].size ? '30' : playBtn[0].size}
-							strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
-							icon={allIcons[theIcon]}
-							style={{
-								color: playBtn[0].color
-									? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)
-									: undefined,
-								backgroundColor:
+                    <IconRender
+                        className={`kt-video-svg-icon  kt-video-svg-icon-style-${
+                            playBtn[0].style
+                        } kt-video-svg-icon-${theIcon} kt-video-play-animation-${
+                            '' !== playBtn[0].animation ? playBtn[0].animation : 'none'
+                        } kt-video-svg-icon-size-${!playBtn[0].size ? 'auto' : playBtn[0].size}`}
+                        name={theIcon}
+                        size={!playBtn[0].size ? '30' : playBtn[0].size}
+                        strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
+                        style={{
+                            color: playBtn[0].color
+                                ? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)
+                                : undefined,
+                            backgroundColor:
 									playBtn[0].background && playBtn[0].style !== 'default'
 										? KadenceColorOutput(playBtn[0].background, playBtn[0].backgroundOpacity)
 										: undefined,
@@ -1325,7 +1306,7 @@ function KadenceVideoPopup(props) {
 											'%'
 										: undefined,
 							}}
-						/>
+                    />
 					</div>
 				</div>
 			</div>
