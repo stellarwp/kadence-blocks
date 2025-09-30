@@ -864,7 +864,7 @@ function KadenceAccordionComponent(props) {
 						variant: titleStyles[0].variant,
 						subset: titleStyles[0].subset,
 						loadGoogle: titleStyles[0].loadGoogle,
-						padding: [10, 14, 10, 14],
+						padding: [9, 13, 9, 13],
 						marginTop: 0,
 						color: '#555555',
 						background: '#f2f2f2',
@@ -883,28 +883,28 @@ function KadenceAccordionComponent(props) {
 				titleBorderRadius: [0, 0, 0, 0],
 				titleBorder: [
 					{
-						top: ['#f2f2f2', '', 0],
-						right: ['#f2f2f2', '', 0],
-						bottom: ['#f2f2f2', '', 0],
-						left: ['#f2f2f2', '', 0],
+						top: ['#f2f2f2', '', 1],
+						right: ['#f2f2f2', '', 1],
+						bottom: ['#f2f2f2', '', 1],
+						left: ['#f2f2f2', '', 1],
 						unit: 'px',
 					},
 				],
 				titleBorderHover: [
 					{
-						top: ['#eeeeee', '', ''],
-						right: ['#eeeeee', '', ''],
-						bottom: ['#eeeeee', '', ''],
-						left: ['#eeeeee', '', ''],
+						top: ['#878787', '', 1],
+						right: ['#878787', '', 1],
+						bottom: ['#878787', '', 1],
+						left: ['#878787', '', 1],
 						unit: 'px',
 					},
 				],
 				titleBorderActive: [
 					{
-						top: ['#444444', '', ''],
-						right: ['#444444', '', ''],
-						bottom: ['#444444', '', ''],
-						left: ['#444444', '', ''],
+						top: ['#444444', '', 1],
+						right: ['#444444', '', 1],
+						bottom: ['#444444', '', 1],
+						left: ['#444444', '', 1],
 						unit: 'px',
 					},
 				],
@@ -939,7 +939,7 @@ function KadenceAccordionComponent(props) {
 						variant: titleStyles[0].variant,
 						subset: titleStyles[0].subset,
 						loadGoogle: titleStyles[0].loadGoogle,
-						padding: [14, 16, 14, 16],
+						padding: [13, 15, 13, 15],
 						marginTop: 10,
 						color: '#555555',
 						background: '#f2f2f2',
@@ -958,28 +958,28 @@ function KadenceAccordionComponent(props) {
 				titleBorderRadius: [6, 6, 6, 6],
 				titleBorder: [
 					{
-						top: ['#f2f2f2', '', 0],
-						right: ['#f2f2f2', '', 0],
-						bottom: ['#f2f2f2', '', 0],
-						left: ['#f2f2f2', '', 0],
+						top: ['#f2f2f2', '', 1],
+						right: ['#f2f2f2', '', 1],
+						bottom: ['#f2f2f2', '', 1],
+						left: ['#f2f2f2', '', 1],
 						unit: 'px',
 					},
 				],
 				titleBorderHover: [
 					{
-						top: ['#eeeeee', '', ''],
-						right: ['#eeeeee', '', ''],
-						bottom: ['#eeeeee', '', ''],
-						left: ['#eeeeee', '', ''],
+						top: ['#878787', '', 1],
+						right: ['#878787', '', 1],
+						bottom: ['#878787', '', 1],
+						left: ['#878787', '', 1],
 						unit: 'px',
 					},
 				],
 				titleBorderActive: [
 					{
-						top: ['#BE530B', '', ''],
-						right: ['#BE530B', '', ''],
-						bottom: ['#BE530B', '', ''],
-						left: ['#BE530B', '', ''],
+						top: ['#BE530B', '', 1],
+						right: ['#BE530B', '', 1],
+						bottom: ['#BE530B', '', 1],
+						left: ['#BE530B', '', 1],
 						unit: 'px',
 					},
 				],
@@ -1042,10 +1042,10 @@ function KadenceAccordionComponent(props) {
 				],
 				titleBorderHover: [
 					{
-						top: ['#d4d4d4', '', ''],
-						right: ['#d4d4d4', '', ''],
-						bottom: ['#d4d4d4', '', ''],
-						left: ['#d4d4d4', '', ''],
+						top: ['#878787', '', ''],
+						right: ['#878787', '', ''],
+						bottom: ['#878787', '', ''],
+						left: ['#878787', '', ''],
 						unit: 'px',
 					},
 				],
@@ -1108,19 +1108,19 @@ function KadenceAccordionComponent(props) {
 				titleBorderRadius: [0, 0, 0, 0],
 				titleBorder: [
 					{
-						top: ['#f2f2f2', '', 0],
-						right: ['#f2f2f2', '', 0],
-						bottom: ['#f2f2f2', '', 4],
-						left: ['#f2f2f2', '', 0],
+						top: ['#949494', '', 0],
+						right: ['#949494', '', 0],
+						bottom: ['#949494', '', 4],
+						left: ['#949494', '', 0],
 						unit: 'px',
 					},
 				],
 				titleBorderHover: [
 					{
-						top: ['#eeeeee', '', ''],
-						right: ['#eeeeee', '', ''],
-						bottom: ['#eeeeee', '', ''],
-						left: ['#eeeeee', '', ''],
+						top: ['#474747', '', ''],
+						right: ['#474747', '', ''],
+						bottom: ['#474747', '', ''],
+						left: ['#474747', '', ''],
 						unit: 'px',
 					},
 				],
@@ -1824,6 +1824,55 @@ function KadenceAccordionComponent(props) {
 									</TabPanel>
 								</KadencePanelBody>
 							)}
+							{showSettings('titleTag', 'kadence/accordion') && (
+								<>
+									<KadencePanelBody
+										title={__('Title Tag Settings', 'kadence-blocks')}
+										panelName={'kb-accordion-title-tag-settings'}
+										initialOpen={false}
+									>
+										<SelectControl
+											label={__('Title Tag', 'kadence-blocks')}
+											value={titleTag}
+											options={[
+												{ value: 'div', label: __('div') },
+												{ value: 'h2', label: __('h2') },
+												{ value: 'h3', label: __('h3') },
+												{ value: 'h4', label: __('h4') },
+												{ value: 'h5', label: __('h5') },
+												{ value: 'h6', label: __('h6') },
+											]}
+											onChange={(value) => {
+												updatePaneTag(value);
+												setTitleTag(value);
+											}}
+										/>
+									</KadencePanelBody>
+									{'div' === titleTag && (
+										<KadencePanelBody>
+											<div
+												class="components-base-control"
+												style={{
+													backgroundColor: '#fcf9e8',
+													padding: '8px',
+													border: '1px solid #dba617',
+												}}
+											>
+												{__(
+													'Accessibility Note: The title tag is not currently a heading. This block might be more accessible if you choose an',
+													'kadence-blocks'
+												)}{' '}
+												<a
+													href="https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/H42.html"
+													target="_blank"
+												>
+													{__('appropriate heading level.', 'kadence-blocks')}
+												</a>
+											</div>
+										</KadencePanelBody>
+									)}
+								</>
+							)}
 						</>
 					)}
 					{activeTab === 'style' && (
@@ -2239,30 +2288,6 @@ function KadenceAccordionComponent(props) {
 										unit={contentPaddingType}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ contentPaddingType: value })}
-									/>
-								</KadencePanelBody>
-							)}
-							{showSettings('titleTag', 'kadence/accordion') && (
-								<KadencePanelBody
-									title={__('Title Tag Settings', 'kadence-blocks')}
-									panelName={'kb-accordion-title-tag-settings'}
-									initialOpen={false}
-								>
-									<SelectControl
-										label={__('Title Tag', 'kadence-blocks')}
-										value={titleTag}
-										options={[
-											{ value: 'div', label: __('div') },
-											{ value: 'h2', label: __('h2') },
-											{ value: 'h3', label: __('h3') },
-											{ value: 'h4', label: __('h4') },
-											{ value: 'h5', label: __('h5') },
-											{ value: 'h6', label: __('h6') },
-										]}
-										onChange={(value) => {
-											updatePaneTag(value);
-											setTitleTag(value);
-										}}
 									/>
 								</KadencePanelBody>
 							)}
