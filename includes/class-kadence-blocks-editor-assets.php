@@ -397,7 +397,6 @@ class Editor_Assets {
 				'kadenceBlocksUrl'       => KADENCE_BLOCKS_URL,
 			]
 		);
-		// Initialize empty icon globals for pro plugin compatibility (will be populated by store after REST fetch)
 		wp_localize_script(
 			'kadence-blocks-js',
 			'kadence_blocks_params_ico',

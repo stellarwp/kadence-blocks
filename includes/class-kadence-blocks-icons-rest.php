@@ -57,8 +57,6 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 
 		$icons['cache_key'] = md5( wp_json_encode( $icons ) );
 
-		sleep( 4 );
-
 		return rest_ensure_response( $icons );
 	}
 
@@ -71,10 +69,10 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
 		if ( file_exists( $icons_file ) ) {
 			include $icons_file;
-			return isset( $faico ) && is_array( $faico ) ? $faico : array();
+			return isset( $faico ) && is_array( $faico ) ? $faico : [];
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -86,10 +84,10 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
 		if ( file_exists( $icons_file ) ) {
 			include $icons_file;
-			return isset( $ico ) && is_array( $ico ) ? $ico : array();
+			return isset( $ico ) && is_array( $ico ) ? $ico : [];
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -98,7 +96,7 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	private function get_custom_icons() {
-		$custom_icons = array();
+		$custom_icons = [];
 		$icons_file   = KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
 
 		if ( file_exists( $icons_file ) ) {
