@@ -65,63 +65,85 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 	 *
 	 * @return array
 	 */
-	private function get_solid_icons() {
-		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
-		if ( file_exists( $icons_file ) ) {
-			include $icons_file;
-			return isset( $faico ) && is_array( $faico ) ? $faico : [];
-		}
+    private function get_solid_icons() {
+        $icons = [];
+        $icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
+        if ( file_exists( $icons_file ) ) {
+            include $icons_file;
+            $icons = isset( $faico ) && is_array( $faico ) ? $faico : [];
+        }
 
-		return [];
-	}
+        // Import bundled social icons by slug naming (non -outline => solid).
+        $social_file = KADENCE_BLOCKS_PATH . 'includes/icons-social-array.php';
+        if ( file_exists( $social_file ) ) {
+            $social_icons = include $social_file;
+            if ( is_array( $social_icons ) ) {
+                foreach ( $social_icons as $slug => $data ) {
+                    if ( substr( $slug, -8 ) !== '-outline' ) {
+                        $icons[ $slug ] = $data;
+                    }
+                }
+            }
+        }
+
+        return $icons;
+    }
 
 	/**
 	 * Retrieves the line icon collection (Feather icons).
 	 *
 	 * @return array
 	 */
-	private function get_line_icons() {
-		$icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
-		if ( file_exists( $icons_file ) ) {
-			include $icons_file;
-			return isset( $ico ) && is_array( $ico ) ? $ico : [];
-		}
+    private function get_line_icons() {
+        $icons = [];
+        $icons_file = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
+        if ( file_exists( $icons_file ) ) {
+            include $icons_file;
+            $icons = isset( $ico ) && is_array( $ico ) ? $ico : [];
+        }
 
-		return [];
-	}
+        // Import bundled social icons by slug naming (-outline => line).
+        $social_file = KADENCE_BLOCKS_PATH . 'includes/icons-social-array.php';
+        if ( file_exists( $social_file ) ) {
+            $social_icons = include $social_file;
+            if ( is_array( $social_icons ) ) {
+                foreach ( $social_icons as $slug => $data ) {
+                    if ( substr( $slug, -8 ) === '-outline' ) {
+                        $icons[ $slug ] = $data;
+                    }
+                }
+            }
+        }
+
+        return $icons;
+    }
 
 	/**
 	 * Retrieves bundled custom icons and user uploaded icons (Pro).
 	 *
 	 * @return array
 	 */
-	private function get_custom_icons() {
-		$custom_icons = [];
-		$icons_file   = KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
+    private function get_custom_icons() {
+        // Only return user custom icons (Pro). Bundled social icons are included in solid/line files.
+        $custom_icons = [];
 
-		if ( file_exists( $icons_file ) ) {
-			include $icons_file;
-			if ( isset( $kbcustom ) && is_array( $kbcustom ) ) {
-				$custom_icons = $kbcustom;
-			}
-		}
-
-		if ( ! $this->has_pro_support() ) {
-			return $custom_icons;
-		}
+        if ( ! $this->has_pro_support() ) {
+            return $custom_icons;
+        }
 
 		$custom_posts = get_posts(
 			array(
 				'post_type'      => 'kadence_custom_svg',
 				'post_status'    => 'publish',
-				'posts_per_page' => 100,
+				'posts_per_page' => 250,
 				'fields'         => 'ids',
 			)
 		);
+		
 
 		if ( empty( $custom_posts ) ) {
-			return $custom_icons;
-		}
+        return $custom_icons;
+    }
 
 		foreach ( $custom_posts as $svg_id ) {
 			$post = get_post( $svg_id );
@@ -153,8 +175,15 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 	 *
 	 * @return bool
 	 */
-	private function has_pro_support() {
-		return defined( 'KADENCE_BLOCKS_PRO' ) && KADENCE_BLOCKS_PRO;
-	}
+    private function has_pro_support() {
+        // Backward compatibility: older Pro defined KADENCE_BLOCKS_PRO.
+        if ( defined( 'KADENCE_BLOCKS_PRO' ) && KADENCE_BLOCKS_PRO ) {
+            return true;
+        }
+        // Current Pro defines KBP_VERSION and main class Kadence_Blocks_Pro.
+        if ( defined( 'KBP_VERSION' ) || class_exists( 'Kadence_Blocks_Pro' ) ) {
+            return true;
+        }
+        return false;
+    }
 }
-
