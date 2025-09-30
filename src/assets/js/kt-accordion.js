@@ -1012,13 +1012,14 @@
 					},
 				});
 			}
-			window.addEventListener('hashchange', window.KadenceBlocksAccordion.anchor, false);
-
-			window.addEventListener('kb-query-loaded', () => {
-				window.KadenceBlocksAccordion.init();
-			});
 		},
 	};
+
+	window.addEventListener('hashchange', window.KadenceBlocksAccordion.anchor, false);
+	window.addEventListener('kb-query-loaded', () => {
+		window.KadenceBlocksAccordion.init();
+	});
+
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
 		document.addEventListener('DOMContentLoaded', window.KadenceBlocksAccordion.init);
