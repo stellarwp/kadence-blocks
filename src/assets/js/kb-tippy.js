@@ -766,6 +766,7 @@
 			onUpdate = _props$render.onUpdate;
 
 		popper.setAttribute('data-tippy-root', '');
+		popper.setAttribute('tabindex', '0');
 		popper.id = 'tippy-' + instance.id;
 		instance.popper = popper;
 		reference._tippy = instance;
@@ -2778,7 +2779,7 @@
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
 						) {
-							instance.reference.role = 'note';
+							instance.reference.role = 'tooltip';
 						}
 					},
 				});
@@ -2811,7 +2812,7 @@
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
 						) {
-							instance.reference.role = 'note';
+							instance.reference.role = 'tooltip';
 						}
 					},
 				});
