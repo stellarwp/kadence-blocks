@@ -47,13 +47,24 @@ export default function CopyPasteAttributes ( {
 	const copyAction = () => {
         //grab all block attributes, minus the exclusions
         //store the attributes to be pasted later
-		localStorage.setItem( storageKey, JSON.stringify( getTransferableAttributes( attributes, defaultAttributes, excludedAttrs, preventMultiple ) ) );
+		localStorage.setItem( storageKey, JSON.stringify( getTransferableAttributes( attributes, defaultAttributes, excludedAttrs, preventMultiple, true ) ) );
 	};
 
 	const pasteAction = () => {
 		const pasteItem = JSON.parse( localStorage.getItem( storageKey ) );
 
 		if ( pasteItem ) {
+			// Filter out default values for regular paste
+			const filteredPasteItem = getTransferableAttributes( pasteItem, defaultAttributes, [], [], false );
+			onPaste( filteredPasteItem );
+		}
+	};
+
+	const pasteAndReplaceAction = () => {
+		const pasteItem = JSON.parse( localStorage.getItem( storageKey ) );
+
+		if ( pasteItem ) {
+			// Include all values including defaults for paste and replace
 			onPaste( pasteItem );
 		}
 	};
@@ -84,6 +95,14 @@ export default function CopyPasteAttributes ( {
 							label={ __( 'Paste Styles', 'kadence-blocks' ) }
 						>
 							{ __( 'Paste Styles', 'kadence-blocks' ) }
+						</MenuItem>
+						<MenuItem
+							icon={ paste }
+							onClick={ flow( onClose, pasteAndReplaceAction ) }
+							disabled={ ! currentCopiedStyles }
+							label={ __( 'Paste and Replace', 'kadence-blocks' ) }
+						>
+							{ __( 'Paste and Replace', 'kadence-blocks' ) }
 						</MenuItem>
 					</MenuGroup>
 				</>
