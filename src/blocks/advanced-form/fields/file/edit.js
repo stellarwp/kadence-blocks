@@ -194,7 +194,7 @@ function FieldFile(props) {
 								<h2>{__('Allowed File Types', 'kadence-blocks')}</h2>
 								<CheckboxControl
 									label={__('Images', 'kadence-blocks')}
-									help="jpeg, jpg, gif, and png"
+									help="jpeg, jpg, gif, png, and webp"
 									checked={allowedTypes.includes('image')}
 									onChange={(value) => toggleAllowedTypes('image')}
 								/>

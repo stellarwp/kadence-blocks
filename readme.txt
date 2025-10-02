@@ -176,6 +176,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.23 =
 Release Date: 9th October 2025
 * Fix: Hover color on nested sections in the editor.
+* Update: Table of Contents will now ignore conditionally hidden headings.
+* Fix: Kadence Blocks Controls use custom color palette only option.
+* Update: Add tabindex to tippy tooltips and update the role to a tooltip.
 
 = 3.5.22 =
 Release Date: 25th September 2025
