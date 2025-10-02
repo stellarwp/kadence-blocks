@@ -10,7 +10,7 @@ import ColorPicker from '../color-picker';
 import { hexToRGBA } from '@kadence/helpers';
 import { map }from 'lodash';
 import { useSetting } from '@wordpress/block-editor';
-import { useState } from '@wordpress/element';
+import { useState, useMemo } from '@wordpress/element';
 
  /**
   * Internal block libraries
@@ -44,22 +44,41 @@ import {
 	defaultValue,
 	onClassChange,
 	onArrayChange = null,
-	disableCustomColors = false,
 } ) {
-	const [ isVisible, setIsVisible ] = useState( false );
 	const [ classSat, setClassSat ] = useState( 'first' );
 	const [ currentColor, setCurrentColor ] = useState( '' );
 	const [ currentOpacity, setCurrentOpacity ] = useState( opacityValue !== '' ? opacityValue : 1 );
 	const [ isPalette, setIsPalette ] = useState( value && value.startsWith( 'palette' ) ? true : false );
-	const colors = useSetting( 'color.palette' );
-	const toggleVisible = () => {
-		setIsVisible( true );
-	};
-	const toggleClose = () => {
-		if ( isVisible === true ) {
-			setIsVisible( false );
+	const allColors = useSetting( 'color.palette' );
+	
+	// Get Kadence Blocks color configuration
+	const kadenceColors = useMemo(() => {
+		if (typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.colors) {
+			try {
+				return JSON.parse(kadence_blocks_params.colors);
+			} catch (e) {
+				return { palette: [], override: false };
+			}
 		}
-	};
+		return { palette: [], override: false };
+	}, []);
+	
+	// Filter colors based on override setting
+	const colors = useMemo(() => {
+		if (!allColors || !Array.isArray(allColors)) {
+			return [];
+		}
+		
+		// If override is enabled, only show custom colors (kb-palette colors)
+		if (kadenceColors.override === true) {
+			return allColors.filter(color => 
+				color.slug && color.slug.startsWith('kb-palette')
+			);
+		}
+		
+		// If override is disabled, show all colors (theme + custom)
+		return allColors;
+	}, [allColors, kadenceColors.override]);
 	if ( reload ) {
 		reloaded( true );
 		setTimeout(() => {
