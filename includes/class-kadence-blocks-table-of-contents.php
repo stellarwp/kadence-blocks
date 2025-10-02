@@ -466,7 +466,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		}
 		
-		// Re-render the content from the processed blocks
+		// Convert the filtered block array back to serialized content format
 		$processed_content = '';
 		foreach ( $processed_blocks as $block ) {
 			$processed_content .= serialize_block( $block );
