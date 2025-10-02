@@ -7,6 +7,23 @@ import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import { useBlockProps } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
+
+const getStoreIcons = () => {
+	if (typeof window === 'undefined' || !window.wp?.data) {
+		return {};
+	}
+
+	const dataStore = window.wp.data.select('kadenceblocks/data');
+	const dispatcher = window.wp.data.dispatch('kadenceblocks/data');
+
+	if (dispatcher?.fetchIcons && dataStore && !dataStore.areIconsLoaded()) {
+		dispatcher.fetchIcons();
+	}
+
+	const icons = dataStore?.getIcons?.()?.combinedIcons || {};
+	return applyFilters('kadence.icon_options', icons);
+};
 
 export default [
 	{
@@ -246,7 +263,7 @@ export default [
 				undefined !== popup && undefined !== popup[0] && undefined !== popup[0].animation
 					? popup[0].animation
 					: 'none';
-			const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+			const allIcons = getStoreIcons();
 			const playIcon = get(allIcons, theIcon, {});
 			const playTitle = playBtn[0].title ? playBtn[0].title : '';
 			const playSize = !playBtn[0].size ? '30' : playBtn[0].size;
@@ -584,7 +601,7 @@ export default [
 					: intrinsic;
 			const mwUnit = undefined !== maxWidthUnit ? maxWidthUnit : 'px';
 			const theIcon = playBtn[0].icon ? playBtn[0].icon : 'fas_play';
-			const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+			const allIcons = getStoreIcons();
 
 			return (
 				<div className={`wp-block-kadence-videopopup kadence-video-popup${uniqueID}`}>
@@ -916,7 +933,7 @@ export default [
 					: intrinsic;
 			const mwUnit = undefined !== maxWidthUnit ? maxWidthUnit : 'px';
 			const theIcon = playBtn[0].icon ? playBtn[0].icon : 'fas_play';
-			const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+			const allIcons = getStoreIcons();
 
 			return (
 				<div className={`kadence-video-popup${uniqueID}`}>
@@ -1225,7 +1242,7 @@ export default [
 					: intrinsic;
 			const mwUnit = undefined !== maxWidthUnit ? maxWidthUnit : 'px';
 			const theIcon = playBtn[0].icon ? playBtn[0].icon : 'fas_play';
-			const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+			const allIcons = getStoreIcons();
 
 			return (
 				<div className={`kadence-video-popup${uniqueID}`}>
@@ -1513,7 +1530,7 @@ export default [
 					: intrinsic;
 			const mwUnit = undefined !== maxWidthUnit ? maxWidthUnit : 'px';
 			const theIcon = playBtn[0].icon ? playBtn[0].icon : 'fas_play';
-			const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
+			const allIcons = getStoreIcons();
 
 			return (
 				<div className={`kadence-video-popup${uniqueID}`}>
