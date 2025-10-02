@@ -68,6 +68,7 @@ import {
 import './formats/markformat';
 import './formats/typed-text';
 import './formats/tooltips';
+import './formats/inline-image';
 import AIText from './ai-text/ai-text.js';
 import './formats/screen-reader-text';
 
@@ -485,6 +486,8 @@ function KadenceAdvancedHeading(props) {
 			'core/link',
 			'kadence/mark',
 			'kadence/typed',
+			'kadence/tooltips',
+			'kadence/inline-image',
 			'core/strikethrough',
 			'core/superscript',
 			'core/superscript',

@@ -18,3 +18,11 @@
     justify-content: center;
     align-items: center;
 }
+
+// Inline Image Format Styles
+.kb-inline-image {
+	display: inline-block;
+	vertical-align: middle;
+	max-width: 100%;
+	height: auto;
+}

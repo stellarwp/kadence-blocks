@@ -23,6 +23,14 @@
 	color: inherit;
 	border-bottom: 1px dashed currentColor;
 }
+
+// Inline Image Format Styles
+.kb-inline-image {
+	display: inline-block;
+	vertical-align: middle;
+	max-width: 100%;
+	height: auto;
+}
 .kb-adv-text-icon-dash .kb-advanced-heading-svg-icon {
 	border-bottom: 1px dashed currentColor;
 }
