@@ -75,9 +75,9 @@ export default function InlineImagePopover({
 					value={imageSettings.width}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, width: newValue };
-						updateFormat({ 
+						updateFormat({
 							width: newValue,
-							style: buildStyleString(newSettings)
+							style: buildStyleString(newSettings),
 						});
 					}}
 					min={10}
@@ -86,7 +86,7 @@ export default function InlineImagePopover({
 					help={__('Set the width of the image as a percentage of the container.', 'kadence-blocks')}
 				/>
 			</KadencePanelBody>
-			
+
 			<KadencePanelBody
 				title={__('Border Settings', 'kadence-blocks')}
 				initialOpen={false}
@@ -97,9 +97,9 @@ export default function InlineImagePopover({
 					value={imageSettings.borderWidth}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderWidth: newValue };
-						updateFormat({ 
+						updateFormat({
 							borderWidth: newValue,
-							style: buildStyleString(newSettings)
+							style: buildStyleString(newSettings),
 						});
 					}}
 					min={0}
@@ -123,9 +123,9 @@ export default function InlineImagePopover({
 					]}
 					onChange={(val) => {
 						const newSettings = { ...imageSettings, borderStyle: val };
-						updateFormat({ 
+						updateFormat({
 							borderStyle: val,
-							style: buildStyleString(newSettings)
+							style: buildStyleString(newSettings),
 						});
 					}}
 				/>
@@ -134,9 +134,9 @@ export default function InlineImagePopover({
 					value={imageSettings.borderColor}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderColor: newValue };
-						updateFormat({ 
+						updateFormat({
 							borderColor: newValue,
-							style: buildStyleString(newSettings)
+							style: buildStyleString(newSettings),
 						});
 					}}
 					placeholder={__('#000000', 'kadence-blocks')}
@@ -154,9 +154,9 @@ export default function InlineImagePopover({
 					value={imageSettings.borderRadius}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderRadius: newValue };
-						updateFormat({ 
+						updateFormat({
 							borderRadius: newValue,
-							style: buildStyleString(newSettings)
+							style: buildStyleString(newSettings),
 						});
 					}}
 					min={0}
@@ -168,4 +168,3 @@ export default function InlineImagePopover({
 		</Popover>
 	);
 }
-

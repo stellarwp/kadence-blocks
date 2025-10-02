@@ -84,4 +84,3 @@ export const kadenceInlineImage = {
 };
 
 registerFormatType(name, kadenceInlineImage);
-
