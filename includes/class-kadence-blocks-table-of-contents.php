@@ -372,6 +372,109 @@ class Kadence_Blocks_Table_Of_Contents {
 		$content = str_replace( ' ', '-', $content );
 		return $content;
 	}
+	
+	/**
+	 * Process content through Kadence Blocks conditional logic (logged in/out, RCP membership, etc.).
+	 *
+	 * @access private
+	 *
+	 * @param string $content The post content to process.
+	 *
+	 * @return string The processed content with conditionally hidden blocks removed.
+	 */
+	private function process_content_through_kadence_conditional_logic( $content ) {
+		$blocks = parse_blocks( $content );
+		
+		if ( empty( $blocks ) ) {
+			return $content;
+		}
+		
+		// Get the Kadence Blocks Frontend instance to access conditionally_render_block
+		$frontend_instance = Kadence_Blocks_Frontend::get_instance();
+		
+		if ( ! $frontend_instance ) {
+			return $content;
+		}
+		
+		// Process each block through conditional logic
+		$processed_blocks = array();
+		foreach ( $blocks as $block ) {
+			if ( empty( $block['blockName'] ) ) {
+				$processed_blocks[] = $block;
+				continue;
+			}
+			
+			$wp_block = new stdClass();
+			$wp_block->context = array();
+			
+			// Check if this block should be conditionally hidden using Kadence Blocks logic
+			// We pass a placeholder content to test if the block would be hidden
+			$block_content = $frontend_instance->conditionally_render_block( 'PLACEHOLDER_CONTENT', $block, $wp_block );
+			
+			
+			if ( $block_content !== '' ) {
+				$processed_blocks[] = $block;
+			}
+		}
+		
+		// Re-render the content from the processed blocks
+		$processed_content = '';
+		foreach ( $processed_blocks as $block ) {
+			$processed_content .= serialize_block( $block );
+		}
+		
+		return $processed_content;
+	}
+	
+	/**
+	 * Process content through Kadence Blocks Pro conditional hiding logic.
+	 *
+	 * @access private
+	 *
+	 * @param string $content The post content to process.
+	 *
+	 * @return string The processed content with conditionally hidden blocks removed.
+	 */
+	private function process_content_through_conditional_hiding( $content ) {
+		// Check if Kadence Blocks Pro is available
+		if ( ! class_exists( 'Kadence_Blocks_Pro_Dynamic_Content' ) ) {
+			return $content;
+		}
+	
+		$dynamic_content = Kadence_Blocks_Pro_Dynamic_Content::get_instance();
+		
+		if ( ! $dynamic_content ) {
+			return $content;
+		}
+		
+		// Parse the content into blocks and process each block through conditional display logic
+		$blocks = $dynamic_content->kadence_parse_blocks( $content );
+		
+		if ( empty( $blocks ) ) {
+			return $content;
+		}
+		
+		$processed_blocks = array();
+		foreach ( $blocks as $block ) {
+			$wp_block = new stdClass();
+			$wp_block->context = array();
+			
+			$should_hide = $dynamic_content->should_conditionally_hide_block( '', $block, $wp_block, null, null );
+			
+			if ( ! $should_hide ) {
+				$processed_blocks[] = $block;
+			}
+		}
+		
+		// Convert the filtered block array back to serialized content format
+		$processed_content = '';
+		foreach ( $processed_blocks as $block ) {
+			$processed_content .= serialize_block( $block );
+		}
+		
+		return $processed_content;
+	}
+	
 	/**
 	 * Extracts heading content, anchor, and level from the given post content.
 	 *
@@ -391,6 +494,12 @@ class Kadence_Blocks_Table_Of_Contents {
 		$current_page = 1,
 		$attributes = array()
 	) {
+		// Process content through Kadence Blocks conditional logic first
+		$content = $this->process_content_through_kadence_conditional_logic( $content );
+		
+		// Then process content through Kadence Blocks Pro conditional hiding before parsing HTML
+		$content = $this->process_content_through_conditional_hiding( $content );
+		
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// Disabled because of PHP DOMDoument and DOMXPath APIs using camelCase.
 		// Create a document to load the post content into.

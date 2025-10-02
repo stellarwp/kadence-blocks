@@ -1451,7 +1451,7 @@ export function EditInner(props) {
 								step={1}
 								min={1}
 								max={2000}
-								reset={true}
+								allowReset={true}
 								help={__(
 									"Note: this ONLY affects when the header changes to it's mobile content. It DOES NOT affect responsive breakpoints for any other blocks or settings.",
 									'kadence-blocks'

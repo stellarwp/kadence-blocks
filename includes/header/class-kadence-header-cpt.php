@@ -47,6 +47,8 @@ class Kadence_Blocks_Header_CPT_Controller {
 
 		// Add a post display state for the current header (if choosen in theme).
 		add_filter( 'display_post_states', array( $this, 'add_display_post_states' ), 10, 2 );
+		add_action( 'admin_bar_menu', array( $this, 'top_headers_admin_bar' ), 100 );
+		add_action( 'admin_bar_menu', array( $this, 'add_new_header_to_admin_bar' ), 100 );
 
 		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
 			new Kadence_Blocks_Duplicate_Post( $this->post_type );
@@ -956,6 +958,86 @@ class Kadence_Blocks_Header_CPT_Controller {
 		}
 
 		return $post_states;
+	}
+
+	/**
+	 * Adds a "Kadence Header" link to the WordPress admin bar "Headers" menu.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+	 */
+	public function top_headers_admin_bar( $wp_admin_bar ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node( array(
+			'id'    => 'kadence-top-headers',
+			'title' => __( 'Headers', 'kadence-pro' ),
+			'href'  => admin_url( 'edit.php?post_type=kadence_header' ),
+		) );
+
+		// Add the current header from theme customizer (first node)
+		if ( class_exists( 'Kadence\Theme' ) ) {
+			if ( Kadence\kadence()->option( 'blocks_header' ) ) {
+				$header_id = intval( Kadence\kadence()->option( 'blocks_header_id' ) );
+				if ( $header_id ) {
+					$header_post = get_post( $header_id );
+					if ( $header_post && 'kadence_header' === $header_post->post_type ) {
+						// translators: %s is the header title
+						$wp_admin_bar->add_node( array(
+							'id'     => 'kadence-header-current',
+							'title'  => sprintf( __( '%s (Theme)', 'kadence-blocks' ), $header_post->post_title ),
+							'parent' => 'kadence-top-headers',
+							'href'   => get_edit_post_link( $header_id ),
+						) );
+					}
+				}
+			}
+		}
+
+		// Add the 5 most recent header posts
+		$recent_headers = get_posts( array(
+			'post_type'      => 'kadence_header',
+			'post_status'    => 'publish',
+			'posts_per_page' => 5,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		) );
+
+		foreach ( $recent_headers as $header ) {
+			$wp_admin_bar->add_node( array(
+				'id'     => 'kadence-header-recent-' . $header->ID,
+				'title'  => $header->post_title,
+				'parent' => 'kadence-top-headers',
+				'href'   => get_edit_post_link( $header->ID ),
+			) );
+		}
+
+		$wp_admin_bar->add_node( array(
+			'id'     => 'kadence-header-add-new',
+			'title'  => __( 'Add New', 'kadence-pro' ),
+			'parent' => 'kadence-top-headers',
+			'href'   => admin_url( 'post-new.php?post_type=kadence_header' ),
+		) );
+	}
+
+	/**
+	 * Adds a "Kadence Header" link to the WordPress admin bar "New" dropdown menu.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+	 */
+	public function add_new_header_to_admin_bar( $wp_admin_bar ) {
+		// Only show for users who can create headers
+		if ( ! current_user_can( 'edit_theme_options' ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node( array(
+			'id'     => 'new-kadence-header',
+			'title'  => __( 'Header', 'kadence-pro' ),
+			'parent' => 'new-content',
+			'href'   => admin_url( 'post-new.php?post_type=kadence_header' ),
+		) );
 	}
 }
 
