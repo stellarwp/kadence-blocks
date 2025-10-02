@@ -6,14 +6,7 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import {
-	TextControl,
-	TextareaControl,
-	SelectControl,
-	ToggleControl,
-	CheckboxControl,
-	RangeControl,
-} from '@wordpress/components';
+import { TextControl, TextareaControl, ToggleControl, CheckboxControl, RangeControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -101,18 +94,6 @@ function FieldFile(props) {
 		},
 	});
 
-	const getSizeOptions = () => {
-		const sizeOptions = [];
-
-		for (let i = 1; i * 5 <= Math.min(25, wpMaxUploadSizeMb); i++) {
-			sizeOptions.push({
-				value: i * 5,
-				label: i * 5 + ' MB',
-			});
-		}
-		return sizeOptions;
-	};
-
 	const toggleAllowedTypes = (type) => {
 		let newTypes = [];
 
@@ -198,14 +179,13 @@ function FieldFile(props) {
 								)}
 							</KadencePanelBody>
 							<KadencePanelBody title={__('File Options', 'kadence-blocks')}>
-								<SelectControl
+								<RangeControl
 									label={__('File Size Limit', 'kadence-blocks')}
-									value={maxSizeMb}
-									onChange={(value) => {
-										setAttributes({ maxSizeMb: parseInt(value) });
-									}}
-									options={getSizeOptions()}
+									value={maxSizeMb ? maxSizeMb : 10}
+									onChange={(value) => setAttributes({ maxSizeMb: value })}
+									min={1}
 									max={wpMaxUploadSizeMb}
+									step={1}
 									help={
 										__('WordPress max upload size:', 'kadence-blocks') + ' ' + wpMaxUploadSizePretty
 									}
@@ -214,7 +194,7 @@ function FieldFile(props) {
 								<h2>{__('Allowed File Types', 'kadence-blocks')}</h2>
 								<CheckboxControl
 									label={__('Images', 'kadence-blocks')}
-									help="jpeg, jpg, gif, and png"
+									help="jpeg, jpg, gif, png, and webp"
 									checked={allowedTypes.includes('image')}
 									onChange={(value) => toggleAllowedTypes('image')}
 								/>
