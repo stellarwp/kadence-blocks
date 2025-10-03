@@ -1,14 +1,16 @@
 import { __ } from '@wordpress/i18n';
 import { useAnchor } from '@wordpress/rich-text';
-import { Popover, TextControl, RangeControl, SelectControl } from '@wordpress/components';
+import { Popover, TextControl, RangeControl, SelectControl, Button } from '@wordpress/components';
 import { useCachedTruthy } from '@wordpress/block-editor';
 import { KadencePanelBody } from '@kadence/components';
+import { image, closeSmall, plusCircleFilled } from '@wordpress/icons';
 import { kadenceInlineImage as settings } from './inline-image';
+import { insertObject } from '@wordpress/rich-text';
 
 export default function InlineImagePopover({
 	name,
 	value,
-	updateFormat,
+	insertImage,
 	isActive,
 	onClose,
 	contentRef,
@@ -24,6 +26,8 @@ export default function InlineImagePopover({
 		borderColor: activeAttributes.borderColor || '#000000',
 	};
 
+	const hasImage = !!imageSettings.src;
+
 	const buildStyleString = (settings) => {
 		const styles = [];
 		if (settings.width) {
@@ -38,6 +42,58 @@ export default function InlineImagePopover({
 			styles.push(`border-color: ${settings.borderColor}`);
 		}
 		return styles.join('; ');
+	};
+
+	const onSelectImage = (media) => {
+		if (!media || !media.url) {
+			onClose();
+			return;
+		}
+
+		const newSettings = {
+			...imageSettings,
+			src: media.url,
+			alt: media.alt || '',
+		};
+
+		insertImage({
+			src: media.url,
+			alt: media.alt || '',
+			style: buildStyleString(newSettings),
+			width: newSettings.width,
+			borderRadius: newSettings.borderRadius,
+			borderWidth: newSettings.borderWidth,
+			borderStyle: newSettings.borderStyle,
+			borderColor: newSettings.borderColor,
+		});
+	};
+
+	const onSelectURL = (newURL) => {
+		if (newURL && newURL.trim()) {
+			const newSettings = {
+				...imageSettings,
+				src: newURL.trim(),
+			};
+
+			insertImage({
+				src: newURL.trim(),
+				alt: '',
+				style: buildStyleString(newSettings),
+				width: newSettings.width,
+				borderRadius: newSettings.borderRadius,
+				borderWidth: newSettings.borderWidth,
+				borderStyle: newSettings.borderStyle,
+				borderColor: newSettings.borderColor,
+			});
+		}
+	};
+
+	const onRemoveImage = () => {
+		insertImage({
+			src: '',
+			alt: '',
+			style: ''
+		});
 	};
 
 	const popoverAnchor = useCachedTruthy(
@@ -57,47 +113,137 @@ export default function InlineImagePopover({
 				initialOpen={true}
 				panelName={'kb-inline-image-basic-settings'}
 			>
-				<TextControl
-					label={__('Image URL', 'kadence-blocks')}
-					value={imageSettings.src}
-					onChange={(newValue) => updateFormat({ src: newValue })}
-					placeholder={__('Enter image URL', 'kadence-blocks')}
-				/>
-				<TextControl
-					label={__('Alternative Text', 'kadence-blocks')}
-					value={imageSettings.alt}
-					onChange={(newValue) => updateFormat({ alt: newValue })}
-					placeholder={__('Enter alternative text', 'kadence-blocks')}
-					help={__('Describe the image for screen readers and accessibility.', 'kadence-blocks')}
-				/>
-				<RangeControl
-					label={__('Image Width (%)', 'kadence-blocks')}
-					value={imageSettings.width}
-					onChange={(newValue) => {
-						const newSettings = { ...imageSettings, width: newValue };
-						updateFormat({ 
-							width: newValue,
-							style: buildStyleString(newSettings)
-						});
-					}}
-					min={10}
-					max={100}
-					step={5}
-					help={__('Set the width of the image as a percentage of the container.', 'kadence-blocks')}
-				/>
+				{!hasImage ? (
+					<>
+						<div className="components-kadence-image-background__label">{__('Image', 'kadence-blocks')}</div>
+						<div className="kb-inline-image-placeholder">
+							<Button
+								isPrimary
+								icon={plusCircleFilled}
+								onClick={() => {
+									// Use WordPress media library directly
+									const mediaFrame = wp.media({
+										title: __('Select Image', 'kadence-blocks'),
+										button: {
+											text: __('Use Image', 'kadence-blocks')
+										},
+										multiple: false,
+										library: {
+											type: 'image'
+										}
+									});
+
+									mediaFrame.on('select', () => {
+										const attachment = mediaFrame.state().get('selection').first().toJSON();
+										onSelectImage(attachment);
+									});
+
+									mediaFrame.open();
+								}}
+							>
+								{__('Select Image', 'kadence-blocks')}
+							</Button>
+							<Button
+								isSecondary
+								onClick={() => {
+									const url = prompt(__('Enter image URL:', 'kadence-blocks'));
+									if (url) {
+										onSelectURL(url);
+									}
+								}}
+							>
+								{__('Insert from URL', 'kadence-blocks')}
+							</Button>
+						</div>
+					</>
+				) : (
+					<>
+						<div className="components-kadence-image-background__label">{__('Image', 'kadence-blocks')}</div>
+						<div className="kadence-image-media-control kadence-image-background-control">
+							<div className="kb-inline-image-preview">
+								<img 
+									src={imageSettings.src} 
+									alt={imageSettings.alt || ''} 
+									style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }}
+								/>
+							</div>
+							<div className="kb-inline-image-actions">
+								<Button
+									isSecondary
+									icon={image}
+									onClick={() => {
+										// Use WordPress media library directly
+										const mediaFrame = wp.media({
+											title: __('Select Image', 'kadence-blocks'),
+											button: {
+												text: __('Use Image', 'kadence-blocks')
+											},
+											multiple: false,
+											library: {
+												type: 'image'
+											}
+										});
+
+										mediaFrame.on('select', () => {
+											const attachment = mediaFrame.state().get('selection').first().toJSON();
+											onSelectImage(attachment);
+										});
+
+										mediaFrame.open();
+									}}
+								>
+									{__('Change Image', 'kadence-blocks')}
+								</Button>
+								<Button
+									icon={closeSmall}
+									label={__('Remove Image', 'kadence-blocks')}
+									isDestructive
+									onClick={onRemoveImage}
+								/>
+							</div>
+						</div>
+					</>
+				)}
+				{hasImage && (
+					<>
+						<TextControl
+							label={__('Alternative Text', 'kadence-blocks')}
+							value={imageSettings.alt}
+							onChange={(newValue) => insertImage({ alt: newValue })}
+							placeholder={__('Enter alternative text', 'kadence-blocks')}
+							help={__('Describe the image for screen readers and accessibility.', 'kadence-blocks')}
+						/>
+						<RangeControl
+							label={__('Image Width (%)', 'kadence-blocks')}
+							value={imageSettings.width}
+							onChange={(newValue) => {
+								const newSettings = { ...imageSettings, width: newValue };
+								insertImage({ 
+									width: newValue,
+									style: buildStyleString(newSettings)
+								});
+							}}
+							min={10}
+							max={100}
+							step={5}
+							help={__('Set the width of the image as a percentage of the container.', 'kadence-blocks')}
+						/>
+					</>
+				)}
 			</KadencePanelBody>
 			
-			<KadencePanelBody
-				title={__('Border Settings', 'kadence-blocks')}
-				initialOpen={false}
-				panelName={'kb-inline-image-border-settings'}
-			>
+			{hasImage && (
+				<KadencePanelBody
+					title={__('Border Settings', 'kadence-blocks')}
+					initialOpen={false}
+					panelName={'kb-inline-image-border-settings'}
+				>
 				<RangeControl
 					label={__('Border Width (px)', 'kadence-blocks')}
 					value={imageSettings.borderWidth}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderWidth: newValue };
-						updateFormat({ 
+						insertImage({ 
 							borderWidth: newValue,
 							style: buildStyleString(newSettings)
 						});
@@ -123,7 +269,7 @@ export default function InlineImagePopover({
 					]}
 					onChange={(val) => {
 						const newSettings = { ...imageSettings, borderStyle: val };
-						updateFormat({ 
+						insertImage({ 
 							borderStyle: val,
 							style: buildStyleString(newSettings)
 						});
@@ -134,7 +280,7 @@ export default function InlineImagePopover({
 					value={imageSettings.borderColor}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderColor: newValue };
-						updateFormat({ 
+						insertImage({ 
 							borderColor: newValue,
 							style: buildStyleString(newSettings)
 						});
@@ -142,19 +288,21 @@ export default function InlineImagePopover({
 					placeholder={__('#000000', 'kadence-blocks')}
 					help={__('Enter a hex color code for the border.', 'kadence-blocks')}
 				/>
-			</KadencePanelBody>
+				</KadencePanelBody>
+			)}
 
-			<KadencePanelBody
-				title={__('Border Radius Settings', 'kadence-blocks')}
-				initialOpen={false}
-				panelName={'kb-inline-image-radius-settings'}
-			>
+			{hasImage && (
+				<KadencePanelBody
+					title={__('Border Radius Settings', 'kadence-blocks')}
+					initialOpen={false}
+					panelName={'kb-inline-image-radius-settings'}
+				>
 				<RangeControl
 					label={__('Border Radius (px)', 'kadence-blocks')}
 					value={imageSettings.borderRadius}
 					onChange={(newValue) => {
 						const newSettings = { ...imageSettings, borderRadius: newValue };
-						updateFormat({ 
+						insertImage({ 
 							borderRadius: newValue,
 							style: buildStyleString(newSettings)
 						});
@@ -164,7 +312,8 @@ export default function InlineImagePopover({
 					step={1}
 					help={__('Set the border radius in pixels for rounded corners.', 'kadence-blocks')}
 				/>
-			</KadencePanelBody>
+				</KadencePanelBody>
+			)}
 		</Popover>
 	);
 }

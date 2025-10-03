@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from '@wordpress/element';
-import { toggleFormat, applyFormat, registerFormatType, useAnchorRef, useAnchor } from '@wordpress/rich-text';
+import { toggleFormat, applyFormat, registerFormatType, useAnchorRef, useAnchor, insert, insertObject } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import InlineImagePopover from './inline-image-popover';
@@ -34,20 +34,32 @@ export const kadenceInlineImage = {
 			return null;
 		}
 		const [isEditingImage, setIsEditingImage] = useState(false);
-		const onToggle = () => onChange(toggleFormat(value, { type: name }));
+		
+		const onToggle = () => {
+			// May want to add a placeholder that can be replaced with the image
+			setIsEditingImage(true);
+		};
+		
 		const disableIsEditingImage = useCallback(() => setIsEditingImage(false), [setIsEditingImage]);
 
-		const updateFormat = (newValue) => {
-			const newAttributes = {
-				...activeAttributes,
-				...newValue,
-			};
+		const insertImage = (imageData) => {
+			// Use insertObject to insert the image at the current cursor position
 			onChange(
-				applyFormat(value, {
+				insertObject(value, {
 					type: name,
-					attributes: newAttributes,
+					attributes: {
+						src: imageData.src || '',
+						alt: imageData.alt || '',
+						style: imageData.style || '',
+						width: imageData.width || '150px',
+						borderRadius: imageData.borderRadius || 0,
+						borderWidth: imageData.borderWidth || 0,
+						borderStyle: imageData.borderStyle || 'solid',
+						borderColor: imageData.borderColor || '#000000',
+					}
 				})
 			);
+			setIsEditingImage(false);
 		};
 
 		useEffect(() => {
@@ -57,6 +69,7 @@ export const kadenceInlineImage = {
 				setIsEditingImage(false);
 			}
 		}, [isActive]);
+		
 		return (
 			<>
 				<RichTextToolbarButton
@@ -67,14 +80,14 @@ export const kadenceInlineImage = {
 					className={`toolbar-button-with-text toolbar-button__${name}`}
 				/>
 
-				{isActive && isEditingImage && (
+				{isEditingImage && (
 					<InlineImagePopover
 						name={name}
 						isActive={isActive}
 						onClose={disableIsEditingImage}
 						activeAttributes={activeAttributes}
 						value={value}
-						updateFormat={updateFormat}
+						insertImage={insertImage}
 						contentRef={contentRef}
 					/>
 				)}
