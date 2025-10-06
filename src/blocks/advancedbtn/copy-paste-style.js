@@ -251,8 +251,6 @@ class ButtonStyleCopyPaste extends Component {
 		const pasteAction = () => {
 			const pasteItem = JSON.parse(localStorage.getItem('kadenceButtonStyle'));
 			if (pasteItem) {
-				// For regular paste, we don't reset default values
-				// This maintains the current behavior where defaults are not overridden
 				if (pasteItem.btn && pasteItem.btn[0]) {
 					onPasteButton(pasteItem.btn[0]);
 					delete pasteItem.btn;
