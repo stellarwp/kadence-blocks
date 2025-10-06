@@ -11,7 +11,6 @@ export default function getTransferableAttributes( attributes, defaultAttributes
     const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
     attributesToTransfer = omit(attributes, allExcludedAttrs);
     
-
     //preventing multiples of some attributes can save space / complexity
     if (preventMultiple.length > 0) {
         preventMultiple.forEach((item) => {
@@ -19,22 +18,20 @@ export default function getTransferableAttributes( attributes, defaultAttributes
         });
     }
 
-    // For copy/paste functionality, we can optionally include default values
-    // so that pasting can reset attributes to their defaults when needed
-    // Only exclude defaults for block defaults functionality (when no excludedAttrs are provided)
-    const isCopyPasteUsage = excludedAttrs.length > 0;
-    
-    if (!isCopyPasteUsage || !includeDefaults) {
-        // we don't need to transfer attributes that are the default.
-        // if provided, compare to the block's defaults and delete (assumed from block.json)
-        Object.keys(attributesToTransfer).map((key, index) => {
-            if ( undefined !== defaultAttributes[key] && undefined !== defaultAttributes[key].default ) {
-                if ( isEqual(attributesToTransfer[key], defaultAttributes[key].default ) ) {
-                    delete(attributesToTransfer[key])
-                }
-            }
-        });
+    // Early return when including defaults - no need to filter out defaults
+    if (includeDefaults) {
+        return attributesToTransfer;
     }
+
+    // we don't need to transfer attributes that are the default.
+    // if provided, compare to the block's defaults and delete (assumed from block.json)
+    Object.keys(attributesToTransfer).map((key, index) => {
+        if ( undefined !== defaultAttributes[key] && undefined !== defaultAttributes[key].default ) {
+            if ( isEqual(attributesToTransfer[key], defaultAttributes[key].default ) ) {
+                delete(attributesToTransfer[key])
+            }
+        }
+    });
 
     return attributesToTransfer;
 }
