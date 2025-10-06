@@ -180,6 +180,7 @@ Release Date: 9th October 2025
 * Fix: Kadence Blocks Controls use custom color palette only option.
 * Update: Add tabindex to tippy tooltips and update the role to a tooltip.
 * Fix: Increased specificity for some Accordion block styles for better block theme support.
+* Fix: Posts block equal heights.
 
 = 3.5.22 =
 Release Date: 25th September 2025
