@@ -127,7 +127,7 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
         // Only return user custom icons (Pro). Bundled social icons are included in solid/line files.
         $custom_icons = [];
 
-        if ( ! $this->has_pro_support() ) {
+        if ( ! $this->has_pro_support() || ! current_user_can( 'edit_posts' ) ) {
             return $custom_icons;
         }
 
@@ -135,7 +135,7 @@ class Kadence_Blocks_Icons_REST_Controller extends WP_REST_Controller {
 			array(
 				'post_type'      => 'kadence_custom_svg',
 				'post_status'    => 'publish',
-				'posts_per_page' => 250,
+				'posts_per_page' => apply_filters( 'kadence_blocks_custom_icons_posts_per_page', 250 ),
 				'fields'         => 'ids',
 			)
 		);
