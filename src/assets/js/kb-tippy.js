@@ -766,6 +766,7 @@
 			onUpdate = _props$render.onUpdate;
 
 		popper.setAttribute('data-tippy-root', '');
+		popper.setAttribute('tabindex', '0');
 		popper.id = 'tippy-' + instance.id;
 		instance.popper = popper;
 		reference._tippy = instance;
@@ -2685,6 +2686,27 @@
 		},
 	};
 
+	const hideOnEsc = {
+		name: 'hideOnEsc',
+		defaultValue: true,
+		fn({hide}) {
+		  function onKeyDown(event) {
+			if (event.keyCode === 27) {
+			  hide();
+			}
+		  }
+	  
+		  return {
+			onShow() {
+			  document.addEventListener('keydown', onKeyDown);
+			},
+			onHide() {
+			  document.removeEventListener('keydown', onKeyDown);
+			},
+		  };
+		},
+	  };
+
 	function areRectsDifferent(rectA, rectB) {
 		if (rectA && rectB) {
 			return (
@@ -2703,7 +2725,7 @@
 	}
 
 	tippy.setDefaultProps({
-		plugins: [animateFill, followCursor, inlinePositioning, sticky],
+		plugins: [animateFill, followCursor, inlinePositioning, sticky, hideOnEsc],
 		render: render,
 	});
 	tippy.createSingleton = createSingleton;
@@ -2759,6 +2781,7 @@
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
 					interactive: true,
+					hideOnEsc: true,
 					popperOptions: {
 						modifiers: [
 							{
@@ -2778,7 +2801,7 @@
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
 						) {
-							instance.reference.role = 'note';
+							instance.reference.role = 'tooltip';
 						}
 					},
 				});
@@ -2791,6 +2814,7 @@
 				tippy('[data-tooltip-id]', {
 					allowHTML: true,
 					interactive: true,
+					hideOnEsc: true,
 					popperOptions: {
 						modifiers: [
 							{
@@ -2811,7 +2835,7 @@
 							instance?.reference?.role == null &&
 							!window.kadenceTippy.isInteractiveElement(instance.reference)
 						) {
-							instance.reference.role = 'note';
+							instance.reference.role = 'tooltip';
 						}
 					},
 				});
