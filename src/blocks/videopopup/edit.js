@@ -7,7 +7,7 @@
 /**
  * Import External
  */
-import { debounce } from 'lodash';
+import { debounce, map } from 'lodash';
 import metadata from './block.json';
 
 /**
@@ -39,7 +39,8 @@ import {
 	ResponsiveRangeControls,
 	ResponsiveBorderControl,
 	ResponsiveMeasurementControls,
-	IconRender,
+	KadenceIconPicker,
+	GenIcon,
 } from '@kadence/components';
 
 import {
@@ -78,9 +79,9 @@ import {
 	ExternalLink,
 } from '@wordpress/components';
 
-import { useSelect } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Build the overlay edit
@@ -145,20 +146,14 @@ function KadenceVideoPopup(props) {
 
 	const { previewDevice } = useSelect(
 		(select) => {
-			const dataStore = select('kadenceblocks/data');
-
-			if (!dataStore) {
-				return {
-					previewDevice: 'Desktop',
-				};
-			}
-
 			return {
-				previewDevice: dataStore.getPreviewDeviceType(),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			};
 		},
 		[clientId]
 	);
+
+	const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -1254,7 +1249,7 @@ function KadenceVideoPopup(props) {
 							'local' === type ? 'kadence-video-type-local' : 'kadence-video-type-external'
 						}`}
 					>
-						<IconRender
+						<GenIcon
 							className={`kt-video-svg-icon  kt-video-svg-icon-style-${
 								playBtn[0].style
 							} kt-video-svg-icon-${theIcon} kt-video-play-animation-${
@@ -1263,6 +1258,7 @@ function KadenceVideoPopup(props) {
 							name={theIcon}
 							size={!playBtn[0].size ? '30' : playBtn[0].size}
 							strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
+							icon={allIcons[theIcon]}
 							style={{
 								color: playBtn[0].color
 									? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)

@@ -19,9 +19,8 @@ export default function SvgDeleteModal( { isOpen, setIsOpen, id, callback } ) {
 	};
 
 	const handleDelete = ( id ) => {
-		const apiId = ('' + id).replace(/^kb-custom-/, '');
 		apiFetch({
-			path: `/wp/v2/kadence_custom_svg/${apiId}`,
+			path: `/wp/v2/kadence_custom_svg/${id}`,
 			method: 'DELETE',
 		}).then((response) => {
 			if ( get( response, 'id', false ) ) {

@@ -546,8 +546,6 @@ function kadence_blocks_register_api_endpoints() {
 	$design_library_controller_upload->register_routes();
 	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
 	$image_picker_controller_upload->register_routes();
-	$icons_controller = new Kadence_Blocks_Icons_REST_Controller();
-	$icons_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 

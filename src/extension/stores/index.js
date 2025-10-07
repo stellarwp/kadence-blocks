@@ -1,5 +1,4 @@
 import { createReduxStore, register, createRegistrySelector, createRegistryControl } from '@wordpress/data';
-import apiFetch from '@wordpress/api-fetch';
 import { get } from 'lodash';
 
 const DEFAULT_STATE = {
@@ -13,13 +12,6 @@ const DEFAULT_STATE = {
 	imagePickerMultiSelection: [],
 	imagePickerResults: {},
 	imagePickerDownloadedImages: [],
-	icons: {
-		solidIcons: {},
-		lineIcons: {},
-		custom: {},
-		combinedIcons: {},
-		loaded: false,
-	},
 };
 
 const actions = {
@@ -132,84 +124,6 @@ const actions = {
 			images,
 		};
 	},
-	*setIcons(icons) {
-		return {
-			type: 'SET_ICONS',
-			icons,
-		};
-	},
-	*fetchIcons() {
-		const path = '/kb-icons/v1/icons';
-		const cacheKey = 'kadence-icons-cache-v1';
-
-		const formatIcons = (data = {}) => ({
-			solidIcons: data?.solidIcons || {},
-			lineIcons: data?.lineIcons || {},
-			custom: data?.custom || {},
-			combinedIcons: {
-				...(data?.solidIcons || {}),
-				...(data?.lineIcons || {}),
-				...(data?.custom || {}),
-			},
-			loaded: true,
-		});
-
-		if (typeof window === 'undefined' || !('caches' in window)) {
-			try {
-				const response = yield { type: 'API_FETCH', request: { path } };
-				return {
-					type: 'SET_ICONS',
-					icons: formatIcons(response),
-				};
-			} catch (error) {
-				console.error('Error fetching icons:', error);
-				return {
-					type: 'SET_ICONS',
-					icons: formatIcons(),
-				};
-			}
-		}
-
-		let cachedData = null;
-		try {
-			const cache = yield { type: 'CACHE_OPEN', cacheKey };
-			const cachedResponse = yield { type: 'CACHE_MATCH', cache, request: path };
-
-			if (cachedResponse) {
-				cachedData = yield { type: 'RESPONSE_JSON', response: cachedResponse.clone() };
-				if (cachedData && cachedData.cache_key) {
-					yield {
-						type: 'SET_ICONS',
-						icons: formatIcons(cachedData),
-					};
-				}
-			}
-
-			const networkResponse = yield { type: 'API_FETCH', request: { path } };
-
-			if (networkResponse?.cache_key && networkResponse.cache_key !== cachedData?.cache_key) {
-				yield {
-					type: 'SET_ICONS',
-					icons: formatIcons(networkResponse),
-				};
-				if (typeof Response !== 'undefined') {
-					const responseToCache = new Response(JSON.stringify(networkResponse), {
-						headers: { 'Content-Type': 'application/json' },
-					});
-					const cacheForPut = yield { type: 'CACHE_OPEN', cacheKey };
-					yield { type: 'CACHE_PUT', cache: cacheForPut, request: path, response: responseToCache };
-				}
-			}
-		} catch (error) {
-			console.error('Error fetching or caching icons:', error);
-			if (!cachedData) {
-				yield {
-					type: 'SET_ICONS',
-					icons: formatIcons(),
-				};
-			}
-		}
-	},
 };
 
 const controls = {
@@ -234,21 +148,6 @@ const controls = {
 				return false;
 			}
 	),
-	API_FETCH({ request }) {
-		return apiFetch(request);
-	},
-	CACHE_OPEN: ({ cacheKey }) => {
-		return window.caches.open(cacheKey);
-	},
-	CACHE_MATCH: ({ cache, request }) => {
-		return cache.match(request);
-	},
-	CACHE_PUT: ({ cache, request, response }) => {
-		return cache.put(request, response);
-	},
-	RESPONSE_JSON: ({ response }) => {
-		return response.json();
-	},
 };
 
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
@@ -405,11 +304,6 @@ const store = createReduxStore('kadenceblocks/data', {
 					...state,
 					imagePickerDownloadedImages: action.images,
 				};
-			case 'SET_ICONS':
-				return {
-					...state,
-					icons: action.icons,
-				};
 			default:
 				return state;
 		}
@@ -525,12 +419,6 @@ const store = createReduxStore('kadenceblocks/data', {
 		getImagePickerDownloadedImages(state) {
 			const { imagePickerDownloadedImages } = state;
 			return imagePickerDownloadedImages;
-		},
-		getIcons(state) {
-			return state.icons;
-		},
-		areIconsLoaded(state) {
-			return get(state, ['icons', 'loaded'], false);
 		},
 	},
 });
