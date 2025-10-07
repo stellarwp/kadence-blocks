@@ -117,6 +117,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
+
 		return $css->css_output();
 	}
 	/**

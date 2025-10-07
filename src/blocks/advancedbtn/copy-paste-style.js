@@ -260,6 +260,7 @@ class ButtonStyleCopyPaste extends Component {
 				}
 			}
 		};
+
 		return (
 			<DropdownMenu
 				className="block-editor-block-settings-menu kadence-blocks-button-item__copy_styles"
@@ -284,6 +285,14 @@ class ButtonStyleCopyPaste extends Component {
 								label={__('Paste Styles', 'kadence-blocks')}
 							>
 								{__('Paste Styles', 'kadence-blocks')}
+							</MenuItem>
+							<MenuItem
+								icon={'editor-paste-text'}
+								onClick={flow(onClose, pasteAction)}
+								disabled={!buttonCopiedStyles}
+								label={__('Paste and Replace', 'kadence-blocks')}
+							>
+								{__('Paste and Replace', 'kadence-blocks')}
 							</MenuItem>
 						</MenuGroup>
 					</Fragment>

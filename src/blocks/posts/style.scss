@@ -7,6 +7,9 @@ ul.wp-block-kadence-posts.kb-posts {
 	padding: 0;
 }
 .wp-block-kadence-posts {
+	.kb-post-list-item {
+		display: grid;
+	}
 	.loop-entry {
 		box-shadow: 0px 15px 25px -10px rgba(0, 0, 0, 0.05);
 		border-radius: 0.25rem;

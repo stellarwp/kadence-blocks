@@ -3,7 +3,7 @@ import { omit, isEqual, head } from 'lodash';
 /**
  * Gets attributes from a kadence block that can be transfered to another block via block defaults or copy/pasting.
  */
-export default function getTransferableAttributes( attributes, defaultAttributes = {}, excludedAttrs = [], preventMultiple = [] ) {
+export default function getTransferableAttributes( attributes, defaultAttributes = {}, excludedAttrs = [], preventMultiple = [], includeDefaults = false ) {
     let attributesToTransfer = {};
     
     //some attributes should never be transferred to a new block
@@ -11,12 +11,16 @@ export default function getTransferableAttributes( attributes, defaultAttributes
     const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
     attributesToTransfer = omit(attributes, allExcludedAttrs);
     
-
     //preventing multiples of some attributes can save space / complexity
-    if (preventMultiple !== []) {
+    if (preventMultiple.length > 0) {
         preventMultiple.forEach((item) => {
             attributesToTransfer[item] = [head(attributesToTransfer[item])];
         });
+    }
+
+    // Early return when including defaults - no need to filter out defaults
+    if (includeDefaults) {
+        return attributesToTransfer;
     }
 
     // we don't need to transfer attributes that are the default.
