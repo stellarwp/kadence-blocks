@@ -23,8 +23,8 @@
 					});
 
 					const ktTabList = thisElem.querySelectorAll(':scope > .kt-tabs-title-list');
-					const ktTabListItems = thisElem.querySelectorAll(':scope > .kt-tabs-title-list li');
-					const ktTabButtons = thisElem.querySelectorAll('.kt-tabs-title-list li a');
+					const ktTabListItems = thisElem.querySelectorAll(':scope > .kt-tabs-title-list > li');
+					const ktTabButtons = thisElem.querySelectorAll(':scope > .kt-tabs-title-list > li > a');
 					const ktTabContentAreas = thisElem.querySelectorAll(
 						':scope > .kt-tabs-content-wrap > .kt-tab-inner-content'
 					);
@@ -118,7 +118,7 @@
 					});
 
 					if (thisElem.classList.contains('kt-create-accordion')) {
-						thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
+						thisElem.querySelectorAll(':scope > .kt-tabs-title-list > .kt-title-item').forEach((listItem) => {
 							const tabId = listItem.querySelector('a').getAttribute('data-tab');
 
 							const titleClasses = listItem.classList;
@@ -148,7 +148,9 @@
 						});
 					}
 
-					const ktAccordionAnchor = thisElem.querySelectorAll('.kt-tabs-accordion-title a');
+					const ktAccordionAnchor = thisElem.querySelectorAll(
+						':scope > .kt-tabs-content-wrap > .kt-tabs-accordion-title > a'
+					);
 					ktAccordionAnchor.forEach((accordionTitleElem) => {
 						accordionTitleElem.addEventListener('click', function (evt) {
 							window.KBTabs.setActiveAccordion(evt, accordionTitleElem, noAllowMultipleOpen);
