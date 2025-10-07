@@ -118,34 +118,36 @@
 					});
 
 					if (thisElem.classList.contains('kt-create-accordion')) {
-						thisElem.querySelectorAll(':scope > .kt-tabs-title-list > .kt-title-item').forEach((listItem) => {
-							const tabId = listItem.querySelector('a').getAttribute('data-tab');
+						thisElem
+							.querySelectorAll(':scope > .kt-tabs-title-list > .kt-title-item')
+							.forEach((listItem) => {
+								const tabId = listItem.querySelector('a').getAttribute('data-tab');
 
-							const titleClasses = listItem.classList;
-							const accordionTitleClasses = [
-								'kt-tabs-accordion-title',
-								'kt-tabs-accordion-title-' + tabId,
-							];
+								const titleClasses = listItem.classList;
+								const accordionTitleClasses = [
+									'kt-tabs-accordion-title',
+									'kt-tabs-accordion-title-' + tabId,
+								];
 
-							const closestTabWrap = listItem.closest('.kt-tabs-wrap');
-							const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
+								const closestTabWrap = listItem.closest('.kt-tabs-wrap');
+								const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
 
-							const newElem = window.document.createElement('div');
-							newElem.className = [...titleClasses].concat(accordionTitleClasses).join(' ');
-							newElem.innerHTML = listItem.innerHTML;
+								const newElem = window.document.createElement('div');
+								newElem.className = [...titleClasses].concat(accordionTitleClasses).join(' ');
+								newElem.innerHTML = listItem.innerHTML;
 
-							ktContentWrap.insertBefore(
-								newElem,
-								ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId)
-							);
+								ktContentWrap.insertBefore(
+									newElem,
+									ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId)
+								);
 
-							ktContentWrap
-								.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
-								.removeAttribute('role');
-							ktContentWrap
-								.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
-								.removeAttribute('tabindex');
-						});
+								ktContentWrap
+									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+									.removeAttribute('role');
+								ktContentWrap
+									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+									.removeAttribute('tabindex');
+							});
 					}
 
 					const ktAccordionAnchor = thisElem.querySelectorAll(
