@@ -307,7 +307,7 @@ class Editor_Assets {
 		$icon_names_path  = KADENCE_BLOCKS_PATH . 'includes/icon-names-array.php';
 		$icon_ico_path    = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
 		$icons_path       = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
-		$icons_kbcustom_path = KADENCE_BLOCKS_PATH . 'includes/icons-kbcustom-array.php';
+		$icons_kbcustom_path = KADENCE_BLOCKS_PATH . 'includes/icons-social-array.php';
 		$current_user     = wp_get_current_user();
 		$user_email       = $current_user->user_email;
 		$recent_posts     = wp_get_recent_posts( [ 'numberposts' => '1' ] );
@@ -401,21 +401,21 @@ class Editor_Assets {
 			'kadence-blocks-js',
 			'kadence_blocks_params_ico',
 			[
-				'icons' => file_exists( $icon_ico_path ) ? include $icon_ico_path : [],
+				'icons' => $this->should_return_icons( $icon_ico_path )
 			]
 		);
 		wp_localize_script(
 			'kadence-blocks-js',
 			'kadence_blocks_params_fa',
 			[
-				'icons' => file_exists( $icons_path ) ? include $icons_path : [],
+				'icons' => $this->should_return_icons( $icons_path ),
 			]
 		);
 		wp_localize_script(
 			'kadence-blocks-js',
 			'kadence_blocks_params_kbcustomicons',
 			[
-				'icons' => file_exists( $icons_kbcustom_path ) ? include $icons_kbcustom_path : [],
+				'icons' => $this->should_return_icons( $icons_kbcustom_path ),
 			]
 		);
 		$fast_load_patterns = class_exists( 'GFForms' ) ? false : true;
@@ -822,5 +822,23 @@ class Editor_Assets {
 			);
 		}
 	}
+
+	/**
+	 * Pro supports loading icons from the data store in 2.8.3 and above.
+	 * 
+	 * @param string $path The path to the icons file.
+	 * @return array The icons array or an empty array.
+	 */
+	public function should_return_icons( $path ) {
+		$has_pro = class_exists( 'Kadence_Blocks_Pro' );
+		$pro_version_compare = defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.8.3', '<' );
+
+		if( $has_pro && $pro_version_compare && file_exists( $path ) ) {
+			return include $path;
+		}
+		
+		return [];
+	}
+
 }
 Editor_Assets::get_instance();

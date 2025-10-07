@@ -7,7 +7,7 @@
 /**
  * Import External
  */
-import { debounce, map } from 'lodash';
+import { debounce } from 'lodash';
 import metadata from './block.json';
 
 /**
@@ -39,8 +39,7 @@ import {
 	ResponsiveRangeControls,
 	ResponsiveBorderControl,
 	ResponsiveMeasurementControls,
-	KadenceIconPicker,
-	GenIcon,
+	IconRender,
 } from '@kadence/components';
 
 import {
@@ -79,9 +78,9 @@ import {
 	ExternalLink,
 } from '@wordpress/components';
 
-import { useDispatch, useSelect } from '@wordpress/data';
-import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
+import { useSelect } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
+import { video, closeSmall, keyboardReturn } from '@wordpress/icons';
 
 /**
  * Build the overlay edit
@@ -146,14 +145,20 @@ function KadenceVideoPopup(props) {
 
 	const { previewDevice } = useSelect(
 		(select) => {
+			const dataStore = select('kadenceblocks/data');
+
+			if (!dataStore) {
+				return {
+					previewDevice: 'Desktop',
+				};
+			}
+
 			return {
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				previewDevice: dataStore.getPreviewDeviceType(),
 			};
 		},
 		[clientId]
 	);
-
-	const allIcons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
 
 	const getDynamic = () => {
 		let contextPost = null;
@@ -1249,7 +1254,7 @@ function KadenceVideoPopup(props) {
 							'local' === type ? 'kadence-video-type-local' : 'kadence-video-type-external'
 						}`}
 					>
-						<GenIcon
+						<IconRender
 							className={`kt-video-svg-icon  kt-video-svg-icon-style-${
 								playBtn[0].style
 							} kt-video-svg-icon-${theIcon} kt-video-play-animation-${
@@ -1258,7 +1263,6 @@ function KadenceVideoPopup(props) {
 							name={theIcon}
 							size={!playBtn[0].size ? '30' : playBtn[0].size}
 							strokeWidth={!playBtn[0].width ? '2' : playBtn[0].width}
-							icon={allIcons[theIcon]}
 							style={{
 								color: playBtn[0].color
 									? KadenceColorOutput(playBtn[0].color, playBtn[0].opacity)
