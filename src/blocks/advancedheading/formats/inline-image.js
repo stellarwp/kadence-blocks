@@ -59,7 +59,7 @@ export const kadenceInlineImage = {
 					}
 				})
 			);
-			setIsEditingImage(true);
+			// setIsEditingImage(true);
 		};
 
 		useEffect(() => {
