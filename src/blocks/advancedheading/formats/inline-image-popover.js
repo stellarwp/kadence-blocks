@@ -92,7 +92,7 @@ export default function InlineImagePopover({
 		insertImage({
 			src: '',
 			alt: '',
-			style: ''
+			style: '',
 		});
 	};
 
@@ -115,7 +115,9 @@ export default function InlineImagePopover({
 			>
 				{!hasImage ? (
 					<>
-						<div className="components-kadence-image-background__label">{__('Image', 'kadence-blocks')}</div>
+						<div className="components-kadence-image-background__label">
+							{__('Image', 'kadence-blocks')}
+						</div>
 						<div className="kb-inline-image-placeholder">
 							<Button
 								isPrimary
@@ -125,12 +127,12 @@ export default function InlineImagePopover({
 									const mediaFrame = wp.media({
 										title: __('Select Image', 'kadence-blocks'),
 										button: {
-											text: __('Use Image', 'kadence-blocks')
+											text: __('Use Image', 'kadence-blocks'),
 										},
 										multiple: false,
 										library: {
-											type: 'image'
-										}
+											type: 'image',
+										},
 									});
 
 									mediaFrame.on('select', () => {
@@ -158,12 +160,14 @@ export default function InlineImagePopover({
 					</>
 				) : (
 					<>
-						<div className="components-kadence-image-background__label">{__('Image', 'kadence-blocks')}</div>
+						<div className="components-kadence-image-background__label">
+							{__('Image', 'kadence-blocks')}
+						</div>
 						<div className="kadence-image-media-control kadence-image-background-control">
 							<div className="kb-inline-image-preview">
-								<img 
-									src={imageSettings.src} 
-									alt={imageSettings.alt || ''} 
+								<img
+									src={imageSettings.src}
+									alt={imageSettings.alt || ''}
 									style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }}
 								/>
 							</div>
@@ -176,12 +180,12 @@ export default function InlineImagePopover({
 										const mediaFrame = wp.media({
 											title: __('Select Image', 'kadence-blocks'),
 											button: {
-												text: __('Use Image', 'kadence-blocks')
+												text: __('Use Image', 'kadence-blocks'),
 											},
 											multiple: false,
 											library: {
-												type: 'image'
-											}
+												type: 'image',
+											},
 										});
 
 										mediaFrame.on('select', () => {
@@ -218,9 +222,9 @@ export default function InlineImagePopover({
 							value={imageSettings.width}
 							onChange={(newValue) => {
 								const newSettings = { ...imageSettings, width: newValue };
-								insertImage({ 
+								insertImage({
 									width: newValue,
-									style: buildStyleString(newSettings)
+									style: buildStyleString(newSettings),
 								});
 							}}
 							min={10}
@@ -231,63 +235,63 @@ export default function InlineImagePopover({
 					</>
 				)}
 			</KadencePanelBody>
-			
+
 			{hasImage && (
 				<KadencePanelBody
 					title={__('Border Settings', 'kadence-blocks')}
 					initialOpen={false}
 					panelName={'kb-inline-image-border-settings'}
 				>
-				<RangeControl
-					label={__('Border Width (px)', 'kadence-blocks')}
-					value={imageSettings.borderWidth}
-					onChange={(newValue) => {
-						const newSettings = { ...imageSettings, borderWidth: newValue };
-						insertImage({ 
-							borderWidth: newValue,
-							style: buildStyleString(newSettings)
-						});
-					}}
-					min={0}
-					max={20}
-					step={1}
-					help={__('Set the border width in pixels.', 'kadence-blocks')}
-				/>
-				<SelectControl
-					label={__('Border Style', 'kadence-blocks')}
-					value={imageSettings.borderStyle}
-					options={[
-						{ label: __('None', 'kadence-blocks'), value: 'none' },
-						{ label: __('Solid', 'kadence-blocks'), value: 'solid' },
-						{ label: __('Dashed', 'kadence-blocks'), value: 'dashed' },
-						{ label: __('Dotted', 'kadence-blocks'), value: 'dotted' },
-						{ label: __('Double', 'kadence-blocks'), value: 'double' },
-						{ label: __('Groove', 'kadence-blocks'), value: 'groove' },
-						{ label: __('Ridge', 'kadence-blocks'), value: 'ridge' },
-						{ label: __('Inset', 'kadence-blocks'), value: 'inset' },
-						{ label: __('Outset', 'kadence-blocks'), value: 'outset' },
-					]}
-					onChange={(val) => {
-						const newSettings = { ...imageSettings, borderStyle: val };
-						insertImage({ 
-							borderStyle: val,
-							style: buildStyleString(newSettings)
-						});
-					}}
-				/>
-				<TextControl
-					label={__('Border Color', 'kadence-blocks')}
-					value={imageSettings.borderColor}
-					onChange={(newValue) => {
-						const newSettings = { ...imageSettings, borderColor: newValue };
-						insertImage({ 
-							borderColor: newValue,
-							style: buildStyleString(newSettings)
-						});
-					}}
-					placeholder={__('#000000', 'kadence-blocks')}
-					help={__('Enter a hex color code for the border.', 'kadence-blocks')}
-				/>
+					<RangeControl
+						label={__('Border Width (px)', 'kadence-blocks')}
+						value={imageSettings.borderWidth}
+						onChange={(newValue) => {
+							const newSettings = { ...imageSettings, borderWidth: newValue };
+							insertImage({
+								borderWidth: newValue,
+								style: buildStyleString(newSettings),
+							});
+						}}
+						min={0}
+						max={20}
+						step={1}
+						help={__('Set the border width in pixels.', 'kadence-blocks')}
+					/>
+					<SelectControl
+						label={__('Border Style', 'kadence-blocks')}
+						value={imageSettings.borderStyle}
+						options={[
+							{ label: __('None', 'kadence-blocks'), value: 'none' },
+							{ label: __('Solid', 'kadence-blocks'), value: 'solid' },
+							{ label: __('Dashed', 'kadence-blocks'), value: 'dashed' },
+							{ label: __('Dotted', 'kadence-blocks'), value: 'dotted' },
+							{ label: __('Double', 'kadence-blocks'), value: 'double' },
+							{ label: __('Groove', 'kadence-blocks'), value: 'groove' },
+							{ label: __('Ridge', 'kadence-blocks'), value: 'ridge' },
+							{ label: __('Inset', 'kadence-blocks'), value: 'inset' },
+							{ label: __('Outset', 'kadence-blocks'), value: 'outset' },
+						]}
+						onChange={(val) => {
+							const newSettings = { ...imageSettings, borderStyle: val };
+							insertImage({
+								borderStyle: val,
+								style: buildStyleString(newSettings),
+							});
+						}}
+					/>
+					<TextControl
+						label={__('Border Color', 'kadence-blocks')}
+						value={imageSettings.borderColor}
+						onChange={(newValue) => {
+							const newSettings = { ...imageSettings, borderColor: newValue };
+							insertImage({
+								borderColor: newValue,
+								style: buildStyleString(newSettings),
+							});
+						}}
+						placeholder={__('#000000', 'kadence-blocks')}
+						help={__('Enter a hex color code for the border.', 'kadence-blocks')}
+					/>
 				</KadencePanelBody>
 			)}
 
@@ -297,24 +301,23 @@ export default function InlineImagePopover({
 					initialOpen={false}
 					panelName={'kb-inline-image-radius-settings'}
 				>
-				<RangeControl
-					label={__('Border Radius (px)', 'kadence-blocks')}
-					value={imageSettings.borderRadius}
-					onChange={(newValue) => {
-						const newSettings = { ...imageSettings, borderRadius: newValue };
-						insertImage({ 
-							borderRadius: newValue,
-							style: buildStyleString(newSettings)
-						});
-					}}
-					min={0}
-					max={50}
-					step={1}
-					help={__('Set the border radius in pixels for rounded corners.', 'kadence-blocks')}
-				/>
+					<RangeControl
+						label={__('Border Radius (px)', 'kadence-blocks')}
+						value={imageSettings.borderRadius}
+						onChange={(newValue) => {
+							const newSettings = { ...imageSettings, borderRadius: newValue };
+							insertImage({
+								borderRadius: newValue,
+								style: buildStyleString(newSettings),
+							});
+						}}
+						min={0}
+						max={50}
+						step={1}
+						help={__('Set the border radius in pixels for rounded corners.', 'kadence-blocks')}
+					/>
 				</KadencePanelBody>
 			)}
 		</Popover>
 	);
 }
-

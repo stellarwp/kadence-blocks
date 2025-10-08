@@ -1,6 +1,14 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from '@wordpress/element';
-import { toggleFormat, applyFormat, registerFormatType, useAnchorRef, useAnchor, insert, insertObject } from '@wordpress/rich-text';
+import {
+	toggleFormat,
+	applyFormat,
+	registerFormatType,
+	useAnchorRef,
+	useAnchor,
+	insert,
+	insertObject,
+} from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import InlineImagePopover from './inline-image-popover';
@@ -34,12 +42,12 @@ export const kadenceInlineImage = {
 			return null;
 		}
 		const [isEditingImage, setIsEditingImage] = useState(false);
-		
+
 		const onToggle = () => {
 			// May want to add a placeholder that can be replaced with the image
 			setIsEditingImage(true);
 		};
-		
+
 		const disableIsEditingImage = useCallback(() => setIsEditingImage(false), [setIsEditingImage]);
 
 		const insertImage = (imageData) => {
@@ -56,7 +64,7 @@ export const kadenceInlineImage = {
 						borderWidth: imageData.borderWidth || 0,
 						borderStyle: imageData.borderStyle || 'solid',
 						borderColor: imageData.borderColor || '#000000',
-					}
+					},
 				})
 			);
 			// setIsEditingImage(true);
@@ -69,7 +77,7 @@ export const kadenceInlineImage = {
 				setIsEditingImage(false);
 			}
 		}, [isActive]);
-		
+
 		return (
 			<>
 				<RichTextToolbarButton
@@ -97,4 +105,3 @@ export const kadenceInlineImage = {
 };
 
 registerFormatType(name, kadenceInlineImage);
-
