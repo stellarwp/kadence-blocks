@@ -50,13 +50,12 @@
 							':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
 						);
 
-						const uniqueId = document.getElementById(tabAnchor) ?
-							`${tabAnchor}-${thisIndex}` : tabAnchor
-						subElem.setAttribute('id', uniqueId)
+						const uniqueId = document.getElementById(tabAnchor) ? `${tabAnchor}-${thisIndex}` : tabAnchor;
+						subElem.setAttribute('id', uniqueId);
 
 						if (!isAccordion) {
 							contentTab.setAttribute('aria-labelledby', uniqueId);
-							contentTab.setAttribute('id', `${uniqueId}-panel`)
+							contentTab.setAttribute('id', `${uniqueId}-panel`);
 							parentListItem.setAttribute('role', 'presentation');
 							subElem.setAttribute('role', 'tab');
 							subElem.setAttribute('aria-controls', `${uniqueId}-panel`);
@@ -174,7 +173,9 @@
 				return;
 			}
 
-			const currentTabButton = window.document.querySelector( '.kt-title-item > #' + window.location.hash.substring(1));
+			const currentTabButton = window.document.querySelector(
+				'.kt-title-item > #' + window.location.hash.substring(1)
+			);
 			if (!currentTabButton) {
 				return;
 			}
@@ -254,7 +255,9 @@
 			window.dispatchEvent(tabEvent);
 		},
 		setActiveTab(wrapper, tabNumber, moveFocus = true) {
-			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active button');
+			const prevActiveAnchor = wrapper.querySelector(
+				':scope > .kt-tabs-title-list > li.kt-tab-title-active button'
+			);
 			const prevActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
 
 			if (prevActiveListItem && prevActiveAnchor) {
