@@ -373,6 +373,24 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'mobile' );
 		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'desktop' );
+
+		// Inline Image.
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' img.kb-inline-image, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] img.kb-inline-image' );
+		if ( ! empty( $attributes['inlineImageWidth'][0] ) ) {
+			$css->add_property( 'width', $attributes['inlineImageWidth'][0] . 'px' );
+		}
+		if ( ! empty( $attributes['inlineImageVerticalAlign'] ) ) {
+			$css->add_property( 'vertical-align', $attributes['inlineImageVerticalAlign'] );
+		}
+		$css->render_border_styles( $attributes, 'inlineImageBorderStyles' );
+		$css->render_border_radius( $attributes, 'inlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'tablet' );
+		$css->render_border_radius( $attributes, 'tabletInlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
+
+		$css->set_media_state( 'mobile' );
+		$css->render_border_radius( $attributes, 'mobileInlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
 		$mark_padding_args = array(
 			'desktop_key' => 'markPadding',
 			'tablet_key'  => 'markTabPadding',

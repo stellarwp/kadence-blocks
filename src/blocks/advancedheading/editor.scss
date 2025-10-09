@@ -23,6 +23,39 @@
 	color: inherit;
 	border-bottom: 1px dashed currentColor;
 }
+
+// Inline Image Format Styles
+.kb-inline-image {
+	display: inline-block;
+	vertical-align: middle;
+	width: 150px;
+	max-width: 100%;
+	height: auto;
+}
+
+// Inline Image Popover Styles
+.kb-inline-image-placeholder {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.kb-inline-image-preview {
+	margin-bottom: 12px;
+	text-align: center;
+	
+	img {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
+}
+
+.kb-inline-image-actions {
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+}
 .kb-adv-text-icon-dash .kb-advanced-heading-svg-icon {
 	border-bottom: 1px dashed currentColor;
 }
