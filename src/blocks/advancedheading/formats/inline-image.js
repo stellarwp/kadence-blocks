@@ -1,12 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useCallback } from '@wordpress/element';
 import {
-	toggleFormat,
-	applyFormat,
 	registerFormatType,
-	useAnchorRef,
-	useAnchor,
-	insert,
 	insertObject,
 } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';

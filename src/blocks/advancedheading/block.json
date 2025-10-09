@@ -589,6 +589,66 @@
 		"textGradient": {
 			"type": "string",
 			"default": ""
+		},
+		"inlineImageWidth": {
+			"type": "array",
+			"default": [150, "", ""]
+		},
+		"inlineImageBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"tabletInlineImageBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"mobileInlineImageBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"inlineImageBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInlineImageBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInlineImageBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inlineImageBorderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inlineImageVerticalAlign": {
+			"type": "string",
+			"default": "baseline"
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],

@@ -255,6 +255,15 @@ function KadenceAdvancedHeading(props) {
 		enableMarkBackgroundGradient,
 		markGradient,
 		markBackgroundGradient,
+		inlineImageWidth,
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles,
+		inlineImageBorderRadius,
+		tabletInlineImageBorderRadius,
+		mobileInlineImageBorderRadius,
+		inlineImageBorderRadiusUnit,
+		inlineImageVerticalAlign,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -748,6 +757,35 @@ function KadenceAdvancedHeading(props) {
 		mobileMarkBorderStyles
 	);
 
+	const previewInlineImageBorderTopStyle = getBorderStyle(
+		previewDevice,
+		'top',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderRightStyle = getBorderStyle(
+		previewDevice,
+		'right',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderBottomStyle = getBorderStyle(
+		previewDevice,
+		'bottom',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderLeftStyle = getBorderStyle(
+		previewDevice,
+		'left',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+
 	const previewBorderTop = getBorderStyle(previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle);
 	const previewBorderRight = getBorderStyle(
 		previewDevice,
@@ -817,6 +855,31 @@ function KadenceAdvancedHeading(props) {
 		undefined !== markBorderRadius ? markBorderRadius[3] : '',
 		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
 		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
+	);
+
+	const previewInlineImageBorderRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[0] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[0] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[0] : ''
+	);
+	const previewInlineImageBorderRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[1] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[1] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[1] : ''
+	);
+	const previewInlineImageBorderRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[2] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[2] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[2] : ''
+	);
+	const previewInlineImageBorderRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[3] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[3] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[3] : ''
 	);
 	const previewTextOrientation = getPreviewSize(
 		previewDevice,
@@ -1264,6 +1327,18 @@ function KadenceAdvancedHeading(props) {
 									';'
 								: ''
 						}
+					}`}
+				{`.kt-adv-heading${uniqueID} img.kb-inline-image {
+						width: ${undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150}px;
+						vertical-align: ${inlineImageVerticalAlign || 'baseline'};
+						border-top: ${previewInlineImageBorderTopStyle ? previewInlineImageBorderTopStyle : 'inherit'};
+						border-right: ${previewInlineImageBorderRightStyle ? previewInlineImageBorderRightStyle : 'inherit'};
+						border-bottom: ${previewInlineImageBorderBottomStyle ? previewInlineImageBorderBottomStyle : 'inherit'};
+						border-left: ${previewInlineImageBorderLeftStyle ? previewInlineImageBorderLeftStyle : 'inherit'};
+						${'' !== previewInlineImageBorderRadiusTop ? 'border-top-left-radius:' + previewInlineImageBorderRadiusTop + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusRight ? 'border-top-right-radius:' + previewInlineImageBorderRadiusRight + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusBottom ? 'border-bottom-right-radius:' + previewInlineImageBorderRadiusBottom + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusLeft ? 'border-bottom-left-radius:' + previewInlineImageBorderRadiusLeft + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
@@ -2298,6 +2373,92 @@ function KadenceAdvancedHeading(props) {
 										unit={markPaddingType}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ markPaddingType: value })}
+									/>
+								</KadencePanelBody>
+							)}
+							{showSettings('inlineImageSettings', 'kadence/advancedheading') && (
+								<KadencePanelBody
+									title={__('Inline Image Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-adv-heading-inline-image-settings'}
+								>
+									<ResponsiveRangeControls
+										label={__('Image Width', 'kadence-blocks')}
+										value={undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150}
+										onChange={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													value,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : '',
+												],
+											});
+										}}
+										tabletValue={undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : ''}
+										onChangeTablet={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
+													value,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : '',
+												],
+											});
+										}}
+										mobileValue={undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : ''}
+										onChangeMobile={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
+													value,
+												],
+											});
+										}}
+										min={10}
+										max={500}
+										step={1}
+										unit="px"
+									/>
+									<ResponsiveBorderControl
+										label={__('Border', 'kadence-blocks')}
+										value={inlineImageBorderStyles}
+										tabletValue={tabletInlineImageBorderStyles}
+										mobileValue={mobileInlineImageBorderStyles}
+										onChange={(value) => setAttributes({ inlineImageBorderStyles: value })}
+										onChangeTablet={(value) => setAttributes({ tabletInlineImageBorderStyles: value })}
+										onChangeMobile={(value) => setAttributes({ mobileInlineImageBorderStyles: value })}
+									/>
+									<ResponsiveMeasurementControls
+										label={__('Border Radius', 'kadence-blocks')}
+										value={inlineImageBorderRadius}
+										tabletValue={tabletInlineImageBorderRadius}
+										mobileValue={mobileInlineImageBorderRadius}
+										onChange={(value) => setAttributes({ inlineImageBorderRadius: value })}
+										onChangeTablet={(value) => setAttributes({ tabletInlineImageBorderRadius: value })}
+										onChangeMobile={(value) => setAttributes({ mobileInlineImageBorderRadius: value })}
+										unit={inlineImageBorderRadiusUnit}
+										units={['px', 'em', 'rem', '%']}
+										onUnit={(value) => setAttributes({ inlineImageBorderRadiusUnit: value })}
+										max={inlineImageBorderRadiusUnit === 'em' || inlineImageBorderRadiusUnit === 'rem' ? 24 : 500}
+										step={inlineImageBorderRadiusUnit === 'em' || inlineImageBorderRadiusUnit === 'rem' ? 0.1 : 1}
+										min={0}
+										isBorderRadius={true}
+										allowEmpty={true}
+									/>
+									<SelectControl
+										label={__('Vertical Alignment', 'kadence-blocks')}
+										value={inlineImageVerticalAlign || 'baseline'}
+										options={[
+											{ value: 'baseline', label: __('Baseline', 'kadence-blocks') },
+											{ value: 'top', label: __('Top', 'kadence-blocks') },
+											{ value: 'middle', label: __('Middle', 'kadence-blocks') },
+											{ value: 'bottom', label: __('Bottom', 'kadence-blocks') },
+											{ value: 'text-top', label: __('Text Top', 'kadence-blocks') },
+											{ value: 'text-bottom', label: __('Text Bottom', 'kadence-blocks') },
+											{ value: 'sub', label: __('Sub', 'kadence-blocks') },
+											{ value: 'super', label: __('Super', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ inlineImageVerticalAlign: value })}
 									/>
 								</KadencePanelBody>
 							)}
