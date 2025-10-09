@@ -43,10 +43,8 @@ class KB_Ajax_Advanced_Form {
 	 * Class Constructor.
 	 */
 	public function __construct() {
-		if ( ! defined( 'KADENCE_FORMS_VERSION' ) ) {
-			add_action( 'wp_ajax_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
-			add_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
-		}
+		add_action( 'wp_ajax_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
+		add_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
 	}
 
 	/**
