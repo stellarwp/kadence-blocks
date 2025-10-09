@@ -2384,32 +2384,56 @@ function KadenceAdvancedHeading(props) {
 								>
 									<ResponsiveRangeControls
 										label={__('Image Width', 'kadence-blocks')}
-										value={undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150}
+										value={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+												? inlineImageWidth[0]
+												: 150
+										}
 										onChange={(value) => {
 											setAttributes({
 												inlineImageWidth: [
 													value,
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+														? inlineImageWidth[1]
+														: '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+														? inlineImageWidth[2]
+														: '',
 												],
 											});
 										}}
-										tabletValue={undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : ''}
+										tabletValue={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+												? inlineImageWidth[1]
+												: ''
+										}
 										onChangeTablet={(value) => {
 											setAttributes({
 												inlineImageWidth: [
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+														? inlineImageWidth[0]
+														: 150,
 													value,
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+														? inlineImageWidth[2]
+														: '',
 												],
 											});
 										}}
-										mobileValue={undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : ''}
+										mobileValue={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+												? inlineImageWidth[2]
+												: ''
+										}
 										onChangeMobile={(value) => {
 											setAttributes({
 												inlineImageWidth: [
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
-													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+														? inlineImageWidth[0]
+														: 150,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+														? inlineImageWidth[1]
+														: '',
 													value,
 												],
 											});
@@ -2425,8 +2449,12 @@ function KadenceAdvancedHeading(props) {
 										tabletValue={tabletInlineImageBorderStyles}
 										mobileValue={mobileInlineImageBorderStyles}
 										onChange={(value) => setAttributes({ inlineImageBorderStyles: value })}
-										onChangeTablet={(value) => setAttributes({ tabletInlineImageBorderStyles: value })}
-										onChangeMobile={(value) => setAttributes({ mobileInlineImageBorderStyles: value })}
+										onChangeTablet={(value) =>
+											setAttributes({ tabletInlineImageBorderStyles: value })
+										}
+										onChangeMobile={(value) =>
+											setAttributes({ mobileInlineImageBorderStyles: value })
+										}
 									/>
 									<ResponsiveMeasurementControls
 										label={__('Border Radius', 'kadence-blocks')}
@@ -2434,13 +2462,27 @@ function KadenceAdvancedHeading(props) {
 										tabletValue={tabletInlineImageBorderRadius}
 										mobileValue={mobileInlineImageBorderRadius}
 										onChange={(value) => setAttributes({ inlineImageBorderRadius: value })}
-										onChangeTablet={(value) => setAttributes({ tabletInlineImageBorderRadius: value })}
-										onChangeMobile={(value) => setAttributes({ mobileInlineImageBorderRadius: value })}
+										onChangeTablet={(value) =>
+											setAttributes({ tabletInlineImageBorderRadius: value })
+										}
+										onChangeMobile={(value) =>
+											setAttributes({ mobileInlineImageBorderRadius: value })
+										}
 										unit={inlineImageBorderRadiusUnit}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ inlineImageBorderRadiusUnit: value })}
-										max={inlineImageBorderRadiusUnit === 'em' || inlineImageBorderRadiusUnit === 'rem' ? 24 : 500}
-										step={inlineImageBorderRadiusUnit === 'em' || inlineImageBorderRadiusUnit === 'rem' ? 0.1 : 1}
+										max={
+											inlineImageBorderRadiusUnit === 'em' ||
+											inlineImageBorderRadiusUnit === 'rem'
+												? 24
+												: 500
+										}
+										step={
+											inlineImageBorderRadiusUnit === 'em' ||
+											inlineImageBorderRadiusUnit === 'rem'
+												? 0.1
+												: 1
+										}
 										min={0}
 										isBorderRadius={true}
 										allowEmpty={true}
