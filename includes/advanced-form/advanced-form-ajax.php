@@ -43,8 +43,10 @@ class KB_Ajax_Advanced_Form {
 	 * Class Constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
-		add_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
+		if ( ! defined( 'KADENCE_FORMS_VERSION' ) ) {
+			add_action( 'wp_ajax_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
+			add_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit', array( $this, 'process_ajax' ) );
+		}
 	}
 
 	/**
@@ -677,6 +679,13 @@ class KB_Ajax_Advanced_Form {
 		$form_args = array();
 		$blocks    = '';
 
+		// If this form was modified using Kadence Forms, but that plugin is not active,
+		// bail to avoid processing potentially incompatible structures.
+		$modified_in_kf = get_post_meta( $post_id, '_kad_form_modified_in_kf_plugin', true );
+		if ( $modified_in_kf && ! defined( 'KADENCE_FORMS_VERSION' ) ) {
+				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Form requires Kadence Forms', 'kadence-blocks' ) );
+		}
+
 		$post_data = get_post( absint( $post_id ) );
 		if ( is_object( $post_data ) && 'kadence_form' === $post_data->post_type && 'publish' === $post_data->post_status && empty( $post_data->post_password ) ) {
 			$blocks = parse_blocks( $post_data->post_content );
@@ -827,4 +836,3 @@ Header set X-Robots-Tag "noindex"
 }
 
 KB_Ajax_Advanced_Form::get_instance();
-

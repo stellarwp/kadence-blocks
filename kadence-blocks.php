@@ -110,8 +110,10 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-vector-post-rest-api.php';
-	// Advanced Form.
-	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
+	// If Kadence Forms is active, do not register Advanced Form from Kadence Blocks to avoid duplicate block name collisions.
+	if ( ! defined( 'KADENCE_FORMS_VERSION' ) ) {
+		require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
+	}
 	// Navigation
 	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/class-kadence-navigation-cpt.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/class-kadence-navigation-rest.php';
