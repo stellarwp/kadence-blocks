@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { registerFormatType, insertObject } from '@wordpress/rich-text';
 import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
-import { dynamicIcon } from '@kadence/icons';
+import { image } from '@wordpress/icons';
 
 const name = 'kadence/inline-image';
 const allowedBlocks = ['kadence/advancedheading'];
@@ -101,7 +101,7 @@ export const kadenceInlineImage = {
 
 		return (
 			<RichTextToolbarButton
-				icon={dynamicIcon}
+				icon={image}
 				title={__('Adv Inline Image', 'kadence-blocks')}
 				onClick={onToggle}
 				isActive={isActive}
