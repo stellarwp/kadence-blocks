@@ -1446,6 +1446,9 @@ export function EditInner(props) {
 								label={__('Screen size to switch to mobile header', 'kadence-blocks')}
 								value={mobileBreakpoint === 0 ? null : mobileBreakpoint}
 								onChange={(value) => {
+									if (value === undefined) {
+										value = 0;
+									}
 									setMetaAttribute(value, 'mobileBreakpoint');
 								}}
 								step={1}

@@ -573,11 +573,13 @@ class KB_Ajax_Advanced_Form {
 				'jpg|jpeg|jpe' => 'image/jpeg',
 				'gif'          => 'image/gif',
 				'png'          => 'image/png',
+				'webp'         => 'image/webp',
 			),
 			'images'     => array(
 				'jpg|jpeg|jpe' => 'image/jpeg',
 				'gif'          => 'image/gif',
 				'png'          => 'image/png',
+				'webp'         => 'image/webp',
 			),
 			'pdf'       => array(
 				'pdf' => 'application/pdf',

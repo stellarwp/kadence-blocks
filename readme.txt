@@ -175,7 +175,15 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 = 3.5.23 =
 Release Date: 9th October 2025
+* Update: Table of Contents will now ignore conditionally hidden headings.
+* Update: Add tabindex to tippy tooltips and update the role to a tooltip.
+* Update: Advanced form file upload limit options all the way up to your PHP limit.
+* Update: Add support for Webp images as a supported filetype in advanced form uploads.
+* Fix: Issue with nested tabs blocks.
 * Fix: Hover color on nested sections in the editor.
+* Fix: Kadence Blocks Controls use custom color palette only option.
+* Fix: Increased specificity for some Accordion block styles to fix issue in FSE themes.
+* Fix: Posts block equal heights.
 
 = 3.5.22 =
 Release Date: 25th September 2025

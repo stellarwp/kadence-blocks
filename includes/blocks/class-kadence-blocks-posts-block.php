@@ -117,6 +117,9 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .kb-post-list-item' );
+		$css->add_property( 'display', 'grid' );
+
 		return $css->css_output();
 	}
 	/**
@@ -135,6 +138,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		global $kadence_blocks_posts_not_in;
+		$kadence_blocks_posts_not_in_local = [];
 		if ( ! isset( $kadence_blocks_posts_not_in ) || ! is_array( $kadence_blocks_posts_not_in ) ) {
 			$kadence_blocks_posts_not_in = [];
 		}
@@ -195,10 +199,11 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		$classes = apply_filters( 'kadence_blocks_posts_container_classes', $classes );
 		do_action( 'kadence_blocks_posts_before_query', $attributes );
 		if ( apply_filters( 'kadence_blocks_posts_block_exclude_current', true ) && is_singular() ) {
-			if ( ! in_array( get_the_ID(), $kadence_blocks_posts_not_in, true ) ) {
-				$kadence_blocks_posts_not_in[] = get_the_ID();
-			}
+			$kadence_blocks_posts_not_in_local[] = get_the_ID();
 		}
+
+		$final_posts_not_in = isset( $kadence_blocks_posts_not_in ) && is_array( $kadence_blocks_posts_not_in ) ? array_merge( $kadence_blocks_posts_not_in, $kadence_blocks_posts_not_in_local ) : $kadence_blocks_posts_not_in_local;
+
 		$post_type = ( isset( $attributes['postType'] ) && ! empty( $attributes['postType'] ) ? $attributes['postType'] : 'post' );
 		$args      = [
 			'post_type'           => $post_type,
@@ -207,7 +212,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 			'order'               => ( isset( $attributes['order'] ) && ! empty( $attributes['order'] ) ? $attributes['order'] : 'desc' ),
 			'orderby'             => ( isset( $attributes['orderBy'] ) && ! empty( $attributes['orderBy'] ) ? $attributes['orderBy'] : 'date' ),
 			'ignore_sticky_posts' => ( isset( $attributes['allowSticky'] ) && $attributes['allowSticky'] ? 0 : 1 ),
-			'post__not_in'        => ( isset( $kadence_blocks_posts_not_in ) && is_array( $kadence_blocks_posts_not_in ) ? $kadence_blocks_posts_not_in : [] ),
+			'post__not_in'        => $final_posts_not_in,
 		];
 		if ( isset( $attributes['offsetQuery'] ) && ! empty( $attributes['offsetQuery'] ) ) {
 			$args['offset'] = $attributes['offsetQuery'];

@@ -646,6 +646,7 @@ function SectionEdit(props) {
 					rowGapUnit: gutterUnit ? gutterUnit : 'px',
 				});
 			}
+			attributes.kbVersion = 2;
 			setAttributes({ kbVersion: 2 });
 		}
 
