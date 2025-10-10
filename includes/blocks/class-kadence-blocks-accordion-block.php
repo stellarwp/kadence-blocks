@@ -193,7 +193,7 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:before' );
 			$css->render_color_output( $title_styles, 'background', 'background' );
 			$css->set_selector( 
-				'.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:hover, 
+				'.kt-accordion-id' . $unique_id . ' > .kt-accordion-inner-wrap > .wp-block-kadence-pane > .kt-accordion-header-wrap > .kt-blocks-accordion-header:hover, 
 				body:not(.hide-focus-outline) .kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header:focus-visible' 
 			);
 			$css->render_color_output( $title_styles, 'colorHover', 'color' );
@@ -225,8 +225,10 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_color_output( $title_styles, 'backgroundHover', 'background' );
 			}
 			// Active styles.
-			//adding a bit of extra specificity to the active styles to override the non-active focus-visible styles
-			$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:focus-visible, .kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header.kt-accordion-panel-active.kt-accordion-panel-active' );
+			$css->set_selector( 
+				'.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:focus-visible,
+				.kt-accordion-id' . $unique_id . ' > .kt-accordion-inner-wrap > .wp-block-kadence-pane > .kt-accordion-header-wrap > .kt-blocks-accordion-header.kt-accordion-panel-active'
+			);
 			$css->render_color_output( $title_styles, 'colorActive', 'color' );
 			$css->render_color_output( $title_styles, 'backgroundActive', 'background' );
 
