@@ -9,6 +9,7 @@
 		cache: {},
 		countUpItems: {},
 		listenerCache: {},
+		sliderEventCache: {},
 		isInViewport(el) {
 			const rect = el.getBoundingClientRect();
 			return (
@@ -17,6 +18,22 @@
 				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
 				rect.right <= (window.innerWidth || document.documentElement.clientWidth) + 300
 			);
+		},
+		isInActiveSlide(el) {
+			// Check if element is inside a slider
+			const slider = el.closest('.kb-splide, .splide');
+			if (!slider) {
+				return true; // Not in a slider, so always consider it "active"
+			}
+			
+			// Find the active slide
+			const activeSlide = slider.querySelector('.splide__slide.is-active');
+			if (!activeSlide) {
+				return true; // No active slide found, default to true
+			}
+			
+			// Check if the countup element is within the active slide
+			return activeSlide.contains(el);
 		},
 		stripHtml(html) {
 			const wrappedHtml = `<pre>${html}</pre>`;
@@ -56,6 +73,8 @@
 				// Initialize listener
 				window.kadenceCountUp.listenerCache[n] = window.kadenceCountUp.listener(n);
 				document.addEventListener('scroll', window.kadenceCountUp.listenerCache[n], { passive: true });
+				// Setup slider listeners if in a slider
+				window.kadenceCountUp.setupSliderListeners(n);
 				window.kadenceCountUp.startCountUp(n);
 			}
 		},
@@ -65,6 +84,33 @@
 			div.innerHTML = prefix + end + suffix;
 			el.before(div);
 			el.setAttribute('aria-hidden', 'true');
+		},
+		setupSliderListeners(index) {
+			const countUpItem = window.kadenceCountUp.countUpItems[index];
+			const slider = countUpItem.closest('.kb-splide, .splide');
+			
+			if (!slider) {
+				return; // Not in a slider, no need for slider listeners
+			}
+			
+			// Create event handlers
+			const mountedHandler = (e) => {
+				window.kadenceCountUp.startCountUp(index);
+			};
+			
+			const movedHandler = (e) => {
+				window.kadenceCountUp.startCountUp(index);
+			};
+			
+			// Add event listeners
+			slider.addEventListener('splideMounted', mountedHandler);
+			slider.addEventListener('splide:moved', movedHandler);
+			
+			// Store references for cleanup
+			window.kadenceCountUp.sliderEventCache[index] = [
+				{ element: slider, event: 'splideMounted', handler: mountedHandler },
+				{ element: slider, event: 'splide:moved', handler: movedHandler }
+			];
 		},
 		/**
 		 * Start Listener.
@@ -78,7 +124,8 @@
 		 * Start function.
 		 */
 		startCountUp(index) {
-			if (window.kadenceCountUp.isInViewport(window.kadenceCountUp.countUpItems[index])) {
+			const countUpItem = window.kadenceCountUp.countUpItems[index];
+			if (window.kadenceCountUp.isInViewport(countUpItem) && window.kadenceCountUp.isInActiveSlide(countUpItem)) {
 				if (!window.kadenceCountUp.cache[index].error) {
 					const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -89,6 +136,13 @@
 					}
 				}
 				document.removeEventListener('scroll', window.kadenceCountUp.listenerCache[index], false);
+				// Also remove slider event listeners if they exist
+				if (window.kadenceCountUp.sliderEventCache[index]) {
+					window.kadenceCountUp.sliderEventCache[index].forEach(listener => {
+						listener.element.removeEventListener(listener.event, listener.handler);
+					});
+					delete window.kadenceCountUp.sliderEventCache[index];
+				}
 			}
 		},
 		// Initiate sticky when the DOM loads.
