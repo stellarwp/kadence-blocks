@@ -4,6 +4,33 @@
 	window.kadenceCountdown = {
 		cache: {},
 		timers: JSON.parse(kadence_blocks_countdown.timers),
+		listenerCache: {},
+		sliderEventCache: {},
+		isInViewport(el) {
+			const rect = el.getBoundingClientRect();
+			return (
+				rect.top >= 0 &&
+				rect.left >= -300 &&
+				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+				rect.right <= (window.innerWidth || document.documentElement.clientWidth) + 300
+			);
+		},
+		isInActiveSlide(el) {
+			// Check if element is inside a slider
+			const slider = el.closest('.kb-splide, .splide');
+			if (!slider) {
+				return true; // Not in a slider, so always consider it "active"
+			}
+			
+			// Find the active slide
+			const activeSlide = slider.querySelector('.splide__slide.is-active');
+			if (!activeSlide) {
+				return true; // No active slide found, default to true
+			}
+			
+			// Check if the countdown element is within the active slide
+			return activeSlide.contains(el);
+		},
 		createCookie(name, value, length, unit) {
 			if (length) {
 				const date = new Date();
@@ -578,12 +605,73 @@
 			}
 			return number;
 		},
+		setupSliderListeners(id, element) {
+			const countdownElement = element.closest('.kb-countdown-container');
+			const slider = countdownElement.closest('.kb-splide, .splide');
+			
+			if (!slider) {
+				return; // Not in a slider, no need for slider listeners
+			}
+			
+			// Create event handlers
+			const mountedHandler = (e) => {
+				window.kadenceCountdown.checkAndStartTimer(id, element, countdownElement);
+			};
+			
+			const movedHandler = (e) => {
+				window.kadenceCountdown.checkAndStartTimer(id, element, countdownElement);
+			};
+			
+			// Add event listeners
+			slider.addEventListener('splideMounted', mountedHandler);
+			slider.addEventListener('splide:moved', movedHandler);
+			
+			// Store references for cleanup
+			window.kadenceCountdown.sliderEventCache[id] = [
+				{ element: slider, event: 'splideMounted', handler: mountedHandler },
+				{ element: slider, event: 'splide:moved', handler: movedHandler }
+			];
+		},
+		checkAndStartTimer(id, element, parent) {
+			// Only check for evergreen timers
+			if (window.kadenceCountdown.timers[id].type !== 'evergreen') {
+				return;
+			}
+			
+			// Check if timer should start based on viewport and active slide
+			if (window.kadenceCountdown.isInViewport(parent) && window.kadenceCountdown.isInActiveSlide(parent)) {
+				// Start the timer if it hasn't been started yet
+				if (!window.kadenceCountdown.cache[id].started) {
+					window.kadenceCountdown.cache[id].started = true;
+					window.kadenceCountdown.updateTimerInterval(element, id, parent);
+					window.kadenceCountdown.cache[id].interval = setInterval(function () {
+						window.kadenceCountdown.updateTimerInterval(element, id, parent);
+					}, 1000);
+					
+					// Remove scroll listener if it exists
+					if (window.kadenceCountdown.listenerCache[id]) {
+						document.removeEventListener('scroll', window.kadenceCountdown.listenerCache[id], false);
+						delete window.kadenceCountdown.listenerCache[id];
+					}
+					
+					// Remove slider event listeners
+					if (window.kadenceCountdown.sliderEventCache[id]) {
+						window.kadenceCountdown.sliderEventCache[id].forEach(listener => {
+							listener.element.removeEventListener(listener.event, listener.handler);
+						});
+						delete window.kadenceCountdown.sliderEventCache[id];
+					}
+				}
+			}
+		},
 		updateTimer(element, id, parent) {
 			window.kadenceCountdown.cache[id] = {};
 			window.kadenceCountdown.cache[id].evergreen = '';
 			window.kadenceCountdown.cache[id].request = '';
 			window.kadenceCountdown.cache[id].revealed = false;
 			window.kadenceCountdown.cache[id].cookie = '';
+			window.kadenceCountdown.cache[id].started = false;
+			
 			if (
 				window.kadenceCountdown.timers[id].type === 'evergreen' &&
 				window.kadenceCountdown.timers[id].campaign_id
@@ -592,10 +680,27 @@
 					window.kadenceCountdown.timers[id].campaign_id
 				);
 			}
-			window.kadenceCountdown.updateTimerInterval(element, id, parent);
-			window.kadenceCountdown.cache[id].interval = setInterval(function () {
+			
+			// For evergreen timers, check viewport and active slide before starting
+			if (window.kadenceCountdown.timers[id].type === 'evergreen') {
+				// Setup scroll listener
+				window.kadenceCountdown.listenerCache[id] = function() {
+					window.kadenceCountdown.checkAndStartTimer(id, element, parent);
+				};
+				document.addEventListener('scroll', window.kadenceCountdown.listenerCache[id], { passive: true });
+				
+				// Setup slider listeners if in a slider
+				window.kadenceCountdown.setupSliderListeners(id, element);
+				
+				// Check immediately if conditions are met
+				window.kadenceCountdown.checkAndStartTimer(id, element, parent);
+			} else {
+				// For non-evergreen timers, start immediately
 				window.kadenceCountdown.updateTimerInterval(element, id, parent);
-			}, 1000);
+				window.kadenceCountdown.cache[id].interval = setInterval(function () {
+					window.kadenceCountdown.updateTimerInterval(element, id, parent);
+				}, 1000);
+			}
 		},
 		initTimer() {
 			const countdowns = document.querySelectorAll('.kb-countdown-container');
