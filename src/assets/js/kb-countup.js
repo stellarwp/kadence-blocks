@@ -25,13 +25,13 @@
 			if (!slider) {
 				return true; // Not in a slider, so always consider it "active"
 			}
-			
+
 			// Find the active slide
 			const activeSlide = slider.querySelector('.splide__slide.is-active');
 			if (!activeSlide) {
 				return true; // No active slide found, default to true
 			}
-			
+
 			// Check if the countup element is within the active slide
 			return activeSlide.contains(el);
 		},
@@ -88,28 +88,28 @@
 		setupSliderListeners(index) {
 			const countUpItem = window.kadenceCountUp.countUpItems[index];
 			const slider = countUpItem.closest('.kb-splide, .splide');
-			
+
 			if (!slider) {
 				return; // Not in a slider, no need for slider listeners
 			}
-			
+
 			// Create event handlers
 			const mountedHandler = (e) => {
 				window.kadenceCountUp.startCountUp(index);
 			};
-			
+
 			const movedHandler = (e) => {
 				window.kadenceCountUp.startCountUp(index);
 			};
-			
+
 			// Add event listeners
 			slider.addEventListener('splideMounted', mountedHandler);
 			slider.addEventListener('splide:moved', movedHandler);
-			
+
 			// Store references for cleanup
 			window.kadenceCountUp.sliderEventCache[index] = [
 				{ element: slider, event: 'splideMounted', handler: mountedHandler },
-				{ element: slider, event: 'splide:moved', handler: movedHandler }
+				{ element: slider, event: 'splide:moved', handler: movedHandler },
 			];
 		},
 		/**
@@ -138,7 +138,7 @@
 				document.removeEventListener('scroll', window.kadenceCountUp.listenerCache[index], false);
 				// Also remove slider event listeners if they exist
 				if (window.kadenceCountUp.sliderEventCache[index]) {
-					window.kadenceCountUp.sliderEventCache[index].forEach(listener => {
+					window.kadenceCountUp.sliderEventCache[index].forEach((listener) => {
 						listener.element.removeEventListener(listener.event, listener.handler);
 					});
 					delete window.kadenceCountUp.sliderEventCache[index];
