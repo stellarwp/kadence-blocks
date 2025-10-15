@@ -117,6 +117,8 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .kb-post-list-item' );
+		$css->add_property( 'display', 'grid' );
 
 		return $css->css_output();
 	}

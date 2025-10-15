@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.8.2
-Stable tag: 3.5.23
+Tested up to: 6.8.3
+Stable tag: 3.5.24
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,13 +173,20 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+= 3.5.24 =
+Release Date: 10th October 2025
+* Fix: issue with accordion heading style active and hover selectors.
+
 = 3.5.23 =
 Release Date: 9th October 2025
-* Fix: Hover color on nested sections in the editor.
 * Update: Table of Contents will now ignore conditionally hidden headings.
-* Fix: Kadence Blocks Controls use custom color palette only option.
 * Update: Add tabindex to tippy tooltips and update the role to a tooltip.
-* Fix: Increased specificity for some Accordion block styles for better block theme support.
+* Update: Advanced form file upload limit options all the way up to your PHP limit.
+* Update: Add support for Webp images as a supported filetype in advanced form uploads.
+* Fix: Issue with nested tabs blocks.
+* Fix: Hover color on nested sections in the editor.
+* Fix: Kadence Blocks Controls use custom color palette only option.
+* Fix: Increased specificity for some Accordion block styles to fix issue in FSE themes.
 * Fix: Posts block equal heights.
 
 = 3.5.22 =

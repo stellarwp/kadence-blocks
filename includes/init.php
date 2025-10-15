@@ -528,14 +528,16 @@ add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );
  * @return void
  */
 function kadence_blocks_register_api_endpoints() {
+	if( !defined( 'KADENCE_FORMS_VERSION' ) ) {
+		$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
+		$mailerlite_controller->register_routes();
+		$getresponse_controller = new Kadence_GetResponse_REST_Controller();
+		$getresponse_controller->register_routes();
+		$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
+		$fluentcrm_controller->register_routes();
+	}
 	$posts_controller = new Kadence_Blocks_Post_Rest_Controller();
 	$posts_controller->register_routes();
-	$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
-	$mailerlite_controller->register_routes();
-	$getresponse_controller = new Kadence_GetResponse_REST_Controller();
-	$getresponse_controller->register_routes();
-	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
-	$fluentcrm_controller->register_routes();
 	$lottieanimation_controller_get = new Kadence_LottieAnimation_get_REST_Controller();
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
