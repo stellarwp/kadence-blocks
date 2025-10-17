@@ -17,9 +17,12 @@ final class Path_Factory {
 	 * @return Path
 	 */
 	public function make(): Path {
-		$uri = SG::get_server_var( 'REQUEST_URI' );
+		$uri = SG::get_server_var( 'REQUEST_URI', '/' );
 
-		$path = wp_parse_url( $uri, PHP_URL_PATH ) ?? '/';
+		// Normalize duplicate slashes in the path portion.
+		$normalized_uri = preg_replace( '#/{2,}#', '/', $uri );
+
+		$path = wp_parse_url( $normalized_uri, PHP_URL_PATH ) ?: '/';
 
 		return new Path( $path );
 	}
