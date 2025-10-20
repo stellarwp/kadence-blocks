@@ -153,9 +153,9 @@ function CloudSections({ importContent, clientId, reload = false, onReload, onLi
 					// Check if the content is an array of objects.
 					if ('page' === type && tempContent?.rows) {
 						pattern.content = StitchPageContent(tempContent.rows);
-					} else if ( tempContent?.content ) {
+					} else if (tempContent?.content) {
 						pattern.content = tempContent.content;
-						if ( tempContent?.cpt_blocks ) {
+						if (tempContent?.cpt_blocks) {
 							pattern.cpt_blocks = tempContent.cpt_blocks;
 						}
 					} else {
