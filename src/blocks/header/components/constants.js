@@ -329,9 +329,11 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 				'The Header (adv) Block has many options to customize and extend your header. Keep reading to learn more or close this to get started. You can always read the',
 				'kadence-blocks'
 			) +
+			' ' +
 			'<a tabindex="-1" target="_blank" href="https://www.kadencewp.com/help-center/docs/kadence-blocks/the-kadence-header-adv-block/">' +
 			__('documentation', 'kadence-blocks') +
 			'</a>' +
+			' ' +
 			__('later.', 'kadence-blocks'),
 	},
 	'add-logo': {
