@@ -176,6 +176,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.25 =
 Release Date: 23rd October 2025
 * Update: default headers admin tab to not show. New Setting to control it's display
+* Update: Improve support for Count up & Count down block in Slider
+* Fix: Turnstile Kadence Captcha prevent from placing order
+* Fix: Row Layout Mobile Collapse Not Working Properly
 
 = 3.5.24 =
 Release Date: 10th October 2025
