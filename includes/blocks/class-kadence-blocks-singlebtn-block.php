@@ -344,10 +344,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['tooltip'] ) ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
+
+		$inheritClassSuffix = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'inherit' : $attributes['inheritStyles'];
+
 		$classes   = [ 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id ];
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
-		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $attributes['inheritStyles'] : 'kb-btn-global-fill';
+		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $inheritClassSuffix : 'kb-btn-global-fill';
+		$classes[] = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'button-style-secondary' : '';
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
@@ -355,7 +359,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
 		}
-		if ( ! empty( $attributes['inheritStyles'] ) && 'inherit' === $attributes['inheritStyles'] ) {
+		if ( ! empty( $attributes['inheritStyles'] ) && ('inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles']) ) {
 			$classes[] = 'wp-block-button__link';
 		}
 		$wrapper_args = [
