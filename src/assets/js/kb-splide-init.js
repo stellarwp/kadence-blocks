@@ -23,10 +23,14 @@
 			}
 
 			for (let i = 0; i < elementList.length; i++) {
-				const thisSlider = elementList[i];
+				let thisSlider = elementList[i];
 				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
 					continue;
 				}
+
+				// Convert UL parent to div if needed
+				thisSlider = this.convertUlToDiv(thisSlider);
+
 				thisSlider.classList.add('kb-splide');
 
 				const slideCount = this.createSplideElements(thisSlider);
@@ -51,14 +55,14 @@
 				const { sliderType } = parsedData;
 
 				if (sliderType && sliderType === 'fluidcarousel') {
-					elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
-						if (!elementList[i].clientWidth) {
+					thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
+						if (!thisSlider.clientWidth) {
 							elem.style.maxWidth = '100%';
 						} else {
-							elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
+							elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
 						}
 					});
-					const childCount = elementList[i].querySelectorAll('.kb-slide-item').length;
+					const childCount = thisSlider.querySelectorAll('.kb-slide-item').length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
@@ -103,8 +107,8 @@
 					window.addEventListener('resize', function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
-							elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
-								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
+							thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
+								elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
 							});
 						}, 10);
 					});
@@ -389,6 +393,28 @@
 			}
 
 			return splideOpts;
+		},
+
+		convertUlToDiv(element) {
+			if (element.tagName.toLowerCase() === 'ul') {
+				const divElement = document.createElement('div');
+				
+				// Copy all attributes
+				Array.from(element.attributes).forEach(attr => {
+					divElement.setAttribute(attr.name, attr.value);
+				});
+				
+				// Copy all children elements
+				while (element.firstChild) {
+					divElement.appendChild(element.firstChild);
+				}
+				
+				// Replace the UL with the div
+				element.parentNode.replaceChild(divElement, element);
+				
+				return divElement;
+			}
+			return element;
 		},
 
 		// Initiate the menus when the DOM loads.
