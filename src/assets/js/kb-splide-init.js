@@ -398,20 +398,20 @@
 		convertUlToDiv(element) {
 			if (element.tagName.toLowerCase() === 'ul') {
 				const divElement = document.createElement('div');
-				
+
 				// Copy all attributes
-				Array.from(element.attributes).forEach(attr => {
+				Array.from(element.attributes).forEach((attr) => {
 					divElement.setAttribute(attr.name, attr.value);
 				});
-				
+
 				// Copy all children elements
 				while (element.firstChild) {
 					divElement.appendChild(element.firstChild);
 				}
-				
+
 				// Replace the UL with the div
 				element.parentNode.replaceChild(divElement, element);
-				
+
 				return divElement;
 			}
 			return element;
