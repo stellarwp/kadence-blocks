@@ -1005,7 +1005,7 @@ function KadenceAdvancedHeading(props) {
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
 				backgroundColor:
-					!enableTextGradient && background && backgroundIgnoreClass
+					!enableTextGradient && background && (backgroundIgnoreClass || isPaletteColor)
 						? KadenceColorOutput(background)
 						: undefined,
 				backgroundImage: enableTextGradient && textGradient !== '' ? textGradient : undefined,
