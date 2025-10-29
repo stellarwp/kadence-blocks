@@ -823,8 +823,10 @@ function KadenceAdvancedHeading(props) {
 	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
-	const isPaletteColor = (background && background.startsWith('palette')) || 
-						(backgroundColorClass && (backgroundColorClass.startsWith('theme-palette') || backgroundColorClass.startsWith('kb-palette')));
+	const isPaletteColor =
+		(background && background.startsWith('palette')) ||
+		(backgroundColorClass &&
+			(backgroundColorClass.startsWith('theme-palette') || backgroundColorClass.startsWith('kb-palette')));
 	if (!backgroundIgnoreClass && !kadence_blocks_params.isKadenceT && isPaletteColor) {
 		backgroundIgnoreClass = true;
 	}
