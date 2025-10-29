@@ -1006,10 +1006,11 @@ function KadenceAdvancedHeading(props) {
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
-				backgroundColor:
-					!enableTextGradient && background && (backgroundIgnoreClass || isPaletteColor)
-						? KadenceColorOutput(background)
-						: undefined,
+				backgroundColor: !enableTextGradient && (background && backgroundIgnoreClass || isPaletteColor) 
+					? (isPaletteColor && backgroundColorClass 
+						? 'var(--global-' + backgroundColorClass.replace('kb-', '').replace('theme-', '') + ')' 
+						: KadenceColorOutput(background))
+					: undefined,
 				backgroundImage: enableTextGradient && textGradient !== '' ? textGradient : undefined,
 				paddingTop:
 					'' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined,
