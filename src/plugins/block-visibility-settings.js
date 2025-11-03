@@ -51,15 +51,18 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options, icon, showBl
 	};
 
 	const saveConfigState = (key, value) => {
-		const config = settings;
+		setSettings((prevSettings) => {
+			const config = { ...prevSettings };
 
-		if (!config['kadence/' + blockSlug]) {
-			config['kadence/' + blockSlug] = {};
-		}
-		config['kadence/' + blockSlug][key] = value;
+			if (!config['kadence/' + blockSlug]) {
+				config['kadence/' + blockSlug] = {};
+			}
+			config['kadence/' + blockSlug] = { ...config['kadence/' + blockSlug], [key]: value };
+
+			return config;
+		});
 
 		setHasChanges(true);
-		setSettings(config);
 	};
 
 	const resetSettings = () => {

@@ -1660,52 +1660,54 @@ function KadenceTabs(props) {
 									</TabPanel>
 								</KadencePanelBody>
 							)}
-							{showSettings('subtitle', 'kadence/tabs') && enableSubtitle && (
-								<KadencePanelBody
-									title={__('Tab Subtitle Color Settings', 'kadence-blocks')}
-									panelName={'kb-tab-subtitle-color'}
-								>
-									<TabPanel
-										className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-										activeClass="active-tab"
-										tabs={[
-											{
-												name: 'normal',
-												title: __('Normal', 'kadence-blocks'),
-												className: 'kt-normal-tab',
-											},
-											{
-												name: 'hover',
-												title: __('Hover', 'kadence-blocks'),
-												className: 'kt-hover-tab',
-											},
-											{
-												name: 'active',
-												title: __('Active', 'kadence-blocks'),
-												className: 'kt-active-tab',
-											},
-										]}
+							{showSettings('titleColor', 'kadence/tabs') &&
+								showSettings('subtitle', 'kadence/tabs') &&
+								enableSubtitle && (
+									<KadencePanelBody
+										title={__('Tab Subtitle Color Settings', 'kadence-blocks')}
+										panelName={'kb-tab-subtitle-color'}
 									>
-										{(tab) => {
-											let tabout;
-											if (tab.name) {
-												if ('hover' === tab.name) {
-													tabout = subtitleHoverSettings;
-												} else if ('active' === tab.name) {
-													tabout = subtitleActiveSettings;
-												} else {
-													tabout = subtitleNormalSettings;
+										<TabPanel
+											className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={[
+												{
+													name: 'normal',
+													title: __('Normal', 'kadence-blocks'),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __('Hover', 'kadence-blocks'),
+													className: 'kt-hover-tab',
+												},
+												{
+													name: 'active',
+													title: __('Active', 'kadence-blocks'),
+													className: 'kt-active-tab',
+												},
+											]}
+										>
+											{(tab) => {
+												let tabout;
+												if (tab.name) {
+													if ('hover' === tab.name) {
+														tabout = subtitleHoverSettings;
+													} else if ('active' === tab.name) {
+														tabout = subtitleActiveSettings;
+													} else {
+														tabout = subtitleNormalSettings;
+													}
 												}
-											}
-											return (
-												<div className={tab.className} key={tab.className}>
-													{tabout}
-												</div>
-											);
-										}}
-									</TabPanel>
-								</KadencePanelBody>
-							)}
+												return (
+													<div className={tab.className} key={tab.className}>
+														{tabout}
+													</div>
+												);
+											}}
+										</TabPanel>
+									</KadencePanelBody>
+								)}
 							{showSettings('titleSpacing', 'kadence/tabs') && (
 								<KadencePanelBody
 									title={__('Tab Title Width/Spacing/Border', 'kadence-blocks')}
@@ -2154,7 +2156,7 @@ function KadenceTabs(props) {
 											setAttributes({ enableSubtitle: value });
 										}}
 									/>
-									{enableSubtitle && (
+									{showSettings('titleFont', 'kadence/tabs') && enableSubtitle && (
 										<TypographyControls
 											fontGroup={'body'}
 											fontSize={
