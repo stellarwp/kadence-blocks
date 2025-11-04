@@ -728,6 +728,13 @@ function KadenceAdvancedHeading(props) {
 		maxHeight && maxHeight[2] ? maxHeight[2] : ''
 	);
 
+	const previewInlineImageWidth = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : ''
+	);
+
 	const previewMarkBorderTopStyle = getBorderStyle(
 		previewDevice,
 		'top',
@@ -1329,7 +1336,7 @@ function KadenceAdvancedHeading(props) {
 						}
 					}`}
 				{`.kt-adv-heading${uniqueID} img.kb-inline-image {
-						width: ${undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150}px;
+						width: ${previewInlineImageWidth}px;
 						vertical-align: ${inlineImageVerticalAlign || 'baseline'};
 						border-top: ${previewInlineImageBorderTopStyle ? previewInlineImageBorderTopStyle : 'inherit'};
 						border-right: ${previewInlineImageBorderRightStyle ? previewInlineImageBorderRightStyle : 'inherit'};

@@ -376,9 +376,12 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		// Inline Image.
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' img.kb-inline-image, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] img.kb-inline-image' );
-		if ( ! empty( $attributes['inlineImageWidth'][0] ) ) {
-			$css->add_property( 'width', $attributes['inlineImageWidth'][0] . 'px' );
+		// Ensure default value if inlineImageWidth desktop value is not set or empty.
+		if ( empty( $attributes['inlineImageWidth'] ) || ! is_array( $attributes['inlineImageWidth'] ) || ! isset( $attributes['inlineImageWidth'][0] ) || ! is_numeric( $attributes['inlineImageWidth'][0] ) ) {
+			$css->add_property( 'width', '150px' );
 		}
+		// Render responsive range will handle desktop, tablet, and mobile if values are set.
+		$css->render_responsive_range( $attributes, 'inlineImageWidth', 'width' );
 		if ( ! empty( $attributes['inlineImageVerticalAlign'] ) ) {
 			$css->add_property( 'vertical-align', $attributes['inlineImageVerticalAlign'] );
 		}

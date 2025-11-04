@@ -61,7 +61,6 @@ export const kadenceInlineImage = {
 						const imageData = {
 							url: url,
 							alt: alt || '',
-							width: Math.min(imgWidth || 150, 150),
 							borderRadius: 0,
 							borderWidth: 0,
 							borderStyle: 'solid',
