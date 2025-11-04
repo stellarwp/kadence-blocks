@@ -132,6 +132,74 @@ final class HashHandlerTest extends TestCase {
 		$this->assertEquals( $hash, $this->hash_store->get( $this->path, Viewport::desktop() ) );
 	}
 
+	public function testItFallsBackToRootWithEmptyRequestUri(): void {
+		$_SERVER['REQUEST_URI'] = '';
+
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->build_hash( $html );
+		$analysis = $this->create_test_analysis();
+
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $hash ) );
+		$this->store->set( $this->path, $analysis );
+
+		$this->hash_handler->start_buffering();
+
+		echo $html;
+
+		// Clear the current output buffer.
+		ob_get_clean();
+
+		// Assert the correct hash was set.
+		add_action(
+			'kadence_blocks_optimizer_set_hash',
+			function ( string $set_hash, Path $path, Viewport $viewport ) use ( $hash ): void {
+				$this->assertSame( $hash, $set_hash );
+				$this->assertEquals( $this->path, $path );
+				$this->assertEquals( Viewport::desktop(), $viewport );
+			},
+			10,
+			3
+		);
+
+		$this->hash_handler->check_hash();
+
+		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 1 );
+	}
+
+	public function testItFallsBackToRootWithoutARequestUri(): void {
+		unset( $_SERVER['REQUEST_URI'] );
+
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->build_hash( $html );
+		$analysis = $this->create_test_analysis();
+
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $hash ) );
+		$this->store->set( $this->path, $analysis );
+
+		$this->hash_handler->start_buffering();
+
+		echo $html;
+
+		// Clear the current output buffer.
+		ob_get_clean();
+
+		// Assert the correct hash was set.
+		add_action(
+			'kadence_blocks_optimizer_set_hash',
+			function ( string $set_hash, Path $path, Viewport $viewport ) use ( $hash ): void {
+				$this->assertSame( $hash, $set_hash );
+				$this->assertEquals( $this->path, $path );
+				$this->assertEquals( Viewport::desktop(), $viewport );
+			},
+			10,
+			3
+		);
+
+		$this->hash_handler->check_hash();
+
+		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 1 );
+	}
+
 	public function testItInvalidatesAnalysisData(): void {
 		$html     = '<html><body>Test content</body></html>';
 		$analysis = $this->create_test_analysis();
@@ -160,28 +228,6 @@ final class HashHandlerTest extends TestCase {
 		// Although this record still exists, our decorator will make it return null.
 		$this->assertNull( $this->store->get( $this->path ) );
 		$this->assertNull( $this->hash_store->get( $this->path, Viewport::desktop() ) );
-	}
-
-	public function testItBypassesHashCheckWithoutARequestUri(): void {
-		$_SERVER['REQUEST_URI'] = '';
-
-		$html     = '<html><body>Test content</body></html>';
-		$hash     = $this->hasher->build_hash( $html );
-		$analysis = $this->create_test_analysis();
-
-		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $hash ) );
-		$this->store->set( $this->path, $analysis );
-
-		$this->hash_handler->start_buffering();
-
-		echo $html;
-
-		// Clear the current output buffer.
-		ob_get_clean();
-
-		$this->hash_handler->check_hash();
-
-		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 0 );
 	}
 
 	public function testItBypassesHashCheckDuringOptimizerRequest(): void {
