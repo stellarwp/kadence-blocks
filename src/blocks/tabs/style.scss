@@ -13,7 +13,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         list-style: none;
         li {
             list-style: none;
-            a.kt-tab-title {
+            button.kt-tab-title {
                 width: auto;
             }
         }
@@ -34,7 +34,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
             margin: 0 4px -1px 0;
             cursor: pointer;
             list-style: none;
-            a.kt-tab-title {
+            button.kt-tab-title {
                 padding: 8px 16px;
                 display:flex;
                 color: var(--global-palette5, #444444);
@@ -47,6 +47,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
 				text-decoration: none;
 				transition: all .2s ease-in-out;
                 height: 100%;
+				cursor: pointer;
 				&:focus {
 					text-decoration: none;
 				}
@@ -119,6 +120,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         border-top-right-radius: 4px;
         transition: all .2s ease-in-out;
 		text-decoration: none;
+		cursor: pointer;
     }
     &.kt-tab-title-active {
         z-index: 4;

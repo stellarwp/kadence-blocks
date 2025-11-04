@@ -61,7 +61,6 @@ function KadenceTabsSave({ attributes }) {
 		}`;
 		return (
 			<li
-				id={titles[index] && titles[index].anchor ? titles[index].anchor : backupAnchor}
 				className={`kt-title-item kt-title-item-${1 + index} kt-tabs-svg-show-${
 					titles[index] && titles[index].onlyIcon ? 'only' : 'always'
 				} kt-tabs-icon-side-${
@@ -70,8 +69,9 @@ function KadenceTabsSave({ attributes }) {
 					enableSubtitle ? ' kb-tabs-have-subtitle' : ''
 				}`}
 			>
-				<a
-					href={`#${titles[index] && titles[index].anchor ? titles[index].anchor : backupAnchor}`}
+				<button
+					type="button"
+					data-anchor={titles[index] && titles[index].anchor ? titles[index].anchor : backupAnchor}
 					data-tab={1 + index}
 					className={`kt-tab-title kt-tab-title-${1 + index} `}
 				>
@@ -127,7 +127,7 @@ function KadenceTabsSave({ attributes }) {
 							size={!iSize ? '14' : iSize}
 						/>
 					)}
-				</a>
+				</button>
 			</li>
 		);
 	};
