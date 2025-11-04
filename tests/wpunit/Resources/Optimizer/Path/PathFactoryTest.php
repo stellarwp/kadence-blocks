@@ -9,15 +9,21 @@ use Tests\Support\Classes\TestCase;
 final class PathFactoryTest extends TestCase {
 
 	private Path_Factory $path_factory;
+	private ?string $request_uri_cache;
 
 	protected function setUp(): void {
 		parent::setUp();
+
+		$this->request_uri_cache = $_SERVER['REQUEST_URI'] ?? null;
 
 		$this->path_factory = $this->container->get( Path_Factory::class );
 	}
 
 	protected function tearDown(): void {
-		unset( $_SERVER['REQUEST_URI'] );
+		// Restore the original REQUEST_URI.
+		if ( isset( $this->request_uri_cache ) ) {
+			$_SERVER['REQUEST_URI'] = $this->request_uri_cache;
+		}
 
 		parent::tearDown();
 	}
