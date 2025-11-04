@@ -23,15 +23,12 @@ final class HashHandlerTest extends TestCase {
 	private Hash_Store $hash_store;
 	private int $post_id;
 	private Path $path;
-	private ?string $request_uri_cache;
 
 	protected function setUp(): void {
 		// Remove all existing shutdown actions to prevent hook interference with output buffering.
 		remove_all_actions( 'shutdown' );
 
 		parent::setUp();
-
-		$this->request_uri_cache = $_SERVER['REQUEST_URI'] ?? null;
 
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
@@ -60,11 +57,6 @@ final class HashHandlerTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
-		// Restore the original REQUEST_URI.
-		if ( isset( $this->request_uri_cache ) ) {
-			$_SERVER['REQUEST_URI'] = $this->request_uri_cache;
-		}
-
 		// Clean up test data.
 		if ( $this->post_id ) {
 			$this->store->delete( $this->path );
