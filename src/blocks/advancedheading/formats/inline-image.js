@@ -1,10 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerFormatType, insertObject } from '@wordpress/rich-text';
-import {
-	RichTextToolbarButton,
-	MediaUpload,
-	MediaUploadCheck,
-} from '@wordpress/block-editor';
+import { RichTextToolbarButton, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { image } from '@wordpress/icons';
 
@@ -59,7 +55,7 @@ export const kadenceInlineImage = {
 					allowedTypes={ALLOWED_MEDIA_TYPES}
 					onSelect={({ id, url, alt, width: imgWidth }) => {
 						const imageData = {
-							url: url,
+							url,
 							alt: alt || '',
 							borderRadius: 0,
 							borderWidth: 0,
@@ -83,7 +79,11 @@ export const kadenceInlineImage = {
 					render={({ open }) => (
 						<RichTextToolbarButton
 							icon={image}
-							title={isObjectActive ? __('Replace image', 'kadence-blocks') : __('Adv Inline Image', 'kadence-blocks')}
+							title={
+								isObjectActive
+									? __('Replace image', 'kadence-blocks')
+									: __('Adv Inline Image', 'kadence-blocks')
+							}
 							onClick={open}
 							isActive={isObjectActive}
 							className={`toolbar-button-with-text toolbar-button__${name}`}
