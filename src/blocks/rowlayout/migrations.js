@@ -460,10 +460,10 @@ export function runRowLayoutMigrations(attributes, setAttributes) {
 	migrateMarginSettings(attributes, setAttributes);
 	migrateGradientSettings(attributes, setAttributes);
 	migrateBorderSettings(attributes, setAttributes);
-
 	// Update version
 	const { kbVersion } = attributes;
 	if (!kbVersion || kbVersion < 2) {
+		attributes.kbVersion = 2;
 		setAttributes({ kbVersion: 2 });
 	}
 }

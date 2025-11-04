@@ -131,6 +131,23 @@
 						drag: childCount > 1 ? splideOptions.drag : false,
 						clones: childCount > 1 ? undefined : 0, // Toggle clones
 					});
+					splideSlider.on('pagination:mounted', function () {
+						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+						paginationButtons.forEach(function (button) {
+							button.addEventListener('keydown', function (event) {
+								// Check if space bar or return/enter is pressed
+								if (event.key === ' ' || event.key === 'Enter') {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+									if (activeSlide) {
+										activeSlide.setAttribute('tabindex', '0');
+										activeSlide.focus();
+									}
+								}
+							});
+						});
+					});
 					// splideSlider.on( 'overflow', function ( isOverflow ) {
 					// 	// Reset the carousel position
 					// 	splideSlider.go( 0 );
@@ -143,6 +160,7 @@
 					// 	};
 					// } );
 					splideSlider.mount();
+
 					var resizeTimer;
 					window.addEventListener('resize', function (e) {
 						clearTimeout(resizeTimer);
@@ -166,6 +184,23 @@
 							pagination: slideCount === 1 ? false : splideOptions.pagination,
 							drag: slideCount === 1 ? false : splideOptions.drag,
 						};
+					});
+					splideSlider.on('pagination:mounted', function () {
+						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+						paginationButtons.forEach(function (button) {
+							button.addEventListener('keydown', function (event) {
+								// Check if space bar or return/enter is pressed
+								if (event.key === ' ' || event.key === 'Enter') {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+									if (activeSlide) {
+										activeSlide.setAttribute('tabindex', '0');
+										activeSlide.focus();
+									}
+								}
+							});
+						});
 					});
 					splideSlider.mount();
 				} else if (sliderType && sliderType === 'thumbnail') {
@@ -231,6 +266,23 @@
 							};
 						});
 					}
+					splideSlider.on('pagination:mounted', function () {
+						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+						paginationButtons.forEach(function (button) {
+							button.addEventListener('keydown', function (event) {
+								// Check if space bar or return/enter is pressed
+								if (event.key === ' ' || event.key === 'Enter') {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+									if (activeSlide) {
+										activeSlide.setAttribute('tabindex', '0');
+										activeSlide.focus();
+									}
+								}
+							});
+						});
+					});
 					splideSlider.mount();
 				} else {
 					const splideSlider = new Splide(thisSlider, splideOptions);
@@ -247,6 +299,23 @@
 							};
 						});
 					}
+					splideSlider.on('pagination:mounted', function () {
+						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+						paginationButtons.forEach(function (button) {
+							button.addEventListener('keydown', function (event) {
+								// Check if space bar or return/enter is pressed
+								if (event.key === ' ' || event.key === 'Enter') {
+									event.preventDefault();
+									var activeSlideIndex = splideSlider?.index || 0;
+									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+									if (activeSlide) {
+										activeSlide.setAttribute('tabindex', '0');
+										activeSlide.focus();
+									}
+								}
+							});
+						});
+					});
 					splideSlider.mount();
 				}
 			}
@@ -268,9 +337,19 @@
 		},
 
 		createSplideElements(wrapperElem) {
-			const slideCount = wrapperElem.children.length;
+			// Extract the pause button if it exists
+			const pauseButton = wrapperElem.querySelector('.kb-gallery-pause-button');
+			if (pauseButton) {
+				pauseButton.remove();
+			}
+
+			let slideCount = 0;
 			for (const slide of wrapperElem.children) {
-				slide.classList.add('splide__slide');
+				// Only add slide class to actual slides, not the pause button
+				if (!slide.classList.contains('kb-gallery-pause-button')) {
+					slide.classList.add('splide__slide');
+					slideCount++;
+				}
 				//slide.classList.add("slick-slide");
 				if (slide.classList.contains('last')) {
 					slide.classList.remove('last');
@@ -289,6 +368,12 @@
 			// The track goes inside them argument elem
 			wrapperElem.innerHTML = splideTrack.outerHTML;
 			wrapperElem.classList.add('splide');
+
+			// Re-append the pause button after the track
+			if (pauseButton) {
+				wrapperElem.appendChild(pauseButton);
+			}
+
 			return slideCount;
 		},
 

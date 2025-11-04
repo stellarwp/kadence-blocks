@@ -981,12 +981,13 @@
 			for (let i = 0, len = accordionsArray.length; i < len; i++) {
 				const multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
 				const openPanels = accordionsArray[i].getAttribute('data-start-open');
-				let openPanel = parseInt(openPanels);
+				let openPanel;
 				if (openPanels !== 'none') {
+					openPanel = 0;
 					for (let b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
 						if (
 							accordionsArray[i].children[b].classList.contains(
-								'kt-accordion-pane-' + parseInt(1 + openPanel)
+								'kt-accordion-pane-' + parseInt(1 + parseInt(openPanels))
 							)
 						) {
 							openPanel = b;
@@ -996,7 +997,7 @@
 				}
 				accordionsArray[i].addEventListener('initialized', window.KadenceBlocksAccordion.anchor, false);
 				new KadenceAccordion(accordionsArray[i], {
-					openHeadersOnLoad: openPanels === 'none' ? [] : [parseInt(openPanel)],
+					openHeadersOnLoad: openPanel || parseInt(openPanel) === 0 ? [parseInt(openPanel)] : [],
 					headerClass: '.kt-blocks-accordion-header',
 					panelClass: '.kt-accordion-panel',
 					panelInnerClass: '.kt-accordion-panel-inner',
@@ -1011,13 +1012,14 @@
 					},
 				});
 			}
-			window.addEventListener('hashchange', window.KadenceBlocksAccordion.anchor, false);
-
-			window.addEventListener('kb-query-loaded', () => {
-				window.KadenceBlocksAccordion.init();
-			});
 		},
 	};
+
+	window.addEventListener('hashchange', window.KadenceBlocksAccordion.anchor, false);
+	window.addEventListener('kb-query-loaded', () => {
+		window.KadenceBlocksAccordion.init();
+	});
+
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
 		document.addEventListener('DOMContentLoaded', window.KadenceBlocksAccordion.init);

@@ -218,6 +218,15 @@
 		"titleBorderActive": {
 			"type": "string"
 		},
+		"subtitleColor": {
+			"type": "string"
+		},
+		"subtitleColorHover": {
+			"type": "string"
+		},
+		"subtitleColorActive": {
+			"type": "string"
+		},
 		"titleBorderWidth": {
 			"type": "array",
 			"default": ["", "", "", ""]

@@ -82,7 +82,8 @@
 		font-size: var(--kb-form-font-size, 1rem);
 		line-height: var(--kb-form-line-height, 1.6);
 		border-radius: var(--kb-form-border-radius, 3px);
-		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+		background:
+			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
 				no-repeat calc(100% - 6px) 50%,
 			var(--kb-form-background-color, var(--global-palette9, #fff));
 		-moz-appearance: none;
@@ -102,7 +103,8 @@
 	select:focus {
 		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a)));
 		border-color: var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70));
-		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+		background:
+			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
 				no-repeat calc(100% - 6px) 50%,
 			var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff)));
 		box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.1);
@@ -218,14 +220,17 @@
 		transition: background 0.2s ease-in-out;
 	}
 	.kb-adv-form-help {
-		color: var(--kb-form-help-color, var(--global-palette6, #777));
+		color: var(--kb-form-help-color, var(--global-palette5, #474748));
 		margin: 2px 0 2px 0;
 		font-size: 80%;
 		font-style: italic;
 		display: block;
 	}
-	input.has-error:not(:focus):invalid {
-		border-color: var(--kb-form-error-color, #be001b) !important;
+	input,
+	textarea {
+		&.has-error:not(:focus):invalid {
+			border-color: var(--kb-form-error-color, #be001b) !important;
+		}
 	}
 	* {
 		box-sizing: border-box;
@@ -388,6 +393,16 @@
 	width: 100%;
 	margin-top: 3px;
 	color: var(--kb-form-error-color, #be001b);
+	h2.kb-adv-form-error-title {
+		font-size: 1rem;
+		font-weight: bold;
+		color: inherit;
+		margin-top: 0;
+		margin-bottom: 0.5em;
+	}
+	ol.kb-adv-form-field-errors > li {
+		list-style-type: disc;
+	}
 }
 .kb-form-is-dark {
 	--kb-form-error-color: #fff;
@@ -401,6 +416,10 @@
 }
 .kb-adv-form-message.kb-adv-form-warning {
 	padding: 1em;
+}
+.kb-adv-form-message {
+	margin-bottom: 3px;
+	margin-top: 0px;
 }
 
 // .kb-adv-form-error-msg {

@@ -51,7 +51,6 @@ import {
 	getPreviewSize,
 	KadenceColorOutput,
 	showSettings,
-	setBlockDefaults,
 	mouseOverVisualizer,
 	getGapSizeOptionOutput,
 	getSpacingOptionOutput,
@@ -150,6 +149,7 @@ function KadenceTestimonials(props) {
 		columnGap,
 		autoPlay,
 		autoSpeed,
+		showPauseButton,
 		transSpeed,
 		slidesScroll,
 		arrowStyle,
@@ -289,8 +289,6 @@ function KadenceTestimonials(props) {
 	};
 
 	useEffect(() => {
-		setBlockDefaults(metadata.name, attributes);
-
 		// Update from old gutter settings.
 		if (columnGap !== '') {
 			setAttributes({ gap: [columnGap, '', ''], columnGap: '' });
@@ -2283,14 +2281,27 @@ function KadenceTestimonials(props) {
 													onChange={(value) => setAttributes({ autoPlay: value })}
 												/>
 												{autoPlay && (
-													<RangeControl
-														label={__('Autoplay Speed', 'kadence-blocks')}
-														value={autoSpeed}
-														onChange={(value) => setAttributes({ autoSpeed: value })}
-														min={0}
-														max={15000}
-														step={10}
-													/>
+													<>
+														<RangeControl
+															label={__('Autoplay Speed', 'kadence-blocks')}
+															value={autoSpeed}
+															onChange={(value) => setAttributes({ autoSpeed: value })}
+															min={0}
+															max={15000}
+															step={10}
+														/>
+														<ToggleControl
+															label={__('Show Pause Button', 'kadence-blocks')}
+															checked={showPauseButton}
+															onChange={(value) =>
+																setAttributes({ showPauseButton: value })
+															}
+															help={__(
+																'Display a pause/play button in the bottom right corner.',
+																'kadence-blocks'
+															)}
+														/>
+													</>
 												)}
 												<RangeControl
 													label={__('Carousel Slide Transition Speed', 'kadence-blocks')}
@@ -3590,6 +3601,37 @@ function KadenceTestimonials(props) {
 							hasTrack={false}
 						>
 							<SplideTrack {...innerBlocksProps}></SplideTrack>
+							{autoPlay && showPauseButton && (
+								<button
+									className="kb-gallery-pause-button splide__toggle"
+									type="button"
+									aria-label={__('Toggle autoplay', 'kadence-blocks')}
+								>
+									<span className="kb-gallery-pause-icon splide__toggle__pause">
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect x="6" y="4" width="4" height="16" fill="currentColor" />
+											<rect x="14" y="4" width="4" height="16" fill="currentColor" />
+										</svg>
+									</span>
+									<span className="kb-gallery-play-icon splide__toggle__play">
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path d="M8 5v14l11-7z" fill="currentColor" />
+										</svg>
+									</span>
+								</button>
+							)}
 						</Splide>
 					)}
 					{layout && layout === 'grid' && (

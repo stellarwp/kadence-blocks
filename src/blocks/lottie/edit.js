@@ -7,8 +7,7 @@
  */
 import './editor.scss';
 import metadata from './block.json';
-
-import '@dotlottie/player-component';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 /**
  * Internal block libraries
@@ -47,13 +46,24 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import {
-	setBlockDefaults,
-	mouseOverVisualizer,
-	getSpacingOptionOutput,
-	uniqueIdHelper,
-	getPreviewSize,
-} from '@kadence/helpers';
+import { mouseOverVisualizer, getSpacingOptionOutput, uniqueIdHelper, getPreviewSize } from '@kadence/helpers';
+
+/**
+ * Lottie Animation Component
+ */
+function LottieAnimation({ playerProps, animationUrl, uniqueID, rerenderKey, useRatio, previewMaxWidth }) {
+	return (
+		<DotLottieReact
+			{...playerProps}
+			src={animationUrl}
+			key={rerenderKey}
+			id={'kb-lottie-player' + uniqueID}
+			style={{
+				maxWidth: !useRatio ? previewMaxWidth : null,
+			}}
+		/>
+	);
+}
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
@@ -171,10 +181,6 @@ export function Edit(props) {
 		className: classes,
 	});
 
-	useEffect(() => {
-		setBlockDefaults('kadence/lottie', attributes);
-	}, []);
-
 	uniqueIdHelper(props);
 	const containerClasses = classnames({
 		'kb-lottie-container': true,
@@ -282,23 +288,19 @@ export function Edit(props) {
 	const playerProps = {};
 
 	if (loop) {
-		playerProps.loop = '';
+		playerProps.loop = true;
 	}
 
 	if (playbackSpeed) {
 		playerProps.speed = playbackSpeed;
 	}
 
-	if (showControls) {
-		playerProps.controls = '';
-	}
-
 	if (autoplay) {
-		playerProps.autoplay = '';
+		playerProps.autoplay = true;
 	}
 
 	if (onlyPlayOnHover) {
-		playerProps.hover = '';
+		playerProps.playOnHover = true;
 	}
 
 	if (bouncePlayback) {
@@ -307,64 +309,7 @@ export function Edit(props) {
 		playerProps.mode = 'normal';
 	}
 
-	if (delay !== 0) {
-		playerProps.intermission = 1000 * delay;
-	}
-
 	const previewMaxWidth = width === '0' ? 'auto' : width + 'px';
-
-	const animationContent = (
-		<>
-			<dotlottie-player
-				{...playerProps}
-				src={getAnimationUrl()}
-				key={rerenderKey}
-				id={'kb-lottie-player' + uniqueID}
-				style={{
-					maxWidth: !useRatio ? previewMaxWidth : null,
-				}}
-			/>
-
-			<SpacingVisualizer
-				style={{
-					marginLeft:
-						undefined !== previewMarginLeft
-							? getSpacingOptionOutput(previewMarginLeft, marginUnit)
-							: undefined,
-					marginRight:
-						undefined !== previewMarginRight
-							? getSpacingOptionOutput(previewMarginRight, marginUnit)
-							: undefined,
-					marginTop:
-						undefined !== previewMarginTop
-							? getSpacingOptionOutput(previewMarginTop, marginUnit)
-							: undefined,
-					marginBottom:
-						undefined !== previewMarginBottom
-							? getSpacingOptionOutput(previewMarginBottom, marginUnit)
-							: undefined,
-				}}
-				type="inside"
-				forceShow={paddingMouseOver.isMouseOver}
-				spacing={[
-					getSpacingOptionOutput(previewPaddingTop, paddingUnit),
-					getSpacingOptionOutput(previewPaddingRight, paddingUnit),
-					getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
-					getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
-				]}
-			/>
-			<SpacingVisualizer
-				type="outside"
-				forceShow={marginMouseOver.isMouseOver}
-				spacing={[
-					getSpacingOptionOutput(previewMarginTop, marginUnit),
-					getSpacingOptionOutput(previewMarginRight, marginUnit),
-					getSpacingOptionOutput(previewMarginBottom, marginUnit),
-					getSpacingOptionOutput(previewMarginLeft, marginUnit),
-				]}
-			/>
-		</>
-	);
 
 	return (
 		<div {...blockProps}>
@@ -722,17 +667,73 @@ export function Edit(props) {
 					margin: useRatio ? '0 auto' : null,
 				}}
 			>
-				{useRatio && (
+				{/* Conditionally wrap animation in ratio container */}
+				{useRatio ? (
 					<div
 						class="kb-is-ratio-animation"
 						style={{
 							paddingBottom: ratio ? ratio + '%' : '100%',
 						}}
 					>
-						{animationContent}
+						<LottieAnimation
+							playerProps={playerProps}
+							animationUrl={getAnimationUrl()}
+							uniqueID={uniqueID}
+							rerenderKey={rerenderKey}
+							useRatio={useRatio}
+							previewMaxWidth={previewMaxWidth}
+						/>
 					</div>
+				) : (
+					<LottieAnimation
+						playerProps={playerProps}
+						animationUrl={getAnimationUrl()}
+						uniqueID={uniqueID}
+						rerenderKey={rerenderKey}
+						useRatio={useRatio}
+						previewMaxWidth={previewMaxWidth}
+					/>
 				)}
-				{!useRatio && <>{animationContent}</>}
+
+				{/* Spacing visualizers for editor */}
+				<SpacingVisualizer
+					style={{
+						marginLeft:
+							undefined !== previewMarginLeft
+								? getSpacingOptionOutput(previewMarginLeft, marginUnit)
+								: undefined,
+						marginRight:
+							undefined !== previewMarginRight
+								? getSpacingOptionOutput(previewMarginRight, marginUnit)
+								: undefined,
+						marginTop:
+							undefined !== previewMarginTop
+								? getSpacingOptionOutput(previewMarginTop, marginUnit)
+								: undefined,
+						marginBottom:
+							undefined !== previewMarginBottom
+								? getSpacingOptionOutput(previewMarginBottom, marginUnit)
+								: undefined,
+					}}
+					type="inside"
+					forceShow={paddingMouseOver.isMouseOver}
+					spacing={[
+						getSpacingOptionOutput(previewPaddingTop, paddingUnit),
+						getSpacingOptionOutput(previewPaddingRight, paddingUnit),
+						getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
+						getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
+					]}
+				/>
+				<SpacingVisualizer
+					type="outside"
+					forceShow={marginMouseOver.isMouseOver}
+					spacing={[
+						getSpacingOptionOutput(previewMarginTop, marginUnit),
+						getSpacingOptionOutput(previewMarginRight, marginUnit),
+						getSpacingOptionOutput(previewMarginBottom, marginUnit),
+						getSpacingOptionOutput(previewMarginLeft, marginUnit),
+					]}
+				/>
 			</div>
 		</div>
 	);

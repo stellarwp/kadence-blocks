@@ -5,18 +5,6 @@
 
 import metadata from './block.json';
 import TestimonialItemWrap from './carousel-item-wrap';
-/**
- * Import Icons
- */
-import {
-	testimonialBubbleIcon,
-	alignTopIcon,
-	alignMiddleIcon,
-	alignBottomIcon,
-	testimonialBasicIcon,
-	testimonialCardIcon,
-	testimonialInLineIcon,
-} from '@kadence/icons';
 
 /**
  * Import External
@@ -44,8 +32,7 @@ import {
 	CopyPasteAttributes,
 	SelectParentBlock,
 } from '@kadence/components';
-
-import { getPreviewSize, KadenceColorOutput, showSettings, setBlockDefaults, uniqueIdHelper } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, showSettings, uniqueIdHelper } from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -127,8 +114,6 @@ function KadenceTestimonials(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults(metadata.name, attributes);
-
 		if (context && context.queryId && context.postId) {
 			if (context.queryId !== inQueryBlock) {
 				setAttributes({
@@ -572,7 +557,7 @@ function KadenceTestimonials(props) {
 						<InspectorControls>
 							<SelectParentBlock clientId={clientId} />
 							<InspectorControlTabs
-								panelName={'icon'}
+								panelName={'testimonial'}
 								allowedTabs={['general', 'advanced']}
 								setActiveTab={(value) => setActiveTab(value)}
 								activeTab={activeTab}

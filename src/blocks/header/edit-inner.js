@@ -1446,12 +1446,15 @@ export function EditInner(props) {
 								label={__('Screen size to switch to mobile header', 'kadence-blocks')}
 								value={mobileBreakpoint === 0 ? null : mobileBreakpoint}
 								onChange={(value) => {
+									if (value === undefined) {
+										value = 0;
+									}
 									setMetaAttribute(value, 'mobileBreakpoint');
 								}}
 								step={1}
 								min={1}
 								max={2000}
-								reset={true}
+								allowReset={true}
 								help={__(
 									"Note: this ONLY affects when the header changes to it's mobile content. It DOES NOT affect responsive breakpoints for any other blocks or settings.",
 									'kadence-blocks'

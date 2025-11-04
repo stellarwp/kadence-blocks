@@ -169,10 +169,12 @@ export default function PaddingResizer({
 									],
 								});
 							}
-							toggleSelection(true);
+							// This is legacy code from core, removing does not seem to affect anything. Was causing an issue with inner blocks losing context.
+							// toggleSelection(true);
 						}}
 						onResizeStart={() => {
-							toggleSelection(false);
+							// This is legacy code from core, removing does not seem to affect anything. Was causing an issue with inner blocks losing context.
+							// toggleSelection(false);
 						}}
 					>
 						{uniqueID && (

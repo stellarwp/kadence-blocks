@@ -49,7 +49,6 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getBorderStyle,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
@@ -259,8 +258,6 @@ function SectionEdit(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/column', attributes);
-
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -649,6 +646,7 @@ function SectionEdit(props) {
 					rowGapUnit: gutterUnit ? gutterUnit : 'px',
 				});
 			}
+			attributes.kbVersion = 2;
 			setAttributes({ kbVersion: 2 });
 		}
 
@@ -1376,15 +1374,15 @@ function SectionEdit(props) {
 					? `.kadence-column-${uniqueID}:hover a:hover { color: ${KadenceColorOutput(linkHoverColorHover)}; }`
 					: ''}
 				{backgroundHover
-					? `.kadence-column-${uniqueID}:hover .kadence-inner-column-inner { background-color: ${KadenceColorOutput(
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner { background-color: ${KadenceColorOutput(
 							backgroundHover
 						)}!important; }`
 					: ''}
 				{previewHoverBackground
-					? `.kadence-column-${uniqueID}:hover .kadence-inner-column-inner { background-image:${previewHoverBackground} !important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner { background-image:${previewHoverBackground} !important; }`
 					: ''}
 				{!previewHoverBackground && backgroundHover
-					? `.kadence-column-${uniqueID}:hover .kadence-inner-column-inner { background-image:none!important; }`
+					? `.kadence-column-${uniqueID}:hover > .kadence-inner-column-inner { background-image:none!important; }`
 					: ''}
 				{hasHoverBackgroundImage && backgroundImgHover[0].bgImgPosition
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:hover { background-position:${backgroundImgHover[0].bgImgPosition} !important; }`

@@ -12,7 +12,6 @@ import {
 	getFontSizeOptionOutput,
 	typographyStyle,
 	getBorderStyle,
-	setBlockDefaults,
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
@@ -215,6 +214,7 @@ export default function KadenceButtonEdit(props) {
 		tooltip,
 		tooltipPlacement,
 		buttonRole,
+		iconReveal,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -260,8 +260,6 @@ export default function KadenceButtonEdit(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 
 	useEffect(() => {
-		setBlockDefaults('kadence/singlebtn', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		if (!inQueryBlock) {
@@ -502,18 +500,20 @@ export default function KadenceButtonEdit(props) {
 		undefined !== onlyText?.[1] ? onlyText[1] : undefined
 	);
 	const nonTransAttrs = ['hideLink', 'link', 'target', 'download', 'text', 'sponsor'];
+	const hasIcon = undefined !== previewOnlyText && previewOnlyText ? false : icon;
 	const btnClassName = classnames({
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,
 		[`kb-btn-global-${inheritStyles}`]: inheritStyles,
 		'wp-block-button__link': inheritStyles && 'inherit' === inheritStyles,
-		[`kb-btn-has-icon`]: undefined !== previewOnlyText && previewOnlyText ? false : icon,
+		[`kb-btn-has-icon`]: hasIcon,
 		[`kt-btn-svg-show-${!iconHover ? 'always' : 'hover'}`]: icon,
 		[`kb-btn-only-icon`]: previewOnlyIcon,
 		[`kb-btn-only-text`]: previewOnlyText,
 		[`kt-btn-size-${sizePreset ? sizePreset : 'standard'}`]: true,
 		[`kb-btn-underline-${textUnderline}`]: textUnderline,
 		[`${className}`]: className,
+		[`icon-reveal`]: hasIcon && iconReveal,
 	});
 	const wrapClasses = classnames({
 		[`kb-single-btn-${uniqueID}`]: true,
@@ -2281,6 +2281,11 @@ export default function KadenceButtonEdit(props) {
 												setAttributes({ iconTitle: value });
 											}}
 										/>
+										<ToggleControl
+											label={__('Icon Reveal on Hover', 'kadence-blocks')}
+											checked={iconReveal}
+											onChange={(value) => setAttributes({ iconReveal: value })}
+										/>
 									</KadencePanelBody>
 								)}
 								{showSettings('fontSettings', 'kadence/advancedbtn') && (
@@ -2432,7 +2437,17 @@ export default function KadenceButtonEdit(props) {
 				}
 			>
 				<Tooltip text={tooltip} placement={tooltipPlacement || 'top'}>
-					<span className={btnClassName}>
+					<span
+						className={btnClassName}
+						style={{
+							'--kb-button-icon-size': previewIconSize
+								? getFontSizeOptionOutput(
+										previewIconSize,
+										undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+									)
+								: undefined,
+						}}
+					>
 						{icon && 'left' === iconSide && (
 							<IconRender
 								className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}

@@ -49,11 +49,11 @@ import {
 	getPreviewSize,
 	showSettings,
 	mouseOverVisualizer,
-	setBlockDefaults,
 	uniqueIdHelper,
 	getInQueryBlock,
 	setDynamicState,
 	hasKadenceCustomCss,
+	getBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -306,7 +306,6 @@ const KadenceRowLayout = (props) => {
 	};
 
 	useEffect(() => {
-		setBlockDefaults('kadence/rowlayout', attributes);
 		const isInQueryBlock = getInQueryBlock(context, inQueryBlock);
 		if (attributes.inQueryBlock !== isInQueryBlock) {
 			attributes.inQueryBlock = isInQueryBlock;
@@ -322,8 +321,10 @@ const KadenceRowLayout = (props) => {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
 		} else if (innerItemCount < columns && !uniqueID) {
-			const defaults = setBlockDefaults('kadence/rowlayout', attributes);
-			updateColumns(innerItemCount, defaults.columns);
+			const defaults = getBlockDefaults('kadence/rowlayout', attributes);
+			const newColumns = defaults?.columns ? defaults.columns : columns;
+
+			updateColumns(innerItemCount, newColumns);
 		}
 	}, [innerItemCount, columns]);
 

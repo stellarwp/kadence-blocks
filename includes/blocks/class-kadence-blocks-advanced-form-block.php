@@ -328,6 +328,13 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return '';
 		}
 
+		// If the form was modified in Kadence Forms and that plugin is not active,
+		// do not render to avoid incompatibilities with newer features.
+		$modified_in_kadence_forms = get_post_meta( $attributes['id'], '_kad_form_modified_in_kf_plugin', true );
+		if ( $modified_in_kadence_forms && ! defined( 'KADENCE_FORMS_VERSION' ) ) {
+			return '';
+		}
+
 		if ( 'publish' !== $form_block->post_status || ! empty( $form_block->post_password ) ) {
 			return '';
 		}

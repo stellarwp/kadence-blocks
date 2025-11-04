@@ -150,7 +150,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 		$rewrite = apply_filters( 'kadence_blocks_form_post_type_url_rewrite', array( 'slug' => 'kadence-form' ) );
 		$args    = array(
 			'labels'                => $labels,
-			'description'           => __( 'Contact forms, subscribe forms and others for your site.', 'kadence_conversions' ),
+			'description'           => __( 'Contact forms, subscribe forms and others for your site.', 'kadence-blocks' ),
 			'public'                => false,
 			'publicly_queryable'    => false,
 			'has_archive'           => false,
@@ -574,7 +574,17 @@ class Kadence_Blocks_Form_CPT_Controller {
 				),
 			)
 		);
-
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_modified_in_kf_plugin',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => false
+			)
+		);
 		register_post_meta(
 			'kadence_form',
 			'_kad_form_browserValidation',

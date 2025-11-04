@@ -56,22 +56,27 @@ function kadence_blocks_convert_custom_fonts() {
 	if ( ! is_admin() ) {
 		return;
 	}
-	$convert_fonts = apply_filters( 'kadence_blocks_add_custom_fonts', array() );
+	$convert_fonts = apply_filters( 'kadence_blocks_add_custom_fonts', [] );
 	if ( ! empty( $convert_fonts ) && is_array( $convert_fonts ) ) {
 		add_filter(
 			'kadence_blocks_custom_fonts',
 			function( $custom_fonts ) use( $convert_fonts ) {
 				foreach ( $convert_fonts as $font_name => $args ) {
-					$weights_arg = array();
+					$weights_arg = [];
 					if ( is_array( $args ) && isset( $args['weights'] ) && is_array( $args['weights'] ) ) {
 						$weights_arg = $args['weights'];
 					}
 					$font_slug = ( is_array( $args ) && isset( $args['fallback'] ) && ! empty( $args['fallback'] ) ? '"' . $font_name . '", ' . $args['fallback'] : $font_name );
-					$custom_fonts[ $font_slug  ] = array(
+
+					$font_entry = [
 						'name'    => $font_slug,
 						'weights' => $weights_arg,
-						'styles'  => array(),
-					);
+						'styles'  => [],
+					];
+					if ( is_array( $args ) && isset( $args['label'] ) && ! empty( $args['label'] ) ) {
+						$font_entry['label'] = $args['label'];
+					}
+					$custom_fonts[ $font_slug ] = $font_entry;
 				}
 				return $custom_fonts;
 			},
@@ -464,7 +469,7 @@ function kadence_blocks_get_icon( $icon = 'arrow-right-alt', $icon_title = '', $
 		case 'arrow-right-alt':
 			$output .= '<svg' . ( ! $aria ? ' aria-hidden="true"' : '' ) . ' class="kadence-svg-icon kadence-arrow-right-alt-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28">';
 			if ( $display_title ) {
-				$output .= '<title>' . ( ! empty( $icon_title ) ? $icon_title : esc_html__( 'Continue', 'kadence' ) ) . '</title>';
+				$output .= '<title>' . ( ! empty( $icon_title ) ? $icon_title : esc_html__( 'Continue', 'kadence-blocks' ) ) . '</title>';
 			}
 			$output .= '<path d="M27 13.953c0 0.141-0.063 0.281-0.156 0.375l-6 5.531c-0.156 0.141-0.359 0.172-0.547 0.094-0.172-0.078-0.297-0.25-0.297-0.453v-3.5h-19.5c-0.281 0-0.5-0.219-0.5-0.5v-3c0-0.281 0.219-0.5 0.5-0.5h19.5v-3.5c0-0.203 0.109-0.375 0.297-0.453s0.391-0.047 0.547 0.078l6 5.469c0.094 0.094 0.156 0.219 0.156 0.359v0z"></path>
 			</svg>';
@@ -523,14 +528,16 @@ add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );
  * @return void
  */
 function kadence_blocks_register_api_endpoints() {
+	if( !defined( 'KADENCE_FORMS_VERSION' ) ) {
+		$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
+		$mailerlite_controller->register_routes();
+		$getresponse_controller = new Kadence_GetResponse_REST_Controller();
+		$getresponse_controller->register_routes();
+		$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
+		$fluentcrm_controller->register_routes();
+	}
 	$posts_controller = new Kadence_Blocks_Post_Rest_Controller();
 	$posts_controller->register_routes();
-	$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
-	$mailerlite_controller->register_routes();
-	$getresponse_controller = new Kadence_GetResponse_REST_Controller();
-	$getresponse_controller->register_routes();
-	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
-	$fluentcrm_controller->register_routes();
 	$lottieanimation_controller_get = new Kadence_LottieAnimation_get_REST_Controller();
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
@@ -551,8 +558,8 @@ function kadence_blocks_register_lottie_custom_post_type() {
 	register_post_type(
 		'kadence_lottie',
 		array(
-			'label'        => _x( 'Lottie Animations', 'Lottie animation' ),
-			'description'  => __( 'Lottie Animations imported in Kadence' ),
+			'label'        => _x( 'Lottie Animations', 'Lottie animation', 'kadence-blocks' ),
+			'description'  => __( 'Lottie Animations imported in Kadence', 'kadence-blocks' ),
 			'public'       => false,
 			'show_ui'      => true,
 			'show_in_menu' => false,

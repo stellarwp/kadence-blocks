@@ -1,3 +1,4 @@
+@import "./variables";
 
 .kb-splide.splide__container {
 	box-sizing: border-box;
@@ -11,14 +12,15 @@
 	padding: 0 !important;
 }
 .kb-splide.splide-initial .splide__list {
-	gap:0;
+	gap: 0;
 	display: flex;
 }
 .kb-splide.is-initialized:not(.is-active) .splide__list {
 	display: block;
 }
 .kb-splide {
-	.splide__pagination, ul.menu ul.splide__pagination.splide__pagination {
+	.splide__pagination,
+	ul.menu ul.splide__pagination.splide__pagination {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
@@ -36,11 +38,15 @@
 	.splide__progress__bar {
 		width: 0;
 	}
-	.splide__toggle.is-active .splide__toggle__play, .splide__toggle__pause {
+	.splide__toggle__play {
+		display: inline-flex;
+	}
+	.splide__toggle.is-active .splide__toggle__play,
+	.splide__toggle__pause {
 		display: none;
 	}
 	.splide__toggle.is-active .splide__toggle__pause {
-		display: inline;
+		display: inline-flex;
 	}
 }
 .kb-splide {
@@ -48,7 +54,7 @@
 	position: relative;
 	//visibility: hidden;
 	--splide-nav-color: #fff;
-	--splide-nav-background: rgba(0,0,0,0.8);
+	--splide-nav-background: rgba(0, 0, 0, 0.8);
 	--splide-nav-border: 2px solid transparent;
 	--splide-pagination-background: #000;
 	&[data-slider-dots="true"] {
@@ -57,7 +63,7 @@
 }
 .kb-splide.kt-carousel-arrowstyle-blackonlight {
 	--splide-nav-color: #000;
-	--splide-nav-background: rgba(255,255,255,0.8);
+	--splide-nav-background: rgba(255, 255, 255, 0.8);
 }
 .kb-splide.kt-carousel-arrowstyle-outlineblack {
 	--splide-nav-color: #000;
@@ -188,7 +194,7 @@
 .kb-splide.splide--rtl {
 	direction: rtl;
 	&.splide--fade {
-		> .splide__track .splide__list  {
+		> .splide__track .splide__list {
 			direction: rtl;
 			flex-direction: row-reverse;
 		}
@@ -202,23 +208,23 @@
 	.splide__arrow {
 		font-size: 1rem;
 		align-items: center;
-		background: var( --splide-nav-background );
-		border: var( --splide-nav-border );
+		background: var(--splide-nav-background);
+		border: var(--splide-nav-border);
 		border-radius: 3px;
 		cursor: pointer;
 		display: flex;
 		height: 3em;
 		width: 2em;
 		justify-content: center;
-		opacity: 0.25;
+		opacity: $splide-arrow-opacity;
 		padding: 0;
-		color: var( --splide-nav-color );
+		color: var(--splide-nav-color);
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
 		z-index: 1;
 		box-shadow: none;
-		transition: opacity .3s ease-in-out;
+		transition: opacity 0.3s ease-in-out;
 	}
 	&.kb-slider-group-arrows {
 		.splide__arrows {
@@ -228,13 +234,14 @@
 			gap: 1rem;
 			.splide__arrow {
 				position: static;
-				opacity: 0.50;
+				opacity: $splide-arrow-opacity-grouped;
 				transform: none;
-				&:hover, &:focus {
-					opacity: 1;
+				&:hover,
+				&:focus {
+					opacity: $splide-arrow-opacity-hover;
 				}
 				&:disabled {
-					opacity: 0.1;
+					opacity: $splide-arrow-opacity-disabled;
 				}
 			}
 		}
@@ -264,7 +271,7 @@
 		}
 	}
 	&:hover .splide__arrow {
-		opacity: .75;
+		opacity: $splide-arrow-opacity;
 	}
 	.splide__arrow {
 		svg {
@@ -272,26 +279,28 @@
 			height: 1em;
 			width: 1em;
 		}
-		&:hover, &:focus {
-			opacity: 1;
-			background: var( --splide-nav-background );
-			color: var( --splide-nav-color );
+		&:hover,
+		&:focus {
+			opacity: $splide-arrow-opacity-hover;
+			background: var(--splide-nav-background);
+			color: var(--splide-nav-color);
 		}
 		&:disabled {
-			opacity: 0.1;
+			opacity: $splide-arrow-opacity-disabled;
 			cursor: not-allowed;
 		}
 	}
 	.splide__arrow--prev {
-		left: 1rem;
+		left: clamp(0.05rem, 1vw, 1rem);
 	}
 	.splide__arrow--prev svg {
 		transform: scaleX(-1);
 	}
 	.splide__arrow--next {
-		right: 1rem;
+		right: clamp(0.05rem, 1vw, 1rem);
 	}
-	.splide__pagination, ul.splide__pagination.splide__pagination {
+	.splide__pagination,
+	ul.splide__pagination.splide__pagination {
 		bottom: -25px;
 		left: 0;
 		padding: 0 1em;
@@ -300,24 +309,24 @@
 		z-index: 1;
 	}
 	.splide__pagination__page {
-		background: var( --splide-pagination-background );
+		background: var(--splide-pagination-background);
 		border: 0;
 		border-radius: 50%;
 		display: inline-block;
 		height: 10px;
 		margin: 3px;
-		opacity: 0.25;
+		opacity: $splide-pagination-opacity;
 		padding: 0;
-		transition: opacity .2s ease-in-out;
+		transition: opacity 0.2s ease-in-out;
 		width: 10px;
 	}
 	.splide__pagination__page.is-active {
-		background: var( --splide-pagination-background );
-		opacity: 0.75;
+		background: var(--splide-pagination-background);
+		opacity: $splide-arrow-opacity;
 	}
 	.splide__pagination__page:hover {
 		cursor: pointer;
-		opacity: 1;
+		opacity: $splide-arrow-opacity-hover;
 	}
 	.splide__pagination__page:focus-visible {
 		outline-offset: 3px;
@@ -330,12 +339,12 @@
 		height: 3px;
 	}
 }
-@supports(outline-offset:-3px) {
+@supports (outline-offset: -3px) {
 	.kb-splide .splide__slide:focus-visible {
 		outline-offset: -3px;
 	}
 }
-@supports(outline-offset:-3px) {
+@supports (outline-offset: -3px) {
 	.kb-splide .splide.is-focus-in .splide__slide:focus {
 		outline-offset: -3px;
 	}
@@ -369,7 +378,7 @@
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--rtl > .splide__track > .splide__arrows .splide__arrow--prev {
 	left: auto;
-	right: 1em;
+	right: clamp(0.05rem, 1vw, 1rem);
 }
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--prev svg,
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev svg,
@@ -379,7 +388,7 @@
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--rtl > .splide__slider > .splide__track > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--rtl > .splide__track > .splide__arrows .splide__arrow--next {
-	left: 1em;
+	left: clamp(0.05rem, 1vw, 1rem);
 	right: auto;
 }
 .kb-splide.splide--rtl > .splide__arrows .splide__arrow--next svg,
@@ -396,7 +405,7 @@
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev,
 .kb-splide.splide--ttb > .splide__track > .splide__arrows .splide__arrow--prev {
-	top: 1em;
+	top: clamp(0.05rem, 1vw, 1rem);
 }
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--prev svg,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--prev svg,
@@ -406,7 +415,7 @@
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--ttb > .splide__slider > .splide__track > .splide__arrows .splide__arrow--next,
 .kb-splide.splide--ttb > .splide__track > .splide__arrows .splide__arrow--next {
-	bottom: 1em;
+	bottom: clamp(0.05rem, 1vw, 1rem);
 	top: auto;
 }
 .kb-splide.splide--ttb > .splide__arrows .splide__arrow--next svg,

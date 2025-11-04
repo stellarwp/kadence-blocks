@@ -60,7 +60,6 @@ import {
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
-	setBlockDefaults,
 } from '@kadence/helpers';
 
 /**
@@ -289,7 +288,7 @@ function KadenceAdvancedHeading(props) {
 				insertBlocks(rawBlocks, currentBlockIndex + 1, parentBlockClientId);
 			}
 			event.preventDefault();
-		} else if (pastedText && isDefaultEditorBlock) {
+		} else if (pastedText && isDefaultEditorBlock && (!content || content === '')) {
 			const paragraphs = pastedText.split(/\n\s*\n/).flatMap((paragraph) => paragraph.split(/\r\s*/));
 
 			const newBlocks = paragraphs
@@ -310,25 +309,7 @@ function KadenceAdvancedHeading(props) {
 				.filter(Boolean);
 
 			if (newBlocks.length > 0 && isDefaultEditorBlock) {
-				if (!content || content === '') {
-					replaceBlocks(clientId, newBlocks);
-				} else {
-					// Append the content of the first new block to the existing content.
-					const firstPastedBlock = newBlocks[0];
-					setAttributes({
-						content: content + firstPastedBlock.attributes.content,
-					});
-
-					// Insert new blocks below for the remaining paragraphs, if there are any.
-					const remainingPastedBlocks = newBlocks.slice(1);
-					if (remainingPastedBlocks.length > 0) {
-						const { getBlockIndex, getBlockRootClientId } = wp.data.select('core/block-editor');
-						const currentBlockIndex = getBlockIndex(clientId);
-						const parentBlockClientId = getBlockRootClientId(clientId);
-
-						insertBlocks(remainingPastedBlocks, currentBlockIndex + 1, parentBlockClientId);
-					}
-				}
+				replaceBlocks(clientId, newBlocks);
 				event.preventDefault();
 			}
 		}
@@ -341,8 +322,6 @@ function KadenceAdvancedHeading(props) {
 		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
 	useEffect(() => {
-		setBlockDefaults('kadence/advancedheading', attributes);
-
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		// Update Old Styles

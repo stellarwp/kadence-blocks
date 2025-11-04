@@ -11,7 +11,6 @@ import {
 	KadenceColorOutput,
 	getPreviewSize,
 	showSettings,
-	setBlockDefaults,
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	getFontSizeOptionOutput,
@@ -188,8 +187,6 @@ function KadenceTableOfContents(props) {
 	const contentMouseOver = mouseOverVisualizer();
 
 	useEffect(() => {
-		setBlockDefaults('kadence/tableofcontents', attributes);
-
 		if (undefined !== startClosed && startClosed) {
 			setShowContent(false);
 		}

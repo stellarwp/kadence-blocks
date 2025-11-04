@@ -33,7 +33,6 @@ import {
 	mouseOverVisualizer,
 	getSpacingOptionOutput,
 	uniqueIdHelper,
-	setBlockDefaults,
 	getFontSizeOptionOutput,
 	getPostOrFseId,
 } from '@kadence/helpers';
@@ -194,8 +193,6 @@ function KadenceForm(props) {
 	);
 
 	useEffect(() => {
-		setBlockDefaults('kadence/form', attributes);
-
 		const postOrFseId = getPostOrFseId(props, parentData);
 		if (postID.toString() !== postOrFseId.toString()) {
 			setAttributes({
