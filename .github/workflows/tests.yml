@@ -1,16 +1,17 @@
 name: 'CI'
 on:
-    workflow_dispatch:
-    pull_request:
-        paths:
-            - '**'
-            - '!**/*.txt'
-    push:
-        branches:
-            - master
-        paths:
-            - '**'
-            - '!**/*.txt'
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '**/*.txt'
+      - '.github/**'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**/*.txt'
+      - '.github/**'
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -40,7 +41,7 @@ jobs:
               uses: actions/checkout@v5
               with:
                   repository: stellarwp/slic
-                  ref: 2.1.0
+                  ref: 2.1.1
                   path: slic
                   fetch-depth: 1
 
