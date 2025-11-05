@@ -17,13 +17,29 @@ final class Path_Factory {
 	 * @return Path
 	 */
 	public function make(): Path {
-		$uri = SG::get_server_var( 'REQUEST_URI', '/' );
+		$uri = SG::get_server_var( 'REQUEST_URI', '' );
 
-		// Normalize duplicate slashes in the path portion.
-		$normalized_uri = preg_replace( '#/{2,}#', '/', $uri );
+		// Normalize leading slashes BEFORE wp_parse_url to prevent // being treated as protocol-relative URL.
+		$uri = preg_replace( '#^/+#', '/', $uri );
 
-		$path = wp_parse_url( $normalized_uri, PHP_URL_PATH ) ?: '/';
+		if ( $uri === null ) {
+			return new Path( '' );
+		}
 
-		return new Path( $path );
+		$path = wp_parse_url( $uri, PHP_URL_PATH ) ?: '';
+
+		// Normalize multiple slashes within the path.
+		$normalized = preg_replace( '#/{2,}#', '/', $path );
+
+		if ( $normalized === null || $normalized === '' ) {
+			return new Path( '' );
+		}
+
+		// Ensure the path starts with a slash.
+		if ( ! str_starts_with( $normalized, '/' ) ) {
+			$normalized = '/' . $normalized;
+		}
+
+		return new Path( $normalized );
 	}
 }
