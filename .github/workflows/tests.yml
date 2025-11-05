@@ -2,15 +2,19 @@ name: 'CI'
 on:
     workflow_dispatch:
     pull_request:
-        paths-ignore:
-            - '**/*.txt'
-            - '.github/**'
+        paths:
+            - '**'
+            - '!**/*.txt'
+            - '!.github/**'
+            - '.github/workflows/tests.yml'
     push:
         branches:
             - master
-        paths-ignore:
-            - '**/*.txt'
-            - '.github/**'
+        paths:
+            - '**'
+            - '!**/*.txt'
+            - '!.github/**'
+            - '.github/workflows/tests.yml'
 jobs:
     test:
         runs-on: ubuntu-latest
