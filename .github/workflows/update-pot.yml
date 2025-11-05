@@ -35,7 +35,7 @@ jobs:
         run: npm run build
 
       - name: Install WP-CLI
-        run: composer wp -- --info
+        run: composer wp
 
       - name: Generate POT file
         run: composer wp i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
