@@ -104,6 +104,9 @@ jobs:
                   ${SLIC_BIN} info
                   ${SLIC_BIN} config
 
+            - name: Use plugin to set PHP version
+              run: ${SLIC_BIN} use kadence-blocks
+
             - name: Install specific WordPress version
               run: |
                   ${SLIC_BIN} wp core update --version=${{ matrix.wordpress }} --force
@@ -111,7 +114,6 @@ jobs:
 
             - name: Set up plugin
               run: |
-                  ${SLIC_BIN} use kadence-blocks
                   ${SLIC_BIN} composer set-version 2
                   ${SLIC_BIN} composer validate
                   ${SLIC_BIN} composer install
