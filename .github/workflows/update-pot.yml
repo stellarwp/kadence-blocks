@@ -29,7 +29,7 @@ jobs:
         run: npm run build
 
       - name: Generate POT file
-        run: npx wp-scripts i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
+        run: npx --yes @wordpress/cli wp i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v6
