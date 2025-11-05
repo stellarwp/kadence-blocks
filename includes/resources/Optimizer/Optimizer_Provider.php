@@ -29,6 +29,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Not_Found_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
@@ -400,6 +401,7 @@ final class Optimizer_Provider extends Provider {
 				fn(): array => [
 					$this->container->get( Optimizer_Request_Rule::class ),
 					$this->container->get( Ignored_Query_Var_Rule::class ),
+					$this->container->get( Not_Found_Rule::class ),
 					$this->container->get( Logged_In_Rule::class ),
 				]
 			);
