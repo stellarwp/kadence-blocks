@@ -1,0 +1,44 @@
+name: Update POT File
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-generate-pot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Generate POT file
+        run: npx wp-scripts i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update pot file'
+          branch: chore/update-pot
+          branch-suffix: timestamp
+          title: 'chore: update pot file'
+          body: |
+            Automated update of the `languages/kadence-blocks.pot` file.
+          add-paths: |
+            languages/kadence-blocks.pot
