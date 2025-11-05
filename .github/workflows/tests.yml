@@ -5,16 +5,12 @@ on:
         paths:
             - '**'
             - '!**/*.txt'
-            - '!.github/**'
-            - '.github/workflows/tests.yml'
     push:
         branches:
             - master
         paths:
             - '**'
             - '!**/*.txt'
-            - '!.github/**'
-            - '.github/workflows/tests.yml'
 jobs:
     test:
         runs-on: ubuntu-latest
