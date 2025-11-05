@@ -17,6 +17,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,8 +34,11 @@ jobs:
       - name: Build assets
         run: npm run build
 
+      - name: Install WP-CLI
+        run: composer wp -- --info
+
       - name: Generate POT file
-        run: npx --yes @wordpress/cli wp i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
+        run: composer wp i18n make-pot . languages/kadence-blocks.pot --domain=kadence-blocks --exclude=node_modules,vendor,dist,bin,.git,.github,tests,.pup-build,.pup-zip
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v6
