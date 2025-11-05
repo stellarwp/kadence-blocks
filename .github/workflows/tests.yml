@@ -38,10 +38,10 @@ jobs:
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
             - name: Checkout the repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Checkout slic
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   repository: stellarwp/slic
                   ref: 2.1.0
