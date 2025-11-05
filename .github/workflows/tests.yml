@@ -2,15 +2,14 @@ name: 'CI'
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - '**/*.txt'
-      - '.github/**'
   push:
     branches:
       - master
     paths-ignore:
       - '**/*.txt'
-      - '.github/**'
 
 jobs:
     test:
