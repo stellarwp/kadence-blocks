@@ -385,6 +385,45 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['inlineImageVerticalAlign'] ) ) {
 			$css->add_property( 'vertical-align', $attributes['inlineImageVerticalAlign'] );
 		}
+		// Add aspect-ratio if useRatio is enabled.
+		if ( ! empty( $attributes['useRatio'] ) && ! empty( $attributes['ratio'] ) ) {
+			$aspect_ratio = '';
+			switch ( $attributes['ratio'] ) {
+				case 'land43':
+					$aspect_ratio = '4 / 3';
+					break;
+				case 'land32':
+					$aspect_ratio = '3 / 2';
+					break;
+				case 'land169':
+					$aspect_ratio = '16 / 9';
+					break;
+				case 'land21':
+					$aspect_ratio = '2 / 1';
+					break;
+				case 'land31':
+					$aspect_ratio = '3 / 1';
+					break;
+				case 'land41':
+					$aspect_ratio = '4 / 1';
+					break;
+				case 'port34':
+					$aspect_ratio = '3 / 4';
+					break;
+				case 'port23':
+					$aspect_ratio = '2 / 3';
+					break;
+				case 'port916':
+					$aspect_ratio = '9 / 16';
+					break;
+				case 'square':
+					$aspect_ratio = '1 / 1';
+					break;
+			}
+			if ( ! empty( $aspect_ratio ) ) {
+				$css->add_property( 'aspect-ratio', $aspect_ratio );
+			}
+		}
 		$css->render_border_styles( $attributes, 'inlineImageBorderStyles' );
 		$css->render_border_radius( $attributes, 'inlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'tablet' );

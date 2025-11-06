@@ -264,6 +264,8 @@ function KadenceAdvancedHeading(props) {
 		mobileInlineImageBorderRadius,
 		inlineImageBorderRadiusUnit,
 		inlineImageVerticalAlign,
+		useRatio,
+		ratio,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -888,6 +890,41 @@ function KadenceAdvancedHeading(props) {
 		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[3] : '',
 		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[3] : ''
 	);
+	let previewInlineImageAspectRatio = '';
+	if (useRatio && ratio) {
+		switch (ratio) {
+			case 'land43':
+				previewInlineImageAspectRatio = '4 / 3';
+				break;
+			case 'land32':
+				previewInlineImageAspectRatio = '3 / 2';
+				break;
+			case 'land169':
+				previewInlineImageAspectRatio = '16 / 9';
+				break;
+			case 'land21':
+				previewInlineImageAspectRatio = '2 / 1';
+				break;
+			case 'land31':
+				previewInlineImageAspectRatio = '3 / 1';
+				break;
+			case 'land41':
+				previewInlineImageAspectRatio = '4 / 1';
+				break;
+			case 'port34':
+				previewInlineImageAspectRatio = '3 / 4';
+				break;
+			case 'port23':
+				previewInlineImageAspectRatio = '2 / 3';
+				break;
+			case 'port916':
+				previewInlineImageAspectRatio = '9 / 16';
+				break;
+			case 'square':
+				previewInlineImageAspectRatio = '1 / 1';
+				break;
+		}
+	}
 	const previewTextOrientation = getPreviewSize(
 		previewDevice,
 		undefined !== textOrientation ? textOrientation : '',
@@ -1346,6 +1383,7 @@ function KadenceAdvancedHeading(props) {
 						${'' !== previewInlineImageBorderRadiusRight ? 'border-top-right-radius:' + previewInlineImageBorderRadiusRight + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
 						${'' !== previewInlineImageBorderRadiusBottom ? 'border-bottom-right-radius:' + previewInlineImageBorderRadiusBottom + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
 						${'' !== previewInlineImageBorderRadiusLeft ? 'border-bottom-left-radius:' + previewInlineImageBorderRadiusLeft + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${previewInlineImageAspectRatio ? 'aspect-ratio: ' + previewInlineImageAspectRatio + ';' : ''}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
@@ -2450,6 +2488,63 @@ function KadenceAdvancedHeading(props) {
 										step={1}
 										unit="px"
 									/>
+									<ToggleControl
+										label={__('Use fixed ratio instead of image ratio', 'kadence-blocks')}
+										checked={useRatio}
+										onChange={(value) => {
+											setAttributes({
+												useRatio: value,
+												ratio: value && !ratio ? 'land43' : ratio,
+											});
+										}}
+									/>
+									{useRatio && (
+										<>
+											<SelectControl
+												label={__('Size Ratio', 'kadence-blocks')}
+												value={ratio}
+												options={[
+													{
+														label: __('Landscape 4:3', 'kadence-blocks'),
+														value: 'land43',
+													},
+													{
+														label: __('Landscape 3:2', 'kadence-blocks'),
+														value: 'land32',
+													},
+													{
+														label: __('Landscape 16:9', 'kadence-blocks'),
+														value: 'land169',
+													},
+													{
+														label: __('Landscape 2:1', 'kadence-blocks'),
+														value: 'land21',
+													},
+													{
+														label: __('Landscape 3:1', 'kadence-blocks'),
+														value: 'land31',
+													},
+													{
+														label: __('Landscape 4:1', 'kadence-blocks'),
+														value: 'land41',
+													},
+													{
+														label: __('Portrait 3:4', 'kadence-blocks'),
+														value: 'port34',
+													},
+													{
+														label: __('Portrait 2:3', 'kadence-blocks'),
+														value: 'port23',
+													},
+													{
+														label: __('Square 1:1', 'kadence-blocks'),
+														value: 'square',
+													},
+												]}
+												onChange={(value) => setAttributes({ ratio: value })}
+											/>
+										</>
+									)}
 									<ResponsiveBorderControl
 										label={__('Border', 'kadence-blocks')}
 										value={inlineImageBorderStyles}

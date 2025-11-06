@@ -649,6 +649,14 @@
 		"inlineImageVerticalAlign": {
 			"type": "string",
 			"default": "baseline"
+		},
+		"useRatio": {
+			"type": "boolean",
+			"default": false
+		},
+		"ratio": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
