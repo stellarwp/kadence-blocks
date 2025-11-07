@@ -200,7 +200,7 @@ final class Hash_Handler {
 			// Set data to stale to force invalidate data for all viewports.
 			try {
 				$this->logger->debug(
-					'Marking optimizer path as stale',
+					'Marking optimizer path as stale to remove on next page load',
 					[
 						'path' => $path->path(),
 					]
