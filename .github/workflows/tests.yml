@@ -2,11 +2,15 @@ name: 'CI'
 on:
   workflow_dispatch:
   pull_request:
-    paths-ignore:
-      - '**/*.txt'
+    paths:
+      - '**.php'
+      - 'composer.lock'
+      - '.github/workflows/tests.yml'
   push:
-    paths-ignore:
-      - '**/*.txt'
+    paths:
+      - '**.php'
+      - 'composer.lock'
+      - '.github/workflows/tests.yml'
 
 jobs:
     test:
