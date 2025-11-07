@@ -26,7 +26,7 @@ final class Ignored_Query_Var_Rule implements Skip_Rule {
 	 */
 	public function should_skip(): bool {
 		foreach ( $this->query_vars as $query_var ) {
-			if ( SG::get_get_var( $query_var ) ) {
+			if ( SG::get_get_var( $query_var ) !== null ) {
 				return true;
 			}
 		}
