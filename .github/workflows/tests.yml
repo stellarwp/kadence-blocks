@@ -55,19 +55,6 @@ jobs:
             - name: Build packages
               run: bun run build
 
-            - name: Get Composer Cache Directory
-              id: get-composer-cache-dir
-              run: |
-                  echo "DIR=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-            - uses: actions/cache@v4
-              id: composer-cache
-              with:
-                  path: ${{ steps.get-composer-cache-dir.outputs.DIR }}
-                  key: ${{ matrix.php }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: |
-                      ${{ matrix.php }}-composer-
-
             - name: Set up slic env vars
               run: |
                   echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
@@ -95,7 +82,6 @@ jobs:
                   ${SLIC_BIN} xdebug off
                   ${SLIC_BIN} debug on
                   ${SLIC_BIN} php-version set ${{ matrix.php }} --skip-rebuild
-                  ${SLIC_BIN} composer-cache set ${{ steps.get-composer-cache-dir.outputs.DIR }}
                   ${SLIC_BIN} info
                   ${SLIC_BIN} config
 
