@@ -12,6 +12,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\TestCase;
+use WP_Query;
 
 final class HashHandlerTest extends TestCase {
 
@@ -73,6 +74,11 @@ final class HashHandlerTest extends TestCase {
 
 		// Reset user.
 		wp_set_current_user( 0 );
+
+		global $wp_query;
+
+		// Reset wp_query to prevent test pollution.
+		$wp_query = new WP_Query();
 
 		parent::tearDown();
 	}
