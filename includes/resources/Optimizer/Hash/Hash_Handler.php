@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use Throwable;
@@ -33,6 +34,7 @@ final class Hash_Handler {
 	private Background_Processor $background_processor;
 	private Hash_Store $hash_store;
 	private Path_Factory $path_factory;
+	private LoggerInterface $logger;
 
 	/**
 	 * @param Hash_Builder         $hasher
@@ -41,6 +43,7 @@ final class Hash_Handler {
 	 * @param Background_Processor $background_processor
 	 * @param Hash_Store           $hash_store
 	 * @param Path_Factory         $path_factory
+	 * @param LoggerInterface      $logger
 	 */
 	public function __construct(
 		Hash_Builder $hasher,
@@ -48,7 +51,8 @@ final class Hash_Handler {
 		Rule_Collection $rules,
 		Background_Processor $background_processor,
 		Hash_Store $hash_store,
-		Path_Factory $path_factory
+		Path_Factory $path_factory,
+		LoggerInterface $logger
 	) {
 		$this->hasher               = $hasher;
 		$this->store                = $store;
@@ -56,6 +60,7 @@ final class Hash_Handler {
 		$this->background_processor = $background_processor;
 		$this->hash_store           = $hash_store;
 		$this->path_factory         = $path_factory;
+		$this->logger               = $logger;
 	}
 
 	/**
@@ -88,20 +93,44 @@ final class Hash_Handler {
 	 */
 	public function check_hash(): void {
 		if ( ! $this->html ) {
+			$this->logger->debug(
+				'Bypassing Optimizer: No HTML found to check',
+				[
+					'request_uri' => SG::get_server_var( 'REQUEST_URI', 'unknown' ),
+				]
+			);
+
 			return;
 		}
 
 		// Don't check hashes on 404 requests.
 		if ( is_404() ) {
+			$this->logger->debug(
+				'Bypassing Optimizer: 404 not found',
+				[
+					'request_uri' => SG::get_server_var( 'REQUEST_URI', 'unknown' ),
+				]
+			);
+
 			return;
 		}
 
 		// Return request early, if possible, so we can process this in the background.
 		$this->background_processor->try_finish();
 
+		$viewport = Viewport::current( $this->is_mobile() );
+
 		// Process skip rules and bail if required.
 		foreach ( $this->rules->all() as $rule ) {
 			if ( $rule->should_skip() ) {
+				$this->logger->debug(
+					'Bypassing Optimizer: skip rule',
+					[
+						'rule'     => get_class( $rule ),
+						'viewport' => $viewport->value(),
+					]
+				);
+
 				return;
 			}
 		}
@@ -109,18 +138,34 @@ final class Hash_Handler {
 		try {
 			$path = $this->path_factory->make();
 		} catch ( InvalidArgumentException $e ) {
+			$this->logger->error(
+				'Optimizer to determine the path',
+				[
+					'viewport' => $viewport->value(),
+					'error'    => $e,
+				]
+			);
+
 			return;
 		}
 
 		// Generate a hash based on the final HTML markup, note this differs for mobile vs desktop.
 		$hash        = $this->hasher->build_hash( $this->html );
-		$viewport    = Viewport::current( $this->is_mobile() );
 		$stored_hash = $this->hash_store->get( $path, $viewport );
 
 		// The frontend script will pass this get var as a hash set request.
 		$maybe_set_hash = (bool) SG::get_get_var( 'kadence_set_optimizer_hash', false );
 
 		if ( $maybe_set_hash ) {
+			$this->logger->debug(
+				'Attempting to store new optimizer hash',
+				[
+					'path'     => $path->path(),
+					'viewport' => $viewport->value(),
+					'hash'     => $hash,
+				]
+			);
+
 			// Store the hash for the current viewport.
 			$this->hash_store->set( $path, $viewport, $hash );
 
@@ -131,6 +176,17 @@ final class Hash_Handler {
 
 		// The HTML has been changed somehow, invalidate the optimization data, so that the next request will not have the data.
 		if ( $stored_hash && $stored_hash !== $hash ) {
+			$changes = $this->hasher->get_changed_components( $stored_hash, $hash );
+
+			$this->logger->debug(
+				'Optimizer hash does not match...deleting',
+				[
+					'path'     => $path->path(),
+					'viewport' => $viewport->value(),
+					'changes'  => $changes,
+				]
+			);
+
 			// Delete the viewport hash.
 			$this->hash_store->delete( $path, $viewport );
 
@@ -143,6 +199,13 @@ final class Hash_Handler {
 
 			// Set data to stale to force invalidate data for all viewports.
 			try {
+				$this->logger->debug(
+					'Marking optimizer path as stale',
+					[
+						'path' => $path->path(),
+					]
+				);
+
 				$analysis->isStale = true;
 				$this->store->set( $path, $analysis );
 
