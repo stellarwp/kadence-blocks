@@ -113,7 +113,10 @@ export function Edit(props) {
 			try {
 				const { meta, rootBlock } = legacyMigration;
 				const resolvedTitle =
-					chosenTitle || pendingTitle.trim() || legacyMigration.title || __('Migrated Form', 'kadence-blocks');
+					chosenTitle ||
+					pendingTitle.trim() ||
+					legacyMigration.title ||
+					__('Migrated Form', 'kadence-blocks');
 				const createdRecord = await saveEntityRecord('postType', 'kadence_form', {
 					status: 'publish',
 					title: resolvedTitle,
@@ -122,9 +125,7 @@ export function Edit(props) {
 				});
 
 				if (createdRecord && createdRecord.id) {
-					const contentWithId = serialize([
-						applyFormIdToBlocks(rootBlock, String(createdRecord.id)),
-					]);
+					const contentWithId = serialize([applyFormIdToBlocks(rootBlock, String(createdRecord.id))]);
 					await saveEntityRecord('postType', 'kadence_form', {
 						id: createdRecord.id,
 						content: contentWithId,

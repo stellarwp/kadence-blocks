@@ -135,7 +135,9 @@ function buildFieldAttributes(blockName, legacyField, context) {
 				...shared,
 				options: buildOptionList(legacyField, true),
 				inline: !!legacyField.inline,
-				defaultValue: Array.isArray(legacyField.default) ? legacyField.default.join(',') : legacyField.default || '',
+				defaultValue: Array.isArray(legacyField.default)
+					? legacyField.default.join(',')
+					: legacyField.default || '',
 			};
 		case 'kadence/advanced-form-accept':
 			return {
@@ -171,7 +173,8 @@ function buildFieldAttributes(blockName, legacyField, context) {
 
 function buildSubmitBlueprint(attributes) {
 	const legacySubmit = Array.isArray(attributes.submit) && attributes.submit[0] ? attributes.submit[0] : {};
-	const legacySubmitFont = Array.isArray(attributes.submitFont) && attributes.submitFont[0] ? attributes.submitFont[0] : {};
+	const legacySubmitFont =
+		Array.isArray(attributes.submitFont) && attributes.submitFont[0] ? attributes.submitFont[0] : {};
 	const legacySubmitMargin =
 		Array.isArray(attributes.submitMargin) && attributes.submitMargin[0] ? attributes.submitMargin[0] : {};
 
@@ -179,7 +182,9 @@ function buildSubmitBlueprint(attributes) {
 	const widthUnit = widthType === 'fixed' ? 'px' : '%';
 	const widthSource = widthType === 'fixed' ? legacySubmit.fixedWidth : legacySubmit.width;
 
-	const baseShadow = Array.isArray(legacySubmit.boxShadow) ? legacySubmit.boxShadow : [false, '#000000', 0.2, 1, 1, 2, 0, false];
+	const baseShadow = Array.isArray(legacySubmit.boxShadow)
+		? legacySubmit.boxShadow
+		: [false, '#000000', 0.2, 1, 1, 2, 0, false];
 	const hoverShadow = Array.isArray(legacySubmit.boxShadowHover)
 		? legacySubmit.boxShadowHover
 		: [false, '#000000', 0.4, 2, 2, 3, 0, false];
@@ -214,7 +219,10 @@ function buildSubmitBlueprint(attributes) {
 			),
 			colorHover: legacySubmit.colorHover || '',
 			backgroundHoverType: legacySubmit.backgroundHoverType || 'normal',
-			backgroundHover: normalizeColorWithOpacity(legacySubmit.backgroundHover, legacySubmit.backgroundHoverOpacity),
+			backgroundHover: normalizeColorWithOpacity(
+				legacySubmit.backgroundHover,
+				legacySubmit.backgroundHoverOpacity
+			),
 			gradientHover: convertLegacyGradient(
 				legacySubmit.backgroundHover,
 				legacySubmit.backgroundHoverOpacity,
@@ -535,20 +543,18 @@ function buildStyleMeta(style) {
 		borderActive: normalizeColorWithOpacity(style.borderActive, style.borderActiveOpacity),
 		placeholderColor: style.placeholderColor ? KadenceColorOutput(style.placeholderColor) : '',
 		gradient: convertLegacyGradient(style.background, style.backgroundOpacity, style.gradient),
-		gradientActive: convertLegacyGradient(style.backgroundActive, style.backgroundActiveOpacity, style.gradientActive),
+		gradientActive: convertLegacyGradient(
+			style.backgroundActive,
+			style.backgroundActiveOpacity,
+			style.gradientActive
+		),
 		backgroundType: style.backgroundType || 'normal',
 		backgroundActiveType: style.backgroundActiveType || 'normal',
-		boxShadow: Array.isArray(style.boxShadow)
-			? style.boxShadow
-			: [false, '#000000', 0.2, 1, 1, 2, 0, false],
+		boxShadow: Array.isArray(style.boxShadow) ? style.boxShadow : [false, '#000000', 0.2, 1, 1, 2, 0, false],
 		boxShadowActive: Array.isArray(style.boxShadowActive)
 			? style.boxShadowActive
 			: [false, '#000000', 0.4, 2, 2, 3, 0, false],
-		gap: [
-			getValidNumber(style.rowGap),
-			getValidNumber(style.tabletRowGap),
-			getValidNumber(style.mobileRowGap),
-		],
+		gap: [getValidNumber(style.rowGap), getValidNumber(style.tabletRowGap), getValidNumber(style.mobileRowGap)],
 		gapUnit: style.rowGapType || 'px',
 		labelStyle: style.labelStyle || 'normal',
 		basicStyles: style.basicStyles !== false,
@@ -787,7 +793,11 @@ function sanitizeInputName(candidate) {
 	if (!candidate) {
 		return '';
 	}
-	return kebabCase(candidate).replace(/[^a-z0-9-_]/g, '').replace(/^-+/, '') || '';
+	return (
+		kebabCase(candidate)
+			.replace(/[^a-z0-9-_]/g, '')
+			.replace(/^-+/, '') || ''
+	);
 }
 
 function ensureUniqueInputName(baseName, usedNames, index) {
