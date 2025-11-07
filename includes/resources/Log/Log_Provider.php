@@ -46,8 +46,17 @@ final class Log_Provider extends Provider {
 					$handler->setFormatter( $this->container->get( ColoredLineFormatter::class ) );
 					$logger->pushHandler( $handler );
 
+					// Prefix logs.
+					$logger->pushProcessor(
+						static function ( array $record ): array {
+							$record['message'] = '[Kadence Blocks]: ' . $record['message'];
+
+							return $record;
+						}
+					);
+
 					return $logger;
-				} 
+				}
 			);
 		} else {
 			// Disable logging.
@@ -58,7 +67,7 @@ final class Log_Provider extends Provider {
 					$logger->pushHandler( new NullHandler() );
 
 					return $logger;
-				} 
+				}
 			);
 		}
 	}
