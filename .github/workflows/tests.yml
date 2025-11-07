@@ -57,15 +57,6 @@ jobs:
             - name: Build packages
               run: bun run build
 
-            - name: Configure PHP environment
-              uses: shivammathur/setup-php@v2
-              with:
-                php-version: ${{ matrix.php-version }}
-                coverage: none
-
-            - name: Install composer dependencies
-              uses: ramsey/composer-install@v3
-
             - name: Set up slic env vars
               run: |
                   echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
@@ -103,6 +94,12 @@ jobs:
               run: |
                   ${SLIC_BIN} wp core update --version=${{ matrix.wordpress }} --force
                   ${SLIC_BIN} wp core version
+
+            - name: Set up plugin
+              run: |
+                  ${SLIC_BIN} composer set-version 2
+                  ${SLIC_BIN} composer validate
+                  ${SLIC_BIN} composer install
 
             - name: Run wpunit tests
               run: ${SLIC_BIN} run wpunit --ext DotReporter
