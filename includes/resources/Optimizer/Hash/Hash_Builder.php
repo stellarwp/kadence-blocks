@@ -13,21 +13,76 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 final class Hash_Builder {
 
 	/**
-	 * Build the hash based on a selected portion of the HTML.
+	 * Build a composite hash string with individual component hashes.
 	 *
 	 * @param string $html The full HTML to be returned to the browser.
 	 *
-	 * @return string The hash.
+	 * @return string The composite hash string.
 	 */
 	public function build_hash( string $html ): string {
-		$parts = [
-			$this->extract_stylesheet_links( $html ),
-			$this->extract_inline_styles( $html ),
-			$this->extract_block_structure( $html ),
-			$this->extract_structural_elements( $html ),
+		$components = [
+			'stylesheet' => hash( 'sha256', $this->extract_stylesheet_links( $html ) ),
+			'inline'     => hash( 'sha256', $this->extract_inline_styles( $html ) ),
+			'blocks'     => hash( 'sha256', $this->extract_block_structure( $html ) ),
+			'structure'  => hash( 'sha256', $this->extract_structural_elements( $html ) ),
 		];
 
-		return hash( 'sha256', implode( '|', $parts ) );
+		return implode(
+			'|',
+			array_map(
+				static fn( string $key, string $hash ): string => "$key:$hash",
+				array_keys( $components ),
+				$components
+			)
+		);
+	}
+
+	/**
+	 * Compare two composite hash strings and return which components changed.
+	 *
+	 * @param string $old_hash The previous composite hash.
+	 * @param string $new_hash The new composite hash.
+	 *
+	 * @return string[] List of component names that changed.
+	 */
+	public function get_changed_components( string $old_hash, string $new_hash ): array {
+		if ( $old_hash === $new_hash ) {
+			return [];
+		}
+
+		$old_parts = $this->parse_composite_hash( $old_hash );
+		$new_parts = $this->parse_composite_hash( $new_hash );
+		$changed   = [];
+
+		foreach ( $new_parts as $key => $new_value ) {
+			if ( ! isset( $old_parts[ $key ] ) || $old_parts[ $key ] !== $new_value ) {
+				$changed[] = $key;
+			}
+		}
+
+		return $changed;
+	}
+
+	/**
+	 * Parse a composite hash string into components.
+	 *
+	 * @param string $composite_hash The composite hash string.
+	 *
+	 * @return array Associative array of component => hash.
+	 */
+	private function parse_composite_hash( string $composite_hash ): array {
+		$parts  = explode( '|', $composite_hash );
+		$result = [];
+
+		foreach ( $parts as $part ) {
+			$split = explode( ':', $part, 2 );
+
+			if ( count( $split ) === 2 ) {
+				$result[ $split[0] ] = $split[1];
+			}
+		}
+
+		return $result;
 	}
 
 	/**

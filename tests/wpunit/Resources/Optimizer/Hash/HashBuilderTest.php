@@ -204,4 +204,161 @@ final class HashBuilderTest extends TestCase {
 		// Should produce different hashes due to different block attributes.
 		$this->assertNotSame( $hash1, $hash2 );
 	}
+
+	public function testItReturnsEmptyArrayForIdenticalHashes(): void {
+		$html = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html );
+		$hash2 = $this->hash_builder->build_hash( $html );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertIsArray( $changes );
+		$this->assertEmpty( $changes );
+	}
+
+	public function testItDetectsStylesheetLinkChanges(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style1.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style2.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'stylesheet', $changes );
+		$this->assertCount( 1, $changes );
+	}
+
+	public function testItDetectsInlineStyleChanges(): void {
+		$html1 = '<html><head><style>body { color: red; }</style></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><style>body { color: blue; }</style></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'inline', $changes );
+		$this->assertCount( 1, $changes );
+	}
+
+	public function testItDetectsBlockStructureChanges(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:heading {"level":1} --><h1>Title</h1><!-- /wp:heading --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'blocks', $changes );
+		$this->assertCount( 1, $changes );
+	}
+
+	public function testItDetectsStructuralElementChanges(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div><section>Section</section></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'structure', $changes );
+		$this->assertCount( 1, $changes );
+	}
+
+	public function testItDetectsMultipleComponentChanges(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style1.css"><style>body { color: red; }</style></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style2.css"><style>body { color: blue; }</style></head><body><!-- wp:heading {"level":1} --><h1>Title</h1><!-- /wp:heading --><div>Wrapper</div><section>Section</section></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'stylesheet', $changes );
+		$this->assertContains( 'inline', $changes );
+		$this->assertContains( 'blocks', $changes );
+		$this->assertContains( 'structure', $changes );
+		$this->assertCount( 4, $changes );
+	}
+
+	public function testItDetectsChangesWithEmptyHtml(): void {
+		$html1 = '';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body>Content</body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertIsArray( $changes );
+		$this->assertNotEmpty( $changes );
+	}
+
+	public function testItHandlesMalformedHashString(): void {
+		$html = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$malformed = 'not-a-proper-hash-format';
+		$hash      = $this->hash_builder->build_hash( $html );
+
+		$changes = $this->hash_builder->get_changed_components( $malformed, $hash );
+
+		$this->assertIsArray( $changes );
+		// Should detect all components as changed since the old hash format is invalid.
+		$this->assertNotEmpty( $changes );
+	}
+
+	public function testItDetectsChangesWhenOnlyContentChanges(): void {
+		// Dynamic content (like text) should NOT change the hash.
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Original content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Modified content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		// Only content changed, structure is identical - no components should be marked as changed.
+		$this->assertEmpty( $changes );
+	}
+
+	public function testItDetectsChangesWhenBlockAdded(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><!-- wp:kadence/advancedheading {"level":1} --><h1>Title</h1><!-- /wp:kadence/advancedheading --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'blocks', $changes );
+	}
+
+	public function testItDetectsChangesWhenBlockRemoved(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><!-- wp:kadence/advancedheading {"level":1} --><h1>Title</h1><!-- /wp:kadence/advancedheading --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'blocks', $changes );
+	}
+
+	public function testItDetectsChangesWithDifferentElementCounts(): void {
+		$html1 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div></body></html>';
+		$html2 = '<html><head><link rel="stylesheet" href="style.css"></head><body><!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --><div>Wrapper</div><div>Second wrapper</div></body></html>';
+
+		$hash1 = $this->hash_builder->build_hash( $html1 );
+		$hash2 = $this->hash_builder->build_hash( $html2 );
+
+		$changes = $this->hash_builder->get_changed_components( $hash1, $hash2 );
+
+		$this->assertContains( 'structure', $changes );
+	}
+
 }

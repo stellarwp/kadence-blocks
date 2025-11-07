@@ -377,8 +377,8 @@ final class Optimizer_Provider extends Provider {
 		$this->container->singleton( Hash_Builder::class, Hash_Builder::class );
 
 		/**
-		 * Filter the list of query variables, that if present and truthy,
-		 * will bypass the hash check.
+		 * Filter the list of query variables, that if present will bypass
+		 * the hash check.
 		 *
 		 * @param string[] $query_vars The query variable names.
 		 */
@@ -408,15 +408,21 @@ final class Optimizer_Provider extends Provider {
 
 		$this->container->singleton( Hash_Handler::class, Hash_Handler::class );
 
-		add_action(
-			'template_redirect',
-			$this->container->callback( Hash_Handler::class, 'start_buffering' ),
-			1,
-			0
-		);
+		// Don't hook in the optimizer under these scenarios for optimal performance.
+		if (
+			! defined( 'WP_UNINSTALL_PLUGIN' ) &&
+			! wp_installing() &&
+			! wp_doing_ajax() &&
+			! wp_is_json_request() &&
+			! wp_doing_cron()
+		) {
+			add_action(
+				'template_redirect',
+				$this->container->callback( Hash_Handler::class, 'start_buffering' ),
+				1,
+				0
+			);
 
-		// Don't register the shutdown hook when uninstalling.
-		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) && ! wp_installing() ) {
 			add_action(
 				'shutdown',
 				$this->container->callback( Hash_Handler::class, 'check_hash' ),

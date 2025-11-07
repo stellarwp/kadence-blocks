@@ -63,7 +63,7 @@ final class Viewport_Hash_Table extends Table {
 			CREATE TABLE `$table_name` (
 				path_hash CHAR(64) NOT NULL COMMENT 'SHA-256 hash of the path (via \$wp->request), identifies the URL',
 				viewport ENUM($enum_values) NOT NULL COMMENT 'The viewport/device identifier',
-				html_hash CHAR(64) NOT NULL COMMENT 'SHA-256 hash of the HTML markup for this viewport',
+				html_hash VARCHAR(512) NOT NULL COMMENT 'A composite of hashes separated by | in a key\:SHA-256 value of the HTML markup for this viewport',
 				PRIMARY KEY (path_hash, viewport),
 				KEY idx_html_hash (html_hash)
 			) {$charset_collate};
