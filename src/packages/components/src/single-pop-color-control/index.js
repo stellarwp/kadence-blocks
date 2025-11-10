@@ -100,10 +100,8 @@ export default function SinglePopColorControl({
 	};
 	const convertedOpacityValue = 100 === opacityUnit ? convertOpacity(currentOpacity) : currentOpacity;
 	const colorVal = currentColor ? currentColor : value;
-	let currentColorString =
-		isPalette && colors && colorVal && colors[parseInt(colorVal.slice(-1), 10) - 1]
-			? colors[parseInt(colorVal.slice(-1), 10) - 1].color
-			: colorVal;
+	const paletteIndex = isPalette && colors && colorVal ? colorVal.match(/\d+$/)?.[0] - 1 : null;
+	let currentColorString = paletteIndex !== null && colors[paletteIndex] ? colors[paletteIndex].color : colorVal;
 	if (!isPalette && currentColorString && currentColorString.startsWith('var(')) {
 		currentColorString = window
 			.getComputedStyle(document.documentElement)
