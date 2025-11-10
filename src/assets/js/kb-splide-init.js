@@ -7,7 +7,7 @@
 			const advancedSliders = document.querySelectorAll(
 				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init'
 			);
-			this.bootstrapSliders(advancedSliders);
+			this.bootstrapSliders(advancedSliders, true);
 
 			const testimonialSliders = document.querySelectorAll(
 				'.wp-block-kadence-testimonials .kt-blocks-carousel-init'
@@ -17,23 +17,66 @@
 			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
-		bootstrapSliders(elementList) {
+		bootstrapSliders(elementList, isAdvanced = false) {
 			if (!elementList || elementList.length === 0) {
 				return;
 			}
 
 			for (let i = 0; i < elementList.length; i++) {
-				let thisSlider = elementList[i];
-				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
-					continue;
-				}
+				let listElement = elementList[i];
+				let thisSlider;
+				let slideCount;
 
-				// Convert UL parent to div if needed
-				thisSlider = this.convertUlToDiv(thisSlider);
+				if (isAdvanced) {
+					// Advanced sliders: listElement is a child, find the parent slider
+					if (!listElement || listElement.classList.contains('is-initialized')) {
+						continue;
+					}
+
+					// Check if listElement itself is the slider (for thumbnail sliders)
+					// Thumbnail sliders have both kt-blocks-carousel-init and splide classes
+					if (listElement.classList.contains('splide') && listElement.classList.contains('kt-blocks-carousel-init')) {
+						// This element IS the slider itself
+						thisSlider = listElement;
+					} else {
+						// Find the parent .kt-blocks-carousel.splide element which is the Splide root
+						thisSlider = listElement.closest('.kt-blocks-carousel.splide');
+						if (!thisSlider) {
+							// Fallback: if no splide class found, try to find parent .kt-blocks-carousel
+							thisSlider = listElement.closest('.kt-blocks-carousel');
+							if (thisSlider) {
+								thisSlider.classList.add('splide');
+							} else {
+								continue;
+							}
+						}
+					}
+
+					if (thisSlider.classList.contains('is-initialized')) {
+						continue;
+					}
+
+					// Get slide count from existing slides
+					// For thumbnail sliders where thisSlider === listElement, query from thisSlider
+					if (thisSlider === listElement) {
+						slideCount = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item').length;
+					} else {
+						slideCount = listElement.querySelectorAll('.splide__slide, .kb-slide-item').length;
+					}
+				} else {
+					// Regular sliders: listElement is the slider itself
+					// PHP now outputs the correct Splide.js structure, so no conversion needed
+					thisSlider = listElement;
+					if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
+						continue;
+					}
+
+					// Get slide count from existing slides (structure is already correct from PHP)
+					slideCount = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item').length;
+				}
 
 				thisSlider.classList.add('kb-splide');
 
-				const slideCount = this.createSplideElements(thisSlider);
 				const parsedData = this.parseDataset(thisSlider.dataset);
 				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
 
@@ -55,14 +98,15 @@
 				const { sliderType } = parsedData;
 
 				if (sliderType && sliderType === 'fluidcarousel') {
-					thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
+					const slideItems = thisSlider.querySelectorAll('.kb-slide-item');
+					slideItems.forEach(function (elem) {
 						if (!thisSlider.clientWidth) {
 							elem.style.maxWidth = '100%';
 						} else {
 							elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
 						}
 					});
-					const childCount = thisSlider.querySelectorAll('.kb-slide-item').length;
+					const childCount = slideItems.length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
@@ -90,28 +134,18 @@
 							});
 						});
 					});
-					// splideSlider.on( 'overflow', function ( isOverflow ) {
-					// 	// Reset the carousel position
-					// 	splideSlider.go( 0 );
-
-					// 	splideSlider.options = {
-					// 	  arrows    : splideOptions.arrows ? isOverflow : false,
-					// 	  pagination: splideOptions.pagination ? isOverflow : false,
-					// 	  drag      : splideOptions.drag ? isOverflow : false,
-					// 	  clones    : isOverflow ? undefined : 0, // Toggle clones
-					// 	};
-					// } );
 					splideSlider.mount();
 
 					var resizeTimer;
-					window.addEventListener('resize', function (e) {
+					const resizeHandler = function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
 							thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
 								elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
 							});
 						}, 10);
-					});
+					};
+					window.addEventListener('resize', resizeHandler);
 				} else if (sliderType && sliderType === 'slider') {
 					if (undefined === parsedData.sliderFade) {
 						splideOptions.type = 'fade';
@@ -149,7 +183,15 @@
 					const navSliderId = parsedData.sliderNav;
 					const navSlider = document.querySelector('#' + navSliderId);
 
-					this.createSplideElements(navSlider);
+					if (!navSlider) {
+						continue;
+					}
+
+					// Ensure nav slider has splide class (structure should already be correct from PHP)
+					if (!navSlider.classList.contains('splide')) {
+						navSlider.classList.add('splide');
+					}
+					navSlider.classList.add('kb-splide');
 
 					// Switch the datasets for the nav and main slider elements
 					const mainSliderParsedData = this.parseDataset(navSlider.dataset);
@@ -171,7 +213,6 @@
 
 					navSlider.classList.add('slick-initialized');
 					navSlider.classList.add('slick-slider');
-					navSlider.classList.add('kb-splide');
 
 					const carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					const thumbnailSlider = new Splide(navSlider, navSliderOptions);
@@ -278,47 +319,6 @@
 			}, {});
 		},
 
-		createSplideElements(wrapperElem) {
-			// Extract the pause button if it exists
-			const pauseButton = wrapperElem.querySelector('.kb-gallery-pause-button');
-			if (pauseButton) {
-				pauseButton.remove();
-			}
-
-			let slideCount = 0;
-			for (const slide of wrapperElem.children) {
-				// Only add slide class to actual slides, not the pause button
-				if (!slide.classList.contains('kb-gallery-pause-button')) {
-					slide.classList.add('splide__slide');
-					slideCount++;
-				}
-				//slide.classList.add("slick-slide");
-				if (slide.classList.contains('last')) {
-					slide.classList.remove('last');
-				}
-			}
-
-			const splideTrack = document.createElement('div');
-			splideTrack.classList.add('splide__track');
-
-			const splideList = document.createElement('ul');
-			splideList.classList.add('splide__list');
-			// The slides go inside the list element
-			splideList.innerHTML = wrapperElem.innerHTML;
-			// The list element goes inside the track
-			splideTrack.innerHTML = splideList.outerHTML;
-			// The track goes inside them argument elem
-			wrapperElem.innerHTML = splideTrack.outerHTML;
-			wrapperElem.classList.add('splide');
-
-			// Re-append the pause button after the track
-			if (pauseButton) {
-				wrapperElem.appendChild(pauseButton);
-			}
-
-			return slideCount;
-		},
-
 		getSplideOptions(dataSet) {
 			const scrollIsOne = dataSet.sliderScroll === 1 ? 1 : false;
 			const splideOpts = {
@@ -393,28 +393,6 @@
 			}
 
 			return splideOpts;
-		},
-
-		convertUlToDiv(element) {
-			if (element.tagName.toLowerCase() === 'ul') {
-				const divElement = document.createElement('div');
-
-				// Copy all attributes
-				Array.from(element.attributes).forEach((attr) => {
-					divElement.setAttribute(attr.name, attr.value);
-				});
-
-				// Copy all children elements
-				while (element.firstChild) {
-					divElement.appendChild(element.firstChild);
-				}
-
-				// Replace the UL with the div
-				element.parentNode.replaceChild(divElement, element);
-
-				return divElement;
-			}
-			return element;
 		},
 
 		// Initiate the menus when the DOM loads.
