@@ -4,9 +4,9 @@ namespace Tests\wpunit\Resources\Optimizer\Lazy_Load\Sections;
 
 use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class LazyRenderDeciderTest extends TestCase {
+final class LazyRenderDeciderTest extends OptimizerTestCase {
 
 	private Analysis_Registry $registry;
 	private Lazy_Render_Decider $decider;

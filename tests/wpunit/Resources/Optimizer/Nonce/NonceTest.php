@@ -3,9 +3,9 @@
 namespace Tests\wpunit\Resources\Optimizer\Nonce;
 
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class NonceTest extends TestCase {
+final class NonceTest extends OptimizerTestCase {
 
 	private Nonce $nonce;
 	private int $original_user_id;

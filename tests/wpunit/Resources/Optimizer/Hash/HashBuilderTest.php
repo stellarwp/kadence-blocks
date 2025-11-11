@@ -3,9 +3,9 @@
 namespace Tests\wpunit\Resources\Optimizer\Hash;
 
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class HashBuilderTest extends TestCase {
+final class HashBuilderTest extends OptimizerTestCase {
 
 	private Hash_Builder $hash_builder;
 

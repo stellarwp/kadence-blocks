@@ -7,10 +7,10 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Sort_Strategy;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_Query;
 
-final class ColumnRegistrarTest extends TestCase {
+final class ColumnRegistrarTest extends OptimizerTestCase {
 
 	private Column $column;
 

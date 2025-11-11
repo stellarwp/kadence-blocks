@@ -4,9 +4,9 @@ namespace Tests\wpunit\Resources\Optimizer\Path;
 
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class PathFactoryTest extends TestCase {
+final class PathFactoryTest extends OptimizerTestCase {
 
 	private Path_Factory $path_factory;
 

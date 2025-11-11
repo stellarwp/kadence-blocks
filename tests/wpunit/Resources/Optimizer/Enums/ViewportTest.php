@@ -3,12 +3,12 @@
 namespace Tests\wpunit\Resources\Optimizer\Enums;
 
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
 /**
  * Test the Viewport enum class.
  */
-final class ViewportTest extends TestCase {
+final class ViewportTest extends OptimizerTestCase {
 
 	/**
 	 * Test desktop viewport creation.

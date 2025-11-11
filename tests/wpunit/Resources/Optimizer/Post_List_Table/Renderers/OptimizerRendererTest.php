@@ -9,9 +9,9 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Render
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class OptimizerRendererTest extends TestCase {
+final class OptimizerRendererTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

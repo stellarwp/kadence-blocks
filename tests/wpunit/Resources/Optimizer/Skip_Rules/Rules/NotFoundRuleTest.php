@@ -3,10 +3,10 @@
 namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Not_Found_Rule;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_Query;
 
-final class NotFoundRuleTest extends TestCase {
+final class NotFoundRuleTest extends OptimizerTestCase {
 
 	private Not_Found_Rule $rule;
 

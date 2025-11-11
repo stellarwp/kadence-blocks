@@ -6,12 +6,12 @@ use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Hook_Manager;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column_Registrar;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
 /**
  * Test the Column_Hook_Manager class.
  */
-final class ColumnHookManagerTest extends TestCase {
+final class ColumnHookManagerTest extends OptimizerTestCase {
 
 	private Column_Hook_Manager $hook_manager;
 	private Column_Registrar $column_registrar;

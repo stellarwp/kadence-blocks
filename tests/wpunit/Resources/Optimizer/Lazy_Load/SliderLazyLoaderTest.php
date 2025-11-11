@@ -10,10 +10,10 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use Brain\Monkey;
 
-final class SliderLazyLoaderTest extends TestCase {
+final class SliderLazyLoaderTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 
@@ -165,7 +165,7 @@ final class SliderLazyLoaderTest extends TestCase {
 			[
 				'http://wordpress.test/image1.jpg',
 				'http://wordpress.test/image2.jpg',
-			] 
+			]
 		);
 
 		$result = $this->lazy_loader->lazy_load_row_slider( $args, $attributes );

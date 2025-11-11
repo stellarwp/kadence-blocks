@@ -6,9 +6,9 @@ use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class HashStoreTest extends TestCase {
+final class HashStoreTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

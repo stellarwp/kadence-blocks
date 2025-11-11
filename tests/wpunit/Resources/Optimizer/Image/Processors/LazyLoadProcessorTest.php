@@ -3,10 +3,10 @@
 namespace Tests\wpunit\Resources\Optimizer\Image\Processors;
 
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Lazy_Load_Processor;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_HTML_Tag_Processor;
 
-final class LazyLoadProcessorTest extends TestCase {
+final class LazyLoadProcessorTest extends OptimizerTestCase {
 
 	private Lazy_Load_Processor $processor;
 

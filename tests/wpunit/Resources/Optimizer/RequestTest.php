@@ -4,9 +4,9 @@ namespace Tests\wpunit\Resources\Optimizer;
 
 use KadenceWP\KadenceBlocks\Optimizer\Request;
 use stdClass;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class RequestTest extends TestCase {
+final class RequestTest extends OptimizerTestCase {
 
 	private Request $request;
 

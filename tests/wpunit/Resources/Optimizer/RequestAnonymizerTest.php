@@ -5,10 +5,10 @@ namespace Tests\wpunit\Resources\Optimizer;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Request_Anonymizer;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WPDieException;
 
-final class RequestAnonymizerTest extends TestCase {
+final class RequestAnonymizerTest extends OptimizerTestCase {
 
 	private Request_Anonymizer $anonymizer;
 	private Nonce $nonce;

@@ -7,9 +7,9 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Table_Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class ExpiredStoreDecoratorTest extends TestCase {
+final class ExpiredStoreDecoratorTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

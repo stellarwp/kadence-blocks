@@ -8,9 +8,9 @@ use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class CachedStoreDecoratorTest extends TestCase {
+final class CachedStoreDecoratorTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

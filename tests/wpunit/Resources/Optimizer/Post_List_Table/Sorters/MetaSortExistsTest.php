@@ -5,10 +5,10 @@ namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Sorters;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Sorters\Meta_Sort_Exists;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_Query;
 
-final class MetaSortExistsTest extends TestCase {
+final class MetaSortExistsTest extends OptimizerTestCase {
 
 	public function testItCreatesWithDefaultSecondaryOrderFields(): void {
 		$sort_strategy = new Meta_Sort_Exists();

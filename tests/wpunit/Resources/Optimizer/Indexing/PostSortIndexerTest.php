@@ -3,9 +3,9 @@
 namespace Tests\wpunit\Resources\Optimizer\Indexing;
 
 use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class PostSortIndexerTest extends TestCase {
+final class PostSortIndexerTest extends OptimizerTestCase {
 
 	private Post_Sort_Indexer $indexer;
 	private int $post_id;

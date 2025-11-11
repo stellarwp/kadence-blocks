@@ -9,10 +9,10 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\DeviceAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use Brain\Monkey;
 
-final class AnalysisRegistryTest extends TestCase {
+final class AnalysisRegistryTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

@@ -4,9 +4,9 @@ namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
 use KadenceWP\KadenceBlocks\Optimizer\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class OptimizerRequestRuleTest extends TestCase {
+final class OptimizerRequestRuleTest extends OptimizerTestCase {
 
 	private Optimizer_Request_Rule $rule;
 

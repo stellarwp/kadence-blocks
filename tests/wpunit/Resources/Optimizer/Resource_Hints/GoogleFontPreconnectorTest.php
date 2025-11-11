@@ -5,11 +5,11 @@ namespace Tests\wpunit\Resources\Optimizer\Resource_Hints;
 use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Resource_Hints\Google_Font_Preconnector;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use Brain\Monkey;
 use PHPUnit\Framework\MockObject\MockObject;
 
-final class GoogleFontPreconnectorTest extends TestCase {
+final class GoogleFontPreconnectorTest extends OptimizerTestCase {
 
 	private Google_Font_Preconnector $preconnector;
 
@@ -345,6 +345,9 @@ final class GoogleFontPreconnectorTest extends TestCase {
 	}
 
 	public function testItDoesNotFilterWpResourceHintsWhenDisabled(): void {
+		// Remove any filters registered by other classes above.
+		remove_all_filters( 'wp_resource_hints' );
+
 		// Disable the resource hints feature.
 		add_filter( 'kadence_blocks_enable_resource_hits', '__return_false' );
 

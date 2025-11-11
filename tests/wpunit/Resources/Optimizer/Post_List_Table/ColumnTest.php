@@ -3,9 +3,9 @@
 namespace Tests\wpunit\Resources\Optimizer\Post_List_Table;
 
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Column;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class ColumnTest extends TestCase {
+final class ColumnTest extends OptimizerTestCase {
 
 	public function testItCreatesColumnWithAllProperties(): void {
 		$slug     = 'test_column';

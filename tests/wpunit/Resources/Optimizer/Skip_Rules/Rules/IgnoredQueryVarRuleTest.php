@@ -4,9 +4,9 @@ namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class IgnoredQueryVarRuleTest extends TestCase {
+final class IgnoredQueryVarRuleTest extends OptimizerTestCase {
 
 	private const MY_QUERY_VAR = 'my_query_var';
 

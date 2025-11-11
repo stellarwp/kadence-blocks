@@ -3,9 +3,9 @@
 namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 
-final class LoggedInRuleTest extends TestCase {
+final class LoggedInRuleTest extends OptimizerTestCase {
 
 	private Logged_In_Rule $rule;
 

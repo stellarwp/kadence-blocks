@@ -4,10 +4,10 @@ namespace Tests\wpunit\Resources\Optimizer\Image\Processors;
 
 use KadenceWP\KadenceBlocks\Optimizer\Image\Processors\Sizes_Attribute_Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Response\ImageAnalysis;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_HTML_Tag_Processor;
 
-final class SizesAttributeProcessorTest extends TestCase {
+final class SizesAttributeProcessorTest extends OptimizerTestCase {
 
 	private Sizes_Attribute_Processor $processor;
 

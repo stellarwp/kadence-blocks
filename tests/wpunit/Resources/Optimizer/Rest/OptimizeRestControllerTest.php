@@ -8,14 +8,14 @@ use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use WP_Error;
 use WP_Http;
 use WP_REST_Request;
 use WP_REST_Server;
 use WP_User;
 
-final class OptimizeRestControllerTest extends TestCase {
+final class OptimizeRestControllerTest extends OptimizerTestCase {
 
 	use Permalink_Trait;
 

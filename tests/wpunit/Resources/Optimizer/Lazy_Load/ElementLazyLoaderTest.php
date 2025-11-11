@@ -4,10 +4,10 @@ namespace Tests\wpunit\Resources\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Element_Lazy_Loader;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
-use Tests\Support\Classes\TestCase;
+use Tests\Support\Classes\OptimizerTestCase;
 use Brain\Monkey;
 
-final class ElementLazyLoaderTest extends TestCase {
+final class ElementLazyLoaderTest extends OptimizerTestCase {
 
 	private Lazy_Render_Decider $decider;
 
