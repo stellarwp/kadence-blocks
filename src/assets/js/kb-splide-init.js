@@ -55,257 +55,284 @@
 						}
 					}
 
-					if (thisSlider.classList.contains('is-initialized')) {
-						continue;
-					}
+				if (thisSlider.classList.contains('is-initialized')) {
+					continue;
+				}
 
-					// Get slide count from existing slides
-					// For thumbnail sliders where thisSlider === listElement, query from thisSlider
-					if (thisSlider === listElement) {
-						slideCount = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item').length;
+				// Get slide count from existing slides (exclude pause button)
+				// For thumbnail sliders where thisSlider === listElement, query from thisSlider
+				if (thisSlider === listElement) {
+					const allSlides = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item');
+					slideCount = Array.from(allSlides).filter(slide => !slide.classList.contains('kb-gallery-pause-button')).length;
+				} else {
+					const allSlides = listElement.querySelectorAll('.splide__slide, .kb-slide-item');
+					slideCount = Array.from(allSlides).filter(slide => !slide.classList.contains('kb-gallery-pause-button')).length;
+				}
+			} else {
+				// Regular sliders: listElement is the slider itself
+				// PHP now outputs the correct Splide.js structure, so no conversion needed
+				thisSlider = listElement;
+				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
+					continue;
+				}
+
+				// Get slide count from existing slides (structure is already correct from PHP, exclude pause button)
+				const allSlides = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item');
+				slideCount = Array.from(allSlides).filter(slide => !slide.classList.contains('kb-gallery-pause-button')).length;
+			}
+
+			// Handle pause button: extract it if it's inside the track and re-append it after the track
+			const pauseButton = thisSlider.querySelector('.kb-gallery-pause-button');
+			if (pauseButton) {
+				const track = thisSlider.querySelector('.splide__track');
+				// If pause button is inside the track, move it outside
+				if (track && track.contains(pauseButton)) {
+					pauseButton.remove();
+					// Re-append after the track
+					if (track.nextSibling) {
+						thisSlider.insertBefore(pauseButton, track.nextSibling);
 					} else {
-						slideCount = listElement.querySelectorAll('.splide__slide, .kb-slide-item').length;
+						thisSlider.appendChild(pauseButton);
 					}
-				} else {
-					// Regular sliders: listElement is the slider itself
-					// PHP now outputs the correct Splide.js structure, so no conversion needed
-					thisSlider = listElement;
-					if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
-						continue;
+				}
+			}
+
+			// Remove 'last' class from slides if present (legacy support)
+			const slides = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item');
+			slides.forEach(function (slide) {
+				if (slide.classList.contains('last')) {
+					slide.classList.remove('last');
+				}
+			});
+
+			thisSlider.classList.add('kb-splide');
+
+			const parsedData = this.parseDataset(thisSlider.dataset);
+			const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
+
+			if (document.querySelector('html[dir="rtl"]')) {
+				parsedData.sliderDirection = 'rtl';
+			} else {
+				parsedData.sliderDirection = 'ltr';
+			}
+
+			thisSlider.addEventListener('load', function (elem) {
+				elem.classList.remove('kt-post-carousel-loading');
+			});
+
+			const splideOptions = this.getSplideOptions(parsedData);
+			// Add this to remove slick based css from hiding elements
+			thisSlider.classList.add('splide-initialized');
+			thisSlider.classList.add('splide-slider');
+
+			const { sliderType } = parsedData;
+
+			if (sliderType && sliderType === 'fluidcarousel') {
+				const slideItems = thisSlider.querySelectorAll('.kb-slide-item');
+				slideItems.forEach(function (elem) {
+					if (!thisSlider.clientWidth) {
+						elem.style.maxWidth = '100%';
+					} else {
+						elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
 					}
-
-					// Get slide count from existing slides (structure is already correct from PHP)
-					slideCount = thisSlider.querySelectorAll('.splide__slide, .kb-slide-item').length;
-				}
-
-				thisSlider.classList.add('kb-splide');
-
-				const parsedData = this.parseDataset(thisSlider.dataset);
-				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
-
-				if (document.querySelector('html[dir="rtl"]')) {
-					parsedData.sliderDirection = 'rtl';
-				} else {
-					parsedData.sliderDirection = 'ltr';
-				}
-
-				thisSlider.addEventListener('load', function (elem) {
-					elem.classList.remove('kt-post-carousel-loading');
 				});
+				const childCount = slideItems.length;
+				const splideSlider = new Splide(thisSlider, {
+					...splideOptions,
+					focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
+					autoWidth: true,
+					preloadPages: childCount <= 1 ? 0 : Math.floor(childCount / 2),
+					arrows: childCount > 1 ? splideOptions.arrows : false,
+					pagination: childCount > 1 ? splideOptions.pagination : false,
+					drag: childCount > 1 ? splideOptions.drag : false,
+					clones: childCount > 1 ? undefined : 0, // Toggle clones
+				});
+				splideSlider.on('pagination:mounted', function () {
+					var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+					paginationButtons.forEach(function (button) {
+						button.addEventListener('keydown', function (event) {
+							// Check if space bar or return/enter is pressed
+							if (event.key === ' ' || event.key === 'Enter') {
+								event.preventDefault();
+								var activeSlideIndex = splideSlider?.index || 0;
+								var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+								if (activeSlide) {
+									activeSlide.setAttribute('tabindex', '0');
+									activeSlide.focus();
+								}
+							}
+						});
+					});
+				});
+				splideSlider.mount();
 
-				const splideOptions = this.getSplideOptions(parsedData);
-				// Add this to remove slick based css from hiding elements
-				thisSlider.classList.add('splide-initialized');
-				thisSlider.classList.add('splide-slider');
-
-				const { sliderType } = parsedData;
-
-				if (sliderType && sliderType === 'fluidcarousel') {
-					const slideItems = thisSlider.querySelectorAll('.kb-slide-item');
-					slideItems.forEach(function (elem) {
-						if (!thisSlider.clientWidth) {
-							elem.style.maxWidth = '100%';
-						} else {
+				var resizeTimer;
+				const resizeHandler = function (e) {
+					clearTimeout(resizeTimer);
+					resizeTimer = setTimeout(function () {
+						thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
 							elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
-						}
-					});
-					const childCount = slideItems.length;
-					const splideSlider = new Splide(thisSlider, {
-						...splideOptions,
-						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
-						autoWidth: true,
-						preloadPages: childCount <= 1 ? 0 : Math.floor(childCount / 2),
-						arrows: childCount > 1 ? splideOptions.arrows : false,
-						pagination: childCount > 1 ? splideOptions.pagination : false,
-						drag: childCount > 1 ? splideOptions.drag : false,
-						clones: childCount > 1 ? undefined : 0, // Toggle clones
-					});
-					splideSlider.on('pagination:mounted', function () {
-						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
-						paginationButtons.forEach(function (button) {
-							button.addEventListener('keydown', function (event) {
-								// Check if space bar or return/enter is pressed
-								if (event.key === ' ' || event.key === 'Enter') {
-									event.preventDefault();
-									var activeSlideIndex = splideSlider?.index || 0;
-									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
-									if (activeSlide) {
-										activeSlide.setAttribute('tabindex', '0');
-										activeSlide.focus();
-									}
-								}
-							});
 						});
-					});
-					splideSlider.mount();
-
-					var resizeTimer;
-					const resizeHandler = function (e) {
-						clearTimeout(resizeTimer);
-						resizeTimer = setTimeout(function () {
-							thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
-								elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
-							});
-						}, 10);
+					}, 10);
+				};
+				window.addEventListener('resize', resizeHandler);
+			} else if (sliderType && sliderType === 'slider') {
+				if (undefined === parsedData.sliderFade) {
+					splideOptions.type = 'fade';
+				} else {
+					splideOptions.type = parsedData.sliderFade ? 'fade' : 'slide';
+				}
+				splideOptions.rewind = true;
+				const splideSlider = new Splide(thisSlider, splideOptions);
+				splideSlider.on('overflow', function (isOverflow) {
+					splideSlider.options = {
+						arrows: slideCount === 1 ? false : splideOptions.arrows,
+						pagination: slideCount === 1 ? false : splideOptions.pagination,
+						drag: slideCount === 1 ? false : splideOptions.drag,
 					};
-					window.addEventListener('resize', resizeHandler);
-				} else if (sliderType && sliderType === 'slider') {
-					if (undefined === parsedData.sliderFade) {
-						splideOptions.type = 'fade';
-					} else {
-						splideOptions.type = parsedData.sliderFade ? 'fade' : 'slide';
-					}
-					splideOptions.rewind = true;
-					const splideSlider = new Splide(thisSlider, splideOptions);
-					splideSlider.on('overflow', function (isOverflow) {
-						splideSlider.options = {
-							arrows: slideCount === 1 ? false : splideOptions.arrows,
-							pagination: slideCount === 1 ? false : splideOptions.pagination,
-							drag: slideCount === 1 ? false : splideOptions.drag,
-						};
-					});
-					splideSlider.on('pagination:mounted', function () {
-						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
-						paginationButtons.forEach(function (button) {
-							button.addEventListener('keydown', function (event) {
-								// Check if space bar or return/enter is pressed
-								if (event.key === ' ' || event.key === 'Enter') {
-									event.preventDefault();
-									var activeSlideIndex = splideSlider?.index || 0;
-									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
-									if (activeSlide) {
-										activeSlide.setAttribute('tabindex', '0');
-										activeSlide.focus();
-									}
+				});
+				splideSlider.on('pagination:mounted', function () {
+					var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+					paginationButtons.forEach(function (button) {
+						button.addEventListener('keydown', function (event) {
+							// Check if space bar or return/enter is pressed
+							if (event.key === ' ' || event.key === 'Enter') {
+								event.preventDefault();
+								var activeSlideIndex = splideSlider?.index || 0;
+								var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+								if (activeSlide) {
+									activeSlide.setAttribute('tabindex', '0');
+									activeSlide.focus();
 								}
-							});
+							}
 						});
 					});
-					splideSlider.mount();
-				} else if (sliderType && sliderType === 'thumbnail') {
-					const navSliderId = parsedData.sliderNav;
-					const navSlider = document.querySelector('#' + navSliderId);
+				});
+				splideSlider.mount();
+			} else if (sliderType && sliderType === 'thumbnail') {
+				const navSliderId = parsedData.sliderNav;
+				const navSlider = document.querySelector('#' + navSliderId);
 
-					if (!navSlider) {
-						continue;
-					}
+				if (!navSlider) {
+					continue;
+				}
 
-					// Ensure nav slider has splide class (structure should already be correct from PHP)
-					if (!navSlider.classList.contains('splide')) {
-						navSlider.classList.add('splide');
-					}
-					navSlider.classList.add('kb-splide');
+				// Ensure nav slider has splide class (structure should already be correct from PHP)
+				if (!navSlider.classList.contains('splide')) {
+					navSlider.classList.add('splide');
+				}
+				navSlider.classList.add('kb-splide');
 
-					// Switch the datasets for the nav and main slider elements
-					const mainSliderParsedData = this.parseDataset(navSlider.dataset);
-					const mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
-					const navSliderOptions = splideOptions;
-					navSliderOptions.isNavigation = true;
-					navSliderOptions.pagination = false;
-					navSliderOptions.type = 'loop';
-					navSliderOptions.arrows = true;
-					// navSliderOptions.rewind = true;
+				// Switch the datasets for the nav and main slider elements
+				const mainSliderParsedData = this.parseDataset(navSlider.dataset);
+				const mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
+				const navSliderOptions = splideOptions;
+				navSliderOptions.isNavigation = true;
+				navSliderOptions.pagination = false;
+				navSliderOptions.type = 'loop';
+				navSliderOptions.arrows = true;
+				// navSliderOptions.rewind = true;
 
-					mainSliderOptions.type =
-						mainSliderParsedData.sliderFade || undefined == mainSliderParsedData.sliderFade
-							? 'fade'
-							: 'slide';
-					mainSliderOptions.rewind = true;
-					mainSliderOptions.pagination = false;
-					mainSliderOptions.direction = navSliderOptions.direction;
+				mainSliderOptions.type =
+					mainSliderParsedData.sliderFade || undefined == mainSliderParsedData.sliderFade
+						? 'fade'
+						: 'slide';
+				mainSliderOptions.rewind = true;
+				mainSliderOptions.pagination = false;
+				mainSliderOptions.direction = navSliderOptions.direction;
 
-					navSlider.classList.add('slick-initialized');
-					navSlider.classList.add('slick-slider');
+				navSlider.classList.add('slick-initialized');
+				navSlider.classList.add('slick-slider');
 
-					const carouselSlider = new Splide(thisSlider, mainSliderOptions);
-					const thumbnailSlider = new Splide(navSlider, navSliderOptions);
-					thumbnailSlider.on('overflow', function (isOverflow) {
+				const carouselSlider = new Splide(thisSlider, mainSliderOptions);
+				const thumbnailSlider = new Splide(navSlider, navSliderOptions);
+				thumbnailSlider.on('overflow', function (isOverflow) {
+					// Reset the carousel position
+					thumbnailSlider.go(0);
+
+					thumbnailSlider.options = {
+						arrows: navSliderOptions.arrows ? isOverflow : false,
+						pagination: navSliderOptions.pagination ? isOverflow : false,
+						drag: navSliderOptions.drag ? isOverflow : false,
+						rewind: !isOverflow ? true : false,
+						type: !isOverflow ? 'slide' : navSliderOptions.type,
+						clones: isOverflow ? undefined : 0, // Toggle clones
+					};
+				});
+				carouselSlider.sync(thumbnailSlider);
+				carouselSlider.mount();
+				thumbnailSlider.mount();
+			} else if (sliderType && sliderType === 'rewind') {
+				splideOptions.type = 'slide';
+				splideOptions.rewind = true;
+				const splideSlider = new Splide(thisSlider, splideOptions);
+				if (!inHiddenMenu) {
+					splideSlider.on('overflow', function (isOverflow) {
 						// Reset the carousel position
-						thumbnailSlider.go(0);
+						splideSlider.go(0);
 
-						thumbnailSlider.options = {
-							arrows: navSliderOptions.arrows ? isOverflow : false,
-							pagination: navSliderOptions.pagination ? isOverflow : false,
-							drag: navSliderOptions.drag ? isOverflow : false,
-							rewind: !isOverflow ? true : false,
-							type: !isOverflow ? 'slide' : navSliderOptions.type,
+						splideSlider.options = {
+							arrows: splideOptions.arrows ? isOverflow : false,
+							pagination: splideOptions.pagination ? isOverflow : false,
+							drag: splideOptions.drag ? isOverflow : false,
 							clones: isOverflow ? undefined : 0, // Toggle clones
 						};
 					});
-					carouselSlider.sync(thumbnailSlider);
-					carouselSlider.mount();
-					thumbnailSlider.mount();
-				} else if (sliderType && sliderType === 'rewind') {
-					splideOptions.type = 'slide';
-					splideOptions.rewind = true;
-					const splideSlider = new Splide(thisSlider, splideOptions);
-					if (!inHiddenMenu) {
-						splideSlider.on('overflow', function (isOverflow) {
-							// Reset the carousel position
-							splideSlider.go(0);
-
-							splideSlider.options = {
-								arrows: splideOptions.arrows ? isOverflow : false,
-								pagination: splideOptions.pagination ? isOverflow : false,
-								drag: splideOptions.drag ? isOverflow : false,
-								clones: isOverflow ? undefined : 0, // Toggle clones
-							};
-						});
-					}
-					splideSlider.on('pagination:mounted', function () {
-						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
-						paginationButtons.forEach(function (button) {
-							button.addEventListener('keydown', function (event) {
-								// Check if space bar or return/enter is pressed
-								if (event.key === ' ' || event.key === 'Enter') {
-									event.preventDefault();
-									var activeSlideIndex = splideSlider?.index || 0;
-									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
-									if (activeSlide) {
-										activeSlide.setAttribute('tabindex', '0');
-										activeSlide.focus();
-									}
-								}
-							});
-						});
-					});
-					splideSlider.mount();
-				} else {
-					const splideSlider = new Splide(thisSlider, splideOptions);
-					if (!inHiddenMenu) {
-						splideSlider.on('overflow', function (isOverflow) {
-							// Reset the carousel position
-							splideSlider.go(0);
-
-							splideSlider.options = {
-								arrows: splideOptions.arrows ? isOverflow : false,
-								pagination: splideOptions.pagination ? isOverflow : false,
-								drag: splideOptions.drag ? isOverflow : false,
-								clones: isOverflow ? undefined : 0, // Toggle clones
-							};
-						});
-					}
-					splideSlider.on('pagination:mounted', function () {
-						var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
-						paginationButtons.forEach(function (button) {
-							button.addEventListener('keydown', function (event) {
-								// Check if space bar or return/enter is pressed
-								if (event.key === ' ' || event.key === 'Enter') {
-									event.preventDefault();
-									var activeSlideIndex = splideSlider?.index || 0;
-									var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
-									if (activeSlide) {
-										activeSlide.setAttribute('tabindex', '0');
-										activeSlide.focus();
-									}
-								}
-							});
-						});
-					});
-					splideSlider.mount();
 				}
+				splideSlider.on('pagination:mounted', function () {
+					var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+					paginationButtons.forEach(function (button) {
+						button.addEventListener('keydown', function (event) {
+							// Check if space bar or return/enter is pressed
+							if (event.key === ' ' || event.key === 'Enter') {
+								event.preventDefault();
+								var activeSlideIndex = splideSlider?.index || 0;
+								var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+								if (activeSlide) {
+									activeSlide.setAttribute('tabindex', '0');
+									activeSlide.focus();
+								}
+							}
+						});
+					});
+				});
+				splideSlider.mount();
+			} else {
+				const splideSlider = new Splide(thisSlider, splideOptions);
+				if (!inHiddenMenu) {
+					splideSlider.on('overflow', function (isOverflow) {
+						// Reset the carousel position
+						splideSlider.go(0);
+
+						splideSlider.options = {
+							arrows: splideOptions.arrows ? isOverflow : false,
+							pagination: splideOptions.pagination ? isOverflow : false,
+							drag: splideOptions.drag ? isOverflow : false,
+							clones: isOverflow ? undefined : 0, // Toggle clones
+						};
+					});
+				}
+				splideSlider.on('pagination:mounted', function () {
+					var paginationButtons = thisSlider.querySelectorAll('.splide__pagination__page');
+					paginationButtons.forEach(function (button) {
+						button.addEventListener('keydown', function (event) {
+							// Check if space bar or return/enter is pressed
+							if (event.key === ' ' || event.key === 'Enter') {
+								event.preventDefault();
+								var activeSlideIndex = splideSlider?.index || 0;
+								var activeSlide = splideSlider?.Components?.Slides?.getAt(activeSlideIndex)?.slide;
+								if (activeSlide) {
+									activeSlide.setAttribute('tabindex', '0');
+									activeSlide.focus();
+								}
+							}
+						});
+					});
+				});
+				splideSlider.mount();
 			}
-		},
+		}
+	},
 
 		parseDataset(elementDataset) {
 			// Auto-parse all values in the elements dataset
