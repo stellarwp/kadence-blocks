@@ -167,7 +167,7 @@ jobs:
       # Try to find zip on s3 service.
       # ------------------------------------------------------------------------------
       - name: Check if zip already exists
-        uses: the-events-calendar/action-s3-utility@main
+        uses: the-events-calendar/action-s3-utility@chore/remove-deprecated-set-output
         if: ${{ inputs.production == 'no' }}
         id: s3_zip_exists
         continue-on-error: true
