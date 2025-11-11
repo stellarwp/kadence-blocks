@@ -753,6 +753,16 @@ function KadenceConfig() {
 								theDefault={true}
 							/>
 						</PanelBody>
+						<PanelBody title={__('Performance Optimizer', 'kadence-blocks')} initialOpen={false}>
+							<KadenceSetting
+								slug={'performance_optimizer_enabled'}
+								label={__('Enable The Performance Optimizer', 'kadence-blocks')}
+								type={'toggle'}
+								theDefault={false}
+								// Reload the page to load/unload the external optimizer JavaScript.
+								successCallback={() => window.location.reload()}
+							/>
+						</PanelBody>
 						<PanelBody title={__('Custom CSS Indicator', 'kadence-blocks')} initialOpen={false}>
 							<KadenceSetting
 								slug={'enable_custom_css_indicator'}
