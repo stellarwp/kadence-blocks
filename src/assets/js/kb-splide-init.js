@@ -23,7 +23,7 @@
 			}
 
 			for (let i = 0; i < elementList.length; i++) {
-				let listElement = elementList[i];
+				const listElement = elementList[i];
 				let thisSlider;
 				let slideCount;
 
@@ -35,7 +35,10 @@
 
 					// Check if listElement itself is the slider (for thumbnail sliders)
 					// Thumbnail sliders have both kt-blocks-carousel-init and splide classes
-					if (listElement.classList.contains('splide') && listElement.classList.contains('kt-blocks-carousel-init')) {
+					if (
+						listElement.classList.contains('splide') &&
+						listElement.classList.contains('kt-blocks-carousel-init')
+					) {
 						// This element IS the slider itself
 						thisSlider = listElement;
 					} else {
