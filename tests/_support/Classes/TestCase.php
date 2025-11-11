@@ -4,7 +4,6 @@ namespace Tests\Support\Classes;
 
 use Codeception\TestCase\WPTestCase;
 use KadenceWP\KadenceBlocks\App;
-use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use RuntimeException;
 use Brain\Monkey;
@@ -20,7 +19,8 @@ class TestCase extends WPTestCase {
 
 		parent::setUp();
 
-		$this->container = App::instance( new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() ) )->container();
+		// Already initialized via kadence_blocks_init().
+		$this->container = App::instance()->container();
 	}
 
 	protected function tearDown(): void {
