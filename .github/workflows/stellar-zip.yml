@@ -167,7 +167,7 @@ jobs:
       # Try to find zip on s3 service.
       # ------------------------------------------------------------------------------
       - name: Check if zip already exists
-        uses: the-events-calendar/action-s3-utility@chore/remove-deprecated-set-output
+        uses: the-events-calendar/action-s3-utility@main
         if: ${{ inputs.production == 'no' }}
         id: s3_zip_exists
         continue-on-error: true
@@ -234,7 +234,7 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Upload the zip to Wasabi
         if: steps.s3_zip_exists.outcome != 'success'
-        uses: the-events-calendar/action-s3-utility@chore/remove-deprecated-set-output
+        uses: the-events-calendar/action-s3-utility@main
         with:
           args: --acl public-read --follow-symlinks
         env:
