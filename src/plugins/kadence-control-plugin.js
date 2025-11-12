@@ -756,7 +756,7 @@ function KadenceConfig() {
 						<PanelBody title={__('Performance Optimizer', 'kadence-blocks')} initialOpen={false}>
 							<KadenceSetting
 								slug={'performance_optimizer_enabled'}
-								label={__('Enable The Performance Optimizer', 'kadence-blocks')}
+								label={__('Globally Enable The Performance Optimizer', 'kadence-blocks')}
 								type={'toggle'}
 								theDefault={false}
 								// Reload the page to load/unload the external optimizer JavaScript.
