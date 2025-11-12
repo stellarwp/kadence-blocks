@@ -422,6 +422,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 			if ( ! empty( $aspect_ratio ) ) {
 				$css->add_property( 'aspect-ratio', $aspect_ratio );
+				$css->add_property( 'object-fit', 'cover' );
 			}
 		}
 		$css->render_border_styles( $attributes, 'inlineImageBorderStyles' );

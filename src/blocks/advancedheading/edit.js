@@ -1384,6 +1384,7 @@ function KadenceAdvancedHeading(props) {
 						${'' !== previewInlineImageBorderRadiusBottom ? 'border-bottom-right-radius:' + previewInlineImageBorderRadiusBottom + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
 						${'' !== previewInlineImageBorderRadiusLeft ? 'border-bottom-left-radius:' + previewInlineImageBorderRadiusLeft + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
 						${previewInlineImageAspectRatio ? 'aspect-ratio: ' + previewInlineImageAspectRatio + ';' : ''}
+						${previewInlineImageAspectRatio ? 'object-fit: cover;' : ''}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
