@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
+use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Query;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
@@ -31,6 +32,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Ignored_Query_Var_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Not_Found_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Post_Excluded_Rule;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Cached_Store_Decorator;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Expired_Store_Decorator;
@@ -65,6 +67,7 @@ final class Optimizer_Provider extends Provider {
 		}
 
 		$this->register_mobile_override();
+		$this->register_exclude_meta_script();
 		$this->register_optimizer_query();
 		$this->register_viewport_query();
 		$this->register_translation();
@@ -106,6 +109,22 @@ final class Optimizer_Provider extends Provider {
 		);
 	}
 
+	private function register_exclude_meta_script(): void {
+		$this->container->singleton( Post_Meta::class, Post_Meta::class );
+
+		add_action(
+			'init',
+			$this->container->callback( Post_Meta::class, 'register_meta' )
+		);
+
+		add_action(
+			'enqueue_block_editor_assets',
+			$this->container->callback( Post_Meta::class, 'enqueue_meta_script' ),
+			15,
+			0
+		);
+	}
+
 	private function register_optimizer_query(): void {
 		$this->container->singleton( Optimizer_Query::class, Optimizer_Query::class );
 
@@ -139,6 +158,7 @@ final class Optimizer_Provider extends Provider {
 								Text_Repository::OPTIMIZING => __( 'Optimizing', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZED => __( 'Not Optimized', 'kadence-blocks' ),
 								Text_Repository::NOT_OPTIMIZABLE => __( 'Not Optimizable', 'kadence-blocks' ),
+								Text_Repository::EXCLUDED  => __( 'Excluded', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZATION_OUTDATED => __( 'Optimization Outdated', 'kadence-blocks' ),
 								Text_Repository::OPTIMIZATION_OUTDATED_RUN => __( 'Optimization Outdated. Run again?', 'kadence-blocks' ),
 							]
@@ -403,6 +423,7 @@ final class Optimizer_Provider extends Provider {
 					$this->container->get( Ignored_Query_Var_Rule::class ),
 					$this->container->get( Not_Found_Rule::class ),
 					$this->container->get( Logged_In_Rule::class ),
+					$this->container->get( Post_Excluded_Rule::class ),
 				]
 			);
 

@@ -26,6 +26,9 @@ export const UI_STATES = {
 	NOT_OPTIMIZED: {
 		text: l10n.notOptimized || 'Not Optimized',
 	},
+	EXCLUDED: {
+		text: l10n.excluded || 'Excluded',
+	},
 	NOT_OPTIMIZABLE: {
 		text: l10n.notOptimizable || 'Not Optimizable',
 	},

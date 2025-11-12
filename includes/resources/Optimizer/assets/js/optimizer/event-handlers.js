@@ -1,12 +1,13 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { addAction } from '@wordpress/hooks';
-import { dispatch } from '@wordpress/data';
+import { dispatch, select } from '@wordpress/data';
 import { getPathAndQueryString } from '@wordpress/url';
 import { analyzeSite, removeOptimization } from './analyzer.js';
 import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
 import { POST_SAVED_HOOK } from '../../../../../../src/extension/post-saved-event/constants';
 import { updateLinkState, getPostTitle, animateDots } from './ui-manager.js';
+import { META_KEY } from '../meta/constants';
 
 /**
  * Handle the post-save hook for automatic optimization.
@@ -28,6 +29,13 @@ export function setupPostSaveHandler() {
 		// This is a public post without a pretty rewrite rule.
 		if (postPath.includes('?')) {
 			console.error('❌ Unable to optimize. This is a public post, but has no rewrite rules.');
+			return;
+		}
+
+		const meta = select('core/editor').getEditedPostAttribute('meta');
+
+		if (meta !== undefined && meta[META_KEY] === true) {
+			console.warn(`⚠️ Post ID ${postId} was excluded from optimization via post meta.`);
 			return;
 		}
 
@@ -88,7 +96,7 @@ export async function handleOptimizeClick(event) {
 		'color: #edd144; -webkit-text-stroke: 0.5px black; font-size: 28px; font-weight: bold;'
 	);
 
-	// Show "Optimizing..." state with animated dots
+	// Show "Optimizing..." state with animated dots.
 	updateLinkState(event.target, UI_STATES.OPTIMIZING);
 
 	const animationInterval = animateDots(event.target);
@@ -98,7 +106,7 @@ export async function handleOptimizeClick(event) {
 		const response = await analyzeSite(postUrl, postId, postPath, nonce);
 		console.log(response);
 
-		// Clear the animation interval
+		// Clear the animation interval.
 		clearInterval(animationInterval);
 
 		// Update link state to show "Remove Optimization".
@@ -106,7 +114,7 @@ export async function handleOptimizeClick(event) {
 
 		createNotice(
 			sprintf(
-				// translators: %s: The post title or post ID
+				// translators: %s: The post title or post ID.
 				__('🎉 "%s" is now Optimized!', 'kadence-blocks'),
 				postTitle
 			)
@@ -154,7 +162,7 @@ export async function handleRemoveOptimizationClick(event) {
 
 		createNotice(
 			sprintf(
-				// translators: %s: The post title or post ID
+				// translators: %s: The post title or post ID.
 				__('Optimization data removed for "%s".', 'kadence-blocks'),
 				postTitle
 			)

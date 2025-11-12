@@ -15,6 +15,7 @@ final class Text_Repository {
 	public const OPTIMIZING                = 'optimizing';
 	public const NOT_OPTIMIZED             = 'notOptimized';
 	public const NOT_OPTIMIZABLE           = 'notOptimizable';
+	public const EXCLUDED                  = 'excluded';
 	public const OPTIMIZATION_OUTDATED     = 'outdated';
 	public const OPTIMIZATION_OUTDATED_RUN = 'outdateRunOptimizer';
 
