@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Renderers;
 
+use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
@@ -60,6 +61,24 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 
 	public function testItImplementsInterface(): void {
 		$this->assertInstanceOf( Renderable::class, $this->renderer );
+	}
+
+	public function testItRendersExcludedStatusForPostsWithExcludedMeta(): void {
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title'  => 'Private Post',
+				'post_status' => 'public',
+			]
+		);
+
+		$result = update_post_meta( $post_id, Post_Meta::META_KEY, 1 );
+
+		$this->assertGreaterThan( 0, $result );
+
+		$this->expectOutputString( 'Excluded' );
+		$this->renderer->render( $post_id );
+
+		wp_delete_post( $post_id, true );
 	}
 
 	public function testItRendersNotOptimizableForNonExistentPost(): void {

@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 
+use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
@@ -33,13 +34,20 @@ final class Optimizer_Renderer implements Renderable {
 	}
 
 	/**
-	 * Display a link to run/remove optimization data if the current user has the correct permissions.
+	 * Display a link to run/remove optimization data if the current user has the correct
+	 * permissions.
 	 *
 	 * @param int $post_id The post ID.
 	 *
 	 * @return void
 	 */
 	public function render( int $post_id ): void {
+		if ( $this->is_post_excluded( $post_id ) ) {
+			echo esc_html( $this->text_repository->get( Text_Repository::EXCLUDED ) );
+
+			return;
+		}
+
 		if ( ! $this->is_post_optimizable( $post_id ) ) {
 			echo esc_html( $this->text_repository->get( Text_Repository::NOT_OPTIMIZABLE ) );
 
@@ -61,6 +69,17 @@ final class Optimizer_Renderer implements Renderable {
 		}
 
 		$this->render_action_link( $post_id, $render_data );
+	}
+
+	/**
+	 * Check if this post was excluded via the post meta set via the optimizer meta Gutenberg plugin.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool
+	 */
+	private function is_post_excluded( int $post_id ): bool {
+		return (bool) get_post_meta( $post_id, Post_Meta::META_KEY, true );
 	}
 
 	/**
