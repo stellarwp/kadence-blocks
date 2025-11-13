@@ -21,6 +21,7 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 	private Store $store;
 	private Nonce $nonce;
 	private Optimizer_Renderer $renderer;
+	private Post_Meta $post_meta;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -46,9 +47,10 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 
 		$this->path = new Path( $post_path );
 
-		$this->store    = $this->container->get( Store::class );
-		$this->nonce    = $this->container->get( Nonce::class );
-		$this->renderer = $this->container->get( Optimizer_Renderer::class );
+		$this->store     = $this->container->get( Store::class );
+		$this->nonce     = $this->container->get( Nonce::class );
+		$this->renderer  = $this->container->get( Optimizer_Renderer::class );
+		$this->post_meta = $this->container->get( Post_Meta::class );
 	}
 
 	protected function tearDown(): void {
@@ -71,9 +73,7 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 			]
 		);
 
-		$result = update_post_meta( $post_id, Post_Meta::META_KEY, 1 );
-
-		$this->assertGreaterThan( 0, $result );
+		$this->assertTrue( $this->post_meta->exclude( $post_id ) );
 
 		$this->expectOutputString( 'Excluded' );
 		$this->renderer->render( $post_id );

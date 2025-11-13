@@ -22,15 +22,18 @@ final class Optimizer_Renderer implements Renderable {
 	private Store $store;
 	private Text_Repository $text_repository;
 	private Nonce $nonce;
+	private Post_Meta $meta;
 
 	public function __construct(
 		Store $store,
 		Text_Repository $text_repository,
-		Nonce $nonce
+		Nonce $nonce,
+		Post_Meta $meta
 	) {
 		$this->store           = $store;
 		$this->text_repository = $text_repository;
 		$this->nonce           = $nonce;
+		$this->meta            = $meta;
 	}
 
 	/**
@@ -42,7 +45,7 @@ final class Optimizer_Renderer implements Renderable {
 	 * @return void
 	 */
 	public function render( int $post_id ): void {
-		if ( $this->is_post_excluded( $post_id ) ) {
+		if ( $this->meta->is_excluded( $post_id ) ) {
 			echo esc_html( $this->text_repository->get( Text_Repository::EXCLUDED ) );
 
 			return;
@@ -69,17 +72,6 @@ final class Optimizer_Renderer implements Renderable {
 		}
 
 		$this->render_action_link( $post_id, $render_data );
-	}
-
-	/**
-	 * Check if this post was excluded via the post meta set via the optimizer meta Gutenberg plugin.
-	 *
-	 * @param int $post_id The post ID.
-	 *
-	 * @return bool
-	 */
-	private function is_post_excluded( int $post_id ): bool {
-		return (bool) get_post_meta( $post_id, Post_Meta::META_KEY, true );
 	}
 
 	/**
