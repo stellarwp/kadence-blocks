@@ -84,3 +84,38 @@ export function createNotice(message, type = NOTICE_TYPES.SUCCESS, isDismissible
 		});
 	}
 }
+
+/**
+ * Create a notice and return a reference to it for later removal.
+ *
+ * This is useful for temporary notices that need to be programmatically dismissed,
+ * such as "Processing..." notices that should be removed when an operation completes.
+ *
+ * @param {string} message - The message content to display in the notice.
+ * @param {string} [type=NOTICE_TYPES.SUCCESS] - The type of notice (success, error, warning, info).
+ * @param {Object} [error] - Optional error object with code, message, and data properties.
+ *
+ * @returns {HTMLElement|null} The notice element or null if not created.
+ *
+ * @example
+ * // Create a processing notice and remove it when done
+ * const notice = createDismissibleNotice('Processing...', NOTICE_TYPES.INFO);
+ * await doSomeWork();
+ * if (notice) {
+ *   notice.remove();
+ * }
+ */
+export function createDismissibleNotice(message, type = NOTICE_TYPES.SUCCESS, error = null) {
+	// Create the notice as non-dismissible to prevent manual dismissal.
+	createNotice(message, type, false, error);
+
+	// Find the notice we just created (it's the last one inserted).
+	const container =
+		document.querySelector('.wrap h1') || document.querySelector('.wrap h2') || document.querySelector('.wrap');
+
+	if (!container) {
+		return null;
+	}
+
+	return container.nextElementSibling;
+}
