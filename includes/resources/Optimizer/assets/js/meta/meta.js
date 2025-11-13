@@ -23,17 +23,17 @@ const OptimizerExcludeMeta = () => {
 	return (
 		<>
 			<PluginSidebarMoreMenuItem target={NAME} icon={kadenceNewIcon}>
-				{__('Kadence Optimizer', 'kadence-blocks')}
+				{__('Kadence Performance Optimizer', 'kadence-blocks')}
 			</PluginSidebarMoreMenuItem>
 			<PluginSidebar
 				isPinnable={false}
 				icon={kadenceNewIcon}
 				name={NAME}
-				title={__('Kadence Optimizer', 'kadence-blocks')}
+				title={__('Optimizer Settings For This Post', 'kadence-blocks')}
 			>
 				<PanelBody>
 					<ToggleControl
-						label={__('Exclude this post from optimization', 'kadence-blocks')}
+						label={__('Exclude from optimization', 'kadence-blocks')}
 						checked={meta[META_KEY]}
 						onChange={(value) => editPost({ meta: { [META_KEY]: value } })}
 					/>
