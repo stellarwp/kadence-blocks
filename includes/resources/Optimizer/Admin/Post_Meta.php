@@ -44,6 +44,28 @@ final class Post_Meta {
 	}
 
 	/**
+	 * Determine if a post is excluded from optimization.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool
+	 */
+	public function is_excluded( int $post_id ): bool {
+		return (bool) get_post_meta( $post_id, self::META_KEY, true );
+	}
+
+	/**
+	 * Manually exclude a post from optimization.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool Note, if already excluded this returns false.
+	 */
+	public function exclude( int $post_id ): bool {
+		return (bool) update_post_meta( $post_id, self::META_KEY, 1 );
+	}
+
+	/**
 	 * Enqueue Meta Optimizer script when editing a post in Gutenberg.
 	 *
 	 * @action enqueue_block_editor_assets

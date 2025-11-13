@@ -38,4 +38,27 @@ final class PostMetaTest extends OptimizerTestCase {
 		$this->assertSame( 'boolean', $meta_config['type'] );
 		$this->assertSame( 'Exclude this post from optimization.', $meta_config['description'] );
 	}
+
+	public function testItDoesNotExcludePostWithoutMeta(): void {
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title'  => 'Test Excluded Post',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->assertFalse( $this->post_meta->is_excluded( $post_id ) );
+	}
+
+	public function testItExcludesPost(): void {
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title'  => 'Test Excluded Post',
+				'post_status' => 'publish',
+			]
+		);
+
+		$this->assertTrue( $this->post_meta->exclude( $post_id ) );
+		$this->assertTrue( $this->post_meta->is_excluded( $post_id ) );
+	}
 }
