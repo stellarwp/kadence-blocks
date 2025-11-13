@@ -8,9 +8,15 @@ use WP_Post;
 
 /**
  * Skip Optimization if the post was excluded via the
- * Gutenberg plugins sidebar.
+ * Gutenberg plugins sidebar which stores to post meta.
  */
 final class Post_Excluded_Rule implements Skip_Rule {
+
+	private Post_Meta $meta;
+
+	public function __construct( Post_Meta $meta ) {
+		$this->meta = $meta;
+	}
 
 	/**
 	 * @inheritDoc
@@ -22,6 +28,6 @@ final class Post_Excluded_Rule implements Skip_Rule {
 			return false;
 		}
 
-		return (bool) get_post_meta( $current_post->ID, Post_Meta::META_KEY, true );
+		return $this->meta->is_excluded( $current_post->ID );
 	}
 }
