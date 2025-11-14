@@ -1503,14 +1503,31 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$style_args['background-repeat'] = $attributes['bgImgRepeat'];
 				}
 			}
-			$style_output = array();
+
+			$style_output = [];
+
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
-			$output .= '<div class="kb-bg-slide-contain">';
-			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
-			$output .= '</div>';
-			$output .= '</div>';
+
+			$attrs = [
+				'class' => 'kb-bg-slide kb-bg-slide-' . $key,
+				'style' => implode( ' ', $style_output ),
+			];
+
+			/**
+			 * DO NOT REMOVE: The optimizer uses this.
+			 *
+			 * @param array<string, mixed> $attrs The HTML attributes.
+			 * @param array<string, mixed> $attributes The row block attributes.
+			 */
+			$attrs = apply_filters( 'kadence_blocks_row_slider_attrs', $attrs, $attributes );
+
+			$output .= sprintf(
+				'<div class="kb-bg-slide-contain"><div %s></div></div>',
+				$this->build_escaped_html_attributes( $attrs )
+			);
+
 			if ( $attributes['backgroundSliderCount'] == $item ) {
 				break;
 			}
@@ -1602,6 +1619,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $video_args['muted'] ) && $video_args['muted'] == 'false' ) {
 			unset( $video_args['muted'] );
 		}
+
+		/**
+		 * DO NOT REMOVE: The optimizer uses this.
+		 *
+		 * @param array<string, mixed> $video_args The HTML attributes.
+		 * @param array<string, mixed> $attributes The row block attributes.
+		 */
+		$video_args = apply_filters( 'kadence_blocks_row_video_attrs', $video_args, $attributes );
+
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
 			if ( empty( $value ) ) {
@@ -1765,6 +1791,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 				}
 			}
+
+			/**
+			 * DO NOT REMOVE: The Optimizer uses this.
+			 *
+			 * @param array<string, mixed> $wrapper_args The wrapper div HTML attributes.
+			 * @param array<string, mixed> $attributes The current block attributes.
+			 */
+			$wrapper_args       = apply_filters( 'kadence_blocks_row_wrapper_args', $wrapper_args, $attributes );
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 			$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 			$content = sprintf( '<%1$s %2$s>%3$s<div %4$s>%5$s</div></%1$s>', $html_tag, $wrapper_attributes, $extra_content, $inner_wrapper_attributes, $content );

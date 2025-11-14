@@ -20,3 +20,4 @@ composer.lock   text -diff
 /codeception.dist.yml       export-ignore
 /codeception.slic.yml       export-ignore
 /tests                      export-ignore
+/.cursor                    export-ignore
