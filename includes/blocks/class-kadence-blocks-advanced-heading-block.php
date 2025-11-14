@@ -294,7 +294,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-heading-icon' );
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
 			$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconPaddingUnit' ) );
+			$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
 			if ( isset( $attributes['lineHeight'] ) ) {
 				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 			}
