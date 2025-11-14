@@ -2,12 +2,12 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Post_List_Table\Renderers;
 
-use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers\Optimizer_Renderer;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Status;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\OptimizerTestCase;
@@ -21,7 +21,7 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 	private Store $store;
 	private Nonce $nonce;
 	private Optimizer_Renderer $renderer;
-	private Post_Meta $post_meta;
+	private Status $status;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -47,10 +47,10 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 
 		$this->path = new Path( $post_path );
 
-		$this->store     = $this->container->get( Store::class );
-		$this->nonce     = $this->container->get( Nonce::class );
-		$this->renderer  = $this->container->get( Optimizer_Renderer::class );
-		$this->post_meta = $this->container->get( Post_Meta::class );
+		$this->store    = $this->container->get( Store::class );
+		$this->nonce    = $this->container->get( Nonce::class );
+		$this->renderer = $this->container->get( Optimizer_Renderer::class );
+		$this->status   = $this->container->get( Status::class );
 	}
 
 	protected function tearDown(): void {
@@ -73,7 +73,7 @@ final class OptimizerRendererTest extends OptimizerTestCase {
 			]
 		);
 
-		$this->assertTrue( $this->post_meta->exclude( $post_id ) );
+		$this->assertTrue( $this->status->set_excluded( $post_id ) );
 
 		$this->expectOutputString( 'Excluded' );
 		$this->renderer->render( $post_id );

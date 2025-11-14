@@ -2,8 +2,9 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Post_Excluded_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Meta;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Status;
 use Tests\Support\Classes\OptimizerTestCase;
 
 final class PostExcludedRuleTest extends OptimizerTestCase {
@@ -60,7 +61,7 @@ final class PostExcludedRuleTest extends OptimizerTestCase {
 	/**
 	 * @dataProvider postTypeProvider
 	 */
-	public function testItDoesNotSkipPostWhenMetaIsFalsely( string $post_type ): void {
+	public function testItDoesNotSkipPostWhenNotOptimized( string $post_type ): void {
 		global $post;
 
 		$post = $this->factory()->post->create_and_get(
@@ -72,7 +73,7 @@ final class PostExcludedRuleTest extends OptimizerTestCase {
 			]
 		);
 
-		$result = update_post_meta( $post->ID, Post_Meta::META_KEY, 0 );
+		$result = update_post_meta( $post->ID, Meta::KEY, Status::NOT_OPTIMIZED );
 
 		$this->assertGreaterThan( 0, $result );
 
@@ -82,7 +83,51 @@ final class PostExcludedRuleTest extends OptimizerTestCase {
 	/**
 	 * @dataProvider postTypeProvider
 	 */
-	public function testItSkipsPostWithMeta( string $post_type ): void {
+	public function testItDoesNotSkipPostWhenOptimized( string $post_type ): void {
+		global $post;
+
+		$post = $this->factory()->post->create_and_get(
+			[
+				'post_title'   => 'Rule Test',
+				'post_content' => 'This post should not be skipped',
+				'post_status'  => 'publish',
+				'post_type'    => $post_type,
+			]
+		);
+
+		$result = update_post_meta( $post->ID, Meta::KEY, Status::OPTIMIZED );
+
+		$this->assertGreaterThan( 0, $result );
+
+		$this->assertFalse( $this->rule->should_skip() );
+	}
+
+	/**
+	 * @dataProvider postTypeProvider
+	 */
+	public function testItDoesNotSkipPostWhenStale( string $post_type ): void {
+		global $post;
+
+		$post = $this->factory()->post->create_and_get(
+			[
+				'post_title'   => 'Rule Test',
+				'post_content' => 'This post should not be skipped',
+				'post_status'  => 'publish',
+				'post_type'    => $post_type,
+			]
+		);
+
+		$result = update_post_meta( $post->ID, Meta::KEY, Status::STALE );
+
+		$this->assertGreaterThan( 0, $result );
+
+		$this->assertFalse( $this->rule->should_skip() );
+	}
+
+	/**
+	 * @dataProvider postTypeProvider
+	 */
+	public function testItSkipsPostWhenMetaIsExcluded( string $post_type ): void {
 		global $post;
 
 		$post = $this->factory()->post->create_and_get(
@@ -94,7 +139,7 @@ final class PostExcludedRuleTest extends OptimizerTestCase {
 			]
 		);
 
-		$result = update_post_meta( $post->ID, Post_Meta::META_KEY, 1 );
+		$result = update_post_meta( $post->ID, Meta::KEY, Status::EXCLUDED );
 
 		$this->assertGreaterThan( 0, $result );
 

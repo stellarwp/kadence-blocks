@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Path;
 
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
+use WP_Post;
 
 /**
  * A path object to generate a unique key for each URL on a site.
@@ -10,7 +11,7 @@ use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 final class Path_Factory {
 
 	/**
-	 * Create a path object based on the current relative path.
+	 * Create a path object based on the current relative path and $post global.
 	 *
 	 * @throws \InvalidArgumentException If the path is empty.
 	 *
@@ -40,6 +41,12 @@ final class Path_Factory {
 			$normalized = '/' . $normalized;
 		}
 
-		return new Path( $normalized );
+		$current_post = get_post();
+
+		if ( ! $current_post instanceof WP_Post ) {
+			return new Path( $normalized, null );
+		}
+
+		return new Path( $normalized, $current_post->ID );
 	}
 }

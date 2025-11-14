@@ -13,6 +13,9 @@ final class PathFactoryTest extends OptimizerTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		// Set pretty permalinks for post ID resolution.
+		update_option( 'permalink_structure', '/%postname%/' );
+
 		$this->path_factory = $this->container->get( Path_Factory::class );
 	}
 
@@ -22,6 +25,7 @@ final class PathFactoryTest extends OptimizerTestCase {
 		$path = $this->path_factory->make();
 
 		$this->assertSame( '/', $path->path() );
+		$this->assertNull( $path->post_id() );
 	}
 
 	public function testItStripsQueryString(): void {
@@ -146,4 +150,140 @@ final class PathFactoryTest extends OptimizerTestCase {
 
 		$this->assertSame( '/', $path->path() );
 	}
+
+	public function testItResolvesPostIdFromQueriedObject(): void {
+		// Create a test post.
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title'  => 'Test Post',
+				'post_status' => 'publish',
+				'post_name'   => 'test-post',
+			]
+		);
+
+		// Set up global $post object for get_post().
+		global $post, $wp_query;
+		$original_post                = $post ?? null;
+		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
+		$post                         = get_post( $post_id );
+		$wp_query->queried_object     = $post;
+		$wp_query->queried_object_id  = $post_id;
+
+		$_SERVER['REQUEST_URI'] = '/test-post/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/test-post/', $path->path() );
+		$this->assertSame( $post_id, $path->post_id() );
+
+		// Clean up.
+		$post                         = $original_post;
+		$wp_query->queried_object     = null;
+		$wp_query->queried_object_id  = $original_queried_object_id;
+		wp_delete_post( $post_id, true );
+	}
+
+
+	public function testItReturnsNullPostIdWhenNoPostFound(): void {
+		// Ensure queried object is not set.
+		global $wp_query;
+		$original_queried_object_id = $wp_query->queried_object_id ?? 0;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = 0;
+
+		$_SERVER['REQUEST_URI'] = '/non-existent-page/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/non-existent-page/', $path->path() );
+		$this->assertNull( $path->post_id() );
+
+		// Clean up.
+		$wp_query->queried_object_id = $original_queried_object_id;
+	}
+
+	public function testItReturnsNullPostIdForNonPostPaths(): void {
+		// Ensure queried object is not set.
+		global $wp_query;
+		$original_queried_object_id = $wp_query->queried_object_id ?? 0;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = 0;
+
+		$_SERVER['REQUEST_URI'] = '/wp-login.php';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/wp-login.php', $path->path() );
+		$this->assertNull( $path->post_id() );
+
+		// Clean up.
+		$wp_query->queried_object_id = $original_queried_object_id;
+	}
+
+	public function testItReturnsNullPostIdForTermQueriedObject(): void {
+		// Create a category.
+		$term_id = $this->factory()->term->create(
+			[
+				'taxonomy' => 'category',
+				'name'     => 'Test Category',
+			]
+		);
+
+		// Set queried object to the term (not a post).
+		global $post, $wp_query;
+		$original_post                = $post ?? null;
+		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
+		$term                        = get_term( $term_id );
+		$post                        = null; // Ensure $post is null for term pages.
+		$wp_query->queried_object     = $term;
+		$wp_query->queried_object_id  = $term_id;
+
+		$_SERVER['REQUEST_URI'] = '/category/test-category/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/category/test-category/', $path->path() );
+		// Should return null because term IDs are not post IDs.
+		$this->assertNull( $path->post_id() );
+
+		// Clean up.
+		$post                         = $original_post;
+		$wp_query->queried_object     = null;
+		$wp_query->queried_object_id  = $original_queried_object_id;
+		wp_delete_term( $term_id, 'category' );
+	}
+
+	public function testItReturnsNullPostIdForUserQueriedObject(): void {
+		// Create a user.
+		$user_id = $this->factory()->user->create(
+			[
+				'user_login' => 'testauthor',
+				'user_email' => 'testauthor@example.com',
+			]
+		);
+
+		// Set queried object to the user (not a post).
+		global $post, $wp_query;
+		$original_post                = $post ?? null;
+		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
+		$user                        = get_userdata( $user_id );
+		$post                        = null; // Ensure $post is null for user pages.
+		$wp_query->queried_object     = $user;
+		$wp_query->queried_object_id  = $user_id;
+
+		$_SERVER['REQUEST_URI'] = '/author/testauthor/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/author/testauthor/', $path->path() );
+		// Should return null because user IDs are not post IDs.
+		$this->assertNull( $path->post_id() );
+
+		// Clean up.
+		$post                         = $original_post;
+		$wp_query->queried_object     = null;
+		$wp_query->queried_object_id  = $original_queried_object_id;
+		wp_delete_user( $user_id );
+	}
+
 }

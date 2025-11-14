@@ -7,7 +7,7 @@ import { OPTIMIZER_DATA, UI_STATES } from './constants.js';
 import { createNotice, NOTICE_TYPES } from '@kadence-bundled/admin-notices';
 import { POST_SAVED_HOOK } from '../../../../../../src/extension/post-saved-event/constants';
 import { updateLinkState, getPostTitle, animateDots } from './ui-manager.js';
-import { META_KEY } from '../meta/constants';
+import { META_KEY, STATUS_EXCLUDED } from '../meta/constants';
 
 /**
  * Handle the post-save hook for automatic optimization.
@@ -34,7 +34,7 @@ export function setupPostSaveHandler() {
 
 		const meta = select('core/editor').getEditedPostAttribute('meta');
 
-		if (meta !== undefined && meta[META_KEY] === true) {
+		if (meta !== undefined && meta[META_KEY] === STATUS_EXCLUDED) {
 			console.warn(`⚠️ Post ID ${postId} was excluded from optimization via post meta.`);
 			return;
 		}

@@ -2,11 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Renderers;
 
-use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Post_List_Table\Contracts\Renderable;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Status;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Optimizer\Translation\Text_Repository;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
@@ -22,18 +22,18 @@ final class Optimizer_Renderer implements Renderable {
 	private Store $store;
 	private Text_Repository $text_repository;
 	private Nonce $nonce;
-	private Post_Meta $meta;
+	private Status $status;
 
 	public function __construct(
 		Store $store,
 		Text_Repository $text_repository,
 		Nonce $nonce,
-		Post_Meta $meta
+		Status $status
 	) {
 		$this->store           = $store;
 		$this->text_repository = $text_repository;
 		$this->nonce           = $nonce;
-		$this->meta            = $meta;
+		$this->status          = $status;
 	}
 
 	/**
@@ -45,7 +45,7 @@ final class Optimizer_Renderer implements Renderable {
 	 * @return void
 	 */
 	public function render( int $post_id ): void {
-		if ( $this->meta->is_excluded( $post_id ) ) {
+		if ( $this->status->is_excluded( $post_id ) ) {
 			echo esc_html( $this->text_repository->get( Text_Repository::EXCLUDED ) );
 
 			return;
@@ -59,7 +59,7 @@ final class Optimizer_Renderer implements Renderable {
 
 		$post_path = $this->get_post_path( $post_id );
 
-		$path = new Path( $post_path );
+		$path = new Path( $post_path, $post_id );
 
 		$analysis    = $this->store->get( $path );
 		$render_data = $this->get_render_data( $analysis );

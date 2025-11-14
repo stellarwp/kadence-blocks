@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { ToggleControl, PanelBody } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { kadenceNewIcon } from '@kadence/icons';
-import { NAME, META_KEY } from './constants';
+import { NAME, META_KEY, STATUS_EXCLUDED, STATUS_UNOPTIMIZED } from './constants';
 
 /**
  * Adds a Gutenberg plugin to exclude the current post from being optimized.
@@ -34,8 +34,10 @@ const OptimizerExcludeMeta = () => {
 				<PanelBody>
 					<ToggleControl
 						label={__('Exclude from optimization', 'kadence-blocks')}
-						checked={meta[META_KEY]}
-						onChange={(value) => editPost({ meta: { [META_KEY]: value } })}
+						checked={meta[META_KEY] === STATUS_EXCLUDED}
+						onChange={(value) =>
+							editPost({ meta: { [META_KEY]: value ? STATUS_EXCLUDED : STATUS_UNOPTIMIZED } })
+						}
 					/>
 				</PanelBody>
 			</PluginSidebar>

@@ -7,6 +7,9 @@ use InvalidArgumentException;
 /**
  * The Path Data Transfer Object.
  *
+ * Represents a URL path and optionally its associated post ID.
+ * The post_id is optional but recommended for reliable status synchronization.
+ *
  * @see Path_Factory
  */
 final class Path {
@@ -19,16 +22,25 @@ final class Path {
 	private string $path;
 
 	/**
-	 * @param string $path The path from $wp->request.
+	 * Optional post ID associated with this path.
+	 *
+	 * @var int|null
+	 */
+	private ?int $post_id;
+
+	/**
+	 * @param string   $path    The path from $wp->request.
+	 * @param int|null $post_id Optional post ID for status synchronization.
 	 *
 	 * @throws InvalidArgumentException If the path is empty.
 	 */
-	public function __construct( string $path ) {
+	public function __construct( string $path, ?int $post_id = null ) {
 		if ( ! $path ) {
 			throw new InvalidArgumentException( 'Cannot hash an empty path. Verify you are using this after the wp hook fired.' );
 		}
 
-		$this->path = $path;
+		$this->path    = $path;
+		$this->post_id = $post_id;
 	}
 
 	/**
@@ -47,5 +59,27 @@ final class Path {
 	 */
 	public function hash(): string {
 		return hash( 'sha256', $this->path );
+	}
+
+	/**
+	 * Get the associated post ID if available.
+	 *
+	 * @return int|null
+	 */
+	public function post_id(): ?int {
+		return $this->post_id;
+	}
+
+	/**
+	 * Create a new Path with post ID attached (immutable).
+	 *
+	 * Useful for adding post context to an existing Path object.
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return self
+	 */
+	public function with_post_id( int $post_id ): self {
+		return new self( $this->path, $post_id );
 	}
 }

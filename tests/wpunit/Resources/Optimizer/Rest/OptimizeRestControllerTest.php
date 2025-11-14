@@ -2,10 +2,10 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Rest;
 
-use KadenceWP\KadenceBlocks\Optimizer\Indexing\Post_Sort_Indexer;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Rest\Optimize_Rest_Controller;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Status;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use Tests\Support\Classes\OptimizerTestCase;
@@ -21,7 +21,7 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 
 	private Optimize_Rest_Controller $controller;
 	private Store $store;
-	private Post_Sort_Indexer $post_sort_indexer;
+	private Status $status;
 	private int $post_id;
 	private Path $path;
 	private WP_User $admin_user;
@@ -35,9 +35,9 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 		// Set pretty permalinks.
 		update_option( 'permalink_structure', '/%postname%/' );
 
-		$this->store             = $this->container->get( Store::class );
-		$this->post_sort_indexer = $this->container->get( Post_Sort_Indexer::class );
-		$this->controller        = $this->container->get( Optimize_Rest_Controller::class );
+		$this->store      = $this->container->get( Store::class );
+		$this->status     = $this->container->get( Status::class );
+		$this->controller = $this->container->get( Optimize_Rest_Controller::class );
 
 		// Create test post.
 		$this->post_id = $this->factory()->post->create(
@@ -84,7 +84,7 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 
 	protected function tearDown(): void {
 		$this->store->delete( $this->path );
-		$this->post_sort_indexer->delete( $this->post_id );
+		$this->status->delete( $this->post_id );
 		wp_set_current_user( 0 );
 
 		// Reset the global REST server.
@@ -127,7 +127,10 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 		// Verify data was stored.
 		$stored_analysis = $this->store->get( $this->path );
 		$this->assertInstanceOf( WebsiteAnalysis::class, $stored_analysis );
-		$this->assertTrue( $this->post_sort_indexer->get( $this->post_id ) );
+		$this->assertSame(
+			Status::OPTIMIZED,
+			$this->status->get( $this->post_id )
+		);
 	}
 
 	public function testCreateItemAsEditor(): void {
@@ -277,7 +280,10 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 
 		// Verify data was deleted.
 		$this->assertNull( $this->store->get( $this->path ) );
-		$this->assertFalse( $this->post_sort_indexer->get( $this->post_id ) );
+		$this->assertSame(
+			Status::NOT_OPTIMIZED,
+			$this->status->get( $this->post_id )
+		);
 	}
 
 	public function testDeleteItemNonExistentData(): void {
@@ -399,7 +405,7 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 		$this->assertEquals( 'rest_kb_optimizer_post_does_not_exist', $response_data['code'] );
 	}
 
-	public function testWithDraftPost(): void {
+	public function testItFailsToOptimizeADraftPost(): void {
 		$draft_post_id = $this->factory()->post->create(
 			[
 				'post_status' => 'draft',
@@ -415,8 +421,29 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 
 		$response = $this->controller->create_item( $request );
 
-		$this->assertNotInstanceOf( WP_Error::class, $response );
-		$this->assertEquals( WP_Http::CREATED, $response->get_status() );
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertEquals( 'rest_kb_optimizer_create_failed_not_published', $response->get_error_code() );
+	}
+
+	public function testItFailsToOptimizeAnExcludedPost(): void {
+		$post_id = $this->factory()->post->create(
+			[
+				'post_status' => 'publish',
+			]
+		);
+
+		wp_set_current_user( $this->admin_user->ID );
+
+		$this->assertTrue( $this->status->set_excluded( $post_id ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::CREATABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $post_id );
+		$request->set_param( Optimize_Rest_Controller::RESULTS, $this->getTestAnalysisData() );
+
+		$response = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertEquals( 'rest_kb_optimizer_create_failed_excluded', $response->get_error_code() );
 	}
 
 	private function getTestAnalysisData(): array {

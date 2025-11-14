@@ -2,8 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Admin\Post_Meta;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Skip_Rule;
+use KadenceWP\KadenceBlocks\Optimizer\Status\Status;
 use WP_Post;
 
 /**
@@ -12,10 +12,10 @@ use WP_Post;
  */
 final class Post_Excluded_Rule implements Skip_Rule {
 
-	private Post_Meta $meta;
+	private Status $status;
 
-	public function __construct( Post_Meta $meta ) {
-		$this->meta = $meta;
+	public function __construct( Status $status ) {
+		$this->status = $status;
 	}
 
 	/**
@@ -28,6 +28,6 @@ final class Post_Excluded_Rule implements Skip_Rule {
 			return false;
 		}
 
-		return $this->meta->is_excluded( $current_post->ID );
+		return $this->status->is_excluded( $current_post->ID );
 	}
 }
