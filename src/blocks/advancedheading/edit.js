@@ -823,11 +823,7 @@ function KadenceAdvancedHeading(props) {
 	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
-	const isPaletteColor =
-		(background && background.startsWith('palette')) ||
-		(backgroundColorClass &&
-			(backgroundColorClass.startsWith('theme-palette') || backgroundColorClass.startsWith('kb-palette')));
-	if (!backgroundIgnoreClass && !kadence_blocks_params.isKadenceT && isPaletteColor) {
+	if (!backgroundIgnoreClass && !kadence_blocks_params.isKadenceT && background && background.startsWith('palette')) {
 		backgroundIgnoreClass = true;
 	}
 	const headingOptions = [
@@ -1007,10 +1003,8 @@ function KadenceAdvancedHeading(props) {
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
 				backgroundColor:
-					!enableTextGradient && ((background && backgroundIgnoreClass) || isPaletteColor)
-						? isPaletteColor && backgroundColorClass
-							? 'var(--global-' + backgroundColorClass.replace('kb-', '').replace('theme-', '') + ')'
-							: KadenceColorOutput(background)
+					!enableTextGradient && background && backgroundIgnoreClass
+						? KadenceColorOutput(background)
 						: undefined,
 				backgroundImage: enableTextGradient && textGradient !== '' ? textGradient : undefined,
 				paddingTop:
