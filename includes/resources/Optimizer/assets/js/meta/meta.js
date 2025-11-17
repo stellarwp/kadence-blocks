@@ -16,15 +16,22 @@ import OptimizedViewLink from '../optimized-view-link';
  */
 const OptimizerExcludeMeta = () => {
 	const meta = useSelect((select) => select('core/editor').getEditedPostAttribute('meta'));
+	const savedMeta = useSelect((select) => select('core/editor').getCurrentPostAttribute('meta'));
 	const { editPost } = useDispatch('core/editor');
 	const originalMetaValue = useRef(null);
 
-	// Capture the original meta value when it first becomes available.
+	// Capture the original meta value when it first becomes available, before any edits.
 	useEffect(() => {
-		if (meta !== undefined && originalMetaValue.current === null && meta[META_KEY] !== undefined) {
-			originalMetaValue.current = meta[META_KEY];
+		if (savedMeta !== undefined && originalMetaValue.current === null) {
+			// Capture the value from the saved post, not the edited version
+			if (savedMeta && savedMeta[META_KEY] !== undefined) {
+				originalMetaValue.current = savedMeta[META_KEY];
+			} else {
+				// If no saved value exists, default to unoptimized
+				originalMetaValue.current = STATUS_UNOPTIMIZED;
+			}
 		}
-	}, [meta]);
+	}, [savedMeta]);
 
 	if (meta === undefined) {
 		return null;
@@ -46,9 +53,17 @@ const OptimizerExcludeMeta = () => {
 						label={__('Exclude this post from optimization', 'kadence-blocks')}
 						checked={meta[META_KEY] === STATUS_EXCLUDED}
 						onChange={(value) => {
-							const fallbackValue =
-								originalMetaValue.current !== null ? originalMetaValue.current : STATUS_UNOPTIMIZED;
-							editPost({ meta: { [META_KEY]: value ? STATUS_EXCLUDED : fallbackValue } });
+							if (value) {
+								// When checking, set to excluded
+								editPost({ meta: { [META_KEY]: STATUS_EXCLUDED } });
+							} else {
+								// When unchecking, restore to original value (or unoptimized if original was excluded)
+								const restoreValue =
+									originalMetaValue.current !== null && originalMetaValue.current !== STATUS_EXCLUDED
+										? originalMetaValue.current
+										: STATUS_UNOPTIMIZED;
+								editPost({ meta: { [META_KEY]: restoreValue } });
+							}
 						}}
 					/>
 
