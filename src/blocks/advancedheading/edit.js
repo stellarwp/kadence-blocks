@@ -68,6 +68,7 @@ import {
 import './formats/markformat';
 import './formats/typed-text';
 import './formats/tooltips';
+import './formats/inline-image';
 import AIText from './ai-text/ai-text.js';
 import './formats/screen-reader-text';
 
@@ -254,6 +255,17 @@ function KadenceAdvancedHeading(props) {
 		enableMarkBackgroundGradient,
 		markGradient,
 		markBackgroundGradient,
+		inlineImageWidth,
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles,
+		inlineImageBorderRadius,
+		tabletInlineImageBorderRadius,
+		mobileInlineImageBorderRadius,
+		inlineImageBorderRadiusUnit,
+		inlineImageVerticalAlign,
+		useRatio,
+		ratio,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -485,6 +497,8 @@ function KadenceAdvancedHeading(props) {
 			'core/link',
 			'kadence/mark',
 			'kadence/typed',
+			'kadence/tooltips',
+			'kadence/inline-image',
 			'core/strikethrough',
 			'core/superscript',
 			'core/superscript',
@@ -716,6 +730,13 @@ function KadenceAdvancedHeading(props) {
 		maxHeight && maxHeight[2] ? maxHeight[2] : ''
 	);
 
+	const previewInlineImageWidth = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[0] ? inlineImageWidth[0] : 150,
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[1] ? inlineImageWidth[1] : '',
+		undefined !== inlineImageWidth && undefined !== inlineImageWidth[2] ? inlineImageWidth[2] : ''
+	);
+
 	const previewMarkBorderTopStyle = getBorderStyle(
 		previewDevice,
 		'top',
@@ -743,6 +764,35 @@ function KadenceAdvancedHeading(props) {
 		markBorderStyles,
 		tabletMarkBorderStyles,
 		mobileMarkBorderStyles
+	);
+
+	const previewInlineImageBorderTopStyle = getBorderStyle(
+		previewDevice,
+		'top',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderRightStyle = getBorderStyle(
+		previewDevice,
+		'right',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderBottomStyle = getBorderStyle(
+		previewDevice,
+		'bottom',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
+	);
+	const previewInlineImageBorderLeftStyle = getBorderStyle(
+		previewDevice,
+		'left',
+		inlineImageBorderStyles,
+		tabletInlineImageBorderStyles,
+		mobileInlineImageBorderStyles
 	);
 
 	const previewBorderTop = getBorderStyle(previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle);
@@ -815,6 +865,66 @@ function KadenceAdvancedHeading(props) {
 		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
 		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
 	);
+
+	const previewInlineImageBorderRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[0] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[0] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[0] : ''
+	);
+	const previewInlineImageBorderRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[1] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[1] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[1] : ''
+	);
+	const previewInlineImageBorderRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[2] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[2] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[2] : ''
+	);
+	const previewInlineImageBorderRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== inlineImageBorderRadius ? inlineImageBorderRadius[3] : '',
+		undefined !== tabletInlineImageBorderRadius ? tabletInlineImageBorderRadius[3] : '',
+		undefined !== mobileInlineImageBorderRadius ? mobileInlineImageBorderRadius[3] : ''
+	);
+	let previewInlineImageAspectRatio = '';
+	if (useRatio && ratio) {
+		switch (ratio) {
+			case 'land43':
+				previewInlineImageAspectRatio = '4 / 3';
+				break;
+			case 'land32':
+				previewInlineImageAspectRatio = '3 / 2';
+				break;
+			case 'land169':
+				previewInlineImageAspectRatio = '16 / 9';
+				break;
+			case 'land21':
+				previewInlineImageAspectRatio = '2 / 1';
+				break;
+			case 'land31':
+				previewInlineImageAspectRatio = '3 / 1';
+				break;
+			case 'land41':
+				previewInlineImageAspectRatio = '4 / 1';
+				break;
+			case 'port34':
+				previewInlineImageAspectRatio = '3 / 4';
+				break;
+			case 'port23':
+				previewInlineImageAspectRatio = '2 / 3';
+				break;
+			case 'port916':
+				previewInlineImageAspectRatio = '9 / 16';
+				break;
+			case 'square':
+				previewInlineImageAspectRatio = '1 / 1';
+				break;
+		}
+	}
 	const previewTextOrientation = getPreviewSize(
 		previewDevice,
 		undefined !== textOrientation ? textOrientation : '',
@@ -1261,6 +1371,20 @@ function KadenceAdvancedHeading(props) {
 									';'
 								: ''
 						}
+					}`}
+				{`.kt-adv-heading${uniqueID} img.kb-inline-image {
+						width: ${previewInlineImageWidth}px;
+						vertical-align: ${inlineImageVerticalAlign || 'baseline'};
+						border-top: ${previewInlineImageBorderTopStyle ? previewInlineImageBorderTopStyle : 'inherit'};
+						border-right: ${previewInlineImageBorderRightStyle ? previewInlineImageBorderRightStyle : 'inherit'};
+						border-bottom: ${previewInlineImageBorderBottomStyle ? previewInlineImageBorderBottomStyle : 'inherit'};
+						border-left: ${previewInlineImageBorderLeftStyle ? previewInlineImageBorderLeftStyle : 'inherit'};
+						${'' !== previewInlineImageBorderRadiusTop ? 'border-top-left-radius:' + previewInlineImageBorderRadiusTop + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusRight ? 'border-top-right-radius:' + previewInlineImageBorderRadiusRight + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusBottom ? 'border-bottom-right-radius:' + previewInlineImageBorderRadiusBottom + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${'' !== previewInlineImageBorderRadiusLeft ? 'border-bottom-left-radius:' + previewInlineImageBorderRadiusLeft + (inlineImageBorderRadiusUnit || 'px') + ';' : ''}
+						${previewInlineImageAspectRatio ? 'aspect-ratio: ' + previewInlineImageAspectRatio + ';' : ''}
+						${previewInlineImageAspectRatio ? 'object-fit: cover;' : ''}
 					}`}
 				{previewMaxWidth
 					? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID}, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${
@@ -2295,6 +2419,191 @@ function KadenceAdvancedHeading(props) {
 										unit={markPaddingType}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ markPaddingType: value })}
+									/>
+								</KadencePanelBody>
+							)}
+							{showSettings('inlineImageSettings', 'kadence/advancedheading') && (
+								<KadencePanelBody
+									title={__('Inline Image Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-adv-heading-inline-image-settings'}
+								>
+									<ResponsiveRangeControls
+										label={__('Image Width', 'kadence-blocks')}
+										value={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+												? inlineImageWidth[0]
+												: 150
+										}
+										onChange={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													value,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+														? inlineImageWidth[1]
+														: '',
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+														? inlineImageWidth[2]
+														: '',
+												],
+											});
+										}}
+										tabletValue={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+												? inlineImageWidth[1]
+												: ''
+										}
+										onChangeTablet={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+														? inlineImageWidth[0]
+														: 150,
+													value,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+														? inlineImageWidth[2]
+														: '',
+												],
+											});
+										}}
+										mobileValue={
+											undefined !== inlineImageWidth && undefined !== inlineImageWidth[2]
+												? inlineImageWidth[2]
+												: ''
+										}
+										onChangeMobile={(value) => {
+											setAttributes({
+												inlineImageWidth: [
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[0]
+														? inlineImageWidth[0]
+														: 150,
+													undefined !== inlineImageWidth && undefined !== inlineImageWidth[1]
+														? inlineImageWidth[1]
+														: '',
+													value,
+												],
+											});
+										}}
+										min={10}
+										max={500}
+										step={1}
+										unit="px"
+									/>
+									<ToggleControl
+										label={__('Use fixed ratio instead of image ratio', 'kadence-blocks')}
+										checked={useRatio}
+										onChange={(value) => {
+											setAttributes({
+												useRatio: value,
+												ratio: value && !ratio ? 'land43' : ratio,
+											});
+										}}
+									/>
+									{useRatio && (
+										<>
+											<SelectControl
+												label={__('Size Ratio', 'kadence-blocks')}
+												value={ratio}
+												options={[
+													{
+														label: __('Landscape 4:3', 'kadence-blocks'),
+														value: 'land43',
+													},
+													{
+														label: __('Landscape 3:2', 'kadence-blocks'),
+														value: 'land32',
+													},
+													{
+														label: __('Landscape 16:9', 'kadence-blocks'),
+														value: 'land169',
+													},
+													{
+														label: __('Landscape 2:1', 'kadence-blocks'),
+														value: 'land21',
+													},
+													{
+														label: __('Landscape 3:1', 'kadence-blocks'),
+														value: 'land31',
+													},
+													{
+														label: __('Landscape 4:1', 'kadence-blocks'),
+														value: 'land41',
+													},
+													{
+														label: __('Portrait 3:4', 'kadence-blocks'),
+														value: 'port34',
+													},
+													{
+														label: __('Portrait 2:3', 'kadence-blocks'),
+														value: 'port23',
+													},
+													{
+														label: __('Square 1:1', 'kadence-blocks'),
+														value: 'square',
+													},
+												]}
+												onChange={(value) => setAttributes({ ratio: value })}
+											/>
+										</>
+									)}
+									<ResponsiveBorderControl
+										label={__('Border', 'kadence-blocks')}
+										value={inlineImageBorderStyles}
+										tabletValue={tabletInlineImageBorderStyles}
+										mobileValue={mobileInlineImageBorderStyles}
+										onChange={(value) => setAttributes({ inlineImageBorderStyles: value })}
+										onChangeTablet={(value) =>
+											setAttributes({ tabletInlineImageBorderStyles: value })
+										}
+										onChangeMobile={(value) =>
+											setAttributes({ mobileInlineImageBorderStyles: value })
+										}
+									/>
+									<ResponsiveMeasurementControls
+										label={__('Border Radius', 'kadence-blocks')}
+										value={inlineImageBorderRadius}
+										tabletValue={tabletInlineImageBorderRadius}
+										mobileValue={mobileInlineImageBorderRadius}
+										onChange={(value) => setAttributes({ inlineImageBorderRadius: value })}
+										onChangeTablet={(value) =>
+											setAttributes({ tabletInlineImageBorderRadius: value })
+										}
+										onChangeMobile={(value) =>
+											setAttributes({ mobileInlineImageBorderRadius: value })
+										}
+										unit={inlineImageBorderRadiusUnit}
+										units={['px', 'em', 'rem', '%']}
+										onUnit={(value) => setAttributes({ inlineImageBorderRadiusUnit: value })}
+										max={
+											inlineImageBorderRadiusUnit === 'em' ||
+											inlineImageBorderRadiusUnit === 'rem'
+												? 24
+												: 500
+										}
+										step={
+											inlineImageBorderRadiusUnit === 'em' ||
+											inlineImageBorderRadiusUnit === 'rem'
+												? 0.1
+												: 1
+										}
+										min={0}
+										isBorderRadius={true}
+										allowEmpty={true}
+									/>
+									<SelectControl
+										label={__('Vertical Alignment', 'kadence-blocks')}
+										value={inlineImageVerticalAlign || 'baseline'}
+										options={[
+											{ value: 'baseline', label: __('Baseline', 'kadence-blocks') },
+											{ value: 'top', label: __('Top', 'kadence-blocks') },
+											{ value: 'middle', label: __('Middle', 'kadence-blocks') },
+											{ value: 'bottom', label: __('Bottom', 'kadence-blocks') },
+											{ value: 'text-top', label: __('Text Top', 'kadence-blocks') },
+											{ value: 'text-bottom', label: __('Text Bottom', 'kadence-blocks') },
+											{ value: 'sub', label: __('Sub', 'kadence-blocks') },
+											{ value: 'super', label: __('Super', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ inlineImageVerticalAlign: value })}
 									/>
 								</KadencePanelBody>
 							)}
