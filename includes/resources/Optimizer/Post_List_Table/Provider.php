@@ -91,5 +91,25 @@ final class Provider extends Provider_Contract {
 			'pre_get_posts',
 			$this->container->callback( Filter::class, 'filter_posts' )
 		);
+
+		$this->register_row_actions();
+	}
+
+	private function register_row_actions(): void {
+		$this->container->singleton( Row_Action::class, Row_Action::class );
+
+		add_filter(
+			'post_row_actions',
+			$this->container->callback( Row_Action::class, 'add_view_optimized_link' ),
+			10,
+			2
+		);
+
+		add_filter(
+			'page_row_actions',
+			$this->container->callback( Row_Action::class, 'add_view_optimized_link' ),
+			10,
+			2
+		);
 	}
 }
