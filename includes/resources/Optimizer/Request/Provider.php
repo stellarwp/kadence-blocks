@@ -2,8 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Optimizer\Request;
 
-use KadenceWP\KadenceBlocks\Optimizer\Request;
-use KadenceWP\KadenceBlocks\Optimizer\Request_Anonymizer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 final class Provider extends Provider_Contract {

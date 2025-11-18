@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
-use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 

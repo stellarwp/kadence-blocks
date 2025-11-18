@@ -7,7 +7,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Builder;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Handler;
 use KadenceWP\KadenceBlocks\Optimizer\Hash\Hash_Store;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
-use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Response\WebsiteAnalysis;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;

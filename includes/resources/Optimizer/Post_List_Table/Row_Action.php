@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Post_List_Table;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Nonce\Nonce;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path;
-use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
 use WP_Post;

@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Optimizer;
+namespace Tests\wpunit\Resources\Optimizer\Request;
 
-use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use stdClass;
 use Tests\Support\Classes\OptimizerTestCase;
 

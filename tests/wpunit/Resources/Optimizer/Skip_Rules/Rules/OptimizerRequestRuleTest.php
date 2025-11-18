@@ -2,7 +2,7 @@
 
 namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
 
-use KadenceWP\KadenceBlocks\Optimizer\Request;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Optimizer_Request_Rule;
 use Tests\Support\Classes\OptimizerTestCase;
 
