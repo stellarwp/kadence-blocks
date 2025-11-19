@@ -45,6 +45,7 @@ export default function OptimizedViewLink() {
 
 	const url = addQueryArgs(permalink, {
 		perf_token: nonce,
+		kb_optimizer_preview: 1,
 	});
 
 	return (

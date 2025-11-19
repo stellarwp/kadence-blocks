@@ -6,9 +6,10 @@ use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 
 final class Request {
 
-	public const QUERY_NOCACHE = 'nocache';
-	public const QUERY_TOKEN   = 'perf_token';
-	public const MIN_LENGTH    = 5;
+	public const QUERY_NOCACHE           = 'nocache';
+	public const QUERY_TOKEN             = 'perf_token';
+	public const QUERY_OPTIMIZER_PREVIEW = 'kb_optimizer_preview';
+	public const MIN_LENGTH              = 5;
 
 	/**
 	 * Check if this request is an optimizer request.

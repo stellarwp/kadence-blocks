@@ -59,7 +59,13 @@ final class Row_Action {
 			return $actions;
 		}
 
-		$url = add_query_arg( Request::QUERY_TOKEN, $this->nonce->create(), $permalink );
+		$url = add_query_arg(
+			[
+				Request::QUERY_TOKEN             => $this->nonce->create(),
+				Request::QUERY_OPTIMIZER_PREVIEW => 1,
+			],
+			$permalink 
+		);
 
 		$actions[ self::ACTION ] = sprintf(
 			'<a href="%s" target="_blank">%s</a>',

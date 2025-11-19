@@ -145,6 +145,7 @@ final class RowActionTest extends OptimizerTestCase {
 		$permalink   = get_permalink( $this->post_id );
 
 		$this->assertStringContainsString( Request::QUERY_TOKEN . '=' . $nonce_value, $result[ Row_Action::ACTION ] );
+		$this->assertStringContainsString( Request::QUERY_OPTIMIZER_PREVIEW . '=1', $result[ Row_Action::ACTION ] );
 		$this->assertStringContainsString( esc_url( $permalink ), $result[ Row_Action::ACTION ] );
 	}
 

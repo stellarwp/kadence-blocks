@@ -69,7 +69,8 @@ final class HashHandlerTest extends OptimizerTestCase {
 			$_GET['preview'],
 			$_GET['kadence_set_optimizer_hash'],
 			$_GET[ Request::QUERY_NOCACHE ],
-			$_GET[ Request::QUERY_TOKEN ]
+			$_GET[ Request::QUERY_TOKEN ],
+			$_GET[ Request::QUERY_OPTIMIZER_PREVIEW ]
 		);
 
 		// Reset user.
@@ -261,6 +262,28 @@ final class HashHandlerTest extends OptimizerTestCase {
 
 		// Simulate a 404 condition.
 		$wp_query->is_404 = true;
+
+		$html     = '<html><body>Test content</body></html>';
+		$hash     = $this->hasher->build_hash( $html );
+		$analysis = $this->create_test_analysis();
+
+		$this->assertTrue( $this->hash_store->set( $this->path, Viewport::desktop(), $hash ) );
+		$this->store->set( $this->path, $analysis );
+
+		$this->hash_handler->start_buffering();
+
+		echo $html;
+
+		// Clear the current output buffer.
+		ob_get_clean();
+
+		$this->hash_handler->check_hash();
+
+		$this->assertTrue( did_action( 'kadence_blocks_hash_check_complete' ) === 0 );
+	}
+
+	public function testItBypassesHashCheckOnOptimizerPreviewRequest(): void {
+		$_GET[ Request::QUERY_OPTIMIZER_PREVIEW ] = '1';
 
 		$html     = '<html><body>Test content</body></html>';
 		$hash     = $this->hasher->build_hash( $html );

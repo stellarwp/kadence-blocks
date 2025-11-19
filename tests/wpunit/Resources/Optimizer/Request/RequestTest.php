@@ -18,7 +18,11 @@ final class RequestTest extends OptimizerTestCase {
 
 	protected function tearDown(): void {
 		// Clean up globals.
-		unset( $_GET[ Request::QUERY_NOCACHE ], $_GET[ Request::QUERY_TOKEN ] );
+		unset(
+			$_GET[ Request::QUERY_NOCACHE ],
+			$_GET[ Request::QUERY_TOKEN ],
+			$_GET[ Request::QUERY_OPTIMIZER_PREVIEW ]
+		);
 
 		parent::tearDown();
 	}
@@ -105,6 +109,7 @@ final class RequestTest extends OptimizerTestCase {
 	public function testConstantsAreCorrectlyDefined(): void {
 		$this->assertEquals( 'nocache', Request::QUERY_NOCACHE );
 		$this->assertEquals( 'perf_token', Request::QUERY_TOKEN );
+		$this->assertEquals( 'kb_optimizer_preview', Request::QUERY_OPTIMIZER_PREVIEW );
 	}
 
 	public function testItReturnsFalseWhenParametersAreNull(): void {

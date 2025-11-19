@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
+use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
@@ -92,6 +93,12 @@ final class Hash_Handler {
 	 * @return void
 	 */
 	public function check_hash(): void {
+		if ( SG::get_get_var( Request::QUERY_OPTIMIZER_PREVIEW ) ) {
+			$this->logger->debug( 'Skipping hash check due to optimizer preview query variable.' );
+
+			return;
+		}
+
 		if ( ! $this->html ) {
 			$this->logger->debug(
 				'Bypassing Optimizer: No HTML found to check',
