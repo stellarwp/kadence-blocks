@@ -15,6 +15,7 @@ final class Optimizer_Provider extends Provider {
 	private const PROVIDERS = [
 		Database\Provider::class,
 		Translation\Provider::class,
+		Skip_Rules\Provider::class,
 		Hash\Provider::class,
 		Nonce\Provider::class,
 		Request\Provider::class,
