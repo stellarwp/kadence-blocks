@@ -336,6 +336,10 @@
 		"vsmobile": {
 			"type": "boolean",
 			"default": false
+		},
+		"enablePauseButton": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

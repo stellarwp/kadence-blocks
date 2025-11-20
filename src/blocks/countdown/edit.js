@@ -145,6 +145,7 @@ function KadenceCountdown(props) {
 		secondsLabel,
 		counterAlign,
 		campaignID,
+		enablePauseButton,
 		numberColor,
 		numberFont,
 		labelColor,
@@ -1373,6 +1374,15 @@ function KadenceCountdown(props) {
 												value={expireAction}
 												onChange={(value) => setAttributes({ expireAction: value })}
 											/>
+											<ToggleControl
+												label={__('Enable Pause Button', 'kadence-blocks')}
+												checked={enablePauseButton || false}
+												onChange={(value) => setAttributes({ enablePauseButton: value })}
+												help={__(
+													'Add a pause button to allow users to pause and resume the countdown timer.',
+													'kadence-blocks'
+												)}
+											/>
 											{'redirect' === expireAction && (
 												<>
 													<URLInputControl
@@ -2076,6 +2086,20 @@ function KadenceCountdown(props) {
 				undefined !== postLabelFont[0].family &&
 				'' !== postLabelFont[0].family &&
 				postLabelFont[0].google && <WebfontLoader config={postLabelConfig}></WebfontLoader>}
+			{enablePauseButton && (
+				<button
+					type="button"
+					className="kb-countdown-pause-button"
+					aria-label={__('Pause countdown timer', 'kadence-blocks')}
+					aria-pressed="false"
+					title={__('Pause countdown', 'kadence-blocks')}
+					disabled
+				>
+					<span className="kb-countdown-pause-icon" aria-hidden="true">
+						⏸
+					</span>
+				</button>
+			)}
 			<InnerBlocks templateLock="all" template={!enableTimer ? templateNoTimer : templateWithTimer} />
 			<SpacingVisualizer
 				style={{

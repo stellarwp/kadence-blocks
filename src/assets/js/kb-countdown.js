@@ -6,6 +6,7 @@
 		timers: JSON.parse(kadence_blocks_countdown.timers),
 		listenerCache: {},
 		sliderEventCache: {},
+		prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 		isInViewport(el) {
 			const rect = el.getBoundingClientRect();
 			return (
@@ -169,6 +170,11 @@
 			return element;
 		},
 		updateTimerInterval(element, id, parent) {
+			// Check if paused
+			if (this.cache[id] && this.cache[id].paused) {
+				return;
+			}
+			
 			const currentTimeStamp = new Date();
 			const userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
 			let total = '';
@@ -585,7 +591,9 @@
 					if (sticky && !window.kadenceCountdown.timers[id].timer) {
 						setTimeout(function () {
 							parent.style.height = parent.scrollHeight + 'px';
-							sticky.style.transition = 'height 0.8s ease';
+							if (!window.kadenceCountdown.prefersReducedMotion) {
+								sticky.style.transition = 'height 0.8s ease';
+							}
 							sticky.style.height = Math.floor(sticky.scrollHeight + parent.scrollHeight) + 'px';
 						}, 200);
 						setTimeout(function () {
@@ -632,9 +640,79 @@
 				{ element: slider, event: 'splide:moved', handler: movedHandler },
 			];
 		},
+		togglePause(id, button) {
+			if (!window.kadenceCountdown.cache[id]) {
+				return;
+			}
+			
+			const isPaused = window.kadenceCountdown.cache[id].paused || false;
+			
+			if (isPaused) {
+				// Resume
+				window.kadenceCountdown.cache[id].paused = false;
+				button.setAttribute('aria-pressed', 'false');
+				button.setAttribute('aria-label', 'Pause countdown timer');
+				button.setAttribute('title', 'Pause countdown');
+				const icon = button.querySelector('.kb-countdown-pause-icon');
+				if (icon) {
+					icon.textContent = '⏸';
+				}
+				button.classList.remove('kb-countdown-paused');
+				
+				// Restart the interval
+				if (window.kadenceCountdown.cache[id].element && window.kadenceCountdown.cache[id].parent) {
+					// Update immediately
+					window.kadenceCountdown.updateTimerInterval(
+						window.kadenceCountdown.cache[id].element, 
+						id, 
+						window.kadenceCountdown.cache[id].parent
+					);
+					// Then set up interval
+					window.kadenceCountdown.cache[id].interval = setInterval(function () {
+						window.kadenceCountdown.updateTimerInterval(
+							window.kadenceCountdown.cache[id].element, 
+							id, 
+							window.kadenceCountdown.cache[id].parent
+						);
+					}, 1000);
+				}
+			} else {
+				// Pause
+				window.kadenceCountdown.cache[id].paused = true;
+				button.setAttribute('aria-pressed', 'true');
+				button.setAttribute('aria-label', 'Resume countdown timer');
+				button.setAttribute('title', 'Resume countdown');
+				const icon = button.querySelector('.kb-countdown-pause-icon');
+				if (icon) {
+					icon.textContent = '▶';
+				}
+				button.classList.add('kb-countdown-paused');
+				
+				// Clear the interval
+				if (window.kadenceCountdown.cache[id].interval) {
+					clearInterval(window.kadenceCountdown.cache[id].interval);
+					window.kadenceCountdown.cache[id].interval = null;
+				}
+			}
+		},
 		checkAndStartTimer(id, element, parent) {
 			// Only check for evergreen timers
 			if (window.kadenceCountdown.timers[id].type !== 'evergreen') {
+				return;
+			}
+
+			// Don't start if user prefers reduced motion
+			if (window.kadenceCountdown.prefersReducedMotion) {
+				// Just update once to show the initial time
+				if (!window.kadenceCountdown.cache[id].started) {
+					window.kadenceCountdown.cache[id].started = true;
+					window.kadenceCountdown.updateTimerInterval(element, id, parent);
+				}
+				return;
+			}
+
+			// Don't start if paused
+			if (window.kadenceCountdown.cache[id] && window.kadenceCountdown.cache[id].paused) {
 				return;
 			}
 
@@ -671,6 +749,9 @@
 			window.kadenceCountdown.cache[id].revealed = false;
 			window.kadenceCountdown.cache[id].cookie = '';
 			window.kadenceCountdown.cache[id].started = false;
+			window.kadenceCountdown.cache[id].paused = false; // Start unpaused so initial display works
+			window.kadenceCountdown.cache[id].element = element;
+			window.kadenceCountdown.cache[id].parent = parent;
 
 			if (
 				window.kadenceCountdown.timers[id].type === 'evergreen' &&
@@ -679,6 +760,50 @@
 				window.kadenceCountdown.cache[id].cookie = window.kadenceCountdown.getCookie(
 					window.kadenceCountdown.timers[id].campaign_id
 				);
+			}
+
+			// Always update once to show the initial time (before setting paused state)
+			window.kadenceCountdown.updateTimerInterval(element, id, parent);
+
+			// Setup pause button if it exists
+			const pauseButton = parent.querySelector('.kb-countdown-pause-button');
+			if (pauseButton) {
+				// Remove any existing event listeners by cloning
+				const newButton = pauseButton.cloneNode(true);
+				pauseButton.parentNode.replaceChild(newButton, pauseButton);
+				
+				// If prefers reduced motion, set button to play state initially and pause the timer
+				if (window.kadenceCountdown.prefersReducedMotion) {
+					window.kadenceCountdown.cache[id].paused = true;
+					newButton.setAttribute('aria-pressed', 'true');
+					newButton.setAttribute('aria-label', 'Resume countdown timer');
+					newButton.setAttribute('title', 'Resume countdown');
+					const icon = newButton.querySelector('.kb-countdown-pause-icon');
+					if (icon) {
+						icon.textContent = '▶';
+					}
+					newButton.classList.add('kb-countdown-paused');
+				}
+				
+				// Add click handler
+				newButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					window.kadenceCountdown.togglePause(id, newButton);
+				});
+				
+				// Keyboard support
+				newButton.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						window.kadenceCountdown.togglePause(id, newButton);
+					}
+				});
+			}
+
+			// Check if user prefers reduced motion - if so, don't start countdown interval
+			if (window.kadenceCountdown.prefersReducedMotion) {
+				// Timer is already displayed and paused, just don't start the interval
+				return;
 			}
 
 			// For evergreen timers, check viewport and active slide before starting
@@ -716,6 +841,27 @@
 			}
 		},
 	};
+	// Listen for changes to prefers-reduced-motion
+	if (window.matchMedia) {
+		const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const handleMotionChange = (e) => {
+			const wasReduced = window.kadenceCountdown.prefersReducedMotion;
+			window.kadenceCountdown.prefersReducedMotion = e.matches;
+			
+			// If preference changed, restart all timers
+			if (wasReduced !== e.matches) {
+				// Reinitialize all timers
+				window.kadenceCountdown.initTimer();
+			}
+		};
+		
+		if (motionQuery.addEventListener) {
+			motionQuery.addEventListener('change', handleMotionChange);
+		} else {
+			// Fallback for older browsers
+			motionQuery.addListener(handleMotionChange);
+		}
+	}
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
 		document.addEventListener('DOMContentLoaded', window.kadenceCountdown.initTimer);
