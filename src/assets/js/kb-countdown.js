@@ -174,7 +174,7 @@
 			if (this.cache[id] && this.cache[id].paused) {
 				return;
 			}
-			
+
 			const currentTimeStamp = new Date();
 			const userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
 			let total = '';
@@ -644,9 +644,9 @@
 			if (!window.kadenceCountdown.cache[id]) {
 				return;
 			}
-			
+
 			const isPaused = window.kadenceCountdown.cache[id].paused || false;
-			
+
 			if (isPaused) {
 				// Resume
 				window.kadenceCountdown.cache[id].paused = false;
@@ -658,20 +658,20 @@
 					icon.textContent = '⏸';
 				}
 				button.classList.remove('kb-countdown-paused');
-				
+
 				// Restart the interval
 				if (window.kadenceCountdown.cache[id].element && window.kadenceCountdown.cache[id].parent) {
 					// Update immediately
 					window.kadenceCountdown.updateTimerInterval(
-						window.kadenceCountdown.cache[id].element, 
-						id, 
+						window.kadenceCountdown.cache[id].element,
+						id,
 						window.kadenceCountdown.cache[id].parent
 					);
 					// Then set up interval
 					window.kadenceCountdown.cache[id].interval = setInterval(function () {
 						window.kadenceCountdown.updateTimerInterval(
-							window.kadenceCountdown.cache[id].element, 
-							id, 
+							window.kadenceCountdown.cache[id].element,
+							id,
 							window.kadenceCountdown.cache[id].parent
 						);
 					}, 1000);
@@ -687,7 +687,7 @@
 					icon.textContent = '▶';
 				}
 				button.classList.add('kb-countdown-paused');
-				
+
 				// Clear the interval
 				if (window.kadenceCountdown.cache[id].interval) {
 					clearInterval(window.kadenceCountdown.cache[id].interval);
@@ -771,7 +771,7 @@
 				// Remove any existing event listeners by cloning
 				const newButton = pauseButton.cloneNode(true);
 				pauseButton.parentNode.replaceChild(newButton, pauseButton);
-				
+
 				// If prefers reduced motion, set button to play state initially and pause the timer
 				if (window.kadenceCountdown.prefersReducedMotion) {
 					window.kadenceCountdown.cache[id].paused = true;
@@ -784,13 +784,13 @@
 					}
 					newButton.classList.add('kb-countdown-paused');
 				}
-				
+
 				// Add click handler
 				newButton.addEventListener('click', (e) => {
 					e.preventDefault();
 					window.kadenceCountdown.togglePause(id, newButton);
 				});
-				
+
 				// Keyboard support
 				newButton.addEventListener('keydown', (e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
@@ -847,14 +847,14 @@
 		const handleMotionChange = (e) => {
 			const wasReduced = window.kadenceCountdown.prefersReducedMotion;
 			window.kadenceCountdown.prefersReducedMotion = e.matches;
-			
+
 			// If preference changed, restart all timers
 			if (wasReduced !== e.matches) {
 				// Reinitialize all timers
 				window.kadenceCountdown.initTimer();
 			}
 		};
-		
+
 		if (motionQuery.addEventListener) {
 			motionQuery.addEventListener('change', handleMotionChange);
 		} else {
