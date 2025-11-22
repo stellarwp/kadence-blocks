@@ -253,6 +253,65 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 				$args['tag__in']      = $tags;
 			}
 		}
+		/**
+		 * Filter the query arguments before executing the WP_Query.
+		 *
+		 * This filter allows developers to completely take over or modify the query arguments
+		 * that are used to fetch posts for the Kadence Posts block. By hooking into this filter,
+		 * you can override any default query parameters, add custom tax_query conditions,
+		 * modify post_type, posts_per_page, order, orderby, or any other WP_Query parameter.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $args The array of query arguments that will be passed to WP_Query.
+		 *                    Default arguments include:
+		 *                    - post_type: The post type to query (default: 'post' or from attributes)
+		 *                    - posts_per_page: Number of posts to show (default: 6 or from attributes)
+		 *                    - post_status: Post status (default: 'publish')
+		 *                    - order: Sort order (default: 'desc' or from attributes)
+		 *                    - orderby: Sort by field (default: 'date' or from attributes)
+		 *                    - ignore_sticky_posts: Whether to ignore sticky posts
+		 *                    - post__not_in: Array of post IDs to exclude
+		 *                    - offset: Number of posts to skip (if offsetQuery is set)
+		 *                    - tax_query: Taxonomy query conditions (if applicable)
+		 *                    - category__in/category__not_in: Category filters (if applicable)
+		 *                    - tag__in/tag__not_in: Tag filters (if applicable)
+		 * @param array $attributes The block attributes array containing all block settings.
+		 *
+		 * @return array Modified query arguments array.
+		 *
+		 * @example
+		 * // Modify posts per page
+		 * add_filter( 'kadence_blocks_posts_query_args', function( $args ) {
+		 *     $args['posts_per_page'] = 12;
+		 *     return $args;
+		 * } );
+		 *
+		 * @example
+		 * // Add custom meta query
+		 * add_filter( 'kadence_blocks_posts_query_args', function( $args ) {
+		 *     $args['meta_query'] = array(
+		 *         array(
+		 *             'key'     => 'featured_post',
+		 *             'value'   => 'yes',
+		 *             'compare' => '='
+		 *         )
+		 *     );
+		 *     return $args;
+		 * } );
+		 *
+		 * @example
+		 * // Completely override query arguments
+		 * add_filter( 'kadence_blocks_posts_query_args', function( $args ) {
+		 *     return array(
+		 *         'post_type'      => 'custom_post_type',
+		 *         'posts_per_page' => 5,
+		 *         'post_status'    => 'publish',
+		 *         'orderby'        => 'title',
+		 *         'order'          => 'ASC',
+		 *     );
+		 * } );
+		 */
 		$args = apply_filters( 'kadence_blocks_posts_query_args', $args );
 		$loop = new WP_Query( $args );
 		ob_start();
