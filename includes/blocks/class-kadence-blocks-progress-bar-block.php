@@ -162,6 +162,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_height        = ! empty( $progress_width ) ? ( absint( $progress_width ) * 11.5 ) : 80;
 			$mask_height_tablet = ! empty( $attributes['progressWidthTablet'] ) ? ( absint( $attributes['progressWidthTablet'] ) * 11.5 ) : 0;
 			$mask_height_mobile = ! empty( $attributes['progressWidthMobile'] ) ? ( absint( $attributes['progressWidthMobile'] ) * 11.5 ) : 0;
+			$mask_width         = $mask_height * $iterations;
+			$mask_width_tablet  = $mask_height_tablet ? ( $mask_height_tablet * $iterations ) : 0;
+			$mask_width_mobile  = $mask_height_mobile ? ( $mask_height_mobile * $iterations ) : 0;
 			// $mask_gap_aspect_ratio_adjustment = ( $iterations + 1 ) * ( $mask_gap / $mask_height );
 
 			if ( 'custom' === $mask ) {
@@ -182,6 +185,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$mask_height_string        = $mask_height . 'px';
 			$mask_height_tablet_string = $mask_height_tablet ? $mask_height_tablet . 'px' : '';
 			$mask_height_mobile_string = $mask_height_mobile ? $mask_height_mobile . 'px' : '';
+			$mask_width_string         = $mask_width . 'px';
+			$mask_width_tablet_string  = $mask_width_tablet ? $mask_width_tablet . 'px' : '';
+			$mask_width_mobile_string  = $mask_width_mobile ? $mask_width_mobile . 'px' : '';
 
 			$css->set_selector( '.kb-progress-bar-container' . $unique_id . ' .kb-progress-bar-' . $unique_id );
 			$css->add_property( '-webkit-mask-image', $mask_image_string );
@@ -199,14 +205,28 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'aspect-ratio', $mask_aspect_ratio_string );
 
 			$css->add_property( 'height', $mask_height_string );
+			$css->add_property( 'width', $mask_width_string );
+			$css->add_property( 'max-width', '100%' );
 
-			if ( $mask_height_tablet_string ) {
+			if ( $mask_height_tablet_string || $mask_width_tablet_string ) {
 				$css->set_media_state( 'tablet' );
-				$css->add_property( 'height', $mask_height_tablet_string );
+				if ( $mask_height_tablet_string ) {
+					$css->add_property( 'height', $mask_height_tablet_string );
+				}
+				if ( $mask_width_tablet_string ) {
+					$css->add_property( 'width', $mask_width_tablet_string );
+				}
+				$css->set_media_state( 'desktop' );
 			}
-			if ( $mask_height_mobile_string ) {
+			if ( $mask_height_mobile_string || $mask_width_mobile_string ) {
 				$css->set_media_state( 'mobile' );
-				$css->add_property( 'height', $mask_height_mobile_string );
+				if ( $mask_height_mobile_string ) {
+					$css->add_property( 'height', $mask_height_mobile_string );
+				}
+				if ( $mask_width_mobile_string ) {
+					$css->add_property( 'width', $mask_width_mobile_string );
+				}
+				$css->set_media_state( 'desktop' );
 			}
 		}
 

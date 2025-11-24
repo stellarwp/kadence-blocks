@@ -1282,15 +1282,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'display', 'none !important' );
 		}
 		$css->set_media_state( 'desktop' );
-		
+
 		// Background Slider Pause Button Styles.
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
 			$arrow_style = ! empty( $attributes['backgroundSliderSettings'][0]['arrowStyle'] ) ? $attributes['backgroundSliderSettings'][0]['arrowStyle'] : 'none';
 			$show_pause_button = isset( $attributes['backgroundSliderSettings'][0]['showPauseButton'] ) ? $attributes['backgroundSliderSettings'][0]['showPauseButton'] : false;
-			
+
 			if ( $show_pause_button ) {
 				$css->set_selector( $base_selector . ' .kb-blocks-bg-slider .kb-gallery-pause-button' );
-				
+
 				// Set styles based on arrow style.
 				switch ( $arrow_style ) {
 					case 'blackonlight':
@@ -1317,7 +1317,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
-		
+
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
 			$css->add_css_string( str_replace( 'selector', $base_selector, $attributes['kadenceBlockCSS'] ) );
 		}
@@ -1484,7 +1484,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$auto = isset( $attributes['backgroundSliderSettings'][0]['autoPlay'] ) ? $attributes['backgroundSliderSettings'][0]['autoPlay'] : true;
 		$show_pause_button = isset( $attributes['backgroundSliderSettings'][0]['showPauseButton'] ) ? $attributes['backgroundSliderSettings'][0]['showPauseButton'] : false;
 		$output .= '<div class="kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
-		$output .= '<div class="kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
+		// Output proper Splide.js structure: splide > splide__track > splide__list > splide__slide
+		$output .= '<div class="kt-blocks-carousel-init splide kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
+		$output .= '<div class="splide__track">';
+		$output .= '<ul class="splide__list">';
 		$item = 1;
 		foreach ( $attributes['backgroundSlider'] as $key => $slide ) {
 			$style_args = array();
@@ -1509,6 +1512,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
+			$output .= '<li class="splide__slide kb-bg-slide-contain">';
+			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
+			$output .= '</div>';
+			$output .= '</li>';
 
 			$attrs = [
 				'class' => 'kb-bg-slide kb-bg-slide-' . $key,
@@ -1533,6 +1540,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$item ++;
 		}
+		$output .= '</ul>';
+		$output .= '</div>';
 		if ( $auto && $show_pause_button ) {
 			$output .= '<button class="kb-gallery-pause-button splide__toggle" type="button" aria-label="' . esc_attr( __( 'Toggle autoplay', 'kadence-blocks' ) ) . '">';
 			$output .= '<span class="kb-gallery-pause-icon splide__toggle__pause"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></span>';
