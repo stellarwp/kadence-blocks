@@ -179,7 +179,8 @@
 				liveRegion.setAttribute('aria-live', 'polite');
 				liveRegion.setAttribute('aria-atomic', 'true');
 				liveRegion.className = 'screen-reader-text';
-				liveRegion.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;';
+				liveRegion.style.cssText =
+					'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;';
 				document.body.appendChild(liveRegion);
 			}
 			// Clear previous message and set new one
@@ -363,11 +364,17 @@
 						completeContent.setAttribute('aria-live', 'polite');
 						completeContent.setAttribute('aria-atomic', 'true');
 						// Announce the content change
-						const completeText = window.kadenceCountdown.stripHtml(completeContent.textContent || completeContent.innerText || '');
+						const completeText = window.kadenceCountdown.stripHtml(
+							completeContent.textContent || completeContent.innerText || ''
+						);
 						if (completeText.trim()) {
-							window.kadenceCountdown.announceToScreenReader('Countdown timer has ended. ' + completeText);
+							window.kadenceCountdown.announceToScreenReader(
+								'Countdown timer has ended. ' + completeText
+							);
 						} else {
-							window.kadenceCountdown.announceToScreenReader('Countdown timer has ended. New content is now available.');
+							window.kadenceCountdown.announceToScreenReader(
+								'Countdown timer has ended. New content is now available.'
+							);
 						}
 					}
 					parent.style.opacity = 1;
