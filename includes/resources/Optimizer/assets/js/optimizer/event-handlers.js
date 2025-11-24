@@ -53,6 +53,9 @@ export function setupPostSaveHandler() {
 			dispatch('core/notices').createSuccessNotice(__('Kadence Optimization Data Updated.', 'kadence-blocks'), {
 				type: 'snackbar',
 			});
+
+			// Force Gutenberg to reload the post + meta from the server.
+			dispatch('core').invalidateResolution('getEntityRecord', ['postType', post.type, post.id]);
 		} catch (error) {
 			console.error('❌ Optimization failed:', error);
 
