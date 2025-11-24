@@ -169,6 +169,25 @@
 			}
 			return element;
 		},
+		announceToScreenReader(message) {
+			// Create or get the live region for announcements
+			let liveRegion = document.getElementById('kb-countdown-announcements');
+			if (!liveRegion) {
+				liveRegion = document.createElement('div');
+				liveRegion.id = 'kb-countdown-announcements';
+				liveRegion.setAttribute('role', 'status');
+				liveRegion.setAttribute('aria-live', 'polite');
+				liveRegion.setAttribute('aria-atomic', 'true');
+				liveRegion.className = 'screen-reader-text';
+				liveRegion.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;';
+				document.body.appendChild(liveRegion);
+			}
+			// Clear previous message and set new one
+			liveRegion.textContent = '';
+			setTimeout(() => {
+				liveRegion.textContent = message;
+			}, 100);
+		},
 		updateTimerInterval(element, id, parent) {
 			// Check if paused
 			if (this.cache[id] && this.cache[id].paused) {
@@ -323,6 +342,8 @@
 						window.location.href = window.kadenceCountdown.timers[id].redirect;
 					}
 				} else if ('hide' === window.kadenceCountdown.timers[id].action) {
+					// Announce to screen readers before hiding
+					window.kadenceCountdown.announceToScreenReader('Countdown timer has ended.');
 					parent.style.display = 'none';
 				} else if ('message' === window.kadenceCountdown.timers[id].action) {
 					if (parent.querySelector('.kb-countdown-inner-first')) {
@@ -334,8 +355,20 @@
 					if (parent.querySelector('.kb-countdown-inner-second')) {
 						parent.querySelector('.kb-countdown-inner-second').style.display = 'none';
 					}
-					if (parent.querySelector('.kb-countdown-inner-complete')) {
-						parent.querySelector('.kb-countdown-inner-complete').style.display = 'block';
+					const completeContent = parent.querySelector('.kb-countdown-inner-complete');
+					if (completeContent) {
+						completeContent.style.display = 'block';
+						// Make the replacement content a live region for screen readers
+						completeContent.setAttribute('role', 'status');
+						completeContent.setAttribute('aria-live', 'polite');
+						completeContent.setAttribute('aria-atomic', 'true');
+						// Announce the content change
+						const completeText = window.kadenceCountdown.stripHtml(completeContent.textContent || completeContent.innerText || '');
+						if (completeText.trim()) {
+							window.kadenceCountdown.announceToScreenReader('Countdown timer has ended. ' + completeText);
+						} else {
+							window.kadenceCountdown.announceToScreenReader('Countdown timer has ended. New content is now available.');
+						}
 					}
 					parent.style.opacity = 1;
 					if (window.kadenceCountdown.timers[id].revealOnLoad) {
