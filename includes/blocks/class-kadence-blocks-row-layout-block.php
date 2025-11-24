@@ -1512,10 +1512,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
-			$output .= '<li class="splide__slide kb-bg-slide-contain">';
-			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
-			$output .= '</div>';
-			$output .= '</li>';
 
 			$attrs = [
 				'class' => 'kb-bg-slide kb-bg-slide-' . $key,
@@ -1531,7 +1527,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$attrs = apply_filters( 'kadence_blocks_row_slider_attrs', $attrs, $attributes );
 
 			$output .= sprintf(
-				'<div class="kb-bg-slide-contain"><div %s></div></div>',
+				'<li class="splide__slide kb-bg-slide-contain"><div %s></div></li>',
 				$this->build_escaped_html_attributes( $attrs )
 			);
 
