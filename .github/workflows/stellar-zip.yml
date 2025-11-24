@@ -99,7 +99,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: timestamp_pre
         run: |
-          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          raw_time=$(TZ='America/Chicago' date '+%m/%d %I:%M %p')
           clean_timestamp="${raw_time} CST"
           encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
           badge_url="https://img.shields.io/badge/Built%20Start-${encoded_timestamp}-blue"
@@ -123,34 +123,9 @@ jobs:
       # ------------------------------------------------------------------------------
       # Setup Node.
       # ------------------------------------------------------------------------------
-      - name: Check for .nvmrc file
-        id: check-nvmrc
-        run: |
-          if [ -f .nvmrc ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - uses: actions/setup-node@v4
-        if: steps.check-nvmrc.outputs.exists == 'true'
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Set up authentication for NODE_AUTH_TOKEN if present
-        run: |
-          if [ -n "${{ secrets.NODE_AUTH_TOKEN }}" ]; then
-            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
-          fi
-
-      # ------------------------------------------------------------------------------
-      # Setup bun.
-      # ------------------------------------------------------------------------------
-      - name: Setup bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+          registry-url: 'https://npm.pkg.github.com'
 
       # ------------------------------------------------------------------------------
       # Setup PHP.
@@ -225,25 +200,11 @@ jobs:
       # ------------------------------------------------------------------------------
       # Build and zip.
       # ------------------------------------------------------------------------------
-      - name: Determine if COMPOSER_TOKEN was provided
-        run: |
-          if [ -z "${{ secrets.COMPOSER_TOKEN }}" ]; then
-            echo "COMPOSER_TOKEN_AVAILABLE=false" >> $GITHUB_ENV
-          else
-            echo "COMPOSER_TOKEN_AVAILABLE=true" >> $GITHUB_ENV
-          fi
-
-      - name: pup build
-        if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'false'
-        run: composer -- pup build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
       - name: pup build with composer auth
-        if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'true'
+        if: steps.s3_zip_exists.outcome != 'success'
         env:
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
         run: composer -- pup build
 
       - name: pup check
@@ -352,7 +313,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: timestamp
         run: |
-          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          raw_time=$(TZ='America/Chicago' date '+%m/%d %I:%M %p')
           clean_timestamp="${raw_time} CST"
           encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
           badge_url="https://img.shields.io/badge/Built%20Completed-${encoded_timestamp}-darkgreen"

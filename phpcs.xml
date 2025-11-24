@@ -29,6 +29,60 @@
 
 	<rule ref="StellarWP.Classes.ValidClassName.NotSnakeCase">
 		<exclude-pattern>./tests/*</exclude-pattern>
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.VariableComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.ClassComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
+		<exclude-pattern>./includes/resources/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
+		<exclude-pattern>./includes/resources/Optimizer/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.ParamNameNoMatch">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="Squiz.Commenting.FunctionComment.IncorrectTypeHint">
+		<exclude-pattern>./includes/resources/Optimizer/Response/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined">
+		<exclude-pattern>./tests/*</exclude-pattern>
+		<exclude-pattern>./includes/resources/Optimizer/Store/Cached_Store_Decorator.php</exclude-pattern>
 	</rule>
 
 	<rule ref="PHPCompatibilityWP"/>

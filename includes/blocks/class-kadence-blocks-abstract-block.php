@@ -97,7 +97,7 @@ class Kadence_Blocks_Abstract_Block {
 		'captcha',
 		'submit',
 	];
-	
+
 	/**
 	 * Allow us to enable merged defaults on blocks individually.
 	 * Considered setting this as a property within each block, but it's easier to see an exhaustive list here.
@@ -531,7 +531,7 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Retuurn if this block should register itself. (can override for things like blocks in two plugins)
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function should_register() {
@@ -545,5 +545,30 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	protected function get_pro_version() {
 		return defined( 'KBP_VERSION' ) ? KBP_VERSION : null;
+	}
+
+	/**
+	 * Build escaped HTML attributes to be placed in an HTML tag.
+	 *
+	 * @param array<string, string|int|float|bool> $attributes The html attributes to render to a tag.
+	 *
+	 * @return string
+	 */
+	protected function build_escaped_html_attributes( array $attributes ): string {
+		$html = '';
+
+		foreach ( $attributes as $key => $value ) {
+			if ( is_bool( $value ) ) {
+				if ( $value ) {
+					$html .= sprintf( ' %s', esc_attr( $key ) );
+				}
+
+				continue;
+			}
+
+			$html .= sprintf( ' %s="%s"', esc_attr( $key ), esc_attr( $value ) );
+		}
+
+		return $html;
 	}
 }
