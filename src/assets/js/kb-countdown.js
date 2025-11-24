@@ -786,6 +786,12 @@
 			window.kadenceCountdown.cache[id].element = element;
 			window.kadenceCountdown.cache[id].parent = parent;
 
+			// Add accessibility role and live region to timer element.
+			if (element) {
+				element.setAttribute('role', 'timer');
+				element.setAttribute('aria-live', 'polite');
+			}
+
 			if (
 				window.kadenceCountdown.timers[id].type === 'evergreen' &&
 				window.kadenceCountdown.timers[id].campaign_id
