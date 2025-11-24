@@ -54,7 +54,7 @@ export function setupPostSaveHandler() {
 				type: 'snackbar',
 			});
 
-			// Force Gutenberg to reload the post + meta from the server.
+			// Force Gutenberg to reload the post + meta from the server so the View Optimized Page component can display in real-time.
 			dispatch('core').invalidateResolution('getEntityRecord', ['postType', post.type, post.id]);
 		} catch (error) {
 			console.error('❌ Optimization failed:', error);
