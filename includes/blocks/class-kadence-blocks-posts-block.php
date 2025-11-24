@@ -261,7 +261,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 		 * you can override any default query parameters, add custom tax_query conditions,
 		 * modify post_type, posts_per_page, order, orderby, or any other WP_Query parameter.
 		 *
-		 * @since 1.0.0
+		 * @since 1.9.19
 		 *
 		 * @param array $args The array of query arguments that will be passed to WP_Query.
 		 *                    Default arguments include:
