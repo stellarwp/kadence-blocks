@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 = 3.5.28 =
-Release Date: 1st December 2025
+Release Date: 2nd December 2025
 * Update: Improve compatibility with WordPress 6.9.
 
 = 3.5.27 =
