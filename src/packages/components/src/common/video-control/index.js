@@ -35,9 +35,6 @@ const ALLOWED_MEDIA_TYPES = [ 'video' ];
  * Basic Video Control.
  */
 class KadenceVideoControl extends Component {
-	constructor() {
-		super( ...arguments );
-	}
 	render() {
 		const {
 			label,

@@ -18,6 +18,13 @@ import { useState, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, ToolbarGroup, Tooltip, Dashicon, SVG, Dropdown, Path } from '@wordpress/components';
 import { DOWN } from '@wordpress/keycodes';
+function unConvertOpacity(value) {
+	let val = 100;
+	if (value) {
+		val = value * 100;
+	}
+	return val;
+}
 // eslint-disable-next-line camelcase
 const ColorSelectorSVGIcon = () => (
 	<SVG xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20">

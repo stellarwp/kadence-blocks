@@ -559,7 +559,7 @@ class InlineTypographyControls extends Component {
 													value={ ( fontSize ? fontSize : '' ) }
 													onChange={ value => onFontSize( value ) }
 													tabletValue={ ( tabSize ? tabSize : '' ) }
-													onChangeTablet={ ( value ) => onTabletSize( value ) }
+														onChangeTablet={ ( value ) => onTabSize( value ) }
 													mobileValue={ ( mobileSize ? mobileSize : '' ) }
 													onChangeMobile={ ( value ) => onMobileSize( value ) }
 													min={ 0 }

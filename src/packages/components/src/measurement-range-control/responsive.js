@@ -28,6 +28,12 @@ import {
 	outlineRightIcon,
 	outlineBottomIcon,
 	outlineLeftIcon,
+	topLeftIcon,
+	topRightIcon,
+	bottomRightIcon,
+	bottomLeftIcon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
 } from '@kadence/icons';
 import { OPTIONS_MAP } from './constants';
 import { isCustomOption, getOptionIndex, getOptionFromSize, getOptionSize } from './utils';
@@ -43,9 +49,10 @@ export default function ResponsiveMeasureRangeControl( {
 		onChangeMobile,
 		mobileValue,
 		tabletValue,
-		value,
-		onControl,
-		control = 'individual',
+	value,
+	onControl,
+	customControl = false,
+	control = 'individual',
 		options = OPTIONS_MAP,
 		step = 1,
 		max = 100,

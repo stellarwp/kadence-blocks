@@ -1,4 +1,4 @@
-/* global wp */
+/* global wp, kadenceElementParams */
 /**
  * External dependencies
  */
