@@ -51,11 +51,11 @@ export const allowOneBlockOfType = () => {
 				if (blocksToRemove.length > 0) {
 					dispatch('core/notices').createNotice(
 						'warning',
-						/* translators: %s: block title */
 						sprintf(
+							/* translators: %s: block title */
 							__('Only one %s block is allowed.', 'kadence-blocks'),
 							blockTitle
-					),
+						),
 					{
 						type: 'snackbar',
 						isDismissible: true,
