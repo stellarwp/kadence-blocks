@@ -7,7 +7,7 @@
 			const advancedSliders = document.querySelectorAll(
 				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init'
 			);
-			this.bootstrapSliders(advancedSliders, true);
+			this.bootstrapSliders(advancedSliders);
 
 			const testimonialSliders = document.querySelectorAll(
 				'.wp-block-kadence-testimonials .kt-blocks-carousel-init'
@@ -17,64 +17,19 @@
 			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
-		bootstrapSliders(elementList, isAdvanced = false) {
+		bootstrapSliders(elementList) {
 			if (!elementList || elementList.length === 0) {
 				return;
 			}
 
 			for (let i = 0; i < elementList.length; i++) {
-				const listElement = elementList[i];
-				let thisSlider;
-				let slideCount;
-
-				if (isAdvanced) {
-					// Advanced sliders: listElement is a child, find the parent slider
-					if (!listElement || listElement.classList.contains('is-initialized')) {
-						continue;
-					}
-
-					// Check if listElement itself is the slider (for thumbnail sliders)
-					// Thumbnail sliders have both kt-blocks-carousel-init and splide classes
-					if (
-						listElement.classList.contains('splide') &&
-						listElement.classList.contains('kt-blocks-carousel-init')
-					) {
-						// This element IS the slider itself
-						thisSlider = listElement;
-					} else {
-						// Find the parent .kt-blocks-carousel.splide element which is the Splide root
-						thisSlider = listElement.closest('.kt-blocks-carousel.splide');
-						if (!thisSlider) {
-							// Fallback: if no splide class found, try to find parent .kt-blocks-carousel
-							thisSlider = listElement.closest('.kt-blocks-carousel');
-							if (thisSlider) {
-								thisSlider.classList.add('splide');
-							} else {
-								continue;
-							}
-						}
-					}
-
-					if (thisSlider.classList.contains('is-initialized')) {
-						continue;
-					}
-
-					// For advanced sliders, determine the correct wrapper element for createSplideElements
-					// If thisSlider === listElement, use thisSlider; otherwise use listElement to find slides
-					const wrapperElem = thisSlider === listElement ? thisSlider : listElement;
-					slideCount = this.createSplideElements(wrapperElem);
-				} else {
-					// Regular sliders: listElement is the slider itself
-					thisSlider = listElement;
-					if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
-						continue;
-					}
-
-					slideCount = this.createSplideElements(thisSlider);
+				const thisSlider = elementList[i];
+				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
+					continue;
 				}
-
 				thisSlider.classList.add('kb-splide');
 
+				const slideCount = this.createSplideElements(thisSlider);
 				const parsedData = this.parseDataset(thisSlider.dataset);
 				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
 
@@ -96,15 +51,14 @@
 				const { sliderType } = parsedData;
 
 				if (sliderType && sliderType === 'fluidcarousel') {
-					const slideItems = thisSlider.querySelectorAll('.kb-slide-item');
-					slideItems.forEach(function (elem) {
-						if (!thisSlider.clientWidth) {
+					elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
+						if (!elementList[i].clientWidth) {
 							elem.style.maxWidth = '100%';
 						} else {
-							elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
+							elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
 						}
 					});
-					const childCount = slideItems.length;
+					const childCount = elementList[i].querySelectorAll('.kb-slide-item').length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
@@ -132,18 +86,28 @@
 							});
 						});
 					});
+					// splideSlider.on( 'overflow', function ( isOverflow ) {
+					// 	// Reset the carousel position
+					// 	splideSlider.go( 0 );
+
+					// 	splideSlider.options = {
+					// 	  arrows    : splideOptions.arrows ? isOverflow : false,
+					// 	  pagination: splideOptions.pagination ? isOverflow : false,
+					// 	  drag      : splideOptions.drag ? isOverflow : false,
+					// 	  clones    : isOverflow ? undefined : 0, // Toggle clones
+					// 	};
+					// } );
 					splideSlider.mount();
 
 					var resizeTimer;
-					const resizeHandler = function (e) {
+					window.addEventListener('resize', function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
-							thisSlider.querySelectorAll('.kb-slide-item').forEach(function (elem) {
-								elem.style.maxWidth = Math.floor((80 / 100) * thisSlider.clientWidth) + 'px';
+							elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
+								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
 							});
 						}, 10);
-					};
-					window.addEventListener('resize', resizeHandler);
+					});
 				} else if (sliderType && sliderType === 'slider') {
 					if (undefined === parsedData.sliderFade) {
 						splideOptions.type = 'fade';
@@ -181,16 +145,6 @@
 					const navSliderId = parsedData.sliderNav;
 					const navSlider = document.querySelector('#' + navSliderId);
 
-					if (!navSlider) {
-						continue;
-					}
-
-					// Ensure nav slider has splide class (structure should already be correct from PHP)
-					if (!navSlider.classList.contains('splide')) {
-						navSlider.classList.add('splide');
-					}
-					navSlider.classList.add('kb-splide');
-
 					this.createSplideElements(navSlider);
 
 					// Switch the datasets for the nav and main slider elements
@@ -213,6 +167,7 @@
 
 					navSlider.classList.add('slick-initialized');
 					navSlider.classList.add('slick-slider');
+					navSlider.classList.add('kb-splide');
 
 					const carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					const thumbnailSlider = new Splide(navSlider, navSliderOptions);
@@ -320,42 +275,42 @@
 		},
 
 		createSplideElements(wrapperElem) {
-			// Handle pause button: extract it if it's inside the track and re-append it after the track
+			// Extract the pause button if it exists
 			const pauseButton = wrapperElem.querySelector('.kb-gallery-pause-button');
 			if (pauseButton) {
-				const track = wrapperElem.querySelector('.splide__track');
-				// If pause button is inside the track, move it outside
-				if (track && track.contains(pauseButton)) {
-					pauseButton.remove();
-					// Re-append after the track
-					if (track.nextSibling) {
-						wrapperElem.insertBefore(pauseButton, track.nextSibling);
-					} else {
-						wrapperElem.appendChild(pauseButton);
-					}
-				}
+				pauseButton.remove();
 			}
 
-			// Remove 'last' class from slides if present (legacy support)
-			// Find all slides (both .splide__slide and .kb-slide-item)
-			const slides = wrapperElem.querySelectorAll('.splide__slide, .kb-slide-item');
 			let slideCount = 0;
-			slides.forEach(function (slide) {
-				// Only count actual slides, not the pause button
+			for (const slide of wrapperElem.children) {
+				// Only add slide class to actual slides, not the pause button
 				if (!slide.classList.contains('kb-gallery-pause-button')) {
-					// Ensure slides have the splide__slide class
-					if (!slide.classList.contains('splide__slide')) {
-						slide.classList.add('splide__slide');
-					}
+					slide.classList.add('splide__slide');
 					slideCount++;
 				}
+				//slide.classList.add("slick-slide");
 				if (slide.classList.contains('last')) {
 					slide.classList.remove('last');
 				}
-			});
+			}
 
-			// Ensure wrapper has splide class
+			const splideTrack = document.createElement('div');
+			splideTrack.classList.add('splide__track');
+
+			const splideList = document.createElement('ul');
+			splideList.classList.add('splide__list');
+			// The slides go inside the list element
+			splideList.innerHTML = wrapperElem.innerHTML;
+			// The list element goes inside the track
+			splideTrack.innerHTML = splideList.outerHTML;
+			// The track goes inside them argument elem
+			wrapperElem.innerHTML = splideTrack.outerHTML;
 			wrapperElem.classList.add('splide');
+
+			// Re-append the pause button after the track
+			if (pauseButton) {
+				wrapperElem.appendChild(pauseButton);
+			}
 
 			return slideCount;
 		},

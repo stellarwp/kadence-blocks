@@ -294,7 +294,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-heading-icon' );
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
 			$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-			$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
+			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconPaddingUnit' ) );
 			if ( isset( $attributes['lineHeight'] ) ) {
 				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 			}
@@ -372,67 +372,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_media_state( 'mobile' );
 		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
-		$css->set_media_state( 'desktop' );
-
-		// Inline Image.
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' img.kb-inline-image, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] img.kb-inline-image' );
-		// Ensure default value if inlineImageWidth desktop value is not set or empty.
-		if ( empty( $attributes['inlineImageWidth'] ) || ! is_array( $attributes['inlineImageWidth'] ) || ! isset( $attributes['inlineImageWidth'][0] ) || ! is_numeric( $attributes['inlineImageWidth'][0] ) ) {
-			$css->add_property( 'width', '150px' );
-		}
-		// Render responsive range will handle desktop, tablet, and mobile if values are set.
-		$css->render_responsive_range( $attributes, 'inlineImageWidth', 'width' );
-		if ( ! empty( $attributes['inlineImageVerticalAlign'] ) ) {
-			$css->add_property( 'vertical-align', $attributes['inlineImageVerticalAlign'] );
-		}
-		// Add aspect-ratio if useRatio is enabled.
-		if ( ! empty( $attributes['useRatio'] ) && ! empty( $attributes['ratio'] ) ) {
-			$aspect_ratio = '';
-			switch ( $attributes['ratio'] ) {
-				case 'land43':
-					$aspect_ratio = '4 / 3';
-					break;
-				case 'land32':
-					$aspect_ratio = '3 / 2';
-					break;
-				case 'land169':
-					$aspect_ratio = '16 / 9';
-					break;
-				case 'land21':
-					$aspect_ratio = '2 / 1';
-					break;
-				case 'land31':
-					$aspect_ratio = '3 / 1';
-					break;
-				case 'land41':
-					$aspect_ratio = '4 / 1';
-					break;
-				case 'port34':
-					$aspect_ratio = '3 / 4';
-					break;
-				case 'port23':
-					$aspect_ratio = '2 / 3';
-					break;
-				case 'port916':
-					$aspect_ratio = '9 / 16';
-					break;
-				case 'square':
-					$aspect_ratio = '1 / 1';
-					break;
-			}
-			if ( ! empty( $aspect_ratio ) ) {
-				$css->add_property( 'aspect-ratio', $aspect_ratio );
-				$css->add_property( 'object-fit', 'cover' );
-			}
-		}
-		$css->render_border_styles( $attributes, 'inlineImageBorderStyles' );
-		$css->render_border_radius( $attributes, 'inlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
-		$css->set_media_state( 'tablet' );
-		$css->render_border_radius( $attributes, 'tabletInlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
-		$css->set_media_state( 'desktop' );
-
-		$css->set_media_state( 'mobile' );
-		$css->render_border_radius( $attributes, 'mobileInlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'desktop' );
 		$mark_padding_args = array(
 			'desktop_key' => 'markPadding',

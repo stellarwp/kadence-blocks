@@ -48,7 +48,7 @@ export default function SinglePopColorControl({
 	const [currentOpacity, setCurrentOpacity] = useState(opacityValue !== '' ? opacityValue : 1);
 	const [isPalette, setIsPalette] = useState(value && value.startsWith('palette') ? true : false);
 	const allColors = useSetting('color.palette');
-
+	
 	// Get Kadence Blocks color configuration
 	const kadenceColors = useMemo(() => {
 		if (typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.colors) {
@@ -60,18 +60,20 @@ export default function SinglePopColorControl({
 		}
 		return { palette: [], override: false };
 	}, []);
-
+	
 	// Filter colors based on override setting
 	const colors = useMemo(() => {
 		if (!allColors || !Array.isArray(allColors)) {
 			return [];
 		}
-
+		
 		// If override is enabled, only show custom colors (kb-palette colors)
 		if (kadenceColors.override === true) {
-			return allColors.filter((color) => color.slug && color.slug.startsWith('kb-palette'));
+			return allColors.filter(color => 
+				color.slug && color.slug.startsWith('kb-palette')
+			);
 		}
-
+		
 		// If override is disabled, show all colors (theme + custom)
 		return allColors;
 	}, [allColors, kadenceColors.override]);
@@ -100,8 +102,10 @@ export default function SinglePopColorControl({
 	};
 	const convertedOpacityValue = 100 === opacityUnit ? convertOpacity(currentOpacity) : currentOpacity;
 	const colorVal = currentColor ? currentColor : value;
-	const paletteIndex = isPalette && colors && colorVal ? colorVal.match(/\d+$/)?.[0] - 1 : null;
-	let currentColorString = paletteIndex !== null && colors[paletteIndex] ? colors[paletteIndex].color : colorVal;
+	let currentColorString =
+		isPalette && colors && colorVal && colors[parseInt(colorVal.slice(-1), 10) - 1]
+			? colors[parseInt(colorVal.slice(-1), 10) - 1].color
+			: colorVal;
 	if (!isPalette && currentColorString && currentColorString.startsWith('var(')) {
 		currentColorString = window
 			.getComputedStyle(document.documentElement)
@@ -294,9 +298,9 @@ export default function SinglePopColorControl({
 												aria-label={
 													name
 														? // translators: %s: The name of the color e.g: "vivid red".
-															sprintf(__('Color: %s', 'kadence-blocks'), name)
+														  sprintf(__('Color: %s', 'kadence-blocks'), name)
 														: // translators: %s: color hex code e.g: "#f00".
-															sprintf(__('Color code: %s', 'kadence-blocks'), color)
+														  sprintf(__('Color code: %s', 'kadence-blocks'), color)
 												}
 												aria-pressed={isActive}
 											/>
