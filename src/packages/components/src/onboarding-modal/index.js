@@ -98,8 +98,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 									return (
 										<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
 											<div className={'number'}>{step.visualNumber}</div>
-											{/* translators: %s: onboarding step name */}
-											{sprintf( __('%s', 'kadence-blocks'), step.name )}
+											<span className={'label'}>{step.name}</span>
 										</div>
 									);
 								}

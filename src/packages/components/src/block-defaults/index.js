@@ -131,11 +131,20 @@ export default function KadenceBlockDefaults( {
                     <>
                         <br/><br/>
 
-                        <a href={'#'}
-                           onClick={() => setIsOpenModify(true)}>{__('Modify attributes', 'kadence-blocks')}</a>
+                        <Button
+                            variant="link"
+                            onClick={() => setIsOpenModify(true)}
+                        >
+                            {__('Modify attributes', 'kadence-blocks')}
+                        </Button>
 
-                        <a href={'#'} style={{color: 'red', float: 'right'}}
-                           onClick={() => setIsOpenResetConfirm(true)}>{__('Reset defaults', 'kadence-blocks')}</a>
+                        <Button
+                            variant="link"
+                            style={{color: 'red', float: 'right'}}
+                            onClick={() => setIsOpenResetConfirm(true)}
+                        >
+                            {__('Reset defaults', 'kadence-blocks')}
+                        </Button>
                     </>
                 )}
 

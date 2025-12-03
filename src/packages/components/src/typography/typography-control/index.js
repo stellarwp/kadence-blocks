@@ -21,7 +21,7 @@ import TwoColumn from '../../panels/two-column';
 import TagSelect from '../../tag-select';
 
 import Select from 'react-select';
-import { range } from 'lodash';
+import { range, isEqual } from 'lodash';
 import HeadingLevelIcon from '../../heading-level-icon';
 
 import { applyFilters } from '@wordpress/hooks';
@@ -34,7 +34,6 @@ import {
 	Button,
 } from '@wordpress/components';
 import { undo } from '@wordpress/icons';
-import { isEqual } from 'lodash';
 
 /**
  * Build the typography controls
