@@ -36,7 +36,7 @@ class DynamicImageControl extends Component {
 		const { open } = this.state;
 
 		// @todo: Replace with icon from @kadence/icons once created
-		let icons = {};
+		const icons = {};
 		icons.dynamic = <svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"

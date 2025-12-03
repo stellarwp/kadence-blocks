@@ -27,7 +27,7 @@ import {
 	percentIcon,
 } from '@kadence/icons';
 
-let icons = {
+const icons = {
 	px: pxIcon,
 	em: emIcon,
 	rem: remIcon,

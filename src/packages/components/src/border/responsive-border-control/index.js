@@ -105,8 +105,7 @@ export default function ResponsiveBorderControl({
 				) {
 					realSetOnControl('linked');
 				}
-			} else {
-				if (
+			} else if (
 					isEqual(value?.[0]?.top, value?.[0]?.bottom) &&
 					isEqual(value?.[0]?.top, value?.[0]?.bottom) &&
 					isEqual(value?.[0]?.top, value?.[0]?.right) &&
@@ -114,7 +113,6 @@ export default function ResponsiveBorderControl({
 				) {
 					realSetOnControl('linked');
 				}
-			}
 		}
 
 		//if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.

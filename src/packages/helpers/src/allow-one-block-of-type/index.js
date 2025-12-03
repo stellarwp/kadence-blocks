@@ -38,8 +38,8 @@ export const allowOneBlockOfType = () => {
 		if (foundBlocks.length > 1) {
 			// Sort blocks: empty/unconfigured blocks first, then by order found
 			foundBlocks.sort((a, b) => {
-				if (a.isEmpty && !b.isEmpty) return -1;
-				if (!a.isEmpty && b.isEmpty) return 1;
+				if (a.isEmpty && !b.isEmpty) {return -1;}
+				if (!a.isEmpty && b.isEmpty) {return 1;}
 				return 0;
 			});
 

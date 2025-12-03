@@ -114,7 +114,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	};
 
 	const loadMoreIcons = async () => {
-		if (!hasMore) return;
+		if (!hasMore) {return;}
 
 		setError(null);
 		setIsLoadingMore(true);
@@ -220,7 +220,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 			)}
 			{!isLoading && !results.svgs && !error && (
 				<p className="svg-search-modal__start-search">
-					{__("Start Search...", "kadence-blocks")}
+					{__("Start Search…", "kadence-blocks")}
 				</p>
 			)}
 		</div>

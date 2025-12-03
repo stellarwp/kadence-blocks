@@ -103,9 +103,9 @@ export default function KadenceIconPicker({
 				return { [translatedCustomSvgString]: customSvgs, ...iconNames };
 			} else if( hasPro && isSupportedProVersion ) {
 				return { [translatedCustomSvgString]: [ 'placeholder' ], ...iconNames };
-			} else {
+			} 
 				return iconNames;
-			}
+			
 		}
 		const svgs = applyFilters( 'kadence.icon_options_names', kadence_blocks_params.icon_names );
 
@@ -122,8 +122,8 @@ export default function KadenceIconPicker({
 		return applyFilters( 'kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons, ...kadence_blocks_params_kbcustomicons.icons } )
 	}, [ kadence_blocks_params_ico.icons, kadence_blocks_params_fa.icons, kadence_blocks_params_kbcustomicons.icons, customSvgs ] )
 	const iconFilterOptions = useMemo( () => {
-		let options = Object.keys( iconNames ).map( ( label, index ) => {
-			return { value: index, label: label }
+		const options = Object.keys( iconNames ).map( ( label, index ) => {
+			return { value: index, label }
 		} )
 
 		return [ { value: 'all', label: __( 'Show All', 'kadence-blocks' ) }, ...options ]
@@ -154,7 +154,7 @@ export default function KadenceIconPicker({
 
 								results = {
 									...results, [ groupIndex ]: {
-										label: label,
+										label,
 										icons: { ...results[ groupIndex ]?.icons, [ icon ]: iconOptions[ icon ] }
 									}
 								}
@@ -297,7 +297,7 @@ export default function KadenceIconPicker({
 																	</button>
 																</div>
 															);
-														} else {
+														} 
 															return (
 																<button
 																	title={ iconKey }
@@ -311,7 +311,7 @@ export default function KadenceIconPicker({
 																	{iconRenderFunction( iconKey )}
 																</button>
 															);
-														}
+														
 													} )
 													}
 												</div>

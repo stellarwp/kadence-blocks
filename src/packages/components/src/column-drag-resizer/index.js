@@ -16,7 +16,7 @@ const ContainerDimensions = ({ children }) => {
 	const parentRef = useRef(null);
 
 	useEffect(() => {
-		if (!parentRef.current?.parentElement) return;
+		if (!parentRef.current?.parentElement) {return;}
 
 		const getDimensions = (element) => {
 			const { top, right, bottom, left, width, height } = element.getBoundingClientRect();
@@ -151,7 +151,7 @@ export default function ColumnDragResizer(props) {
 		}
 
 		//package new widths to be dispatched
-		var newColumnWidths = [...previewColumnWidths];
+		let newColumnWidths = [...previewColumnWidths];
 		newColumnWidths[currentColumn] = tempColumnW;
 		newColumnWidths[nextColumn] = tempNextColumnW;
 
@@ -182,8 +182,8 @@ export default function ColumnDragResizer(props) {
 		'kt-resizeable-column-inactive': !active,
 	});
 
-	var resizableBoxes = (width) => {
-		var resizableBoxArray = [];
+	const resizableBoxes = (width) => {
+		const resizableBoxArray = [];
 		for (let column = 0; column < columns - 1; column++) {
 			const columnWidth = previewColumnWidths?.[column];
 			const nextColumnWidth = previewColumnWidths?.[column + 1];

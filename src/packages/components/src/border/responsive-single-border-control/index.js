@@ -151,17 +151,17 @@ export default function ResponsiveSingleBorderControl({
 		: 'px';
 
 	const handleOnChangeDesktop = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(value));
+		const newVal = JSON.parse(JSON.stringify(value));
 		newVal[0][attr] = size;
 		onChange(newVal);
 	};
 	const handleOnChangeTablet = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(tabletValue));
+		const newVal = JSON.parse(JSON.stringify(tabletValue));
 		newVal[0][attr] = size;
 		onChangeTablet(newVal);
 	};
 	const handleOnChangeMobile = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(mobileValue));
+		const newVal = JSON.parse(JSON.stringify(mobileValue));
 		newVal[0][attr] = size;
 		onChangeMobile(newVal);
 	};
