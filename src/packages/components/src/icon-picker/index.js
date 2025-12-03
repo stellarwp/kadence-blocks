@@ -10,15 +10,11 @@ import { debounce, isEqual, has, get } from 'lodash';
 import {applyFilters} from '@wordpress/hooks'
 import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
 import {default as GenIcon} from '../icons/gen-icon';
-import { plus } from '@wordpress/icons';
+import { plus, chevronDown, closeSmall } from '@wordpress/icons';
 import './editor.scss';
 import SvgAddModal from './svg-add-modal';
 import SvgDeleteModal from './svg-delete-modal';
 import { compareVersions } from '@kadence/helpers';
-import {
-	chevronDown,
-	closeSmall,
-} from '@wordpress/icons';
 import { default as IconRender } from '../icons/icon-render';
 export default function KadenceIconPicker({
 		value,

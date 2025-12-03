@@ -7,17 +7,15 @@
  * Internal block libraries
  */
  import { __ } from '@wordpress/i18n';
-import {
-	Flex,
-	FlexBlock,
-	FlexItem,
-	RangeControl as CoreRangeControl
-} from '@wordpress/components';
 import { useState, useMemo, forwardRef } from '@wordpress/element';
 import {
 	Button,
 	DropdownMenu,
 	ButtonGroup,
+	Flex,
+	FlexBlock,
+	FlexItem,
+	RangeControl as CoreRangeControl
 } from '@wordpress/components';
 import {
 	pxIcon,

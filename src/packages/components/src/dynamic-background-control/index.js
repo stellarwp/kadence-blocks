@@ -7,9 +7,8 @@ import { debounce } from 'lodash';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { Button, withFilters, Popover, ExternalLink } from '@wordpress/components';
-import { createRef } from '@wordpress/element';
 
 /**
  * Internal Dependencies

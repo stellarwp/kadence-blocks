@@ -1,5 +1,5 @@
 import { Button, Tooltip, ResizableBox } from '@wordpress/components';
-import { isRTL } from '@kadence/helpers';
+import { isRTL, getPreviewSize } from '@kadence/helpers';
 import classnames from 'classnames';
 import { debounce, throttle } from 'lodash';
 
@@ -9,7 +9,6 @@ import { debounce, throttle } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { getPreviewGutterSize, getGutterTotal } from './utils';
-import { getPreviewSize } from '@kadence/helpers';
 
 const ContainerDimensions = ({ children }) => {
 	const [dimensions, setDimensions] = useState(null);
