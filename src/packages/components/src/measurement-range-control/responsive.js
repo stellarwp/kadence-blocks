@@ -200,7 +200,7 @@ export default function ResponsiveMeasureRangeControl( {
 			onChange( deskDefault );
 		}
 	}
-	let mobilePlaceholder = tabletValue ? JSON.parse( JSON.stringify( tabletValue ) ) : [ '', '', '', '' ];
+	const mobilePlaceholder = tabletValue ? JSON.parse( JSON.stringify( tabletValue ) ) : [ '', '', '', '' ];
 	if ( ! mobilePlaceholder?.[0] ) {
 		mobilePlaceholder[0] = value?.[0] ? value[0] : '';
 	}

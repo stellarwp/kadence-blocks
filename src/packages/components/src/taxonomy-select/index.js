@@ -31,15 +31,13 @@ export default function TaxonomySelect( {
 	let taxStart = '';
 	if( taxOnly || ( termIsOptional && typeof(value) == 'string' ) ) {
 		taxStart = value;
-	} else {
-		if( isArrayLike(value) && has(value, [0, 'value']) && !isEmpty(value) ) {
+	} else if( isArrayLike(value) && has(value, [0, 'value']) && !isEmpty(value) ) {
 			taxStart = value[0].value.split('|');
 		} else if ( value && !isEmpty(value) ) {
 			taxStart = value.split('|');
 		} else {
 			taxStart = [''];
 		}
-	}
 	const [ tax, setTax ] = useState( typeof(taxStart) == 'object' ? taxStart[0] : taxStart );
 	useEffect( () => {
 		let theSource = source ? source : contextPost;
@@ -117,13 +115,11 @@ export default function TaxonomySelect( {
 							setTax( val.value );
 							onChange( val.value );
 						}
-					} else {
-						if ( ! val ) {
+					} else if ( ! val ) {
 							setTax( '' );
 						} else {
 							setTax( val.value );
 						}
-					}
 				} }
 			/>
 			{ '' !== tax && ! taxOnly && (

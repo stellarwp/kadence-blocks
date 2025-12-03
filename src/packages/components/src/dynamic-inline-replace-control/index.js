@@ -12,7 +12,7 @@ class DynamicInlineReplaceControl extends Component {
 		super( ...arguments );
 	}
 	render() {
-		return;
+		
 	}
 };
 

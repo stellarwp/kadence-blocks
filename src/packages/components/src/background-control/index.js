@@ -57,7 +57,7 @@ const BackgroundControl = ( props ) => {
 		attributes
 	} = props;
 	
-	let attachmentOptions = [
+	const attachmentOptions = [
 		{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) }
 	];
 	if ( imageAttachmentFixed ) {

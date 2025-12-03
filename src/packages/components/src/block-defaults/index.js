@@ -126,7 +126,7 @@ export default function KadenceBlockDefaults( {
                 <br/><br/>
 
                 <Button isPrimary={true}
-                        onClick={() => setIsOpenSaveConfirm(true)}>{__(' Save as default', 'kadence-blocks')}</Button>
+                        onClick={() => setIsOpenSaveConfirm(true)}>{__('Save as default', 'kadence-blocks')}</Button>
 
                 {hasConfig && (
                     <>

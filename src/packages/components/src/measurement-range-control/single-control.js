@@ -36,7 +36,7 @@ import {
 } from '@kadence/icons';
 import { settings, link, linkOff } from '@wordpress/icons';
 import { OPTIONS_MAP } from './constants';
-let icons = {
+const icons = {
 	px: pxIcon,
 	em: emIcon,
 	rem: remIcon,

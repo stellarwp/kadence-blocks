@@ -107,5 +107,5 @@ export default function uniqueIdHelper(props) {
 		addUniqueID(attributes?.uniqueID, clientId);
 	}, [clientId]);
 
-	return;
+	
 }

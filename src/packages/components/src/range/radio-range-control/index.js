@@ -29,7 +29,7 @@ import {
 } from '@kadence/icons';
 import { settings } from '@wordpress/icons';
 
-let icons = {
+const icons = {
 	px: pxIcon,
 	em: emIcon,
 	rem: remIcon,
