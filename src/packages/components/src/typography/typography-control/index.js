@@ -31,7 +31,10 @@ import {
 	ToolbarGroup,
 	ToggleControl,
 	SelectControl,
+	Button,
 } from '@wordpress/components';
+import { undo } from '@wordpress/icons';
+import { isEqual } from 'lodash';
 
 /**
  * Build the typography controls

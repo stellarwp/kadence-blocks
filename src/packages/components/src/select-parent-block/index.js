@@ -26,14 +26,8 @@ export default function SelectParentBlock({ clientId, label = null, parentSlug =
 	const { firstParentClientId } = useSelect((select) => {
 		const { getBlockParents, getBlockParentsByBlockName } = select(blockEditorStore);
 
-		let parentClientId, parents;
-
-		if (parentSlug !== null) {
-			parents = getBlockParentsByBlockName(clientId, parentSlug);
-		} else {
-			parents = getBlockParents(clientId);
-		}
-		parentClientId = parents[parents.length - 1];
+		const parents = parentSlug !== null ? getBlockParentsByBlockName(clientId, parentSlug) : getBlockParents(clientId);
+		const parentClientId = parents[parents.length - 1];
 
 		return {
 			firstParentClientId: parentClientId,

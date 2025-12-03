@@ -127,8 +127,6 @@ export default class KadenceBlocksCSS {
 		lg: 'var(--global-kb-gap-lg, 4rem)',
 	};
 
-	constructor() {}
-
 	/**
 	 * Sets a selector to the object and changes the current selector to a new one
 	 *
@@ -216,7 +214,7 @@ export default class KadenceBlocksCSS {
 				const atEnd = this._selector_states.length === i + 1;
 
 				const atEndComma = atEnd ? '' : ',';
-				new_selector += this._selector + state + atEndComma;
+					new_selector += this._selector + element + atEndComma;
 			}
 
 			this._selector_output = new_selector;

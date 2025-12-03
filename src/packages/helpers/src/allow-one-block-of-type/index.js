@@ -48,12 +48,13 @@ export const allowOneBlockOfType = () => {
 
 			const blocksToRemove = foundBlocks.filter(block => block.clientId !== blockToKeep.clientId);
 
-			if (blocksToRemove.length > 0) {
-				dispatch('core/notices').createNotice(
-					'warning',
-					sprintf(
-						__('Only one %s block is allowed.', 'kadence-blocks'),
-						blockTitle
+				if (blocksToRemove.length > 0) {
+					dispatch('core/notices').createNotice(
+						'warning',
+						/* translators: %s: block title */
+						sprintf(
+							__('Only one %s block is allowed.', 'kadence-blocks'),
+							blockTitle
 					),
 					{
 						type: 'snackbar',

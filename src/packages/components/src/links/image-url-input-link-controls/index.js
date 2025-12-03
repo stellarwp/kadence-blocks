@@ -11,6 +11,7 @@
  import {
 	 ToolbarButton,
 	 Button,
+	 SelectControl,
 	 NavigableMenu,
 	 MenuItem,
 	 ToggleControl,
