@@ -12,14 +12,13 @@ import { __ } from '@wordpress/i18n';
 import { map, isEqual } from 'lodash';
 import SingleBorderControl from '../single-border-control';
 import { capitalizeFirstLetter } from '@kadence/helpers';
-import { undo } from '@wordpress/icons';
+import { undo, settings, link, linkOff } from '@wordpress/icons';
 /**
  * WordPress dependencies
  */
 import { useInstanceId } from '@wordpress/compose';
 import { Dashicon, Button, ButtonGroup } from '@wordpress/components';
 import { outlineTopIcon, outlineRightIcon, outlineBottomIcon, outlineLeftIcon } from '@kadence/icons';
-import { settings, link, linkOff } from '@wordpress/icons';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.

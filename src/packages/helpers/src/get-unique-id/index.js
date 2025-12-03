@@ -1,8 +1,7 @@
-import { uniqueId } from 'lodash';
+import { uniqueId, get, has } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import getPostOrWidgetId from '../get-post-or-widget-id';
 import { useEffect, useMemo } from '@wordpress/element';
-import { get, has } from 'lodash';
 import { default as hashString } from '../hash-string';
 import getBlockDefaults from '../set-block-defaults';
 

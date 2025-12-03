@@ -1,9 +1,8 @@
 import {useEffect, useState} from '@wordpress/element';
-import {useSelect} from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import KadencePanelBody from '../panel-body/index.js';
 import {__} from "@wordpress/i18n";
 import {omit, head, get, isEqual} from 'lodash';
-import {useDispatch} from '@wordpress/data';
 import {store as noticesStore} from '@wordpress/notices';
 import {
     Button,
