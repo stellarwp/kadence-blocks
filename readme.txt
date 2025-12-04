@@ -173,9 +173,19 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.30 =
+Release Date: TBD
+* Add: Classic adv form transform tool to new form block.
+* Add: An inline image format for the Heading (adv) block.
+* Fix: Issue with some sliders including gallery (adv) not working when inside other loop blocks
+* Fix: progress bar issue in Safari
+* Fix: theme extended color palette not showing correctly in the editor in some places.
+* Fix: Issue with padding on icons
+
 = 3.5.29 =
 Release Date: 3rd December 2025
-* Fix: Editor errors when using WordPress 6.9.
+* Update: Improve compatibility with WordPress 6.9.
 
 = 3.5.28 =
 Release Date: 2nd December 2025
