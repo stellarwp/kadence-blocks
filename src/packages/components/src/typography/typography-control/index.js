@@ -21,7 +21,7 @@ import TwoColumn from '../../panels/two-column';
 import TagSelect from '../../tag-select';
 
 import Select from 'react-select';
-import { range } from 'lodash';
+import { range, isEqual } from 'lodash';
 import HeadingLevelIcon from '../../heading-level-icon';
 
 import { applyFilters } from '@wordpress/hooks';
@@ -31,7 +31,9 @@ import {
 	ToolbarGroup,
 	ToggleControl,
 	SelectControl,
+	Button,
 } from '@wordpress/components';
+import { undo } from '@wordpress/icons';
 
 /**
  * Build the typography controls
@@ -100,11 +102,11 @@ class TypographyControls extends Component {
 					} );
 				} );
 				newOptions.push( {
-					label: label,
+					label,
 					value: name,
 					google: false,
-					weights: weights,
-					styles: styles,
+					weights,
+					styles,
 				} );
 			} );
 			const custom_fonts = [
@@ -139,8 +141,8 @@ class TypographyControls extends Component {
 				typographySelectOptions = blockConfigObject[ 'kadence/typography' ].choiceArray;
 			}
 		}
-		this.setState( { typographyOptions: typographyOptions } );
-		this.setState( { typographySelectOptions: typographySelectOptions } );
+		this.setState( { typographyOptions } );
+		this.setState( { typographySelectOptions } );
 		this.setTypographyOptions( typographySelectOptions );
 	}
 	componentDidUpdate( prevProps ) {
@@ -208,7 +210,7 @@ class TypographyControls extends Component {
 		}
 		this.setState( { typographyWeights: fontStandardWeights } );
 		this.setState( { typographyStyles: fontStandardStyles } );
-		this.setState( { typographySubsets: typographySubsets } );
+		this.setState( { typographySubsets } );
 		this.setState( { fontFamilyValue: activeFont } );
 	}
 	render() {
@@ -302,11 +304,11 @@ class TypographyControls extends Component {
 		const currentValue = {
 			size: fontSize,
 			sizeType: fontSizeType,
-			lineHeight: lineHeight,
+			lineHeight,
 			lineType: lineHeightType,
-			letterSpacing: letterSpacing,
+			letterSpacing,
 			letterType: letterSpacingType,
-			textTransform: textTransform,
+			textTransform,
 			family: fontFamily,
 			google: googleFont,
 			style: fontStyle,
@@ -376,7 +378,7 @@ class TypographyControls extends Component {
 					weight = undefined !== select.weights?.[0]?.value ? select.weights[0].value : 'inherit';
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { google: select.google, family: select.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
+					onFontArrayChange( { google: select.google, family: select.value, variant, weight, style: 'normal', subset } );
 				} else {
 					onFontChange( select );
 					onFontVariant( variant );
@@ -411,7 +413,7 @@ class TypographyControls extends Component {
 					variant = select;
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { variant: variant, weight: ( 'regular' === select ? '400' : select ) } );
+					onFontArrayChange( { variant, weight: ( 'regular' === select ? '400' : select ) } );
 				} else {
 					onFontVariant( variant );
 					onFontWeight( ( 'regular' === select ? '400' : select ) );
@@ -436,7 +438,7 @@ class TypographyControls extends Component {
 					variant = ( fontWeight ? fontWeight : 'regular' );
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { variant: variant, style: select } );
+					onFontArrayChange( { variant, style: select } );
 				} else {
 					onFontVariant( variant );
 					onFontStyle( select );

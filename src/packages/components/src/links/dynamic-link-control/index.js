@@ -1,23 +1,22 @@
   /**
-  * External Dependencies
-  */
+   * External Dependencies
+   */
    import { debounce } from 'lodash';
 
  /**
   * WordPress dependencies
   */
  import { __ } from '@wordpress/i18n';
- import { Fragment, Component } from '@wordpress/element';
+ import { Fragment, Component, createRef } from '@wordpress/element';
  import { Button, withFilters, Popover, ExternalLink } from '@wordpress/components';
- import { createRef } from '@wordpress/element';
 
  /**
   * Internal Dependencies
   */
 
  /**
- * Build the Dynamic Link controls
- */
+  * Build the Dynamic Link controls
+  */
 class DynamicLinkControl extends Component {
 	constructor() {
         super( ...arguments );
@@ -36,7 +35,7 @@ class DynamicLinkControl extends Component {
 		const { open } = this.state;
 
 		// @todo: Replace with icon from @kadence/icons once created
-		let icons = {};
+		const icons = {};
 		icons.dynamic = <svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"

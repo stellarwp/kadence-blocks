@@ -12,6 +12,7 @@ export default function SimpleWebfontLoader({ typography, children }) {
 	);
 
 	const loadFont = useCallback((fontFamily) => {
+		const { frames } = window;
 		const context = frames['editor-canvas']?.document || document;
 		const url = `https://fonts.googleapis.com/css?family=${fontFamily.replace(/\s+/g, '+')}`;
 
@@ -28,6 +29,7 @@ export default function SimpleWebfontLoader({ typography, children }) {
 			if (!typography || typography.length === 0) {
 				return;
 			}
+			const { frames } = window;
 			const fontFamily = typography[0].family + (typography[0]?.variant ? ':' + typography[0].variant : '');
 			const frame = frames['editor-canvas'] ? 'Desktop' : 'iframe';
 

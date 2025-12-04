@@ -1,19 +1,18 @@
   /**
-  * External Dependencies
-  */
+   * External Dependencies
+   */
    import { debounce } from 'lodash';
 
  /**
   * WordPress dependencies
   */
  import { __ } from '@wordpress/i18n';
- import { Component } from '@wordpress/element';
+ import { Component, createRef } from '@wordpress/element';
  import { Button, withFilters, Popover, ExternalLink } from '@wordpress/components';
- import { createRef } from '@wordpress/element';
 
  /**
- * Build the Dynamic Image controls
- */
+  * Build the Dynamic Image controls
+  */
 class DynamicGalleryControl extends Component {
 	constructor() {
         super( ...arguments );
@@ -31,7 +30,7 @@ class DynamicGalleryControl extends Component {
     render() {
 		const { open } = this.state;
 		// @todo: Replace with icon from @kadence/icons once created
-		let icons = {};
+		const icons = {};
 		icons.dynamic = <svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"

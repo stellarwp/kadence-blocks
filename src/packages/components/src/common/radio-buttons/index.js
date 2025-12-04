@@ -61,13 +61,11 @@ export default function KadenceRadioButtons({
 						aria-pressed={value === option.value}
 						onClick={() => {
 							if (undefined !== option?.isDisabled && option.isDisabled) {
-							} else {
-								if (allowClear && option.value === value) {
+							} else if (allowClear && option.value === value) {
 									onChange('');
 								} else {
 									onChange(option.value);
 								}
-							}
 						}}
 						label={hideLabel ? option.label : option?.tooltip}
 					>
