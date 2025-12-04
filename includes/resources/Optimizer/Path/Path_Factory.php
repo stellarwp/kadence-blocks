@@ -41,7 +41,8 @@ final class Path_Factory {
 			$normalized = '/' . $normalized;
 		}
 
-		$current_post = get_post();
+		// This will get the proper front/posts page ID.
+		$current_post = get_queried_object();
 
 		if ( ! $current_post instanceof WP_Post ) {
 			return new Path( $normalized, null );

@@ -163,11 +163,11 @@ final class PathFactoryTest extends OptimizerTestCase {
 
 		// Set up global $post object for get_post().
 		global $post, $wp_query;
-		$original_post                = $post ?? null;
-		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
-		$post                         = get_post( $post_id );
-		$wp_query->queried_object     = $post;
-		$wp_query->queried_object_id  = $post_id;
+		$original_post               = $post ?? null;
+		$original_queried_object_id  = $wp_query->queried_object_id ?? 0;
+		$post                        = get_post( $post_id );
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $post_id;
 
 		$_SERVER['REQUEST_URI'] = '/test-post/';
 
@@ -177,9 +177,9 @@ final class PathFactoryTest extends OptimizerTestCase {
 		$this->assertSame( $post_id, $path->post_id() );
 
 		// Clean up.
-		$post                         = $original_post;
-		$wp_query->queried_object     = null;
-		$wp_query->queried_object_id  = $original_queried_object_id;
+		$post                        = $original_post;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = $original_queried_object_id;
 		wp_delete_post( $post_id, true );
 	}
 
@@ -187,7 +187,7 @@ final class PathFactoryTest extends OptimizerTestCase {
 	public function testItReturnsNullPostIdWhenNoPostFound(): void {
 		// Ensure queried object is not set.
 		global $wp_query;
-		$original_queried_object_id = $wp_query->queried_object_id ?? 0;
+		$original_queried_object_id  = $wp_query->queried_object_id ?? 0;
 		$wp_query->queried_object    = null;
 		$wp_query->queried_object_id = 0;
 
@@ -205,7 +205,7 @@ final class PathFactoryTest extends OptimizerTestCase {
 	public function testItReturnsNullPostIdForNonPostPaths(): void {
 		// Ensure queried object is not set.
 		global $wp_query;
-		$original_queried_object_id = $wp_query->queried_object_id ?? 0;
+		$original_queried_object_id  = $wp_query->queried_object_id ?? 0;
 		$wp_query->queried_object    = null;
 		$wp_query->queried_object_id = 0;
 
@@ -231,12 +231,12 @@ final class PathFactoryTest extends OptimizerTestCase {
 
 		// Set queried object to the term (not a post).
 		global $post, $wp_query;
-		$original_post                = $post ?? null;
-		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
+		$original_post               = $post ?? null;
+		$original_queried_object_id  = $wp_query->queried_object_id ?? 0;
 		$term                        = get_term( $term_id );
 		$post                        = null; // Ensure $post is null for term pages.
-		$wp_query->queried_object     = $term;
-		$wp_query->queried_object_id  = $term_id;
+		$wp_query->queried_object    = $term;
+		$wp_query->queried_object_id = $term_id;
 
 		$_SERVER['REQUEST_URI'] = '/category/test-category/';
 
@@ -247,9 +247,9 @@ final class PathFactoryTest extends OptimizerTestCase {
 		$this->assertNull( $path->post_id() );
 
 		// Clean up.
-		$post                         = $original_post;
-		$wp_query->queried_object     = null;
-		$wp_query->queried_object_id  = $original_queried_object_id;
+		$post                        = $original_post;
+		$wp_query->queried_object    = null;
+		$wp_query->queried_object_id = $original_queried_object_id;
 		wp_delete_term( $term_id, 'category' );
 	}
 
@@ -264,12 +264,10 @@ final class PathFactoryTest extends OptimizerTestCase {
 
 		// Set queried object to the user (not a post).
 		global $post, $wp_query;
-		$original_post                = $post ?? null;
-		$original_queried_object_id   = $wp_query->queried_object_id ?? 0;
 		$user                        = get_userdata( $user_id );
 		$post                        = null; // Ensure $post is null for user pages.
-		$wp_query->queried_object     = $user;
-		$wp_query->queried_object_id  = $user_id;
+		$wp_query->queried_object    = $user;
+		$wp_query->queried_object_id = $user_id;
 
 		$_SERVER['REQUEST_URI'] = '/author/testauthor/';
 
@@ -278,12 +276,75 @@ final class PathFactoryTest extends OptimizerTestCase {
 		$this->assertSame( '/author/testauthor/', $path->path() );
 		// Should return null because user IDs are not post IDs.
 		$this->assertNull( $path->post_id() );
-
-		// Clean up.
-		$post                         = $original_post;
-		$wp_query->queried_object     = null;
-		$wp_query->queried_object_id  = $original_queried_object_id;
-		wp_delete_user( $user_id );
 	}
 
+	public function testItResolvesPostIdForStaticFrontPage(): void {
+		// Create a page to use as static front page.
+		$front_page_id = $this->factory()->post->create(
+			[
+				'post_type'   => 'page',
+				'post_title'  => 'Home Page',
+				'post_status' => 'publish',
+				'post_name'   => 'home',
+			]
+		);
+
+		// Configure WordPress to use a static front page.
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $front_page_id );
+
+		// Set up queried object for front page.
+		global $post, $wp_query;
+		$post                        = get_post( $front_page_id );
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $front_page_id;
+
+		$_SERVER['REQUEST_URI'] = '/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/', $path->path() );
+		$this->assertSame( $front_page_id, $path->post_id() );
+	}
+
+	public function testItResolvesPostIdForPageForPosts(): void {
+		// Create a page to use as the blog posts page.
+		$blog_page_id = $this->factory()->post->create(
+			[
+				'post_type'   => 'page',
+				'post_title'  => 'Blog',
+				'post_status' => 'publish',
+				'post_name'   => 'blog',
+			]
+		);
+
+		// Create a static front page.
+		$front_page_id = $this->factory()->post->create(
+			[
+				'post_type'   => 'page',
+				'post_title'  => 'Home',
+				'post_status' => 'publish',
+				'post_name'   => 'home',
+			]
+		);
+
+		// Configure WordPress to use static front page with separate blog page.
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $front_page_id );
+		update_option( 'page_for_posts', $blog_page_id );
+
+		// Set up queried object for blog page.
+		// Note: On the blog page, get_queried_object() returns the page_for_posts page.
+		global $post, $wp_query;
+		$post                        = get_post( $blog_page_id );
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $blog_page_id;
+
+		$_SERVER['REQUEST_URI'] = '/blog/';
+
+		$path = $this->path_factory->make();
+
+		$this->assertSame( '/blog/', $path->path() );
+		$this->assertSame( $blog_page_id, $path->post_id() );
+	}
 }
