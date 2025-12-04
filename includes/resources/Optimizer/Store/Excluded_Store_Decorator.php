@@ -76,9 +76,8 @@ final class Excluded_Store_Decorator implements Store {
 		$post_id = $path->post_id();
 
 		if ( ! $post_id ) {
-			// No post_id means we can't check exclusion - allow but log.
 			$this->logger->warning(
-				'Optimization set without post_id - cannot verify exclusion',
+				'Missing post_id in Path: Skipping exclusion check and storing optimization data without post_id',
 				[ 'path' => $path->path() ]
 			);
 
