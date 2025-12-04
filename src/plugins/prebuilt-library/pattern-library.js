@@ -549,20 +549,24 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					setPatterns(o);
 					setCategories(JSON.parse(JSON.stringify(cats)));
 					const htmlPatternsResponse = await getPatterns('section', tempReload, null, null, 'html');
-					if (htmlPatternsResponse === 'failed') {
-						console.log('Permissions Error getting library htmlContent');
-						setPatternsHTML([]);
-					} else if (htmlPatternsResponse === 'error') {
-						console.log('Error getting library htmlContent.');
-						setPatternsHTML([]);
+					let parsedHtml = htmlPatternsResponse;
+
+					if (htmlPatternsResponse === 'failed' || htmlPatternsResponse === 'error') {
+						parsedHtml = false;
 					} else {
-						const o = SafeParseJSON(htmlPatternsResponse, false);
-						if (o) {
-							setPatternsHTML(o);
-						} else {
-							setPatternsHTML([]);
+						parsedHtml = SafeParseJSON(htmlPatternsResponse, false);
+					}
+
+					if (!parsedHtml && !tempReload) {
+						// If the cached response is empty or missing, force a reload once so previews populate without manual sync.
+						const freshHtml = await getPatterns('section', true, null, null, 'html');
+
+						if (freshHtml !== 'failed' && freshHtml !== 'error') {
+							parsedHtml = SafeParseJSON(freshHtml, false);
 						}
 					}
+
+					setPatternsHTML(parsedHtml ? parsedHtml : []);
 				}
 			} else {
 				if (tempSubTab === 'pages') {
