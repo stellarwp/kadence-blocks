@@ -146,10 +146,10 @@ final class Hash_Handler {
 			$path = $this->path_factory->make();
 		} catch ( InvalidArgumentException $e ) {
 			$this->logger->error(
-				'Optimizer to determine the path',
+				'Hash handler unable to determine the path',
 				[
-					'viewport' => $viewport->value(),
-					'error'    => $e,
+					'viewport'  => $viewport->value(),
+					'exception' => $e,
 				]
 			);
 
