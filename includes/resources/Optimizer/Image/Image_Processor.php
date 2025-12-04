@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
-use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
+use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
 use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use WP_HTML_Tag_Processor;
 
@@ -80,7 +80,7 @@ final class Image_Processor {
 					'Skipping Image Processor Buffering: skip rule',
 					[
 						'rule'        => get_class( $rule ),
-						'request_uri' => SuperGlobals::get_server_var( 'REQUEST_URI' ),
+						'request_uri' => SG::get_server_var( 'REQUEST_URI', 'unknown' ),
 					]
 				);
 
