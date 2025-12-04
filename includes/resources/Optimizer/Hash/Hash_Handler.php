@@ -100,12 +100,14 @@ final class Hash_Handler {
 		}
 
 		if ( ! $this->html ) {
-			$this->logger->debug(
-				'Bypassing Optimizer: No HTML found to check',
-				[
-					'request_uri' => SG::get_server_var( 'REQUEST_URI', 'unknown' ),
-				]
-			);
+			if ( ! is_admin() ) {
+				$this->logger->debug(
+					'Bypassing Optimizer: No HTML found to check',
+					[
+						'request_uri' => SG::get_server_var( 'REQUEST_URI', 'unknown' ),
+					]
+				);
+			}
 
 			return;
 		}
