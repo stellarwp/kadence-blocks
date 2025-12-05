@@ -671,6 +671,11 @@ button.components-button.kt-font-clear-btn {
 // A padding adds to heading tag if it has class "has-background" along with "has-theme-palette-*" class.
 // This CSS rule will override that padding issue.
 // Reference: https://stellarwp.atlassian.net/browse/KAD-5283
-h2.kadence-advancedheading-text.has-background[class*="has-theme-palette-"] {
+h1.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h2.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h3.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h4.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h5.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h6.kadence-advancedheading-text.has-background[class*="has-theme-palette-"] {
 	padding: 0;
 }
