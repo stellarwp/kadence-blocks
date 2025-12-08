@@ -6,13 +6,15 @@
 /**
  * Internal block libraries
  */
- import { __, sprintf } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useInstanceId } from '@wordpress/compose';
-import { range } from 'lodash';
+import { range, isEqual } from 'lodash';
 import {
 	Button,
 	ToolbarGroup,
+	ToolbarDropdownMenu,
 } from '@wordpress/components';
+import { undo } from '@wordpress/icons';
 /**
  * Import Css
  */
@@ -27,7 +29,7 @@ import {
 	percentIcon,
 } from '@kadence/icons';
 
-let icons = {
+const icons = {
 	px: pxIcon,
 	em: emIcon,
 	rem: remIcon,
@@ -50,6 +52,8 @@ export default function tagSelect( {
 	headingOnly = false,
 	tagLowLevel = 1,
 	tagHighLevel = 7,
+	defaultValue = '',
+	onReset = () => {},
 } ) {
 	const level = ( value !== 'span' && value !== 'div' && value !== 'p' ? value : 2 );
 	const htmlTag = ( value === 'span' || value === 'div' || value === 'p' ? value : 'heading' );

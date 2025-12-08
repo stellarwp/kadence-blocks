@@ -1,9 +1,8 @@
 import {useEffect, useState} from '@wordpress/element';
-import {useSelect} from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import KadencePanelBody from '../panel-body/index.js';
 import {__} from "@wordpress/i18n";
 import {omit, head, get, isEqual} from 'lodash';
-import {useDispatch} from '@wordpress/data';
 import {store as noticesStore} from '@wordpress/notices';
 import {
     Button,
@@ -126,17 +125,26 @@ export default function KadenceBlockDefaults( {
                 <br/><br/>
 
                 <Button isPrimary={true}
-                        onClick={() => setIsOpenSaveConfirm(true)}>{__(' Save as default', 'kadence-blocks')}</Button>
+                        onClick={() => setIsOpenSaveConfirm(true)}>{__('Save as default', 'kadence-blocks')}</Button>
 
                 {hasConfig && (
                     <>
                         <br/><br/>
 
-                        <a href={'#'}
-                           onClick={() => setIsOpenModify(true)}>{__('Modify attributes', 'kadence-blocks')}</a>
+                        <Button
+                            variant="link"
+                            onClick={() => setIsOpenModify(true)}
+                        >
+                            {__('Modify attributes', 'kadence-blocks')}
+                        </Button>
 
-                        <a href={'#'} style={{color: 'red', float: 'right'}}
-                           onClick={() => setIsOpenResetConfirm(true)}>{__('Reset defaults', 'kadence-blocks')}</a>
+                        <Button
+                            variant="link"
+                            style={{color: 'red', float: 'right'}}
+                            onClick={() => setIsOpenResetConfirm(true)}
+                        >
+                            {__('Reset defaults', 'kadence-blocks')}
+                        </Button>
                     </>
                 )}
 

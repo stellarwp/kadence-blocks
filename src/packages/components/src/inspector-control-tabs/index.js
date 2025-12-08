@@ -97,7 +97,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 							aria-label={title + ' ' + __( 'tab', 'kadence-blocks' ) }
 							onClick={() => switchTab( key )}
 							className={classnames( {
-								[ 'is-active' ]: key === activeTab,
+								'is-active': key === activeTab,
 							} )}
 						>
 							<Icon icon={icon}/> {title}
