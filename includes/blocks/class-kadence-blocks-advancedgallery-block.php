@@ -846,6 +846,84 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( strpos( $content, 'data-columns-ss' ) === false && strpos( $content, 'kb-gallery-type-grid' ) !== false ) {
 				$content = str_replace( 'data-columns-xs="1"', 'data-columns-xs="1" data-columns-ss="1"', $content );
 			}
+	
+			// Fix for older carousel structures that need splide__track and splide__list wrappers
+			// Check if content has old carousel structure (has kt-blocks-carousel but no splide__track)
+			if ( strpos( $content, 'kt-blocks-carousel' ) !== false && strpos( $content, 'splide__track' ) === false ) {
+				// Add 'splide' class to kt-blocks-carousel containers
+				$content = preg_replace(
+					'/(<div[^>]*class=")([^"]*kt-blocks-carousel)([^"]*kt-carousel-container-dotstyle-[^"]*")/',
+					'$1$2 splide$3',
+					$content
+				);
+				
+				// Transform carousel structure: wrap kt-blocks-carousel-init with splide__track and convert div to ul
+				// Pattern matches: <div class="kt-blocks-carousel-init kb-gallery-carousel ...">...slides...</div>
+				$content = preg_replace_callback(
+					'/(<div[^>]*class="([^"]*kt-blocks-carousel-init[^"]*kb-gallery-carousel[^"]*)"[^>]*>)(.*?)(<\/div>\s*<\/div>\s*<\/div>)/s',
+					function( $matches ) {
+						$classes = $matches[2];
+						$inner_content = trim( $matches[3] );
+						// Convert slide divs to li elements with splide__slide class
+						$inner_content = preg_replace(
+							'/<div([^>]*class=")([^"]*kb-slide-item[^"]*kb-gallery-carousel-item[^"]*)"([^>]*)>/',
+							'<li$1$2 splide__slide"$3>',
+							$inner_content
+						);
+						// Close li tags instead of div tags for slides
+						$inner_content = preg_replace(
+							'/<\/div>\s*(?=\s*<li|<\/ul>|$)/',
+							'</li>',
+							$inner_content
+						);
+						// Wrap with splide__track and convert outer div to ul with splide__list
+						return '<div class="splide__track"><ul class="' . esc_attr( $classes ) . ' splide__list">' . $inner_content . '</ul></div>' . $matches[4];
+					},
+					$content
+				);
+				
+				// Transform fluidcarousel structure
+				$content = preg_replace_callback(
+					'/(<div[^>]*class="([^"]*kt-blocks-carousel-init[^"]*kb-blocks-fluid-carousel[^"]*)"[^>]*>)(.*?)(<\/div>\s*<\/div>\s*<\/div>)/s',
+					function( $matches ) {
+						$classes = $matches[2];
+						$inner_content = trim( $matches[3] );
+						$inner_content = preg_replace(
+							'/<div([^>]*class=")([^"]*kb-slide-item[^"]*kb-gallery-carousel-item[^"]*)"([^>]*)>/',
+							'<li$1$2 splide__slide"$3>',
+							$inner_content
+						);
+						$inner_content = preg_replace(
+							'/<\/div>\s*(?=\s*<li|<\/ul>|$)/',
+							'</li>',
+							$inner_content
+						);
+						return '<div class="splide__track"><ul class="' . esc_attr( $classes ) . ' splide__list">' . $inner_content . '</ul></div>' . $matches[4];
+					},
+					$content
+				);
+				
+				// Transform slider structure
+				$content = preg_replace_callback(
+					'/(<div[^>]*class="([^"]*kt-blocks-carousel-init[^"]*kb-blocks-slider[^"]*)"[^>]*>)(.*?)(<\/div>\s*<\/div>\s*<\/div>)/s',
+					function( $matches ) {
+						$classes = $matches[2];
+						$inner_content = trim( $matches[3] );
+						$inner_content = preg_replace(
+							'/<div([^>]*class=")([^"]*kb-slide-item[^"]*kb-gallery-slide-item[^"]*)"([^>]*)>/',
+							'<li$1$2 splide__slide"$3>',
+							$inner_content
+						);
+						$inner_content = preg_replace(
+							'/<\/div>\s*(?=\s*<li|<\/ul>|$)/',
+							'</li>',
+							$inner_content
+						);
+						return '<div class="splide__track"><ul class="' . esc_attr( $classes ) . ' splide__list">' . $inner_content . '</ul></div>' . $matches[4];
+					},
+					$content
+				);
+			}
 		}
 		return $content;
 	}
