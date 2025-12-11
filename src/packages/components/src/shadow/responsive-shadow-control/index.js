@@ -206,7 +206,7 @@ export default function ResponsiveShadowControl ( {
 
 	return [
 		onEnableChange && (
-			<div className={ `components-base-control kb-responsive-range-control${ '' !== className ? ' ' + className : '' }` }>
+			<div className={ `components-base-control kt-box-shadow-container${ '' !== className ? ' ' + className : '' }` }>
 				<div className="kadence-title-bar">
 					{ label && (
 						<span className="kadence-control-title">
