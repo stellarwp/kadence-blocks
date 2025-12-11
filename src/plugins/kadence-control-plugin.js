@@ -1,6 +1,6 @@
 import { map } from 'lodash';
 
-import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/edit-post';
+import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
 import { Fragment, useState } from '@wordpress/element';
 import { PanelBody, Button } from '@wordpress/components';
@@ -751,6 +751,16 @@ function KadenceConfig() {
 								label={__('Enable Pexels Image Picker', 'kadence-blocks')}
 								type={'toggle'}
 								theDefault={true}
+							/>
+						</PanelBody>
+						<PanelBody title={__('Performance Optimizer', 'kadence-blocks')} initialOpen={false}>
+							<KadenceSetting
+								slug={'performance_optimizer_enabled'}
+								label={__('Globally Enable The Performance Optimizer', 'kadence-blocks')}
+								type={'toggle'}
+								theDefault={false}
+								// Reload the page to load/unload the external optimizer JavaScript.
+								successCallback={() => window.location.reload()}
 							/>
 						</PanelBody>
 						<PanelBody title={__('Custom CSS Indicator', 'kadence-blocks')} initialOpen={false}>

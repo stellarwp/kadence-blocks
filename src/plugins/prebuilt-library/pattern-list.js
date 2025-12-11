@@ -54,7 +54,7 @@ function PatternsListHeader({ filterValue, filteredBlockPatternsLength }) {
 	return (
 		<Heading level={2} lineHeight={'48px'} className="block-editor-block-patterns-explorer__search-results-count">
 			{sprintf(
-				/* translators: %d: number of patterns. %s: block pattern search query */
+				/* translators: %1$d: number of patterns. %2$s: block pattern search query */
 				_n('%1$d pattern found for "%2$s"', '%1$d patterns found for "%2$s"', filteredBlockPatternsLength),
 				filteredBlockPatternsLength,
 				filterValue
@@ -1355,7 +1355,7 @@ function PatternList({
 						<span className="kb-patterns-count-message">
 							{filterValue
 								? sprintf(
-										/* translators: %d: number of patterns. %s: block pattern search query */
+										/* translators: %1$: number of patterns. %2$s: block pattern search query */
 										_n(
 											'%1$d pattern for "%2$s"',
 											'%1$d patterns for "%2$s"',
@@ -1397,7 +1397,7 @@ function PatternList({
 						<span className="kb-patterns-count-message">
 							{filterValue
 								? sprintf(
-										/* translators: %d: number of patterns. %s: block pattern search query */
+										/* translators: %1$d: number of patterns. %2$s: block pattern search query */
 										_n(
 											'%1$d pattern for "%2$s"',
 											'%1$d patterns for "%2$s"',

@@ -1,6 +1,5 @@
 const { src, dest, parallel } = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
-const path = require('path');
 const rename = require('gulp-rename');
 const cleancss = require('gulp-clean-css');
 const config = require('../config');
@@ -16,7 +15,7 @@ function stylesPipe(sources) {
 }
 
 function miscStyles() {
-	return stylesPipe(['src/assets/css/*.scss'])
+	return stylesPipe(['src/assets/css/*.scss', 'includes/resources/Optimizer/assets/css/*.scss'])
 		.pipe(
 			rename((file) => {
 				file.basename += '.min';
