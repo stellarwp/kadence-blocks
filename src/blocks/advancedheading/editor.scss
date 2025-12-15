@@ -672,11 +672,18 @@ button.components-button.kt-font-clear-btn {
 // This CSS rule will override that padding issue.
 // Reference: https://stellarwp.atlassian.net/browse/KAD-5283
 h1.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h1.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
 h2.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h2.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
 h3.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h3.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
 h4.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h4.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
 h5.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+h5.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
 h6.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
-p.kadence-advancedheading-text.has-background[class*="has-theme-palette-"] {
+h6.kadence-advancedheading-text.has-background[class*="has-kb-palette-"],
+p.kadence-advancedheading-text.has-background[class*="has-theme-palette-"],
+p.kadence-advancedheading-text.has-background[class*="has-kb-palette-"] {
 	padding: 0;
 }
