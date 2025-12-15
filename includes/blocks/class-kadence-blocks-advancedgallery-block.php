@@ -637,6 +637,28 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( strpos( $content, 'data-columns-ss' ) === false && strpos( $content, 'kb-gallery-type-grid' ) !== false ) {
 				$content = str_replace( 'data-columns-xs="1"', 'data-columns-xs="1" data-columns-ss="1"', $content );
 			}
+			
+			// Convert images to imagesDynamic for older blocks that haven't been through the editor
+			if ( empty( $attributes['imagesDynamic'] ) && ! empty( $attributes['images'] ) && is_array( $attributes['images'] ) ) {
+				$new_image_data = array();
+				foreach ( $attributes['images'] as $image ) {
+					$new_image_data[] = array(
+						'url'          => ! empty( $image['url'] ) ? $image['url'] : '',
+						'thumbUrl'     => ! empty( $image['thumbUrl'] ) ? $image['thumbUrl'] : '',
+						'lightUrl'     => ! empty( $image['lightUrl'] ) ? $image['lightUrl'] : '',
+						'link'         => ! empty( $image['link'] ) ? $image['link'] : '',
+						'customLink'   => ! empty( $image['customLink'] ) ? $image['customLink'] : '',
+						'linkTarget'   => ! empty( $image['linkTarget'] ) ? $image['linkTarget'] : '',
+						'width'        => ! empty( $image['width'] ) ? $image['width'] : '',
+						'height'       => ! empty( $image['height'] ) ? $image['height'] : '',
+						'alt'          => ! empty( $image['alt'] ) ? $image['alt'] : '',
+						'id'           => ! empty( $image['id'] ) ? $image['id'] : '',
+						'caption'      => ! empty( $image['caption'] ) ? $image['caption'] : '',
+						'linkSponsored' => ! empty( $image['linkSponsored'] ) ? $image['linkSponsored'] : '',
+					);
+				}
+				$attributes['imagesDynamic'] = $new_image_data;
+			}
 		}
 
 		$images       = ( ! empty( $attributes['imagesDynamic'] ) ? $attributes['imagesDynamic'] : false );
