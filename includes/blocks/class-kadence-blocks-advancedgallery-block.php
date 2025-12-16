@@ -157,17 +157,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property('padding', ( $desk_gutter / 2 ) . $gutter_unit );
 		} else if ( 'carousel' === $gallery_type ) {
 			// Carousel.
-			if ( ! $updated_version ) {
-				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
-				$css->add_property('margin', '0 -' . ( $desk_gutter / 2 ) . $gutter_unit );
+			if ( $updated_version ) {
+				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
+				$css->add_property( 'margin-left', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
+				$css->add_property( 'margin-right', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
 
-				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
-				$css->add_property('padding', '4px ' . ( $desk_gutter / 2 ) . $gutter_unit );
-				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
-				$css->add_property('left', ( $desk_gutter / 2 ) . $gutter_unit );
-
-				$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
-				$css->add_property('right', ( $desk_gutter / 2 ) . $gutter_unit );
+				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
+				$css->add_property( 'padding-left', ( $desk_gutter / 2 ) . $gutter_unit );
+				$css->add_property( 'padding-right', ( $desk_gutter / 2 ) . $gutter_unit );
 			}
 		} else if ( 'fluidcarousel' === $gallery_type ) {
 			if ( ! $updated_version ) {
@@ -207,17 +204,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property('padding', ( $tablet_gutter / 2 ) . $gutter_unit );
 			} else if ( 'carousel' === $gallery_type ) {
 				// Carousel.
-				if ( ! $updated_version ) {
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
-					$css->add_property('margin', '0 -' . ( $tablet_gutter / 2 ) . $gutter_unit );
+				if ( $updated_version ) {
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
+					$css->add_property( 'margin-left', '-' . ( $tablet_gutter / 2 ) . $gutter_unit );
+					$css->add_property( 'margin-right', '-' . ( $tablet_gutter / 2 ) . $gutter_unit );
 
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
-					$css->add_property('padding', '4px ' . ( $tablet_gutter / 2 ) . $gutter_unit );
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
-					$css->add_property('left', ( $tablet_gutter / 2 ) . $gutter_unit );
-
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
-					$css->add_property('right', ( $tablet_gutter / 2 ) . $gutter_unit );
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
+					$css->add_property( 'padding-left', ( $tablet_gutter / 2 ) . $gutter_unit );
+					$css->add_property( 'padding-right', ( $tablet_gutter / 2 ) . $gutter_unit );
 				}
 			} else if ( 'fluidcarousel' === $gallery_type ) {
 				if ( ! $updated_version ) {
@@ -261,17 +255,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property('padding', ( $mobile_gutter / 2 ) . $gutter_unit );
 			} else if ( 'carousel' === $gallery_type ) {
 				// Carousel.
-				if ( ! $updated_version ) {
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
-					$css->add_property('margin', '0 -' . ( $mobile_gutter / 2 ) . $gutter_unit );
+				if ( $updated_version ) {
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
+					$css->add_property( 'margin-left', '-' . ( $mobile_gutter / 2 ) . $gutter_unit );
+					$css->add_property( 'margin-right', '-' . ( $mobile_gutter / 2 ) . $gutter_unit );
 
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item');
-					$css->add_property('padding', '4px ' . ( $mobile_gutter / 2 ) . $gutter_unit );
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev' );
-					$css->add_property('left', ( $mobile_gutter / 2 ) . $gutter_unit );
-
-					$css->set_selector('.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next' );
-					$css->add_property('right', ( $mobile_gutter / 2 ) . $gutter_unit );
+					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
+					$css->add_property( 'padding-left', ( $mobile_gutter / 2 ) . $gutter_unit );
+					$css->add_property( 'padding-right', ( $mobile_gutter / 2 ) . $gutter_unit );
 				}
 			} else if ( 'fluidcarousel' === $gallery_type ) {
 				if ( ! $updated_version ) {
@@ -622,7 +613,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		return $css->css_output();
 	}
-
+	
 	/**
 	 * Parse images from saved HTML content.
 	 *
@@ -647,8 +638,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		$xpath = new \DOMXPath( $doc );
 
-		// Find all gallery items (use word boundary matching to exclude kadence-blocks-gallery-item-inner, etc.).
-		$gallery_items = $xpath->query( "//*[contains(concat(' ', normalize-space(@class), ' '), ' kadence-blocks-gallery-item ')]" );
+		// Find all gallery items.
+		$gallery_items = $xpath->query( "//*[contains(@class, 'kadence-blocks-gallery-item')]" );
 
 		foreach ( $gallery_items as $item ) {
 			// Find the img element within this gallery item.
