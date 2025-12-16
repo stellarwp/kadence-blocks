@@ -12,3 +12,14 @@ bin/wp-cli.phar
 /tests/codeception.env
 # Remove this when fully transitioning to bun.
 /bun.lock*
+
+# Vendor - track autoloader files and prefixed packages, ignore raw packages
+/vendor/*
+!/vendor/autoload.php
+!/vendor/bin/
+!/vendor/composer/
+/vendor/composer/*
+!/vendor/composer/*.php
+!/vendor/composer/*.json
+!/vendor/composer/LICENSE
+!/vendor/vendor-prefixed/
