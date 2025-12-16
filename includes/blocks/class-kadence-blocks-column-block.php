@@ -743,7 +743,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'margin-right', 'auto' );
 		}
 		if ( isset( $attributes['collapseOrder'] ) ) {
-			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id );
+			$css->set_selector(
+				'.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ',
+				.kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ',
+				.kb-row-layout-wrap.wp-block-kadence-rowlayout .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id
+			);
 			$css->add_property( 'order', $attributes['collapseOrder'] );
 		}
 		if ( ! empty( $attributes['textAlign'][2] ) ) {
