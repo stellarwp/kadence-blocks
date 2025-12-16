@@ -52,7 +52,7 @@
 		left: 0.5em;
 		right: auto;
 		bottom: auto;
-		transform: translateY(-1em);
+		transform: translateY(-1.5em);
 	}
 	
 	&.kb-countdown-pause-button-top-right {
@@ -60,7 +60,7 @@
 		right: 0.5em;
 		left: auto;
 		bottom: auto;
-		transform: translateY(-1em);
+		transform: translateY(-1.5em);
 	}
 	
 	&.kb-countdown-pause-button-bottom-left {
@@ -68,7 +68,7 @@
 		left: 0.5em;
 		top: auto;
 		right: auto;
-		transform: translateY(1em);
+		transform: translateY(1.5em);
 	}
 	
 	&.kb-countdown-pause-button-bottom-right {
@@ -76,7 +76,7 @@
 		right: 0.5em;
 		top: auto;
 		left: auto;
-		transform: translateY(1em);
+		transform: translateY(1.5em);
 	}
 }
 
