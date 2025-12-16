@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9
-Stable tag: 3.5.29
+Stable tag: 3.5.30
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,13 +175,15 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.30 =
-Release Date: TBD
+Release Date: 8th January 2026
 * Add: Classic adv form transform tool to new form block.
 * Add: An inline image format for the Heading (adv) block.
 * Fix: Issue with some sliders including gallery (adv) not working when inside other loop blocks
+* Fix: Testimonial Block Left Padding Issue
 * Fix: progress bar issue in Safari
 * Fix: theme extended color palette not showing correctly in the editor in some places.
-* Fix: Issue with padding on icons
+* Fix: Issue with padding on icons in text block
+* Fix: Button (Adv) outline style text color settings not working in Kadence Theme when visited
 
 = 3.5.29 =
 Release Date: 3rd December 2025
