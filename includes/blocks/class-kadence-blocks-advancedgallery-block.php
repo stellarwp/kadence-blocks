@@ -622,7 +622,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		return $css->css_output();
 	}
-	
+
 	/**
 	 * Parse images from saved HTML content.
 	 *
@@ -647,8 +647,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		$xpath = new \DOMXPath( $doc );
 
-		// Find all gallery items.
-		$gallery_items = $xpath->query( "//*[contains(@class, 'kadence-blocks-gallery-item')]" );
+		// Find all gallery items (use word boundary matching to exclude kadence-blocks-gallery-item-inner, etc.).
+		$gallery_items = $xpath->query( "//*[contains(concat(' ', normalize-space(@class), ' '), ' kadence-blocks-gallery-item ')]" );
 
 		foreach ( $gallery_items as $item ) {
 			// Find the img element within this gallery item.
