@@ -637,7 +637,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			return;
 		}
 		wp_register_style( 'kadence-blocks-' . $this->block_name, false );
-		$heading_css = <<<CSS
+		$heading_css = <<<'CSS'
 			.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}
 			.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}
 			.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;}
@@ -650,7 +650,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		// Short term fix for an issue with heading wrapping.
 		if ( class_exists( '\Kadence\Theme' ) ) {
-			$heading_css .= <<<CSS
+			$heading_css .= <<<'CSS'
 				.single-content .kadence-advanced-heading-wrapper h1,
 				.single-content .kadence-advanced-heading-wrapper h2,
 				.single-content .kadence-advanced-heading-wrapper h3,
