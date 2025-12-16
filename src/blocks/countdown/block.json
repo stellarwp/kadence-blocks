@@ -340,6 +340,10 @@
 		"enablePauseButton": {
 			"type": "boolean",
 			"default": false
+		},
+		"pauseButtonPosition": {
+			"type": "string",
+			"default": "top-right"
 		}
 	},
 	"supports": {

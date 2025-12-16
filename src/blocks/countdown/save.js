@@ -24,6 +24,7 @@ function Save({ attributes }) {
 		counterAlign,
 		revealOnLoad,
 		enablePauseButton,
+		pauseButtonPosition,
 	} = attributes;
 	const classes = classnames({
 		'kb-countdown-container': true,
@@ -52,7 +53,7 @@ function Save({ attributes }) {
 			{enablePauseButton && (
 				<button
 					type="button"
-					className="kb-countdown-pause-button"
+					className={`kb-countdown-pause-button kb-countdown-pause-button-${pauseButtonPosition || 'top-right'}`}
 					aria-label="Pause countdown timer"
 					aria-pressed="false"
 					title="Pause countdown"
