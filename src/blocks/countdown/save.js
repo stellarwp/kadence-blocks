@@ -23,6 +23,8 @@ function Save({ attributes }) {
 		enableTimer,
 		counterAlign,
 		revealOnLoad,
+		enablePauseButton,
+		pauseButtonPosition,
 	} = attributes;
 	const classes = classnames({
 		'kb-countdown-container': true,
@@ -48,6 +50,19 @@ function Save({ attributes }) {
 
 	return (
 		<div {...blockProps} data-id={uniqueID}>
+			{enablePauseButton && (
+				<button
+					type="button"
+					className={`kb-countdown-pause-button kb-countdown-pause-button-${pauseButtonPosition || 'top-right'}`}
+					aria-label="Pause countdown timer"
+					aria-pressed="false"
+					title="Pause countdown"
+				>
+					<span className="kb-countdown-pause-icon" aria-hidden="true">
+						⏸
+					</span>
+				</button>
+			)}
 			<InnerBlocks.Content />
 		</div>
 	);
