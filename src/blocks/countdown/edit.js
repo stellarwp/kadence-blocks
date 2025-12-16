@@ -1390,9 +1390,18 @@ function KadenceCountdown(props) {
 													value={pauseButtonPosition || 'top-right'}
 													options={[
 														{ value: 'top-left', label: __('Top Left', 'kadence-blocks') },
-														{ value: 'top-right', label: __('Top Right', 'kadence-blocks') },
-														{ value: 'bottom-left', label: __('Bottom Left', 'kadence-blocks') },
-														{ value: 'bottom-right', label: __('Bottom Right', 'kadence-blocks') },
+														{
+															value: 'top-right',
+															label: __('Top Right', 'kadence-blocks'),
+														},
+														{
+															value: 'bottom-left',
+															label: __('Bottom Left', 'kadence-blocks'),
+														},
+														{
+															value: 'bottom-right',
+															label: __('Bottom Right', 'kadence-blocks'),
+														},
 													]}
 													onChange={(value) => setAttributes({ pauseButtonPosition: value })}
 												/>
@@ -2110,15 +2119,28 @@ function KadenceCountdown(props) {
 					disabled
 					style={{
 						position: 'absolute',
-						top: pauseButtonPosition === 'top-left' || pauseButtonPosition === 'top-right' ? '0.5em' : 'auto',
-						bottom: pauseButtonPosition === 'bottom-left' || pauseButtonPosition === 'bottom-right' ? '0.5em' : 'auto',
-						left: pauseButtonPosition === 'top-left' || pauseButtonPosition === 'bottom-left' ? '0.5em' : 'auto',
-						right: pauseButtonPosition === 'top-right' || pauseButtonPosition === 'bottom-right' ? '0.5em' : 'auto',
-						transform: pauseButtonPosition === 'top-left' || pauseButtonPosition === 'top-right' 
-							? 'translateY(-.5em)' 
-							: pauseButtonPosition === 'bottom-left' || pauseButtonPosition === 'bottom-right'
-							? 'translateY(.5em)'
-							: 'none',
+						top:
+							pauseButtonPosition === 'top-left' || pauseButtonPosition === 'top-right'
+								? '0.5em'
+								: 'auto',
+						bottom:
+							pauseButtonPosition === 'bottom-left' || pauseButtonPosition === 'bottom-right'
+								? '0.5em'
+								: 'auto',
+						left:
+							pauseButtonPosition === 'top-left' || pauseButtonPosition === 'bottom-left'
+								? '0.5em'
+								: 'auto',
+						right:
+							pauseButtonPosition === 'top-right' || pauseButtonPosition === 'bottom-right'
+								? '0.5em'
+								: 'auto',
+						transform:
+							pauseButtonPosition === 'top-left' || pauseButtonPosition === 'top-right'
+								? 'translateY(-.5em)'
+								: pauseButtonPosition === 'bottom-left' || pauseButtonPosition === 'bottom-right'
+									? 'translateY(.5em)'
+									: 'none',
 					}}
 				>
 					<span className="kb-countdown-pause-icon" aria-hidden="true">
