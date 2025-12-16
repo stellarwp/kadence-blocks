@@ -654,7 +654,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$grid_layout = $this->get_template_columns( $css, $columns, $mobile_layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'mobile', 'customGutter', 'gutterType' ), $column1_mobile, $column2_mobile, $column3_mobile, $column4_mobile, $column5_mobile, $column6_mobile );
 		$css->add_property( 'grid-template-columns', $grid_layout );
 		//mobile ordering
-		// todo - this is causing the problem.
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $mobile_layout, $collapse_layouts ) ) {
 			foreach ( range( 1, $columns ) as $item_count ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ' of *:not(style))' );
