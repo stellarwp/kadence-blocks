@@ -622,6 +622,78 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 
 		return $css->css_output();
 	}
+	
+	/**
+	 * Parse images from saved HTML content.
+	 *
+	 * This extracts image data from the block's saved HTML when the images attribute
+	 * is not available (due to source-based attribute parsing only working in the editor).
+	 *
+	 * @param string $content The saved HTML content of the block.
+	 * @return array Array of image data extracted from the HTML.
+	 */
+	public function parse_images_from_content( $content ) {
+		$images = array();
+
+		if ( empty( $content ) ) {
+			return $images;
+		}
+
+		$doc = new \DOMDocument();
+		// Suppress warnings for malformed HTML and load with UTF-8 encoding.
+		libxml_use_internal_errors( true );
+		$doc->loadHTML( '<?xml encoding="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		libxml_clear_errors();
+
+		$xpath = new \DOMXPath( $doc );
+
+		// Find all gallery items.
+		$gallery_items = $xpath->query( "//*[contains(@class, 'kadence-blocks-gallery-item')]" );
+
+		foreach ( $gallery_items as $item ) {
+			// Find the img element within this gallery item.
+			$img_nodes = $xpath->query( ".//img", $item );
+
+			if ( $img_nodes->length === 0 ) {
+				continue;
+			}
+
+			$img = $img_nodes->item( 0 );
+
+			// Extract image data from attributes.
+			$image_data = array(
+				'url'          => $img->getAttribute( 'data-full-image' ) ?: '',
+				'thumbUrl'     => $img->getAttribute( 'src' ) ?: '',
+				'lightUrl'     => $img->getAttribute( 'data-light-image' ) ?: '',
+				'link'         => $img->getAttribute( 'data-link' ) ?: '',
+				'customLink'   => $img->getAttribute( 'data-custom-link' ) ?: '',
+				'linkTarget'   => $img->getAttribute( 'data-custom-link-target' ) ?: '',
+				'width'        => $img->getAttribute( 'width' ) ?: '',
+				'height'       => $img->getAttribute( 'height' ) ?: '',
+				'alt'          => $img->getAttribute( 'alt' ) ?: '',
+				'id'           => $img->getAttribute( 'data-id' ) ?: '',
+				'linkSponsored' => $img->getAttribute( 'data-sponsored' ) ?: '',
+				'caption'      => '',
+			);
+
+			// Find caption element within this gallery item.
+			$caption_nodes = $xpath->query( ".//*[contains(@class, 'kadence-blocks-gallery-item__caption')]", $item );
+			if ( $caption_nodes->length > 0 ) {
+				$caption_node = $caption_nodes->item( 0 );
+				// Get inner HTML of caption.
+				$inner_html = '';
+				foreach ( $caption_node->childNodes as $child ) {
+					$inner_html .= $doc->saveHTML( $child );
+				}
+				$image_data['caption'] = trim( $inner_html );
+			}
+
+			$images[] = $image_data;
+		}
+
+		return $images;
+	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -637,27 +709,15 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( strpos( $content, 'data-columns-ss' ) === false && strpos( $content, 'kb-gallery-type-grid' ) !== false ) {
 				$content = str_replace( 'data-columns-xs="1"', 'data-columns-xs="1" data-columns-ss="1"', $content );
 			}
-			
-			// Convert images to imagesDynamic for older blocks that haven't been through the editor
-			if ( empty( $attributes['imagesDynamic'] ) && ! empty( $attributes['images'] ) && is_array( $attributes['images'] ) ) {
-				$new_image_data = array();
-				foreach ( $attributes['images'] as $image ) {
-					$new_image_data[] = array(
-						'url'          => ! empty( $image['url'] ) ? $image['url'] : '',
-						'thumbUrl'     => ! empty( $image['thumbUrl'] ) ? $image['thumbUrl'] : '',
-						'lightUrl'     => ! empty( $image['lightUrl'] ) ? $image['lightUrl'] : '',
-						'link'         => ! empty( $image['link'] ) ? $image['link'] : '',
-						'customLink'   => ! empty( $image['customLink'] ) ? $image['customLink'] : '',
-						'linkTarget'   => ! empty( $image['linkTarget'] ) ? $image['linkTarget'] : '',
-						'width'        => ! empty( $image['width'] ) ? $image['width'] : '',
-						'height'       => ! empty( $image['height'] ) ? $image['height'] : '',
-						'alt'          => ! empty( $image['alt'] ) ? $image['alt'] : '',
-						'id'           => ! empty( $image['id'] ) ? $image['id'] : '',
-						'caption'      => ! empty( $image['caption'] ) ? $image['caption'] : '',
-						'linkSponsored' => ! empty( $image['linkSponsored'] ) ? $image['linkSponsored'] : '',
-					);
+
+			// Parse images from content if imagesDynamic is not set.
+			// The 'images' attribute uses source-based parsing which only works in the editor,
+			// so we need to extract image data from the saved HTML content for frontend rendering.
+			if ( empty( $attributes['imagesDynamic'] ) ) {
+				$parsed_images = $this->parse_images_from_content( $content );
+				if ( ! empty( $parsed_images ) ) {
+					$attributes['imagesDynamic'] = $parsed_images;
 				}
-				$attributes['imagesDynamic'] = $new_image_data;
 			}
 		}
 
