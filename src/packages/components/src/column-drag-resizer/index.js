@@ -1,5 +1,5 @@
 import { Button, Tooltip, ResizableBox } from '@wordpress/components';
-import { isRTL } from '@kadence/helpers';
+import { isRTL, getPreviewSize } from '@kadence/helpers';
 import classnames from 'classnames';
 import { debounce, throttle } from 'lodash';
 
@@ -7,16 +7,16 @@ import { debounce, throttle } from 'lodash';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef, cloneElement } from '@wordpress/element';
 import { getPreviewGutterSize, getGutterTotal } from './utils';
-import { getPreviewSize } from '@kadence/helpers';
+/* global ResizeObserver */
 
 const ContainerDimensions = ({ children }) => {
 	const [dimensions, setDimensions] = useState(null);
 	const parentRef = useRef(null);
 
 	useEffect(() => {
-		if (!parentRef.current?.parentElement) return;
+		if (!parentRef.current?.parentElement) {return;}
 
 		const getDimensions = (element) => {
 			const { top, right, bottom, left, width, height } = element.getBoundingClientRect();
@@ -57,7 +57,7 @@ const ContainerDimensions = ({ children }) => {
 		return renderedChildren ? <div ref={parentRef}>{renderedChildren}</div> : null;
 	}
 
-	return React.cloneElement(children, {
+	return cloneElement(children, {
 		...dimensions,
 		ref: (node) => {
 			parentRef.current = node;
@@ -151,7 +151,7 @@ export default function ColumnDragResizer(props) {
 		}
 
 		//package new widths to be dispatched
-		var newColumnWidths = [...previewColumnWidths];
+		let newColumnWidths = [...previewColumnWidths];
 		newColumnWidths[currentColumn] = tempColumnW;
 		newColumnWidths[nextColumn] = tempNextColumnW;
 
@@ -182,8 +182,8 @@ export default function ColumnDragResizer(props) {
 		'kt-resizeable-column-inactive': !active,
 	});
 
-	var resizableBoxes = (width) => {
-		var resizableBoxArray = [];
+	const resizableBoxes = (width) => {
+		const resizableBoxArray = [];
 		for (let column = 0; column < columns - 1; column++) {
 			const columnWidth = previewColumnWidths?.[column];
 			const nextColumnWidth = previewColumnWidths?.[column + 1];
@@ -239,7 +239,7 @@ export default function ColumnDragResizer(props) {
 				>
 					<span className="editor-row-controls-container kadence-resize-extra-controls">
 						{columnsUnlocked && (
-							<Tooltip text={__('Switch to 5% step resizing', 'kadence-blocks')}>
+							<Tooltip text={__('Switch to 5 percent step resizing', 'kadence-blocks')}>
 								<Button className="kt-fluid-grid-btn" isSmall onClick={() => onColumnsUnlocked(false)}>
 									{
 										<svg

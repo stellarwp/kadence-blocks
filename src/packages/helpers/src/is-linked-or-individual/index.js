@@ -5,10 +5,10 @@ import { get } from 'lodash';
  */
 export default ( variable, key ) => {
 
-	let value0 = get( variable, [ key, 0 ] );
-	let value1 = get( variable, [ key, 1 ] );
-	let value2 = get( variable, [ key, 2 ] );
-	let value3 = get( variable, [ key, 3 ] );
+	const value0 = get( variable, [ key, 0 ] );
+	const value1 = get( variable, [ key, 1 ] );
+	const value2 = get( variable, [ key, 2 ] );
+	const value3 = get( variable, [ key, 3 ] );
 
 	if ( value0 === value1 && value0 === value2 && value0 === value3 ) {
 		return 'linked';

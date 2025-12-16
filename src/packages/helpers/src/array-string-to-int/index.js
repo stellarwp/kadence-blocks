@@ -4,8 +4,8 @@
  * @returns {array} with numbers as integers.
  */
 export default ( array ) => {
-	let result = array.map(function (x) {
-		let parsedValue = parseInt(x);
+	const result = array.map(function (x) {
+		const parsedValue = parseInt(x);
 		if( isNaN( parsedValue ) ) {
 			return x;
 		}

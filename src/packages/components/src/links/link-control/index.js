@@ -10,8 +10,8 @@ import { Fragment, Component } from '@wordpress/element';
 import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
 import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
- * Import Css
- */
+  * Import Css
+  */
   import './editor.scss';
  /**
   * Internal dependencies
@@ -19,9 +19,9 @@ import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
 import InputSearch from '../input-search';
 
  /**
- * Build the typography controls
- * @returns {object} typography settings.
- */
+  * Build the typography controls
+  * @returns {object} typography settings.
+  */
 class URLInputControl extends Component {
 	constructor() {
 		super( ...arguments );

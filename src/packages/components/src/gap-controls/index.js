@@ -9,12 +9,12 @@ import { useState, useEffect } from '@wordpress/element';
 import { map, isEqual } from 'lodash';
 
 /**
-* Import Css
-*/
+ * Import Css
+ */
 import './editor.scss';
 /**
-* Internal block libraries
-*/
+ * Internal block libraries
+ */
 import { __ } from '@wordpress/i18n';
 import {
    Flex,
@@ -89,9 +89,9 @@ function getOptionValue( optionsArray, value ) {
    return found.value;
 }
 /**
-* Build the Measure controls
-* @returns {object} Measure settings.
-*/
+ * Build the Measure controls
+ * @returns {object} Measure settings.
+ */
 export default function GapSizeControl( {
    label,
    onChange,

@@ -45,7 +45,7 @@ export default function HoverToggleControl({
 	const [isHover, setIsHover] = useState(initial === 'hover' ? true : false);
 	const [isActive, setIsActive] = useState(initial === 'active' ? true : false);
 
-	var tabs = [
+	const tabs = [
 		{
 			name: 'normal',
 			title: normalTab,
@@ -100,9 +100,9 @@ export default function HoverToggleControl({
 										{active}
 									</>
 								);
-							} else {
+							} 
 								return <>{normal}</>;
-							}
+							
 						}
 					}}
 				</TabPanel>

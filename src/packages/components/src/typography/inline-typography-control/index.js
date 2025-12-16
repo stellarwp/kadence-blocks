@@ -101,11 +101,11 @@ class InlineTypographyControls extends Component {
 					} );
 				} );
 				newOptions.push( {
-					label: label,
+					label,
 					value: name,
 					google: false,
-					weights: weights,
-					styles: styles,
+					weights,
+					styles,
 				} );
 			} );
 			const custom_fonts = [
@@ -140,8 +140,8 @@ class InlineTypographyControls extends Component {
 				typographySelectOptions = blockConfigObject[ 'kadence/typography' ].choiceArray;
 			}
 		}
-		this.setState( { typographyOptions: typographyOptions } );
-		this.setState( { typographySelectOptions: typographySelectOptions } );
+		this.setState( { typographyOptions } );
+		this.setState( { typographySelectOptions } );
 		this.setTypographyOptions( typographySelectOptions );
 	}
 	componentDidUpdate( prevProps ) {
@@ -209,7 +209,7 @@ class InlineTypographyControls extends Component {
 		}
 		this.setState( { typographyWeights: fontStandardWeights } );
 		this.setState( { typographyStyles: fontStandardStyles } );
-		this.setState( { typographySubsets: typographySubsets } );
+		this.setState( { typographySubsets } );
 		this.setState( { fontFamilyValue: activeFont } );
 	}
 	render() {
@@ -350,7 +350,7 @@ class InlineTypographyControls extends Component {
 					weight = 'inherit';
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { google: selected.google, family: selected.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
+					onFontArrayChange( { google: selected.google, family: selected.value, variant, weight, style: 'normal', subset } );
 				} else {
 					onFontChange( selected );
 					onFontVariant( variant );
@@ -385,7 +385,7 @@ class InlineTypographyControls extends Component {
 					variant = selected;
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { variant: variant, weight: ( 'regular' === selected ? '400' : selected ) } );
+					onFontArrayChange( { variant, weight: ( 'regular' === selected ? '400' : selected ) } );
 				} else {
 					onFontVariant( variant );
 					onFontWeight( ( 'regular' === selected ? '400' : selected ) );
@@ -410,7 +410,7 @@ class InlineTypographyControls extends Component {
 					variant = ( fontWeight ? fontWeight : 'regular' );
 				}
 				if ( onFontArrayChange ) {
-					onFontArrayChange( { variant: variant, style: selected } );
+					onFontArrayChange( { variant, style: selected } );
 				} else {
 					onFontVariant( variant );
 					onFontStyle( selected );
@@ -439,7 +439,7 @@ class InlineTypographyControls extends Component {
 		});
 
 		// @todo: Replace with icon from @kadence/icons once created
-		let icons = {};
+		const icons = {};
 		icons.fontfamily = <svg width="16px" height="16px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd"
 								clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414">
 			<path d="M39.939,7.124l0,-3.751l-11.251,0l0,3.751l3.75,0l0,33.752l-3.75,0l0,3.751l11.251,0l0,-3.751l-3.751,0l0,-33.752l3.751,0Zm-11.251,4.391c0,-0.195 -0.366,-0.429 -0.6,-0.596c-1.033,-0.771 -2.175,-1.273 -3.443,-1.506c-1.268,-0.234 -2.747,-0.35 -4.45,-0.35c-1.234,0 -2.501,0.195 -3.797,0.592c-1.297,0.396 -2.4,0.876 -3.311,1.446c-1.056,0.667 -1.911,1.429 -2.569,2.278c-0.658,0.852 -0.988,1.744 -0.988,2.676c0,0.893 0.238,1.697 0.714,2.417c0.476,0.72 1.221,1.078 2.233,1.078c1.135,0 2.022,-0.292 2.661,-0.883c0.639,-0.585 0.958,-1.234 0.958,-1.944c0,-0.668 -0.097,-1.397 -0.289,-2.189c-0.195,-0.789 -0.288,-1.387 -0.288,-1.792c0.324,-0.345 0.887,-0.674 1.687,-0.989c0.799,-0.315 1.667,-0.47 2.599,-0.47c1.358,0 2.406,0.277 3.147,0.834c0.74,0.559 1.312,1.212 1.717,1.962c0.364,0.669 0.269,2.186 0.269,2.186l0,4.472c0,0.527 -2.545,1.257 -5.333,2.189c-2.789,0.931 -4.484,1.569 -5.397,1.914c-0.728,0.285 -1.429,0.666 -2.261,1.14c-0.831,0.478 -1.463,1.018 -1.971,1.628c-0.649,0.729 -1.116,1.549 -1.44,2.46c-0.325,0.911 -0.475,1.944 -0.475,3.101c0,2.23 0.73,4.034 2.179,5.412c1.448,1.376 3.3,2.068 5.549,2.068c2.128,0 3.947,-0.834 5.456,-1.603c1.514,-0.774 2.928,-1.92 4.244,-3.795l0.184,0c0.264,1.875 0.851,2.946 1.792,3.686l1.223,0.064l0,-27.486Zm-3.259,22.286c-0.75,0.955 -1.673,1.78 -2.766,2.483c-1.095,0.699 -2.363,1.052 -3.801,1.052c-1.359,0 -2.477,-0.396 -3.358,-1.191c-0.883,-0.791 -1.322,-2.029 -1.322,-3.712c0,-1.3 0.292,-2.425 0.883,-3.368c0.585,-0.947 1.388,-1.763 2.398,-2.453c1.118,-0.733 2.322,-1.341 3.619,-1.83c1.296,-0.488 2.622,-0.934 4.347,-1.438l0,10.457Z"
@@ -559,7 +559,7 @@ class InlineTypographyControls extends Component {
 													value={ ( fontSize ? fontSize : '' ) }
 													onChange={ value => onFontSize( value ) }
 													tabletValue={ ( tabSize ? tabSize : '' ) }
-													onChangeTablet={ ( value ) => onTabletSize( value ) }
+														onChangeTablet={ ( value ) => onTabSize( value ) }
 													mobileValue={ ( mobileSize ? mobileSize : '' ) }
 													onChangeMobile={ ( value ) => onMobileSize( value ) }
 													min={ 0 }

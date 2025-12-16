@@ -127,8 +127,6 @@ export default class KadenceBlocksCSS {
 		lg: 'var(--global-kb-gap-lg, 4rem)',
 	};
 
-	constructor() {}
-
 	/**
 	 * Sets a selector to the object and changes the current selector to a new one
 	 *
@@ -158,7 +156,7 @@ export default class KadenceBlocksCSS {
 	add_selector_rules_to_output() {
 		if (!this.empty(this._css)) {
 			this.prepare_selector_output();
-			var selector_output = this._selector_output + '{' + this._css + '}';
+			const selector_output = this._selector_output + '{' + this._css + '}';
 
 			if (this.has_media_query()) {
 				this._media_query_output += selector_output;
@@ -209,14 +207,14 @@ export default class KadenceBlocksCSS {
 	prepare_selector_output() {
 		if (!this.empty(this._selector_states)) {
 			// Create a new variable to store all of the states.
-			var new_selector = '';
+			let new_selector = '';
 
 			for (let i = 0; i < this._selector_states.length; i++) {
 				const element = this._selector_states[i];
 				const atEnd = this._selector_states.length === i + 1;
 
 				const atEndComma = atEnd ? '' : ',';
-				new_selector += this._selector + state + atEndComma;
+					new_selector += this._selector + element + atEndComma;
 			}
 
 			this._selector_output = new_selector;
@@ -359,10 +357,10 @@ export default class KadenceBlocksCSS {
 			return false;
 		}
 
-		var size_number = value ? value : '0';
-		var size_unit = unit ? unit : 'em';
+		const size_number = value ? value : '0';
+		const size_unit = unit ? unit : 'em';
 
-		var size_string = 'calc(' + size_number + size_unit + ' / 2)';
+		const size_string = 'calc(' + size_number + size_unit + ' / 2)';
 
 		return size_string;
 	}
@@ -378,10 +376,10 @@ export default class KadenceBlocksCSS {
 			return false;
 		}
 
-		var size_number = !this.empty(value) ? value : '0';
-		var size_unit = !this.empty(unit) ? unit : 'em';
+		const size_number = !this.empty(value) ? value : '0';
+		const size_unit = !this.empty(unit) ? unit : 'em';
 
-		var size_string = size_number + size_unit;
+		const size_string = size_number + size_unit;
 
 		return size_string;
 	}
@@ -436,7 +434,7 @@ export default class KadenceBlocksCSS {
 	) {
 		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue, nohook);
 
-		var prop_args = {};
+		let prop_args = {};
 		switch (property) {
 			case 'border-width':
 				prop_args = {
@@ -472,10 +470,10 @@ export default class KadenceBlocksCSS {
 				break;
 		}
 		const defaults = {
-			first_prop: prop_args['first_prop'],
-			second_prop: prop_args['second_prop'],
-			third_prop: prop_args['third_prop'],
-			fourth_prop: prop_args['fourth_prop'],
+			first_prop: prop_args.first_prop,
+			second_prop: prop_args.second_prop,
+			third_prop: prop_args.third_prop,
+			fourth_prop: prop_args.fourth_prop,
 		};
 
 		args = { ...defaults, ...args };
@@ -483,32 +481,32 @@ export default class KadenceBlocksCSS {
 		if (previewValue && Array.isArray(previewValue)) {
 			const zeroCheck = !checkZero || previewValue[0] != '0' || previewValue[0] != 0;
 			if (this.isNumeric(previewValue[0]) && zeroCheck) {
-				this.add_property(args['first_prop'], previewValue[0] + unit);
+				this.add_property(args.first_prop, previewValue[0] + unit);
 			} else if ('position' === property && !this.empty(previewValue[0])) {
-				this.add_property(args['first_prop'], previewValue[0]);
+				this.add_property(args.first_prop, previewValue[0]);
 			} else if (!this.empty(previewValue[0]) && this.is_variable_value(previewValue[0])) {
-				this.add_property(args['first_prop'], this.get_variable_value(previewValue[0]));
+				this.add_property(args.first_prop, this.get_variable_value(previewValue[0]));
 			}
 			if (this.isNumeric(previewValue[1]) && zeroCheck) {
-				this.add_property(args['second_prop'], previewValue[1] + unit);
+				this.add_property(args.second_prop, previewValue[1] + unit);
 			} else if ('position' === property && !this.empty(previewValue[1])) {
-				this.add_property(args['second_prop'], previewValue[1]);
+				this.add_property(args.second_prop, previewValue[1]);
 			} else if (!this.empty(previewValue[1]) && this.is_variable_value(previewValue[1])) {
-				this.add_property(args['second_prop'], this.get_variable_value(previewValue[1]));
+				this.add_property(args.second_prop, this.get_variable_value(previewValue[1]));
 			}
 			if (this.isNumeric(previewValue[2]) && zeroCheck) {
-				this.add_property(args['third_prop'], previewValue[2] + unit);
+				this.add_property(args.third_prop, previewValue[2] + unit);
 			} else if ('position' === property && !this.empty(previewValue[2])) {
-				this.add_property(args['third_prop'], previewValue[2]);
+				this.add_property(args.third_prop, previewValue[2]);
 			} else if (!this.empty(previewValue[2]) && this.is_variable_value(previewValue[2])) {
-				this.add_property(args['third_prop'], this.get_variable_value(previewValue[2]));
+				this.add_property(args.third_prop, this.get_variable_value(previewValue[2]));
 			}
 			if (this.isNumeric(previewValue[3]) && zeroCheck) {
-				this.add_property(args['fourth_prop'], previewValue[3] + unit);
+				this.add_property(args.fourth_prop, previewValue[3] + unit);
 			} else if ('position' === property && !this.empty(previewValue[3])) {
-				this.add_property(args['fourth_prop'], previewValue[3]);
+				this.add_property(args.fourth_prop, previewValue[3]);
 			} else if (!this.empty(previewValue[3]) && this.is_variable_value(previewValue[3])) {
-				this.add_property(args['fourth_prop'], this.get_variable_value(previewValue[3]));
+				this.add_property(args.fourth_prop, this.get_variable_value(previewValue[3]));
 			}
 		}
 	}
@@ -773,34 +771,34 @@ export default class KadenceBlocksCSS {
 		if (!('inset' in value)) {
 			return false;
 		}
-		var opacity = null;
+		let opacity = null;
 		if ('opacity' in value) {
-			opacity = 'opacity' in value && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0;
+			opacity = 'opacity' in value && !this.empty(value?.opacity) ? value?.opacity : 0;
 		}
-		var shadowString = '';
-		if (value['inset']) {
+		let shadowString = '';
+		if (value.inset) {
 			shadowString =
 				'inset ' +
-				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
+				(!this.empty(value.hOffset) ? value.hOffset : '0') +
 				'px ' +
-				(!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
+				(!this.empty(value.vOffset) ? value.vOffset : '0') +
 				'px ' +
-				(!this.empty(value['blur']) ? value['blur'] : '0') +
+				(!this.empty(value.blur) ? value.blur : '0') +
 				'px ' +
-				(!this.empty(value['spread']) ? value['spread'] : '0') +
+				(!this.empty(value.spread) ? value.spread : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value.color) ? this.render_color(value.color, opacity) : 'rgba(0,0,0,0.0)');
 		} else {
 			shadowString =
-				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
+				(!this.empty(value.hOffset) ? value.hOffset : '0') +
 				'px ' +
-				(!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
+				(!this.empty(value.vOffset) ? value.vOffset : '0') +
 				'px ' +
-				(!this.empty(value['blur']) ? value['blur'] : '0') +
+				(!this.empty(value.blur) ? value.blur : '0') +
 				'px ' +
-				(!this.empty(value['spread']) ? value['spread'] : '0') +
+				(!this.empty(value.spread) ? value.spread : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value.color) ? this.render_color(value.color, opacity) : 'rgba(0,0,0,0.0)');
 		}
 
 		return shadowString;
@@ -816,7 +814,7 @@ export default class KadenceBlocksCSS {
 	 */
 	reset_css() {
 		this._css = '';
-		return;
+		
 	}
 
 	/**

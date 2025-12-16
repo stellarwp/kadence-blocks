@@ -199,7 +199,7 @@ class KadenceMediaPlaceholder extends Component {
 		} = this.props;
 
 		let instructions = labels.instructions;
-		let title = labels.title;
+		const title = labels.title;
 
 		if ( ! mediaUpload && ! onSelectURL ) {
 			instructions = __( 'To edit this block, you need permission to upload media.', 'kadence-blocks' );

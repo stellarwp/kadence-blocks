@@ -16,7 +16,7 @@ import {
 
 export default ( unit ) => {
 
-	let lowerUnit = unit.toLowerCase();
+	const lowerUnit = unit.toLowerCase();
 
 	if ( lowerUnit === '%' ) {
 		return percentIcon;

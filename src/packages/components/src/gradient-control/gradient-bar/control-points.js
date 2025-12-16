@@ -721,8 +721,7 @@ function InsertPoint( {
 																)
 															);
 														}
-													} else {
-														if ( ! alreadyInsertedPoint ) {
+													} else if ( ! alreadyInsertedPoint ) {
 															onChange(
 																addControlPoint(
 																	controlPoints,
@@ -740,7 +739,6 @@ function InsertPoint( {
 																)
 															);
 														}
-													}
 												} }
 												aria-label={ name ?
 													// translators: %s: The name of the color e.g: "vivid red".

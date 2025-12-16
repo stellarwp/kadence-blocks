@@ -7,7 +7,6 @@ build
 gulp
 bin
 includes/assets/js/
-src/packages/
 src/assets/js/scroll-magic.js
 src/assets/js/progressBar.js
 src/assets/js/countUp.js

@@ -14,7 +14,7 @@ import './editor.scss';
 import { isEqual } from 'lodash';
 import MeasurementSingleControl from '../single-input-control';
 import RangeControl from '../../range/range-control';
-import { undo } from '@wordpress/icons';
+import { undo, settings, link, linkOff } from '@wordpress/icons';
 
 /**
  * Internal block libraries
@@ -45,11 +45,9 @@ import {
 	topRightIcon,
 	bottomRightIcon,
 	bottomLeftIcon,
-	radiusLinkedIcon,
-	radiusIndividualIcon
+radiusLinkedIcon,
+radiusIndividualIcon
 } from '@kadence/icons';
-
-import { settings, link, linkOff } from '@wordpress/icons';
 
 /**
  * Build the Measure controls

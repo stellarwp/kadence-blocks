@@ -12,14 +12,13 @@ import { __ } from '@wordpress/i18n';
 import { map, isEqual } from 'lodash';
 import SingleBorderControl from '../single-border-control';
 import { capitalizeFirstLetter } from '@kadence/helpers';
-import { undo } from '@wordpress/icons';
+import { undo, settings, link, linkOff } from '@wordpress/icons';
 /**
  * WordPress dependencies
  */
 import { useInstanceId } from '@wordpress/compose';
 import { Dashicon, Button, ButtonGroup } from '@wordpress/components';
 import { outlineTopIcon, outlineRightIcon, outlineBottomIcon, outlineLeftIcon } from '@kadence/icons';
-import { settings, link, linkOff } from '@wordpress/icons';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -151,17 +150,17 @@ export default function ResponsiveSingleBorderControl({
 		: 'px';
 
 	const handleOnChangeDesktop = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(value));
+		const newVal = JSON.parse(JSON.stringify(value));
 		newVal[0][attr] = size;
 		onChange(newVal);
 	};
 	const handleOnChangeTablet = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(tabletValue));
+		const newVal = JSON.parse(JSON.stringify(tabletValue));
 		newVal[0][attr] = size;
 		onChangeTablet(newVal);
 	};
 	const handleOnChangeMobile = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(mobileValue));
+		const newVal = JSON.parse(JSON.stringify(mobileValue));
 		newVal[0][attr] = size;
 		onChangeMobile(newVal);
 	};

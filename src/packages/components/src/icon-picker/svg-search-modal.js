@@ -114,7 +114,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	};
 
 	const loadMoreIcons = async () => {
-		if (!hasMore) return;
+		if (!hasMore) {return;}
 
 		setError(null);
 		setIsLoadingMore(true);
@@ -173,21 +173,24 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 			)}
 			{!isLoading && allIcons.length > 0 && (
 				<>
-					<ul className="svg-search-modal__results">
-						{allIcons.map((icon, index) => (
-							<li
-								key={index}
-								onClick={() => handleItemClick(index)}
-								style={{
-									width: '84px',
-									height: '88px',
-									border: selectedIndex === index ? "2px solid var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba))" : "2px solid transparent",
-								}}
-							>
-								<img src={icon.url} alt={icon.title} />
-							</li>
-						))}
-					</ul>
+						<ul className="svg-search-modal__results">
+							{allIcons.map((icon, index) => (
+								<li key={index}>
+									<button
+										type="button"
+										onClick={() => handleItemClick(index)}
+										className="svg-search-modal__result-button"
+										style={{
+											width: '84px',
+											height: '88px',
+											border: selectedIndex === index ? "2px solid var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba))" : "2px solid transparent",
+										}}
+									>
+										<img src={icon.url} alt={icon.title} />
+									</button>
+								</li>
+							))}
+						</ul>
 					<div className="footer">
 						<Button
 							isSecondary={true}
@@ -220,7 +223,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 			)}
 			{!isLoading && !results.svgs && !error && (
 				<p className="svg-search-modal__start-search">
-					{__("Start Search...", "kadence-blocks")}
+					{__("Start Search…", "kadence-blocks")}
 				</p>
 			)}
 		</div>

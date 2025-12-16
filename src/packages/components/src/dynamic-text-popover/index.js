@@ -3,10 +3,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, withFilters, Popover, ExternalLink } from '@wordpress/components';
-import { createRef, Fragment, Component } from '@wordpress/element';
+import { createRef, Fragment, Component, useState } from '@wordpress/element';
 import { debounce } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
-import { useState } from '@wordpress/element';
 
 /**
  * External dependencies

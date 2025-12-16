@@ -3,7 +3,7 @@
  */
 
 export default function hashString(str) {
-	var hash = 5381,
+	let hash = 5381,
 		i    = str.length;
 
 	while(i) {

@@ -26,8 +26,8 @@ export default function KadencePostSelectTerms( {
 			setIsLoading( false );
 		} else {
 			const options = {
-				source: source,
-				page: page,
+				source,
+				page,
 				per_page: 50,
 			};
 			setIsLoading( true );

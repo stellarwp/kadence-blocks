@@ -12,14 +12,13 @@
  import { map, isEqual } from 'lodash';
  import FontSizeControl from './index';
  import { capitalizeFirstLetter, FONT_SIZES_MAP } from '@kadence/helpers';
- import { undo } from '@wordpress/icons';
+ import { undo, settings, link, linkOff } from '@wordpress/icons';
  import {
 	 Dashicon,
 	 Button,
 	 DropdownMenu,
 	 ButtonGroup,
  } from '@wordpress/components';
- import { settings, link, linkOff } from '@wordpress/icons';
  /**
   * Build the Measure controls
   * @returns {object} Measure settings.
@@ -81,15 +80,13 @@
 	 const onReset = () => {
 		if ( typeof reset === 'function' ){
 			reset();
-		} else {
-			if ( deviceType === 'Mobile' ) {
+		} else if ( deviceType === 'Mobile' ) {
 				onChangeMobile( defaultValue[2] );
 			} else if ( deviceType === 'Tablet' ) {
 				onChangeTablet( defaultValue[1] );
 			} else {
 				onChange( defaultValue[0] );
 			}
-		}
 	}
 	 const output = {};
 	 output.Mobile = (

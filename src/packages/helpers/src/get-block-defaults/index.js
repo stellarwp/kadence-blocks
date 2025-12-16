@@ -3,7 +3,7 @@
  * This is used by uniqueIdHelper to get defaults for new blocks.
  */
 export default function getBlockDefaults(blockSlug, attributes) {
-    let defaults = {};
+    const defaults = {};
 
     if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
         const oldBlockConfig = kadence_blocks_params.config && kadence_blocks_params.config[blockSlug] ? kadence_blocks_params.config[blockSlug] : undefined;
@@ -12,7 +12,7 @@ export default function getBlockDefaults(blockSlug, attributes) {
             // hack to make icon list block work with old attributes.
             if ( blockSlug === 'kadence/iconlist' ) {
                 if ( undefined !== blockConfigObject[blockSlug]?.items?.[0]?.icon && blockConfigObject[blockSlug]?.items?.[0]?.icon && ! blockConfigObject[blockSlug]?.icon ) {
-                    defaults['icon'] = blockConfigObject[blockSlug]?.items?.[0]?.icon
+                    defaults.icon = blockConfigObject[blockSlug]?.items?.[0]?.icon
                 }
             }
             Object.keys(blockConfigObject[blockSlug]).map((attribute) => {

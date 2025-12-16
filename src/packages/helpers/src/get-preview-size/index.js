@@ -7,9 +7,9 @@ export default (device, desktopSize, tabletSize, mobileSize, noHook = false) => 
 		return useMemo(() => {
 			return getPreviewSize(device, desktopSize, tabletSize, mobileSize);
 		}, [device, desktopSize, tabletSize, mobileSize]);
-	} else {
+	} 
 		return getPreviewSize(device, desktopSize, tabletSize, mobileSize);
-	}
+	
 };
 
 function getPreviewSize(device, desktopSize, tabletSize, mobileSize) {

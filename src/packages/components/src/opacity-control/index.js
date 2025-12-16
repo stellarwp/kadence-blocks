@@ -34,7 +34,7 @@ class OpacityControl extends Component {
 		};
 
 		// @todo: Replace with icon from @kadence/icons once created
-		let icons = {};
+		const icons = {};
 		icons.opacity = <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 							 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
 			<g fillRule='nonzero'>

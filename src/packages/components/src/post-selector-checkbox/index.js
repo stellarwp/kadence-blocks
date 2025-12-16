@@ -234,7 +234,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 											ref={searchRef}
 											value={searchQuery}
 											onChange={(value) => handleSearchChange(value)}
-											placeholder={__('Search posts...', 'kadence-blocks')}
+											placeholder={__('Search posts…', 'kadence-blocks')}
 										/>
 										<>{( isLoading ? <Spinner /> : renderPosts( searchPosts ) ) }</>
 									</div>

@@ -46,6 +46,7 @@ function WebfontLoader({ config, children, onStatus = noop }) {
 	const loadFonts = useCallback(() => {
 		if (mounted && config?.google?.families?.[0]) {
 			const fontFamily = config.google.families[0];
+			const { frames } = window;
 			
 			if (!ktgooglefonts.includes(fontFamily)) {
 				handleLoading();

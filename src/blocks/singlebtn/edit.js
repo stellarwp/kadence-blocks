@@ -15,6 +15,7 @@ import {
 	getBorderColor,
 	uniqueIdHelper,
 	getInQueryBlock,
+	compareVersions,
 } from '@kadence/helpers';
 
 import {
@@ -276,6 +277,10 @@ export default function KadenceButtonEdit(props) {
 			setIsEditingURL(false);
 		}
 	}, [isSelected]);
+
+	const themeVersion = window?.kadence_blocks_params?.tVersion ? window.kadence_blocks_params.tVersion : '1.0.0';
+	const supportsSecondaryButton = compareVersions(themeVersion, '1.4.0') >= 0;
+
 	function startEditing(event) {
 		event.preventDefault();
 		setIsEditingURL(true);
@@ -378,12 +383,18 @@ export default function KadenceButtonEdit(props) {
 			setAttributes({ widthType: type });
 		}
 	};
-	const buttonStyleOptions = [
-		{ value: 'fill', label: __('Fill', 'kadence-blocks') },
-		{ value: 'outline', label: __('Outline', 'kadence-blocks') },
-		{ value: 'inherit', label: __('Theme', 'kadence-blocks') },
-	];
-
+	const buttonStyleOptions = supportsSecondaryButton
+		? [
+				{ value: 'fill', label: __('Fill', 'kadence-blocks') },
+				{ value: 'outline', label: __('Outline', 'kadence-blocks') },
+				{ value: 'inherit', label: __('Theme Base', 'kadence-blocks') },
+				{ value: 'inherit-secondary', label: __('Theme Secondary', 'kadence-blocks') },
+			]
+		: [
+				{ value: 'fill', label: __('Fill', 'kadence-blocks') },
+				{ value: 'outline', label: __('Outline', 'kadence-blocks') },
+				{ value: 'inherit', label: __('Theme Base', 'kadence-blocks') },
+			];
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		undefined !== margin?.[0] ? margin[0] : '',
@@ -501,11 +512,14 @@ export default function KadenceButtonEdit(props) {
 	);
 	const nonTransAttrs = ['hideLink', 'link', 'target', 'download', 'text', 'sponsor'];
 	const hasIcon = undefined !== previewOnlyText && previewOnlyText ? false : icon;
+	const inheritClassSuffix = inheritStyles && 'inherit-secondary' === inheritStyles ? 'inherit' : inheritStyles;
 	const btnClassName = classnames({
 		'kt-button': true,
 		[`kt-button-${uniqueID}`]: true,
-		[`kb-btn-global-${inheritStyles}`]: inheritStyles,
-		'wp-block-button__link': inheritStyles && 'inherit' === inheritStyles,
+		[`kb-btn-global-${inheritClassSuffix}`]: inheritClassSuffix,
+		'wp-block-button__link':
+			inheritStyles && ('inherit' === inheritStyles || 'inherit-secondary' === inheritStyles),
+		'button-style-secondary': inheritStyles && 'inherit-secondary' === inheritStyles,
 		[`kb-btn-has-icon`]: hasIcon,
 		[`kt-btn-svg-show-${!iconHover ? 'always' : 'hover'}`]: icon,
 		[`kb-btn-only-icon`]: previewOnlyIcon,
@@ -731,6 +745,7 @@ export default function KadenceButtonEdit(props) {
 									)}
 									<KadenceRadioButtons
 										value={inheritStyles}
+										className={'button-style-inherit-control'}
 										options={buttonStyleOptions}
 										hideLabel={false}
 										label={__('Button Inherit Styles', 'kadence-blocks')}

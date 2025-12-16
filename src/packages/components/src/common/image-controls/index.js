@@ -30,9 +30,6 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
  * Basic Image Control.
  */
 class KadenceImageControl extends Component {
-	constructor() {
-		super( ...arguments );
-	}
 	render() {
 		const {
 			label,

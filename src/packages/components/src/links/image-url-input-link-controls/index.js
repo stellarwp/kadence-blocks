@@ -7,10 +7,11 @@
   * WordPress dependencies
   */
  import { __ } from '@wordpress/i18n';
- import { useRef, useState, useCallback } from '@wordpress/element';
+ import { useRef, useState, useCallback, Fragment } from '@wordpress/element';
  import {
 	 ToolbarButton,
 	 Button,
+	 SelectControl,
 	 NavigableMenu,
 	 MenuItem,
 	 ToggleControl,
@@ -20,7 +21,6 @@
  } from '@wordpress/components';
  import { URLPopover } from '@wordpress/block-editor';
  import { link as linkIcon, close } from '@wordpress/icons';
- import { Fragment } from '@wordpress/element';
 
 
  const LINK_DESTINATION_NONE = 'none';

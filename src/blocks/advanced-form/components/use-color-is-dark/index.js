@@ -12,8 +12,8 @@ function getReadableColor(value, colors) {
 	if (!colors) {
 		return value;
 	}
-	let currentColorString =
-		colors && colors?.[parseInt(value.slice(-1), 10) - 1] ? colors[parseInt(value.slice(-1), 10) - 1].color : value;
+	const paletteIndex = colors && value ? value.match(/\d+$/)?.[0] - 1 : null;
+	let currentColorString = paletteIndex !== null && colors[paletteIndex] ? colors[paletteIndex].color : value;
 	if (currentColorString && currentColorString.startsWith('var(')) {
 		currentColorString = window
 			.getComputedStyle(document.documentElement)

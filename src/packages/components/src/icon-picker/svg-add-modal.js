@@ -48,7 +48,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback, proVersion }
 			if ( fileContent !== '' ) {
 				apiFetch( {
 					path  : '/kb-custom-svg/v1/manage',
-					data  : { file: fileContent, title: title },
+					data  : { file: fileContent, title },
 					method: 'POST',
 				} ).then( ( response ) => {
 					if ( has( response, 'value' ) && has( response, 'label' ) ) {
@@ -73,7 +73,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback, proVersion }
 		<>
 			{isOpen && (
 				<Modal
-					title={__( 'Add a Custom Icon ', 'kadence-blocks' )}
+					title={__( 'Add a Custom Icon', 'kadence-blocks' )}
 					className={'upload-svg-modal'}
 					size={'medium'}
 					onRequestClose={() => setIsOpen( false )}

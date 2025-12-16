@@ -6,6 +6,7 @@ import DynamicTextPopover from '../dynamic-text-popover';
 import { __ } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
 import { map, isEqual } from 'lodash';
+import { undo } from '@wordpress/icons';
 /**
  * WordPress dependencies
  */

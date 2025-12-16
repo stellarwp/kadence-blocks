@@ -21,7 +21,7 @@
 	"require": {
 		"adbario/php-dot-notation": "^3.3",
 		"composer/installers": "^2.0",
-		"enshrined/svg-sanitize": "^0.21.0",
+		"enshrined/svg-sanitize": "^0.22.0",
 		"graham-campbell/result-type": "^1.1",
 		"lucatume/di52": "^4.0",
 		"monolog/monolog": "^2.10",

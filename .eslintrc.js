@@ -63,6 +63,8 @@ const eslintConfig = {
 		kadence_pro_video_pop: 'readable',
 		kadence_blocks_params_ico: 'readable',
 		kadence_blocks_params_fa: 'readable',
+		kadence_blocks_params_kbcustomicons: 'readable',
+		ktgooglefonts: 'readable',
 	},
 	rules: {
 		'@wordpress/i18n-text-domain': [
@@ -113,6 +115,7 @@ const eslintConfig = {
 		'jsx-a11y/alt-text': 'off',
 		'no-bitwise': 'off',
 		'jsdoc/require-returns-check': 'off',
+		'jsdoc/require-returns-type': 'off',
 		'@wordpress/no-global-active-element': 'off',
 	},
 	overrides: [

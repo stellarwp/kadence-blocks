@@ -244,11 +244,11 @@ const GradientPositionPicker = ( { gradientAST, hasGradient, onChange } ) => {
 						type: 'position',
 						value: {
 							x: {
-								type: type,
+								type,
 								value: positionX
 							},
 							y: {
-								type: type,
+								type,
 								value: positionY
 							}
 						}

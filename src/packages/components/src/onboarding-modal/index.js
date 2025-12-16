@@ -1,5 +1,5 @@
-import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
+import { useEffect, useState, createElement } from '@wordpress/element';
 import { Button, Modal, Dashicon } from '@wordpress/components';
 
 import './editor.scss';
@@ -74,7 +74,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 				</div>
 			</div>
 			<div key={currentStep}>
-				{React.createElement(steps[currentStep].component, {
+				{createElement(steps[currentStep].component, {
 					data: formData,
 					componentData: steps[currentStep].componentData,
 					onChange: (data) => handleChange(data),
@@ -98,7 +98,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 									return (
 										<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
 											<div className={'number'}>{step.visualNumber}</div>
-											{__(step.name, 'kadence-blocks')}
+											<span className={'label'}>{step.name}</span>
 										</div>
 									);
 								}
