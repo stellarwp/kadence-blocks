@@ -28,7 +28,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/telemetry": "^2.3",
-		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
+		"stellarwp/uplink": "dev-bugfix/multisite-token-logic@dev",
 		"symfony/filesystem": "^5.4",
 		"symfony/http-client": "^5.4",
 		"symfony/http-foundation": "^5.4",
