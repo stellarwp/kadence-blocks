@@ -14,45 +14,49 @@
 		 * @returns {string} - Text content from the visible area only
 		 */
 		extractVisibleText(element, maxHeight) {
-			if (!element) return '';
-			if (!maxHeight || maxHeight <= 0) return '';
-			
+			if (!element) {
+				return '';
+			}
+			if (!maxHeight || maxHeight <= 0) {
+				return '';
+			}
+
 			// Temporarily make element measurable if it has inert
 			const wasInert = element.hasAttribute('inert');
 			if (wasInert) {
 				element.removeAttribute('inert');
 			}
-			
+
 			// Get the bounding rect of the container
 			const containerRect = element.getBoundingClientRect();
 			const visibleBottom = containerRect.top + maxHeight;
-			
+
 			// Find all leaf text-containing elements (elements with direct text content)
 			const visibleTexts = [];
-			
+
 			// Walk through all elements and find ones with text that are within visible area
 			const walkElements = (el) => {
 				// Skip script, style, and hidden elements
 				if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'NOSCRIPT') {
 					return;
 				}
-				
+
 				const style = window.getComputedStyle(el);
 				if (style.display === 'none' || style.visibility === 'hidden') {
 					return;
 				}
-				
+
 				const rect = el.getBoundingClientRect();
-				
+
 				// Check if element is within visible area
 				if (rect.top >= visibleBottom) {
 					return; // Element starts below visible area, skip it and children
 				}
-				
+
 				// Check if this element has direct text content (not just from children)
 				let hasDirectText = false;
 				let directText = '';
-				
+
 				for (const child of el.childNodes) {
 					if (child.nodeType === Node.TEXT_NODE) {
 						const text = child.textContent.trim();
@@ -62,12 +66,12 @@
 						}
 					}
 				}
-				
+
 				if (hasDirectText && directText.trim()) {
 					// Calculate how much of this element is visible
 					const elementTop = rect.top - containerRect.top;
 					const elementBottom = rect.bottom - containerRect.top;
-					
+
 					// Only include if element starts within visible area
 					if (elementTop < maxHeight) {
 						// If element extends beyond visible area, we may need to truncate
@@ -78,44 +82,44 @@
 							const visibleWordCount = Math.max(1, Math.floor(words.length * visibleRatio));
 							directText = words.slice(0, visibleWordCount).join(' ');
 						}
-						
+
 						visibleTexts.push({
 							text: directText.trim(),
-							top: elementTop
+							top: elementTop,
 						});
 					}
 				}
-				
+
 				// Recurse into children
 				for (const child of el.children) {
 					walkElements(child);
 				}
 			};
-			
+
 			walkElements(element);
-			
+
 			// Restore inert if it was set
 			if (wasInert) {
 				element.setAttribute('inert', '');
 			}
-			
+
 			if (visibleTexts.length === 0) {
 				return '';
 			}
-			
+
 			// Sort by position and deduplicate
 			visibleTexts.sort((a, b) => a.top - b.top);
-			
+
 			// Build excerpt, avoiding duplicates
 			const seenTexts = new Set();
 			let excerpt = '';
-			
+
 			for (const item of visibleTexts) {
 				// Skip if we've seen this exact text (handles nested elements)
 				if (seenTexts.has(item.text)) {
 					continue;
 				}
-				
+
 				// Skip if this text is contained within already added text
 				let isContained = false;
 				for (const seen of seenTexts) {
@@ -124,13 +128,13 @@
 						break;
 					}
 				}
-				
+
 				if (!isContained) {
 					seenTexts.add(item.text);
 					excerpt += (excerpt ? ' ' : '') + item.text;
 				}
 			}
-			
+
 			return this.cleanupExcerpt(excerpt);
 		},
 		/**
@@ -139,27 +143,29 @@
 		 * @returns {string} - Cleaned up text
 		 */
 		cleanupExcerpt(text) {
-			if (!text) return '';
-			
+			if (!text) {
+				return '';
+			}
+
 			// Remove any HTML tags that might have slipped through
 			let cleaned = text.replace(/<[^>]*>/g, '');
-			
+
 			// Normalize whitespace
 			cleaned = cleaned.replace(/\s+/g, ' ').trim();
-			
+
 			// Try to end at a sentence boundary if we have enough content
 			if (cleaned.length > 80) {
 				const lastPeriod = cleaned.lastIndexOf('.');
 				const lastExclamation = cleaned.lastIndexOf('!');
 				const lastQuestion = cleaned.lastIndexOf('?');
 				const lastSentenceEnd = Math.max(lastPeriod, lastExclamation, lastQuestion);
-				
+
 				// Only truncate at sentence if it preserves a reasonable amount
 				if (lastSentenceEnd > 40) {
 					cleaned = cleaned.substring(0, lastSentenceEnd + 1);
 				}
 			}
-			
+
 			return cleaned;
 		},
 		/**
@@ -176,16 +182,26 @@
 			const activateButton = i18n.activateButton || 'Activate the';
 			const buttonToReveal = i18n.buttonToReveal || 'button to reveal the full content.';
 			const showMoreDefault = i18n.showMoreDefault || 'Show More';
-			
+
 			const showMorePrompt = buttonText || showMoreDefault;
-			
+
 			if (!excerpt || excerpt.trim() === '') {
 				// No text content - just tell user to click the button
 				return contentCollapsed + ' ' + activateButton + ' ' + showMorePrompt + ' ' + buttonToReveal;
 			}
-			
+
 			// Add excerpt with pause (using period) and prompt
-			return excerpt + ' ... ' + contentContinues + ' ' + activateButton + ' ' + showMorePrompt + ' ' + buttonToReveal;
+			return (
+				excerpt +
+				' ... ' +
+				contentContinues +
+				' ' +
+				activateButton +
+				' ' +
+				showMorePrompt +
+				' ' +
+				buttonToReveal
+			);
 		},
 		/**
 		 * Get the current max-height for the content based on viewport
@@ -194,22 +210,26 @@
 		 */
 		getCurrentMaxHeight(rootElement) {
 			const contentElement = rootElement.querySelector('.wp-block-kadence-column.kb-show-more-content');
-			if (!contentElement) return 250;
-			
+			if (!contentElement) {
+				return 250;
+			}
+
 			const computedStyle = window.getComputedStyle(contentElement);
 			const maxHeight = computedStyle.maxHeight;
-			
+
 			if (maxHeight === 'none') {
 				return null; // Content is expanded
 			}
-			
+
 			// Convert to pixels
 			const match = maxHeight.match(/([\d.]+)(px|em|rem)/);
-			if (!match) return 250;
-			
+			if (!match) {
+				return 250;
+			}
+
 			const value = parseFloat(match[1]);
 			const unit = match[2];
-			
+
 			if (unit === 'px') {
 				return value;
 			} else if (unit === 'em' || unit === 'rem') {
@@ -217,7 +237,7 @@
 				const fontSize = parseFloat(window.getComputedStyle(contentElement).fontSize);
 				return value * fontSize;
 			}
-			
+
 			return 250;
 		},
 		/**
@@ -226,8 +246,10 @@
 		 * @returns {Array<HTMLElement>} - Array of focusable elements
 		 */
 		getFocusableElements(container) {
-			if (!container) return [];
-			
+			if (!container) {
+				return [];
+			}
+
 			const focusableSelectors = [
 				'a[href]',
 				'button:not([disabled])',
@@ -252,23 +274,23 @@
 				'[role="tab"]:not([tabindex="-1"])',
 				'[role="textbox"]:not([tabindex="-1"])',
 			].join(', ');
-			
+
 			const elements = Array.from(container.querySelectorAll(focusableSelectors));
-			
+
 			// Filter out elements that are not actually focusable
-			return elements.filter(el => {
+			return elements.filter((el) => {
 				// Check if element is visible
 				const style = window.getComputedStyle(el);
 				if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
 					return false;
 				}
-				
+
 				// Check if element has a tabindex that makes it focusable
 				const tabIndex = el.getAttribute('tabindex');
 				if (tabIndex === '-1') {
 					return false;
 				}
-				
+
 				return true;
 			});
 		},
@@ -277,16 +299,18 @@
 		 * @param {HTMLElement} container - The container element
 		 */
 		disableTabIndex(container) {
-			if (!container) return;
-			
+			if (!container) {
+				return;
+			}
+
 			const focusableElements = this.getFocusableElements(container);
-			
-			focusableElements.forEach(el => {
+
+			focusableElements.forEach((el) => {
 				// If this element is currently focused, blur it
 				if (document.activeElement === el) {
 					el.blur();
 				}
-				
+
 				// Store original tabindex if it exists
 				const originalTabIndex = el.getAttribute('tabindex');
 				if (originalTabIndex !== null) {
@@ -295,7 +319,7 @@
 					// Mark that this element didn't have a tabindex originally
 					el.setAttribute('data-had-no-tabindex', 'true');
 				}
-				
+
 				// Set tabindex to -1 to remove from tab order
 				el.setAttribute('tabindex', '-1');
 			});
@@ -305,15 +329,17 @@
 		 * @param {HTMLElement} container - The container element
 		 */
 		restoreTabIndex(container) {
-			if (!container) return;
-			
+			if (!container) {
+				return;
+			}
+
 			// Find all elements that have our data attributes (elements we modified)
 			const modifiedElements = container.querySelectorAll('[data-original-tabindex], [data-had-no-tabindex]');
-			
-			modifiedElements.forEach(el => {
+
+			modifiedElements.forEach((el) => {
 				const originalTabIndex = el.getAttribute('data-original-tabindex');
 				const hadNoTabIndex = el.getAttribute('data-had-no-tabindex');
-				
+
 				if (originalTabIndex !== null) {
 					// Restore original tabindex
 					el.setAttribute('tabindex', originalTabIndex);
@@ -339,9 +365,11 @@
 			const showLessButton = rootElement.querySelector(
 				'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(2)'
 			);
-			
-			if (!contentElement) return;
-			
+
+			if (!contentElement) {
+				return;
+			}
+
 			// Get the button text for the screen reader prompt
 			let buttonText = 'Show More';
 			if (showMoreButton) {
@@ -350,14 +378,14 @@
 					buttonText = btnTextEl.textContent.trim();
 				}
 			}
-			
+
 			if (isExpanded) {
 				// Content is expanded - show full content to screen readers, hide excerpt
 				contentElement.removeAttribute('aria-hidden');
 				contentElement.removeAttribute('inert');
 				// Restore tabindex on all focusable elements
 				this.restoreTabIndex(contentElement);
-				
+
 				if (excerptElement) {
 					excerptElement.textContent = '';
 					excerptElement.setAttribute('aria-hidden', 'true');
@@ -375,7 +403,7 @@
 				contentElement.setAttribute('inert', '');
 				// Remove focusable elements from tab order (fallback for browsers without inert support)
 				this.disableTabIndex(contentElement);
-				
+
 				// Generate and update excerpt with screen reader prompt
 				if (excerptElement) {
 					const maxHeight = this.getCurrentMaxHeight(rootElement);
@@ -384,7 +412,7 @@
 						contentElement.removeAttribute('inert');
 						const excerptText = this.extractVisibleText(contentElement, maxHeight);
 						contentElement.setAttribute('inert', '');
-						
+
 						// Build full screen reader text with excerpt and prompt
 						const srText = this.buildScreenReaderText(excerptText, buttonText);
 						excerptElement.textContent = srText;
@@ -395,7 +423,7 @@
 						excerptElement.setAttribute('aria-hidden', 'true');
 					}
 				}
-				
+
 				if (showMoreButton) {
 					showMoreButton.setAttribute('aria-expanded', 'false');
 				}
@@ -414,11 +442,13 @@
 			if (rootElement.classList.contains('kb-smc-open')) {
 				return true;
 			}
-			
+
 			// Check CSS media queries for default expanded states
 			const contentElement = rootElement.querySelector('.wp-block-kadence-column.kb-show-more-content');
-			if (!contentElement) return false;
-			
+			if (!contentElement) {
+				return false;
+			}
+
 			const computedStyle = window.getComputedStyle(contentElement);
 			return computedStyle.maxHeight === 'none';
 		},
@@ -430,14 +460,14 @@
 		 */
 		ensureExcerptElement(rootElement) {
 			let excerptElement = rootElement.querySelector('.kb-show-more-sr-excerpt');
-			
+
 			if (!excerptElement) {
 				// Fallback: Create the excerpt element if PHP didn't add it (edge case)
 				excerptElement = document.createElement('div');
 				excerptElement.className = 'kb-show-more-sr-excerpt';
 				excerptElement.setAttribute('aria-live', 'polite');
 				excerptElement.setAttribute('aria-atomic', 'true');
-				
+
 				// Insert it as the first child of the root element
 				if (rootElement.firstChild) {
 					rootElement.insertBefore(excerptElement, rootElement.firstChild);
@@ -445,27 +475,29 @@
 					rootElement.appendChild(excerptElement);
 				}
 			}
-			
+
 			return excerptElement;
 		},
 		initShowMore() {
 			// Query for both new and old block structures for backwards compatibility
-			window.kadenceShowMore.cache = document.querySelectorAll('.wp-block-kadence-show-more, .kb-block-show-more-container');
+			window.kadenceShowMore.cache = document.querySelectorAll(
+				'.wp-block-kadence-show-more, .kb-block-show-more-container'
+			);
 			if (!window.kadenceShowMore.cache.length) {
 				return;
 			}
 			for (let n = 0; n < window.kadenceShowMore.cache.length; n++) {
 				// Initialize listener (backward support)
 				const rootElement = window.kadenceShowMore.cache[n];
-				
+
 				// Add wp-block-kadence-show-more class if missing (for backwards compatibility)
 				if (!rootElement.classList.contains('wp-block-kadence-show-more')) {
 					rootElement.classList.add('wp-block-kadence-show-more');
 				}
-				
+
 				// Ensure excerpt element exists for backwards compatibility
 				window.kadenceShowMore.ensureExcerptElement(rootElement);
-				
+
 				const contentElement = rootElement.querySelector('.wp-block-kadence-column.kb-show-more-content');
 				const showMoreButton = rootElement.querySelector(
 					'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(1)'
@@ -473,7 +505,7 @@
 				const showLessButton = rootElement.querySelector(
 					'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(2)'
 				);
-				
+
 				// Set up button IDs for aria-controls
 				const uniqueId = 'kb-show-more-' + n;
 				if (contentElement && !contentElement.id) {
@@ -487,13 +519,13 @@
 					showLessButton.id = uniqueId + '-show-less';
 					showLessButton.setAttribute('aria-controls', uniqueId + '-content');
 				}
-				
+
 				// Initialize accessibility state after a brief delay to ensure CSS is applied
 				const initAccessibility = () => {
 					const isExpanded = window.kadenceShowMore.isDefaultExpanded(rootElement);
 					window.kadenceShowMore.updateAccessibility(rootElement, isExpanded);
 				};
-				
+
 				// Use requestAnimationFrame to ensure CSS is applied
 				if (window.requestAnimationFrame) {
 					requestAnimationFrame(() => {
@@ -502,7 +534,7 @@
 				} else {
 					setTimeout(initAccessibility, 100);
 				}
-				
+
 				// Handle window resize to update excerpt for responsive heights
 				let resizeTimeout;
 				const handleResize = () => {
@@ -513,7 +545,7 @@
 					}, 250);
 				};
 				window.addEventListener('resize', handleResize);
-				
+
 				if (
 					rootElement.querySelector(
 						'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .kt-btn-wrap:first-child a'
