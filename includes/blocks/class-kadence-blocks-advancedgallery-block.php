@@ -155,17 +155,6 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property('margin','-' . ( $desk_gutter / 2 ) . $gutter_unit );
 			$css->set_selector('.kb-gallery-type-tiles.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
 			$css->add_property('padding', ( $desk_gutter / 2 ) . $gutter_unit );
-		} else if ( 'carousel' === $gallery_type ) {
-			// Carousel.
-			if ( $updated_version ) {
-				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
-				$css->add_property( 'margin-left', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
-				$css->add_property( 'margin-right', '-' . ( $desk_gutter / 2 ) . $gutter_unit );
-
-				$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
-				$css->add_property( 'padding-left', ( $desk_gutter / 2 ) . $gutter_unit );
-				$css->add_property( 'padding-right', ( $desk_gutter / 2 ) . $gutter_unit );
-			}
 		} else if ( 'thumbslider' === $gallery_type ) {
 			if ( $updated_version ) {
 				// Thumbnail.
@@ -194,17 +183,6 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property('margin','-' . ( $tablet_gutter / 2 ) . $gutter_unit );
 				$css->set_selector('.kb-gallery-type-tiles.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
 				$css->add_property('padding', ( $tablet_gutter / 2 ) . $gutter_unit );
-			} else if ( 'carousel' === $gallery_type ) {
-				// Carousel.
-				if ( $updated_version ) {
-					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
-					$css->add_property( 'margin-left', '-' . ( $tablet_gutter / 2 ) . $gutter_unit );
-					$css->add_property( 'margin-right', '-' . ( $tablet_gutter / 2 ) . $gutter_unit );
-
-					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
-					$css->add_property( 'padding-left', ( $tablet_gutter / 2 ) . $gutter_unit );
-					$css->add_property( 'padding-right', ( $tablet_gutter / 2 ) . $gutter_unit );
-				}
 			} else if ( 'thumbslider' === $gallery_type ) {
 				if ( $updated_version ) {
 					// Thumbnail.
@@ -237,17 +215,6 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property('margin','-' . ( $mobile_gutter / 2 ) . $gutter_unit );
 				$css->set_selector('.kb-gallery-type-tiles.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item' );
 				$css->add_property('padding', ( $mobile_gutter / 2 ) . $gutter_unit );
-			} else if ( 'carousel' === $gallery_type ) {
-				// Carousel.
-				if ( $updated_version ) {
-					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized )' );
-					$css->add_property( 'margin-left', '-' . ( $mobile_gutter / 2 ) . $gutter_unit );
-					$css->add_property( 'margin-right', '-' . ( $mobile_gutter / 2 ) . $gutter_unit );
-
-					$css->set_selector( '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init:not( .splide-initialized ) .kb-slide-item' );
-					$css->add_property( 'padding-left', ( $mobile_gutter / 2 ) . $gutter_unit );
-					$css->add_property( 'padding-right', ( $mobile_gutter / 2 ) . $gutter_unit );
-				}
 			} else if ( 'thumbslider' === $gallery_type ) {
 				if ( $updated_version ) {
 					// Thumbnail.
