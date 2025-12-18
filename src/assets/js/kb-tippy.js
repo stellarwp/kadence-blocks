@@ -12,8 +12,8 @@
 	typeof exports === 'object' && typeof module !== 'undefined'
 		? (module.exports = factory(require('@popperjs/core')))
 		: typeof define === 'function' && define.amd
-		? define(['@popperjs/core'], factory)
-		: ((global = global || self), (global.tippy = factory(global.Popper)));
+			? define(['@popperjs/core'], factory)
+			: ((global = global || self), (global.tippy = factory(global.Popper)));
 })(this, function (core) {
 	'use strict';
 
@@ -237,8 +237,8 @@
 				target.getRootNode == null
 					? void 0
 					: (_target$getRootNode = target.getRootNode()) == null
-					? void 0
-					: _target$getRootNode.host;
+						? void 0
+						: _target$getRootNode.host;
 		}
 
 		return false;
@@ -467,8 +467,8 @@
 					passedProps[name] !== undefined
 						? passedProps[name]
 						: (_name = defaultProps[name]) != null
-						? _name
-						: defaultValue;
+							? _name
+							: defaultValue;
 			}
 
 			return acc;
@@ -483,7 +483,7 @@
 							plugins: plugins,
 						})
 					)
-			  )
+				)
 			: defaultKeys;
 		var props = propKeys.reduce(function (acc, key) {
 			var valueAsString = (reference.getAttribute('data-tooltip-' + key) || '').trim();
@@ -1215,7 +1215,7 @@
 				? {
 						getBoundingClientRect: getReferenceClientRect,
 						contextElement: getReferenceClientRect.contextElement || getCurrentTarget(),
-				  }
+					}
 				: reference;
 			var tippyModifier = {
 				name: '$$tippy',
@@ -1926,7 +1926,7 @@
 									return (_references$index = references[index]) == null
 										? void 0
 										: _references$index.getBoundingClientRect();
-							  },
+								},
 				})
 			);
 		}
@@ -2689,23 +2689,23 @@
 	const hideOnEsc = {
 		name: 'hideOnEsc',
 		defaultValue: true,
-		fn({hide}) {
-		  function onKeyDown(event) {
-			if (event.keyCode === 27) {
-			  hide();
+		fn({ hide }) {
+			function onKeyDown(event) {
+				if (event.keyCode === 27) {
+					hide();
+				}
 			}
-		  }
-	  
-		  return {
-			onShow() {
-			  document.addEventListener('keydown', onKeyDown);
-			},
-			onHide() {
-			  document.removeEventListener('keydown', onKeyDown);
-			},
-		  };
+
+			return {
+				onShow() {
+					document.addEventListener('keydown', onKeyDown);
+				},
+				onHide() {
+					document.removeEventListener('keydown', onKeyDown);
+				},
+			};
 		},
-	  };
+	};
 
 	function areRectsDifferent(rectA, rectB) {
 		if (rectA && rectB) {
@@ -2794,6 +2794,9 @@
 					},
 					content: (reference) => {
 						const content = reference.getAttribute('data-kb-tooltip-content');
+						if (reference.classList.contains('wp-block-kadence-hotspot')) {
+							return content;
+						}
 						return window.kadenceTippy.strip_tags(content);
 					},
 					onCreate: (instance) => {

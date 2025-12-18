@@ -27,6 +27,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 	shadowBase = '',
 	shadowLabel = __('Box Shadow', 'kadence-blocks'),
 	includeActive = true,
+	includeHover = true,
 	setAttributes,
 	setMetaAttribute,
 	attributes,
@@ -102,17 +103,19 @@ export default function ResponsiveButtonStyleControlsWithStates({
 
 	const normalComponents = (
 		<>
-			<ResponsivePopColorControl
-				label={colorLabel}
-				value={colorValue}
-				tabletValue={colorValueTablet}
-				mobileValue={colorValueMobile}
-				default={''}
-				onChange={(value) => saveFunction(colorBase, value)}
-				onChangeTablet={(value) => saveFunction(colorBase + 'Tablet', value)}
-				onChangeMobile={(value) => saveFunction(colorBase + 'Mobile', value)}
-				key={'normal'}
-			/>
+			{colorBase && (
+				<ResponsivePopColorControl
+					label={colorLabel}
+					value={colorValue}
+					tabletValue={colorValueTablet}
+					mobileValue={colorValueMobile}
+					default={''}
+					onChange={(value) => saveFunction(colorBase, value)}
+					onChangeTablet={(value) => saveFunction(colorBase + 'Tablet', value)}
+					onChangeMobile={(value) => saveFunction(colorBase + 'Mobile', value)}
+					key={'normal'}
+				/>
+			)}
 
 			{backgroundBase && backgroundTypeBase && backgroundGradientBase && (
 				<>
@@ -273,7 +276,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 		</>
 	);
 
-	const hoverComponents = (
+	const hoverComponents = includeHover ? (
 		<>
 			<ResponsivePopColorControl
 				label={colorLabel}
@@ -453,7 +456,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 				/>
 			)}
 		</>
-	);
+	) : null;
 
 	const activeComponents = includeActive ? (
 		<>
@@ -639,13 +642,16 @@ export default function ResponsiveButtonStyleControlsWithStates({
 
 	return (
 		<>
-			<HoverToggleControl
-				normal={normalComponents}
-				hover={hoverComponents}
-				active={activeComponents}
-				setActivePreview={setActivePreview}
-				activePreview={activePreview}
-			/>
+			{(includeHover || includeActive) && (
+				<HoverToggleControl
+					normal={normalComponents}
+					hover={hoverComponents}
+					active={activeComponents}
+					setActivePreview={setActivePreview}
+					activePreview={activePreview}
+				/>
+			)}
+			{!includeHover && !includeActive && <>{normalComponents}</>}
 		</>
 	);
 }

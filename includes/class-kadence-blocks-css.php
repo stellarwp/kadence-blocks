@@ -2110,7 +2110,7 @@ class Kadence_Blocks_CSS {
 	 * @param array $attributes an array of attributes.
 	 * @return void
 	 */
-	public function render_button_styles_with_states( $args, $attributes ) {
+	public function render_button_styles_with_states( $args, $attributes, $states = array( '', 'Hover', 'Active' ) ) {
 		$default_args = array(
 			'colorBase' => '',
 			'backgroundBase' => '',
@@ -2138,7 +2138,6 @@ class Kadence_Blocks_CSS {
 		$border_radius_unit_base = $args['borderRadiusUnitBase'];
 		$shadow_base = $args['shadowBase'];
 
-		$states = array( '', 'Hover', 'Active' );
 		$sizes = array( '', 'Tablet', 'Mobile' );
 
 		$property_prefix = $args['renderAsVars'] ? $args['varBase'] : '';
