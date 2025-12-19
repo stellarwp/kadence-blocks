@@ -34,17 +34,20 @@ export function Edit(props) {
 	const { index, parentTableClientId, parentColumns, columnPosition, siblingRows, hasInnerBlocks, previewDevice } =
 		useSelect(
 			(select) => {
-				const blockParents = select('core/block-editor').getBlockParents(clientId);
-				const tableClientId = blockParents[0];
-				const rowId = blockParents[1];
-				const rowBlocks = select('core/block-editor').getBlockOrder(rowId);
+				const tableClientId =
+					select('core/block-editor').getBlockParentsByBlockName(clientId, 'kadence/table')[0] || null;
+				const rowId =
+					select('core/block-editor').getBlockParentsByBlockName(clientId, 'kadence/table-row')[0] || null;
+				const rowBlocks = rowId ? select('core/block-editor').getBlockOrder(rowId) : [];
 				return {
 					index: select('core/block-editor').getBlockIndex(clientId),
 					parentTableClientId: tableClientId,
-					parentColumns: select('core/block-editor').getBlockAttributes(tableClientId).columns,
-					currentRowClientId: rowId,
+					parentColumns: tableClientId
+						? select('core/block-editor').getBlockAttributes(tableClientId).columns
+						: undefined,
+					currentRowClientId: rowId || undefined,
 					columnPosition: rowBlocks.indexOf(clientId),
-					siblingRows: select('core/block-editor').getBlocks(tableClientId),
+					siblingRows: tableClientId ? select('core/block-editor').getBlocks(tableClientId) : [],
 					hasInnerBlocks: select('core/block-editor').getBlocks(clientId).length > 0,
 					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				};
@@ -110,7 +113,9 @@ export function Edit(props) {
 	};
 
 	const addColumn = (position) => {
-		const newColumnCount = parentColumns + 1;
+		const currentColumns =
+			typeof parentColumns === 'number' ? parentColumns : context?.['kadence/table/columns'] || 0;
+		const newColumnCount = currentColumns + 1;
 
 		let insertIndex;
 		switch (position) {
