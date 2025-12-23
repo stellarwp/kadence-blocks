@@ -379,6 +379,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Ensure default value if inlineImageWidth desktop value is not set or empty.
 		if ( empty( $attributes['inlineImageWidth'] ) || ! is_array( $attributes['inlineImageWidth'] ) || ! isset( $attributes['inlineImageWidth'][0] ) || ! is_numeric( $attributes['inlineImageWidth'][0] ) ) {
 			$css->add_property( 'width', '150px' );
+			$css->add_property( 'display', 'inline-block' );
 		}
 		// Render responsive range will handle desktop, tablet, and mobile if values are set.
 		$css->render_responsive_range( $attributes, 'inlineImageWidth', 'width' );
