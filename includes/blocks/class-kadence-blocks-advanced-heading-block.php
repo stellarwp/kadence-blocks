@@ -638,11 +638,30 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			return;
 		}
 		wp_register_style( 'kadence-blocks-' . $this->block_name, false );
-		$heading_css = '.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;} .is-layout-constrained > .kb-advanced-heading-link {display: block;}';
+		$heading_css = <<<'CSS'
+			.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}
+			.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}
+			.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;}
+			.is-layout-constrained > .kb-advanced-heading-link {display: block;}
+		CSS;
+
+		// Style to prevent padding conflict with WordPress core style for headings and paragraphs.
+		// Reference: https://stellarwp.atlassian.net/browse/KAD-5283
+		$heading_css .= '.wp-block-kadence-advancedheading.has-background{padding: 0;}';
+
 		// Short term fix for an issue with heading wrapping.
 		if ( class_exists( '\Kadence\Theme' ) ) {
-			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';
+			$heading_css .= <<<'CSS'
+				.single-content .kadence-advanced-heading-wrapper h1,
+				.single-content .kadence-advanced-heading-wrapper h2,
+				.single-content .kadence-advanced-heading-wrapper h3,
+				.single-content .kadence-advanced-heading-wrapper h4,
+				.single-content .kadence-advanced-heading-wrapper h5,
+				.single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}
+				.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}
+			CSS;
 		}
+
 		// Add screen reader text styles
 		$heading_css .= '.kb-screen-reader-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);}';
 		wp_add_inline_style( 'kadence-blocks-' . $this->block_name, $heading_css );

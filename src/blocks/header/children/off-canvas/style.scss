@@ -44,7 +44,7 @@ $admin-bar-height-mobile: 46px;
 			@include open-right-styles();
 		}
 	}
-	&.open-tablet-right {
+	&.open-mobile-right {
 		@media (max-width: vars.$phone-minus-query) {
 			@include open-right-styles();
 		}
