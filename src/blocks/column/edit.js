@@ -989,9 +989,10 @@ function SectionEdit(props) {
 	const tabHasRowGap = ![undefined, null, ''].includes(rowGap?.[1]);
 	const mobileHasRowGap = ![undefined, null, ''].includes(rowGap?.[2]);
 
+	const defaultRowGapVariable = applyFilters('kadence.block.column.defaultRowGapVariable', 'none');
 	const previewRowGapVariable = getPreviewSize(
 		previewDevice,
-		rowGapVariable && '' !== rowGapVariable[0] ? rowGapVariable[0] : 'none',
+		rowGapVariable && '' !== rowGapVariable[0] ? rowGapVariable[0] : defaultRowGapVariable,
 		rowGapVariable && '' !== rowGapVariable[1] ? rowGapVariable[1] : '',
 		rowGapVariable && '' !== rowGapVariable[2] ? rowGapVariable[2] : ''
 	);
