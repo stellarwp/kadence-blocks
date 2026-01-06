@@ -1123,7 +1123,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					)
 				));
 			}
-			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
+			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . ( $link_to === 'media' && 'none' !== $lightbox ? ' role="button" aria-haspopup="dialog"' : '' ) . '>';
 		}
 		$image_radius_style = '';
 		if ( ! empty( $padding_bottom ) ) {
@@ -1212,7 +1212,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			'kb_glightbox',
 			array(
 				'moreText' => __( 'See more', 'kadence-blocks' ),
-				'lightBoxAriaLabel' => __('Display this image in a lightbox', 'kadence-blocks'),
+				'lightBoxAriaLabel' => __('Display lightbox image:', 'kadence-blocks'),
 			)
 		);
 		wp_localize_script(
