@@ -418,11 +418,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				// Caption background color
 				if( empty( $attributes['captionStyle'] ) || ( ! empty( $attributes['captionStyle'] ) && ( 'bottom' === $attributes['captionStyle'] || 'bottom-hover' === $attributes['captionStyle'] ) ) ) {
 					$css->set_selector('.kb-gallery-caption-style-bottom.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-bottom-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-					$css->add_property('background', 'linear-gradient(0deg, '. $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.5' ) .' 0, rgba(0, 0, 0, 0) 100%)');
+					$css->add_property('background', 'linear-gradient(0deg, '. $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.8' ) .' 0, rgba(0, 0, 0, 0) 100%)');
 
 				} else {
 					$css->set_selector('.kb-gallery-caption-style-cover-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-below.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-					$css->add_property('background', $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.5' ) );
+					$css->add_property('background', $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.8' ) );
 				}
 			}
 		}
