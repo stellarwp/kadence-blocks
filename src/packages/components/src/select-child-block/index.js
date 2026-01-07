@@ -11,7 +11,7 @@ export default function SelectChildBlock({ clientId, label = null, childSlug = n
 
 		const findChildRecursively = (blockId, targetSlug) => {
 			const block = getBlock(blockId);
-			if (!block) return null;
+			if (!block) {return null;}
 
 			for (const child of block.innerBlocks) {
 				if (child.name === targetSlug) {

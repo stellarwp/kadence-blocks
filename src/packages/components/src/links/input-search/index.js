@@ -12,7 +12,7 @@ import { Component,Fragment, createRef } from '@wordpress/element';
 import { safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
 import { applyFilters } from '@wordpress/hooks';
 import { UP, DOWN, ENTER, TAB } from '@wordpress/keycodes';
-import { BaseControl, Button, Spinner, ToggleControl, ExternalLink } from '@wordpress/components';
+import { BaseControl, Button, Spinner, ToggleControl, ExternalLink, Icon } from '@wordpress/components';
 import { withInstanceId, withSafeTimeout, compose } from '@wordpress/compose';
 import DynamicLinkControl from '../dynamic-link-control';
 import TextHighlight from '../text-highlight';

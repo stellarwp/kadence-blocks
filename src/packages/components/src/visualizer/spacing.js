@@ -71,7 +71,7 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 				bottom: offset && spacingBottom ? `calc(${ spacingBottom } * -1)` : 0,
 				//left: offset && spacingLeft ? `calc(${ spacingLeft } * -1)` : 0,
 			};
-		} else {
+		} 
 			return {
 				borderTopWidth: outputSpacing?.top
 					? outputSpacing?.top
@@ -92,7 +92,7 @@ export default function SpacingVisualizer( { style, type = 'inside', spacing, fo
 					? style.marginRight
 					: 0,
 			};
-		}
+		
 	}, [ spacing ] );
 
 	const [ isActive, setIsActive ] = useState( false );
