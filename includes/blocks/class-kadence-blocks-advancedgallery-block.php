@@ -1105,7 +1105,12 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		} else {
 			$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . esc_attr( $image['width'] ) . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . esc_attr( $image['height'] ) . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="' . esc_attr( implode( ' ', $image_classes ) ) . '"/></div>';
 		}
-		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item">';
+		// Add tabindex for accessibility when no link and caption is shown on hover (exclude carousel types)
+		$tabindex_attr = '';
+		if ( empty( $href ) && ( 'bottom-hover' === $caption_style || 'cover-hover' === $caption_style ) && 'carousel' !== $type && 'slider' !== $type && 'thumbslider' !== $type && 'fluidcarousel' !== $type ) {
+			$tabindex_attr = ' tabindex="0"';
+		}
+		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item"' . $tabindex_attr . '>';
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$figure_style = '';
 		if ( ! empty( $padding_bottom ) && 'below' === $caption_style ) {
