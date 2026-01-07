@@ -11,6 +11,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 function Save({ attributes }) {
 	const {
@@ -54,9 +55,8 @@ function Save({ attributes }) {
 				<button
 					type="button"
 					className={`kb-countdown-pause-button kb-countdown-pause-button-${pauseButtonPosition || 'top-right'}`}
-					aria-label="Pause countdown timer"
-					aria-pressed="false"
-					title="Pause countdown"
+					aria-label={__('Pause countdown timer', 'kadence-blocks')}
+					title={__('Pause countdown', 'kadence-blocks')}
 				>
 					<span className="kb-countdown-pause-icon" aria-hidden="true">
 						⏸

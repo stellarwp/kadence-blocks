@@ -344,7 +344,7 @@
 					}
 				} else if ('hide' === window.kadenceCountdown.timers[id].action) {
 					// Announce to screen readers before hiding
-					window.kadenceCountdown.announceToScreenReader('Countdown timer has ended.');
+					window.kadenceCountdown.announceToScreenReader(wp.i18n.__('Countdown timer has ended.', 'kadence-blocks'));
 					parent.style.display = 'none';
 				} else if ('message' === window.kadenceCountdown.timers[id].action) {
 					if (parent.querySelector('.kb-countdown-inner-first')) {
@@ -369,11 +369,11 @@
 						);
 						if (completeText.trim()) {
 							window.kadenceCountdown.announceToScreenReader(
-								'Countdown timer has ended. ' + completeText
+								wp.i18n.__('Countdown timer has ended.', 'kadence-blocks') + ' ' + completeText
 							);
 						} else {
 							window.kadenceCountdown.announceToScreenReader(
-								'Countdown timer has ended. New content is now available.'
+								wp.i18n.__('Countdown timer has ended. New content is now available.', 'kadence-blocks')
 							);
 						}
 					}
@@ -691,8 +691,8 @@
 				// Resume
 				window.kadenceCountdown.cache[id].paused = false;
 				button.setAttribute('aria-pressed', 'false');
-				button.setAttribute('aria-label', 'Pause countdown timer');
-				button.setAttribute('title', 'Pause countdown');
+				button.setAttribute('aria-label', wp.i18n.__('Pause countdown timer', 'kadence-blocks'));
+				button.setAttribute('title', wp.i18n.__('Pause countdown', 'kadence-blocks'));
 				const icon = button.querySelector('.kb-countdown-pause-icon');
 				if (icon) {
 					icon.textContent = '⏸';
@@ -720,8 +720,8 @@
 				// Pause
 				window.kadenceCountdown.cache[id].paused = true;
 				button.setAttribute('aria-pressed', 'true');
-				button.setAttribute('aria-label', 'Resume countdown timer');
-				button.setAttribute('title', 'Resume countdown');
+				button.setAttribute('aria-label', wp.i18n.__('Resume countdown timer', 'kadence-blocks'));
+				button.setAttribute('title', wp.i18n.__('Resume countdown', 'kadence-blocks'));
 				const icon = button.querySelector('.kb-countdown-pause-icon');
 				if (icon) {
 					icon.textContent = '▶';
@@ -822,8 +822,8 @@
 				if (window.kadenceCountdown.prefersReducedMotion) {
 					window.kadenceCountdown.cache[id].paused = true;
 					newButton.setAttribute('aria-pressed', 'true');
-					newButton.setAttribute('aria-label', 'Resume countdown timer');
-					newButton.setAttribute('title', 'Resume countdown');
+					newButton.setAttribute('aria-label', wp.i18n.__('Resume countdown timer', 'kadence-blocks'));
+					newButton.setAttribute('title', wp.i18n.__('Resume countdown', 'kadence-blocks'));
 					const icon = newButton.querySelector('.kb-countdown-pause-icon');
 					if (icon) {
 						icon.textContent = '▶';
