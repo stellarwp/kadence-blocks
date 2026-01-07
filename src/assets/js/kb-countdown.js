@@ -344,7 +344,9 @@
 					}
 				} else if ('hide' === window.kadenceCountdown.timers[id].action) {
 					// Announce to screen readers before hiding
-					window.kadenceCountdown.announceToScreenReader(wp.i18n.__('Countdown timer has ended.', 'kadence-blocks'));
+					window.kadenceCountdown.announceToScreenReader(
+						wp.i18n.__('Countdown timer has ended.', 'kadence-blocks')
+					);
 					parent.style.display = 'none';
 				} else if ('message' === window.kadenceCountdown.timers[id].action) {
 					if (parent.querySelector('.kb-countdown-inner-first')) {
