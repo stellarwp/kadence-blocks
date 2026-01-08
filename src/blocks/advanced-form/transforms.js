@@ -747,7 +747,8 @@ function applyFormIdToBlocks(rootBlock, formId) {
 	const assignIds = (block, isRoot = false) => {
 		if (block?.attributes) {
 			if (isRoot) {
-				block.attributes.id = numericId;
+				// standard built advanced form blocks do no get their id attached here, so leaving this off
+				// block.attributes.id = numericId;
 			} else {
 				block.attributes.formID = stringId;
 			}
