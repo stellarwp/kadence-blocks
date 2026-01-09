@@ -55,6 +55,8 @@ import {
 	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
+import { getMeasureStyles } from '../../common/measure-styles';
+
 import './editor.scss';
 import metadata from './block.json';
 import { getPreviewGutterSize } from './utils';
@@ -3623,38 +3625,32 @@ function SectionEdit(props) {
 				}
 				style={{
 					minHeight: undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined,
-					paddingLeft:
-						undefined !== previewPaddingLeft
-							? getSpacingOptionOutput(previewPaddingLeft, previewPaddingType)
-							: undefined,
-					paddingRight:
-						undefined !== previewPaddingRight
-							? getSpacingOptionOutput(previewPaddingRight, previewPaddingType)
-							: undefined,
-					paddingTop:
-						undefined !== previewPaddingTop
-							? getSpacingOptionOutput(previewPaddingTop, previewPaddingType)
-							: undefined,
-					paddingBottom:
-						undefined !== previewPaddingBottom
-							? getSpacingOptionOutput(previewPaddingBottom, previewPaddingType)
-							: undefined,
-					marginLeft:
-						undefined !== previewMarginLeft
-							? getSpacingOptionOutput(previewMarginLeft, previewMarginType)
-							: undefined,
-					marginRight:
-						undefined !== previewMarginRight
-							? getSpacingOptionOutput(previewMarginRight, previewMarginType)
-							: undefined,
-					marginTop:
-						undefined !== previewMarginTop
-							? getSpacingOptionOutput(previewMarginTop, previewMarginType)
-							: undefined,
-					marginBottom:
-						undefined !== previewMarginBottom
-							? getSpacingOptionOutput(previewMarginBottom, previewMarginType)
-							: undefined,
+					...getMeasureStyles({
+						property: 'padding',
+						blockName: 'kadence/column',
+						selector: uniqueID,
+						values: {
+							top: previewPaddingTop,
+							right: previewPaddingRight,
+							bottom: previewPaddingBottom,
+							left: previewPaddingLeft,
+						},
+						unit: previewPaddingType,
+						attributes,
+					}),
+					...getMeasureStyles({
+						property: 'margin',
+						blockName: 'kadence/column',
+						selector: uniqueID,
+						values: {
+							top: previewMarginTop,
+							right: previewMarginRight,
+							bottom: previewMarginBottom,
+							left: previewMarginLeft,
+						},
+						unit: previewMarginType,
+						attributes,
+					}),
 					textAlign: previewAlign ? previewAlign : undefined,
 					backgroundColor: backgroundString,
 					backgroundImage: previewBackground ? previewBackground : undefined,
@@ -3678,18 +3674,19 @@ function SectionEdit(props) {
 					borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
 					borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
 					borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-					borderTopLeftRadius: previewRadiusTop
-						? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderTopRightRadius: previewRadiusRight
-						? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomRightRadius: previewRadiusBottom
-						? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomLeftRadius: previewRadiusLeft
-						? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
+					...getMeasureStyles({
+						property: 'border-radius',
+						blockName: 'kadence/column',
+						selector: uniqueID,
+						values: {
+							topLeft: previewRadiusTop,
+							topRight: previewRadiusRight,
+							bottomRight: previewRadiusBottom,
+							bottomLeft: previewRadiusLeft,
+						},
+						unit: borderRadiusUnit,
+						attributes,
+					}),
 					boxShadow:
 						undefined !== displayShadow &&
 						displayShadow &&
