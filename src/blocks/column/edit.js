@@ -2716,6 +2716,7 @@ function SectionEdit(props) {
 
 						{activeTab === 'style' && (
 							<>
+								{showSettings('background', 'kadence/column') && (
 								<KadencePanelBody
 									title={__('Background', 'kadence-blocks')}
 									initialOpen={true}
@@ -2972,7 +2973,7 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
-
+								)}
 								<>
 									{applyFilters(
 										'kadence.styleControlsBackdropFilter',
@@ -2980,7 +2981,7 @@ function SectionEdit(props) {
 										props
 									)}
 								</>
-
+								{showSettings('backgroundOverlay', 'kadence/column') && (
 								<KadencePanelBody
 									title={__('Background Overlay', 'kadence-blocks')}
 									initialOpen={false}
@@ -3278,6 +3279,8 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
+								)}
+								{showSettings('border', 'kadence/column') && (
 								<KadencePanelBody
 									title={__('Border Styles', 'kadence-blocks')}
 									initialOpen={false}
@@ -3548,6 +3551,7 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
+								)}
 								<div className="kt-sidebar-settings-spacer"></div>
 								{showSettings('textColor', 'kadence/column') && (
 									<KadencePanelBody

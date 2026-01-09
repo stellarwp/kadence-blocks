@@ -502,6 +502,19 @@ function KadenceConfig() {
 												key: 'paddingMargin',
 												label: __('Enable Padding/Margin Control', 'kadence-blocks'),
 											},
+
+											{
+												key: 'background',
+												label: __('Enable Background Settings', 'kadence-blocks'),
+											},
+											{
+												key: 'backgroundOverlay',
+												label: __('Enable Background Overlay Settings', 'kadence-blocks'),
+											},
+											{
+												key: 'border',
+												label: __('Enable Border Settings', 'kadence-blocks')
+											},
 										]}
 									/>
 								</div>
