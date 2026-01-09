@@ -40,6 +40,10 @@ export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_
 	}
 	const found = spacingMap.find( ( option ) => option.value === value );
 	if ( ! found ) {
+		// Unknown spacing key - output as CSS variable reference.
+		if ( typeof value === 'string' && isNaN( value ) ) {
+			return `var(--global-kb-spacing-${value})`;
+		}
 		return value + unit;
 	}
 	return found.output;

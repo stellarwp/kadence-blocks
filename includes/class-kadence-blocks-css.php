@@ -2229,6 +2229,9 @@ class Kadence_Blocks_CSS {
 			$resolved = $value;
 		} elseif ( ! empty( $value ) && $this->is_variable_value( $value ) ) {
 			$resolved = $this->get_variable_value( $value );
+		} elseif ( ! empty( $value ) && is_string( $value ) && ! is_numeric( $value ) ) {
+			// Unknown spacing key - output as CSS variable reference.
+			$resolved = 'var(--global-kb-spacing-' . sanitize_key( $value ) . ')';
 		}
 
 		if ( null === $resolved ) {
