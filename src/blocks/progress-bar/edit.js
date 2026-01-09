@@ -566,9 +566,24 @@ export function Edit(props) {
 	const maskPositionArray = iterations > 1 ? range(0, 100.1, 100 / (iterations - 1)) : [0];
 	const maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, '');
 	const maskAspectRatioString = iterations + '/1';
-	const maskHeightString = progressWidth ? progressWidth * 11.5 + 'px' : '80px';
-	const maskHeightStringTablet = progressWidthTablet ? progressWidthTablet * 11.5 + 'px' : '';
-	const maskHeightStringMobile = progressWidthMobile ? progressWidthMobile * 11.5 + 'px' : '';
+	const maskHeight = progressWidth ? progressWidth * 11.5 : 80;
+	const maskHeightTablet = progressWidthTablet ? progressWidthTablet * 11.5 : 0;
+	const maskHeightMobile = progressWidthMobile ? progressWidthMobile * 11.5 : 0;
+	const maskHeightString = maskHeight ? maskHeight + 'px' : '80px';
+	const maskHeightStringTablet = maskHeightTablet ? maskHeightTablet + 'px' : '';
+	const maskHeightStringMobile = maskHeightMobile ? maskHeightMobile + 'px' : '';
+	const maskWidth = maskHeight * iterations;
+	const maskWidthTablet = maskHeightTablet ? maskHeightTablet * iterations : 0;
+	const maskWidthMobile = maskHeightMobile ? maskHeightMobile * iterations : 0;
+	const maskWidthString = maskWidth + 'px';
+	const maskWidthStringTablet = maskWidthTablet ? maskWidthTablet + 'px' : '';
+	const maskWidthStringMobile = maskWidthMobile ? maskWidthMobile + 'px' : '';
+	const previewMaskWidthString = getPreviewSize(
+		previewDevice,
+		maskWidthString,
+		maskWidthStringTablet,
+		maskWidthStringMobile
+	);
 	const previewMaskHeightString = getPreviewSize(
 		previewDevice,
 		maskHeightString,
@@ -594,6 +609,8 @@ export function Edit(props) {
 					aspect-ratio: ${maskAspectRatioString};
 
 					height: ${previewMaskHeightString};
+					width: ${previewMaskWidthString};
+					max-width: 100%;
 				}
 				`;
 	}
