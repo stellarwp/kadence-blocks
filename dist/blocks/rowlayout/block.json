@@ -746,9 +746,9 @@
     "padding": {
       "type": "array",
       "default": [
-        "sm",
         "",
-        "sm",
+        "",
+        "",
         ""
       ]
     },
