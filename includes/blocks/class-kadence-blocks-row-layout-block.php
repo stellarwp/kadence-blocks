@@ -440,12 +440,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktop' );
 			}
 		}
-		// Padding, check for old attributes and use if present.
-		if ( empty( $attributes['kbVersion'] ) ) {
-			// Add old defaults back in.
-			$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, 25px )' );
-			$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, 25px )' );
-		}
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
 			if ( $css->is_number( $attributes['topPadding'] ) || ( ! empty( $attributes['paddingUnit'] ) && 'px' !== $attributes['paddingUnit'] ) ) {
 				$css->add_property( 'padding-top', ( $css->is_number( $attributes['topPadding'] ) ? $attributes['topPadding'] : '25' ) . ( ! empty( $attributes['paddingUnit'] ) ? $attributes['paddingUnit'] : 'px' ) );
@@ -490,14 +484,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$args = array(
 				'unit_key' => 'paddingUnit',
 			);
-			// If no padding is set, use the default.
-			if ( ! isset( $attributes['padding'] ) ) {
-				// $attributes['padding'] = [
-				// 	'sm', '', 'sm', ''
-				// ];
-				$css->add_property( 'padding-top', 'var( --global-kb-row-default-top, var(--global-kb-spacing-sm, 1.5rem) )' );
-				$css->add_property( 'padding-bottom', 'var( --global-kb-row-default-bottom, var(--global-kb-spacing-sm, 1.5rem) )' );
-			}
 			$css->render_measure_output( $attributes, 'padding', 'padding', $args );
 		}
 		// Min Height.
@@ -1282,15 +1268,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'display', 'none !important' );
 		}
 		$css->set_media_state( 'desktop' );
-		
+
 		// Background Slider Pause Button Styles.
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
 			$arrow_style = ! empty( $attributes['backgroundSliderSettings'][0]['arrowStyle'] ) ? $attributes['backgroundSliderSettings'][0]['arrowStyle'] : 'none';
 			$show_pause_button = isset( $attributes['backgroundSliderSettings'][0]['showPauseButton'] ) ? $attributes['backgroundSliderSettings'][0]['showPauseButton'] : false;
-			
+
 			if ( $show_pause_button ) {
 				$css->set_selector( $base_selector . ' .kb-blocks-bg-slider .kb-gallery-pause-button' );
-				
+
 				// Set styles based on arrow style.
 				switch ( $arrow_style ) {
 					case 'blackonlight':
@@ -1317,7 +1303,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
-		
+
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
 			$css->add_css_string( str_replace( 'selector', $base_selector, $attributes['kadenceBlockCSS'] ) );
 		}
