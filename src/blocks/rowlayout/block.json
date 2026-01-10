@@ -693,7 +693,7 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["sm", "", "sm", ""]
+			"default": ["", "", "", ""]
 		},
 		"mobilePadding": {
 			"type": "array",

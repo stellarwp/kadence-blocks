@@ -851,7 +851,7 @@ const KadenceRowLayout = (props) => {
 														? [padding[0], '', padding[2], '']
 														: undefined !== padding && undefined !== padding[0]
 															? padding
-															: ['sm', '', 'sm', '']
+															: ['', '', '', '']
 												}
 												tabletValue={tabletPadding}
 												mobileValue={
@@ -865,7 +865,7 @@ const KadenceRowLayout = (props) => {
 												min={0}
 												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-												deskDefault={['sm', '', 'sm', '']}
+												deskDefault={['', '', '', '']}
 												unit={paddingUnit}
 												options={SPACING_SIZES_MAP}
 												units={['px', 'em', 'rem', '%', 'vh', 'vw']}
