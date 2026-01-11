@@ -71,6 +71,7 @@ import renderSVGDivider from './render-svg-divider';
 import GridVisualizer from './gridvisualizer';
 import { getGutterTotal, getPreviewGutterSize } from './utils';
 import { SPACING_SIZES_MAP, COLUMN_WIDTH_MAP } from './constants';
+import { getMeasureStyles } from '../../common/measure-styles';
 import { runRowLayoutMigrations } from './migrations';
 /**
  * Import Css
@@ -621,14 +622,17 @@ const KadenceRowLayout = (props) => {
 								: '0px') +
 							')'
 						: undefined,
-				paddingLeft:
-					'' !== previewPaddingLeft
-						? getSpacingOptionOutput(previewPaddingLeft, paddingUnit ? paddingUnit : 'px')
-						: undefined,
-				paddingRight:
-					'' !== previewPaddingRight
-						? getSpacingOptionOutput(previewPaddingRight, paddingUnit ? paddingUnit : 'px')
-						: undefined,
+				...getMeasureStyles({
+					property: 'padding',
+					blockName: 'kadence/rowlayout',
+					selector: uniqueID,
+					values: {
+						left: previewPaddingLeft,
+						right: previewPaddingRight,
+					},
+					unit: paddingUnit || 'px',
+					attributes,
+				}),
 			},
 		},
 		{

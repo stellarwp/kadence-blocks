@@ -3,6 +3,7 @@ import { ResizableBox } from '@wordpress/components';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { PADDING_RESIZE_MAP } from './constants';
 import { getSpacingOptionName, getSpacingOptionSize, getSpacingNameFromSize, getSpacingValueFromSize } from './utils';
 import { getPreviewSize, showSettings } from '@kadence/helpers';
@@ -60,7 +61,7 @@ export default function PaddingResizer({
 			: ''
 	);
 
-	const previewPadding = getPreviewSize(
+	const rawPreviewPadding = getPreviewSize(
 		previewDevice,
 		undefined !== padding && undefined !== padding[index] ? getSpacingOptionSize(padding[index]) : '',
 		undefined !== tabletPadding && undefined !== tabletPadding[index] && '' !== tabletPadding[index]
@@ -70,6 +71,19 @@ export default function PaddingResizer({
 			? getSpacingOptionSize(mobilePadding[index])
 			: ''
 	);
+	// Check if padding is explicitly set for current device
+	const hasPaddingSet =
+		(previewDevice === 'Desktop' && padding?.[index] !== undefined && padding?.[index] !== '') ||
+		(previewDevice === 'Tablet' && tabletPadding?.[index] !== undefined && tabletPadding?.[index] !== '') ||
+		(previewDevice === 'Mobile' && mobilePadding?.[index] !== undefined && mobilePadding?.[index] !== '');
+
+	const previewPadding = hasPaddingSet
+		? rawPreviewPadding
+		: applyFilters('kadence.rowlayout.defaultPadding', 0, {
+				edge,
+				attributes,
+				previewDevice,
+			});
 	let paddingType = 'variable';
 	if (padding?.[index] !== undefined && Number(padding?.[index]) === parseFloat(padding?.[index])) {
 		paddingType = 'normal';

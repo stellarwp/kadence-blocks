@@ -742,11 +742,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'tabletOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(1 of *:not(style))' );
-				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
+				$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(2 of *:not(style))' );
-				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
+				$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 			}
 			$css->set_media_state( 'desktop' );
 		}
