@@ -26,12 +26,15 @@
 				const listElement = elementList[i];
 				let thisSlider;
 				let slideCount;
+				let initElement; // for adding is-initialized class later
 
 				if (isAdvanced) {
 					// Advanced sliders: listElement is a child, find the parent slider
 					if (!listElement || listElement.classList.contains('is-initialized')) {
 						continue;
 					}
+
+					initElement = listElement;
 
 					// Check if listElement itself is the slider (for thumbnail sliders)
 					// Thumbnail sliders have both kt-blocks-carousel-init and splide classes
@@ -70,6 +73,7 @@
 						continue;
 					}
 
+					initElement = thisSlider;
 					slideCount = this.createSplideElements(thisSlider);
 				}
 
@@ -133,6 +137,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 
 					var resizeTimer;
 					const resizeHandler = function (e) {
@@ -177,6 +185,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else if (sliderType && sliderType === 'thumbnail') {
 					const navSliderId = parsedData.sliderNav;
 					const navSlider = document.querySelector('#' + navSliderId);
@@ -232,6 +244,10 @@
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else if (sliderType && sliderType === 'rewind') {
 					splideOptions.type = 'slide';
 					splideOptions.rewind = true;
@@ -267,6 +283,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else {
 					const splideSlider = new Splide(thisSlider, splideOptions);
 					if (!inHiddenMenu) {
@@ -300,6 +320,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				}
 			}
 		},
