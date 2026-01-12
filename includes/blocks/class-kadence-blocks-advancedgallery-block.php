@@ -361,11 +361,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				// Caption background color
 				if( empty( $attributes['captionStyle'] ) || ( ! empty( $attributes['captionStyle'] ) && ( 'bottom' === $attributes['captionStyle'] || 'bottom-hover' === $attributes['captionStyle'] ) ) ) {
 					$css->set_selector('.kb-gallery-caption-style-bottom.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-bottom-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-					$css->add_property('background', 'linear-gradient(0deg, '. $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.5' ) .' 0, rgba(0, 0, 0, 0) 100%)');
+					$css->add_property('background', 'linear-gradient(0deg, '. $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.8' ) .' 0, rgba(0, 0, 0, 0) 100%)');
 
 				} else {
 					$css->set_selector('.kb-gallery-caption-style-cover-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-below.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-					$css->add_property('background', $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.5' ) );
+					$css->add_property('background', $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.8' ) );
 				}
 			}
 		}
@@ -1130,7 +1130,12 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		} else {
 			$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . esc_attr( $image['width'] ) . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . esc_attr( $image['height'] ) . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" data-id="' . esc_attr( $image_id ) . '" class="' . esc_attr( implode( ' ', $image_classes ) ) . '"/></div>';
 		}
-		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item">';
+		// Add tabindex for accessibility when no link and caption is shown on hover (exclude carousel types)
+		$tabindex_attr = '';
+		if ( empty( $href ) && ( 'bottom-hover' === $caption_style || 'cover-hover' === $caption_style ) && 'carousel' !== $type && 'slider' !== $type && 'thumbslider' !== $type && 'fluidcarousel' !== $type ) {
+			$tabindex_attr = ' tabindex="0"';
+		}
+		$output = '<' . $item_tag . ' class="kadence-blocks-gallery-item"' . $tabindex_attr . '>';
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$figure_style = '';
 		if ( ! empty( $padding_bottom ) && 'below' === $caption_style ) {
@@ -1148,7 +1153,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					)
 				));
 			}
-			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
+			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . ( $link_to === 'media' && 'none' !== $lightbox ? ' role="button" aria-haspopup="dialog"' : '' ) . '>';
 		}
 		$image_radius_style = '';
 		if ( ! empty( $padding_bottom ) ) {
@@ -1237,7 +1242,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			'kb_glightbox',
 			array(
 				'moreText' => __( 'See more', 'kadence-blocks' ),
-				'lightBoxAriaLabel' => __('Display this image in a lightbox', 'kadence-blocks'),
+				'lightBoxAriaLabel' => __('Display lightbox image:', 'kadence-blocks'),
 			)
 		);
 		wp_localize_script(
