@@ -21,6 +21,10 @@
 		},
 		"uniqueID": {
 			"type": "string"
+		},
+		"legacyMigration": {
+			"type": "object",
+			"default": null
 		}
 	}
 }

@@ -373,12 +373,19 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'mobile' );
 		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'desktop' );
+		$mark_padding_args = array(
+			'desktop_key' => 'markPadding',
+			'tablet_key'  => 'markTabPadding',
+			'mobile_key'  => 'markMobilePadding',
+		);
+		$css->render_measure_output( $attributes, 'markPadding', 'padding', $mark_padding_args );
 
 		// Inline Image.
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' img.kb-inline-image, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] img.kb-inline-image' );
 		// Ensure default value if inlineImageWidth desktop value is not set or empty.
 		if ( empty( $attributes['inlineImageWidth'] ) || ! is_array( $attributes['inlineImageWidth'] ) || ! isset( $attributes['inlineImageWidth'][0] ) || ! is_numeric( $attributes['inlineImageWidth'][0] ) ) {
 			$css->add_property( 'width', '150px' );
+			$css->add_property( 'display', 'inline-block' );
 		}
 		// Render responsive range will handle desktop, tablet, and mobile if values are set.
 		$css->render_responsive_range( $attributes, 'inlineImageWidth', 'width' );
@@ -434,12 +441,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'mobile' );
 		$css->render_border_radius( $attributes, 'mobileInlineImageBorderRadius', ( ! empty( $attributes['inlineImageBorderRadiusUnit'] ) ? $attributes['inlineImageBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'desktop' );
-		$mark_padding_args = array(
-			'desktop_key' => 'markPadding',
-			'tablet_key'  => 'markTabPadding',
-			'mobile_key'  => 'markMobilePadding',
-		);
-		$css->render_measure_output( $attributes, 'markPadding', 'padding', $mark_padding_args );
 		// Link.
 		if ( ! empty( $attributes['linkColor'] ) ) {
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id . ', .kt-adv-heading-link' . $unique_id . ' .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
