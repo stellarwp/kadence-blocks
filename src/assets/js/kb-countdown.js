@@ -697,7 +697,8 @@
 				button.setAttribute('title', wp.i18n.__('Pause countdown', 'kadence-blocks'));
 				const icon = button.querySelector('.kb-countdown-pause-icon');
 				if (icon) {
-					icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" /><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" /></svg>';
+					icon.innerHTML =
+						'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" /><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" /></svg>';
 				}
 				button.classList.remove('kb-countdown-paused');
 
@@ -726,7 +727,8 @@
 				button.setAttribute('title', wp.i18n.__('Resume countdown', 'kadence-blocks'));
 				const icon = button.querySelector('.kb-countdown-pause-icon');
 				if (icon) {
-					icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>';
+					icon.innerHTML =
+						'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>';
 				}
 				button.classList.add('kb-countdown-paused');
 
@@ -828,7 +830,8 @@
 					newButton.setAttribute('title', wp.i18n.__('Resume countdown', 'kadence-blocks'));
 					const icon = newButton.querySelector('.kb-countdown-pause-icon');
 					if (icon) {
-						icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>';
+						icon.innerHTML =
+							'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>';
 					}
 					newButton.classList.add('kb-countdown-paused');
 				}
