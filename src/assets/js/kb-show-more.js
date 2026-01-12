@@ -58,7 +58,7 @@
 				let directText = '';
 
 				for (const child of el.childNodes) {
-					if (child.nodeType === Node.TEXT_NODE) {
+					if (child.nodeType === 3) {
 						const text = child.textContent.trim();
 						if (text) {
 							hasDirectText = true;
@@ -358,6 +358,11 @@
 		 */
 		updateAccessibility(rootElement, isExpanded) {
 			const contentElement = rootElement.querySelector('.wp-block-kadence-column.kb-show-more-content');
+
+			if (!contentElement) {
+				return;
+			}
+
 			const excerptElement = rootElement.querySelector('.kb-show-more-sr-excerpt');
 			const showMoreButton = rootElement.querySelector(
 				'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(1)'
@@ -365,10 +370,6 @@
 			const showLessButton = rootElement.querySelector(
 				'.wp-block-kadence-advancedbtn.kb-show-more-buttons > .wp-block-kadence-singlebtn:nth-of-type(2)'
 			);
-
-			if (!contentElement) {
-				return;
-			}
 
 			// Get the button text for the screen reader prompt
 			let buttonText = 'Show More';
@@ -528,7 +529,7 @@
 
 				// Use requestAnimationFrame to ensure CSS is applied
 				if (window.requestAnimationFrame) {
-					requestAnimationFrame(() => {
+					window.requestAnimationFrame(() => {
 						setTimeout(initAccessibility, 50);
 					});
 				} else {
