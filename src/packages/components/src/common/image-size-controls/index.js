@@ -57,7 +57,7 @@ const ImageSizeControl = (props) => {
 					return {
 						value: sizeUrl,
 						label: name + ' (' + sizeWidth + 'x' + sizeHeight + ')',
-						slug: slug,
+						slug,
 						width: sizeWidth,
 						height: sizeHeight,
 					};
@@ -103,7 +103,7 @@ const ImageSizeControl = (props) => {
 					return {
 						value: sizeUrl,
 						label: name + ('full' === slug ? '' : ' (' + sizeWidth + 'x' + sizeHeight + ')'),
-						slug: slug,
+						slug,
 						width: sizeWidth,
 						height: sizeHeight,
 					};

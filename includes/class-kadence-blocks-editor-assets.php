@@ -813,7 +813,7 @@ class Editor_Assets {
 			return;
 		}
 		global $pagenow;
-		if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow || 'widgets.php' === $pagenow ) {
+		if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow || 'widgets.php' === $pagenow || 'site-editor.php' === $pagenow ) {
 			wp_localize_script(
 				'kadence-blocks-js',
 				'kadence_blocks_user_params',

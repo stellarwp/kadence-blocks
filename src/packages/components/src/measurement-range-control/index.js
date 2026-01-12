@@ -9,6 +9,7 @@
  import { useState, useEffect } from '@wordpress/element';
  import SingleMeasureRangeControl from './single-control';
  import { map, isEqual } from 'lodash';
+ import { undo, settings, link, linkOff } from '@wordpress/icons';
 /**
  * Import Css
  */
@@ -47,7 +48,6 @@ import {
 	radiusLinkedIcon,
 	radiusIndividualIcon
 } from '@kadence/icons';
-import { settings, link, linkOff } from '@wordpress/icons';
 import { OPTIONS_MAP } from './constants';
 import { isCustomOption, getOptionIndex, getOptionFromSize, getOptionSize } from './utils';
 
