@@ -13,6 +13,7 @@ import {
 	ToggleControl,
 	SelectControl,
 	Button,
+	TextControl,
 	__experimentalNumberControl as NumberControl,
 	ResizableBox,
 	ExternalLink,
@@ -103,6 +104,8 @@ export function Edit(props) {
 		tabletMargin,
 		mobileMargin,
 		marginType,
+		enableCaption,
+		caption,
 	} = attributes;
 
 	const { insertBlock } = useDispatch('core/block-editor');
@@ -211,7 +214,7 @@ export function Edit(props) {
 		[uniqueID, className]
 	);
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			className: innerBlockClassName,
 			style: {},
@@ -654,6 +657,25 @@ export function Edit(props) {
 								checked={overflowXScroll}
 								onChange={(value) => setAttributes({ overflowXScroll: value })}
 							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Caption', 'kadence-blocks')}
+							panelName={'table-caption'}
+							initialOpen={false}
+						>
+							<ToggleControl
+								label={__('Enable Caption?', 'kadence-blocks')}
+								checked={enableCaption}
+								onChange={(value) => setAttributes({ enableCaption: value })}
+							/>
+							{enableCaption && (
+								<TextControl
+									label={__('Caption Text', 'kadence-blocks')}
+									value={caption || ''}
+									onChange={(value) => setAttributes({ caption: value })}
+								/>
+							)}
 						</KadencePanelBody>
 					</>
 				)}
@@ -1105,7 +1127,10 @@ export function Edit(props) {
 					</div>
 				</div>
 			)}
-			<table {...innerBlocksProps} />
+			<table {...innerBlocksProps}>
+				{enableCaption && caption && <caption>{caption}</caption>}
+				{children}
+			</table>
 		</div>
 	);
 }

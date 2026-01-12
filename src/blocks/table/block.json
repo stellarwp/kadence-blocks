@@ -301,6 +301,14 @@
 		"marginType": {
 			"type": "string",
 			"default": "px"
+		},
+		"enableCaption": {
+			"type": "boolean",
+			"default": false
+		},
+		"caption": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"providesContext": {

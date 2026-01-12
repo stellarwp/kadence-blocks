@@ -251,10 +251,16 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => implode( ' ', $wrapper_classes ),
 		] );
 
+		$caption_html = '';
+		if ( ! empty( $attributes['enableCaption'] ) && ! empty( $attributes['caption'] ) ) {
+			$caption_html = '<caption>' . esc_html( $attributes['caption'] ) . '</caption>';
+		}
+
 		return sprintf(
-			'<div %1$s><table class="kb-table kb-table%2$s">%3$s</table></div>',
+			'<div %1$s><table class="kb-table kb-table%2$s">%3$s%4$s</table></div>',
 			$wrapper_attributes,
 			esc_attr( $unique_id ),
+			$caption_html,
 			$content
 		);
 	}
