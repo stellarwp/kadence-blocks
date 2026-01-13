@@ -975,7 +975,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 
 		$wp_admin_bar->add_node( array(
 			'id'    => 'kadence-top-headers',
-			'title' => __( 'Headers', 'kadence-pro' ),
+			'title' => __( 'Headers', 'kadence-blocks' ),
 			'href'  => admin_url( 'edit.php?post_type=kadence_header' ),
 		) );
 
@@ -1018,7 +1018,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 
 		$wp_admin_bar->add_node( array(
 			'id'     => 'kadence-header-add-new',
-			'title'  => __( 'Add New', 'kadence-pro' ),
+			'title'  => __( 'Add New', 'kadence-blocks' ),
 			'parent' => 'kadence-top-headers',
 			'href'   => admin_url( 'post-new.php?post_type=kadence_header' ),
 		) );
@@ -1040,7 +1040,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 
 		$wp_admin_bar->add_node( array(
 			'id'     => 'new-kadence-header',
-			'title'  => __( 'Header', 'kadence-pro' ),
+			'title'  => __( 'Header', 'kadence-blocks' ),
 			'parent' => 'new-content',
 			'href'   => admin_url( 'post-new.php?post_type=kadence_header' ),
 		) );
