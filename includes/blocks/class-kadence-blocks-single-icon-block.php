@@ -88,9 +88,15 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_color_output( $attributes, 'hBackground', 'background' );
 				$css->render_color_output( $attributes, 'hBorder', 'border-color' );
 			}
+
 			// Hover.
 			$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'hColor', 'color' );
+
+			// Default height and width to auto for SVGs.
+			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap, .kt-svg-style-stacked.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap svg' );
+			$css->add_property( 'width', '1em' );
+			$css->add_property( 'height', '1em' );
 		}
 
 		return $css->css_output();
