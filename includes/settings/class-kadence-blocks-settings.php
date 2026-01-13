@@ -1061,6 +1061,9 @@ class Kadence_Blocks_Settings {
 			add_settings_section( 'kt_blocks_fonts_sec', '', [ $this, 'fonts_local_callback' ], 'kt_blocks_fonts_section' );
 			add_settings_field( 'load_fonts_local', __( 'Load Google Fonts Locally', 'kadence-blocks' ), [ $this, 'load_fonts_local_callback' ], 'kt_blocks_fonts_section', 'kt_blocks_fonts_sec' );
 		}
+		register_setting( 'kadence_blocks_admin_bar_settings', 'kadence_blocks_admin_bar_settings', [ $this, 'validate_options' ] );
+		add_settings_section( 'kt_blocks_admin_bar_sec', '', [ $this, 'admin_bar_callback' ], 'kt_blocks_admin_bar_section' );
+		add_settings_field( 'show_headers_in_admin_bar', __( 'Show Block Headers in Admin Bar', 'kadence-blocks' ), [ $this, 'show_headers_in_admin_bar_callback' ], 'kt_blocks_admin_bar_section', 'kt_blocks_admin_bar_sec' );
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -1145,6 +1148,18 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+	
+	/**
+	 * Outputs admin bar settings field
+	 */
+	public function show_headers_in_admin_bar_callback() {
+		$data    = self::get_data_options( 'kadence_blocks_admin_bar_settings' );
+		$default = ( $data['show_headers_in_admin_bar'] ?? 'false' );
+		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kadence_blocks_admin_bar_settings[show_headers_in_admin_bar]">';
+			echo '<option value="false" ' . ( 'false' === $default ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
+	}
 
 	/**
 	 * Outputs title for content width.
@@ -1159,6 +1174,12 @@ class Kadence_Blocks_Settings {
 	 * Outputs title for fonts local.
 	 */
 	public function fonts_local_callback() {
+	}
+
+	/**
+	 * Outputs title for admin bar.
+	 */
+	public function admin_bar_callback() {
 	}
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
@@ -1289,6 +1310,19 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+								echo '</form>';
+								?>
+							</div>
+							<div class="kt-dashboard-spacer"></div>
+						<?php } ?>
+						<?php if ( apply_filters( 'kadence_blocks_show_admin_bar', true ) ) { ?>
+								<h2><?php echo esc_html__( 'Admin Bar', 'kadence-blocks' ); ?></h2>
+								<div class="kt-promo-row-area">
+								<?php
+								echo '<form action="options.php" method="post">';
+									settings_fields( 'kadence_blocks_admin_bar_settings' );
+									do_settings_sections( 'kt_blocks_admin_bar_section' );
 									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>

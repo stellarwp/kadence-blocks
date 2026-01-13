@@ -1342,7 +1342,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			if ( ! empty( $pattern_style ) ) {
 				$args['style'] = $pattern_style;
 			}
-			if ( 'section' === $library ) {
+			if ( 'templates' !== $library && 'pages' !== $library && 'template' !== $library ) {
 				$args['data'] = 'true';
 			}
 			if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {

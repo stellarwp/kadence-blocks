@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.8.2
-Stable tag: 3.5.23
+Tested up to: 6.9
+Stable tag: 3.5.31
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,13 +173,60 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.31 =
+Release Date: 9th January 2026
+* Fix: issue with adv highlight padding
+
+= 3.5.30 =
+Release Date: 8th January 2026
+* Add: Classic adv form transform tool to new form block.
+* Add: An inline image format for the Heading (adv) block.
+* Fix: Issue with some sliders including gallery (adv) not working when inside other loop blocks
+* Fix: Testimonial Block Left Padding Issue
+* Fix: progress bar issue in Safari
+* Fix: theme extended color palette not showing correctly in the editor in some places.
+* Fix: Issue with padding on icons in text block
+* Fix: Button (Adv) outline style text color settings not working in Kadence Theme when visited
+
+= 3.5.29 =
+Release Date: 3rd December 2025
+* Update: Improve compatibility with WordPress 6.9.
+
+= 3.5.28 =
+Release Date: 2nd December 2025
+* Update: Improve compatibility with WordPress 6.9.
+
+= 3.5.27 =
+Release Date: 6th November 2025
+* Update: Added support for Kadence Theme secondary button styling.
+* Update: Google Fonts list.
+
+= 3.5.26 =
+Release Date: 24th October 2025
+* Fix: Accordion icon hover colors.
+
+= 3.5.25 =
+Release Date: 23rd October 2025
+* Update: default headers admin tab to not show. New Setting to control it's display
+* Update: Improve support for Count up & Count down block in Slider
+* Fix: Turnstile Kadence Captcha prevent from placing order
+* Fix: Row Layout Mobile Collapse Not Working Properly
+
+= 3.5.24 =
+Release Date: 10th October 2025
+* Fix: issue with accordion heading style active and hover selectors.
+
 = 3.5.23 =
 Release Date: 9th October 2025
-* Fix: Hover color on nested sections in the editor.
 * Update: Table of Contents will now ignore conditionally hidden headings.
-* Fix: Kadence Blocks Controls use custom color palette only option.
 * Update: Add tabindex to tippy tooltips and update the role to a tooltip.
-* Fix: Increased specificity for some Accordion block styles for better block theme support.
+* Update: Advanced form file upload limit options all the way up to your PHP limit.
+* Update: Add support for Webp images as a supported filetype in advanced form uploads.
+* Fix: Issue with nested tabs blocks.
+* Fix: Hover color on nested sections in the editor.
+* Fix: Kadence Blocks Controls use custom color palette only option.
+* Fix: Increased specificity for some Accordion block styles to fix issue in FSE themes.
 * Fix: Posts block equal heights.
 
 = 3.5.22 =

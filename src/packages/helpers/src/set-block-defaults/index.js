@@ -10,7 +10,7 @@ export default (blockSlug, attributes) => {
                 // hack to make icon list block work with old attributes.
                 if ( blockSlug === 'kadence/iconlist' ) {
                     if ( undefined !== blockConfigObject[blockSlug]?.items?.[0]?.icon && blockConfigObject[blockSlug]?.items?.[0]?.icon && ! blockConfigObject[blockSlug]?.icon ) {
-                        attributes['icon'] = blockConfigObject[blockSlug]?.items?.[0]?.icon
+                        attributes.icon = blockConfigObject[blockSlug]?.items?.[0]?.icon
                     }
                 }
                 Object.keys(blockConfigObject[blockSlug]).map((attribute) => {

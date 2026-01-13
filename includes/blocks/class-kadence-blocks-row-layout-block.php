@@ -549,22 +549,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $layout, $collapse_layouts ) ) {
 			$css->set_media_state( 'tablet' );
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 			}
 			// Row Three.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 			}
 			// Row Four.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
 			$css->set_media_state( 'desktop' );
@@ -595,22 +595,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			//tablet ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $tabletLayout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 				}
 				// Row Two.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 				}
 				// Row Three.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 				}
 				// Row Four.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 				}
 			}
@@ -625,22 +625,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			//tablet collapse ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $collapse_tab_layout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 				}
 				// Row Two.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 				}
 				// Row Three.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 				}
 				// Row Four.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ' of *:not(style))' );
 					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 				}
 			}
@@ -656,22 +656,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		//mobile ordering
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $mobile_layout, $collapse_layouts ) ) {
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 			}
 			// Row Three.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 			}
 			// Row Four.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ' of *:not(style))' );
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
 		}
@@ -711,11 +711,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktopOnly' );
 			}
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1)' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1 of *:not(style))' );
 				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2)' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2 of *:not(style))' );
 				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
@@ -723,43 +723,43 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				if ( isset( $content_width ) && ! empty( $content_width ) ) {
 					$css->start_media_query( '(min-width:' . absint( $content_width ) . 'px)' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1):not(.specificity)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1 of *:not(style)):not(.specificity)' );
 						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2):not(.specificity)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2 of *:not(style)):not(.specificity)' );
 						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->stop_media_query();
 				} else {
 					$css->set_media_state( 'desktopOnly' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1 of *:not(style))' );
 						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2 of *:not(style))' );
 						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->set_media_state( 'desktop' );
 				}
 			} else {
 				if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1):not(.specificity)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1 of *:not(style)):not(.specificity)' );
 					$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left, calc( ' . $padding_left . ' *-1 ) )' );
 				}
 				if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2):not(.specificity)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2 of *:not(style)):not(.specificity)' );
 					$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right, calc( ' . $padding_right . ' *-1 ))' );
 				}
 			}
 			$css->set_media_state( 'tabletOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-of-type(1)' );
+				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(1 of *:not(style))' );
 				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-of-type(2)' );
+				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(2 of *:not(style))' );
 				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
@@ -1484,7 +1484,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$auto = isset( $attributes['backgroundSliderSettings'][0]['autoPlay'] ) ? $attributes['backgroundSliderSettings'][0]['autoPlay'] : true;
 		$show_pause_button = isset( $attributes['backgroundSliderSettings'][0]['showPauseButton'] ) ? $attributes['backgroundSliderSettings'][0]['showPauseButton'] : false;
 		$output .= '<div class="kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
-		$output .= '<div class="kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
+		// Output proper Splide.js structure: splide > splide__track > splide__list > splide__slide
+		$output .= '<div class="kt-blocks-carousel-init splide kb-blocks-bg-slider-init kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-slider-anim-speed="' . esc_attr( $tran_speed ) . '" data-slider-type="slider" data-slider-scroll="1" data-slider-arrows="' . ( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-fade="' . ( $fade ? 'true' : 'false' ) . '" data-slider-dots="' . ( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . ( $auto ? 'true' : 'false' ) . '" data-slider-speed="' . esc_attr( $speed ) . '" data-show-pause-button="' . esc_attr( $show_pause_button ? 'true' : 'false' ) . '">';
+		$output .= '<div class="splide__track">';
+		$output .= '<ul class="splide__list">';
 		$item = 1;
 		foreach ( $attributes['backgroundSlider'] as $key => $slide ) {
 			$style_args = array();
@@ -1507,15 +1510,17 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
-			$output .= '<div class="kb-bg-slide-contain">';
+			$output .= '<li class="splide__slide kb-bg-slide-contain">';
 			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
 			$output .= '</div>';
-			$output .= '</div>';
+			$output .= '</li>';
 			if ( $attributes['backgroundSliderCount'] == $item ) {
 				break;
 			}
 			$item ++;
 		}
+		$output .= '</ul>';
+		$output .= '</div>';
 		if ( $auto && $show_pause_button ) {
 			$output .= '<button class="kb-gallery-pause-button splide__toggle" type="button" aria-label="' . esc_attr( __( 'Toggle autoplay', 'kadence-blocks' ) ) . '">';
 			$output .= '<span class="kb-gallery-pause-icon splide__toggle__pause"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></span>';

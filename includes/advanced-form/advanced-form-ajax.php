@@ -829,4 +829,3 @@ Header set X-Robots-Tag "noindex"
 }
 
 KB_Ajax_Advanced_Form::get_instance();
-

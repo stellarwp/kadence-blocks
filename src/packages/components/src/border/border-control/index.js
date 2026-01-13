@@ -10,6 +10,7 @@ import { useState, useRef } from '@wordpress/element';
 import { map, isEqual } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { UnitControl, DropdownMenu, Flex, FlexItem, Button } from '@wordpress/components';
+import { undo, settings, link, linkOff } from '@wordpress/icons';
 import { KadenceColorOutput } from '@kadence/helpers';
 /**
  * WordPress dependencies
@@ -39,7 +40,6 @@ import {
 	radiusLinkedIcon,
 	radiusIndividualIcon,
 } from '@kadence/icons';
-import { settings, link, linkOff } from '@wordpress/icons';
 import SingleBorderControl from '../single-border-control';
 /**
  * Build the Border controls

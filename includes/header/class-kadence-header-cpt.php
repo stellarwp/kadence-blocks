@@ -966,7 +966,10 @@ class Kadence_Blocks_Header_CPT_Controller {
 	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
 	 */
 	public function top_headers_admin_bar( $wp_admin_bar ) {
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		$admin_bar_settings = get_option( 'kadence_blocks_admin_bar_settings' );
+		$show_headers_in_admin_bar = isset( $admin_bar_settings['show_headers_in_admin_bar'] ) && $admin_bar_settings['show_headers_in_admin_bar'] === 'true' ? true : false;
+
+		if ( ! current_user_can( 'edit_posts' ) || ! $show_headers_in_admin_bar ) {
 			return;
 		}
 
@@ -1027,8 +1030,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
 	 */
 	public function add_new_header_to_admin_bar( $wp_admin_bar ) {
+		$admin_bar_settings = get_option( 'kadence_blocks_admin_bar_settings' );
+		$show_headers_in_admin_bar = isset( $admin_bar_settings['show_headers_in_admin_bar'] ) && $admin_bar_settings['show_headers_in_admin_bar'] === 'true' ? true : false;
+
 		// Only show for users who can create headers
-		if ( ! current_user_can( 'edit_theme_options' ) ) {
+		if ( ! current_user_can( 'edit_theme_options' ) || ! $show_headers_in_admin_bar ) {
 			return;
 		}
 
