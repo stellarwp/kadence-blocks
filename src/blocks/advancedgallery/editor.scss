@@ -843,16 +843,3 @@
 .kb-gallery-main-contain.kb-gallery-type-thumbslider .kb-gallery-pause-button {
 	margin-right: 25px;
 }
-
-// Fix for thumbnail slider: allow overflow visible when arrows are positioned outside (editor)
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top),
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-left),
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-right) {
-	overflow: visible;
-}
-
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom),
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-left),
-.kb-gallery-main-contain.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-right) {
-	overflow: visible;
-}
