@@ -552,7 +552,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		if ( ! empty( $attributes['dotCustomColorActive'] ) && $is_carousel && 'custom' === $dot_style ) {
-			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:active' );
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page.is-active' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['dotCustomColorActive'] ) );
 		}
 
@@ -567,7 +567,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		if ( ! empty( $attributes['dotCustomColorBorderActive'] ) && $is_carousel && 'custom' === $dot_style ) {	
-			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page:active' );
+			$css->set_selector( '.kb-gallery-id-' . $unique_id . ' .splide__pagination__page.is-active' );
 			$css->add_property( 'border-color', $css->render_color( $attributes['dotCustomColorBorderActive'] ) );
 		}
 
