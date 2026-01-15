@@ -262,7 +262,8 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		] );
 
 		$caption_html = '';
-		if ( ! empty( $attributes['enableCaption'] ) && ! empty( $attributes['caption'] ) ) {
+		$is_enabled = filter_var( $attributes['enableCaption'] ?? false, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+		if ( $is_enabled === true && isset( $attributes['caption'] ) && is_string( $attributes['caption'] ) && trim( $attributes['caption'] ) !== '' ) {
 			$caption_html = '<caption>' . esc_html( $attributes['caption'] ) . '</caption>';
 		}
 
