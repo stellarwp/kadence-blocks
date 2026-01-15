@@ -153,6 +153,16 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_text_align( $attributes, 'headerAlign', $text_align_args );
 		
 
+		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' caption' );
+		$css->render_typography( $attributes, 'captionTypography' );
+
+		$text_align_args = array(
+			'desktop_key' => 'captionAlign',
+			'tablet_key'  => 'captionAlignTablet',
+			'mobile_key'  => 'captionAlignMobile',
+		);
+		$css->render_text_align( $attributes, 'captionAlign', $text_align_args );
+
 		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td' );
 		$css->render_measure_output( $attributes, 'cellPadding', 'padding' );
 
