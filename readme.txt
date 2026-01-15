@@ -175,7 +175,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.5.31 =
-Release Date: 15th January 2026
+Release Date: 9th January 2026
+* Fix: issue with adv highlight padding
 
 = 3.5.30 =
 Release Date: 8th January 2026
