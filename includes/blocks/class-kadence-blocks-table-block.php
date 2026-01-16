@@ -153,6 +153,16 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_text_align( $attributes, 'headerAlign', $text_align_args );
 		
 
+		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' caption' );
+		$css->render_typography( $attributes, 'captionTypography' );
+
+		$text_align_args = array(
+			'desktop_key' => 'captionAlign',
+			'tablet_key'  => 'captionAlignTablet',
+			'mobile_key'  => 'captionAlignMobile',
+		);
+		$css->render_text_align( $attributes, 'captionAlign', $text_align_args );
+
 		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td' );
 		$css->render_measure_output( $attributes, 'cellPadding', 'padding' );
 
@@ -251,10 +261,17 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => implode( ' ', $wrapper_classes ),
 		] );
 
+		$caption_html = '';
+		$is_enabled = filter_var( $attributes['enableCaption'] ?? false, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+		if ( $is_enabled === true && isset( $attributes['caption'] ) && is_string( $attributes['caption'] ) && trim( $attributes['caption'] ) !== '' ) {
+			$caption_html = '<caption>' . esc_html( $attributes['caption'] ) . '</caption>';
+		}
+
 		return sprintf(
-			'<div %1$s><table class="kb-table kb-table%2$s">%3$s</table></div>',
+			'<div %1$s><table class="kb-table kb-table%2$s">%3$s%4$s</table></div>',
 			$wrapper_attributes,
 			esc_attr( $unique_id ),
+			$caption_html,
 			$content
 		);
 	}
