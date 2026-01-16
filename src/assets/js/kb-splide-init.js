@@ -470,6 +470,7 @@
 				direction: dataSet.sliderDirection,
 				pauseOnHover: dataSet.sliderPauseHover || false,
 				gap: dataSet.sliderGap || 0,
+				label: dataSet.sliderLabel || '',
 				breakpoints: {
 					543: {
 						perPage: dataSet.columnsSs || 1,
