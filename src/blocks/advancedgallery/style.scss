@@ -809,6 +809,19 @@
 		z-index: 1;
 	}
 
+	// Fix for thumbnail slider: allow overflow visible when arrows are positioned outside
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-left),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-right) {
+		overflow: visible;
+	}
+
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-left),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-right) {
+		overflow: visible;
+	}
+
 // Pause Button Styles
 .wp-block-kadence-advancedgallery {
 	.kt-blocks-carousel {

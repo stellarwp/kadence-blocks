@@ -2674,7 +2674,7 @@ function KadenceAdvancedHeading(props) {
 			<InspectorAdvancedControls>
 				{htmlTag === 'heading' && (
 					<TextControl
-						label={__('Alterative title for table of contents', 'kadence-blocks')}
+						label={__('Alternative title for table of contents', 'kadence-blocks')}
 						help={__(
 							'If using table of contents block you can define a custom title here.',
 							'kadence-blocks'

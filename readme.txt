@@ -174,14 +174,31 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.5.32 =
+Release Date: 15th January 2026
+* Update: Begin sunsetting classic form block - hide in block appender, classic form blocks still usable
+* Fix: “Slide In From” setting in the Off Canvas panel not applying on mobile.
+* Fix: Mobile Collapse Order not working when using Reverse
+* Fix: Box shadow preset is missing for infobox block
+* Fix: Spacing appears in Text (Adv) Block only when background color is chosen via swatch
+* Fix: Kadence Blocks custom colors not available while editing Patterns.
+* Fix: Lightbox not working on Slider, Carousel and Fluid Carousel
+* Fix: Gallery (Adv) slider: arrow and dot controls ignored on frontend
+
+= 3.5.31 =
+Release Date: 9th January 2026
+* Fix: issue with adv highlight padding
+
 = 3.5.30 =
-Release Date: TBD
+Release Date: 8th January 2026
 * Add: Classic adv form transform tool to new form block.
 * Add: An inline image format for the Heading (adv) block.
 * Fix: Issue with some sliders including gallery (adv) not working when inside other loop blocks
+* Fix: Testimonial Block Left Padding Issue
 * Fix: progress bar issue in Safari
 * Fix: theme extended color palette not showing correctly in the editor in some places.
-* Fix: Issue with padding on icons
+* Fix: Issue with padding on icons in text block
+* Fix: Button (Adv) outline style text color settings not working in Kadence Theme when visited
 
 = 3.5.29 =
 Release Date: 3rd December 2025
