@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9
-Stable tag: 3.5.32
+Stable tag: 3.6.0-beta.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -243,7 +243,7 @@ Release Date: 9th October 2025
 = 3.5.22 =
 Release Date: 25th September 2025
 * Fix: Removed default navigation submenu box shadow when disabled.
-* Update: When prefers-reduced-motion is enabled, Countup block now only shows the end value. 
+* Update: When prefers-reduced-motion is enabled, Countup block now only shows the end value.
 * Update: Gallery tiles layout outer div updated to ul to match inner markup.
 
 = 3.5.21 =
@@ -273,7 +273,7 @@ Release Date: 19th August 2025
 = 3.5.17 =
 Release Date: 14th August 2025
 * Add: Option to reveal icons for buttons on hover.
-* Add: Mosaic gallery support for pro features. 
+* Add: Mosaic gallery support for pro features.
 * Add: Custom option for autofill value on advanced form input fields.
 * Add: Pause button option for sliders with autoplay
 * Update: Slides in sliders are now semantic list items
@@ -305,7 +305,7 @@ Release Date: 28th July 2025
 
 = 3.5.15 =
 Release Date: 23rd July 2025
-* Fix: Mosaic gallery custom link in editor. 
+* Fix: Mosaic gallery custom link in editor.
 * Fix: Block defaults not applying to new blocks.
 * Fix: Add link support to advanced text block in some templates.
 
@@ -327,7 +327,7 @@ Release Date: 15th July 2025
 
 = 3.5.12 =
 Release Date: 2nd July 2025
-* Update: Header block off canvas trigger focus styles. 
+* Update: Header block off canvas trigger focus styles.
 * Fix: Icon List default bottom margin.
 * Fix: Count Up block responsive font, number size, line height preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.

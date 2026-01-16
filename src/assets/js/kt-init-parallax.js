@@ -6,18 +6,28 @@ const kbjarforEach = function (array, callback, scope) {
 		callback.call(scope, i, array[i]); // passes back stuff we need.
 	}
 };
+
+// Function to initialize jarallax on a single element
+const initializeParallax = (element) => {
+	jarallax(element, {
+		speed: kadence_blocks_parallax.speed,
+		elementInViewport: element,
+	});
+};
+
+// Initial parallax setup for elements that are already in the DOM
 const kbNodeList = document.querySelectorAll('.kt-jarallax');
-// Setup a timer
+kbjarforEach(kbNodeList, function (index, value) {
+	initializeParallax(value);
+});
+
+// Set up a timer for resize optimization
 let kbjartimeout;
-// Listen for resize events
 window.addEventListener(
 	'resize',
-	function (event) {
-		// If timer is null, reset it to 66ms and run your functions.
-		// Otherwise, wait until timer is cleared
+	function () {
 		if (!kbjartimeout) {
 			kbjartimeout = setTimeout(function () {
-				// Reset timeout
 				kbjartimeout = null;
 				document.body.style.setProperty(
 					'--kb-screen-height-fix',
@@ -28,10 +38,14 @@ window.addEventListener(
 	},
 	false
 );
+
+// Set initial screen height CSS var
 document.body.style.setProperty('--kb-screen-height-fix', document.documentElement.clientHeight + 200 + 'px');
-kbjarforEach(kbNodeList, function (index, value) {
-	jarallax(value, {
-		speed: kadence_blocks_parallax.speed,
-		elementInViewport: value,
-	});
+
+// Listen for lazy-loaded elements and initialize parallax if needed
+window.addEventListener('kadence-lazy-loaded', ({ detail }) => {
+	const el = detail.element;
+	if (el.classList.contains('kt-jarallax')) {
+		initializeParallax(el);
+	}
 });

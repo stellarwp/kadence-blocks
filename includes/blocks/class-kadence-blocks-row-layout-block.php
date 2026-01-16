@@ -1282,15 +1282,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'display', 'none !important' );
 		}
 		$css->set_media_state( 'desktop' );
-		
+
 		// Background Slider Pause Button Styles.
 		if ( isset( $attributes['backgroundSettingTab'] ) && 'slider' === $attributes['backgroundSettingTab'] ) {
 			$arrow_style = ! empty( $attributes['backgroundSliderSettings'][0]['arrowStyle'] ) ? $attributes['backgroundSliderSettings'][0]['arrowStyle'] : 'none';
 			$show_pause_button = isset( $attributes['backgroundSliderSettings'][0]['showPauseButton'] ) ? $attributes['backgroundSliderSettings'][0]['showPauseButton'] : false;
-			
+
 			if ( $show_pause_button ) {
 				$css->set_selector( $base_selector . ' .kb-blocks-bg-slider .kb-gallery-pause-button' );
-				
+
 				// Set styles based on arrow style.
 				switch ( $arrow_style ) {
 					case 'blackonlight':
@@ -1317,7 +1317,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
-		
+
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
 			$css->add_css_string( str_replace( 'selector', $base_selector, $attributes['kadenceBlockCSS'] ) );
 		}
@@ -1506,14 +1506,31 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$style_args['background-repeat'] = $attributes['bgImgRepeat'];
 				}
 			}
-			$style_output = array();
+
+			$style_output = [];
+
 			foreach ( $style_args as $sub_key => $value ) {
 				$style_output[] = $sub_key . ':' . esc_attr( $value ) . ';';
 			}
-			$output .= '<li class="splide__slide kb-bg-slide-contain">';
-			$output .= '<div class="kb-bg-slide kb-bg-slide-' . esc_attr( $key ) . '" style="' . esc_attr( implode( ' ', $style_output ) ) . '">';
-			$output .= '</div>';
-			$output .= '</li>';
+
+			$attrs = [
+				'class' => 'kb-bg-slide kb-bg-slide-' . $key,
+				'style' => implode( ' ', $style_output ),
+			];
+
+			/**
+			 * DO NOT REMOVE: The optimizer uses this.
+			 *
+			 * @param array<string, mixed> $attrs The HTML attributes.
+			 * @param array<string, mixed> $attributes The row block attributes.
+			 */
+			$attrs = apply_filters( 'kadence_blocks_row_slider_attrs', $attrs, $attributes );
+
+			$output .= sprintf(
+				'<li class="splide__slide kb-bg-slide-contain"><div %s></div></li>',
+				$this->build_escaped_html_attributes( $attrs )
+			);
+
 			if ( $attributes['backgroundSliderCount'] == $item ) {
 				break;
 			}
@@ -1607,6 +1624,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $video_args['muted'] ) && $video_args['muted'] == 'false' ) {
 			unset( $video_args['muted'] );
 		}
+
+		/**
+		 * DO NOT REMOVE: The optimizer uses this.
+		 *
+		 * @param array<string, mixed> $video_args The HTML attributes.
+		 * @param array<string, mixed> $attributes The row block attributes.
+		 */
+		$video_args = apply_filters( 'kadence_blocks_row_video_attrs', $video_args, $attributes );
+
 		$video_html_attributes = array();
 		foreach ( $video_args as $key => $value ) {
 			if ( empty( $value ) ) {
@@ -1770,6 +1796,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 				}
 			}
+
+			/**
+			 * DO NOT REMOVE: The Optimizer uses this.
+			 *
+			 * @param array<string, mixed> $wrapper_args The wrapper div HTML attributes.
+			 * @param array<string, mixed> $attributes The current block attributes.
+			 */
+			$wrapper_args       = apply_filters( 'kadence_blocks_row_wrapper_args', $wrapper_args, $attributes );
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 			$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 			$content = sprintf( '<%1$s %2$s>%3$s<div %4$s>%5$s</div></%1$s>', $html_tag, $wrapper_attributes, $extra_content, $inner_wrapper_attributes, $content );
