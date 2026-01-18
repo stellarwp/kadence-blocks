@@ -65,18 +65,34 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 		$units = ! empty( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px';
 		if ( ! empty( $attributes['spacerHeight'] ) || $units !== 'px' ) {
 			$height = ( ! empty( $attributes['spacerHeight'] ) ? $attributes['spacerHeight'] : '60' );
-			$css->add_property( 'height', $height . $units );
+			if ( '%' === $units ) {
+				$css->add_property( 'aspect-ratio', '100 / ' . $height );
+				$css->add_property( 'width', '100%' );
+				$css->add_property( 'height', 'auto' );
+			} else {
+				$css->add_property( 'height', $height . $units );
+			}
 		}
 		if ( ! empty( $attributes['tabletSpacerHeight'] ) ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attributes['tabletSpacerHeight'] . ( isset( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px' ) . '!important' );
+			if ( '%' === $units ) {
+				$css->add_property( 'aspect-ratio', '100 / ' . $attributes['tabletSpacerHeight'] . ' !important' );
+				$css->add_property( 'height', 'auto !important' );
+			} else {
+				$css->add_property( 'height', $attributes['tabletSpacerHeight'] . $units . ' !important' );
+			}
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ! empty( $attributes['mobileSpacerHeight'] ) ) {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attributes['mobileSpacerHeight'] . ( isset( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px' ) . '!important' );
+			if ( '%' === $units ) {
+				$css->add_property( 'aspect-ratio', '100 / ' . $attributes['mobileSpacerHeight'] . ' !important' );
+				$css->add_property( 'height', 'auto !important' );
+			} else {
+				$css->add_property( 'height', $attributes['mobileSpacerHeight'] . $units . ' !important' );
+			}
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ! empty( $attributes['dividerStyle'] ) && 'stripe' === $attributes['dividerStyle'] ) {

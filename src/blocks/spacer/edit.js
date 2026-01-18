@@ -180,8 +180,8 @@ function KadenceSpacerDivider(props) {
 											onChangeTablet={(value) => setAttributes({ tabletSpacerHeight: value })}
 											mobileValue={mobileSpacerHeight ? mobileSpacerHeight : ''}
 											onChangeMobile={(value) => setAttributes({ mobileSpacerHeight: value })}
-											min={6}
-											max={600}
+											min={spacerHeightUnits === '%' ? 0 : 6}
+											max={spacerHeightUnits === '%' ? 200 : 600}
 											step={1}
 											unit={spacerHeightUnits}
 											onUnit={
@@ -189,7 +189,7 @@ function KadenceSpacerDivider(props) {
 													? (value) => setAttributes({ spacerHeightUnits: value })
 													: false
 											}
-											units={['px', 'vh']}
+											units={['px', 'vh', '%']}
 										/>
 									)}
 								</KadencePanelBody>
@@ -382,7 +382,19 @@ function KadenceSpacerDivider(props) {
 						</span>
 					</div>
 				)}
-				{'vh' !== spacerHeightUnits &&
+				{spacerHeightUnits && '%' === spacerHeightUnits && (
+					<div
+						className="kt-spacer-height-preview"
+						style={{
+							aspectRatio: `100 / ${previewHeight || 1}`,
+							width: '100%',
+							height: 'auto',
+						}}
+					>
+						<span id={`spacing-height-${uniqueID}`}>{previewHeight + '%'}</span>
+					</div>
+				)}
+				{'vh' !== spacerHeightUnits && '%' !== spacerHeightUnits &&
 					showSettings('spacerDivider', 'kadence/spacer') &&
 					showSettings('spacerHeight', 'kadence/spacer') && (
 						<ResizableBox
@@ -440,7 +452,7 @@ function KadenceSpacerDivider(props) {
 							)}
 						</ResizableBox>
 					)}
-				{'vh' !== spacerHeightUnits &&
+				{'vh' !== spacerHeightUnits && '%' !== spacerHeightUnits &&
 					(!showSettings('spacerDivider', 'kadence/spacer') ||
 						!showSettings('spacerHeight', 'kadence/spacer')) && (
 						<div
