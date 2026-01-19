@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9
-Stable tag: 3.5.31
+Stable tag: 3.5.32
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,17 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.5.32 =
+Release Date: 15th January 2026
+* Update: Begin sunsetting classic form block - hide in block appender, classic form blocks still usable
+* Fix: “Slide In From” setting in the Off Canvas panel not applying on mobile.
+* Fix: Mobile Collapse Order not working when using Reverse
+* Fix: Box shadow preset is missing for infobox block
+* Fix: Spacing appears in Text (Adv) Block only when background color is chosen via swatch
+* Fix: Kadence Blocks custom colors not available while editing Patterns.
+* Fix: Lightbox not working on Slider, Carousel and Fluid Carousel
+* Fix: Gallery (Adv) slider: arrow and dot controls ignored on frontend
 
 = 3.5.31 =
 Release Date: 9th January 2026
