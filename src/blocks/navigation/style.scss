@@ -1564,3 +1564,15 @@ $link-color-property: var(
 		color: $link-color-property;
 	}
 }
+
+ul.sub-menu.kb-nav-sub-menu::before {
+	content: '';
+	height: var(--kb-nav-dropdown-margin-top, 0);
+	position: absolute;
+	display: inline-block;
+	background: transparent;
+	left: 0;
+	width: 100%;
+	top: calc(-1 * var(--kb-nav-dropdown-margin-top, 0));
+	opacity: 0;
+}
