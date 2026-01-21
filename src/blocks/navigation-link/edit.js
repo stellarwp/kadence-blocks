@@ -870,10 +870,7 @@ export default function Edit(props) {
 										/>
 									)}
 								</div>
-								<div
-									className="kb-nav-link-image-overlay"
-									aria-hidden="true"
-								/>
+								<div className="kb-nav-link-image-overlay" aria-hidden="true" />
 							</div>
 						</div>
 					)}
