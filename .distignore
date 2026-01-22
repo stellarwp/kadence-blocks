@@ -5,6 +5,7 @@
 /src
 /node_modules
 /tests
+/.cursor
 
 .distignore
 .gitignore
@@ -31,3 +32,5 @@ codeception.slic.yml
 .gitattributes
 .gitmodules
 .wordpress-org/
+.npmrc
+bunfig.toml

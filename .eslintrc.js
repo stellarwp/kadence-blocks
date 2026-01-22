@@ -10,6 +10,10 @@ const eslintConfig = {
 			webpack: {
 				config: path.join(__dirname, '/webpack.config.js'),
 			},
+			alias: [
+				['@kadence-bundled/admin-notices', './src/extension/admin-notices'],
+				['@kadence/optimizer', './includes/resources/Optimizer/assets/js/optimizer'],
+			],
 		},
 	},
 	globals: {
@@ -58,6 +62,8 @@ const eslintConfig = {
 		Image: 'readable',
 		Masonry: 'readable',
 		IntersectionObserver: 'readable',
+		requestAnimationFrame: 'readable',
+		requestIdleCallback: 'readable',
 		getComputedStyle: 'readable',
 		ScrollMagic: 'readable',
 		kadence_pro_video_pop: 'readable',

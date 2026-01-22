@@ -1,10 +1,16 @@
 import { map } from 'lodash';
 
-import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/editor';
+import { PluginSidebar, PluginSidebarMoreMenuItem, store as editorStore } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
-import { Fragment, useState } from '@wordpress/element';
-import { PanelBody, Button } from '@wordpress/components';
+import { Fragment, useState, useEffect, useRef } from '@wordpress/element';
+import { PanelBody, Button, ToggleControl } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { external } from '@wordpress/icons';
+import { store as coreStore } from '@wordpress/core-data';
+import { store as preferencesStore } from '@wordpress/preferences';
+import { store as noticesStore } from '@wordpress/notices';
+import { addQueryArgs } from '@wordpress/url';
 /**
  * Import Icons
  */
@@ -26,6 +32,166 @@ import ExportDefaults from './block-defaults/export-defaults';
 import ImportDefaults from './block-defaults/import-defaults';
 import ResetDefaults from './block-defaults/reset-defaults';
 import DefaultEditorBlock from './default-editor-block';
+
+// Optimizer constants - matching the PHP version
+const META_KEY = '_kb_optimizer_status';
+const STATUS_EXCLUDED = -1;
+const STATUS_UNOPTIMIZED = 0;
+const STATUS_OPTIMIZED = 1;
+
+/**
+ * Custom hook to get the performance optimizer enabled setting
+ * @returns {boolean} Whether the optimizer is enabled
+ */
+function useOptimizerEnabled() {
+	const globalSettings = kadence_blocks_params.globalSettings ? JSON.parse(kadence_blocks_params.globalSettings) : {};
+	return globalSettings?.performance_optimizer_enabled === true;
+}
+
+/**
+ * Performance Optimizer toggle component that uses the shared hook
+ * This ensures we use the same state source for both the toggle and conditional panel
+ */
+function PerformanceOptimizerToggle() {
+	const isOptimizerEnabled = useOptimizerEnabled();
+	const [isSaving, setIsSaving] = useState(false);
+	const { createSuccessNotice } = useDispatch(noticesStore);
+
+	const saveConfig = (value) => {
+		setIsSaving(true);
+		const config = kadence_blocks_params.globalSettings ? JSON.parse(kadence_blocks_params.globalSettings) : {};
+		config.performance_optimizer_enabled = value;
+		const settingModel = new wp.api.models.Settings({ kadence_blocks_settings: JSON.stringify(config) });
+
+		settingModel.save().then((response) => {
+			createSuccessNotice(__('Settings saved', 'kadence-blocks'), {
+				type: 'snackbar',
+			});
+
+			setIsSaving(false);
+			kadence_blocks_params.globalSettings = JSON.stringify(config);
+			// Reload the page to load/unload the external optimizer JavaScript.
+			window.location.reload();
+		});
+	};
+
+	return (
+		<ToggleControl
+			label={__('Globally Enable The Performance Optimizer', 'kadence-blocks')}
+			isBusy={isSaving}
+			checked={isOptimizerEnabled}
+			onChange={(value) => {
+				saveConfig(value);
+			}}
+		/>
+	);
+}
+
+/**
+ * Component for excluding the current post from optimization
+ */
+function OptimizerExcludeToggle() {
+	const meta = useSelect((select) => select('core/editor').getEditedPostAttribute('meta'));
+	const savedMeta = useSelect((select) => select('core/editor').getCurrentPostAttribute('meta'));
+	const { editPost } = useDispatch('core/editor');
+	const originalMetaValue = useRef(null);
+
+	// Capture the original meta value when it first becomes available, before any edits.
+	useEffect(() => {
+		if (savedMeta !== undefined && originalMetaValue.current === null) {
+			// Capture the value from the saved post, not the edited version
+			if (savedMeta && savedMeta[META_KEY] !== undefined) {
+				originalMetaValue.current = savedMeta[META_KEY];
+			} else {
+				// If no saved value exists, default to unoptimized
+				originalMetaValue.current = STATUS_UNOPTIMIZED;
+			}
+		}
+	}, [savedMeta]);
+
+	if (meta === undefined) {
+		return null;
+	}
+
+	return (
+		<ToggleControl
+			label={__('Exclude this post from optimization', 'kadence-blocks')}
+			checked={meta[META_KEY] === STATUS_EXCLUDED}
+			onChange={(value) => {
+				if (value) {
+					// When checking, set to excluded
+					editPost({ meta: { [META_KEY]: STATUS_EXCLUDED } });
+				} else {
+					// When unchecking, restore to original value (or unoptimized if original was excluded)
+					const restoreValue =
+						originalMetaValue.current !== null && originalMetaValue.current !== STATUS_EXCLUDED
+							? originalMetaValue.current
+							: STATUS_UNOPTIMIZED;
+					editPost({ meta: { [META_KEY]: restoreValue } });
+				}
+			}}
+		/>
+	);
+}
+
+/**
+ * Component for viewing the optimized version of a post
+ */
+function OptimizedViewLink() {
+	const { hasLoaded, permalink, isPublished, label, meta, showIconLabels } = useSelect((select) => {
+		const editor = select(editorStore);
+		const { get } = select(preferencesStore);
+
+		// Get post type for label.
+		const postTypeSlug = editor.getCurrentPostType();
+		const postType = select(coreStore).getPostType(postTypeSlug);
+		const postTypeLabel = postType?.labels?.singular_name || 'Post';
+		const dynamicLabel = __('View Optimized', 'kadence-blocks') + ' ' + postTypeLabel;
+
+		return {
+			permalink: editor.getPermalink(),
+			isPublished: editor.isCurrentPostPublished(),
+			label: dynamicLabel,
+			hasLoaded: !!postType,
+			meta: editor.getEditedPostAttribute('meta'),
+			showIconLabels: get('core', 'showIconLabels'),
+		};
+	}, []);
+
+	if (!isPublished || !permalink || !hasLoaded) {
+		return null;
+	}
+
+	if (meta !== undefined && meta[META_KEY] !== STATUS_OPTIMIZED) {
+		return null;
+	}
+
+	const optimizerData = window.kbOptimizer || {};
+	const nonce = optimizerData.token;
+
+	const url = addQueryArgs(permalink, {
+		perf_token: nonce,
+		kb_optimizer_preview: 1,
+	});
+
+	return (
+		<div style={{ marginTop: '12px' }}>
+			<Button
+				style={{ paddingLeft: 0 }}
+				icon={external}
+				iconPosition={'right'}
+				label={label}
+				href={url}
+				target="_blank"
+				showTooltip={!showIconLabels}
+				size="compact"
+			>
+				{label}
+			</Button>
+		</div>
+	);
+}
+
 /**
  * Build the row edit
  */
@@ -40,6 +206,10 @@ function KadenceConfig() {
 	const [controlIcon, setControlIcon] = useState(
 		applyFilters('kadence.block_sidebar_control_icon', BlockIcons.kadenceNewIcon)
 	);
+
+	// Get the performance optimizer enabled setting using the shared hook
+	const isOptimizerEnabled = useOptimizerEnabled();
+
 	return (
 		<Fragment>
 			<PluginSidebarMoreMenuItem target="kadence-controls" icon={controlIcon}>
@@ -752,6 +922,16 @@ function KadenceConfig() {
 								type={'toggle'}
 								theDefault={true}
 							/>
+						</PanelBody>
+						<PanelBody title={__('Performance Optimizer', 'kadence-blocks')} initialOpen={false}>
+							<PerformanceOptimizerToggle />
+
+							{isOptimizerEnabled && (
+								<>
+									<OptimizerExcludeToggle />
+									<OptimizedViewLink />
+								</>
+							)}
 						</PanelBody>
 						<PanelBody title={__('Custom CSS Indicator', 'kadence-blocks')} initialOpen={false}>
 							<KadenceSetting
