@@ -16,13 +16,6 @@ final class Provider extends Provider_Contract {
 		);
 
 		add_action(
-			'enqueue_block_editor_assets',
-			$this->container->callback( Meta::class, 'enqueue_meta_script' ),
-			15,
-			0
-		);
-
-		add_action(
 			'updated_post_meta',
 			function ( $meta_id, $post_id, $meta_key, $value ) {
 				$this->container->get( Meta::class )->maybe_clear_optimizer_data( $post_id, $meta_key, $value );
