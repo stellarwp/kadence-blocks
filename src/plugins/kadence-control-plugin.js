@@ -1,6 +1,6 @@
 import { map } from 'lodash';
 
-import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/editor';
+import { PluginSidebar, PluginSidebarMoreMenuItem, store as editorStore } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
 import { Fragment, useState, useEffect, useRef } from '@wordpress/element';
 import { PanelBody, Button, ToggleControl } from '@wordpress/components';
@@ -9,7 +9,6 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { external } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { store as preferencesStore } from '@wordpress/preferences';
-import { store as editorStore } from '@wordpress/editor';
 import { store as noticesStore } from '@wordpress/notices';
 import { addQueryArgs } from '@wordpress/url';
 /**
