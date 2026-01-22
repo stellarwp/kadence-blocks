@@ -410,7 +410,7 @@ class Kadence_Blocks_Cpt_Import_Export
 					if ($new_post_id) {
 						wp_update_post(array(
 							'ID' => $new_post_id,
-							'post_content' => $updated_content
+							'post_content' => wp_slash($updated_content)
 						));
 					}
 				}
@@ -480,7 +480,7 @@ class Kadence_Blocks_Cpt_Import_Export
 			$updated_content = $this->update_block_ids($temp_content, $id_map);
 			wp_update_post(array(
 				'ID' => $new_post_id,
-				'post_content' => $updated_content
+				'post_content' => wp_slash($updated_content)
 			));
 
 			return $new_post_id;
