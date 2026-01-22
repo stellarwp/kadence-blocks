@@ -11,14 +11,13 @@ use KadenceWP\KadenceBlocks\Traits\Permalink_Trait;
  * Post Meta to control excluding posts from being optimized set
  * via a Gutenberg plugin.
  *
- * @see Optimizer/assets/js/meta/index.js
+ * @see kadence-control-plugin.js
  */
 final class Meta {
 
 	use Permalink_Trait;
 
 	public const KEY                = '_kb_optimizer_status';
-	public const META_SCRIPT_HANDLE = 'kadence-optimizer-meta';
 
 	private Asset $asset;
 	private Status $status;
@@ -95,16 +94,5 @@ final class Meta {
 		$path = new Path( $post_path, $post_id );
 
 		$this->store->delete( $path );
-	}
-
-	/**
-	 * Enqueue Meta Optimizer script when editing a post in Gutenberg.
-	 *
-	 * @action enqueue_block_editor_assets
-	 *
-	 * @return void
-	 */
-	public function enqueue_meta_script(): void {
-		$this->asset->enqueue_script( self::META_SCRIPT_HANDLE, 'dist/kadence-optimizer-meta' );
 	}
 }

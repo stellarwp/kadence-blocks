@@ -60,10 +60,6 @@ final class MetaTest extends OptimizerTestCase {
 		$this->assertEquals( '_kb_optimizer_status', Meta::KEY );
 	}
 
-	public function testItHasScriptHandle(): void {
-		$this->assertSame( 'kadence-optimizer-meta', Meta::META_SCRIPT_HANDLE );
-	}
-
 	public function testItRegistersPostMeta(): void {
 		$this->meta->register_meta();
 
@@ -225,16 +221,5 @@ final class MetaTest extends OptimizerTestCase {
 		// Verify data was deleted from store.
 		$this->assertFalse( $this->store->has( $path ) );
 		$this->assertNull( $this->store->get( $path ) );
-	}
-
-	public function testEnqueueMetaScriptEnqueuesScript(): void {
-		// Ensure we're in the block editor context.
-		set_current_screen( 'post' );
-
-		// Call the method.
-		$this->meta->enqueue_meta_script();
-
-		// Verify script is enqueued.
-		$this->assertTrue( wp_script_is( Meta::META_SCRIPT_HANDLE, 'enqueued' ) || wp_script_is( Meta::META_SCRIPT_HANDLE, 'registered' ) );
 	}
 }
