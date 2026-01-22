@@ -925,6 +925,13 @@ function KadenceConfig() {
 						</PanelBody>
 						<PanelBody title={__('Performance Optimizer', 'kadence-blocks')} initialOpen={false}>
 							<PerformanceOptimizerToggle />
+
+							{isOptimizerEnabled && (
+								<>
+									<OptimizerExcludeToggle />
+									<OptimizedViewLink />
+								</>
+							)}
 						</PanelBody>
 						<PanelBody title={__('Custom CSS Indicator', 'kadence-blocks')} initialOpen={false}>
 							<KadenceSetting
@@ -972,12 +979,6 @@ function KadenceConfig() {
 				{map(extraPanels, ({ Panel }, index) => (
 					<Panel key={index} />
 				))}
-				{isOptimizerEnabled && (
-					<PanelBody title={__('Page Optimization', 'kadence-blocks')} initialOpen={false}>
-						<OptimizerExcludeToggle />
-						<OptimizedViewLink />
-					</PanelBody>
-				)}
 			</PluginSidebar>
 		</Fragment>
 	);
