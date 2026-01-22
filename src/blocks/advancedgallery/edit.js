@@ -1817,7 +1817,7 @@ export default function GalleryEdit(props) {
 													captionStyles[0] &&
 													undefined !== captionStyles[0].backgroundOpacity
 														? captionStyles[0].backgroundOpacity
-														: 0.5
+														: 0.8
 												}
 												onOpacityChange={(value) =>
 													saveCaptionFont({ backgroundOpacity: value })
