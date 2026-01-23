@@ -4,11 +4,9 @@
 
 import { times } from 'lodash';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import { KadenceColorOutput, getPreviewSize, getBorderStyle } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize, getBorderStyle, getSpacingOptionOutput } from '@kadence/helpers';
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-
-import { getSpacingOptionOutput } from './utils';
 
 /**
  * Build the row edit
