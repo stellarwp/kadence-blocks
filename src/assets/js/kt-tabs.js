@@ -4,14 +4,14 @@
 		setupTabs() {
 			const ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 
-			ktTabWraps.forEach((thisElem) => {
+			ktTabWraps.forEach((thisElem, thisIndex) => {
 				if (!thisElem.classList.contains('initialized')) {
 					const ktTabListItemsBeforeCheck = thisElem.querySelectorAll(':scope > .kt-tabs-title-list li');
 
 					// Before we initialize this tab, remove the tab if the content tab is not found.
 					// This can happen due to conditional display.
 					ktTabListItemsBeforeCheck.forEach((subElem) => {
-						const listItemButton = subElem.querySelector('a');
+						const listItemButton = subElem.querySelector('button');
 						const tabId = listItemButton.getAttribute('data-tab');
 						const contentTab = thisElem.querySelector(
 							':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
@@ -24,7 +24,7 @@
 
 					const ktTabList = thisElem.querySelectorAll(':scope > .kt-tabs-title-list');
 					const ktTabListItems = thisElem.querySelectorAll(':scope > .kt-tabs-title-list > li');
-					const ktTabButtons = thisElem.querySelectorAll(':scope > .kt-tabs-title-list > li > a');
+					const ktTabButtons = thisElem.querySelectorAll('.kt-tabs-title-list > li > button');
 					const ktTabContentAreas = thisElem.querySelectorAll(
 						':scope > .kt-tabs-content-wrap > .kt-tab-inner-content'
 					);
@@ -40,7 +40,7 @@
 
 					ktTabButtons.forEach((subElem) => {
 						const parentListItem = subElem.parentElement;
-						const parentId = parentListItem.getAttribute('id');
+						const tabAnchor = subElem.getAttribute('data-anchor');
 						const isActive = parentListItem.classList.contains('kt-tab-title-active');
 						const isAccordion = parentListItem.classList.contains('kt-tabs-accordion-title');
 
@@ -50,11 +50,15 @@
 							':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
 						);
 
+						const uniqueId = document.getElementById(tabAnchor) ? `${tabAnchor}-${thisIndex}` : tabAnchor;
+						subElem.setAttribute('id', uniqueId);
+
 						if (!isAccordion) {
-							contentTab.setAttribute('aria-labelledby', parentId);
+							contentTab.setAttribute('aria-labelledby', uniqueId);
+							contentTab.setAttribute('id', `${uniqueId}-panel`);
 							parentListItem.setAttribute('role', 'presentation');
 							subElem.setAttribute('role', 'tab');
-							subElem.setAttribute('aria-controls', parentId);
+							subElem.setAttribute('aria-controls', `${uniqueId}-panel`);
 							subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 						} else {
 							subElem.setAttribute('aria-selected', isActive ? true : false);
@@ -74,20 +78,20 @@
 							switch (evt.which) {
 								case 32: // Space bar
 									evt.preventDefault();
-									listItem.querySelector('a').click();
+									listItem.querySelector('button').click();
 									break;
 								case 37:
 									if (listItem.previousElementSibling) {
-										listItem.previousElementSibling.querySelector('a').click();
+										listItem.previousElementSibling.querySelector('button').click();
 									} else {
-										listItem.parentElement.querySelector('li:last-of-type > a').click();
+										listItem.parentElement.querySelector('li:last-of-type > button').click();
 									}
 									break;
 								case 39:
 									if (listItem.nextElementSibling) {
-										listItem.nextElementSibling.querySelector('a').click();
+										listItem.nextElementSibling.querySelector('button').click();
 									} else {
-										listItem.parentElement.querySelector('li:first-of-type > a').click();
+										listItem.parentElement.querySelector('li:first-of-type > button').click();
 									}
 									break;
 							}
@@ -121,7 +125,7 @@
 						thisElem
 							.querySelectorAll(':scope > .kt-tabs-title-list > .kt-title-item')
 							.forEach((listItem) => {
-								const tabId = listItem.querySelector('a').getAttribute('data-tab');
+								const tabId = listItem.querySelector('button').getAttribute('data-tab');
 
 								const titleClasses = listItem.classList;
 								const accordionTitleClasses = [
@@ -142,10 +146,10 @@
 								);
 
 								ktContentWrap
-									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  button')
 									.removeAttribute('role');
 								ktContentWrap
-									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+									.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  button')
 									.removeAttribute('tabindex');
 							});
 					}
@@ -169,16 +173,16 @@
 				return;
 			}
 
-			const tabTitleItems = window.document.querySelector(window.location.hash + '.kt-title-item');
-			if (!tabTitleItems) {
+			const currentTabButton = window.document.querySelector(
+				'.kt-title-item > #' + window.location.hash.substring(1)
+			);
+			if (!currentTabButton) {
 				return;
 			}
 
-			const currentTab = window.document.querySelector('#' + window.location.hash.substring(1));
-
 			// Trigger tab change.
-			const tabNumber = currentTab.querySelector('a').getAttribute('data-tab');
-			const tabWrap = currentTab.closest('.kt-tabs-wrap');
+			const tabNumber = currentTabButton.getAttribute('data-tab');
+			const tabWrap = currentTabButton.closest('.kt-tabs-wrap');
 			window.KBTabs.setActiveTab(tabWrap, tabNumber);
 
 			//If collapsed accordions, go to that tab title
@@ -251,7 +255,9 @@
 			window.dispatchEvent(tabEvent);
 		},
 		setActiveTab(wrapper, tabNumber, moveFocus = true) {
-			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
+			const prevActiveAnchor = wrapper.querySelector(
+				':scope > .kt-tabs-title-list > li.kt-tab-title-active button'
+			);
 			const prevActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
 
 			if (prevActiveListItem && prevActiveAnchor) {
@@ -262,7 +268,7 @@
 
 			wrapper.className = wrapper.className.replace(/\bkt-active-tab-\S+/g, 'kt-active-tab-' + tabNumber);
 			const newActiveAnchor = wrapper.querySelector(
-				':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' a'
+				':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber + ' button'
 			);
 			const newActiveListItem = wrapper.querySelector(
 				':scope > .kt-tabs-title-list > li.kt-title-item-' + tabNumber
