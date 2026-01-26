@@ -13,7 +13,7 @@ let wasAutoSave = false;
  */
 subscribe(() => {
 	const editor = select('core/editor');
-	
+
 	if (!editor) {
 		return;
 	}
