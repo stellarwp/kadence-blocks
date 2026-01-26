@@ -67,6 +67,11 @@
 		</gutenberg-block>
 		<gutenberg-block type="kadence/image" translate="1">
 			<key name="id" type="post-ids" sub-type="attachment" />
+			<key name="kadenceDynamic">
+				<key name="*">
+					<key name="url" />
+				</key>
+			</key>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
 			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
