@@ -474,6 +474,7 @@ $link-color-property: var(
 			&.menu-item--toggled-on {
 				> .kb-link-wrap > .kb-nav-link-content:after {
 					transform: scale(1, 1) translate(50%, 0);
+					color: var(--kb-nav-link-color, inherit); !important;
 				}
 			}
 		}
