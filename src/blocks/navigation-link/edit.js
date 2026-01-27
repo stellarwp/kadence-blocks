@@ -826,6 +826,7 @@ export default function Edit(props) {
 										? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' + imageRatio
 										: ''
 								}`}
+								style={{ position: 'relative' }}
 							>
 								<div className="kadence-navigation-link-image-inner-intrinsic">
 									<img
@@ -869,6 +870,7 @@ export default function Edit(props) {
 										/>
 									)}
 								</div>
+								<div className="kb-nav-link-image-overlay" aria-hidden="true" />
 							</div>
 						</div>
 					)}
