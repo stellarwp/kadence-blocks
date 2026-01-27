@@ -31,7 +31,15 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 
 		const typedHeadings = document.querySelectorAll('.kt-typed-text');
 
+		// Check if user prefers reduced motion
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 		typedHeadings.forEach(function (element) {
+			// If user prefers reduced motion, skip animation and show original text
+			if (prefersReducedMotion) {
+				return;
+			}
+
 			let strings = element.getAttribute('data-strings');
 			let stringsArray = [];
 			let sanitizedStrings;
