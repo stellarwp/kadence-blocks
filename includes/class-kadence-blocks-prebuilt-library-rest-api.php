@@ -846,14 +846,26 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param string $content The content to process.
 	 */
 	public function process_cpt( $content, $cpt_blocks, $style ) {
+		$valid_cpt_block_names = [
+			'kadence/header',
+			'kadence/navigation',
+			'kadence/advanced-form',
+			'kadence/query',
+			'kadence/query-card',
+		];
+		$valid_cpt_block_post_types = [
+			'kadence_header',
+			'kadence_navigation',
+			'kadence_form',
+			'kadence_query',
+			'kadence_query_card',
+		];
+
+
 		foreach ( $cpt_blocks as $cpt_block_name => $cpt_block_content ) {
-			switch ( $cpt_block_name ) {
-				case 'kadence/header':
-				case 'kadence/navigation':
-				case 'kadence/advanced-form':
-				case 'kadence/query':
-				case 'kadence/query-card':
-					foreach ( $cpt_block_content as $cpt_key => $cpt_data ) {
+			if ( in_array( $cpt_block_name, $valid_cpt_block_names ) ) {
+				foreach ( $cpt_block_content as $cpt_key => $cpt_data ) {
+					if ( in_array( $cpt_data['post_type'], $valid_cpt_block_post_types ) ) {
 						$old_id = $cpt_data['ID'];
 						$id_map = [];
 						if ( ! empty( $cpt_data['inner_posts'] ) && is_array( $cpt_data['inner_posts'] ) ) {
@@ -872,7 +884,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 							$content               = $this->update_block_ids( $content, $new_id_map );
 						}
 					}
-					break;
+				}
 			}
 		}
 		return $content;
@@ -922,7 +934,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				'post_type'    => $cpt_data['post_type'],
 				'post_title'   => $title,
 				'post_content' => '',
-				'post_status'  => 'publish',
+				'post_status'  => current_user_can( 'publish_posts' ) ? 'publish' : 'pending',
 			],
 			true
 		);
