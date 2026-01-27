@@ -794,6 +794,10 @@ function KadenceConfig() {
 												label: __('Enable Title Icon Settings', 'kadence-blocks'),
 											},
 											{
+												key: 'subtitle',
+												label: __('Enable Subtitle Settings', 'kadence-blocks'),
+											},
+											{
 												key: 'structure',
 												label: __('Enable Structure Settings', 'kadence-blocks'),
 											},
