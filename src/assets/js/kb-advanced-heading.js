@@ -95,6 +95,34 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			element.getAttribute('data-smart-backspace')
 				? (kbTypedSettings.smartBackspace = element.getAttribute('data-smart-backspace') === 'true')
 				: null;
+
+			// Create a hidden live region for screen reader announcements
+			const liveRegion = document.createElement('span');
+			liveRegion.className = 'kt-typed-text-sr-only';
+			liveRegion.setAttribute('aria-live', 'polite');
+			liveRegion.setAttribute('aria-atomic', 'true');
+			liveRegion.style.cssText = 'position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;';
+			
+			// Insert the live region right after the element
+			element.parentNode.insertBefore(liveRegion, element.nextSibling);
+
+			// Store the cursor character to remove it from announcements
+			const cursorChar = kbTypedSettings.cursorChar || '_';
+
+			// Use Typed.js callbacks to announce strings when they're complete
+			kbTypedSettings.onStringTyped = function (arrayPos, self) {
+				// Announce the complete string when it's fully typed
+				const currentString = self.strings[arrayPos];
+				if (currentString) {
+					const cleanString = currentString.replace(cursorChar, '').trim(); // Remove cursor character
+					if (cleanString) {
+						// Update the live region to trigger screen reader announcement
+						liveRegion.textContent = '';
+						liveRegion.textContent = cleanString;
+					}
+				}
+			};
+
 			element.innerHTML = '';
 
 			new Typed(element, kbTypedSettings);
