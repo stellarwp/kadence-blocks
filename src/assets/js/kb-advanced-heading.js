@@ -101,8 +101,9 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			liveRegion.className = 'kt-typed-text-sr-only';
 			liveRegion.setAttribute('aria-live', 'polite');
 			liveRegion.setAttribute('aria-atomic', 'true');
-			liveRegion.style.cssText = 'position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;';
-			
+			liveRegion.style.cssText =
+				'position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;';
+
 			// Insert the live region right after the element
 			element.parentNode.insertBefore(liveRegion, element.nextSibling);
 
