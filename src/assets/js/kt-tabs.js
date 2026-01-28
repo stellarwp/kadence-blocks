@@ -51,7 +51,9 @@
 						);
 
 						if (!isAccordion) {
-							contentTab.setAttribute('aria-labelledby', parentId);
+							if (contentTab) {
+								contentTab.setAttribute('aria-labelledby', parentId);
+							}
 							parentListItem.setAttribute('role', 'presentation');
 							subElem.setAttribute('role', 'tab');
 							subElem.setAttribute('aria-controls', parentId);
@@ -60,9 +62,11 @@
 							subElem.setAttribute('aria-selected', isActive ? true : false);
 						}
 
-						contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+						if (contentTab) {
+							contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+						}
 
-						if (isActive) {
+						if (isActive && contentTab) {
 							contentTab.style.display = 'block';
 						}
 					});
