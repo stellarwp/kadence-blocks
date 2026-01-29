@@ -66,7 +66,7 @@
 					const showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
 					const galleryLinks = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
 					for (let l = 0; l < galleryLinks.length; l++) {
-						galleryLinks[l].setAttribute('aria-label', kb_glightbox.lightBoxAriaLabel);
+						galleryLinks[l].setAttribute('aria-label', kb_glightbox.lightBoxAriaLabel + ' ' + (l + 1));
 					}
 					kadenceBlocksGLight.foundClasses[i] = false;
 					for (let n = 0; n < galleryClass.length; n++) {
