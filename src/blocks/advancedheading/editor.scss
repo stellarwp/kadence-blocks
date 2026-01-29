@@ -666,3 +666,9 @@ button.components-button.kt-font-clear-btn {
         z-index: 1;
     }
 }
+
+// We notice a style conflict with WordPress styles in Gutenberg editor.
+// A padding adds to heading tag if it has class "has-background" along with "has-theme-palette-*" class.
+// This CSS rule will override that padding issue.
+// Reference: https://stellarwp.atlassian.net/browse/KAD-5283
+.kadence-advancedheading-text.has-background{padding: 0;}

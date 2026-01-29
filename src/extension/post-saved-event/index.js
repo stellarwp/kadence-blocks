@@ -13,11 +13,6 @@ let wasAutoSave = false;
  */
 subscribe(() => {
 	const editor = select('core/editor');
-
-	if (!editor) {
-		return;
-	}
-
 	const isSaving = editor.isSavingPost();
 	const isAutoNow = editor.isAutosavingPost();
 
