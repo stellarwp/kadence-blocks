@@ -27,6 +27,13 @@ final class Admin_Provider extends Provider {
 	 * @return void
 	 */
 	private function register_post_saved_event(): void {
+		global $pagenow;
+
+		// Only load on post edit screens (not widgets.php or site-editor.php).
+		if ( ! in_array( $pagenow, [ 'post.php', 'post-new.php' ] ) ) {
+			return;
+		}
+
 		add_action(
 			'enqueue_block_editor_assets',
 			function (): void {
