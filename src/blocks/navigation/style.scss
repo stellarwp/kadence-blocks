@@ -1520,6 +1520,39 @@ $link-color-property: var(
 		}
 	}
 
+	// Image overlay (mediaType=image): container background cleared; overlay uses --kb-nav-link-media-container-background*.
+	&.kb-menu-has-image .link-media-container {
+		background: transparent;
+	}
+	&.kb-menu-has-image .link-media-container .kadence-navigation-link-image-intrinsic {
+		position: relative;
+	}
+	.kb-nav-link-image-overlay {
+		position: absolute;
+		inset: 0;
+		background-color: var(--kb-nav-link-media-container-background, transparent);
+		opacity: 0.5;
+		pointer-events: none;
+	}
+	.kb-link-wrap:hover .kb-nav-link-image-overlay {
+		background-color: var(
+			--kb-nav-link-media-container-background-hover,
+			var(--kb-nav-link-media-container-background, transparent)
+		);
+	}
+	.kb-link-wrap:active .kb-nav-link-image-overlay {
+		background-color: var(
+			--kb-nav-link-media-container-background-active,
+			var(--kb-nav-link-media-container-background-hover, var(--kb-nav-link-media-container-background, transparent))
+		);
+	}
+	&.current-menu-item .kb-nav-link-image-overlay {
+		background-color: var(
+			--kb-nav-link-media-container-background-active,
+			var(--kb-nav-link-media-container-background, transparent)
+		);
+	}
+
 	.link-svg-icon {
 		display: inline-flex;
 		justify-content: center;
