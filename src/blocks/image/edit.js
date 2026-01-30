@@ -554,7 +554,7 @@ export function ImageEdit(props) {
 			{...blockProps}
 			style={{
 				maxWidth: imgMaxWidth && (align === 'left' || align === 'right') ? imgMaxWidth + 'px' : undefined,
-				zIndex: zIndex !== undefined && zIndex !== '' ? zIndex : undefined,
+				zIndex: zIndex ? zIndex : undefined,
 				marginTop: '' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginUnit) : undefined,
 				marginRight:
 					'' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginUnit) : undefined,

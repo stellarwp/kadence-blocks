@@ -496,7 +496,7 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 				? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
 				: undefined,
 			minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
-			zIndex: zIndex !== undefined && zIndex !== '' ? zIndex : undefined,
+			zIndex: zIndex ? zIndex : undefined,
 			boxShadow:
 				undefined !== displayBoxShadow &&
 				displayBoxShadow &&
