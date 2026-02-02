@@ -5,6 +5,8 @@ const EXTERNAL_NAME = 'kadence';
 const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';
 
+const path = require('path');
+
 function camelCaseDash(string) {
 	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
@@ -55,14 +57,27 @@ module.exports = {
 		'extension-stores': './src/extension/stores/index.js',
 		'extension-block-css': './src/extension/block-css/index.js',
 		'extension-image-picker': './src/extension/image-picker/index.js',
+		'extension-admin-notices': './src/extension/admin-notices/index.js',
 		'admin-kadence-home': './src/home.js',
 		'header-visual-builder': './src/header-visual-builder.js',
+		'kadence-optimizer': './includes/resources/Optimizer/assets/js/optimizer/index.js',
+		'lazy-loader': './includes/resources/Optimizer/Lazy_Load/assets/js/lazy-loader/index.js',
+		'post-saved-event': './src/extension/post-saved-event/index.js',
 	},
 	output: {
 		...defaultConfig.output,
 		path: __dirname + '/dist/',
 		library: ['kadence', '[name]'],
 		libraryTarget: 'this',
+	},
+	resolve: {
+		alias: {
+			'@kadence-bundled/admin-notices': path.resolve(__dirname, 'src/extension/admin-notices'),
+			[`${PROJECT_NAMESPACE}optimizer`]: path.resolve(
+				__dirname,
+				'includes/resources/Optimizer/assets/js/optimizer'
+			),
+		},
 	},
 	plugins: [
 		new StyleOnlyEntryPlugin(),

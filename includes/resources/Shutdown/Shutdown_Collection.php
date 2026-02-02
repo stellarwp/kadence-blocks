@@ -12,12 +12,12 @@ final class Shutdown_Collection {
 	/**
 	 * @var Terminable[]
 	 */
-	private $tasks;
+	private array $tasks;
 
 	/**
 	 * @param Terminable[] $tasks The tasks to process.
 	 */
-	public function __construct( array $tasks ) {
+	public function __construct( array $tasks = [] ) {
 		$this->tasks = $tasks;
 	}
 
@@ -27,5 +27,4 @@ final class Shutdown_Collection {
 	public function all(): array {
 		return $this->tasks;
 	}
-
 }

@@ -208,7 +208,7 @@ function CloudLibraryPatterns({
 					<span className="kb-patterns-count-message">
 						{search
 							? sprintf(
-									/* translators: %d: number of patterns. %s: block pattern search query */
+									/* translators: %1$s: number of patterns. %2$s: block pattern search query */
 									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredPatterns.length),
 									filteredPatterns.length,
 									search
