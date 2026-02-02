@@ -741,7 +741,7 @@ function buildFieldBorderRadiusMeta(style) {
 
 function applyFormIdToBlocks(rootBlock, formId) {
 	const clone = cloneDeep(rootBlock);
-	const numericId = Number(formId);
+	// const numericId = Number(formId);
 	const stringId = String(formId);
 
 	const assignIds = (block, isRoot = false) => {
