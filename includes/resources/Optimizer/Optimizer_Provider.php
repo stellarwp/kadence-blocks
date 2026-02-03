@@ -30,11 +30,6 @@ final class Optimizer_Provider extends Provider {
 	];
 
 	public function register(): void {
-		// Don't load any optimization logic when running through wp cli.
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			return;
-		}
-
 		$this->container->singleton( State::class, State::class );
 
 		/**
