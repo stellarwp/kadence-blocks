@@ -511,6 +511,93 @@ $link-color-property: var(
 	}
 }
 
+@mixin parent-active-styles {
+	.menu-item {
+		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+			--kb-nav-link-background-active-lv: var(
+				--kb-nav-link-background-active-ancestor,
+				var(--kb-nav-link-background-active)
+			);
+			--kb-nav-link-active-border-top-lv: var(
+				--kb-nav-link-active-ancestor-border-top,
+				var(--kb-nav-link-active-border-top)
+			);
+			--kb-nav-link-active-border-right-lv: var(
+				--kb-nav-link-active-ancestor-border-right,
+				var(--kb-nav-link-active-border-right)
+			);
+			--kb-nav-link-active-border-bottom-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom,
+				var(--kb-nav-link-active-border-bottom)
+			);
+			--kb-nav-link-active-border-left-lv: var(
+				--kb-nav-link-active-ancestor-border-left,
+				var(--kb-nav-link-active-border-left)
+			);
+			--kb-nav-link-active-border-top-left-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-active-border-top-left-radius)
+			);
+			--kb-nav-link-active-border-top-right-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-active-border-top-right-radius)
+			);
+			--kb-nav-link-active-border-bottom-right-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-active-border-bottom-left-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-active-box-shadow-lv: var(
+				--kb-nav-link-box-shadow-active-ancestor,
+				var(--kb-nav-link-box-shadow-active)
+			);
+			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active-ancestor);
+			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active-ancestor);
+			--kb-nav-link-media-container-background-active-lv: var(
+				--kb-nav-link-media-container-background-active-ancestor
+			);
+			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active-ancestor);
+			--kb-nav-link-media-container-active-border-top-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top,
+				var(--kb-nav-link-media-container-active-border-top)
+			);
+			--kb-nav-link-media-container-active-border-right-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-right,
+				var(--kb-nav-link-media-container-active-border-right)
+			);
+			--kb-nav-link-media-container-active-border-bottom-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom,
+				var(--kb-nav-link-media-container-active-border-bottom)
+			);
+			--kb-nav-link-media-container-active-border-left-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-left,
+				var(--kb-nav-link-media-container-active-border-left)
+			);
+			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-media-container-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-media-container-active-border-top-right-radius)
+			);
+			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-media-container-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-media-container-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active-ancestor);
+		}
+	}
+}
+
 .wp-block-kadence-navigation {
 	max-width: 100%;
 	box-sizing: border-box;
@@ -652,6 +739,25 @@ $link-color-property: var(
 	&.kb-nav-mobile-horizontal-layout-grid.navigation-mobile-orientation-horizontal {
 		@media (max-width: vars.$phone-minus-query) {
 			@include layout-grid-styles();
+		}
+	}
+
+	//desktop parent/ancestor active styles
+	.navigation-desktop-parent-active-true {
+		@media (min-width: vars.$laptop-plus-query) {
+			@include parent-active-styles();
+		}
+	}
+	//tablet parent/ancestor active styles
+	.navigation-tablet-parent-active-true {
+		@media (min-width: vars.$before-tablet-plus-query) and (max-width: vars.$tablet-minus-query) {
+			@include parent-active-styles();
+		}
+	}
+	//mobile parent/ancestor active styles
+	.navigation-mobile-parent-active-true {
+		@media (max-width: vars.$phone-minus-query) {
+			@include parent-active-styles();
 		}
 	}
 
@@ -842,88 +948,6 @@ $link-color-property: var(
 				--kb-nav-link-media-container-active-border-bottom-left-radius
 			);
 			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active);
-		}
-		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
-			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
-			--kb-nav-link-background-active-lv: var(
-				--kb-nav-link-background-active-ancestor,
-				var(--kb-nav-link-background-active)
-			);
-			--kb-nav-link-active-border-top-lv: var(
-				--kb-nav-link-active-ancestor-border-top,
-				var(--kb-nav-link-active-border-top)
-			);
-			--kb-nav-link-active-border-right-lv: var(
-				--kb-nav-link-active-ancestor-border-right,
-				var(--kb-nav-link-active-border-right)
-			);
-			--kb-nav-link-active-border-bottom-lv: var(
-				--kb-nav-link-active-ancestor-border-bottom,
-				var(--kb-nav-link-active-border-bottom)
-			);
-			--kb-nav-link-active-border-left-lv: var(
-				--kb-nav-link-active-ancestor-border-left,
-				var(--kb-nav-link-active-border-left)
-			);
-			--kb-nav-link-active-border-top-left-radius-lv: var(
-				--kb-nav-link-active-ancestor-border-top-left-radius,
-				var(--kb-nav-link-active-border-top-left-radius)
-			);
-			--kb-nav-link-active-border-top-right-radius-lv: var(
-				--kb-nav-link-active-ancestor-border-top-right-radius,
-				var(--kb-nav-link-active-border-top-right-radius)
-			);
-			--kb-nav-link-active-border-bottom-right-radius-lv: var(
-				--kb-nav-link-active-ancestor-border-bottom-right-radius,
-				var(--kb-nav-link-active-border-bottom-right-radius)
-			);
-			--kb-nav-link-active-border-bottom-left-radius-lv: var(
-				--kb-nav-link-active-ancestor-border-bottom-left-radius,
-				var(--kb-nav-link-active-border-bottom-left-radius)
-			);
-			--kb-nav-link-active-box-shadow-lv: var(
-				--kb-nav-link-box-shadow-active-ancestor,
-				var(--kb-nav-link-box-shadow-active)
-			);
-			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active-ancestor);
-			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active-ancestor);
-			--kb-nav-link-media-container-background-active-lv: var(
-				--kb-nav-link-media-container-background-active-ancestor
-			);
-			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active-ancestor);
-			--kb-nav-link-media-container-active-border-top-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-top,
-				var(--kb-nav-link-media-container-active-border-top)
-			);
-			--kb-nav-link-media-container-active-border-right-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-right,
-				var(--kb-nav-link-media-container-active-border-right)
-			);
-			--kb-nav-link-media-container-active-border-bottom-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-bottom,
-				var(--kb-nav-link-media-container-active-border-bottom)
-			);
-			--kb-nav-link-media-container-active-border-left-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-left,
-				var(--kb-nav-link-media-container-active-border-left)
-			);
-			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-top-left-radius,
-				var(--kb-nav-link-media-container-active-border-to-left-radiusp)
-			);
-			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-top-right-radius,
-				var(--kb-nav-link-media-container-active-border-top-right-radius)
-			);
-			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-bottom-right-radius,
-				var(--kb-nav-link-media-container-active-border-bottom-right-radius)
-			);
-			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
-				--kb-nav-link-media-container-active-ancestor-border-bottom-left-radius,
-				var(--kb-nav-link-media-container-active-border-bottom-left-radius)
-			);
-			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active-ancestor);
 		}
 	}
 
