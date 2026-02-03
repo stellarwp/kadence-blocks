@@ -13,7 +13,9 @@
 		"build:custom": "wp-scripts build --webpack-bundle-analyzer",
 		"lint-js": "wp-scripts lint-js",
 		"lint-js-fix": "wp-scripts lint-js --fix",
-		"format": "wp-scripts format"
+		"format": "wp-scripts format",
+		"link-kadence-packages": "node node_modules/@kadence/components/scripts/npm/link-kadence-packages.js",
+		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js"
 	},
 	"dependencies": {
 		"@kadence/components": "github:stellarwp/kadence-components#1.1.5",
