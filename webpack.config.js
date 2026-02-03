@@ -1,5 +1,6 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
+const ReplaceTextDomainPlugin = require('@kadence/components/scripts/webpack/replace-text-domain-plugin.js');
 const PROJECT_NAMESPACE = '@kadence/';
 
 const path = require('path');
@@ -69,5 +70,12 @@ module.exports = {
 			),
 		},
 	},
-	plugins: [...defaultConfig.plugins, new StyleOnlyEntryPlugin()],
+	plugins: [
+		...defaultConfig.plugins,
+		new StyleOnlyEntryPlugin(),
+		new ReplaceTextDomainPlugin({
+			placeholder: '__KADENCE__TEXT__DOMAIN__',
+			value: 'kadence-blocks',
+		}),
+	],
 };
