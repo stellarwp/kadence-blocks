@@ -17,6 +17,7 @@ function BackendStyles(props) {
 		columns,
 		dataTypography,
 		headerTypography,
+		captionTypography,
 		evenOddBackground,
 		backgroundColorEven,
 		backgroundColorOdd,
@@ -44,6 +45,9 @@ function BackendStyles(props) {
 		headerAlign,
 		headerAlignTablet,
 		headerAlignMobile,
+		captionAlign,
+		captionAlignTablet,
+		captionAlignMobile,
 		columnSettings,
 		overflowXScroll,
 		rowMinHeight,
@@ -65,6 +69,7 @@ function BackendStyles(props) {
 	// Get preview sizes
 	const previewHeaderAlign = getPreviewSize(previewDevice, headerAlign, headerAlignTablet, headerAlignMobile);
 	const previewTextAlign = getPreviewSize(previewDevice, textAlign, textAlignTablet, textAlignMobile);
+	const previewCaptionAlign = getPreviewSize(previewDevice, captionAlign, captionAlignTablet, captionAlignMobile);
 	const previewMaxHeight = getPreviewSize(previewDevice, maxHeight?.[0], maxHeight?.[1], maxHeight?.[2]);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth?.[0], maxWidth?.[1], maxWidth?.[2]);
 	const previewRowMinHeight = getPreviewSize(previewDevice, rowMinHeight, tabletRowMinHeight, mobileRowMinHeight);
@@ -164,6 +169,15 @@ function BackendStyles(props) {
 		cellPaddingType
 	);
 
+	if (captionTypography?.[0]?.color) {
+		css.set_selector(`.kb-table${uniqueID} caption`);
+		css.add_property('color', KadenceColorOutput(captionTypography[0].color));
+	}
+
+	css.set_selector(`.kb-table${uniqueID} caption`);
+	css.render_font(captionTypography ? captionTypography : [], previewDevice);
+	css.add_property('text-align', previewCaptionAlign);
+
 	css.set_selector(`.kb-table${uniqueID} td`);
 	css.add_property('text-align', previewTextAlign);
 	css.set_selector(`.kb-table${uniqueID} tr td`);
@@ -214,11 +228,13 @@ function BackendStyles(props) {
 	if (columnBackgroundsHover) {
 		columnBackgroundsHover.forEach((background, index) => {
 			if (background) {
-				css.set_selector(
-					`.kb-table${uniqueID} td:nth-of-type(${index + 1}):hover, .kb-table${uniqueID} th:nth-of-type(${
-						index + 1
-					}):hover`
-				);
+				if (isFirstColumnHeader) {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index}):hover`);
+				} else {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index + 1}):hover`);
+				}
+				css.add_property('background-color', KadenceColorOutput(background));
+				css.set_selector(`.kb-table${uniqueID} th:nth-of-type(${index + 1}):hover`);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});

@@ -17,6 +17,71 @@
 			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
+
+		initAllOptimized() {
+			// Use intersection observer for optimized pages.
+			const allSliders = document.querySelectorAll(
+				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init, ' +
+					'.wp-block-kadence-testimonials .kt-blocks-carousel-init, ' +
+					'.kb-blocks-bg-slider > .kt-blocks-carousel-init'
+			);
+
+			if (allSliders.length === 0) {
+				return;
+			}
+
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							const slider = entry.target;
+							observer.unobserve(slider);
+							// Detect if it's an advanced slider based on parent class
+							const isAdvanced = Boolean(slider.closest('.wp-block-kadence-advancedgallery'));
+							this.deferSliderInit(slider, isAdvanced);
+						}
+					});
+				},
+				{
+					rootMargin: '150px 0px',
+				}
+			);
+
+			allSliders.forEach((slider) => {
+				observer.observe(slider);
+			});
+		},
+
+		/**
+		 * Defers slider initialization until the browser's execution stack is clear
+		 * and the browser is idle, helping ensure 3rd party scripts have completed
+		 * their DOM modifications before initializing sliders.
+		 *
+		 * @param {Element} slider - The slider element to initialize
+		 * @param {boolean} isAdvanced - Whether this is an advanced slider
+		 */
+		deferSliderInit(slider, isAdvanced = false) {
+			// Wait for current execution stack to clear
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					// Wait for browser to be idle
+					if ('requestIdleCallback' in window) {
+						requestIdleCallback(
+							() => {
+								this.bootstrapSliders([slider], isAdvanced);
+							},
+							{ timeout: 1000 }
+						);
+					} else {
+						// Fallback for browsers without requestIdleCallback
+						setTimeout(() => {
+							this.bootstrapSliders([slider], isAdvanced);
+						}, 100);
+					}
+				});
+			});
+		},
+
 		bootstrapSliders(elementList, isAdvanced = false) {
 			if (!elementList || elementList.length === 0) {
 				return;
@@ -26,12 +91,15 @@
 				const listElement = elementList[i];
 				let thisSlider;
 				let slideCount;
+				let initElement; // for adding is-initialized class later
 
 				if (isAdvanced) {
 					// Advanced sliders: listElement is a child, find the parent slider
 					if (!listElement || listElement.classList.contains('is-initialized')) {
 						continue;
 					}
+
+					initElement = listElement;
 
 					// Check if listElement itself is the slider (for thumbnail sliders)
 					// Thumbnail sliders have both kt-blocks-carousel-init and splide classes
@@ -70,6 +138,7 @@
 						continue;
 					}
 
+					initElement = thisSlider;
 					slideCount = this.createSplideElements(thisSlider);
 				}
 
@@ -133,6 +202,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 
 					var resizeTimer;
 					const resizeHandler = function (e) {
@@ -177,6 +250,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else if (sliderType && sliderType === 'thumbnail') {
 					const navSliderId = parsedData.sliderNav;
 					const navSlider = document.querySelector('#' + navSliderId);
@@ -204,7 +281,7 @@
 					// navSliderOptions.rewind = true;
 
 					mainSliderOptions.type =
-						mainSliderParsedData.sliderFade || undefined == mainSliderParsedData.sliderFade
+						mainSliderParsedData.sliderFade || undefined === mainSliderParsedData.sliderFade
 							? 'fade'
 							: 'slide';
 					mainSliderOptions.rewind = true;
@@ -224,7 +301,7 @@
 							arrows: navSliderOptions.arrows ? isOverflow : false,
 							pagination: navSliderOptions.pagination ? isOverflow : false,
 							drag: navSliderOptions.drag ? isOverflow : false,
-							rewind: !isOverflow ? true : false,
+							rewind: !isOverflow,
 							type: !isOverflow ? 'slide' : navSliderOptions.type,
 							clones: isOverflow ? undefined : 0, // Toggle clones
 						};
@@ -232,6 +309,10 @@
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else if (sliderType && sliderType === 'rewind') {
 					splideOptions.type = 'slide';
 					splideOptions.rewind = true;
@@ -267,6 +348,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				} else {
 					const splideSlider = new Splide(thisSlider, splideOptions);
 					if (!inHiddenMenu) {
@@ -300,6 +385,10 @@
 						});
 					});
 					splideSlider.mount();
+					// Mark as initialized for lightbox script
+					if (initElement) {
+						initElement.classList.add('is-initialized');
+					}
 				}
 			}
 		},
@@ -381,6 +470,7 @@
 				direction: dataSet.sliderDirection,
 				pauseOnHover: dataSet.sliderPauseHover || false,
 				gap: dataSet.sliderGap || 0,
+				label: dataSet.sliderLabel || '',
 				breakpoints: {
 					543: {
 						perPage: dataSet.columnsSs || 1,
@@ -439,11 +529,19 @@
 		// Initiate the menus when the DOM loads.
 		init() {
 			if (typeof Splide === 'function') {
-				kadenceBlocksSplide.initAll();
+				if (document.body.classList.contains('kb-optimized')) {
+					kadenceBlocksSplide.initAllOptimized();
+				} else {
+					kadenceBlocksSplide.initAll();
+				}
 			} else {
 				var initLoadDelay = setInterval(function () {
 					if (typeof Splide === 'function') {
-						kadenceBlocksSplide.initAll();
+						if (document.body.classList.contains('kb-optimized')) {
+							kadenceBlocksSplide.initAllOptimized();
+						} else {
+							kadenceBlocksSplide.initAll();
+						}
 						clearInterval(initLoadDelay);
 					} else {
 						console.log('No Splide found');

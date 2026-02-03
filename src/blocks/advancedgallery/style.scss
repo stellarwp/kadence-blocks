@@ -139,7 +139,7 @@
 				margin-top: 0;
 				color: #ffffff;
 				text-align: center;
-				background: linear-gradient(0deg, rgba($color: #000000, $alpha: 0.5) 0, rgba($color: #000000, $alpha: 0) 100%);
+				background: linear-gradient(0deg, rgba($color: #000000, $alpha: 0.8) 0, rgba($color: #000000, $alpha: 0) 100%);
 				img {
 					display: inline;
 				}
@@ -217,7 +217,7 @@
 		margin: 0;
 		opacity: 0;
 		transition: opacity 0.3s ease-in-out;
-		background: rgba( 0,0,0, 0.5 );
+		background: rgba( 0,0,0, 0.8 );
 	}
 }
 .kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item:hover .kadence-blocks-gallery-item__caption, .kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item:focus-within .kadence-blocks-gallery-item__caption {
@@ -278,7 +278,7 @@
 .kb-gallery-caption-style-below .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption {
 	padding: 10px;
 	margin-top:0;
-	background: rgba( 0,0,0, 0.5 );
+	background: rgba( 0,0,0, 0.8 );
 	position: static;
 }
 .kb-gallery-type-carousel .kb-gallery-image-ratio-inherit.kb-gallery-image-contain:after, .kb-gallery-type-slider .kb-gallery-image-ratio-inherit.kb-gallery-image-contain:after {
@@ -807,6 +807,19 @@
 		gap: 1rem;
 		position: absolute;
 		z-index: 1;
+	}
+
+	// Fix for thumbnail slider: allow overflow visible when arrows are positioned outside
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-left),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-top-right) {
+		overflow: visible;
+	}
+
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-left),
+	.kb-gallery-type-thumbslider .kt-blocks-carousel:has(.kb-slider-arrow-position-outside-bottom-right) {
+		overflow: visible;
 	}
 
 // Pause Button Styles

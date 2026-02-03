@@ -744,7 +744,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['collapseOrder'] ) ) {
 			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id );
-			$css->add_property( 'order', $attributes['collapseOrder'] );
+			$css->add_property( 'order', $attributes['collapseOrder'] . ' !important' );
 		}
 		if ( ! empty( $attributes['textAlign'][2] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
@@ -923,6 +923,14 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		return $css->css_output();
 	}
+
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$html = parent::build_html( $attributes, $unique_id, $content, $block_instance );
+
+		// Do not remove: The Optimizer uses this.
+		return apply_filters( 'kadence_blocks_column_html', $html, $attributes, $unique_id, $block_instance );
+	}
+
 	/**
 	 * Set the vertical align.
 	 *
@@ -980,4 +988,5 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 	}
 }
+
 Kadence_Blocks_Column_Block::get_instance();
