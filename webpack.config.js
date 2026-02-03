@@ -1,5 +1,5 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
-const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
+const StyleOnlyEntryPlugin = require('@kadence/components/scripts/webpack/style-only-entry-plugin.js');
 const ReplaceTextDomainPlugin = require('@kadence/components/scripts/webpack/replace-text-domain-plugin.js');
 const PROJECT_NAMESPACE = '@kadence/';
 
