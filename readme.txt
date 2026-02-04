@@ -1,4 +1,4 @@
-=== Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
+=== Kadence Blocks — Page Builder Toolkit for Gutenberg Editor ===
 Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
