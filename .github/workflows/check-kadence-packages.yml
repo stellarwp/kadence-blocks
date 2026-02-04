@@ -1,0 +1,98 @@
+name: Check Kadence Packages Versions
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+      
+      - name: Check package versions
+        id: check_versions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Array of packages to check
+          packages=("@kadence/kadence-components" "@kadence/helpers" "@kadence/kadence-icons")
+          
+          # Get current versions from package.json
+          current_components=$(grep '"@kadence/components":' package.json | sed 's/.*#//' | tr -d '", ')
+          current_helpers=$(grep '"@kadence/helpers":' package.json | sed 's/.*#//' | tr -d '", ')
+          current_icons=$(grep '"@kadence/icons":' package.json | sed 's/.*#//' | tr -d '", ')
+          
+          echo "Current versions:"
+          echo "  @kadence/components: $current_components"
+          echo "  @kadence/helpers: $current_helpers"
+          echo "  @kadence/icons: $current_icons"
+          
+          # Check latest releases
+          echo ""
+          echo "Latest releases:"
+          
+          updates_available=false
+          updates_message=""
+          
+          # Check kadence-components
+          latest_components=$(gh release list --repo stellarwp/kadence-components --limit 1 --json tagName -q '.[0].tagName' | sed 's/v//')
+          echo "  @kadence/components: $latest_components"
+          if [ "$current_components" != "$latest_components" ]; then
+            updates_available=true
+            updates_message="${updates_message}**@kadence/components**: $current_components → $latest_components\n"
+          fi
+          
+          # Check kadence-helpers
+          latest_helpers=$(gh release list --repo stellarwp/kadence-helpers --limit 1 --json tagName -q '.[0].tagName' | sed 's/v//')
+          echo "  @kadence/helpers: $latest_helpers"
+          if [ "$current_helpers" != "$latest_helpers" ]; then
+            updates_available=true
+            updates_message="${updates_message}**@kadence/helpers**: $current_helpers → $latest_helpers\n"
+          fi
+          
+          # Check kadence-icons
+          latest_icons=$(gh release list --repo stellarwp/kadence-icons --limit 1 --json tagName -q '.[0].tagName' | sed 's/v//')
+          echo "  @kadence/icons: $latest_icons"
+          if [ "$current_icons" != "$latest_icons" ]; then
+            updates_available=true
+            updates_message="${updates_message}**@kadence/icons**: $current_icons → $latest_icons\n"
+          fi
+          
+          # Set outputs
+          echo "updates_available=$updates_available" >> $GITHUB_OUTPUT
+          echo "updates_message<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$updates_message" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "latest_components=$latest_components" >> $GITHUB_OUTPUT
+          echo "latest_helpers=$latest_helpers" >> $GITHUB_OUTPUT
+          echo "latest_icons=$latest_icons" >> $GITHUB_OUTPUT
+      
+      - name: Fail if updates available
+        if: steps.check_versions.outputs.updates_available == 'true'
+        run: |
+          echo "❌ Updates available for Kadence packages:"
+          echo -e "${{ steps.check_versions.outputs.updates_message }}"
+          exit 1
+      
+      - name: Success message
+        if: steps.check_versions.outputs.updates_available == 'false'
+        run: |
+          echo "✅ All Kadence packages are up to date!"
+          echo "  @kadence/components: ${{ steps.check_versions.outputs.latest_components }}"
+          echo "  @kadence/helpers: ${{ steps.check_versions.outputs.latest_helpers }}"
+          echo "  @kadence/icons: ${{ steps.check_versions.outputs.latest_icons }}"
