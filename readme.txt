@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.6.2 =
 Release Date: 5th February 2026
 * Fix: Correct Authorization for Media Upload for some user roles
+* Fix: Don't run optimizer when in WP CLI
 
 = 3.6.1 =
 Release Date: 29th January 2026
