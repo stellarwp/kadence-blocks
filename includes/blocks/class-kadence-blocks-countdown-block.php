@@ -657,7 +657,8 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		wp_register_script( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countdown.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countdown.min.js', array( 'wp-i18n' ), KADENCE_BLOCKS_VERSION, true );
+		wp_set_script_translations( 'kadence-blocks-countdown', 'kadence-blocks' );
 	}
 
 

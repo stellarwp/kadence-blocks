@@ -184,12 +184,12 @@ class TableTest extends KadenceBlocksUnit {
 		$css_helper = new CSSTestHelper($css_output);
 
 
-		$this->assertStringNotContainsString( 'td:nth-child(1):hover', $css_output );
-		$this->assertStringNotContainsString( 'td:nth-child(4):hover', $css_output );
+		$this->assertStringNotContainsString( 'td:nth-of-type(1):hover', $css_output );
+		$this->assertStringNotContainsString( 'td:nth-of-type(4):hover', $css_output );
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(2):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2):hover',
 				[
 					'background-color' => '#111'
 				]
@@ -198,7 +198,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(3):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3):hover',
 				[
 					'background-color' => '#333'
 				]
@@ -207,7 +207,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(5):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5):hover',
 				[
 					'background-color' => 'blue'
 				]

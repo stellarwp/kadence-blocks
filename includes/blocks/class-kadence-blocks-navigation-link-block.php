@@ -254,6 +254,34 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-media-intrinsic-width', ! is_numeric( $attributes['mediaImage'][0]['width'] ) ? null : $attributes['mediaImage'][0]['width'] . 'px' );
 		}
 
+		// Image overlay: uses imageOverlayBackground* (Overlay Color) when media type is image. For image, the
+		// container must not show background (it would appear as a box); only the overlay shows it.
+		// Variables --kb-nav-link-media-container-background{, -hover, -active} are set in sized_dynamic_styles
+		// from imageOverlayBackground* attributes (separate from mediaBackground* used for icon).
+		if ( ! empty( $attributes['mediaType'] ) && 'image' === $attributes['mediaType'] ) {
+			$css->set_selector( '.kb-nav-link-' . $unique_id . '.kb-menu-has-image .link-media-container' );
+			$css->add_property( 'background', 'transparent' );
+
+			$css->set_selector( '.kb-nav-link-' . $unique_id . ' .link-media-container .kadence-navigation-link-image-intrinsic' );
+			$css->add_property( 'position', 'relative' );
+
+			$css->set_selector( '.kb-nav-link-' . $unique_id . ' .kb-nav-link-image-overlay' );
+			$css->add_property( 'position', 'absolute' );
+			$css->add_property( 'inset', '0' );
+			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background, transparent)' );
+			$css->add_property( 'opacity', '0.5' );
+			$css->add_property( 'pointer-events', 'none' );
+
+			$css->set_selector( '.kb-nav-link-' . $unique_id . ' .kb-link-wrap:hover .kb-nav-link-image-overlay' );
+			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background-hover, var(--kb-nav-link-media-container-background, transparent))' );
+
+			$css->set_selector( '.kb-nav-link-' . $unique_id . ' .kb-link-wrap:active .kb-nav-link-image-overlay' );
+			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background-active, var(--kb-nav-link-media-container-background-hover, var(--kb-nav-link-media-container-background, transparent)))' );
+
+			$css->set_selector( '.kb-nav-link-' . $unique_id . '.current-menu-item .kb-nav-link-image-overlay' );
+			$css->add_property( 'background-color', 'var(--kb-nav-link-media-container-background-active, var(--kb-nav-link-media-container-background, transparent))' );
+		}
+
 		// styles that need a more speicifc selector
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $attributes );
@@ -396,6 +424,25 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( $attributes['mediaType'] && 'none' !== $attributes['mediaType'] ) {
 			$css->add_property( '--kb-nav-link-icon-font-size', $css->render_size( $media_icon_size, 'px' ) );
 			// $css->add_property( '--kb-nav-link-icon-height', $css->render_size( $media_icon_size, 'px' ) );
+
+			// Image overlay: set overlay color variables on .link-media-container so the overlay can use them.
+			// Uses imageOverlayBackground* attributes (separate from mediaBackground used for icon).
+			if ( 'image' === $attributes['mediaType'] ) {
+				$css->set_selector( '.kb-nav-link-' . $unique_id . '.kb-menu-has-image .link-media-container' );
+				$overlay_bg = $css->render_color( $css->get_inherited_value( $attributes['imageOverlayBackground'] ?? '', $attributes['imageOverlayBackgroundTablet'] ?? '', $attributes['imageOverlayBackgroundMobile'] ?? '', $size, true ) );
+				$overlay_bg_hover = $css->render_color( $css->get_inherited_value( $attributes['imageOverlayBackgroundHover'] ?? '', $attributes['imageOverlayBackgroundHoverTablet'] ?? '', $attributes['imageOverlayBackgroundHoverMobile'] ?? '', $size, true ) );
+				$overlay_bg_active = $css->render_color( $css->get_inherited_value( $attributes['imageOverlayBackgroundActive'] ?? '', $attributes['imageOverlayBackgroundActiveTablet'] ?? '', $attributes['imageOverlayBackgroundActiveMobile'] ?? '', $size, true ) );
+				if ( '' !== $overlay_bg ) {
+					$css->add_property( '--kb-nav-link-media-container-background', $overlay_bg );
+				}
+				if ( '' !== $overlay_bg_hover ) {
+					$css->add_property( '--kb-nav-link-media-container-background-hover', $overlay_bg_hover );
+				}
+				if ( '' !== $overlay_bg_active ) {
+					$css->add_property( '--kb-nav-link-media-container-background-active', $overlay_bg_active );
+				}
+				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap' );
+			}
 
 			if ( $sized_attributes['mediaAlign'] == 'left' ) {
 				$css->add_property( '--kb-nav-link-media-container-order', '-1' );
@@ -567,6 +614,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$mega_menu_width_class_mobile = 'kb-menu-mega-width-mobile-' . $mobile_width;
 
 		$wrapper_classes   = [];
+		$wrapper_classes[] = 'wp-block-kadence-navigation-link';
 		$wrapper_classes[] = 'kb-nav-link-' . $unique_id;
 		$wrapper_classes[] = 'menu-item';
 		if ( $has_children ) {
@@ -648,10 +696,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 			$image = wp_get_attachment_image( $attributes['mediaImage'][0]['id'], [ $attributes['mediaImage'][0]['width'], $attributes['mediaImage'][0]['height'] ] );
 
+			$overlay_html    = '<div class="kb-nav-link-image-overlay" aria-hidden="true"></div>';
 			$container_start = '<div class="kadence-navigation-link-image-inner-intrinsic-container">
 				<div class="kadence-navigation-link-image-intrinsic' . ( 'svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '' ) . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . $attributes['imageRatio'] : '' ) . '">
 					<div class="kadence-navigation-link-image-inner-intrinsic">';
-			$container_end   = '</div></div></div>';
+			$container_end   = '</div>' . $overlay_html . '</div></div>';
 
 			$media = $image ? '<div class="link-media-container">' . $container_start . $image . $container_end . '</div>' : '';
 		}

@@ -1,0 +1,34 @@
+<?php declare( strict_types=1 );
+
+namespace Tests\wpunit\Resources\Optimizer\Skip_Rules\Rules;
+
+use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rules\Logged_In_Rule;
+use Tests\Support\Classes\OptimizerTestCase;
+
+final class LoggedInRuleTest extends OptimizerTestCase {
+
+	private Logged_In_Rule $rule;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->rule = $this->container->get( Logged_In_Rule::class );
+	}
+
+	protected function tearDown(): void {
+		// Reset logged in user state.
+		wp_set_current_user( 0 );
+
+		parent::tearDown();
+	}
+
+	public function testItDoesntSkipWhenNotLoggedIn(): void {
+		$this->assertFalse( $this->rule->should_skip() );
+	}
+
+	public function testItSkipsWhenLoggedIn(): void {
+		wp_set_current_user( 1 );
+
+		$this->assertTrue( $this->rule->should_skip() );
+	}
+}
