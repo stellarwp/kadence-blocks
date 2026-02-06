@@ -13,6 +13,7 @@ import {
 	ToggleControl,
 	SelectControl,
 	Button,
+	TextControl,
 	__experimentalNumberControl as NumberControl,
 	ResizableBox,
 	ExternalLink,
@@ -60,6 +61,7 @@ export function Edit(props) {
 		columns,
 		dataTypography,
 		headerTypography,
+		captionTypography,
 		evenOddBackground,
 		backgroundColorEven,
 		backgroundColorOdd,
@@ -87,6 +89,9 @@ export function Edit(props) {
 		headerAlign,
 		headerAlignTablet,
 		headerAlignMobile,
+		captionAlign,
+		captionAlignTablet,
+		captionAlignMobile,
 		isFirstRowHeader,
 		isFirstColumnHeader,
 		columnSettings,
@@ -103,6 +108,8 @@ export function Edit(props) {
 		tabletMargin,
 		mobileMargin,
 		marginType,
+		enableCaption,
+		caption,
 	} = attributes;
 
 	const { insertBlock } = useDispatch('core/block-editor');
@@ -211,7 +218,7 @@ export function Edit(props) {
 		[uniqueID, className]
 	);
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			className: innerBlockClassName,
 			style: {},
@@ -309,6 +316,13 @@ export function Edit(props) {
 	const saveHeaderTypography = (value) => {
 		setAttributes({
 			headerTypography: [{ ...headerTypography[0], ...value }, ...headerTypography.slice(1)],
+		});
+	};
+
+	const saveCaptionTypography = (value) => {
+		const currentTypography = captionTypography || [{}];
+		setAttributes({
+			captionTypography: [{ ...currentTypography[0], ...value }, ...currentTypography.slice(1)],
 		});
 	};
 	const previewColumnSettingUnit = getPreviewSize(
@@ -655,6 +669,25 @@ export function Edit(props) {
 								onChange={(value) => setAttributes({ overflowXScroll: value })}
 							/>
 						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Caption', 'kadence-blocks')}
+							panelName={'table-caption'}
+							initialOpen={false}
+						>
+							<ToggleControl
+								label={__('Enable Caption?', 'kadence-blocks')}
+								checked={enableCaption}
+								onChange={(value) => setAttributes({ enableCaption: value })}
+							/>
+							{enableCaption && (
+								<TextControl
+									label={__('Caption Text', 'kadence-blocks')}
+									value={caption || ''}
+									onChange={(value) => setAttributes({ caption: value })}
+								/>
+							)}
+						</KadencePanelBody>
 					</>
 				)}
 
@@ -816,6 +849,65 @@ export function Edit(props) {
 								onFontSubset={(value) => saveHeaderTypography({ subset: value })}
 							/>
 						</KadencePanelBody>
+						{enableCaption && (
+							<KadencePanelBody
+								title={__('Caption Typography', 'kadence-blocks')}
+								panelName={'table-caption-typography'}
+								initialOpen={false}
+							>
+								<ResponsiveAlignControls
+									label={__('Text Alignment', 'kadence-blocks')}
+									value={captionAlign}
+									mobileValue={captionAlignMobile}
+									tabletValue={captionAlignTablet}
+									onChange={(nextAlign) => setAttributes({ captionAlign: nextAlign })}
+									onChangeTablet={(nextAlign) => setAttributes({ captionAlignTablet: nextAlign })}
+									onChangeMobile={(nextAlign) => setAttributes({ captionAlignMobile: nextAlign })}
+								/>
+								<PopColorControl
+									label={__('Text Color', 'kadence-blocks')}
+									value={captionTypography?.[0]?.color || ''}
+									default={''}
+									onChange={(value) => saveCaptionTypography({ color: value })}
+								/>
+								<TypographyControls
+									fontGroup={'heading'}
+									fontSize={captionTypography?.[0]?.size}
+									onFontSize={(value) => saveCaptionTypography({ size: value })}
+									fontSizeType={captionTypography?.[0]?.sizeType}
+									onFontSizeType={(value) => saveCaptionTypography({ sizeType: value })}
+									lineHeight={captionTypography?.[0]?.lineHeight}
+									onLineHeight={(value) => saveCaptionTypography({ lineHeight: value })}
+									lineHeightType={captionTypography?.[0]?.lineType}
+									onLineHeightType={(value) => saveCaptionTypography({ lineType: value })}
+									letterSpacing={captionTypography?.[0]?.letterSpacing}
+									onLetterSpacing={(value) => saveCaptionTypography({ letterSpacing: value })}
+									textTransform={captionTypography?.[0]?.textTransform}
+									onTextTransform={(value) => saveCaptionTypography({ textTransform: value })}
+									fontFamily={captionTypography?.[0]?.family}
+									onFontFamily={(value) => saveCaptionTypography({ family: value })}
+									onFontChange={(select) => {
+										saveCaptionTypography({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveCaptionTypography(values)}
+									googleFont={captionTypography?.[0]?.google}
+									onGoogleFont={(value) => saveCaptionTypography({ google: value })}
+									loadGoogleFont={captionTypography?.[0]?.loadGoogle}
+									onLoadGoogleFont={(value) => saveCaptionTypography({ loadGoogle: value })}
+									fontVariant={captionTypography?.[0]?.variant}
+									onFontVariant={(value) => saveCaptionTypography({ variant: value })}
+									fontWeight={captionTypography?.[0]?.weight}
+									onFontWeight={(value) => saveCaptionTypography({ weight: value })}
+									fontStyle={captionTypography?.[0]?.style}
+									onFontStyle={(value) => saveCaptionTypography({ style: value })}
+									fontSubset={captionTypography?.[0]?.subset}
+									onFontSubset={(value) => saveCaptionTypography({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Row Backgrounds', 'kadence-blocks')}
 							panelName={'table-row-background'}
@@ -1105,7 +1197,10 @@ export function Edit(props) {
 					</div>
 				</div>
 			)}
-			<table {...innerBlocksProps} />
+			<table {...innerBlocksProps}>
+				{enableCaption && caption && <caption>{caption}</caption>}
+				{children}
+			</table>
 		</div>
 	);
 }
