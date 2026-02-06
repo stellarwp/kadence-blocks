@@ -544,7 +544,6 @@ class KBHeader {
 
 				// either shrink or unshrink the header based on scroll position
 				const shrinkingHeight = Math.max(shrinkHeight, this.shrinkStartHeight - window.scrollY);
-				console.log('13 - shrinkingHeight', shrinkHeader);
 				shrinkHeader.style.height = shrinkingHeight + 'px';
 				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
 				shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
