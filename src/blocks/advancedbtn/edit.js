@@ -118,22 +118,27 @@ function KadenceButtons(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
-		if (uniqueID && !childBlocks.length) {
-			// Check if we are attempting recovery.
-			if (
-				btns?.length &&
-				btns.length &&
-				undefined !== metadata?.attributes?.btns?.default &&
-				!isEqual(metadata.attributes.btns.default, btns)
-			) {
-				const migrateUpdate = migrateToInnerblocks(attributes);
-				setAttributes(migrateUpdate[0]);
-				replaceInnerBlocks(clientId, migrateUpdate[1]);
-			} else if (!isPreviewMode) {
-				// Delete if no inner blocks.
-				removeBlock(clientId, true);
+		// Only run cleanup if we've had time to load and still have no blocks
+		const timeoutId = setTimeout(() => {
+			if (uniqueID && !childBlocks.length) {
+				// Check if we are attempting recovery.
+				if (
+					btns?.length &&
+					btns.length &&
+					undefined !== metadata?.attributes?.btns?.default &&
+					!isEqual(metadata.attributes.btns.default, btns)
+				) {
+					const migrateUpdate = migrateToInnerblocks(attributes);
+					setAttributes(migrateUpdate[0]);
+					replaceInnerBlocks(clientId, migrateUpdate[1]);
+				} else if (!isPreviewMode) {
+					// Delete if no inner blocks after delay
+					removeBlock(clientId, true);
+				}
 			}
-		}
+		}, 100); // Small delay to allow blocks to render
+
+		return () => clearTimeout(timeoutId);
 	}, [childBlocks.length]);
 
 	const saveMargin = (value) => {
