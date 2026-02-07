@@ -54,6 +54,7 @@ import {
 	setDynamicState,
 	hasKadenceCustomCss,
 	getBlockDefaults,
+	getSpacingOptionOutput,
 } from '@kadence/helpers';
 
 /**
@@ -68,7 +69,7 @@ import StyleControls from './style-controls';
 import PaddingResizer from './padding-resizer';
 import renderSVGDivider from './render-svg-divider';
 import GridVisualizer from './gridvisualizer';
-import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
+import { getGutterTotal, getPreviewGutterSize } from './utils';
 import { SPACING_SIZES_MAP, COLUMN_WIDTH_MAP } from './constants';
 import { runRowLayoutMigrations } from './migrations';
 /**
