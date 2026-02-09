@@ -208,7 +208,13 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['columnBackgroundsHover'] ) ) {
 			foreach( $attributes['columnBackgroundsHover'] as $index => $background ) {
 				if ( $background ) {
-					$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td:nth-of-type(' . ( $index + 1 ) . '):hover, .kb-table-container .kb-table' . esc_attr( $unique_id ) . ' th:nth-of-type(' . ( $index + 1 ) . '):hover' );
+					if ( !empty( $attributes['isFirstColumnHeader'] ) && $attributes['isFirstColumnHeader'] ) {
+						$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td:nth-of-type(' . ( $index ) . '):hover' );
+					} else {
+						$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td:nth-of-type(' . ( $index + 1 ) . '):hover' );
+					}
+					$css->add_property( 'background-color', $css->render_color( $background ) );
+					$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' th:nth-of-type(' . ( $index + 1 ) . '):hover' );
 					$css->add_property( 'background-color', $css->render_color( $background ) );
 				}
 			}

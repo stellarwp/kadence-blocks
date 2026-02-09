@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Kadence Blocks – Gutenberg Blocks for Page Builder Features
+ * Plugin Name: Kadence Blocks — Page Builder Toolkit for Gutenberg Editor
  * Plugin URI: https://www.kadencewp.com/product/kadence-gutenberg-blocks/
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.6.0
+ * Version: 3.6.2
  * Requires PHP: 7.4
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.6.0' );
+define( 'KADENCE_BLOCKS_VERSION', '3.6.2' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
