@@ -625,13 +625,13 @@ export function EditInner(props) {
 								onChangeMobile={(value) => setMetaAttribute(value, 'isTransparentMobile')}
 							/>
 
-							{/* {previewIsTransparent === '1' && (
+							{previewIsTransparent === '1' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
-							)} */}
+							)}
 							{previewIsSticky === '1' && (
 								<>
 									<ResponsiveSelectControl

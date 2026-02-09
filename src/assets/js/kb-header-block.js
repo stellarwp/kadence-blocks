@@ -130,6 +130,11 @@ class KBHeader {
 	anchorOffset = 0;
 
 	/**
+	 * ResizeObserver used to keep header height exports in sync.
+	 */
+	_heightObserver = null;
+
+	/**
 	 * the wrapper element that holds stickyWrapper's place in the dom.
 	 */
 	placeholderWrapper;
@@ -185,15 +190,17 @@ class KBHeader {
 		this.mobileBreakpoint = this.root.dataset?.mobileBreakpoint;
 		this._state = 'CREATED';
 
-		// if (this.transparent && this.autoTransparentSpacing) {
-		// 	this.initAutoTransparentSpacing();
-		// }
+		if (this.transparent && this.autoTransparentSpacing) {
+			this.initAutoTransparentSpacing();
+		}
 		if (this.sticky || this.stickyTablet || this.stickyMobile) {
 			this.initStickyHeader();
 		}
 		if (this.mobileBreakpoint && this.mobileBreakpoint !== 0) {
 			this.initMobileBreakpoint();
 		}
+
+		this.initHeaderHeightExports();
 
 		var event = new Event('MOUNTED', {
 			bubbles: true,
@@ -204,27 +211,46 @@ class KBHeader {
 		this._state = 'IDLE';
 	}
 
-	// initAutoTransparentSpacing() {
-	// 	const self = this;
+	/**
+	 * Update the :root CSS variable and global JS variable with current header height.
+	 * Other systems can use --kb-header-height (CSS) or window.kbHeaderHeight (JS).
+	 */
+	updateHeaderHeightExports() {
+		if (!this.activeHeaderContainer) {
+			return;
+		}
+		const height = this.getHeight();
+		document.documentElement.style.setProperty('--kb-header-height', height + 'px');
+		window.kbHeaderHeight = height;
+	}
 
-	// 	this.setAutoTransparentSpacing();
+	/**
+	 * Set up header height exports (CSS var + global) and keep them updated on size change.
+	 */
+	initHeaderHeightExports() {
+		const self = this;
+		this.updateHeaderHeightExports();
+		this._heightObserver = new ResizeObserver(function () {
+			self.updateHeaderHeightExports();
+		});
+		this._heightObserver.observe(this.root);
+	}
 
-	// 	document.onresize = self.setAutoTransparentSpacing;
-	// }
+	initAutoTransparentSpacing() {
+		const self = this;
 
-	// setAutoTransparentSpacing() {
-	// 	const self = this;
+		this.setAutoTransparentSpacing();
+	}
 
-	// 	const height = this.getHeight();
+	setAutoTransparentSpacing() {
+		const elementToApply = this.root.nextElementSibling;
 
-	// 	const elementToApply = this.root.nextElementSibling;
+		elementToApply.style.paddingTop = 'var(--kb-header-height)';
+	}
 
-	// 	elementToApply.style.paddingTop = height + 'px';
-	// }
-
-	// getHeight() {
-	// 	return this.root.querySelector('div').clientHeight;
-	// }
+	getHeight() {
+		return this.activeHeaderContainer.clientHeight;
+	}
 
 	/**
 	 * Initiate the script to stick the header.
@@ -255,6 +281,7 @@ class KBHeader {
 			this.root.querySelector('.wp-block-kadence-header-desktop').style.display = 'none';
 			this.root.querySelector('.wp-block-kadence-header-tablet').style.display = 'block';
 		}
+		this.updateHeaderHeightExports();
 	}
 
 	/**
