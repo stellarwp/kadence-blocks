@@ -214,11 +214,13 @@ function BackendStyles(props) {
 	if (columnBackgroundsHover) {
 		columnBackgroundsHover.forEach((background, index) => {
 			if (background) {
-				css.set_selector(
-					`.kb-table${uniqueID} td:nth-of-type(${index + 1}):hover, .kb-table${uniqueID} th:nth-of-type(${
-						index + 1
-					}):hover`
-				);
+				if (isFirstColumnHeader) {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index}):hover`);
+				} else {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index + 1}):hover`);
+				}
+				css.add_property('background-color', KadenceColorOutput(background));
+				css.set_selector(`.kb-table${uniqueID} th:nth-of-type(${index + 1}):hover`);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});

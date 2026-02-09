@@ -1,0 +1,108 @@
+name: Create bi-weekly release branch
+
+on:
+  schedule:
+    # Every Sunday at 1:00 AM PST (09:00 UTC)
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if this is a bi-weekly run
+        id: cadence
+        run: |
+          # Anchor date: upcoming Sunday (adjust once if needed)
+          ANCHOR_DATE="2026-02-08"
+
+          TODAY=$(date -u +%Y-%m-%d)
+
+          DAYS_DIFF=$(( ( $(date -ud "$TODAY" +%s) - $(date -ud "$ANCHOR_DATE" +%s) ) / 86400 ))
+
+          if (( DAYS_DIFF < 0 || DAYS_DIFF % 14 != 0 )); then
+            echo "Not a bi-weekly run — exiting."
+            echo "run=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "run=true" >> $GITHUB_OUTPUT
+
+      - name: Determine sprint name
+        if: steps.cadence.outputs.run == 'true'
+        id: sprint
+        run: |
+          SPRINTS=(
+            banette
+            chikorita
+            dewgong
+            eevee
+            feraligatr
+            gardevoir
+            haunter
+            illumise
+            jigglypuff
+            kadabra
+            lanturn
+            machamp
+            nidoking
+            octillery
+            pidgeot
+            quagsire
+            raichu
+            salamence
+            tangela
+            umbreon
+            vaporeon
+            wartortle
+            xatu
+            yamask
+            zangoose
+          )
+
+          INDEX_FILE=".github/sprint-index"
+
+          if [ ! -f "$INDEX_FILE" ]; then
+            echo "0" > "$INDEX_FILE"
+          fi
+
+          INDEX=$(cat "$INDEX_FILE")
+          SPRINT=${SPRINTS[$INDEX]}
+
+          if [ -z "$SPRINT" ]; then
+            echo "Sprint index out of range"
+            exit 1
+          fi
+
+          NEXT_INDEX=$((INDEX + 1))
+          echo "$NEXT_INDEX" > "$INDEX_FILE"
+
+          echo "sprint=$SPRINT" >> $GITHUB_OUTPUT
+
+      - name: Create release branch
+        if: steps.cadence.outputs.run == 'true'
+        run: |
+          git checkout master
+          git pull origin master
+
+          BRANCH="release/M26.${{ steps.sprint.outputs.sprint }}"
+
+          git checkout -b "$BRANCH"
+          git push origin "$BRANCH"
+
+      - name: Commit sprint index update
+        if: steps.cadence.outputs.run == 'true'
+        run: |
+          git checkout master
+          git add .github/sprint-index
+          git commit -m "chore: advance sprint index"
+          git push origin master
