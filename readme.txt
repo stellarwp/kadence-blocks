@@ -1,10 +1,10 @@
-=== Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
+=== Kadence Blocks — Page Builder Toolkit for Gutenberg Editor ===
 Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.9
-Stable tag: 3.5.32
+Tested up to: 6.9.1
+Stable tag: 3.6.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,6 +174,27 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.6.2 =
+Release Date: 5th February 2026
+* Fix: Correct Authorization for Media Upload for some user roles
+* Fix: Don't run optimizer when in WP CLI
+
+= 3.6.1 =
+Release Date: 29th January 2026
+* Fix: Issue with icon block in shop kit product tabs
+* Fix: Table(Adv) background/headings not working when inside of Row/Section
+* Fix: Design Library sometimes not showing preview
+* Fix: Wrong Text Domain in class-kadence-header-cpt.php
+* Fix: Add null checks for contentTab in kt-tabs.js
+* Fix: Issue with WPML and ACF image translation syncing
+* Fix: Links in Advanced Heading and Buttons Block Not Translatable
+* Fix: Kadence Blocks preventing Appearance > Widgets from loading.
+
+= 3.6.0 =
+Release Date: 22nd January 2026
+* New: Performance optimizer extension. Enable it in the Kadence blocks settings in the gutenberg editor.
+* Fix: Permission checks on Block Patterns API
+
 = 3.5.32 =
 Release Date: 15th January 2026
 * Update: Begin sunsetting classic form block - hide in block appender, classic form blocks still usable
@@ -243,7 +264,7 @@ Release Date: 9th October 2025
 = 3.5.22 =
 Release Date: 25th September 2025
 * Fix: Removed default navigation submenu box shadow when disabled.
-* Update: When prefers-reduced-motion is enabled, Countup block now only shows the end value. 
+* Update: When prefers-reduced-motion is enabled, Countup block now only shows the end value.
 * Update: Gallery tiles layout outer div updated to ul to match inner markup.
 
 = 3.5.21 =
@@ -273,7 +294,7 @@ Release Date: 19th August 2025
 = 3.5.17 =
 Release Date: 14th August 2025
 * Add: Option to reveal icons for buttons on hover.
-* Add: Mosaic gallery support for pro features. 
+* Add: Mosaic gallery support for pro features.
 * Add: Custom option for autofill value on advanced form input fields.
 * Add: Pause button option for sliders with autoplay
 * Update: Slides in sliders are now semantic list items
@@ -305,7 +326,7 @@ Release Date: 28th July 2025
 
 = 3.5.15 =
 Release Date: 23rd July 2025
-* Fix: Mosaic gallery custom link in editor. 
+* Fix: Mosaic gallery custom link in editor.
 * Fix: Block defaults not applying to new blocks.
 * Fix: Add link support to advanced text block in some templates.
 
@@ -327,7 +348,7 @@ Release Date: 15th July 2025
 
 = 3.5.12 =
 Release Date: 2nd July 2025
-* Update: Header block off canvas trigger focus styles. 
+* Update: Header block off canvas trigger focus styles.
 * Fix: Icon List default bottom margin.
 * Fix: Count Up block responsive font, number size, line height preview in editor.
 * Fix: Content for Testimonial block when copy/paste styles.

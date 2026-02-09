@@ -2,15 +2,16 @@ name: 'CI'
 on:
   workflow_dispatch:
   pull_request:
-    paths-ignore:
-      - '**/*.txt'
-      - '.github/**'
+    paths:
+      - '**.php'
+      - 'composer.lock'
+      - '.github/workflows/tests.yml'
   push:
-    branches:
-      - master
-    paths-ignore:
-      - '**/*.txt'
-      - '.github/**'
+    paths:
+      - '**.php'
+      - 'composer.lock'
+      - '.github/workflows/tests.yml'
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -34,37 +35,27 @@ jobs:
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
             - name: Checkout the repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Checkout slic
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   repository: stellarwp/slic
-                  ref: 2.1.0
+                  ref: 2.1.2
                   path: slic
                   fetch-depth: 1
 
-            - uses: oven-sh/setup-bun@v1
+            - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
 
             - run: bun install --frozen-lockfile
+              env:
+                  BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+                  PUPPETEER_SKIP_DOWNLOAD: true
 
             - name: Build packages
               run: bun run build
-
-            - name: Get Composer Cache Directory
-              id: get-composer-cache-dir
-              run: |
-                  echo "DIR=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-            - uses: actions/cache@v4
-              id: composer-cache
-              with:
-                  path: ${{ steps.get-composer-cache-dir.outputs.DIR }}
-                  key: ${{ matrix.php }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: |
-                      ${{ matrix.php }}-composer-
 
             - name: Set up slic env vars
               run: |
@@ -93,9 +84,11 @@ jobs:
                   ${SLIC_BIN} xdebug off
                   ${SLIC_BIN} debug on
                   ${SLIC_BIN} php-version set ${{ matrix.php }} --skip-rebuild
-                  ${SLIC_BIN} composer-cache set ${{ steps.get-composer-cache-dir.outputs.DIR }}
                   ${SLIC_BIN} info
                   ${SLIC_BIN} config
+
+            - name: Use plugin to set PHP version
+              run: ${SLIC_BIN} use kadence-blocks
 
             - name: Install specific WordPress version
               run: |
@@ -104,7 +97,6 @@ jobs:
 
             - name: Set up plugin
               run: |
-                  ${SLIC_BIN} use kadence-blocks
                   ${SLIC_BIN} composer set-version 2
                   ${SLIC_BIN} composer validate
                   ${SLIC_BIN} composer install
