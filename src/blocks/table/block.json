@@ -84,6 +84,42 @@
 				}
 			]
 		},
+		"captionTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true,
+					"padding": ["xxs", "xs", "xxs", "xs"],
+					"marginTop": 8,
+					"color": "",
+					"background": "",
+					"border": ["", "", "", ""],
+					"borderRadius": ["", "", "", ""],
+					"borderWidth": ["", "", "", ""],
+					"colorHover": "",
+					"backgroundHover": "",
+					"borderHover": ["", "", "", ""],
+					"colorActive": "",
+					"backgroundActive": "",
+					"borderActive": ["", "", "", ""],
+					"textTransform": "",
+					"paddingTablet": ["", "", "", ""],
+					"paddingMobile": ["", "", "", ""],
+					"paddingType": "px"
+				}
+			]
+		},
 		"evenOddBackground": {
 			"type": "boolean",
 			"default": false
@@ -208,6 +244,18 @@
 			"type": "string",
 			"default": ""
 		},
+		"captionAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"captionAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"captionAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"isFirstRowHeader": {
 			"type": "boolean",
 			"default": false
@@ -301,6 +349,14 @@
 		"marginType": {
 			"type": "string",
 			"default": "px"
+		},
+		"enableCaption": {
+			"type": "boolean",
+			"default": false
+		},
+		"caption": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"providesContext": {

@@ -91,6 +91,18 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'padding', 'padding', $padding_args );
 
 
+		// Screen reader excerpt - visually hidden but accessible to screen readers
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .kb-show-more-sr-excerpt' );
+		$css->add_property( 'position', 'absolute' );
+		$css->add_property( 'width', '1px' );
+		$css->add_property( 'height', '1px' );
+		$css->add_property( 'padding', '0' );
+		$css->add_property( 'margin', '-1px' );
+		$css->add_property( 'overflow', 'hidden' );
+		$css->add_property( 'clip', 'rect(0, 0, 0, 0)' );
+		$css->add_property( 'white-space', 'nowrap' );
+		$css->add_property( 'border', '0' );
+
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn' );
 		$css->add_property( 'margin-top', '1em' );
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(2), .kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(2)' );
@@ -198,6 +210,40 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param array $attributes the blocks attributes.
+	 * @param string $unique_id the blocks attr ID.
+	 * @param string $content the block content.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return string Modified block content.
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		// Check if excerpt element already exists in content
+		if ( false !== strpos( $content, 'kb-show-more-sr-excerpt' ) ) {
+			return $content;
+		}
+
+		// Create the excerpt div HTML
+		$excerpt_html = '<div class="kb-show-more-sr-excerpt" aria-live="polite" aria-atomic="true"></div>';
+
+		// Find the opening div tag of the container and insert excerpt right after it
+		// Match: <div class="kb-block-show-more-container...">
+		$pattern = '/(<div[^>]*class="[^"]*kb-block-show-more-container[^"]*"[^>]*>)/i';
+		
+		if ( preg_match( $pattern, $content, $matches ) ) {
+			// Insert excerpt div right after the opening container div
+			$content = preg_replace( $pattern, $matches[0] . $excerpt_html, $content, 1 );
+		} else {
+			// Fallback: if pattern doesn't match, prepend to content
+			$content = $excerpt_html . $content;
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Registers scripts and styles.
 	 */
 	public function register_scripts() {
@@ -211,6 +257,18 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		wp_register_script( 'kadence-blocks-show-more', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-show-more.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		wp_localize_script(
+			'kadence-blocks-show-more',
+			'kbShowMore',
+			array(
+				'contentCollapsed'     => __( 'Content is collapsed.', 'kadence-blocks' ),
+				'contentContinues'     => __( 'Content continues.', 'kadence-blocks' ),
+				'activateButton'       => __( 'Activate the', 'kadence-blocks' ),
+				'buttonToReveal'       => __( 'button to reveal the full content.', 'kadence-blocks' ),
+				'showMoreDefault'      => __( 'Show More', 'kadence-blocks' ),
+			)
+		);
 	}
 
 }
