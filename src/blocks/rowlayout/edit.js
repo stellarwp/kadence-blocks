@@ -103,6 +103,7 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { blockDefault, brush, settings, plusCircle } from '@wordpress/icons';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal block libraries
  */
@@ -648,11 +649,15 @@ const KadenceRowLayout = (props) => {
 		<>
 			{'contentOnly' !== templateLock && !isPreviewMode && showSettings('allSettings', 'kadence/rowlayout') && (
 				<BlockControls>
-					<BlockAlignmentToolbar
-						value={align}
-						controls={['center', 'wide', 'full']}
-						onChange={(value) => setAttributes({ align: value })}
-					/>
+					{applyFilters(
+						'kadence.blocks.rowlayout.alignmentToolbar',
+						<BlockAlignmentToolbar
+							value={align}
+							controls={['center', 'wide', 'full']}
+							onChange={(value) => setAttributes({ align: value })}
+						/>,
+						{ align, setAttributes, attributes }
+					)}
 					<ToolbarGroup group="content-width">
 						<ToolbarButton
 							className="kb-content-width"
