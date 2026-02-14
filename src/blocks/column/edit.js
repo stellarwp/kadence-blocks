@@ -1465,12 +1465,14 @@ function SectionEdit(props) {
 			{showSettings('allSettings', 'kadence/column') && (
 				<>
 					<BlockControls>
-						{!inRowBlock && (
+						{!inRowBlock && applyFilters(
+							'kadence.blocks.column.alignmentToolbar',
 							<BlockAlignmentToolbar
 								value={align}
 								controls={['wide', 'full']}
 								onChange={(value) => setAttributes({ align: value })}
-							/>
+							/>,
+							{ align, setAttributes, attributes }
 						)}
 						<BlockVerticalAlignmentToolbar
 							value={actualVerticalAlign === 'middle' ? 'center' : actualVerticalAlign}
