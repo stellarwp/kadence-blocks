@@ -577,6 +577,42 @@
         }
       ]
     },
+    "tabletBackgroundVideoType": {
+      "type": "string",
+      "default": "local"
+    },
+    "tabletBackgroundVideo": {
+      "type": "array",
+      "default": [
+        {
+          "youTube": "",
+          "local": "",
+          "localID": "",
+          "vimeo": "",
+          "ratio": "16/9",
+          "loop": true,
+          "mute": true
+        }
+      ]
+    },
+    "mobileBackgroundVideoType": {
+      "type": "string",
+      "default": "local"
+    },
+    "mobileBackgroundVideo": {
+      "type": "array",
+      "default": [
+        {
+          "youTube": "",
+          "local": "",
+          "localID": "",
+          "vimeo": "",
+          "ratio": "16/9",
+          "loop": true,
+          "mute": true
+        }
+      ]
+    },
     "zIndex": {
       "type": "number",
       "default": ""
