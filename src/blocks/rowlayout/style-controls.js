@@ -150,6 +150,10 @@ function StyleControls(props) {
 		backgroundSliderSettings,
 		backgroundVideo,
 		backgroundVideoType,
+		tabletBackgroundVideo,
+		tabletBackgroundVideoType,
+		mobileBackgroundVideo,
+		mobileBackgroundVideoType,
 		overlaySecondOpacity,
 		overlayFirstOpacity,
 		paddingUnit,
@@ -346,6 +350,62 @@ function StyleControls(props) {
 			backgroundVideo: newUpdate,
 		});
 	};
+	const hasTabletBackgroundVideoContent = undefined !== tabletBackgroundVideo && undefined !== tabletBackgroundVideo[0];
+	const saveTabletVideoSettings = (value) => {
+		let bgVideo;
+		if (undefined === tabletBackgroundVideo || (undefined !== tabletBackgroundVideo && undefined === tabletBackgroundVideo[0])) {
+			bgVideo = [
+				{
+					youTube: '',
+					local: '',
+					localID: '',
+					vimeo: '',
+					ratio: '16/9',
+					loop: true,
+					mute: true,
+				},
+			];
+		} else {
+			bgVideo = tabletBackgroundVideo;
+		}
+		const newUpdate = bgVideo.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			tabletBackgroundVideo: newUpdate,
+		});
+	};
+	const hasMobileBackgroundVideoContent = undefined !== mobileBackgroundVideo && undefined !== mobileBackgroundVideo[0];
+	const saveMobileVideoSettings = (value) => {
+		let bgVideo;
+		if (undefined === mobileBackgroundVideo || (undefined !== mobileBackgroundVideo && undefined === mobileBackgroundVideo[0])) {
+			bgVideo = [
+				{
+					youTube: '',
+					local: '',
+					localID: '',
+					vimeo: '',
+					ratio: '16/9',
+					loop: true,
+					mute: true,
+				},
+			];
+		} else {
+			bgVideo = mobileBackgroundVideo;
+		}
+		const newUpdate = bgVideo.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			mobileBackgroundVideo: newUpdate,
+		});
+	};
 	const overTabControls = (
 		<div>
 			<PopColorControl
@@ -531,7 +591,7 @@ function StyleControls(props) {
 						label={__('Type', 'kadence-blocks')}
 						type={mobileBackground?.[0]?.type ? mobileBackground[0].type : 'normal'}
 						onChange={(value) => saveMobileBackground({ type: value })}
-						allowedTypes={['normal', 'gradient']}
+						allowedTypes={['normal', 'gradient', 'video']}
 					/>
 					{'gradient' === mobileBackgroundType && (
 						<GradientControl
@@ -638,6 +698,171 @@ function StyleControls(props) {
 							/>
 						</>
 					)}
+					{'video' === mobileBackgroundType && (
+						<>
+							<SelectControl
+								label={__('Background Video Type', 'kadence-blocks')}
+								options={[
+									{
+										label: __('Local (MP4)', 'kadence-blocks'),
+										value: 'local',
+									},
+									{
+										label: __('YouTube', 'kadence-blocks'),
+										value: 'youtube',
+									},
+									{
+										label: __('Vimeo', 'kadence-blocks'),
+										value: 'vimeo',
+									},
+								]}
+								value={mobileBackgroundVideoType}
+								onChange={(value) => setAttributes({ mobileBackgroundVideoType: value })}
+							/>
+							{(undefined === mobileBackgroundVideoType || 'local' === mobileBackgroundVideoType) && (
+								<Fragment>
+									<KadenceVideoControl
+										label={__('Background Video', 'kadence-blocks')}
+										hasVideo={hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].localID ? true : false}
+										videoURL={
+											hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].local
+												? mobileBackgroundVideo[0].local
+												: ''
+										}
+										videoID={
+											hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].localID
+												? mobileBackgroundVideo[0].localID
+												: ''
+										}
+										onRemoveVideo={() => {
+											saveMobileVideoSettings({
+												localID: '',
+												local: '',
+											});
+										}}
+										onSaveVideo={(video) => {
+											saveMobileVideoSettings({
+												localID: video.id,
+												local: video.url,
+											});
+										}}
+										disableMediaButtons={
+											hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].local ? true : false
+										}
+									/>
+									<TextControl
+										label={__('HTML5 Video File URL', 'kadence-blocks')}
+										value={
+											hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].local
+												? mobileBackgroundVideo[0].local
+												: ''
+										}
+										onChange={(value) => saveMobileVideoSettings({ local: value })}
+									/>
+								</Fragment>
+							)}
+							{undefined !== mobileBackgroundVideoType && 'local' !== mobileBackgroundVideoType && (
+								<div className="components-base-control">
+									{__(
+										'Warning: Embedded videos are not ideal for background content. Consider self hosting instead.',
+										'kadence-blocks'
+									)}
+								</div>
+							)}
+							{'youtube' === mobileBackgroundVideoType && (
+								<TextControl
+									label={__('YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks')}
+									value={
+										hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].youTube
+											? mobileBackgroundVideo[0].youTube
+											: ''
+									}
+									onChange={(value) => saveMobileVideoSettings({ youTube: value })}
+								/>
+							)}
+							{'vimeo' === mobileBackgroundVideoType && (
+								<TextControl
+									label={__('Vimeo ID ( example: 789006133 )', 'kadence-blocks')}
+									value={
+										hasMobileBackgroundVideoContent && mobileBackgroundVideo[0].vimeo
+											? mobileBackgroundVideo[0].vimeo
+											: ''
+									}
+									onChange={(value) => saveMobileVideoSettings({ vimeo: value })}
+								/>
+							)}
+							{undefined !== mobileBackgroundVideoType && 'local' !== mobileBackgroundVideoType && (
+								<SelectControl
+									label={__('Background Video Ratio', 'kadence-blocks')}
+									options={[
+										{
+											label: '16 / 9',
+											value: '16/9',
+										},
+										{
+											label: '4 / 3',
+											value: '4/3',
+										},
+										{
+											label: '3 / 2',
+											value: '3/2',
+										},
+									]}
+									value={
+										hasMobileBackgroundVideoContent && undefined !== mobileBackgroundVideo[0].ratio
+											? mobileBackgroundVideo[0].ratio
+											: '16/9'
+									}
+									onChange={(value) => saveMobileVideoSettings({ ratio: value })}
+								/>
+							)}
+							<ToggleControl
+								label={__('Mute Video', 'kadence-blocks')}
+								checked={
+									hasMobileBackgroundVideoContent && undefined !== mobileBackgroundVideo[0].mute
+										? mobileBackgroundVideo[0].mute
+										: true
+								}
+								onChange={(value) => saveMobileVideoSettings({ mute: value })}
+							/>
+							<ToggleControl
+								label={__('Loop Video', 'kadence-blocks')}
+								checked={
+									hasMobileBackgroundVideoContent && undefined !== mobileBackgroundVideo[0].loop
+										? mobileBackgroundVideo[0].loop
+										: true
+								}
+								onChange={(value) => saveMobileVideoSettings({ loop: value })}
+							/>
+							<PopColorControl
+								label={__('Background Color', 'kadence-blocks')}
+								value={mobileBackground[0].bgColor ? mobileBackground[0].bgColor : ''}
+								default={''}
+								onChange={(value) => saveMobileBackground({ bgColor: value })}
+							/>
+							{(undefined === mobileBackgroundVideoType || 'local' === mobileBackgroundVideoType) && (
+								<KadenceImageControl
+									label={__('Select Video Poster', 'kadence-blocks')}
+									hasImage={mobileBackground[0].bgImg ? true : false}
+									imageURL={mobileBackground[0].bgImg ? mobileBackground[0].bgImg : ''}
+									imageID={mobileBackground[0].bgImgID ? mobileBackground[0].bgImgID : ''}
+									onRemoveImage={() => {
+										saveMobileBackground({
+											bgImgID: '',
+											bgImg: '',
+										});
+									}}
+									onSaveImage={(img) => {
+										saveMobileBackground({
+											bgImgID: img.id,
+											bgImg: img.url,
+										});
+									}}
+									disableMediaButtons={mobileBackground[0].bgImg ? true : false}
+								/>
+							)}
+						</>
+					)}
 				</>
 			)}
 		</>
@@ -701,7 +926,7 @@ function StyleControls(props) {
 						label={__('Type', 'kadence-blocks')}
 						type={tabletBackground?.[0]?.type ? tabletBackground[0].type : 'normal'}
 						onChange={(value) => saveTabletBackground({ type: value })}
-						allowedTypes={['normal', 'gradient']}
+						allowedTypes={['normal', 'gradient', 'video']}
 					/>
 					{'gradient' === tabletBackgroundType && (
 						<GradientControl
@@ -806,6 +1031,171 @@ function StyleControls(props) {
 								name={'kadence/rowlayout'}
 								clientId={clientId}
 							/>
+						</>
+					)}
+					{'video' === tabletBackgroundType && (
+						<>
+							<SelectControl
+								label={__('Background Video Type', 'kadence-blocks')}
+								options={[
+									{
+										label: __('Local (MP4)', 'kadence-blocks'),
+										value: 'local',
+									},
+									{
+										label: __('YouTube', 'kadence-blocks'),
+										value: 'youtube',
+									},
+									{
+										label: __('Vimeo', 'kadence-blocks'),
+										value: 'vimeo',
+									},
+								]}
+								value={tabletBackgroundVideoType}
+								onChange={(value) => setAttributes({ tabletBackgroundVideoType: value })}
+							/>
+							{(undefined === tabletBackgroundVideoType || 'local' === tabletBackgroundVideoType) && (
+								<Fragment>
+									<KadenceVideoControl
+										label={__('Background Video', 'kadence-blocks')}
+										hasVideo={hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].localID ? true : false}
+										videoURL={
+											hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].local
+												? tabletBackgroundVideo[0].local
+												: ''
+										}
+										videoID={
+											hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].localID
+												? tabletBackgroundVideo[0].localID
+												: ''
+										}
+										onRemoveVideo={() => {
+											saveTabletVideoSettings({
+												localID: '',
+												local: '',
+											});
+										}}
+										onSaveVideo={(video) => {
+											saveTabletVideoSettings({
+												localID: video.id,
+												local: video.url,
+											});
+										}}
+										disableMediaButtons={
+											hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].local ? true : false
+										}
+									/>
+									<TextControl
+										label={__('HTML5 Video File URL', 'kadence-blocks')}
+										value={
+											hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].local
+												? tabletBackgroundVideo[0].local
+												: ''
+										}
+										onChange={(value) => saveTabletVideoSettings({ local: value })}
+									/>
+								</Fragment>
+							)}
+							{undefined !== tabletBackgroundVideoType && 'local' !== tabletBackgroundVideoType && (
+								<div className="components-base-control">
+									{__(
+										'Warning: Embedded videos are not ideal for background content. Consider self hosting instead.',
+										'kadence-blocks'
+									)}
+								</div>
+							)}
+							{'youtube' === tabletBackgroundVideoType && (
+								<TextControl
+									label={__('YouTube ID ( example: OZBOEnHhR14 )', 'kadence-blocks')}
+									value={
+										hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].youTube
+											? tabletBackgroundVideo[0].youTube
+											: ''
+									}
+									onChange={(value) => saveTabletVideoSettings({ youTube: value })}
+								/>
+							)}
+							{'vimeo' === tabletBackgroundVideoType && (
+								<TextControl
+									label={__('Vimeo ID ( example: 789006133 )', 'kadence-blocks')}
+									value={
+										hasTabletBackgroundVideoContent && tabletBackgroundVideo[0].vimeo
+											? tabletBackgroundVideo[0].vimeo
+											: ''
+									}
+									onChange={(value) => saveTabletVideoSettings({ vimeo: value })}
+								/>
+							)}
+							{undefined !== tabletBackgroundVideoType && 'local' !== tabletBackgroundVideoType && (
+								<SelectControl
+									label={__('Background Video Ratio', 'kadence-blocks')}
+									options={[
+										{
+											label: '16 / 9',
+											value: '16/9',
+										},
+										{
+											label: '4 / 3',
+											value: '4/3',
+										},
+										{
+											label: '3 / 2',
+											value: '3/2',
+										},
+									]}
+									value={
+										hasTabletBackgroundVideoContent && undefined !== tabletBackgroundVideo[0].ratio
+											? tabletBackgroundVideo[0].ratio
+											: '16/9'
+									}
+									onChange={(value) => saveTabletVideoSettings({ ratio: value })}
+								/>
+							)}
+							<ToggleControl
+								label={__('Mute Video', 'kadence-blocks')}
+								checked={
+									hasTabletBackgroundVideoContent && undefined !== tabletBackgroundVideo[0].mute
+										? tabletBackgroundVideo[0].mute
+										: true
+								}
+								onChange={(value) => saveTabletVideoSettings({ mute: value })}
+							/>
+							<ToggleControl
+								label={__('Loop Video', 'kadence-blocks')}
+								checked={
+									hasTabletBackgroundVideoContent && undefined !== tabletBackgroundVideo[0].loop
+										? tabletBackgroundVideo[0].loop
+										: true
+								}
+								onChange={(value) => saveTabletVideoSettings({ loop: value })}
+							/>
+							<PopColorControl
+								label={__('Background Color', 'kadence-blocks')}
+								value={tabletBackground[0].bgColor ? tabletBackground[0].bgColor : ''}
+								default={''}
+								onChange={(value) => saveTabletBackground({ bgColor: value })}
+							/>
+							{(undefined === tabletBackgroundVideoType || 'local' === tabletBackgroundVideoType) && (
+								<KadenceImageControl
+									label={__('Select Video Poster', 'kadence-blocks')}
+									hasImage={tabletBackground[0].bgImg ? true : false}
+									imageURL={tabletBackground[0].bgImg ? tabletBackground[0].bgImg : ''}
+									imageID={tabletBackground[0].bgImgID ? tabletBackground[0].bgImgID : ''}
+									onRemoveImage={() => {
+										saveTabletBackground({
+											bgImgID: '',
+											bgImg: '',
+										});
+									}}
+									onSaveImage={(img) => {
+										saveTabletBackground({
+											bgImgID: img.id,
+											bgImg: img.url,
+										});
+									}}
+									disableMediaButtons={tabletBackground[0].bgImg ? true : false}
+								/>
+							)}
 						</>
 					)}
 				</>

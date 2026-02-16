@@ -83,6 +83,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $show_play_pause || $show_audio ) {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
 		}
+		if ( $this->has_responsive_video( $attributes ) ) {
+			$this->enqueue_script( 'kadence-blocks-responsive-video-bg' );
+		}
 	}
 
 	/**
@@ -911,10 +914,30 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					break;
 			}
 			if ( 'normal' !== $background_type ) {
-				$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				if ( 'video' === $tablet_background_type ) {
+					// Only hide desktop video + slider, not the tablet/mobile video containers.
+					$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-container:not(.kb-blocks-bg-video-tablet):not(.kb-blocks-bg-video-mobile),' . $base_selector . ' .kb-blocks-bg-slider' );
+				} else {
+					$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				}
+				$css->add_property( 'display', 'none' );
+			}
+			// Tablet video container visibility.
+			if ( 'video' === $tablet_background_type ) {
+				// Show tablet video container at tablet breakpoint.
+				$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-tablet' );
+				$css->add_property( 'display', 'block' );
+				// Hide desktop video container at tablet breakpoint.
+				$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-container:not(.kb-blocks-bg-video-tablet):not(.kb-blocks-bg-video-mobile)' );
 				$css->add_property( 'display', 'none' );
 			}
 			$css->set_media_state( 'desktop' );
+		}
+		// Hide tablet video container by default (desktop breakpoint).
+		$tablet_background_for_video = ( isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
+		if ( ! empty( $tablet_background_for_video['enable'] ) && 'video' === ( $tablet_background_for_video['type'] ?? '' ) ) {
+			$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-tablet' );
+			$css->add_property( 'display', 'none' );
 		}
 		// Mobile Background.
 		$mobile_background = ( isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
@@ -982,10 +1005,30 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					break;
 			}
 			if ( 'normal' !== $background_type ) {
-				$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				if ( 'video' === $mobile_background_type ) {
+					// Only hide non-mobile video containers + slider.
+					$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-container:not(.kb-blocks-bg-video-mobile),' . $base_selector . ' .kb-blocks-bg-slider' );
+				} else {
+					$css->set_selector( $base_selector . ' .kb-blocks-bg-video-container,' . $base_selector . ' .kb-blocks-bg-slider' );
+				}
+				$css->add_property( 'display', 'none' );
+			}
+			// Mobile video container visibility.
+			if ( 'video' === $mobile_background_type ) {
+				// Show mobile video container at mobile breakpoint.
+				$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-mobile' );
+				$css->add_property( 'display', 'block' );
+				// Hide all other video containers at mobile breakpoint.
+				$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-container:not(.kb-blocks-bg-video-mobile)' );
 				$css->add_property( 'display', 'none' );
 			}
 			$css->set_media_state( 'desktop' );
+		}
+		// Hide mobile video container by default (desktop breakpoint).
+		$mobile_background_for_video = ( isset( $attributes['mobileBackground'][0] ) && is_array( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array() );
+		if ( ! empty( $mobile_background_for_video['enable'] ) && 'video' === ( $mobile_background_for_video['type'] ?? '' ) ) {
+			$css->set_selector( $base_selector . ' > .kb-blocks-bg-video-mobile' );
+			$css->add_property( 'display', 'none' );
 		}
 		// Overlay.
 		if ( ! empty( $attributes['overlay'] ) || ! empty( $attributes['overlayBgImg'] ) || ! empty( $attributes['overlaySecond'] ) || ! empty( $attributes['overlayGradient'] ) ) {
@@ -1533,19 +1576,43 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param array $attributes for the block.
 	 */
-	public function get_video_render( $attributes ) {
-		if ( empty( $attributes['backgroundVideo'][0]['local'] ) && empty( $attributes['backgroundVideo'][0]['vimeo'] ) && empty( $attributes['backgroundVideo'][0]['youTube'] ) ) {
+	public function get_video_render( $attributes, $device = 'desktop' ) {
+		// Determine which video attributes to use based on device.
+		switch ( $device ) {
+			case 'tablet':
+				$video_attributes = isset( $attributes['tabletBackgroundVideo'][0] ) ? $attributes['tabletBackgroundVideo'][0] : array();
+				$background_video_type = ! empty( $attributes['tabletBackgroundVideoType'] ) ? $attributes['tabletBackgroundVideoType'] : 'local';
+				$poster = ! empty( $attributes['tabletBackground'][0]['bgImg'] ) ? $attributes['tabletBackground'][0]['bgImg'] : '';
+				break;
+			case 'mobile':
+				$video_attributes = isset( $attributes['mobileBackgroundVideo'][0] ) ? $attributes['mobileBackgroundVideo'][0] : array();
+				$background_video_type = ! empty( $attributes['mobileBackgroundVideoType'] ) ? $attributes['mobileBackgroundVideoType'] : 'local';
+				$poster = ! empty( $attributes['mobileBackground'][0]['bgImg'] ) ? $attributes['mobileBackground'][0]['bgImg'] : '';
+				break;
+			default: // desktop
+				$video_attributes = isset( $attributes['backgroundVideo'][0] ) ? $attributes['backgroundVideo'][0] : array();
+				$background_video_type = ! empty( $attributes['backgroundVideoType'] ) ? $attributes['backgroundVideoType'] : 'local';
+				$poster = ! empty( $attributes['bgImg'] ) ? $attributes['bgImg'] : '';
+				break;
+		}
+
+		if ( empty( $video_attributes['local'] ) && empty( $video_attributes['vimeo'] ) && empty( $video_attributes['youTube'] ) ) {
 			return '';
 		}
+
 		$output = '';
-		$video_attributes = $attributes['backgroundVideo'][0];
-		$background_video_type = isset( $attributes['backgroundVideoType'] ) && $attributes['backgroundVideoType'] ? $attributes['backgroundVideoType'] : 'local';
-		$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
+		$is_responsive = ( 'desktop' !== $device );
+		$has_responsive_video = $this->has_responsive_video( $attributes );
+		$container_class = 'kb-blocks-bg-video-container';
+		if ( $is_responsive ) {
+			$container_class .= ' kb-blocks-bg-video-' . $device;
+		}
+		$video_id_suffix = ( 'desktop' !== $device ) ? '-' . $device : '';
 
 		if ( 'local' == $background_video_type ) {
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video',
-				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ),
+				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . $video_id_suffix,
 				'playsinline' => '',
 				'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
 				'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
@@ -1572,21 +1639,39 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				)
 			);
 
+			$iframe_src = $src_base . $video_id . $src_query_string;
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video ' . $background_video_type,
-				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ),
-				'src' => $src_base . $video_id . $src_query_string,
+				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . $video_id_suffix,
 			);
+			// For responsive containers, use data-src to prevent loading. For desktop with responsive overrides, also defer.
+			if ( $is_responsive || $has_responsive_video ) {
+				$video_args['data-src'] = $iframe_src;
+			} else {
+				$video_args['src'] = $iframe_src;
+			}
 		}
-		if ( ! empty( $attributes['bgImg'] ) && 'local' === $background_video_type ) {
-			$video_args['poster'] = $attributes['bgImg'];
+		if ( ! empty( $poster ) && 'local' === $background_video_type ) {
+			$video_args['poster'] = $poster;
 		}
-		if ( $prevent_preload ) {
-			$video_args['preload'] = 'none';
+
+		// For responsive video containers or desktop with responsive overrides, always defer loading to JS.
+		if ( $is_responsive || $has_responsive_video ) {
+			if ( 'local' == $background_video_type ) {
+				$video_args['preload'] = 'none';
+			}
+			// No autoplay — JS will activate the correct container.
+		} else {
+			// Desktop-only (no responsive overrides) — use original preload logic.
+			$prevent_preload = $this->prevent_preload_when_hidden( $attributes );
+			if ( $prevent_preload ) {
+				$video_args['preload'] = 'none';
+			}
+			if ( ! $prevent_preload ) {
+				$video_args['autoplay'] = '';
+			}
 		}
-		if ( ! $prevent_preload ) {
-			$video_args['autoplay'] = '';
-		}
+
 		if ( isset( $video_args['loop'] ) && $video_args['loop'] == 'false' ) {
 			unset( $video_args['loop'] );
 		}
@@ -1607,32 +1692,46 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$btns_output = '';
-		$show_play_pause = ( isset( $video_attributes['btns'] ) && $video_attributes['btns'] );
-		$show_audio_is_default = ( ! isset( $video_attributes['btnsMute'] ) );
-		$is_unmuted = ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] );
-		$show_audio = ( $show_audio_is_default && $show_play_pause && $is_unmuted ) || ( isset( $video_attributes['btnsMute'] ) && $video_attributes['btnsMute'] );
-		if ( $show_play_pause || $show_audio ) {
-			$btns_output .= '<div class="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">';
-			if ( $show_play_pause ) {
-				$btns_output .= '<button class="kb-background-video-play kb-toggle-video-btn" aria-label="' . __( 'Play', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></button>';
-				$btns_output .= '<button class="kb-background-video-pause kb-toggle-video-btn" aria-label="' . __( 'Pause', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg></button>';
+		// Play/pause/mute buttons are desktop-only.
+		if ( ! $is_responsive ) {
+			$show_play_pause = ( isset( $video_attributes['btns'] ) && $video_attributes['btns'] );
+			$show_audio_is_default = ( ! isset( $video_attributes['btnsMute'] ) );
+			$is_unmuted = ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] );
+			$show_audio = ( $show_audio_is_default && $show_play_pause && $is_unmuted ) || ( isset( $video_attributes['btnsMute'] ) && $video_attributes['btnsMute'] );
+			if ( $show_play_pause || $show_audio ) {
+				$btns_output .= '<div class="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">';
+				if ( $show_play_pause ) {
+					$btns_output .= '<button class="kb-background-video-play kb-toggle-video-btn" aria-label="' . __( 'Play', 'kadence-blocks' ) . '" aria-hidden="true" style="display: none;"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></button>';
+					$btns_output .= '<button class="kb-background-video-pause kb-toggle-video-btn" aria-label="' . __( 'Pause', 'kadence-blocks' ) . '" aria-hidden="false"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg></button>';
+				}
+				if ( $show_audio ) {
+					$hidden_attrs = 'aria-hidden="true" style="display: none;"';
+					$unhidden_attrs = 'aria-hidden="false"';
+					$btns_output .= '<button class="kb-background-video-unmute kb-toggle-video-btn" aria-label="' . __( 'Unmute', 'kadence-blocks' ) . '" ' . ( $is_unmuted ? $hidden_attrs : $unhidden_attrs ) . '><svg viewBox="0 0 256 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971z"></path></svg></button>';
+					$btns_output .= '<button class="kb-background-video-mute kb-toggle-video-btn" aria-label="' . __( 'Mute', 'kadence-blocks' ) . '" ' . ( $is_unmuted ? $unhidden_attrs : $hidden_attrs ) . '><svg viewBox="0 0 576 512" height="16" width="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971zm182.056-77.876C422.982.92 403.283 5.668 394.061 20.745c-9.221 15.077-4.473 34.774 10.604 43.995C468.967 104.063 512 174.983 512 256c0 73.431-36.077 142.292-96.507 184.206-14.522 10.072-18.129 30.01-8.057 44.532 10.076 14.528 30.016 18.126 44.531 8.057C529.633 438.927 576 350.406 576 256c0-103.244-54.579-194.877-137.944-245.859zM480 256c0-68.547-36.15-129.777-91.957-163.901-15.076-9.22-34.774-4.471-43.994 10.607-9.22 15.078-4.471 34.774 10.607 43.994C393.067 170.188 416 211.048 416 256c0 41.964-20.62 81.319-55.158 105.276-14.521 10.073-18.128 30.01-8.056 44.532 6.216 8.96 16.185 13.765 26.322 13.765a31.862 31.862 0 0 0 18.21-5.709C449.091 377.953 480 318.938 480 256zm-96 0c0-33.717-17.186-64.35-45.972-81.944-15.079-9.214-34.775-4.463-43.992 10.616s-4.464 34.775 10.615 43.992C314.263 234.538 320 244.757 320 256a32.056 32.056 0 0 1-13.802 26.332c-14.524 10.069-18.136 30.006-8.067 44.53 10.07 14.525 30.008 18.136 44.53 8.067C368.546 316.983 384 287.478 384 256z"></path></svg></button>';
+				}
+				$btns_output .= '</div>';
 			}
-			if ( $show_audio ) {
-				$hidden_attrs = 'aria-hidden="true" style="display: none;"';
-				$unhidden_attrs = 'aria-hidden="false"';
-				$btns_output .= '<button class="kb-background-video-unmute kb-toggle-video-btn" aria-label="' . __( 'Unmute', 'kadence-blocks' ) . '" ' . ( $is_unmuted ? $hidden_attrs : $unhidden_attrs ) . '><svg viewBox="0 0 256 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971z"></path></svg></button>';
-				$btns_output .= '<button class="kb-background-video-mute kb-toggle-video-btn" aria-label="' . __( 'Mute', 'kadence-blocks' ) . '" ' . ( $is_unmuted ? $unhidden_attrs : $hidden_attrs ) . '><svg viewBox="0 0 576 512" height="16" width="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971zm182.056-77.876C422.982.92 403.283 5.668 394.061 20.745c-9.221 15.077-4.473 34.774 10.604 43.995C468.967 104.063 512 174.983 512 256c0 73.431-36.077 142.292-96.507 184.206-14.522 10.072-18.129 30.01-8.057 44.532 10.076 14.528 30.016 18.126 44.531 8.057C529.633 438.927 576 350.406 576 256c0-103.244-54.579-194.877-137.944-245.859zM480 256c0-68.547-36.15-129.777-91.957-163.901-15.076-9.22-34.774-4.471-43.994 10.607-9.22 15.078-4.471 34.774 10.607 43.994C393.067 170.188 416 211.048 416 256c0 41.964-20.62 81.319-55.158 105.276-14.521 10.073-18.128 30.01-8.056 44.532 6.216 8.96 16.185 13.765 26.322 13.765a31.862 31.862 0 0 0 18.21-5.709C449.091 377.953 480 318.938 480 256zm-96 0c0-33.717-17.186-64.35-45.972-81.944-15.079-9.214-34.775-4.463-43.992 10.616s-4.464 34.775 10.615 43.992C314.263 234.538 320 244.757 320 256a32.056 32.056 0 0 1-13.802 26.332c-14.524 10.069-18.136 30.006-8.067 44.53 10.07 14.525 30.008 18.136 44.53 8.067C368.546 316.983 384 287.478 384 256z"></path></svg></button>';
-			}
-			$btns_output .= '</div>';
 		}
 
-		// if ( 'local' == $attributes['backgroundVideoType'] ) {
 		if ( 'local' == $background_video_type ) {
-			$output = sprintf( '<div class="kb-blocks-bg-video-container"><video %1$s></video>%2$s</div>', implode( ' ', $video_html_attributes ), $btns_output );
+			$output = sprintf( '<div class="%1$s"><video %2$s></video>%3$s</div>', esc_attr( $container_class ), implode( ' ', $video_html_attributes ), $btns_output );
 		} else {
-			$output = sprintf( '<div class="kb-blocks-bg-video-container embedded"><div class="kb-bg-video-iframe kb-bg-video-ratio-%1$s"><iframe frameborder="0" %2$s></iframe></div></div>', $ratio, implode( ' ', $video_html_attributes ) );
+			$output = sprintf( '<div class="%1$s embedded"><div class="kb-bg-video-iframe kb-bg-video-ratio-%2$s"><iframe frameborder="0" %3$s></iframe></div></div>', esc_attr( $container_class ), $ratio, implode( ' ', $video_html_attributes ) );
 		}
 		return $output;
+	}
+
+	/**
+	 * Check if any responsive video overrides exist.
+	 *
+	 * @param array $attributes the block attributes.
+	 * @return bool
+	 */
+	public function has_responsive_video( $attributes ) {
+		$has_tablet = ! empty( $attributes['tabletBackground'][0]['enable'] ) && 'video' === ( $attributes['tabletBackground'][0]['type'] ?? '' );
+		$has_mobile = ! empty( $attributes['mobileBackground'][0]['enable'] ) && 'video' === ( $attributes['mobileBackground'][0]['type'] ?? '' );
+		return $has_tablet || $has_mobile;
 	}
 
 	/**
@@ -1733,7 +1832,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$extra_content .= $this->get_slider_render( $attributes );
 			}
 			if ( 'video' === $background_type ) {
-				$extra_content .= $this->get_video_render( $attributes );
+				$extra_content .= $this->get_video_render( $attributes, 'desktop' );
+			}
+			$tablet_bg = isset( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array();
+			if ( ! empty( $tablet_bg['enable'] ) && 'video' === ( $tablet_bg['type'] ?? '' ) ) {
+				$extra_content .= $this->get_video_render( $attributes, 'tablet' );
+			}
+			$mobile_bg = isset( $attributes['mobileBackground'][0] ) ? $attributes['mobileBackground'][0] : array();
+			if ( ! empty( $mobile_bg['enable'] ) && 'video' === ( $mobile_bg['type'] ?? '' ) ) {
+				$extra_content .= $this->get_video_render( $attributes, 'mobile' );
 			}
 			if ( $this->has_overlay( $attributes ) ) {
 				$overlay_type = ( ! empty( $attributes['currentOverlayTab'] ) ? $attributes['currentOverlayTab'] : 'normal' );
@@ -1760,7 +1867,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 			$content = sprintf( '<%1$s %2$s>%3$s<div %4$s>%5$s</div></%1$s>', $html_tag, $wrapper_attributes, $extra_content, $inner_wrapper_attributes, $content );
 			// Disable preloading if no video on mobile or tablet.
-			if ( ! empty( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && ! empty( $attributes['backgroundVideo'][0]['local'] ) && $this->prevent_preload_when_hidden( $attributes ) ) {
+			if ( $this->has_responsive_video( $attributes ) ) {
+				// Responsive video JS handles activation — no inline script needed.
+			} elseif ( ! empty( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && ! empty( $attributes['backgroundVideo'][0]['local'] ) && $this->prevent_preload_when_hidden( $attributes ) ) {
 				if ( ! empty( $attributes['tabletBackground'][0]['enable'] ) && 'true' == $attributes['tabletBackground'][0]['enable'] ) {
 					$size = 1024;
 				} else {
@@ -1811,6 +1920,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kad-splide', KADENCE_BLOCKS_URL . 'includes/assets/js/splide.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-splide-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-splide-init.min.js', array( 'kad-splide' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-responsive-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-responsive-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-splide-init',
 			'kb_splide',

@@ -96,6 +96,10 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 		backgroundSliderSettings,
 		backgroundVideo,
 		backgroundVideoType,
+		tabletBackgroundVideo,
+		tabletBackgroundVideoType,
+		mobileBackgroundVideo,
+		mobileBackgroundVideoType,
 		overlaySecondOpacity,
 		overlayFirstOpacity,
 		paddingUnit,
@@ -371,8 +375,8 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 	const previewBackgroundSettingTab = getPreviewSize(
 		previewDevice,
 		backgroundSettingTab ? backgroundSettingTab : 'normal',
-		undefined !== tabletBackground && tabletBackground?.[0] && tabletBackground?.[0]?.enable ? 'normal' : '',
-		undefined !== mobileBackground && mobileBackground?.[0] && mobileBackground?.[0]?.enable ? 'normal' : ''
+		undefined !== tabletBackground && tabletBackground?.[0] && tabletBackground?.[0]?.enable ? (tabletBackground[0].type || 'normal') : '',
+		undefined !== mobileBackground && mobileBackground?.[0] && mobileBackground?.[0]?.enable ? (mobileBackground[0].type || 'normal') : ''
 	);
 
 	const sliderSettings = {
@@ -637,50 +641,63 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 							)}
 					</div>
 				)}
-				{'video' === previewBackgroundSettingTab && (
-					<div
-						className={'kb-blocks-bg-video-container'}
-						style={{
-							backgroundColor: previewBackgroundColor
-								? KadenceColorOutput(previewBackgroundColor)
-								: undefined,
-						}}
-					>
-						{(undefined === backgroundVideoType || 'local' === backgroundVideoType) && (
-							<video
-								className="kb-blocks-bg-video"
-								playsinline=""
-								loop=""
-								poster={
-									kadenceDynamic?.['backgroundVideo:0:local']?.enable
-										? '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png'
-										: undefined
-								}
-								src={
-									kadenceDynamic?.['backgroundVideo:0:local']?.enable
-										? undefined
-										: backgroundVideo?.[0]?.local
-											? backgroundVideo[0].local
+				{'video' === previewBackgroundSettingTab && (() => {
+					let activeVideoType, activeVideo;
+					if (previewDevice === 'Mobile' && mobileBackground?.[0]?.enable && mobileBackground?.[0]?.type === 'video') {
+						activeVideoType = mobileBackgroundVideoType || 'local';
+						activeVideo = mobileBackgroundVideo?.[0];
+					} else if (previewDevice === 'Tablet' && tabletBackground?.[0]?.enable && tabletBackground?.[0]?.type === 'video') {
+						activeVideoType = tabletBackgroundVideoType || 'local';
+						activeVideo = tabletBackgroundVideo?.[0];
+					} else {
+						activeVideoType = backgroundVideoType || 'local';
+						activeVideo = backgroundVideo?.[0];
+					}
+					return (
+						<div
+							className={'kb-blocks-bg-video-container'}
+							style={{
+								backgroundColor: previewBackgroundColor
+									? KadenceColorOutput(previewBackgroundColor)
+									: undefined,
+							}}
+						>
+							{(undefined === activeVideoType || 'local' === activeVideoType) && (
+								<video
+									className="kb-blocks-bg-video"
+									playsinline=""
+									loop=""
+									poster={
+										kadenceDynamic?.['backgroundVideo:0:local']?.enable
+											? '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png'
 											: undefined
-								}
-							></video>
-						)}
-						{'youtube' === backgroundVideoType && (
-							<div
-								className="kb-blocks-bg-video"
-								style={{
-									backgroundImage: `url(https://img.youtube.com/vi/${backgroundVideo[0].youTube}/maxresdefault.jpg)`,
-								}}
-							></div>
-						)}
-						{'vimeo' === backgroundVideoType && (
-							<div
-								className="kb-blocks-bg-video"
-								style={{ backgroundImage: `url(https://vumbnail.com/${backgroundVideo[0].vimeo}.jpg)` }}
-							></div>
-						)}
-					</div>
-				)}
+									}
+									src={
+										kadenceDynamic?.['backgroundVideo:0:local']?.enable
+											? undefined
+											: activeVideo?.local
+												? activeVideo.local
+												: undefined
+									}
+								></video>
+							)}
+							{'youtube' === activeVideoType && activeVideo?.youTube && (
+								<div
+									className="kb-blocks-bg-video"
+									style={{
+										backgroundImage: `url(https://img.youtube.com/vi/${activeVideo.youTube}/maxresdefault.jpg)`,
+									}}
+								></div>
+							)}
+							{'vimeo' === activeVideoType && activeVideo?.vimeo && (
+								<div
+									className="kb-blocks-bg-video"
+									style={{ backgroundImage: `url(https://vumbnail.com/${activeVideo.vimeo}.jpg)` }}
+								></div>
+							)}
+						</div>
+					);
+				})()}
 				{children}
 			</div>
 		</>
