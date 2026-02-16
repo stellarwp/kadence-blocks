@@ -14,7 +14,7 @@
 			v.play && v.play().catch(function() {});
 		}
 		var f = c.querySelector('iframe[data-src]');
-		if (f && !f.src) {
+		if (f && f.getAttribute('data-src') !== f.src) {
 			f.src = f.getAttribute('data-src');
 		}
 	}
@@ -24,6 +24,10 @@
 		if (v) {
 			v.pause();
 			v.removeAttribute('autoplay');
+		}
+		var f = c.querySelector('iframe[data-src]');
+		if (f && f.src) {
+			f.src = 'about:blank';
 		}
 	}
 
