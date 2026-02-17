@@ -791,6 +791,11 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 
+		// Require upload capability to prevent contributors from uploading to media library via this endpoint.
+		if ( ! current_user_can( 'upload_files' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to upload files.', 'kadence-blocks' ) );
+		}
+
 		$content       = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
 		$image_library = empty( $_POST['image_library'] ) ? '' : json_decode( $_POST['image_library'], true );
 		$data          = $this->process_image_content( $content, $image_library );

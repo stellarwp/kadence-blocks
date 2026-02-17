@@ -1,10 +1,10 @@
-=== Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
+=== Kadence Blocks — Page Builder Toolkit for Gutenberg Editor ===
 Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.9
-Stable tag: 3.6.0
+Tested up to: 6.9.1
+Stable tag: 3.6.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,22 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.6.2 =
+Release Date: 5th February 2026
+* Fix: Correct Authorization for Media Upload for some user roles
+* Fix: Don't run optimizer when in WP CLI
+
+= 3.6.1 =
+Release Date: 29th January 2026
+* Fix: Issue with icon block in shop kit product tabs
+* Fix: Table(Adv) background/headings not working when inside of Row/Section
+* Fix: Design Library sometimes not showing preview
+* Fix: Wrong Text Domain in class-kadence-header-cpt.php
+* Fix: Add null checks for contentTab in kt-tabs.js
+* Fix: Issue with WPML and ACF image translation syncing
+* Fix: Links in Advanced Heading and Buttons Block Not Translatable
+* Fix: Kadence Blocks preventing Appearance > Widgets from loading.
 
 = 3.6.0 =
 Release Date: 22nd January 2026
