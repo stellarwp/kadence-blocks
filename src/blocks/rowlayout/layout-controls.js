@@ -590,8 +590,19 @@ function LayoutControls({
 							<ToggleControl
 								label={__('Inherit Max Width from Theme?', 'kadence-blocks')}
 								checked={undefined !== inheritMaxWidth ? inheritMaxWidth : false}
-								onChange={(value) => setAttributes({ inheritMaxWidth: value })}
+								onChange={(value) => {
+									const attrs = { inheritMaxWidth: value };
+									if (!value) {
+										attrs.innerContentWidth = '';
+									}
+									setAttributes(attrs);
+								}}
 							/>
+							{inheritMaxWidth === true && applyFilters(
+								'kadence.blocks.rowlayout.contentWidthPresetControl',
+								null,
+								{ attributes, setAttributes }
+							)}
 							{inheritMaxWidth !== true && (
 								<ResponsiveRangeControls
 									label={__('Custom Content Max Width', 'kadence-blocks')}

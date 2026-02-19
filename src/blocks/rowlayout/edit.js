@@ -29,6 +29,7 @@ import {
 import Select from 'react-select';
 import { times, dropRight, debounce, map } from 'lodash';
 import classnames from 'classnames';
+import { isNamedContentWidthPreset } from './content-width-utils';
 /**
  * Import Kadence Components
  */
@@ -165,6 +166,7 @@ const KadenceRowLayout = (props) => {
 		columnsInnerHeight,
 		zIndex,
 		inheritMaxWidth,
+		innerContentWidth,
 		paddingUnit,
 		align,
 		minHeightTablet,
@@ -366,8 +368,8 @@ const KadenceRowLayout = (props) => {
 	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
 	const isKadenceT = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false;
-	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
-	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? '' : '';
+	const paddingSidesTheme = isKadenceT && isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth) ? 'var(--global-content-edge-padding)' : '0px';
+	const paddingSidesDefault = hasBG && !(isKadenceT && isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth)) ? '' : '';
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== padding?.[0] ? padding[0] : '',
@@ -596,7 +598,8 @@ const KadenceRowLayout = (props) => {
 
 	const innerClasses = classnames({
 		'innerblocks-wrap': true,
-		'kb-theme-content-width': inheritMaxWidth,
+		'kb-theme-content-width': isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth),
+		[`kb-content-width-${innerContentWidth}`]: innerContentWidth && innerContentWidth !== 'custom',
 		[`kt-layout-inner-wrap-id${uniqueID}`]: uniqueID,
 		[`kb-grid-columns-${columns}`]: columns,
 	});
@@ -607,7 +610,8 @@ const KadenceRowLayout = (props) => {
 			ref: containerRef,
 			className: innerClasses,
 			style: {
-				maxWidth: !inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+				maxWidth: !isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth) && previewMaxWidth
+					? previewMaxWidth + maxWidthUnit : undefined,
 				minHeight:
 					previewMinHeight && paddingUnit && '%' !== paddingUnit
 						? 'calc(' +
@@ -662,7 +666,7 @@ const KadenceRowLayout = (props) => {
 						<ToolbarButton
 							className="kb-content-width"
 							icon={
-								inheritMaxWidth ? (
+								isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth) ? (
 									<ContentWidthIcon value="theme" />
 								) : (
 									<ContentWidthIcon value="normal" />
@@ -693,8 +697,19 @@ const KadenceRowLayout = (props) => {
 									<ToggleControl
 										label={__('Use Theme Content Inner Width?', 'kadence-blocks')}
 										checked={undefined !== inheritMaxWidth ? inheritMaxWidth : false}
-										onChange={(value) => setAttributes({ inheritMaxWidth: value })}
+										onChange={(value) => {
+											const attrs = { inheritMaxWidth: value };
+											if (!value) {
+												attrs.innerContentWidth = '';
+											}
+											setAttributes(attrs);
+										}}
 									/>
+									{inheritMaxWidth === true && applyFilters(
+										'kadence.blocks.rowlayout.contentWidthPresetControl',
+										null,
+										{ attributes, setAttributes }
+									)}
 									{inheritMaxWidth !== true && (
 										<>
 											<ResponsiveRangeControls
@@ -1468,7 +1483,7 @@ const KadenceRowLayout = (props) => {
 				)}
 				<SpacingVisualizer
 					style={{
-						maxWidth: !inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
+						maxWidth: !isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth) && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
 					}}
 					type="inside"
 					forceHide={resizingVisually}

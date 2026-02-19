@@ -409,38 +409,47 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_row_gap( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'column-gap', 'customGutter', 'gutterType' );
 		$css->render_row_gap( $attributes, array( 'collapseGutter', 'tabletRowGutter', 'mobileRowGutter' ), 'row-gap', 'customRowGutter', 'rowGutterType' );
 		// Max Width.
-		if ( isset( $attributes['inheritMaxWidth'] ) && true === $attributes['inheritMaxWidth'] ) {
-			global $content_width;
-			if ( isset( $content_width ) ) {
-				if ( class_exists( 'Kadence\Theme' ) ) {
-					$css->add_property( 'max-width', 'var( --global-content-width, ' . absint( $content_width ) . 'px )' );
-					$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
-					$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
+		$skip_max_width_css = apply_filters(
+			'kadence_blocks_rowlayout_skip_max_width_css',
+			false,
+			$attributes,
+			$unique_id,
+			$inner_selector
+		);
+		if ( true !== $skip_max_width_css ) {
+			if ( isset( $attributes['inheritMaxWidth'] ) && true === $attributes['inheritMaxWidth'] ) {
+				global $content_width;
+				if ( isset( $content_width ) ) {
+					if ( class_exists( 'Kadence\Theme' ) ) {
+						$css->add_property( 'max-width', 'var( --global-content-width, ' . absint( $content_width ) . 'px )' );
+						$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
+						$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
+					} else {
+						$css->add_property( 'max-width', absint( $content_width ) . 'px' );
+					}
 				} else {
-					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
+					$css->add_property( 'max-width', 'var(--wp--style--global--content-size)' );
 				}
 			} else {
-				$css->add_property( 'max-width', 'var(--wp--style--global--content-size)' );
-			}
-		} else {
-			if ( $css->is_number( $attributes['maxWidth'] ) ) {
-				$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-			}
-			if ( $css->is_number( $attributes['responsiveMaxWidth'][0] ) ) {
-				$css->set_media_state( 'tablet' );
-				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][0] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-				$css->set_media_state( 'desktop' );
-			}
-			if ( $css->is_number( $attributes['responsiveMaxWidth'][1] ) ) {
-				$css->set_media_state( 'mobile' );
-				$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][1] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-				$css->add_property( 'margin-left', 'auto' );
-				$css->add_property( 'margin-right', 'auto' );
-				$css->set_media_state( 'desktop' );
+				if ( $css->is_number( $attributes['maxWidth'] ) ) {
+					$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+					$css->add_property( 'margin-left', 'auto' );
+					$css->add_property( 'margin-right', 'auto' );
+				}
+				if ( $css->is_number( $attributes['responsiveMaxWidth'][0] ) ) {
+					$css->set_media_state( 'tablet' );
+					$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][0] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+					$css->add_property( 'margin-left', 'auto' );
+					$css->add_property( 'margin-right', 'auto' );
+					$css->set_media_state( 'desktop' );
+				}
+				if ( $css->is_number( $attributes['responsiveMaxWidth'][1] ) ) {
+					$css->set_media_state( 'mobile' );
+					$css->add_property( 'max-width', $attributes['responsiveMaxWidth'][1] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+					$css->add_property( 'margin-left', 'auto' );
+					$css->add_property( 'margin-right', 'auto' );
+					$css->set_media_state( 'desktop' );
+				}
 			}
 		}
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
@@ -1807,9 +1816,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['columnsInnerHeight'] ) && $attributes['columnsInnerHeight'] ) {
 				$inner_classes[] = 'kt-inner-column-height-full';
 			}
-			if ( isset( $attributes['inheritMaxWidth'] ) && $attributes['inheritMaxWidth'] ) {
+			$inner_content_width = ! empty( $attributes['innerContentWidth'] ) ? $attributes['innerContentWidth'] : '';
+
+			if ( $inner_content_width && 'custom' !== $inner_content_width ) {
+				$inner_classes[] = 'kb-theme-content-width';
+				$inner_classes[] = 'kb-content-width-' . sanitize_html_class( $inner_content_width );
+			} elseif ( ! $inner_content_width && isset( $attributes['inheritMaxWidth'] ) && $attributes['inheritMaxWidth'] ) {
 				$inner_classes[] = 'kb-theme-content-width';
 			}
+
+			$inner_classes = apply_filters(
+				'kadence_blocks_rowlayout_inner_classes',
+				$inner_classes,
+				$attributes,
+				$unique_id
+			);
+
 			$wrapper_args = array(
 				'class' => implode( ' ', $outer_classes ),
 			);

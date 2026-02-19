@@ -606,6 +606,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"innerContentWidth": {
+			"type": "string",
+			"default": ""
+		},
 		"noCustomDefaults": {
 			"type": "boolean",
 			"default": false

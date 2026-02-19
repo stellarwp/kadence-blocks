@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { Button, Tooltip, ResizableBox } from '@wordpress/components';
 import { getGutterPercentUnit, getGutterTotal, getPreviewGutterSize } from './utils';
 import { getSpacingOptionOutput } from '@kadence/helpers';
+import { isNamedContentWidthPreset } from './content-width-utils';
 /**
  * Internal block libraries
  */
@@ -27,6 +28,7 @@ export default function GridVisualizer({ setAttributes, attributes }) {
 		overlayGradient,
 		overlayBgImg,
 		inheritMaxWidth,
+		innerContentWidth,
 		maxWidth,
 		maxWidthUnit,
 	} = attributes;
@@ -38,13 +40,14 @@ export default function GridVisualizer({ setAttributes, attributes }) {
 		'kt-resizeable-column-container': true,
 		'kb-grid-align-display-wrap': true,
 		[`kt-resizeable-column-container${uniqueID}`]: uniqueID,
-		'kb-theme-content-width': inheritMaxWidth,
+		'kb-theme-content-width': isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth),
+		[`kb-content-width-${innerContentWidth}`]: innerContentWidth && innerContentWidth !== 'custom',
 	});
 	let fallbackPadding =
 		bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg
 			? 'var(--global-row-edge-sm, 15px)'
 			: '0px';
-	if (inheritMaxWidth) {
+	if (isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth)) {
 		fallbackPadding = 'var(--global-row-edge-theme, 15px)';
 	}
 	const fallbackVerticalPadding = 'var(--global-row-spacing-sm, 25px)';
@@ -76,7 +79,7 @@ export default function GridVisualizer({ setAttributes, attributes }) {
 				paddingTop: previewPaddingTop ? previewPaddingTop : fallbackVerticalPadding,
 				paddingBottom: previewPaddingBottom ? previewPaddingBottom : fallbackVerticalPadding,
 				maxWidth:
-					!inheritMaxWidth && previewMaxWidth
+					!isNamedContentWidthPreset(innerContentWidth, inheritMaxWidth) && previewMaxWidth
 						? previewMaxWidth + (maxWidthUnit ? maxWidthUnit : 'px')
 						: undefined,
 			}}

@@ -451,6 +451,17 @@ function migrateBorderSettings(attributes, setAttributes) {
 }
 
 /**
+ * Migrate inheritMaxWidth boolean to innerContentWidth string
+ */
+function migrateInnerContentWidth(attributes, setAttributes) {
+	const { innerContentWidth, inheritMaxWidth } = attributes;
+	if (innerContentWidth) return;
+	if (inheritMaxWidth === true) {
+		setAttributes({ innerContentWidth: 'theme' });
+	}
+}
+
+/**
  * Run all migrations for row layout block
  */
 export function runRowLayoutMigrations(attributes, setAttributes) {
@@ -460,6 +471,7 @@ export function runRowLayoutMigrations(attributes, setAttributes) {
 	migrateMarginSettings(attributes, setAttributes);
 	migrateGradientSettings(attributes, setAttributes);
 	migrateBorderSettings(attributes, setAttributes);
+	migrateInnerContentWidth(attributes, setAttributes);
 	// Update version
 	const { kbVersion } = attributes;
 	if (!kbVersion || kbVersion < 2) {
