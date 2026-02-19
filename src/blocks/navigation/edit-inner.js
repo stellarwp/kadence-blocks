@@ -1913,9 +1913,9 @@ export function EditInner(props) {
 								)}
 								<ResponsiveMeasureRangeControl
 									label={__('Padding', 'kadence-blocks')}
-									value={paddingDropdown}
-									tabletValue={tabletPaddingDropdown}
-									mobileValue={mobilePaddingDropdown}
+									value={arrayStringToInt(paddingDropdown)}
+									tabletValue={arrayStringToInt(tabletPaddingDropdown)}
+									mobileValue={arrayStringToInt(mobilePaddingDropdown)}
 									onChange={(value) => {
 										setMetaAttribute(value.map(String), 'paddingDropdown');
 									}}
@@ -1940,9 +1940,9 @@ export function EditInner(props) {
 								/>
 								<ResponsiveMeasureRangeControl
 									label={__('Margin', 'kadence-blocks')}
-									value={marginDropdown}
-									tabletValue={tabletMarginDropdown}
-									mobileValue={mobileMarginDropdown}
+									value={arrayStringToInt(marginDropdown)}
+									tabletValue={arrayStringToInt(tabletMarginDropdown)}
+									mobileValue={arrayStringToInt(mobileMarginDropdown)}
 									onChange={(value) => {
 										setMetaAttribute(value.map(String), 'marginDropdown');
 									}}
