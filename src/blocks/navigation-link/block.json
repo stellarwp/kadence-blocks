@@ -910,6 +910,43 @@
 			"default": "normal"
 		},
 
+		"imageOverlayBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundHover": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundActive": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"imageOverlayBackgroundActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+
 		"mediaBorder": {
 			"type": "array",
 			"default": [
