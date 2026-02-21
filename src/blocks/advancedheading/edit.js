@@ -1990,12 +1990,12 @@ function KadenceAdvancedHeading(props) {
 											<p
 												dangerouslySetInnerHTML={{
 													__html: sprintf(
-														/* translators: The %s is for the writing-mode CSS property */
+														/* translators: The %s is for the link to the text orientation and accessibility documentation */
 														__(
-															'The text orientation feature uses the %s CSS property. While it works in most modern browsers, it may not be supported in some older browsers.',
+															'Vertical text can be harder to read at certain screen sizes or zoom levels. Responsive orientation can help, but browser support may vary. Learn more about %s.',
 															'kadence-blocks'
 														),
-														'<code>writing-mode</code>'
+														'<a href="https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/#text-orientation" target="_blank">text orientation and accessibility</a>'
 													),
 												}}
 											/>

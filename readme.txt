@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.9
+Tested up to: 6.9.1
 Stable tag: 3.6.2
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -175,7 +175,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.6.2 =
-Release Date: tba
+Release Date: 5th February 2026
+* Fix: Correct Authorization for Media Upload for some user roles
+* Fix: Don't run optimizer when in WP CLI
 
 = 3.6.1 =
 Release Date: 29th January 2026
