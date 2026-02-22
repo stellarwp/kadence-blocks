@@ -1299,7 +1299,7 @@ function KadenceAccordionComponent(props) {
 					${titleStyles?.[0]?.weight ? 'font-weight:' + titleStyles[0].weight : ''};
 				}
 				.kt-accordion-${uniqueID} .wp-block-kadence-pane {
-					margin-top:${titleStyles?.[0]?.marginTop ? titleStyles[0].marginTop : 0}px${hasColumns ? ' !important' : ''};
+					${titleStyles?.[0]?.marginTop != null ? `margin-top:${titleStyles[0].marginTop}px${hasColumns ? ' !important' : ''};` : ''}
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header .kt-blocks-accordion-title {
 					${previewTitleHeight ? 'line-height:' + previewTitleHeight + titleStyles[0].lineType : ''};
