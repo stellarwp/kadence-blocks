@@ -92,6 +92,15 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 			// Hover.
 			$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'hColor', 'color' );
+
+			// Size the wrap; padding is included via box-sizing so the SVG stays inside.
+			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap' );
+			$css->add_property( 'width', '1em' );
+			$css->add_property( 'height', '1em' );
+			// SVG fills the wrap but scales down when wrap has padding (max-width/height in style.scss).
+			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap svg' );
+			$css->add_property( 'width', '1em' );
+			$css->add_property( 'height', '1em' );
 		}
 
 		return $css->css_output();
