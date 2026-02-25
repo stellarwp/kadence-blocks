@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9.1
-Stable tag: 3.6.4
+Stable tag: 3.6.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,17 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.6.5 =
+Release Date: 25rd February 2026
+* Fix: Kadence Performance Optimizer Database Index Size Error
+* Fix: Text (Adv) Block: Content misaligned when 400% zoom is applied.
+* Fix: Text (Adv) Block: Dynamic content announced incorrectly
+* Fix: Text (Adv) Block: Animation does not respect prefers-reduced-motion.
+* Fix: Animate on Scroll: Animation does not respect prefers-reduced-motion.
+* Fix: Table (Adv) Block - Table Cells do not have closing HTML Tags in Raw HTML .
+* Fix: Gallery(Adv) carousel not working inside Ultimate Menu custom content (via Elements).
+* Fix: Height issues on Sticky Header
 
 = 3.6.4 =
 Release Date: 23rd February 2026
