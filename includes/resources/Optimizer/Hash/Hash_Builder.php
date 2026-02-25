@@ -21,10 +21,10 @@ final class Hash_Builder {
 	 */
 	public function build_hash( string $html ): string {
 		$components = [
-			'stylesheet' => hash( 'sha256', $this->extract_stylesheet_links( $html ) ),
-			'inline'     => hash( 'sha256', $this->extract_inline_styles( $html ) ),
-			'blocks'     => hash( 'sha256', $this->extract_block_structure( $html ) ),
-			'structure'  => hash( 'sha256', $this->extract_structural_elements( $html ) ),
+			'stylesheet' => hash( 'md5', $this->extract_stylesheet_links( $html ) ),
+			'inline'     => hash( 'md5', $this->extract_inline_styles( $html ) ),
+			'blocks'     => hash( 'md5', $this->extract_block_structure( $html ) ),
+			'structure'  => hash( 'md5', $this->extract_structural_elements( $html ) ),
 		];
 
 		return implode(
