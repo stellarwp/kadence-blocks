@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9.1
-Stable tag: 3.6.2
+Stable tag: 3.6.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,25 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.6.4 =
+Release Date: 23rd February 2026
+* Fix: Updating permissions on image rest endpoints.
+
+= 3.6.3 =
+Release Date: 11th February 2026
+* Fix: The "Make Parent of Current Menu Item Active" Setting is always active | Navigation (Adv)
+* Fix: Row Layout Custom CSS formatting breaks when exporting/importing Advanced Header Blocks
+* Fix: Modal content is not showing WP patterns when aligned to left or right
+* Add: Aria-label options for the Table(Adv) block
+* Update: Show More: Button is not keyboard operable
+* Update: Show More: Hidden content accessible via keyboard
+* Update: Show More: Hidden elements are exposed to screen readers 
+* Update: Countdown: Missing Pause button for Animated element longer than 5 seconds
+* Fix: Countdown: Status message not announced by screen readers
+* Fix: Countdown missing timer role 
+* Fix: Navigation Submenu hides right away when spacing is added
+* Add: Overlay Color settings to Nav Link Images
 
 = 3.6.2 =
 Release Date: 5th February 2026

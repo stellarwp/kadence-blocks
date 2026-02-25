@@ -233,13 +233,13 @@ $link-color-property: var(
 	}
 
 	/**
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	 *
-	 * This selector needs to stay separated, otherwise submenus
-	 * will not be displayed with IE/Edge.
-	 */
+	  * "focus-within" is an alternative to focus class for
+	  * supporting browsers (all but IE/Edge) for no-JS context
+	  * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	  *
+	  * This selector needs to stay separated, otherwise submenus
+	  * will not be displayed with IE/Edge.
+	  */
 	.menu-item:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
@@ -762,8 +762,8 @@ $link-color-property: var(
 	}
 
 	/*--------------------------------------------------------------
-	 ## Header navigation menus. Base styles for menus, menu items, and their links
-	--------------------------------------------------------------*/
+	  ## Header navigation menus. Base styles for menus, menu items, and their links
+	 --------------------------------------------------------------*/
 	.navigation,
 	.menu-container {
 		display: flex;
@@ -1222,9 +1222,9 @@ $link-color-property: var(
 	}
 
 	/*
-	 * rtl fixes
-	 * TODO test these styles
-	 */
+	  * rtl fixes
+	  * TODO test these styles
+	  */
 	.rtl {
 		.sub-menu .kb-nav-dropdown-toggle-btn {
 			left: 0;
@@ -1246,8 +1246,8 @@ $link-color-property: var(
 	}
 
 	/*--------------------------------------------------------------
-	 ## Misc features
-	 --------------------------------------------------------------*/
+	  ## Misc features
+	  --------------------------------------------------------------*/
 	.kb-nav-label-description {
 		display: block;
 		font-size: 0.8em;
@@ -1260,8 +1260,8 @@ $link-color-property: var(
 }
 
 /*--------------------------------------------------------------
- ## Navigation Link item styles. (pulled in from their separated file for performance)
---------------------------------------------------------------*/
+  ## Navigation Link item styles. (pulled in from their separated file for performance)
+ --------------------------------------------------------------*/
 .wp-block-kadence-navigation-link {
 	.link-highlight-label {
 		transition:
