@@ -6,7 +6,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Resource_Hints\Google_Font_Preconnector;
 use Tests\Support\Classes\OptimizerTestCase;
-use Brain\Monkey;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class GoogleFontPreconnectorTest extends OptimizerTestCase {
@@ -17,10 +16,6 @@ final class GoogleFontPreconnectorTest extends OptimizerTestCase {
 	private $registry;
 
 	protected function setUp(): void {
-		Monkey\setUp();
-
-		Monkey\Functions\when( '\\KadenceWP\\KadenceBlocks\\Traits\\wp_is_mobile' )->justReturn( false );
-
 		parent::setUp();
 
 		$this->registry     = $this->createMock( Analysis_Registry::class );
