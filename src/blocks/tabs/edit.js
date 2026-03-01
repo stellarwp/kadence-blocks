@@ -1410,11 +1410,15 @@ function KadenceTabs(props) {
 		<div {...blockProps}>
 			{renderCSS}
 			<BlockControls>
-				<BlockAlignmentToolbar
-					value={blockAlignment}
-					controls={['center', 'wide', 'full']}
-					onChange={(value) => setAttributes({ blockAlignment: value })}
-				/>
+				{applyFilters(
+					'kadence.blocks.tabs.alignmentToolbar',
+					<BlockAlignmentToolbar
+						value={blockAlignment}
+						controls={['center', 'wide', 'full']}
+						onChange={(value) => setAttributes({ blockAlignment: value })}
+					/>,
+					{ blockAlignment, setAttributes }
+				)}
 				<AlignmentToolbar
 					value={tabAlignment}
 					onChange={(nextAlign) => {
