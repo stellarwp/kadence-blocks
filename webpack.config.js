@@ -1,22 +1,13 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
-const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
-const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
-const EXTERNAL_NAME = 'kadence';
-const HANDLE_NAME = 'kadence';
+const StyleOnlyEntryPlugin = require('@kadence/components/scripts/webpack/style-only-entry-plugin.js');
+const ReplaceTextDomainPlugin = require('@kadence/components/scripts/webpack/replace-text-domain-plugin.js');
 const PROJECT_NAMESPACE = '@kadence/';
 
 const path = require('path');
 
-function camelCaseDash(string) {
-	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-}
-
 module.exports = {
 	...defaultConfig,
 	entry: {
-		icons: './src/packages/icons/src/index.js',
-		components: './src/packages/components/src/index.js',
-		helpers: './src/packages/helpers/src/index.js',
 		'blocks-navigation': './src/blocks/navigation/index.js',
 		'blocks-navigation-link': './src/blocks/navigation-link/index.js',
 		'blocks-header': './src/blocks/header/index.js',
@@ -80,23 +71,11 @@ module.exports = {
 		},
 	},
 	plugins: [
+		...defaultConfig.plugins,
 		new StyleOnlyEntryPlugin(),
-		...defaultConfig.plugins.filter((plugin) => plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'),
-		new DependencyExtractionWebpackPlugin({
-			requestToExternal(request) {
-				if (request.endsWith('.css')) {
-					return false;
-				}
-
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return [EXTERNAL_NAME, camelCaseDash(request.substring(PROJECT_NAMESPACE.length))];
-				}
-			},
-			requestToHandle(request) {
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return `${HANDLE_NAME}-${request.substring(PROJECT_NAMESPACE.length)}`;
-				}
-			},
+		new ReplaceTextDomainPlugin({
+			placeholder: '__KADENCE__TEXT__DOMAIN__',
+			value: 'kadence-blocks',
 		}),
 	],
 };

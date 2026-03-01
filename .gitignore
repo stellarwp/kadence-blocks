@@ -16,3 +16,4 @@ bin/wp-cli.phar
 /.env
 # Remove this when fully transitioning to bun.
 /bun.lock*
+/.kadence-packages-root
