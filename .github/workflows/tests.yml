@@ -35,13 +35,13 @@ jobs:
         name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
         steps:
             - name: Checkout the repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Checkout slic
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
               with:
                   repository: stellarwp/slic
-                  ref: 2.1.2
+                  ref: main
                   path: slic
                   fetch-depth: 1
 
@@ -109,7 +109,7 @@ jobs:
 
             - name: Upload codeception output
               if: ${{ failure() }}
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with:
                   name: '${{ matrix.test }}-${{ matrix.php }}-${{ matrix.wordpress }}-output'
                   path: './tests/_output'
