@@ -460,12 +460,10 @@ class KBHeader {
 		var elWidth = this.placeholderWrapper.offsetWidth;
 		var elOffsetLeft = this.getOffset(this.placeholderWrapper).left;
 		const activeSizeCased = this.activeSizeCased();
-		if (!this['transparent' + activeSizeCased]) {
-			this.placeholderWrapper.style.height = elHeight + 'px';
-		} else {
-			this.placeholderWrapper.style.height = null;
-		}
-		if ('' !== this['stickySection' + activeSizeCased] && this['transparent' + activeSizeCased]) {
+		const isTransparent = this['transparent' + activeSizeCased];
+		const hasStickySection = '' !== this['stickySection' + activeSizeCased];
+
+		if (!isTransparent || hasStickySection) {
 			this.placeholderWrapper.style.height = elHeight + 'px';
 		} else {
 			this.placeholderWrapper.style.height = null;
