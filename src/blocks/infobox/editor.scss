@@ -357,3 +357,14 @@
 .block-editor-block-inspector .components-base-control.mb-0 {
 	margin-bottom: 0;
 }
+
+// KAD-5338 - When "Number Border Animation" is set to "Border Spin In", then number should be above the border animation to make it editable in editor.
+.kt-blocks-info-box-media {
+	&.kt-info-media-animate-drawborder{
+		.kadence-info-box-number-container.kt-info-number-animate-drawborder{
+			z-index: 3;
+			position: relative;
+		}
+
+	}
+}

@@ -564,22 +564,31 @@ class Kadence_Blocks_Settings {
 					$newpalette = $san_palette;
 				}
 				add_theme_support( 'editor-color-palette', $newpalette );
-				add_action( 'wp_head', [ $this, 'print_gutenberg_style' ], 8 );
-				add_action( 'admin_print_styles', [ $this, 'print_gutenberg_style' ], 21 );
+				add_action( 'wp_head', [ $this, 'print_color_palette_css' ], 8 );
+				add_filter( 'block_editor_settings_all', [ $this, 'add_color_palette_css_to_block_editor' ], 999 );
 			}
 		}
 	}
-	/**
-	 * Print Gutenberg Palette Styles
-	 */
-	public function print_gutenberg_style() {
-		if ( is_admin() ) {
-			$screen = get_current_screen();
-			if ( ! $screen || ! $screen->is_block_editor() ) {
-				return;
-			}
+
+	public function print_color_palette_css() {
+		if ( $css = $this->get_color_palette_css() ) {
+			printf( '<style id="kadence_blocks_palette_css">%s</style>', $css ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
+	}
+
+	public function add_color_palette_css_to_block_editor(array $settings) {
+		if ( $css = $this->get_color_palette_css() ) {
+			$settings['styles'][] =[
+				'css' => $css,
+			];
+		}
+
+		return $settings;
+	}
+
+	private function get_color_palette_css() {
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
+		
 		if ( $palette && is_object( $palette ) && isset( $palette->palette ) && is_array( $palette->palette ) ) {
 			$san_palette = [];
 			foreach ( $palette->palette as $item ) {
@@ -590,16 +599,20 @@ class Kadence_Blocks_Settings {
 				];
 			}
 			if ( isset( $san_palette[0] ) ) {
-				echo '<style id="kadence_blocks_palette_css">';
+				$color_palette_css = '';
 				foreach ( $san_palette as $set ) {
 					$slug  = $set['slug'];
 					$color = $set['color'];
-					echo ':root .has-' . esc_attr( $slug ) . '-color{color:' . esc_attr( $color ) . '}:root .has-' . esc_attr( $slug ) . '-background-color{background-color:' . esc_attr( $color ) . '}';
+					$color_palette_css .= ':root .has-' . esc_attr( $slug ) . '-color{color:' . esc_attr( $color ) . '}:root .has-' . esc_attr( $slug ) . '-background-color{background-color:' . esc_attr( $color ) . '}';
 				}
-				echo '</style>';
+
+				return $color_palette_css;
 			}
 		}
+
+		return null;
 	}
+
 	/**
 	 * Redirect to the settings page on activation
 	 */
