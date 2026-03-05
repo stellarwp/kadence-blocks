@@ -486,11 +486,14 @@ class KBHeader {
 		var elHeight = this.stickyWrapper.offsetHeight;
 		var elWidth = this.placeholderWrapper.offsetWidth;
 		var elOffsetLeft = this.getOffset(this.placeholderWrapper).left;
-		if (!this['transparent' + this.activeSizeCased()]) {
+		const activeSizeCased = this.activeSizeCased();
+		const isTransparent = this['transparent' + activeSizeCased];
+		const hasStickySection = '' !== this['stickySection' + activeSizeCased];
+
+		if (!isTransparent || hasStickySection) {
 			this.placeholderWrapper.style.height = elHeight + 'px';
-		}
-		if ('' !== this['stickySection' + this.activeSizeCased()] && this['transparent' + this.activeSizeCased()]) {
-			this.placeholderWrapper.style.height = elHeight + 'px';
+		} else {
+			this.placeholderWrapper.style.height = null;
 		}
 
 		// Adjust offsetTop depending on certain top of page elements

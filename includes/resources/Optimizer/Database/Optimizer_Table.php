@@ -10,7 +10,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
  */
 final class Optimizer_Table extends Table {
 
-	public const SCHEMA_VERSION = '2.0.4';
+	public const SCHEMA_VERSION = '2.0.5';
 
 	/**
 	 * @var string The base table name.

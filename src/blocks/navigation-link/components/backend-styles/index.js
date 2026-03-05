@@ -283,6 +283,15 @@ export default function BackendStyles(props) {
 		dropdownHorizontalAlignment,
 		dropdownHorizontalAlignmentTablet,
 		dropdownHorizontalAlignmentMobile,
+		imageOverlayBackground,
+		imageOverlayBackgroundHover,
+		imageOverlayBackgroundActive,
+		imageOverlayBackgroundTablet,
+		imageOverlayBackgroundHoverTablet,
+		imageOverlayBackgroundActiveTablet,
+		imageOverlayBackgroundMobile,
+		imageOverlayBackgroundHoverMobile,
+		imageOverlayBackgroundActiveMobile,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -617,6 +626,26 @@ export default function BackendStyles(props) {
 		dropdownHorizontalAlignmentTablet,
 		dropdownHorizontalAlignmentMobile
 	);
+
+	// Image overlay preview sizes (must be at top level to avoid hook violations)
+	const previewImageOverlayBackground = getPreviewSize(
+		previewDevice,
+		imageOverlayBackground || '',
+		imageOverlayBackgroundTablet || '',
+		imageOverlayBackgroundMobile || ''
+	);
+	const previewImageOverlayBackgroundHover = getPreviewSize(
+		previewDevice,
+		imageOverlayBackgroundHover || '',
+		imageOverlayBackgroundHoverTablet || '',
+		imageOverlayBackgroundHoverMobile || ''
+	);
+	const previewImageOverlayBackgroundActive = getPreviewSize(
+		previewDevice,
+		imageOverlayBackgroundActive || '',
+		imageOverlayBackgroundActiveTablet || '',
+		imageOverlayBackgroundActiveMobile || ''
+	);
 	const css = new KadenceBlocksCSS();
 
 	let imageRatioPadding = isNaN(mediaImage[0].height)
@@ -941,6 +970,49 @@ export default function BackendStyles(props) {
 		attributes,
 		previewDevice
 	);
+
+	// Image overlay: for mediaType image, container must not show background; only the overlay does.
+	// Overlay uses imageOverlayBackground* attributes (separate from mediaBackground used for icon).
+	if (mediaType === 'image') {
+		// Set overlay color variables from imageOverlayBackground* (overrides mediaBackground* set by render_button_styles_with_states).
+		css.set_selector(`.kb-nav-link-${uniqueID}.kb-menu-has-image .link-media-container`);
+		const overlayBg = css.render_color(previewImageOverlayBackground);
+		const overlayBgHover = css.render_color(previewImageOverlayBackgroundHover);
+		const overlayBgActive = css.render_color(previewImageOverlayBackgroundActive);
+		if (overlayBg) {
+			css.add_property('--kb-nav-link-media-container-background', overlayBg);
+		}
+		if (overlayBgHover) {
+			css.add_property('--kb-nav-link-media-container-background-hover', overlayBgHover);
+		}
+		if (overlayBgActive) {
+			css.add_property('--kb-nav-link-media-container-background-active', overlayBgActive);
+		}
+		css.add_property('background', 'transparent');
+
+		css.set_selector(`.kb-nav-link-${uniqueID} .link-media-container .kadence-navigation-link-image-intrinsic`);
+		css.add_property('position', 'relative');
+
+		css.set_selector(`.kb-nav-link-${uniqueID} .kb-nav-link-image-overlay`);
+		css.add_property('position', 'absolute');
+		css.add_property('inset', '0');
+		css.add_property('background-color', 'var(--kb-nav-link-media-container-background, transparent)');
+		css.add_property('opacity', '0.5');
+		css.add_property('pointer-events', 'none');
+
+		css.set_selector(`.kb-nav-link-${uniqueID} .kb-link-wrap:hover .kb-nav-link-image-overlay`);
+		css.add_property('background-color', 'var(--kb-nav-link-media-container-background-hover)');
+
+		css.set_selector(`.kb-nav-link-${uniqueID} .kb-link-wrap:active .kb-nav-link-image-overlay`);
+		css.add_property('background-color', 'var(--kb-nav-link-media-container-background-active)');
+
+		css.set_selector(`.kb-nav-link-${uniqueID}.current-menu-item .kb-nav-link-image-overlay`);
+		css.add_property('background-color', 'var(--kb-nav-link-media-container-background-active)');
+
+		// Restore block selector so subsequent blocks (transparent, sticky, highlight, media position,
+		// max-width, ratio, etc.) apply to .kb-nav-link-{id}, not the overlay.
+		css.set_selector(`.kb-nav-link-${uniqueID}`);
+	}
 
 	//transparent styles
 	if (context?.['kadence/headerIsTransparent'] == '1') {
