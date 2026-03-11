@@ -522,7 +522,7 @@ export default function BackendStyles(props) {
 		//apply auto padding to the next block after the header
 		if (autoTransparentSpacing && elementHeight) {
 			css.set_selector(`.kb-header-transparent-placeholder + *`);
-			css.add_property('padding-top', elementHeight + 'px');
+			css.add_property('padding-top', 'var(--kb-editor-height-hd)');
 		}
 	}
 
