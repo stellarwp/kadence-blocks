@@ -830,12 +830,21 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
-	 * @return array<array{id: int, url: string}> A list of local or pexels images, where the ID is an attachment_id or pexels_id.
+	 * @return array<array{id: int, url: string}>|\WP_Error A list of local or pexels images, or WP_Error on permission failure.
 	 * @throws InvalidArgumentException
 	 * @throws Throwable
 	 * @throws ImageDownloadException
 	 */
-	public function process_images( WP_REST_Request $request ): array {
+	public function process_images( WP_REST_Request $request ) {
+		// Require upload capability; this endpoint downloads images and adds them to the media library.
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return new WP_Error(
+				'rest_forbidden',
+				__( 'You do not have permission to upload files.', 'kadence-blocks' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$parameters = (array) $request->get_json_params();
 
 		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
@@ -1212,6 +1221,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function process_pattern( WP_REST_Request $request ) {
+		// Require upload capability; pattern processing downloads images and adds them to the media library.
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return new WP_Error(
+				'rest_forbidden',
+				__( 'You do not have permission to upload files.', 'kadence-blocks' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$parameters = $request->get_json_params();
 		if ( empty( $parameters['content'] ) ) {
 			return rest_ensure_response( 'failed' );

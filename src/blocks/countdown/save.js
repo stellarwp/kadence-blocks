@@ -11,6 +11,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 function Save({ attributes }) {
 	const {
@@ -23,6 +24,8 @@ function Save({ attributes }) {
 		enableTimer,
 		counterAlign,
 		revealOnLoad,
+		enablePauseButton,
+		pauseButtonPosition,
 	} = attributes;
 	const classes = classnames({
 		'kb-countdown-container': true,
@@ -48,6 +51,21 @@ function Save({ attributes }) {
 
 	return (
 		<div {...blockProps} data-id={uniqueID}>
+			{enablePauseButton && (
+				<button
+					type="button"
+					className={`kb-countdown-pause-button kb-countdown-pause-button-${pauseButtonPosition || 'top-right'}`}
+					aria-label={__('Pause countdown timer', 'kadence-blocks')}
+					title={__('Pause countdown', 'kadence-blocks')}
+				>
+					<span className="kb-countdown-pause-icon" aria-hidden="true">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+							<rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+						</svg>
+					</span>
+				</button>
+			)}
 			<InnerBlocks.Content />
 		</div>
 	);
