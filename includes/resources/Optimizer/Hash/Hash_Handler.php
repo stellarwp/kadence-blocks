@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Hash;
 
 use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Optimizer\Device_Resolver;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
 use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
@@ -10,7 +11,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
-use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use Throwable;
 
 /**
@@ -19,8 +19,6 @@ use Throwable;
  * optimization pass and invalidates the current optimization data if it's outdated.
  */
 final class Hash_Handler {
-
-	use Viewport_Trait;
 
 	/**
 	 * Captures the final HTML before output buffering is
@@ -36,6 +34,7 @@ final class Hash_Handler {
 	private Hash_Store $hash_store;
 	private Path_Factory $path_factory;
 	private LoggerInterface $logger;
+	private Device_Resolver $device_resolver;
 
 	/**
 	 * @param Hash_Builder         $hasher
@@ -45,6 +44,7 @@ final class Hash_Handler {
 	 * @param Hash_Store           $hash_store
 	 * @param Path_Factory         $path_factory
 	 * @param LoggerInterface      $logger
+	 * @param Device_Resolver      $device_resolver
 	 */
 	public function __construct(
 		Hash_Builder $hasher,
@@ -53,7 +53,8 @@ final class Hash_Handler {
 		Background_Processor $background_processor,
 		Hash_Store $hash_store,
 		Path_Factory $path_factory,
-		LoggerInterface $logger
+		LoggerInterface $logger,
+		Device_Resolver $device_resolver
 	) {
 		$this->hasher               = $hasher;
 		$this->store                = $store;
@@ -62,6 +63,7 @@ final class Hash_Handler {
 		$this->hash_store           = $hash_store;
 		$this->path_factory         = $path_factory;
 		$this->logger               = $logger;
+		$this->device_resolver      = $device_resolver;
 	}
 
 	/**
@@ -127,7 +129,7 @@ final class Hash_Handler {
 		// Return request early, if possible, so we can process this in the background.
 		$this->background_processor->try_finish();
 
-		$viewport = Viewport::current( $this->is_mobile() );
+		$viewport = Viewport::current( $this->device_resolver->is_mobile() );
 
 		// Process skip rules and bail if required.
 		foreach ( $this->rules->all() as $rule ) {

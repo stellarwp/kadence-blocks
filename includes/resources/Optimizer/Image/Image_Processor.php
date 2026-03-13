@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Image;
 
 use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Optimizer\Device_Resolver;
 use KadenceWP\KadenceBlocks\Optimizer\Enums\Viewport;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Contracts\Processor;
 use KadenceWP\KadenceBlocks\Optimizer\Image\Traits\Image_Key_Generator_Trait;
@@ -12,7 +13,6 @@ use KadenceWP\KadenceBlocks\Optimizer\Skip_Rules\Rule_Collection;
 use KadenceWP\KadenceBlocks\Optimizer\Store\Contracts\Store;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals as SG;
-use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 use WP_HTML_Tag_Processor;
 
 /**
@@ -23,12 +23,19 @@ use WP_HTML_Tag_Processor;
  */
 final class Image_Processor {
 
-	use Viewport_Trait;
 	use Image_Key_Generator_Trait;
 
 	private Store $store;
 	private Rule_Collection $rules;
 	private Path_Factory $path_factory;
+
+	/**
+	 * The logger.
+	 *
+	 * @var LoggerInterface
+	 */
+	private LoggerInterface $logger;
+	private Device_Resolver $device_resolver;
 
 	/**
 	 * The list of image processors.
@@ -38,31 +45,27 @@ final class Image_Processor {
 	private array $processors;
 
 	/**
-	 * The logger.
-	 *
-	 * @var LoggerInterface
-	 */
-	private LoggerInterface $logger;
-
-	/**
-	 * @param Store           $store The optimization store.
-	 * @param Rule_Collection $rules The rule collection.
-	 * @param Path_Factory    $path_factory The path factory.
-	 * @param LoggerInterface $logger The logger.
-	 * @param Processor[]     $processors The list of image processors.
+	 * @param Store           $store  The optimization store.
+	 * @param Rule_Collection $rules  The rule collection.
+	 * @param Path_Factory    $path_factory  The path factory.
+	 * @param LoggerInterface $logger  The logger.
+	 * @param Device_Resolver $device_resolver The device resolver.
+	 * @param Processor[]     $processors  The list of image processors.
 	 */
 	public function __construct(
 		Store $store,
 		Rule_Collection $rules,
 		Path_Factory $path_factory,
 		LoggerInterface $logger,
+		Device_Resolver $device_resolver,
 		array $processors
 	) {
-		$this->store        = $store;
-		$this->rules        = $rules;
-		$this->path_factory = $path_factory;
-		$this->logger       = $logger;
-		$this->processors   = $processors;
+		$this->store           = $store;
+		$this->rules           = $rules;
+		$this->path_factory    = $path_factory;
+		$this->logger          = $logger;
+		$this->device_resolver = $device_resolver;
+		$this->processors      = $processors;
 	}
 
 	/**
@@ -108,7 +111,7 @@ final class Image_Processor {
 			return $html;
 		}
 
-		$device          = $analysis->getDevice( Viewport::current( $this->is_mobile() ) );
+		$device          = $analysis->getDevice( Viewport::current( $this->device_resolver->is_mobile() ) );
 		$critical_images = $device ? $device->criticalImages : [];
 		$images          = $analysis->images;
 

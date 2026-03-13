@@ -3,14 +3,12 @@
 namespace KadenceWP\KadenceBlocks\Optimizer\Lazy_Load;
 
 use KadenceWP\KadenceBlocks\Optimizer\Analysis_Registry;
+use KadenceWP\KadenceBlocks\Optimizer\Device_Resolver;
 use KadenceWP\KadenceBlocks\Optimizer\Lazy_Load\Sections\Lazy_Render_Decider;
 use KadenceWP\KadenceBlocks\Optimizer\Request\Request;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
-use KadenceWP\KadenceBlocks\Traits\Viewport_Trait;
 
 final class Provider extends Provider_Contract {
-
-	use Viewport_Trait;
 
 	public function register(): void {
 		$this->register_analysis_registry();
@@ -25,7 +23,7 @@ final class Provider extends Provider_Contract {
 
 		$this->container->when( Analysis_Registry::class )
 						->needs( '$is_mobile' )
-						->give( fn(): bool => $this->is_mobile() );
+						->give( fn( $c ): bool => $c->get( Device_Resolver::class )->is_mobile() );
 	}
 
 	private function register_element_lazy_loader(): void {

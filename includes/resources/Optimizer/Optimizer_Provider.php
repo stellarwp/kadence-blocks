@@ -3,7 +3,6 @@
 namespace KadenceWP\KadenceBlocks\Optimizer;
 
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
-use KadenceWP\KadenceBlocks\StellarWP\SuperGlobals\SuperGlobals;
 
 final class Optimizer_Provider extends Provider {
 
@@ -61,15 +60,9 @@ final class Optimizer_Provider extends Provider {
 	private function register_mobile_override(): void {
 		add_filter(
 			'wp_is_mobile',
-			static function ( bool $is_mobile ): bool {
-				if ( SuperGlobals::get_get_var( 'kadence_is_mobile' ) ) {
-					return true;
-				}
-
-				return $is_mobile;
-			},
+			fn(): bool => $this->container->get( Device_Resolver::class )->is_mobile(),
 			10,
-			1
+			0
 		);
 	}
 }
