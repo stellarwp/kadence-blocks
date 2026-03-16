@@ -712,6 +712,27 @@ class KBHeader {
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 		}
+		// Fix stale placeholder height and position when back at top.
+		//
+		// Two timing issues cause the header to overlap page content at scrollY=0:
+		// 1. elHeight (line ~486) is measured before the shrink block (line ~571)
+		//    restores the header row, so placeholderWrapper gets the shrunk value.
+		// 2. isSticking (used at line ~597) reflects the previous scroll frame,
+		//    so position:fixed persists even though setStickyChanged(false) runs
+		//    afterwards.
+		//
+		// Re-measuring and resetting here — after both shrink and class logic
+		// have completed — corrects both issues in a single pass.
+		if ( window.scrollY === 0 && this.shrinkMain ) {
+			this.stickyWrapper.style.position = 'initial';
+			this.stickyWrapper.style.width = 'initial';
+			this.stickyWrapper.style.left = 'initial';
+			this.stickyWrapper.style.top = 'initial';
+
+			if ( ! isTransparent || hasStickySection ) {
+				this.placeholderWrapper.style.height = this.stickyWrapper.offsetHeight + 'px';
+			}
+		}
 	}
 
 	activeSizeCased(size) {
