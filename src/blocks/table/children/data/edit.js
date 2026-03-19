@@ -150,6 +150,13 @@ export function Edit(props) {
 			? 'th'
 			: 'td';
 
+	// Clear scope when the cell is no longer a header so stale values don't persist.
+	useEffect(() => {
+		if (Tag === 'td' && scope !== '') {
+			setAttributes({ scope: '' });
+		}
+	}, [Tag]);
+
 	const tagProps = Tag === 'th' && scope ? { ...blockProps, scope } : blockProps;
 
 	return (
