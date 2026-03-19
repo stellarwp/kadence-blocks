@@ -68,6 +68,11 @@ export function Edit(props) {
 		}
 	}, [hasInnerBlocks]);
 
+	const Tag =
+		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']
+			? 'th'
+			: 'td';
+
 	const classes = useMemo(
 		() =>
 			classnames({
@@ -80,6 +85,7 @@ export function Edit(props) {
 
 	const blockProps = useBlockProps({
 		className: classes,
+		...(Tag === 'th' && scope ? { scope } : {}),
 	});
 
 	uniqueIdHelper(props);
@@ -145,11 +151,6 @@ export function Edit(props) {
 		});
 	};
 
-	const Tag =
-		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']
-			? 'th'
-			: 'td';
-
 	// Clear scope when the cell is no longer a header so stale values don't persist.
 	useEffect(() => {
 		if (Tag === 'td' && scope !== '') {
@@ -157,10 +158,8 @@ export function Edit(props) {
 		}
 	}, [Tag]);
 
-	const tagProps = Tag === 'th' && scope ? { ...blockProps, scope } : blockProps;
-
 	return (
-		<Tag {...tagProps}>
+		<Tag {...blockProps}>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			<BlockControls>
 				<TableControlsDropdown onAddRow={addRow} onAddColumn={addColumn} />
