@@ -150,8 +150,10 @@ export function Edit(props) {
 			? 'th'
 			: 'td';
 
+	const tagProps = Tag === 'th' && scope ? { ...blockProps, scope } : blockProps;
+
 	return (
-		<Tag {...blockProps}>
+		<Tag {...tagProps}>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			<BlockControls>
 				<TableControlsDropdown onAddRow={addRow} onAddColumn={addColumn} />
