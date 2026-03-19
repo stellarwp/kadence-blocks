@@ -17,7 +17,7 @@ import { uniqueIdHelper } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
 import { flow } from 'lodash';
 import classnames from 'classnames';
-import { ToolbarDropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
+import { ToolbarDropdownMenu, MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
 import { TableControlsDropdown } from './table-controls';
 
 const DEFAULT_BLOCK = [['core/paragraph', {}]];
@@ -178,6 +178,19 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<KadencePanelBody initialOpen={true}>
+						{Tag === 'th' && (
+							<SelectControl
+								label={__('Scope', 'kadence-blocks')}
+								value={scope}
+								options={[
+									{ label: __('None', 'kadence-blocks'), value: '' },
+									{ label: __('Column (col)', 'kadence-blocks'), value: 'col' },
+									{ label: __('Row (row)', 'kadence-blocks'), value: 'row' },
+								]}
+								onChange={(value) => setAttributes({ scope: value })}
+								help={__('Defines which cells this header relates to.', 'kadence-blocks')}
+							/>
+						)}
 						<ResponsiveMeasureRangeControl
 							label={__('Padding', 'kadence-blocks')}
 							value={padding}
