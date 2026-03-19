@@ -186,7 +186,7 @@ export function Edit(props) {
 					<KadencePanelBody initialOpen={true}>
 						{Tag === 'th' && (
 							<SelectControl
-								label={__('Scope', 'kadence-blocks')}
+								label={__('Header Scope', 'kadence-blocks')}
 								value={scope}
 								options={[
 									{ label: __('None', 'kadence-blocks'), value: '' },
@@ -194,7 +194,7 @@ export function Edit(props) {
 									{ label: __('Row (row)', 'kadence-blocks'), value: 'row' },
 								]}
 								onChange={(value) => setAttributes({ scope: value })}
-								help={__('Defines which cells this header relates to.', 'kadence-blocks')}
+								help={__('Defines whether this header applies to its column or row.', 'kadence-blocks')}
 							/>
 						)}
 						<ResponsiveMeasureRangeControl
