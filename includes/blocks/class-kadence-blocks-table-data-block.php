@@ -104,9 +104,10 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return sprintf(
-			'<%s class="kb-table-data kb-table-data%2$s">%3$s</%4$s>',
+			'<%s class="kb-table-data kb-table-data%2$s"%3$s>%4$s</%5$s>',
 			$tag,
 			esc_attr( $unique_id ),
+			$scope_attr,
 			$content,
 			$tag
 		);
