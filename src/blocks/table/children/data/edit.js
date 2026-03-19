@@ -85,7 +85,7 @@ export function Edit(props) {
 
 	const blockProps = useBlockProps({
 		className: classes,
-		...(Tag === 'th' && scope ? { scope } : {}),
+		...(Tag === 'th' && ['col', 'row'].includes(scope) ? { scope } : {}),
 	});
 
 	uniqueIdHelper(props);
