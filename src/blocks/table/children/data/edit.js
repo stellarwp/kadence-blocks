@@ -24,7 +24,7 @@ const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId, context } = props;
 
-	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType, scope } = attributes;
+	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType, scope = '' } = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
 
