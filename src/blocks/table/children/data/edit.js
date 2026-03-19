@@ -156,7 +156,7 @@ export function Edit(props) {
 		if (Tag === 'td' && scope !== '') {
 			setAttributes({ scope: '' });
 		}
-	}, [Tag]);
+	}, [Tag, scope]);
 
 	return (
 		<Tag {...blockProps}>
