@@ -723,15 +723,12 @@ class KBHeader {
 		//
 		// Re-measuring and resetting here — after both shrink and class logic
 		// have completed — corrects both issues in a single pass.
-		if ( window.scrollY === 0 && this.shrinkMain ) {
-			this.stickyWrapper.style.position = 'initial';
+			if ( window.scrollY === 0 && this.shrinkMain && ( ! isTransparent || hasStickySection ) ) {			this.stickyWrapper.style.position = 'initial';
 			this.stickyWrapper.style.width = 'initial';
 			this.stickyWrapper.style.left = 'initial';
 			this.stickyWrapper.style.top = 'initial';
-
-			if ( ! isTransparent || hasStickySection ) {
-				this.placeholderWrapper.style.height = this.stickyWrapper.offsetHeight + 'px';
-			}
+																									   
+			this.placeholderWrapper.style.height = this.stickyWrapper.offsetHeight + 'px';
 		}
 	}
 
