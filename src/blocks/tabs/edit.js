@@ -30,6 +30,7 @@ import {
 	getBorderStyle,
 	uniqueIdHelper,
 } from '@kadence/helpers';
+import { SPACING_SIZES_MAP } from './constants';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -1865,6 +1866,7 @@ function KadenceTabs(props) {
 																		onUnit={(value) =>
 																			setAttributes({ titlePaddingUnit: value })
 																		}
+																		options={SPACING_SIZES_MAP}
 																	/>
 																	<ResponsiveMeasureRangeControl
 																		label={__('Title Margin', 'kadence-blocks')}
@@ -1900,6 +1902,7 @@ function KadenceTabs(props) {
 																		}
 																		unit={titleMarginUnit}
 																		units={['px', 'em', 'rem']}
+																		options={SPACING_SIZES_MAP}
 																		onUnit={(value) =>
 																			setAttributes({ titleMarginUnit: value })
 																		}
@@ -1989,6 +1992,7 @@ function KadenceTabs(props) {
 																		}
 																		unit={titleMarginUnit}
 																		units={['px', 'em', 'rem']}
+																		options={SPACING_SIZES_MAP}
 																		onUnit={(value) =>
 																			setAttributes({ titleMarginUnit: value })
 																		}
@@ -2339,6 +2343,7 @@ function KadenceTabs(props) {
 									unit={innerPaddingType}
 									units={['px', 'em', 'rem']}
 									onUnit={(value) => setAttributes({ innerPaddingType: value })}
+									options={SPACING_SIZES_MAP}
 								/>
 
 								{showSettings('structure', 'kadence/tabs') && (
