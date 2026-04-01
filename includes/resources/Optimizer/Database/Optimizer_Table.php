@@ -41,7 +41,12 @@ final class Optimizer_Table extends Table {
 	 */
 	public function update() {
 		if ( $this->exists() ) {
-			$this->drop();
+			try {
+				$this->drop();
+			} catch ( DatabaseQueryException $e ) {
+				error_log( '[Kadence Blocks]: Unable to drop optimizer table during schema update: ' . $e->getMessage() );
+				return [];
+			}
 		}
 
 		return parent::update();

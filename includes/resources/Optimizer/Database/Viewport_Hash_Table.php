@@ -42,7 +42,12 @@ final class Viewport_Hash_Table extends Table {
 	 */
 	public function update() {
 		if ( $this->exists() ) {
-			$this->drop();
+			try {
+				$this->drop();
+			} catch ( DatabaseQueryException $e ) {
+				error_log( '[Kadence Blocks]: Unable to drop viewport_hash table during schema update: ' . $e->getMessage() );
+				return [];
+			}
 		}
 
 		return parent::update();
