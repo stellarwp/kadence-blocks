@@ -43,8 +43,8 @@ final class Optimizer_Table extends Table {
 		if ( $this->exists() ) {
 			try {
 				$this->drop();
-			} catch ( DatabaseQueryException $e ) {
-				error_log( '[Kadence Blocks]: Unable to drop optimizer table during schema update: ' . $e->getMessage() );
+			} catch ( \Throwable $e ) {
+				function_exists( 'error_log' ) && error_log( '[Kadence Blocks]: Unable to drop optimizer table during schema update: ' . $e->getMessage() );
 				return [];
 			}
 		}
