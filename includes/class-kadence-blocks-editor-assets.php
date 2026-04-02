@@ -8,9 +8,8 @@
 namespace KadenceWP\KadenceBlocks;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function kadence_blocks_get_asset_file;
+use function kadence_blocks_is_license_authorized;
 use function kadence_blocks_get_current_license_data;
 use function kadence_blocks_get_post_types;
 use function kadence_blocks_is_ai_disabled;
@@ -293,11 +292,7 @@ class Editor_Assets {
 		if ( ! empty( $pro_data['email'] ) ) {
 			$pro_data['api_email'] = $pro_data['email'];
 		}
-		$token         = ! kadence_blocks_is_ai_disabled() ? get_authorization_token( 'kadence-blocks' ) : '';
-		$is_authorized = false;
-		if ( ! empty( $pro_data['key'] ) && ! kadence_blocks_is_ai_disabled() ) {
-			$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
-		}
+		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_license_authorized();
 		if ( empty( $pro_data['domain'] ) ) {
 			$pro_data['domain'] = get_license_domain();
 		}

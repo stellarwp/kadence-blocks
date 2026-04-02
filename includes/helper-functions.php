@@ -11,7 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
  * Check if we are in AMP Mode.
@@ -230,6 +233,27 @@ function kadence_blocks_get_current_license_data(): array {
 	];
 
 	return $cache = $license_data;
+}
+
+/**
+ * Whether the current site has an authorized Kadence license.
+ *
+ * Checks the legacy StellarWP Uplink license first, then falls back to
+ * Harbor's unified license as the final check.
+ *
+ * @return bool
+ */
+function kadence_blocks_is_license_authorized(): bool {
+	$license_key = kadence_blocks_get_current_license_key();
+
+	if ( ! empty( $license_key ) ) {
+		$token = get_authorization_token( 'kadence-blocks' );
+		if ( is_authorized( $license_key, 'kadence-blocks', $token ?? '', get_license_domain() ) ) {
+			return true;
+		}
+	}
+
+	return lw_harbor_is_product_license_active( 'kadence' );
 }
 
 /**
