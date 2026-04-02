@@ -24,6 +24,14 @@ final class Harbor_Provider extends Provider {
 		$extensions = [
 			'kadence-blocks'   => __( 'Kadence Blocks', 'kadence-blocks' ),
 			'kadence-insights' => __( 'Kadence Insights', 'kadence-blocks' ),
+			'kadence-shop-kit' => __( 'Kadence Shop Kit', 'kadence-blocks' ),
+			'kadence-galleries' => __( 'Kadence Galleries', 'kadence-blocks' ),
+			'kadence-creative-kit' => __( 'Kadence Creative Kit', 'kadence-blocks' ),
+			'kadence-conversions' => __( 'Kadence Conversions', 'kadence-blocks' ),
+			'kadence-captcha' => __( 'Kadence Captcha', 'kadence-blocks' ),
+			'kadence-theme-pro' => __( 'Kadence Theme Pro', 'kadence-blocks' ),
+			'kadence-pattern-hub' => __( 'Kadence Pattern Hub', 'kadence-blocks' ),
+			'kadence-white-label' => __( 'Kadence White Label', 'kadence-blocks' ),
 		];
 
 		foreach ( $extensions as $hook_prefix => $product_name ) {
