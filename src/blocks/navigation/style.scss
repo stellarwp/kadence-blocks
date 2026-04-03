@@ -1621,3 +1621,8 @@ $link-color-property: var(
 		color: $link-color-property;
 	}
 }
+
+// Escape key dismissal for hover-opened submenus (WCAG 2.1 SC 1.4.13).
+.menu-item.kb-nav-esc-close > ul.sub-menu {
+	display: none !important;
+}
