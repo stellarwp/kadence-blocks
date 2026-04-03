@@ -281,7 +281,7 @@ function kadence_blocks_is_ai_disabled() {
 		return true;
 	}
 
-	return lw_harbor_is_product_license_active( 'kadence' );
+	return (bool) apply_filters( 'kadence_blocks_ai_disabled', false );
 }
 
 /**
@@ -293,13 +293,10 @@ function kadence_blocks_is_ai_disabled() {
  * @return string
  */
 function kadence_blocks_get_ai_disabled_message(): string {
-	$message = __( 'Kadence AI is disabled by site admin.', 'kadence-blocks' );
-
-	if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
-		$message = __( 'Kadence AI is not yet available with your plan.', 'kadence-blocks' );
-	}
-
-	return apply_filters( 'kadence_blocks_ai_disabled_message', $message );
+	return apply_filters(
+		'kadence_blocks_ai_disabled_message',
+		__( 'Kadence AI is disabled by site admin.', 'kadence-blocks' )
+	);
 }
 
 /**

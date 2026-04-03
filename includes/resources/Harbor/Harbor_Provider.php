@@ -20,6 +20,8 @@ final class Harbor_Provider extends Provider {
 
 		lw_harbor_register_submenu( 'kadence-blocks' );
 		add_filter( 'lw-harbor/legacy_licenses', [ $this, 'report_legacy_licenses' ] );
+		add_filter( 'kadence_blocks_ai_disabled', [ $this, 'is_ai_disabled' ] );
+		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
 		$extensions = [
 			'kadence-blocks'   => __( 'Kadence Blocks', 'kadence-blocks' ),
@@ -46,6 +48,37 @@ final class Harbor_Provider extends Provider {
 		if ( class_exists( 'KadenceWP\KadenceBlocksPro\Uplink\Connect' ) ) {
 			remove_action( 'admin_notices', [ \KadenceWP\KadenceBlocksPro\Uplink\Connect::get_instance(), 'inactive_notice' ] );
 		}
+	}
+
+	/**
+	 * Disables Kadence AI for Harbor-licensed customers.
+	 * AI features are not yet supported under Harbor licensing.
+	 *
+	 * @param bool $disabled Whether AI is disabled.
+	 *
+	 * @return bool
+	 */
+	public function is_ai_disabled( bool $disabled ): bool {
+		if ( $disabled ) {
+			return true;
+		}
+
+		return lw_harbor_is_product_license_active( 'kadence' );
+	}
+
+	/**
+	 * Overrides the AI disabled message for Harbor-licensed customers.
+	 *
+	 * @param string $message The default disabled message.
+	 *
+	 * @return string
+	 */
+	public function ai_disabled_message( string $message ): string {
+		if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
+			return __( 'Kadence AI is not yet available with your plan.', 'kadence-blocks' );
+		}
+
+		return $message;
 	}
 
 	/**
