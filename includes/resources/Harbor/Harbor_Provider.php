@@ -63,6 +63,10 @@ final class Harbor_Provider extends Provider {
 			return true;
 		}
 
+		if ( kadence_blocks_is_legacy_license_authorized() ) {
+			return false;
+		}
+
 		return lw_harbor_is_product_license_active( 'kadence' );
 	}
 
@@ -74,6 +78,10 @@ final class Harbor_Provider extends Provider {
 	 * @return string
 	 */
 	public function ai_disabled_message( string $message ): string {
+		if ( kadence_blocks_is_legacy_license_authorized() ) {
+			return $message;
+		}
+
 		if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
 			return __( 'Kadence AI is not yet available with your plan.', 'kadence-blocks' );
 		}
