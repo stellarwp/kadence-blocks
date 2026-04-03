@@ -207,7 +207,7 @@ function kadence_blocks_get_current_env() {
 				return 'dev';
 			case 'https://licensing-staging.stellarwp.com':
 				return 'staging';
-				
+
 		}
 	}
 	return '';
@@ -244,6 +244,23 @@ function kadence_blocks_get_current_license_data(): array {
  * @return bool
  */
 function kadence_blocks_is_license_authorized(): bool {
+	if ( kadence_blocks_is_legacy_license_authorized() ) {
+		return true;
+	}
+
+	return lw_harbor_is_product_license_active( 'kadence' );
+}
+
+/**
+ * Check if a legacy (Uplink) Kadence license is authorized.
+ *
+ * AI features are not currently supported under Harbor licensing, so this
+ * function gates AI-specific UI and functionality. Harbor-only customers and
+ * customers with no license will return false.
+ *
+ * @return bool
+ */
+function kadence_blocks_is_legacy_license_authorized(): bool {
 	$license_key = kadence_blocks_get_current_license_key();
 
 	if ( ! empty( $license_key ) ) {
@@ -253,7 +270,7 @@ function kadence_blocks_is_license_authorized(): bool {
 		}
 	}
 
-	return lw_harbor_is_product_license_active( 'kadence' );
+	return false;
 }
 
 /**
@@ -263,7 +280,26 @@ function kadence_blocks_is_ai_disabled() {
 	if ( defined( 'KADENCE_BLOCKS_AI_DISABLED' ) && KADENCE_BLOCKS_AI_DISABLED ) {
 		return true;
 	}
-	return false;
+
+	return lw_harbor_is_product_license_active( 'kadence' );
+}
+
+/**
+ * Get the message shown when Kadence AI is disabled.
+ *
+ * Applies the `kadence_blocks_ai_disabled_message` filter so hosting
+ * environments (e.g. Harbor) can surface a context-specific reason.
+ *
+ * @return string
+ */
+function kadence_blocks_get_ai_disabled_message(): string {
+	$message = __( 'Kadence AI is disabled by site admin.', 'kadence-blocks' );
+
+	if ( lw_harbor_is_product_license_active( 'kadence' ) ) {
+		$message = __( 'Kadence AI is not yet available with your plan.', 'kadence-blocks' );
+	}
+
+	return apply_filters( 'kadence_blocks_ai_disabled_message', $message );
 }
 
 /**

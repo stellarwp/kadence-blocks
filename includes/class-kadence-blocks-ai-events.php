@@ -96,7 +96,7 @@ class Kadence_Blocks_AI_Events {
 	 */
 	public function handle_event( string $name, array $context ): void {
 		// Only pass tracking events if AI has been activated through Opt in.
-		if ( ! kadence_blocks_is_license_authorized() ) {
+		if ( ! kadence_blocks_is_legacy_license_authorized() ) {
 			return;
 		}
 

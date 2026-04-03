@@ -47,7 +47,8 @@ export function DisabledBanner() {
 						)}
 					</div>
 					<p className="disabled-authorize-note">
-						{__('Kadence AI is disabled by site admin.', 'kadence-blocks')}
+						{window?.kadence_blocks_params?.aiDisabledMessage ||
+							__('Kadence AI is disabled by site admin.', 'kadence-blocks')}
 					</p>
 				</>
 			</div>

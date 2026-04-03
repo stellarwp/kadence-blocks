@@ -10,9 +10,11 @@ namespace KadenceWP\KadenceBlocks;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function kadence_blocks_get_asset_file;
 use function kadence_blocks_is_license_authorized;
+use function kadence_blocks_is_legacy_license_authorized;
 use function kadence_blocks_get_current_license_data;
 use function kadence_blocks_get_post_types;
 use function kadence_blocks_is_ai_disabled;
+use function kadence_blocks_get_ai_disabled_message;
 use function rcp_get_membership_levels;
 use function rcp_get_access_levels;
 
@@ -292,7 +294,7 @@ class Editor_Assets {
 		if ( ! empty( $pro_data['email'] ) ) {
 			$pro_data['api_email'] = $pro_data['email'];
 		}
-		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_license_authorized();
+		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 		if ( empty( $pro_data['domain'] ) ) {
 			$pro_data['domain'] = get_license_domain();
 		}
@@ -334,6 +336,7 @@ class Editor_Assets {
 				'proData'                => $pro_data,
 				'isAuthorized'           => $is_authorized,
 				'isAIDisabled'           => kadence_blocks_is_ai_disabled(),
+				'aiDisabledMessage'      => kadence_blocks_get_ai_disabled_message(),
 				'homeLink'               => admin_url( 'admin.php?page=kadence-blocks-home' ),
 				'pro'                    => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 				'creativeKit'            => ( class_exists( 'KadenceWP\CreativeKit' ) ? 'true' : 'false' ),

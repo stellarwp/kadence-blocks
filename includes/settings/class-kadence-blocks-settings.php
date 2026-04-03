@@ -805,7 +805,7 @@ class Kadence_Blocks_Settings {
 		$auth_url       = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() );
 		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
-		$is_authorized  = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_license_authorized();
+		$is_authorized  = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 
 		if ( $is_authorized ) {
 			$disconnect_url = get_disconnect_url( 'kadence-blocks' );
@@ -845,6 +845,7 @@ class Kadence_Blocks_Settings {
 				'site_name'        => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'            => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'     => kadence_blocks_is_ai_disabled(),
+				'aiDisabledMessage' => kadence_blocks_get_ai_disabled_message(),
 				'pVersion'         => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'     => $is_authorized,
 				'licenseKey'       => $license_key,
