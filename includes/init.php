@@ -14,10 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
-
 
 /**
  * Setup the post type options for post blocks.
