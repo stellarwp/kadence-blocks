@@ -181,7 +181,7 @@ final class Harbor_Provider extends Provider {
 	 * @return array<string, array{name: string, page_url: string}>
 	 */
 	private function get_known_plugins(): array {
-		$default_page = admin_url('admin.php?page=kadence-blocks-home');
+		$default_page = admin_url('admin.php?page=kadence-blocks');
 
 		return [
 			'kadence-blocks'       => [
