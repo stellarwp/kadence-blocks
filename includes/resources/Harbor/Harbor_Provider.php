@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 
 final class Harbor_Provider extends Provider {
 
@@ -23,31 +24,16 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'kadence_blocks_ai_disabled', [ $this, 'is_ai_disabled' ] );
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
-		$extensions = [
-			'kadence-blocks'   => __( 'Kadence Blocks', 'kadence-blocks' ),
-			'kadence-insights' => __( 'Kadence Insights', 'kadence-blocks' ),
-			'kadence-shop-kit' => __( 'Kadence Shop Kit', 'kadence-blocks' ),
-			'kadence-galleries' => __( 'Kadence Galleries', 'kadence-blocks' ),
-			'kadence-creative-kit' => __( 'Kadence Creative Kit', 'kadence-blocks' ),
-			'kadence-conversions' => __( 'Kadence Conversions', 'kadence-blocks' ),
-			'kadence-captcha' => __( 'Kadence Captcha', 'kadence-blocks' ),
-			'kadence-theme-pro' => __( 'Kadence Theme Pro', 'kadence-blocks' ),
-			'kadence-pattern-hub' => __( 'Kadence Pattern Hub', 'kadence-blocks' ),
-			'kadence-white-label' => __( 'Kadence White Label', 'kadence-blocks' ),
-		];
-
-		foreach ( $extensions as $hook_prefix => $product_name ) {
+		foreach ( $this->get_known_plugins() as $slug => $plugin ) {
 			add_action(
-				"stellarwp/uplink/{$hook_prefix}/license_field_after_form",
-				function() use ( $product_name ) {
-					$this->render_harbor_license_notice( $product_name );
+				"stellarwp/uplink/{$slug}/license_field_after_form",
+				function() use ( $plugin ) {
+					$this->render_harbor_license_notice( $plugin['name'] );
 				}
 			);
 		}
 
-		if ( class_exists( 'KadenceWP\KadenceBlocksPro\Uplink\Connect' ) ) {
-			remove_action( 'admin_notices', [ \KadenceWP\KadenceBlocksPro\Uplink\Connect::get_instance(), 'inactive_notice' ] );
-		}
+		add_action( 'admin_init', [ $this, 'suppress_legacy_inactive_notices' ] );
 	}
 
 	/**
@@ -125,33 +111,124 @@ final class Harbor_Provider extends Provider {
 	 * @return array
 	 */
 	public function report_legacy_licenses( array $licenses ): array {
-		$data = kadence_blocks_get_current_license_data();
+		$reported_keys = [];
+		$domain        = get_license_domain();
 
-		if ( empty( $data['key'] ) ) {
-			return $licenses;
+		foreach ( $this->get_known_plugins() as $slug => $plugin ) {
+			$key = get_license_key( $slug );
+
+			if ( empty( $key ) || isset( $reported_keys[ $key ] ) ) {
+				continue;
+			}
+
+			$reported_keys[ $key ] = true;
+			$token                 = get_authorization_token( $slug );
+			$is_active             = is_authorized( $key, $slug, $token ?? '', $domain );
+
+			$licenses[] = [
+				'key'       => $key,
+				'slug'      => $slug,
+				'name'      => $plugin['name'],
+				'product'   => 'kadence',
+				'is_active' => $is_active,
+				'page_url'  => esc_url( $plugin['page_url'] ),
+			];
 		}
 
-		$product_names = [
-			'kadence-blocks'       => 'Kadence Blocks',
-			'kadence-blocks-pro'   => 'Kadence Blocks Pro',
-			'kadence-creative-kit' => 'Kadence Creative Kit',
-		];
-
-		$slug      = $data['product'] ?? 'kadence-blocks';
-		$name      = $product_names[ $slug ] ?? 'Kadence Blocks';
-		$token     = get_authorization_token( 'kadence-blocks' );
-		$is_active = is_authorized( $data['key'], 'kadence-blocks', $token ?? '', get_license_domain() );
-
-		$licenses[] = [
-			'key'       => $data['key'],
-			'slug'      => $slug,
-			'name'      => $name,
-			'product'   => 'kadence',
-			'is_active' => $is_active,
-			'page_url'  => admin_url( 'admin.php?page=kadence-blocks-home' ),
-		];
-
 		return $licenses;
+	}
+
+	/**
+	 * Removes legacy "not activated" admin notices from all Kadence add-ons.
+	 *
+	 * Each add-on registers its inactive_notice callback during plugins_loaded,
+	 * which runs after Harbor_Provider::register(). Hooking to admin_init ensures
+	 * all add-on callbacks are already registered before we remove them.
+	 *
+	 * @return void
+	 */
+	public function suppress_legacy_inactive_notices(): void {
+		global $wp_filter;
+
+		if ( empty( $wp_filter['admin_notices'] ) ) {
+			return;
+		}
+
+		foreach ( $wp_filter['admin_notices']->callbacks as $priority => $callbacks ) {
+			foreach ( $callbacks as $key => $callback ) {
+				$function = $callback['function'];
+
+				if ( ! is_array( $function )
+					|| ! is_object( $function[0] )
+					|| $function[1] !== 'inactive_notice'
+				) {
+					continue;
+				}
+
+				if ( strpos( get_class( $function[0] ), 'KadenceWP\\' ) === 0 ) {
+					unset( $wp_filter['admin_notices']->callbacks[ $priority ][ $key ] );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns a map of all known Kadence plugin slugs to their metadata.
+	 *
+	 * page_url should be a full URL and should point to the plugin's
+	 * license settings page.
+	 *
+	 * @return array<string, array{name: string, page_url: string}>
+	 */
+	private function get_known_plugins(): array {
+		$default_page = admin_url('admin.php?page=kadence-blocks-home');
+
+		return [
+			'kadence-blocks'       => [
+				'name'       => __( 'Kadence Blocks', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-blocks-pro'   => [
+				'name'       => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-creative-kit' => [
+				'name'       => __( 'Kadence Creative Kit', 'kadence-blocks' ),
+				'page_url'   => admin_url('admin.php?page=kadence-blocks-home&license=show'),
+			],
+			'kadence-insights'     => [
+				'name'       => __( 'Kadence Insights', 'kadence-blocks' ),
+				'page_url'   => admin_url('admin.php?page=kadence-insights-settings&license=show'),
+			],
+			'kadence-shop-kit'     => [
+				'name'       => __( 'Kadence Shop Kit', 'kadence-blocks' ),
+				'page_url'   => admin_url('admin.php?page=kadence-shop-kit-settings&license=show'),
+			],
+			'kadence-galleries'    => [
+				'name'       => __( 'Kadence Galleries', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-conversions'  => [
+				'name'       => __( 'Kadence Conversions', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-captcha'      => [
+				'name'       => __( 'Kadence Captcha', 'kadence-blocks' ),
+				'page_url'   => admin_url('admin.php?page=kadence-recaptcha-settings&license=show'),
+			],
+			'kadence-theme-pro'    => [
+				'name'       => __( 'Kadence Theme Pro', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-pattern-hub'  => [
+				'name'       => __( 'Kadence Pattern Hub', 'kadence-blocks' ),
+				'page_url'   => $default_page,
+			],
+			'kadence-white-label'  => [
+				'name'       => __( 'Kadence White Label', 'kadence-blocks' ),
+				'page_url'   => admin_url('admin.php?page=kadence-white-label-settings')
+			],
+		];
 	}
 
 }
