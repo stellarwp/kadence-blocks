@@ -264,8 +264,9 @@ function kadence_blocks_is_legacy_license_authorized(): bool {
 	$license_key = kadence_blocks_get_current_license_key();
 
 	if ( ! empty( $license_key ) ) {
-		$token = get_authorization_token( 'kadence-blocks' );
-		if ( is_authorized( $license_key, 'kadence-blocks', $token ?? '', get_license_domain() ) ) {
+		$slug  = kadence_blocks_get_current_product_slug();
+		$token = get_authorization_token( $slug );
+		if ( is_authorized( $license_key, $slug, $token ?? '', get_license_domain() ) ) {
 			return true;
 		}
 	}
