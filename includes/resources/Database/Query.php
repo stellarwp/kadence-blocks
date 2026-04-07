@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
 use KadenceWP\KadenceBlocks\StellarWP\DB\QueryBuilder\QueryBuilder;
 
 /**
- * A query wrapper for the StellarWP DB instance using a specific
+ * A query wrapper for the Liquid Web DB instance using a specific
  * table.
  *
  * This class should be extended and configured for a specific table

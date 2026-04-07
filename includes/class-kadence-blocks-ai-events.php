@@ -1,6 +1,6 @@
 <?php
 /**
- * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
+ * Class responsible for sending events AI Events to Liquid Web Prophecy WP AI.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,7 +13,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
- * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
+ * Class responsible for sending events AI Events to Liquid Web Prophecy WP AI.
  */
 class Kadence_Blocks_AI_Events {
 
