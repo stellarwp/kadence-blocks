@@ -42,6 +42,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
+		"stellarwp/harbor": "dev-main",
 		"stellarwp/prophecy-image-downloader": "^3.0",
 		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/schema": "^2.0",
@@ -83,16 +84,18 @@
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"strauss-install": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.19.1/strauss.phar"
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.27.0/strauss.phar"
 		],
 		"strauss": [
 			"@strauss-install",
 			"@php bin/strauss.phar",
+			"@php vendor/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
 			"@composer dump-autoload"
 		],
 		"strauss-release": [
 			"@strauss-install",
 			"@php bin/strauss.phar --deleteVendorPackages=true",
+			"@php vendor/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
 			"@composer dump-autoload"
 		],
 		"strauss-clean": [
