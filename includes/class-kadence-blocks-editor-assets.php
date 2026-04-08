@@ -313,7 +313,7 @@ class Editor_Assets {
 				'numberposts' => 4,
 				'post_type'   => 'product',
 				'fields'      => 'ids',
-			] 
+			]
 		);
 		$prophecy_data    = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 		wp_localize_script(

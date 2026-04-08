@@ -33,6 +33,7 @@ export default function KadenceBlocksHome() {
 	const isNetworkAdmin = kadenceHomeParams.isNetworkAdmin ? true : false;
 	const isNetworkEnabled = kadenceHomeParams.isNetworkEnabled ? true : false;
 	const isAIDisabled = kadenceHomeParams.isAIDisabled ? true : false;
+	const isAIHidden = kadenceHomeParams.isAIHidden ? true : false;
 	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
 	const showControls = (isNetworkAdmin && isNetworkEnabled) || (!isNetworkAdmin && !isNetworkEnabled) ? true : false;
 
@@ -136,7 +137,7 @@ export default function KadenceBlocksHome() {
 	if (isAIDisabled) {
 		return (
 			<>
-				<DisabledBanner />
+				{!isAIHidden && <DisabledBanner />}
 
 				<div className="kb-section kb-section--dark">
 					<div className="kb-container">

@@ -24,6 +24,7 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'lw-harbor/legacy_licenses', new Report_Legacy_Licenses() );
 		add_filter( 'kadence_blocks_ai_disabled', [ $this, 'is_ai_disabled' ] );
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
+		add_filter( 'kadence_blocks_ai_hidden', [ $this, 'is_ai_hidden' ] );
 
 		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
 			add_action(
@@ -52,7 +53,7 @@ final class Harbor_Provider extends Provider {
 			return false;
 		}
 
-		return lw_harbor_is_product_license_active( 'kadence' );
+		return true;
 	}
 
 	/**
@@ -74,4 +75,18 @@ final class Harbor_Provider extends Provider {
 		return $message;
 	}
 
+	/**
+	 * Filters the AI hidden state for Harbor-licensed customers.
+	 *
+	 * @param bool $hidden Whether AI is hidden.
+	 *
+	 * @return bool
+	 */
+	public function is_ai_hidden( bool $hidden ): bool {
+		if ( kadence_blocks_is_legacy_license_authorized() ) {
+			return false;
+		}
+
+		return true;
+	}
 }

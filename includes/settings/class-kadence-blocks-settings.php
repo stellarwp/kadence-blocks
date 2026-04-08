@@ -586,7 +586,7 @@ class Kadence_Blocks_Settings {
 
 	private function get_color_palette_css() {
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
-		
+
 		if ( $palette && is_object( $palette ) && isset( $palette->palette ) && is_array( $palette->palette ) ) {
 			$san_palette = [];
 			foreach ( $palette->palette as $item ) {
@@ -845,6 +845,7 @@ class Kadence_Blocks_Settings {
 				'site_name'        => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'            => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'     => kadence_blocks_is_ai_disabled(),
+				'isAIHidden'       => (bool) apply_filters( 'kadence_blocks_ai_hidden', false ),
 				'aiDisabledMessage' => kadence_blocks_get_ai_disabled_message(),
 				'pVersion'         => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'     => $is_authorized,
@@ -1218,7 +1219,7 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
-	
+
 	/**
 	 * Outputs admin bar settings field
 	 */
@@ -1490,7 +1491,7 @@ class Kadence_Blocks_Settings {
 				'linkText' => __( 'Manage Lottie Animations', 'kadence-blocks' ),
 			],
 			'kadence/vector'          => [
-				'slug'     => 'kadence/vector', 
+				'slug'     => 'kadence/vector',
 				'name'     => __( 'Vector Graphics', 'kadence-blocks' ),
 				'desc'     => __( 'Add custom vector icons and SVGs to enhance your site design.', 'kadence-blocks' ),
 				'link'     => admin_url( 'edit.php?post_type=kadence_vector' ),
