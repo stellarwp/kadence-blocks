@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a823630fd7197034de879f12f7ac260",
+    "content-hash": "71d610412ee70256b8492c277ea40194",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1009,16 +1009,16 @@
         },
         {
             "name": "stellarwp/superglobals",
-            "version": "1.3.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/superglobals.git",
-                "reference": "a43ffa491c171f46d81a26d55e096bc8eaddfb3e"
+                "reference": "188f4466663b9aea10cdb865805a734ecc9f0f25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/superglobals/zipball/a43ffa491c171f46d81a26d55e096bc8eaddfb3e",
-                "reference": "a43ffa491c171f46d81a26d55e096bc8eaddfb3e",
+                "url": "https://api.github.com/repos/stellarwp/superglobals/zipball/188f4466663b9aea10cdb865805a734ecc9f0f25",
+                "reference": "188f4466663b9aea10cdb865805a734ecc9f0f25",
                 "shasum": ""
             },
             "require": {
@@ -1053,9 +1053,9 @@
             "description": "A library that handles access to superglobals.",
             "support": {
                 "issues": "https://github.com/stellarwp/superglobals/issues",
-                "source": "https://github.com/stellarwp/superglobals/tree/1.3.0"
+                "source": "https://github.com/stellarwp/superglobals/tree/2.0.0"
             },
-            "time": "2024-06-26T14:12:19+00:00"
+            "time": "2026-02-09T18:15:19+00:00"
         },
         {
             "name": "stellarwp/telemetry",

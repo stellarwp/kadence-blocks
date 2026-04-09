@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Optimizer\Path;
 
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Optimizer\Path\Path_Factory;
+use stdClass;
 use Tests\Support\Classes\OptimizerTestCase;
 
 final class PathFactoryTest extends OptimizerTestCase {
@@ -17,6 +18,12 @@ final class PathFactoryTest extends OptimizerTestCase {
 		update_option( 'permalink_structure', '/%postname%/' );
 
 		$this->path_factory = $this->container->get( Path_Factory::class );
+	}
+
+	protected function tearDown(): void {
+		unset( $_SERVER['REQUEST_URI'] );
+
+		parent::tearDown();
 	}
 
 	public function testItHandlesRootPath(): void {
@@ -346,5 +353,17 @@ final class PathFactoryTest extends OptimizerTestCase {
 
 		$this->assertSame( '/blog/', $path->path() );
 		$this->assertSame( $blog_page_id, $path->post_id() );
+	}
+
+	/**
+	 * @note this would only fatal error in PHP 8.x
+	 */
+	public function testItHandlesInvalidRequestUri(): void {
+		$this->expectException( InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'Cannot hash an empty path. Verify you are using this after the wp hook fired.' );
+
+		$_SERVER['REQUEST_URI'] = new stdClass();
+
+		$this->path_factory->make();
 	}
 }
