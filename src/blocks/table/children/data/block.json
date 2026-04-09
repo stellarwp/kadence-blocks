@@ -30,6 +30,9 @@
 		"paddingType": {
 			"type": "string",
 			"default": "px"
+		},
+		"scope": {
+			"type": "string"
 		}
 	},
 	"supports": {
