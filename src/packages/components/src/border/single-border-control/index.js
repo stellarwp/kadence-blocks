@@ -64,13 +64,13 @@ export default function SingleBorderControl({
 }) {
 	const instanceId = useInstanceId(SingleBorderControl);
 	const onChangeStyle = (style) => {
-		const newVal = value;
+		const newVal = [...value];
 		newVal[1] = style;
 		onChange(newVal);
 	};
 	const currentStyle = value?.[1] || 'solid';
 	const onChangeColor = (color) => {
-		const newVal = value;
+		const newVal = [...value];
 		newVal[0] = color;
 		onChange(newVal);
 	};
@@ -79,7 +79,7 @@ export default function SingleBorderControl({
 	const onChangeSize = (size) => {
 		const isNumeric = !isNaN(parseFloat(size));
 		const nextValue = isNumeric ? parseFloat(size) : '';
-		const newVal = value;
+		const newVal = [...value];
 		newVal[2] = nextValue;
 		onChange(newVal);
 	};
@@ -171,7 +171,7 @@ export default function SingleBorderControl({
 				)}
 				<div className={'kadence-single-border-control-wrap'}>
 					<PopColorControl
-						key={`border-color-${currentColor}-${instanceId}`}
+						key={`border-color-${instanceId}`}
 						value={currentColor}
 						default={''}
 						hideClear={true}
