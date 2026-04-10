@@ -687,6 +687,24 @@ class KBHeader {
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 		}
+
+		if (window.scrollY === 0 && this.shrinkMain) {
+			const correctionSizeCased = this.activeSizeCased();
+			const isTransparent = this['transparent' + correctionSizeCased];
+			const hasStickySection = '' !== this['stickySection' + correctionSizeCased];
+
+			if (!this.isSticking) {
+				this.stickyWrapper.style.position = 'initial';
+				this.stickyWrapper.style.width = 'initial';
+				this.stickyWrapper.style.left = 'initial';
+				this.stickyWrapper.style.top = 'initial';
+			}
+
+			if ((!isTransparent || hasStickySection) && this.placeholderWrapper) {
+				const currentHeight = this.stickyWrapper.offsetHeight;
+				this.placeholderWrapper.style.height = currentHeight + 'px';
+			}
+		}
 	}
 
 	activeSizeCased(size) {
