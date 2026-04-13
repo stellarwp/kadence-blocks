@@ -1,13 +1,37 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const StyleOnlyEntryPlugin = require('@kadence/components/scripts/webpack/style-only-entry-plugin.js');
 const ReplaceTextDomainPlugin = require('@kadence/components/scripts/webpack/replace-text-domain-plugin.js');
+const EXTERNAL_NAME = 'kadence';
+const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';
 
 const path = require('path');
 
+function camelCaseDash(string) {
+	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+function getKadenceNamespaceRequest(request) {
+	const bundledKadenceEntryPackages = new Set(['@kadence/icons', '@kadence/components', '@kadence/helpers']);
+
+	if (!request.startsWith(PROJECT_NAMESPACE)) {
+		return undefined;
+	}
+
+	if (bundledKadenceEntryPackages.has(request)) {
+		return undefined;
+	}
+
+	return request.substring(PROJECT_NAMESPACE.length);
+}
+
 module.exports = {
 	...defaultConfig,
 	entry: {
+		icons: '@kadence/icons',
+		components: '@kadence/components',
+		helpers: '@kadence/helpers',
 		'blocks-navigation': './src/blocks/navigation/index.js',
 		'blocks-navigation-link': './src/blocks/navigation-link/index.js',
 		'blocks-header': './src/blocks/header/index.js',
@@ -71,8 +95,30 @@ module.exports = {
 		},
 	},
 	plugins: [
-		...defaultConfig.plugins,
 		new StyleOnlyEntryPlugin(),
+		...defaultConfig.plugins.filter((plugin) => plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'),
+		new DependencyExtractionWebpackPlugin({
+			requestToExternal(request) {
+				if (request.endsWith('.css')) {
+					return false;
+				}
+
+				const kadenceNamespaceRequest = getKadenceNamespaceRequest(request);
+				if (!kadenceNamespaceRequest) {
+					return undefined;
+				}
+
+				return [EXTERNAL_NAME, camelCaseDash(kadenceNamespaceRequest)];
+			},
+			requestToHandle(request) {
+				const kadenceNamespaceRequest = getKadenceNamespaceRequest(request);
+				if (!kadenceNamespaceRequest) {
+					return undefined;
+				}
+
+				return `${HANDLE_NAME}-${kadenceNamespaceRequest}`;
+			},
+		}),
 		new ReplaceTextDomainPlugin({
 			placeholder: '__KADENCE__TEXT__DOMAIN__',
 			value: 'kadence-blocks',
