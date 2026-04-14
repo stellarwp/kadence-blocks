@@ -6,7 +6,6 @@ import { getAsyncData } from '../plugins/prebuilt-library/data-fetch/get-async-d
 import Notices from './notices';
 import { ActionCard, ArticleSlider, SectionTitle, UpsellContent } from './components';
 import { AUTHENTICATED_CONTENT, UNAUTHENTICATED_CONTENT } from './constants';
-import { DisabledBanner } from './components/large-banner/disabled-banner';
 import { AiBanner } from './components/large-banner/ai-banner';
 import { Icon, SVG } from '@wordpress/components';
 import { aiIcon } from '@kadence/icons';
@@ -35,7 +34,6 @@ export default function KadenceBlocksHome() {
 	const authenticated = kadenceHomeParams.isAuthorized ? true : false;
 	const isNetworkAdmin = kadenceHomeParams.isNetworkAdmin ? true : false;
 	const isNetworkEnabled = kadenceHomeParams.isNetworkEnabled ? true : false;
-	const isAIDisabled = kadenceHomeParams.isAIDisabled ? true : false;
 	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
 	const showControls = (isNetworkAdmin && isNetworkEnabled) || (!isNetworkAdmin && !isNetworkEnabled) ? true : false;
 
@@ -156,24 +154,6 @@ export default function KadenceBlocksHome() {
 			<a href={kadenceHomeParams.disconnectUrl}>{__('Disconnect?', 'kadence-blocks')}</a>
 		</>
 	);
-	if (isAIDisabled) {
-		return (
-			<>
-				{kadenceHomeParams.homeContent?.bannerConfig ? (
-					<AiBanner showControls={true} isUserAuthenticated={false} />
-				) : (
-					<DisabledBanner />
-				)}
-
-				<div className="kb-section kb-section--dark">
-					<div className="kb-container">
-						<SectionTitle title={homeContent?.knowledgeBase?.heading} variant="white" />
-						<ArticleSlider articles={homeContent?.knowledgeBase?.articles || []} />
-					</div>
-				</div>
-			</>
-		);
-	}
 	return (
 		<>
 			<AiBanner
