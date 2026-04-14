@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
-use KadenceWP\KadenceBlocks\Home\Banner_Config_View_Model;
+use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
  * Build Welcome Page class
@@ -840,7 +840,7 @@ class Kadence_Blocks_Settings {
 		wp_enqueue_style( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.css', [ 'wp-edit-blocks', 'kadence-components' ], $kadence_home_meta['version'] );
 
 		// Banner Config.
-		$banner_config = new Banner_Config_View_Model();
+		$home_content = new Home_Content_View_Model();
 
 		wp_localize_script(
 			'admin-kadence-home',
@@ -851,7 +851,7 @@ class Kadence_Blocks_Settings {
 				'site_name'        => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'            => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'     => kadence_blocks_is_ai_disabled(),
-				'bannerConfig'     => $banner_config->exports(),
+				'homeContent'      => $home_content->exports(),
 				'aiDisabledMessage' => kadence_blocks_get_ai_disabled_message(),
 				'pVersion'         => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'     => $is_authorized,

@@ -37,7 +37,7 @@ const kbLogo = (
  *   isNetworkAdmin  — whether this is a network admin context
  *   isUserAuthenticated — whether the user has an active legacy AI connection
  */
-export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserAuthenticated }) {
+export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserAuthenticated, aiStatus }) {
 	const {
 		heading = '',
 		body = '',
@@ -45,7 +45,7 @@ export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserA
 		primaryCtaUrl = '',
 		secondaryCtaText = '',
 		secondaryCtaUrl = '',
-	} = window?.kadenceHomeParams?.bannerConfig || {};
+	} = window?.kadenceHomeParams?.homeContent?.bannerConfig || {};
 
 	const [isVisible, setIsVisible] = useState(false);
 	const [availableCredits, setAvailableCredits] = useState(false);
@@ -104,7 +104,7 @@ export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserA
 				onClick={onUpdateWizard}
 				iconPosition="left"
 				icon={aiIcon}
-				text={primaryCtaText}
+				text={aiStatus === 'infoLoaded' ? __('Update Kadence AI Details', 'kadence-blocks') : primaryCtaText}
 				className="kadence-open-ai-button"
 				variant="primary"
 			/>
