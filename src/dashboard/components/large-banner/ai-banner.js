@@ -83,12 +83,7 @@ export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserA
 		// External/internal link — render as anchor.
 		if (primaryCtaUrl) {
 			return (
-				<a
-					className="uplink-authorize"
-					href={primaryCtaUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
+				<a className="uplink-authorize" href={primaryCtaUrl} target="_blank" rel="noopener noreferrer">
 					{primaryCtaText}
 				</a>
 			);
