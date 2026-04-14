@@ -7,7 +7,6 @@ import Notices from './notices';
 import { ActionCard, ArticleSlider, SectionTitle, UpsellContent } from './components';
 import { AUTHENTICATED_CONTENT, UNAUTHENTICATED_CONTENT } from './constants';
 import { AiBanner } from './components/large-banner/ai-banner';
-import { Icon, SVG } from '@wordpress/components';
 import { aiIcon } from '@kadence/icons';
 
 /**
@@ -21,7 +20,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
-import { Button, Spinner } from '@wordpress/components';
+import { Icon, SVG, Spinner } from '@wordpress/components';
 
 export default function KadenceBlocksHome() {
 	const [wizardState, setWizardState] = useState(false);
