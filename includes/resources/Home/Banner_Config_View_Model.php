@@ -45,7 +45,7 @@ final class Banner_Config_View_Model {
 				'primaryCtaText'   => __( 'Open Kadence AI', 'kadence-blocks' ),
 				'primaryCtaUrl'    => '',
 				'secondaryCtaText' => __( 'Manage AI Credits', 'kadence-blocks' ),
-				'secondaryCtaUrl'  => 'https://app.kadencewp.com/',
+				'secondaryCtaUrl'  => esc_url( build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() ) ),
 			];
 		}
 
