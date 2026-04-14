@@ -10,11 +10,6 @@ import blocksPro from './images/blocks-pro.png';
 import bundles from './images/bundles.png';
 
 export const AUTHENTICATED_CONTENT = {
-	largeBanner: {
-		heading: <>{__("Let's build,", 'kadence-blocks')}</>,
-		subHeading: '',
-		imageSrc: '',
-	},
 	actionCards: {
 		title: <SectionTitle title={__('Start Building with Kadence AI', 'kadence-blocks')} icon={aiIcon} />,
 		cards: [
@@ -204,22 +199,6 @@ export const AUTHENTICATED_CONTENT = {
 };
 
 export const UNAUTHENTICATED_CONTENT = {
-	largeBanner: {
-		heading: (
-			<>
-				{__('Kadence is better with AI.', 'kadence-blocks')} {aiIcon}
-			</>
-		),
-		subHeading: __(
-			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!",
-			'kadence-blocks'
-		),
-		subHeadingPro: __(
-			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro",
-			'kadence-blocks'
-		),
-		buttonText: __('Get Started with Kadence AI', 'kadence-blocks'),
-	},
 	actionCards: {
 		title: <SectionTitle title={__('Streamlined site building', 'kadence-blocks')} />,
 		cards: [

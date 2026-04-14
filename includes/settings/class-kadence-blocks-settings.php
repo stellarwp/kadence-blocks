@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
+use KadenceWP\KadenceBlocks\Home\Banner_Config_View_Model;
 
 /**
  * Build Welcome Page class
@@ -810,6 +811,7 @@ class Kadence_Blocks_Settings {
 		if ( $is_authorized ) {
 			$disconnect_url = get_disconnect_url( 'kadence-blocks' );
 		}
+
 		// Icons Scripts & Styles.
 		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
 		wp_register_script( 'kadence-icons', KADENCE_BLOCKS_URL . 'dist/icons.js', array_merge( $kadence_icons_meta['dependencies'], [ 'wp-api' ] ), $kadence_icons_meta['version'], true );
@@ -836,6 +838,10 @@ class Kadence_Blocks_Settings {
 		$kadence_home_meta = kadence_blocks_get_asset_file( 'dist/admin-kadence-home' );
 		wp_enqueue_script( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.js', $kadence_home_meta['dependencies'], $kadence_home_meta['version'], true );
 		wp_enqueue_style( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.css', [ 'wp-edit-blocks', 'kadence-components' ], $kadence_home_meta['version'] );
+
+		// Banner Config.
+		$banner_config = new Banner_Config_View_Model();
+
 		wp_localize_script(
 			'admin-kadence-home',
 			'kadenceHomeParams',
@@ -845,7 +851,7 @@ class Kadence_Blocks_Settings {
 				'site_name'        => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'            => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'     => kadence_blocks_is_ai_disabled(),
-				'isAIHidden'       => (bool) apply_filters( 'kadence_blocks_ai_hidden', false ),
+				'bannerConfig'     => $banner_config->exports(),
 				'aiDisabledMessage' => kadence_blocks_get_ai_disabled_message(),
 				'pVersion'         => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'     => $is_authorized,
