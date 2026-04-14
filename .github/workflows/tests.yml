@@ -17,7 +17,7 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
-            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+            COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
 
         strategy:
             matrix:
