@@ -1,7 +1,13 @@
 name: ESLint
 run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
-on: push
+on:
+  push:
+  # pull_request:
+
+# permissions:
+#   contents: write
+#   pull-requests: write
 
 jobs:
   run-linters:
@@ -32,7 +38,19 @@ jobs:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          auto_fix: true
-          eslint: true
+        run: npm run lint-js
+
+      # - name: Auto-fix lint issues
+      #   run: npm run lint-js-fix
+
+      # - name: Commit auto-fixes
+      #   run: |
+      #     if git diff --quiet; then
+      #       echo "No changes to commit"
+      #       exit 0
+      #     fi
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #     git add -A
+      #     git commit -m "chore: apply eslint fixes [skip ci]"
+      #     git push
