@@ -1131,27 +1131,27 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							)}
 						</div>
 					</div>
-					<div className="kb-library-sidebar-sub-choices">
-						<Button
-							className={
-								'kb-subtab-button kb-trigger-design' +
-								(selectedContextTab === 'design' ? ' is-pressed' : '')
-							}
-							aria-pressed={selectedContextTab === 'design'}
-							onClick={() => {
-								const tempActiveStorage = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								tempActiveStorage.contextTab = 'design';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
-								forceRefreshLibrary();
-								setContextTab('design');
-							}}
-						>
-							{__('By Design', 'kadence-blocks')}
-						</Button>
-						{!isAIDisabled && (
+					{ ! isAIDisabled && (
+						<div className="kb-library-sidebar-sub-choices">
+							<Button
+								className={
+									'kb-subtab-button kb-trigger-design' +
+									(selectedContextTab === 'design' ? ' is-pressed' : '')
+								}
+								aria-pressed={selectedContextTab === 'design'}
+								onClick={() => {
+									const tempActiveStorage = SafeParseJSON(
+										localStorage.getItem('kadenceBlocksPrebuilt'),
+										true
+									);
+									tempActiveStorage.contextTab = 'design';
+									localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
+									forceRefreshLibrary();
+									setContextTab('design');
+								}}
+							>
+								{__('By Design', 'kadence-blocks')}
+							</Button>
 							<Button
 								className={
 									'kb-subtab-button kb-trigger-context' +
@@ -1173,8 +1173,8 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									setContextTab('context');
 								}}
 							/>
-						)}
-					</div>
+						</div>
+					) }
 					<div className="kb-library-sidebar-context-choices">
 						<Button
 							className={
