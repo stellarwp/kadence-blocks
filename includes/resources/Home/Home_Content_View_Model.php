@@ -36,6 +36,7 @@ final class Home_Content_View_Model {
 	 * }
 	 */
 	private function banner_config( bool $is_authorized, bool $is_liquid_web ): array {
+		// (new) customer scenario (liquid web).
 		if ( $is_liquid_web ) {
 			return [
 				'heading'        => __( 'Kadence AI is evolving.', 'kadence-blocks' ),
@@ -45,6 +46,7 @@ final class Home_Content_View_Model {
 			];
 		}
 
+		// legacy customer scenario.
 		if ( $is_authorized ) {
 			return [
 				'heading'          => __( 'Kadence is better with AI.', 'kadence-blocks' ),
@@ -56,9 +58,10 @@ final class Home_Content_View_Model {
 			];
 		}
 
+		// unknown customer scenario.
 		return [
 			'heading'          => __( 'Kadence AI is evolving.', 'kadence-blocks' ),
-			'body'             => __( "Kadence AI is being reimagined. Activate your license key to check whether you have existing AI credits — or stay tuned for what's coming next.", 'kadence-blocks' ),
+			'body'             => __("If you're using a legacy Kadence plan, activate your license to access your included features. If you're on a new plan, Kadence AI is currently being reimagined to deliver a more powerful experience. During this transition, it's only available on previous Kadence plans.", 'kadence-blocks' ),
 			'primaryCtaText'   => __( 'Activate License Key', 'kadence-blocks' ),
 			'primaryCtaUrl'    => esc_url( build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() ) ),
 			'secondaryCtaText' => __( 'Learn More', 'kadence-blocks' ),
