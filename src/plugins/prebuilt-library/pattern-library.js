@@ -1131,7 +1131,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							)}
 						</div>
 					</div>
-					{ ! isAIDisabled && (
+					{!isAIDisabled && (
 						<div className="kb-library-sidebar-sub-choices">
 							<Button
 								className={
@@ -1174,7 +1174,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 								}}
 							/>
 						</div>
-					) }
+					)}
 					<div className="kb-library-sidebar-context-choices">
 						<Button
 							className={
