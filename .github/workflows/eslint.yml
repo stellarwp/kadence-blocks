@@ -1,7 +1,13 @@
 name: ESLint
 run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
-on: push
+on:
+  push:
+  # pull_request:
+
+# permissions:
+#   contents: write
+#   pull-requests: write
 
 jobs:
   run-linters:
@@ -30,6 +36,15 @@ jobs:
         run: bun install --frozen-lockfile
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Build Kadence workspace packages (for ESLint import resolution)
+        run: |
+          for pkg in helpers icons components; do
+            dir="node_modules/@kadence/${pkg}"
+            if [ -f "$dir/package.json" ]; then
+              (cd "$dir" && npm install && npm run build)
+            fi
+          done
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
