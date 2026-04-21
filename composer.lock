@@ -1023,16 +1023,16 @@
         },
         {
             "name": "stellarwp/harbor",
-            "version": "v0.1.4",
+            "version": "v0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/harbor.git",
-                "reference": "a8363683bd4280dd00c2c307efbcd44d3cd71348"
+                "reference": "d204d37170e1f8f78b64a77f5bac6103b09d86b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/a8363683bd4280dd00c2c307efbcd44d3cd71348",
-                "reference": "a8363683bd4280dd00c2c307efbcd44d3cd71348",
+                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/d204d37170e1f8f78b64a77f5bac6103b09d86b3",
+                "reference": "d204d37170e1f8f78b64a77f5bac6103b09d86b3",
                 "shasum": ""
             },
             "require": {
@@ -1087,9 +1087,9 @@
             "description": "A library that integrates a WordPress product with the Liquid Web licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/harbor/issues",
-                "source": "https://github.com/stellarwp/harbor/tree/v0.1.4"
+                "source": "https://github.com/stellarwp/harbor/tree/v0.1.5"
             },
-            "time": "2026-04-20T18:53:12+00:00"
+            "time": "2026-04-21T18:58:25+00:00"
         },
         {
             "name": "stellarwp/licensing-api-client",
