@@ -1,4 +1,4 @@
-/* global kadence_blocks_advanced_form_params */
+/* global kadence_blocks_advanced_form_params, turnstile, hcaptcha */
 (function () {
 	'use strict';
 	window.kadenceAdvancedForm = {
