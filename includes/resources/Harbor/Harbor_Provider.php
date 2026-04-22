@@ -16,6 +16,7 @@ final class Harbor_Provider extends Provider {
 	 * @return void
 	 */
 	public function register(): void {
+		HarborConfig::set_plugin_basename( KADENCE_BLOCKS_PLUGIN_BASENAME );
 		HarborConfig::set_container( $this->container );
 		Harbor::init();
 
