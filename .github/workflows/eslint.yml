@@ -32,8 +32,11 @@ jobs:
             ${{ runner.os }}-bun-
 
       # ESLint and Prettier must be in `package.json`
+      - name: Remove npm lockfile to prevent bun git-clone issues
+        run: rm -f package-lock.json
+
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 

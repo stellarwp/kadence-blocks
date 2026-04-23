@@ -49,6 +49,9 @@ jobs:
               with:
                   bun-version: latest
 
+            - name: Remove npm lockfile to prevent bun git-clone issues
+              run: rm -f package-lock.json
+
             - run: bun install
               env:
                   BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
