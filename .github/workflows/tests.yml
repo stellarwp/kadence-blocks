@@ -59,6 +59,8 @@ jobs:
 
             - name: Build Kadence workspace packages
               run: |
+                  git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+                  git config --global url."https://github.com/".insteadOf "git@github.com:"
                   for pkg in helpers icons components; do
                     dir="node_modules/@kadence/${pkg}"
                     if [ -f "$dir/package.json" ]; then
