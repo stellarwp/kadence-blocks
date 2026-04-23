@@ -41,14 +41,11 @@ jobs:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Build Kadence workspace packages (for ESLint import resolution)
-        env:
-          GIT_CONFIG_GLOBAL: /tmp/ci-gitconfig
         run: |
-          printf '[url "https://github.com/"]\n\tinsteadOf = ssh://git@github.com/\n\tinsteadOf = git@github.com:\n' > /tmp/ci-gitconfig
           for pkg in helpers icons components; do
             dir="node_modules/@kadence/${pkg}"
             if [ -f "$dir/package.json" ]; then
-              (cd "$dir" && npm install && npm run build)
+              (cd "$dir" && npm install --omit=prod && npm run build)
             fi
           done
 
