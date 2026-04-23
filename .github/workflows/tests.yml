@@ -58,9 +58,10 @@ jobs:
                   PUPPETEER_SKIP_DOWNLOAD: true
 
             - name: Build Kadence workspace packages
+              env:
+                  GIT_CONFIG_GLOBAL: /tmp/ci-gitconfig
               run: |
-                  git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-                  git config --global url."https://github.com/".insteadOf "git@github.com:"
+                  printf '[url "https://github.com/"]\n\tinsteadOf = ssh://git@github.com/\n\tinsteadOf = git@github.com:\n' > /tmp/ci-gitconfig
                   for pkg in helpers icons components; do
                     dir="node_modules/@kadence/${pkg}"
                     if [ -f "$dir/package.json" ]; then
