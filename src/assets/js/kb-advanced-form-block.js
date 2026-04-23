@@ -26,18 +26,13 @@
 			// Regenerate Google reCAPTCHA v3 token
 			const recaptchaV3Input = form.querySelector('.kb_recaptcha_response');
 			if (recaptchaV3Input && typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {
-				// Get the site key from the script tag or a data attribute
-				const recaptchaScript = document.querySelector('script[src*="google.com/recaptcha"]');
-				if (recaptchaScript) {
-					const siteKeyMatch = recaptchaScript.src.match(/render=([^&]+)/);
-					if (siteKeyMatch && siteKeyMatch[1]) {
-						const siteKey = siteKeyMatch[1];
-						grecaptcha.ready(function () {
-							grecaptcha.execute(siteKey, { action: 'kb_form' }).then(function (token) {
-								recaptchaV3Input.setAttribute('value', token);
-							});
+				const siteKey = recaptchaV3Input.dataset.sitekey;
+				if (siteKey) {
+					grecaptcha.ready(function () {
+						grecaptcha.execute(siteKey, { action: 'kb_form' }).then(function (token) {
+							recaptchaV3Input.setAttribute('value', token);
 						});
-					}
+					});
 				}
 			}
 
@@ -50,7 +45,7 @@
 			// Reset hCaptcha widget
 			const hCaptchaWidget = form.querySelector('.h-captcha');
 			if (hCaptchaWidget && typeof hcaptcha !== 'undefined' && typeof hcaptcha.reset === 'function') {
-				hcaptcha.reset(hCaptchaWidget);
+				hcaptcha.reset();
 			}
 		},
 		ensureLiveRegion(form) {
