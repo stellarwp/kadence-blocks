@@ -49,7 +49,7 @@ jobs:
               with:
                   bun-version: latest
 
-            - run: bun install --frozen-lockfile
+            - run: bun install
               env:
                   BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
                   PUPPETEER_SKIP_DOWNLOAD: true
