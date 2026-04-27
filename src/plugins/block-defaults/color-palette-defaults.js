@@ -13,6 +13,7 @@ const kbColorUniqueIDs = [];
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { use } from 'react';
 
 export default function KadenceColorDefault() {
 	const [isSaving, setIsSaving] = useState(false);
@@ -32,6 +33,7 @@ export default function KadenceColorDefault() {
 	const [classSat, setClassSat] = useState('first');
 	const { createErrorNotice } = useDispatch(noticesStore);
 	const { updateSettings } = useDispatch(blockEditorStore);
+	const existingFeatures = useSelect((select) => select(blockEditorStore).getSettings().__experimentalFeatures, []);
 	useEffect(() => {
 		if (!colors) {
 			if (undefined !== kadenceColors.override && true === kadenceColors.override) {
@@ -51,6 +53,22 @@ export default function KadenceColorDefault() {
 			}
 		}
 	}, []);
+
+	// This effect will run whenever the colors state changes and will update the block editor settings with the new color palette.
+	// It included support for legacy color palette and new color palette, but the legacy support will be removed in future versions.
+	useEffect(() => {
+		if (colors) {
+			try {
+				existingFeatures.color.palette.theme = colors;
+				updateSettings({
+					colors, // Legacy support for color palette, will be removed in future versions.
+					__experimentalFeatures: existingFeatures, // Update the experimental features with the new color palette.
+				});
+			} catch (error) {
+				console.error('Failed to update colors', error);
+			}
+		}
+	}, [colors, existingFeatures, updateSettings]);
 
 	const saveConfig = async (configToSave = null) => {
 		if (false === isSaving) {
@@ -72,7 +90,7 @@ export default function KadenceColorDefault() {
 					createErrorNotice(__('Colors saved!', 'kadence-blocks'), {
 						type: 'snackbar',
 					});
-					updateSettings({ colors });
+
 					return true;
 				}
 			} catch (error) {
