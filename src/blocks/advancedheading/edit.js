@@ -1437,7 +1437,9 @@ function KadenceAdvancedHeading(props) {
 						display: inline;
 					}`}
 				{/* This style is used to override the default color which applied to already saved color palette with root css variable */}
-				{ color && colorClass.includes('kb-palette') && ( ! textGradient || textGradient === '' ) &&
+				{color &&
+					colorClass.includes('kb-palette') &&
+					(!textGradient || textGradient === '') &&
 					`.has-${colorClass}-color{
 						color: ${color} !important;
 					}`}
