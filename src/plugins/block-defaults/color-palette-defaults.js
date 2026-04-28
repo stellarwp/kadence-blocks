@@ -60,14 +60,26 @@ export default function KadenceColorDefault() {
 			try {
 				existingFeatures.color.palette.theme = colors;
 				updateSettings({
-					colors, // Legacy support for color palette, will be removed in future versions.
-					__experimentalFeatures: existingFeatures, // Update the experimental features with the new color palette.
+					// Legacy support for color palette, will be removed in future versions.
+					colors,
+
+					// Update the experimental features with the new color palette.
+					__experimentalFeatures: {
+						...existingFeatures,
+						color: {
+							...existingFeatures?.color,
+							palette: {
+								...existingFeatures?.color?.palette,
+								theme: colors,
+							},
+						},
+					},
 				});
 			} catch (error) {
 				console.error('Failed to update colors', error);
 			}
 		}
-	}, [colors, existingFeatures, updateSettings]);
+	}, [colors]);
 
 	const saveConfig = async (configToSave = null) => {
 		if (false === isSaving) {
