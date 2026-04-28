@@ -16,12 +16,17 @@ final class Bulk_Action_Manager {
 	 *
 	 * @filter bulk_actions-edit-post
 	 * @filter bulk_actions-edit-page
+	 * 
+	 * Developer Notes:
+	 * This function used to be hooked to both 'bulk_actions-edit-post' and 'bulk_actions-edit-page' filters.
+	 * For this reason we can not force the type of $actions to be array because it be "null", "false", etc. depending on the third party plugin implementation in which it is called.
+	 * Therefore, we keep the type as "mixed" and handle it accordingly.
 	 *
-	 * @param array<string, string|array<string, string>> $actions The existing actions.
+	 * @param mixed $actions The existing actions.
 	 *
 	 * @return array<string, string|array<string, string>>
 	 */
-	public function register_actions( array $actions ): array {
+	public function register_actions( $actions ): array {
 		$actions[ __( 'KB Optimizer', 'kadence-blocks' ) ] = [
 			self::OPTIMIZE_POSTS      => __( 'Optimize', 'kadence-blocks' ),
 			self::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
