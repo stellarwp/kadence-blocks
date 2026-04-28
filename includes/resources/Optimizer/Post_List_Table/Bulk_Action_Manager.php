@@ -18,9 +18,12 @@ final class Bulk_Action_Manager {
 	 * @filter bulk_actions-edit-page
 	 * 
 	 * Developer Notes:
-	 * This function used to be hooked to both 'bulk_actions-edit-post' and 'bulk_actions-edit-page' filters.
-	 * For this reason we can not force the type of $actions to be array because it be "null", "false", etc. depending on the third party plugin implementation in which it is called.
-	 * Therefore, we keep the type as "mixed" and handle it accordingly.
+	 * The $actions parameter is typed as `mixed` rather than `array` intentionally.
+	 * Although WordPress always passes an array, third-party plugins that hook into
+	 * 'bulk_actions-edit-post' or 'bulk_actions-edit-page' may return non-array values
+	 * (e.g. null, false) when they short-circuit the filter chain. Enforcing an `array`
+	 * type hint here would cause a fatal TypeError in those edge cases, so we accept
+	 * `mixed` and let the return type coerce the final value to an array.
 	 *
 	 * @param mixed $actions The existing actions.
 	 *
