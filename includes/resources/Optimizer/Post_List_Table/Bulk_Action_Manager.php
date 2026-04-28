@@ -30,6 +30,11 @@ final class Bulk_Action_Manager {
 	 * @return array<string, string|array<string, string>>
 	 */
 	public function register_actions( $actions ): array {
+		// Ensure $actions is an array to prevent fatal errors if a previous filter returns a non-array value.
+		if ( ! is_array( $actions ) ) {
+			$actions = [];
+		}
+
 		$actions[ __( 'KB Optimizer', 'kadence-blocks' ) ] = [
 			self::OPTIMIZE_POSTS      => __( 'Optimize', 'kadence-blocks' ),
 			self::REMOVE_OPTIMIZATION => __( 'Remove Optimization', 'kadence-blocks' ),
