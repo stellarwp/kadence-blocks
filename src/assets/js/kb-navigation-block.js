@@ -6,7 +6,7 @@
 (function () {
 	const focusableElementsString =
 		'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
-		const hoveredItems = new Set();
+	const hoveredItems = new Set();
 	/**
 	 * Get element's offset.
 	 */
@@ -410,6 +410,11 @@
 	 * is applied and cleaned up when the user re-engages with the menu item.
 	 */
 	const initHoverEscDismiss = function (nav) {
+		// Hover submenus only exist on horizontal orientation.
+		if (nav.classList.contains('is-vertical')) {
+			return;
+		}
+
 		var submenuParents = nav.querySelectorAll('.menu-item-has-children');
 
 		if (!submenuParents.length) {
