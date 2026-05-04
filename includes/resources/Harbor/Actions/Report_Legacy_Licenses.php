@@ -2,10 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Actions;
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_auth_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized_by_resource;
 
 final class Report_Legacy_Licenses {
 
@@ -19,7 +19,6 @@ final class Report_Legacy_Licenses {
 	 */
 	public function __invoke( array $licenses ): array {
 		$reported_keys = [];
-		$domain        = get_license_domain();
 
 		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
 			$key = get_license_key( $slug );
@@ -28,9 +27,19 @@ final class Report_Legacy_Licenses {
 				continue;
 			}
 
+			$resource = get_resource( $slug );
+
+			if ( ! $resource ) {
+				continue;
+			}
+
 			$reported_keys[ $key ] = true;
-			$token                 = get_authorization_token( $slug );
-			$is_active             = is_authorized( $key, $slug, $token ?? '', $domain );
+
+			// OAuth-enabled products require an authorized token; license-key-only
+			// products are active when the license is valid.
+			$is_active = get_auth_url( $slug ) !== ''
+				? is_authorized_by_resource( $slug )
+				: $resource->has_valid_license();
 
 			$licenses[] = [
 				'key'       => $key,
