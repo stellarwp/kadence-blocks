@@ -38,11 +38,11 @@ final class Get_Known_Plugins {
 			],
 			'kadence-galleries'    => [
 				'name'     => 'Kadence Galleries',
-				'page_url' => $default_page,
+				'page_url' => admin_url('edit.php?post_type=kt_gallery&page=kadence-galleries-settings'),
 			],
 			'kadence-conversions'  => [
 				'name'     => 'Kadence Conversions',
-				'page_url' => $default_page,
+				'page_url' => admin_url('admin.php?page=kadence-conversion-settings'),
 			],
 			'kadence-captcha'      => [
 				'name'     => 'Kadence Captcha',
@@ -50,11 +50,11 @@ final class Get_Known_Plugins {
 			],
 			'kadence-theme-pro'    => [
 				'name'     => 'Kadence Theme Pro',
-				'page_url' => $default_page,
+				'page_url' => admin_url('themes.php?page=kadence'),
 			],
 			'kadence-pattern-hub'  => [
 				'name'     => 'Kadence Pattern Hub',
-				'page_url' => $default_page,
+				'page_url' => admin_url('edit.php?post_type=kadence_cloud&page=kadence-cloud-settings&license=show'),
 			],
 			'kadence-white-label'  => [
 				'name'     => 'Kadence White Label',
