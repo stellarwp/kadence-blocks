@@ -2,10 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Actions;
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_auth_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized_by_resource;
 
 /**
  * Reports Kadence's legacy Uplink licenses into Harbor's unified license listing.
@@ -42,11 +40,7 @@ final class Report_Legacy_Licenses {
 
 			$reported_keys[ $key ] = true;
 
-			// OAuth-enabled products require an authorized token; license-key-only
-			// products are active when the license is valid.
-			$is_active = get_auth_url( $slug ) !== ''
-				? is_authorized_by_resource( $slug )
-				: $resource->has_valid_license();
+			$is_active = $resource->has_valid_license();
 
 			$licenses[] = [
 				'key'       => $key,
