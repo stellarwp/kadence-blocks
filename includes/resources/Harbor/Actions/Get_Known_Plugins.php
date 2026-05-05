@@ -55,10 +55,6 @@ final class Get_Known_Plugins {
 				'name'     => 'Kadence Captcha',
 				'page_url' => admin_url( 'admin.php?page=kadence-recaptcha-settings&license=show' ),
 			],
-			'kadence-theme-pro'    => [
-				'name'     => 'Kadence Theme Pro',
-				'page_url' => admin_url('themes.php?page=kadence'),
-			],
 			'kadence-pattern-hub'  => [
 				'name'     => 'Kadence Pattern Hub',
 				'page_url' => admin_url('edit.php?post_type=kadence_cloud&page=kadence-cloud-settings&license=show'),
