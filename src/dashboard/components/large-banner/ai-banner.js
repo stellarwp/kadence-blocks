@@ -158,7 +158,7 @@ export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserA
 							>
 								{availableCredits === false ? <Spinner /> : ''}
 								{availableCredits === false
-									? __('Fetching Available Credits')
+									? __('Fetching Available Credits', 'kadence-blocks')
 									: availableCredits + ' ' + __('Credits Available', 'kadence-blocks')}
 							</Popover>
 						)}

@@ -150,7 +150,7 @@ export function LargeBanner({
 							>
 								{availableCredits === false ? <Spinner /> : ''}
 								{availableCredits === false
-									? __('Fetching Available Credits')
+									? __('Fetching Available Credits', 'kadence-blocks')
 									: availableCredits + ' ' + __('Credits Available', 'kadence-blocks')}
 							</Popover>
 						)}
