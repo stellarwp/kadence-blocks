@@ -31,6 +31,8 @@ final class Harbor_Provider extends Provider {
 				"stellarwp/uplink/{$slug}/license_field_after_form",
 				new Render_Harbor_License_Notice( $plugin['name'] )
 			);
+
+			add_filter( "stellarwp/uplink/{$slug}/plugin_notices", [ $this, 'suppress_inline_license_notices' ] );
 		}
 
 		add_action( 'admin_init', new Suppress_Legacy_Inactive_Notices() );
@@ -68,6 +70,20 @@ final class Harbor_Provider extends Provider {
 		}
 
 		return $message;
+	}
+
+	/**
+	 * Suppresses the StellarWP Uplink inline license notice on the WP plugins
+	 * page for LiquidWeb customers, who manage licensing through the unified key.
+	 *
+	 * This was intentionally kept simple for any unified key instead of Kadence specific so that plugins can continue offloading notices to the Harbor library.
+	 *
+	 * @param array<string, array{slug: string, message_row_html: string}> $notices
+	 *
+	 * @return array<string, array{slug: string, message_row_html: string}>
+	 */
+	public function suppress_inline_license_notices( array $notices ): array {
+		return lw_harbor_has_unified_license_key() ? [] : $notices;
 	}
 
 }
