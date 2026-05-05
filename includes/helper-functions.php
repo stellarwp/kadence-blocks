@@ -261,17 +261,24 @@ function kadence_blocks_is_license_authorized(): bool {
  * @return bool
  */
 function kadence_blocks_is_legacy_license_authorized(): bool {
-	$license_key = kadence_blocks_get_current_license_key();
+	static $cache = null;
 
-	if ( ! empty( $license_key ) ) {
-		$slug  = kadence_blocks_get_current_product_slug();
-		$token = get_authorization_token( $slug );
-		if ( is_authorized( $license_key, $slug, $token ?? '', get_license_domain() ) ) {
-			return true;
-		}
+	if ( $cache !== null ) {
+		return $cache;
 	}
 
-	return false;
+	$license_key = kadence_blocks_get_current_license_key();
+
+	if ( empty( $license_key ) ) {
+		$cache = false;
+		return $cache;
+	}
+
+	$slug  = kadence_blocks_get_current_product_slug();
+	$token = get_authorization_token( $slug );
+	$cache = is_authorized( $license_key, $slug, $token ?? '', get_license_domain() );
+
+	return $cache;
 }
 
 /**
