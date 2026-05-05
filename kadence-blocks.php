@@ -22,6 +22,11 @@ define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTO
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.7.0' );
 
+/**
+ * Plugin basename, e.g. "kadence-blocks/kadence-blocks.php".
+ *
+ * @since 3.7.0
+ */
 if ( ! defined('KADENCE_BLOCKS_PLUGIN_BASENAME') ) {
 	define( 'KADENCE_BLOCKS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 }

@@ -10,6 +10,11 @@ use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Harbor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
+/**
+ * Wires the Harbor (LiquidWeb unified license) integration into Kadence Blocks.
+ *
+ * @since 3.7.0
+ */
 final class Harbor_Provider extends Provider {
 
 	/**

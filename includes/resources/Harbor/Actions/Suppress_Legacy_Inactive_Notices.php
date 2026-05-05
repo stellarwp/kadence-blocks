@@ -2,6 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Actions;
 
+/**
+ * Suppresses legacy Kadence add-on "license not activated" admin notices in favor of Harbor's unified UI.
+ *
+ * @since 3.7.0
+ */
 final class Suppress_Legacy_Inactive_Notices {
 
 	/**
@@ -10,6 +15,8 @@ final class Suppress_Legacy_Inactive_Notices {
 	 * Each add-on registers its inactive_notice callback during plugins_loaded,
 	 * which runs after Harbor_Provider::register(). Hooking to admin_init ensures
 	 * all add-on callbacks are already registered before we remove them.
+	 *
+	 * @since 3.7.0
 	 *
 	 * @return void
 	 */

@@ -7,11 +7,18 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized_by_resource;
 
+/**
+ * Reports Kadence's legacy Uplink licenses into Harbor's unified license listing.
+ *
+ * @since 3.7.0
+ */
 final class Report_Legacy_Licenses {
 
 	/**
 	 * Reports legacy Uplink-managed Kadence licenses to Harbor so they appear
 	 * in the unified license UI.
+	 *
+	 * @since 3.7.0
 	 *
 	 * @param array $licenses Existing legacy licenses from other plugins.
 	 *

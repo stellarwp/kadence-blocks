@@ -11,9 +11,14 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
  * All home page copy lives here so changes require no JavaScript deployment.
  * The primaryCtaUrl for the authorized banner scenario is intentionally empty —
  * the frontend interprets an empty URL as "open the AI wizard".
+ *
+ * @since 3.7.0
  */
 final class Home_Content_View_Model {
 
+	/**
+	 * @since 3.7.0
+	 */
 	public function exports(): array {
 		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 		$is_liquid_web = ! $is_authorized && lw_harbor_is_product_license_active( 'kadence' );

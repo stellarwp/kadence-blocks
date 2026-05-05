@@ -2,6 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Actions;
 
+/**
+ * Provides the list of Kadence plugins that integrate with Harbor.
+ *
+ * @since 3.7.0
+ */
 final class Get_Known_Plugins {
 
 	/**
@@ -9,6 +14,8 @@ final class Get_Known_Plugins {
 	 *
 	 * page_url should be a full URL and should point to the plugin's
 	 * license settings page.
+	 *
+	 * @since 3.7.0
 	 *
 	 * @return array<string, array{name: string, page_url: string}>
 	 */

@@ -2,6 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Actions;
 
+/**
+ * Renders the Harbor (Liquid Web Software Manager) notice on legacy Uplink license forms.
+ *
+ * @since 3.7.0
+ */
 final class Render_Harbor_License_Notice {
 
 	/**
@@ -18,6 +23,8 @@ final class Render_Harbor_License_Notice {
 
 	/**
 	 * Renders a Harbor notice below the save button on a Kadence Uplink license field.
+	 *
+	 * @since 3.7.0
 	 *
 	 * @return void
 	 */
