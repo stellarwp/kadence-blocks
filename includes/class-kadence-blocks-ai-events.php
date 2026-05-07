@@ -92,6 +92,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @action kadenceblocks/ai/event
 	 *
+	 * @since 3.7.0 added legacy license check
 	 * @return void
 	 */
 	public function handle_event( string $name, array $context ): void {
@@ -120,7 +121,7 @@ class Kadence_Blocks_AI_Events {
 					[
 						'name'    => $name,
 						'context' => $context,
-					] 
+					]
 				),
 			]
 		);

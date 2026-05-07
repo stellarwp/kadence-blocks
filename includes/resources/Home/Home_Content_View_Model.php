@@ -31,6 +31,11 @@ final class Home_Content_View_Model {
 	}
 
 	/**
+	 * @since 3.7.0
+	 *
+	 * @param bool $is_authorized Whether the current site has an authorized Kadence license.
+	 * @param bool $is_liquid_web Whether the current site is a Liquid Web customer.
+	 *
 	 * @return array{
 	 *     heading: string,
 	 *     body: string,
@@ -75,6 +80,10 @@ final class Home_Content_View_Model {
 	}
 
 	/**
+	 * @since 3.7.0
+	 *
+	 * @param bool $is_authorized Whether the current site has an authorized Kadence license.
+	 *
 	 * @return array{
 	 *     title: string,
 	 *     showAiIcon: bool,
@@ -138,6 +147,10 @@ final class Home_Content_View_Model {
 	}
 
 	/**
+	 * @since 3.7.0
+	 *
+	 * @param bool $is_authorized Whether the current site has an authorized Kadence license.
+	 *
 	 * @return array{
 	 *     heading: string,
 	 *     articles: array<int, array{category: string, heading: string, description: string, link: string, linkTarget: string}>,
@@ -150,6 +163,11 @@ final class Home_Content_View_Model {
 		];
 	}
 
+	/**
+	 * @since 3.7.0
+	 *
+	 * @return array<int, array{category: string, heading: string, description: string, link: string, linkTarget: string}>
+	 */
 	private function knowledge_base_authorized(): array {
 		return [
 			[
@@ -190,6 +208,11 @@ final class Home_Content_View_Model {
 		];
 	}
 
+	/**
+	 * @since 3.7.0
+	 *
+	 * @return array<int, array{category: string, heading: string, description: string, link: string, linkTarget: string}>
+	 */
 	private function knowledge_base_default(): array {
 		return [
 			[

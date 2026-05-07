@@ -172,6 +172,8 @@ class Editor_Assets {
 	}
 	/**
 	 * Enqueue block settings for backend editor.
+	 *
+	 * @since 3.7.0 added aiDisabledMessage
 	 */
 	public function editor_assets_variables() {
 		$sidebar_size   = 750;

@@ -795,6 +795,8 @@ class Kadence_Blocks_Settings {
 	}
 	/**
 	 * Loads admin style sheets and scripts
+	 *
+	 * @since 3.7.0 added homeContent, aiDisabledMessage
 	 */
 	public function home_scripts() {
 		$using_network_enabled = false;
