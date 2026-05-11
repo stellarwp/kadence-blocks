@@ -171,7 +171,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.7.0 =
 Release Date: 11th May 2026
-* Feature: Added compatibility with Liquid Web licensing
+* Feature - Integrate with Nexcess Licensing and Portal.
 
 = 3.6.7 =
 Release Date: 8th April 2026
