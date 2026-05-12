@@ -169,6 +169,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.7.1 =
+Release Date: 12th May 2026
+* Tweak: Moved the Liquid Web menu item to Settings -> Liquid Web Products.
+* Tweak: The Settings -> Liquid Web Products page now requires a opt-in to communicate with external servers.
+
 = 3.7.0 =
 Release Date: 11th May 2026
 * Feature - Integrate with Nexcess Licensing and Portal.
