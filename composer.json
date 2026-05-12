@@ -42,7 +42,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
-		"stellarwp/harbor": "^1.0",
+		"stellarwp/harbor": "^1.1",
 		"stellarwp/prophecy-image-downloader": "^3.0",
 		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/schema": "^2.0",
