@@ -95,7 +95,7 @@
 		"strauss-release": [
 			"@strauss-install",
 			"@php bin/strauss.phar --deleteVendorPackages=true",
-			"@php vendor/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
+			"@php vendor/vendor-prefixed/stellarwp/harbor/bin/stellar-harbor domain=kadence-blocks",
 			"@composer dump-autoload"
 		],
 		"strauss-clean": [
