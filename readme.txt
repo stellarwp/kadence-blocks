@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
 Tested up to: 6.9.4
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,10 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.7.2 =
+Release Date: 13th May 2026
+* Tweak: Update Harbor to 1.2.0, removing the Liquid Web Products page when there are no premium plugins present.
 
 = 3.7.1 =
 Release Date: 12th May 2026
