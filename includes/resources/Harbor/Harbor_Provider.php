@@ -98,7 +98,7 @@ final class Harbor_Provider extends Provider {
 	/**
 	 * Get the premium plugin existence callbacks.
 	 *
-	 * @since TBD
+	 * @since 3.7.2
 	 *
 	 * @param bool $exists Whether a premium plugin exists.
 	 *
