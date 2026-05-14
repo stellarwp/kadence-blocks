@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Harbor\Actions\Suppress_Legacy_Inactive_Notices;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Harbor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
+use ITSEC_Core;
 
 /**
  * Wires the Harbor (LiquidWeb unified license) integration into Kadence Blocks.
@@ -23,6 +24,9 @@ final class Harbor_Provider extends Provider {
 	public function register(): void {
 		HarborConfig::set_plugin_basename( KADENCE_BLOCKS_PLUGIN_BASENAME );
 		HarborConfig::set_container( $this->container );
+
+		add_filter( 'lw_harbor/premium_plugin_exists', [ $this, 'register_premium_plugin_exists' ] );
+
 		Harbor::init();
 
 		lw_harbor_register_submenu( 'kadence-blocks' );
@@ -91,4 +95,46 @@ final class Harbor_Provider extends Provider {
 		return lw_harbor_has_unified_license_key() ? [] : $notices;
 	}
 
+	/**
+	 * Get the premium plugin existence callbacks.
+	 *
+	 * @since 3.7.2
+	 *
+	 * @param bool $exists Whether a premium plugin exists.
+	 *
+	 * @return bool
+	 */
+	public function register_premium_plugin_exists( bool $exists ): bool {
+		if ( $exists ) {
+			// It already exists.
+			return true;
+		}
+
+		$premium_constants = [
+			'KTP_PLUGIN_FILE',
+			'KADENCE_WOO_EXTRAS_VERSION',
+			'SOLIDWP_BACKUPS_PLUGIN_FILE',
+			'KADENCE_CONVERSIONS_FILE',
+			'KADENCE_INSIGHTS_FILE',
+			'KADENCE_WHITE_VERSION',
+		];
+
+		foreach ( $premium_constants as $premium_constant ) {
+			if ( ! defined( $premium_constant ) ) {
+				continue;
+			}
+
+			return true;
+		}
+
+		// Kadence Security Pro does not have a constant.
+		if (
+			class_exists( ITSEC_Core::class ) &&
+			ITSEC_Core::get_install_type() === 'pro'
+		) {
+			return true;
+		}
+
+		return false;
+	}
 }
