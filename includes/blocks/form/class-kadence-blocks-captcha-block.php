@@ -135,7 +135,7 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		wp_add_inline_script( 'kadence-blocks-recaptcha', $recaptcha_v3_script, 'after' );
 		$this->enqueue_script( 'kadence-blocks-recaptcha' );
 
-		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . esc_attr( $unique_id ) . '" />';
+		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . esc_attr( $unique_id ) . '" data-sitekey="' . esc_attr( $captcha_settings->public_key ) . '" />';
 
 		// Handle Kadence Captcha plugin settings
 		$recaptcha_notice_html = '<span style="max-width: 100%%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">%s</span>';

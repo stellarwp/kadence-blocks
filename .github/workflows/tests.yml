@@ -49,10 +49,22 @@ jobs:
               with:
                   bun-version: latest
 
-            - run: bun install --frozen-lockfile
+            - name: Remove npm lockfile to prevent bun git-clone issues
+              run: rm -f package-lock.json
+
+            - run: bun install
               env:
                   BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
                   PUPPETEER_SKIP_DOWNLOAD: true
+
+            - name: Build Kadence workspace packages
+              run: |
+                  for pkg in helpers icons components; do
+                    dir="node_modules/@kadence/${pkg}"
+                    if [ -f "$dir/package.json" ]; then
+                      (cd "$dir" && npm install --omit=prod && npm run build)
+                    fi
+                  done
 
             - name: Build packages
               run: bun run build
