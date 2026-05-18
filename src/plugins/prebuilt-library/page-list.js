@@ -528,7 +528,8 @@ function PageList({
 		return (
 			<div className="kb-ai-dropdown-container-content-wrap activation-needed">
 				<p className="kb-disabled-authorize-note">
-					{__('Kadence AI is disabled by site admin.', 'kadence-blocks')}
+					{window?.kadence_blocks_params?.aiDisabledMessage ||
+						__('Kadence AI is disabled by site admin.', 'kadence-blocks')}
 				</p>
 			</div>
 		);

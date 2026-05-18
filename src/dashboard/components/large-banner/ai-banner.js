@@ -1,11 +1,8 @@
-import { Button, Icon, Tooltip, SVG, Popover, Spinner } from '@wordpress/components';
+import { Button, SVG, Popover, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { aiIcon } from '@kadence/icons';
 import { SafeParseJSON } from '@kadence/helpers';
-import { DashboardButton } from '../dashboard-button';
-import { useEffect, useState } from '@wordpress/element';
-
-import './large-banner.scss';
+import { useState } from '@wordpress/element';
 import { getAsyncData } from '../../../plugins/prebuilt-library/data-fetch/get-async-data';
 
 const kbLogo = (
@@ -31,35 +28,40 @@ const kbLogo = (
 	</svg>
 );
 
-export function LargeBanner({
-	heading,
-	subHeading,
-	subHeadingPro,
-	imageSrc,
-	buttonText,
-	isUserAuthenticated,
-	activateUrl,
-	onUpdateWizard,
-	showControls,
-	isNetworkAdmin,
-	siteName = '',
-}) {
-	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
-	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
+/**
+ * Banner driven entirely by server-side config from kadenceHomeParams.bannerConfig.
+ *
+ * Props:
+ *   onUpdateWizard  — callback to open the AI wizard (used when primaryCtaUrl is empty)
+ *   showControls    — whether the current user can control AI activation
+ *   isNetworkAdmin  — whether this is a network admin context
+ *   isUserAuthenticated — whether the user has an active legacy AI connection
+ */
+export function AiBanner({ onUpdateWizard, showControls, isNetworkAdmin, isUserAuthenticated, aiStatus }) {
+	const {
+		heading = '',
+		body = '',
+		primaryCtaText = '',
+		primaryCtaUrl = '',
+		secondaryCtaText = '',
+		secondaryCtaUrl = '',
+	} = window?.kadenceHomeParams?.homeContent?.bannerConfig || {};
+
 	const [isVisible, setIsVisible] = useState(false);
 	const [availableCredits, setAvailableCredits] = useState(false);
+	const { getAvailableCredits } = getAsyncData();
+
 	const toggleVisible = () => {
 		if (availableCredits === false) {
 			getRemoteAvailableCredits();
 		}
 		setIsVisible((state) => !state);
 	};
-	const { getAIContentRemaining, getAvailableCredits } = getAsyncData();
+
 	async function getRemoteAvailableCredits() {
 		const response = await getAvailableCredits();
 		const tempActiveStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 		if (response === 'error') {
-			console.log('Error getting credits');
 			tempActiveStorage.credits = 'fetch';
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setAvailableCredits(0);
@@ -73,52 +75,61 @@ export function LargeBanner({
 			setAvailableCredits(parseInt(response));
 		}
 	}
-	const companyName = siteName || __('Something Great!', 'kadence-blocks');
-	const addedHeading = isUserAuthenticated ? <div> {companyName}</div> : '';
+
+	const renderPrimaryCta = () => {
+		if (!primaryCtaText) {
+			return null;
+		}
+		// External/internal link — render as anchor.
+		if (primaryCtaUrl) {
+			return (
+				<a className="uplink-authorize" href={primaryCtaUrl} target="_blank" rel="noopener noreferrer">
+					{primaryCtaText}
+				</a>
+			);
+		}
+		// No URL — open the AI wizard. Respect network-admin restriction.
+		if (!showControls) {
+			return (
+				<p className="uplink-authorize-note">
+					{__('Authorization needed from network admin', 'kadence-blocks')}
+				</p>
+			);
+		}
+		if (isNetworkAdmin) {
+			return null;
+		}
+		return (
+			<Button
+				onClick={onUpdateWizard}
+				iconPosition="left"
+				icon={aiIcon}
+				text={aiStatus === 'infoLoaded' ? __('Update Kadence AI Details', 'kadence-blocks') : primaryCtaText}
+				className="kadence-open-ai-button"
+				variant="primary"
+			/>
+		);
+	};
+
 	return (
 		<div className="kb-large-banner">
 			<div className="kb-large-banner__logo">{kbLogo}</div>
 			<div className="kb-large-banner__content">
-				<div className="kb-large-banner__heading">
-					{heading}
-					{addedHeading}
-				</div>
-				{!isUserAuthenticated && (
-					<>
-						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
-						{showControls && (
-							<a className="uplink-authorize" href={activateUrl}>
-								{hasPro && data_key
-									? __('Connect Blocks Pro License to Site', 'kadence-blocks')
-									: buttonText}
-							</a>
-						)}
-						{!showControls && (
-							<p className="uplink-authorize-note">
-								{__('Authorization needed from network admin', 'kadence-blocks')}
-							</p>
-						)}
-					</>
-				)}
-				{isUserAuthenticated && !isNetworkAdmin && (
-					<>
-						<Button
-							onClick={onUpdateWizard}
-							iconPosition="left"
-							icon={aiIcon}
-							text={__('Update Kadence AI Details', 'kadence-blocks')}
-							className="kadence-update-ai-wizard"
-							variant="link"
-						/>
-					</>
+				<div className="kb-large-banner__heading">{heading}</div>
+				{body && <div className="kb-large-banner__subheading">{body}</div>}
+				{renderPrimaryCta()}
+				{secondaryCtaText && secondaryCtaUrl && (
+					<a
+						href={secondaryCtaUrl}
+						className="kb-large-banner__secondary-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{secondaryCtaText}
+					</a>
 				)}
 			</div>
 
-			{/* {isUserAuthenticated && (
-				<div className="kb-large-banner__media">
-					<img src={imageSrc} />
-				</div>
-			)} */}
 			{isUserAuthenticated && (
 				<div className="kb-large-banner__tooltip">
 					<Button
@@ -143,10 +154,7 @@ export function LargeBanner({
 							<Popover
 								className="kb-large-banner__tooltip_popup"
 								placement={'left'}
-								onClose={() => {
-									console.log('close');
-									setIsVisible(false);
-								}}
+								onClose={() => setIsVisible(false)}
 							>
 								{availableCredits === false ? <Spinner /> : ''}
 								{availableCredits === false

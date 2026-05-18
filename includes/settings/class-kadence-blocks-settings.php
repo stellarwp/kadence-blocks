@@ -9,11 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
+use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
  * Build Welcome Page class
@@ -588,7 +587,7 @@ class Kadence_Blocks_Settings {
 
 	private function get_color_palette_css() {
 		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
-		
+
 		if ( $palette && is_object( $palette ) && isset( $palette->palette ) && is_array( $palette->palette ) ) {
 			$san_palette = [];
 			foreach ( $palette->palette as $item ) {
@@ -796,6 +795,8 @@ class Kadence_Blocks_Settings {
 	}
 	/**
 	 * Loads admin style sheets and scripts
+	 *
+	 * @since 3.7.0 added homeContent, aiDisabledMessage
 	 */
 	public function home_scripts() {
 		$using_network_enabled = false;
@@ -804,18 +805,15 @@ class Kadence_Blocks_Settings {
 		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
 			$using_network_enabled = true;
 		}
-		$token          = get_authorization_token( 'kadence-blocks' );
 		$auth_url       = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() );
 		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
-		$is_authorized  = false;
-		if ( ! empty( $license_key ) && ! kadence_blocks_is_ai_disabled() ) {
-			$is_authorized = is_authorized( $license_key, 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
-		}
+		$is_authorized  = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 
 		if ( $is_authorized ) {
 			$disconnect_url = get_disconnect_url( 'kadence-blocks' );
 		}
+
 		// Icons Scripts & Styles.
 		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
 		wp_register_script( 'kadence-icons', KADENCE_BLOCKS_URL . 'dist/icons.js', array_merge( $kadence_icons_meta['dependencies'], [ 'wp-api' ] ), $kadence_icons_meta['version'], true );
@@ -842,6 +840,10 @@ class Kadence_Blocks_Settings {
 		$kadence_home_meta = kadence_blocks_get_asset_file( 'dist/admin-kadence-home' );
 		wp_enqueue_script( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.js', $kadence_home_meta['dependencies'], $kadence_home_meta['version'], true );
 		wp_enqueue_style( 'admin-kadence-home', KADENCE_BLOCKS_URL . 'dist/admin-kadence-home.css', [ 'wp-edit-blocks', 'kadence-components' ], $kadence_home_meta['version'] );
+
+		// Banner Config.
+		$home_content = new Home_Content_View_Model();
+
 		wp_localize_script(
 			'admin-kadence-home',
 			'kadenceHomeParams',
@@ -851,6 +853,8 @@ class Kadence_Blocks_Settings {
 				'site_name'        => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'            => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'     => kadence_blocks_is_ai_disabled(),
+				'homeContent'      => $home_content->exports(),
+				'aiDisabledMessage' => kadence_blocks_get_ai_disabled_message(),
 				'pVersion'         => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'     => $is_authorized,
 				'licenseKey'       => $license_key,
@@ -1223,7 +1227,7 @@ class Kadence_Blocks_Settings {
 			echo '<option value="true" ' . ( 'true' === $default ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
-	
+
 	/**
 	 * Outputs admin bar settings field
 	 */
@@ -1495,7 +1499,7 @@ class Kadence_Blocks_Settings {
 				'linkText' => __( 'Manage Lottie Animations', 'kadence-blocks' ),
 			],
 			'kadence/vector'          => [
-				'slug'     => 'kadence/vector', 
+				'slug'     => 'kadence/vector',
 				'name'     => __( 'Vector Graphics', 'kadence-blocks' ),
 				'desc'     => __( 'Add custom vector icons and SVGs to enhance your site design.', 'kadence-blocks' ),
 				'link'     => admin_url( 'edit.php?post_type=kadence_vector' ),
