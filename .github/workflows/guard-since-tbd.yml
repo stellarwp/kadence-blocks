@@ -1,0 +1,43 @@
+name: Guard against @since TBD on master
+
+# Fails CI if any `@since TBD` markers reach master. Runs on:
+#   - PRs targeting master (blocks the merge button until clean)
+#   - Pushes to master (catches direct commits / merges that bypassed PR review)
+#
+# Companion to .github/workflows/replace-since-tbd.yml — the replacement
+# workflow is what fixes TBD markers; this workflow enforces that it ran.
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  guard:
+    name: Check for unresolved @since TBD markers
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan PHP files for @since TBD
+        run: |
+          # Same exclusions as the replacement workflow so the two stay in sync.
+          MATCHES=$(grep -rn --include='*.php' \
+            --exclude-dir=vendor \
+            --exclude-dir=vendor-prefixed \
+            --exclude-dir=node_modules \
+            --exclude-dir=dist \
+            --exclude-dir=build \
+            '@since TBD' . || true)
+
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Found unresolved '@since TBD' markers. Run the 'Replace @since TBD with release version' workflow on the release branch and merge that PR before merging into master."
+            echo ""
+            echo "Locations:"
+            echo "$MATCHES"
+            exit 1
+          fi
+
+          echo "No '@since TBD' markers found — clear to merge."
