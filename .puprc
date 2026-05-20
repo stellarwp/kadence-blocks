@@ -14,6 +14,14 @@
 		"npm run build"
 	],
 	"checks": {
+		"tbd": {
+			"fail_method": "error",
+			"fail_method_dev": "error",
+			"dirs": [
+				"."
+			],
+			"skip_directories": "vendor|vendor-prefixed|node_modules|dist|build|bin"
+		},
 		"version-conflict": {
 			"fail_method": "error",
 			"fail_method_dev": "warn"

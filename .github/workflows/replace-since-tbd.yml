@@ -1,0 +1,71 @@
+name: Replace @since TBD with release version
+
+# Replaces `@since TBD` docblock markers with the actual release version on a
+# release branch, then opens a PR back into that same branch for review.
+#
+# Idempotent: re-run any time during QA to sweep up TBDs added by late fixes.
+# Run a final time right before merging the release branch into master.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to substitute for TBD (e.g. 3.8.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+
+    # Guard: only allow this workflow to run on release branches, never on
+    # master or feature branches. Prevents accidental dispatch against the
+    # wrong base.
+    if: startsWith(github.ref, 'refs/heads/release/')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace @since TBD in PHP files
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Single-line substring replacement; safe for sed (no multi-line or
+          # whitespace-sensitive content). Excludes:
+          #   - vendor/ and vendor-prefixed/ (Composer + Strauss output)
+          #   - node_modules/, dist/, build/ (JS build artifacts)
+          MATCHED=$(grep -rl --include='*.php' \
+            --exclude-dir=vendor \
+            --exclude-dir=vendor-prefixed \
+            --exclude-dir=node_modules \
+            --exclude-dir=dist \
+            --exclude-dir=build \
+            '@since TBD' . || true)
+
+          if [ -z "$MATCHED" ]; then
+            echo "No @since TBD found — nothing to do."
+            exit 0
+          fi
+
+          echo "Files to update:"
+          echo "$MATCHED"
+
+          echo "$MATCHED" | xargs sed -i "s/@since TBD/@since ${VERSION}/g"
+
+      - name: Open PR with replacements
+        uses: peter-evans/create-pull-request@v6
+        with:
+          base: ${{ github.ref_name }}
+          branch: chore/replace-since-tbd-${{ inputs.version }}
+          title: "chore: replace @since TBD with ${{ inputs.version }}"
+          commit-message: "chore: replace @since TBD with ${{ inputs.version }}"
+          body: |
+            Automated replacement of `@since TBD` placeholders with `${{ inputs.version }}`
+            on branch `${{ github.ref_name }}`.
+
+            Re-run this workflow if additional commits land during QA and
+            introduce new `@since TBD` markers.
