@@ -1,6 +1,6 @@
 name: Guard against @since TBD on master
 
-# Fails CI if any `@since TBD` markers reach master. Runs on:
+# Uses pup's built-in TBD check to fail CI if unresolved markers reach master. Runs on:
 #   - PRs targeting master (blocks the merge button until clean)
 #   - Pushes to master (catches direct commits / merges that bypassed PR review)
 #
@@ -15,29 +15,14 @@ on:
 
 jobs:
   guard:
-    name: Check for unresolved @since TBD markers
+    name: Run pup TBD check
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scan PHP files for @since TBD
-        run: |
-          # Same exclusions as the replacement workflow so the two stay in sync.
-          MATCHES=$(grep -rn --include='*.php' \
-            --exclude-dir=vendor \
-            --exclude-dir=vendor-prefixed \
-            --exclude-dir=node_modules \
-            --exclude-dir=dist \
-            --exclude-dir=build \
-            '@since TBD' . || true)
+      - name: Install pup
+        run: composer run pup
 
-          if [ -n "$MATCHES" ]; then
-            echo "::error::Found unresolved '@since TBD' markers. Run the 'Replace @since TBD with release version' workflow on the release branch and merge that PR before merging into master."
-            echo ""
-            echo "Locations:"
-            echo "$MATCHES"
-            exit 1
-          fi
-
-          echo "No '@since TBD' markers found — clear to merge."
+      - name: Check for unresolved TBD markers
+        run: php bin/pup.phar check:tbd
