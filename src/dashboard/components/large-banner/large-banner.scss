@@ -36,6 +36,32 @@
 			opacity: .8;
 		}
 	}
+	.kadence-open-ai-button {
+		&.components-button {
+			background: #0073E6;
+			color: #fff;
+			border-radius: 4px;
+			padding: 12px 24px;
+			height: auto;
+			font-size: 14px;
+			&:not(:disabled,[aria-disabled=true]):hover {
+				background: #005bb5;
+				color: #fff;
+			}
+		}
+	}
+	.kb-large-banner__secondary-link {
+		display: inline-block;
+		margin-top: 12px;
+		margin-left: 16px;
+		color: rgba(255, 255, 255, 0.75);
+		font-size: 14px;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		&:hover {
+			color: #fff;
+		}
+	}
 	.disabled-authorize-note {
 		background: #891c23;
 		padding: 0.5em 1em;

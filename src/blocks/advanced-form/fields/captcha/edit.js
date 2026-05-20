@@ -20,7 +20,7 @@ import {
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState } from '@wordpress/element';
-import { getUniqueId, getPreviewSize } from '@kadence/helpers';
+import { getPreviewSize } from '@kadence/helpers';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';

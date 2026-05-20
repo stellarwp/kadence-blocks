@@ -13,7 +13,9 @@
 		"build:custom": "wp-scripts build --webpack-bundle-analyzer",
 		"lint-js": "wp-scripts lint-js",
 		"lint-js-fix": "wp-scripts lint-js --fix",
-		"format": "wp-scripts format"
+		"format": "wp-scripts format",
+		"link-kadence-packages": "node node_modules/@kadence/components/scripts/npm/link-kadence-packages.js",
+		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js"
 	},
 	"dependencies": {
 		"@algolia/autocomplete-js": "^1.10.0",
@@ -21,6 +23,9 @@
 		"@dnd-kit/sortable": "^10.0.0",
 		"@floating-ui/react": "^0.27.12",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
+		"@kadence/components": "github:stellarwp/kadence-components#1.1.8",
+		"@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.0",
+		"@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
 		"@lottiefiles/dotlottie-react": "^0.15.2",
 		"@react-google-maps/api": "^2.12.0",
 		"@splidejs/react-splide": "^0.7.12",

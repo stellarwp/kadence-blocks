@@ -1,7 +1,13 @@
 name: ESLint
 run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
-on: push
+on:
+  push:
+  # pull_request:
+
+# permissions:
+#   contents: write
+#   pull-requests: write
 
 jobs:
   run-linters:
@@ -26,10 +32,22 @@ jobs:
             ${{ runner.os }}-bun-
 
       # ESLint and Prettier must be in `package.json`
+      - name: Remove npm lockfile to prevent bun git-clone issues
+        run: rm -f package-lock.json
+
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Build Kadence workspace packages (for ESLint import resolution)
+        run: |
+          for pkg in helpers icons components; do
+            dir="node_modules/@kadence/${pkg}"
+            if [ -f "$dir/package.json" ]; then
+              (cd "$dir" && npm install --omit=prod && npm run build)
+            fi
+          done
 
       - name: Run linters
         uses: wearerequired/lint-action@v2

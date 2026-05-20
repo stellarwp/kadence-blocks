@@ -95,10 +95,19 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$tag = $this->is_this_block_header( $attributes, $block_instance->context ) ? 'th' : 'td';
 
+		$scope_attr = '';
+		if ( 'th' === $tag && ! empty( $attributes['scope'] ) ) {
+			$allowed_scopes = [ 'col', 'row' ];
+			if ( in_array( $attributes['scope'], $allowed_scopes, true ) ) {
+				$scope_attr = ' scope="' . esc_attr( $attributes['scope'] ) . '"';
+			}
+		}
+
 		return sprintf(
-			'<%s class="kb-table-data kb-table-data%2$s">%3$s</%4$s>',
+			'<%s class="kb-table-data kb-table-data%2$s"%3$s>%4$s</%5$s>',
 			$tag,
 			esc_attr( $unique_id ),
+			$scope_attr,
 			$content,
 			$tag
 		);

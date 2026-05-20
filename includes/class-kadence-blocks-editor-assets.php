@@ -8,12 +8,12 @@
 namespace KadenceWP\KadenceBlocks;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function kadence_blocks_get_asset_file;
+use function kadence_blocks_is_legacy_license_authorized;
 use function kadence_blocks_get_current_license_data;
 use function kadence_blocks_get_post_types;
 use function kadence_blocks_is_ai_disabled;
+use function kadence_blocks_get_ai_disabled_message;
 use function rcp_get_membership_levels;
 use function rcp_get_access_levels;
 
@@ -172,6 +172,8 @@ class Editor_Assets {
 	}
 	/**
 	 * Enqueue block settings for backend editor.
+	 *
+	 * @since 3.7.0 added aiDisabledMessage
 	 */
 	public function editor_assets_variables() {
 		$sidebar_size   = 750;
@@ -293,11 +295,7 @@ class Editor_Assets {
 		if ( ! empty( $pro_data['email'] ) ) {
 			$pro_data['api_email'] = $pro_data['email'];
 		}
-		$token         = ! kadence_blocks_is_ai_disabled() ? get_authorization_token( 'kadence-blocks' ) : '';
-		$is_authorized = false;
-		if ( ! empty( $pro_data['key'] ) && ! kadence_blocks_is_ai_disabled() ) {
-			$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
-		}
+		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
 		if ( empty( $pro_data['domain'] ) ) {
 			$pro_data['domain'] = get_license_domain();
 		}
@@ -316,7 +314,7 @@ class Editor_Assets {
 				'numberposts' => 4,
 				'post_type'   => 'product',
 				'fields'      => 'ids',
-			] 
+			]
 		);
 		$prophecy_data    = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 		wp_localize_script(
@@ -339,6 +337,7 @@ class Editor_Assets {
 				'proData'                => $pro_data,
 				'isAuthorized'           => $is_authorized,
 				'isAIDisabled'           => kadence_blocks_is_ai_disabled(),
+				'aiDisabledMessage'      => kadence_blocks_get_ai_disabled_message(),
 				'homeLink'               => admin_url( 'admin.php?page=kadence-blocks-home' ),
 				'pro'                    => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 				'creativeKit'            => ( class_exists( 'KadenceWP\CreativeKit' ) ? 'true' : 'false' ),
