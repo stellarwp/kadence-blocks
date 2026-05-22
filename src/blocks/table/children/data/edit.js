@@ -17,14 +17,14 @@ import { uniqueIdHelper } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
 import { flow } from 'lodash';
 import classnames from 'classnames';
-import { ToolbarDropdownMenu, MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
+import { ToolbarDropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { TableControlsDropdown } from './table-controls';
 
 const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId, context } = props;
 
-	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType, scope = '' } = attributes;
+	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType } = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
 
@@ -85,7 +85,6 @@ export function Edit(props) {
 
 	const blockProps = useBlockProps({
 		className: classes,
-		...(Tag === 'th' && ['col', 'row'].includes(scope) ? { scope } : {}),
 	});
 
 	uniqueIdHelper(props);
@@ -151,13 +150,6 @@ export function Edit(props) {
 		});
 	};
 
-	// Clear scope when the cell is no longer a header so stale values don't persist.
-	useEffect(() => {
-		if (Tag === 'td' && scope !== '') {
-			setAttributes({ scope: '' });
-		}
-	}, [Tag, scope]);
-
 	return (
 		<Tag {...blockProps}>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
@@ -184,19 +176,6 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<KadencePanelBody initialOpen={true}>
-						{Tag === 'th' && (
-							<SelectControl
-								label={__('Header Scope', 'kadence-blocks')}
-								value={scope}
-								options={[
-									{ label: __('None', 'kadence-blocks'), value: '' },
-									{ label: __('Column (col)', 'kadence-blocks'), value: 'col' },
-									{ label: __('Row (row)', 'kadence-blocks'), value: 'row' },
-								]}
-								onChange={(value) => setAttributes({ scope: value })}
-								help={__('Defines whether this header applies to its column or row.', 'kadence-blocks')}
-							/>
-						)}
 						<ResponsiveMeasureRangeControl
 							label={__('Padding', 'kadence-blocks')}
 							value={padding}

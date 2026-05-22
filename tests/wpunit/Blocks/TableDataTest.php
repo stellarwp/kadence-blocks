@@ -52,7 +52,7 @@ class TableDataTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * Returns context that makes the cell render as <th> via isFirstColumnHeader (column 0).
+	 * Returns context that makes the cell a column header (column 0 in a table with isFirstColumnHeader).
 	 *
 	 * @return array
 	 */
@@ -61,7 +61,7 @@ class TableDataTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * Returns context that makes the cell render as <th> via isFirstRowHeader (row 0).
+	 * Returns context that makes the cell a row header (row 0 in a table with isFirstRowHeader).
 	 *
 	 * @return array
 	 */
@@ -82,35 +82,14 @@ class TableDataTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * Tests that scope="col" is emitted on a <th> header cell driven by the first-column-header path.
+	 * Tests that scope="row" is emitted on a <th> for a first-column header cell at column 0.
+	 * First-column headers identify rows, so the correct scope is "row".
 	 *
 	 * @return void
 	 */
-	public function testScopeColEmittedOnThViaFirstColumn() {
-		$attributes     = [
-			'column' => 0,
-			'scope'  => 'col',
-		];
+	public function testScopeRowEmittedOnThViaFirstColumnHeader() {
+		$attributes     = [ 'column' => 0 ];
 		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_column() );
-
-		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
-
-		$this->assertStringContainsString( '<th', $html );
-		$this->assertStringContainsString( 'scope="col"', $html );
-	}
-
-	/**
-	 * Tests that scope="row" is emitted on a <th> header cell driven by the first-row-header path.
-	 * Uses column=1 to confirm it is the row-header path, not the column-header path, driving <th>.
-	 *
-	 * @return void
-	 */
-	public function testScopeRowEmittedOnThViaFirstRow() {
-		$attributes     = [
-			'column' => 1,
-			'scope'  => 'row',
-		];
-		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_row() );
 
 		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
 
@@ -119,36 +98,20 @@ class TableDataTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * Tests that no scope attribute is emitted when scope is an empty string, even on a <th> cell.
+	 * Tests that scope="col" is emitted on a <th> for a first-row header cell at row 0.
+	 * First-row headers identify columns, so the correct scope is "col".
+	 * Uses column=1 to confirm the row-header path, not the column-header path, drives <th>.
 	 *
 	 * @return void
 	 */
-	public function testNoScopeAttributeWhenScopeIsEmptyOnTh() {
-		$attributes     = [
-			'column' => 0,
-			'scope'  => '',
-		];
-		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_column() );
+	public function testScopeColEmittedOnThViaFirstRowHeader() {
+		$attributes     = [ 'column' => 1 ];
+		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_row() );
 
 		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
 
 		$this->assertStringContainsString( '<th', $html );
-		$this->assertStringNotContainsString( 'scope=', $html );
-	}
-
-	/**
-	 * Tests that no scope attribute is emitted when the scope key is absent from attributes.
-	 *
-	 * @return void
-	 */
-	public function testNoScopeAttributeWhenScopeNotSetOnTh() {
-		$attributes     = [ 'column' => 0 ];
-		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_column() );
-
-		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
-
-		$this->assertStringContainsString( '<th', $html );
-		$this->assertStringNotContainsString( 'scope=', $html );
+		$this->assertStringContainsString( 'scope="col"', $html );
 	}
 
 	/**
@@ -159,10 +122,7 @@ class TableDataTest extends KadenceBlocksUnit {
 	 * @return void
 	 */
 	public function testFirstColumnHeaderFlagWithNonZeroColumnIsNotAHeader() {
-		$attributes     = [
-			'column' => 1,
-			'scope'  => 'col',
-		];
+		$attributes     = [ 'column' => 1 ];
 		$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_column() );
 
 		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
@@ -173,15 +133,12 @@ class TableDataTest extends KadenceBlocksUnit {
 
 	/**
 	 * Tests that column position alone does not make a header cell when isFirstColumnHeader
-	 * context is not set. Verifies the && in is_this_block_header is not accidentally an ||.
+	 * context is not set. Verifies that both conditions must be true.
 	 *
 	 * @return void
 	 */
 	public function testColumnZeroWithoutContextFlagIsNotAHeader() {
-		$attributes     = [
-			'column' => 0,
-			'scope'  => 'col',
-		];
+		$attributes     = [ 'column' => 0 ];
 		$block_instance = $this->make_block_instance( $attributes, $this->non_header_context() );
 
 		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
@@ -191,44 +148,76 @@ class TableDataTest extends KadenceBlocksUnit {
 	}
 
 	/**
-	 * Tests that scope is suppressed on <td> cells regardless of the scope attribute value.
+	 * Tests that isFirstRowHeader context alone does not make a header cell when parentRow !== 0.
+	 * Verifies that only row 0 qualifies as the header row.
 	 *
 	 * @return void
 	 */
-	public function testNoScopeAttributeOnTdRegardlessOfScopeValue() {
-		foreach ( [ 'col', 'row' ] as $scope ) {
-			$attributes     = [
-				'column' => 1,
-				'scope'  => $scope,
-			];
-			$block_instance = $this->make_block_instance( $attributes, $this->non_header_context() );
+	public function testFirstRowHeaderFlagWithNonZeroRowIsNotAHeader() {
+		$attributes     = [ 'column' => 0 ];
+		$context        = [
+			'kadence/table/isFirstRowHeader' => true,
+			'kadence/table/parentRow'        => 1,
+		];
+		$block_instance = $this->make_block_instance( $attributes, $context );
 
-			$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
+		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
 
-			$this->assertStringContainsString( '<td', $html, "Expected <td> for scope='{$scope}' on non-header cell." );
-			$this->assertStringNotContainsString( 'scope=', $html, "scope attribute must be suppressed on <td> for scope='{$scope}'." );
-		}
+		$this->assertStringContainsString( '<td', $html );
+		$this->assertStringNotContainsString( 'scope=', $html );
 	}
 
 	/**
-	 * Tests that unsupported scope values are rejected and not emitted even on a <th> cell.
-	 * Includes injection attempts to confirm the server-side allowlist is enforced.
+	 * Tests that row 0 alone does not make a header cell when isFirstRowHeader context is not set.
+	 * Verifies that both conditions must be true.
 	 *
 	 * @return void
 	 */
-	public function testUnsupportedScopeValueNotEmittedOnTh() {
-		foreach ( [ 'colgroup', 'rowgroup', 'invalid', '<script>', '1' ] as $bad_scope ) {
-			$attributes     = [
-				'column' => 0,
-				'scope'  => $bad_scope,
-			];
-			$block_instance = $this->make_block_instance( $attributes, $this->header_via_first_column() );
+	public function testRowZeroWithoutContextFlagIsNotAHeader() {
+		$attributes     = [ 'column' => 1 ];
+		$context        = [ 'kadence/table/parentRow' => 0 ];
+		$block_instance = $this->make_block_instance( $attributes, $context );
 
-			$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
+		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
 
-			$this->assertStringContainsString( '<th', $html, "Expected <th> for scope value '{$bad_scope}'." );
-			$this->assertStringNotContainsString( 'scope=', $html, "scope attribute must not be emitted for unsupported value '{$bad_scope}'." );
-		}
+		$this->assertStringContainsString( '<td', $html );
+		$this->assertStringNotContainsString( 'scope=', $html );
+	}
+
+	/**
+	 * Tests that when both header flags are set and the cell is at column 0 of row 0,
+	 * the first-row-header path takes precedence and emits scope="col".
+	 *
+	 * @return void
+	 */
+	public function testFirstRowHeaderTakesPrecedenceOverFirstColumnHeaderAtCellZeroZero() {
+		$attributes = [ 'column' => 0 ];
+		$context    = [
+			'kadence/table/isFirstRowHeader'    => true,
+			'kadence/table/isFirstColumnHeader' => true,
+			'kadence/table/parentRow'           => 0,
+		];
+		$block_instance = $this->make_block_instance( $attributes, $context );
+
+		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
+
+		$this->assertStringContainsString( '<th', $html );
+		$this->assertStringContainsString( 'scope="col"', $html );
+	}
+
+	/**
+	 * Tests that non-header cells always render as <td> with no scope attribute.
+	 *
+	 * @return void
+	 */
+	public function testNoScopeAttributeOnTdCell() {
+		$attributes     = [ 'column' => 1 ];
+		$block_instance = $this->make_block_instance( $attributes, $this->non_header_context() );
+
+		$html = $this->block->build_html( $attributes, 'abc', '', $block_instance );
+
+		$this->assertStringContainsString( '<td', $html );
+		$this->assertStringNotContainsString( 'scope=', $html );
 	}
 
 	/**
