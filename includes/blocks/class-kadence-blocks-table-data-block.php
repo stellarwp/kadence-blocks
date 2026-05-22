@@ -96,8 +96,6 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 		$scope = $this->get_block_header_scope( $attributes, $block_instance->context );
 		$tag   = $scope ? 'th' : 'td';
 
-		$scope_attr = $scope ? sprintf( ' scope="%s"', esc_attr( $scope ) ) : '';
-
 		return sprintf(
 			'<%1$s%2$s class="kb-table-data kb-table-data%3$s">%4$s</%5$s>',
 			$tag,
@@ -112,7 +110,10 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	 * Get the header scope for a table data cell.
 	 *
 	 * @param array $attributes Block attributes.
-	 * @param array $context      Block context.
+	 * @param array $context    Block context.
+	 *
+	 * @since TBD
+	 *
 	 * @return string|false 'col', 'row', or false when the cell is not a header.
 	 */
 	private function get_block_header_scope( $attributes, $context ) {
@@ -123,14 +124,26 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 		$row    = $context['kadence/table/parentRow'] ?? -1;
 
 		if ( 0 === $row && $is_first_row_header ) {
-			return 'col';
+			/**
+			 * Filter the scope for the table data cell.
+			 * Scope is 'row', 'col', or false when the cell is not a header.
+			 * https://www.w3schools.com/tags/att_th_scope.asp
+			 *
+			 * @param string $scope The scope.
+			 * @param array $attributes The block attributes.
+			 * @param array $context The block context.
+			 * @return string The scope.
+			 * 
+			 * @since TBD
+			 */
+			return apply_filters( 'kadence_blocks_table_data_scope_attributes', 'col', $attributes, $context );
 		}
 
 		if ( 0 === $column && $is_first_column_header ) {
-			return 'row';
+			return apply_filters( 'kadence_blocks_table_data_scope_attributes', 'row', $attributes, $context );
 		}
 
-		return false;
+		return apply_filters( 'kadence_blocks_table_data_scope_attributes', false, $attributes, $context );
 	}
 
 }
