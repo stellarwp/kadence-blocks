@@ -455,9 +455,19 @@ class Kadence_Blocks_Settings {
 					);
 				} else {
 					// Merge mode: add custom colors to theme palette.
-					$existing_theme = isset( $data['settings']['color']['palette']['theme'] )
+					$existing_theme = isset( $data['settings']['color']['palette']['theme'] ) && ! empty( $data['settings']['color']['palette']['theme'] )
 						? $data['settings']['color']['palette']['theme']
 						: [];
+
+					// If theme.json has no colors, fall back to colors registered via
+					// add_theme_support( 'editor-color-palette' ) — e.g. Blocksy registers
+					// its palette this way rather than through theme.json.
+					if ( empty( $existing_theme ) ) {
+						$theme_support = get_theme_support( 'editor-color-palette' );
+						if ( is_array( $theme_support ) && ! empty( $theme_support[0] ) ) {
+							$existing_theme = $theme_support[0];
+						}
+					}
 
 					// Merge custom colors with theme palette.
 					$merged_palette = array_merge( $existing_theme, $san_palette );

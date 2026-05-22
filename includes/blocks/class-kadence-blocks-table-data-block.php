@@ -96,13 +96,14 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 		$scope = $this->get_block_header_scope( $attributes, $block_instance->context );
 		$tag   = $scope ? 'th' : 'td';
 
+		$scope_attr = $scope ? sprintf( ' scope="%s"', esc_attr( $scope ) ) : '';
+
 		return sprintf(
-			'<%1$s%2$s class="kb-table-data kb-table-data%3$s">%4$s</%5$s>',
+			'<%1$s %2$s class="kb-table-data kb-table-data%3$s">%4$s</%1$s>',
 			$tag,
 			$scope_attr,
 			esc_attr( $unique_id ),
-			$content,
-			$tag
+			$content
 		);
 	}
 

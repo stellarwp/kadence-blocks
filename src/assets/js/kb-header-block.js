@@ -569,7 +569,7 @@ class KBHeader {
 
 				// either shrink or unshrink the header based on scroll position
 				const shrinkingHeight = Math.max(shrinkHeight, this.shrinkStartHeight - window.scrollY);
-				shrinkHeader.style.height = shrinkingHeight + 'px';
+				shrinkHeader.style.height = 'auto';
 				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
 				shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
 
@@ -711,6 +711,24 @@ class KBHeader {
 			//this.stickyWrapper.style.top = null;
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
+		}
+
+		if (window.scrollY === 0 && this.shrinkMain) {
+			const correctionSizeCased = this.activeSizeCased();
+			const isTransparent = this['transparent' + correctionSizeCased];
+			const hasStickySection = '' !== this['stickySection' + correctionSizeCased];
+
+			if (!this.isSticking) {
+				this.stickyWrapper.style.position = 'initial';
+				this.stickyWrapper.style.width = 'initial';
+				this.stickyWrapper.style.left = 'initial';
+				this.stickyWrapper.style.top = 'initial';
+			}
+
+			if ((!isTransparent || hasStickySection) && this.placeholderWrapper) {
+				const currentHeight = this.stickyWrapper.offsetHeight;
+				this.placeholderWrapper.style.height = currentHeight + 'px';
+			}
 		}
 	}
 
