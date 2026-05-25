@@ -737,14 +737,6 @@ div.kb-blocks-bg-video {
 	height: auto;
 	width: 100%;
 }
-.block-editor-block-list__block[data-type="kadence/rowlayout"] {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-.block-editor-block-list__block[data-type="kadence/rowlayout"] > .wp-block {
-	margin-top: 0;
-	margin-bottom: 0;
-}
 .wp-block-kadence-rowlayout.has-border-radius {
 	overflow: clip;
 }
@@ -1075,7 +1067,7 @@ div.kb-blocks-bg-video {
 	.kb-blocks-bg-slider .kb-gallery-pause-button {
 		opacity: 0.25;
 	}
-	
+
 	.kb-blocks-bg-slider:hover .kb-gallery-pause-button {
 		opacity: 1;
 	}

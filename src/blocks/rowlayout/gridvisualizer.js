@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { Button, Tooltip, ResizableBox } from '@wordpress/components';
-import { getGutterPercentUnit, getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
+import { getGutterPercentUnit, getGutterTotal, getPreviewGutterSize } from './utils';
+import { getSpacingOptionOutput } from '@kadence/helpers';
 /**
  * Internal block libraries
  */
