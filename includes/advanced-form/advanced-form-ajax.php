@@ -307,7 +307,7 @@ class KB_Ajax_Advanced_Form {
 				if ( ! empty( $field_errors ) ) {
 					continue;
 				}
-				
+
 				// File required & skipped.
 				if ( isset( $_FILES[ $expected_field ] ) ) {
 					if ( empty( $file['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
@@ -325,7 +325,7 @@ class KB_Ajax_Advanced_Form {
 							continue;
 						}
 						foreach ( $post_file as $file ) {
-							$file_name_array[] = $file['name'];
+							$file_name_array[] = sanitize_file_name( $file['name'] );
 							if ( empty( $file['size'] ) && ! empty( $field['required'] ) && $field['required'] ) {
 								$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
 
