@@ -135,7 +135,7 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 			 * @param array $context The block context.
 			 * @return string The scope.
 			 * 
-			 * @since TBD
+			 * @since 3.7.3
 			 */
 			return apply_filters( 'kadence_blocks_table_data_scope_attributes', 'col', $attributes, $context );
 		}
