@@ -106,12 +106,18 @@ function kadence_blocks_get_current_license_key() {
 
 ## Proposed server-side fix
 
-Legacy and unified customers now share the **same portal**, but the portal exposes **two distinct licensing APIs** — one for legacy keys (replacing what SureCart at `api.surecart.com` used to serve) and one for unified LWSW keys. Keys are format-distinguishable: every unified key starts with the `LWSW-` prefix (see `Harbor/Licensing/Registry/Product_Registry.php:14` and `License_Key::is_valid_format()`); legacy keys do not. The server can therefore dispatch by inspecting the incoming key:
+**The patterns server runs `stellarwp/kadence-blocks-plugin-endpoints`** as a WordPress plugin to interact with the licensing API. Its `License_Relay` class (`inc/KadenceBlocksPluginEndpoints/API/License_Relay.php`) is the actual validator behind the user-reported error: the exact text *"Invalid or expired license key."* originates at `inc/KadenceBlocksPluginEndpoints/API/SVG_API_Endpoint.php:140-143`, returned as a `WP_Error` with code `invalid_license`. That's the same plugin that needs to learn about LWSW keys.
 
-- Starts with `LWSW-` → call the **unified** licensing API.
-- Otherwise → call the **legacy** licensing API on the new portal (URL TBD — see open questions).
+`License_Relay` today targets a single licensing server:
 
-**The server calls the licensing APIs directly over HTTP — no PHP SDK install required.** The pattern server is a backend service, not a customer WordPress site, so the Harbor/licensing-api-client SDKs (which are designed for plugins managing their own license state) are unnecessary weight. Direct `wp_remote_get` calls keep the dependency surface minimal and the behavior auditable. The endpoint shapes below are extracted from tracing those SDKs against their HTTP layers.
+- **Base URL:** `https://licensing.kadencewp.com` (`License_Relay.php:34`, overridable via `STELLARWP_UPLINK_ORIGIN_BASE_URL` constant or `stellarwp/uplink_origin/base_url` filter)
+- **API root:** `/api/stellarwp/v3/` (`License_Relay.php:43`)
+- **Validate endpoint:** `GET https://licensing.kadencewp.com/api/stellarwp/v3/license/validate?key=…&plugin=kadence-blocks-pro&domain=…` (`validate_license()` at line 96)
+- Request body is signed via `STELLARWP_UPLINK_SIGNED_SECRET` and dispatched through `request()` at line 173
+
+That endpoint is the **legacy** licensing API on the new portal — no SureCart-URL swap is required because SureCart isn't on the request path here. (The `stellarwp/kadence-cloud-surecart-license` plugin still exists upstream of `kadence_cloud_rest_request_access`, but the failure-mode trace shows `License_Relay` is what surfaces the error users are seeing.)
+
+The change: extend `License_Relay` to dispatch by key format. LWSW keys are self-describing — they start with the `LWSW-` prefix (see `Harbor/Licensing/Registry/Product_Registry.php:14` and `License_Key::is_valid_format()`). When the incoming key matches that prefix, call the **unified** licensing API instead of `licensing.kadencewp.com`; otherwise keep today's signed-Uplink behavior intact.
 
 **Unified API endpoint** (the plugin's `License_Manager::call_products_api()` resolves to this URL):
 
@@ -123,7 +129,7 @@ GET https://licensing.nexcess.com/api/liquidweb/v1/products
 
 Returns a JSON array of catalog entries, each keyed by `product_slug` (see `vendor/vendor-prefixed/stellarwp/harbor/src/Harbor/Catalog/Clients/Http_Client.php:122`). Auth is `optionalToken()` per `ProductsResource::catalog()` — likely no auth needed for this lookup, but worth confirming (see open questions). HTTP 404 = unknown key (block); 200 with an entitled product matching the gate = grant; 200 without the entitled product = block.
 
-**Legacy API endpoint** replaces SureCart entirely. The existing `stellarwp/kadence-cloud-surecart-license` plugin uses a filterable base URL (`apply_filters( 'surecart_licensing_endpoint', 'https://api.surecart.com' )` at `kadence-cloud-surecart-license-client.php:229`), so depending on whether the new portal's legacy API is wire-compatible with SureCart's `GET /v1/public/licenses/{key}` + `POST /v1/public/activations` shape, the migration is either (a) a one-line filter override pointing at the new URL, or (b) a fork of the client to adapt to a different route shape. See open questions for the URL and shape.
+**Why direct HTTP, no SDK install:** the pattern server is a backend service, not a customer WordPress site, so the Harbor / `stellarwp/licensing-api-client` SDKs (which exist to manage on-site license state, retries, throttling, repository persistence) are unnecessary weight. `License_Relay` already uses `wp_remote_request` for the legacy server; adding a second `wp_remote_get` branch for the unified server keeps the dependency surface minimal and the behavior auditable. The endpoint shape above was extracted by tracing the SDK to its HTTP layer.
 
 Two distinct servers serve different libraries. Each needs its own change.
 
@@ -131,144 +137,124 @@ Two distinct servers serve different libraries. Each needs its own change.
 
 Repos involved:
 
-- `stellarwp/kadence-cloud` — registers routes (`/get`, `/info`, `/categories`, `/single`, `/single-pattern`, `/patterns`, `/search`) and runs the `kadence_cloud_rest_request_access` filter (`kadence-cloud-rest-controller.php:757`).
-- `stellarwp/kadence-cloud-surecart-license` — existing validator hooked on that filter, currently validates against SureCart (`kadence-cloud-surecart-license.php:269`). Will be repointed at the new portal's **legacy** API.
-- `stellarwp/kadence-cloud-pages` — same pattern for `pages`/`pages-categories` routes.
+- `stellarwp/kadence-blocks-plugin-endpoints` — **the plugin to change**. Owns `License_Relay` (the actual validator) and the endpoints whose `invalid_license` error matches the user-reported message.
+- `stellarwp/kadence-cloud` — registers the underlying pattern routes (`/get`, `/info`, `/categories`, `/single`, `/single-pattern`, `/patterns`, `/search`) and exposes the `kadence_cloud_rest_request_access` filter (`kadence-cloud-rest-controller.php:757`). No change required unless a separate gate also needs LWSW awareness — see open questions.
+- `stellarwp/kadence-cloud-pages` — same shape for `pages`/`pages-categories` routes; same answer.
 
-**Change 1 — repoint the legacy validator at the new portal.** In `stellarwp/kadence-cloud-surecart-license`, override the `surecart_licensing_endpoint` filter (or hardcode the new URL — that filter is the existing extension point at `kadence-cloud-surecart-license-client.php:229`). If the new portal's legacy API is shape-compatible with SureCart's `GET /v1/public/licenses/{key}` and `POST /v1/public/activations`, this is a single-line change. If routes/payloads differ, fork the client class into a `Portal_Legacy_Client` adapter (same public methods, new wire shape) and swap the `new Client( $public_token )` instantiations at lines 98, 157, 236.
+**Change — extend `License_Relay` to dispatch by key format.** Add an LWSW branch inside `validate_license()` (`inc/KadenceBlocksPluginEndpoints/API/License_Relay.php:96`) that calls the LiquidWeb licensing API for `LWSW-`-prefixed keys and returns a result shape compatible with the existing consumers (`SVG_API_Endpoint.php:135` expects an object with a `results[0]` array carrying an `api_invalid` flag — matches the legacy server's response). Non-LWSW keys keep today's signed-Uplink path untouched.
 
-**Change 2 — add a sibling plugin for unified keys.** Create `stellarwp/kadence-cloud-harbor-license` that hooks `kadence_cloud_rest_request_access`, detects LWSW-prefixed keys, and validates them against the unified licensing API. Structure mirrors the (now-repointed) SureCart plugin:
+Sketch:
 
 ```php
-const KADENCE_CLOUD_LWSW_API_BASE   = 'https://licensing.nexcess.com';
-const KADENCE_CLOUD_LWSW_API_PATH   = '/api/liquidweb/v1/products';
-const KADENCE_CLOUD_LWSW_REQUIRED   = 'kadence-blocks-pro'; // canonical product_slug — TBD, see open questions
+const LWSW_API_BASE         = 'https://licensing.nexcess.com';
+const LWSW_API_PATH         = '/api/liquidweb/v1/products';
+const LWSW_REQUIRED_PRODUCT = 'kadence-blocks-pro'; // canonical product_slug — TBD, see open questions
 
-function kadence_cloud_harbor_check_cloud_access( $access, $key, $request ) {
-    if ( $access ) {
-        return $access; // Another handler already authorized.
-    }
-    if ( empty( $key ) || strpos( $key, 'LWSW-' ) !== 0 ) {
-        // Not an LWSW unified key — let the legacy portal handler try.
-        return $access;
+public function validate_license( $plugin_slug = 'kadence-blocks-pro' ) {
+    if ( strpos( $this->key, 'LWSW-' ) === 0 ) {
+        return $this->validate_lwsw_license( $plugin_slug );
     }
 
-    $domain = preg_replace( '(^https?://)', '', (string) $request->get_param( 'site' ) );
+    // Existing signed-Uplink path — unchanged.
+    $args = [
+        'key'               => $this->key,
+        'plugin'            => $plugin_slug,
+        'domain'            => $this->site_domain,
+        'wp_version'        => '',
+        'multisite'         => '',
+        'network_activated' => '',
+        'active_sites'      => '',
+        'origin'            => 'kadence',
+    ];
+    return $this->get( 'license/validate', $args, '/api/plugins/v2/' );
+}
 
+private function validate_lwsw_license( string $plugin_slug ): \stdClass {
     $url = add_query_arg(
         [
-            'license_key' => $key,
-            'domain'      => $domain,
+            'license_key' => $this->key,
+            'domain'      => preg_replace( '(^https?://)', '', $this->site_domain ),
         ],
-        KADENCE_CLOUD_LWSW_API_BASE . KADENCE_CLOUD_LWSW_API_PATH
+        self::LWSW_API_BASE . self::LWSW_API_PATH
     );
 
     $response = wp_remote_get(
         $url,
-        [
-            'timeout' => 10,
-            'headers' => [ 'Accept' => 'application/json' ],
-        ]
+        [ 'timeout' => 10, 'headers' => [ 'Accept' => 'application/json' ] ]
     );
 
+    // Shape the response to match what existing consumers expect:
+    // an object with ->results[0]->api_invalid (truthy = invalid).
+    $result = new \stdClass();
+    $entry  = new \stdClass();
+    $entry->api_invalid = '';
+    $result->results = [ $entry ];
+
     if ( is_wp_error( $response ) ) {
-        error_log( '[kadence-cloud-harbor-license] HTTP error: ' . $response->get_error_message() );
-        return $access; // Soft-fail: transient — let other handlers try.
+        // Soft-fail: don't mark invalid on transient errors, but also don't
+        // grant access. Empty results signal "could not validate".
+        $result->results = [];
+        return $result;
     }
 
     $status = (int) wp_remote_retrieve_response_code( $response );
-
     if ( $status === 404 ) {
-        return false; // Definitively invalid key — block.
+        $entry->api_invalid = 'invalid_license';
+        return $result;
     }
     if ( $status < 200 || $status >= 300 ) {
-        error_log( '[kadence-cloud-harbor-license] unexpected HTTP ' . $status );
-        return $access; // Soft-fail on 5xx / unexpected.
+        $result->results = [];
+        return $result;
     }
 
     $body = json_decode( wp_remote_retrieve_body( $response ), true );
     if ( ! is_array( $body ) ) {
-        return $access;
+        $result->results = [];
+        return $result;
     }
 
-    // Catalog entries each have a 'product_slug' field — see Harbor's Http_Client.php:122.
-    foreach ( $body as $entry ) {
-        if ( ! empty( $entry['product_slug'] ) && $entry['product_slug'] === KADENCE_CLOUD_LWSW_REQUIRED ) {
-            return true;
+    // Map plugin_slug → required product_slug (only one mapping today; expand as needed).
+    $required = ( $plugin_slug === 'kadence-blocks-pro' ) ? self::LWSW_REQUIRED_PRODUCT : $plugin_slug;
+    foreach ( $body as $entry_data ) {
+        if ( ! empty( $entry_data['product_slug'] ) && $entry_data['product_slug'] === $required ) {
+            return $result; // api_invalid stays empty → valid.
         }
     }
 
-    return false; // Authenticated but not entitled to premium patterns.
+    // Authenticated but not entitled to this product.
+    $entry->api_invalid = 'product_not_entitled';
+    return $result;
 }
-add_filter( 'kadence_cloud_rest_request_access', 'kadence_cloud_harbor_check_cloud_access', 9, 3 );
 ```
 
-Priority `9` lets Harbor run before the legacy-portal handler's priority-`10`. Unified keys short-circuit on success; non-LWSW keys fall through untouched to the legacy validator. Legacy customers see no behavior change beyond the URL swap in Change 1.
+This keeps the public contract of `License_Relay::validate_license()` stable so existing callers (`SVG_API_Endpoint.php:135` and any other endpoint added to this plugin) work without modification. Existing legacy customers see no behavior change — the LWSW branch only fires when the key prefix matches.
 
-The legacy validator already early-returns when `$access === true` (`kadence-cloud-surecart-license.php:197-199`), so this composes cleanly without touching it.
-
-Apply the same plugin/handler to `stellarwp/kadence-cloud-pages` if it registers its own copy of the filter callback list.
-
-**Caching note:** the catalog API call is a network round trip per pattern import. Wrap the `wp_remote_get` call with a transient (5–15 min TTL) keyed on `sha1( $key . '|' . $domain )` so repeat imports from the same site don't re-hit the licensing service. Cache successful entitlement checks; do not cache 5xx / transient failures.
+**Caching note:** add a transient cache around the `wp_remote_get` call, keyed on `sha1( $this->key . '|' . $this->site_domain )` with a 5–15 min TTL so repeat imports from the same site don't re-hit the licensing service. Cache successful entitlement checks and 404s (definitive); do not cache 5xx / transient failures.
 
 ### Server B — `api.startertemplatecloud.com` (covers `library=templates`, full-site starter imports)
 
-Repo: `stellarwp/kadence-starter-api`. This server does **not** use the filter pattern. License validation lives inline in `kadence-starter-api-rest-controller.php:162-249`, which currently has two branches:
+Repo: `stellarwp/kadence-starter-api`. Owns its own `Kadence_Starter_License_Relay` class with the same `validate_license` shape as Server A's `License_Relay`. License validation lives inline in `kadence-starter-api-rest-controller.php:162-249`, which currently has two branches:
 
 1. iThemes API check (line 174-219) for legacy iThemes-bundled licenses.
 2. `Kadence_Starter_License_Relay->validate_license()` (line 221-227) for everything else.
 
-**Proposal:** add a third branch *before* the relay call, around line 220, that detects LWSW keys and calls the licensing API directly. Sketch:
+**Proposal:** add the same LWSW dispatch inside `Kadence_Starter_License_Relay->validate_license()` (mirroring the Server A change). The caller at line 221 stays unchanged; the relay class internally routes LWSW keys to the LiquidWeb API and returns the same `results[0]->api_invalid` shape the caller already inspects.
 
-```php
-} else if ( strpos( $api_key, 'LWSW-' ) === 0 ) {
-    $domain = preg_replace( '(^https?://)', '', (string) $site_url );
-
-    $response = wp_remote_get(
-        add_query_arg(
-            [ 'license_key' => $api_key, 'domain' => $domain ],
-            'https://licensing.nexcess.com/api/liquidweb/v1/products'
-        ),
-        [ 'timeout' => 10, 'headers' => [ 'Accept' => 'application/json' ] ]
-    );
-
-    if ( ! is_wp_error( $response ) && (int) wp_remote_retrieve_response_code( $response ) === 200 ) {
-        $body = json_decode( wp_remote_retrieve_body( $response ), true );
-        if ( is_array( $body ) ) {
-            foreach ( $body as $entry ) {
-                if ( ! empty( $entry['product_slug'] ) && $entry['product_slug'] === 'kadence-blocks-pro' ) {
-                    $member = true;
-                    break;
-                }
-            }
-        }
-    }
-    // Soft-fail: leave $member = false on errors/non-200. The user gets the free-tier view.
-} else {
-    // Existing relay path for legacy keys (will also need to be repointed
-    // at the new portal's legacy API in step Change 1 above — same URL swap
-    // as Server A, applied inside Kadence_Starter_License_Relay).
-    $relay = new Kadence_Starter_License_Relay( $api_key, /* ... */ );
-    // ...existing logic...
-}
-```
-
-Smaller surface than Server A, but invasive — modifies an existing file rather than adding a sibling plugin. If a cleaner extension point is preferred, introduce a `kadence_starter_api_license_validated` filter and refactor existing branches to use it (larger change, easier to maintain).
+**Optional cleanup:** the two relay classes (Server A's `License_Relay` and Server B's `Kadence_Starter_License_Relay`) are now logically identical apart from constants. Worth extracting into a shared Composer package (e.g., `stellarwp/kadence-license-relay`) so the LWSW dispatch lives in one place. That's a larger refactor — fine to ship the duplicated change first and consolidate later.
 
 ---
 
 ## Open questions
 
-1. **Legacy portal API URL.** What's the base URL of the new portal's legacy licensing API (the SureCart replacement)? Needed for Change 1 in Server A and the equivalent change inside `Kadence_Starter_License_Relay` for Server B.
-2. **Legacy portal API shape.** Is the new portal wire-compatible with SureCart's existing routes (`GET /v1/public/licenses/{key}` returning `{ id, status, product }` and `POST /v1/public/activations` consuming `{ license, fingerprint, name }`), or does it require a route/payload adapter? Determines whether the migration is a filter-only change or a client fork.
-3. **Legacy portal auth model.** Still bearer-token via the same `public_token` semantics, or different credential format? If different, the `sc_license_public_token` storage and the `kadence_pattern_hub_get_public_token()` bootstrap path (`kadence-cloud-surecart-license.php:276-302`) need updating.
-4. **`product` field for legacy keys.** Does the legacy API on the new portal return the same product-id namespace as SureCart did? The validator gates on configured `sc_license_products` (`kadence-cloud-surecart-license.php:246-256`); if IDs have changed, the per-store configuration on the patterns server has to be rewritten alongside the URL swap.
-5. **Unified API auth.** The catalog endpoint is called with `optionalToken()` in the SDK (`ProductsResource.php:90`), suggesting auth is not required. Is that actually the case in production at `licensing.nexcess.com/api/liquidweb/v1/products`, or does the pattern server need to be provisioned with a service token / Bearer credential to call it? If a token is needed, where does it come from and how is it rotated?
-6. **Product slug for unified (LWSW) keys.** The catalog response is a JSON array of entries each carrying a `product_slug` field. What's the canonical `product_slug` for "Kadence Blocks Pro" / the bundle that grants premium-pattern access? The handler needs the equivalent canonical slugs to gate on (parallel to legacy's `sc_license_products` list). The sketch hardcodes `kadence-blocks-pro` as a placeholder.
-7. **Per-site activation for unified keys.** The legacy path calls `is_active( $license_id, $fingerprint, $product_name )` (`kadence-cloud-surecart-license.php:259`) to enforce per-site activations. The unified catalog endpoint doesn't appear to consume a seat — it just looks up entitlements. Is per-domain activation enforced elsewhere in the unified licensing flow, or are unified entitlements seat-unlimited at the validation layer? If activation needs to happen, the handler may need a different endpoint (something like `/activations` rather than `/products`).
-8. **Cloud Pages and Page Wizard.** `stellarwp/kadence-cloud-pages` and `stellarwp/kadence-cloud-page-wizard` also register routes that may or may not run through the same filter. Confirm whether the Server A handlers (both legacy URL swap and unified sibling plugin) cover them automatically or if each repo needs its own registration.
-9. **Caching strategy.** Both API calls add latency to every pattern import. The server side should cache validated `key → entitlement` results for ~5–15 min via transient (sketch keys on `sha1($key . '|' . $domain)`). What's the cache-invalidation expectation when an entitlement is revoked mid-window (e.g., subscription cancelled)? An acceptable lag, or do we need an invalidation webhook from the portal?
-10. **Throttling on the portal.** What's the rate limit / acceptable QPS the pattern server can hit each of the two portal APIs with? Pattern imports are user-driven so traffic is bursty; if either API has aggressive limits, the cache TTL needs to be tuned accordingly.
+1. **Unified API auth.** The catalog endpoint is called with `optionalToken()` in the SDK (`ProductsResource.php:90`), suggesting auth is not required. Is that actually the case in production at `licensing.nexcess.com/api/liquidweb/v1/products`, or do the pattern + starter API servers need to be provisioned with a service token / Bearer credential to call it? If a token is needed, where does it come from and how is it rotated?
+2. **Product slug for unified (LWSW) keys.** The catalog response is a JSON array of entries each carrying a `product_slug` field. What's the canonical `product_slug` for "Kadence Blocks Pro" / the bundle that grants premium-pattern access? The handler needs the equivalent canonical slugs to gate on. The sketch hardcodes `kadence-blocks-pro` as a placeholder; mapping table may need to grow if other plugin slugs are passed in (`kadence-creative-kit`, etc.).
+3. **Per-site activation for unified keys.** The catalog endpoint just looks up entitlements — it doesn't appear to consume a seat. Is per-domain activation enforced elsewhere in the unified licensing flow, or are unified entitlements seat-unlimited at the validation layer? If activation needs to happen, the handler may need a separate call (something like `/activations`) before granting access.
+4. **Response-shape compatibility.** The sketch wraps the LWSW response in an object that mimics the legacy `results[0]->api_invalid` shape so `SVG_API_Endpoint.php:147-156` keeps working. Are there other consumers of `License_Relay->validate_license()` outside the SVG endpoint that inspect different fields of the response (e.g., expiration date, product list)? If so, those fields need to be populated from the catalog response too.
+5. **`kadence_cloud_rest_request_access` gate.** `stellarwp/kadence-cloud` exposes this filter, and `stellarwp/kadence-cloud-surecart-license` is hooked on it. Does that filter actually fire on pattern-content requests today, or has it been short-circuited / no-op'd on the patterns server in favor of the `License_Relay` path in `kadence-blocks-plugin-endpoints`? If the SureCart hook still gates premium content for some routes, the same LWSW-prefix dispatch needs to be added to that plugin too. Worth a live trace of one Pricing Table 11 request to confirm.
+6. **Cloud Pages and Page Wizard.** `stellarwp/kadence-cloud-pages` and `stellarwp/kadence-cloud-page-wizard` also register routes. Confirm they go through `License_Relay` (so they're covered by the single change above) rather than maintaining their own validators.
+7. **Caching strategy.** The catalog call adds latency to every pattern import. The transient cache sketched above (`sha1($key . '|' . $domain)`, 5–15 min TTL) helps but raises a question: what's the cache-invalidation expectation when an entitlement is revoked mid-window (e.g., subscription cancelled)? An acceptable lag, or do we need an invalidation webhook from the portal?
+8. **Throttling on the portal.** What's the rate limit / acceptable QPS the pattern server can hit `licensing.nexcess.com` with? Pattern imports are user-driven so traffic is bursty; if the API has aggressive limits, the cache TTL needs to be tuned accordingly.
+9. **Shared library vs. duplicated change.** Server A and Server B both maintain a `License_Relay` class with identical wire format. Extract to a shared Composer package now, or ship the duplicated LWSW change first and consolidate later? Lower-risk path is ship-then-consolidate.
 
 ---
 
@@ -276,13 +262,11 @@ Smaller surface than Server A, but invasive — modifies an existing file rather
 
 1. **Plugin-side fix lands first**, behind no flag — for SureCart customers it's a no-op (the legacy keys still resolve first), so there's no regression risk.
 2. **Before the server-side change ships**, the plugin fix alone will *not* unblock unified customers (the server still rejects unified keys). It also won't make things worse — they're already broken.
-3. **Suggested rollout order on the server side** — two changes interact, so sequencing matters:
-   1. Repoint the legacy validator at the new portal (Change 1). Ship this independently and verify legacy customers still import correctly. This is the higher-risk step because every legacy customer is affected on day one; ideally gate the URL behind a per-store override or a feature flag while verifying.
-   2. Add the Harbor sibling plugin (Change 2). Lower risk — it only takes effect for LWSW-prefixed keys, so legacy customers can't be regressed by it. Unified customers stay broken (same as today) until this lands.
-4. **After both server-side changes**, verify:
+3. **Server-side rollout is a single change per repo** — the LWSW branch in `License_Relay` only fires for `LWSW-`-prefixed keys, so legacy customers can't be regressed by it. The change is intrinsically low-risk on the legacy side and adds new capability on the unified side.
+4. **After server-side changes ship**, verify:
    - Premium pattern import works for a unified-license test site (Pricing Table 11 is a good canary because it's the user-reported case).
    - Premium page import works (Pattern Library → Pages tab).
    - Full-site starter template import works (Server B path, both legacy and unified key holders).
-   - Legacy customers still import successfully via the new portal URL (regression check).
-   - Unlicensed sites still see a clear error (failure-mode check).
-5. **Logging.** During rollout, log on the server side which validator authorized each request (`harbor` for LWSW-prefixed, `legacy-portal`, `local_access_keys`). Log API errors at WARN so transient portal outages are visible without being treated as customer-side license failures.
+   - Legacy customers still import successfully (regression check — should be a no-op since their codepath is untouched).
+   - Unlicensed sites and invalid LWSW keys still produce a clear error (failure-mode check).
+5. **Logging.** Inside the LWSW branch of `License_Relay`, log which path validated each request (`lwsw` vs. `legacy-uplink`). Log unified-API errors at WARN so transient licensing-service outages are visible without being misattributed as customer-side license failures.
