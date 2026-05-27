@@ -184,6 +184,12 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * Constructor.
 	 */
 	public function __construct() {
+		$patterns_base              = $this->get_patterns_base_url();
+		$starter_base               = $this->get_starter_base_url();
+		$this->remote_url           = $patterns_base . '/wp-json/kadence-cloud/v1/get/';
+		$this->remote_pages_url     = $patterns_base . '/wp-json/kadence-cloud/v1/pages/';
+		$this->remote_templates_url = $starter_base . '/wp-json/kadence-starter/v1/get/';
+
 		if ( is_admin() ) {
 			// Ajax Calls.
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_data', [ $this, 'prebuilt_data_ajax_callback' ] );
@@ -203,6 +209,32 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->schedule_cleanup();
 		add_filter( 'cron_schedules', [ $this, 'add_monthly_to_cron_schedule' ], 10, 1 );
 		add_action( 'delete_block_library_folder', [ $this, 'delete_block_library_folder' ] );
+	}
+
+	/**
+	 * Resolve the patterns-cloud base URL with overrides.
+	 *
+	 * Order: KADENCE_BLOCKS_PATTERNS_BASE_URL constant, then the
+	 * kadence_blocks_patterns_base_url filter, then production default.
+	 */
+	protected function get_patterns_base_url(): string {
+		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
+			? KADENCE_BLOCKS_PATTERNS_BASE_URL
+			: 'https://patterns.startertemplatecloud.com';
+		return rtrim( (string) apply_filters( 'kadence_blocks_patterns_base_url', $url ), '/' );
+	}
+
+	/**
+	 * Resolve the starter-templates base URL with overrides.
+	 *
+	 * Order: KADENCE_BLOCKS_STARTER_BASE_URL constant, then the
+	 * kadence_blocks_starter_base_url filter, then production default.
+	 */
+	protected function get_starter_base_url(): string {
+		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
+			? KADENCE_BLOCKS_STARTER_BASE_URL
+			: 'https://api.startertemplatecloud.com';
+		return rtrim( (string) apply_filters( 'kadence_blocks_starter_base_url', $url ), '/' );
 	}
 	/**
 	 * Get the section data if available locally.
@@ -1151,7 +1183,7 @@ class Kadence_Blocks_Prebuilt_Library {
 				'key'     => $this->key,
 			];
 			// Get the response.
-			$api_url  = add_query_arg( $args, 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/' );
+			$api_url  = add_query_arg( $args, $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/single/' );
 			$response = wp_safe_remote_get(
 				$api_url,
 				[

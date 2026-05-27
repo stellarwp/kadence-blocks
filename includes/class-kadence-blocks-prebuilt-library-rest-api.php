@@ -338,12 +338,48 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Constructor.
 	 */
 	public function __construct() {
+		$patterns_base              = $this->get_patterns_base_url();
+		$starter_base               = $this->get_starter_base_url();
+		$this->remote_url           = $patterns_base . '/wp-json/kadence-cloud/v1/get/';
+		$this->remote_cat_url       = $patterns_base . '/wp-json/kadence-cloud/v1/categories/';
+		$this->remote_pages_url     = $patterns_base . '/wp-json/kadence-cloud/v1/pages/';
+		$this->remote_pages_cat_url = $patterns_base . '/wp-json/kadence-cloud/v1/pages-categories/';
+		$this->remote_templates_url = $starter_base . '/wp-json/kadence-starter/v1/get/';
+
 		$this->namespace           = 'kb-design-library/v1';
 		$this->rest_base           = 'get';
 		$this->reset               = 'reset';
 		$this->block_library_cache = kadence_blocks()->get( Block_Library_Cache::class );
 		$this->ai_cache            = kadence_blocks()->get( Ai_Cache::class );
 		$this->cache_primer        = kadence_blocks()->get( Cache_Primer::class );
+	}
+
+	/**
+	 * Resolve the patterns-cloud base URL with overrides.
+	 *
+	 * Order: KADENCE_BLOCKS_PATTERNS_BASE_URL constant, then the
+	 * kadence_blocks_patterns_base_url filter, then production default.
+	 * Lets a local-dev docker stack point the editor at a containerized
+	 * patterns site without code changes.
+	 */
+	protected function get_patterns_base_url(): string {
+		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
+			? KADENCE_BLOCKS_PATTERNS_BASE_URL
+			: 'https://patterns.startertemplatecloud.com';
+		return rtrim( (string) apply_filters( 'kadence_blocks_patterns_base_url', $url ), '/' );
+	}
+
+	/**
+	 * Resolve the starter-templates base URL with overrides.
+	 *
+	 * Order: KADENCE_BLOCKS_STARTER_BASE_URL constant, then the
+	 * kadence_blocks_starter_base_url filter, then production default.
+	 */
+	protected function get_starter_base_url(): string {
+		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
+			? KADENCE_BLOCKS_STARTER_BASE_URL
+			: 'https://api.startertemplatecloud.com';
+		return rtrim( (string) apply_filters( 'kadence_blocks_starter_base_url', $url ), '/' );
 	}
 
 	/**
@@ -1355,7 +1391,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
 			}
 		} else {
-			$library_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/';
+			$library_url = $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/single/';
 		}
 
 		if ( ! empty( $library ) ) {
