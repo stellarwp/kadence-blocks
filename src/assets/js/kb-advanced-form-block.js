@@ -1,10 +1,52 @@
-/* global kadence_blocks_advanced_form_params */
+/* global kadence_blocks_advanced_form_params, turnstile, hcaptcha */
 (function () {
 	'use strict';
 	window.kadenceAdvancedForm = {
 		error_item: 1,
 		clearForm(form) {
 			form.reset();
+		},
+		/**
+		 * Regenerates captcha tokens after form submission.
+		 *
+		 * This function handles token regeneration for different captcha providers:
+		 * - Google reCAPTCHA v3: Executes grecaptcha to generate a new token and updates the hidden input
+		 * - Cloudflare Turnstile: Resets the widget to get a new token
+		 * - hCaptcha: Resets the widget to get a new token
+		 *
+		 * This is necessary because captcha tokens are single-use and must be regenerated
+		 * after each form submission to allow users to submit the form multiple times.
+		 *
+		 * @param {HTMLFormElement} form - The form element containing the captcha field
+		 * @returns {void}
+		 *
+		 * @since 3.2.52
+		 */
+		regenerateCaptchaTokens(form) {
+			// Regenerate Google reCAPTCHA v3 token
+			const recaptchaV3Input = form.querySelector('.kb_recaptcha_response');
+			if (recaptchaV3Input && typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {
+				const siteKey = recaptchaV3Input.dataset.sitekey;
+				if (siteKey) {
+					grecaptcha.ready(function () {
+						grecaptcha.execute(siteKey, { action: 'kb_form' }).then(function (token) {
+							recaptchaV3Input.setAttribute('value', token);
+						});
+					});
+				}
+			}
+
+			// Reset Turnstile widget
+			const turnstileWidget = form.querySelector('.cf-turnstile');
+			if (turnstileWidget && typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+				turnstile.reset(turnstileWidget);
+			}
+
+			// Reset hCaptcha widget
+			const hCaptchaWidget = form.querySelector('.h-captcha');
+			if (hCaptchaWidget && typeof hcaptcha !== 'undefined' && typeof hcaptcha.reset === 'function') {
+				hcaptcha.reset();
+			}
 		},
 		ensureLiveRegion(form) {
 			let liveRegion = form.querySelector('.kb-form-live-region');
@@ -477,7 +519,7 @@
 
 				fetch(kb_adv_form_params.ajaxurl, fetchOptions)
 					.then((response) => {
-						if (form.querySelector('.g-recaptcha')) {
+						if (form.querySelector('.g-recaptcha') && typeof grecaptcha !== 'undefined') {
 							grecaptcha.reset();
 						}
 						submitButton.removeAttribute('disabled');
@@ -517,6 +559,10 @@
 								window.kadenceAdvancedForm.announceMessage(form, successText, 'polite');
 
 								window.kadenceAdvancedForm.clearForm(form);
+
+								// Regenerate captcha tokens after form reset
+								window.kadenceAdvancedForm.regenerateCaptchaTokens(form);
+
 								if (response?.hide) {
 									// Focus on the announcement message
 									const announcementMessage = form.parentNode.querySelector('.kb-adv-form-message');
