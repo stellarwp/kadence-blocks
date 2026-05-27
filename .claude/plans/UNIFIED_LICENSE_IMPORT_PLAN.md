@@ -18,7 +18,7 @@ Not affected (so we don't over-scope): premium blocks themselves, bundled Custom
 
 ---
 
-## The fix — three changes
+## The fix — four changes
 
 ### 1. Plugin: pass the LWSW key
 
@@ -43,22 +43,28 @@ function kadence_blocks_get_current_license_key() {
 
 Safe to land independently — for legacy customers the legacy key still resolves first.
 
-### 2. Server A: `stellarwp/kadence-blocks-plugin-endpoints`
+### 2. `stellarwp/kadence-cloud-kadencewp-license` *(gates premium pattern imports — the Pricing Table 11 path)*
 
-Owns `License_Relay` (`inc/KadenceBlocksPluginEndpoints/API/License_Relay.php:96`) — this is the validator behind the user-reported error (`SVG_API_Endpoint.php:140-143` returns the exact text `"Invalid or expired license key."`).
+Hooks `kadence_cloud_rest_request_access` for `/kadence-cloud/v1/single` (`inc/KadenceCloudKWPLicense/API/API_License_Validation.php:30-64`) and uses its own `License_Relay` (`inc/KadenceCloudKWPLicense/API/License_Relay.php`) to validate the `api_key`.
 
-Add `stellarwp/licensing-api-client-wordpress` as a Composer dependency. In `validate_license()`, branch on key prefix:
+Add `stellarwp/licensing-api-client-wordpress` as a Composer dependency. In `License_Relay::validate_license()`, branch on key prefix:
 
-- `LWSW-…` → proxy to the LiquidWeb licensing API via the SDK. Use `WordPressApiFactory::make( $config )->products()->catalog( $key, $domain )`. Map the returned `Catalog` to the existing `results[0]->api_invalid` response shape so `SVG_API_Endpoint.php:147-156` and other callers keep working unchanged.
+- `LWSW-…` → proxy to the LiquidWeb licensing API via the SDK. Use `WordPressApiFactory::make( $config )->products()->catalog( $key, $domain )`. Map the returned `Catalog` into the existing `results[0]->api_invalid` response shape so the caller at `API_License_Validation.php:55` keeps working unchanged.
 - Anything else → existing signed-Uplink path to `https://licensing.kadencewp.com/api/stellarwp/v3/license/validate`, untouched.
 
 Cache successful validations and 404s in a transient keyed on `sha1( $key . '|' . $domain )` (5–15 min TTL). Don't cache transient failures.
 
-### 3. Server B: `stellarwp/kadence-starter-api`
+### 3. `stellarwp/kadence-blocks-plugin-endpoints` *(gates SVG endpoint + any other relay consumers)*
 
-Owns its own `Kadence_Starter_License_Relay` with the same wire format as Server A. Make the identical change inside its `validate_license()`. Caller at `kadence-starter-api-rest-controller.php:221` stays unchanged.
+Owns its own copy of `License_Relay` (`inc/KadenceBlocksPluginEndpoints/API/License_Relay.php:96`). The exact text `"Invalid or expired license key."` from the bug report originates here (`SVG_API_Endpoint.php:140-143`).
 
-Both relay classes are now logically identical apart from constants — optional follow-up to extract into a shared Composer package; not required to ship.
+Same change as #2: identical LWSW branch in `validate_license()`, same SDK dependency, same response-shape mapping.
+
+### 4. `stellarwp/kadence-starter-api` *(gates full-site starter template imports)*
+
+Owns `Kadence_Starter_License_Relay` with the same wire format. Same change as #2 and #3 — identical LWSW branch in `validate_license()`. Caller at `kadence-starter-api-rest-controller.php:221` stays unchanged.
+
+**Three identical relay copies.** Worth extracting into a shared Composer package (e.g., `stellarwp/kadence-license-relay`) so the LWSW dispatch lives in one place. Optional for the initial fix; recommended as the immediate follow-up.
 
 ---
 
