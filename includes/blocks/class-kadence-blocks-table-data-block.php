@@ -113,7 +113,7 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes Block attributes.
 	 * @param array $context    Block context.
 	 *
-	 * @since TBD
+	 * @since 3.7.3
 	 *
 	 * @return string|false 'col', 'row', or false when the cell is not a header.
 	 */
