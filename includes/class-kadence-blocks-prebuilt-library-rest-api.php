@@ -336,6 +336,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 	/**
 	 * Constructor.
+	 *
+	 * @since TBD add dynamic base URLs for patterns and starter templates
 	 */
 	public function __construct() {
 		$patterns_base              = $this->get_patterns_base_url();
@@ -360,6 +362,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * KADENCE_BLOCKS_PATTERNS_BASE_URL constant, otherwise production
 	 * default. Lets a local-dev docker stack point the editor at a
 	 * containerized patterns site without code changes.
+	 *
+	 * @since TBD
 	 */
 	protected function get_patterns_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
@@ -372,6 +376,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Resolve the starter-templates base URL with override.
 	 *
 	 * KADENCE_BLOCKS_STARTER_BASE_URL constant, otherwise production default.
+	 *
+	 * @since TBD
 	 */
 	protected function get_starter_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
@@ -966,7 +972,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			[
 				'post_type' => $cpt_data['post_type'],
 				'title'     => $title,
-			] 
+			]
 		);
 		if ( $post_exists ) {
 			return $post_exists[0]->ID;
@@ -1075,7 +1081,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$content = str_replace( 'logo-placeholder-8.png', 'logo-placeholder-8-white.png', $content );
 		$content = str_replace( 'logo-placeholder-9.png', 'logo-placeholder-9-white.png', $content );
 		$content = str_replace( 'logo-placeholder-10.png', 'logo-placeholder-10-white.png', $content );
-		
+
 		if ( $style === 'highlight' ) {
 			$form_content = $this->get_string_inbetween( $content, '"submit":[{', ']}', 'wp:kadence/form' );
 			if ( $form_content ) {
@@ -1798,7 +1804,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context_name'    => $context,
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			// Check if we have a remote file.
@@ -1818,7 +1824,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 						'context_name'    => $context,
 						'is_regeneration' => true,
 						'errors'          => $response->get_error_messages(),
-					] 
+					]
 				);
 
 				return rest_ensure_response( 'error' );
@@ -1859,7 +1865,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'context_name'    => $context,
 					'credits_after'   => $this->get_remote_remaining_credits(),
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			return rest_ensure_response( $body );
@@ -1985,7 +1991,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context' => $contexts_available,
 					'error'   => true,
-				] 
+				]
 			);
 		} else {
 			return rest_ensure_response( 'failed' );
