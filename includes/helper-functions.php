@@ -188,6 +188,8 @@ function kadence_blocks_get_current_license_key() {
  * "invalid license" errors downstream.
  *
  * Returns an empty string if no slot is currently authorized.
+ *
+ * @since TBD
  */
 function kadence_blocks_get_authorized_license_key(): string {
 	$candidates = [];
