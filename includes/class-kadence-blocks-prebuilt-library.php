@@ -212,29 +212,27 @@ class Kadence_Blocks_Prebuilt_Library {
 	}
 
 	/**
-	 * Resolve the patterns-cloud base URL with overrides.
+	 * Resolve the patterns-cloud base URL with override.
 	 *
-	 * Order: KADENCE_BLOCKS_PATTERNS_BASE_URL constant, then the
-	 * kadence_blocks_patterns_base_url filter, then production default.
+	 * KADENCE_BLOCKS_PATTERNS_BASE_URL constant, otherwise production default.
 	 */
 	protected function get_patterns_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
 			? KADENCE_BLOCKS_PATTERNS_BASE_URL
 			: 'https://patterns.startertemplatecloud.com';
-		return rtrim( (string) apply_filters( 'kadence_blocks_patterns_base_url', $url ), '/' );
+		return rtrim( (string) $url, '/' );
 	}
 
 	/**
-	 * Resolve the starter-templates base URL with overrides.
+	 * Resolve the starter-templates base URL with override.
 	 *
-	 * Order: KADENCE_BLOCKS_STARTER_BASE_URL constant, then the
-	 * kadence_blocks_starter_base_url filter, then production default.
+	 * KADENCE_BLOCKS_STARTER_BASE_URL constant, otherwise production default.
 	 */
 	protected function get_starter_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
 			? KADENCE_BLOCKS_STARTER_BASE_URL
 			: 'https://api.startertemplatecloud.com';
-		return rtrim( (string) apply_filters( 'kadence_blocks_starter_base_url', $url ), '/' );
+		return rtrim( (string) $url, '/' );
 	}
 	/**
 	 * Get the section data if available locally.
