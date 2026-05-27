@@ -163,7 +163,17 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $creative_kit_key ) ) {
 		return $creative_kit_key;
 	}
-	return get_license_key( 'kadence-blocks' );
+	$legacy_key = get_license_key( 'kadence-blocks' );
+	if ( ! empty( $legacy_key ) ) {
+		return $legacy_key;
+	}
+	if ( function_exists( 'lw_harbor_get_unified_license_key' ) ) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+	return '';
 }
 
 /**
