@@ -13,6 +13,7 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
+use KadenceWP\KadenceBlocks\Traits\API_Url_Trait;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
@@ -27,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller {
 
+	use API_Url_Trait;
 	use Image_Trait;
 
 	/**
@@ -192,7 +194,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/get/';
+	protected $remote_url;
 
 	/**
 	 * The remote URL.
@@ -200,7 +202,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/categories/';
+	protected $remote_cat_url;
 
 	/**
 	 * The remote URL.
@@ -208,7 +210,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages/';
+	protected $remote_pages_url;
 
 	/**
 	 * The remote URL.
@@ -216,7 +218,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages-categories/';
+	protected $remote_pages_cat_url;
 
 	/**
 	 * The remote URL.
@@ -224,7 +226,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
+	protected $remote_templates_url;
 
 	/**
 	 * The library folder.
@@ -340,13 +342,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since TBD add dynamic base URLs for patterns and starter templates
 	 */
 	public function __construct() {
-		$patterns_base              = $this->get_patterns_base_url();
-		$starter_base               = $this->get_starter_base_url();
-		$this->remote_url           = $patterns_base . '/wp-json/kadence-cloud/v1/get/';
-		$this->remote_cat_url       = $patterns_base . '/wp-json/kadence-cloud/v1/categories/';
-		$this->remote_pages_url     = $patterns_base . '/wp-json/kadence-cloud/v1/pages/';
-		$this->remote_pages_cat_url = $patterns_base . '/wp-json/kadence-cloud/v1/pages-categories/';
-		$this->remote_templates_url = $starter_base . '/wp-json/kadence-starter/v1/get/';
+		$this->remote_url           = $this->get_patterns_get_url();
+		$this->remote_cat_url       = $this->get_patterns_categories_url();
+		$this->remote_pages_url     = $this->get_patterns_pages_url();
+		$this->remote_pages_cat_url = $this->get_patterns_pages_categories_url();
+		$this->remote_templates_url = $this->get_starter_get_url();
 
 		$this->namespace           = 'kb-design-library/v1';
 		$this->rest_base           = 'get';
@@ -354,36 +354,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$this->block_library_cache = kadence_blocks()->get( Block_Library_Cache::class );
 		$this->ai_cache            = kadence_blocks()->get( Ai_Cache::class );
 		$this->cache_primer        = kadence_blocks()->get( Cache_Primer::class );
-	}
-
-	/**
-	 * Resolve the patterns-cloud base URL with override.
-	 *
-	 * KADENCE_BLOCKS_PATTERNS_BASE_URL constant, otherwise production
-	 * default. Lets a local-dev docker stack point the editor at a
-	 * containerized patterns site without code changes.
-	 *
-	 * @since TBD
-	 */
-	protected function get_patterns_base_url(): string {
-		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
-			? KADENCE_BLOCKS_PATTERNS_BASE_URL
-			: 'https://patterns.startertemplatecloud.com';
-		return rtrim( (string) $url, '/' );
-	}
-
-	/**
-	 * Resolve the starter-templates base URL with override.
-	 *
-	 * KADENCE_BLOCKS_STARTER_BASE_URL constant, otherwise production default.
-	 *
-	 * @since TBD
-	 */
-	protected function get_starter_base_url(): string {
-		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
-			? KADENCE_BLOCKS_STARTER_BASE_URL
-			: 'https://api.startertemplatecloud.com';
-		return rtrim( (string) $url, '/' );
 	}
 
 	/**
@@ -1395,7 +1365,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
 			}
 		} else {
-			$library_url = $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/single/';
+			$library_url = $this->get_patterns_single_url();
 		}
 
 		if ( ! empty( $library ) ) {
