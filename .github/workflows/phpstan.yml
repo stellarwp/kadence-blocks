@@ -1,0 +1,59 @@
+name: Run PHPStan on pull requests
+on: pull_request
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    env:
+        COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0 # fetch all history.
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+          tools: composer
+
+      - name: Configure Composer Auth
+        run: composer config --global github-oauth.github.com ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Cache Dependencies
+        id: deps-cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            vendor
+            vendor/vendor-prefixed
+          key: v1-deps-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            v1-deps-${{ runner.os }}-${{ github.ref_name }}-
+            v1-deps-${{ runner.os }}-
+
+      - name: Composer Install
+        if: steps.deps-cache.outputs.cache-hit != 'true'
+        run: composer install --no-progress --no-interaction --ignore-platform-reqs
+
+      - name: Restore PHPStan cache
+        uses: actions/cache/restore@v5
+        with:
+          path: phpstan-cache
+          key: v1-phpstan-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            v1-phpstan-${{ runner.os }}-${{ github.ref_name }}-
+            v1-phpstan-${{ runner.os }}-
+            v1-phpstan-
+
+      - name: Run PHPStan
+        run: composer phpstan
+
+      - name: Save PHPStan cache
+        uses: actions/cache/save@v5
+        if: ${{ !cancelled() }}
+        with:
+          path: phpstan-cache
+          key: v1-phpstan-${{ runner.os }}-${{ github.ref_name }}-${{ github.run_id }}

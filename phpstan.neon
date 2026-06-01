@@ -1,0 +1,27 @@
+includes:
+	- phpstan-baseline.neon
+parameters:
+	phpVersion: 70400
+	tmpDir: phpstan-cache
+	parallel:
+		jobSize: 10
+		maximumNumberOfProcesses: 10
+		minimumNumberOfJobsPerProcess: 2
+		processTimeout: 600.0
+	reportUnmatchedIgnoredErrors: false
+	level: max
+	scanDirectories:
+		- vendor
+	paths:
+		- includes
+		- kadence-blocks.php
+		- uninstall.php
+	excludePaths:
+		analyse:
+			- includes/assets/*
+			# Generated data files (large literal arrays of icons/fonts) -- nothing to analyse, and they choke PHPStan at level max.
+			- includes/*-array.php
+	scanFiles:
+		- .phpstan/phpstan-wp-polyfills.php
+	bootstrapFiles:
+		- .phpstan/phpstan-stubs.php
