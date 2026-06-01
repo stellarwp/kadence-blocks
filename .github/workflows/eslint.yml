@@ -27,27 +27,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
-      # ESLint and Prettier must be in `package.json`
-      - name: Remove npm lockfile to prevent bun git-clone issues
-        run: rm -f package-lock.json
-
+      # ESLint and Prettier must be in `package.json`.
+      # `bun install` runs the root postinstall, which builds the @kadence/* source
+      # packages so ESLint can resolve their imports (bun blocks their own prepare
+      # scripts; npm does not).
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
-
-      - name: Build Kadence workspace packages (for ESLint import resolution)
-        run: |
-          for pkg in helpers icons components; do
-            dir="node_modules/@kadence/${pkg}"
-            if [ -f "$dir/package.json" ]; then
-              (cd "$dir" && npm install --omit=prod && npm run build)
-            fi
-          done
 
       - name: Run linters
         uses: wearerequired/lint-action@v2

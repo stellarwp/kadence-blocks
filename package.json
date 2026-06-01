@@ -4,6 +4,8 @@
 	"private": true,
 	"scripts": {
 		"packages-update": "wp-scripts packages-update",
+		"build:packages": "for pkg in helpers icons components; do dir=\"node_modules/@kadence/$pkg\"; if [ -f \"$dir/package.json\" ] && [ ! -f \"$dir/dist/cjs/index.js\" ]; then (cd \"$dir\" && npm install --omit=prod && npm run build); fi; done",
+		"postinstall": "bun run build:packages",
 		"start-wp": "wp-scripts start",
 		"start-gulp": "gulp watch",
 		"start": "concurrently --kill-others \"npm run start-wp\" \"npm run start-gulp\"",

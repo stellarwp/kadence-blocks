@@ -14,6 +14,4 @@ bin/wp-cli.phar
 .pup-zip
 /tests/codeception.env
 /.env
-# Remove this when fully transitioning to bun.
-/bun.lock*
 /.kadence-packages-root
