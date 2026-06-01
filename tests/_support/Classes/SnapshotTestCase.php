@@ -43,7 +43,7 @@ class SnapshotTestCase extends WPTestCase {
 	 *
 	 * @return void
 	 */
-	protected function assertMatchesJsonSnapshot( $data ): void {
+	public function assertMatchesJsonSnapshot( $data ): void {
 		if ( is_string( $data ) ) {
 			$this->spatieAssertMatchesJsonSnapshot( $data );
 
