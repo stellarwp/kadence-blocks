@@ -163,7 +163,72 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $creative_kit_key ) ) {
 		return $creative_kit_key;
 	}
-	return get_license_key( 'kadence-blocks' );
+	$legacy_key = get_license_key( 'kadence-blocks' );
+	if ( ! empty( $legacy_key ) ) {
+		return $legacy_key;
+	}
+	if ( function_exists( 'lw_harbor_get_unified_license_key' ) ) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+	return '';
+}
+
+/**
+ * Get a license key that is currently authorized for Kadence access.
+ *
+ * Unlike {@see kadence_blocks_get_current_license_key()} which returns whatever
+ * is stored, this filters to a key that has actually been validated and is
+ * known to grant access. Use this when shipping the key to a remote server
+ * (editor assets, pattern-library REST controller, AI prophecy token), so
+ * stale/superseded legacy keys don't take precedence over an active unified
+ * key, and unified keys without the 'kadence' entitlement don't surface as
+ * "invalid license" errors downstream.
+ *
+ * Returns an empty string if no slot is currently authorized.
+ *
+ * @since 3.7.5
+ */
+function kadence_blocks_get_authorized_license_key(): string {
+	$candidates = [];
+	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+		$key = get_license_key( 'kadence-blocks-pro' );
+		if ( ! empty( $key ) ) {
+			$candidates[] = [ 'key' => $key, 'slug' => 'kadence-blocks-pro' ];
+		}
+	}
+	if ( class_exists( 'KadenceWP\\CreativeKit\\Core' ) ) {
+		$key = get_license_key( 'kadence-creative-kit' );
+		if ( ! empty( $key ) ) {
+			$candidates[] = [ 'key' => $key, 'slug' => 'kadence-creative-kit' ];
+		}
+	}
+	$blocks_key = get_license_key( 'kadence-blocks' );
+	if ( ! empty( $blocks_key ) ) {
+		$candidates[] = [ 'key' => $blocks_key, 'slug' => 'kadence-blocks' ];
+	}
+
+	foreach ( $candidates as $candidate ) {
+		$token = get_authorization_token( $candidate['slug'] );
+		if ( is_authorized( $candidate['key'], $candidate['slug'], $token ?? '', get_license_domain() ) ) {
+			return $candidate['key'];
+		}
+	}
+
+	if (
+		function_exists( 'lw_harbor_get_unified_license_key' )
+		&& function_exists( 'lw_harbor_is_product_license_active' )
+		&& lw_harbor_is_product_license_active( 'kadence' )
+	) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+
+	return '';
 }
 
 /**
@@ -226,7 +291,7 @@ function kadence_blocks_get_current_license_data(): array {
 	}
 
 	$license_data = [
-		'key'     => kadence_blocks_get_current_license_key(),
+		'key'     => kadence_blocks_get_authorized_license_key(),
 		'email'   => kadence_blocks_get_current_license_email(),
 		'product' => kadence_blocks_get_current_product_slug(),
 		'env'     => kadence_blocks_get_current_env(),
