@@ -10,8 +10,13 @@ parameters:
 		processTimeout: 600.0
 	reportUnmatchedIgnoredErrors: false
 	level: max
+	# Scan only the strauss-prefixed packages so PHPStan can resolve them.
+	# Do NOT scan all of vendor: that double-scans php-stubs/wordpress-stubs
+	# (also loaded by szepeviktor/phpstan-wordpress) and the winning signature
+	# becomes filesystem-iteration-order dependent, producing different results
+	# locally vs CI.
 	scanDirectories:
-		- vendor
+		- vendor/vendor-prefixed
 	paths:
 		- includes
 		- kadence-blocks.php

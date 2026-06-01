@@ -2441,6 +2441,11 @@ parameters:
 			path: includes/blocks/class-kadence-blocks-googlemaps-block.php
 
 		-
+			message: "#^Method Kadence_Blocks_Googlemaps_Block\\:\\:sanitize_custom_snazzy_styles\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: includes/blocks/class-kadence-blocks-googlemaps-block.php
+
+		-
 			message: "#^Parameter \\#2 \\$css \\(Kadence_Blocks_CSS\\) of method Kadence_Blocks_Googlemaps_Block\\:\\:build_css\\(\\) should be compatible with parameter \\$css \\(string\\) of method Kadence_Blocks_Abstract_Block\\:\\:build_css\\(\\)$#"
 			count: 1
 			path: includes/blocks/class-kadence-blocks-googlemaps-block.php
@@ -7391,6 +7396,11 @@ parameters:
 			path: includes/class-kadence-blocks-ai-events.php
 
 		-
+			message: "#^Parameter \\#2 \\$args of function wp_remote_post expects array\\{method\\?\\: string, timeout\\?\\: float, redirection\\?\\: int, httpversion\\?\\: string, user\\-agent\\?\\: string, reject_unsafe_urls\\?\\: bool, blocking\\?\\: bool, headers\\?\\: array\\|string, \\.\\.\\.\\}, array\\{timeout\\: 20, blocking\\: false, headers\\: array\\{X\\-Prophecy\\-Token\\: string, Content\\-Type\\: 'application/json'\\}, body\\: non\\-empty\\-string\\|false\\} given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-ai-events.php
+
+		-
 			message: "#^Parameter \\#2 \\$id_or_name of method Kadence_Blocks_AI_Events\\:\\:build_collection_updated_event_data\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-ai-events.php
@@ -7602,6 +7612,16 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-cpt-import-export.php
+
+		-
+			message: "#^Parameter \\#1 \\$postarr of function wp_update_post expects array\\{ID\\?\\: int, post_author\\?\\: int, post_date\\?\\: string, post_date_gmt\\?\\: string, post_content\\?\\: string, post_content_filtered\\?\\: string, post_title\\?\\: string, post_excerpt\\?\\: string, \\.\\.\\.\\}, array\\{ID\\: int\\<1, max\\>, post_content\\: array\\|string\\} given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-cpt-import-export.php
+
+		-
+			message: "#^Parameter \\#1 \\$postarr of function wp_update_post expects array\\{ID\\?\\: int, post_author\\?\\: int, post_date\\?\\: string, post_date_gmt\\?\\: string, post_content\\?\\: string, post_content_filtered\\?\\: string, post_title\\?\\: string, post_excerpt\\?\\: string, \\.\\.\\.\\}, array\\{ID\\: mixed, post_content\\: array\\|string\\} given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-cpt-import-export.php
 
@@ -8831,6 +8851,11 @@ parameters:
 			path: includes/class-kadence-blocks-duplicate-post.php
 
 		-
+			message: "#^Parameter \\#1 \\$post of function get_post expects int\\|WP_Post\\|null, int\\|string given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-duplicate-post.php
+
+		-
 			message: "#^Parameter \\#1 \\$post of method Kadence_Blocks_Duplicate_Post\\:\\:duplicate\\(\\) expects POST, WP_Post given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-duplicate-post.php
@@ -8842,6 +8867,16 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$post of method Kadence_Blocks_Duplicate_Post\\:\\:recursive_duplicate\\(\\) expects WP_Post, POST given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-duplicate-post.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int\\|string given\\.$#"
+			count: 1
+			path: includes/class-kadence-blocks-duplicate-post.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function wp_slash expects array\\|string, mixed given\\.$#"
 			count: 1
 			path: includes/class-kadence-blocks-duplicate-post.php
 
@@ -9343,6 +9378,11 @@ parameters:
 		-
 			message: "#^Method Kadence_Blocks_Image_Picker_REST_Controller\\:\\:sanitize_image_sizes_array\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
+			path: includes/class-kadence-blocks-image-picker-rest.php
+
+		-
+			message: "#^Parameter \\#1 \\$maybeint of function absint expects array\\|bool\\|float\\|int\\|resource\\|string\\|null, mixed given\\.$#"
+			count: 2
 			path: includes/class-kadence-blocks-image-picker-rest.php
 
 		-
@@ -10161,13 +10201,13 @@ parameters:
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, array\\<int, string\\>\\|string given\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
+			count: 3
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
-			count: 3
+			message: "#^Parameter \\#1 \\$maybeint of function absint expects array\\|bool\\|float\\|int\\|resource\\|string\\|null, mixed given\\.$#"
+			count: 2
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
@@ -10228,6 +10268,11 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$args of function wp_safe_remote_get expects array\\{method\\?\\: string, timeout\\?\\: float, redirection\\?\\: int, httpversion\\?\\: string, user\\-agent\\?\\: string, reject_unsafe_urls\\?\\: bool, blocking\\?\\: bool, headers\\?\\: array\\|string, \\.\\.\\.\\}, array\\{timeout\\: '60', sslverify\\: false\\} given\\.$#"
 			count: 1
+			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|false given\\.$#"
+			count: 2
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
@@ -10497,7 +10542,7 @@ parameters:
 
 		-
 			message: "#^Method Kadence_Blocks_Prebuilt_Library\\:\\:get_template_data\\(\\) should return string but returns string\\|false\\.$#"
-			count: 3
+			count: 4
 			path: includes/class-kadence-blocks-prebuilt-library.php
 
 		-
@@ -11416,7 +11461,7 @@ parameters:
 			path: includes/form-ajax.php
 
 		-
-			message: "#^Cannot access offset mixed on mixed\\.$#"
+			message: "#^Cannot access offset int\\<0, max\\> on mixed\\.$#"
 			count: 1
 			path: includes/form-ajax.php
 
@@ -12316,16 +12361,6 @@ parameters:
 			path: includes/resources/Image_Downloader/Cache_Primer.php
 
 		-
-			message: "#^Call to an undefined method Throwable\\:\\:getMessage\\(\\)\\.$#"
-			count: 1
-			path: includes/resources/Image_Downloader/Image_Downloader.php
-
-		-
-			message: "#^Call to an undefined method Throwable\\:\\:getTraceAsString\\(\\)\\.$#"
-			count: 1
-			path: includes/resources/Image_Downloader/Image_Downloader.php
-
-		-
 			message: "#^Method KadenceWP\\\\KadenceBlocks\\\\Image_Downloader\\\\Image_Downloader\\:\\:get_existing_images\\(\\) should return array\\<array\\{id\\: int, url\\: string\\}\\> but returns non\\-empty\\-array\\<int\\<0, max\\>, array\\{id\\: false, url\\: string\\|false\\}\\>\\.$#"
 			count: 1
 			path: includes/resources/Image_Downloader/Image_Downloader.php
@@ -12464,16 +12499,6 @@ parameters:
 			message: "#^PHPDoc tag @return with type mixed is not subtype of native type array\\.$#"
 			count: 1
 			path: includes/resources/Optimizer/Analysis_Registry.php
-
-		-
-			message: "#^Call to an undefined method Throwable\\:\\:getMessage\\(\\)\\.$#"
-			count: 1
-			path: includes/resources/Optimizer/Database/Optimizer_Table.php
-
-		-
-			message: "#^Call to an undefined method Throwable\\:\\:getMessage\\(\\)\\.$#"
-			count: 1
-			path: includes/resources/Optimizer/Database/Viewport_Hash_Table.php
 
 		-
 			message: "#^PHPDoc type array\\<string\\> of property KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Database\\\\Viewport_Hash_Table\\:\\:\\$uid_column is not covariant with PHPDoc type string of overridden property KadenceWP\\\\KadenceBlocks\\\\StellarWP\\\\Schema\\\\Tables\\\\Contracts\\\\Table\\:\\:\\$uid_column\\.$#"
@@ -12641,9 +12666,19 @@ parameters:
 			path: includes/resources/Optimizer/Post_List_Table/Renderers/Optimizer_Renderer.php
 
 		-
+			message: "#^Parameter \\#1 \\$value of function trailingslashit expects string, string\\|false given\\.$#"
+			count: 1
+			path: includes/resources/Optimizer/Post_List_Table/Renderers/Optimizer_Renderer.php
+
+		-
 			message: "#^is_wp_error\\(string\\) will always evaluate to false\\.$#"
 			count: 1
 			path: includes/resources/Optimizer/Post_List_Table/Renderers/Optimizer_Renderer.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function trailingslashit expects string, string\\|false given\\.$#"
+			count: 1
+			path: includes/resources/Optimizer/Post_List_Table/Row_Action.php
 
 		-
 			message: "#^Cannot cast mixed to string\\.$#"
@@ -12856,6 +12891,11 @@ parameters:
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
 
 		-
+			message: "#^Parameter \\#1 \\$value of function trailingslashit expects string, string\\|false given\\.$#"
+			count: 1
+			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
+
+		-
 			message: "#^Parameter \\#2 \\$post_id of class KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Path\\\\Path constructor expects int\\|null, mixed given\\.$#"
 			count: 4
 			path: includes/resources/Optimizer/Rest/Optimize_Rest_Controller.php
@@ -12879,6 +12919,11 @@ parameters:
 			message: "#^Cannot cast mixed to string\\.$#"
 			count: 1
 			path: includes/resources/Optimizer/State.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function trailingslashit expects string, string\\|false given\\.$#"
+			count: 1
+			path: includes/resources/Optimizer/Status/Meta.php
 
 		-
 			message: "#^Property KadenceWP\\\\KadenceBlocks\\\\Optimizer\\\\Status\\\\Meta\\:\\:\\$asset is never read, only written\\.$#"
@@ -13489,8 +13534,3 @@ parameters:
 			message: "#^Class Kadence_Blocks not found\\.$#"
 			count: 1
 			path: kadence-blocks.php
-
-		-
-			message: "#^Call to an undefined method Throwable\\:\\:getMessage\\(\\)\\.$#"
-			count: 1
-			path: uninstall.php
