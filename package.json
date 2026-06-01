@@ -23,7 +23,7 @@
 		"@dnd-kit/sortable": "^10.0.0",
 		"@floating-ui/react": "^0.27.12",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
-		"@kadence/components": "github:stellarwp/kadence-components#1.1.8",
+		"@kadence/components": "github:stellarwp/kadence-components#1.1.9",
 		"@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.0",
 		"@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
 		"@lottiefiles/dotlottie-react": "^0.15.2",
