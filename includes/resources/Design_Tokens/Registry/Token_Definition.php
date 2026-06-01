@@ -73,7 +73,9 @@ final class Token_Definition {
 	 */
 	public static function from_array( array $definition ): self {
 		foreach ( [ 'id', 'type', 'label' ] as $required ) {
-			if ( empty( $definition[ $required ] ) || ! is_string( $definition[ $required ] ) ) {
+			// Require a present, non-empty string. Avoid empty() so a legitimate "0" string is not
+			// mistaken for a missing value.
+			if ( ! isset( $definition[ $required ] ) || ! is_string( $definition[ $required ] ) || $definition[ $required ] === '' ) {
 				throw new InvalidArgumentException(
 					sprintf( 'Design token declaration is missing required string "%s".', $required )
 				);
