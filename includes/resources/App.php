@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Admin\Admin_Provider;
 use KadenceWP\KadenceBlocks\Asset\Asset_Provider;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Database\Database_Provider;
+use KadenceWP\KadenceBlocks\Design_Tokens\Design_Tokens_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Log\Log_Provider;
@@ -50,6 +51,7 @@ final class App {
 		Image_Downloader_Provider::class,
 		Optimizer_Provider::class,
 		Cache_Provider::class,
+		Design_Tokens_Provider::class,
 		Shutdown_Provider::class,
 	];
 
