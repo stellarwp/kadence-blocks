@@ -1,0 +1,58 @@
+# Checks spelling on the lines/files changed in a pull request.
+# The repository is expected to have pre-existing spelling issues, so this
+# only checks files touched by the PR to avoid blocking on legacy problems
+# while still preventing new issues from being introduced.
+# cSpell:ignore ACMRTUXB
+name: cSpell
+run-name: '[cSpell] ${{ github.event.head_commit.message }}'
+
+on:
+  pull_request:
+
+jobs:
+  spell-check:
+    name: Check spelling on changed files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Remove npm lockfile to prevent bun git-clone issues
+        run: rm -f package-lock.json
+
+      - name: Install dependencies
+        run: bun install
+        env:
+          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Check for spelling errors in changed files
+        run: |
+          # Fetch the base branch so we can diff against it.
+          git remote set-branches origin "$GITHUB_BASE_REF"
+          git fetch origin --depth=1
+
+          FILES=$(git diff --name-only --diff-filter=ACMRTUXB "origin/$GITHUB_BASE_REF")
+
+          if [ -z "$FILES" ]; then
+            echo "No changed files to spell-check."
+            exit 0
+          fi
+
+          echo "Spell-checking the following files:"
+          echo "$FILES"
+
+          bun run cspell-cmd $FILES
