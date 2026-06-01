@@ -10,9 +10,17 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 final class Design_Tokens_Provider extends Provider {
 
 	/**
-	 * @inheritDoc
+	 * Design Tokens sub-providers to register, in order.
+	 *
+	 * @var class-string<Provider>[]
 	 */
+	private const PROVIDERS = [
+		Database\Provider::class,
+	];
+
 	public function register(): void {
-		// Bindings and hooks will be registered here in a follow-up.
+		foreach ( self::PROVIDERS as $provider ) {
+			$this->container->register( $provider );
+		}
 	}
 }
