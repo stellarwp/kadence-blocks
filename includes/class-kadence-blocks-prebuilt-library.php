@@ -321,7 +321,7 @@ class Kadence_Blocks_Prebuilt_Library {
 					} else {
 						$expires_add = MONTH_IN_SECONDS;
 					}
-					$cloud_settings['connections'][ $this->package ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time() ) + $expires_add );
+					$cloud_settings['connections'][ $this->package ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'Y-m-d H:i:s' ) ) + $expires_add );
 					update_option( 'kadence_blocks_cloud', json_encode( $cloud_settings ) );
 					if ( $this->create_template_data_file( true ) ) {
 						return $this->get_local_template_data_contents();
