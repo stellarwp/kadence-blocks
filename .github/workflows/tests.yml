@@ -119,6 +119,9 @@ jobs:
             - name: Run acceptance tests
               run: ${SLIC_BIN} run acceptance --ext DotReporter
 
+            - name: Run snapshot tests
+              run: ${SLIC_BIN} run snapshot --ext DotReporter
+
             - name: Upload codeception output
               if: ${{ failure() }}
               uses: actions/upload-artifact@v6
