@@ -28,8 +28,13 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Baseline_Document::class, Always_Present_Baseline_Document::class );
 
 		$this->load_helper();
-		$this->register_declarations();
-		$this->guard_baseline();
+
+		// Declarations carry __() labels/groups, so they must not be evaluated before init or WordPress
+		// fires the _load_textdomain_just_in_time notice. register() runs on plugins_loaded, so defer the
+		// declaration load (and the guard that runs once tokens are in) to init. Early priority keeps the
+		// registry populated before any consumer (admin UI, projectors, resolver) reads it.
+		add_action( 'init', [ $this, 'register_declarations' ], 0 );
+		add_action( 'init', [ $this, 'guard_baseline' ], 0 );
 	}
 
 	/**
@@ -47,14 +52,14 @@ final class Provider extends Provider_Contract {
 	/**
 	 * The single declaration point — registers each declared token / variant set against the registry.
 	 *
-	 * Reads declarations.php as data and registers via the container so this runs during container
-	 * boot, before the global kadence_blocks() accessor is defined (see includes/init.php).
+	 * Reads declarations.php as data and registers via the container. Hooked on init (priority 0) because
+	 * declarations carry __() strings that must not resolve before the textdomain is available.
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	private function register_declarations(): void {
+	public function register_declarations(): void {
 		$registry     = $this->container->get( Token_Registry::class );
 		$declarations = require __DIR__ . '/declarations.php';
 
@@ -72,7 +77,7 @@ final class Provider extends Provider_Contract {
 	 *
 	 * @return void
 	 */
-	private function guard_baseline(): void {
+	public function guard_baseline(): void {
 		$this->container->get( Baseline_Guard::class )->run();
 	}
 }
