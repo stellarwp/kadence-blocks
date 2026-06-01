@@ -339,7 +339,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Constructor.
 	 *
-	 * @since TBD add dynamic base URLs for patterns and starter templates
+	 * @since 3.7.5 add dynamic base URLs for patterns and starter templates
 	 */
 	public function __construct() {
 		$this->remote_url           = $this->get_patterns_get_url();

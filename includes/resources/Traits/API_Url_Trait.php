@@ -19,7 +19,7 @@ trait API_Url_Trait {
 	 *
 	 * KADENCE_BLOCKS_PATTERNS_BASE_URL constant, otherwise production default.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_PATTERNS_BASE_URL' ) && KADENCE_BLOCKS_PATTERNS_BASE_URL
@@ -33,7 +33,7 @@ trait API_Url_Trait {
 	 *
 	 * KADENCE_BLOCKS_STARTER_BASE_URL constant, otherwise production default.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_starter_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_STARTER_BASE_URL' ) && KADENCE_BLOCKS_STARTER_BASE_URL
@@ -45,7 +45,7 @@ trait API_Url_Trait {
 	/**
 	 * Patterns-cloud "get" (sections) endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_get_url(): string {
 		return $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/get/';
@@ -54,7 +54,7 @@ trait API_Url_Trait {
 	/**
 	 * Patterns-cloud categories endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_categories_url(): string {
 		return $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/categories/';
@@ -63,7 +63,7 @@ trait API_Url_Trait {
 	/**
 	 * Patterns-cloud pages endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_pages_url(): string {
 		return $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/pages/';
@@ -72,7 +72,7 @@ trait API_Url_Trait {
 	/**
 	 * Patterns-cloud pages-categories endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_pages_categories_url(): string {
 		return $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/pages-categories/';
@@ -81,7 +81,7 @@ trait API_Url_Trait {
 	/**
 	 * Patterns-cloud single-item endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_patterns_single_url(): string {
 		return $this->get_patterns_base_url() . '/wp-json/kadence-cloud/v1/single/';
@@ -90,7 +90,7 @@ trait API_Url_Trait {
 	/**
 	 * Starter-templates "get" endpoint.
 	 *
-	 * @since TBD
+	 * @since 3.7.5
 	 */
 	protected function get_starter_get_url(): string {
 		return $this->get_starter_base_url() . '/wp-json/kadence-starter/v1/get/';
