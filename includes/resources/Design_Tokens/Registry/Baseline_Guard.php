@@ -114,6 +114,12 @@ final class Baseline_Guard {
 		add_action(
 			'admin_notices',
 			static function () use ( $missing ): void {
+				// Only surface the misconfiguration to users who could act on it, and avoid leaking
+				// internal token ids to lower-privileged admin-area users.
+				if ( ! current_user_can( 'manage_options' ) ) {
+					return;
+				}
+
 				printf(
 					'<div class="notice notice-error"><p>%s</p></div>',
 					esc_html(

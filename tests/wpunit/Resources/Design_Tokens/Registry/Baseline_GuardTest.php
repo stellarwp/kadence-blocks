@@ -21,6 +21,14 @@ final class Baseline_GuardTest extends TestCase {
 		$this->logger = new TestLogger();
 	}
 
+	protected function tearDown(): void {
+		// The production path registers an admin_notices callback; drop it so it can't leak into
+		// sibling tests via the global $wp_filter.
+		remove_all_actions( 'admin_notices' );
+
+		parent::tearDown();
+	}
+
 	private function registry_with_one_token(): Token_Registry {
 		$registry = new Token_Registry();
 		$registry->register(
@@ -77,6 +85,18 @@ final class Baseline_GuardTest extends TestCase {
 		$this->assertFalse( $registry->is_active() );
 		$this->assertTrue( $this->logger->hasErrorRecords() );
 		$this->assertSame( $before + 1, $this->count_admin_notices() );
+	}
+
+	public function testItResolvesFromTheContainerAgainstTheBoundStub(): void {
+		// Exercises the real autowiring path: Token_Registry singleton, the bound Baseline_Document
+		// stub, the LoggerInterface bound by Log_Provider, and the optional $throw_on_missing default.
+		// The bound Always_Present_Baseline_Document satisfies every declared token, so the guard is a
+		// no-op and projection stays active.
+		$registry = $this->container->get( Token_Registry::class );
+
+		$this->container->get( Baseline_Guard::class )->run();
+
+		$this->assertTrue( $registry->is_active() );
 	}
 
 	private function count_admin_notices(): int {

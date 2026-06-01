@@ -33,8 +33,11 @@ final class Provider extends Provider_Contract {
 		// fires the _load_textdomain_just_in_time notice. register() runs on plugins_loaded, so defer the
 		// declaration load (and the guard that runs once tokens are in) to init. Early priority keeps the
 		// registry populated before any consumer (admin UI, projectors, resolver) reads it.
+		//
+		// The guard validates the registered tokens, so it must run after register_declarations. The
+		// later priority makes that ordering explicit rather than relying on same-priority insertion order.
 		add_action( 'init', [ $this, 'register_declarations' ], 0 );
-		add_action( 'init', [ $this, 'guard_baseline' ], 0 );
+		add_action( 'init', [ $this, 'guard_baseline' ], 1 );
 	}
 
 	/**
