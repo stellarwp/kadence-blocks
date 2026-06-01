@@ -1,0 +1,48 @@
+name: PHPCS
+
+# Runs PHP_CodeSniffer against only the lines changed by the branch, so a PR is
+# held to the coding standard for what it touches without failing on pre-existing
+# violations elsewhere. Every remaining issue is printed in full to the job log
+# (no ReviewDog-style truncation), which keeps larger reports reviewable in CI.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '**.php'
+  push:
+    paths:
+      - '**.php'
+
+jobs:
+  phpcs:
+    name: Run PHPCS on changed lines
+    runs-on: ubuntu-latest
+
+    env:
+      COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: mbstring, intl
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run PHPCS on changed lines
+        run: |
+          # On a pull_request the base is the target branch; on a push diff
+          # against master so feature branches are still covered.
+          BASE_REF="${GITHUB_BASE_REF:-master}"
+
+          git remote set-branches origin "$BASE_REF"
+          git fetch origin --depth=1
+
+          composer phpcs-ci "origin/$BASE_REF"

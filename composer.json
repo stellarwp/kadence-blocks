@@ -61,6 +61,7 @@
 		"codeception/module-phpbrowser": "^1.0.3",
 		"codeception/module-webdriver": "^1.4.1",
 		"codeception/util-universalframework": "^1.0",
+		"exussum12/coverage-checker": "^1.0",
 		"lucatume/wp-browser": "<3.5",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"sabberworm/php-css-parser": "^8.4",
@@ -129,7 +130,10 @@
 			"@compatibility:php-8.3",
 			"@compatibility:php-8.4"
 		],
-		"phpcs": "phpcs --standard=phpcs.xml"
+		"phpcs": "phpcs --standard=phpcs.xml",
+		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
+		"phpcs-partial": "dev_scripts/partial-phpcs.sh selected",
+		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff"
 	},
 	"extra": {
 		"strauss": {
