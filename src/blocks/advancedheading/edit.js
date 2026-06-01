@@ -1436,6 +1436,13 @@ function KadenceAdvancedHeading(props) {
 						box-decoration-break: clone;
 						display: inline;
 					}`}
+				{/* This style is used to override the default color which applied to already saved color palette with root css variable */}
+				{color &&
+					colorClass.includes('kb-palette') &&
+					(!textGradient || textGradient === '') &&
+					`.has-${colorClass}-color{
+						color: ${color} !important;
+					}`}
 			</style>
 			<BlockControls>
 				<ToolbarGroup group="tag">
