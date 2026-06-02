@@ -1,5 +1,5 @@
 {
-	"$description": "Shipped, read-only baseline DTCG document for the Kadence Blocks Design Tokens module. Defines a value for every token, a curated pool of foundation presets, a $default block preset for each alpha block, and the Button lead variant set. The stored document (kb_design_tokens table) is sparse overrides layered on top of this baseline; this file is versioned with the plugin and is NEVER mutated at runtime. See Engineering Design Document section 4a.",
+	"$description": "Shipped, read-only baseline DTCG document for the Kadence Blocks Design Tokens module. Defines a value for every token, a curated pool of foundation presets, a $default block preset for each alpha block, and the Button lead variant set. The stored document (kb_design_tokens table) is sparse overrides layered on top of this baseline; this file is versioned with the plugin and is NEVER mutated at runtime.",
 	"primitive": {
 		"color": {
 			"brand": {
