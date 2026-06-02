@@ -9,6 +9,9 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	 * 'id' (DTCG dot-path), 'type' (DTCG $type), 'label', optional 'group', optional 'projections'
 	 * and an optional 'css_var' override. See Token_Definition::from_array().
 	 *
+	 * Register before `init` priority 1: the baseline guard runs once there and does not re-validate
+	 * tokens declared later, so a token registered on a later hook skips baseline validation entirely.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $definition The token declaration.

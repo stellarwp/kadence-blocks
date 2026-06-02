@@ -36,6 +36,10 @@ final class Provider extends Provider_Contract {
 		//
 		// The guard validates the registered tokens, so it must run after register_declarations. The
 		// later priority makes that ordering explicit rather than relying on same-priority insertion order.
+		//
+		// The guard is one-shot at init:1 — v1 is central-declarations-only, so tokens declared by
+		// third parties on a later hook (init:2+) skip baseline validation and is_active() is not
+		// re-checked. Re-validating late registrations is out of scope until the real baseline lands.
 		add_action( 'init', [ $this, 'register_declarations' ], 0 );
 		add_action( 'init', [ $this, 'guard_baseline' ], 1 );
 	}
