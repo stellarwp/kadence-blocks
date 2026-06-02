@@ -14,7 +14,14 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $definition The token declaration.
+	 * @param array{
+	 *     id: string,
+	 *     type: string,
+	 *     label: string,
+	 *     group?: string,
+	 *     css_var?: string,
+	 *     projections?: array<string, mixed>,
+	 * } $definition The token declaration.
 	 *
 	 * @return void
 	 */
@@ -29,7 +36,10 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set See Variant_Set::from_array().
+	 * @param array{
+	 *     block: string,
+	 *     variants?: string[],
+	 * } $set See Variant_Set::from_array().
 	 *
 	 * @return void
 	 */
