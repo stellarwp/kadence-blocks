@@ -35,7 +35,7 @@ final class Baseline_GuardTest extends TestCase {
 		// tests via the global $wp_filter, while leaving any bootstrap-registered callbacks intact.
 		global $wp_filter;
 		if ( $this->admin_notices_snapshot !== null ) {
-			$wp_filter['admin_notices'] = $this->admin_notices_snapshot;
+			$wp_filter['admin_notices'] = $this->admin_notices_snapshot; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Restoring the snapshotted hook state captured in setUp() to avoid leaking into sibling tests.
 		} else {
 			unset( $wp_filter['admin_notices'] );
 		}

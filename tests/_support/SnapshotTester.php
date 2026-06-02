@@ -16,7 +16,7 @@
  *
  * @SuppressWarnings(PHPMD)
 */
-class SnapshotTester extends \Codeception\Actor
-{
-    use _generated\SnapshotTesterActions;
+class SnapshotTester extends \Codeception\Actor {
+
+	use _generated\SnapshotTesterActions;
 }

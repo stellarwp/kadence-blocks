@@ -72,7 +72,11 @@ final class Token_Store extends Query {
 					->where( 'slug', $slug )
 					->get( ARRAY_A );
 
-		return $row['document'] ?? '';
+		if ( ! is_array( $row ) ) {
+			return '';
+		}
+
+		return (string) ( $row['document'] ?? '' );
 	}
 
 	/**
@@ -93,7 +97,11 @@ final class Token_Store extends Query {
 					->where( 'slug', $slug )
 					->get( ARRAY_A );
 
-		return $row['version'] ?? '';
+		if ( ! is_array( $row ) ) {
+			return '';
+		}
+
+		return (string) ( $row['version'] ?? '' );
 	}
 
 	/**
@@ -156,7 +164,7 @@ final class Token_Store extends Query {
 					->where( 'slug', $slug )
 					->get( ARRAY_A );
 
-		if ( $row === null ) {
+		if ( ! is_array( $row ) ) {
 			return;
 		}
 

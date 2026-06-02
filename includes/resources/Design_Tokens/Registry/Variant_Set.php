@@ -47,7 +47,7 @@ final class Variant_Set {
 	 *
 	 * @param array<string, mixed> $set The variant-set declaration.
 	 *
-	 * @throws InvalidArgumentException When "block" is missing.
+	 * @throws InvalidArgumentException When "block" is missing or "variants" is not a list of strings.
 	 *
 	 * @return self
 	 */
@@ -58,6 +58,22 @@ final class Variant_Set {
 			throw new InvalidArgumentException( 'Variant-set declaration is missing required string "block".' );
 		}
 
-		return new self( $set['block'], array_values( (array) ( $set['variants'] ?? [] ) ) );
+		$declared = $set['variants'] ?? [];
+		if ( ! is_array( $declared ) ) {
+			throw new InvalidArgumentException( 'Variant-set declaration "variants" must be an array of strings.' );
+		}
+
+		// Re-index to a list of validated strings: declarations may key variants (e.g. [ 2 => 'primary' ])
+		// and the $variants property is documented as string[]. Full payload validation is SOFT-3393.
+		$variants = [];
+		foreach ( $declared as $variant ) {
+			if ( ! is_string( $variant ) ) {
+				throw new InvalidArgumentException( 'Variant-set declaration "variants" must contain only strings.' );
+			}
+
+			$variants[] = $variant;
+		}
+
+		return new self( $set['block'], $variants );
 	}
 }
