@@ -66,7 +66,7 @@ final class Baseline_Guard {
 	public function run(): void {
 		$missing = $this->registry->missing_from_baseline( $this->baseline );
 
-		if ( $missing === [] ) {
+		if ( empty( $missing ) ) {
 			return;
 		}
 
