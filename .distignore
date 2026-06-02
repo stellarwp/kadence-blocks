@@ -34,6 +34,10 @@ codeception.slic.yml
 .wordpress-org/
 .npmrc
 bunfig.toml
+.phpstan/
+phpstan-baseline.neon
+phpstan-cache/
+phpstan.neon
 dev_scripts/
 diff.txt
 diffcs.txt
