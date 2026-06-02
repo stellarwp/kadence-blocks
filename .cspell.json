@@ -29,6 +29,7 @@
         "memize",
         "nvmrc",
         "phpcs",
+		"phpstan",
         "progressbar",
         "puprc",
         "recaptcha",
