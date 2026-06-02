@@ -39,7 +39,9 @@ final class Variant_Set {
 	 * @return self
 	 */
 	public static function from_array( array $set ): self {
-		if ( empty( $set['block'] ) || ! is_string( $set['block'] ) ) {
+		// Require a present, non-empty string. Avoid empty() so a legitimate "0" block name is not
+		// mistaken for a missing value, matching Token_Definition::from_array().
+		if ( ! isset( $set['block'] ) || ! is_string( $set['block'] ) || $set['block'] === '' ) {
 			throw new InvalidArgumentException( 'Variant-set declaration is missing required string "block".' );
 		}
 
