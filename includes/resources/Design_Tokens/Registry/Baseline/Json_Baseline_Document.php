@@ -27,12 +27,20 @@ final class Json_Baseline_Document implements Baseline_Document {
 
 	/**
 	 * Object-cache group for the decoded baseline document.
+	 *
+	 * @var string
+	 *
+	 * @since TBD
 	 */
-	public const CACHE_GROUP = 'kb_design_tokens';
+	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
 	 * The DTCG document layers that hold registrable tokens. The $extensions layer (presets/variants)
 	 * is excluded by design — its entries are not tokens and must never satisfy the guard.
+	 *
+	 * @var string[]
+	 *
+	 * @since TBD
 	 */
 	private const TOKEN_LAYERS = [ 'primitive', 'semantic' ];
 
@@ -40,6 +48,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * Absolute path to the shipped baseline.json.
 	 *
 	 * @var string
+	 *
+	 * @since TBD
 	 */
 	private string $path;
 
@@ -47,6 +57,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * Cache-busting version the decoded document is keyed on (the plugin version).
 	 *
 	 * @var string
+	 *
+	 * @since TBD
 	 */
 	private string $version;
 
@@ -54,6 +66,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * Memoised decoded document for this request. Null until first loaded.
 	 *
 	 * @var array<string, mixed>|null
+	 *
+	 * @since TBD
 	 */
 	private ?array $document = null;
 
@@ -61,6 +75,8 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * Memoised id index for this request: token dot-path id => true. Null until first built.
 	 *
 	 * @var array<string, true>|null
+	 *
+	 * @since TBD
 	 */
 	private ?array $index = null;
 
