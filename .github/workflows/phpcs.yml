@@ -23,7 +23,7 @@ jobs:
       COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.GH_BOT_TOKEN }}"}}'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Configure PHP environment
         uses: shivammathur/setup-php@v2
