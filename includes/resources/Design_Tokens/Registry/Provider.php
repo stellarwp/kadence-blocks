@@ -67,6 +67,7 @@ final class Provider extends Provider_Contract {
 	 * @return void
 	 */
 	public function register_declarations(): void {
+		/** @var Token_Registry $registry */
 		$registry     = $this->container->get( Token_Registry::class );
 		$declarations = require __DIR__ . '/declarations.php';
 
@@ -85,6 +86,8 @@ final class Provider extends Provider_Contract {
 	 * @return void
 	 */
 	public function guard_baseline(): void {
-		$this->container->get( Baseline_Guard::class )->run();
+		/** @var Baseline_Guard $guard */
+		$guard = $this->container->get( Baseline_Guard::class );
+		$guard->run();
 	}
 }
