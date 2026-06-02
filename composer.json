@@ -62,6 +62,7 @@
 		"codeception/module-phpbrowser": "^1.0.3",
 		"codeception/module-webdriver": "^1.4.1",
 		"codeception/util-universalframework": "^1.0",
+		"exussum12/coverage-checker": "^1.0",
 		"lucatume/wp-browser": "<3.5",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"phpstan/extension-installer": "^1.4",
@@ -133,6 +134,8 @@
 			"@compatibility:php-8.4"
 		],
 		"phpcs": "phpcs --standard=phpcs.xml",
+		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
+		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff",
 		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=4096M",
 		"phpstan-baseline": "./vendor/bin/phpstan analyse --memory-limit=4096M --level max --configuration phpstan.neon --generate-baseline"
 	},
