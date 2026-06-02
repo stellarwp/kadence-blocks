@@ -19,9 +19,11 @@
         "algoliasearch",
         "bunfig",
         "bunx",
+        "codecept",
         "codeception",
         "diffcs",
         "distignore",
+        "DTCG",
         "dotlottie",
         "gulpfile",
         "hcaptcha",
@@ -42,6 +44,7 @@
         "slidy",
         "splide",
         "splidejs",
-        "stellarwp"
+        "stellarwp",
+        "wpunit"
     ]
 }

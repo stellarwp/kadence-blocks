@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore spatie .
 
 /*
  * Codeception regenerates snapshots on `--debug`, while the spatie/phpunit-snapshot-assertions

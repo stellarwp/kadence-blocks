@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore advancedbtn .
 // The single declaration point. Adding an entry here automatically reaches every projector and the
 // admin UI. Returned as data (rather than calling the global helper) so the Provider can register it
 // directly against the container. v1 ships a small representative set; the full catalog lands with

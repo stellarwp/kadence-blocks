@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore advancedbtn .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
@@ -26,7 +27,7 @@ final class Token_Registry {
 
 	/**
 	 * Whether token projection is active. Flipped off by the fail-closed guard so projectors and the
-	 * UI surface fall back to existing KB behaviour rather than projecting a partial/broken set.
+	 * UI surface fall back to existing KB behavior rather than projecting a partial/broken set.
 	 *
 	 * @var bool
 	 */

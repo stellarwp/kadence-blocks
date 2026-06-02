@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore Adbar .
 
 namespace KadenceWP\KadenceBlocks;
 
