@@ -13,9 +13,22 @@ use InvalidArgumentException;
  */
 final class Variant_Set {
 
+	/**
+	 * The block name.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $block;
 
-	/** @var string[] */
+	/**
+	 * The declared variant names.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
 	public array $variants;
 
 	/**
