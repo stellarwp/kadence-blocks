@@ -99,6 +99,28 @@ final class Token_DefinitionTest extends TestCase {
 	}
 
 	/**
+	 * @dataProvider malformedIdProvider
+	 */
+	public function testItThrowsWhenIdHasAnInvalidCharset( string $id ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Token_Definition::from_array( [ 'id' => $id, 'type' => 'color', 'label' => 'Button Background' ] );
+	}
+
+	/**
+	 * @return array<string, array{0: string}>
+	 */
+	public function malformedIdProvider(): array {
+		return [
+			'space'        => [ 'semantic.color.button bg' ],
+			'slash'        => [ 'semantic/color/button-bg' ],
+			'uppercase'    => [ 'semantic.Color.button-bg' ],
+			'leading dot'  => [ '.semantic.color.button-bg' ],
+			'trailing dot' => [ 'semantic.color.button-bg.' ],
+		];
+	}
+
+	/**
 	 * @dataProvider wrongTypeOptionalProvider
 	 *
 	 * @param array<string, mixed> $definition

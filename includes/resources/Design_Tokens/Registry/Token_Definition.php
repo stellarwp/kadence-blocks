@@ -82,6 +82,17 @@ final class Token_Definition {
 			}
 		}
 
+		$id = $definition['id'];
+
+		// Guard the id charset at declaration time: it feeds Css_Var::from_id() which only swaps "." for
+		// "--", so an id with a space or slash would silently yield an invalid CSS custom-property name.
+		// A DTCG dot-path is lowercase alphanumeric segments separated by "." or "-".
+		if ( ! preg_match( '/^[a-z0-9]+([.-][a-z0-9]+)*$/', $id ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token id "%s" must be a dot-path of lowercase alphanumeric segments separated by "." or "-".', $id )
+			);
+		}
+
 		// Optional keys are type-checked so a bad declaration raises the documented InvalidArgumentException
 		// rather than a raw TypeError from the constructor's typed params — this is a public helper.
 		if ( isset( $definition['group'] ) && ! is_string( $definition['group'] ) ) {
@@ -95,8 +106,6 @@ final class Token_Definition {
 		if ( isset( $definition['projections'] ) && ! is_array( $definition['projections'] ) ) {
 			throw new InvalidArgumentException( 'Design token declaration "projections" must be an array.' );
 		}
-
-		$id = $definition['id'];
 
 		return new self(
 			$id,
