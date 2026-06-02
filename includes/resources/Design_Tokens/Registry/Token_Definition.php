@@ -67,7 +67,7 @@ final class Token_Definition {
 	 *
 	 * @param array<string, mixed> $definition The token declaration.
 	 *
-	 * @throws InvalidArgumentException When required keys are missing.
+	 * @throws InvalidArgumentException When required keys are missing or an optional key is the wrong type.
 	 *
 	 * @return self
 	 */
@@ -82,6 +82,20 @@ final class Token_Definition {
 			}
 		}
 
+		// Optional keys are type-checked so a bad declaration raises the documented InvalidArgumentException
+		// rather than a raw TypeError from the constructor's typed params — this is a public helper.
+		if ( isset( $definition['group'] ) && ! is_string( $definition['group'] ) ) {
+			throw new InvalidArgumentException( 'Design token declaration "group" must be a string.' );
+		}
+
+		if ( isset( $definition['css_var'] ) && ! is_string( $definition['css_var'] ) ) {
+			throw new InvalidArgumentException( 'Design token declaration "css_var" must be a string.' );
+		}
+
+		if ( isset( $definition['projections'] ) && ! is_array( $definition['projections'] ) ) {
+			throw new InvalidArgumentException( 'Design token declaration "projections" must be an array.' );
+		}
+
 		$id = $definition['id'];
 
 		return new self(
@@ -90,7 +104,7 @@ final class Token_Definition {
 			$definition['label'],
 			$definition['group'] ?? '',
 			// css_var override is rare; default is derived and impossible to drift from the id.
-			isset( $definition['css_var'] ) ? (string) $definition['css_var'] : Css_Var::from_id( $id ),
+			$definition['css_var'] ?? Css_Var::from_id( $id ),
 			$definition['projections'] ?? []
 		);
 	}
