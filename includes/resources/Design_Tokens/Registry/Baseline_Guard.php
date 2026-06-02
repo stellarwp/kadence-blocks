@@ -26,6 +26,8 @@ final class Baseline_Guard {
 	/**
 	 * Whether a missing entry throws. Resolves to WP_DEBUG when null (the production/dev default).
 	 *
+	 * @since TBD
+	 *
 	 * @var bool|null
 	 */
 	private ?bool $throw_on_missing;
