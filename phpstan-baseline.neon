@@ -12276,6 +12276,11 @@ parameters:
 			path: includes/resources/Database/Database_Provider.php
 
 		-
+			message: "#^Offset 'is_premium' does not exist on array\\{name\\: string, page_url\\: string\\}\\.$#"
+			count: 1
+			path: includes/resources/Harbor/Actions/Get_Known_Plugins.php
+
+		-
 			message: "#^Method KadenceWP\\\\KadenceBlocks\\\\Harbor\\\\Actions\\\\Report_Legacy_Licenses\\:\\:__invoke\\(\\) has parameter \\$licenses with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: includes/resources/Harbor/Actions/Report_Legacy_Licenses.php
