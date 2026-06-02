@@ -1,5 +1,19 @@
 {
     "version": "0.2",
+    "ignorePaths": [
+        "package-lock.json",
+        "bun.lock",
+        "bun.lockb",
+        "composer.lock",
+        "build/**",
+        "**/*.min.js",
+        "**/*.asset.php",
+        "**/*.pot",
+        "languages/**",
+        "vendor/**",
+        "node_modules/**",
+        "**/*.svg"
+    ],
     "words": [
         "algoliasearch",
         "bunfig",

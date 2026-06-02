@@ -1,10 +1,10 @@
-# Checks spelling on the lines/files changed in a pull request.
+# Checks spelling on the files changed in a pull request.
 # The repository is expected to have pre-existing spelling issues, so this
 # only checks files touched by the PR to avoid blocking on legacy problems
 # while still preventing new issues from being introduced.
 # cSpell:ignore ACMRTUXB
 name: cSpell
-run-name: '[cSpell] ${{ github.event.head_commit.message }}'
+run-name: '[cSpell] ${{ github.event.pull_request.title }}'
 
 on:
   pull_request:
@@ -23,21 +23,13 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache dependencies
+      - name: Cache Bun
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-cspell
           restore-keys: |
             ${{ runner.os }}-bun-
-
-      - name: Remove npm lockfile to prevent bun git-clone issues
-        run: rm -f package-lock.json
-
-      - name: Install dependencies
-        run: bun install
-        env:
-          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Check for spelling errors in changed files
         run: |
@@ -55,4 +47,5 @@ jobs:
           echo "Spell-checking the following files:"
           echo "$FILES"
 
+          # cspell is fetched on demand by bunx; no full project install needed.
           bun run cspell-cmd $FILES
