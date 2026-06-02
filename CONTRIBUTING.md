@@ -43,7 +43,11 @@ This installs Composer packages and runs the Strauss post-install steps that pre
 bun install
 ```
 
-The `postinstall` step builds the local `@kadence/*` packages (`helpers`, `icons`, `components`) automatically.
+The `postinstall` step builds the `@kadence/*` packages (`helpers`, `icons`, `components`) automatically.
+
+> **Why this build step exists:** The `@kadence/*` packages are pulled directly from GitHub (see the `github:stellarwp/...` entries in `package.json`), and those repos ship **source only** — not the compiled `dist/` output that Kadence Blocks imports. So after install they must be transpiled with Babel. The `build:packages` script does this, but only for packages whose `dist/cjs/index.js` is missing (already-built packages are skipped).
+>
+> The script uses `npm install --omit=prod` rather than `bun install` for this one step on purpose: `@kadence/helpers` declares `@kadence/icons` as a **production git dependency**, and a full install would try to git-clone it (which fails / rate-limits in CI). `--omit=prod` installs only the Babel devDependencies needed to transpile and skips that git dependency entirely.
 
 ## 4. Build the assets
 

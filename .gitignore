@@ -16,3 +16,4 @@ bin/wp-cli.phar
 /.env
 /.kadence-packages-root
 phpstan-cache/
+package-lock.json
