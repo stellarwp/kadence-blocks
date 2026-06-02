@@ -110,21 +110,10 @@ final class Harbor_Provider extends Provider {
 			return true;
 		}
 
-		$premium_constants = [
-			'KTP_PLUGIN_FILE',
-			'KADENCE_WOO_EXTRAS_VERSION',
-			'SOLIDWP_BACKUPS_PLUGIN_FILE',
-			'KADENCE_CONVERSIONS_FILE',
-			'KADENCE_INSIGHTS_FILE',
-			'KADENCE_WHITE_VERSION',
-		];
-
-		foreach ( $premium_constants as $premium_constant ) {
-			if ( ! defined( $premium_constant ) ) {
-				continue;
+		foreach ( ( new Get_Known_Plugins() )->premium_constants() as $constant ) {
+			if ( defined( $constant ) ) {
+				return true;
 			}
-
-			return true;
 		}
 
 		// Kadence Security Pro does not have a constant.
