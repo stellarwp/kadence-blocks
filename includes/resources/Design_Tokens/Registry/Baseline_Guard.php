@@ -64,6 +64,9 @@ final class Baseline_Guard {
 	 * @return void
 	 */
 	public function run(): void {
+		// TODO (SOFT-3377): this walks every declared token against the baseline on each run — O(n) per
+		// request once it runs against the real baseline. Cache the result and recompute only when a token
+		// is added/updated/removed so the common (unchanged-registry) path stays cheap.
 		$missing = $this->registry->missing_from_baseline( $this->baseline );
 
 		if ( empty( $missing ) ) {
