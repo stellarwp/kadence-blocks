@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
  * Policy:
  *   - Always log the missing ids.
  *   - Under WP_DEBUG: throw Missing_Baseline_Entry so dev/CI cannot miss the misconfiguration.
- *   - In production: deactivate token projection (fall back to existing KB behaviour) + admin notice.
+ *   - In production: deactivate token projection (fall back to existing KB behavior) + admin notice.
  *     Never white-screen a live site.
  *
  * @since TBD

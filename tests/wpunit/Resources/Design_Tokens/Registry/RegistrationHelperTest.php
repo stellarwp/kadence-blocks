@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore advancedbtn .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
@@ -17,7 +18,7 @@ final class RegistrationHelperTest extends TestCase {
 
 	protected function tearDown(): void {
 		// Token_Registry is a container singleton, so tokens these tests register (semantic.color.test-only,
-		// kadence/testblock) would otherwise leak into every later test in the run. Rebind a fresh registry
+		// kadence/test-block) would otherwise leak into every later test in the run. Rebind a fresh registry
 		// repopulated from the declarations so the container is restored to exactly its declared state —
 		// otherwise a leaked token with no baseline entry would trip the guard once SOFT-3377 binds a real
 		// baseline, giving an order-dependent failure.
@@ -80,12 +81,12 @@ final class RegistrationHelperTest extends TestCase {
 	public function testVariantSetHelperRegistersAgainstTheSharedRegistry(): void {
 		kadence_blocks_register_design_variant_set(
 			[
-				'block'    => 'kadence/testblock',
+				'block'    => 'kadence/test-block',
 				'variants' => [ 'a', 'b' ],
 			]
 		);
 
-		$set = $this->registry->for_block( 'kadence/testblock' );
+		$set = $this->registry->for_block( 'kadence/test-block' );
 
 		$this->assertNotNull( $set );
 		$this->assertSame( [ 'a', 'b' ], $set->variants );
