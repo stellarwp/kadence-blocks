@@ -62,6 +62,7 @@
 		"codeception/module-webdriver": "^1.4.1",
 		"codeception/util-universalframework": "^1.0",
 		"lucatume/wp-browser": "<3.5",
+		"lucatume/wp-snaphot-assertions": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"sabberworm/php-css-parser": "^8.4",
 		"stellarwp/coding-standards": "^2.0"
