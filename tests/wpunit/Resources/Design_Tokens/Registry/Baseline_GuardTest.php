@@ -15,16 +15,30 @@ final class Baseline_GuardTest extends TestCase {
 
 	private TestLogger $logger;
 
+	/** @var \WP_Hook|null Clone of $wp_filter['admin_notices'] taken in setUp. */
+	private $admin_notices_snapshot;
+
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->logger = new TestLogger();
+
+		// Clone admin_notices so the production path's registered callback can be removed in tearDown
+		// without clobbering callbacks other code registered at bootstrap. A clone (not a reference) is
+		// required because WP_Hook is mutated in place by add_action().
+		global $wp_filter;
+		$this->admin_notices_snapshot = isset( $wp_filter['admin_notices'] ) ? clone $wp_filter['admin_notices'] : null;
 	}
 
 	protected function tearDown(): void {
-		// The production path registers an admin_notices callback; drop it so it can't leak into
-		// sibling tests via the global $wp_filter.
-		remove_all_actions( 'admin_notices' );
+		// Restore the snapshot so the production path's admin_notices callback can't leak into sibling
+		// tests via the global $wp_filter, while leaving any bootstrap-registered callbacks intact.
+		global $wp_filter;
+		if ( $this->admin_notices_snapshot !== null ) {
+			$wp_filter['admin_notices'] = $this->admin_notices_snapshot;
+		} else {
+			unset( $wp_filter['admin_notices'] );
+		}
 
 		parent::tearDown();
 	}
