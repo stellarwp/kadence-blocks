@@ -1,0 +1,32 @@
+includes:
+	- phpstan-baseline.neon
+parameters:
+	phpVersion: 70400
+	tmpDir: phpstan-cache
+	parallel:
+		jobSize: 10
+		maximumNumberOfProcesses: 10
+		minimumNumberOfJobsPerProcess: 2
+		processTimeout: 600.0
+	reportUnmatchedIgnoredErrors: false
+	level: max
+	# Scan only the strauss-prefixed packages so PHPStan can resolve them.
+	# Do NOT scan all of vendor: that double-scans php-stubs/wordpress-stubs
+	# (also loaded by szepeviktor/phpstan-wordpress) and the winning signature
+	# becomes filesystem-iteration-order dependent, producing different results
+	# locally vs CI.
+	scanDirectories:
+		- vendor/vendor-prefixed
+	paths:
+		- includes
+		- kadence-blocks.php
+		- uninstall.php
+	excludePaths:
+		analyse:
+			- includes/assets/*
+			# Generated data files (large literal arrays of icons/fonts) -- nothing to analyse, and they choke PHPStan at level max.
+			- includes/*-array.php
+	scanFiles:
+		- .phpstan/phpstan-wp-polyfills.php
+	bootstrapFiles:
+		- .phpstan/phpstan-stubs.php
