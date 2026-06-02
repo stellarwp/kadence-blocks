@@ -135,7 +135,6 @@
 		],
 		"phpcs": "phpcs --standard=phpcs.xml",
 		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
-		"phpcs-partial": "dev_scripts/partial-phpcs.sh selected",
 		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff",
 		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=4096M",
 		"phpstan-baseline": "./vendor/bin/phpstan analyse --memory-limit=4096M --level max --configuration phpstan.neon --generate-baseline"

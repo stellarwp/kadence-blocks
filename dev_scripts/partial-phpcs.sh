@@ -16,6 +16,11 @@
 #
 # cSpell:ignore ACMR diffcs diffFilter
 
+# Fail loudly: without this a failed `git diff` (unfetched/typo'd base ref,
+# shallow-fetch issue) would print an error, leave an empty file list, and the
+# "No php files to check" guard below would exit 0 -- a misleading green check.
+set -euo pipefail
+
 OPERATION_MODE="${1:-diff}"
 BASE_BRANCH="${2:-origin/master}"
 
@@ -27,10 +32,17 @@ fi
 
 # if operation mode is selected, check if file list is provided
 if [ "$OPERATION_MODE" = "selected" ]; then
-	if [ -z "$3" ]; then
+	if [ -z "${3:-}" ]; then
 		echo "File list is required for operation mode: selected."
 		exit 1
 	fi
+fi
+
+# both modes diff against the base ref, so make sure it actually exists before
+# we rely on the diff being empty to mean "nothing changed"
+if ! git rev-parse --verify --quiet "$BASE_BRANCH" >/dev/null; then
+	echo "Base ref '$BASE_BRANCH' not found. Did the workflow fetch it?"
+	exit 1
 fi
 
 # constants
