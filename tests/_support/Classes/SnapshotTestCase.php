@@ -74,7 +74,7 @@ class SnapshotTestCase extends WPTestCase {
 		 * Increment the snapshot incrementor to ensure we are checking against the correct
 		 * file name.
 		 */
-		++$this->snapshotIncrementor;
+		++$this->snapshotIncrementor; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Property is defined by the spatie/phpunit-snapshot-assertions trait.
 
 		$snapshot = Snapshots\Snapshot::forTestCase(
 			$this->getSnapshotId(),
@@ -87,7 +87,7 @@ class SnapshotTestCase extends WPTestCase {
 		 * expected file name afterwards. We have to do this due to how we create a separate
 		 * Snapshot object above.
 		 */
-		--$this->snapshotIncrementor;
+		--$this->snapshotIncrementor; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Property is defined by the spatie/phpunit-snapshot-assertions trait.
 
 		if (
 			! $snapshot->exists()

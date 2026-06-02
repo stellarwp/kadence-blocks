@@ -91,10 +91,31 @@ final class Token_DefinitionTest extends TestCase {
 	 */
 	public function missingRequiredProvider(): array {
 		return [
-			'missing id'    => [ [ 'type' => 'color', 'label' => 'Button Background' ] ],
-			'missing type'  => [ [ 'id' => 'semantic.color.button-bg', 'label' => 'Button Background' ] ],
-			'missing label' => [ [ 'id' => 'semantic.color.button-bg', 'type' => 'color' ] ],
-			'empty id'      => [ [ 'id' => '', 'type' => 'color', 'label' => 'Button Background' ] ],
+			'missing id'    => [
+				[
+					'type'  => 'color',
+					'label' => 'Button Background',
+				],
+			],
+			'missing type'  => [
+				[
+					'id'    => 'semantic.color.button-bg',
+					'label' => 'Button Background',
+				],
+			],
+			'missing label' => [
+				[
+					'id'   => 'semantic.color.button-bg',
+					'type' => 'color',
+				],
+			],
+			'empty id'      => [
+				[
+					'id'    => '',
+					'type'  => 'color',
+					'label' => 'Button Background',
+				],
+			],
 		];
 	}
 
@@ -104,7 +125,13 @@ final class Token_DefinitionTest extends TestCase {
 	public function testItThrowsWhenIdHasAnInvalidCharset( string $id ): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Token_Definition::from_array( [ 'id' => $id, 'type' => 'color', 'label' => 'Button Background' ] );
+		Token_Definition::from_array(
+			[
+				'id'    => $id,
+				'type'  => 'color',
+				'label' => 'Button Background',
+			]
+		);
 	}
 
 	/**
@@ -135,7 +162,11 @@ final class Token_DefinitionTest extends TestCase {
 	 * @return array<string, array{0: array<string, mixed>}>
 	 */
 	public function wrongTypeOptionalProvider(): array {
-		$base = [ 'id' => 'semantic.color.button-bg', 'type' => 'color', 'label' => 'Button Background' ];
+		$base = [
+			'id'    => 'semantic.color.button-bg',
+			'type'  => 'color',
+			'label' => 'Button Background',
+		];
 
 		return [
 			'non-string group'      => [ $base + [ 'group' => [ 'Brand' ] ] ],

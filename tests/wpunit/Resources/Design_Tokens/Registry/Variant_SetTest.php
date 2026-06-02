@@ -30,7 +30,10 @@ final class Variant_SetTest extends TestCase {
 		$set = Variant_Set::from_array(
 			[
 				'block'    => 'kadence/advancedbtn',
-				'variants' => [ 2 => 'primary', 5 => 'secondary' ],
+				'variants' => [
+					2 => 'primary',
+					5 => 'secondary',
+				],
 			]
 		);
 

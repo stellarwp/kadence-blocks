@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-/**
+/*
  * Codeception regenerates snapshots on `--debug`, while the spatie/phpunit-snapshot-assertions
  * library does the same on `--update-snapshots`. Codeception strictly validates its CLI
  * arguments, so appending `--update-snapshots` to the `codecept run` command directly would
