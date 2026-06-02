@@ -15,6 +15,36 @@ final class RegistrationHelperTest extends TestCase {
 		$this->registry = $this->container->get( Token_Registry::class );
 	}
 
+	protected function tearDown(): void {
+		// Token_Registry is a container singleton, so tokens these tests register (semantic.color.test-only,
+		// kadence/testblock) would otherwise leak into every later test in the run. Rebind a fresh registry
+		// repopulated from the declarations so the container is restored to exactly its declared state —
+		// otherwise a leaked token with no baseline entry would trip the guard once SOFT-3377 binds a real
+		// baseline, giving an order-dependent failure.
+		$this->container->singleton( Token_Registry::class, $this->declared_registry() );
+
+		parent::tearDown();
+	}
+
+	/**
+	 * A fresh registry populated from the same declarations the Provider loads, so the container is
+	 * restored to its bootstrap state without leaking test-only tokens.
+	 */
+	private function declared_registry(): Token_Registry {
+		$registry     = new Token_Registry();
+		$declarations = require KADENCE_BLOCKS_PATH . 'includes/resources/Design_Tokens/Registry/declarations.php';
+
+		foreach ( $declarations['tokens'] as $token ) {
+			$registry->register( $token );
+		}
+
+		foreach ( $declarations['variant_sets'] as $variant_set ) {
+			$registry->register_variant_set( $variant_set );
+		}
+
+		return $registry;
+	}
+
 	public function testTheRegistryIsASingleton(): void {
 		$this->assertSame( $this->registry, $this->container->get( Token_Registry::class ) );
 	}
