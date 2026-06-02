@@ -34,3 +34,4 @@ codeception.slic.yml
 .wordpress-org/
 .npmrc
 bunfig.toml
+dev_scripts/

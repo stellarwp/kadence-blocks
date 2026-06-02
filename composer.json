@@ -74,6 +74,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"KadenceWP\\KadenceBlocks\\Dev\\": "dev_scripts/src/",
 			"Tests\\": "tests/",
 			"Tests\\Acceptance\\": "tests/acceptance/",
 			"Tests\\Support\\": "tests/_support/",
@@ -81,6 +82,9 @@
 		}
 	},
 	"scripts": {
+		"generate-dtcg-schema": [
+			"@php dev_scripts/bin/generate-dtcg-schema.php"
+		],
 		"stellar-uplink": [
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
