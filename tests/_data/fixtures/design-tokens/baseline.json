@@ -1,0 +1,457 @@
+{
+	"$description": "Shipped, read-only baseline DTCG document for the Kadence Blocks Design Tokens module. Defines a value for every token, a curated pool of foundation presets, a $default block preset for each alpha block, and the Button lead variant set. The stored document (kb_design_tokens table) is sparse overrides layered on top of this baseline; this file is versioned with the plugin and is NEVER mutated at runtime. See Engineering Design Document section 4a.",
+	"primitive": {
+		"color": {
+			"brand": {
+				"primary": {
+					"$type": "color",
+					"$value": "#3182CE"
+				},
+				"secondary": {
+					"$type": "color",
+					"$value": "#2C5282"
+				},
+				"accent": {
+					"$type": "color",
+					"$value": "#ED8936"
+				}
+			},
+			"neutral": {
+				"0": {
+					"$type": "color",
+					"$value": "#ffffff"
+				},
+				"50": {
+					"$type": "color",
+					"$value": "#F7FAFC"
+				},
+				"100": {
+					"$type": "color",
+					"$value": "#EDF2F7"
+				},
+				"200": {
+					"$type": "color",
+					"$value": "#E2E8F0"
+				},
+				"300": {
+					"$type": "color",
+					"$value": "#CBD5E0"
+				},
+				"500": {
+					"$type": "color",
+					"$value": "#718096"
+				},
+				"700": {
+					"$type": "color",
+					"$value": "#2D3748"
+				},
+				"900": {
+					"$type": "color",
+					"$value": "#1A202C"
+				}
+			}
+		},
+		"dimension": {
+			"space": {
+				"xs": {
+					"$type": "dimension",
+					"$value": "0.25rem"
+				},
+				"sm": {
+					"$type": "dimension",
+					"$value": "0.5rem"
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "1rem"
+				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "2rem"
+				},
+				"xl": {
+					"$type": "dimension",
+					"$value": "4rem"
+				}
+			},
+			"radius": {
+				"none": {
+					"$type": "dimension",
+					"$value": "0"
+				},
+				"sm": {
+					"$type": "dimension",
+					"$value": "0.125rem"
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "0.5rem"
+				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "1rem"
+				},
+				"full": {
+					"$type": "dimension",
+					"$value": "9999px"
+				}
+			},
+			"borderWidth": {
+				"sm": {
+					"$type": "dimension",
+					"$value": "1px"
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "2px"
+				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "4px"
+				}
+			},
+			"iconSize": {
+				"sm": {
+					"$type": "dimension",
+					"$value": "1rem"
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "1.5rem"
+				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "2.25rem"
+				}
+			}
+		},
+		"fontFamily": {
+			"sans": {
+				"$type": "fontFamily",
+				"$value": [
+					"Inter",
+					"system-ui",
+					"sans-serif"
+				]
+			},
+			"serif": {
+				"$type": "fontFamily",
+				"$value": [
+					"Georgia",
+					"Cambria",
+					"serif"
+				]
+			},
+			"mono": {
+				"$type": "fontFamily",
+				"$value": [
+					"Menlo",
+					"Consolas",
+					"monospace"
+				]
+			}
+		},
+		"fontSize": {
+			"xs": {
+				"$type": "dimension",
+				"$value": "0.64rem"
+			},
+			"sm": {
+				"$type": "dimension",
+				"$value": "0.8rem"
+			},
+			"md": {
+				"$type": "dimension",
+				"$value": "1rem"
+			},
+			"lg": {
+				"$type": "dimension",
+				"$value": "1.25rem"
+			},
+			"xl": {
+				"$type": "dimension",
+				"$value": "1.563rem"
+			},
+			"2xl": {
+				"$type": "dimension",
+				"$value": "1.953rem"
+			},
+			"3xl": {
+				"$type": "dimension",
+				"$value": "2.441rem"
+			}
+		}
+	},
+	"semantic": {
+		"color": {
+			"text": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.900}"
+			},
+			"text-muted": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.500}"
+			},
+			"surface": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.0}"
+			},
+			"surface-alt": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.50}"
+			},
+			"border": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.200}"
+			},
+			"link": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.primary}"
+			},
+			"button-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.primary}"
+			},
+			"button-text": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.0}"
+			},
+			"icon": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.primary}"
+			}
+		},
+		"spacing": {
+			"inline": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.space.md}"
+			},
+			"block": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.space.lg}"
+			},
+			"section": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.space.xl}"
+			}
+		},
+		"radius": {
+			"control": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.md}"
+			},
+			"media": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.lg}"
+			}
+		},
+		"borderWidth": {
+			"default": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.borderWidth.sm}"
+			}
+		},
+		"iconSize": {
+			"default": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.iconSize.md}"
+			}
+		},
+		"typography": {
+			"heading": {
+				"$type": "typography",
+				"$value": {
+					"fontFamily": "{primitive.fontFamily.sans}",
+					"fontSize": "{primitive.fontSize.2xl}",
+					"fontWeight": 700,
+					"lineHeight": 1.2
+				}
+			},
+			"body": {
+				"$type": "typography",
+				"$value": {
+					"fontFamily": "{primitive.fontFamily.sans}",
+					"fontSize": "{primitive.fontSize.md}",
+					"fontWeight": 400,
+					"lineHeight": 1.6
+				}
+			}
+		},
+		"shadow": {
+			"card": {
+				"$type": "shadow",
+				"$value": {
+					"color": "{primitive.color.neutral.900}",
+					"offsetX": "0px",
+					"offsetY": "2px",
+					"blur": "8px",
+					"spread": "0px"
+				}
+			}
+		}
+	},
+	"$extensions": {
+		"com.kadence.designTokens": {
+			"foundationPresets": {
+				"typeScale": {
+					"$default": "majorThird",
+					"minorThird": {
+						"label": "Minor Third",
+						"tokens": {
+							"primitive.fontSize.xs": "0.694rem",
+							"primitive.fontSize.sm": "0.833rem",
+							"primitive.fontSize.md": "1rem",
+							"primitive.fontSize.lg": "1.2rem",
+							"primitive.fontSize.xl": "1.44rem",
+							"primitive.fontSize.2xl": "1.728rem",
+							"primitive.fontSize.3xl": "2.074rem"
+						}
+					},
+					"majorThird": {
+						"label": "Major Third",
+						"tokens": {
+							"primitive.fontSize.xs": "0.64rem",
+							"primitive.fontSize.sm": "0.8rem",
+							"primitive.fontSize.md": "1rem",
+							"primitive.fontSize.lg": "1.25rem",
+							"primitive.fontSize.xl": "1.563rem",
+							"primitive.fontSize.2xl": "1.953rem",
+							"primitive.fontSize.3xl": "2.441rem"
+						}
+					},
+					"perfectFourth": {
+						"label": "Perfect Fourth",
+						"tokens": {
+							"primitive.fontSize.xs": "0.563rem",
+							"primitive.fontSize.sm": "0.75rem",
+							"primitive.fontSize.md": "1rem",
+							"primitive.fontSize.lg": "1.333rem",
+							"primitive.fontSize.xl": "1.777rem",
+							"primitive.fontSize.2xl": "2.369rem",
+							"primitive.fontSize.3xl": "3.157rem"
+						}
+					},
+					"goldenRatio": {
+						"label": "Golden Ratio",
+						"tokens": {
+							"primitive.fontSize.xs": "0.382rem",
+							"primitive.fontSize.sm": "0.618rem",
+							"primitive.fontSize.md": "1rem",
+							"primitive.fontSize.lg": "1.618rem",
+							"primitive.fontSize.xl": "2.618rem",
+							"primitive.fontSize.2xl": "4.236rem",
+							"primitive.fontSize.3xl": "6.854rem"
+						}
+					}
+				},
+				"colorPalette": {
+					"$default": "kadence",
+					"kadence": {
+						"label": "Kadence",
+						"tokens": {
+							"primitive.color.brand.primary": "#3182CE",
+							"primitive.color.brand.secondary": "#2C5282",
+							"primitive.color.brand.accent": "#ED8936"
+						}
+					},
+					"sunset": {
+						"label": "Sunset",
+						"tokens": {
+							"primitive.color.brand.primary": "#DD6B20",
+							"primitive.color.brand.secondary": "#C05621",
+							"primitive.color.brand.accent": "#F6AD55"
+						}
+					},
+					"forest": {
+						"label": "Forest",
+						"tokens": {
+							"primitive.color.brand.primary": "#2F855A",
+							"primitive.color.brand.secondary": "#276749",
+							"primitive.color.brand.accent": "#68D391"
+						}
+					}
+				}
+			},
+			"variants": {
+				"kadence/rowlayout": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"background": "{semantic.color.surface}",
+							"padding": "{semantic.spacing.section}"
+						}
+					}
+				},
+				"kadence/column": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"background": "{semantic.color.surface-alt}",
+							"padding": "{semantic.spacing.block}"
+						}
+					}
+				},
+				"kadence/image": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"borderRadius": "{semantic.radius.media}",
+							"shadow": "{semantic.shadow.card}"
+						}
+					}
+				},
+				"kadence/advancedbtn": {
+					"$default": "primary",
+					"primary": {
+						"label": "Primary",
+						"tokens": {
+							"button-bg": "{semantic.color.button-bg}",
+							"button-text": "{semantic.color.button-text}",
+							"button-radius": "{semantic.radius.control}"
+						}
+					},
+					"secondary": {
+						"label": "Secondary",
+						"tokens": {
+							"button-bg": "{primitive.color.brand.secondary}",
+							"button-text": "{primitive.color.neutral.0}",
+							"button-radius": "{semantic.radius.control}"
+						}
+					},
+					"ghost": {
+						"label": "Ghost",
+						"tokens": {
+							"button-bg": "transparent",
+							"button-text": "{primitive.color.brand.primary}",
+							"button-border": "{primitive.color.brand.primary}",
+							"button-radius": "{semantic.radius.control}"
+						}
+					}
+				},
+				"kadence/advancedheading": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"typography": "{semantic.typography.heading}",
+							"color": "{semantic.color.text}"
+						}
+					}
+				},
+				"kadence/icon": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"color": "{semantic.color.icon}",
+							"size": "{semantic.iconSize.default}"
+						}
+					}
+				}
+			}
+		}
+	}
+}
