@@ -26,6 +26,8 @@ final class Baseline_Guard {
 	/**
 	 * Whether a missing entry throws. Resolves to WP_DEBUG when null (the production/dev default).
 	 *
+	 * @since TBD
+	 *
 	 * @var bool|null
 	 */
 	private ?bool $throw_on_missing;
@@ -62,9 +64,12 @@ final class Baseline_Guard {
 	 * @return void
 	 */
 	public function run(): void {
+		// TODO (SOFT-3377): this walks every declared token against the baseline on each run — O(n) per
+		// request once it runs against the real baseline. Cache the result and recompute only when a token
+		// is added/updated/removed so the common (unchanged-registry) path stays cheap.
 		$missing = $this->registry->missing_from_baseline( $this->baseline );
 
-		if ( $missing === [] ) {
+		if ( empty( $missing ) ) {
 			return;
 		}
 
