@@ -74,6 +74,10 @@ final class Baseline_Guard {
 			implode( ', ', $missing )
 		);
 
+		// TODO (SOFT-3377): the guard moves off `init` and runs against the real baseline, so this would
+		// otherwise log once per front-end/admin/REST/AJAX/cron request on a misconfigured site. A missing
+		// baseline entry is a deterministic deploy-time error (identical every request), so throttle to
+		// once per process with a static flag before this stops being a no-op.
 		$this->logger->error( $message );
 
 		if ( $this->should_throw() ) {

@@ -97,4 +97,50 @@ final class Token_DefinitionTest extends TestCase {
 			'empty id'      => [ [ 'id' => '', 'type' => 'color', 'label' => 'Button Background' ] ],
 		];
 	}
+
+	/**
+	 * @dataProvider malformedIdProvider
+	 */
+	public function testItThrowsWhenIdHasAnInvalidCharset( string $id ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Token_Definition::from_array( [ 'id' => $id, 'type' => 'color', 'label' => 'Button Background' ] );
+	}
+
+	/**
+	 * @return array<string, array{0: string}>
+	 */
+	public function malformedIdProvider(): array {
+		return [
+			'space'        => [ 'semantic.color.button bg' ],
+			'slash'        => [ 'semantic/color/button-bg' ],
+			'uppercase'    => [ 'semantic.Color.button-bg' ],
+			'leading dot'  => [ '.semantic.color.button-bg' ],
+			'trailing dot' => [ 'semantic.color.button-bg.' ],
+		];
+	}
+
+	/**
+	 * @dataProvider wrongTypeOptionalProvider
+	 *
+	 * @param array<string, mixed> $definition
+	 */
+	public function testItThrowsWhenOptionalKeysAreTheWrongType( array $definition ): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Token_Definition::from_array( $definition );
+	}
+
+	/**
+	 * @return array<string, array{0: array<string, mixed>}>
+	 */
+	public function wrongTypeOptionalProvider(): array {
+		$base = [ 'id' => 'semantic.color.button-bg', 'type' => 'color', 'label' => 'Button Background' ];
+
+		return [
+			'non-string group'      => [ $base + [ 'group' => [ 'Brand' ] ] ],
+			'non-string css_var'    => [ $base + [ 'css_var' => 123 ] ],
+			'non-array projections' => [ $base + [ 'projections' => 'wp_preset' ] ],
+		];
+	}
 }
