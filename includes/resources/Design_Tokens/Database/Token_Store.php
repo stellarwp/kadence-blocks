@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Database;
 
 use KadenceWP\KadenceBlocks\Database\Query;
+use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 
 /**
  * The sole gateway to the kb_design_tokens table.
@@ -71,10 +72,13 @@ final class Token_Store extends Query {
 	 * @param string $title    Optional human-readable label. Left untouched on
 	 *                         update when an empty string is passed.
 	 *
-	 * @return bool True on a successful write, false if the write failed (in
-	 *              which case the change action does NOT fire).
+	 * @return void
+	 *
+	 * @throws DatabaseQueryException If the write fails. The change action only
+	 *                                fires on success, since a failed write
+	 *                                throws before changed() is reached.
 	 */
-	public function save_document( string $document, string $slug = self::DEFAULT_SLUG, string $title = '' ): bool {
+	public function save_document( string $document, string $slug = self::DEFAULT_SLUG, string $title = '' ): void {
 		$data = [
 			'slug'       => $slug,
 			'document'   => $document,
@@ -90,18 +94,12 @@ final class Token_Store extends Query {
 		// upsert() is a non-atomic SELECT-then-INSERT/UPDATE, not an atomic
 		// INSERT ... ON DUPLICATE KEY. Two concurrent first-writes for the same
 		// slug can both miss the SELECT and race to INSERT; the UNIQUE KEY on
-		// slug then makes the loser fail (caught by the === false guard below).
-		// Fine for admin-driven single-set saves in v1; revisit if writes ever
-		// become concurrent.
-		$result = $this->qb()->upsert( $data, [ 'slug' ] );
+		// slug then makes the loser throw DatabaseQueryException. Fine for
+		// admin-driven single-set saves in v1; revisit if writes become concurrent.
+		$this->qb()->upsert( $data, [ 'slug' ] );
 
-		if ( $result === false ) {
-			return false;
-		}
-
+		// Reached only on a successful write — a failed write throws above.
 		$this->changed( $slug );
-
-		return true;
 	}
 
 	/**
@@ -111,19 +109,22 @@ final class Token_Store extends Query {
 	 *
 	 * @param string $slug The token set slug.
 	 *
-	 * @return bool True when the version was bumped, false if the set does not
-	 *              exist or the write failed (the change action does NOT fire).
+	 * @return void
+	 *
+	 * @throws DatabaseQueryException If the write fails. The change action only
+	 *                                fires on success, since a failed write
+	 *                                throws before changed() is reached.
 	 */
-	public function bump_version( string $slug = self::DEFAULT_SLUG ): bool {
+	public function bump_version( string $slug = self::DEFAULT_SLUG ): void {
 		$row = $this->qb()
 					->where( 'slug', $slug )
 					->get( ARRAY_A );
 
 		if ( $row === null ) {
-			return false;
+			return;
 		}
 
-		$result = $this->qb()
+		$this->qb()
 			->where( 'slug', $slug )
 			->update(
 				[
@@ -132,13 +133,8 @@ final class Token_Store extends Query {
 				]
 			);
 
-		if ( $result === false ) {
-			return false;
-		}
-
+		// Reached only on a successful write — a failed write throws above.
 		$this->changed( $slug );
-
-		return true;
 	}
 
 	/**

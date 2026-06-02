@@ -5,7 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Design_Tokens_Table;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
-use KadenceWP\KadenceBlocks\StellarWP\DB\QueryBuilder\QueryBuilder;
+use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use Tests\Support\Classes\TestCase;
 
 final class Token_StoreTest extends TestCase {
@@ -140,40 +140,12 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( 2, $this->count_rows() );
 	}
 
-	public function testSaveDocumentReturnsFalseAndDoesNotFireTheChangedActionOnWriteFailure(): void {
-		// Stub the query builder so the underlying upsert reports a DB error.
-		$qb = $this->createMock( QueryBuilder::class );
-		$qb->method( 'upsert' )->willReturn( false );
-
-		$store = $this->store_with_query_builder( $qb );
-
-		$fired = 0;
-		add_action(
-			Token_Store::CHANGED_ACTION,
-			static function () use ( &$fired ): void {
-				++$fired;
-			}
-		);
-
-		$result = $store->save_document( '{"a":1}' );
-
-		// A failed write must not be advertised as a change.
-		$this->assertFalse( $result );
-		$this->assertSame( 0, $fired );
-	}
-
-	public function testBumpVersionReturnsFalseAndDoesNotFireTheChangedActionOnWriteFailure(): void {
-		// First qb() call backs the existence SELECT — return a row so we reach the update.
-		$select_qb = $this->createMock( QueryBuilder::class );
-		$select_qb->method( 'where' )->willReturnSelf();
-		$select_qb->method( 'get' )->willReturn( [ 'document' => '{"keep":true}' ] );
-
-		// Second qb() call backs the UPDATE, which reports a DB error.
-		$update_qb = $this->createMock( QueryBuilder::class );
-		$update_qb->method( 'where' )->willReturnSelf();
-		$update_qb->method( 'update' )->willReturn( false );
-
-		$store = $this->store_with_query_builder( $select_qb, $update_qb );
+	public function testAWriteErrorThrowsAndDoesNotFireTheChangedAction(): void {
+		// Point a store at a table that doesn't exist so the write errors out.
+		// StellarWP's DB layer throws on any query error rather than returning a
+		// falsy value, so the change action is never reached — proving it only
+		// fires on a successful write.
+		$store = new Token_Store( 'kb_design_tokens_does_not_exist' );
 
 		$fired = 0;
 		add_action(
@@ -183,29 +155,20 @@ final class Token_StoreTest extends TestCase {
 			}
 		);
 
-		$result = $store->bump_version();
+		$caught = null;
 
-		$this->assertFalse( $result );
+		try {
+			$store->save_document( '{"a":1}' );
+		} catch ( DatabaseQueryException $e ) {
+			$caught = $e;
+		}
+
+		$this->assertInstanceOf(
+			DatabaseQueryException::class,
+			$caught,
+			'Expected a DatabaseQueryException writing to a missing table.'
+		);
 		$this->assertSame( 0, $fired );
-	}
-
-	/**
-	 * Build a real Token_Store whose qb() hands back the given stub builder(s).
-	 *
-	 * The constructor is skipped (it only stores a table name we never reach once
-	 * qb() is stubbed). Pass multiple builders to back successive qb() calls.
-	 *
-	 * @param QueryBuilder ...$builders The stub builder(s), in call order.
-	 */
-	private function store_with_query_builder( QueryBuilder ...$builders ): Token_Store {
-		$store = $this->getMockBuilder( Token_Store::class )
-					->onlyMethods( [ 'qb' ] )
-					->disableOriginalConstructor()
-					->getMock();
-
-		$store->method( 'qb' )->willReturnOnConsecutiveCalls( ...$builders );
-
-		return $store;
 	}
 
 	/**
