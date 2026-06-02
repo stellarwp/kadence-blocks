@@ -14,23 +14,55 @@ use InvalidArgumentException;
  */
 final class Token_Definition {
 
-	/** @var string DTCG dot-path, e.g. "semantic.color.button-bg". */
+	/**
+	 * DTCG dot-path, e.g. "semantic.color.button-bg".
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $id;
 
-	/** @var string DTCG $type: color | dimension | shadow | typography | … */
+	/**
+	 * DTCG $type: color | dimension | shadow | typography | …
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $type;
 
-	/** @var string Human-readable label for the custom UI. */
+	/**
+	 * Human-readable label for the custom UI.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $label;
 
-	/** @var string UI grouping bucket, e.g. "Brand". */
+	/**
+	 * UI grouping bucket, e.g. "Brand".
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $group;
 
-	/** @var string The canonical (or overridden) CSS custom-property name. */
+	/**
+	 * The canonical (or overridden) CSS custom-property name.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public string $css_var;
 
 	/**
 	 * Projection targets. Keys are projection ids; values are projection-specific config.
+	 *
+	 * @since TBD
 	 *
 	 * @var array<string, mixed> e.g. [ 'wp_preset' => 'color', 'kadence_slot' => 'palette1', 'site_editor' => true ]
 	 */
