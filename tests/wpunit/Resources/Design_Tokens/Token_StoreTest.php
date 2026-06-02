@@ -2,8 +2,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Design_Tokens_Table;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Table;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use Tests\Support\Classes\TestCase;
@@ -71,7 +71,7 @@ final class Token_StoreTest extends TestCase {
 	public function testSaveFiresTheChangedActionWithTheSlug(): void {
 		$fired = [];
 		add_action(
-			Token_Store::CHANGED_ACTION,
+			Token_Store::changed_action(),
 			static function ( $slug ) use ( &$fired ): void {
 				$fired[] = $slug;
 			}
@@ -83,7 +83,7 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	public function testSaveDoesNotClobberAnExistingTitleWhenOmitted(): void {
-		$this->store->save_document( '{"v":1}', Token_Store::DEFAULT_SLUG, 'My Tokens' );
+		$this->store->save_document( '{"v":1}', Token_Store::default_slug(), 'My Tokens' );
 		$this->store->save_document( '{"v":2}' );
 
 		$this->assertSame( 'My Tokens', $this->read_title() );
@@ -105,7 +105,7 @@ final class Token_StoreTest extends TestCase {
 
 		$fired = 0;
 		add_action(
-			Token_Store::CHANGED_ACTION,
+			Token_Store::changed_action(),
 			static function () use ( &$fired ): void {
 				++$fired;
 			}
@@ -119,7 +119,7 @@ final class Token_StoreTest extends TestCase {
 	public function testBumpVersionIsANoOpForAMissingSet(): void {
 		$fired = 0;
 		add_action(
-			Token_Store::CHANGED_ACTION,
+			Token_Store::changed_action(),
 			static function () use ( &$fired ): void {
 				++$fired;
 			}
@@ -149,7 +149,7 @@ final class Token_StoreTest extends TestCase {
 
 		$fired = 0;
 		add_action(
-			Token_Store::CHANGED_ACTION,
+			Token_Store::changed_action(),
 			static function () use ( &$fired ): void {
 				++$fired;
 			}
@@ -174,8 +174,10 @@ final class Token_StoreTest extends TestCase {
 	/**
 	 * Read the title column directly (test-only inspection of the table).
 	 */
-	private function read_title( string $slug = Token_Store::DEFAULT_SLUG ): ?string {
-		$row = DB::table( Design_Tokens_Table::table_name( false ) )
+	private function read_title( ?string $slug = null ): ?string {
+		$slug ??= Token_Store::default_slug();
+
+		$row = DB::table( Token_Table::table_name( false ) )
 				->where( 'slug', $slug )
 				->get( ARRAY_A );
 
@@ -183,6 +185,6 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	private function count_rows(): int {
-		return (int) DB::table( Design_Tokens_Table::table_name( false ) )->count();
+		return (int) DB::table( Token_Table::table_name( false ) )->count();
 	}
 }

@@ -12,33 +12,50 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
  *
  * Unlike the Optimizer tables, this holds authored user data, so it must NOT
  * drop itself on a schema change — the base class migration is non-destructive.
+ *
+ * @since TBD
  */
-final class Design_Tokens_Table extends Table {
+final class Token_Table extends Table {
 
+	/**
+	 * @var string The table schema version, bumped when get_definition() changes.
+	 *
+	 * @since TBD
+	 */
 	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
 	 * @var string The base table name.
+	 *
+	 * @since TBD
 	 */
 	protected static $base_table_name = 'kb_design_tokens';
 
 	/**
 	 * @var string The organizational group this table belongs to.
+	 *
+	 * @since TBD
 	 */
 	protected static $group = 'kb';
 
 	/**
 	 * @var string|null The slug used to identify the custom table.
+	 *
+	 * @since TBD
 	 */
 	protected static $schema_slug = 'design_tokens';
 
 	/**
 	 * @var string The field that uniquely identifies a row in the table.
+	 *
+	 * @since TBD
 	 */
 	protected static $uid_column = 'id';
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since TBD
 	 */
 	protected function get_definition(): string {
 		global $wpdb;

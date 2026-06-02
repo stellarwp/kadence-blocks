@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Database;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Design_Tokens_Table;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Optimizer_Table;
 use KadenceWP\KadenceBlocks\Optimizer\Database\Viewport_Hash_Table;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
@@ -33,7 +33,7 @@ final class Database_Provider extends Provider {
 			[
 				Viewport_Hash_Table::class,
 				Optimizer_Table::class,
-				Design_Tokens_Table::class,
+				Token_Table::class,
 			]
 		);
 

@@ -16,21 +16,51 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryExcept
  * belongs to the REST layer. This store only persists and signals change.
  *
  * @see Provider for the table binding.
+ *
+ * @since TBD
  */
 final class Token_Store extends Query {
 
 	/**
-	 * Fires after any write so projectors and caches can react.
+	 * @var string Action fired after any write so projectors and caches can react.
+	 *
+	 * @since TBD
 	 */
-	public const CHANGED_ACTION = 'kadence_blocks_design_tokens_changed';
+	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_changed';
 
 	/**
-	 * The default token set slug. v1 ships a single set under this slug.
+	 * @var string The default token set slug. v1 ships a single set under this slug.
+	 *
+	 * @since TBD
 	 */
-	public const DEFAULT_SLUG = 'default';
+	private const DEFAULT_SLUG = 'default';
+
+	/**
+	 * The action hook that fires after any write, for callers that need to react to changes.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function changed_action(): string {
+		return self::CHANGED_ACTION;
+	}
+
+	/**
+	 * The default token set slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function default_slug(): string {
+		return self::DEFAULT_SLUG;
+	}
 
 	/**
 	 * Read the raw overrides-only DTCG document for a token set.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $slug The token set slug.
 	 *
@@ -51,6 +81,8 @@ final class Token_Store extends Query {
 	 * Consumed by downstream caches (e.g. the theme.json preset array is keyed on
 	 * this value) to know when a token set has changed.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $slug The token set slug.
 	 *
 	 * @return string The stored version hash, or an empty string when no row
@@ -66,6 +98,8 @@ final class Token_Store extends Query {
 
 	/**
 	 * Insert or update a token set's document, bump its version and signal change.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON to persist.
 	 * @param string $slug     The token set slug.
@@ -107,6 +141,8 @@ final class Token_Store extends Query {
 	 *
 	 * No-op when the set does not exist — there is nothing cached to invalidate.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $slug The token set slug.
 	 *
 	 * @return void
@@ -143,6 +179,8 @@ final class Token_Store extends Query {
 	 * The microtime() salt guarantees the hash changes on every write, so repeated
 	 * saves (and document-less version bumps) always invalidate downstream caches.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $document The document the hash is derived from.
 	 *
 	 * @return string A 32-character hash.
@@ -153,6 +191,8 @@ final class Token_Store extends Query {
 
 	/**
 	 * Signal that a token set changed so projectors and caches can react.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $slug The token set slug that changed.
 	 *
