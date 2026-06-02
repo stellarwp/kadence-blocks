@@ -34,5 +34,9 @@ codeception.slic.yml
 .wordpress-org/
 .npmrc
 bunfig.toml
+.phpstan/
+phpstan-baseline.neon
+phpstan-cache/
+phpstan.neon
 .cspell.json
 .nvmrc
