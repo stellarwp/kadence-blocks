@@ -28,6 +28,7 @@
         "gulpfile",
         "hcaptcha",
         "kadence",
+        "LONGTEXT",
         "lottiefiles",
         "lwsw",
         "mbstring",
@@ -45,6 +46,7 @@
         "splide",
         "splidejs",
         "stellarwp",
+        "wpdb",
         "wpunit"
     ]
 }
