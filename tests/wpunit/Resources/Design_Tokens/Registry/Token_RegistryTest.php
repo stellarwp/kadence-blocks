@@ -156,6 +156,10 @@ final class Token_RegistryTest extends TestCase {
 			public function has( string $id ): bool {
 				return $id === 'semantic.color.button-bg';
 			}
+
+			public function document(): array {
+				return [];
+			}
 		};
 
 		$this->assertSame( [ 'semantic.spacing.md' ], $this->registry->missing_from_baseline( $baseline ) );

@@ -26,4 +26,15 @@ final class Empty_Baseline_Document implements Baseline_Document {
 	public function has( string $id ): bool {
 		return false;
 	}
+
+	/**
+	 * No baseline exists, so the document is empty — consistent with has() always being false.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function document(): array {
+		return [];
+	}
 }

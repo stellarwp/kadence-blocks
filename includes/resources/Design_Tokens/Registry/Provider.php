@@ -2,12 +2,12 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Always_Present_Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
- * Wires the Token Registry: binds the singleton and the (stub) baseline, defines the global helper,
+ * Wires the Token Registry: binds the singleton and the shipped baseline, defines the global helper,
  * registers the token declarations, then runs the fail-closed baseline guard once all tokens are in.
  *
  * @since TBD
@@ -22,10 +22,13 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Token_Registry::class, Token_Registry::class );
 
-		// Bind the baseline contract to a permissive stub until SOFT-3377 supplies the real document.
-		// The example declarations flow through registration and the guard end-to-end; SOFT-3377 swaps
-		// this binding for the real document, at which point a token without a baseline entry fails closed.
-		$this->container->singleton( Baseline_Document::class, Always_Present_Baseline_Document::class );
+		// Bind the baseline contract to the shipped, read-only DTCG document (baseline.json). Every
+		// declared token must now have a matching baseline entry or the guard fails closed. The version
+		// keys the decoded-document cache, so a baseline shipped with a new plugin build invalidates it.
+		$this->container->singleton(
+			Baseline_Document::class,
+			new Json_Baseline_Document( __DIR__ . '/Baseline/baseline.json', KADENCE_BLOCKS_VERSION )
+		);
 
 		$this->load_helper();
 
