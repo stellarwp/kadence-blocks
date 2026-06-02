@@ -15,7 +15,9 @@
 		"lint-js-fix": "wp-scripts lint-js --fix",
 		"format": "wp-scripts format",
 		"link-kadence-packages": "node node_modules/@kadence/components/scripts/npm/link-kadence-packages.js",
-		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js"
+		"unlink-kadence-packages": "node node_modules/@kadence/components/scripts/npm/unlink-kadence-packages.js",
+		"cspell-cmd": "bunx cspell lint -c .cspell.json --no-progress --no-must-find-files --dot",
+		"cspell-full": "bun run cspell-cmd '**'"
 	},
 	"dependencies": {
 		"@algolia/autocomplete-js": "^1.10.0",
@@ -67,6 +69,7 @@
 		"@wordpress/scripts": "^30.19.0",
 		"ajv": "^8.17.1",
 		"concurrently": "^9.2.0",
+		"cspell": "^10.0.1",
 		"del": "^8.0.0",
 		"eslint-import-resolver-alias": "^1.1.2",
 		"eslint-import-resolver-webpack": "^0.13.8",
