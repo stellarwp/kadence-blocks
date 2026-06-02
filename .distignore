@@ -38,6 +38,8 @@ bunfig.toml
 phpstan-baseline.neon
 phpstan-cache/
 phpstan.neon
+.cspell.json
+.nvmrc
 dev_scripts/
 diff.txt
 diffcs.txt
