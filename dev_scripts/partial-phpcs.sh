@@ -14,10 +14,10 @@
 # $2 - base branch (default: origin/master)
 # $3 - file list (newline separated, required when operation_mode is selected)
 #
-# cSpell:ignore ACMR diffcs diffFilter
+# cSpell:ignore ACMR diffcs diffFilter exussum
 
-# Fail loudly: without this a failed `git diff` (unfetched/typo'd base ref,
-# shallow-fetch issue) would print an error, leave an empty file list, and the
+# Fail loudly: without this a failed `git diff` (base ref not fetched, a typo,
+# a shallow-fetch issue) would print an error, leave an empty file list, and the
 # "No php files to check" guard below would exit 0 -- a misleading green check.
 set -euo pipefail
 

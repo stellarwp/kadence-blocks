@@ -1,5 +1,7 @@
 name: PHPCS
 
+# cspell:ignore shivammathur
+#
 # Runs PHP_CodeSniffer against only the lines changed by the branch, so a PR is
 # held to the coding standard for what it touches without failing on pre-existing
 # violations elsewhere. Every remaining issue is printed in full to the job log
