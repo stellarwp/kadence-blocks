@@ -43,7 +43,7 @@ abstract class Composite_Value implements Value_Validator {
 		}
 
 		// A brace-bearing string is a fumbled alias attempt — a composite literal is otherwise an object.
-		if ( Alias::looks_like_alias( $value ) ) {
+		if ( is_string( $value ) && Alias::looks_like_alias( $value ) ) {
 			return [
 				new Validation_Error(
 					$path,

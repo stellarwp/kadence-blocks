@@ -114,6 +114,7 @@ final class Kind {
 			return 'array';
 		}
 
-		return (string) $value;
+		// Remaining scalars (int/float) are castable; anything else falls back to its type name.
+		return is_scalar( $value ) ? (string) $value : gettype( $value );
 	}
 }

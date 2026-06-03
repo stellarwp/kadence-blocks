@@ -69,7 +69,11 @@ final class Alias {
 	 * @return bool
 	 */
 	public static function looks_like_alias( $value ): bool {
-		return is_string( $value ) && ( strpos( $value, '{' ) !== false || strpos( $value, '}' ) !== false );
+		return is_string( $value )
+			&& (
+				strpos( $value, '{' ) !== false
+				|| strpos( $value, '}' ) !== false
+			);
 	}
 
 	/**
