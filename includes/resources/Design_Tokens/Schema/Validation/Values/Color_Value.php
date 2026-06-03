@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 
 /**
- * Validates a color $value: an alias or a colour literal (hex / function / keyword / named colour).
+ * Validates a color $value: an alias or a color literal (hex / function / keyword / named color).
  *
  * @since TBD
  */

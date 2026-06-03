@@ -16,7 +16,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *   1. a well-formed alias        → valid (the Resolver flattens it later; "alias anywhere" lives here).
  *   2. a malformed alias attempt  → CODE_ALIAS_MALFORMED (a value that reaches for a "{…}" but is not
  *                                   a whole-string alias — flagged distinctly so authors fix the alias
- *                                   rather than being told it is an invalid colour/dimension).
+ *                                   rather than being told it is an invalid color/dimension).
  *   3. otherwise                  → a literal check via Literals; failure is CODE_VALUE_INVALID.
  *
  * @since TBD

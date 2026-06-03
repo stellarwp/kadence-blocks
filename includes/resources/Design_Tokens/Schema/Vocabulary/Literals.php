@@ -8,7 +8,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *
  * These checks are deliberately permissive-but-meaningful: they reject obviously-wrong values (a color
  * of "not-a-color", a dimension of "red") while accepting the breadth of valid CSS — hex/function
- * colours, length units, and CSS function forms like var()/calc()/clamp(). They never see aliases:
+ * colors, length units, and CSS function forms like var()/calc()/clamp(). They never see aliases:
  * callers short-circuit Alias::is_alias() first, so "alias anywhere" stays a single rule applied once.
  *
  * @since TBD
@@ -25,7 +25,7 @@ final class Literals {
 	private const LENGTH_UNITS = 'px|rem|em|ex|ch|vw|vh|vmin|vmax|vi|vb|cm|mm|in|pt|pc|q|fr|%|deg|rad|grad|turn|s|ms';
 
 	/**
-	 * CSS-wide keywords and the dynamic colour keywords, valid for any kind.
+	 * CSS-wide keywords and the dynamic color keywords, valid for any kind.
 	 *
 	 * @since TBD
 	 *
@@ -41,7 +41,7 @@ final class Literals {
 	];
 
 	/**
-	 * The CSS named colours (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
+	 * The CSS named colors (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
 	 * what lets "not-a-color" be rejected while "rebeccapurple" is accepted.
 	 *
 	 * @since TBD
@@ -200,12 +200,12 @@ final class Literals {
 	];
 
 	/**
-	 * Whether the value is a valid colour literal: a hex colour, a CSS colour function, a CSS-wide or
-	 * dynamic keyword, or a named colour.
+	 * Whether the value is a valid color literal: a hex color, a CSS color function, a CSS-wide or
+	 * dynamic keyword, or a named color.
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed $value The candidate colour.
+	 * @param mixed $value The candidate color.
 	 *
 	 * @return bool
 	 */
@@ -225,7 +225,7 @@ final class Literals {
 			return true;
 		}
 
-		// A CSS colour function such as rgb, hsl, lab, oklch, color, or a var/calc reference.
+		// A CSS color function such as rgb, hsl, lab, oklch, color, or a var/calc reference.
 		return self::is_function( $value );
 	}
 

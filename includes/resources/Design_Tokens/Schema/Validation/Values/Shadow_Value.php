@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
  * Validates a shadow $value: an alias, or an object of { color, offsetX, offsetY, blur, spread } where
- * each sub-field is itself an alias or its literal kind (a colour, the rest dimensions).
+ * each sub-field is itself an alias or its literal kind (a color, the rest dimensions).
  *
  * @since TBD
  */

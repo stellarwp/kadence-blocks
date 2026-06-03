@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Schema;
 
+// cspell:ignore justinrainbow .
+
 use JsonSchema\Validator as Json_Schema_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Provider;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
@@ -15,8 +17,8 @@ use Tests\Support\Classes\TestCase;
  *   2. the shipped baseline validates against that schema (the check requested on SOFT-3378), and
  *   3. for the structural errors both engines can see, the published schema and the PHP validator agree.
  *
- * Literal-grammar errors (a bad colour, a malformed alias that is still a string) are out of agreement
- * scope by design: the published schema treats colour/dimension literals permissively and the PHP
+ * Literal-grammar errors (a bad color, a malformed alias that is still a string) are out of agreement
+ * scope by design: the published schema treats color/dimension literals permissively and the PHP
  * Literals layer is their sole authority. justinrainbow is used here as a DEV-ONLY draft-07 engine; the
  * runtime never loads a schema engine.
  *

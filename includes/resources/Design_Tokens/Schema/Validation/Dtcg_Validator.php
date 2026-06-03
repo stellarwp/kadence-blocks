@@ -29,8 +29,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *                         the "$value": null (reset) and "$disabled": true (remove) sentinels are
  *                         allowed in place of a value.
  *
- * Leaf-level "$"-extensions are passed through unvalidated and reserved for future responsive / clamp
- * work. The $extensions layer is validated only as far as this ticket's scope: variant / preset
+ * Leaf-level "$"-extensions are passed through without validation and reserved for future responsive /
+ * clamp work. The $extensions layer is validated only as far as this ticket's scope: variant / preset
  * `tokens` map values must be alias-or-literal; richer variant semantics are out of scope here.
  *
  * @since TBD

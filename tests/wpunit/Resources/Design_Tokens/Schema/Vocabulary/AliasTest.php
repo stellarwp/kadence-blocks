@@ -12,7 +12,7 @@ final class AliasTest extends TestCase {
 	 *
 	 * @param mixed $value
 	 */
-	public function testItRecognisesAliases( $value, bool $expected ): void {
+	public function testItRecognizesAliases( $value, bool $expected ): void {
 		$this->assertSame( $expected, Alias::is_alias( $value ) );
 	}
 
@@ -21,19 +21,19 @@ final class AliasTest extends TestCase {
 	 */
 	public function aliasProvider(): array {
 		return [
-			'simple path'      => [ '{primitive.color.brand.primary}', true ],
-			'single segment'   => [ '{brand}', true ],
-			'with dashes'      => [ '{semantic.color.button-bg}', true ],
-			'leading digit'    => [ '{primitive.fontSize.2xl}', true ],
-			'space inside'     => [ '{bad path}', false ],
-			'partial interp'   => [ '1px solid {x}', false ],
-			'no braces'        => [ 'primitive.color.brand', false ],
-			'open only'        => [ '{primitive.color', false ],
-			'empty braces'     => [ '{}', false ],
-			'empty string'     => [ '', false ],
-			'non-string int'   => [ 700, false ],
-			'non-string array' => [ [ 'a' ], false ],
-			'non-string null'  => [ null, false ],
+			'simple path'           => [ '{primitive.color.brand.primary}', true ],
+			'single segment'        => [ '{brand}', true ],
+			'with dashes'           => [ '{semantic.color.button-bg}', true ],
+			'leading digit'         => [ '{primitive.fontSize.2xl}', true ],
+			'space inside'          => [ '{bad path}', false ],
+			'partial interpolation' => [ '1px solid {x}', false ],
+			'no braces'             => [ 'primitive.color.brand', false ],
+			'open only'             => [ '{primitive.color', false ],
+			'empty braces'          => [ '{}', false ],
+			'empty string'          => [ '', false ],
+			'non-string int'        => [ 700, false ],
+			'non-string array'      => [ [ 'a' ], false ],
+			'non-string null'       => [ null, false ],
 		];
 	}
 
@@ -59,14 +59,14 @@ final class AliasTest extends TestCase {
 	 */
 	public function looksLikeAliasProvider(): array {
 		return [
-			'malformed space' => [ '{bad path}', true ],
-			'unclosed'        => [ '{primitive.color', true ],
-			'partial interp'  => [ '1px solid {x}', true ],
-			'closing only'    => [ 'x}', true ],
-			'well-formed too' => [ '{primitive.color.brand.primary}', true ],
-			'plain literal'   => [ 'not-a-color', false ],
-			'empty string'    => [ '', false ],
-			'non-string'      => [ 700, false ],
+			'malformed space'       => [ '{bad path}', true ],
+			'unclosed'              => [ '{primitive.color', true ],
+			'partial interpolation' => [ '1px solid {x}', true ],
+			'closing only'          => [ 'x}', true ],
+			'well-formed too'       => [ '{primitive.color.brand.primary}', true ],
+			'plain literal'         => [ 'not-a-color', false ],
+			'empty string'          => [ '', false ],
+			'non-string'            => [ 700, false ],
 		];
 	}
 }

@@ -18,6 +18,8 @@ declare( strict_types=1 );
 
 namespace KadenceWP\KadenceBlocks\Dev\Design_Tokens\Schema;
 
+// cspell:ignore justinrainbow .
+
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
@@ -29,7 +31,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *
  * Scope mirrors the validator's published contract: it models the full document grammar (the baseline
  * shape) — group recursion, the $type enum, the alias pattern, leaf shape, and composite field shapes.
- * Literal colour/dimension grammar is intentionally permissive here (the PHP Literals layer is the
+ * Literal color/dimension grammar is intentionally permissive here (the PHP Literals layer is the
  * authority for that), and the store-only override sentinels are a runtime concern, not part of the
  * public document contract. Draft-07 is chosen for universal tool support.
  *

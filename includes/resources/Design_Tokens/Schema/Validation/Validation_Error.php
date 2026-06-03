@@ -33,7 +33,7 @@ final class Validation_Error {
 	private const CODE_ALIAS_MALFORMED = 'alias_malformed';
 
 	/**
-	 * A literal value is not valid for its $type / kind (e.g. a colour of "not-a-color").
+	 * A literal value is not valid for its $type / kind (e.g. a color of "not-a-color").
 	 *
 	 * @since TBD
 	 *
