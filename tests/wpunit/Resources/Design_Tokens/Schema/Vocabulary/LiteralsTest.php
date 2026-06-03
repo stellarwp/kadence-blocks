@@ -226,6 +226,10 @@ final class LiteralsTest extends TestCase {
 			'value'    => 1001,
 			'expected' => false,
 		];
+		yield 'leading zero string' => [
+			'value'    => '0400',
+			'expected' => false,
+		];
 		yield 'word' => [
 			'value'    => 'heavy',
 			'expected' => false,

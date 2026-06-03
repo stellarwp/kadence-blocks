@@ -293,7 +293,14 @@ final class Literals {
 	 * @return bool
 	 */
 	public static function is_font_weight( $value ): bool {
-		if ( is_int( $value ) || ( is_string( $value ) && (bool) preg_match( '/^\d{1,4}$/', $value ) ) ) {
+		if (
+			is_int( $value )
+			|| (
+				// String form must not carry a leading zero ("0400" is a CSS parse error).
+				is_string( $value )
+				&& (bool) preg_match( '/^[1-9]\d{0,3}$/', $value )
+			)
+		) {
 			$weight = (int) $value;
 
 			return $weight >= 1 && $weight <= 1000;
