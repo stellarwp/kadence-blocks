@@ -15,6 +15,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
 
 /**
  * Check if we are in AMP Mode.
@@ -215,6 +216,15 @@ function kadence_blocks_get_authorized_license_key(): string {
 		if ( is_authorized( $candidate['key'], $candidate['slug'], $token ?? '', get_license_domain() ) ) {
 			return $candidate['key'];
 		}
+		// Legacy keys (e.g. "ktw...") are activated by direct license-key
+		// validation and never obtain a V3 authorization token, so is_authorized()
+		// above returns false for them. Fall back to the legacy validation flow so
+		// a valid legacy key still ships to the pattern/AI servers. A revoked or
+		// expired legacy key still fails here, preserving the original intent of
+		// not handing a stale key to remotes.
+		if ( kadence_blocks_is_legacy_key_valid( $candidate['slug'], $candidate['key'] ) ) {
+			return $candidate['key'];
+		}
 	}
 
 	if (
@@ -229,6 +239,45 @@ function kadence_blocks_get_authorized_license_key(): string {
 	}
 
 	return '';
+}
+
+/**
+ * Whether a license key is valid via the legacy (Uplink V2) validation flow.
+ *
+ * Legacy keys (e.g. "ktw...") are validated by checking the key directly against
+ * the licensing server rather than via the V3 token-authorization handshake, so
+ * {@see is_authorized()} returns false for them even when the key is good. This
+ * mirrors how kadence-blocks-pro validates its own legacy license. The result is
+ * cached in a transient (keyed by slug + key) so we don't hit the licensing
+ * server on every editor/REST load.
+ *
+ * @since TBD
+ *
+ * @param string $slug The Uplink resource slug.
+ * @param string $key  The license key to validate.
+ *
+ * @return bool
+ */
+function kadence_blocks_is_legacy_key_valid( string $slug, string $key ): bool {
+	if ( empty( $slug ) || empty( $key ) ) {
+		return false;
+	}
+
+	$transient = 'kadence_blocks_legacy_key_valid_' . md5( $slug . '_' . $key );
+	$cached    = get_transient( $transient );
+	if ( 'valid' === $cached ) {
+		return true;
+	}
+	if ( 'invalid' === $cached ) {
+		return false;
+	}
+
+	$validation = validate_license( $slug, $key );
+	$is_valid   = $validation && method_exists( $validation, 'is_valid' ) && $validation->is_valid();
+
+	set_transient( $transient, $is_valid ? 'valid' : 'invalid', WEEK_IN_SECONDS );
+
+	return $is_valid;
 }
 
 /**
