@@ -101,11 +101,11 @@ final class Baseline_GuardTest extends TestCase {
 		$this->assertSame( $before + 1, $this->count_admin_notices() );
 	}
 
-	public function testItResolvesFromTheContainerAgainstTheBoundStub(): void {
+	public function testItResolvesFromTheContainerAgainstTheBoundBaselineDocument(): void {
 		// Exercises the real autowiring path: Token_Registry singleton, the bound Baseline_Document
-		// stub, the LoggerInterface bound by Log_Provider, and the optional $throw_on_missing default.
-		// The bound Always_Present_Baseline_Document satisfies every declared token, so the guard is a
-		// no-op and projection stays active.
+		// (the shipped Json_Baseline_Document), the LoggerInterface bound by Log_Provider, and the
+		// optional $throw_on_missing default. The shipped baseline has an entry for every declared
+		// token, so the guard is a no-op and projection stays active.
 		$registry = $this->container->get( Token_Registry::class );
 
 		$this->container->get( Baseline_Guard::class )->run();
