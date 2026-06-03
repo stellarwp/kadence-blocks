@@ -23,9 +23,8 @@ use Tests\Support\Classes\TestCase;
  * Literals layer is their sole authority. justinrainbow is used here as a DEV-ONLY draft-07 engine; the
  * runtime never loads a schema engine.
  *
- * NOTE: the baseline is consumed from a test fixture until SOFT-3377 ships
- * includes/resources/Design_Tokens/Registry/Baseline/baseline.json on this branch; once it lands, point
- * this test at the real file so the shipped document is the conformance target.
+ * The conformance target is the real shipped baseline (includes/resources/Design_Tokens/Registry/
+ * Baseline/baseline.json), read straight from the plugin source.
  *
  * @since TBD
  */
@@ -50,7 +49,7 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 	 */
 	public function testTheShippedBaselineValidatesAgainstTheSchema(): void {
 		$validator = new Json_Schema_Validator();
-		$data      = json_decode( $this->fixture( 'design-tokens/baseline.json' ) );
+		$data      = json_decode( $this->get_baseline() );
 
 		$validator->validate( $data, $this->schema() );
 
@@ -61,7 +60,7 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheBaselinePassesThePhpValidatorToo(): void {
-		$document = json_decode( $this->fixture( 'design-tokens/baseline.json' ), true );
+		$document = json_decode( $this->get_baseline(), true );
 
 		$this->assertTrue( ( new Dtcg_Validator() )->validate( $document, Dtcg_Validator::get_context_baseline() )->is_valid() );
 	}
@@ -128,6 +127,16 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 				],
 			],
 		];
+	}
+
+	/**
+	 * The shipped baseline DTCG document, read straight from the plugin source.
+	 *
+	 * @return string
+	 */
+	private function get_baseline(): string {
+		// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		return (string) file_get_contents( KADENCE_BLOCKS_PATH . 'includes/resources/Design_Tokens/Registry/Baseline/baseline.json' );
 	}
 
 	/**

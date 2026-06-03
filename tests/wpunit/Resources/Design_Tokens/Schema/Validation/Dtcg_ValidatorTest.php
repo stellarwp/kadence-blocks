@@ -21,8 +21,8 @@ final class Dtcg_ValidatorTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testTheShippedBaselineFixtureValidatesAsABaseline(): void {
-		$document = json_decode( $this->fixture( 'design-tokens/baseline.json' ), true );
+	public function testTheShippedBaselineValidatesAsABaseline(): void {
+		$document = json_decode( $this->get_baseline(), true );
 
 		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() );
 
@@ -33,7 +33,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheBaselineAlsoValidatesAsOverrides(): void {
-		$document = json_decode( $this->fixture( 'design-tokens/baseline.json' ), true );
+		$document = json_decode( $this->get_baseline(), true );
 
 		$this->assertTrue( $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() )->is_valid() );
 	}
@@ -233,6 +233,16 @@ final class Dtcg_ValidatorTest extends TestCase {
 		];
 
 		$this->assertTrue( $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() )->is_valid() );
+	}
+
+	/**
+	 * The shipped baseline DTCG document, read straight from the plugin source.
+	 *
+	 * @return string
+	 */
+	private function get_baseline(): string {
+		// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+		return (string) file_get_contents( KADENCE_BLOCKS_PATH . 'includes/resources/Design_Tokens/Registry/Baseline/baseline.json' );
 	}
 
 	/**
