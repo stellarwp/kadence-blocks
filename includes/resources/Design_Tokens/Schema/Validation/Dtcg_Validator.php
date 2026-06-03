@@ -25,9 +25,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *
  *   - CONTEXT_BASELINE  — the shipped, full document: every leaf must carry a concrete $type + $value;
  *                         override sentinels are rejected.
- *   - CONTEXT_OVERRIDES — a sparse store write: the same leaf rules apply to values that ARE set, but
- *                         the "$value": null (reset) and "$disabled": true (remove) sentinels are
- *                         allowed in place of a value.
+ *   - CONTEXT_OVERRIDES — a store write that is sparse in PATHS (only the tokens being changed appear),
+ *                         not in keys: every concrete leaf is still self-describing and must carry
+ *                         $type + $value, exactly as in the baseline. The two override-only sparse
+ *                         forms are the "$value": null (reset to baseline) and "$disabled": true
+ *                         (remove the token) sentinels; outside of those, an override leaf without a
+ *                         $type is rejected as $type_unknown.
  *
  * Leaf-level "$"-extensions are passed through without validation and reserved for future responsive /
  * clamp work. The $extensions layer is validated only as far as this ticket's scope: variant / preset
