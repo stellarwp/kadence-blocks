@@ -26,7 +26,9 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	 * @return void
 	 */
 	function kadence_blocks_register_design_token( array $definition ): void {
-		kadence_blocks()->get( Token_Registry::class )->register( $definition );
+		/** @var Token_Registry $registry */
+		$registry = kadence_blocks()->get( Token_Registry::class );
+		$registry->register( $definition );
 	}
 }
 
@@ -44,6 +46,8 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 	 * @return void
 	 */
 	function kadence_blocks_register_design_variant_set( array $set ): void {
-		kadence_blocks()->get( Token_Registry::class )->register_variant_set( $set );
+		/** @var Token_Registry $registry */
+		$registry = kadence_blocks()->get( Token_Registry::class );
+		$registry->register_variant_set( $set );
 	}
 }

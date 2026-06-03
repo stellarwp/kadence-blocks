@@ -17,11 +17,9 @@ final class Design_Tokens_Provider extends Provider {
 	private const PROVIDERS = [
 		Registry\Provider::class,
 		Schema\Provider::class,
+		Database\Provider::class,
 	];
 
-	/**
-	 * @inheritDoc
-	 */
 	public function register(): void {
 		foreach ( self::PROVIDERS as $provider ) {
 			$this->container->register( $provider );

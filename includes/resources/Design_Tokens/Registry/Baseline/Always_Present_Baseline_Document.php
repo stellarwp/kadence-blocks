@@ -5,13 +5,13 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 
 /**
- * Permissive baseline stub bound until SOFT-3377 ships the real DTCG document.
+ * Permissive baseline stub: its has() always returns true, so every declared token is treated as
+ * present and the guard becomes a no-op.
  *
- * Its has() always returns true, so the example declarations flow through registration, the guard
- * and (later) projection end-to-end now — proving the path this ticket promises. The guard is therefore
- * effectively a no-op at runtime until SOFT-3377 swaps this binding for the real document, at which
- * point every declared token must have a genuine baseline entry or the guard fires. The fail-closed
- * "missing" path is still fully covered by tests using a fake baseline.
+ * This was the bound default until SOFT-3377 shipped the real document (Json_Baseline_Document); the
+ * container now binds that instead. Retained as a test fixture for exercising the guard's "all present"
+ * path without the real baseline. The fail-closed "missing" path is covered by Empty_Baseline_Document
+ * and per-test fakes.
  *
  * @since TBD
  */
@@ -26,5 +26,16 @@ final class Always_Present_Baseline_Document implements Baseline_Document {
 	 */
 	public function has( string $id ): bool {
 		return true;
+	}
+
+	/**
+	 * No real document backs this fixture; only has() is meaningful here.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function document(): array {
+		return [];
 	}
 }

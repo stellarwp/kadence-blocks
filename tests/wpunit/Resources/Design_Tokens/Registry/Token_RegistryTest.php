@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore advancedbtn .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
@@ -155,6 +156,10 @@ final class Token_RegistryTest extends TestCase {
 		$baseline = new class() implements Baseline_Document {
 			public function has( string $id ): bool {
 				return $id === 'semantic.color.button-bg';
+			}
+
+			public function document(): array {
+				return [];
 			}
 		};
 

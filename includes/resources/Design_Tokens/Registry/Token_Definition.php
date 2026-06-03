@@ -104,17 +104,9 @@ final class Token_Definition {
 	 * @return self
 	 */
 	public static function from_array( array $definition ): self {
-		foreach ( [ 'id', 'type', 'label' ] as $required ) {
-			// Require a present, non-empty string. Avoid empty() so a legitimate "0" string is not
-			// mistaken for a missing value.
-			if ( ! isset( $definition[ $required ] ) || ! is_string( $definition[ $required ] ) || $definition[ $required ] === '' ) {
-				throw new InvalidArgumentException(
-					sprintf( 'Design token declaration is missing required string "%s".', $required )
-				);
-			}
-		}
-
-		$id = $definition['id'];
+		$id    = self::require_string( $definition['id'] ?? null, 'id' );
+		$type  = self::require_string( $definition['type'] ?? null, 'type' );
+		$label = self::require_string( $definition['label'] ?? null, 'label' );
 
 		// Guard the id charset at declaration time: it feeds Css_Var::from_id() which only swaps "." for
 		// "--", so an id with a space or slash would silently yield an invalid CSS custom-property name.
@@ -125,29 +117,74 @@ final class Token_Definition {
 			);
 		}
 
-		// Optional keys are type-checked so a bad declaration raises the documented InvalidArgumentException
-		// rather than a raw TypeError from the constructor's typed params — this is a public helper.
-		if ( isset( $definition['group'] ) && ! is_string( $definition['group'] ) ) {
-			throw new InvalidArgumentException( 'Design token declaration "group" must be a string.' );
-		}
+		$group   = self::optional_string( $definition['group'] ?? null, 'group' );
+		$css_var = self::optional_string( $definition['css_var'] ?? null, 'css_var' );
 
-		if ( isset( $definition['css_var'] ) && ! is_string( $definition['css_var'] ) ) {
-			throw new InvalidArgumentException( 'Design token declaration "css_var" must be a string.' );
-		}
-
-		if ( isset( $definition['projections'] ) && ! is_array( $definition['projections'] ) ) {
+		// Type-checked here so a bad declaration raises the documented InvalidArgumentException rather than
+		// a raw TypeError from the constructor's typed param — this is a public helper.
+		$projections = $definition['projections'] ?? [];
+		if ( ! is_array( $projections ) ) {
 			throw new InvalidArgumentException( 'Design token declaration "projections" must be an array.' );
 		}
 
 		return new self(
 			$id,
-			$definition['type'],
-			$definition['label'],
-			$definition['group'] ?? '',
+			$type,
+			$label,
+			$group ?? '',
 			// css_var override is rare; default is derived and impossible to drift from the id.
-			$definition['css_var'] ?? Css_Var::from_id( $id ),
-			$definition['projections'] ?? []
+			$css_var ?? Css_Var::from_id( $id ),
+			$projections
 		);
+	}
+
+	/**
+	 * Require a declaration value to be a present, non-empty string.
+	 *
+	 * Avoid empty() so a legitimate "0" string is not mistaken for a missing value.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value The raw declaration value.
+	 * @param string $key   The declaration key, used for the error message.
+	 *
+	 * @throws InvalidArgumentException When the value is missing or not a non-empty string.
+	 *
+	 * @return string
+	 */
+	private static function require_string( $value, string $key ): string {
+		if ( ! is_string( $value ) || $value === '' ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token declaration is missing required string "%s".', $key )
+			);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Type-check an optional declaration value: a string when present, otherwise null.
+	 *
+	 * Validated here so a bad declaration raises the documented InvalidArgumentException rather than a
+	 * raw TypeError from the constructor's typed params — this is a public helper.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value The raw declaration value.
+	 * @param string $key   The declaration key, used for the error message.
+	 *
+	 * @throws InvalidArgumentException When the value is present but not a string.
+	 *
+	 * @return string|null
+	 */
+	private static function optional_string( $value, string $key ): ?string {
+		if ( $value !== null && ! is_string( $value ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token declaration "%s" must be a string.', $key )
+			);
+		}
+
+		return $value;
 	}
 
 	/**

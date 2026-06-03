@@ -13,6 +13,7 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
 use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
+use KadenceWP\KadenceBlocks\Traits\API_Url_Trait;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
@@ -27,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller {
 
+	use API_Url_Trait;
 	use Image_Trait;
 
 	/**
@@ -192,7 +194,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/get/';
+	protected $remote_url;
 
 	/**
 	 * The remote URL.
@@ -200,7 +202,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/categories/';
+	protected $remote_cat_url;
 
 	/**
 	 * The remote URL.
@@ -208,7 +210,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages/';
+	protected $remote_pages_url;
 
 	/**
 	 * The remote URL.
@@ -216,7 +218,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_pages_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages-categories/';
+	protected $remote_pages_cat_url;
 
 	/**
 	 * The remote URL.
@@ -224,7 +226,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
-	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
+	protected $remote_templates_url;
 
 	/**
 	 * The library folder.
@@ -336,8 +338,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.7.5 add dynamic base URLs for patterns and starter templates
 	 */
 	public function __construct() {
+		$this->remote_url           = $this->get_patterns_get_url();
+		$this->remote_cat_url       = $this->get_patterns_categories_url();
+		$this->remote_pages_url     = $this->get_patterns_pages_url();
+		$this->remote_pages_cat_url = $this->get_patterns_pages_categories_url();
+		$this->remote_templates_url = $this->get_starter_get_url();
+
 		$this->namespace           = 'kb-design-library/v1';
 		$this->rest_base           = 'get';
 		$this->reset               = 'reset';
@@ -932,7 +942,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			[
 				'post_type' => $cpt_data['post_type'],
 				'title'     => $title,
-			] 
+			]
 		);
 		if ( $post_exists ) {
 			return $post_exists[0]->ID;
@@ -1041,7 +1051,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$content = str_replace( 'logo-placeholder-8.png', 'logo-placeholder-8-white.png', $content );
 		$content = str_replace( 'logo-placeholder-9.png', 'logo-placeholder-9-white.png', $content );
 		$content = str_replace( 'logo-placeholder-10.png', 'logo-placeholder-10-white.png', $content );
-		
+
 		if ( $style === 'highlight' ) {
 			$form_content = $this->get_string_inbetween( $content, '"submit":[{', ']}', 'wp:kadence/form' );
 			if ( $form_content ) {
@@ -1355,7 +1365,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
 			}
 		} else {
-			$library_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/';
+			$library_url = $this->get_patterns_single_url();
 		}
 
 		if ( ! empty( $library ) ) {
@@ -1764,7 +1774,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context_name'    => $context,
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			// Check if we have a remote file.
@@ -1784,7 +1794,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 						'context_name'    => $context,
 						'is_regeneration' => true,
 						'errors'          => $response->get_error_messages(),
-					] 
+					]
 				);
 
 				return rest_ensure_response( 'error' );
@@ -1825,7 +1835,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'context_name'    => $context,
 					'credits_after'   => $this->get_remote_remaining_credits(),
 					'is_regeneration' => true,
-				] 
+				]
 			);
 
 			return rest_ensure_response( $body );
@@ -1951,7 +1961,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				[
 					'context' => $contexts_available,
 					'error'   => true,
-				] 
+				]
 			);
 		} else {
 			return rest_ensure_response( 'failed' );
