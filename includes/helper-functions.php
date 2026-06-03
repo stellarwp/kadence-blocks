@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
 
@@ -247,9 +248,11 @@ function kadence_blocks_get_authorized_license_key(): string {
  * Legacy keys (e.g. "ktw...") are validated by checking the key directly against
  * the licensing server rather than via the V3 token-authorization handshake, so
  * {@see is_authorized()} returns false for them even when the key is good. This
- * mirrors how kadence-blocks-pro validates its own legacy license. The result is
- * cached in a transient (keyed by slug + key) so we don't hit the licensing
- * server on every editor/REST load.
+ * mirrors how kadence-blocks-pro validates its own legacy license. Uplink's own
+ * persisted license status is the source of truth for a positive result (it
+ * revalidates on its own schedule, so a revoked key is not kept "valid"); only
+ * the negative result is short-cached in a transient to avoid re-hitting the
+ * licensing server on every editor/REST load.
  *
  * @since TBD
  *
@@ -263,19 +266,31 @@ function kadence_blocks_is_legacy_key_valid( string $slug, string $key ): bool {
 		return false;
 	}
 
-	$transient = 'kadence_blocks_legacy_key_valid_' . md5( $slug . '_' . $key );
-	$cached    = get_transient( $transient );
-	if ( 'valid' === $cached ) {
+	$resource = get_resource( $slug );
+
+	// Authoritative positive signal: trust Uplink's persisted, self-maintained
+	// status when it already says the key is valid. Uplink revalidates and
+	// updates this status on its own schedule, so we avoid the false positives
+	// that a week-long positive transient could ship for a revoked key.
+	if ( $resource && $resource->get_license_object()->is_valid() ) {
 		return true;
 	}
-	if ( 'invalid' === $cached ) {
+
+	// No stored "valid" status yet (never validated, invalid, or revoked).
+	// Short-cache the negative so we don't re-POST on every load, then validate;
+	// a successful validate_license() persists the status, so the fast path
+	// above answers subsequent requests without another network call.
+	$transient = 'kadence_blocks_legacy_key_invalid_' . md5( $slug . '_' . $key );
+	if ( 'invalid' === get_transient( $transient ) ) {
 		return false;
 	}
 
 	$validation = validate_license( $slug, $key );
 	$is_valid   = $validation && method_exists( $validation, 'is_valid' ) && $validation->is_valid();
 
-	set_transient( $transient, $is_valid ? 'valid' : 'invalid', WEEK_IN_SECONDS );
+	if ( ! $is_valid ) {
+		set_transient( $transient, 'invalid', HOUR_IN_SECONDS );
+	}
 
 	return $is_valid;
 }
