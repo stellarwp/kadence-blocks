@@ -86,6 +86,8 @@ final class Dtcg_Schema_Generator {
 	/**
 	 * The reusable schema definitions.
 	 *
+	 * @since TBD
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function definitions(): array {
@@ -95,10 +97,12 @@ final class Dtcg_Schema_Generator {
 				'pattern'     => Alias::get_pattern(),
 				'description' => 'A whole-string DTCG alias, e.g. "{primitive.color.brand.primary}".',
 			],
-			// A node is exactly one of a token leaf or a group of child nodes. They are mutually
-			// exclusive: a leaf requires $type + $value (and forbids non-"$" children), a group forbids
-			// $type/$value (additionalProperties:false) and recurses into child nodes. if/then is avoided
-			// deliberately — the dev-side draft-07 engine (justinrainbow) does not enforce it.
+			/**
+			 * A node is exactly one of a token leaf or a group of child nodes. They are mutually
+			 * exclusive: a leaf requires $type + $value (and forbids non-"$" children), a group forbids
+			 * $type/$value (additionalProperties:false) and recurses into child nodes. if/then is avoided
+			 * deliberately — the dev-side draft-07 engine (justinrainbow) does not enforce it.
+			 */
 			'node'  => [
 				'type'  => 'object',
 				'oneOf' => [
@@ -137,6 +141,8 @@ final class Dtcg_Schema_Generator {
 	 * One branch per $type pinning $type to a const and $value to that type's value schema. The branches
 	 * are mutually exclusive (distinct $type consts), so the enclosing oneOf selects exactly one.
 	 *
+	 * @since TBD
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function value_branches(): array {
@@ -159,6 +165,8 @@ final class Dtcg_Schema_Generator {
 	 * The per-type $value definitions, each "alias OR the type's literal shape". anyOf (not oneOf):
 	 * an alias is itself a string, so a string literal branch would otherwise double-match an alias.
 	 *
+	 * @since TBD
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function value_definitions(): array {
@@ -179,6 +187,8 @@ final class Dtcg_Schema_Generator {
 	/**
 	 * The permissive literal shape for a $type. Composite types are built from composite_fields() so the
 	 * field set tracks Token_Type; scalar literal grammar stays permissive (PHP Literals is the authority).
+	 *
+	 * @since TBD
 	 *
 	 * @param string $type A v1 $type.
 	 *
@@ -203,6 +213,8 @@ final class Dtcg_Schema_Generator {
 
 	/**
 	 * The object shape for a composite type: every sub-field required, each "alias OR kind shape".
+	 *
+	 * @since TBD
 	 *
 	 * @param string $type A composite $type.
 	 *
@@ -232,6 +244,8 @@ final class Dtcg_Schema_Generator {
 	/**
 	 * The permissive non-alias shape for a composite sub-field kind.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $kind A $type or KIND_* constant.
 	 *
 	 * @return array<string, mixed>
@@ -255,6 +269,8 @@ final class Dtcg_Schema_Generator {
 
 	/**
 	 * Stable definition name for a type's $value schema.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $type A v1 $type.
 	 *
