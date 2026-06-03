@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 
 /**
  * Flattens the effective DTCG document into two ready-to-emit maps. The single place
@@ -60,6 +61,10 @@ final class Token_Resolver {
 	 * @param string $slug The token set slug to resolve.
 	 *
 	 * @return Resolved_Tokens
+	 *
+	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
+	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
+	 *                                  Writes are gated by dry_run(), so a clean store never hits this.
 	 */
 	public function resolve( string $slug = 'default' ): Resolved_Tokens {
 		$version = $this->store->get_version( $slug );
@@ -85,7 +90,8 @@ final class Token_Resolver {
 	 *
 	 * @param array<string,mixed> $overrides Decoded candidate overrides.
 	 *
-	 * @throws Alias_Cycle_Exception When the candidate introduces an unresolvable cycle.
+	 * @throws Alias_Cycle_Exception    When the candidate introduces an unresolvable cycle.
+	 * @throws Dangling_Alias_Exception When the candidate aliases a path with no token leaf.
 	 */
 	public function dry_run( array $overrides ): Resolved_Tokens {
 		return $this->resolve_document( $this->effective->build( $overrides ) );
@@ -155,7 +161,8 @@ final class Token_Resolver {
 	 *
 	 * @return mixed The literal (scalar, list, or composite array with literal fields).
 	 *
-	 * @throws Alias_Cycle_Exception When resolution re-enters a dot-path already being resolved.
+	 * @throws Alias_Cycle_Exception    When resolution re-enters a dot-path already being resolved.
+	 * @throws Dangling_Alias_Exception When an alias references a path with no token leaf.
 	 */
 	private function resolve_value( $value, array $document, array $visited ) {
 		// Alias: jump to the referenced token's $value and resolve that.
@@ -175,10 +182,15 @@ final class Token_Resolver {
 
 			$leaf = $this->lookup( $target, $document );
 
-			// Dangling alias: nothing to resolve to. Pass the reference through unchanged
-			// so the failure is visible rather than silently emitting an empty value.
+			// Dangling alias: the target is missing, or points at a group rather than a
+			// token leaf. There is nothing to resolve to, and passing the "{…}" reference
+			// through would emit invalid CSS, so reject it. dry_run() surfaces this to the
+			// REST write layer (HTTP 422) before the document is ever stored — symmetric
+			// with cycle handling.
 			if ( $leaf === null || ! array_key_exists( '$value', $leaf ) ) {
-				return $value;
+				throw new Dangling_Alias_Exception(
+					sprintf( 'Alias references a missing token at "%s".', $target )
+				);
 			}
 
 			$visited[ $target ] = true;
@@ -196,7 +208,9 @@ final class Token_Resolver {
 			return $resolved;
 		}
 
-		// Scalar or list (e.g. fontFamily): literal already.
+		// Scalar or list: literal already. Lists (e.g. a fontFamily stack, or a
+		// multi-layer shadow — see Css_Renderer::shadow) pass through untouched; their
+		// elements are not alias-resolved in v1.
 		return $value;
 	}
 

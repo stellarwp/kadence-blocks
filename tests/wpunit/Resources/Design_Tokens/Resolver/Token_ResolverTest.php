@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
@@ -154,7 +155,7 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '#3182CE', $by_var[ $var ] );
 	}
 
-	public function testADanglingAliasPassesTheReferenceThroughRatherThanFailing(): void {
+	public function testItThrowsOnADanglingAlias(): void {
 		$resolver = $this->resolver_for(
 			[
 				'semantic' => [
@@ -168,7 +169,34 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '{primitive.color.missing}', $resolver->dry_run( [] )->value( 'semantic.color.x' ) );
+		$this->expectException( Dangling_Alias_Exception::class );
+
+		$resolver->dry_run( [] );
+	}
+
+	public function testItThrowsOnADanglingAliasNestedInsideAComposite(): void {
+		$resolver = $this->resolver_for(
+			[
+				'semantic' => [
+					'shadow' => [
+						'card' => [
+							'$type'  => 'shadow',
+							'$value' => [
+								'color'   => '{primitive.color.missing}',
+								'offsetX' => '0px',
+								'offsetY' => '2px',
+								'blur'    => '8px',
+								'spread'  => '0px',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->expectException( Dangling_Alias_Exception::class );
+
+		$resolver->dry_run( [] );
 	}
 
 	public function testItThrowsOnAnAliasCycle(): void {

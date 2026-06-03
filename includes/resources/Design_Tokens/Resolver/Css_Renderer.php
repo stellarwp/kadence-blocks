@@ -47,6 +47,11 @@ final class Css_Renderer {
 	/**
 	 * Render a shadow composite to "<offsetX> <offsetY> <blur> <spread> <color>".
 	 *
+	 * v1 supports a single shadow object. DTCG also permits a $value that is an array of
+	 * shadow objects (stacked box-shadows); that shape is intentionally not handled here —
+	 * Token_Resolver passes a list through untouched, and supporting it is a follow-up that
+	 * would change this method (join each layer with ", ") and the resolver's list handling.
+	 *
 	 * @param mixed $value
 	 */
 	private function shadow( $value ): string {
@@ -77,12 +82,18 @@ final class Css_Renderer {
 		}
 
 		$weight = $value['fontWeight'] ?? '';
-		$size   = $value['fontSize'] ?? '';
+		$size   = (string) ( $value['fontSize'] ?? '' );
 		$lh     = $value['lineHeight'] ?? '';
 		// fontFamily may resolve to a list (e.g. ["Inter","sans-serif"]); render it as a CSS family list.
 		$family = $this->font_family( $value['fontFamily'] ?? '' );
 
-		$size_lh = $lh !== '' ? "{$size}/{$lh}" : (string) $size;
+		// The CSS `font` shorthand is only valid with both a font-size and a font-family;
+		// without either, emit nothing rather than a malformed declaration (e.g. "700 /1.2").
+		if ( $size === '' || $family === '' ) {
+			return '';
+		}
+
+		$size_lh = $lh !== '' ? "{$size}/{$lh}" : $size;
 
 		return trim( sprintf( '%s %s %s', $weight, $size_lh, $family ) );
 	}

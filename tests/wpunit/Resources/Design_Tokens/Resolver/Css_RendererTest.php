@@ -90,4 +90,26 @@ final class Css_RendererTest extends TestCase {
 	public function testNonScalarScalarTypeReturnsEmptyString(): void {
 		$this->assertSame( '', $this->renderer->render( 'color', [ 'unexpected' => 'array' ] ) );
 	}
+
+	public function testTypographyReturnsEmptyStringWhenFontSizeIsMissing(): void {
+		$typography = [
+			'fontFamily' => [ 'Inter', 'sans-serif' ],
+			'fontWeight' => 700,
+			'lineHeight' => 1.2,
+		];
+
+		// The CSS `font` shorthand is invalid without a font-size, so nothing is emitted.
+		$this->assertSame( '', $this->renderer->render( 'typography', $typography ) );
+	}
+
+	public function testTypographyReturnsEmptyStringWhenFontFamilyIsMissing(): void {
+		$typography = [
+			'fontSize'   => '1rem',
+			'fontWeight' => 700,
+			'lineHeight' => 1.2,
+		];
+
+		// The CSS `font` shorthand is invalid without a font-family.
+		$this->assertSame( '', $this->renderer->render( 'typography', $typography ) );
+	}
 }
