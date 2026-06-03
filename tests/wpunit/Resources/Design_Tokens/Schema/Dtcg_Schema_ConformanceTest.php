@@ -127,6 +127,17 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 				],
 			],
 		];
+		yield 'unknown leaf field' => [
+			'document' => [
+				'primitive' => [
+					'x' => [
+						'$type'  => 'color',
+						'$value' => '#fff',
+						'extra'  => 'oops',
+					],
+				],
+			],
+		];
 	}
 
 	/**

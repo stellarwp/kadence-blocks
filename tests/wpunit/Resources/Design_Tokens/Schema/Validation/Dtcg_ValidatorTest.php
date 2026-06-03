@@ -161,6 +161,20 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'     => Validation_Error::get_code_malformed_node(),
 			'path'     => 'primitive.x',
 		];
+		yield 'unknown leaf field' => [
+			'document' => [
+				'primitive' => [
+					'x' => [
+						'$type'  => 'color',
+						'$value' => '#fff',
+						'extra'  => 'oops',
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_leaf_field_unknown(),
+			'path'     => 'primitive.x.extra',
+		];
 		yield 'bad extension value' => [
 			'document' => [
 				'$extensions' => [

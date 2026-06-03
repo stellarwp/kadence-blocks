@@ -96,6 +96,15 @@ final class Validation_Error {
 	private const CODE_MALFORMED_NODE = 'malformed_node';
 
 	/**
+	 * A token leaf carries a non-"$"-prefixed key that the DTCG leaf shape does not allow.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CODE_LEAF_FIELD_UNKNOWN = 'leaf_field_unknown';
+
+	/**
 	 * DTCG dot-path to the offending node.
 	 *
 	 * @since TBD
@@ -245,5 +254,16 @@ final class Validation_Error {
 	 */
 	public static function get_code_malformed_node(): string {
 		return self::CODE_MALFORMED_NODE;
+	}
+
+	/**
+	 * Code: a token leaf carries a non-"$"-prefixed key that the DTCG leaf shape does not allow.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_code_leaf_field_unknown(): string {
+		return self::CODE_LEAF_FIELD_UNKNOWN;
 	}
 }

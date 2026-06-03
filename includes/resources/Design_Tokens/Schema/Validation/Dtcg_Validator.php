@@ -199,42 +199,70 @@ final class Dtcg_Validator {
 	 * @return Validation_Error[]
 	 */
 	private function validate_leaf( array $leaf, string $path, string $context ): array {
+		$errors = $this->validate_leaf_keys( $leaf, $path );
+
 		$has_disabled = Sentinels::has_disabled( $leaf );
 		$is_reset     = Sentinels::is_reset( $leaf );
 
 		if ( $context === self::CONTEXT_BASELINE ) {
 			if ( $has_disabled || $is_reset ) {
-				return [
-					new Validation_Error(
-						$path,
-						Validation_Error::get_code_sentinel_not_allowed(),
-						'Override sentinels ("$value": null, "$disabled") are not allowed in the baseline document.'
-					),
-				];
+				$errors[] = new Validation_Error(
+					$path,
+					Validation_Error::get_code_sentinel_not_allowed(),
+					'Override sentinels ("$value": null, "$disabled") are not allowed in the baseline document.'
+				);
+
+				return $errors;
 			}
 		} else {
 			if ( $has_disabled ) {
 				if ( ! Sentinels::is_disabled( $leaf ) ) {
-					return [
-						new Validation_Error(
-							$path . '.' . Sentinels::get_disabled_key(),
-							Validation_Error::get_code_sentinel_invalid(),
-							'The "$disabled" sentinel must be boolean true.'
-						),
-					];
+					$errors[] = new Validation_Error(
+						$path . '.' . Sentinels::get_disabled_key(),
+						Validation_Error::get_code_sentinel_invalid(),
+						'The "$disabled" sentinel must be boolean true.'
+					);
 				}
 
 				// A well-formed disable sentinel removes the token; nothing else to check.
-				return [];
+				return $errors;
 			}
 
 			if ( $is_reset ) {
 				// A reset falls back to baseline; no $type/$value to validate.
-				return [];
+				return $errors;
 			}
 		}
 
-		return $this->validate_typed_leaf( $leaf, $path );
+		return array_merge( $errors, $this->validate_typed_leaf( $leaf, $path ) );
+	}
+
+	/**
+	 * Reject leaf keys that are not "$"-prefixed. The DTCG leaf shape only carries "$"-prefixed metadata
+	 * ($type, $value, $description, $extensions, sentinels and forward-looking extensions); a non-"$" key
+	 * is structural noise that the published schema rejects via additionalProperties:false.
+	 *
+	 * @param array<string, mixed> $leaf The decoded leaf.
+	 * @param string               $path Dot-path to the leaf.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_leaf_keys( array $leaf, string $path ): array {
+		$errors = [];
+
+		foreach ( array_keys( $leaf ) as $key ) {
+			if ( $this->is_meta_key( $key ) ) {
+				continue;
+			}
+
+			$errors[] = new Validation_Error(
+				$path . '.' . $key,
+				Validation_Error::get_code_leaf_field_unknown(),
+				sprintf( 'Token leaf has an unknown field "%s"; only "$"-prefixed keys are allowed.', (string) $key )
+			);
+		}
+
+		return $errors;
 	}
 
 	/**
