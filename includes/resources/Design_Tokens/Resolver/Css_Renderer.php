@@ -41,7 +41,7 @@ final class Css_Renderer {
 			return implode( ', ', $families );
 		}
 
-		return (string) $value;
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**

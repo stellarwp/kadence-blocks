@@ -66,7 +66,8 @@ final class Token_Resolver {
 		}
 
 		$raw      = $this->store->get_document( $slug );
-		$over     = $raw === '' ? [] : ( json_decode( $raw, true ) ?: [] );
+		$decoded  = $raw === '' ? [] : json_decode( $raw, true );
+		$over     = is_array( $decoded ) ? $decoded : [];
 		$document = $this->effective->build( $over );
 
 		return $this->memo[ $key ] = $this->resolve_document( $document );
@@ -151,6 +152,11 @@ final class Token_Resolver {
 		// Alias: jump to the referenced token's $value and resolve that.
 		if ( Alias::is_alias( $value ) ) {
 			$target = Alias::path_of( $value );
+
+			// is_alias() guarantees a path; the guard keeps the type non-null for what follows.
+			if ( $target === null ) {
+				return $value;
+			}
 
 			if ( isset( $visited[ $target ] ) ) {
 				throw new Alias_Cycle_Exception(

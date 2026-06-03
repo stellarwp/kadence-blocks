@@ -46,6 +46,10 @@ final class Effective_Document {
 			$base = $this->baseline->document()[ $layer ] ?? [];
 			$over = $overrides[ $layer ] ?? [];
 
+			// The DTCG layers are always groups; coerce anything else to an empty group.
+			$base = is_array( $base ) ? $base : [];
+			$over = is_array( $over ) ? $over : [];
+
 			if ( $base === [] && $over === [] ) {
 				continue;
 			}
