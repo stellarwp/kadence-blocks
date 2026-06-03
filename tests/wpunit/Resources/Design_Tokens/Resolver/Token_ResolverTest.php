@@ -31,10 +31,22 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
-					'color' => [ 'brand' => [ 'primary' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ],
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
 				],
 				'semantic'  => [
-					'color' => [ 'button-bg' => [ '$type' => 'color', '$value' => '{primitive.color.brand.primary}' ] ],
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
 				],
 			]
 		);
@@ -50,9 +62,18 @@ final class Token_ResolverTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'c' => [ '$type' => 'color', '$value' => '#abcdef' ],
-						'b' => [ '$type' => 'color', '$value' => '{primitive.color.c}' ],
-						'a' => [ '$type' => 'color', '$value' => '{primitive.color.b}' ],
+						'c' => [
+							'$type'  => 'color',
+							'$value' => '#abcdef',
+						],
+						'b' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.c}',
+						],
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.b}',
+						],
 					],
 				],
 			]
@@ -65,7 +86,12 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
-					'color' => [ 'ink' => [ '$type' => 'color', '$value' => '#1A202C' ] ],
+					'color' => [
+						'ink' => [
+							'$type'  => 'color',
+							'$value' => '#1A202C',
+						],
+					],
 				],
 				'semantic'  => [
 					'shadow' => [
@@ -91,7 +117,12 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
-					'fontFamily' => [ 'sans' => [ '$type' => 'fontFamily', '$value' => [ 'Inter', 'system-ui', 'sans-serif' ] ] ],
+					'fontFamily' => [
+						'sans' => [
+							'$type'  => 'fontFamily',
+							'$value' => [ 'Inter', 'system-ui', 'sans-serif' ],
+						],
+					],
 				],
 			]
 		);
@@ -106,7 +137,12 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'semantic' => [
-					'color' => [ 'button-bg' => [ '$type' => 'color', '$value' => '#3182CE' ] ],
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '#3182CE',
+						],
+					],
 				],
 			]
 		);
@@ -122,7 +158,12 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'semantic' => [
-					'color' => [ 'x' => [ '$type' => 'color', '$value' => '{primitive.color.missing}' ] ],
+					'color' => [
+						'x' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.missing}',
+						],
+					],
 				],
 			]
 		);
@@ -135,8 +176,14 @@ final class Token_ResolverTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'a' => [ '$type' => 'color', '$value' => '{primitive.color.b}' ],
-						'b' => [ '$type' => 'color', '$value' => '{primitive.color.a}' ],
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.b}',
+						],
+						'b' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.a}',
+						],
 					],
 				],
 			]
@@ -151,10 +198,22 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
-					'color' => [ 'brand' => [ 'primary' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ],
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
 				],
 				'semantic'  => [
-					'color' => [ 'button-bg' => [ '$type' => 'color', '$value' => '{primitive.color.brand.primary}' ] ],
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
 				],
 			]
 		);
@@ -162,7 +221,14 @@ final class Token_ResolverTest extends TestCase {
 		$by_id = $resolver->dry_run(
 			[
 				'primitive' => [
-					'color' => [ 'brand' => [ 'primary' => [ '$type' => 'color', '$value' => '#000000' ] ] ],
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
+						],
+					],
 				],
 			]
 		)->by_id();
@@ -185,7 +251,14 @@ final class Token_ResolverTest extends TestCase {
 			(string) wp_json_encode(
 				[
 					'primitive' => [
-						'color' => [ 'brand' => [ 'primary' => [ '$type' => 'color', '$value' => '#000000' ] ] ],
+						'color' => [
+							'brand' => [
+								'primary' => [
+									'$type'  => 'color',
+									'$value' => '#000000',
+								],
+							],
+						],
 					],
 				]
 			)

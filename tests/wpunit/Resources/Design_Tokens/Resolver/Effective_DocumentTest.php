@@ -15,17 +15,26 @@ final class Effective_DocumentTest extends TestCase {
 	 */
 	private function baseline(): array {
 		return [
-			'primitive' => [
+			'primitive'   => [
 				'color' => [
 					'brand' => [
-						'primary'   => [ '$type' => 'color', '$value' => '#3182CE' ],
-						'secondary' => [ '$type' => 'color', '$value' => '#2C5282' ],
+						'primary'   => [
+							'$type'  => 'color',
+							'$value' => '#3182CE',
+						],
+						'secondary' => [
+							'$type'  => 'color',
+							'$value' => '#2C5282',
+						],
 					],
 				],
 			],
-			'semantic'  => [
+			'semantic'    => [
 				'color' => [
-					'button-bg' => [ '$type' => 'color', '$value' => '{primitive.color.brand.primary}' ],
+					'button-bg' => [
+						'$type'  => 'color',
+						'$value' => '{primitive.color.brand.primary}',
+					],
 				],
 			],
 			// Excluded layer: must never appear in the effective document.
@@ -58,7 +67,10 @@ final class Effective_DocumentTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand' => [
-							'primary' => [ '$type' => 'color', '$value' => '#000000' ],
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
 						],
 					],
 				],
@@ -76,7 +88,10 @@ final class Effective_DocumentTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand' => [
-							'primary' => [ '$type' => 'color', '$value' => '#000000' ],
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
 						],
 					],
 				],
@@ -128,7 +143,10 @@ final class Effective_DocumentTest extends TestCase {
 			[
 				'semantic' => [
 					'color' => [
-						'link' => [ '$type' => 'color', '$value' => '#0000EE' ],
+						'link' => [
+							'$type'  => 'color',
+							'$value' => '#0000EE',
+						],
 					],
 				],
 			]
@@ -147,7 +165,10 @@ final class Effective_DocumentTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand' => [
-							'primary' => [ '$type' => 'color', '$value' => '#abcdef' ],
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#abcdef',
+							],
 						],
 					],
 				],

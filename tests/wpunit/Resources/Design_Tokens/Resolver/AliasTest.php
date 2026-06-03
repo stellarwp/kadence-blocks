@@ -12,7 +12,7 @@ final class AliasTest extends TestCase {
 	 *
 	 * @param mixed $value
 	 */
-	public function testItRecognisesAliases( $value, bool $expected ): void {
+	public function testItRecognizesAliases( $value, bool $expected ): void {
 		$this->assertSame( $expected, Alias::is_alias( $value ) );
 	}
 
@@ -21,18 +21,18 @@ final class AliasTest extends TestCase {
 	 */
 	public function aliasProvider(): array {
 		return [
-			'simple reference'    => [ '{primitive.color.brand.primary}', true ],
-			'single segment'      => [ '{brand}', true ],
-			'hyphenated segment'  => [ '{semantic.color.button-bg}', true ],
-			'plain colour'        => [ '#3182CE', false ],
-			'dimension'           => [ '1rem', false ],
-			'embedded reference'  => [ 'calc({primitive.dimension.space.md} * 2)', false ],
-			'unclosed brace'      => [ '{primitive.color', false ],
-			'illegal char'        => [ '{primitive.color/brand}', false ],
-			'empty braces'        => [ '{}', false ],
-			'non-string int'      => [ 700, false ],
-			'non-string array'    => [ [ 'color' => '#fff' ], false ],
-			'null'                => [ null, false ],
+			'simple reference'   => [ '{primitive.color.brand.primary}', true ],
+			'single segment'     => [ '{brand}', true ],
+			'hyphenated segment' => [ '{semantic.color.button-bg}', true ],
+			'plain color'        => [ '#3182CE', false ],
+			'dimension'          => [ '1rem', false ],
+			'embedded reference' => [ 'calc({primitive.dimension.space.md} * 2)', false ],
+			'unclosed brace'     => [ '{primitive.color', false ],
+			'illegal char'       => [ '{primitive.color/brand}', false ],
+			'empty braces'       => [ '{}', false ],
+			'non-string int'     => [ 700, false ],
+			'non-string array'   => [ [ 'color' => '#fff' ], false ],
+			'null'               => [ null, false ],
 		];
 	}
 

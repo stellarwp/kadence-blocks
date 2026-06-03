@@ -54,8 +54,12 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve a stored token set into flat maps. Memoised per request on the store version,
+	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
+	 *
+	 * @param string $slug The token set slug to resolve.
+	 *
+	 * @return Resolved_Tokens
 	 */
 	public function resolve( string $slug = 'default' ): Resolved_Tokens {
 		$version = $this->store->get_version( $slug );
@@ -70,7 +74,9 @@ final class Token_Resolver {
 		$over     = is_array( $decoded ) ? $decoded : [];
 		$document = $this->effective->build( $over );
 
-		return $this->memo[ $key ] = $this->resolve_document( $document );
+		$this->memo[ $key ] = $this->resolve_document( $document );
+
+		return $this->memo[ $key ];
 	}
 
 	/**
@@ -106,15 +112,18 @@ final class Token_Resolver {
 	/**
 	 * Depth-first walk, collecting every token leaf.
 	 *
-	 * @param array<string,mixed>  $node
+	 * @param array<string,mixed>  $node     The current group node.
+	 * @param string               $prefix   The dot-path accumulated so far.
 	 * @param array<string,mixed>  $document Full effective doc, for alias lookups.
 	 * @param array<string,string> $by_id    By-reference id => CSS value map.
 	 * @param array<string,string> $by_var   By-reference css-var => CSS value map.
+	 *
+	 * @return void
 	 */
 	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
-				continue; // DTCG metadata key
+				continue; // DTCG metadata key.
 			}
 			if ( ! is_array( $child ) ) {
 				continue;
@@ -127,7 +136,7 @@ final class Token_Resolver {
 				$value = $this->resolve_value( $child['$value'], $document, [] );
 				$css   = $this->renderer->render( (string) $type, $value );
 
-				$by_id[ $path ]                     = $css;
+				$by_id[ $path ]                      = $css;
 				$by_var[ Css_Var::from_id( $path ) ] = $css;
 				continue;
 			}
@@ -146,7 +155,7 @@ final class Token_Resolver {
 	 *
 	 * @return mixed The literal (scalar, list, or composite array with literal fields).
 	 *
-	 * @throws Alias_Cycle_Exception
+	 * @throws Alias_Cycle_Exception When resolution re-enters a dot-path already being resolved.
 	 */
 	private function resolve_value( $value, array $document, array $visited ) {
 		// Alias: jump to the referenced token's $value and resolve that.
@@ -194,7 +203,8 @@ final class Token_Resolver {
 	/**
 	 * Look up a leaf node by dot-path within the effective document.
 	 *
-	 * @param array<string,mixed> $document
+	 * @param string              $path     The dot-path to look up.
+	 * @param array<string,mixed> $document The effective document to search.
 	 *
 	 * @return array<string,mixed>|null
 	 */
