@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Schema;
 
 // cspell:ignore justinrainbow .
 
+use Generator;
 use JsonSchema\Validator as Json_Schema_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Provider;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
@@ -30,6 +31,9 @@ use Tests\Support\Classes\TestCase;
  */
 final class Dtcg_Schema_ConformanceTest extends TestCase {
 
+	/**
+	 * @return void
+	 */
 	public function testTheCommittedSchemaIsExactlyWhatTheGeneratorEmits(): void {
 		// json_encode (not wp_json_encode) so the byte comparison matches how the file was generated.
 		$generated = json_encode( ( new Dtcg_Schema_Generator() )->generate(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n"; // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
@@ -41,6 +45,9 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testTheShippedBaselineValidatesAgainstTheSchema(): void {
 		$validator = new Json_Schema_Validator();
 		$data      = json_decode( $this->fixture( 'design-tokens/baseline.json' ) );
@@ -50,6 +57,9 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 		$this->assertTrue( $validator->isValid(), $this->describe_schema_errors( $validator ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testTheBaselinePassesThePhpValidatorToo(): void {
 		$document = json_decode( $this->fixture( 'design-tokens/baseline.json' ), true );
 
@@ -60,6 +70,8 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 	 * @dataProvider structuralInvalidProvider
 	 *
 	 * @param array<string, mixed> $document
+	 *
+	 * @return void
 	 */
 	public function testStructuralInvalidsAreRejectedByBothEngines( array $document ): void {
 		// The PHP validator rejects it.
@@ -74,44 +86,44 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 	}
 
 	/**
-	 * @return array<string, array{0: array<string, mixed>}>
+	 * @return Generator
 	 */
-	public function structuralInvalidProvider(): array {
-		return [
-			'unknown type'      => [
-				[
-					'primitive' => [
-						'x' => [
-							'$type'  => 'nope',
-							'$value' => '#fff',
+	public function structuralInvalidProvider(): Generator {
+		yield 'unknown type' => [
+			'document' => [
+				'primitive' => [
+					'x' => [
+						'$type'  => 'nope',
+						'$value' => '#fff',
+					],
+				],
+			],
+		];
+		yield 'missing value' => [
+			'document' => [ 'primitive' => [ 'x' => [ '$type' => 'color' ] ] ],
+		];
+		yield 'shadow bad fields' => [
+			'document' => [
+				'semantic' => [
+					's' => [
+						'$type'  => 'shadow',
+						'$value' => [
+							'color'   => '#000',
+							'offsetX' => '0px',
+							'offsetY' => '0px',
+							'blur'    => '1px',
+							'bogus'   => 'x',
 						],
 					],
 				],
 			],
-			'missing value'     => [ [ 'primitive' => [ 'x' => [ '$type' => 'color' ] ] ] ],
-			'shadow bad fields' => [
-				[
-					'semantic' => [
-						's' => [
-							'$type'  => 'shadow',
-							'$value' => [
-								'color'   => '#000',
-								'offsetX' => '0px',
-								'offsetY' => '0px',
-								'blur'    => '1px',
-								'bogus'   => 'x',
-							],
-						],
-					],
-				],
-			],
-			'fontFamily scalar' => [
-				[
-					'primitive' => [
-						'f' => [
-							'$type'  => 'fontFamily',
-							'$value' => 'Inter',
-						],
+		];
+		yield 'fontFamily scalar' => [
+			'document' => [
+				'primitive' => [
+					'f' => [
+						'$type'  => 'fontFamily',
+						'$value' => 'Inter',
 					],
 				],
 			],
@@ -138,6 +150,11 @@ final class Dtcg_Schema_ConformanceTest extends TestCase {
 		return dirname( ( new ReflectionClass( Provider::class ) )->getFileName() ) . '/dtcg.schema.json';
 	}
 
+	/**
+	 * @param Json_Schema_Validator $validator The validator whose errors to render.
+	 *
+	 * @return string
+	 */
 	private function describe_schema_errors( Json_Schema_Validator $validator ): string {
 		$lines = [];
 

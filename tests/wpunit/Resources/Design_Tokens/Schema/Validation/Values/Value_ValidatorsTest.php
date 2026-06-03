@@ -12,6 +12,9 @@ use Tests\Support\Classes\TestCase;
 
 final class Value_ValidatorsTest extends TestCase {
 
+	/**
+	 * @return void
+	 */
 	public function testColorAcceptsLiteralAndAlias(): void {
 		$validator = new Color_Value();
 
@@ -19,6 +22,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], $validator->validate( '{primitive.color.brand.primary}', 'p.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testColorRejectsBadLiteralWithValueInvalid(): void {
 		$errors = ( new Color_Value() )->validate( 'not-a-color', 'p.x.$value' );
 
@@ -27,6 +33,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( 'p.x.$value', $errors[0]->path );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testColorRejectsMalformedAliasWithAliasMalformed(): void {
 		$errors = ( new Color_Value() )->validate( '{bad path}', 'p.x.$value' );
 
@@ -34,6 +43,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( Validation_Error::get_code_alias_malformed(), $errors[0]->code );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testDimensionAcceptsLiteralAndAlias(): void {
 		$validator = new Dimension_Value();
 
@@ -42,6 +54,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], $validator->validate( '{primitive.dimension.space.md}', 'p.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testFontFamilyAcceptsArrayAndAlias(): void {
 		$validator = new Font_Family_Value();
 
@@ -49,6 +64,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], $validator->validate( '{primitive.fontFamily.sans}', 'p.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testFontFamilyRejectsEmptyArray(): void {
 		$errors = ( new Font_Family_Value() )->validate( [], 'p.$value' );
 
@@ -56,10 +74,16 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testShadowAcceptsWholeAlias(): void {
 		$this->assertSame( [], ( new Shadow_Value() )->validate( '{semantic.shadow.card}', 'p.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testShadowAcceptsObjectWithAliasedSubField(): void {
 		$value = [
 			'color'   => '{primitive.color.neutral.900}',
@@ -72,6 +96,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], ( new Shadow_Value() )->validate( $value, 's.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testShadowReportsMissingAndUnknownSubFields(): void {
 		$value = [
 			'color'   => '#000',
@@ -93,6 +120,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertContains( Validation_Error::get_code_composite_field_unknown(), $codes );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testShadowSubFieldPathIsDotted(): void {
 		$value = [
 			'color'   => 'not-a-color',
@@ -109,6 +139,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testShadowRejectsNonObjectLiteral(): void {
 		$errors = ( new Shadow_Value() )->validate( 5, 's.$value' );
 
@@ -116,6 +149,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( Validation_Error::get_code_malformed_node(), $errors[0]->code );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testTypographyAcceptsMixedLiteralsAndAliases(): void {
 		$value = [
 			'fontFamily' => '{primitive.fontFamily.sans}',
@@ -127,6 +163,9 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], ( new Typography_Value() )->validate( $value, 't.$value' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testTypographyRejectsBadWeight(): void {
 		$value = [
 			'fontFamily' => '{primitive.fontFamily.sans}',
