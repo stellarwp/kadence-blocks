@@ -342,7 +342,12 @@ final class Literals {
 
 	/**
 	 * Whether the string is a CSS function form, e.g. var(--x), calc(1rem + 2px), clamp(...). The body
-	 * is intentionally unparsed — this is a shape gate, not a CSS expression validator.
+	 * is intentionally unparsed — this is a shape gate, not a CSS expression validator. The greedy ".*"
+	 * between the outer parens is required to let nested calls like calc(var(--x) + 2px) or
+	 * clamp(1rem, var(--y), 3rem) match; constraining the body would reject legitimate CSS. The
+	 * trade-off is that two function calls concatenated into one string (e.g. "rgb(0,0,0) hsl(0,0,0)")
+	 * would also match, but a DTCG $value is a single token — that concatenation is not a shape this
+	 * module is meant to police, and parsing it would belong in a real CSS parser.
 	 *
 	 * @param string $value The candidate function string.
 	 *
