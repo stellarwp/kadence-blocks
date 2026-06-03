@@ -85,6 +85,12 @@ final class Dtcg_Validator {
 	 */
 	private array $validators;
 
+	/**
+	 * Wire the per-$type value validators. The map is the dispatch table walk() uses once a leaf's $type
+	 * has been verified, so this set must match Token_Type's v1 enum exactly.
+	 *
+	 * @since TBD
+	 */
 	public function __construct() {
 		$this->validators = [
 			Token_Type::get_type_color()       => new Color_Value(),
@@ -157,6 +163,8 @@ final class Dtcg_Validator {
 	/**
 	 * Walk one node, which is either a token leaf or a group of child nodes.
 	 *
+	 * @since TBD
+	 *
 	 * @param mixed  $node    The decoded node.
 	 * @param string $path    Dot-path to the node.
 	 * @param string $context The validation context.
@@ -194,6 +202,8 @@ final class Dtcg_Validator {
 
 	/**
 	 * Validate a token leaf, applying the context's sentinel rules.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string, mixed> $leaf    The decoded leaf.
 	 * @param string               $path    Dot-path to the leaf.
@@ -245,6 +255,8 @@ final class Dtcg_Validator {
 	 * ($type, $value, $description, $extensions, sentinels and forward-looking extensions); a non-"$" key
 	 * is structural noise that the published schema rejects via additionalProperties:false.
 	 *
+	 * @since TBD
+	 *
 	 * @param array<string, mixed> $leaf The decoded leaf.
 	 * @param string               $path Dot-path to the leaf.
 	 *
@@ -270,6 +282,8 @@ final class Dtcg_Validator {
 
 	/**
 	 * Validate a concrete (non-sentinel) leaf: it must carry a valid $type and a $value of that type.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string, mixed> $leaf The decoded leaf.
 	 * @param string               $path Dot-path to the leaf.
@@ -313,6 +327,8 @@ final class Dtcg_Validator {
 	 * Validate the $extensions layer to this ticket's scope: every preset / variant `tokens` map value
 	 * must be an alias or a literal scalar. $default / label / structural variant semantics are
 	 * deferred to the variant data-model work, and any non-Kadence extension namespace is passed through untouched.
+	 *
+	 * @since TBD
 	 *
 	 * @param mixed $extensions The decoded $extensions node.
 	 *
@@ -368,6 +384,8 @@ final class Dtcg_Validator {
 	 * A preset / variant token value must be an alias or a non-empty literal scalar. The target token's
 	 * $type is not resolved here, so the literal is checked only for shape, not per-type grammar.
 	 *
+	 * @since TBD
+	 *
 	 * @param mixed  $value The decoded value.
 	 * @param string $path  Dot-path to the value.
 	 *
@@ -403,6 +421,8 @@ final class Dtcg_Validator {
 	 * node is a leaf that is missing its $value rather than a typed group — which surfaces the right
 	 * error. Child token/group names are dot-path segments and never collide with these "$" keys.
 	 *
+	 * @since TBD
+	 *
 	 * @param array<string, mixed> $node The decoded node.
 	 *
 	 * @return bool
@@ -415,6 +435,8 @@ final class Dtcg_Validator {
 
 	/**
 	 * Whether a node key is DTCG metadata (a "$"-prefixed key) rather than a child token/group name.
+	 *
+	 * @since TBD
 	 *
 	 * @param mixed $key The node key.
 	 *

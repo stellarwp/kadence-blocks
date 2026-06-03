@@ -68,6 +68,8 @@ final class Kind {
 	/**
 	 * Whether a literal (non-alias) value satisfies the grammar for the kind.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $kind  A Token_Type $type or KIND_* constant.
 	 * @param mixed  $value The decoded value.
 	 *
@@ -92,6 +94,8 @@ final class Kind {
 
 	/**
 	 * Render a decoded value as a short string for an error message.
+	 *
+	 * @since TBD
 	 *
 	 * @param mixed $value The decoded value.
 	 *

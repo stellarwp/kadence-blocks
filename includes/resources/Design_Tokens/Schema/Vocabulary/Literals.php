@@ -363,6 +363,8 @@ final class Literals {
 	 * would also match, but a DTCG $value is a single token — that concatenation is not a shape this
 	 * module is meant to police, and parsing it would belong in a real CSS parser.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $value The candidate function string.
 	 *
 	 * @return bool

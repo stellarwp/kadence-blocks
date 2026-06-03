@@ -25,6 +25,8 @@ final class Validation_Result {
 	private array $errors;
 
 	/**
+	 * @since TBD
+	 *
 	 * @param Validation_Error[] $errors The collected errors.
 	 */
 	public function __construct( array $errors = [] ) {

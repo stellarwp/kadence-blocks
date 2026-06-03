@@ -132,6 +132,8 @@ final class Validation_Error {
 	public string $message;
 
 	/**
+	 * @since TBD
+	 *
 	 * @param string $path    DTCG dot-path to the offending node.
 	 * @param string $code    A stable code, as returned by the code_*() accessors.
 	 * @param string $message Human-readable explanation.

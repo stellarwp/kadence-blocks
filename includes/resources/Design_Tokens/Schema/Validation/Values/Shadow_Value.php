@@ -14,6 +14,8 @@ final class Shadow_Value extends Composite_Value {
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since TBD
 	 */
 	protected function type(): string {
 		return Token_Type::get_type_shadow();

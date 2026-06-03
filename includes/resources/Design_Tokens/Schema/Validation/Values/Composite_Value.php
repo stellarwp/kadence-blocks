@@ -22,6 +22,8 @@ abstract class Composite_Value implements Value_Validator {
 	/**
 	 * The composite $type this validator covers (Token_Type::get_type_shadow() or Token_Type::get_type_typography()).
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	abstract protected function type(): string;
