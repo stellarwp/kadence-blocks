@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Flattens the effective DTCG document into two ready-to-emit maps. The single place
@@ -166,11 +167,12 @@ final class Token_Resolver {
 	 */
 	private function resolve_value( $value, array $document, array $visited ) {
 		// Alias: jump to the referenced token's $value and resolve that.
-		if ( Alias::is_alias( $value ) ) {
+		// Only strings can be aliases; the is_string() narrows $value for path_of()'s string parameter.
+		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
 			$target = Alias::path_of( $value );
 
-			// is_alias() guarantees a path; the guard keeps the type non-null for what follows.
-			if ( $target === null ) {
+			// is_alias() guarantees a non-empty path; the guard keeps the type tight for what follows.
+			if ( $target === '' ) {
 				return $value;
 			}
 
