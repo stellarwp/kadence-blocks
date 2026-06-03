@@ -132,7 +132,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'document' => [ 'primitive' => [ 'x' => [ '$value' => null ] ] ],
 			'context'  => Dtcg_Validator::get_context_baseline(),
 			'code'     => Validation_Error::get_code_sentinel_not_allowed(),
-			'path'     => 'primitive.x',
+			'path'     => 'primitive.x.$value',
 		];
 		yield 'disabled not true' => [
 			'document' => [ 'primitive' => [ 'x' => [ '$disabled' => 'yes' ] ] ],
@@ -229,6 +229,30 @@ final class Dtcg_ValidatorTest extends TestCase {
 		];
 
 		$this->assertCount( 2, $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() )->errors() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItCollectsEveryUnknownLeafFieldInOnePass(): void {
+		$document = [
+			'primitive' => [
+				'x' => [
+					'$type'  => 'color',
+					'$value' => '#fff',
+					'foo'    => 'bar',
+					'baz'    => 'qux',
+				],
+			],
+		];
+
+		$errors = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() )->errors();
+
+		$this->assertCount( 2, $errors );
+		$this->assertSame( Validation_Error::get_code_leaf_field_unknown(), $errors[0]->code );
+		$this->assertSame( Validation_Error::get_code_leaf_field_unknown(), $errors[1]->code );
+		$this->assertSame( 'primitive.x.foo', $errors[0]->path );
+		$this->assertSame( 'primitive.x.baz', $errors[1]->path );
 	}
 
 	/**

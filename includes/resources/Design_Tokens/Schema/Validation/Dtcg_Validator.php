@@ -218,13 +218,23 @@ final class Dtcg_Validator {
 		$is_reset     = Sentinels::is_reset( $leaf );
 
 		if ( $context === self::CONTEXT_BASELINE ) {
-			if ( $has_disabled || $is_reset ) {
+			if ( $is_reset ) {
 				$errors[] = new Validation_Error(
-					$path,
+					$path . '.' . Sentinels::get_value_key(),
 					Validation_Error::get_code_sentinel_not_allowed(),
-					'Override sentinels ("$value": null, "$disabled") are not allowed in the baseline document.'
+					'The "$value": null reset sentinel is not allowed in the baseline document.'
 				);
+			}
 
+			if ( $has_disabled ) {
+				$errors[] = new Validation_Error(
+					$path . '.' . Sentinels::get_disabled_key(),
+					Validation_Error::get_code_sentinel_not_allowed(),
+					'The "$disabled" sentinel is not allowed in the baseline document.'
+				);
+			}
+
+			if ( $is_reset || $has_disabled ) {
 				return $errors;
 			}
 		} else {

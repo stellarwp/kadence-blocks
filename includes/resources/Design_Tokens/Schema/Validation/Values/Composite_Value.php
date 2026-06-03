@@ -59,7 +59,7 @@ abstract class Composite_Value implements Value_Validator {
 			return [
 				new Validation_Error(
 					$path,
-					Validation_Error::get_code_malformed_node(),
+					Validation_Error::get_code_value_invalid(),
 					sprintf( 'A %s value must be an object of sub-fields or an alias.', $this->type() )
 				),
 			];

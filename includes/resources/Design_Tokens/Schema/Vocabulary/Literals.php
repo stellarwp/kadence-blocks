@@ -370,6 +370,6 @@ final class Literals {
 	 * @return bool
 	 */
 	private static function is_function( string $value ): bool {
-		return (bool) preg_match( '/^[a-z][a-z0-9-]*\(.*\)$/is', $value );
+		return (bool) preg_match( '/^[a-z][a-z0-9-]*\(.*\)$/i', $value );
 	}
 }

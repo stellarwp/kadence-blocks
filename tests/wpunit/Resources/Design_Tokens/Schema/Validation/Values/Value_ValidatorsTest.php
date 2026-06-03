@@ -146,7 +146,7 @@ final class Value_ValidatorsTest extends TestCase {
 		$errors = ( new Shadow_Value() )->validate( 5, 's.$value' );
 
 		$this->assertCount( 1, $errors );
-		$this->assertSame( Validation_Error::get_code_malformed_node(), $errors[0]->code );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}
 
 	/**
