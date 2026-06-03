@@ -41,6 +41,20 @@ final class Literals {
 	];
 
 	/**
+	 * The CSS font-weight keywords accepted as a non-numeric weight literal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const FONT_WEIGHT_KEYWORDS = [
+		'normal',
+		'bold',
+		'bolder',
+		'lighter',
+	];
+
+	/**
 	 * The CSS named colors (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
 	 * what lets "not-a-color" be rejected while "rebeccapurple" is accepted.
 	 *
@@ -307,7 +321,7 @@ final class Literals {
 		}
 
 		if ( is_string( $value ) ) {
-			return in_array( strtolower( $value ), [ 'normal', 'bold', 'bolder', 'lighter' ], true );
+			return in_array( strtolower( $value ), self::FONT_WEIGHT_KEYWORDS, true );
 		}
 
 		return false;
