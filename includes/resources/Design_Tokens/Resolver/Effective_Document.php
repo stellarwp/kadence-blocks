@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 
 /**
  * Deep-merges the stored overrides-only DTCG document onto the shipped baseline,
@@ -104,10 +105,8 @@ final class Effective_Document {
 			return false;
 		}
 
-		if ( array_key_exists( '$value', $value ) && $value['$value'] === null ) {
-			return true;
-		}
-
-		return ( $value['$disabled'] ?? false ) === true;
+		// Both override-suppression sentinels drop the baseline entry from the effective document; the
+		// spellings live on Sentinels so this never hard-codes "$value"/"$disabled".
+		return Sentinels::is_reset( $value ) || Sentinels::is_disabled( $value );
 	}
 }
