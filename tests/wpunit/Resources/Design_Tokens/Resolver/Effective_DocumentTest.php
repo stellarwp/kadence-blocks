@@ -157,6 +157,36 @@ final class Effective_DocumentTest extends TestCase {
 		$this->assertArrayHasKey( 'button-bg', $document['semantic']['color'] );
 	}
 
+	public function testAGroupOverrideReplacesABaselineLeafInsteadOfCorruptingIt(): void {
+		// The baseline holds a leaf at brand.primary; the override puts a GROUP at the same key.
+		// The group must replace the leaf wholesale, never merge its children alongside the leaf's
+		// $type/$value (which would leave a hybrid node and drop the override's child tokens).
+		$document = $this->effective()->build(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'light' => [
+									'$type'  => 'color',
+									'$value' => '#5599EE',
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$primary = $document['primitive']['color']['brand']['primary'];
+
+		$this->assertArrayHasKey( 'light', $primary );
+		$this->assertSame( '#5599EE', $primary['light']['$value'] );
+		// The baseline leaf's keys must not survive alongside the new group.
+		$this->assertArrayNotHasKey( '$value', $primary );
+		$this->assertArrayNotHasKey( '$type', $primary );
+	}
+
 	public function testAnEmptyBaselineWithOverridesStillBuildsFromOverrides(): void {
 		$effective = new Effective_Document( new Fake_Baseline_Document( [] ) );
 

@@ -78,13 +78,19 @@ final class Effective_Document {
 			}
 
 			// A leaf ($value present) replaces wholesale — never field-merge a token value.
-			if ( is_array( $value ) && array_key_exists( '$value', $value ) ) {
+			if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
 				$base[ $key ] = $value;
 				continue;
 			}
 
-			// Two groups: descend. Otherwise the override introduces a new branch.
-			if ( is_array( $value ) && isset( $base[ $key ] ) && is_array( $base[ $key ] ) ) {
+			// Two groups: descend. A baseline leaf is never a group, so when the override puts a group
+			// where the baseline holds a leaf, the override replaces it (falls through below) rather than
+			// merging the group's children alongside the leaf's $type/$value and corrupting the node.
+			if ( is_array( $value )
+				&& isset( $base[ $key ] )
+				&& is_array( $base[ $key ] )
+				&& ! array_key_exists( Sentinels::get_value_key(), $base[ $key ] )
+			) {
 				$base[ $key ] = $this->merge_node( $base[ $key ], $value );
 				continue;
 			}
