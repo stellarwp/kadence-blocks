@@ -6,6 +6,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Provider;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
 final class Projection_ProviderTest extends TestCase {
@@ -32,6 +34,17 @@ final class Projection_ProviderTest extends TestCase {
 	protected function tearDown(): void {
 		wp_deregister_style( 'kadence-blocks-global-variables' );
 		wp_deregister_style( 'kadence-blocks-global-editor-styles' );
+
+		// Re-activate the registry in case a test called deactivate() on the singleton.
+		$this->container->get( Token_Registry::class )->activate();
+
+		// Clear the Token_Resolver singleton's in-memory memo so calls to resolve() made
+		// during these tests do not short-circuit object-cache checks in later test classes.
+		/** @var Token_Resolver $resolver */
+		$resolver      = $this->container->get( Token_Resolver::class );
+		$memo_property = new ReflectionProperty( Token_Resolver::class, 'memo' );
+		$memo_property->setAccessible( true );
+		$memo_property->setValue( $resolver, [] );
 
 		parent::tearDown();
 	}
