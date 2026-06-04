@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 
 /**
  * The real, shipped baseline DTCG document (baseline.json).
@@ -33,16 +34,6 @@ final class Json_Baseline_Document implements Baseline_Document {
 	 * @since TBD
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
-
-	/**
-	 * The DTCG document layers that hold registrable tokens. The $extensions layer (presets/variants)
-	 * is excluded by design — its entries are not tokens and must never satisfy the guard.
-	 *
-	 * @var string[]
-	 *
-	 * @since TBD
-	 */
-	private const TOKEN_LAYERS = [ 'primitive', 'semantic' ];
 
 	/**
 	 * Absolute path to the shipped baseline.json.
@@ -154,7 +145,7 @@ final class Json_Baseline_Document implements Baseline_Document {
 		$document = $this->document();
 		$index    = [];
 
-		foreach ( self::TOKEN_LAYERS as $layer ) {
+		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
 				$this->collect_leaves( $document[ $layer ], $layer, $index );
 			}

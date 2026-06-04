@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 
 /**
  * Flattens the effective DTCG document into two ready-to-emit maps. The single place
@@ -15,13 +16,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
  * @since TBD
  */
 final class Token_Resolver {
-
-	/**
-	 * The DTCG layers carrying resolvable tokens; $extensions is excluded by design.
-	 *
-	 * @var string[]
-	 */
-	private const TOKEN_LAYERS = [ 'primitive', 'semantic' ];
 
 	/**
 	 * @var Token_Store
@@ -107,7 +101,7 @@ final class Token_Resolver {
 		$by_id  = [];
 		$by_var = [];
 
-		foreach ( self::TOKEN_LAYERS as $layer ) {
+		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
 				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var );
 			}

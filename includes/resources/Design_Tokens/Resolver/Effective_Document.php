@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 
 /**
@@ -15,14 +16,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * @since TBD
  */
 final class Effective_Document {
-
-	/**
-	 * The DTCG layers that carry resolvable tokens. Mirrors Json_Baseline_Document
-	 * so $extensions (presets/variants) is never treated as a token tree.
-	 *
-	 * @var string[]
-	 */
-	private const TOKEN_LAYERS = [ 'primitive', 'semantic' ];
 
 	/**
 	 * @var Baseline_Document
@@ -43,7 +36,7 @@ final class Effective_Document {
 	public function build( array $overrides ): array {
 		$effective = [];
 
-		foreach ( self::TOKEN_LAYERS as $layer ) {
+		foreach ( Layers::token_layers() as $layer ) {
 			$base = $this->baseline->document()[ $layer ] ?? [];
 			$over = $overrides[ $layer ] ?? [];
 
