@@ -69,6 +69,8 @@ abstract class Controller extends WP_REST_Controller {
 		 *
 		 * @param string          $capability The required capability.
 		 * @param WP_REST_Request $request    The current request.
+		 *
+		 * @return string The required capability.
 		 */
 		return Cast::to_string( apply_filters( 'kadence_blocks_design_tokens_capability', self::DEFAULT_CAPABILITY, $request ) );
 	}
