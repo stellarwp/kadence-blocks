@@ -88,7 +88,10 @@ final class Provider extends Provider_Contract {
 			return $colors;
 		}
 
-		return $this->container->get( Legacy_Filter_Bridge::class )->global_colors( $colors );
+		/** @var Legacy_Filter_Bridge $bridge */
+		$bridge = $this->container->get( Legacy_Filter_Bridge::class );
+
+		return $bridge->global_colors( $colors );
 	}
 
 	/**
@@ -103,7 +106,10 @@ final class Provider extends Provider_Contract {
 			return $sizes;
 		}
 
-		return $this->container->get( Legacy_Filter_Bridge::class )->font_sizes( $sizes );
+		/** @var Legacy_Filter_Bridge $bridge */
+		$bridge = $this->container->get( Legacy_Filter_Bridge::class );
+
+		return $bridge->font_sizes( $sizes );
 	}
 
 	/**
@@ -120,13 +126,17 @@ final class Provider extends Provider_Contract {
 	 */
 	private function build_css(): string {
 		try {
-			$store    = $this->container->get( Token_Store::class );
-			$version  = $store->get_version();
-			$resolved = $this->container->get( Token_Resolver::class )->resolve();
+			/** @var Token_Store $store */
+			$store   = $this->container->get( Token_Store::class );
+			$version = $store->get_version();
+			/** @var Token_Resolver $resolver */
+			$resolver = $this->container->get( Token_Resolver::class );
+			$resolved = $resolver->resolve();
 		} catch ( RuntimeException $e ) {
 			return '';
 		}
 
+		/** @var Css_Var_Projector $projector */
 		$projector = $this->container->get( Css_Var_Projector::class );
 
 		return $projector->css_for_version( $resolved, $version );
@@ -140,6 +150,9 @@ final class Provider extends Provider_Contract {
 	 * @return bool
 	 */
 	private function is_active(): bool {
-		return $this->container->get( Token_Registry::class )->is_active();
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+
+		return $registry->is_active();
 	}
 }
