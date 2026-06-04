@@ -16,7 +16,7 @@ final class Token_ResolverTest extends TestCase {
 
 	/**
 	 * Build a resolver over a fully-controlled baseline. The store is never touched by
-	 * dry_run(), so we can exercise the full resolution + render path without the database.
+	 * resolve_overrides(), so we can exercise the full resolution + render path without the database.
 	 *
 	 * @param array<string, mixed> $baseline
 	 */
@@ -52,7 +52,7 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$by_id = $resolver->dry_run( [] )->by_id();
+		$by_id = $resolver->resolve_overrides( [] )->by_id();
 
 		$this->assertSame( '#3182CE', $by_id['semantic.color.button-bg'] );
 		$this->assertSame( '#3182CE', $by_id['primitive.color.brand.primary'] );
@@ -80,7 +80,7 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '#abcdef', $resolver->dry_run( [] )->value( 'primitive.color.a' ) );
+		$this->assertSame( '#abcdef', $resolver->resolve_overrides( [] )->value( 'primitive.color.a' ) );
 	}
 
 	public function testItResolvesAnAliasNestedInsideACompositeShadow(): void {
@@ -111,7 +111,7 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '0px 2px 8px 0px #1A202C', $resolver->dry_run( [] )->value( 'semantic.shadow.card' ) );
+		$this->assertSame( '0px 2px 8px 0px #1A202C', $resolver->resolve_overrides( [] )->value( 'semantic.shadow.card' ) );
 	}
 
 	public function testFontFamilyListsRenderCommaSeparated(): void {
@@ -130,7 +130,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->assertSame(
 			'Inter, system-ui, sans-serif',
-			$resolver->dry_run( [] )->value( 'primitive.fontFamily.sans' )
+			$resolver->resolve_overrides( [] )->value( 'primitive.fontFamily.sans' )
 		);
 	}
 
@@ -148,7 +148,7 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$by_var = $resolver->dry_run( [] )->by_var();
+		$by_var = $resolver->resolve_overrides( [] )->by_var();
 		$var    = Css_Var::from_id( 'semantic.color.button-bg' );
 
 		$this->assertArrayHasKey( $var, $by_var );
@@ -171,7 +171,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->expectException( Dangling_Alias_Exception::class );
 
-		$resolver->dry_run( [] );
+		$resolver->resolve_overrides( [] );
 	}
 
 	public function testItThrowsOnADanglingAliasNestedInsideAComposite(): void {
@@ -196,7 +196,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->expectException( Dangling_Alias_Exception::class );
 
-		$resolver->dry_run( [] );
+		$resolver->resolve_overrides( [] );
 	}
 
 	public function testItThrowsOnAnAliasCycle(): void {
@@ -219,7 +219,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->expectException( Alias_Cycle_Exception::class );
 
-		$resolver->dry_run( [] );
+		$resolver->resolve_overrides( [] );
 	}
 
 	public function testDryRunOverridesWinOverTheBaseline(): void {
@@ -246,7 +246,7 @@ final class Token_ResolverTest extends TestCase {
 			]
 		);
 
-		$by_id = $resolver->dry_run(
+		$by_id = $resolver->resolve_overrides(
 			[
 				'primitive' => [
 					'color' => [

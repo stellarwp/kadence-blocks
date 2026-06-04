@@ -59,7 +59,7 @@ final class Token_Resolver {
 	 *
 	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
-	 *                                  Writes are gated by dry_run(), so a clean store never hits this.
+	 *                                  Writes are gated by resolve_overrides(), so a clean store never hits this.
 	 */
 	public function resolve( string $slug = 'default' ): Resolved_Tokens {
 		$version = $this->store->get_version( $slug );
@@ -80,15 +80,16 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Dry-run resolution against an ad-hoc overrides array — used by the REST write layer
-	 * to reject aliasing cycles before committing. Never touches the store/memo.
+	 * Resolve an ad-hoc overrides array against the baseline without persisting — used by the REST
+	 * write layer to reject aliasing cycles and dangling aliases before committing. A dry run by
+	 * nature: it never touches the store or the memo.
 	 *
 	 * @param array<string,mixed> $overrides Decoded candidate overrides.
 	 *
 	 * @throws Alias_Cycle_Exception    When the candidate introduces an unresolvable cycle.
 	 * @throws Dangling_Alias_Exception When the candidate aliases a path with no token leaf.
 	 */
-	public function dry_run( array $overrides ): Resolved_Tokens {
+	public function resolve_overrides( array $overrides ): Resolved_Tokens {
 		return $this->resolve_document( $this->effective->build( $overrides ) );
 	}
 
@@ -180,7 +181,7 @@ final class Token_Resolver {
 
 			// Dangling alias: the target is missing, or points at a group rather than a
 			// token leaf. There is nothing to resolve to, and passing the "{…}" reference
-			// through would emit invalid CSS, so reject it. dry_run() surfaces this to the
+			// through would emit invalid CSS, so reject it. resolve_overrides() surfaces this to the
 			// REST write layer (HTTP 422) before the document is ever stored — symmetric
 			// with cycle handling.
 			if ( $leaf === null || ! array_key_exists( '$value', $leaf ) ) {
