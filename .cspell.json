@@ -39,6 +39,7 @@
         "memize",
 		"Menlo",
         "nvmrc",
+        "PCRE",
         "phar",
         "phpcs",
         "phpstan",

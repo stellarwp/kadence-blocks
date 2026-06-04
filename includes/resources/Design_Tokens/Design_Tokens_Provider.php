@@ -17,6 +17,8 @@ final class Design_Tokens_Provider extends Provider {
 	private const PROVIDERS = [
 		Registry\Provider::class,
 		Database\Provider::class,
+		Schema\Provider::class,
+		Resolver\Provider::class,
 	];
 
 	public function register(): void {
