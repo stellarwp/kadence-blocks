@@ -172,10 +172,10 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( 0, $fired );
 	}
 
-	public function testSavingActionDoesNotFireOnAFirstSave(): void {
+	public function testSupersededActionDoesNotFireOnAFirstSave(): void {
 		$fired = 0;
 		add_action(
-			Token_Store::saving_action(),
+			Token_Store::superseded_action(),
 			static function () use ( &$fired ): void {
 				++$fired;
 			}
@@ -187,13 +187,13 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( 0, $fired );
 	}
 
-	public function testSavingActionFiresWithThePreviousDocumentAndVersionOnOverwrite(): void {
+	public function testSupersededActionFiresWithThePreviousDocumentAndVersionOnOverwrite(): void {
 		$this->store->save_document( '{"v":1}' );
 		$first_version = $this->store->get_version();
 
 		$captured = [];
 		add_action(
-			Token_Store::saving_action(),
+			Token_Store::superseded_action(),
 			static function ( $slug, $document, $version ) use ( &$captured ): void {
 				$captured = [
 					'slug'     => $slug,
@@ -213,14 +213,14 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( $first_version, $captured['version'] );
 	}
 
-	public function testSavingActionFiresEvenWhenThePreviousDocumentWasEmpty(): void {
+	public function testSupersededActionFiresEvenWhenThePreviousDocumentWasEmpty(): void {
 		// A saved-empty set is still a real prior state (an undo back to baseline),
 		// distinct from "no row at all".
 		$this->store->save_document( '' );
 
 		$captured = null;
 		add_action(
-			Token_Store::saving_action(),
+			Token_Store::superseded_action(),
 			static function ( $slug, $document ) use ( &$captured ): void {
 				$captured = $document;
 			},
@@ -233,7 +233,7 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( '', $captured );
 	}
 
-	public function testSavingActionFiresOnlyAfterTheNewDocumentIsPersisted(): void {
+	public function testSupersededActionFiresOnlyAfterTheNewDocumentIsPersisted(): void {
 		$this->store->save_document( '{"v":1}' );
 
 		// Capture what the live table holds at the moment the action fires, plus
@@ -241,7 +241,7 @@ final class Token_StoreTest extends TestCase {
 		$live_at_fire   = null;
 		$carried_in_arg = null;
 		add_action(
-			Token_Store::saving_action(),
+			Token_Store::superseded_action(),
 			function ( $slug, $document ) use ( &$live_at_fire, &$carried_in_arg ): void {
 				$live_at_fire   = $this->store->get_document();
 				$carried_in_arg = $document;

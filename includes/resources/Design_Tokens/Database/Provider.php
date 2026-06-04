@@ -40,7 +40,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Bind Token_History_Store and subscribe it to the Token_Store saving action.
+	 * Bind Token_History_Store and subscribe it to the Token_Store superseded action.
 	 *
 	 * The store archives the previous document each time a set is overwritten.
 	 * Subscribing here (rather than calling the store from Token_Store) keeps
@@ -59,7 +59,7 @@ final class Provider extends Provider_Contract {
 						->give( static fn(): string => Token_History_Table::table_name( false ) );
 
 		add_action(
-			Token_Store::saving_action(),
+			Token_Store::superseded_action(),
 			$this->container->callback( Token_History_Store::class, 'record' ),
 			10,
 			3

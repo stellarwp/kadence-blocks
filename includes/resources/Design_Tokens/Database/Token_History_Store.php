@@ -12,12 +12,12 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryExcept
  * back for the module's undo/audit surface. No component other than this store
  * should touch the table directly.
  *
- * It is wired to Token_Store's "saving" action by Provider, so every successful
+ * It is wired to Token_Store's "superseded" action by Provider, so every successful
  * document save (after the first, which has no prior state) leaves a snapshot
  * here. Writes append only — v1 keeps the full history and never prunes.
  *
- * @see Provider for the table binding and the saving-action subscription.
- * @see Token_Store::saving_action() for the signal this store reacts to.
+ * @see Provider for the table binding and the superseded-action subscription.
+ * @see Token_Store::superseded_action() for the signal this store reacts to.
  *
  * @since TBD
  */

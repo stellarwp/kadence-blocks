@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
  * rather than relying on WordPress revisions (which several managed hosts
  * disable). Each row is a point-in-time snapshot of the document that was about
  * to be overwritten — written by Token_History_Store in response to the
- * Token_Store "saving" action.
+ * Token_Store "superseded" action.
  *
  * Like Token_Table, this holds authored user data, so it must NOT drop itself on
  * a schema change — the base class migration is non-destructive.

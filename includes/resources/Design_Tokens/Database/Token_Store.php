@@ -38,7 +38,7 @@ final class Token_Store extends Query {
 	 *
 	 * @since TBD
 	 */
-	private const SAVING_ACTION = 'kadence_blocks_design_tokens_saving';
+	private const SUPERSEDED_ACTION = 'kadence_blocks_design_tokens_superseded';
 
 	/**
 	 * @var string The default token set slug. v1 ships a single set under this slug.
@@ -68,8 +68,8 @@ final class Token_Store extends Query {
 	 *
 	 * @return string
 	 */
-	public static function saving_action(): string {
-		return self::SAVING_ACTION;
+	public static function superseded_action(): string {
+		return self::SUPERSEDED_ACTION;
 	}
 
 	/**
@@ -177,7 +177,7 @@ final class Token_Store extends Query {
 		// throws above, so nothing is archived and no change is signalled for a
 		// save that did not happen.
 		if ( is_array( $previous ) ) {
-			$this->saving( $slug, (string) ( $previous['document'] ?? '' ), (string) ( $previous['version'] ?? '' ) );
+			$this->superseded( $slug, (string) ( $previous['document'] ?? '' ), (string) ( $previous['version'] ?? '' ) );
 		}
 
 		$this->changed( $slug );
@@ -268,7 +268,7 @@ final class Token_Store extends Query {
 	 *
 	 * @return void
 	 */
-	private function saving( string $slug, string $document, string $version ): void {
+	private function superseded( string $slug, string $document, string $version ): void {
 		/**
 		 * Fires immediately after a design token set's existing document is overwritten.
 		 *
@@ -276,6 +276,6 @@ final class Token_Store extends Query {
 		 * @param string $document The now-previous document that was replaced.
 		 * @param string $version  The now-previous version hash.
 		 */
-		do_action( self::SAVING_ACTION, $slug, $document, $version );
+		do_action( self::SUPERSEDED_ACTION, $slug, $document, $version );
 	}
 }
