@@ -164,9 +164,10 @@ final class Css_Var_Projector {
 		$declarations = '';
 
 		foreach ( $this->registry->by_projection( self::WP_PRESET ) as $id => $token ) {
-			// A token registered without a baseline/override value resolves to nothing — skip it rather
-			// than emit a preset that points at an undefined variable.
-			if ( $resolved->value( $id ) === null ) {
+			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
+			// --wp--preset-- declaration that resolves to nothing in the browser.
+			$value = $resolved->value( $id );
+			if ( $value === null || $value === '' ) {
 				continue;
 			}
 

@@ -121,6 +121,25 @@ final class Css_Var_ProjectorTest extends TestCase {
 		$this->assertStringNotContainsString( '--wp--preset--', $css );
 	}
 
+	public function testItSkipsPresetWhenTokenHasEmptyStringResolvedValue(): void {
+		$id  = 'semantic.color.button-bg';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'color',
+				'label'       => 'Button Background',
+				'projections' => [ 'wp_preset' => 'color' ],
+			]
+		);
+
+		// by_id has the key but with an empty value (e.g. an unrecognised $type rendered to '').
+		$css = $this->projector()->css( $this->resolved( [ $id => '' ], [ $var => '' ] ) );
+
+		$this->assertStringNotContainsString( '--wp--preset--', $css );
+	}
+
 	public function testNoPresetTokensProducesNoPresetBlock(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
 		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );

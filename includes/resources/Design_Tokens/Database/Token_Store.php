@@ -138,10 +138,15 @@ final class Token_Store extends Query {
 					->get( ARRAY_A );
 
 		if ( ! is_array( $row ) ) {
-			return $this->version_memo[ $slug ] = '';
+			$this->version_memo[ $slug ] = '';
+
+			return '';
 		}
 
-		return $this->version_memo[ $slug ] = (string) ( $row['version'] ?? '' );
+		$version                     = (string) ( $row['version'] ?? '' );
+		$this->version_memo[ $slug ] = $version;
+
+		return $version;
 	}
 
 	/**
