@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+
 /**
  * Renders an already-flattened (alias-free) DTCG value to a CSS-ready string,
  * dispatching on $type. Input is the literal produced by Token_Resolver — never an alias.
@@ -15,14 +17,14 @@ final class Css_Renderer {
 	 */
 	public function render( string $type, $value ): string {
 		switch ( $type ) {
-			case 'fontFamily':
+			case Token_Type::get_type_font_family():
 				return $this->font_family( $value );
-			case 'shadow':
+			case Token_Type::get_type_shadow():
 				return $this->shadow( $value );
-			case 'typography':
+			case Token_Type::get_type_typography():
 				return $this->typography( $value );
-			case 'color':
-			case 'dimension':
+			case Token_Type::get_type_color():
+			case Token_Type::get_type_dimension():
 			default:
 				return is_scalar( $value ) ? (string) $value : '';
 		}
