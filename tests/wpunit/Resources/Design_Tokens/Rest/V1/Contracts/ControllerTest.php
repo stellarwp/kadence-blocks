@@ -40,7 +40,9 @@ final class ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItDefaultsToTheThemeOptionsCapability(): void {
-		$this->assertSame( 'edit_theme_options', $this->make_controller()->get_capability() );
+		$capability = $this->make_controller()->get_capability( new WP_REST_Request( WP_REST_Server::READABLE ) );
+
+		$this->assertSame( 'edit_theme_options', $capability );
 	}
 
 	/**
@@ -49,7 +51,9 @@ final class ControllerTest extends TestCase {
 	public function testItHonorsTheCapabilityFilter(): void {
 		add_filter( 'kadence_blocks_design_tokens_capability', static fn(): string => 'manage_options' );
 
-		$this->assertSame( 'manage_options', $this->make_controller()->get_capability() );
+		$capability = $this->make_controller()->get_capability( new WP_REST_Request( WP_REST_Server::READABLE ) );
+
+		$this->assertSame( 'manage_options', $capability );
 	}
 
 	/**
@@ -58,8 +62,8 @@ final class ControllerTest extends TestCase {
 	public function testTheCapabilityFilterReceivesTheRequest(): void {
 		add_filter(
 			'kadence_blocks_design_tokens_capability',
-			static function ( string $capability, ?WP_REST_Request $request ): string {
-				return $request && WP_REST_Server::CREATABLE === $request->get_method() ? 'manage_options' : $capability;
+			static function ( string $capability, WP_REST_Request $request ): string {
+				return WP_REST_Server::CREATABLE === $request->get_method() ? 'manage_options' : $capability;
 			},
 			10,
 			2

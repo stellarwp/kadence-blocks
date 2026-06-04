@@ -51,24 +51,24 @@ abstract class Controller extends WP_REST_Controller {
 	/**
 	 * The capability a request must satisfy to access design-token routes.
 	 *
-	 * The request, when available, is passed through to the filter so a callback
-	 * can vary the requirement per route or method (for example, requiring a
-	 * higher capability on writes than reads) without registering a new filter.
+	 * The request is passed through to the filter so a callback can vary the
+	 * requirement per route or method (for example, requiring a higher capability
+	 * on writes than reads) without registering a new filter.
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_REST_Request|null $request The current request, if any.
+	 * @param WP_REST_Request $request The current request.
 	 *
 	 * @return string
 	 */
-	public function get_capability( ?WP_REST_Request $request = null ): string {
+	public function get_capability( WP_REST_Request $request ): string {
 		/**
 		 * Filters the capability required to access the Design Tokens REST routes.
 		 *
 		 * @since TBD
 		 *
-		 * @param string               $capability The required capability.
-		 * @param WP_REST_Request|null $request    The current request, if any.
+		 * @param string          $capability The required capability.
+		 * @param WP_REST_Request $request    The current request.
 		 */
 		return Cast::to_string( apply_filters( 'kadence_blocks_design_tokens_capability', self::DEFAULT_CAPABILITY, $request ) );
 	}
