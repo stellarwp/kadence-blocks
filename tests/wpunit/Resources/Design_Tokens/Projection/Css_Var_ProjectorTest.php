@@ -134,7 +134,7 @@ final class Css_Var_ProjectorTest extends TestCase {
 			]
 		);
 
-		// by_id has the key but with an empty value (e.g. an unrecognised $type rendered to '').
+		// by_id has the key but with an empty value (e.g. an unrecognized $type rendered to '').
 		$css = $this->projector()->css( $this->resolved( [ $id => '' ], [ $var => '' ] ) );
 
 		$this->assertStringNotContainsString( '--wp--preset--', $css );

@@ -79,7 +79,10 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 	 */
 	private function color_baseline( string $id, string $value ): array {
 		$parts = explode( '.', $id );
-		$node  = [ '$type' => 'color', '$value' => $value ];
+		$node  = [
+			'$type'  => 'color',
+			'$value' => $value,
+		];
 
 		for ( $i = count( $parts ) - 1; $i >= 0; $i-- ) {
 			$node = [ $parts[ $i ] => $node ];
@@ -103,8 +106,8 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			]
 		);
 
-		$bridge  = $this->bridge_for( $this->color_baseline( $id, '#3182CE' ) );
-		$result  = $bridge->global_colors( $this->default_colors );
+		$bridge = $this->bridge_for( $this->color_baseline( $id, '#3182CE' ) );
+		$result = $bridge->global_colors( $this->default_colors );
 
 		$this->assertSame( 'var(' . $var . ', #3182CE)', $result['--global-palette3'] );
 
@@ -150,8 +153,8 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			]
 		);
 
-		$bridge  = $this->bridge_for( [] );
-		$result  = $bridge->global_colors( $this->default_colors );
+		$bridge = $this->bridge_for( [] );
+		$result = $bridge->global_colors( $this->default_colors );
 
 		$this->assertSame( $this->default_colors, $result );
 	}
@@ -188,7 +191,16 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			]
 		);
 
-		$baseline = [ 'semantic' => [ 'dimension' => [ 'font-sm' => [ '$type' => 'dimension', '$value' => '0.875rem' ] ] ] ];
+		$baseline = [
+			'semantic' => [
+				'dimension' => [
+					'font-sm' => [
+						'$type'  => 'dimension',
+						'$value' => '0.875rem',
+					],
+				],
+			],
+		];
 		$bridge   = $this->bridge_for( $baseline );
 		$result   = $bridge->font_sizes( $this->default_font_sizes );
 
@@ -215,7 +227,16 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			]
 		);
 
-		$baseline = [ 'semantic' => [ 'dimension' => [ 'font-md' => [ '$type' => 'dimension', '$value' => '1rem' ] ] ] ];
+		$baseline = [
+			'semantic' => [
+				'dimension' => [
+					'font-md' => [
+						'$type'  => 'dimension',
+						'$value' => '1rem',
+					],
+				],
+			],
+		];
 		$bridge   = $this->bridge_for( $baseline );
 		$result   = $bridge->font_sizes( $this->default_font_sizes );
 		$value    = $result['md'];
@@ -286,7 +307,7 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 	}
 
 	public function testFontSizesIsUnaffectedByKadenceTheme(): void {
-		$id  = 'semantic.dimension.font-sm';
+		$id = 'semantic.dimension.font-sm';
 
 		$this->registry->register(
 			[
@@ -297,7 +318,16 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 			]
 		);
 
-		$baseline = [ 'semantic' => [ 'dimension' => [ 'font-sm' => [ '$type' => 'dimension', '$value' => '0.875rem' ] ] ] ];
+		$baseline = [
+			'semantic' => [
+				'dimension' => [
+					'font-sm' => [
+						'$type'  => 'dimension',
+						'$value' => '0.875rem',
+					],
+				],
+			],
+		];
 		$bridge   = $this->bridge_for( $baseline );
 
 		// Kadence\Theme may or may not be defined — font_sizes() never checks for it.

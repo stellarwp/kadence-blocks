@@ -22,10 +22,10 @@ final class Projection_ProviderTest extends TestCase {
 
 		// Register the KB style handles the provider appends to.
 		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
-			wp_register_style( 'kadence-blocks-global-variables', false );
+			wp_register_style( 'kadence-blocks-global-variables', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
 		if ( ! wp_style_is( 'kadence-blocks-global-editor-styles', 'registered' ) ) {
-			wp_register_style( 'kadence-blocks-global-editor-styles', false );
+			wp_register_style( 'kadence-blocks-global-editor-styles', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
 	}
 
@@ -94,11 +94,11 @@ final class Projection_ProviderTest extends TestCase {
 		$this->provider->enqueue_front_end();
 		$this->provider->enqueue_editor();
 
-		$frontInline  = wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' );
-		$editorInline = wp_styles()->get_data( 'kadence-blocks-global-editor-styles', 'after' );
+		$front_inline  = wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' );
+		$editor_inline = wp_styles()->get_data( 'kadence-blocks-global-editor-styles', 'after' );
 
-		$this->assertEmpty( $frontInline );
-		$this->assertEmpty( $editorInline );
+		$this->assertEmpty( $front_inline );
+		$this->assertEmpty( $editor_inline );
 	}
 
 	public function testFiltersReturnInputUnchangedWhenRegistryIsDeactivated(): void {
