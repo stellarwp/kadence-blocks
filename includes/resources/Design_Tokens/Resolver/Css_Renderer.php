@@ -59,7 +59,8 @@ final class Css_Renderer {
 	 * Token_Resolver passes a list through untouched, and supporting it is a follow-up that
 	 * would change this method (join each layer with ", ") and the resolver's list handling.
 	 *
-	 * @param mixed $value
+	 * @param mixed|array{color: string, offsetX: string, offsetY: string, blur: string, spread: string} $value
+	 *              The resolved shadow shape; typed loosely so a malformed (non-array) token still degrades to "".
 	 */
 	private function shadow( $value ): string {
 		if ( ! is_array( $value ) ) {
@@ -81,7 +82,8 @@ final class Css_Renderer {
 	 * ("<weight> <size>/<line-height> <family>"). Emitted as one custom property;
 	 * projectors may also split it into longhand properties if needed.
 	 *
-	 * @param mixed $value
+	 * @param mixed|array{fontFamily: string|string[], fontSize: string, fontWeight: string, lineHeight: string} $value
+	 *              The resolved typography shape; typed loosely so a malformed (non-array) token still degrades to "".
 	 */
 	private function typography( $value ): string {
 		if ( ! is_array( $value ) ) {
