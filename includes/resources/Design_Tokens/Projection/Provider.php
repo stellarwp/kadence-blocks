@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
@@ -105,17 +106,20 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Build the projected CSS from the current resolved token set.
+	 * Build the projected CSS from the current resolved token set, using the per-request memo
+	 * and object cache so repeated calls (front end + editor) within the same request are free.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
 	private function build_css(): string {
+		$store     = $this->container->get( Token_Store::class );
+		$version   = $store->get_version();
 		$resolved  = $this->container->get( Token_Resolver::class )->resolve();
 		$projector = $this->container->get( Css_Var_Projector::class );
 
-		return $projector->css( $resolved );
+		return $projector->css_for_version( $resolved, $version );
 	}
 
 	/**

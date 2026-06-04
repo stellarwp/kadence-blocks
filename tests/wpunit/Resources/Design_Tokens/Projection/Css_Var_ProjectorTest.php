@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -12,15 +13,17 @@ use Tests\Support\Classes\TestCase;
 final class Css_Var_ProjectorTest extends TestCase {
 
 	private Token_Registry $registry;
+	private Token_Store $store;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->registry = new Token_Registry();
+		$this->store    = $this->container->get( Token_Store::class );
 	}
 
 	private function projector(): Css_Var_Projector {
-		return new Css_Var_Projector( $this->registry );
+		return new Css_Var_Projector( $this->registry, $this->store );
 	}
 
 	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {
@@ -176,5 +179,51 @@ final class Css_Var_ProjectorTest extends TestCase {
 		$this->assertStringContainsString( '#abcdefghi', $css );
 		$this->assertStringNotContainsString( "\x00", $css );
 		$this->assertStringNotContainsString( "\x1F", $css );
+	}
+
+	// ---- Caching (css_for_version) ------------------------------------------------------------------
+
+	public function testCssForVersionReturnsSameResultAsCss(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+
+		$resolved  = $this->resolved( [], [ $var => '#3182CE' ] );
+		$projector = $this->projector();
+
+		$this->assertSame(
+			$projector->css( $resolved ),
+			$projector->css_for_version( $resolved, 'v1' )
+		);
+	}
+
+	public function testCssForVersionServesFromObjectCacheOnSecondCall(): void {
+		$var      = Css_Var::from_id( 'semantic.color.button-bg' );
+		$resolved = $this->resolved( [], [ $var => '#3182CE' ] );
+		$version  = 'test-version-cache';
+
+		// Seed the cache with a sentinel so we can confirm it is served.
+		$cache_key = 'projected_css_' . KADENCE_BLOCKS_VERSION . '_' . $version;
+		wp_cache_set( $cache_key, 'SENTINEL', 'kb_design_tokens', DAY_IN_SECONDS );
+
+		$result = $this->projector()->css_for_version( $resolved, $version );
+
+		$this->assertSame( 'SENTINEL', $result );
+	}
+
+	public function testCssForVersionProducesDifferentCacheKeyOnVersionBump(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+
+		$resolved  = $this->resolved( [], [ $var => '#3182CE' ] );
+		$projector = $this->projector();
+
+		$v1 = $projector->css_for_version( $resolved, 'version-a' );
+		// Seed an old value under version-b.
+		wp_cache_set( 'projected_css_' . KADENCE_BLOCKS_VERSION . '_version-b', 'OLD', 'kb_design_tokens', 1 );
+
+		$v2 = $projector->css_for_version( $resolved, 'version-b' );
+
+		// version-b served from cache seeded above.
+		$this->assertSame( 'OLD', $v2 );
+		// version-a was NOT the sentinel.
+		$this->assertNotSame( 'OLD', $v1 );
 	}
 }

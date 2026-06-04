@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -48,15 +49,39 @@ final class Css_Var_Projector {
 	private const WP_PRESET = 'wp_preset';
 
 	/**
+	 * Object-cache group shared with the resolver.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CACHE_GROUP = 'kb_design_tokens';
+
+	/**
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @param Token_Registry $registry
+	 * @var Token_Store
 	 */
-	public function __construct( Token_Registry $registry ) {
+	private Token_Store $store;
+
+	/**
+	 * Per-request memo keyed on the store version, so a write (which bumps the version)
+	 * automatically invalidates the in-memory result without an explicit purge hook.
+	 *
+	 * @var array<string,string>
+	 */
+	private array $memo = [];
+
+	/**
+	 * @param Token_Registry $registry
+	 * @param Token_Store    $store
+	 */
+	public function __construct( Token_Registry $registry, Token_Store $store ) {
 		$this->registry = $registry;
+		$this->store    = $store;
 	}
 
 	/**
@@ -73,6 +98,40 @@ final class Css_Var_Projector {
 		$presets = $this->preset_block( $resolved );
 
 		return $tokens . $presets;
+	}
+
+	/**
+	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the
+	 * store version, so a token write (which bumps the version) invalidates it automatically.
+	 *
+	 * The plugin version is folded into the cache key alongside the store version: the store version
+	 * tracks stored overrides, but projected CSS also depends on shipped declarations and the baseline,
+	 * which change with a plugin build. Including KADENCE_BLOCKS_VERSION busts the cache on upgrade.
+	 *
+	 * @since TBD
+	 *
+	 * @param Resolved_Tokens $resolved The resolved set (already version-correct from the resolver).
+	 * @param string          $version  The store version the resolved set was built from.
+	 *
+	 * @return string
+	 */
+	public function css_for_version( Resolved_Tokens $resolved, string $version ): string {
+		if ( isset( $this->memo[ $version ] ) ) {
+			return $this->memo[ $version ];
+		}
+
+		$cache_key = 'projected_css_' . KADENCE_BLOCKS_VERSION . '_' . $version;
+		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
+
+		if ( $found && is_string( $cached ) ) {
+			return $this->memo[ $version ] = $cached;
+		}
+
+		$css = $this->css( $resolved );
+
+		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
+
+		return $this->memo[ $version ] = $css;
 	}
 
 	/**
