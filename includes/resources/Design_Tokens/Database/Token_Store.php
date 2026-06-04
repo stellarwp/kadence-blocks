@@ -29,6 +29,18 @@ final class Token_Store extends Query {
 	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_changed';
 
 	/**
+	 * @var string Action fired after a save overwrites a set's existing document,
+	 *             carrying the now-previous document so the history store can
+	 *             archive it. Fires only on a successful write to a set that
+	 *             already existed — first saves have no prior state to keep, and a
+	 *             failed write throws before this is reached, so nothing is
+	 *             archived for a save that did not happen.
+	 *
+	 * @since TBD
+	 */
+	private const SUPERSEDED_ACTION = 'kadence_blocks_design_tokens_superseded';
+
+	/**
 	 * @var string The default token set slug. v1 ships a single set under this slug.
 	 *
 	 * @since TBD
@@ -44,6 +56,20 @@ final class Token_Store extends Query {
 	 */
 	public static function changed_action(): string {
 		return self::CHANGED_ACTION;
+	}
+
+	/**
+	 * The action hook that fires after a save overwrites a set's existing document.
+	 *
+	 * Subscribers receive the slug plus the now-previous document and version, for
+	 * callers (the history store) that archive state once a save has committed.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function superseded_action(): string {
+		return self::SUPERSEDED_ACTION;
 	}
 
 	/**
@@ -121,6 +147,13 @@ final class Token_Store extends Query {
 	 *                                throws before changed() is reached.
 	 */
 	public function save_document( string $document, string $slug = self::DEFAULT_SLUG, string $title = '' ): void {
+		// Capture the row before the upsert overwrites it, so its document can be
+		// archived once the save succeeds. Only a pre-existing row has prior state
+		// worth keeping — a first save has nothing to archive.
+		$previous = $this->qb()
+						->where( 'slug', $slug )
+						->get( ARRAY_A );
+
 		$data = [
 			'slug'       => $slug,
 			'document'   => $document,
@@ -140,7 +173,13 @@ final class Token_Store extends Query {
 		// admin-driven single-set saves in v1; revisit if writes become concurrent.
 		$this->qb()->upsert( $data, [ 'slug' ] );
 
-		// Reached only on a successful write — a failed write throws above.
+		// Everything below is reached only on a successful write — a failed upsert
+		// throws above, so nothing is archived and no change is signalled for a
+		// save that did not happen.
+		if ( is_array( $previous ) ) {
+			$this->superseded( $slug, (string) ( $previous['document'] ?? '' ), (string) ( $previous['version'] ?? '' ) );
+		}
+
 		$this->changed( $slug );
 	}
 
@@ -213,5 +252,30 @@ final class Token_Store extends Query {
 		 * @param string $slug The token set slug that changed.
 		 */
 		do_action( self::CHANGED_ACTION, $slug );
+	}
+
+	/**
+	 * Signal that a save overwrote a set's existing document, carrying its prior state.
+	 *
+	 * Fires after a successful upsert so a subscriber can archive the document
+	 * that was just replaced (the history store), with the captured prior values.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug     The token set slug that was overwritten.
+	 * @param string $document The now-previous document that was replaced.
+	 * @param string $version  The now-previous version hash.
+	 *
+	 * @return void
+	 */
+	private function superseded( string $slug, string $document, string $version ): void {
+		/**
+		 * Fires immediately after a design token set's existing document is overwritten.
+		 *
+		 * @param string $slug     The token set slug that was overwritten.
+		 * @param string $document The now-previous document that was replaced.
+		 * @param string $version  The now-previous version hash.
+		 */
+		do_action( self::SUPERSEDED_ACTION, $slug, $document, $version );
 	}
 }

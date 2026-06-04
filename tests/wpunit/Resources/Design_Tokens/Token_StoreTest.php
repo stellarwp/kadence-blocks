@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_History_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Table;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
@@ -169,6 +170,122 @@ final class Token_StoreTest extends TestCase {
 			'Expected a DatabaseQueryException writing to a missing table.'
 		);
 		$this->assertSame( 0, $fired );
+	}
+
+	public function testSupersededActionDoesNotFireOnAFirstSave(): void {
+		$fired = 0;
+		add_action(
+			Token_Store::superseded_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		// No prior row exists, so there is no previous document to archive.
+		$this->store->save_document( '{"first":true}' );
+
+		$this->assertSame( 0, $fired );
+	}
+
+	public function testSupersededActionFiresWithThePreviousDocumentAndVersionOnOverwrite(): void {
+		$this->store->save_document( '{"v":1}' );
+		$first_version = $this->store->get_version();
+
+		$captured = [];
+		add_action(
+			Token_Store::superseded_action(),
+			static function ( $slug, $document, $version ) use ( &$captured ): void {
+				$captured = [
+					'slug'     => $slug,
+					'document' => $document,
+					'version'  => $version,
+				];
+			},
+			10,
+			3
+		);
+
+		$this->store->save_document( '{"v":2}' );
+
+		// The signal carries the state leaving the table, not the incoming save.
+		$this->assertSame( Token_Store::default_slug(), $captured['slug'] );
+		$this->assertSame( '{"v":1}', $captured['document'] );
+		$this->assertSame( $first_version, $captured['version'] );
+	}
+
+	public function testSupersededActionFiresEvenWhenThePreviousDocumentWasEmpty(): void {
+		// A saved-empty set is still a real prior state (an undo back to baseline),
+		// distinct from "no row at all".
+		$this->store->save_document( '' );
+
+		$captured = null;
+		add_action(
+			Token_Store::superseded_action(),
+			static function ( $slug, $document ) use ( &$captured ): void {
+				$captured = $document;
+			},
+			10,
+			2
+		);
+
+		$this->store->save_document( '{"now":"set"}' );
+
+		$this->assertSame( '', $captured );
+	}
+
+	public function testSupersededActionFiresOnlyAfterTheNewDocumentIsPersisted(): void {
+		$this->store->save_document( '{"v":1}' );
+
+		// Capture what the live table holds at the moment the action fires, plus
+		// the previous document the action carries.
+		$live_at_fire   = null;
+		$carried_in_arg = null;
+		add_action(
+			Token_Store::superseded_action(),
+			function ( $slug, $document ) use ( &$live_at_fire, &$carried_in_arg ): void {
+				$live_at_fire   = $this->store->get_document();
+				$carried_in_arg = $document;
+			},
+			10,
+			2
+		);
+
+		$this->store->save_document( '{"v":2}' );
+
+		// The action fires after the upsert commits, so the new value is already
+		// live — guarding that a failed write never archives a phantom previous.
+		$this->assertSame( '{"v":2}', $live_at_fire );
+		// It still carries the document that was just replaced.
+		$this->assertSame( '{"v":1}', $carried_in_arg );
+	}
+
+	public function testSaveArchivesThePreviousDocumentIntoHistory(): void {
+		$history = $this->container->get( Token_History_Store::class );
+
+		// First save: nothing to archive yet.
+		$this->store->save_document( '{"v":1}' );
+		$this->assertSame( 0, $history->count() );
+
+		// Second save: the first document is archived before being overwritten.
+		$this->store->save_document( '{"v":2}' );
+		$this->assertSame( 1, $history->count() );
+		$this->assertSame( '{"v":1}', $history->latest()['document'] );
+
+		// Third save: history accumulates, newest first.
+		$this->store->save_document( '{"v":3}' );
+		$this->assertSame( 2, $history->count() );
+		$this->assertSame( '{"v":2}', $history->latest()['document'] );
+	}
+
+	public function testBumpVersionDoesNotArchiveHistory(): void {
+		$history = $this->container->get( Token_History_Store::class );
+
+		$this->store->save_document( '{"v":1}' );
+		$this->store->bump_version();
+
+		// bump_version() re-hashes without changing the document, so there is no
+		// new prior state to record.
+		$this->assertSame( 0, $history->count() );
 	}
 
 	/**

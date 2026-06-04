@@ -21,6 +21,7 @@ final class Provider extends Provider_Contract {
 	 */
 	public function register(): void {
 		$this->register_token_store();
+		$this->register_history_store();
 	}
 
 	/**
@@ -36,5 +37,32 @@ final class Provider extends Provider_Contract {
 		$this->container->when( Token_Store::class )
 						->needs( '$table' )
 						->give( static fn(): string => Token_Table::table_name( false ) );
+	}
+
+	/**
+	 * Bind Token_History_Store and subscribe it to the Token_Store superseded action.
+	 *
+	 * The store archives the previous document each time a set is overwritten.
+	 * Subscribing here (rather than calling the store from Token_Store) keeps
+	 * Token_Store the sole writer of its own table — it only announces the prior
+	 * state, and history is a separable consumer of that signal.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function register_history_store(): void {
+		$this->container->singleton( Token_History_Store::class, Token_History_Store::class );
+
+		$this->container->when( Token_History_Store::class )
+						->needs( '$table' )
+						->give( static fn(): string => Token_History_Table::table_name( false ) );
+
+		add_action(
+			Token_Store::superseded_action(),
+			$this->container->callback( Token_History_Store::class, 'record' ),
+			10,
+			3
+		);
 	}
 }
