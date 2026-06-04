@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Utils\Cast;
 
 /**
  * Renders an already-flattened (alias-free) DTCG value to a CSS-ready string,
@@ -26,7 +27,7 @@ final class Css_Renderer {
 			case Token_Type::get_type_color():
 			case Token_Type::get_type_dimension():
 			default:
-				return is_scalar( $value ) ? (string) $value : '';
+				return Cast::to_string( $value );
 		}
 	}
 
@@ -36,14 +37,18 @@ final class Css_Renderer {
 	private function font_family( $value ): string {
 		if ( is_array( $value ) ) {
 			$families = array_map(
-				static fn( $f ): string => strpos( (string) $f, ' ' ) !== false ? '"' . $f . '"' : (string) $f,
+				static function ( $family ): string {
+					$name = Cast::to_string( $family );
+
+					return strpos( $name, ' ' ) !== false ? '"' . $name . '"' : $name;
+				},
 				$value
 			);
 
 			return implode( ', ', $families );
 		}
 
-		return is_scalar( $value ) ? (string) $value : '';
+		return Cast::to_string( $value );
 	}
 
 	/**
@@ -84,7 +89,7 @@ final class Css_Renderer {
 		}
 
 		$weight = $value['fontWeight'] ?? '';
-		$size   = (string) ( $value['fontSize'] ?? '' );
+		$size   = Cast::to_string( $value['fontSize'] ?? '' );
 		$lh     = $value['lineHeight'] ?? '';
 		// fontFamily may resolve to a list (e.g. ["Inter","sans-serif"]); render it as a CSS family list.
 		$family = $this->font_family( $value['fontFamily'] ?? '' );
