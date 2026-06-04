@@ -8,18 +8,11 @@ use WP_REST_Controller;
 use WP_REST_Request;
 
 /**
- * Base controller for the Design Tokens REST surface.
+ * Abstract base for the v1 Design Tokens REST controllers.
  *
- * A thin, well-typed boundary over the store, registry, and resolver: concrete
- * controllers extend this to expose read/write, variant, and Design MD routes.
- * It supplies the shared namespace and the single capability gate every route
- * is protected by, leaning on WP_REST_Controller for everything else (schema,
- * collection params, the standard *_permissions_check() seams).
- *
- * Authentication uses the standard WordPress REST flow: the editor calls these
- * routes through apiFetch, which attaches the core wp_rest nonce as X-WP-Nonce,
- * and MCP clients authenticate with application passwords. The capability check
- * is the real gate.
+ * Provides the shared `kb-design-tokens/v1` namespace and a capability gate
+ * applied to every route through the standard permission-check methods. Concrete
+ * controllers extend this to register their routes and implement their handlers.
  *
  * @since TBD
  */
