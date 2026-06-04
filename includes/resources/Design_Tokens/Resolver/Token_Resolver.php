@@ -88,7 +88,7 @@ final class Token_Resolver {
 
 		$result = $this->resolve_document( $document );
 
-		wp_cache_set( $cache_key, $result, self::CACHE_GROUP );
+		wp_cache_set( $cache_key, $result, self::CACHE_GROUP, DAY_IN_SECONDS );
 		$this->memo[ $key ] = $result;
 
 		return $result;
