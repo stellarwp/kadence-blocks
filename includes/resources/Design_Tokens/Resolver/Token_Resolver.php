@@ -71,7 +71,7 @@ final class Token_Resolver {
 			return $this->memo[ $key ];
 		}
 
-		// L2: object cache — survives across requests, keyed on the store version.
+		// L2: persistent object cache (requires a drop-in such as Memcached or Redis) — survives across requests, keyed on the store version.
 		$cache_key = 'resolved_tokens_' . $slug . '_' . $version;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
