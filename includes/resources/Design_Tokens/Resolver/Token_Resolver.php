@@ -76,7 +76,9 @@ final class Token_Resolver {
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && $cached instanceof Resolved_Tokens ) {
-			return $this->memo[ $key ] = $cached;
+			$this->memo[ $key ] = $cached;
+
+			return $cached;
 		}
 
 		$raw      = $this->store->get_document( $slug );
