@@ -25,6 +25,7 @@ final class Provider extends Provider_Contract {
 	 */
 	private const CONTROLLERS = [
 		Documents_Controller::class,
+		Schema_Controller::class,
 	];
 
 	/**
