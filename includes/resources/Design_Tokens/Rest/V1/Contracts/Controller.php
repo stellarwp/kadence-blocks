@@ -19,15 +19,6 @@ use WP_REST_Request;
 abstract class Controller extends WP_REST_Controller {
 
 	/**
-	 * The REST namespace shared by every Design Tokens route.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const REST_NAMESPACE = 'kb-design-tokens/v1';
-
-	/**
 	 * Capability required to read or write design tokens.
 	 *
 	 * Site-wide branding is a theme-level concern, so this gates on
@@ -40,13 +31,17 @@ abstract class Controller extends WP_REST_Controller {
 	private const DEFAULT_CAPABILITY = 'edit_theme_options';
 
 	/**
-	 * Sets the shared REST namespace for every Design Tokens route.
+	 * The REST namespace shared by every Design Tokens route.
+	 *
+	 * Redeclared from WP_REST_Controller both to set the shared value and to narrow the type to a
+	 * guaranteed non-empty string, so concrete controllers can pass it straight to register_rest_route()
+	 * without re-narrowing it at each call.
 	 *
 	 * @since TBD
+	 *
+	 * @var non-falsy-string
 	 */
-	public function __construct() {
-		$this->namespace = self::REST_NAMESPACE;
-	}
+	protected $namespace = 'kb-design-tokens/v1';
 
 	/**
 	 * The capability a request must satisfy to access design-token routes.
