@@ -16,7 +16,8 @@ use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryExcept
  * document save (after the first, which has no prior state) leaves a snapshot
  * here. Each archive then prunes the set's trail to the most-recent N snapshots
  * (default 5), tunable per set via the kadence_blocks_design_tokens_history_limit
- * filter; a non-positive limit disables pruning and keeps the full trail.
+ * filter. Recording can be switched off per set via the
+ * kadence_blocks_design_tokens_history_enabled filter — independent of the cap.
  *
  * @see Provider for the table binding and the superseded-action subscription.
  * @see Token_Store::superseded_action() for the signal this store reacts to.
@@ -46,23 +47,13 @@ final class Token_History_Store extends Query {
 	}
 
 	/**
-	 * The shipped per-set history retention limit, before any filtering.
-	 *
-	 * @since TBD
-	 *
-	 * @return int
-	 */
-	public static function default_history_limit(): int {
-		return self::DEFAULT_HISTORY_LIMIT;
-	}
-
-	/**
 	 * Archive a previous document snapshot for a token set.
 	 *
 	 * Called once a save has overwritten the set's previous document, so the
 	 * values passed are the ones that just left the live table, not the incoming
 	 * save. After the snapshot is stored, the set's trail is pruned to its
-	 * retention limit.
+	 * retention limit. Recording is skipped entirely for a set whose history is
+	 * disabled via the kadence_blocks_design_tokens_history_enabled filter.
 	 *
 	 * @since TBD
 	 *
@@ -75,6 +66,10 @@ final class Token_History_Store extends Query {
 	 * @throws DatabaseQueryException If the write fails.
 	 */
 	public function record( string $slug, string $document, string $version ): void {
+		if ( ! $this->history_enabled( $slug ) ) {
+			return;
+		}
+
 		$this->qb()->insert(
 			[
 				'slug'       => $slug,
@@ -168,11 +163,6 @@ final class Token_History_Store extends Query {
 	private function prune( string $slug ): void {
 		$limit = $this->history_limit( $slug );
 
-		// A non-positive limit disables pruning — keep the full trail.
-		if ( $limit < 1 ) {
-			return;
-		}
-
 		// The oldest snapshot to keep: the Nth-newest row. With fewer than $limit
 		// rows the offset overshoots and this returns null, so nothing is pruned.
 		$cutoff = $this->qb()
@@ -195,25 +185,56 @@ final class Token_History_Store extends Query {
 
 	/**
 	 * The retention limit for a token set's history: how many of the most-recent
-	 * snapshots to keep. A non-positive return disables pruning.
+	 * snapshots to keep. Always at least 1 — this is a cap, not an on/off switch.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The token set slug the limit applies to.
 	 *
-	 * @return int
+	 * @return int A positive retention count.
 	 */
 	private function history_limit( string $slug ): int {
 		/**
 		 * Filters how many design-token history snapshots are kept per token set.
 		 *
-		 * Return 0 or a negative number to disable pruning and keep the full trail.
+		 * This is the retention cap, not an on/off switch: the returned value is
+		 * clamped to a minimum of 1. To stop recording history altogether, use the
+		 * kadence_blocks_design_tokens_history_enabled filter instead.
 		 *
 		 * @since TBD
 		 *
 		 * @param int    $limit The number of most-recent snapshots to retain. Default 5.
 		 * @param string $slug  The token set slug being pruned.
 		 */
-		return (int) apply_filters( 'kadence_blocks_design_tokens_history_limit', self::DEFAULT_HISTORY_LIMIT, $slug );
+		$limit = (int) apply_filters( 'kadence_blocks_design_tokens_history_limit', self::DEFAULT_HISTORY_LIMIT, $slug );
+
+		return max( 1, $limit );
+	}
+
+	/**
+	 * Whether history is recorded for a token set. When false, record() archives
+	 * nothing for the set — independent of the retention cap. Existing snapshots
+	 * are left in place; only further recording (and its pruning) stops.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return bool
+	 */
+	private function history_enabled( string $slug ): bool {
+		/**
+		 * Filters whether design-token history is recorded for a token set.
+		 *
+		 * Return false to stop archiving snapshots for the set entirely (no
+		 * recording, no pruning). Independent of the retention cap set by
+		 * kadence_blocks_design_tokens_history_limit.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $enabled Whether to record history. Default true.
+		 * @param string $slug    The token set slug.
+		 */
+		return (bool) apply_filters( 'kadence_blocks_design_tokens_history_enabled', true, $slug );
 	}
 }

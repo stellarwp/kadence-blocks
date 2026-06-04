@@ -100,7 +100,8 @@ final class Token_History_StoreTest extends TestCase {
 			$this->history->record( Token_History_Store::default_slug(), '{"v":' . $n . '}', (string) $n );
 		}
 
-		$this->assertSame( Token_History_Store::default_history_limit(), $this->history->count() );
+		// Default retention is 5.
+		$this->assertSame( 5, $this->history->count() );
 
 		$documents = array_column( $this->history->for_set( '', 100 ), 'document' );
 
@@ -123,18 +124,49 @@ final class Token_History_StoreTest extends TestCase {
 		$this->assertSame( [ '{"v":4}', '{"v":3}' ], $documents );
 	}
 
-	public function testANonPositiveLimitDisablesPruning(): void {
-		$disable = static fn(): int => 0;
-		add_filter( 'kadence_blocks_design_tokens_history_limit', $disable );
+	public function testHistoryLimitIsClampedToAtLeastOne(): void {
+		// The limit is a cap, not an off switch: a 0 or negative filter value
+		// clamps to 1 rather than disabling pruning.
+		$to_zero = static fn(): int => 0;
+		add_filter( 'kadence_blocks_design_tokens_history_limit', $to_zero );
 
-		foreach ( range( 1, 8 ) as $n ) {
+		foreach ( range( 1, 4 ) as $n ) {
 			$this->history->record( Token_History_Store::default_slug(), '{"v":' . $n . '}', (string) $n );
 		}
 
-		remove_filter( 'kadence_blocks_design_tokens_history_limit', $disable );
+		remove_filter( 'kadence_blocks_design_tokens_history_limit', $to_zero );
 
-		// Pruning off: every snapshot is kept, well past the default limit.
-		$this->assertSame( 8, $this->history->count() );
+		$this->assertSame( 1, $this->history->count() );
+		$this->assertSame( '{"v":4}', $this->history->latest()['document'] );
+	}
+
+	public function testDisablingHistoryViaFilterStopsRecording(): void {
+		$disable = static fn(): bool => false;
+		add_filter( 'kadence_blocks_design_tokens_history_enabled', $disable );
+
+		foreach ( range( 1, 3 ) as $n ) {
+			$this->history->record( Token_History_Store::default_slug(), '{"v":' . $n . '}', (string) $n );
+		}
+
+		remove_filter( 'kadence_blocks_design_tokens_history_enabled', $disable );
+
+		// Disabled: nothing is archived for the set.
+		$this->assertSame( 0, $this->history->count() );
+	}
+
+	public function testDisablingHistoryLeavesExistingSnapshotsInPlace(): void {
+		$this->history->record( Token_History_Store::default_slug(), '{"kept":true}', 'v' );
+
+		$disable = static fn(): bool => false;
+		add_filter( 'kadence_blocks_design_tokens_history_enabled', $disable );
+
+		$this->history->record( Token_History_Store::default_slug(), '{"skipped":true}', 'v2' );
+
+		remove_filter( 'kadence_blocks_design_tokens_history_enabled', $disable );
+
+		// The pre-existing snapshot survives; only the disabled save was skipped.
+		$this->assertSame( 1, $this->history->count() );
+		$this->assertSame( '{"kept":true}', $this->history->latest()['document'] );
 	}
 
 	public function testPruningIsScopedToTheSavedSlug(): void {
@@ -147,7 +179,7 @@ final class Token_History_StoreTest extends TestCase {
 			$this->history->record( 'set-a', '{"a":' . $n . '}', (string) $n );
 		}
 
-		$this->assertSame( Token_History_Store::default_history_limit(), $this->history->count( 'set-a' ) );
+		$this->assertSame( 5, $this->history->count( 'set-a' ) );
 		$this->assertSame( 2, $this->history->count( 'set-b' ) );
 	}
 
