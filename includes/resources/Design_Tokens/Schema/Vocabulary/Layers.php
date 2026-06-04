@@ -3,13 +3,11 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
 
 /**
- * The top-level DTCG document layers, single-sourced so the baseline index, the deep-merge and the
- * Resolver agree on exactly which layers carry resolvable tokens.
+ * Single source of truth for the top-level DTCG document layers that carry resolvable tokens.
  *
- * A v1 document has three layers: "primitive" and "semantic" hold registrable token trees, while
- * "$extensions" (foundation presets, block presets, variants) is NOT a token tree and must never be
- * walked, merged or indexed as one. token_layers() returns the resolvable pair so consumers cannot
- * drift on the list (it previously lived as a literal in three classes).
+ * A v1 document has three top-level keys: "primitive" and "semantic" hold registrable token trees,
+ * while "$extensions" (foundation presets, block presets, variants) is NOT a token tree and must
+ * never be walked, merged, or indexed as one.
  *
  * @since TBD
  */
