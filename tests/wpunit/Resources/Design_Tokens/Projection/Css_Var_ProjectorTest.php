@@ -3,7 +3,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -13,17 +12,15 @@ use Tests\Support\Classes\TestCase;
 final class Css_Var_ProjectorTest extends TestCase {
 
 	private Token_Registry $registry;
-	private Token_Store $store;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->registry = new Token_Registry();
-		$this->store    = $this->container->get( Token_Store::class );
 	}
 
 	private function projector(): Css_Var_Projector {
-		return new Css_Var_Projector( $this->registry, $this->store );
+		return new Css_Var_Projector( $this->registry );
 	}
 
 	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {

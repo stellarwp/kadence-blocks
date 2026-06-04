@@ -2,7 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -63,11 +62,6 @@ final class Css_Var_Projector {
 	private Token_Registry $registry;
 
 	/**
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
-
-	/**
 	 * Per-request memo keyed on the store version, so a write (which bumps the version)
 	 * automatically invalidates the in-memory result without an explicit purge hook.
 	 *
@@ -77,11 +71,9 @@ final class Css_Var_Projector {
 
 	/**
 	 * @param Token_Registry $registry
-	 * @param Token_Store    $store
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store ) {
+	public function __construct( Token_Registry $registry ) {
 		$this->registry = $registry;
-		$this->store    = $store;
 	}
 
 	/**
