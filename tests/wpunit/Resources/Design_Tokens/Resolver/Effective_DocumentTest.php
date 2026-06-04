@@ -105,7 +105,7 @@ final class Effective_DocumentTest extends TestCase {
 		);
 	}
 
-	public function testANullValueSentinelRemovesTheBaselineEntry(): void {
+	public function testANullValueSentinelRestoresTheBaselineEntry(): void {
 		$document = $this->effective()->build(
 			[
 				'primitive' => [
@@ -118,8 +118,9 @@ final class Effective_DocumentTest extends TestCase {
 			]
 		);
 
-		$this->assertArrayNotHasKey( 'secondary', $document['primitive']['color']['brand'] );
-		$this->assertArrayHasKey( 'primary', $document['primitive']['color']['brand'] );
+		// RESET keeps the baseline value; the entry must survive with its original data.
+		$this->assertArrayHasKey( 'secondary', $document['primitive']['color']['brand'] );
+		$this->assertSame( '#2C5282', $document['primitive']['color']['brand']['secondary']['$value'] );
 	}
 
 	public function testADisabledSentinelRemovesTheBaselineEntry(): void {

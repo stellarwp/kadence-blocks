@@ -10,8 +10,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * Deep-merges the stored overrides-only DTCG document onto the shipped baseline,
  * producing the single "effective" view the Resolver walks.
  *
- * Override leaves win over baseline leaves. Two removal sentinels delete a baseline
- * entry instead of overriding it: a $value of null, or a "$disabled": true marker.
+ * Override leaves win over baseline leaves. Two sentinels let an override suppress a
+ * baseline entry without physically deleting it: DISABLE ($disabled: true) removes the
+ * entry entirely; RESET ($value: null) skips the override and keeps the baseline value.
  *
  * @since TBD
  */
@@ -64,14 +65,24 @@ final class Effective_Document {
 	 */
 	private function merge_node( array $base, array $over ): array {
 		foreach ( $over as $key => $value ) {
-			// Removal sentinels: drop the baseline entry entirely.
-			if ( $this->is_removal( $value ) ) {
+			if ( ! is_array( $value ) ) {
+				$base[ $key ] = $value;
+				continue;
+			}
+
+			// DISABLE sentinel: remove the baseline entry entirely.
+			if ( Sentinels::is_disabled( $value ) ) {
 				unset( $base[ $key ] );
 				continue;
 			}
 
+			// RESET sentinel: skip the override and keep the baseline value as-is.
+			if ( Sentinels::is_reset( $value ) ) {
+				continue;
+			}
+
 			// A leaf ($value present) replaces wholesale — never field-merge a token value.
-			if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
+			if ( array_key_exists( Sentinels::get_value_key(), $value ) ) {
 				$base[ $key ] = $value;
 				continue;
 			}
@@ -79,8 +90,8 @@ final class Effective_Document {
 			// Two groups: descend. A baseline leaf is never a group, so when the override puts a group
 			// where the baseline holds a leaf, the override replaces it (falls through below) rather than
 			// merging the group's children alongside the leaf's $type/$value and corrupting the node.
-			if ( is_array( $value )
-				&& isset( $base[ $key ] )
+			if (
+				isset( $base[ $key ] )
 				&& is_array( $base[ $key ] )
 				&& ! array_key_exists( Sentinels::get_value_key(), $base[ $key ] )
 			) {
@@ -92,20 +103,5 @@ final class Effective_Document {
 		}
 
 		return $base;
-	}
-
-	/**
-	 * Whether an override node is a removal marker for its baseline counterpart.
-	 *
-	 * @param mixed $value
-	 */
-	private function is_removal( $value ): bool {
-		if ( ! is_array( $value ) ) {
-			return false;
-		}
-
-		// Both override-suppression sentinels drop the baseline entry from the effective document; the
-		// spellings live on Sentinels so this never hard-codes "$value"/"$disabled".
-		return Sentinels::is_reset( $value ) || Sentinels::is_disabled( $value );
 	}
 }
