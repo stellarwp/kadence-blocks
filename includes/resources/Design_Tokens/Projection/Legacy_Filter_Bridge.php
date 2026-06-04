@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use RuntimeException;
 
 /**
  * Feeds resolved token values into KB's legacy variable families so existing blocks inherit tokens
@@ -85,7 +86,14 @@ final class Legacy_Filter_Bridge {
 			return $colors;
 		}
 
-		$resolved = $this->resolver->resolve();
+		try {
+			$resolved = $this->resolver->resolve();
+		} catch ( RuntimeException $e ) {
+			// A corrupt stored document (alias cycle or dangling alias) must not kill the page.
+			// The REST write gate rejects such documents, but a direct DB write could bypass it.
+			// Fail open: return the incoming array untouched so existing palette values survive.
+			return $colors;
+		}
 
 		foreach ( $this->registry->by_projection( self::SLOT ) as $id => $token ) {
 			$slot = $token->projections[ self::SLOT ] ?? null;
@@ -117,7 +125,11 @@ final class Legacy_Filter_Bridge {
 	 * @return array<string,string>
 	 */
 	public function font_sizes( array $sizes ): array {
-		$resolved = $this->resolver->resolve();
+		try {
+			$resolved = $this->resolver->resolve();
+		} catch ( RuntimeException $e ) {
+			return $sizes;
+		}
 
 		foreach ( $this->registry->by_projection( self::SLOT ) as $id => $token ) {
 			$slot = $token->projections[ self::SLOT ] ?? null;
