@@ -10,8 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * Feeds resolved token values into KB's legacy variable families so existing blocks inherit tokens
  * without per-block changes.
  *
- *   kadence_blocks_pattern_global_colors  — tokens with a kadence_slot of palette[1-9] -> --global-paletteN
- *   kadence_blocks_variable_font_sizes    — tokens with a kadence_slot font key       -> that size key
+ * Two filter families are supported:
+ *
+ *   - kadence_blocks_pattern_global_colors  — tokens declaring a kadence_slot of palette[1-9]
+ *     override that --global-paletteN entry.
+ *   - kadence_blocks_variable_font_sizes    — tokens declaring a font-size slot key override
+ *     that key's clamp() value.
  *
  * Each callback is a transform of the incoming array: a token-claimed slot is rewritten to
  * "var(--kb-token--…, <resolved literal>)" so legacy blocks react to variant overrides of

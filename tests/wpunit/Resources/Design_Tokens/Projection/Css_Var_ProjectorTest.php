@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette .
+// cspell:ignore palette Fghi .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
