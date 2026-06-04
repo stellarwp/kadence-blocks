@@ -63,7 +63,10 @@ final class Css_Renderer {
 	 *              The resolved shadow shape; typed loosely so a malformed (non-array) token still degrades to "".
 	 */
 	private function shadow( $value ): string {
-		if ( ! is_array( $value ) ) {
+		// Render only a single shadow object (an associative map). A non-array, an empty array, or a
+		// list-shaped value (a stacked-shadow array of objects, not supported in v1) has no single
+		// offsetX/offsetY/… to read, so emit nothing rather than a "0 0 0 0" shaped from missing keys.
+		if ( ! is_array( $value ) || $value === [] || array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
 			return '';
 		}
 
