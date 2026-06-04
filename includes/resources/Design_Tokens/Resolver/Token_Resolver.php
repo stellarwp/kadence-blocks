@@ -21,6 +21,7 @@ final class Token_Resolver {
 	 * Object-cache group shared by all resolved-token entries.
 	 *
 	 * @since TBD
+	 *
 	 * @var string
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
