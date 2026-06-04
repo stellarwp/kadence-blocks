@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette Fghi .
+// cspell:ignore palette Fghi redbodycolor .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
@@ -162,8 +162,11 @@ final class Css_Var_ProjectorTest extends TestCase {
 		// Value containing characters that could break out of a declaration.
 		$css = $this->projector()->css( $this->resolved( [], [ $var => 'red}body{color:blue' ] ) );
 
-		$this->assertStringNotContainsString( '}', $css );
-		$this->assertStringNotContainsString( '{', $css );
+		// The structural braces of the :root{} block are fine; the injected chars inside the VALUE
+		// must be stripped. Check the rendered declaration contains no unstripped breakout pattern.
+		$this->assertStringNotContainsString( 'red}', $css );
+		$this->assertStringNotContainsString( 'body{', $css );
+		$this->assertStringContainsString( $var . ':redbodycolor:blue;', $css );
 	}
 
 	public function testSanitizerPreservesLegitimateClampValue(): void {

@@ -48,16 +48,6 @@ final class Token_Store extends Query {
 	private const DEFAULT_SLUG = 'default';
 
 	/**
-	 * Per-request memo for get_version(), keyed by slug. Cleared on every successful write so
-	 * callers that fetch the version before and after a save always see the new hash.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<string,string>
-	 */
-	private array $version_memo = [];
-
-	/**
 	 * The action hook that fires after any write, for callers that need to react to changes.
 	 *
 	 * @since TBD
@@ -129,24 +119,15 @@ final class Token_Store extends Query {
 	 *                exists (i.e. the set renders from baseline).
 	 */
 	public function get_version( string $slug = self::DEFAULT_SLUG ): string {
-		if ( isset( $this->version_memo[ $slug ] ) ) {
-			return $this->version_memo[ $slug ];
-		}
-
 		$row = $this->qb()
 					->where( 'slug', $slug )
 					->get( ARRAY_A );
 
 		if ( ! is_array( $row ) ) {
-			$this->version_memo[ $slug ] = '';
-
 			return '';
 		}
 
-		$version                     = (string) ( $row['version'] ?? '' );
-		$this->version_memo[ $slug ] = $version;
-
-		return $version;
+		return (string) ( $row['version'] ?? '' );
 	}
 
 	/**
@@ -195,8 +176,6 @@ final class Token_Store extends Query {
 		// Everything below is reached only on a successful write — a failed upsert
 		// throws above, so nothing is archived and no change is signalled for a
 		// save that did not happen.
-		unset( $this->version_memo[ $slug ] );
-
 		if ( is_array( $previous ) ) {
 			$this->superseded( $slug, (string) ( $previous['document'] ?? '' ), (string) ( $previous['version'] ?? '' ) );
 		}
@@ -238,8 +217,6 @@ final class Token_Store extends Query {
 			);
 
 		// Reached only on a successful write — a failed write throws above.
-		unset( $this->version_memo[ $slug ] );
-
 		$this->changed( $slug );
 	}
 
