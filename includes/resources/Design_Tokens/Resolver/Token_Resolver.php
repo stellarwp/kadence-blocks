@@ -17,6 +17,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  */
 final class Token_Resolver {
 
+	private const CACHE_GROUP = 'kb_design_tokens';
+
 	/**
 	 * @var Token_Store
 	 */
@@ -69,14 +71,25 @@ final class Token_Resolver {
 			return $this->memo[ $key ];
 		}
 
+		// L2: object cache — survives across requests, keyed on the store version.
+		$cache_key = 'resolved_tokens_' . $slug . '_' . $version;
+		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
+
+		if ( $found && $cached instanceof Resolved_Tokens ) {
+			return $this->memo[ $key ] = $cached;
+		}
+
 		$raw      = $this->store->get_document( $slug );
 		$decoded  = $raw === '' ? [] : json_decode( $raw, true );
 		$over     = is_array( $decoded ) ? $decoded : [];
 		$document = $this->effective->build( $over );
 
-		$this->memo[ $key ] = $this->resolve_document( $document );
+		$result = $this->resolve_document( $document );
 
-		return $this->memo[ $key ];
+		wp_cache_set( $cache_key, $result, self::CACHE_GROUP );
+		$this->memo[ $key ] = $result;
+
+		return $result;
 	}
 
 	/**
