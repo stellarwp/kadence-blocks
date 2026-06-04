@@ -1,0 +1,180 @@
+<?php declare( strict_types=1 );
+// cspell:ignore palette .
+
+namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
+use Tests\Support\Classes\TestCase;
+
+final class Css_Var_ProjectorTest extends TestCase {
+
+	private Token_Registry $registry;
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->registry = new Token_Registry();
+	}
+
+	private function projector(): Css_Var_Projector {
+		return new Css_Var_Projector( $this->registry );
+	}
+
+	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {
+		return new Resolved_Tokens( $by_id, $by_var );
+	}
+
+	// ---- Token block -------------------------------------------------------------------------------
+
+	public function testItEmitsOneDeclarationPerVar(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+
+		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringContainsString( $var . ':#3182CE;', $css );
+	}
+
+	public function testItScopesToBothSelectors(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringContainsString( ':root,', $css );
+		$this->assertStringContainsString( ':root:where(.kb-tokens)', $css );
+		// Bare :root must be present for editor-iframe coverage.
+		$this->assertStringStartsWith( ':root,', $css );
+	}
+
+	public function testScopeConstantMatchesSpec(): void {
+		$this->assertSame( ':root,:root:where(.kb-tokens)', Css_Var_Projector::SCOPE );
+	}
+
+	public function testItNeverEmitsImportant(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringNotContainsString( '!important', $css );
+	}
+
+	public function testEmptyByVarProducesNoTokenBlock(): void {
+		$css = $this->projector()->css( $this->resolved() );
+
+		$this->assertSame( '', $css );
+	}
+
+	// ---- Preset block -------------------------------------------------------------------------------
+
+	public function testItEmitsWpPresetBridgeForBareStringCategory(): void {
+		$id  = 'semantic.color.button-bg';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'color',
+				'label'       => 'Button Background',
+				'projections' => [ 'wp_preset' => 'color' ],
+			]
+		);
+
+		$css = $this->projector()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringContainsString( '--wp--preset--color--button-bg:var(' . $var . ');', $css );
+	}
+
+	public function testItHonorsExplicitCategoryAndSlug(): void {
+		$id  = 'semantic.color.button-bg';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'color',
+				'label'       => 'Button Background',
+				'projections' => [ 'wp_preset' => [ 'category' => 'color', 'slug' => 'btn' ] ],
+			]
+		);
+
+		$css = $this->projector()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringContainsString( '--wp--preset--color--btn:var(' . $var . ');', $css );
+	}
+
+	public function testItSkipsPresetWhenTokenHasNoResolvedValue(): void {
+		$id  = 'semantic.color.button-bg';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'color',
+				'label'       => 'Button Background',
+				'projections' => [ 'wp_preset' => 'color' ],
+			]
+		);
+
+		// by_id is empty — no resolved value for this id.
+		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringNotContainsString( '--wp--preset--', $css );
+	}
+
+	public function testNoPresetTokensProducesNoPresetBlock(): void {
+		$var = Css_Var::from_id( 'semantic.color.button-bg' );
+		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+
+		$this->assertStringNotContainsString( '--wp--preset--', $css );
+	}
+
+	public function testBothBlocksEmptyWhenNothingResolved(): void {
+		$css = $this->projector()->css( $this->resolved() );
+
+		$this->assertSame( '', $css );
+	}
+
+	// ---- sanitize_value -------------------------------------------------------------------------------
+
+	public function testSanitizerStripsBreakoutCharacters(): void {
+		$id  = 'semantic.color.bad';
+		$var = Css_Var::from_id( $id );
+
+		// Value containing characters that could break out of a declaration.
+		$css = $this->projector()->css( $this->resolved( [], [ $var => 'red}body{color:blue' ] ) );
+
+		$this->assertStringNotContainsString( '}', $css );
+		$this->assertStringNotContainsString( '{', $css );
+	}
+
+	public function testSanitizerPreservesLegitimateClampValue(): void {
+		$id  = 'semantic.dimension.spacing-md';
+		$var = Css_Var::from_id( $id );
+
+		$clamp = 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)';
+		$css   = $this->projector()->css( $this->resolved( [], [ $var => $clamp ] ) );
+
+		$this->assertStringContainsString( $clamp, $css );
+	}
+
+	public function testSanitizerPreservesFontFamilyStack(): void {
+		$id  = 'semantic.font-family.base';
+		$var = Css_Var::from_id( $id );
+
+		$stack = '"Inter", "Helvetica Neue", Arial, sans-serif';
+		$css   = $this->projector()->css( $this->resolved( [], [ $var => $stack ] ) );
+
+		$this->assertStringContainsString( $stack, $css );
+	}
+
+	public function testSanitizerStripsControlCharacters(): void {
+		$id  = 'semantic.color.ctrl';
+		$var = Css_Var::from_id( $id );
+
+		$css = $this->projector()->css( $this->resolved( [], [ $var => "#abc\x00def\x1Fghi" ] ) );
+
+		$this->assertStringContainsString( '#abcdefghi', $css );
+		$this->assertStringNotContainsString( "\x00", $css );
+		$this->assertStringNotContainsString( "\x1F", $css );
+	}
+}
