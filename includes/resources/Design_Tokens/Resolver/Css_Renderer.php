@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
-use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Utils\Cast;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
 
 /**
  * Renders an already-flattened (alias-free) DTCG value to a CSS-ready string,
