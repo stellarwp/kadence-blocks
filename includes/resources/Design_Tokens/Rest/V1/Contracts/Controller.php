@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
 use WP_Error;

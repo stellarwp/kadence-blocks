@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
+namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1\Contracts;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use Tests\Support\Classes\TestCase;
 use ReflectionProperty;
 use WP_Error;

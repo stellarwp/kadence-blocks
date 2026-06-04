@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -30,7 +31,7 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		foreach ( self::CONTROLLERS as $controller ) { // @phpstan-ignore foreach.emptyArray -- CONTROLLERS is empty until the first endpoint controller lands; this ignore goes away once it is populated.
+		foreach ( self::CONTROLLERS as $controller ) { // @phpstan-ignore foreach.emptyArray (CONTROLLERS is empty until the first endpoint controller lands; this ignore goes away once it is populated.)
 			add_action( 'rest_api_init', $this->container->callback( $controller, 'register_routes' ) );
 		}
 	}
