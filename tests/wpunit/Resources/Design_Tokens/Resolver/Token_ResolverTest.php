@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
@@ -263,6 +264,83 @@ final class Token_ResolverTest extends TestCase {
 
 		// The override flows through the alias.
 		$this->assertSame( '#000000', $by_id['semantic.color.button-bg'] );
+	}
+
+	public function testResolvePopulatesObjectCacheOnColdPath(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$version   = $store->get_version();
+		$cache_key = 'resolved_tokens_default_' . $version;
+
+		wp_cache_delete( $cache_key, 'kb_design_tokens' );
+
+		$result = $resolver->resolve();
+
+		$this->assertInstanceOf( Resolved_Tokens::class, $result );
+
+		$cached = wp_cache_get( $cache_key, 'kb_design_tokens', false, $found );
+
+		$this->assertTrue( $found );
+		$this->assertInstanceOf( Resolved_Tokens::class, $cached );
+		$this->assertSame( $result->by_id(), $cached->by_id() );
+	}
+
+	public function testResolveReturnsObjectCacheHitWithoutRebuildingDocument(): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+		// Fresh instance so the L1 memo is empty — the container singleton may already be warm.
+		$resolver = new Token_Resolver(
+			$store,
+			$this->container->get( Effective_Document::class ),
+			$this->container->get( Css_Renderer::class )
+		);
+
+		$version   = $store->get_version();
+		$cache_key = 'resolved_tokens_default_' . $version;
+		$sentinel  = new Resolved_Tokens(
+			[ 'sentinel.token' => '#sentinel' ],
+			[ '--kb-token--sentinel--token' => '#sentinel' ]
+		);
+		wp_cache_set( $cache_key, $sentinel, 'kb_design_tokens' );
+
+		$result = $resolver->resolve();
+
+		$this->assertSame( '#sentinel', $result->by_id()['sentinel.token'] ?? null );
+	}
+
+	public function testVersionBumpInvalidatesObjectCacheImplicitly(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$before = $resolver->resolve();
+
+		$this->assertSame( '#3182CE', $before->value( 'semantic.color.button-bg' ) );
+
+		$store->save_document(
+			(string) wp_json_encode(
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									'$type'  => 'color',
+									'$value' => '#FF0000',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$after = $resolver->resolve();
+
+		$this->assertSame( '#FF0000', $after->value( 'semantic.color.button-bg' ) );
 	}
 
 	public function testResolveReadsTheStoredOverridesAndInvalidatesOnVersionBump(): void {
