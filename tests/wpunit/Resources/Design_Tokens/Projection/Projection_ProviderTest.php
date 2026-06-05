@@ -3,8 +3,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Hooks;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Provider;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -12,17 +12,17 @@ use Tests\Support\Classes\TestCase;
 
 final class Projection_ProviderTest extends TestCase {
 
-	private Provider $provider;
+	private Css_Var_Hooks $hooks;
 	private Token_Registry $registry;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		// The Provider was registered during module bootstrap; the container stores it as a singleton.
-		$this->provider = $this->container->get( Provider::class );
+		// Css_Var_Hooks was registered as a singleton during module bootstrap.
+		$this->hooks    = $this->container->get( Css_Var_Hooks::class );
 		$this->registry = $this->container->get( Token_Registry::class );
 
-		// Register the KB style handles the provider appends to.
+		// Register the KB style handles the hooks append to.
 		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
 			wp_register_style( 'kadence-blocks-global-variables', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
@@ -52,7 +52,7 @@ final class Projection_ProviderTest extends TestCase {
 	// ---- Front-end enqueue ---------------------------------------------------------------------------
 
 	public function testEnqueueFrontEndAppendsInlineStyleToGlobalVariablesHandle(): void {
-		$this->provider->enqueue_front_end();
+		$this->hooks->enqueue_front_end();
 
 		$inline = wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' );
 
@@ -66,7 +66,13 @@ final class Projection_ProviderTest extends TestCase {
 	// ---- Editor enqueue -------------------------------------------------------------------------------
 
 	public function testEnqueueEditorAppendsInlineStyleToEditorHandle(): void {
-		$this->provider->enqueue_editor();
+		global $pagenow;
+		$prev    = $pagenow;
+		$pagenow = 'post.php'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+		$this->hooks->enqueue_editor();
+
+		$pagenow = $prev; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 		$inline = wp_styles()->get_data( 'kadence-blocks-global-editor-styles', 'after' );
 
@@ -84,7 +90,7 @@ final class Projection_ProviderTest extends TestCase {
 			'--global-palette1' => '#3182CE',
 			'--global-palette2' => '#2B6CB0',
 		];
-		$result = $this->provider->filter_global_colors( $input );
+		$result = $this->hooks->filter_global_colors( $input );
 
 		// The shipped tokens include a palette1 slot, so that key will be rewritten; others pass through.
 		$this->assertArrayHasKey( '--global-palette1', $result );
@@ -93,7 +99,7 @@ final class Projection_ProviderTest extends TestCase {
 
 	public function testFilterFontSizesPassesThroughWhenNoFontSizeTokensRegistered(): void {
 		$input  = [ 'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)' ];
-		$result = $this->provider->filter_font_sizes( $input );
+		$result = $this->hooks->filter_font_sizes( $input );
 
 		// Shipped tokens have no kadence_slot font-size entries, so input passes through unchanged.
 		$this->assertSame( $input, $result );
@@ -104,8 +110,8 @@ final class Projection_ProviderTest extends TestCase {
 	public function testNothingIsEmittedWhenRegistryIsDeactivated(): void {
 		$this->registry->deactivate();
 
-		$this->provider->enqueue_front_end();
-		$this->provider->enqueue_editor();
+		$this->hooks->enqueue_front_end();
+		$this->hooks->enqueue_editor();
 
 		$front_inline  = wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' );
 		$editor_inline = wp_styles()->get_data( 'kadence-blocks-global-editor-styles', 'after' );
@@ -120,7 +126,7 @@ final class Projection_ProviderTest extends TestCase {
 		$colors = [ '--global-palette1' => '#3182CE' ];
 		$sizes  = [ 'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)' ];
 
-		$this->assertSame( $colors, $this->provider->filter_global_colors( $colors ) );
-		$this->assertSame( $sizes, $this->provider->filter_font_sizes( $sizes ) );
+		$this->assertSame( $colors, $this->hooks->filter_global_colors( $colors ) );
+		$this->assertSame( $sizes, $this->hooks->filter_font_sizes( $sizes ) );
 	}
 }
