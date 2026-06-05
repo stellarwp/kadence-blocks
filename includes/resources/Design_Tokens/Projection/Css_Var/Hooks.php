@@ -1,4 +1,5 @@
 <?php declare( strict_types=1 );
+// cspell:ignore pagenow .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
