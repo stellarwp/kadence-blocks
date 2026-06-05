@@ -105,7 +105,7 @@ final class Dtcg_Schema {
 
 	/**
 	 * Decode the committed dtcg.schema.json into an array. A missing or malformed file yields an empty
-	 * document so the endpoint degrades to an empty body rather than fataling. The readability guard runs
+	 * document so the endpoint degrades to an empty body rather than a fatal error. The readability guard runs
 	 * first so a missing file short-circuits before wp_json_file_decode() would warn about it.
 	 *
 	 * @since TBD
