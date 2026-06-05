@@ -18,7 +18,7 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 	private Token_Registry $registry;
 
 	/**
-	 * The default palette shipped by KB's init.php — keys and values must stay in lockstep.
+	 * The default palette included in `includes/init.php` — keys and values must stay in lockstep.
 	 *
 	 * @var array<string,string>
 	 */
@@ -35,7 +35,7 @@ final class Legacy_Filter_BridgeTest extends TestCase {
 	];
 
 	/**
-	 * The default font-size map shipped by KB's init.php — keys and values must stay in lockstep.
+	 * The default font-size map included in `includes/init.php` — keys and values must stay in lockstep.
 	 *
 	 * @var array<string,string>
 	 */
