@@ -4,7 +4,6 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Dtcg_Schema;
-use WP_Http;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -74,6 +73,10 @@ final class Schema_Controller extends Controller {
 	/**
 	 * Read the published DTCG JSON Schema.
 	 *
+	 * The committed schema file is already JSON, so it is served verbatim: returning a decoded array and
+	 * letting the REST server re-encode it would reformat the published document for no reason (and risk
+	 * altering it). Serialization is short-circuited and the raw bytes are echoed instead.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -81,7 +84,24 @@ final class Schema_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		return new WP_REST_Response( $this->dtcg_schema->document(), WP_Http::OK );
+		$response = new WP_REST_Response();
+
+		add_filter(
+			'rest_pre_serve_request',
+			function ( $served, $result ) use ( $response ) {
+				if ( $result !== $response ) {
+					return $served;
+				}
+
+				echo $this->dtcg_schema->json(); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw JSON Schema body; escaping would corrupt it.
+
+				return true;
+			},
+			10,
+			2
+		);
+
+		return $response;
 	}
 
 	/**

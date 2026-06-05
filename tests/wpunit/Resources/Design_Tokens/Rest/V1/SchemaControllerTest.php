@@ -6,13 +6,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Schema_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Dtcg_Schema;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
-use WP_Http;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * Covers the schema controller, which serves the committed DTCG JSON Schema.
+ * Covers the schema controller, which serves the committed DTCG JSON Schema verbatim.
  */
 final class SchemaControllerTest extends TestCase {
 
@@ -44,6 +43,7 @@ final class SchemaControllerTest extends TestCase {
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		remove_all_filters( 'rest_pre_serve_request' );
 		wp_set_current_user( 0 );
 
 		global $wp_rest_server;
@@ -71,14 +71,18 @@ final class SchemaControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testItReturnsTheCommittedDtcgSchema(): void {
-		$response = $this->controller->get_item( new WP_REST_Request( WP_REST_Server::READABLE ) );
+	public function testItServesTheCommittedSchemaVerbatim(): void {
+		$request  = new WP_REST_Request( WP_REST_Server::READABLE );
+		$response = $this->controller->get_item( $request );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( WP_Http::OK, $response->get_status() );
 
-		// The endpoint returns exactly what the schema accessor loads, with no transformation.
-		$this->assertSame( $this->container->get( Dtcg_Schema::class )->document(), $response->get_data() );
+		ob_start();
+		$served = apply_filters( 'rest_pre_serve_request', false, $response, $request, $this->rest_server );
+		$output = ob_get_clean();
+
+		$this->assertTrue( $served, 'The schema endpoint should short-circuit serialization and serve the raw body.' );
+		$this->assertSame( $this->container->get( Dtcg_Schema::class )->json(), $output );
 	}
 
 	/**

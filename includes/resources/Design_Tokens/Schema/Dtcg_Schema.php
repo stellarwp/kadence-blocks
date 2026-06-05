@@ -2,18 +2,21 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema;
 
+use WP_Filesystem_Direct;
+
 /**
  * Runtime accessor for the committed, published DTCG JSON Schema (dtcg.schema.json).
  *
  * The schema is a generated artifact built from the PHP source of truth by the dev-only
  * Dtcg_Schema_Generator and committed to the repo; production never regenerates it. The REST schema
- * endpoint serves this static file so external tooling (and the MCP layer) can introspect the DTCG
+ * endpoint serves this file verbatim so external tooling (and the MCP layer) can introspect the DTCG
  * document grammar — the runtime validator does not consult it.
  *
- * The file ships with the plugin and is read-only, so it only changes when the plugin updates. The
- * decoded schema is therefore loaded at most once per request (memoised on the instance) and cached in
- * the object cache keyed on the plugin version, so it survives across requests and invalidates
- * automatically when a new plugin version ships a new dtcg.schema.json. Mirrors Json_Baseline_Document.
+ * The file is served as-is, so this returns the raw JSON string rather than a decoded array: the
+ * endpoint would only re-encode a decoded array straight back to JSON, reformatting the published
+ * document for no reason. The bytes ship with the plugin and are read-only, so they are loaded at most
+ * once per request (memoised on the instance) and cached in the object cache keyed on the plugin
+ * version, surviving across requests and invalidating automatically when a new plugin version ships.
  *
  * @since TBD
  */
@@ -38,7 +41,7 @@ final class Dtcg_Schema {
 	private string $path;
 
 	/**
-	 * Cache-busting version the decoded schema is keyed on (the plugin version).
+	 * Cache-busting version the schema is keyed on (the plugin version).
 	 *
 	 * @since TBD
 	 *
@@ -47,20 +50,20 @@ final class Dtcg_Schema {
 	private string $version;
 
 	/**
-	 * Memoised decoded schema for this request. Null until first loaded.
+	 * Memoised raw schema JSON for this request. Null until first loaded.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, mixed>|null
+	 * @var string|null
 	 */
-	private ?array $document = null;
+	private ?string $json = null;
 
 	/**
 	 * @since TBD
 	 *
 	 * @param string $path    Absolute path to the committed dtcg.schema.json.
-	 * @param string $version Cache-busting version (pass the plugin version); the decoded-schema cache is
-	 *                        keyed on it so a new shipped dtcg.schema.json invalidates the cache automatically.
+	 * @param string $version Cache-busting version (pass the plugin version); the schema cache is keyed on
+	 *                        it so a new shipped dtcg.schema.json invalidates the cache automatically.
 	 */
 	public function __construct( string $path, string $version ) {
 		$this->path    = $path;
@@ -68,57 +71,63 @@ final class Dtcg_Schema {
 	}
 
 	/**
-	 * The full decoded DTCG JSON Schema, loaded once per request and cached across requests on the version.
+	 * The committed DTCG JSON Schema as its raw, ready-to-serve JSON string, loaded once per request and
+	 * cached across requests on the version.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, mixed> The decoded schema, or an empty array when the file is missing or malformed.
+	 * @return string The raw schema JSON, or an empty string when the file is missing or unreadable.
 	 */
-	public function document(): array {
-		if ( $this->document !== null ) {
-			return $this->document;
+	public function json(): string {
+		if ( $this->json !== null ) {
+			return $this->json;
 		}
 
 		$key    = 'dtcg_schema_' . $this->version;
 		$cached = wp_cache_get( $key, self::CACHE_GROUP, false, $found );
 
-		if ( $found && is_array( $cached ) ) {
-			$this->document = $cached;
+		if ( $found && is_string( $cached ) ) {
+			$this->json = $cached;
 
 			return $cached;
 		}
 
-		$document = $this->load();
+		$json = $this->load();
 
-		// Only cache a successful load. The committed schema is never empty, so an empty result means the
-		// file was missing/unreadable/malformed. Caching that would pin the failure to this version's cache
-		// until the next version bump — so skip it and let the next request recover. It is still memoised on
-		// the instance for the current request.
-		if ( $document !== [] ) {
-			wp_cache_set( $key, $document, self::CACHE_GROUP );
+		// Only cache a successful read. The committed schema is never empty, so an empty result means the
+		// file was missing/unreadable. Caching that would pin the failure to this version's cache until the
+		// next version bump — so skip it and let the next request recover. It is still memoised on the
+		// instance for the current request.
+		if ( $json !== '' ) {
+			wp_cache_set( $key, $json, self::CACHE_GROUP );
 		}
 
-		$this->document = $document;
+		$this->json = $json;
 
-		return $document;
+		return $json;
 	}
 
 	/**
-	 * Decode the committed dtcg.schema.json into an array. A missing or malformed file yields an empty
-	 * document so the endpoint degrades to an empty body rather than a fatal error. The readability guard runs
-	 * first so a missing file short-circuits before wp_json_file_decode() would warn about it.
+	 * Read the committed dtcg.schema.json as a raw string. A missing or unreadable file yields an empty
+	 * string so the endpoint degrades to an empty body rather than a fatal error.
+	 *
+	 * Uses WP_Filesystem_Direct rather than the WP_Filesystem() bootstrap: the file is a read-only plugin
+	 * asset, and the direct handler always reads it without the credential prompt that the bootstrap can
+	 * trigger on non-direct hosts.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, mixed>
+	 * @return string
 	 */
-	private function load(): array {
-		if ( ! is_readable( $this->path ) ) {
-			return [];
+	private function load(): string {
+		if ( ! class_exists( WP_Filesystem_Direct::class ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 		}
 
-		$decoded = wp_json_file_decode( $this->path, [ 'associative' => true ] );
+		$filesystem = new WP_Filesystem_Direct( false );
+		$raw        = $filesystem->get_contents( $this->path );
 
-		return is_array( $decoded ) ? $decoded : [];
+		return is_string( $raw ) ? $raw : '';
 	}
 }

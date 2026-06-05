@@ -14,25 +14,24 @@ final class Dtcg_SchemaTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testItDecodesTheCommittedSchemaFile(): void {
-		$path   = $this->schema_path();
-		$schema = ( new Dtcg_Schema( $path, 'test-version-decode' ) )->document();
+	public function testItReadsTheCommittedSchemaFileVerbatim(): void {
+		$path = $this->schema_path();
+		$json = ( new Dtcg_Schema( $path, 'test-version-read' ) )->json();
 
 		$this->assertSame(
-			wp_json_file_decode( $path, [ 'associative' => true ] ),
-			$schema
+			file_get_contents( $path ), // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- Reading the committed fixture to compare bytes.
+			$json
 		);
-		$this->assertArrayHasKey( '$schema', $schema );
-		$this->assertArrayHasKey( 'definitions', $schema );
+		$this->assertStringContainsString( '"$schema"', $json );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testItReturnsAnEmptyArrayForAMissingFile(): void {
-		$schema = ( new Dtcg_Schema( __DIR__ . '/does-not-exist.json', 'test-version-missing' ) )->document();
+	public function testItReturnsAnEmptyStringForAMissingFile(): void {
+		$json = ( new Dtcg_Schema( __DIR__ . '/does-not-exist.json', 'test-version-missing' ) )->json();
 
-		$this->assertSame( [], $schema );
+		$this->assertSame( '', $json );
 	}
 
 	/**
