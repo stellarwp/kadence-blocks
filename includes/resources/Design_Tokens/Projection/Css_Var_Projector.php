@@ -221,7 +221,7 @@ final class Css_Var_Projector {
 	/**
 	 * The last dot-segment of a token id, used as the default preset slug.
 	 *
-	 *   semantic.color.button-bg => button-bg
+	 * Example: semantic.color.button-bg => button-bg
 	 *
 	 * @since TBD
 	 *
