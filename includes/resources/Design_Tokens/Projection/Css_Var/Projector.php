@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Projector as Projector_Contract;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -26,7 +27,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Projector_Contract {
 
 	/**
 	 * The root scope for both declaration blocks. :where() contributes zero specificity, so neither
