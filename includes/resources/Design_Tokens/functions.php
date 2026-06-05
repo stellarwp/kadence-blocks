@@ -1,5 +1,7 @@
 <?php declare( strict_types=1 );
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Foundation_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Preset_Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
@@ -49,5 +51,42 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
 		$registry->register_variant_set( $set );
+	}
+}
+
+if ( ! function_exists( 'kadence_blocks_design_foundation_presets' ) ) {
+	/**
+	 * The foundation-preset catalogue reader — the beginner on-ramp's "what can I pick?" surface. Thin
+	 * accessor over the Foundation_Presets service for callers (a future admin UI / MCP) that need to
+	 * list the shipped type scales and starter palettes.
+	 *
+	 * @since TBD
+	 *
+	 * @return Foundation_Presets
+	 */
+	function kadence_blocks_design_foundation_presets(): Foundation_Presets {
+		/** @var Foundation_Presets $presets */
+		$presets = kadence_blocks()->get( Foundation_Presets::class );
+
+		return $presets;
+	}
+}
+
+if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
+	/**
+	 * Apply a foundation-preset choice, seeding the primitive layer as store overrides. Thin readability
+	 * wrapper over Preset_Selector::apply().
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group  The preset group key, e.g. "typeScale" or "colorPalette".
+	 * @param string $choice The preset slug within the group, e.g. "goldenRatio".
+	 *
+	 * @return void
+	 */
+	function kadence_blocks_apply_design_foundation_preset( string $group, string $choice ): void {
+		/** @var Preset_Selector $selector */
+		$selector = kadence_blocks()->get( Preset_Selector::class );
+		$selector->apply( $group, $choice );
 	}
 }
