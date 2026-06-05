@@ -99,7 +99,7 @@ final class Dtcg_Schema {
 		// next version bump — so skip it and let the next request recover. It is still memoised on the
 		// instance for the current request.
 		if ( $json !== '' ) {
-			wp_cache_set( $key, $json, self::CACHE_GROUP );
+			wp_cache_set( $key, $json, self::CACHE_GROUP, DAY_IN_SECONDS );
 		}
 
 		$this->json = $json;
