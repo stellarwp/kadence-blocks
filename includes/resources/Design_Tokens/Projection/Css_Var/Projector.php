@@ -1,60 +1,23 @@
 <?php declare( strict_types=1 );
+// cspell:ignore pagenow .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use RuntimeException;
 
 /**
- * Projects resolved tokens to CSS custom properties — the CSS-variable backbone.
+ * Projects the resolved token set into the WordPress style pipeline.
  *
- * Emits two declaration blocks, both scoped to ":root,:root:where(.kb-tokens)":
- *
- *   1. The --kb-token--* family, straight from the Resolver's css-var => value map. This is the
- *      single source other projectors and adapters point at.
- *   2. A --wp--preset--<category>--<slug>: var(--kb-token--*) bridge for every token that declares a
- *      "wp_preset" projection, so WordPress preset variables (and the editor swatches that read them)
- *      resolve to the token value without a second copy of it.
- *
- * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
- * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping.
- * Neither selector escalates specificity; nothing here is !important — per-instance variant overrides
- * must be able to win by ordinary cascade.
- *
- * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Hooks.
+ * Reacts to WordPress hooks to inject --kb-token--* / --wp--preset--* into KB's existing inline
+ * styles and feeds the legacy color/font-size filters — all gated on Token_Registry::is_active()
+ * so a deactivated registry leaves KB's behavior untouched.
  *
  * @since TBD
  */
 final class Projector {
-
-	/**
-	 * The root scope for both declaration blocks. :where() contributes zero specificity, so neither
-	 * selector weighs more than a bare :root. Never !important.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const SCOPE = ':root,:root:where(.kb-tokens)';
-
-	/**
-	 * The projection key a token declares to opt into the --wp--preset--* bridge.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const WP_PRESET = 'wp_preset';
-
-	/**
-	 * Object-cache group shared with the resolver.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
 	 * @var Token_Registry
@@ -62,196 +25,171 @@ final class Projector {
 	private Token_Registry $registry;
 
 	/**
-	 * Per-request memo keyed on the store version, so a write (which bumps the version)
-	 * automatically invalidates the in-memory result without an explicit purge hook.
-	 *
-	 * @var array<string,string>
+	 * @var Token_Resolver
 	 */
-	private array $memo = [];
+	private Token_Resolver $resolver;
 
 	/**
-	 * @param Token_Registry $registry
+	 * @var Token_Store
 	 */
-	public function __construct( Token_Registry $registry ) {
-		$this->registry = $registry;
+	private Token_Store $store;
+
+	/**
+	 * @var Css_Builder
+	 */
+	private Css_Builder $css_builder;
+
+	/**
+	 * @var Legacy_Filter_Bridge
+	 */
+	private Legacy_Filter_Bridge $bridge;
+
+	/**
+	 * @param Token_Registry       $registry
+	 * @param Token_Resolver       $resolver
+	 * @param Token_Store          $store
+	 * @param Css_Builder          $css_builder
+	 * @param Legacy_Filter_Bridge $bridge
+	 */
+	public function __construct(
+		Token_Registry $registry,
+		Token_Resolver $resolver,
+		Token_Store $store,
+		Css_Builder $css_builder,
+		Legacy_Filter_Bridge $bridge
+	) {
+		$this->registry    = $registry;
+		$this->resolver    = $resolver;
+		$this->store       = $store;
+		$this->css_builder = $css_builder;
+		$this->bridge      = $bridge;
 	}
 
 	/**
-	 * Build the full CSS string for the resolved set. Front end and editor share it verbatim.
+	 * Append the projected CSS to the front-end global-variables handle.
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The resolved token maps.
-	 *
-	 * @return string The CSS, or an empty string when there is nothing to project.
+	 * @return void
 	 */
-	public function css( Resolved_Tokens $resolved ): string {
-		$tokens  = $this->token_block( $resolved->by_var() );
-		$presets = $this->preset_block( $resolved );
+	public function enqueue_front_end(): void {
+		if ( ! $this->is_active() ) {
+			return;
+		}
 
-		return $tokens . $presets;
+		$css = $this->build_css();
+		if ( $css !== '' ) {
+			wp_add_inline_style( 'kadence-blocks-global-variables', $css );
+		}
 	}
 
 	/**
-	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the
-	 * store version, so a token write (which bumps the version) invalidates it automatically.
+	 * Append the projected CSS to the editor global-styles handle.
 	 *
-	 * The plugin version is folded into the cache key alongside the store version: the store version
-	 * tracks stored overrides, but projected CSS also depends on shipped declarations and the baseline,
-	 * which change with a plugin build. Including KADENCE_BLOCKS_VERSION busts the cache on upgrade.
+	 * Only runs on requests where the block editor will load its scripts, determined
+	 * by matching known editor page slugs. Can be overridden with the
+	 * `kadence_blocks_load_editor_token_vars` filter.
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The resolved set (already version-correct from the resolver).
-	 * @param string          $version  The store version the resolved set was built from.
+	 * @return void
+	 */
+	public function enqueue_editor(): void {
+		if ( ! $this->is_active() ) {
+			return;
+		}
+
+		/**
+		 * Whether to append the token CSS to the editor global-styles handle.
+		 *
+		 * @param bool $load True on known block-editor page slugs.
+		 */
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', $this->is_block_editor_page() ) ) {
+			return;
+		}
+
+		$css = $this->build_css();
+		if ( $css !== '' ) {
+			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
+		}
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @param array<string,string> $colors
+	 *
+	 * @return array<string,string>
+	 */
+	public function filter_global_colors( array $colors ): array {
+		if ( ! $this->is_active() ) {
+			return $colors;
+		}
+
+		return $this->bridge->global_colors( $colors );
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @param array<string,string> $sizes
+	 *
+	 * @return array<string,string>
+	 */
+	public function filter_font_sizes( array $sizes ): array {
+		if ( ! $this->is_active() ) {
+			return $sizes;
+		}
+
+		return $this->bridge->font_sizes( $sizes );
+	}
+
+	/**
+	 * Build the projected CSS from the current resolved token set, using the per-request memo
+	 * and object cache so repeated calls within the same request are free.
+	 *
+	 * Returns an empty string when the stored document cannot be resolved (e.g. an alias cycle
+	 * introduced by a direct DB write that bypassed the REST validation gate) so the page does
+	 * not crash — the inline style is simply omitted and KB falls back to its existing variables.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function css_for_version( Resolved_Tokens $resolved, string $version ): string {
-		if ( isset( $this->memo[ $version ] ) ) {
-			return $this->memo[ $version ];
-		}
-
-		$cache_key = 'projected_css_' . KADENCE_BLOCKS_VERSION . '_' . $version;
-		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
-
-		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $version ] = $cached;
-		}
-
-		$css = $this->css( $resolved );
-
-		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
-
-		return $this->memo[ $version ] = $css;
-	}
-
-	/**
-	 * Emit the --kb-token--* declarations from the resolver's css-var => value map.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string> $by_var css-var => CSS value.
-	 *
-	 * @return string
-	 */
-	private function token_block( array $by_var ): string {
-		if ( $by_var === [] ) {
+	private function build_css(): string {
+		try {
+			$version  = $this->store->get_version();
+			$resolved = $this->resolver->resolve();
+		} catch ( RuntimeException $e ) {
 			return '';
 		}
 
-		$declarations = '';
-		foreach ( $by_var as $var => $value ) {
-			$declarations .= $var . ':' . $this->sanitize_value( $value ) . ';';
-		}
-
-		return self::SCOPE . '{' . $declarations . '}';
+		return $this->css_builder->css_for_version( $resolved, $version );
 	}
 
 	/**
-	 * Emit the --wp--preset--*: var(--kb-token--*) bridge for tokens declaring a "wp_preset" projection.
-	 *
-	 * Each preset points at its token's variable rather than the literal value, so the two can never
-	 * disagree and a token change updates both in one place.
+	 * Whether token projection is active.
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The resolved token maps.
-	 *
-	 * @return string
+	 * @return bool
 	 */
-	private function preset_block( Resolved_Tokens $resolved ): string {
-		$declarations = '';
-
-		// category, slug and css_var come from developer-declared registry config,
-		// not from the store — no sanitization needed here (contrast with token_block()).
-		foreach ( $this->registry->by_projection( self::WP_PRESET ) as $id => $token ) {
-			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
-			// --wp--preset-- declaration that resolves to nothing in the browser.
-			$value = $resolved->value( $id );
-			if ( $value === null || $value === '' ) {
-				continue;
-			}
-
-			[ $category, $slug ] = $this->preset_target( $token, $id );
-			if ( $category === '' ) {
-				continue;
-			}
-
-			$preset        = Wp_Preset_Var::from( $category, $slug );
-			$declarations .= $preset . ':var(' . $token->css_var . ');';
-		}
-
-		return $declarations === '' ? '' : self::SCOPE . '{' . $declarations . '}';
+	private function is_active(): bool {
+		return $this->registry->is_active();
 	}
 
 	/**
-	 * Resolve a token's wp_preset config to a (category, slug) pair.
+	 * Whether the current admin request is a known block-editor page.
 	 *
-	 * The projection value is either a bare category string (slug derived from the token id's last
-	 * dot-segment) or an explicit ['category' => …, 'slug' => …] array for the rare case the slug must
-	 * differ from the id segment.
-	 *
-	 *   'wp_preset' => 'color'                          // semantic.color.button-bg => color / button-bg
-	 *   'wp_preset' => ['category' => 'color', 'slug' => 'btn']
+	 * Uses the global $pagenow because get_current_screen() is not yet available at
+	 * admin_init priority 5, which is when the editor handle is registered.
 	 *
 	 * @since TBD
 	 *
-	 * @param Token_Definition $token The token definition.
-	 * @param string           $id    The token id.
-	 *
-	 * @return array{0:string,1:string} [ category, slug ]; category '' means "skip".
+	 * @return bool
 	 */
-	private function preset_target( Token_Definition $token, string $id ): array {
-		$config = $token->projections[ self::WP_PRESET ] ?? null;
-
-		if ( is_string( $config ) && $config !== '' ) {
-			return [ $config, $this->slug_from_id( $id ) ];
-		}
-
-		if ( is_array( $config ) && isset( $config['category'] ) && is_string( $config['category'] ) ) {
-			$slug = isset( $config['slug'] ) && is_string( $config['slug'] ) ? $config['slug'] : $this->slug_from_id( $id );
-
-			return [ $config['category'], $slug ];
-		}
-
-		return [ '', '' ];
-	}
-
-	/**
-	 * The last dot-segment of a token id, used as the default preset slug.
-	 *
-	 * Example: semantic.color.button-bg => button-bg
-	 *
-	 * @since TBD
-	 *
-	 * @param string $id The token id.
-	 *
-	 * @return string
-	 */
-	private function slug_from_id( string $id ): string {
-		$pos = strrpos( $id, '.' );
-
-		return $pos === false ? $id : substr( $id, $pos + 1 );
-	}
-
-	/**
-	 * Defense-in-depth sanitizer for a custom-property value.
-	 *
-	 * Values from the Resolver are already well-formed; this only guarantees a stray value can never
-	 * break out of the declaration or inject a rule (strips "{", "}", ";", "<", ">" and control
-	 * characters). Not esc_attr(), which would mangle legitimate CSS such as the quotes/commas in a
-	 * font-family stack.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $value The raw CSS value.
-	 *
-	 * @return string
-	 */
-	private function sanitize_value( string $value ): string {
-		$value = preg_replace( '/[\x00-\x1F\x7F]/', '', $value ) ?? '';
-
-		return str_replace( [ '{', '}', ';', '<', '>' ], '', $value );
+	private function is_block_editor_page(): bool {
+		global $pagenow;
+		return in_array( $pagenow, [ 'post.php', 'post-new.php', 'site-editor.php', 'widgets.php' ], true );
 	}
 }

@@ -2,18 +2,18 @@
 
 namespace Tests\snapshot\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use Tests\Support\Classes\SnapshotTestCase;
 
 /**
- * Snapshot the exact CSS output of Projector so any format change is an explicit, reviewable diff.
+ * Snapshot the exact CSS output of Css_Builder so any format change is an explicit, reviewable diff.
  *
  * @since TBD
  */
-final class Projector_SnapshotTest extends SnapshotTestCase {
+final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 
 	private Token_Registry $registry;
 
@@ -23,8 +23,8 @@ final class Projector_SnapshotTest extends SnapshotTestCase {
 		$this->registry = new Token_Registry();
 	}
 
-	private function projector(): Projector {
-		return new Projector( $this->registry );
+	private function builder(): Css_Builder {
+		return new Css_Builder( $this->registry );
 	}
 
 	/**
@@ -46,10 +46,10 @@ final class Projector_SnapshotTest extends SnapshotTestCase {
 			[ $var => '#3182CE' ]
 		);
 
-		$css = $this->projector()->css( $resolved );
+		$css = $this->builder()->css( $resolved );
 
 		// Structural assertions that must always hold regardless of snapshot content.
-		$this->assertStringContainsString( Projector::SCOPE, $css );
+		$this->assertStringContainsString( Css_Builder::SCOPE, $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 		$this->assertStringContainsString( '--wp--preset--', $css );
 		$this->assertStringNotContainsString( '!important', $css );

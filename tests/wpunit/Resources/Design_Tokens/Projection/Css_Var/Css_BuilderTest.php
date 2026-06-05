@@ -3,13 +3,13 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use Tests\Support\Classes\TestCase;
 
-final class ProjectorTest extends TestCase {
+final class Css_BuilderTest extends TestCase {
 
 	private Token_Registry $registry;
 
@@ -19,8 +19,8 @@ final class ProjectorTest extends TestCase {
 		$this->registry = new Token_Registry();
 	}
 
-	private function projector(): Projector {
-		return new Projector( $this->registry );
+	private function builder(): Css_Builder {
+		return new Css_Builder( $this->registry );
 	}
 
 	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {
@@ -32,14 +32,14 @@ final class ProjectorTest extends TestCase {
 	public function testItEmitsOneDeclarationPerVar(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
 
-		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( $var . ':#3182CE;', $css );
 	}
 
 	public function testItScopesToBothSelectors(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
-		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( ':root,', $css );
 		$this->assertStringContainsString( ':root:where(.kb-tokens)', $css );
@@ -48,18 +48,18 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testScopeConstantMatchesSpec(): void {
-		$this->assertSame( ':root,:root:where(.kb-tokens)', Projector::SCOPE );
+		$this->assertSame( ':root,:root:where(.kb-tokens)', Css_Builder::SCOPE );
 	}
 
 	public function testItNeverEmitsImportant(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
-		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '!important', $css );
 	}
 
 	public function testEmptyByVarProducesNoTokenBlock(): void {
-		$css = $this->projector()->css( $this->resolved() );
+		$css = $this->builder()->css( $this->resolved() );
 
 		$this->assertSame( '', $css );
 	}
@@ -79,7 +79,7 @@ final class ProjectorTest extends TestCase {
 			]
 		);
 
-		$css = $this->projector()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( '--wp--preset--color--button-bg:var(' . $var . ');', $css );
 	}
@@ -97,7 +97,7 @@ final class ProjectorTest extends TestCase {
 			]
 		);
 
-		$css = $this->projector()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( '--wp--preset--color--btn:var(' . $var . ');', $css );
 	}
@@ -116,7 +116,7 @@ final class ProjectorTest extends TestCase {
 		);
 
 		// by_id is empty — no resolved value for this id.
-		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '--wp--preset--', $css );
 	}
@@ -135,20 +135,20 @@ final class ProjectorTest extends TestCase {
 		);
 
 		// by_id has the key but with an empty value (e.g. an unrecognized $type rendered to '').
-		$css = $this->projector()->css( $this->resolved( [ $id => '' ], [ $var => '' ] ) );
+		$css = $this->builder()->css( $this->resolved( [ $id => '' ], [ $var => '' ] ) );
 
 		$this->assertStringNotContainsString( '--wp--preset--', $css );
 	}
 
 	public function testNoPresetTokensProducesNoPresetBlock(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
-		$css = $this->projector()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '--wp--preset--', $css );
 	}
 
 	public function testBothBlocksEmptyWhenNothingResolved(): void {
-		$css = $this->projector()->css( $this->resolved() );
+		$css = $this->builder()->css( $this->resolved() );
 
 		$this->assertSame( '', $css );
 	}
@@ -160,7 +160,7 @@ final class ProjectorTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		// Value containing characters that could break out of a declaration.
-		$css = $this->projector()->css( $this->resolved( [], [ $var => 'red}body{color:blue' ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => 'red}body{color:blue' ] ) );
 
 		// The structural braces of the :root{} block are fine; the injected chars inside the VALUE
 		// must be stripped. Check the rendered declaration contains no unstripped breakout pattern.
@@ -174,7 +174,7 @@ final class ProjectorTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		$clamp = 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)';
-		$css   = $this->projector()->css( $this->resolved( [], [ $var => $clamp ] ) );
+		$css   = $this->builder()->css( $this->resolved( [], [ $var => $clamp ] ) );
 
 		$this->assertStringContainsString( $clamp, $css );
 	}
@@ -184,7 +184,7 @@ final class ProjectorTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		$stack = '"Inter", "Helvetica Neue", Arial, sans-serif';
-		$css   = $this->projector()->css( $this->resolved( [], [ $var => $stack ] ) );
+		$css   = $this->builder()->css( $this->resolved( [], [ $var => $stack ] ) );
 
 		$this->assertStringContainsString( $stack, $css );
 	}
@@ -193,7 +193,7 @@ final class ProjectorTest extends TestCase {
 		$id  = 'semantic.color.ctrl';
 		$var = Css_Var::from_id( $id );
 
-		$css = $this->projector()->css( $this->resolved( [], [ $var => "#abc\x00def\x1Fghi" ] ) );
+		$css = $this->builder()->css( $this->resolved( [], [ $var => "#abc\x00def\x1Fghi" ] ) );
 
 		$this->assertStringContainsString( '#abcdefghi', $css );
 		$this->assertStringNotContainsString( "\x00", $css );
@@ -205,12 +205,12 @@ final class ProjectorTest extends TestCase {
 	public function testCssForVersionReturnsSameResultAsCss(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
 
-		$resolved  = $this->resolved( [], [ $var => '#3182CE' ] );
-		$projector = $this->projector();
+		$resolved = $this->resolved( [], [ $var => '#3182CE' ] );
+		$builder  = $this->builder();
 
 		$this->assertSame(
-			$projector->css( $resolved ),
-			$projector->css_for_version( $resolved, 'v1' )
+			$builder->css( $resolved ),
+			$builder->css_for_version( $resolved, 'v1' )
 		);
 	}
 
@@ -223,7 +223,7 @@ final class ProjectorTest extends TestCase {
 		$cache_key = 'projected_css_' . KADENCE_BLOCKS_VERSION . '_' . $version;
 		wp_cache_set( $cache_key, 'SENTINEL', 'kb_design_tokens', DAY_IN_SECONDS );
 
-		$result = $this->projector()->css_for_version( $resolved, $version );
+		$result = $this->builder()->css_for_version( $resolved, $version );
 
 		$this->assertSame( 'SENTINEL', $result );
 	}
@@ -231,14 +231,14 @@ final class ProjectorTest extends TestCase {
 	public function testCssForVersionProducesDifferentCacheKeyOnVersionBump(): void {
 		$var = Css_Var::from_id( 'semantic.color.button-bg' );
 
-		$resolved  = $this->resolved( [], [ $var => '#3182CE' ] );
-		$projector = $this->projector();
+		$resolved = $this->resolved( [], [ $var => '#3182CE' ] );
+		$builder  = $this->builder();
 
-		$v1 = $projector->css_for_version( $resolved, 'version-a' );
+		$v1 = $builder->css_for_version( $resolved, 'version-a' );
 		// Seed an old value under version-b.
 		wp_cache_set( 'projected_css_' . KADENCE_BLOCKS_VERSION . '_version-b', 'OLD', 'kb_design_tokens', 1 );
 
-		$v2 = $projector->css_for_version( $resolved, 'version-b' );
+		$v2 = $builder->css_for_version( $resolved, 'version-b' );
 
 		// version-b served from cache seeded above.
 		$this->assertSame( 'OLD', $v2 );
