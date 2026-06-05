@@ -16,6 +16,7 @@
         "**/*.svg"
     ],
     "words": [
+		"abspath",
 		"advancedbtn",
 		"advancedheading",
         "algoliasearch",
