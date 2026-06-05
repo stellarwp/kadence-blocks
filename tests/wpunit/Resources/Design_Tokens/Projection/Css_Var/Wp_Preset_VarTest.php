@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Wp_Preset_Var;
 use Tests\Support\Classes\TestCase;
 
 final class Wp_Preset_VarTest extends TestCase {

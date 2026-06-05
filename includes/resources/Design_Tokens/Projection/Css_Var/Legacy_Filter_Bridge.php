@@ -1,7 +1,7 @@
 <?php declare( strict_types=1 );
 // cspell:ignore palette .
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -24,7 +24,7 @@ use RuntimeException;
  * (e.g. prebuilt-library preview iframes). Everything else passes through untouched.
  *
  * The color half is a no-op when the Kadence theme owns the palette. Activation is gated upstream
- * by the Provider (it only registers these filters when Token_Registry::is_active()).
+ * by Hooks (it only calls these methods when Token_Registry::is_active()).
  *
  * @since TBD
  */

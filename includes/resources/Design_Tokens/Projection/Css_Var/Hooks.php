@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -16,7 +16,7 @@ use RuntimeException;
  *
  * @since TBD
  */
-final class Css_Var_Hooks {
+final class Hooks {
 
 	/**
 	 * @var Token_Registry
@@ -34,9 +34,9 @@ final class Css_Var_Hooks {
 	private Token_Store $store;
 
 	/**
-	 * @var Css_Var_Projector
+	 * @var Projector
 	 */
-	private Css_Var_Projector $projector;
+	private Projector $projector;
 
 	/**
 	 * @var Legacy_Filter_Bridge
@@ -47,14 +47,14 @@ final class Css_Var_Hooks {
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
-	 * @param Css_Var_Projector    $projector
+	 * @param Projector            $projector
 	 * @param Legacy_Filter_Bridge $bridge
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Css_Var_Projector $projector,
+		Projector $projector,
 		Legacy_Filter_Bridge $bridge
 	) {
 		$this->registry  = $registry;

@@ -3,8 +3,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Hooks;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Hooks;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -12,14 +12,14 @@ use Tests\Support\Classes\TestCase;
 
 final class Projection_ProviderTest extends TestCase {
 
-	private Css_Var_Hooks $hooks;
+	private Hooks $hooks;
 	private Token_Registry $registry;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		// Css_Var_Hooks was registered as a singleton during module bootstrap.
-		$this->hooks    = $this->container->get( Css_Var_Hooks::class );
+		// Hooks was registered as a singleton during module bootstrap.
+		$this->hooks    = $this->container->get( Hooks::class );
 		$this->registry = $this->container->get( Token_Registry::class );
 
 		// Register the KB style handles the hooks append to.
@@ -59,7 +59,7 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertNotEmpty( $inline );
 
 		$css = implode( '', (array) $inline );
-		$this->assertStringContainsString( Css_Var_Projector::SCOPE, $css );
+		$this->assertStringContainsString( Projector::SCOPE, $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 	}
 
@@ -79,7 +79,7 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertNotEmpty( $inline );
 
 		$css = implode( '', (array) $inline );
-		$this->assertStringContainsString( Css_Var_Projector::SCOPE, $css );
+		$this->assertStringContainsString( Projector::SCOPE, $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 	}
 

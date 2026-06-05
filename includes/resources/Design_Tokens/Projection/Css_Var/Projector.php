@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -22,11 +22,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  * Neither selector escalates specificity; nothing here is !important — per-instance variant overrides
  * must be able to win by ordinary cascade.
  *
- * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in the Provider.
+ * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Hooks.
  *
  * @since TBD
  */
-final class Css_Var_Projector {
+final class Projector {
 
 	/**
 	 * The root scope for both declaration blocks. :where() contributes zero specificity, so neither

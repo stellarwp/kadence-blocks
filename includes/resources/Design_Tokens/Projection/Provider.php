@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Hooks;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Legacy_Filter_Bridge;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -18,12 +21,12 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		$this->container->singleton( Css_Var_Projector::class, Css_Var_Projector::class );
+		$this->container->singleton( Projector::class, Projector::class );
 		$this->container->singleton( Legacy_Filter_Bridge::class, Legacy_Filter_Bridge::class );
-		$this->container->singleton( Css_Var_Hooks::class, Css_Var_Hooks::class );
+		$this->container->singleton( Hooks::class, Hooks::class );
 
-		/** @var Css_Var_Hooks $hooks */
-		$hooks = $this->container->get( Css_Var_Hooks::class );
+		/** @var Hooks $hooks */
+		$hooks = $this->container->get( Hooks::class );
 
 		// Front end: append our declarations to the global-variables handle (KB enqueues at 90).
 		add_action( 'wp_enqueue_scripts', [ $hooks, 'enqueue_front_end' ], 100 );

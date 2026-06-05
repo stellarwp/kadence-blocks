@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 /**
  * Derives a WordPress preset custom-property name from a (category, slug) pair.

@@ -1,15 +1,15 @@
 <?php declare( strict_types=1 );
 // cspell:ignore palette Fghi redbodycolor .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use Tests\Support\Classes\TestCase;
 
-final class Css_Var_ProjectorTest extends TestCase {
+final class ProjectorTest extends TestCase {
 
 	private Token_Registry $registry;
 
@@ -19,8 +19,8 @@ final class Css_Var_ProjectorTest extends TestCase {
 		$this->registry = new Token_Registry();
 	}
 
-	private function projector(): Css_Var_Projector {
-		return new Css_Var_Projector( $this->registry );
+	private function projector(): Projector {
+		return new Projector( $this->registry );
 	}
 
 	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {
@@ -48,7 +48,7 @@ final class Css_Var_ProjectorTest extends TestCase {
 	}
 
 	public function testScopeConstantMatchesSpec(): void {
-		$this->assertSame( ':root,:root:where(.kb-tokens)', Css_Var_Projector::SCOPE );
+		$this->assertSame( ':root,:root:where(.kb-tokens)', Projector::SCOPE );
 	}
 
 	public function testItNeverEmitsImportant(): void {

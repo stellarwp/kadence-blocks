@@ -1,10 +1,10 @@
 <?php declare( strict_types=1 );
 // cspell:ignore palette Squiz .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Legacy_Filter_Bridge;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Legacy_Filter_Bridge;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
