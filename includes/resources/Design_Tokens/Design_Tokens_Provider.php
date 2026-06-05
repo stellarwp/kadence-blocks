@@ -20,6 +20,7 @@ final class Design_Tokens_Provider extends Provider {
 		Schema\Provider::class,
 		Resolver\Provider::class,
 		Projection\Provider::class,
+		Rest\Provider::class,
 	];
 
 	public function register(): void {
