@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Exception\Unknown_Preset_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use RuntimeException;
 
 /**
@@ -17,6 +18,11 @@ use RuntimeException;
  * the baseline leaf at the same dot-path, because the Resolver's deep-merge replaces a token leaf
  * WHOLESALE, so an override missing its $type would break the per-$type CSS renderer downstream.
  *
+ * Selecting a preset is a **clean swap**: the group's whole footprint (every path any preset in the
+ * group can touch) is cleared first, then the chosen preset's paths are written. So switching presets
+ * never leaves an earlier preset's exclusive paths applied — and a manual override within the footprint
+ * is discarded by a later preset selection. Re-selecting the current preset is a no-op (no write).
+ *
  * Persisting through {@see Token_Store::save_document()} bumps the set version and fires
  * `kadence_blocks_design_tokens_changed`, so every projector and cache reacts automatically.
  *
@@ -25,18 +31,11 @@ use RuntimeException;
 final class Preset_Selector {
 
 	/**
-	 * @var string The DTCG leaf key carrying a token's type.
+	 * @var Catalog The catalogue reader the chosen preset's tokens and the group footprint come from.
 	 *
 	 * @since TBD
 	 */
-	private const TYPE_KEY = '$type';
-
-	/**
-	 * @var Foundation_Presets The catalogue reader the chosen preset's tokens come from.
-	 *
-	 * @since TBD
-	 */
-	private Foundation_Presets $presets;
+	private Catalog $catalog;
 
 	/**
 	 * @var Baseline_Document The baseline each override leaf's $type is sourced from.
@@ -55,12 +54,12 @@ final class Preset_Selector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Foundation_Presets $presets  The catalogue reader.
-	 * @param Baseline_Document  $baseline The shipped baseline document.
-	 * @param Token_Store        $store    The persistence gateway.
+	 * @param Catalog           $catalog  The catalogue reader.
+	 * @param Baseline_Document $baseline The shipped baseline document.
+	 * @param Token_Store       $store    The persistence gateway.
 	 */
-	public function __construct( Foundation_Presets $presets, Baseline_Document $baseline, Token_Store $store ) {
-		$this->presets  = $presets;
+	public function __construct( Catalog $catalog, Baseline_Document $baseline, Token_Store $store ) {
+		$this->catalog  = $catalog;
 		$this->baseline = $baseline;
 		$this->store    = $store;
 	}
@@ -84,17 +83,32 @@ final class Preset_Selector {
 
 		// Resolve first: an unknown choice throws here, before the store is touched, so a bad call writes
 		// nothing.
-		$tokens = $this->presets->tokens_for( $group, $choice );
+		$tokens = $this->catalog->tokens_for( $group, $choice );
 
 		$document = $this->current_overrides( $slug );
+		$original = $document;
+
+		// Clear the group's whole footprint, then write the chosen preset — a clean swap, so a preset the
+		// choice omits can never persist from a previous selection.
+		foreach ( $this->catalog->group_paths( $group ) as $dot_path ) {
+			$this->unset_leaf( $document, $dot_path );
+		}
 
 		foreach ( $tokens as $dot_path => $value ) {
 			$leaf = [
-				self::TYPE_KEY             => $this->baseline_type( (string) $dot_path ),
+				Token_Type::get_type_key() => $this->baseline_type( (string) $dot_path ),
 				Sentinels::get_value_key() => $value,
 			];
 
 			$this->set_leaf( $document, (string) $dot_path, $leaf );
+		}
+
+		// No-op guard: re-selecting the current preset (or any selection that nets no change) leaves the
+		// document equal to what is stored, so skip the write rather than bump the version, fire the
+		// changed action and churn history for nothing. Loose equality ignores key order, which clearing
+		// then re-writing the same paths can shuffle.
+		if ( $document == $original ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
+			return;
 		}
 
 		$json = wp_json_encode( $document );
@@ -152,11 +166,13 @@ final class Preset_Selector {
 			$node = $node[ $segment ];
 		}
 
-		if ( ! is_array( $node ) || ! isset( $node[ self::TYPE_KEY ] ) || ! is_string( $node[ self::TYPE_KEY ] ) ) {
+		$type_key = Token_Type::get_type_key();
+
+		if ( ! is_array( $node ) || ! isset( $node[ $type_key ] ) || ! is_string( $node[ $type_key ] ) ) {
 			throw Unknown_Preset_Exception::for_missing_baseline_type( $dot_path );
 		}
 
-		return $node[ self::TYPE_KEY ];
+		return $node[ $type_key ];
 	}
 
 	/**
@@ -198,5 +214,56 @@ final class Preset_Selector {
 		}
 
 		unset( $node );
+	}
+
+	/**
+	 * Remove the leaf at a dot-path, pruning any ancestor group left empty by the removal so the
+	 * overrides document stays sparse (no `primitive: { fontSize: {} }` residue). A no-op when the path
+	 * is absent.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node     The current group node, mutated in place.
+	 * @param string               $dot_path The token dot-path to remove.
+	 *
+	 * @return void
+	 */
+	private function unset_leaf( array &$node, string $dot_path ): void {
+		$this->unset_segments( $node, explode( '.', $dot_path ) );
+	}
+
+	/**
+	 * Recursive worker for {@see unset_leaf()}: walk the remaining segments, unset the final key, then
+	 * prune the parent if the removal emptied it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node     The current group node, mutated in place.
+	 * @param string[]             $segments The remaining dot-path segments.
+	 *
+	 * @return void
+	 */
+	private function unset_segments( array &$node, array $segments ): void {
+		$segment = array_shift( $segments );
+
+		if ( $segment === null || ! array_key_exists( $segment, $node ) ) {
+			return;
+		}
+
+		if ( $segments === [] ) {
+			unset( $node[ $segment ] );
+
+			return;
+		}
+
+		if ( ! is_array( $node[ $segment ] ) ) {
+			return;
+		}
+
+		$this->unset_segments( $node[ $segment ], $segments );
+
+		if ( $node[ $segment ] === [] ) {
+			unset( $node[ $segment ] );
+		}
 	}
 }

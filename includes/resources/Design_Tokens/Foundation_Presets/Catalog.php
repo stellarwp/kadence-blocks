@@ -19,7 +19,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  *
  * @since TBD
  */
-final class Foundation_Presets {
+final class Catalog {
 
 	/**
 	 * @var Baseline_Document The shipped, read-only baseline the catalogue is read from.
@@ -116,6 +116,33 @@ final class Foundation_Presets {
 		$tokens = $set[ $choice ][ Extensions::get_tokens_key() ] ?? [];
 
 		return is_array( $tokens ) ? $tokens : [];
+	}
+
+	/**
+	 * The union of every token dot-path any preset in the group touches — the group's "footprint".
+	 *
+	 * {@see Preset_Selector} uses this to make a selection replace the group wholesale: paths the chosen
+	 * preset omits are cleared rather than left behind, so switching presets can never leave a previous
+	 * preset's exclusive paths applied.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group The preset group key.
+	 *
+	 * @throws Unknown_Preset_Exception When the group does not exist.
+	 *
+	 * @return string[] Dot-paths, de-duplicated.
+	 */
+	public function group_paths( string $group ): array {
+		$paths = [];
+
+		foreach ( array_keys( $this->options( $group ) ) as $slug ) {
+			foreach ( array_keys( $this->tokens_for( $group, (string) $slug ) ) as $path ) {
+				$paths[ (string) $path ] = true;
+			}
+		}
+
+		return array_keys( $paths );
 	}
 
 	/**

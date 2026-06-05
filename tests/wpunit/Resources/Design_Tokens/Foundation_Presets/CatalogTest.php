@@ -2,22 +2,22 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Foundation_Presets;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Exception\Unknown_Preset_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Foundation_Presets;
 use Tests\Support\Classes\TestCase;
 
 /**
  * Reads the catalogue from the real shipped baseline (baseline.json) bound in the container, so these
  * assertions double as a guard that the shipped foundation presets keep their expected shape.
  */
-final class Foundation_PresetsTest extends TestCase {
+final class CatalogTest extends TestCase {
 
-	private Foundation_Presets $presets;
+	private Catalog $presets;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->presets = $this->container->get( Foundation_Presets::class );
+		$this->presets = $this->container->get( Catalog::class );
 	}
 
 	public function testItListsTheShippedPresetGroups(): void {
@@ -79,5 +79,31 @@ final class Foundation_PresetsTest extends TestCase {
 		$this->expectException( Unknown_Preset_Exception::class );
 
 		$this->presets->options( 'noSuchGroup' );
+	}
+
+	public function testGroupPathsIsTheUnionOfEveryPresetsPaths(): void {
+		$paths = $this->presets->group_paths( 'typeScale' );
+
+		// Every shipped type scale writes the same seven fontSize primitives, so the footprint is exactly
+		// those paths, de-duplicated.
+		sort( $paths );
+		$this->assertSame(
+			[
+				'primitive.fontSize.2xl',
+				'primitive.fontSize.3xl',
+				'primitive.fontSize.lg',
+				'primitive.fontSize.md',
+				'primitive.fontSize.sm',
+				'primitive.fontSize.xl',
+				'primitive.fontSize.xs',
+			],
+			$paths
+		);
+	}
+
+	public function testGroupPathsThrowsOnAnUnknownGroup(): void {
+		$this->expectException( Unknown_Preset_Exception::class );
+
+		$this->presets->group_paths( 'noSuchGroup' );
 	}
 }

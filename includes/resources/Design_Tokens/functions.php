@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Foundation_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Preset_Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
@@ -57,16 +57,16 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 if ( ! function_exists( 'kadence_blocks_design_foundation_presets' ) ) {
 	/**
 	 * The foundation-preset catalogue reader — the beginner on-ramp's "what can I pick?" surface. Thin
-	 * accessor over the Foundation_Presets service for callers (a future admin UI / MCP) that need to
-	 * list the shipped type scales and starter palettes.
+	 * accessor over the Catalog service that lists the shipped type scales and starter palettes (the
+	 * admin UI and MCP surface read it to render the picker).
 	 *
 	 * @since TBD
 	 *
-	 * @return Foundation_Presets
+	 * @return Catalog
 	 */
-	function kadence_blocks_design_foundation_presets(): Foundation_Presets {
-		/** @var Foundation_Presets $presets */
-		$presets = kadence_blocks()->get( Foundation_Presets::class );
+	function kadence_blocks_design_foundation_presets(): Catalog {
+		/** @var Catalog $presets */
+		$presets = kadence_blocks()->get( Catalog::class );
 
 		return $presets;
 	}

@@ -285,7 +285,7 @@ final class Dtcg_Validator {
 	 */
 	private function validate_typed_leaf( array $leaf, string $path ): array {
 		$errors   = [];
-		$type     = $leaf['$type'] ?? null;
+		$type     = $leaf[ Token_Type::get_type_key() ] ?? null;
 		$has_type = is_string( $type ) && Token_Type::is_valid( $type );
 
 		if ( ! $has_type ) {
@@ -430,7 +430,7 @@ final class Dtcg_Validator {
 	private function is_leaf( array $node ): bool {
 		return array_key_exists( Sentinels::get_value_key(), $node )
 			|| array_key_exists( Sentinels::get_disabled_key(), $node )
-			|| array_key_exists( '$type', $node );
+			|| array_key_exists( Token_Type::get_type_key(), $node );
 	}
 
 	/**

@@ -4,8 +4,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Foundation_Presets;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Table;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Exception\Unknown_Preset_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Foundation_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Preset_Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
@@ -92,8 +92,8 @@ final class Preset_SelectorTest extends TestCase {
 		$this->assertSame( '#DD6B20', $by_id['semantic.color.link'] );
 	}
 
-	public function testApplyingMergesOntoExistingOverridesWithoutClobberingUnrelatedPaths(): void {
-		// A pre-existing, unrelated override the user already authored.
+	public function testApplyingLeavesPathsOutsideTheGroupFootprintIntact(): void {
+		// A pre-existing override the user already authored, outside the typeScale footprint.
 		$this->store->save_document(
 			(string) wp_json_encode(
 				[
@@ -115,8 +115,77 @@ final class Preset_SelectorTest extends TestCase {
 
 		// The seeded type scale is present...
 		$this->assertSame( '6.854rem', $overrides['primitive']['fontSize']['3xl']['$value'] );
-		// ...and the unrelated override survived the merge.
+		// ...and the override outside the group footprint is untouched (the clean swap only clears the
+		// group's own paths).
 		$this->assertSame( '#123456', $overrides['semantic']['color']['link']['$value'] );
+	}
+
+	public function testSelectingAPresetClearsAnotherPresetsExclusivePaths(): void {
+		// A hand-built group whose two presets touch DISJOINT paths, which the shipped presets never do.
+		// Proves a clean swap: switching usesA -> usesB removes usesA's exclusive path rather than layering.
+		$baseline = new Fake_Baseline_Document(
+			[
+				'primitive'   => [
+					'fontSize' => [
+						'a' => [
+							'$type'  => 'dimension',
+							'$value' => '1rem',
+						],
+						'b' => [
+							'$type'  => 'dimension',
+							'$value' => '1rem',
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'foundationPresets' => [
+							'typeScale' => [
+								'$default' => 'usesA',
+								'usesA'    => [
+									'label'  => 'Uses A',
+									'tokens' => [ 'primitive.fontSize.a' => '2rem' ],
+								],
+								'usesB'    => [
+									'label'  => 'Uses B',
+									'tokens' => [ 'primitive.fontSize.b' => '3rem' ],
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$selector = new Preset_Selector( new Catalog( $baseline ), $baseline, $this->store );
+
+		$selector->apply( 'typeScale', 'usesA' );
+		$this->assertArrayHasKey( 'a', $this->stored_overrides()['primitive']['fontSize'] );
+
+		$selector->apply( 'typeScale', 'usesB' );
+		$fontsize = $this->stored_overrides()['primitive']['fontSize'];
+
+		$this->assertArrayNotHasKey( 'a', $fontsize, 'usesA\'s exclusive path should be cleared on swap.' );
+		$this->assertSame( '3rem', $fontsize['b']['$value'] );
+	}
+
+	public function testReselectingTheCurrentPresetIsANoOp(): void {
+		$this->selector->apply( 'typeScale', 'goldenRatio' );
+		$version_after_first = $this->store->get_version();
+
+		$fired = 0;
+		add_action(
+			Token_Store::changed_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		// Same selection again: nets no change, so it must not write (no version bump, no changed action).
+		$this->selector->apply( 'typeScale', 'goldenRatio' );
+
+		$this->assertSame( 0, $fired );
+		$this->assertSame( $version_after_first, $this->store->get_version() );
 	}
 
 	public function testApplyingFiresTheChangedAction(): void {
@@ -180,7 +249,7 @@ final class Preset_SelectorTest extends TestCase {
 			]
 		);
 
-		$selector = new Preset_Selector( new Foundation_Presets( $baseline ), $baseline, $this->store );
+		$selector = new Preset_Selector( new Catalog( $baseline ), $baseline, $this->store );
 
 		$this->expectException( Unknown_Preset_Exception::class );
 
