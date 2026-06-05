@@ -163,6 +163,8 @@ final class Css_Var_Projector {
 	private function preset_block( Resolved_Tokens $resolved ): string {
 		$declarations = '';
 
+		// category, slug and css_var come from developer-declared registry config,
+		// not from the store — no sanitization needed here (contrast with token_block()).
 		foreach ( $this->registry->by_projection( self::WP_PRESET ) as $id => $token ) {
 			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
 			// --wp--preset-- declaration that resolves to nothing in the browser.
