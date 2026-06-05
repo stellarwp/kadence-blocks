@@ -35,12 +35,20 @@ return [
 			],
 		],
 	],
-	// Variant-set skeleton: declares that the Button block accepts variants. The variant payload shape
-	// and $default handling are SOFT-3393.
+	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
+	// token reference where the property is already a registered token, an inline target otherwise).
+	// The variant NAMES, the default ($default) and the values all live in the baseline document under
+	// $extensions…variants.<block>; this declares only the structural wiring. Inline slot values here
+	// (e.g. palette3) are placeholders until the per-block wiring tickets vet them against the block.
 	'variant_sets' => [
 		[
 			'block'    => 'kadence/advancedbtn',
-			'variants' => [ 'primary', 'secondary', 'ghost' ],
+			'bindings' => [
+				'button-bg'     => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's projections.
+				'button-text'   => [ 'token' => 'semantic.color.button-text' ],
+				'button-border' => [ 'kadence_slot' => 'palette3' ],            // not a token yet → inline target.
+				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
+			],
 		],
 	],
 ];

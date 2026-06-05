@@ -49,7 +49,8 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Register which blocks accept variants. Skeleton — the rich data model lands in SOFT-3393.
+	 * Register a block's variant set — the variants it accepts, its default, and the per-property
+	 * bindings.
 	 *
 	 * @since TBD
 	 *
@@ -137,7 +138,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Variant set registered for a block, or null. (Data model fleshed out in SOFT-3393.)
+	 * Variant set registered for a block, or null.
 	 *
 	 * @since TBD
 	 *
@@ -147,6 +148,30 @@ final class Token_Registry {
 	 */
 	public function for_block( string $block ): ?Variant_Set {
 		return $this->variant_sets[ $block ] ?? null;
+	}
+
+	/**
+	 * The effective projection targets for a binding: a token reference contributes the referenced
+	 * token's projections (so a variant reuses the variable the base property already feeds), and the
+	 * binding's inline targets are merged on top, supplementing or overriding them (e.g. adding a
+	 * block_attr the token never carries). A reference to an unregistered token contributes nothing, so
+	 * a stale reference fails soft (its projections are skipped) rather than fatal.
+	 *
+	 * @since TBD
+	 *
+	 * @param Binding $binding The binding to resolve.
+	 *
+	 * @return array<string, mixed> Projection target key => value.
+	 */
+	public function effective_projections( Binding $binding ): array {
+		$base = [];
+
+		if ( $binding->is_token_ref() ) {
+			$token = $this->get( (string) $binding->token );
+			$base  = $token !== null ? $token->projections : [];
+		}
+
+		return array_merge( $base, $binding->projections );
 	}
 
 	/**
