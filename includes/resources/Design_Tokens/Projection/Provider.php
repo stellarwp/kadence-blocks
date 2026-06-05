@@ -143,7 +143,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Whether token projection is active. Fail-closed: any error reading the registry means "off".
+	 * Whether token projection is active.
 	 *
 	 * @since TBD
 	 *
