@@ -2,10 +2,10 @@
 // cspell:ignore advancedbtn .
 // The single declaration point. Adding an entry here automatically reaches every projector and the
 // admin UI. Returned as data (rather than calling the global helper) so the Provider can register it
-// directly against the container. v1 ships a small representative set; the full catalog is registered
-// incrementally by the per-block wiring tickets (SOFT-3401..3406, under SOFT-3366) and the variant-set
-// work (SOFT-3393), each of which owns its tokens' projection targets. The shipped baseline (SOFT-3377)
-// must contain an entry for every token registered here, or the guard fails closed.
+// directly against the container. This ships a small representative set; the full catalog is registered
+// incrementally by the per-block wiring work and the variant-set work, each of which owns its tokens'
+// projection targets. The shipped baseline must contain an entry for every token registered here, or
+// the guard fails closed.
 //
 // Loaded on `init` (see Registry\Provider) so the __() label/group calls don't trigger the
 // _load_textdomain_just_in_time notice — translations must not load before init.
@@ -35,12 +35,20 @@ return [
 			],
 		],
 	],
-	// Variant-set skeleton: declares that the Button block accepts variants. The variant payload shape
-	// and $default handling are SOFT-3393.
+	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
+	// token reference where the property is already a registered token, an inline target otherwise).
+	// The variant NAMES, the default ($default) and the values all live in the baseline document under
+	// $extensions…variants.<block>; this declares only the structural wiring. Inline slot values here
+	// (e.g. palette3) are placeholders until the per-block wiring tickets vet them against the block.
 	'variant_sets' => [
 		[
 			'block'    => 'kadence/advancedbtn',
-			'variants' => [ 'primary', 'secondary', 'ghost' ],
+			'bindings' => [
+				'button-bg'     => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's projections.
+				'button-text'   => [ 'token' => 'semantic.color.button-text' ],
+				'button-border' => [ 'kadence_slot' => 'palette3' ],            // not a token yet → inline target.
+				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
+			],
 		],
 	],
 ];
