@@ -1,5 +1,7 @@
 <?php declare( strict_types=1 );
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
@@ -34,14 +36,12 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 
 if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 	/**
-	 * Declare which block accepts variants (skeleton; data model in SOFT-3393).
+	 * Declare that a block accepts variants, plus its per-property bindings. Variant names, default and
+	 * values are document data, not declared here.
 	 *
 	 * @since TBD
 	 *
-	 * @param array{
-	 *     block: string,
-	 *     variants?: string[],
-	 * } $set See Variant_Set::from_array().
+	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Variant_Set::from_array().
 	 *
 	 * @return void
 	 */
@@ -49,5 +49,42 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
 		$registry->register_variant_set( $set );
+	}
+}
+
+if ( ! function_exists( 'kadence_blocks_design_foundation_presets' ) ) {
+	/**
+	 * The foundation-preset catalogue reader — the beginner on-ramp's "what can I pick?" surface. Thin
+	 * accessor over the Catalog service that lists the shipped type scales and starter palettes (the
+	 * admin UI and MCP surface read it to render the picker).
+	 *
+	 * @since TBD
+	 *
+	 * @return Catalog
+	 */
+	function kadence_blocks_design_foundation_presets(): Catalog {
+		/** @var Catalog $presets */
+		$presets = kadence_blocks()->get( Catalog::class );
+
+		return $presets;
+	}
+}
+
+if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
+	/**
+	 * Apply a foundation-preset choice, seeding the primitive layer as store overrides. Thin readability
+	 * wrapper over Selector::apply().
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group  The preset group key, e.g. "typeScale" or "colorPalette".
+	 * @param string $choice The preset slug within the group, e.g. "goldenRatio".
+	 *
+	 * @return void
+	 */
+	function kadence_blocks_apply_design_foundation_preset( string $group, string $choice ): void {
+		/** @var Selector $selector */
+		$selector = kadence_blocks()->get( Selector::class );
+		$selector->apply( $group, $choice );
 	}
 }

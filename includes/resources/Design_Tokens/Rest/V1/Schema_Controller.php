@@ -4,6 +4,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Dtcg_Schema;
+use WP_Error;
+use WP_Http;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -81,19 +83,31 @@ final class Schema_Controller extends Controller {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
+		$json = $this->dtcg_schema->json();
+
+		// An empty string means the committed file is missing or unreadable. Serving an empty 200 body
+		// would hand consumers invalid JSON, so surface the failure explicitly instead.
+		if ( $json === '' ) {
+			return new WP_Error(
+				'rest_design_tokens_schema_unavailable',
+				__( 'The DTCG schema could not be read.', 'kadence-blocks' ),
+				[ 'status' => WP_Http::INTERNAL_SERVER_ERROR ]
+			);
+		}
+
 		$response = new WP_REST_Response();
 
 		add_filter(
 			'rest_pre_serve_request',
-			function ( $served, $result ) use ( $response ) {
+			function ( $served, $result ) use ( $response, $json ) {
 				if ( $result !== $response ) {
 					return $served;
 				}
 
-				echo $this->dtcg_schema->json(); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw JSON Schema body; escaping would corrupt it.
+				echo $json; // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw JSON Schema body; escaping would corrupt it.
 
 				return true;
 			},

@@ -6,6 +6,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Schema_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Dtcg_Schema;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
+use WP_Error;
+use WP_Http;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -83,6 +85,19 @@ final class SchemaControllerTest extends TestCase {
 
 		$this->assertTrue( $served, 'The schema endpoint should short-circuit serialization and serve the raw body.' );
 		$this->assertSame( $this->container->get( Dtcg_Schema::class )->json(), $output );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReturnsServerErrorWhenTheSchemaCannotBeRead(): void {
+		$controller = new Schema_Controller( new Dtcg_Schema( __DIR__ . '/does-not-exist.json', 'test-version-missing' ) );
+
+		$result = $controller->get_item( new WP_REST_Request( WP_REST_Server::READABLE ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_schema_unavailable', $result->get_error_code() );
+		$this->assertSame( WP_Http::INTERNAL_SERVER_ERROR, $result->get_error_data()['status'] );
 	}
 
 	/**

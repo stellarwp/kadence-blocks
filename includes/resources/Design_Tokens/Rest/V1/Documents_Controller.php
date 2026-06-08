@@ -356,14 +356,7 @@ final class Documents_Controller extends Controller {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
 		if ( $slug !== Token_Store::default_slug() ) {
-			return new WP_Error(
-				'rest_design_tokens_not_found',
-				__( 'Sorry, that design token set does not exist.', 'kadence-blocks' ),
-				[
-					'status' => WP_Http::NOT_FOUND,
-					'slug'   => $slug,
-				]
-			);
+			return $this->not_found( $slug );
 		}
 
 		return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
@@ -372,8 +365,9 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Read the resolved/flattened token map for a set, for previews.
 	 *
-	 * The resolver follows aliases and renders each leaf to its CSS value. A stored set carrying an alias
-	 * cycle or a dangling alias cannot be flattened, so it is surfaced as HTTP 422 rather than a fatal.
+	 * An unknown slug is a 404, mirroring get_item(). The resolver follows aliases and renders each leaf
+	 * to its CSS value; a stored set carrying an alias cycle or a dangling alias cannot be flattened, so it
+	 * is surfaced as HTTP 422 rather than a fatal.
 	 *
 	 * @since TBD
 	 *
@@ -383,6 +377,10 @@ final class Documents_Controller extends Controller {
 	 */
 	public function get_resolved( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+
+		if ( $slug !== Token_Store::default_slug() ) {
+			return $this->not_found( $slug );
+		}
 
 		try {
 			$resolved = $this->resolver->resolve( $slug );
@@ -1135,5 +1133,25 @@ final class Documents_Controller extends Controller {
 			'version'  => $this->store->get_version( $slug ),
 			'document' => $this->read_stored_document( $slug ),
 		];
+	}
+
+	/**
+	 * The error returned when a slug does not name a known token set.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The unknown slug.
+	 *
+	 * @return WP_Error
+	 */
+	private function not_found( string $slug ): WP_Error {
+		return new WP_Error(
+			'rest_design_tokens_not_found',
+			__( 'Sorry, that design token set does not exist.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::NOT_FOUND,
+				'slug'   => $slug,
+			]
+		);
 	}
 }

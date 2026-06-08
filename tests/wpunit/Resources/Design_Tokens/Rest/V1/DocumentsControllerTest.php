@@ -201,13 +201,33 @@ final class DocumentsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testItReturnsNotFoundFromResolvedForAnUnknownSlug(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'does-not-exist' );
+
+		$result = $this->controller->get_resolved( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testItDeniesAccessToUsersWithoutTheCapability(): void {
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
 
-		$result = $this->controller->get_items_permissions_check( new WP_REST_Request( WP_REST_Server::READABLE ) );
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
 
-		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		// Both permission callbacks gate the routes (get_items for the collection, get_item for the single
+		// document and resolved map), so both must deny a user without the capability.
+		foreach ( [ 'get_items_permissions_check', 'get_item_permissions_check' ] as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny the subscriber." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
 	}
 
 	/**

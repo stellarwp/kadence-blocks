@@ -59,7 +59,8 @@ final class RegistrationHelperTest extends TestCase {
 		$set = $this->registry->for_block( 'kadence/advancedbtn' );
 
 		$this->assertNotNull( $set );
-		$this->assertSame( [ 'primary', 'secondary', 'ghost' ], $set->variants );
+		$this->assertSame( 'kadence/advancedbtn', $set->block );
+		$this->assertNotNull( $set->binding( 'button-bg' ) );
 	}
 
 	public function testHelperRegistersAgainstTheSharedRegistry(): void {
@@ -82,14 +83,15 @@ final class RegistrationHelperTest extends TestCase {
 		kadence_blocks_register_design_variant_set(
 			[
 				'block'    => 'kadence/test-block',
-				'variants' => [ 'a', 'b' ],
+				'bindings' => [ 'thing' => [ 'kadence_slot' => 'palette1' ] ],
 			]
 		);
 
 		$set = $this->registry->for_block( 'kadence/test-block' );
 
 		$this->assertNotNull( $set );
-		$this->assertSame( [ 'a', 'b' ], $set->variants );
+		$this->assertSame( 'kadence/test-block', $set->block );
+		$this->assertNotNull( $set->binding( 'thing' ) );
 	}
 
 	public function testHelperFunctionsExist(): void {
