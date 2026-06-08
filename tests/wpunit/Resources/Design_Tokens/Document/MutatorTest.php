@@ -2,7 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Document;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use Tests\Support\Classes\TestCase;
@@ -11,12 +11,12 @@ use Tests\Support\Classes\TestCase;
  * Covers the pure merge / set / remove transforms the REST write layer uses to assemble a candidate
  * overrides document.
  */
-final class Document_MutatorTest extends TestCase {
+final class MutatorTest extends TestCase {
 
 	/**
-	 * @var Document_Mutator
+	 * @var Mutator
 	 */
-	private Document_Mutator $mutator;
+	private Mutator $mutator;
 
 	/**
 	 * @return void
@@ -24,7 +24,7 @@ final class Document_MutatorTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->mutator = new Document_Mutator();
+		$this->mutator = new Mutator();
 	}
 
 	/**

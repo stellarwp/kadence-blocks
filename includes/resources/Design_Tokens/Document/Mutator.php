@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  *
  * @since TBD
  */
-final class Document_Mutator {
+final class Mutator {
 
 	/**
 	 * Deep-merge a partial overrides document onto a stored one, preserving every untouched path.

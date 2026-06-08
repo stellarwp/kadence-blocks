@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -148,9 +148,9 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @var Document_Mutator
+	 * @var Mutator
 	 */
-	private Document_Mutator $mutator;
+	private Mutator $mutator;
 
 	/**
 	 * Builds the baseline-merged effective document, used to infer a token's $type on a single-token write.
@@ -185,14 +185,14 @@ final class Documents_Controller extends Controller {
 	 * @param Token_Store        $store     The sole gateway to the kb_design_tokens table.
 	 * @param Token_Resolver     $resolver  Flattens a stored token set and dry-runs candidate overrides.
 	 * @param Dtcg_Validator     $validator Validates the DTCG grammar of a candidate document.
-	 * @param Document_Mutator   $mutator   Assembles the candidate overrides document.
+	 * @param Mutator            $mutator   Assembles the candidate overrides document.
 	 * @param Effective_Document $effective Builds the effective document for $type inference.
 	 */
 	public function __construct(
 		Token_Store $store,
 		Token_Resolver $resolver,
 		Dtcg_Validator $validator,
-		Document_Mutator $mutator,
+		Mutator $mutator,
 		Effective_Document $effective
 	) {
 		$this->store     = $store;
