@@ -1,7 +1,7 @@
 <?php declare( strict_types=1 );
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
-use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Preset_Selector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
@@ -75,7 +75,7 @@ if ( ! function_exists( 'kadence_blocks_design_foundation_presets' ) ) {
 if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
 	/**
 	 * Apply a foundation-preset choice, seeding the primitive layer as store overrides. Thin readability
-	 * wrapper over Preset_Selector::apply().
+	 * wrapper over Selector::apply().
 	 *
 	 * @since TBD
 	 *
@@ -85,8 +85,8 @@ if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
 	 * @return void
 	 */
 	function kadence_blocks_apply_design_foundation_preset( string $group, string $choice ): void {
-		/** @var Preset_Selector $selector */
-		$selector = kadence_blocks()->get( Preset_Selector::class );
+		/** @var Selector $selector */
+		$selector = kadence_blocks()->get( Selector::class );
 		$selector->apply( $group, $choice );
 	}
 }

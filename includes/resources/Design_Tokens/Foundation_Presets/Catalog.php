@@ -13,7 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * hand-authoring tokens: typographic type scales (minor third, major third, …) and starter color
  * palettes. They live in the shipped baseline under
  * `$extensions.<namespace>.foundationPresets.<group>.<slug>` and are read-only here — applying a choice
- * (which seeds the primitive layer as store overrides) is {@see Preset_Selector}.
+ * (which seeds the primitive layer as store overrides) is {@see Selector}.
  *
  * The baseline is the single source of truth; this class never holds its own copy of the catalogue.
  *
@@ -93,7 +93,7 @@ final class Catalog {
 	}
 
 	/**
-	 * A preset's flat token map: primitive dot-path => raw value. This is what {@see Preset_Selector}
+	 * A preset's flat token map: primitive dot-path => raw value. This is what {@see Selector}
 	 * turns into store overrides.
 	 *
 	 * @since TBD
@@ -121,7 +121,7 @@ final class Catalog {
 	/**
 	 * The union of every token dot-path any preset in the group touches — the group's "footprint".
 	 *
-	 * {@see Preset_Selector} uses this to make a selection replace the group wholesale: paths the chosen
+	 * {@see Selector} uses this to make a selection replace the group wholesale: paths the chosen
 	 * preset omits are cleared rather than left behind, so switching presets can never leave a previous
 	 * preset's exclusive paths applied.
 	 *

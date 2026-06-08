@@ -28,7 +28,7 @@ use RuntimeException;
  *
  * @since TBD
  */
-final class Preset_Selector {
+final class Selector {
 
 	/**
 	 * @var Catalog The catalogue reader the chosen preset's tokens and the group footprint come from.

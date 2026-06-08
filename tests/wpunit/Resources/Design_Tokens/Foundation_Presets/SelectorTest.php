@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Table;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Exception\Unknown_Preset_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Preset_Selector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\StellarWP\DB\DB;
 use Tests\Support\Classes\Fake_Baseline_Document;
@@ -16,16 +16,16 @@ use Tests\Support\Classes\TestCase;
  * Exercises the full write path against the real baseline + a real kb_design_tokens row, then resolves
  * the stored overrides back through the Token_Resolver to prove the seeded primitives render as expected.
  */
-final class Preset_SelectorTest extends TestCase {
+final class SelectorTest extends TestCase {
 
-	private Preset_Selector $selector;
+	private Selector $selector;
 
 	private Token_Store $store;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->selector = $this->container->get( Preset_Selector::class );
+		$this->selector = $this->container->get( Selector::class );
 		$this->store    = $this->container->get( Token_Store::class );
 	}
 
@@ -157,7 +157,7 @@ final class Preset_SelectorTest extends TestCase {
 			]
 		);
 
-		$selector = new Preset_Selector( new Catalog( $baseline ), $baseline, $this->store );
+		$selector = new Selector( new Catalog( $baseline ), $baseline, $this->store );
 
 		$selector->apply( 'typeScale', 'usesA' );
 		$this->assertArrayHasKey( 'a', $this->stored_overrides()['primitive']['fontSize'] );
@@ -249,7 +249,7 @@ final class Preset_SelectorTest extends TestCase {
 			]
 		);
 
-		$selector = new Preset_Selector( new Catalog( $baseline ), $baseline, $this->store );
+		$selector = new Selector( new Catalog( $baseline ), $baseline, $this->store );
 
 		$this->expectException( Unknown_Preset_Exception::class );
 

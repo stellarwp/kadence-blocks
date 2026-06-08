@@ -21,6 +21,6 @@ final class Provider extends Provider_Contract {
 	 */
 	public function register(): void {
 		$this->container->singleton( Catalog::class, Catalog::class );
-		$this->container->singleton( Preset_Selector::class, Preset_Selector::class );
+		$this->container->singleton( Selector::class, Selector::class );
 	}
 }
