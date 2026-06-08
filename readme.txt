@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc, ghernkadence
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.6
-Tested up to: 6.9.4
-Stable tag: 3.7.2
+Tested up to: 7.0
+Stable tag: 3.7.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,22 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.7.5 =
+Release Date: 1st June 2026
+* Tweak: Pattern and Starter Template libraries now resolve an authorized license key (including unified Liquid Web licenses) when communicating with remote servers, so imports work for sites licensed through Liquid Web.
+* Tweak: Update Harbor to 1.4 and centralize premium plugin detection so the Liquid Web Products page recognizes all active premium Kadence plugins.
+
+= 3.7.4 =
+Release Date: 29th May 2026
+* Fix: Section/Row Layout Block - Flex Settings Direction, Alignment, and Vertical Alignment controls rendering as a text-alignment toolbar instead of their proper controls (regression in 3.7.3).
+
+= 3.7.3 =
+Release Date: 27th May 2026
+* Fix: Advanced Form - reCAPTCHA v3, Turnstile, and hCaptcha tokens not regenerating after a successful submission, preventing subsequent form submissions.
+* Fix: Table (Adv) Block - Column widths not respected when Column Headers are enabled.
+* Fix: Custom color palette conflict with block themes (e.g. Blocksy) overriding Kadence color settings.
+* Add: `kadence_blocks_table_data_scope_attributes` filter for customizing Table (Adv) header cell scope attributes.
 
 = 3.7.2 =
 Release Date: 13th May 2026

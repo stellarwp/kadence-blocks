@@ -68,6 +68,11 @@ export function Edit(props) {
 		}
 	}, [hasInnerBlocks]);
 
+	const Tag =
+		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']
+			? 'th'
+			: 'td';
+
 	const classes = useMemo(
 		() =>
 			classnames({
@@ -144,11 +149,6 @@ export function Edit(props) {
 			updateBlockAttributes(parentTableClientId, { columns: newColumnCount });
 		});
 	};
-
-	const Tag =
-		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']
-			? 'th'
-			: 'td';
 
 	return (
 		<Tag {...blockProps}>

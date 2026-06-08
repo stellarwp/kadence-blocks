@@ -13,7 +13,8 @@
 		},
 		"allow-plugins": {
 			"composer/installers": true,
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
 		}
 	},
 	"repositories": [
@@ -42,7 +43,7 @@
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
 		"stellarwp/db": "^1.1",
-		"stellarwp/harbor": "^1.2",
+		"stellarwp/harbor": "^1.4",
 		"stellarwp/prophecy-image-downloader": "^3.0",
 		"stellarwp/prophecy-storage": "^3.0",
 		"stellarwp/schema": "^2.0",
@@ -61,10 +62,13 @@
 		"codeception/module-phpbrowser": "^1.0.3",
 		"codeception/module-webdriver": "^1.4.1",
 		"codeception/util-universalframework": "^1.0",
+		"exussum12/coverage-checker": "^1.0",
 		"lucatume/wp-browser": "<3.5",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpstan/extension-installer": "^1.4",
 		"sabberworm/php-css-parser": "^8.4",
-		"stellarwp/coding-standards": "^2.0"
+		"stellarwp/coding-standards": "^2.0",
+		"szepeviktor/phpstan-wordpress": "^1.3"
 	},
 	"autoload": {
 		"psr-4": {
@@ -129,7 +133,11 @@
 			"@compatibility:php-8.3",
 			"@compatibility:php-8.4"
 		],
-		"phpcs": "phpcs --standard=phpcs.xml"
+		"phpcs": "phpcs --standard=phpcs.xml",
+		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
+		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff",
+		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=4096M",
+		"phpstan-baseline": "./vendor/bin/phpstan analyse --memory-limit=4096M --level max --configuration phpstan.neon --generate-baseline"
 	},
 	"extra": {
 		"strauss": {

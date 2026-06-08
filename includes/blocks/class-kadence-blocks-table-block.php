@@ -100,8 +100,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 					$width_unit = ! empty( $settings['unit'] ) ? $settings['unit'] : '%';
 
 					if( isset( $settings['width'] ) && '' !== $settings['width'] ) {
-						$css->set_selector('.kb-table' . esc_attr($unique_id) . ' td:nth-of-type(' . ($index + 1) . '), ' .
-							'.kb-table' . esc_attr($unique_id) . ' th:nth-of-type(' . ($index + 1) . ')');
+						$css->set_selector('.kb-table' . esc_attr($unique_id) . ' tr > *:nth-child(' . ($index + 1) . ')');
 						$css->add_property('width', $settings['width'] . $width_unit);
 					}
 
