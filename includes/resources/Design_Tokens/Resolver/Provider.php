@@ -21,5 +21,6 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Css_Renderer::class, Css_Renderer::class );
 		$this->container->singleton( Token_Resolver::class, Token_Resolver::class );
 		$this->container->singleton( Variant_Resolver::class, Variant_Resolver::class );
+		$this->container->singleton( Effective_Variants::class );
 	}
 }
