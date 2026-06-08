@@ -88,6 +88,17 @@ final class Variant_ResolverTest extends TestCase {
 
 		$this->assertSame( [], $report['unbound'], 'Valued properties with no binding.' );
 		$this->assertSame( [], $report['unvalued'], 'Bindings no variant ever sets.' );
+
+		// A token-ref binding must resolve to the referenced token's projections. An empty result would
+		// mean a typo'd token id silently produced no projection (effective_projections fails soft), so
+		// assert the reference actually lands.
+		$binding = $set->binding( 'button-bg' );
+		$this->assertNotNull( $binding, 'button-bg should be bound.' );
+		$this->assertTrue( $binding->is_token_ref(), 'button-bg should be a token reference.' );
+		$this->assertNotEmpty(
+			$registry->effective_projections( $binding ),
+			'The button-bg token reference should resolve to the token projections.'
+		);
 	}
 
 	public function testItThrowsForAnUnknownBlock(): void {

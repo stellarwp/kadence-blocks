@@ -19,7 +19,7 @@ use InvalidArgumentException;
  *     does not carry.
  *   - **Both** — e.g. `['token' => 'semantic.color.button-bg', 'block_attr' => 'background']`. The
  *     inline targets supplement (and override) the referenced token's projections, which is how a
- *     token-backed property still declares the `block_attr` a block preset needs (SOFT-3396).
+ *     token-backed property still declares the `block_attr` a block preset needs.
  *
  * {@see Token_Registry::effective_projections()} merges the two. The projection vocabulary is the same
  * one tokens use, with one addition — `block_attr`, which tokens never carry.
@@ -56,7 +56,7 @@ final class Binding {
 	public const WP_PRESET = 'wp_preset';
 
 	/**
-	 * Inline target: a block attribute, so a block preset can seed an attribute default (SOFT-3396).
+	 * Inline target: a block attribute, so a block preset can seed an attribute default.
 	 *
 	 * @since TBD
 	 *

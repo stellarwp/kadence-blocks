@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 
 /**
  * Flattens a block variant's token bindings to CSS-ready values — the variant counterpart of the
- * Token_Resolver, and the seam SOFT-3394/3395/3396/3390 build on.
+ * Token_Resolver, and the seam the block-preset and variant projectors build on.
  *
  * A variant's values live in the document under
  * `$extensions.com.kadence.designTokens.variants.<block>.<variant>.tokens` as a property => alias-or-
@@ -19,10 +19,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding} — value and target are kept separate
  * so each downstream projector maps them its own way.
  *
- * v1 reads variant definitions from the shipped baseline. Merging store overrides into the variant
- * section (so a user can re-skin a variant) is a follow-up that arrives with the write endpoints; the
- * core Resolver's Effective_Document deliberately strips `$extensions`, so variants are resolved here
- * rather than through that deep-merge.
+ * Variant definitions are read from the shipped baseline. The core Resolver's Effective_Document
+ * deliberately strips `$extensions`, so variants are resolved here rather than through that deep-merge.
  *
  * @since TBD
  */
@@ -181,7 +179,7 @@ final class Variant_Resolver {
 	/**
 	 * The union of every property the block's variants set a value for — what a {@see
 	 * \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::consistency()} check compares the
-	 * bindings against, and what a block preset (SOFT-3396) iterates.
+	 * bindings against, and what a block preset iterates.
 	 *
 	 * @since TBD
 	 *
@@ -228,6 +226,11 @@ final class Variant_Resolver {
 
 	/**
 	 * The property => value map for a variant, or throw when the block/variant is undefined.
+	 *
+	 * A variant that exists but carries no `tokens` map — or a non-array one — resolves to an empty map,
+	 * not an error: a variant may legitimately set no values (it then contributes nothing downstream).
+	 * Only an undefined block or variant is an error; a malformed-but-present `tokens` fails soft, in line
+	 * with the resolver's other lookups.
 	 *
 	 * @since TBD
 	 *
