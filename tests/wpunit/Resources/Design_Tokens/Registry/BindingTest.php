@@ -42,6 +42,21 @@ final class BindingTest extends TestCase {
 		$this->assertSame( [ 'block_attr' => 'background' ], $binding->projections );
 	}
 
+	public function testBlockAttrReturnsTheBoundAttributeOrNull(): void {
+		$bound = Binding::from_array(
+			'button-bg',
+			[
+				'token'      => 'semantic.color.button-bg',
+				'block_attr' => 'background',
+			]
+		);
+		$this->assertSame( 'background', $bound->block_attr() );
+
+		// A binding with no block_attr target has no attribute to seed.
+		$unbound = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
+		$this->assertNull( $unbound->block_attr() );
+	}
+
 	public function testItAcceptsTheCssVarFlag(): void {
 		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
 
