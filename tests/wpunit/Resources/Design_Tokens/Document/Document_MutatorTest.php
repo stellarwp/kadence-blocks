@@ -3,6 +3,8 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Document;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -33,8 +35,8 @@ final class Document_MutatorTest extends TestCase {
 			'primitive' => [
 				'color' => [
 					'a' => [
-						'$type'  => 'color',
-						'$value' => '#aaaaaa',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#aaaaaa',
 					],
 				],
 			],
@@ -46,16 +48,16 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'b' => [
-							'$type'  => 'color',
-							'$value' => '#bbbbbb',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#bbbbbb',
 						],
 					],
 				],
 			]
 		);
 
-		$this->assertSame( '#aaaaaa', $merged['primitive']['color']['a']['$value'] );
-		$this->assertSame( '#bbbbbb', $merged['primitive']['color']['b']['$value'] );
+		$this->assertSame( '#aaaaaa', $merged['primitive']['color']['a'][ Sentinels::get_value_key() ] );
+		$this->assertSame( '#bbbbbb', $merged['primitive']['color']['b'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -66,9 +68,9 @@ final class Document_MutatorTest extends TestCase {
 			'primitive' => [
 				'color' => [
 					'a' => [
-						'$type'        => 'color',
-						'$value'       => '#aaaaaa',
-						'$description' => 'keep?',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#aaaaaa',
+						'$description'             => 'keep?',
 					],
 				],
 			],
@@ -80,8 +82,8 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'a' => [
-							'$type'  => 'color',
-							'$value' => '#000000',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#000000',
 						],
 					],
 				],
@@ -89,7 +91,7 @@ final class Document_MutatorTest extends TestCase {
 		);
 
 		// The whole leaf is replaced: the new value lands and the old $description does not linger.
-		$this->assertSame( '#000000', $merged['primitive']['color']['a']['$value'] );
+		$this->assertSame( '#000000', $merged['primitive']['color']['a'][ Sentinels::get_value_key() ] );
 		$this->assertArrayNotHasKey( '$description', $merged['primitive']['color']['a'] );
 	}
 
@@ -101,8 +103,8 @@ final class Document_MutatorTest extends TestCase {
 			'primitive' => [
 				'color' => [
 					'a' => [
-						'$type'  => 'color',
-						'$value' => '#aaaaaa',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#aaaaaa',
 					],
 				],
 			],
@@ -113,14 +115,14 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'a' => [ '$value' => null ],
+						'a' => [ Sentinels::get_value_key() => null ],
 					],
 				],
 			]
 		);
 
 		// The reset sentinel is stored verbatim for the Resolver to interpret, not applied here.
-		$this->assertSame( [ '$value' => null ], $merged['primitive']['color']['a'] );
+		$this->assertSame( [ Sentinels::get_value_key() => null ], $merged['primitive']['color']['a'] );
 	}
 
 	/**
@@ -131,8 +133,8 @@ final class Document_MutatorTest extends TestCase {
 			'primitive'   => [
 				'color' => [
 					'a' => [
-						'$type'  => 'color',
-						'$value' => '#aaaaaa',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#aaaaaa',
 					],
 				],
 			],
@@ -147,8 +149,8 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'a' => [
-							'$type'  => 'color',
-							'$value' => '#000000',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#000000',
 						],
 					],
 				],
@@ -166,12 +168,12 @@ final class Document_MutatorTest extends TestCase {
 			[],
 			'primitive.color.brand',
 			[
-				'$type'  => 'color',
-				'$value' => '#3182CE',
+				Token_Type::get_type_key() => 'color',
+				Sentinels::get_value_key() => '#3182CE',
 			] 
 		);
 
-		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
+		$this->assertSame( '#3182CE', $document['primitive']['color']['brand'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -183,20 +185,20 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand' => [
-							'$type'  => 'color',
-							'$value' => '#000000',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#000000',
 						],
 					],
 				],
 			],
 			'primitive.color.brand',
 			[
-				'$type'  => 'color',
-				'$value' => '#3182CE',
+				Token_Type::get_type_key() => 'color',
+				Sentinels::get_value_key() => '#3182CE',
 			]
 		);
 
-		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
+		$this->assertSame( '#3182CE', $document['primitive']['color']['brand'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -208,20 +210,20 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'$type'  => 'color',
-						'$value' => '#000000',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#000000',
 					],
 				],
 			],
 			'primitive.color.brand',
 			[
-				'$type'  => 'color',
-				'$value' => '#3182CE',
+				Token_Type::get_type_key() => 'color',
+				Sentinels::get_value_key() => '#3182CE',
 			]
 		);
 
-		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
-		$this->assertArrayNotHasKey( '$value', $document['primitive']['color'] );
+		$this->assertSame( '#3182CE', $document['primitive']['color']['brand'][ Sentinels::get_value_key() ] );
+		$this->assertArrayNotHasKey( Sentinels::get_value_key(), $document['primitive']['color'] );
 	}
 
 	/**
@@ -233,8 +235,8 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand' => [
-							'$type'  => 'color',
-							'$value' => '#3182CE',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#3182CE',
 						],
 					],
 				],
@@ -255,12 +257,12 @@ final class Document_MutatorTest extends TestCase {
 				'primitive' => [
 					'color' => [
 						'brand'  => [
-							'$type'  => 'color',
-							'$value' => '#3182CE',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#3182CE',
 						],
 						'accent' => [
-							'$type'  => 'color',
-							'$value' => '#dd0000',
+							Token_Type::get_type_key() => 'color',
+							Sentinels::get_value_key() => '#dd0000',
 						],
 					],
 				],
@@ -269,7 +271,7 @@ final class Document_MutatorTest extends TestCase {
 		);
 
 		$this->assertArrayNotHasKey( 'brand', $document['primitive']['color'] );
-		$this->assertSame( '#dd0000', $document['primitive']['color']['accent']['$value'] );
+		$this->assertSame( '#dd0000', $document['primitive']['color']['accent'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -280,8 +282,8 @@ final class Document_MutatorTest extends TestCase {
 			'primitive' => [
 				'color' => [
 					'brand' => [
-						'$type'  => 'color',
-						'$value' => '#3182CE',
+						Token_Type::get_type_key() => 'color',
+						Sentinels::get_value_key() => '#3182CE',
 					],
 				],
 			],

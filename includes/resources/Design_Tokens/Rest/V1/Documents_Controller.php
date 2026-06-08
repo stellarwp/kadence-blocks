@@ -12,6 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use WP_Error;
@@ -539,11 +540,11 @@ final class Documents_Controller extends Controller {
 
 		$is_sentinel = Sentinels::is_reset( $leaf ) || Sentinels::has_disabled( $leaf );
 
-		if ( ! $is_sentinel && ! array_key_exists( '$type', $leaf ) ) {
-			$existing = $this->node_at( $effective, $path );
-			$type     = is_array( $existing ) && isset( $existing['$type'] ) && is_string( $existing['$type'] ) ? $existing['$type'] : null;
+		if ( ! $is_sentinel && ! array_key_exists( Token_Type::get_type_key(), $leaf ) ) {
+			$existing  = $this->node_at( $effective, $path );
+			$node_type = is_array( $existing ) ? ( $existing[ Token_Type::get_type_key() ] ?? null ) : null;
 
-			if ( $type === null ) {
+			if ( ! is_string( $node_type ) ) {
 				return new WP_Error(
 					'rest_design_tokens_type_required',
 					__( 'A $type is required to create a new token.', 'kadence-blocks' ),
@@ -555,7 +556,7 @@ final class Documents_Controller extends Controller {
 				);
 			}
 
-			$leaf['$type'] = $type;
+			$leaf[ Token_Type::get_type_key() ] = $node_type;
 		}
 
 		$candidate = $this->mutator->set( $stored, $path, $leaf );
@@ -970,9 +971,9 @@ final class Documents_Controller extends Controller {
 	 * @return bool
 	 */
 	private function is_leaf_node( array $node ): bool {
-		return array_key_exists( '$value', $node )
-			|| array_key_exists( '$disabled', $node )
-			|| array_key_exists( '$type', $node );
+		return array_key_exists( Sentinels::get_value_key(), $node )
+			|| array_key_exists( Sentinels::get_disabled_key(), $node )
+			|| array_key_exists( Token_Type::get_type_key(), $node );
 	}
 
 	/**

@@ -4,6 +4,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Documents_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use ReflectionClass;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
@@ -274,8 +276,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'b' => [
-								'$type'  => 'color',
-								'$value' => '#bbbbbb',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
 							],
 						],
 					],
@@ -288,8 +290,8 @@ final class DocumentsControllerTest extends TestCase {
 
 		$document = $response->get_data()['document'];
 
-		$this->assertSame( '#aaaaaa', $document['primitive']['color']['a']['$value'] );
-		$this->assertSame( '#bbbbbb', $document['primitive']['color']['b']['$value'] );
+		$this->assertSame( '#aaaaaa', $document['primitive']['color']['a'][ Sentinels::get_value_key() ] );
+		$this->assertSame( '#bbbbbb', $document['primitive']['color']['b'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -306,8 +308,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'b' => [
-								'$type'  => 'color',
-								'$value' => '#bbbbbb',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
 							],
 						],
 					],
@@ -335,8 +337,8 @@ final class DocumentsControllerTest extends TestCase {
 						'color' => [
 							'brand' => [
 								'primary' => [
-									'$type'  => 'color',
-									'$value' => '#3182CE',
+									Token_Type::get_type_key()  => 'color',
+									Sentinels::get_value_key() => '#3182CE',
 								],
 							],
 						],
@@ -347,7 +349,7 @@ final class DocumentsControllerTest extends TestCase {
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$this->assertSame( WP_Http::CREATED, $response->get_status() );
-		$this->assertSame( '#3182CE', $response->get_data()['document']['primitive']['color']['brand']['primary']['$value'] );
+		$this->assertSame( '#3182CE', $response->get_data()['document']['primitive']['color']['brand']['primary'][ Sentinels::get_value_key() ] );
 	}
 
 	/**
@@ -367,8 +369,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'a' => [
-								'$type'  => 'color',
-								'$value' => '#000000',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#000000',
 							],
 						],
 					],
@@ -390,15 +392,15 @@ final class DocumentsControllerTest extends TestCase {
 
 		// The body omits $type; it is inferred from the stored token.
 		$response = $this->controller->set_token(
-			$this->token_request( 'POST', Token_Store::default_slug(), 'primitive.color.brand.primary', [ '$value' => '#3182CE' ] )
+			$this->token_request( 'POST', Token_Store::default_slug(), 'primitive.color.brand.primary', [ Sentinels::get_value_key() => '#3182CE' ] )
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 
 		$leaf = $response->get_data()['document']['primitive']['color']['brand']['primary'];
 
-		$this->assertSame( '#3182CE', $leaf['$value'] );
-		$this->assertSame( 'color', $leaf['$type'] );
+		$this->assertSame( '#3182CE', $leaf[ Sentinels::get_value_key() ] );
+		$this->assertSame( 'color', $leaf[ Token_Type::get_type_key() ] );
 	}
 
 	/**
@@ -407,11 +409,11 @@ final class DocumentsControllerTest extends TestCase {
 	public function testSetTokenStoresSentinelsVerbatim(): void {
 		// brand.accent is a baseline leaf nothing aliases, so disabling it cannot dangle another token.
 		$response = $this->controller->set_token(
-			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.accent', [ '$disabled' => true ] )
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.accent', [ Sentinels::get_disabled_key() => true ] )
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( [ '$disabled' => true ], $response->get_data()['document']['primitive']['color']['brand']['accent'] );
+		$this->assertSame( [ Sentinels::get_disabled_key() => true ], $response->get_data()['document']['primitive']['color']['brand']['accent'] );
 	}
 
 	/**
@@ -419,7 +421,7 @@ final class DocumentsControllerTest extends TestCase {
 	 */
 	public function testSetTokenRequiresATypeForANewToken(): void {
 		$response = $this->controller->set_token(
-			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand-new-xyz', [ '$value' => '#123456' ] )
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand-new-xyz', [ Sentinels::get_value_key() => '#123456' ] )
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -439,8 +441,8 @@ final class DocumentsControllerTest extends TestCase {
 				Token_Store::default_slug(),
 				'primitive.color.brand',
 				[
-					'$type'  => 'color',
-					'$value' => '#3182CE',
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '#3182CE',
 				] 
 			)
 		);
@@ -461,8 +463,8 @@ final class DocumentsControllerTest extends TestCase {
 				Token_Store::default_slug(),
 				'primitive.color.brand.primary.deep',
 				[
-					'$type'  => 'color',
-					'$value' => '#3182CE',
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '#3182CE',
 				] 
 			)
 		);
@@ -485,8 +487,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'brand' => [
-								'$type'  => 'color',
-								'$value' => '#3182CE',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#3182CE',
 							],
 						],
 					],
@@ -559,8 +561,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'bad' => [
-								'$type'  => 'bogus',
-								'$value' => '#ffffff',
+								Token_Type::get_type_key() => 'bogus',
+								Sentinels::get_value_key() => '#ffffff',
 							],
 						],
 					],
@@ -586,12 +588,12 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'cycle-a' => [
-								'$type'  => 'color',
-								'$value' => '{primitive.color.cycle-b}',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.cycle-b}',
 							],
 							'cycle-b' => [
-								'$type'  => 'color',
-								'$value' => '{primitive.color.cycle-a}',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.cycle-a}',
 							],
 						],
 					],
@@ -618,8 +620,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'x' => [
-								'$type'  => 'color',
-								'$value' => '{primitive.color.does-not-exist-xyz}',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.does-not-exist-xyz}',
 							],
 						],
 					],
@@ -644,8 +646,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'brand' => [
-								'$type'  => 'color',
-								'$value' => '#3182CE',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#3182CE',
 							],
 						],
 					],
@@ -706,8 +708,8 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'a' => [
-								'$type'  => 'color',
-								'$value' => '#bbbbbb',
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
 							],
 						],
 					],
