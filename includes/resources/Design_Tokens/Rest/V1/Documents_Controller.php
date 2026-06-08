@@ -33,8 +33,9 @@ use WP_REST_Server;
  * Token_Store::save_document() that bumps the version and fires the change action.
  *
  * A single token set ships under Token_Store::default_slug(); the slug parameter and the collection
- * are modelled now so the surface does not change when multi-set support arrives. Until it does,
- * writing any non-default slug is rejected with HTTP 422.
+ * are modelled now so the surface does not change when multi-set support arrives. Until then a
+ * non-default slug is rejected: reads return 404 (no such set), writes return 422 (multi-set authoring
+ * is unsupported).
  *
  * @since TBD
  */
