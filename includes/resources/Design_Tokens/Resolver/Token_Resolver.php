@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Excepti
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
  * Flattens the effective DTCG document into two ready-to-emit maps. The single place
@@ -156,7 +157,7 @@ final class Token_Resolver {
 			$path = $prefix . '.' . $key;
 
 			if ( array_key_exists( '$value', $child ) ) {
-				$type  = $child['$type'] ?? '';
+				$type  = $child[ Token_Type::get_type_key() ] ?? '';
 				$value = $this->resolve_value( $child['$value'], $document, [] );
 				$css   = $this->renderer->render( (string) $type, $value );
 
