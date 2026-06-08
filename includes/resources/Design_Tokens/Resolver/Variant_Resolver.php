@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
 /**
  * Flattens a block variant's token bindings to CSS-ready values — the variant counterpart of the
@@ -25,34 +26,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
  * @since TBD
  */
 final class Variant_Resolver {
-
-	/**
-	 * The `$extensions` path to the variants section. Inlined here because the shared vocabulary that
-	 * owns these spellings ships on a separate branch; centralise once it lands.
-	 *
-	 * @since TBD
-	 *
-	 * @var string[]
-	 */
-	private const VARIANTS_PATH = [ '$extensions', 'com.kadence.designTokens', 'variants' ];
-
-	/**
-	 * The key naming a block's default variant.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const DEFAULT_KEY = '$default';
-
-	/**
-	 * The key carrying a variant's property => value map.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const TOKENS_KEY = 'tokens';
 
 	/**
 	 * @var Baseline_Document The shipped baseline the variant definitions are read from.
@@ -248,7 +221,7 @@ final class Variant_Resolver {
 			throw Unknown_Variant_Exception::for_variant( $block, $variant );
 		}
 
-		$tokens = $block_variants[ $variant ][ self::TOKENS_KEY ] ?? [];
+		$tokens = $block_variants[ $variant ][ Extensions::get_tokens_key() ] ?? [];
 
 		return is_array( $tokens ) ? $tokens : [];
 	}
@@ -266,7 +239,7 @@ final class Variant_Resolver {
 	 * @return string
 	 */
 	public function default_variant( string $block ): string {
-		$default = $this->block_variants( $block )[ self::DEFAULT_KEY ] ?? '';
+		$default = $this->block_variants( $block )[ Extensions::get_default_key() ] ?? '';
 
 		if ( ! is_string( $default ) || $default === '' ) {
 			throw Unknown_Variant_Exception::no_default( $block );
@@ -306,7 +279,13 @@ final class Variant_Resolver {
 	private function variants_section(): array {
 		$node = $this->baseline->document();
 
-		foreach ( self::VARIANTS_PATH as $key ) {
+		$path = [
+			Extensions::get_extensions_key(),
+			Extensions::get_namespace(),
+			Extensions::get_section_variants(),
+		];
+
+		foreach ( $path as $key ) {
 			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) ) {
 				return [];
 			}
