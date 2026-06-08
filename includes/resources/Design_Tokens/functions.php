@@ -39,10 +39,7 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array{
-	 *     block: string,
-	 *     bindings?: array<string, array<string, mixed>>,
-	 * } $set See Variant_Set::from_array().
+	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Variant_Set::from_array().
 	 *
 	 * @return void
 	 */
