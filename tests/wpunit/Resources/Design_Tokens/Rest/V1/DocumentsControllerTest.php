@@ -530,7 +530,7 @@ final class DocumentsControllerTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
-		$this->assertSame( 'rest_design_tokens_multiset_unsupported', $response->get_error_code() );
+		$this->assertSame( 'rest_design_tokens_unsupported_slug', $response->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
 	}
 

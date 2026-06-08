@@ -849,7 +849,7 @@ final class Documents_Controller extends Controller {
 		}
 
 		return new WP_Error(
-			'rest_design_tokens_multiset_unsupported',
+			'rest_design_tokens_unsupported_slug',
 			__( 'Only the default design token set can be written in this version.', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::UNPROCESSABLE_ENTITY,
