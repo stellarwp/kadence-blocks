@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_V
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Shadow_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Typography_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
@@ -57,24 +58,6 @@ final class Dtcg_Validator {
 	 * @var string
 	 */
 	private const CONTEXT_OVERRIDES = 'overrides';
-
-	/**
-	 * The DTCG vendor-extension namespace this module owns.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const KADENCE_NAMESPACE = 'com.kadence.designTokens';
-
-	/**
-	 * The $extensions sections whose preset/variant `tokens` maps are value-checked in v1.
-	 *
-	 * @since TBD
-	 *
-	 * @var string[]
-	 */
-	private const EXTENSION_SECTIONS = [ 'foundationPresets', 'variants' ];
 
 	/**
 	 * Value validators keyed by $type.
@@ -302,7 +285,7 @@ final class Dtcg_Validator {
 	 */
 	private function validate_typed_leaf( array $leaf, string $path ): array {
 		$errors   = [];
-		$type     = $leaf['$type'] ?? null;
+		$type     = $leaf[ Token_Type::get_type_key() ] ?? null;
 		$has_type = is_string( $type ) && Token_Type::is_valid( $type );
 
 		if ( ! $has_type ) {
@@ -345,20 +328,20 @@ final class Dtcg_Validator {
 	 * @return Validation_Error[]
 	 */
 	private function validate_extensions( $extensions ): array {
-		if ( ! is_array( $extensions ) || ! isset( $extensions[ self::KADENCE_NAMESPACE ] ) ) {
+		if ( ! is_array( $extensions ) || ! isset( $extensions[ Extensions::get_namespace() ] ) ) {
 			return [];
 		}
 
-		$namespace = $extensions[ self::KADENCE_NAMESPACE ];
+		$namespace = $extensions[ Extensions::get_namespace() ];
 
 		if ( ! is_array( $namespace ) ) {
 			return [];
 		}
 
-		$base   = '$extensions.' . self::KADENCE_NAMESPACE;
+		$base   = Extensions::get_extensions_key() . '.' . Extensions::get_namespace();
 		$errors = [];
 
-		foreach ( self::EXTENSION_SECTIONS as $section ) {
+		foreach ( Extensions::get_sections() as $section ) {
 			if ( ! isset( $namespace[ $section ] ) || ! is_array( $namespace[ $section ] ) ) {
 				continue;
 			}
@@ -369,14 +352,21 @@ final class Dtcg_Validator {
 				}
 
 				foreach ( $preset_set as $preset_name => $preset ) {
+					$tokens_key = Extensions::get_tokens_key();
+
 					// $default names a preset; its structure is the variant data model's concern.
-					if ( $preset_name === '$default' || ! is_array( $preset ) || ! isset( $preset['tokens'] ) || ! is_array( $preset['tokens'] ) ) {
+					if (
+						$preset_name === Extensions::get_default_key()
+						|| ! is_array( $preset )
+						|| ! isset( $preset[ $tokens_key ] )
+						|| ! is_array( $preset[ $tokens_key ] )
+					) {
 						continue;
 					}
 
-					$prefix = sprintf( '%s.%s.%s.%s.tokens', $base, $section, $group, $preset_name );
+					$prefix = sprintf( '%s.%s.%s.%s.%s', $base, $section, $group, $preset_name, $tokens_key );
 
-					foreach ( $preset['tokens'] as $token_path => $value ) {
+					foreach ( $preset[ $tokens_key ] as $token_path => $value ) {
 						$error = $this->validate_extension_value( $value, $prefix . '.' . $token_path );
 
 						if ( $error !== null ) {
@@ -440,7 +430,7 @@ final class Dtcg_Validator {
 	private function is_leaf( array $node ): bool {
 		return array_key_exists( Sentinels::get_value_key(), $node )
 			|| array_key_exists( Sentinels::get_disabled_key(), $node )
-			|| array_key_exists( '$type', $node );
+			|| array_key_exists( Token_Type::get_type_key(), $node );
 	}
 
 	/**
