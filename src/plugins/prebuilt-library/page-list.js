@@ -56,7 +56,7 @@ function PageListNotice({ type }) {
 }
 function ProOnlyHeader({ launchWizard }) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
-	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
+	const data_key = !!window?.kadence_blocks_params?.proData?.hasApiKey;
 	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
 	return (
 		<div className="kb-patterns-banner-generate-notice">
@@ -227,7 +227,7 @@ function PageList({
 	const [rootScroll, setRootScroll] = useState();
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
-	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
+	const data_key = !!window?.kadence_blocks_params?.proData?.hasApiKey;
 	const onSelectBlockPattern = (info) => {
 		const pageSend = {
 			id: info.id,

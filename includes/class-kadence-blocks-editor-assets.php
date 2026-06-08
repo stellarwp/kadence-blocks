@@ -171,6 +171,28 @@ class Editor_Assets {
 		return $show;
 	}
 	/**
+	 * Build the non-sensitive license bundle exposed to the block editor.
+	 *
+	 * The raw license credentials (key, api_key, email, api_email, domain) are
+	 * intentionally NOT exposed to the client. Any feature that needs the key
+	 * routes through the server-side proxy (see Kadence_Blocks_Prebuilt_Library_REST
+	 * and class-kadence-blocks-prebuilt-library.php), which injects the stored key
+	 * behind the scenes. The frontend only needs derived state for UI gating.
+	 *
+	 * @since 3.7.6
+	 *
+	 * @return array{product: string, env: string, hasApiKey: bool}
+	 */
+	public function get_pro_data() {
+		$license_data = kadence_blocks_get_current_license_data();
+
+		return [
+			'product'   => ! empty( $license_data['product'] ) ? $license_data['product'] : '',
+			'env'       => ! empty( $license_data['env'] ) ? $license_data['env'] : '',
+			'hasApiKey' => ! empty( $license_data['key'] ),
+		];
+	}
+	/**
 	 * Enqueue block settings for backend editor.
 	 *
 	 * @since 3.7.0 added aiDisabledMessage
@@ -288,17 +310,8 @@ class Editor_Assets {
 			'xxl'  => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
 			'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
 		];
-		$pro_data      = kadence_blocks_get_current_license_data();
-		if ( ! empty( $pro_data['key'] ) ) {
-			$pro_data['api_key'] = $pro_data['key'];
-		}
-		if ( ! empty( $pro_data['email'] ) ) {
-			$pro_data['api_email'] = $pro_data['email'];
-		}
+		$pro_data      = $this->get_pro_data();
 		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
-		if ( empty( $pro_data['domain'] ) ) {
-			$pro_data['domain'] = get_license_domain();
-		}
 		$font_sizes       = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 		$subscribed       = class_exists( 'Kadence_Blocks_Pro' ) || class_exists( 'KadenceWP\CreativeKit' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 		$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -323,6 +336,7 @@ class Editor_Assets {
 			[
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce'             => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
+				'restNonce'              => wp_create_nonce( 'wp_rest' ),
 				'ajax_loader'            => KADENCE_BLOCKS_URL . 'includes/assets/images/ajax-loader.gif',
 				'site_name'              => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'                  => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),

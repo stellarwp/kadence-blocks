@@ -37,7 +37,6 @@ export const AIText = {
 	edit({ activeAttributes, isActive, value, onChange, contentRef }) {
 		const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 		const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
-		const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 		const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
 		const selectedBlock = useSelect((select) => {
 			return select('core/block-editor').getSelectedBlock();
