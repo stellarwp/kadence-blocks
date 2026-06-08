@@ -21,6 +21,7 @@
         "algoliasearch",
         "bunfig",
         "bunx",
+        "centralise",
         "codecept",
         "codeception",
 		"Consolas",
@@ -28,6 +29,7 @@
         "distignore",
         "DTCG",
         "dotlottie",
+        "formalises",
         "gulpfile",
         "hcaptcha",
 		"Inno",
@@ -46,6 +48,8 @@
         "progressbar",
         "puprc",
         "recaptcha",
+        "recognised",
+        "retargets",
 		"rowlayout",
         "scroller",
         "slic",
@@ -53,6 +57,7 @@
         "splide",
         "splidejs",
         "stellarwp",
+        "unrecognised",
         "wpdb",
         "wpunit"
     ]
