@@ -267,7 +267,20 @@ final class DocumentsControllerTest extends TestCase {
 
 		// POST and PATCH share patch_item; the body's new path merges in beside the stored one.
 		$response = $this->controller->patch_item(
-			$this->write_request( 'POST', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'b' => [ '$type' => 'color', '$value' => '#bbbbbb' ] ] ] ] )
+			$this->write_request(
+				'POST',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								'$type'  => 'color',
+								'$value' => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -286,7 +299,20 @@ final class DocumentsControllerTest extends TestCase {
 		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
 
 		$response = $this->controller->update_item(
-			$this->write_request( 'PUT', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'b' => [ '$type' => 'color', '$value' => '#bbbbbb' ] ] ] ] )
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								'$type'  => 'color',
+								'$value' => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$document = $response->get_data()['document'];
@@ -301,7 +327,22 @@ final class DocumentsControllerTest extends TestCase {
 	 */
 	public function testCollectionPostCreatesTheDefaultSetWith201(): void {
 		$response = $this->controller->create_item(
-			$this->write_request( 'POST', '', [ 'primitive' => [ 'color' => [ 'brand' => [ 'primary' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ] ] ] )
+			$this->write_request(
+				'POST',
+				'',
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									'$type'  => 'color',
+									'$value' => '#3182CE',
+								],
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -319,7 +360,20 @@ final class DocumentsControllerTest extends TestCase {
 		);
 
 		$response = $this->controller->patch_item(
-			$this->write_request( 'POST', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'a' => [ '$type' => 'color', '$value' => '#000000' ] ] ] ] )
+			$this->write_request(
+				'POST',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'a' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$document = $response->get_data()['document'];
@@ -380,7 +434,15 @@ final class DocumentsControllerTest extends TestCase {
 		// "primitive.color.brand" is a baseline group (primary/secondary/accent); writing one leaf there
 		// would orphan every token under it, so it is rejected with a precise error.
 		$response = $this->controller->set_token(
-			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand', [ '$type' => 'color', '$value' => '#3182CE' ] )
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand',
+				[
+					'$type'  => 'color',
+					'$value' => '#3182CE',
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -394,7 +456,15 @@ final class DocumentsControllerTest extends TestCase {
 	public function testSetTokenRejectsNestingUnderAnExistingToken(): void {
 		// "primitive.color.brand.primary" is a baseline leaf; a token cannot be written below it.
 		$response = $this->controller->set_token(
-			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.primary.deep', [ '$type' => 'color', '$value' => '#3182CE' ] )
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand.primary.deep',
+				[
+					'$type'  => 'color',
+					'$value' => '#3182CE',
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -408,7 +478,20 @@ final class DocumentsControllerTest extends TestCase {
 		// Replacing the brand group with a single leaf removes brand.primary, which baseline semantic
 		// tokens alias. The dry-run resolver rejects the unresolvable result before it can be stored.
 		$response = $this->controller->update_item(
-			$this->write_request( 'PUT', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'brand' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ] ] )
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -469,7 +552,20 @@ final class DocumentsControllerTest extends TestCase {
 	 */
 	public function testWriteReturns422OnInvalidDtcg(): void {
 		$response = $this->controller->update_item(
-			$this->write_request( 'PUT', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'bad' => [ '$type' => 'bogus', '$value' => '#ffffff' ] ] ] ] )
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'bad' => [
+								'$type'  => 'bogus',
+								'$value' => '#ffffff',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -489,8 +585,14 @@ final class DocumentsControllerTest extends TestCase {
 				[
 					'primitive' => [
 						'color' => [
-							'cycle-a' => [ '$type' => 'color', '$value' => '{primitive.color.cycle-b}' ],
-							'cycle-b' => [ '$type' => 'color', '$value' => '{primitive.color.cycle-a}' ],
+							'cycle-a' => [
+								'$type'  => 'color',
+								'$value' => '{primitive.color.cycle-b}',
+							],
+							'cycle-b' => [
+								'$type'  => 'color',
+								'$value' => '{primitive.color.cycle-a}',
+							],
 						],
 					],
 				]
@@ -512,7 +614,16 @@ final class DocumentsControllerTest extends TestCase {
 			$this->write_request(
 				'PUT',
 				Token_Store::default_slug(),
-				[ 'primitive' => [ 'color' => [ 'x' => [ '$type' => 'color', '$value' => '{primitive.color.does-not-exist-xyz}' ] ] ] ]
+				[
+					'primitive' => [
+						'color' => [
+							'x' => [
+								'$type'  => 'color',
+								'$value' => '{primitive.color.does-not-exist-xyz}',
+							],
+						],
+					],
+				]
 			)
 		);
 
@@ -526,7 +637,20 @@ final class DocumentsControllerTest extends TestCase {
 	 */
 	public function testCollectionPostRejectsANonDefaultSlug(): void {
 		$response = $this->controller->create_item(
-			$this->write_request( 'POST', 'other-brand', [ 'primitive' => [ 'color' => [ 'brand' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ] ] )
+			$this->write_request(
+				'POST',
+				'other-brand',
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $response );
@@ -575,7 +699,20 @@ final class DocumentsControllerTest extends TestCase {
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
 
 		$this->controller->update_item(
-			$this->write_request( 'PUT', Token_Store::default_slug(), [ 'primitive' => [ 'color' => [ 'a' => [ '$type' => 'color', '$value' => '#bbbbbb' ] ] ] ] )
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'a' => [
+								'$type'  => 'color',
+								'$value' => '#bbbbbb',
+							],
+						],
+					],
+				] 
+			)
 		);
 
 		$this->assertNotSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );

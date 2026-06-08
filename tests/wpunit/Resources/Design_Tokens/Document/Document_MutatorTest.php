@@ -32,7 +32,10 @@ final class Document_MutatorTest extends TestCase {
 		$current = [
 			'primitive' => [
 				'color' => [
-					'a' => [ '$type' => 'color', '$value' => '#aaaaaa' ],
+					'a' => [
+						'$type'  => 'color',
+						'$value' => '#aaaaaa',
+					],
 				],
 			],
 		];
@@ -42,7 +45,10 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'b' => [ '$type' => 'color', '$value' => '#bbbbbb' ],
+						'b' => [
+							'$type'  => 'color',
+							'$value' => '#bbbbbb',
+						],
 					],
 				],
 			]
@@ -59,7 +65,11 @@ final class Document_MutatorTest extends TestCase {
 		$current = [
 			'primitive' => [
 				'color' => [
-					'a' => [ '$type' => 'color', '$value' => '#aaaaaa', '$description' => 'keep?' ],
+					'a' => [
+						'$type'        => 'color',
+						'$value'       => '#aaaaaa',
+						'$description' => 'keep?',
+					],
 				],
 			],
 		];
@@ -69,7 +79,10 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'a' => [ '$type' => 'color', '$value' => '#000000' ],
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '#000000',
+						],
 					],
 				],
 			]
@@ -87,7 +100,10 @@ final class Document_MutatorTest extends TestCase {
 		$current = [
 			'primitive' => [
 				'color' => [
-					'a' => [ '$type' => 'color', '$value' => '#aaaaaa' ],
+					'a' => [
+						'$type'  => 'color',
+						'$value' => '#aaaaaa',
+					],
 				],
 			],
 		];
@@ -114,7 +130,10 @@ final class Document_MutatorTest extends TestCase {
 		$current = [
 			'primitive'   => [
 				'color' => [
-					'a' => [ '$type' => 'color', '$value' => '#aaaaaa' ],
+					'a' => [
+						'$type'  => 'color',
+						'$value' => '#aaaaaa',
+					],
 				],
 			],
 			'$extensions' => [
@@ -127,7 +146,10 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'a' => [ '$type' => 'color', '$value' => '#000000' ],
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '#000000',
+						],
 					],
 				],
 			]
@@ -140,7 +162,14 @@ final class Document_MutatorTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetCreatesIntermediateGroups(): void {
-		$document = $this->mutator->set( [], 'primitive.color.brand', [ '$type' => 'color', '$value' => '#3182CE' ] );
+		$document = $this->mutator->set(
+			[],
+			'primitive.color.brand',
+			[
+				'$type'  => 'color',
+				'$value' => '#3182CE',
+			] 
+		);
 
 		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
 	}
@@ -150,9 +179,21 @@ final class Document_MutatorTest extends TestCase {
 	 */
 	public function testSetReplacesAnExistingLeaf(): void {
 		$document = $this->mutator->set(
-			[ 'primitive' => [ 'color' => [ 'brand' => [ '$type' => 'color', '$value' => '#000000' ] ] ] ],
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'$type'  => 'color',
+							'$value' => '#000000',
+						],
+					],
+				],
+			],
 			'primitive.color.brand',
-			[ '$type' => 'color', '$value' => '#3182CE' ]
+			[
+				'$type'  => 'color',
+				'$value' => '#3182CE',
+			]
 		);
 
 		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
@@ -164,9 +205,19 @@ final class Document_MutatorTest extends TestCase {
 	public function testSetReplacesALeafInThePathWithAGroup(): void {
 		// "primitive.color" starts as a leaf; setting a token below it must replace it with a group.
 		$document = $this->mutator->set(
-			[ 'primitive' => [ 'color' => [ '$type' => 'color', '$value' => '#000000' ] ] ],
+			[
+				'primitive' => [
+					'color' => [
+						'$type'  => 'color',
+						'$value' => '#000000',
+					],
+				],
+			],
 			'primitive.color.brand',
-			[ '$type' => 'color', '$value' => '#3182CE' ]
+			[
+				'$type'  => 'color',
+				'$value' => '#3182CE',
+			]
 		);
 
 		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['$value'] );
@@ -178,7 +229,16 @@ final class Document_MutatorTest extends TestCase {
 	 */
 	public function testRemoveDeletesTheLeafAndPrunesEmptyAncestors(): void {
 		$document = $this->mutator->remove(
-			[ 'primitive' => [ 'color' => [ 'brand' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ] ],
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'$type'  => 'color',
+							'$value' => '#3182CE',
+						],
+					],
+				],
+			],
 			'primitive.color.brand'
 		);
 
@@ -194,8 +254,14 @@ final class Document_MutatorTest extends TestCase {
 			[
 				'primitive' => [
 					'color' => [
-						'brand' => [ '$type' => 'color', '$value' => '#3182CE' ],
-						'accent' => [ '$type' => 'color', '$value' => '#dd0000' ],
+						'brand'  => [
+							'$type'  => 'color',
+							'$value' => '#3182CE',
+						],
+						'accent' => [
+							'$type'  => 'color',
+							'$value' => '#dd0000',
+						],
 					],
 				],
 			],
@@ -210,7 +276,16 @@ final class Document_MutatorTest extends TestCase {
 	 * @return void
 	 */
 	public function testRemoveIsANoOpWhenThePathIsAbsent(): void {
-		$current = [ 'primitive' => [ 'color' => [ 'brand' => [ '$type' => 'color', '$value' => '#3182CE' ] ] ] ];
+		$current = [
+			'primitive' => [
+				'color' => [
+					'brand' => [
+						'$type'  => 'color',
+						'$value' => '#3182CE',
+					],
+				],
+			],
+		];
 
 		$document = $this->mutator->remove( $current, 'primitive.color.missing' );
 
