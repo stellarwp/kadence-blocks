@@ -526,8 +526,12 @@ final class Documents_Controller extends Controller {
 			$leaf = [];
 		}
 
-		$stored    = $this->read_stored_document( $slug );
-		$effective = $this->effective->build( $stored );
+		$stored = $this->read_stored_document( $slug );
+
+		// Build the inspection view with disabled tokens kept (apply_disabled = false): authoring over a
+		// token that an override currently disables must still read its baseline $type and group shape,
+		// which the rendering view would have stripped away.
+		$effective = $this->effective->build( $stored, false );
 
 		// Refuse to write a single token over a token group or to nest one under another token. Both would
 		// silently restructure the document and orphan every token under the addressed path; the
@@ -568,7 +572,9 @@ final class Documents_Controller extends Controller {
 	 * Remove a single token override by dot-path (DELETE /documents/{slug}/tokens/{path}).
 	 *
 	 * Dropping the override reverts that token to its baseline value. Idempotent: when nothing is stored
-	 * at the path, the set is returned unchanged without a write.
+	 * at the path, the set is returned unchanged without a write. The resulting document runs the same
+	 * write pipeline as every other write, so a delete that would leave another override aliasing the
+	 * removed token is rejected (HTTP 422) before commit rather than persisting a dangling alias.
 	 *
 	 * @since TBD
 	 *
@@ -593,7 +599,7 @@ final class Documents_Controller extends Controller {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 		}
 
-		return $this->persist( $candidate === [] ? '' : (string) wp_json_encode( $candidate ), $slug, '', WP_Http::OK );
+		return $this->validate_and_save( $candidate, $slug, '' );
 	}
 
 	/**

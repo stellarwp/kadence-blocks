@@ -157,9 +157,19 @@ final class Mutator {
 	}
 
 	/**
-	 * Whether a node is a token leaf — a concrete value, a "$value": null reset, or a "$disabled" leaf —
-	 * rather than a group of child tokens. Detected via the Sentinels keys so the rule stays in lockstep
-	 * with the validator and the Resolver.
+	 * Whether a node is a token leaf to replace wholesale, rather than a group of child tokens to
+	 * descend into.
+	 *
+	 * Keyed on the markers a stored override leaf can carry:
+	 *
+	 *   - "$value": a concrete value or a reset, e.g. { "$type": "color", "$value": "#3182CE" } or
+	 *     { "$value": null }. Like the Resolver's effective merge, such a node is a leaf and is never
+	 *     field-merged.
+	 *   - "$disabled": a disable sentinel, e.g. { "$disabled": true }. Treated as a leaf here because
+	 *     these transforms store sentinels verbatim for the Resolver to interpret at read time.
+	 *
+	 * A "$type"-only node, e.g. { "$type": "color" }, is deliberately NOT a leaf: it is invalid DTCG the
+	 * validator rejects downstream, so it is descended into as a group rather than replaced.
 	 *
 	 * @since TBD
 	 *

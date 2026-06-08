@@ -432,6 +432,26 @@ final class DocumentsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testSetTokenInfersTypeForADisabledBaselineToken(): void {
+		// brand.accent is disabled in the overrides; re-enabling it with a bare $value (no $type) must
+		// still infer the type from the baseline token the disable was hiding, not reject it as new.
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"accent":{"$disabled":true}}}}}' );
+
+		$response = $this->controller->set_token(
+			$this->token_request( 'PUT', Token_Store::default_slug(), 'primitive.color.brand.accent', [ Sentinels::get_value_key() => '#3182CE' ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$leaf = $response->get_data()['document']['primitive']['color']['brand']['accent'];
+
+		$this->assertSame( '#3182CE', $leaf[ Sentinels::get_value_key() ] );
+		$this->assertSame( 'color', $leaf[ Token_Type::get_type_key() ] );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testSetTokenRejectsAGroupPath(): void {
 		// "primitive.color.brand" is a baseline group (primary/secondary/accent); writing one leaf there
 		// would orphan every token under it, so it is rejected with a precise error.
@@ -532,6 +552,29 @@ final class DocumentsControllerTest extends TestCase {
 		$this->assertSame( WP_Http::OK, $response->get_status() );
 		// Nothing was removed, so no write happened and the version is unchanged.
 		$this->assertSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenThatDanglesAnAliasReturns422AndPersistsNothing(): void {
+		// "ref" aliases "src"; deleting "src" would leave "ref" dangling. The same dry-run that gates the
+		// bulk writes must reject the delete before commit rather than persist an unresolvable document.
+		$stored = '{"primitive":{"color":{"src":{"$type":"color","$value":"#123456"},'
+			. '"ref":{"$type":"color","$value":"{primitive.color.src}"}}}}';
+		$this->store->save_document( $stored );
+
+		$before = $this->store->get_document( Token_Store::default_slug() );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.src' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		// The dry-run rejected the delete before commit, so the override survives untouched.
+		$this->assertSame( $before, $this->store->get_document( Token_Store::default_slug() ) );
 	}
 
 	/**
