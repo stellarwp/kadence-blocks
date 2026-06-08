@@ -19,6 +19,7 @@ final class Design_Tokens_Provider extends Provider {
 		Database\Provider::class,
 		Schema\Provider::class,
 		Resolver\Provider::class,
+		Foundation_Presets\Provider::class,
 		Rest\Provider::class,
 	];
 

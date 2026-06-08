@@ -65,6 +65,16 @@ final class Token_Type {
 	private const TYPOGRAPHY = 'typography';
 
 	/**
+	 * The DTCG leaf key whose value is one of the $types above. Single-sourced here so the validator,
+	 * resolver and projectors never hardcode the spelling.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KEY = '$type';
+
+	/**
 	 * The fontWeight composite sub-field kind. Not a registrable $type — kept distinct from the $type
 	 * constants so dispatch never confuses "a typography token" with "the fontWeight field inside one".
 	 *
@@ -171,6 +181,17 @@ final class Token_Type {
 	 */
 	public static function composite_fields( string $type ): array {
 		return self::COMPOSITE_FIELDS[ $type ] ?? [];
+	}
+
+	/**
+	 * The DTCG leaf key that carries a token's $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_key(): string {
+		return self::KEY;
 	}
 
 	/**
