@@ -815,9 +815,9 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a variant map whose entries are not well-formed: each named variant must be an object, its
-	 * label (when present) a string and its tokens (when present) an object. The alias-or-literal grammar of
-	 * the token values is left to the DTCG validator.
+	 * Reject a variant map whose entries are not well-formed: each named variant must have a non-empty
+	 * slug and be an object, its label (when present) a string and its tokens (when present) an object. The
+	 * alias-or-literal grammar of the token values is left to the DTCG validator.
 	 *
 	 * @since TBD
 	 *
@@ -831,6 +831,19 @@ final class Variants_Controller extends Controller {
 			// $default and any other "$"-prefixed metadata key is not a named variant.
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
+			}
+
+			// An empty slug would create a variant keyed by "" — a malformed node, the variant analogue of
+			// the empty dot-path segment the documents controller rejects. Refuse it before it is stored.
+			if ( (string) $slug === '' ) {
+				return new WP_Error(
+					'rest_design_tokens_invalid',
+					__( 'A variant slug cannot be empty.', 'kadence-blocks' ),
+					[
+						'status' => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'  => $block,
+					]
+				);
 			}
 
 			$label_key  = Extensions::get_label_key();

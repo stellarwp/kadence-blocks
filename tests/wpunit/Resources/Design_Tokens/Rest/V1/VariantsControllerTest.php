@@ -400,6 +400,22 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testAnEmptyVariantSlugIsRejected(): void {
+		// An empty key in the variants map would store a variant node keyed by "" — reject it, mirroring the
+		// documents controller's empty dot-path-segment guard.
+		$result = $this->controller->update_item(
+			$this->block_request( 'PUT', self::BUTTON, [ 'variants' => [ '' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ] ] )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testWritesAreDeniedToUsersWithoutTheCapability(): void {
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
 
