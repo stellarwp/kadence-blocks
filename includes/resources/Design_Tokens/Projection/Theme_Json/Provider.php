@@ -23,9 +23,10 @@ final class Provider extends Provider_Contract {
 
 		// Both layers: default (so user/theme can still override) and theme (so presets read as
 		// theme-origin in the Site Editor). KB's existing palette injection runs at priority 999 on
-		// wp_theme_json_data_theme; we run at 1000 so our merge_existing() sees and preserves it.
+		// wp_theme_json_data_theme; we run at 1010 so our merge_existing() sees and preserves it, while
+		// leaving a buffer (1000-1009) for another consumer that needs to inject just before us.
 		$callback = $this->container->callback( Projector::class, 'inject' );
-		add_filter( 'wp_theme_json_data_default', $callback, 1000 );
-		add_filter( 'wp_theme_json_data_theme', $callback, 1000 );
+		add_filter( 'wp_theme_json_data_default', $callback, 1010 );
+		add_filter( 'wp_theme_json_data_theme', $callback, 1010 );
 	}
 }

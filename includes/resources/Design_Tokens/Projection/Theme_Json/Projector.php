@@ -201,7 +201,7 @@ final class Projector {
 	 * @param array<string, mixed> $tree The tree to read from.
 	 * @param string[]             $path The path segments.
 	 *
-	 * @return mixed
+	 * @return mixed|null
 	 */
 	private function get_path( array $tree, array $path ) {
 		$cursor = $tree;
