@@ -725,6 +725,20 @@ final class DocumentsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testValidateTokenPathRejectsEmptySegments(): void {
+		// The path pattern permits runs of dots and a trailing dot, which explode() turns into empty
+		// segments; each must be rejected so no token is ever keyed by an empty string.
+		foreach ( [ 'primitive..brand', 'primitive.color.', 'primitive.color..accent' ] as $path ) {
+			$result = $this->controller->validate_token_path( $path, new WP_REST_Request( 'PUT' ), 'path' );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "Path '$path' should be rejected." );
+			$this->assertSame( 'rest_invalid_param', $result->get_error_code() );
+		}
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testWritesAreDeniedToUsersWithoutTheCapability(): void {
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
 

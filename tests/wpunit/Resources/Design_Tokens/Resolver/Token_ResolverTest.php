@@ -267,10 +267,15 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	public function testResolvePopulatesObjectCacheOnColdPath(): void {
-		/** @var Token_Resolver $resolver */
-		$resolver = $this->container->get( Token_Resolver::class );
 		/** @var Token_Store $store */
 		$store = $this->container->get( Token_Store::class );
+		// Fresh instance so the L1 memo is empty — the container singleton may already be warm from another
+		// test, in which case resolve() returns the memo and never reaches the L2 write this asserts.
+		$resolver = new Token_Resolver(
+			$store,
+			$this->container->get( Effective_Document::class ),
+			$this->container->get( Css_Renderer::class )
+		);
 
 		$version   = $store->get_version();
 		$cache_key = 'resolved_tokens_default_' . $version;

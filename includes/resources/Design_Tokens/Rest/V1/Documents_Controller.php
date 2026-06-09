@@ -605,8 +605,9 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Validate that the token dot-path begins with a real token layer and names a token below it.
 	 *
-	 * Used as the path argument's validate_callback so a path into "$extensions" (or any non-layer root,
-	 * or a bare layer with no token) is rejected as a 400 before a handler runs.
+	 * Used as the path argument's validate_callback so a path into "$extensions" (any non-layer root), a
+	 * bare layer with no token, or one with an empty segment (the pattern allows runs of dots, e.g.
+	 * "primitive..brand" or a trailing dot) is rejected as a 400 before a handler runs.
 	 *
 	 * @since TBD
 	 *
@@ -619,12 +620,16 @@ final class Documents_Controller extends Controller {
 	public function validate_token_path( $value, $request, $key ) {
 		$segments = explode( '.', Cast::to_string( $value ) );
 
-		if ( count( $segments ) < 2 || ! in_array( $segments[0], Layers::token_layers(), true ) ) {
+		// An empty segment ("primitive..brand", "primitive.color.") would create a node keyed by "" and a
+		// malformed dot-path/CSS var, so reject it alongside a too-short path or a non-layer first segment.
+		$has_empty_segment = in_array( '', $segments, true );
+
+		if ( count( $segments ) < 2 || $has_empty_segment || ! in_array( $segments[0], Layers::token_layers(), true ) ) {
 			return new WP_Error(
 				'rest_invalid_param',
 				sprintf(
 					/* translators: %s: comma-separated list of valid token layers. */
-					__( 'The token path must begin with a valid layer (%s) and name a token below it.', 'kadence-blocks' ),
+					__( 'The token path must begin with a valid layer (%s) and name a token below it, with no empty segments.', 'kadence-blocks' ),
 					implode( ', ', Layers::token_layers() )
 				),
 				[ 'status' => WP_Http::BAD_REQUEST ]

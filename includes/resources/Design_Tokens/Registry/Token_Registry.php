@@ -270,4 +270,15 @@ final class Token_Registry {
 	public function deactivate(): void {
 		$this->active = false;
 	}
+
+	/**
+	 * Re-enable projection after a previous deactivate() call.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function activate(): void {
+		$this->active = true;
+	}
 }
