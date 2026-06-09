@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -29,14 +30,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 final class Css_Builder {
 
 	/**
-	 * The root scope for both declaration blocks. :where() contributes zero specificity, so neither
-	 * selector weighs more than a bare :root. Never !important.
+	 * The root scope for both declaration blocks, defined once in {@see Scope::ROOT}.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public const SCOPE = ':root,:root:where(.kb-tokens)';
+	public const SCOPE = Scope::ROOT;
 
 	/**
 	 * The projection key a token declares to opt into the --wp--preset--* bridge.
