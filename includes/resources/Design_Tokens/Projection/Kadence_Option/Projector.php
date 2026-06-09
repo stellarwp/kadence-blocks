@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette .
+// cspell:ignore palette autoloaded .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
@@ -160,7 +160,9 @@ final class Projector {
 			$this->sync_theme_palette( $entries );
 		}
 
-		update_option( self::SYNC_MARKER_OPTION, $signature, false );
+		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not
+		// cost a dedicated query. It is a tiny "{version}:{theme-bit}" string.
+		update_option( self::SYNC_MARKER_OPTION, $signature, true );
 	}
 
 	/**
@@ -177,7 +179,11 @@ final class Projector {
 		$decoded = $this->decode( (string) get_option( self::KB_COLORS_OPTION, '' ) );
 		$merged  = $this->builder->merge_kb_colors( $decoded, $entries );
 
-		update_option( self::KB_COLORS_OPTION, (string) wp_json_encode( $merged ), false );
+		// Autoloaded: this option is read on every front-end request — load_color_palette() on
+		// after_setup_theme and load_color_palette_theme_json() on wp_theme_json_data_theme both
+		// get_option() it. On an existing option update_option ignores this flag (preserving KB's own
+		// setting, normally autoloaded); it only takes effect when WE create the option first.
+		update_option( self::KB_COLORS_OPTION, (string) wp_json_encode( $merged ), true );
 	}
 
 	/**
@@ -199,7 +205,10 @@ final class Projector {
 		$decoded = $this->decode( (string) $raw );
 		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
 
-		update_option( self::THEME_PALETTE_OPTION, (string) wp_json_encode( $merged ), false );
+		// This option always already exists here (proved by the sentinel probe), so update_option ignores
+		// the autoload arg and leaves the theme's own setting untouched. Pass null to say so explicitly
+		// rather than implying we would set it to "no".
+		update_option( self::THEME_PALETTE_OPTION, (string) wp_json_encode( $merged ), null );
 	}
 
 	/**
