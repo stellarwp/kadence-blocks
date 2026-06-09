@@ -270,6 +270,88 @@ All tests live under `tests/` following existing project conventions.
 
 ---
 
+## JavaScript / TypeScript Architecture
+
+The existing plugin JS is pure ES6+ with Babel and `@wordpress/scripts` (webpack). No TypeScript exists anywhere in the codebase. Concierge is a clean slate — the recommendation is to **introduce TypeScript here only**, without migrating existing code.
+
+### Why TypeScript fits here
+
+The PHP contracts (`Check_Result`, `Report`, REST response shapes) have well-defined structure. Mirroring them as TS interfaces catches PHP↔JS mismatches at compile time and gives full autocomplete on API responses.
+
+### Enabling TypeScript
+
+`@wordpress/scripts` supports TypeScript out of the box — one config file and a webpack entry is all that's needed:
+
+```json
+// includes/resources/Concierge/assets/js/tsconfig.json
+{
+  "extends": "@wordpress/scripts/config/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": { "@concierge/*": ["./*"] }
+  }
+}
+```
+
+```js
+// webpack.config.js — add entry
+'kadence-concierge': './includes/resources/Concierge/assets/js/index.ts',
+```
+
+### JS Directory Structure
+
+Mirrors the PHP module layout:
+
+```
+Concierge/assets/js/
+├── index.ts                      # entry point
+├── types/
+│   ├── check.ts                  # CheckResult, Report, CheckStatus
+│   └── api.ts                    # REST request/response shapes
+├── api/
+│   └── concierge-api.ts          # typed wrappers around @wordpress/api-fetch
+├── components/
+│   ├── ConciergePanel.tsx        # main sidebar/panel component
+│   ├── CheckList.tsx             # renders a Report
+│   └── CheckItem.tsx             # single CheckResult row
+└── store/
+    └── index.ts                  # @wordpress/data store for results
+```
+
+### Shared Types
+
+PHP contract shapes map directly to TS interfaces:
+
+```ts
+// types/check.ts
+export type CheckStatus = 'pass' | 'warn' | 'fail';
+
+export interface CheckResultItem {
+  label: string;
+  url?: string;
+}
+
+export interface CheckResult {
+  check_id: string;
+  status: CheckStatus;
+  message: string;
+  items: CheckResultItem[];
+}
+
+export interface Report {
+  category: string;
+  results: CheckResult[];
+  has_failures: boolean;
+}
+```
+
+### Boundary Rule
+
+TypeScript stays inside `Concierge/assets/js/`. The rest of the plugin (`src/blocks/`, Optimizer JS) remains plain JS. Mixing TS and JS in the same webpack build is supported by `@wordpress/scripts` — no conflict.
+
+---
+
 ## Open Questions
 
 1. Should check results be persisted (e.g. cached in a transient or custom table) so `Results_Controller` can serve the last run without re-running? Or always run on demand?
