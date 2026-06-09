@@ -1,0 +1,1 @@
+:root,:root:where(.kb-tokens){--kb-token--semantic--color--button-bg:#3182CE;}:root,:root:where(.kb-tokens){--wp--preset--color--button-bg:var(--kb-token--semantic--color--button-bg);}

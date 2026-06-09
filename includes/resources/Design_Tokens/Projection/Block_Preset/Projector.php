@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projectors;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
@@ -23,7 +23,7 @@ use RuntimeException;
  *
  * @since TBD
  */
-final class Block_Preset_Projector {
+final class Projector {
 
 	/**
 	 * @var Token_Registry The registry the block's variant set (and its bindings) is read from.

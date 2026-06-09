@@ -424,10 +424,19 @@ class Kadence_Blocks_Abstract_Block {
 		 *
 		 * @since TBD
 		 *
-		 * @param array  $default_attributes The block's registration defaults, keyed by attribute name.
-		 * @param string $block_name         The full block name, e.g. "kadence/advancedbtn".
+		 * @param array<string, mixed> $default_attributes The block's registration defaults: attribute
+		 *                                                 name => default value.
+		 * @param string               $block_name         The full block name, e.g. "kadence/advancedbtn".
+		 *
+		 * @return array<string, mixed> The default attributes, after any module's overlay.
 		 */
-		$default_attributes = apply_filters( 'kadence_blocks_block_default_attributes', $default_attributes, 'kadence/' . $this->block_name );
+		$filtered_attributes = apply_filters( 'kadence_blocks_block_default_attributes', $default_attributes, 'kadence/' . $this->block_name );
+
+		// A third-party callback could return a non-array; ignore it and keep KB's own defaults rather than
+		// letting a bad value corrupt the merge below.
+		if ( is_array( $filtered_attributes ) ) {
+			$default_attributes = $filtered_attributes;
+		}
 
 		$merged_attributes = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 

@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projectors;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projectors\Block_Preset_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use Tests\Support\Classes\TestCase;
@@ -14,7 +14,7 @@ use Tests\Support\Classes\TestCase;
  * Button wiring, SOFT-3406). Values come from the baseline; this proves the property -> attribute mapping
  * and the overlay semantics.
  */
-final class Block_Preset_ProjectorTest extends TestCase {
+final class ProjectorTest extends TestCase {
 
 	private const BUTTON = 'kadence/advancedbtn';
 
@@ -40,14 +40,19 @@ final class Block_Preset_ProjectorTest extends TestCase {
 	public function testThePresetWinsOverBlockJsonDefaultsButLeavesOthersIntact(): void {
 		$defaults = $this->projector( $this->button_set() )->add_preset_defaults(
 			[
-				'padding'    => '10px',          // untouched by the preset.
-				'background' => 'rebeccapurple', // overridden by the preset.
+				'padding'    => '10px',          // not bound by the preset: must survive untouched.
+				'background' => 'rebeccapurple', // bound to button-bg: the preset must overwrite it.
 			],
 			self::BUTTON
 		);
 
-		$this->assertSame( '10px', $defaults['padding'] );
+		// The preset overwrites a default it binds...
 		$this->assertSame( '#3182CE', $defaults['background'] );
+		// ...adds a binding the incoming defaults did not carry...
+		$this->assertSame( '#ffffff', $defaults['color'] );
+		// ...and leaves an unrelated default untouched, proving an overlay merge rather than a wholesale
+		// replace (a buggy projector returning only its preset would drop "padding" here).
+		$this->assertSame( '10px', $defaults['padding'] );
 	}
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
@@ -90,15 +95,15 @@ final class Block_Preset_ProjectorTest extends TestCase {
 	}
 
 	public function testTheFilterIsRegistered(): void {
-		// The Projectors\Provider wires the projector into KB's render path on boot.
+		// The Projection\Block_Preset\Provider wires the projector into KB's render path on boot.
 		$this->assertNotFalse( has_filter( 'kadence_blocks_block_default_attributes' ) );
 	}
 
 	/**
 	 * Build the projector with a given registry and the real (baseline-backed) variant resolver.
 	 */
-	private function projector( Token_Registry $registry ): Block_Preset_Projector {
-		return new Block_Preset_Projector( $registry, $this->resolver );
+	private function projector( Token_Registry $registry ): Projector {
+		return new Projector( $registry, $this->resolver );
 	}
 
 	/**
