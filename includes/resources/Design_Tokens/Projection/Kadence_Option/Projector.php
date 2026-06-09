@@ -176,7 +176,8 @@ final class Projector {
 	 * @return void
 	 */
 	private function sync_kb_colors( array $entries ): void {
-		$decoded = $this->decode( (string) get_option( self::KB_COLORS_OPTION, '' ) );
+		$raw     = get_option( self::KB_COLORS_OPTION, '' );
+		$decoded = $this->decode( is_string( $raw ) ? $raw : '' );
 		$merged  = $this->builder->merge_kb_colors( $decoded, $entries );
 
 		// Autoloaded: this option is read on every front-end request — load_color_palette() on
@@ -202,7 +203,7 @@ final class Projector {
 			return; // raced away between probe and here; never create.
 		}
 
-		$decoded = $this->decode( (string) $raw );
+		$decoded = $this->decode( is_string( $raw ) ? $raw : '' );
 		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
 
 		// This option always already exists here (proved by the sentinel probe), so update_option ignores
