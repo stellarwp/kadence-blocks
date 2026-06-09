@@ -30,11 +30,16 @@ final class Effective_Document {
 	/**
 	 * Build the merged document from the baseline and a decoded overrides array.
 	 *
-	 * @param array<string,mixed> $overrides Decoded overrides-only DTCG (token-set document).
+	 * @param array<string,mixed> $overrides      Decoded overrides-only DTCG (token-set document).
+	 * @param bool                $apply_disabled Whether a DISABLE override removes the baseline entry.
+	 *                                            True (the Resolver's rendering view) drops disabled tokens
+	 *                                            entirely; false (the write layer's inspection view) keeps the
+	 *                                            baseline token visible, so a disabled token's $type and group
+	 *                                            shape can still be read when authoring it.
 	 *
 	 * @return array<string,mixed> The effective document, $extensions stripped.
 	 */
-	public function build( array $overrides ): array {
+	public function build( array $overrides, bool $apply_disabled = true ): array {
 		$effective = [];
 
 		foreach ( Layers::token_layers() as $layer ) {
@@ -49,7 +54,7 @@ final class Effective_Document {
 				continue;
 			}
 
-			$effective[ $layer ] = $this->merge_node( $base, $over );
+			$effective[ $layer ] = $this->merge_node( $base, $over, $apply_disabled );
 		}
 
 		return $effective;
@@ -60,19 +65,25 @@ final class Effective_Document {
 	 *
 	 * @param array<string,mixed> $base
 	 * @param array<string,mixed> $over
+	 * @param bool                $apply_disabled Whether a DISABLE override removes the baseline entry.
 	 *
 	 * @return array<string,mixed>
 	 */
-	private function merge_node( array $base, array $over ): array {
+	private function merge_node( array $base, array $over, bool $apply_disabled = true ): array {
 		foreach ( $over as $key => $value ) {
 			if ( ! is_array( $value ) ) {
 				$base[ $key ] = $value;
 				continue;
 			}
 
-			// DISABLE sentinel: remove the baseline entry entirely.
+			// DISABLE sentinel: remove the baseline entry entirely for the rendering view. The inspection
+			// view keeps the baseline token instead, so authoring over a disabled token can still read its
+			// $type and tell a disabled group apart from a disabled leaf.
 			if ( Sentinels::is_disabled( $value ) ) {
-				unset( $base[ $key ] );
+				if ( $apply_disabled ) {
+					unset( $base[ $key ] );
+				}
+
 				continue;
 			}
 
@@ -95,7 +106,7 @@ final class Effective_Document {
 				&& is_array( $base[ $key ] )
 				&& ! array_key_exists( Sentinels::get_value_key(), $base[ $key ] )
 			) {
-				$base[ $key ] = $this->merge_node( $base[ $key ], $value );
+				$base[ $key ] = $this->merge_node( $base[ $key ], $value, $apply_disabled );
 				continue;
 			}
 
