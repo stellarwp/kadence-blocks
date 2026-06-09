@@ -18,7 +18,7 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		$this->container->singleton( Theme_Json_Builder::class );
+		$this->container->singleton( Json_Builder::class );
 		$this->container->singleton( Projector::class );
 
 		// Both layers: default (so user/theme can still override) and theme (so presets read as

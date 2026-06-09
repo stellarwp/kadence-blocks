@@ -41,21 +41,21 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
-	 * @var Theme_Json_Builder
+	 * @var Json_Builder
 	 */
-	private Theme_Json_Builder $builder;
+	private Json_Builder $builder;
 
 	/**
 	 * @param Token_Registry     $registry
 	 * @param Token_Resolver     $resolver
 	 * @param Token_Store        $store
-	 * @param Theme_Json_Builder $builder
+	 * @param Json_Builder $builder
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Theme_Json_Builder $builder
+		Json_Builder $builder
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
