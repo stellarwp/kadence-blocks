@@ -87,4 +87,34 @@ final class Variant_SetTest extends TestCase {
 		$this->assertSame( [], $report['unbound'] );
 		$this->assertSame( [], $report['unvalued'] );
 	}
+
+	public function testToUiArrayEmitsTokenReferenceAndInlineTargetsPerProperty(): void {
+		$ui = Variant_Set::from_array( $this->declaration() )->to_ui_array();
+
+		$this->assertSame( [ 'bindings' ], array_keys( $ui ) );
+
+		// A token-reference binding: token id present, no inline projections.
+		$this->assertSame(
+			[
+				'token'       => 'semantic.color.button-bg',
+				'projections' => [],
+			],
+			$ui['bindings']['button-bg']
+		);
+
+		// An inline binding: null token, its projection targets carried.
+		$this->assertSame(
+			[
+				'token'       => null,
+				'projections' => [ 'kadence_slot' => 'palette3' ],
+			],
+			$ui['bindings']['button-border']
+		);
+	}
+
+	public function testToUiArrayIsEmptyWhenTheSetHasNoBindings(): void {
+		$ui = Variant_Set::from_array( [ 'block' => 'kadence/advancedbtn' ] )->to_ui_array();
+
+		$this->assertSame( [ 'bindings' => [] ], $ui );
+	}
 }

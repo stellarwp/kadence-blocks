@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn .
+// cspell:ignore advancedbtn advancedheading .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
@@ -139,6 +139,23 @@ final class Token_RegistryTest extends TestCase {
 		$set = $this->registry->for_block( 'kadence/advancedbtn' );
 		$this->assertNotNull( $set );
 		$this->assertSame( 'kadence/advancedbtn', $set->block );
+	}
+
+	public function testVariantSetsIsEmptyUntilRegistered(): void {
+		$this->assertSame( [], $this->registry->variant_sets() );
+	}
+
+	public function testVariantSetsReturnsRegisteredSetsKeyedByBlockInOrder(): void {
+		$this->registry->register_variant_set( [ 'block' => 'kadence/advancedbtn' ] );
+		$this->registry->register_variant_set( [ 'block' => 'kadence/advancedheading' ] );
+
+		$sets = $this->registry->variant_sets();
+
+		$this->assertSame(
+			[ 'kadence/advancedbtn', 'kadence/advancedheading' ],
+			array_keys( $sets )
+		);
+		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn']->block );
 	}
 
 	public function testIsActiveByDefaultAndDeactivates(): void {
