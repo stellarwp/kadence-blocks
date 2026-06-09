@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 
@@ -37,15 +37,6 @@ final class Css_Builder {
 	 * @var string
 	 */
 	public const SCOPE = Scope::ROOT;
-
-	/**
-	 * The projection key a token declares to opt into the --wp--preset--* bridge.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const WP_PRESET = 'wp_preset';
 
 	/**
 	 * Object-cache group shared with the resolver.
@@ -165,7 +156,7 @@ final class Css_Builder {
 
 		// category, slug and css_var come from developer-declared registry config,
 		// not from the store — no sanitization needed here (contrast with token_block()).
-		foreach ( $this->registry->by_projection( self::WP_PRESET ) as $id => $token ) {
+		foreach ( $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) as $id => $token ) {
 			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
 			// --wp--preset-- declaration that resolves to nothing in the browser.
 			$value = $resolved->value( $id );
@@ -173,66 +164,16 @@ final class Css_Builder {
 				continue;
 			}
 
-			[ $category, $slug ] = $this->preset_target( $token, $id );
-			if ( $category === '' ) {
+			$target = Wp_Preset_Target::from_token( $token );
+			if ( $target === null ) {
 				continue;
 			}
 
-			$preset        = Wp_Preset_Var::from( $category, $slug );
+			$preset        = Wp_Preset_Var::from( $target->category, $target->slug );
 			$declarations .= $preset . ':var(' . $token->css_var . ');';
 		}
 
 		return $declarations === '' ? '' : self::SCOPE . '{' . $declarations . '}';
-	}
-
-	/**
-	 * Resolve a token's wp_preset config to a (category, slug) pair.
-	 *
-	 * The projection value is either a bare category string (slug derived from the token id's last
-	 * dot-segment) or an explicit ['category' => …, 'slug' => …] array for the rare case the slug must
-	 * differ from the id segment.
-	 *
-	 *   'wp_preset' => 'color'                          // semantic.color.button-bg => color / button-bg
-	 *   'wp_preset' => ['category' => 'color', 'slug' => 'btn']
-	 *
-	 * @since TBD
-	 *
-	 * @param Token_Definition $token The token definition.
-	 * @param string           $id    The token id.
-	 *
-	 * @return array{0:string,1:string} [ category, slug ]; category '' means "skip".
-	 */
-	private function preset_target( Token_Definition $token, string $id ): array {
-		$config = $token->projections[ self::WP_PRESET ] ?? null;
-
-		if ( is_string( $config ) && $config !== '' ) {
-			return [ $config, $this->slug_from_id( $id ) ];
-		}
-
-		if ( is_array( $config ) && isset( $config['category'] ) && is_string( $config['category'] ) ) {
-			$slug = isset( $config['slug'] ) && is_string( $config['slug'] ) ? $config['slug'] : $this->slug_from_id( $id );
-
-			return [ $config['category'], $slug ];
-		}
-
-		return [ '', '' ];
-	}
-
-	/**
-	 * The last dot-segment of a token id, used as the default preset slug.
-	 *
-	 * Example: semantic.color.button-bg => button-bg
-	 *
-	 * @since TBD
-	 *
-	 * @param string $id The token id.
-	 *
-	 * @return string
-	 */
-	private function slug_from_id( string $id ): string {
-		$pos = strrpos( $id, '.' );
-
-		return $pos === false ? $id : substr( $id, $pos + 1 );
 	}
 
 	/**
