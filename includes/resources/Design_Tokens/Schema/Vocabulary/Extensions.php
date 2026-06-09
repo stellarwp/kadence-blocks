@@ -116,6 +116,17 @@ final class Extensions {
 	}
 
 	/**
+	 * The variants section name: block presets / variants.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_variants(): string {
+		return self::SECTION_VARIANTS;
+	}
+
+	/**
 	 * Every section name the module owns under its namespace.
 	 *
 	 * @since TBD
