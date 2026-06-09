@@ -16,9 +16,6 @@ export function getAsyncData() {
 	const [isLoadingAI, setLoadingAI] = useState(false);
 	const [error, setError] = useState(false);
 
-	// Credentials are no longer read on the client. The server injects the
-	// stored license key for any endpoint that needs it (see ai-proxy.js and
-	// the prebuilt-library REST controller).
 	const product_id =
 		undefined !== kadence_blocks_params &&
 		kadence_blocks_params?.proData &&

@@ -70,7 +70,6 @@ class SingleTemplateLibrary extends Component {
 	}
 	reloadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		// Credentials are injected server-side; the client no longer sends api_key/api_email.
 		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		const data = new FormData();
 		data.append('action', 'kadence_import_reload_prebuilt_data');
@@ -118,7 +117,6 @@ class SingleTemplateLibrary extends Component {
 	}
 	loadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		// Credentials are injected server-side; the client no longer sends api_key/api_email.
 		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		const data = new FormData();
 		data.append('action', 'kadence_import_get_prebuilt_data');

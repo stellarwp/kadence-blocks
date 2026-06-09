@@ -6,16 +6,13 @@ use KadenceWP\KadenceBlocks\Editor_Assets;
 use Tests\wpunit\KadenceBlocksTestCase;
 
 /**
- * Ensures the block-editor `proData` bundle never exposes raw license credentials.
- *
- * Regression test for the Contributor+ Sensitive Information Exposure where
- * `kadence_blocks_params.proData` leaked key/api_key/email/api_email/domain to
- * any user who could open the block editor.
+ * Verifies the editor `proData` bundle only carries the derived license state
+ * the client needs; the license key itself is used via the server-side REST API.
  */
 class EditorAssetsProDataTest extends KadenceBlocksTestCase {
 
 	/**
-	 * Credential keys that must never be present in the client bundle.
+	 * Keys that belong to the server side and should not appear in the bundle.
 	 *
 	 * @var string[]
 	 */
@@ -29,7 +26,7 @@ class EditorAssetsProDataTest extends KadenceBlocksTestCase {
 			$this->assertArrayNotHasKey(
 				$forbidden,
 				$pro_data,
-				sprintf( 'proData must not expose the "%s" credential to the client.', $forbidden )
+				sprintf( 'proData should only contain derived license state, not "%s".', $forbidden )
 			);
 		}
 	}

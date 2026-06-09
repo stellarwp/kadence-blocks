@@ -8,11 +8,10 @@ use Tests\wpunit\KadenceBlocksTestCase;
 use WP_REST_Request;
 
 /**
- * Tests the server-side AI proxy that replaces direct, key-bearing client calls.
+ * Tests the server-side AI proxy routes used by the inline AI and AI Wizard.
  *
- * The inline AI and AI Wizard used to read `proData.api_key` in the browser and
- * call Kadence's servers directly. These requests now go through same-origin
- * proxy routes that inject the stored license token server-side.
+ * Requests go through same-origin routes under `kb-design-library/v1/ai/` and
+ * the request token is attached server-side.
  */
 class PrebuiltLibraryAiProxyTest extends KadenceBlocksTestCase {
 
@@ -79,7 +78,7 @@ class PrebuiltLibraryAiProxyTest extends KadenceBlocksTestCase {
 
 		$this->assertIsArray( $token );
 		// Server-derived identity fields are always present; the key comes from
-		// server storage (empty in the test env) and never from client input.
+		// the server's stored license data (empty in the test env).
 		foreach ( [ 'domain', 'key', 'site_name', 'product_slug', 'product_version' ] as $field ) {
 			$this->assertArrayHasKey( $field, $token );
 		}

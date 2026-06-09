@@ -216,11 +216,10 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Get the stored Kadence license key.
 	 *
-	 * The raw key is never accepted from the client (see the proData exposure
-	 * fix). The server always uses its own stored license credentials so a
-	 * Contributor+ user cannot supply or read someone else's key.
+	 * The library flow uses the server's own stored license data rather than
+	 * values passed in with the request.
 	 *
-	 * @since 3.7.6
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -233,7 +232,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Get the stored Kadence license email.
 	 *
-	 * @since 3.7.6
+	 * @since TBD
 	 *
 	 * @return string
 	 */

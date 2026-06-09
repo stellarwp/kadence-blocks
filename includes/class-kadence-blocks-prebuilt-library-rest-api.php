@@ -3085,8 +3085,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Proxy a streaming "generate content" AI request (inline AI).
 	 *
-	 * The license key is never sent by the client; it is injected server-side
-	 * via {@see get_token_header()}. Preserves the editor's live streaming UX.
+	 * The request token is attached server-side via {@see get_token_header()};
+	 * the streaming response is passed straight through to preserve the editor's
+	 * live typing UX.
+	 *
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -3111,6 +3114,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 	/**
 	 * Proxy a streaming "transform" AI request (inline AI improve/simplify/tone/edit/...).
+	 *
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -3143,6 +3148,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Proxy a streaming "improve mission statement" AI request (AI Wizard).
 	 *
+	 * @since TBD
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|void Streams and exits on success; response on bad input.
@@ -3170,6 +3177,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Kept separate so the URL/body composition is unit-testable without
 	 * performing the actual (streaming) network call.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $path Upstream path relative to the prophecy AI base URL.
 	 * @param array  $body Request body to forward.
 	 *
@@ -3183,10 +3192,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	}
 
 	/**
-	 * Stream an AI proxy request to the browser, injecting the license token server-side.
+	 * Stream an AI proxy request to the browser, attaching the request token server-side.
 	 *
 	 * Uses a cURL passthrough so chunks reach the editor as they arrive (live typing).
 	 * Falls back to a buffered request on hosts without cURL.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $url  Upstream URL.
 	 * @param array  $body Request body to forward.
@@ -3205,6 +3216,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 	/**
 	 * Stream the upstream response chunk-by-chunk via cURL.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $url   Upstream URL.
 	 * @param array  $body  Request body to forward.
@@ -3264,6 +3277,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 	/**
 	 * Buffered fallback for hosts without cURL: fetch and echo the response in one shot.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $url   Upstream URL.
 	 * @param array  $body  Request body to forward.

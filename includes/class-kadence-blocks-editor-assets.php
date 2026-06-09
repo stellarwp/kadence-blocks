@@ -171,15 +171,13 @@ class Editor_Assets {
 		return $show;
 	}
 	/**
-	 * Build the non-sensitive license bundle exposed to the block editor.
+	 * Build the license state bundle exposed to the block editor.
 	 *
-	 * The raw license credentials (key, api_key, email, api_email, domain) are
-	 * intentionally NOT exposed to the client. Any feature that needs the key
-	 * routes through the server-side proxy (see Kadence_Blocks_Prebuilt_Library_REST
-	 * and class-kadence-blocks-prebuilt-library.php), which injects the stored key
-	 * behind the scenes. The frontend only needs derived state for UI gating.
+	 * Returns the derived state the editor UI needs (product, environment, and
+	 * whether a key is present). Requests that need the license key itself are
+	 * made through the server-side REST API.
 	 *
-	 * @since 3.7.6
+	 * @since TBD
 	 *
 	 * @return array{product: string, env: string, hasApiKey: bool}
 	 */

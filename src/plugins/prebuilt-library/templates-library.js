@@ -86,7 +86,6 @@ class TemplatesLibrary extends Component {
 	}
 	reloadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		// Credentials are injected server-side; the client no longer sends api_key/api_email.
 		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
@@ -124,7 +123,6 @@ class TemplatesLibrary extends Component {
 	}
 	loadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		// Credentials are injected server-side; the client no longer sends api_key/api_email.
 		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
