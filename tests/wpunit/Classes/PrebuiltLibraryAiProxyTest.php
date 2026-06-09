@@ -18,7 +18,7 @@ class PrebuiltLibraryAiProxyTest extends KadenceBlocksTestCase {
 	/**
 	 * Build the controller without its constructor so the unit assertions do not
 	 * depend on the DI container. Property defaults (e.g. $remote_ai_url) are
-	 * still initialised by PHP.
+	 * still set by PHP.
 	 */
 	private function controller(): Kadence_Blocks_Prebuilt_Library_REST_Controller {
 		return ( new ReflectionClass( Kadence_Blocks_Prebuilt_Library_REST_Controller::class ) )

@@ -345,7 +345,7 @@ function kadence_blocks_get_current_env() {
 /**
  * Get the current license key for the plugin.
  *
- * @return array{key: string, email: string, product: string}
+ * @return array{key: string, email: string, product: string, env: string}
  */
 function kadence_blocks_get_current_license_data(): array {
 	static $cache;

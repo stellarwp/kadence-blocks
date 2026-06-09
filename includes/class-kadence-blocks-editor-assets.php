@@ -5,9 +5,9 @@
  * @since 1.0.0
  * @package Kadence Blocks
  */
+
 namespace KadenceWP\KadenceBlocks;
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function kadence_blocks_get_asset_file;
 use function kadence_blocks_is_legacy_license_authorized;
 use function kadence_blocks_get_current_license_data;

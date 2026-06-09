@@ -3109,7 +3109,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			]
 		);
 
-		return $this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
 	}
 
 	/**
@@ -3123,7 +3123,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function ai_transform( WP_REST_Request $request ) {
 		$parameters = $request->get_json_params();
-		$type       = (string) $request->get_param( 'type' );
+		$type       = $request->get_param( 'type' );
+		$type       = is_string( $type ) ? $type : '';
 		$allowed    = [ 'improve', 'simplify', 'lengthen', 'spelling', 'shorten', 'tone', 'edit' ];
 		if ( ! in_array( $type, $allowed, true ) ) {
 			return new WP_REST_Response( [ 'error' => 'Invalid transform type' ], 400 );
@@ -3142,7 +3143,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$proxy = $this->build_ai_proxy_request( 'proxy/transform/' . $type, $body );
 
-		return $this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
 	}
 
 	/**
@@ -3168,7 +3169,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			]
 		);
 
-		return $this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
+		$this->stream_ai_proxy( $proxy['url'], $proxy['body'] );
 	}
 
 	/**
@@ -3179,10 +3180,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @since TBD
 	 *
-	 * @param string $path Upstream path relative to the prophecy AI base URL.
-	 * @param array  $body Request body to forward.
+	 * @param string               $path Upstream path relative to the prophecy AI base URL.
+	 * @param array<string, mixed> $body Request body to forward.
 	 *
-	 * @return array{url: string, body: array}
+	 * @return array{url: string, body: array<string, mixed>}
 	 */
 	public function build_ai_proxy_request( $path, array $body ) {
 		return [
@@ -3199,8 +3200,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @since TBD
 	 *
-	 * @param string $url  Upstream URL.
-	 * @param array  $body Request body to forward.
+	 * @param string               $url  Upstream URL.
+	 * @param array<string, mixed> $body Request body to forward.
 	 *
 	 * @return void Always echoes the response and exits.
 	 */
@@ -3219,9 +3220,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @since TBD
 	 *
-	 * @param string $url   Upstream URL.
-	 * @param array  $body  Request body to forward.
-	 * @param string $token The X-Prophecy-Token header value.
+	 * @param string               $url   Upstream URL.
+	 * @param array<string, mixed> $body  Request body to forward.
+	 * @param string               $token The X-Prophecy-Token header value.
 	 *
 	 * @return void Echoes the streamed response and exits.
 	 */
@@ -3280,9 +3281,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 *
 	 * @since TBD
 	 *
-	 * @param string $url   Upstream URL.
-	 * @param array  $body  Request body to forward.
-	 * @param string $token The X-Prophecy-Token header value.
+	 * @param string               $url   Upstream URL.
+	 * @param array<string, mixed> $body  Request body to forward.
+	 * @param string               $token The X-Prophecy-Token header value.
 	 *
 	 * @return void Echoes the response and exits.
 	 */
@@ -3290,12 +3291,12 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$response = wp_remote_post(
 			$url,
 			[
-				'timeout' => 60,
+				'timeout' => 60, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout -- AI responses can take longer than the default to generate.
 				'headers' => [
 					'Content-Type'     => 'application/json',
 					'X-Prophecy-Token' => $token,
 				],
-				'body'    => wp_json_encode( $body ),
+				'body'    => (string) wp_json_encode( $body ),
 			]
 		);
 		if ( is_wp_error( $response ) ) {
@@ -3304,6 +3305,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		$code         = wp_remote_retrieve_response_code( $response );
 		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
+		$content_type = is_array( $content_type ) ? (string) reset( $content_type ) : (string) $content_type;
 		status_header( $code ? (int) $code : 200 );
 		nocache_headers();
 		header( 'Content-Type: ' . ( $content_type ? $content_type : 'text/event-stream' ) );
