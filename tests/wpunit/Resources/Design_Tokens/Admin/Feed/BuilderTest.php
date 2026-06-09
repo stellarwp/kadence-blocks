@@ -40,11 +40,11 @@ final class BuilderTest extends TestCase {
 		$values   = [ 'semantic.color.button-bg' => '#3182CE' ];
 		$variants = [ 'kadence/advancedbtn' => [ 'default' => 'primary' ] ];
 
-		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $this->rest(), 'v7' );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertTrue( $feed['resolved'] );
-		$this->assertSame( 7, $feed['version'] );
+		$this->assertSame( 'v7', $feed['version'] );
 		$this->assertSame( $this->registry->to_ui_schema(), $feed['schema'] );
 		$this->assertSame( $values, $feed['values'] );
 		$this->assertSame( $variants, $feed['variants'] );
@@ -52,7 +52,7 @@ final class BuilderTest extends TestCase {
 	}
 
 	public function testResolvedFalseKeepsStructureButEmptyValues(): void {
-		$feed = ( new Builder( $this->registry ) )->build( [], false, [], $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( [], false, [], $this->rest(), 'v7' );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertFalse( $feed['resolved'] );
@@ -61,10 +61,11 @@ final class BuilderTest extends TestCase {
 	}
 
 	public function testResolvedTrueWithEmptyValuesPassesThroughUnchanged(): void {
-		$feed = ( new Builder( $this->registry ) )->build( [], true, [], $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( [], true, [], $this->rest(), 'v7' );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertTrue( $feed['resolved'] );
+		$this->assertSame( 'v7', $feed['version'] );
 		$this->assertSame( [], $feed['values'] );
 	}
 
@@ -76,7 +77,7 @@ final class BuilderTest extends TestCase {
 			true,
 			[ 'kadence/advancedbtn' => [] ],
 			$this->rest(),
-			7
+			'v7'
 		);
 
 		$this->assertFalse( $feed['active'] );
@@ -86,6 +87,6 @@ final class BuilderTest extends TestCase {
 		$this->assertSame( [], $feed['variants'] );
 		// The REST descriptor and version are still present so the React app can wire even when hidden.
 		$this->assertSame( $this->rest(), $feed['rest'] );
-		$this->assertSame( 7, $feed['version'] );
+		$this->assertSame( 'v7', $feed['version'] );
 	}
 }

@@ -82,7 +82,7 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 			'nonce'     => 'test-nonce',
 		];
 
-		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $rest, 7 );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $rest, 'v7' );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertTrue( $feed['active'] );

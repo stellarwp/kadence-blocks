@@ -46,11 +46,11 @@ final class Builder {
 	 * @param bool                                                  $resolved Whether resolution succeeded.
 	 * @param array<string, mixed>                                  $variants Per-block variant structure + values.
 	 * @param array{root: string, namespace: string, nonce: string} $rest     REST root, namespace and nonce.
-	 * @param int                                                   $version  Store version.
+	 * @param string                                                $version  Store version hash ('' from baseline).
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $variants, array $rest, int $version ): array {
+	public function build( array $values, bool $resolved, array $variants, array $rest, string $version ): array {
 		$active = $this->registry->is_active();
 
 		return [
