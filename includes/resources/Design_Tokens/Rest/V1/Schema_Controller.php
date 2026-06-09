@@ -92,8 +92,8 @@ final class Schema_Controller extends Controller {
 		$json     = $this->dtcg_schema->json();
 		$document = json_decode( $json, true );
 
-		// An empty or unparseable result means the committed file is missing or corrupt. Serving an empty
-		// or invalid 200 body would hand consumers bad JSON, so surface the failure explicitly instead.
+		// An empty or invalid result means the committed file is missing or corrupt. Serving an empty or
+		// malformed 200 body would hand consumers bad JSON, so surface the failure explicitly instead.
 		if ( $json === '' || ! is_array( $document ) ) {
 			return new WP_Error(
 				'rest_design_tokens_schema_unavailable',
