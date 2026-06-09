@@ -48,7 +48,7 @@ final class Palette_Builder {
 	}
 
 	/**
-	 * slug => [ 'color' => hex, 'name' => label ] for every token that claims a palette slot AND
+	 * Slug => [ 'color' => hex, 'name' => label ] for every token that claims a palette slot AND
 	 * resolves to a non-empty value. Returns [] when nothing applies, so the caller skips both writes.
 	 *
 	 * @since TBD
@@ -142,7 +142,7 @@ final class Palette_Builder {
 	 *
 	 * @param array<int, mixed>                                 $palette List of {color,slug,name,…} entries.
 	 * @param array<string, array{color: string, name: string}> $entries slug => {color,name}.
-	 * @param bool                                               $append  Append claimed slugs not present.
+	 * @param bool                                              $append  Append claimed slugs not present.
 	 *
 	 * @return array<int, mixed>
 	 */
@@ -158,10 +158,13 @@ final class Palette_Builder {
 				continue;
 			}
 
-			$palette[ $i ]['color'] = $entries[ $slug ]['color'];
+			// $entry is a confirmed array (is_array check above); write through it so PHPStan can
+			// track the type, then put the modified entry back into the palette list.
+			$entry['color'] = $entries[ $slug ]['color'];
 			if ( $append ) {
-				$palette[ $i ]['name'] = $entries[ $slug ]['name'];
+				$entry['name'] = $entries[ $slug ]['name'];
 			}
+			$palette[ $i ] = $entry;
 			$seen[ $slug ] = true;
 		}
 
