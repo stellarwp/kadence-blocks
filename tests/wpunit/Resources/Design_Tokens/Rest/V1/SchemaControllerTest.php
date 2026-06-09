@@ -90,6 +90,22 @@ final class SchemaControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testItExposesTheSchemaAsResponseDataForServerSideConsumers(): void {
+		$response = $this->controller->get_item( new WP_REST_Request( WP_REST_Server::READABLE ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		// rest_do_request() never runs rest_pre_serve_request, so server-side callers read the decoded
+		// schema here rather than getting an empty body.
+		$expected = json_decode( $this->container->get( Dtcg_Schema::class )->json(), true );
+
+		$this->assertSame( $expected, $response->get_data() );
+		$this->assertArrayHasKey( '$schema', $response->get_data() );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testItReturnsServerErrorWhenTheSchemaCannotBeRead(): void {
 		$controller = new Schema_Controller( new Dtcg_Schema( __DIR__ . '/does-not-exist.json', 'test-version-missing' ) );
 

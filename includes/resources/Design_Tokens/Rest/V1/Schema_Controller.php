@@ -75,9 +75,12 @@ final class Schema_Controller extends Controller {
 	/**
 	 * Read the published DTCG JSON Schema.
 	 *
-	 * The committed schema file is already JSON, so it is served verbatim: returning a decoded array and
-	 * letting the REST server re-encode it would reformat the published document for no reason (and risk
-	 * altering it). Serialization is short-circuited and the raw bytes are echoed instead.
+	 * The committed schema file is already JSON, so over HTTP it is served verbatim: returning a decoded
+	 * array and letting the REST server re-encode it would reformat the published document for no reason
+	 * (and risk altering it). Serialization is short-circuited and the raw bytes are echoed instead.
+	 *
+	 * The decoded schema is also set as the response data so server-side callers (rest_do_request(), which
+	 * never runs the rest_pre_serve_request filter) read it via get_data() rather than getting an empty body.
 	 *
 	 * @since TBD
 	 *
@@ -86,11 +89,12 @@ final class Schema_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
-		$json = $this->dtcg_schema->json();
+		$json     = $this->dtcg_schema->json();
+		$document = json_decode( $json, true );
 
-		// An empty string means the committed file is missing or unreadable. Serving an empty 200 body
-		// would hand consumers invalid JSON, so surface the failure explicitly instead.
-		if ( $json === '' ) {
+		// An empty or invalid result means the committed file is missing or corrupt. Serving an empty or
+		// malformed 200 body would hand consumers bad JSON, so surface the failure explicitly instead.
+		if ( $json === '' || ! is_array( $document ) ) {
 			return new WP_Error(
 				'rest_design_tokens_schema_unavailable',
 				__( 'The DTCG schema could not be read.', 'kadence-blocks' ),
@@ -98,7 +102,10 @@ final class Schema_Controller extends Controller {
 			);
 		}
 
-		$response = new WP_REST_Response();
+		// Fallback for a server-side call: rest_do_request() never runs the rest_pre_serve_request filter,
+		// so it reads the schema from this decoded data. An HTTP call is the preferred usage — the filter
+		// below streams the exact committed bytes and this decoded copy is ignored.
+		$response = new WP_REST_Response( $document );
 
 		add_filter(
 			'rest_pre_serve_request',
