@@ -251,7 +251,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS
 	 *
-	 * @param array    $attributes the blocks attribtues.
+	 * @param array    $attributes the blocks attributes.
 	 * @param string   $content the blocks content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 */
@@ -284,7 +284,7 @@ class Kadence_Blocks_Abstract_Block {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
 			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
-				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
+				// Some plugins run render block without outputting the content, this makes it so css can be rebuilt.
 				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) ) {
 					$this->do_inline_styles( $content, $unique_style_id, $css );
@@ -376,8 +376,8 @@ class Kadence_Blocks_Abstract_Block {
 	 * If the tag provided isn't allowed, return the default value.
 	 *
 	 * @param array  $attributes Array of the blocks attributes.
-	 * @param string $tag_key Offest on $attributes where the tag is set.
-	 * @param string $default Default tag to use if $tag_key attribue is undefined or invalid.
+	 * @param string $tag_key Offset on $attributes where the tag is set.
+	 * @param string $default Default tag to use if $tag_key attribute is undefined or invalid.
 	 * @param array  $allowed_tags Array of allowed tags.
 	 * @param string $level_key If defined, we'll assume heading tags are allowed.
 	 *
@@ -405,7 +405,7 @@ class Kadence_Blocks_Abstract_Block {
 	 *
 	 * @param string $cache_key The cache key (usually unique id).
 	 * @param array  $attributes The block's attributes.
-	 * @param string $block_name The name of the block.
+	 * @param bool   $cache Whether to cache the merged result. Default true.
 	 * @return array
 	 */
 	public function get_attributes_with_defaults( $cache_key, $attributes, $cache = true ) {
@@ -414,7 +414,31 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		$default_attributes = $this->get_block_default_attributes();
-		$merged_attributes  = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
+
+		/**
+		 * Filters a block's default attributes before they are merged with the instance's attributes.
+		 *
+		 * Lets a module contribute an extra layer of defaults (e.g. the Design Tokens block preset) that
+		 * sits above the block.json defaults yet below the instance attributes, so the merge below still
+		 * lets a per-instance value win.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string, mixed> $default_attributes The block's registration defaults: attribute
+		 *                                                 name => default value.
+		 * @param string               $block_name         The full block name, e.g. "kadence/advancedbtn".
+		 *
+		 * @return array<string, mixed> The default attributes, after any module's overlay.
+		 */
+		$filtered_attributes = apply_filters( 'kadence_blocks_block_default_attributes', $default_attributes, 'kadence/' . $this->block_name );
+
+		// A third-party callback could return a non-array; ignore it and keep KB's own defaults rather than
+		// letting a bad value corrupt the merge below.
+		if ( is_array( $filtered_attributes ) ) {
+			$default_attributes = $filtered_attributes;
+		}
+
+		$merged_attributes = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
 		if ( $cache ) {
 			$this->attributes_with_defaults[ $cache_key ] = $merged_attributes;
@@ -530,7 +554,7 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Retuurn if this block should register itself. (can override for things like blocks in two plugins)
+	 * Return if this block should register itself. (can override for things like blocks in two plugins)
 	 *
 	 * @return boolean
 	 */

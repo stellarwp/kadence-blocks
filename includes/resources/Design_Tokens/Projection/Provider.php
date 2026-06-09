@@ -23,6 +23,7 @@ final class Provider extends Provider_Contract {
 	 */
 	private const PROVIDERS = [
 		Css_Var\Provider::class,
+		Block_Preset\Provider::class,
 	];
 
 	/**

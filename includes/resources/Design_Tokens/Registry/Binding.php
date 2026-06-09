@@ -175,6 +175,21 @@ final class Binding {
 	}
 
 	/**
+	 * The block attribute this binding seeds, or null when it declares none. Used by the block-preset
+	 * projector to map a resolved variant value onto a block's default attribute. Always an inline target
+	 * — tokens never carry a `block_attr` — so it is read straight off this binding.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function block_attr(): ?string {
+		$attribute = $this->projections[ self::BLOCK_ATTR ] ?? null;
+
+		return is_string( $attribute ) ? $attribute : null;
+	}
+
+	/**
 	 * Extract and validate the inline projection targets from a binding declaration.
 	 *
 	 * @since TBD

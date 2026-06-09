@@ -16,6 +16,7 @@
         "**/*.svg"
     ],
     "words": [
+        "ABSPATH",
         "advancedbtn",
         "advancedheading",
         "algoliasearch",
@@ -53,6 +54,7 @@
         "retargets",
         "rowlayout",
         "scroller",
+        "singlebtn",
         "slic",
         "slidy",
         "splide",
