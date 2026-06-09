@@ -31,7 +31,7 @@ final class Wp_Preset_Target {
 	 *
 	 * @var string
 	 */
-	public const PROJECTION = 'wp_preset';
+	private const PROJECTION = 'wp_preset';
 
 	/**
 	 * The preset category, e.g. "color", "font-family", "spacing", "shadow".
@@ -58,6 +58,17 @@ final class Wp_Preset_Target {
 	private function __construct( string $category, string $slug ) {
 		$this->category = $category;
 		$this->slug     = $slug;
+	}
+
+	/**
+	 * Get the projection key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_projection_key(): string {
+		return self::PROJECTION;
 	}
 
 	/**

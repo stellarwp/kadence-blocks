@@ -156,7 +156,7 @@ final class Css_Builder {
 
 		// category, slug and css_var come from developer-declared registry config,
 		// not from the store — no sanitization needed here (contrast with token_block()).
-		foreach ( $this->registry->by_projection( Wp_Preset_Target::PROJECTION ) as $id => $token ) {
+		foreach ( $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) as $id => $token ) {
 			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
 			// --wp--preset-- declaration that resolves to nothing in the browser.
 			$value = $resolved->value( $id );
