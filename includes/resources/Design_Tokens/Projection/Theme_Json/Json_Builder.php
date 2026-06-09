@@ -25,7 +25,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *
  * @since TBD
  */
-final class Theme_Json_Builder {
+final class Json_Builder {
 
 	/**
 	 * theme.json schema version the payload targets.
@@ -78,6 +78,10 @@ final class Theme_Json_Builder {
 	];
 
 	/**
+	 * The token registry.
+	 *
+	 * @since TBD
+	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
@@ -85,6 +89,8 @@ final class Theme_Json_Builder {
 	/**
 	 * Per-request memo keyed on the store version, so a write (which bumps the version) invalidates
 	 * the in-memory result without an explicit purge.
+	 *
+	 * @since TBD
 	 *
 	 * @var array<string, array<string, mixed>>
 	 */
@@ -150,6 +156,7 @@ final class Theme_Json_Builder {
 			return $this->memo[ $version ];
 		}
 
+		$found     = false;
 		$cache_key = 'theme_json_presets_' . KADENCE_BLOCKS_VERSION . '_' . $version;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 

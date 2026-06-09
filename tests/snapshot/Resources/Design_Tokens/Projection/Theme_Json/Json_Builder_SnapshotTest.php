@@ -3,19 +3,19 @@
 
 namespace Tests\snapshot\Resources\Design_Tokens\Projection\Theme_Json;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Theme_Json_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Json_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use Tests\Support\Classes\SnapshotTestCase;
 
 /**
- * Snapshot the exact theme.json payload of Theme_Json_Builder so any format change is an explicit,
+ * Snapshot the exact theme.json payload of Json_Builder so any format change is an explicit,
  * reviewable diff — one token per supported bucket.
  *
  * @since TBD
  */
-final class Theme_Json_Builder_SnapshotTest extends SnapshotTestCase {
+final class Json_Builder_SnapshotTest extends SnapshotTestCase {
 
 	private Token_Registry $registry;
 
@@ -53,7 +53,7 @@ final class Theme_Json_Builder_SnapshotTest extends SnapshotTestCase {
 			$by_var[ Css_Var::from_id( $id ) ] = $value;
 		}
 
-		$payload = ( new Theme_Json_Builder( $this->registry ) )->payload( new Resolved_Tokens( $by_id, $by_var ) );
+		$payload = ( new Json_Builder( $this->registry ) )->payload( new Resolved_Tokens( $by_id, $by_var ) );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertSame( 2, $payload['version'] );

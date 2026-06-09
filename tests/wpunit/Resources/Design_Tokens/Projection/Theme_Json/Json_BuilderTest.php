@@ -3,13 +3,13 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Theme_Json;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Theme_Json_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Json_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use Tests\Support\Classes\TestCase;
 
-final class Theme_Json_BuilderTest extends TestCase {
+final class Json_BuilderTest extends TestCase {
 
 	private Token_Registry $registry;
 
@@ -19,8 +19,8 @@ final class Theme_Json_BuilderTest extends TestCase {
 		$this->registry = new Token_Registry();
 	}
 
-	private function builder(): Theme_Json_Builder {
-		return new Theme_Json_Builder( $this->registry );
+	private function builder(): Json_Builder {
+		return new Json_Builder( $this->registry );
 	}
 
 	/**
@@ -263,7 +263,7 @@ final class Theme_Json_BuilderTest extends TestCase {
 
 		// A fresh builder shares the object cache but not the per-request memo, so a cache hit on the
 		// same version returns the identical payload without rebuilding from the (here empty) registry.
-		$cold   = new Theme_Json_Builder( new Token_Registry() );
+		$cold   = new Json_Builder( new Token_Registry() );
 		$second = $cold->payload_for_version( new Resolved_Tokens( [], [] ), 'v1' );
 
 		$this->assertSame( $first, $second );
