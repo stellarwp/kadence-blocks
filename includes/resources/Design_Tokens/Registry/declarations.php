@@ -50,5 +50,12 @@ return [
 				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
 			],
 		],
+		[
+			'block'    => 'core/button',
+			'bindings' => [
+				'button-bg'   => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's wp_preset → --wp--preset--color--button-bg.
+				'button-text' => [ 'token' => 'semantic.color.button-text' ],
+			],
+		],
 	],
 ];

@@ -177,6 +177,35 @@ final class Variant_Resolver {
 	}
 
 	/**
+	 * The human-readable label a block's variant declares in the document, or null when the block, the
+	 * variant, or its label is absent. A lookup convenience that never throws, mirroring has_variant().
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block   The block name.
+	 * @param string $variant The variant slug.
+	 *
+	 * @return string|null
+	 */
+	public function label( string $block, string $variant ): ?string {
+		$block_node = $this->variants_section()[ $block ] ?? null;
+
+		if ( ! is_array( $block_node ) ) {
+			return null;
+		}
+
+		$variant_node = $block_node[ $variant ] ?? null;
+
+		if ( ! is_array( $variant_node ) ) {
+			return null;
+		}
+
+		$label = $variant_node['label'] ?? null;
+
+		return is_string( $label ) && $label !== '' ? $label : null;
+	}
+
+	/**
 	 * The union of every property the block's variants set a value for — what a {@see
 	 * \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::consistency()} check compares the
 	 * bindings against, and what a block preset iterates.

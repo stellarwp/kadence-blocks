@@ -450,6 +450,30 @@
 							"size": "{semantic.iconSize.default}"
 						}
 					}
+				},
+				"core/button": {
+					"$default": "primary",
+					"primary": {
+						"label": "Primary",
+						"tokens": {
+							"button-bg": "{semantic.color.button-bg}",
+							"button-text": "{semantic.color.button-text}"
+						}
+					},
+					"secondary": {
+						"label": "Secondary",
+						"tokens": {
+							"button-bg": "{primitive.color.brand.secondary}",
+							"button-text": "{primitive.color.neutral.0}"
+						}
+					},
+					"ghost": {
+						"label": "Ghost",
+						"tokens": {
+							"button-bg": "transparent",
+							"button-text": "{primitive.color.brand.primary}"
+						}
+					}
 				}
 			}
 		}
