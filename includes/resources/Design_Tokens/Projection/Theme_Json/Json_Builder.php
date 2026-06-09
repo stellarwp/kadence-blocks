@@ -111,7 +111,7 @@ final class Json_Builder {
 	 * @return bool
 	 */
 	public function has_presets(): bool {
-		return $this->registry->by_projection( Wp_Preset_Target::PROJECTION ) !== [];
+		return $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) !== [];
 	}
 
 	/**
@@ -185,7 +185,7 @@ final class Json_Builder {
 		// bucket's path is written exactly once even with many tokens in the same category.
 		$by_category = [];
 
-		foreach ( $this->registry->by_projection( Wp_Preset_Target::PROJECTION ) as $id => $token ) {
+		foreach ( $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) as $id => $token ) {
 			$target = Wp_Preset_Target::from_token( $token );
 			if ( $target === null || ! isset( self::BUCKETS[ $target->category ] ) ) {
 				continue; // Unmapped category (e.g. radius) — no native bucket; skip.
