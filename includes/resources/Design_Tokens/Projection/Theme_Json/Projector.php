@@ -94,7 +94,7 @@ final class Projector {
 	/**
 	 * Build the cached preset payload from the current resolved set. Returns an empty array when the
 	 * stored document cannot be resolved (alias cycle / dangling alias from a raw DB write that
-	 * bypassed REST validation), so theme.json is left untouched rather than fatalling the request.
+	 * bypassed REST validation), so theme.json is left untouched rather than crashing the request.
 	 *
 	 * @since TBD
 	 *
