@@ -55,7 +55,7 @@ final class Palette_Builder_SnapshotTest extends SnapshotTestCase {
 					'projections' => $token['projections'],
 				]
 			);
-			$by_id[ $token['id'] ]                  = $token['value'];
+			$by_id[ $token['id'] ]                      = $token['value'];
 			$by_var[ Css_Var::from_id( $token['id'] ) ] = $token['value'];
 		}
 
@@ -63,9 +63,17 @@ final class Palette_Builder_SnapshotTest extends SnapshotTestCase {
 		$builder  = new Palette_Builder( $this->registry );
 
 		$existing = [
-			'palette' => [
-				[ 'color' => '#old-palette1', 'name' => 'Old Name 1', 'slug' => 'palette1' ],
-				[ 'color' => '#aabbcc', 'name' => 'Custom Entry', 'slug' => 'palette5' ],
+			'palette'  => [
+				[
+					'color' => '#old-palette1',
+					'name'  => 'Old Name 1',
+					'slug'  => 'palette1',
+				],
+				[
+					'color' => '#aabbcc',
+					'name'  => 'Custom Entry',
+					'slug'  => 'palette5',
+				],
 			],
 			'override' => false,
 		];

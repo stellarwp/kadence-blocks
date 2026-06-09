@@ -29,8 +29,8 @@ final class Palette_BuilderTest extends TestCase {
 
 		foreach ( $definitions_and_values as [ $definition, $value ] ) {
 			$this->registry->register( $definition );
-			$id           = (string) $definition['id'];
-			$by_id[ $id ] = $value;
+			$id                                = (string) $definition['id'];
+			$by_id[ $id ]                      = $value;
 			$by_var[ Css_Var::from_id( $id ) ] = $value;
 		}
 
@@ -124,15 +124,24 @@ final class Palette_BuilderTest extends TestCase {
 
 	public function testMergeKbColorsOverwritesColorOfExistingEntry(): void {
 		$existing = [
-			'palette' => [
-				[ 'color' => '#old', 'name' => 'Old Name', 'slug' => 'palette1' ],
+			'palette'  => [
+				[
+					'color' => '#old',
+					'name'  => 'Old Name',
+					'slug'  => 'palette1',
+				],
 			],
 			'override' => false,
 		];
 
 		$result = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		$this->assertSame( '#3182CE', $result['palette']['palette1']['color'] ?? $result['palette'][0]['color'] );
@@ -140,16 +149,29 @@ final class Palette_BuilderTest extends TestCase {
 
 	public function testMergeKbColorsPreservesPositionOfExistingEntry(): void {
 		$existing = [
-			'palette' => [
-				[ 'color' => '#aaa', 'name' => 'First', 'slug' => 'palette3' ],
-				[ 'color' => '#old', 'name' => 'Old', 'slug' => 'palette1' ],
+			'palette'  => [
+				[
+					'color' => '#aaa',
+					'name'  => 'First',
+					'slug'  => 'palette3',
+				],
+				[
+					'color' => '#old',
+					'name'  => 'Old',
+					'slug'  => 'palette1',
+				],
 			],
 			'override' => false,
 		];
 
 		$result  = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 		$palette = $result['palette'];
 
@@ -166,7 +188,12 @@ final class Palette_BuilderTest extends TestCase {
 
 		$result  = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 		$palette = $result['palette'];
 
@@ -178,15 +205,24 @@ final class Palette_BuilderTest extends TestCase {
 
 	public function testMergeKbColorsPreservesNonTokenEntry(): void {
 		$existing = [
-			'palette' => [
-				[ 'color' => '#ff0000', 'name' => 'Red', 'slug' => 'palette5' ],
+			'palette'  => [
+				[
+					'color' => '#ff0000',
+					'name'  => 'Red',
+					'slug'  => 'palette5',
+				],
 			],
 			'override' => false,
 		];
 
 		$result  = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 		$by_slug = array_column( $result['palette'], null, 'slug' );
 
@@ -202,7 +238,12 @@ final class Palette_BuilderTest extends TestCase {
 
 		$result = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		$this->assertTrue( $result['override'] );
@@ -216,7 +257,12 @@ final class Palette_BuilderTest extends TestCase {
 
 		$result = $this->builder()->merge_kb_colors(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		$this->assertFalse( $result['override'] );
@@ -225,7 +271,12 @@ final class Palette_BuilderTest extends TestCase {
 	public function testMergeKbColorsDefaultsOverrideFalseWhenAbsent(): void {
 		$result = $this->builder()->merge_kb_colors(
 			[],
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		$this->assertFalse( $result['override'] );
@@ -236,13 +287,22 @@ final class Palette_BuilderTest extends TestCase {
 	public function testMergeThemePaletteOverwritesColorOnly(): void {
 		$existing = [
 			'palette' => [
-				[ 'color' => '#old', 'name' => 'Palette 1', 'slug' => 'palette1' ],
+				[
+					'color' => '#old',
+					'name'  => 'Palette 1',
+					'slug'  => 'palette1',
+				],
 			],
 		];
 
 		$result  = $this->builder()->merge_theme_palette(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 		$palette = $result['palette'];
 
@@ -253,13 +313,22 @@ final class Palette_BuilderTest extends TestCase {
 	public function testMergeThemePaletteNeverAppends(): void {
 		$existing = [
 			'palette' => [
-				[ 'color' => '#aaa', 'name' => 'Other', 'slug' => 'palette5' ],
+				[
+					'color' => '#aaa',
+					'name'  => 'Other',
+					'slug'  => 'palette5',
+				],
 			],
 		];
 
 		$result = $this->builder()->merge_theme_palette(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		// palette1 was not present and must not be appended.
@@ -270,14 +339,27 @@ final class Palette_BuilderTest extends TestCase {
 	public function testMergeThemePalettePreservesUnclaimed(): void {
 		$existing = [
 			'palette' => [
-				[ 'color' => '#aaa', 'name' => 'Unclaimed', 'slug' => 'palette7' ],
-				[ 'color' => '#old', 'name' => 'Palette 1', 'slug' => 'palette1' ],
+				[
+					'color' => '#aaa',
+					'name'  => 'Unclaimed',
+					'slug'  => 'palette7',
+				],
+				[
+					'color' => '#old',
+					'name'  => 'Palette 1',
+					'slug'  => 'palette1',
+				],
 			],
 		];
 
 		$result  = $this->builder()->merge_theme_palette(
 			$existing,
-			[ 'palette1' => [ 'color' => '#new', 'name' => 'Ignored' ] ]
+			[
+				'palette1' => [
+					'color' => '#new',
+					'name'  => 'Ignored',
+				],
+			]
 		);
 		$by_slug = array_column( $result['palette'], null, 'slug' );
 
@@ -289,7 +371,12 @@ final class Palette_BuilderTest extends TestCase {
 
 		$result = $this->builder()->merge_theme_palette(
 			$existing,
-			[ 'palette1' => [ 'color' => '#3182CE', 'name' => 'Button Background' ] ]
+			[
+				'palette1' => [
+					'color' => '#3182CE',
+					'name'  => 'Button Background',
+				],
+			]
 		);
 
 		$this->assertSame( $existing, $result );
@@ -297,13 +384,24 @@ final class Palette_BuilderTest extends TestCase {
 
 	public function testMergeThemePalettePreservesSiblingTopLevelKeys(): void {
 		$existing = [
-			'palette'   => [ [ 'color' => '#old', 'name' => 'Palette 1', 'slug' => 'palette1' ] ],
+			'palette'   => [
+				[
+					'color' => '#old',
+					'name'  => 'Palette 1',
+					'slug'  => 'palette1',
+				],
+			],
 			'some_meta' => 'keep-me',
 		];
 
 		$result = $this->builder()->merge_theme_palette(
 			$existing,
-			[ 'palette1' => [ 'color' => '#new', 'name' => 'Ignored' ] ]
+			[
+				'palette1' => [
+					'color' => '#new',
+					'name'  => 'Ignored',
+				],
+			]
 		);
 
 		$this->assertSame( 'keep-me', $result['some_meta'] );
