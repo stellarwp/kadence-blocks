@@ -14,7 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
 
 /**
  * Check if we are in AMP Mode.
@@ -215,6 +217,15 @@ function kadence_blocks_get_authorized_license_key(): string {
 		if ( is_authorized( $candidate['key'], $candidate['slug'], $token ?? '', get_license_domain() ) ) {
 			return $candidate['key'];
 		}
+		// Legacy keys (e.g. "ktw...") are activated by direct license-key
+		// validation and never obtain a V3 authorization token, so is_authorized()
+		// above returns false for them. Fall back to the legacy validation flow so
+		// a valid legacy key still ships to the pattern/AI servers. A revoked or
+		// expired legacy key still fails here, preserving the original intent of
+		// not handing a stale key to remotes.
+		if ( kadence_blocks_is_legacy_key_valid( $candidate['slug'], $candidate['key'] ) ) {
+			return $candidate['key'];
+		}
 	}
 
 	if (
@@ -229,6 +240,59 @@ function kadence_blocks_get_authorized_license_key(): string {
 	}
 
 	return '';
+}
+
+/**
+ * Whether a license key is valid via the legacy (Uplink V2) validation flow.
+ *
+ * Legacy keys (e.g. "ktw...") are validated by checking the key directly against
+ * the licensing server rather than via the V3 token-authorization handshake, so
+ * {@see is_authorized()} returns false for them even when the key is good. This
+ * mirrors how kadence-blocks-pro validates its own legacy license. Uplink's own
+ * persisted license status is the source of truth for a positive result (it
+ * revalidates on its own schedule, so a revoked key is not kept "valid"); only
+ * the negative result is short-cached in a transient to avoid re-hitting the
+ * licensing server on every editor/REST load.
+ *
+ * @since TBD
+ *
+ * @param string $slug The Uplink resource slug.
+ * @param string $key  The license key to validate.
+ *
+ * @return bool
+ */
+function kadence_blocks_is_legacy_key_valid( string $slug, string $key ): bool {
+	if ( empty( $slug ) || empty( $key ) ) {
+		return false;
+	}
+
+	$resource = get_resource( $slug );
+
+	// Authoritative positive signal: trust Uplink's persisted, self-maintained
+	// status when it already says the key is valid. Uplink revalidates and
+	// updates this status on its own schedule, so we avoid the false positives
+	// that a week-long positive transient could ship for a revoked key.
+	if ( $resource && $resource->get_license_object()->is_valid() ) {
+		return true;
+	}
+
+	// No stored "valid" status yet (never validated, invalid, or revoked).
+	// Short-cache the negative so we don't re-POST on every load, then validate;
+	// a successful validate_license() persists the status, so the fast path
+	// above answers subsequent requests without another network call.
+	$transient = 'kadence_blocks_legacy_key_invalid_' . md5( $slug . '_' . $key );
+	if ( 'invalid' === get_transient( $transient ) ) {
+		return false;
+	}
+
+	$validation = validate_license( $slug, $key );
+	$is_valid   = $validation && method_exists( $validation, 'is_valid' ) && $validation->is_valid();
+
+	if ( ! $is_valid ) {
+		set_transient( $transient, 'invalid', HOUR_IN_SECONDS );
+	}
+
+	return $is_valid;
 }
 
 /**
