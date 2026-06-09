@@ -82,10 +82,8 @@ final class Kadence_Palette_Slot {
 	 * @return self|null
 	 */
 	public static function from_token( Token_Definition $token ): ?self {
-		if ( ! $token->has_projection( self::PROJECTION ) ) {
-			return null;
-		}
-
+		// A missing projection (?? null), a non-string value, and a string that is not palette1…palette9
+		// all collapse to "not a palette slot" here, so no separate has_projection() guard is needed.
 		$slot = $token->projections[ self::PROJECTION ] ?? null;
 
 		if ( ! is_string( $slot ) || preg_match( self::SLOT_PATTERN, $slot ) !== 1 ) {

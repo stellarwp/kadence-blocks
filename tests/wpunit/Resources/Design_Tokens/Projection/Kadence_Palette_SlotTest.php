@@ -27,14 +27,14 @@ final class Kadence_Palette_SlotTest extends TestCase {
 	public function testFromTokenReturnsPaletteSlotForPalette1(): void {
 		$slot = Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => 'palette1' ] ) );
 
-		$this->assertNotNull( $slot );
+		$this->assertInstanceOf( Kadence_Palette_Slot::class, $slot );
 		$this->assertSame( 'palette1', $slot->slug );
 	}
 
 	public function testFromTokenReturnsPaletteSlotForPalette9(): void {
 		$slot = Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => 'palette9' ] ) );
 
-		$this->assertNotNull( $slot );
+		$this->assertInstanceOf( Kadence_Palette_Slot::class, $slot );
 		$this->assertSame( 'palette9', $slot->slug );
 	}
 
@@ -44,6 +44,19 @@ final class Kadence_Palette_SlotTest extends TestCase {
 
 	public function testFromTokenReturnsNullForPalette10(): void {
 		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => 'palette10' ] ) ) );
+	}
+
+	public function testFromTokenReturnsNullForPaletteWithoutDigit(): void {
+		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => 'palette' ] ) ) );
+	}
+
+	public function testFromTokenReturnsNullForEmptyString(): void {
+		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => '' ] ) ) );
+	}
+
+	public function testFromTokenReturnsNullForUppercaseSlot(): void {
+		// The slot pattern is case-sensitive: the stored slug must be lowercase palette1…palette9.
+		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [ 'kadence_slot' => 'Palette1' ] ) ) );
 	}
 
 	public function testFromTokenReturnsNullForFontSizeKey(): void {
