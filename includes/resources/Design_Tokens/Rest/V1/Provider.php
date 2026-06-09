@@ -23,7 +23,10 @@ final class Provider extends Provider_Contract {
 	 *
 	 * @var class-string<Controller>[]
 	 */
-	private const CONTROLLERS = [];
+	private const CONTROLLERS = [
+		Documents_Controller::class,
+		Schema_Controller::class,
+	];
 
 	/**
 	 * @inheritDoc
@@ -31,7 +34,7 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		foreach ( self::CONTROLLERS as $controller ) { // @phpstan-ignore foreach.emptyArray (CONTROLLERS is empty until the first endpoint controller lands; this ignore goes away once it is populated.)
+		foreach ( self::CONTROLLERS as $controller ) {
 			add_action( 'rest_api_init', $this->container->callback( $controller, 'register_routes' ) );
 		}
 	}
