@@ -144,7 +144,7 @@ final class Palette_BuilderTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '#3182CE', $result['palette']['palette1']['color'] ?? $result['palette'][0]['color'] );
+		$this->assertSame( '#3182CE', $result['palette'][0]['color'] );
 	}
 
 	public function testMergeKbColorsPreservesPositionOfExistingEntry(): void {
