@@ -151,7 +151,7 @@ final class Localizer {
 	private function rest(): array {
 		return [
 			'root'      => esc_url_raw( rest_url() ),
-			'namespace' => Controller::NAMESPACE_V1,
+			'namespace' => Controller::namespace_v1(),
 			'nonce'     => wp_create_nonce( 'wp_rest' ),
 		];
 	}
