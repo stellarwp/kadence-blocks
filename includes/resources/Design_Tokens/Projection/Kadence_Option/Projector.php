@@ -115,7 +115,7 @@ final class Projector {
 	 * @return void
 	 */
 	public function on_tokens_changed(): void {
-		$this->reconciled_this_request = true; // a write supersedes the boot pass for this request
+		$this->reconciled_this_request = true; // A write supersedes the boot pass for this request.
 		$this->sync();
 	}
 
@@ -135,7 +135,7 @@ final class Projector {
 		$signature     = $this->store->get_version() . ':' . ( $theme_present ? '1' : '0' );
 
 		// Skip the resolve + writes when neither the store version nor the theme-option presence changed
-		// since the last successful sync. (The theme-present bit is what catches a theme switch.)
+		// since the last successful sync. The theme-present bit is what catches a theme switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;
 		}
@@ -154,9 +154,9 @@ final class Projector {
 			return;
 		}
 
-		$this->sync_kb_colors( $entries );          // always
+		$this->sync_kb_colors( $entries );          // Always.
 
-		if ( $theme_present ) {                       // only when it already exists
+		if ( $theme_present ) {                       // Only when it already exists.
 			$this->sync_theme_palette( $entries );
 		}
 
