@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette .
+// cspell:ignore palette autoloaded alloptions .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Kadence_Option;
 
@@ -203,6 +203,15 @@ final class ProjectorTest extends TestCase {
 
 		// The marker must have been set after the first reconcile; the second must short-circuit.
 		$this->assertSame( $after_first, get_option( 'kadence_blocks_colors' ) );
+	}
+
+	public function testMarkerIsAutoloaded(): void {
+		$this->projector->reconcile();
+
+		$this->assertNotFalse( get_option( 'kadence_blocks_design_tokens_palette_sync' ) );
+		// reconcile() reads the marker on every request to short-circuit, so it must be autoloaded
+		// rather than cost a dedicated query: assert it landed in the autoloaded set.
+		$this->assertArrayHasKey( 'kadence_blocks_design_tokens_palette_sync', wp_load_alloptions() );
 	}
 
 	// ---- Token-changed action re-sync --------------------------------------------------------------
