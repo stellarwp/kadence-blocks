@@ -156,6 +156,7 @@ final class Token_RegistryTest extends TestCase {
 			array_keys( $sets )
 		);
 		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn']->block );
+		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading']->block );
 	}
 
 	public function testIsActiveByDefaultAndDeactivates(): void {
