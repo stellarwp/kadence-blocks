@@ -164,6 +164,44 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function testReadRoutesAreGatedByTheCapability(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+
+		// Both read callbacks gate the routes (get_items for the collection, get_item for a single block and
+		// its default), so both must deny a user without the capability and allow one that has it.
+		$checks = [ 'get_items_permissions_check', 'get_item_permissions_check' ];
+
+		// A logged-out user is denied.
+		wp_set_current_user( 0 );
+
+		foreach ( $checks as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny a logged-out user." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
+
+		// An authenticated user without edit_theme_options is denied.
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'subscriber' ] ) );
+
+		foreach ( $checks as $check ) {
+			$result = $this->controller->$check( $request );
+
+			$this->assertInstanceOf( WP_Error::class, $result, "$check should deny a subscriber." );
+			$this->assertSame( 'rest_forbidden', $result->get_error_code() );
+		}
+
+		// An administrator (edit_theme_options) is allowed.
+		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		foreach ( $checks as $check ) {
+			$this->assertTrue( $this->controller->$check( $request ), "$check should allow an administrator." );
+		}
+	}
+
+	/**
 	 * Build a request for a single block route, splitting the block name into its two path segments and
 	 * carrying any extra body parameters.
 	 *

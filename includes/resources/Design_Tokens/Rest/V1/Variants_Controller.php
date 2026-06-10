@@ -209,11 +209,12 @@ final class Variants_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$slug   = Token_Store::default_slug();
-		$blocks = [];
+		$slug    = Token_Store::default_slug();
+		$section = $this->variants->section( $slug );
+		$blocks  = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
-			$node = $this->variants->block( $block, $slug ) ?? [];
+			$node = isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
 
 			$blocks[] = [
 				'block'   => $block,
