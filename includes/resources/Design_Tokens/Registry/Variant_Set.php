@@ -120,7 +120,7 @@ final class Variant_Set {
 	 *
 	 * @return array{bindings: array<string, array{token: string|null, projections: array<string, mixed>}>}
 	 */
-	public function to_ui_array(): array {
+	public function to_ui_schema(): array {
 		$bindings = [];
 
 		foreach ( $this->bindings as $property => $binding ) {

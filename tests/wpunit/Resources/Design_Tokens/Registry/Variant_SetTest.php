@@ -88,8 +88,8 @@ final class Variant_SetTest extends TestCase {
 		$this->assertSame( [], $report['unvalued'] );
 	}
 
-	public function testToUiArrayEmitsTokenReferenceAndInlineTargetsPerProperty(): void {
-		$ui = Variant_Set::from_array( $this->declaration() )->to_ui_array();
+	public function testToUiSchemaEmitsTokenReferenceAndInlineTargetsPerProperty(): void {
+		$ui = Variant_Set::from_array( $this->declaration() )->to_ui_schema();
 
 		$this->assertSame( [ 'bindings' ], array_keys( $ui ) );
 
@@ -112,8 +112,8 @@ final class Variant_SetTest extends TestCase {
 		);
 	}
 
-	public function testToUiArrayIsEmptyWhenTheSetHasNoBindings(): void {
-		$ui = Variant_Set::from_array( [ 'block' => 'kadence/advancedbtn' ] )->to_ui_array();
+	public function testToUiSchemaIsEmptyWhenTheSetHasNoBindings(): void {
+		$ui = Variant_Set::from_array( [ 'block' => 'kadence/advancedbtn' ] )->to_ui_schema();
 
 		$this->assertSame( [ 'bindings' => [] ], $ui );
 	}
