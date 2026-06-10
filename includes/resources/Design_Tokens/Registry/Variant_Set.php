@@ -111,7 +111,7 @@ final class Variant_Set {
 	}
 
 	/**
-	 * Structure-only serialization for the admin UI feed (SOFT-3385): the bound properties and, per
+	 * Structure-only serialization for the admin UI feed: the bound properties and, per
 	 * property, the token reference and inline projection targets. Values, variant names and the default
 	 * are NOT here — those are document data read through the Variant_Resolver. Mirrors
 	 * {@see Token_Registry::to_ui_schema()}.
