@@ -137,11 +137,7 @@ final class Effective_Variants {
 	private function variants_of( array $document ): array {
 		$node = $document;
 
-		$path = [
-			Extensions::get_extensions_key(),
-			Extensions::get_namespace(),
-			Extensions::get_section_variants(),
-		];
+		$path = Extensions::get_variants_path();
 
 		foreach ( $path as $key ) {
 			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) ) {
