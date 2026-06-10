@@ -150,14 +150,16 @@ final class Projector {
 		}
 
 		$entries = $this->builder->entries( $resolved );
-		if ( $entries === [] ) {
-			return;
-		}
 
-		$this->sync_kb_colors( $entries );          // Always.
+		// Empty entries is a valid resolved state (no token values set yet). Still advance the marker so
+		// the next request short-circuits rather than re-resolving. When the user writes token values the
+		// store version changes, the signature flips, and the next reconcile re-enters the write path.
+		if ( $entries !== [] ) {
+			$this->sync_kb_colors( $entries );          // Always.
 
-		if ( $theme_present ) {                       // Only when it already exists.
-			$this->sync_theme_palette( $entries );
+			if ( $theme_present ) {                       // Only when it already exists.
+				$this->sync_theme_palette( $entries );
+			}
 		}
 
 		// Autoloaded: the boot pass reads this marker on every request to short-circuit, so it must not

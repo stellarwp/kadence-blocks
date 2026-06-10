@@ -80,7 +80,7 @@ final class ProjectorTest extends TestCase {
 		$by_slug = array_column( $decoded['palette'], null, 'slug' );
 		// The shipped declarations include button-bg => palette1.
 		$this->assertArrayHasKey( 'palette1', $by_slug );
-		$this->assertNotEmpty( $by_slug['palette1']['color'] );
+		$this->assertMatchesRegularExpression( '/^#[0-9a-fA-F]{3,8}$/', $by_slug['palette1']['color'] );
 	}
 
 	public function testReconcileSyncsKbColorsWithoutKadenceGlobalPalettePresent(): void {
@@ -274,7 +274,10 @@ final class ProjectorTest extends TestCase {
 	// ---- Hook wiring -------------------------------------------------------------------------------
 
 	public function testInitActionHasReconcileCallbackAtPriority20(): void {
-		$this->assertNotFalse( has_action( 'init' ) );
+		global $wp_filter;
+		// has_action('init') is always non-false in WP core; check that priority 20 specifically has a
+		// callback, which is where the Provider wires reconcile().
+		$this->assertArrayHasKey( 20, $wp_filter['init']->callbacks );
 	}
 
 	public function testTokenChangedActionHasOnTokensChangedCallback(): void {
