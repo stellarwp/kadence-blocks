@@ -120,7 +120,7 @@ final class Palette_BuilderTest extends TestCase {
 		$this->assertSame( [], $entries );
 	}
 
-	// ---- merge_kb_colors() -------------------------------------------------------------------------
+	// ---- merge_kadence_blocks_colors() -------------------------------------------------------------------------
 
 	public function testMergeKbColorsOverwritesColorOfExistingEntry(): void {
 		$existing = [
@@ -134,7 +134,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => false,
 		];
 
-		$result = $this->builder()->merge_kb_colors(
+		$result = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -164,7 +164,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => false,
 		];
 
-		$result  = $this->builder()->merge_kb_colors(
+		$result  = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -186,7 +186,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => false,
 		];
 
-		$result  = $this->builder()->merge_kb_colors(
+		$result  = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -215,7 +215,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => false,
 		];
 
-		$result  = $this->builder()->merge_kb_colors(
+		$result  = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -236,7 +236,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => true,
 		];
 
-		$result = $this->builder()->merge_kb_colors(
+		$result = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -255,7 +255,7 @@ final class Palette_BuilderTest extends TestCase {
 			'override' => false,
 		];
 
-		$result = $this->builder()->merge_kb_colors(
+		$result = $this->builder()->merge_kadence_blocks_colors(
 			$existing,
 			[
 				'palette1' => [
@@ -269,7 +269,7 @@ final class Palette_BuilderTest extends TestCase {
 	}
 
 	public function testMergeKbColorsDefaultsOverrideFalseWhenAbsent(): void {
-		$result = $this->builder()->merge_kb_colors(
+		$result = $this->builder()->merge_kadence_blocks_colors(
 			[],
 			[
 				'palette1' => [

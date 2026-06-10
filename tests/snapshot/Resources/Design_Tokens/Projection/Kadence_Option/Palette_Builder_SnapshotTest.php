@@ -79,7 +79,7 @@ final class Palette_Builder_SnapshotTest extends SnapshotTestCase {
 		];
 
 		$entries = $builder->entries( $resolved );
-		$merged  = $builder->merge_kb_colors( $existing, $entries );
+		$merged  = $builder->merge_kadence_blocks_colors( $existing, $entries );
 
 		$this->assertMatchesSnapshot( wp_json_encode( $merged, JSON_PRETTY_PRINT ) );
 	}

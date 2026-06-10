@@ -108,7 +108,7 @@ final class Palette_Builder {
 	 *
 	 * @return array<string, mixed> The merged payload (re-encode and store).
 	 */
-	public function merge_kb_colors( array $existing, array $entries ): array {
+	public function merge_kadence_blocks_colors( array $existing, array $entries ): array {
 		$palette = $this->palette_list( $existing );
 		$claimed = [];
 
@@ -164,11 +164,10 @@ final class Palette_Builder {
 	 * @return array<string, mixed> The merged payload (re-encode and store).
 	 */
 	public function merge_theme_palette( array $existing, array $entries ): array {
-		if ( ! isset( $existing['palette'] ) || ! is_array( $existing['palette'] ) ) {
+		$palette = $this->palette_list( $existing );
+		if ( $palette === [] ) {
 			return $existing; // Unexpected shape — leave the theme's option exactly as found.
 		}
-
-		$palette = $existing['palette'];
 
 		foreach ( $palette as $index => $entry ) {
 			if ( ! is_array( $entry ) ) {
