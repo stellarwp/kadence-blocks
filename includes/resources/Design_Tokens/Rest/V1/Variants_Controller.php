@@ -760,7 +760,21 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		return $this->persist( (string) wp_json_encode( $candidate ), $block, $status );
+		$encoded = wp_json_encode( $candidate );
+
+		// Guard the encode: a false return cast to "" would clear the whole set on persist instead of storing it.
+		if ( $encoded === false ) {
+			return new WP_Error(
+				'rest_design_tokens_save_failed',
+				__( 'The design token set could not be encoded.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::INTERNAL_SERVER_ERROR,
+					'block'  => $block,
+				]
+			);
+		}
+
+		return $this->persist( $encoded, $block, $status );
 	}
 
 	/**
@@ -982,7 +996,7 @@ final class Variants_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function unset_block( array $document, string $block ): array {
-		return $this->unset_path( $document, array_merge( $this->variants_path(), [ $block ] ) );
+		return $this->mutator->remove_by_keys( $document, array_merge( $this->variants_path(), [ $block ] ) );
 	}
 
 	/**
@@ -997,46 +1011,7 @@ final class Variants_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function unset_variant( array $document, string $block, string $variant ): array {
-		return $this->unset_path( $document, array_merge( $this->variants_path(), [ $block, $variant ] ) );
-	}
-
-	/**
-	 * Recursively remove a node addressed by literal keys, pruning emptied ancestor groups on the way out.
-	 *
-	 * Addresses the document by discrete array keys rather than a dot-path, because the keys themselves
-	 * carry dots ("com.kadence.designTokens") and slashes ("kadence/advancedbtn").
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $node The current node.
-	 * @param string[]             $keys The remaining literal keys to the node to remove.
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function unset_path( array $node, array $keys ): array {
-		$head = (string) array_shift( $keys );
-
-		if ( ! array_key_exists( $head, $node ) ) {
-			return $node;
-		}
-
-		if ( $keys === [] ) {
-			unset( $node[ $head ] );
-
-			return $node;
-		}
-
-		if ( ! is_array( $node[ $head ] ) ) {
-			return $node;
-		}
-
-		$node[ $head ] = $this->unset_path( $node[ $head ], $keys );
-
-		if ( $node[ $head ] === [] ) {
-			unset( $node[ $head ] );
-		}
-
-		return $node;
+		return $this->mutator->remove_by_keys( $document, array_merge( $this->variants_path(), [ $block, $variant ] ) );
 	}
 
 	/**
@@ -1047,11 +1022,7 @@ final class Variants_Controller extends Controller {
 	 * @return string[]
 	 */
 	private function variants_path(): array {
-		return [
-			Extensions::get_extensions_key(),
-			Extensions::get_namespace(),
-			Extensions::get_section_variants(),
-		];
+		return Extensions::get_variants_path();
 	}
 
 	/**
@@ -1116,20 +1087,15 @@ final class Variants_Controller extends Controller {
 	/**
 	 * Decode the stored overrides-only document for the default set.
 	 *
+	 * Reuses the reader's single decode seam ({@see Effective_Variants::raw()}) so the controller does not
+	 * decode the store itself.
+	 *
 	 * @since TBD
 	 *
 	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
 	 */
 	private function stored_document(): array {
-		$raw = $this->store->get_document( Token_Store::default_slug() );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
+		return $this->variants->raw( Token_Store::default_slug() );
 	}
 
 	/**
