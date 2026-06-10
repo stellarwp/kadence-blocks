@@ -269,7 +269,7 @@ final class Css_Builder {
 	 */
 	private function variant_var( string $block, string $variant, string $property ): string {
 		return Css_Var::PREFIX . self::VARIANT_SEGMENT
-			. Style::ident( str_replace( '/', '-', $block ) ) . '--'
+			. Style::ident( $block ) . '--'
 			. Style::ident( $variant ) . '--'
 			. Style::ident( $property );
 	}
