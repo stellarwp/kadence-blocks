@@ -138,6 +138,21 @@ final class Extensions {
 	}
 
 	/**
+	 * The literal key path to the variants section, from the document root.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_variants_path(): array {
+		return [
+			self::get_extensions_key(),
+			self::get_namespace(),
+			self::get_section_variants(),
+		];
+	}
+
+	/**
 	 * The key naming a group's default preset slug.
 	 *
 	 * @since TBD
