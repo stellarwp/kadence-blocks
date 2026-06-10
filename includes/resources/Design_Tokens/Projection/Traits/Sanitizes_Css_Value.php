@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits;
 
 /**
  * Shared defense-in-depth sanitizer for a CSS custom-property value, used by the projection CSS builders.

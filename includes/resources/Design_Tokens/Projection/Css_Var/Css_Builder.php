@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Sanitizes_Css_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;

@@ -3,7 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Sanitizes_Css_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;

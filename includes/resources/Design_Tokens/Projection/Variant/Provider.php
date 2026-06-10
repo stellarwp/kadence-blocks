@@ -26,8 +26,8 @@ final class Provider extends Provider_Contract {
 		// so a variant override always follows the base token vars in source order and wins by cascade.
 		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 110 );
 
-		// Editor: append at admin_init priority 6, after the editor-styles handle is registered and after the
+		// Editor: append at admin_init priority 10, after the editor-styles handle is registered and after the
 		// Css_Var projector (priority 5), so the variant CSS follows the token vars on the same handle.
-		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 6 );
+		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 10 );
 	}
 }
