@@ -21,5 +21,16 @@ final class Scope {
 	 *
 	 * @var string
 	 */
-	public const ROOT = ':root,:root:where(.kb-tokens)';
+	private const ROOT = ':root,:root:where(.kb-tokens)';
+
+	/**
+	 * The root scope selector shared by the projection CSS builders.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function root(): string {
+		return self::ROOT;
+	}
 }

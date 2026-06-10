@@ -3,6 +3,7 @@
 namespace Tests\snapshot\Resources\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -49,7 +50,7 @@ final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 		$css = $this->builder()->css( $resolved );
 
 		// Structural assertions that must always hold regardless of snapshot content.
-		$this->assertStringContainsString( Css_Builder::SCOPE, $css );
+		$this->assertStringContainsString( Scope::root(), $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 		$this->assertStringContainsString( '--wp--preset--', $css );
 		$this->assertStringNotContainsString( '!important', $css );

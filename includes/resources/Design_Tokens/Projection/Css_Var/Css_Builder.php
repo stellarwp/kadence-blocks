@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -29,14 +30,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  */
 final class Css_Builder {
 
-	/**
-	 * The root scope for both declaration blocks, defined once in {@see Scope::ROOT}.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const SCOPE = Scope::ROOT;
+	use Sanitizes_Css_Value;
 
 	/**
 	 * Object-cache group shared with the resolver.
@@ -136,7 +130,7 @@ final class Css_Builder {
 			$declarations .= $var . ':' . $this->sanitize_value( $value ) . ';';
 		}
 
-		return self::SCOPE . '{' . $declarations . '}';
+		return Scope::root() . '{' . $declarations . '}';
 	}
 
 	/**
@@ -173,26 +167,6 @@ final class Css_Builder {
 			$declarations .= $preset . ':var(' . $token->css_var . ');';
 		}
 
-		return $declarations === '' ? '' : self::SCOPE . '{' . $declarations . '}';
-	}
-
-	/**
-	 * Defense-in-depth sanitizer for a custom-property value.
-	 *
-	 * Values from the Resolver are already well-formed; this only guarantees a stray value can never
-	 * break out of the declaration or inject a rule (strips "{", "}", ";", "<", ">" and control
-	 * characters). Not esc_attr(), which would mangle legitimate CSS such as the quotes/commas in a
-	 * font-family stack.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $value The raw CSS value.
-	 *
-	 * @return string
-	 */
-	private function sanitize_value( string $value ): string {
-		$value = preg_replace( '/[\x00-\x1F\x7F]/', '', $value ) ?? '';
-
-		return str_replace( [ '{', '}', ';', '<', '>' ], '', $value );
+		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
 	}
 }

@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
@@ -11,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable block variants — "Projector B" for Kadence blocks.
+ * Builds the scoped CSS for selectable Kadence block variants.
  *
  * A Kadence block has no native style-variation system, so a selected variant reaches output purely
  * through the cascade: the editor adds a "kb-variant--<name>" class to the block, and this builder emits,
@@ -37,6 +38,8 @@ use RuntimeException;
  * @since TBD
  */
 final class Css_Builder {
+
+	use Sanitizes_Css_Value;
 
 	/**
 	 * The variant var namespace, appended after the shared --kb-token-- prefix.
@@ -120,7 +123,7 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = '.wp-block-' . $this->ident( str_replace( '/', '-', $block ) );
+			$selector = '.wp-block-' . $this->sanitize_identifier( str_replace( '/', '-', $block ) );
 
 			foreach ( $names as $variant ) {
 				try {
@@ -152,12 +155,12 @@ final class Css_Builder {
 				}
 
 				if ( $declarations !== '' ) {
-					$scoped .= $selector . '.kb-variant--' . $this->ident( $variant ) . '{' . $declarations . '}';
+					$scoped .= $selector . '.kb-variant--' . $this->sanitize_identifier( $variant ) . '{' . $declarations . '}';
 				}
 			}
 		}
 
-		$css = $globals === '' ? '' : Scope::ROOT . '{' . $globals . '}';
+		$css = $globals === '' ? '' : Scope::root() . '{' . $globals . '}';
 
 		return $css . $scoped;
 	}
@@ -208,7 +211,7 @@ final class Css_Builder {
 	 * @return string|null The slot ("palette3"), or null.
 	 */
 	private function palette_slot( Binding $binding ): ?string {
-		$slot = $this->registry->effective_projections( $binding )[ Binding::KADENCE_SLOT ] ?? null;
+		$slot = $this->registry->effective_projections( $binding )[ Binding::get_kadence_slot_key() ] ?? null;
 
 		if ( is_string( $slot ) && preg_match( '/^palette[1-9]$/', $slot ) === 1 ) {
 			return $slot;
@@ -230,10 +233,10 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function variant_var( string $block, string $variant, string $property ): string {
-		return Css_Var::PREFIX . self::VARIANT_SEGMENT
-			. $this->ident( str_replace( '/', '-', $block ) ) . '--'
-			. $this->ident( $variant ) . '--'
-			. $this->ident( $property );
+		return Css_Var::get_prefix() . self::VARIANT_SEGMENT
+			. $this->sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
+			. $this->sanitize_identifier( $variant ) . '--'
+			. $this->sanitize_identifier( $property );
 	}
 
 	/**
@@ -247,24 +250,7 @@ final class Css_Builder {
 	 *
 	 * @return string
 	 */
-	private function ident( string $segment ): string {
+	private function sanitize_identifier( string $segment ): string {
 		return (string) preg_replace( '/[^A-Za-z0-9_-]+/', '-', $segment );
-	}
-
-	/**
-	 * Defense-in-depth sanitizer for a custom-property value: strips control characters and the characters
-	 * that could close a declaration or inject a rule ("{", "}", ";", "<", ">"). Not esc_attr(), which
-	 * would mangle legitimate CSS such as a font-family stack.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $value The raw CSS value.
-	 *
-	 * @return string
-	 */
-	private function sanitize_value( string $value ): string {
-		$value = preg_replace( '/[\x00-\x1F\x7F]/', '', $value ) ?? '';
-
-		return str_replace( [ '{', '}', ';', '<', '>' ], '', $value );
 	}
 }

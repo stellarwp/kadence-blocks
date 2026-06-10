@@ -22,10 +22,12 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Css_Builder::class );
 		$this->container->singleton( Projector::class );
 
-		// Front end: append after the token vars (KB enqueues the handle at 90; the Css_Var projector at 100).
-		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 100 );
+		// Front end: append after the token vars (KB enqueues the handle at 90; the Css_Var projector at 100),
+		// so a variant override always follows the base token vars in source order and wins by cascade.
+		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 110 );
 
-		// Editor: append at admin_init priority 5, after the editor-styles handle is registered.
-		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 5 );
+		// Editor: append at admin_init priority 6, after the editor-styles handle is registered and after the
+		// Css_Var projector (priority 5), so the variant CSS follows the token vars on the same handle.
+		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 6 );
 	}
 }

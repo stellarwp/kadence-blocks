@@ -76,6 +76,9 @@ addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttrib
  * selected variant is emitted server-side by the Design Tokens variant projector.
  *
  * @param {Object} settings The block settings.
+ *
+ * @since TBD
+ *
  * @return {Object} The block settings with the kbVariant attribute added.
  */
 export function blockVariantAttribute(settings) {
@@ -96,11 +99,14 @@ addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVaria
  * The class a selected variant outputs, or an empty string when none is selected.
  *
  * @param {string} kbVariant The selected variant slug.
+ *
+ * @since TBD
+ *
  * @return {string} The `kb-variant--<slug>` class, or an empty string.
  */
 function kbVariantClassName(kbVariant) {
-	// Mirror the projector's PHP ident() sanitizer, so the output class always matches the scoped selector
-	// the projector emits even if a slug carries an unexpected character.
+	// Mirror the projector's PHP Css_Builder::sanitize_identifier() sanitizer, so the output class always
+	// matches the scoped selector the projector emits even if a slug carries an unexpected character.
 	const slug = (kbVariant || '').replace(/[^A-Za-z0-9_-]+/g, '-');
 
 	return slug ? `kb-variant--${slug}` : '';
@@ -113,6 +119,9 @@ function kbVariantClassName(kbVariant) {
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
  * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
  * @return {Object} The props, with the variant class appended when one is selected.
  */
 export function blockVariantSaveClass(props, blockType, attributes) {
@@ -133,6 +142,8 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', b
 /**
  * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
  * live with the same scoped overrides the front end uses.
+ *
+ * @since TBD
  */
 const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {

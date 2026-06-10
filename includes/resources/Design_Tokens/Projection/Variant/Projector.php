@@ -3,12 +3,12 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Editor_Page;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use RuntimeException;
 
 /**
- * Projects the selectable-variant CSS into the WordPress style pipeline ("Projector B").
+ * Projects the selectable-variant CSS into the WordPress style pipeline.
  *
  * Appends the per (block, variant) scoped overrides built by {@see Css_Builder} to KB's existing inline
  * style handles, on the front end and in the editor, gated on Token_Registry::is_active() so a
@@ -88,7 +88,7 @@ final class Projector {
 		}
 
 		/** This filter is documented in includes/resources/Design_Tokens/Projection/Css_Var/Projector.php */
-		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Editor_Page::is_block_editor() ) ) {
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Location::is_block_editor() ) ) {
 			return;
 		}
 

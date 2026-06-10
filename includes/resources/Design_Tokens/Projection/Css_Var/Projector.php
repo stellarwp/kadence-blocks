@@ -3,9 +3,9 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Editor_Page;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use RuntimeException;
 
 /**
@@ -104,7 +104,7 @@ final class Projector {
 		 *
 		 * @param bool $load True on known block-editor page slugs.
 		 */
-		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Editor_Page::is_block_editor() ) ) {
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Location::is_block_editor() ) ) {
 			return;
 		}
 
