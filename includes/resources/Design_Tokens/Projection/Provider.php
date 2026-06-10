@@ -25,6 +25,7 @@ final class Provider extends Provider_Contract {
 		Css_Var\Provider::class,
 		Theme_Json\Provider::class,
 		Block_Preset\Provider::class,
+		Adapter\Provider::class,
 	];
 
 	/**

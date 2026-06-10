@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 
 /**
@@ -24,6 +25,9 @@ final class Token_Registry {
 
 	/** @var array<string, Variant_Set> Keyed by block name. */
 	private array $variant_sets = [];
+
+	/** @var array<string, Adapter_Interface> Keyed by block name. */
+	private array $adapters = [];
 
 	/**
 	 * Whether token projection is active. Flipped off by the fail-closed guard so projectors and the
@@ -62,6 +66,20 @@ final class Token_Registry {
 		$variant_set = Variant_Set::from_array( $set );
 
 		$this->variant_sets[ $variant_set->block ] = $variant_set;
+	}
+
+	/**
+	 * Register a per-block adapter — a named transform keyed to the Kadence Blocks block type it adapts.
+	 * At most one adapter per block; a later registration for the same block replaces the earlier one.
+	 *
+	 * @since TBD
+	 *
+	 * @param Adapter_Interface $adapter The adapter to register.
+	 *
+	 * @return void
+	 */
+	public function register_adapter( Adapter_Interface $adapter ): void {
+		$this->adapters[ $adapter->get_block() ] = $adapter;
 	}
 
 	// ---- Lookups consumed by projectors and the UI ------------------------------------------------
@@ -148,6 +166,31 @@ final class Token_Registry {
 	 */
 	public function for_block( string $block ): ?Variant_Set {
 		return $this->variant_sets[ $block ] ?? null;
+	}
+
+	/**
+	 * The adapter registered for a Kadence Blocks block, or null when the block has none (the default —
+	 * its CSS vars already carry the tokens).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The Kadence Blocks block name, e.g. "kadence/advancedheading".
+	 *
+	 * @return Adapter_Interface|null
+	 */
+	public function adapter_for_block( string $block ): ?Adapter_Interface {
+		return $this->adapters[ $block ] ?? null;
+	}
+
+	/**
+	 * All registered adapters, keyed by Kadence Blocks block name.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, Adapter_Interface>
+	 */
+	public function adapters(): array {
+		return $this->adapters;
 	}
 
 	/**

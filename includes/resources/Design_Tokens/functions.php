@@ -2,6 +2,7 @@
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Selector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
@@ -49,6 +50,30 @@ if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
 		$registry->register_variant_set( $set );
+	}
+}
+
+if ( ! function_exists( 'kadence_blocks_register_design_token_adapter' ) ) {
+	/**
+	 * Register a per-block adapter — a named transform keyed to the Kadence Blocks block type whose
+	 * attributes cannot be expressed as a clean token/variable reference. Adapters apply to Kadence Blocks
+	 * blocks only: they run through KB's own block-attributes seam, so a core or third-party block is never
+	 * touched. Thin readability wrapper over Token_Registry::register_adapter() that mirrors KB's existing
+	 * global helpers. Most blocks need none.
+	 *
+	 * Register any time before the block renders (e.g. on `init`): the adapter projector looks the adapter
+	 * up by block when KB assembles the block's attributes, so registration order does not matter.
+	 *
+	 * @since TBD
+	 *
+	 * @param Adapter_Interface $adapter The adapter to register.
+	 *
+	 * @return void
+	 */
+	function kadence_blocks_register_design_token_adapter( Adapter_Interface $adapter ): void {
+		/** @var Token_Registry $registry */
+		$registry = kadence_blocks()->get( Token_Registry::class );
+		$registry->register_adapter( $adapter );
 	}
 }
 
