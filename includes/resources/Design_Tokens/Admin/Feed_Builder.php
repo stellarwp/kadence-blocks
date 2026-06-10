@@ -51,25 +51,15 @@ final class Feed_Builder {
 	 * @return array<string, mixed> The localized payload.
 	 */
 	public function build( array $values, bool $resolved, array $variants, array $rest, int $version ): array {
-		if ( ! $this->registry->is_active() ) {
-			return [
-				'active'   => false,
-				'resolved' => false,
-				'version'  => $version,
-				'schema'   => [ 'groups' => [] ],
-				'values'   => [],
-				'variants' => [],
-				'rest'     => $rest,
-			];
-		}
+		$active = $this->registry->is_active();
 
 		return [
-			'active'   => true,
-			'resolved' => $resolved,
+			'active'   => $active,
+			'resolved' => $active && $resolved,
 			'version'  => $version,
-			'schema'   => $this->registry->to_ui_schema(),
-			'values'   => $values,
-			'variants' => $variants,
+			'schema'   => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
+			'values'   => $active ? $values : [],
+			'variants' => $active ? $variants : [],
 			'rest'     => $rest,
 		];
 	}

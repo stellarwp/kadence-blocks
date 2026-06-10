@@ -60,6 +60,14 @@ final class Feed_BuilderTest extends TestCase {
 		$this->assertSame( [], $feed['values'] );
 	}
 
+	public function testResolvedTrueWithEmptyValuesPassesThroughUnchanged(): void {
+		$feed = ( new Feed_Builder( $this->registry ) )->build( [], true, [], $this->rest(), 7 );
+
+		$this->assertTrue( $feed['active'] );
+		$this->assertTrue( $feed['resolved'] );
+		$this->assertSame( [], $feed['values'] );
+	}
+
 	public function testDeactivatedRegistryYieldsEmptyInactivePayload(): void {
 		$this->registry->deactivate();
 
