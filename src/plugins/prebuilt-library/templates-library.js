@@ -1,5 +1,7 @@
 /**
  * Handle Template Library.
+ *
+ * cSpell:ignore blockcode
  */
 
 /**

@@ -1,6 +1,8 @@
 <?php
 /**
  * REST API for Kadence prebuilt library.
+ *
+ * CSpell:ignore ploaceholder postid numberxnumber inbetween
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

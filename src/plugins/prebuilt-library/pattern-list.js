@@ -1,3 +1,4 @@
+// cSpell:ignore hpcontexts bento
 /**
  * WordPress dependencies
  */

@@ -3,6 +3,8 @@
  * Class for pulling in library database and saving locally
  * Based on a package from the WPTT Team for local fonts.
  *
+ * CSpell:ignore wptt creds wpfs gmaiil gmai gmaill orgg
+ *
  * @package Kadence Blocks
  */
 

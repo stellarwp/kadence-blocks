@@ -1,3 +1,4 @@
+// cSpell:ignore blockcode
 /**
  * External dependencies
  */
