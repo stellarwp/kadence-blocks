@@ -127,15 +127,19 @@ final class Localizer {
 			$variants = $this->variant_feed->all( $slug );
 			$resolved = true;
 		} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
-			// Corrupt stored document. Fail open: ship structure only.
-			$resolved = false;
+			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
 		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version );
+		$json = wp_json_encode( $feed );
+
+		if ( $json === false ) {
+			return; // Feed cannot be serialized — skip rather than inject malformed JS.
+		}
 
 		wp_add_inline_script(
 			self::HANDLE,
-			'window.' . self::OBJECT . ' = ' . wp_json_encode( $feed ) . ';',
+			'window.' . self::OBJECT . ' = ' . $json . ';',
 			'before'
 		);
 	}
