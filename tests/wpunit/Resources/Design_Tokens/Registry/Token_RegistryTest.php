@@ -1,5 +1,4 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn advancedheading .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
