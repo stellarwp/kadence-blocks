@@ -10232,7 +10232,7 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$route_namespace of function register_rest_route expects non\\-falsy\\-string, string given\\.$#"
-			count: 22
+			count: 19
 			path: includes/class-kadence-blocks-prebuilt-library-rest-api.php
 
 		-
@@ -11846,7 +11846,7 @@ parameters:
 			path: includes/helper-functions.php
 
 		-
-			message: "#^Function kadence_blocks_get_current_license_data\\(\\) should return array\\{key\\: string, email\\: string, product\\: string, env\\: string\\} but returns array\\.$#"
+			message: "#^Function kadence_blocks_get_current_license_data\\(\\) should return array\\{key\\: string, email\\: string, product\\: string\\} but returns array\\.$#"
 			count: 1
 			path: includes/helper-functions.php
 

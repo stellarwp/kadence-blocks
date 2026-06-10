@@ -11,6 +11,7 @@ namespace KadenceWP\KadenceBlocks;
 use function kadence_blocks_get_asset_file;
 use function kadence_blocks_is_legacy_license_authorized;
 use function kadence_blocks_get_current_license_data;
+use function kadence_blocks_get_current_env;
 use function kadence_blocks_get_post_types;
 use function kadence_blocks_is_ai_disabled;
 use function kadence_blocks_get_ai_disabled_message;
@@ -186,7 +187,7 @@ class Editor_Assets {
 
 		return [
 			'product'   => ! empty( $license_data['product'] ) ? $license_data['product'] : '',
-			'env'       => ! empty( $license_data['env'] ) ? $license_data['env'] : '',
+			'env'       => kadence_blocks_get_current_env(),
 			'hasApiKey' => ! empty( $license_data['key'] ),
 		];
 	}

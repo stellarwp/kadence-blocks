@@ -337,6 +337,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	protected $cache_primer;
 
 	/**
+	 * The route namespace.
+	 *
+	 * @var non-falsy-string
+	 */
+	protected $namespace = 'kb-design-library/v1';
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.7.5 add dynamic base URLs for patterns and starter templates
