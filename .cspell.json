@@ -1,7 +1,7 @@
 {
     "version": "0.2",
     "ignorePaths": [
-		"agents.md",
+		"AGENTS.md",
         "package-lock.json",
         "bun.lock",
         "bun.lockb",
