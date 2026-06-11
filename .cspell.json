@@ -16,6 +16,7 @@
         "**/*.svg"
     ],
     "words": [
+        "ABSPATH",
         "algoliasearch",
         "bunfig",
         "bunx",
@@ -25,11 +26,14 @@
         "dotlottie",
         "gulpfile",
         "hcaptcha",
+        "ithemes",
         "kadence",
         "lottiefiles",
         "lwsw",
         "mbstring",
         "memize",
+        "multisite",
+        "multisites",
         "nvmrc",
         "phar",
         "phpcs",
@@ -43,6 +47,7 @@
         "splide",
         "splidejs",
         "stellarwp",
-		"solidwp"
+    		"solidwp",
+        "trailingslashit"
     ]
 }
