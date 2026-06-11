@@ -116,6 +116,17 @@ final class Extensions {
 	}
 
 	/**
+	 * The variants section name: block presets / variants.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_variants(): string {
+		return self::SECTION_VARIANTS;
+	}
+
+	/**
 	 * Every section name the module owns under its namespace.
 	 *
 	 * @since TBD
@@ -124,6 +135,21 @@ final class Extensions {
 	 */
 	public static function get_sections(): array {
 		return [ self::SECTION_FOUNDATION_PRESETS, self::SECTION_VARIANTS ];
+	}
+
+	/**
+	 * The literal key path to the variants section, from the document root.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_variants_path(): array {
+		return [
+			self::get_extensions_key(),
+			self::get_namespace(),
+			self::get_section_variants(),
+		];
 	}
 
 	/**

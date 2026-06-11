@@ -1,12 +1,12 @@
 <?php declare( strict_types=1 );
-// cspell:ignore pagenow .
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
-use RuntimeException;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
+use Throwable;
 
 /**
  * Projects the resolved token set into the WordPress style pipeline.
@@ -104,7 +104,7 @@ final class Projector {
 		 *
 		 * @param bool $load True on known block-editor page slugs.
 		 */
-		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', $this->is_block_editor_page() ) ) {
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Location::is_block_editor() ) ) {
 			return;
 		}
 
@@ -160,7 +160,7 @@ final class Projector {
 		try {
 			$version  = $this->store->get_version();
 			$resolved = $this->resolver->resolve();
-		} catch ( RuntimeException $e ) {
+		} catch ( Throwable $e ) {
 			return '';
 		}
 
@@ -176,20 +176,5 @@ final class Projector {
 	 */
 	private function is_active(): bool {
 		return $this->registry->is_active();
-	}
-
-	/**
-	 * Whether the current admin request is a known block-editor page.
-	 *
-	 * Uses the global $pagenow because get_current_screen() is not yet available at
-	 * admin_init priority 5, which is when the editor handle is registered.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	private function is_block_editor_page(): bool {
-		global $pagenow;
-		return in_array( $pagenow, [ 'post.php', 'post-new.php', 'site-editor.php', 'widgets.php' ], true );
 	}
 }
