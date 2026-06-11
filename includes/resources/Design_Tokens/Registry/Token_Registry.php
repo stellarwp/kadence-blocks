@@ -151,9 +151,9 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The block names that have a registered variant set, in registration order. The variant projector
-	 * walks these to emit each block's selectable-variant CSS; the variant values themselves come from the
-	 * document via the Variant_Resolver.
+	 * The block names that have a registered variant set, in registration order. Projectors walk these to
+	 * emit each block's variant output; the variant values themselves come from the document via the
+	 * Variant_Resolver.
 	 *
 	 * @since TBD
 	 *
