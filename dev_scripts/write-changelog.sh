@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #
 # Compile pending changelog entries into readme.txt using
-# @stellarwp/changelogger (and the custom Kadence-format strategy).
+# @stellarwp/changelogger (and the custom Kadence-format strategy). The
+# changelogger itself is fetched on demand via dev_scripts/changelogger.sh.
 #
 # Authors add entries during development with:
 #   composer run changelog:add
@@ -30,15 +31,5 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-if ! command -v npx >/dev/null 2>&1; then
-  echo "Error: npx (Node.js) is required to run @stellarwp/changelogger." >&2
-  exit 1
-fi
-
-if [ ! -x "node_modules/.bin/changelogger" ]; then
-  echo "Error: @stellarwp/changelogger is not installed. Run \`npm install --legacy-peer-deps\` first." >&2
-  exit 1
-fi
-
 echo "Writing changelog for $VERSION..."
-exec npx --no-install changelogger write --overwrite-version "$VERSION" "$@"
+exec dev_scripts/changelogger.sh write --overwrite-version "$VERSION" "$@"
