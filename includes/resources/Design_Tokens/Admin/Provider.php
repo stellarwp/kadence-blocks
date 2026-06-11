@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -19,8 +21,8 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		$this->container->singleton( Feed_Builder::class );
-		$this->container->singleton( Variant_Feed::class );
+		$this->container->singleton( Builder::class );
+		$this->container->singleton( Variants::class );
 		$this->container->singleton( Localizer::class );
 
 		// admin_head fires after the dashboard's admin_print_styles-{page} enqueue and before the footer

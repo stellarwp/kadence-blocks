@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -13,7 +15,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  *
  * On admin_head — after the dashboard's `admin_print_styles-{page}` enqueue has run, before the footer
  * where `admin-kadence-home` prints — it gathers the resolved values, the variants and the REST
- * root/nonce, asks {@see Feed_Builder} to shape them, and attaches the result to the existing
+ * root/nonce, asks {@see Builder} to shape them, and attaches the result to the existing
  * 'admin-kadence-home' handle as `window.kadenceDesignTokens`. Guarded on
  * wp_script_is( …, 'enqueued' ) so it runs ONLY where that bundle loads (the Kadence dashboard, and any
  * future screen using it), never plugin-wide.
@@ -70,32 +72,32 @@ final class Localizer {
 	 *
 	 * @since TBD
 	 *
-	 * @var Variant_Feed
+	 * @var Variants
 	 */
-	private Variant_Feed $variant_feed;
+	private Variants $variant_feed;
 
 	/**
 	 * The pure payload assembler.
 	 *
 	 * @since TBD
 	 *
-	 * @var Feed_Builder
+	 * @var Builder
 	 */
-	private Feed_Builder $builder;
+	private Builder $builder;
 
 	/**
 	 * @since TBD
 	 *
 	 * @param Token_Resolver $resolver     The token resolver.
 	 * @param Token_Store    $store        The token store.
-	 * @param Variant_Feed   $variant_feed The variants section builder.
-	 * @param Feed_Builder   $builder      The pure payload assembler.
+	 * @param Variants       $variant_feed The variants section builder.
+	 * @param Builder        $builder      The pure payload assembler.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Variant_Feed $variant_feed,
-		Feed_Builder $builder
+		Variants $variant_feed,
+		Builder $builder
 	) {
 		$this->resolver     = $resolver;
 		$this->store        = $store;
