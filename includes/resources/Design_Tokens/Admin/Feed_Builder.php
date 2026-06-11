@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 /**
  * Pure assembler for the admin UI schema feed — the `window.kadenceDesignTokens` payload the dashboard
- * React app reads (SOFT-3385).
+ * React app reads.
  *
  * Reads token STRUCTURE from the registry ({@see Token_Registry::to_ui_schema()}) and folds in the
  * resolved VALUES, VARIANTS, REST descriptor and store version handed in by the Localizer — which owns
