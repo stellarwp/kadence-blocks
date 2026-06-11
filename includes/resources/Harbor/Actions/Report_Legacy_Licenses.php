@@ -49,6 +49,7 @@ final class Report_Legacy_Licenses {
 				'product'   => 'kadence',
 				'is_active' => $is_active,
 				'page_url'  => esc_url( $plugin['page_url'] ),
+				'use_for_updates' => $plugin['is_premium'] ? true : false,
 			];
 		}
 
