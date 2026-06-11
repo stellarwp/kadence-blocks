@@ -210,7 +210,7 @@ final class Projector {
 	 */
 	private function sync_kb_colors( array $entries ): void {
 		$raw     = get_option( self::KB_COLORS_OPTION, '' );
-		$decoded = $this->decode( is_string( $raw ) ? $raw : '' );
+		$decoded = $this->decode( $raw );
 		$merged  = $this->builder->merge_kb_colors( $decoded, $entries );
 
 		// Autoloaded: this option is read on every front-end request — load_color_palette() on
@@ -236,7 +236,7 @@ final class Projector {
 		}
 
 		$raw     = get_option( self::THEME_PALETTE_OPTION, '' );
-		$decoded = $this->decode( is_string( $raw ) ? $raw : '' );
+		$decoded = $this->decode( $raw );
 		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
 
 		// This option always already exists here (proved by the sentinel probe), so update_option ignores
@@ -262,14 +262,15 @@ final class Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $raw
+	 * @param mixed $raw
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function decode( string $raw ): array {
-		if ( $raw === '' ) {
+	private function decode( $raw ): array {
+		if ( ! is_string( $raw ) || $raw === '' ) {
 			return [];
 		}
+
 		$decoded = json_decode( $raw, true );
 
 		return is_array( $decoded ) ? $decoded : [];
