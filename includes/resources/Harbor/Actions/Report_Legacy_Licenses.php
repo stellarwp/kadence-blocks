@@ -16,6 +16,7 @@ final class Report_Legacy_Licenses {
 	 * Reports legacy Uplink-managed Kadence licenses to Harbor so they appear
 	 * in the unified license UI.
 	 *
+	 * @since TBD add use_for_updates
 	 * @since 3.7.0
 	 *
 	 * @param array $licenses Existing legacy licenses from other plugins.
@@ -49,6 +50,7 @@ final class Report_Legacy_Licenses {
 				'product'   => 'kadence',
 				'is_active' => $is_active,
 				'page_url'  => esc_url( $plugin['page_url'] ),
+				'use_for_updates' => $plugin['is_premium'] ? true : false,
 			];
 		}
 
