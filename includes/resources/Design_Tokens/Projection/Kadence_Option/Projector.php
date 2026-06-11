@@ -213,10 +213,10 @@ final class Projector {
 		$decoded = $this->decode( $raw );
 		$merged  = $this->builder->merge_kb_colors( $decoded, $entries );
 
-		// Autoloaded: this option is read on every front-end request — load_color_palette() on
-		// after_setup_theme and load_color_palette_theme_json() on wp_theme_json_data_theme both
-		// get_option() it. On an existing option update_option ignores this flag (preserving KB's own
-		// setting, normally autoloaded); it only takes effect when WE create the option first.
+		// Pass true to ensure this option is autoloaded: it is read on every front-end request
+		// (load_color_palette() in after_setup_theme, load_color_palette_theme_json() on
+		// wp_theme_json_data_theme). update_option only writes when the value changes, and preserves
+		// autoload each time it does — which is the state we want.
 		update_option( self::KB_COLORS_OPTION, (string) wp_json_encode( $merged ), true );
 	}
 
@@ -239,9 +239,8 @@ final class Projector {
 		$decoded = $this->decode( $raw );
 		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
 
-		// This option always already exists here (proved by the sentinel probe), so update_option ignores
-		// the autoload arg and leaves the theme's own setting untouched. Pass null to say so explicitly
-		// rather than implying we would set it to "no".
+		// Pass null so update_option preserves the theme's existing autoload setting rather than
+		// forcing it. It only writes when the value changes.
 		update_option( self::THEME_PALETTE_OPTION, (string) wp_json_encode( $merged ), null );
 	}
 
