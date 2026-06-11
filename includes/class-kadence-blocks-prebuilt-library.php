@@ -221,7 +221,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * The library flow uses the server's own stored license data rather than
 	 * values passed in with the request.
 	 *
-	 * @since TBD
+	 * @since 3.7.6
 	 *
 	 * @return string
 	 */
@@ -234,7 +234,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Get the stored Kadence license email.
 	 *
-	 * @since TBD
+	 * @since 3.7.6
 	 *
 	 * @return string
 	 */

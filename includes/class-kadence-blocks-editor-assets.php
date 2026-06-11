@@ -180,7 +180,7 @@ class Editor_Assets {
 	 * whether a key is present). Requests that need the license key itself are
 	 * made through the server-side REST API.
 	 *
-	 * @since TBD
+	 * @since 3.7.6
 	 *
 	 * @return array{product: string, env: string, hasApiKey: bool}
 	 */
