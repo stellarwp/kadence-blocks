@@ -83,6 +83,16 @@ final class ProjectorTest extends TestCase {
 		$this->assertMatchesRegularExpression( '/^#[0-9a-fA-F]{3,8}$/', $by_slug['palette1']['color'] );
 	}
 
+	public function testReconcileDecodesEmptyKbColorsOption(): void {
+		update_option( 'kadence_blocks_colors', '' );
+
+		$this->projector->reconcile();
+
+		$decoded = json_decode( (string) get_option( 'kadence_blocks_colors' ), true );
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'palette', $decoded );
+	}
+
 	public function testReconcileSyncsKbColorsWithoutKadenceGlobalPalettePresent(): void {
 		// Explicitly confirm there is no kadence_global_palette option.
 		$this->assertSame( self::ABSENT, get_option( 'kadence_global_palette', self::ABSENT ) );
@@ -154,6 +164,30 @@ final class ProjectorTest extends TestCase {
 	// ---- Fail-open on corrupt store ----------------------------------------------------------------
 
 	public function testReconcileDoesNotAdvanceMarkerOnResolverException(): void {
+		$kb_colors     = [
+			'palette'  => [
+				[
+					'color' => '#seeded',
+					'name'  => 'Seeded',
+					'slug'  => 'palette1',
+				],
+			],
+			'override' => false,
+		];
+		$theme_palette = [
+			'palette' => [
+				[
+					'color' => '#theme-old',
+					'name'  => 'P1',
+					'slug'  => 'palette1',
+				],
+			],
+		];
+		$kb_json       = (string) wp_json_encode( $kb_colors );
+		$theme_json    = (string) wp_json_encode( $theme_palette );
+		update_option( 'kadence_blocks_colors', $kb_json );
+		update_option( 'kadence_global_palette', $theme_json );
+
 		// A real resolver over a baseline whose only token aliases a missing path: resolve() throws a
 		// Dangling_Alias_Exception (a RuntimeException), exercising the genuine fail-open path. Token_Resolver
 		// is final, so we compose one rather than subclass it.
@@ -186,23 +220,25 @@ final class ProjectorTest extends TestCase {
 		$projector->reconcile();
 
 		$this->assertFalse( get_option( 'kadence_blocks_design_tokens_palette_sync' ) );
-		$this->assertEmpty( get_option( 'kadence_blocks_colors' ) );
+		$this->assertSame( $kb_json, get_option( 'kadence_blocks_colors' ) );
+		$this->assertSame( $theme_json, get_option( 'kadence_global_palette' ) );
 	}
 
 	// ---- Idempotency -------------------------------------------------------------------------------
 
-	public function testSecondReconcileWithUnchangedSignaturePerformsNoWrite(): void {
+	public function testSecondReconcileWithUnchangedSignatureSkipsResolution(): void {
 		$this->projector->reconcile();
 
-		$after_first = get_option( 'kadence_blocks_colors' );
+		$resolver = $this->container->get( Token_Resolver::class );
+		$memo     = new ReflectionProperty( Token_Resolver::class, 'memo' );
+		$memo->setAccessible( true );
+		$memo->setValue( $resolver, [] );
 
-		// Reset the per-request guard to allow a second reconcile.
 		$this->reset_guard( $this->projector );
-
 		$this->projector->reconcile();
 
-		// The marker must have been set after the first reconcile; the second must short-circuit.
-		$this->assertSame( $after_first, get_option( 'kadence_blocks_colors' ) );
+		// Matching marker must short-circuit before resolve() repopulates the memo.
+		$this->assertSame( [], $memo->getValue( $resolver ) );
 	}
 
 	public function testMarkerIsAutoloaded(): void {
