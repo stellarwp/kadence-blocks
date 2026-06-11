@@ -56,17 +56,6 @@ final class Projector {
 	private const SYNC_MARKER_OPTION = 'kadence_blocks_design_tokens_palette_sync';
 
 	/**
-	 * Sentinel for the existence probe. Null bytes (\0) cannot survive a MySQL utf8/utf8mb4 round-trip,
-	 * so no real stored option value can ever equal this — get_option($key, SENTINEL) === SENTINEL
-	 * reliably means "absent".
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const ABSENT = "\0kb-design-tokens-absent\0";
-
-	/**
 	 * The token registry.
 	 *
 	 * @since TBD
@@ -246,15 +235,15 @@ final class Projector {
 	}
 
 	/**
-	 * Whether the Kadence theme's palette option exists, via the sentinel idiom — the §8C spec's exact
-	 * "get_option($key, $sentinel) !== $sentinel" test. Never creates the option.
+	 * Whether the Kadence theme's palette option exists. Uses !== false because get_option() returns
+	 * false only when the row is absent, and kadence_global_palette always stores a JSON string.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
 	private function theme_palette_exists(): bool {
-		return get_option( self::THEME_PALETTE_OPTION, self::ABSENT ) !== self::ABSENT;
+		return get_option( self::THEME_PALETTE_OPTION ) !== false;
 	}
 
 	/**
