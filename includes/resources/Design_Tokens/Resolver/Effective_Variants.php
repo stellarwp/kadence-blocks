@@ -69,7 +69,7 @@ final class Effective_Variants {
 	 * @return array<string, mixed>
 	 */
 	public function section( string $slug = 'default' ): array {
-		return $this->for_overrides( $this->stored_document( $slug ) );
+		return $this->for_overrides( $this->raw( $slug ) );
 	}
 
 	/**
@@ -105,7 +105,10 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * Decode the set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
+	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
+	 *
+	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than
+	 * its merged variants view, reuse this instead of decoding the store themselves.
 	 *
 	 * @since TBD
 	 *
@@ -113,7 +116,7 @@ final class Effective_Variants {
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function stored_document( string $slug ): array {
+	public function raw( string $slug = 'default' ): array {
 		$raw = $this->store->get_document( $slug );
 
 		if ( $raw === '' ) {

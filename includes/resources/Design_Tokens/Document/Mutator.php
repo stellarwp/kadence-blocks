@@ -115,27 +115,31 @@ final class Mutator {
 	 * @return array<string, mixed> The document with the path removed and empty ancestors pruned.
 	 */
 	public function remove( array $document, string $path ): array {
-		return $this->remove_segments( $document, explode( '.', $path ) );
+		return $this->remove_by_keys( $document, explode( '.', $path ) );
 	}
 
 	/**
-	 * Recursively remove the head-most segment chain from a node, pruning emptied groups on the way out.
+	 * Recursively remove the node addressed by a literal key chain, pruning emptied groups on the way out.
+	 *
+	 * Addresses the document by discrete array keys rather than a dot-path, so a caller whose keys themselves
+	 * carry dots ("com.kadence.designTokens") or slashes ("kadence/advancedbtn") can remove a node the
+	 * dot-path form could not express.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node     The current node.
-	 * @param string[]             $segments The remaining dot-path segments.
+	 * @param array<string, mixed> $node The current node.
+	 * @param string[]             $keys The remaining literal keys to the node to remove.
 	 *
-	 * @return array<string, mixed> The node with the segment chain removed.
+	 * @return array<string, mixed> The node with the key chain removed.
 	 */
-	private function remove_segments( array $node, array $segments ): array {
-		$head = (string) array_shift( $segments );
+	public function remove_by_keys( array $node, array $keys ): array {
+		$head = (string) array_shift( $keys );
 
 		if ( ! array_key_exists( $head, $node ) ) {
 			return $node;
 		}
 
-		if ( $segments === [] ) {
+		if ( $keys === [] ) {
 			unset( $node[ $head ] );
 
 			return $node;
@@ -146,7 +150,7 @@ final class Mutator {
 			return $node;
 		}
 
-		$node[ $head ] = $this->remove_segments( $node[ $head ], $segments );
+		$node[ $head ] = $this->remove_by_keys( $node[ $head ], $keys );
 
 		// Prune a group that the removal just emptied so stored overrides do not accrue husks.
 		if ( $node[ $head ] === [] ) {
