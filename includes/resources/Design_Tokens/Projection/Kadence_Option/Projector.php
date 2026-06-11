@@ -211,7 +211,7 @@ final class Projector {
 	private function sync_kb_colors( array $entries ): void {
 		$raw     = get_option( self::KB_COLORS_OPTION, '' );
 		$decoded = $this->decode( $raw );
-		$merged  = $this->builder->merge_kb_colors( $decoded, $entries );
+		$merged  = $this->builder->merge_kadence_blocks_colors( $decoded, $entries );
 
 		// Pass true to ensure this option is autoloaded: it is read on every front-end request
 		// (load_color_palette() in after_setup_theme, load_color_palette_theme_json() on
