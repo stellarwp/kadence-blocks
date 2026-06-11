@@ -2,15 +2,18 @@
 /**
  * Class to Enqueue editor script assets of all the blocks.
  *
+ * CSpell:ignore sdist nosidebar jssize fullwidth graphy
+ *
  * @since 1.0.0
  * @package Kadence Blocks
  */
+
 namespace KadenceWP\KadenceBlocks;
 
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function kadence_blocks_get_asset_file;
 use function kadence_blocks_is_legacy_license_authorized;
 use function kadence_blocks_get_current_license_data;
+use function kadence_blocks_get_current_env;
 use function kadence_blocks_get_post_types;
 use function kadence_blocks_is_ai_disabled;
 use function kadence_blocks_get_ai_disabled_message;
@@ -171,6 +174,26 @@ class Editor_Assets {
 		return $show;
 	}
 	/**
+	 * Build the license state bundle exposed to the block editor.
+	 *
+	 * Returns the derived state the editor UI needs (product, environment, and
+	 * whether a key is present). Requests that need the license key itself are
+	 * made through the server-side REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{product: string, env: string, hasApiKey: bool}
+	 */
+	public function get_pro_data() {
+		$license_data = kadence_blocks_get_current_license_data();
+
+		return [
+			'product'   => ! empty( $license_data['product'] ) ? $license_data['product'] : '',
+			'env'       => kadence_blocks_get_current_env(),
+			'hasApiKey' => ! empty( $license_data['key'] ),
+		];
+	}
+	/**
 	 * Enqueue block settings for backend editor.
 	 *
 	 * @since 3.7.0 added aiDisabledMessage
@@ -186,12 +209,12 @@ class Editor_Assets {
 				$post_type = get_post_type();
 				if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
 					if ( isset( $post_type ) && 'page' === $post_type ) {
-						$defualt_size_type = $editor_widths['page_default'];
+						$default_size_type = $editor_widths['page_default'];
 					} else {
-						$defualt_size_type = $editor_widths['post_default'];
+						$default_size_type = $editor_widths['post_default'];
 					}
 				} else {
-					$defualt_size_type = 'sidebar';
+					$default_size_type = 'sidebar';
 				}
 				if ( isset( $editor_widths['sidebar'] ) && ! empty( $editor_widths['sidebar'] ) ) {
 					$sidebar_size = $editor_widths['sidebar'] + $add_size;
@@ -203,9 +226,9 @@ class Editor_Assets {
 				} else {
 					$nosidebar_size = 1140 + $add_size;
 				}
-				if ( 'sidebar' == $defualt_size_type ) {
+				if ( 'sidebar' == $default_size_type ) {
 					$default_size = $sidebar_size;
-				} elseif ( 'fullwidth' == $defualt_size_type ) {
+				} elseif ( 'fullwidth' == $default_size_type ) {
 					$default_size = 'none';
 				} else {
 					$default_size = $nosidebar_size;
@@ -288,17 +311,8 @@ class Editor_Assets {
 			'xxl'  => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
 			'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
 		];
-		$pro_data      = kadence_blocks_get_current_license_data();
-		if ( ! empty( $pro_data['key'] ) ) {
-			$pro_data['api_key'] = $pro_data['key'];
-		}
-		if ( ! empty( $pro_data['email'] ) ) {
-			$pro_data['api_email'] = $pro_data['email'];
-		}
+		$pro_data      = $this->get_pro_data();
 		$is_authorized = ! kadence_blocks_is_ai_disabled() && kadence_blocks_is_legacy_license_authorized();
-		if ( empty( $pro_data['domain'] ) ) {
-			$pro_data['domain'] = get_license_domain();
-		}
 		$font_sizes       = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 		$subscribed       = class_exists( 'Kadence_Blocks_Pro' ) || class_exists( 'KadenceWP\CreativeKit' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 		$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
@@ -323,6 +337,7 @@ class Editor_Assets {
 			[
 				'ajax_url'               => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce'             => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
+				'restNonce'              => wp_create_nonce( 'wp_rest' ),
 				'ajax_loader'            => KADENCE_BLOCKS_URL . 'includes/assets/images/ajax-loader.gif',
 				'site_name'              => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'                  => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),

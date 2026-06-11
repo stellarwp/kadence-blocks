@@ -3,6 +3,8 @@
  * Class for pulling in library database and saving locally
  * Based on a package from the WPTT Team for local fonts.
  *
+ * CSpell:ignore wptt creds wpfs gmaiil gmai gmaill orgg
+ *
  * @package Kadence Blocks
  */
 
@@ -62,7 +64,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	private $package = 'section';
 
 	/**
-	 * Is a template for Kadence. 
+	 * Is a template for Kadence.
 	 *
 	 * @var bool
 	 */
@@ -211,6 +213,35 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->schedule_cleanup();
 		add_filter( 'cron_schedules', [ $this, 'add_monthly_to_cron_schedule' ], 10, 1 );
 		add_action( 'delete_block_library_folder', [ $this, 'delete_block_library_folder' ] );
+	}
+
+	/**
+	 * Get the stored Kadence license key.
+	 *
+	 * The library flow uses the server's own stored license data rather than
+	 * values passed in with the request.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_stored_license_key() {
+		$data = kadence_blocks_get_current_license_data();
+
+		return ! empty( $data['key'] ) ? $data['key'] : '';
+	}
+
+	/**
+	 * Get the stored Kadence license email.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_stored_license_email() {
+		$data = kadence_blocks_get_current_license_data();
+
+		return ! empty( $data['email'] ) ? $data['email'] : '';
 	}
 
 	/**
@@ -514,8 +545,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_template_data_path = '';
-		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key                  = $this->get_stored_license_key();
+		$this->api_email                = $this->get_stored_license_email();
 		$this->package                  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url                      = empty( $_POST['url'] ) ? '' : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
 		$this->key                      = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
@@ -538,7 +569,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			$final_data['refresh'] = ! empty( $temp_data['refresh'] ) ? sanitize_text_field( $temp_data['refresh'] ) : '';
 			$final_data['expires'] = ! empty( $temp_data['expires'] ) ? sanitize_text_field( $temp_data['expires'] ) : '';
 			$final_data['pages']     = ! empty( $temp_data['pages'] ) ? sanitize_text_field( $temp_data['pages'] ) : '';
-			
+
 			if ( ! empty( $final_data['name'] ) ) {
 				wp_send_json( $final_data );
 			}
@@ -592,8 +623,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_template_data_path = '';
-		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key                  = $this->get_stored_license_key();
+		$this->api_email                = $this->get_stored_license_email();
 		$this->product_id               = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug             = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package                  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
@@ -617,8 +648,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_template_data_path = '';
-		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key                  = $this->get_stored_license_key();
+		$this->api_email                = $this->get_stored_license_email();
 		$this->product_id               = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug             = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package                  = 'templates';
@@ -641,8 +672,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_pages_data_path = '';
-		$this->api_key               = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email             = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key               = $this->get_stored_license_key();
+		$this->api_email             = $this->get_stored_license_email();
 		$this->product_id            = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug          = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package               = 'pages';
@@ -670,8 +701,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_template_data_path = '';
-		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key                  = $this->get_stored_license_key();
+		$this->api_email                = $this->get_stored_license_email();
 		$this->product_id               = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug             = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package                  = 'templates';
@@ -705,8 +736,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_pages_data_path = '';
-		$this->api_key               = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email             = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key               = $this->get_stored_license_key();
+		$this->api_email             = $this->get_stored_license_email();
 		$this->product_id            = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug          = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package               = 'pages';
@@ -890,7 +921,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		$import_type    = empty( $_POST['import_type'] ) ? 'pattern' : sanitize_text_field( $_POST['import_type'] );
 		$import_id      = empty( $_POST['import_item_id'] ) ? '' : sanitize_text_field( $_POST['import_item_id'] );
 		$import_style   = empty( $_POST['import_style'] ) ? 'normal' : sanitize_text_field( $_POST['import_style'] );
-		$this->api_key  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_key  = $this->get_stored_license_key();
 		$this->package  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url      = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		$this->key      = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';
@@ -1208,8 +1239,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->local_template_data_path = '';
-		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
-		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->api_key                  = $this->get_stored_license_key();
+		$this->api_email                = $this->get_stored_license_email();
 		$this->product_id               = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
 		$this->product_slug             = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package                  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );

@@ -1,3 +1,4 @@
+// cSpell:ignore blockcode
 /**
  * External dependencies
  */
@@ -70,29 +71,10 @@ class SingleTemplateLibrary extends Component {
 	}
 	reloadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		let data_key =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
-				? kadence_blocks_params.proData.api_key
-				: '';
-		let data_email =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
-				? kadence_blocks_params.proData.api_email
-				: '';
 		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
-		if (!data_key) {
-			data_key =
-				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
-					? kadence_blocks_params.proData.ithemes_key
-					: '';
-			if (data_key) {
-				data_email = 'iThemes';
-			}
-		}
 		const data = new FormData();
 		data.append('action', 'kadence_import_reload_prebuilt_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
-		data.append('api_key', data_key);
-		data.append('api_email', data_email);
 		data.append('package', this.props.selectedSlug);
 		data.append('product_slug', data_product);
 		data.append('url', this.props.selectedURL);
@@ -111,42 +93,35 @@ class SingleTemplateLibrary extends Component {
 				if (response) {
 					const o = SafeParseJSON(response, false);
 					if (o) {
-						control.setState({ items: o, errorItems: false, isLoading: false });
+						control.setState({
+							items: o,
+							errorItems: false,
+							isLoading: false,
+						});
 					} else {
-						control.setState({ items: 'error', errorItems: true, isLoading: false });
+						control.setState({
+							items: 'error',
+							errorItems: true,
+							isLoading: false,
+						});
 					}
 				}
 			})
 			.fail(function (error) {
 				console.log(error);
-				control.setState({ items: 'error', errorItems: true, isLoading: false });
+				control.setState({
+					items: 'error',
+					errorItems: true,
+					isLoading: false,
+				});
 			});
 	}
 	loadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		let data_key =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
-				? kadence_blocks_params.proData.api_key
-				: '';
-		let data_email =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
-				? kadence_blocks_params.proData.api_email
-				: '';
 		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
-		if (!data_key) {
-			data_key =
-				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
-					? kadence_blocks_params.proData.ithemes_key
-					: '';
-			if (data_key) {
-				data_email = 'iThemes';
-			}
-		}
 		const data = new FormData();
 		data.append('action', 'kadence_import_get_prebuilt_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
-		data.append('api_key', data_key);
-		data.append('api_email', data_email);
 		data.append('product_slug', data_product);
 		data.append('package', this.props.selectedSlug);
 		data.append('url', this.props.selectedURL);
@@ -165,15 +140,27 @@ class SingleTemplateLibrary extends Component {
 				if (response) {
 					const o = SafeParseJSON(response, false);
 					if (o) {
-						control.setState({ items: o, errorItems: false, isLoading: false });
+						control.setState({
+							items: o,
+							errorItems: false,
+							isLoading: false,
+						});
 					} else {
-						control.setState({ items: 'error', errorItems: true, isLoading: false });
+						control.setState({
+							items: 'error',
+							errorItems: true,
+							isLoading: false,
+						});
 					}
 				}
 			})
 			.fail(function (error) {
 				console.log(error);
-				control.setState({ items: 'error', errorItems: true, isLoading: false });
+				control.setState({
+					items: 'error',
+					errorItems: true,
+					isLoading: false,
+				});
 			});
 	}
 	render() {
@@ -264,7 +251,11 @@ class SingleTemplateLibrary extends Component {
 												<img src={image} alt={name} />
 											</LazyLoad>
 											<div className="demo-title">
-												<h4 dangerouslySetInnerHTML={{ __html: name }} />
+												<h4
+													dangerouslySetInnerHTML={{
+														__html: name,
+													}}
+												/>
 											</div>
 										</div>
 									</Button>
