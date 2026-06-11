@@ -254,7 +254,7 @@ function kadence_blocks_get_authorized_license_key(): string {
  * the negative result is short-cached in a transient to avoid re-hitting the
  * licensing server on every editor/REST load.
  *
- * @since TBD
+ * @since 3.7.6
  *
  * @param string $slug The Uplink resource slug.
  * @param string $key  The license key to validate.
