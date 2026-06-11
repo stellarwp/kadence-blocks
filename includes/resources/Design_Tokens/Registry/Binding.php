@@ -35,7 +35,7 @@ final class Binding {
 	 *
 	 * @var string
 	 */
-	public const TOKEN = 'token';
+	private const TOKEN = 'token';
 
 	/**
 	 * Inline target: a Kadence palette slot (palette1..9) → `--global-paletteN`.
@@ -44,7 +44,7 @@ final class Binding {
 	 *
 	 * @var string
 	 */
-	public const KADENCE_SLOT = 'kadence_slot';
+	private const KADENCE_SLOT = 'kadence_slot';
 
 	/**
 	 * Inline target: a WordPress preset category → `--wp--preset--<category>--<slug>`.
@@ -53,7 +53,7 @@ final class Binding {
 	 *
 	 * @var string
 	 */
-	public const WP_PRESET = 'wp_preset';
+	private const WP_PRESET = 'wp_preset';
 
 	/**
 	 * Inline target: a block attribute, so a block preset can seed an attribute default.
@@ -62,7 +62,7 @@ final class Binding {
 	 *
 	 * @var string
 	 */
-	public const BLOCK_ATTR = 'block_attr';
+	private const BLOCK_ATTR = 'block_attr';
 
 	/**
 	 * Inline target (boolean flag): the property surfaces only as its `--kb-token--*` var, with no
@@ -72,7 +72,7 @@ final class Binding {
 	 *
 	 * @var string
 	 */
-	public const CSS_VAR = 'css_var';
+	private const CSS_VAR = 'css_var';
 
 	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
@@ -161,6 +161,18 @@ final class Binding {
 		}
 
 		return new self( $property, $token, $inline );
+	}
+
+	/**
+	 * The projection key for the Kadence palette-slot target ("kadence_slot"), used to read a binding's
+	 * slot out of its effective projections.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kadence_slot_key(): string {
+		return self::KADENCE_SLOT;
 	}
 
 	/**

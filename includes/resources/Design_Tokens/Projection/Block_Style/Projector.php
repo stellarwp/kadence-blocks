@@ -3,8 +3,8 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Editor_Request;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use RuntimeException;
 use WP_Theme_JSON_Data;
 
@@ -20,8 +20,6 @@ use WP_Theme_JSON_Data;
  * @since TBD
  */
 final class Projector {
-
-	use Block_Editor_Request;
 
 	/**
 	 * @var Token_Registry
@@ -104,7 +102,7 @@ final class Projector {
 		}
 
 		/** This filter is documented in includes/resources/Design_Tokens/Projection/Css_Var/Projector.php */
-		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', $this->is_block_editor_page() ) ) {
+		if ( ! apply_filters( 'kadence_blocks_load_editor_token_vars', Location::is_block_editor() ) ) {
 			return;
 		}
 

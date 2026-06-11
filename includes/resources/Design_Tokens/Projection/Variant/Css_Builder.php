@@ -1,9 +1,10 @@
 <?php declare( strict_types=1 );
+// cspell:ignore advancedbtn palette .
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Wp_Preset_Var;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -11,25 +12,25 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for native block-style variants — "Projector B" for non-Kadence blocks.
+ * Builds the scoped CSS for selectable Kadence block variants.
  *
- * A native block (core/button and the like) reaches its variants through WordPress's own block-style
- * system: each named variant is registered with register_block_style(), so the editor adds an
- * "is-style-kb-<name>" class when it is picked, and this builder emits, per (block, variant), a rule that
- * re-targets the --wp--preset--<category>--<slug> custom properties the block already consumes when its
- * baseline ($default) points at a token-backed preset. Picking a style therefore re-skins the block with
- * no change to its markup; an unstyled block keeps its $default.
+ * A Kadence block has no native style-variation system, so a selected variant reaches output purely
+ * through the cascade: the editor adds a "kb-variant--<name>" class to the block, and this builder emits,
+ * per (block, variant), a rule that retargets the --global-paletteN custom properties the block's
+ * render_color() already consumes. Picking the variant therefore re-skins the block with zero changes to
+ * its render path; an unselected block keeps its $default (the block preset).
  *
  * Two declaration blocks are emitted:
  *
  *   1. A global --kb-token--variant--<block>--<variant>--<property> definition for every bound value, so
  *      a variant's values surface as named token vars in the same graph as every other token.
- *   2. Per (block, variant) scoped rules — "<block-selector>.is-style-kb-<variant>" — pointing each
- *      --wp--preset--*--* at its variant var. The var is co-emitted in (1), so no literal fallback.
+ *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
+ *      --global-paletteN at its variant var. The var is always co-emitted in (1) in the same stylesheet,
+ *      so the reference resolves without a literal fallback.
  *
- * Only non-Kadence blocks are emitted here; Kadence blocks reach their variants through the kbVariant
- * class path instead. Only a property whose binding resolves to a wp_preset target contributes — a
- * property with no preset bucket has no --wp--preset variable for a native block to re-target.
+ * Scoping is per (block, variant): the same variant name on two blocks ("ghost" on a Button and a Row)
+ * gets its own block-qualified rule, so values never collide. Only named variants are emitted; the
+ * "$default" is the preset, applied through KB's attribute defaults rather than a class.
  *
  * Nothing here is !important and the scope carries ordinary class specificity, so a per-instance inline
  * style still wins over a variant. Values are sanitized defensively before they reach a declaration.
@@ -38,16 +39,7 @@ use RuntimeException;
  */
 final class Css_Builder {
 
-	/**
-	 * Scope for the global variant-var definitions. Matches the token backbone's scope (see
-	 * Css_Var\Css_Builder::SCOPE) so the variant vars live everywhere KB prints variables; :where() adds
-	 * no specificity.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const ROOT_SCOPE = ':root,:root:where(.kb-tokens)';
+	use Sanitizes_Css_Value;
 
 	/**
 	 * The variant var namespace, appended after the shared --kb-token-- prefix.
@@ -103,8 +95,8 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the native block-style CSS for a token set: the global variant-var block followed by the per
-	 * (block, variant) scoped rules. Empty when no native block contributes a preset-targeted value.
+	 * Build the full variant CSS for a token set: the global variant-var block followed by the per
+	 * (block, variant) scoped rules. Empty when no registered block contributes a palette-targeted value.
 	 *
 	 * @since TBD
 	 *
@@ -117,10 +109,6 @@ final class Css_Builder {
 		$scoped  = '';
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
-			if ( ! Style::is_native( $block ) ) {
-				continue; // Kadence blocks reach their variants through the kbVariant class path.
-			}
-
 			$set = $this->registry->for_block( $block );
 
 			if ( $set === null ) {
@@ -135,7 +123,7 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = $this->block_selector( $block );
+			$selector = '.wp-block-' . $this->sanitize_identifier( str_replace( '/', '-', $block ) );
 
 			foreach ( $names as $variant ) {
 				try {
@@ -153,9 +141,9 @@ final class Css_Builder {
 						continue;
 					}
 
-					$target = $this->preset_target( $binding );
+					$slot = $this->palette_slot( $binding );
 
-					if ( $target === null ) {
+					if ( $slot === null ) {
 						continue;
 					}
 
@@ -163,16 +151,16 @@ final class Css_Builder {
 					$literal = $this->sanitize_value( $value );
 
 					$globals      .= $var . ':' . $literal . ';';
-					$declarations .= Wp_Preset_Var::from( $target->category, $target->slug ) . ':var(' . $var . ');';
+					$declarations .= '--global-' . $slot . ':var(' . $var . ');';
 				}
 
 				if ( $declarations !== '' ) {
-					$scoped .= $selector . '.' . Style::selector_class( $variant ) . '{' . $declarations . '}';
+					$scoped .= $selector . '.kb-variant--' . $this->sanitize_identifier( $variant ) . '{' . $declarations . '}';
 				}
 			}
 		}
 
-		$css = $globals === '' ? '' : self::ROOT_SCOPE . '{' . $globals . '}';
+		$css = $globals === '' ? '' : Scope::root() . '{' . $globals . '}';
 
 		return $css . $scoped;
 	}
@@ -180,7 +168,7 @@ final class Css_Builder {
 	/**
 	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
 	 * version, so a token write (which bumps the version) invalidates it automatically. The plugin version
-	 * is folded in too, since the CSS also depends on shipped declarations and the baseline.
+	 * is folded in too, since variant CSS also depends on shipped declarations and the baseline.
 	 *
 	 * @since TBD
 	 *
@@ -196,7 +184,7 @@ final class Css_Builder {
 			return $this->memo[ $memo_key ];
 		}
 
-		$cache_key = 'block_style_css_' . KADENCE_BLOCKS_VERSION . '_' . $slug . '_' . $version;
+		$cache_key = 'variant_css_' . KADENCE_BLOCKS_VERSION . '_' . $slug . '_' . $version;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
@@ -211,53 +199,30 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The wp_preset target (category + slug) a binding resolves to, or null when it has none.
+	 * The Kadence palette slot a binding targets (palette1..9), or null when it targets no palette slot.
 	 *
-	 * Reads the referenced token's wp_preset projection, so a native variant re-targets the exact
-	 * --wp--preset variable the block's $default already points at. An inline binding with no token
-	 * reference contributes no preset target here (the shipped native variants reference tokens).
+	 * Reads the binding's effective projections so a token-reference binding inherits the referenced
+	 * token's slot and an inline binding declares its own; both reach the same --global-paletteN.
 	 *
 	 * @since TBD
 	 *
 	 * @param Binding $binding The variant binding.
 	 *
-	 * @return Wp_Preset_Target|null
+	 * @return string|null The slot ("palette3"), or null.
 	 */
-	private function preset_target( Binding $binding ): ?Wp_Preset_Target {
-		if ( ! $binding->is_token_ref() ) {
-			return null;
+	private function palette_slot( Binding $binding ): ?string {
+		$slot = $this->registry->effective_projections( $binding )[ Binding::get_kadence_slot_key() ] ?? null;
+
+		if ( is_string( $slot ) && preg_match( '/^palette[1-9]$/', $slot ) === 1 ) {
+			return $slot;
 		}
 
-		$token = $this->registry->get( (string) $binding->token );
-
-		return $token === null ? null : Wp_Preset_Target::from_token( $token );
-	}
-
-	/**
-	 * The CSS class selector for a block: "core/button" => ".wp-block-button"; a namespaced block =>
-	 * ".wp-block-<namespace>-<name>", matching WordPress's own block class derivation.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $block The block name.
-	 *
-	 * @return string
-	 */
-	private function block_selector( string $block ): string {
-		$parts     = explode( '/', $block, 2 );
-		$namespace = $parts[0];
-		$name      = $parts[1] ?? $namespace;
-
-		if ( $namespace === 'core' ) {
-			return '.wp-block-' . Style::ident( $name );
-		}
-
-		return '.wp-block-' . Style::ident( $namespace ) . '-' . Style::ident( $name );
+		return null;
 	}
 
 	/**
 	 * The variant var name for a (block, variant, property): "--kb-token--variant--<block>--<variant>--
-	 * <property>", e.g. --kb-token--variant--core-button--ghost--button-bg.
+	 * <property>", e.g. --kb-token--variant--kadence-advancedbtn--ghost--button-bg.
 	 *
 	 * @since TBD
 	 *
@@ -269,25 +234,23 @@ final class Css_Builder {
 	 */
 	private function variant_var( string $block, string $variant, string $property ): string {
 		return Css_Var::get_prefix() . self::VARIANT_SEGMENT
-			. Style::ident( $block ) . '--'
-			. Style::ident( $variant ) . '--'
-			. Style::ident( $property );
+			. $this->sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
+			. $this->sanitize_identifier( $variant ) . '--'
+			. $this->sanitize_identifier( $property );
 	}
 
 	/**
-	 * Defense-in-depth sanitizer for a custom-property value: strips control characters and the characters
-	 * that could close a declaration or inject a rule ("{", "}", ";", "<", ">"). Not esc_attr(), which
-	 * would mangle legitimate CSS such as a font-family stack.
+	 * Reduce a segment to a CSS-identifier-safe form, so a variant slug or block name can never break out
+	 * of a selector or a custom-property name. Keeps word characters and hyphens; collapses anything else
+	 * to a single hyphen.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $value The raw CSS value.
+	 * @param string $segment The raw segment.
 	 *
 	 * @return string
 	 */
-	private function sanitize_value( string $value ): string {
-		$value = preg_replace( '/[\x00-\x1F\x7F]/', '', $value ) ?? '';
-
-		return str_replace( [ '{', '}', ';', '<', '>' ], '', $value );
+	private function sanitize_identifier( string $segment ): string {
+		return (string) preg_replace( '/[^A-Za-z0-9_-]+/', '-', $segment );
 	}
 }

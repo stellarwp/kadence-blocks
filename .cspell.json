@@ -16,6 +16,7 @@
         "**/*.svg"
     ],
     "words": [
+		"absint",
         "ABSPATH",
         "advancedbtn",
         "advancedheading",
@@ -61,6 +62,7 @@
         "splidejs",
         "stellarwp",
         "unrecognised",
+		"unslash",
         "wpdb",
         "wpunit"
     ]
