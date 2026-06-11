@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exce
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
- * Attaches the design-token schema feed to KB's admin dashboard bundle (SOFT-3385).
+ * Attaches the design-token schema feed to KB's admin dashboard bundle.
  *
  * On admin_head — after the dashboard's `admin_print_styles-{page}` enqueue has run, before the footer
  * where `admin-kadence-home` prints — it gathers the resolved values, the variants and the REST
