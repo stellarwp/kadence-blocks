@@ -31,13 +31,13 @@ abstract class Controller extends WP_REST_Controller {
 	private const DEFAULT_CAPABILITY = 'edit_theme_options';
 
 	/**
-	 * The shared v1 namespace value. Read by non-controller callers through {@see self::namespace_v1()}.
+	 * The shared namespace value. Read by non-controller callers through {@see self::namespace()}.
 	 *
 	 * @since TBD
 	 *
 	 * @var non-falsy-string
 	 */
-	private const NAMESPACE_V1 = 'kb-design-tokens/v1';
+	private const NAMESPACE = 'kb-design-tokens/v1';
 
 	/**
 	 * The REST namespace shared by every Design Tokens route.
@@ -50,18 +50,18 @@ abstract class Controller extends WP_REST_Controller {
 	 *
 	 * @var non-falsy-string
 	 */
-	protected $namespace = self::NAMESPACE_V1;
+	protected $namespace = self::NAMESPACE;
 
 	/**
-	 * The shared v1 namespace, for non-controller callers (e.g. the admin UI feed Localizer) that need
+	 * The shared namespace, for non-controller callers (e.g. the admin UI feed Localizer) that need
 	 * the exact value the routes register under, with no drift.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public static function namespace_v1(): string {
-		return self::NAMESPACE_V1;
+	public static function namespace(): string {
+		return self::NAMESPACE;
 	}
 
 	/**
