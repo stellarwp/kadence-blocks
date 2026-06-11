@@ -1,0 +1,77 @@
+{
+    "active": true,
+    "resolved": true,
+    "version": 7,
+    "schema": {
+        "groups": {
+            "Brand": [
+                {
+                    "id": "semantic.color.button-bg",
+                    "type": "color",
+                    "label": "Button Background",
+                    "cssVar": "--kb-token--semantic--color--button-bg",
+                    "projections": {
+                        "wp_preset": "color",
+                        "kadence_slot": "palette1"
+                    }
+                },
+                {
+                    "id": "semantic.color.button-text",
+                    "type": "color",
+                    "label": "Button Text",
+                    "cssVar": "--kb-token--semantic--color--button-text",
+                    "projections": {
+                        "wp_preset": "color"
+                    }
+                }
+            ],
+            "Layout": [
+                {
+                    "id": "semantic.spacing.md",
+                    "type": "dimension",
+                    "label": "Medium",
+                    "cssVar": "--kb-token--semantic--spacing--md",
+                    "projections": {
+                        "wp_preset": "spacing"
+                    }
+                }
+            ]
+        }
+    },
+    "values": {
+        "semantic.color.button-bg": "#000000",
+        "semantic.color.button-text": "#000000",
+        "semantic.spacing.md": "#000000"
+    },
+    "variants": {
+        "kadence\/advancedbtn": {
+            "bindings": {
+                "button-bg": {
+                    "token": "semantic.color.button-bg",
+                    "projections": []
+                }
+            },
+            "default": "primary",
+            "names": [
+                "primary",
+                "ghost"
+            ],
+            "properties": [
+                "button-bg"
+            ],
+            "values": {
+                "primary": {
+                    "button-bg": "#3182CE"
+                },
+                "ghost": {
+                    "button-bg": "transparent"
+                }
+            }
+        }
+    },
+    "rest": {
+        "root": "https:\/\/example.test\/wp-json\/",
+        "namespace": "kb-design-tokens\/v1",
+        "nonce": "test-nonce"
+    }
+}
