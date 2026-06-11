@@ -164,7 +164,7 @@ final class Projector {
 		}
 
 		$theme_present = $this->theme_palette_exists();
-		$signature     = $this->store->get_version() . ':' . ( $theme_present ? '1' : '0' );
+		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version() . ':' . ( $theme_present ? '1' : '0' );
 
 		// Skip the resolve + writes when neither the store version nor the theme-option presence changed
 		// since the last successful sync. The theme-present bit is what catches a theme switch.
