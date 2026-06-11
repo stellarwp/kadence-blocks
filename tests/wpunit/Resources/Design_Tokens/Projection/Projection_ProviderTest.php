@@ -3,8 +3,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -59,7 +59,7 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertNotEmpty( $inline );
 
 		$css = implode( '', (array) $inline );
-		$this->assertStringContainsString( Css_Builder::SCOPE, $css );
+		$this->assertStringContainsString( Scope::root(), $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 	}
 
@@ -68,7 +68,7 @@ final class Projection_ProviderTest extends TestCase {
 	public function testEnqueueEditorAppendsInlineStyleToEditorHandle(): void {
 		global $pagenow;
 		$prev    = $pagenow;
-		$pagenow = 'post.php'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$pagenow = 'post-new.php'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 		$this->projector->enqueue_editor();
 
@@ -79,7 +79,7 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertNotEmpty( $inline );
 
 		$css = implode( '', (array) $inline );
-		$this->assertStringContainsString( Css_Builder::SCOPE, $css );
+		$this->assertStringContainsString( Scope::root(), $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
 	}
 

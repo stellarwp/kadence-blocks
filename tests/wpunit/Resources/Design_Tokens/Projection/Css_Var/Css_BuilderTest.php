@@ -4,6 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -47,8 +48,8 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringStartsWith( ':root,', $css );
 	}
 
-	public function testScopeConstantMatchesSpec(): void {
-		$this->assertSame( ':root,:root:where(.kb-tokens)', Css_Builder::SCOPE );
+	public function testScopeMatchesSpec(): void {
+		$this->assertSame( ':root,:root:where(.kb-tokens)', Scope::root() );
 	}
 
 	public function testItNeverEmitsImportant(): void {

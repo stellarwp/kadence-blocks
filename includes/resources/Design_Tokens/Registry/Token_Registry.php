@@ -163,6 +163,19 @@ final class Token_Registry {
 	}
 
 	/**
+	 * The block names that have a registered variant set, in registration order. The variant projector
+	 * walks these to emit each block's selectable-variant CSS; the variant values themselves come from the
+	 * document via the Variant_Resolver.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function variant_blocks(): array {
+		return array_keys( $this->variant_sets );
+	}
+
+	/**
 	 * The effective projection targets for a binding: a token reference contributes the referenced
 	 * token's projections (so a variant reuses the variable the base property already feeds), and the
 	 * binding's inline targets are merged on top, supplementing or overriding them (e.g. adding a

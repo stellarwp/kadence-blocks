@@ -18,7 +18,18 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
  */
 final class Css_Var {
 
-	public const PREFIX = '--kb-token--';
+	private const PREFIX = '--kb-token--';
+
+	/**
+	 * The shared custom-property prefix every token variable carries ("--kb-token--").
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_prefix(): string {
+		return self::PREFIX;
+	}
 
 	/**
 	 * Derive the canonical CSS custom-property name from a token id.

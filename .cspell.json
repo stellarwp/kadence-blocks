@@ -1,6 +1,7 @@
 {
     "version": "0.2",
     "ignorePaths": [
+		"AGENTS.md",
         "package-lock.json",
         "bun.lock",
         "bun.lockb",
@@ -16,6 +17,7 @@
         "**/*.svg"
     ],
     "words": [
+		"absint",
         "ABSPATH",
         "advancedbtn",
         "advancedheading",
@@ -61,6 +63,7 @@
         "splidejs",
         "stellarwp",
         "unrecognised",
+		"unslash",
         "wpdb",
         "wpunit"
     ]
