@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
  *
  * @since TBD
  */
-final class Variant_Feed {
+final class Variants {
 
 	/**
 	 * The token registry, source of the registered variant sets.

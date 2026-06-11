@@ -1,18 +1,18 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Admin;
+namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Variant_Feed;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises Variant_Feed against the real shipped baseline, so these assertions also guard the
+ * Exercises Variants against the real shipped baseline, so these assertions also guard the
  * baseline's Button variant definitions.
  */
-final class Variant_FeedTest extends TestCase {
+final class VariantsTest extends TestCase {
 
 	private const BUTTON = 'kadence/advancedbtn';
 
@@ -28,7 +28,7 @@ final class Variant_FeedTest extends TestCase {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
 
-		$variants = ( new Variant_Feed( $registry, $this->resolver ) )->all();
+		$variants = ( new Variants( $registry, $this->resolver ) )->all();
 
 		$this->assertArrayHasKey( self::BUTTON, $variants );
 
@@ -52,7 +52,7 @@ final class Variant_FeedTest extends TestCase {
 		$registry = new Token_Registry();
 		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block' ] );
 
-		$variants = ( new Variant_Feed( $registry, $this->resolver ) )->all();
+		$variants = ( new Variants( $registry, $this->resolver ) )->all();
 
 		$this->assertSame( [], $variants );
 	}

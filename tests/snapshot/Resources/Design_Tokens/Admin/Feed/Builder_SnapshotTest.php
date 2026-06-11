@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn .
 
-namespace Tests\snapshot\Resources\Design_Tokens\Admin;
+namespace Tests\snapshot\Resources\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\SnapshotTestCase;
 
@@ -13,7 +13,7 @@ use Tests\Support\Classes\SnapshotTestCase;
  *
  * @since TBD
  */
-final class Feed_Builder_SnapshotTest extends SnapshotTestCase {
+final class Builder_SnapshotTest extends SnapshotTestCase {
 
 	private Token_Registry $registry;
 
@@ -82,7 +82,7 @@ final class Feed_Builder_SnapshotTest extends SnapshotTestCase {
 			'nonce'     => 'test-nonce',
 		];
 
-		$feed = ( new Feed_Builder( $this->registry ) )->build( $values, true, $variants, $rest, 7 );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $rest, 7 );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertTrue( $feed['active'] );

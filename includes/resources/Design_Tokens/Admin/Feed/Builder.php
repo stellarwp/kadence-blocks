@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
@@ -17,7 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  *
  * @since TBD
  */
-final class Feed_Builder {
+final class Builder {
 
 	/**
 	 * The token registry, the single source of token + variant structure.

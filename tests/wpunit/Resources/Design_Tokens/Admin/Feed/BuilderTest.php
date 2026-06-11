@@ -1,12 +1,12 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Admin;
+namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\TestCase;
 
-final class Feed_BuilderTest extends TestCase {
+final class BuilderTest extends TestCase {
 
 	private Token_Registry $registry;
 
@@ -40,7 +40,7 @@ final class Feed_BuilderTest extends TestCase {
 		$values   = [ 'semantic.color.button-bg' => '#3182CE' ];
 		$variants = [ 'kadence/advancedbtn' => [ 'default' => 'primary' ] ];
 
-		$feed = ( new Feed_Builder( $this->registry ) )->build( $values, true, $variants, $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $this->rest(), 7 );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertTrue( $feed['resolved'] );
@@ -52,7 +52,7 @@ final class Feed_BuilderTest extends TestCase {
 	}
 
 	public function testResolvedFalseKeepsStructureButEmptyValues(): void {
-		$feed = ( new Feed_Builder( $this->registry ) )->build( [], false, [], $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( [], false, [], $this->rest(), 7 );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertFalse( $feed['resolved'] );
@@ -61,7 +61,7 @@ final class Feed_BuilderTest extends TestCase {
 	}
 
 	public function testResolvedTrueWithEmptyValuesPassesThroughUnchanged(): void {
-		$feed = ( new Feed_Builder( $this->registry ) )->build( [], true, [], $this->rest(), 7 );
+		$feed = ( new Builder( $this->registry ) )->build( [], true, [], $this->rest(), 7 );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertTrue( $feed['resolved'] );
@@ -71,7 +71,7 @@ final class Feed_BuilderTest extends TestCase {
 	public function testDeactivatedRegistryYieldsEmptyInactivePayload(): void {
 		$this->registry->deactivate();
 
-		$feed = ( new Feed_Builder( $this->registry ) )->build(
+		$feed = ( new Builder( $this->registry ) )->build(
 			[ 'semantic.color.button-bg' => '#3182CE' ],
 			true,
 			[ 'kadence/advancedbtn' => [] ],
