@@ -19,6 +19,7 @@
         "algoliasearch",
         "bunfig",
         "bunx",
+		"changelogger",
         "codeception",
         "diffcs",
         "distignore",
