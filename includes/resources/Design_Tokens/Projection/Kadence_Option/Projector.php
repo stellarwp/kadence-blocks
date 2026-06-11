@@ -65,9 +65,40 @@ final class Projector {
 	 */
 	private const ABSENT = "\0kb-design-tokens-absent\0";
 
+	/**
+	 * The token registry.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Registry
+	 */
 	private Token_Registry $registry;
+
+	/**
+	 * The token resolver.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Resolver
+	 */
 	private Token_Resolver $resolver;
+
+	/**
+	 * The token store.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Store
+	 */
 	private Token_Store $store;
+
+	/**
+	 * The palette builder.
+	 *
+	 * @since TBD
+	 *
+	 * @var Palette_Builder
+	 */
 	private Palette_Builder $builder;
 
 	/**
