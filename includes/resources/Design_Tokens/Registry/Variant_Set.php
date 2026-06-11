@@ -111,6 +111,29 @@ final class Variant_Set {
 	}
 
 	/**
+	 * Structure-only serialization for the admin UI feed: the bound properties and, per
+	 * property, the token reference and inline projection targets. Values, variant names and the default
+	 * are NOT here — those are document data read through the Variant_Resolver. Mirrors
+	 * {@see Token_Registry::to_ui_schema()}.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{bindings: array<string, array{token: string|null, projections: array<string, mixed>}>}
+	 */
+	public function to_ui_schema(): array {
+		$bindings = [];
+
+		foreach ( $this->bindings as $property => $binding ) {
+			$bindings[ $property ] = [
+				'token'       => $binding->token,
+				'projections' => $binding->projections,
+			];
+		}
+
+		return [ 'bindings' => $bindings ];
+	}
+
+	/**
 	 * Build the property => Binding map from a declaration's "bindings".
 	 *
 	 * @since TBD

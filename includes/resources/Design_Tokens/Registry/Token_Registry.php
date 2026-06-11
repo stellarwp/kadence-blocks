@@ -151,6 +151,18 @@ final class Token_Registry {
 	}
 
 	/**
+	 * All registered variant sets, keyed by block name in registration order. The admin UI feed
+	 * iterates this to render per-block variant editors; mirrors all() for tokens.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, Variant_Set>
+	 */
+	public function variant_sets(): array {
+		return $this->variant_sets;
+	}
+
+	/**
 	 * The effective projection targets for a binding: a token reference contributes the referenced
 	 * token's projections (so a variant reuses the variable the base property already feeds), and the
 	 * binding's inline targets are merged on top, supplementing or overriding them (e.g. adding a
@@ -190,7 +202,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The schema the admin React app consumes (SOFT-3385). A token registered in PHP appears in the
+	 * The schema the admin React app consumes. A token registered in PHP appears in the
 	 * UI with no JS change. Values are NOT included here — the resolver supplies current values
 	 * separately; this is structure only.
 	 *
