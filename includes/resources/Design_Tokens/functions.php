@@ -17,14 +17,7 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array{
-	 *     id: string,
-	 *     type: string,
-	 *     label: string,
-	 *     group?: string,
-	 *     css_var?: string,
-	 *     projections?: array<string, mixed>,
-	 * } $definition The token declaration.
+	 * @param array<string, mixed> $definition The token declaration. See Token_Definition::from_array().
 	 *
 	 * @return void
 	 */

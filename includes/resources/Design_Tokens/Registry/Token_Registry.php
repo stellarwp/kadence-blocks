@@ -182,6 +182,18 @@ final class Token_Registry {
 	}
 
 	/**
+	 * All registered variant sets, keyed by block name in registration order. The admin UI feed
+	 * iterates this to render per-block variant editors; mirrors all() for tokens.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, Variant_Set>
+	 */
+	public function variant_sets(): array {
+		return $this->variant_sets;
+	}
+
+	/**
 	 * The adapter registered for a Kadence Blocks block, or null when the block has none (the default —
 	 * its CSS vars already carry the tokens).
 	 *
@@ -259,7 +271,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The schema the admin React app consumes (SOFT-3385). A token registered in PHP appears in the
+	 * The schema the admin React app consumes. A token registered in PHP appears in the
 	 * UI with no JS change. Values are NOT included here — the resolver supplies current values
 	 * separately; this is structure only.
 	 *
