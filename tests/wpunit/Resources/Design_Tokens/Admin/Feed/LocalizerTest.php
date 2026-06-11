@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Admin;
+namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Localizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;

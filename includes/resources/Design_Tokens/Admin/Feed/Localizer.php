@@ -1,9 +1,7 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
