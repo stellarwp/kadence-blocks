@@ -38,9 +38,11 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Projector::class );
 
-		// Register the adapters on init, the same hook the token declarations use, so the registry is fully
-		// populated before render. The filter below then looks each adapter up by block.
-		add_action( 'init', [ $this, 'register_adapters' ], 0 );
+		// Register the adapters on init at priority 10 — after the token declarations (priority 0) and the
+		// baseline guard (priority 1) so an adapter that depends on declared tokens sees a populated
+		// registry, and on a round increment that leaves room for other code to register adapters before
+		// us. The filter below then looks each adapter up by block.
+		add_action( 'init', [ $this, 'register_adapters' ], 10 );
 
 		add_filter(
 			'kadence_blocks_block_default_attributes',

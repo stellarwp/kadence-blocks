@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -59,6 +60,20 @@ final class Token_Registry_AdaptersTest extends TestCase {
 
 		// The accessor must return exactly the BLOCK const the subclass declares.
 		$this->assertSame( $this->declared_block( $adapter ), $adapter->get_block() );
+	}
+
+	public function testRegisteringAnAdapterThatDeclaresNoBlockThrows(): void {
+		// An adapter that does not override BLOCK reports an empty block; registering it would store it under
+		// the empty key where it could never match, so the registry rejects it loudly.
+		$this->expectException( InvalidArgumentException::class );
+
+		$this->registry->register_adapter(
+			new class() extends Abstract_Adapter {
+				public function apply( array $attributes ): array {
+					return $attributes;
+				}
+			}
+		);
 	}
 
 	/**

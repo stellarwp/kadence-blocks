@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
+use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 
@@ -76,10 +77,22 @@ final class Token_Registry {
 	 *
 	 * @param Adapter_Interface $adapter The adapter to register.
 	 *
+	 * @throws InvalidArgumentException When the adapter declares no block (an empty BLOCK const).
+	 *
 	 * @return void
 	 */
 	public function register_adapter( Adapter_Interface $adapter ): void {
-		$this->adapters[ $adapter->get_block() ] = $adapter;
+		$block = $adapter->get_block();
+
+		// A concrete adapter that forgets to override BLOCK would register under the empty key and silently
+		// never match, so its apply() would never run. Fail loudly so the misconfiguration surfaces.
+		if ( $block === '' ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Adapter %s must override the BLOCK constant with the block type it adapts.', get_class( $adapter ) )
+			);
+		}
+
+		$this->adapters[ $block ] = $adapter;
 	}
 
 	// ---- Lookups consumed by projectors and the UI ------------------------------------------------
