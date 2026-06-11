@@ -1,5 +1,7 @@
 /**
  * Handle Template Library.
+ *
+ * cSpell:ignore blockcode
  */
 
 /**
@@ -86,32 +88,13 @@ class TemplatesLibrary extends Component {
 	}
 	reloadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		let data_key =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
-				? kadence_blocks_params.proData.api_key
-				: '';
-		let data_email =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
-				? kadence_blocks_params.proData.api_email
-				: '';
 		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
 				: '';
-		if (!data_key) {
-			data_key =
-				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
-					? kadence_blocks_params.proData.ithemes_key
-					: '';
-			if (data_key) {
-				data_email = 'iThemes';
-			}
-		}
 		const data = new FormData();
 		data.append('action', 'kadence_import_reload_prebuilt_templates_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
-		data.append('api_key', data_key);
-		data.append('api_email', data_email);
 		data.append('product_id', product_id);
 		data.append('package', 'templates');
 		const control = this;
@@ -142,32 +125,13 @@ class TemplatesLibrary extends Component {
 	}
 	loadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		let data_key =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
-				? kadence_blocks_params.proData.api_key
-				: '';
-		let data_email =
-			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
-				? kadence_blocks_params.proData.api_email
-				: '';
 		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
 				: '';
-		if (!data_key) {
-			data_key =
-				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
-					? kadence_blocks_params.proData.ithemes_key
-					: '';
-			if (data_key) {
-				data_email = 'iThemes';
-			}
-		}
 		const data = new FormData();
 		data.append('action', 'kadence_import_get_prebuilt_templates_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
-		data.append('api_key', data_key);
-		data.append('api_email', data_email);
 		data.append('product_id', product_id);
 		data.append('package', 'templates');
 		const control = this;

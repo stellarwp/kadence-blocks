@@ -21,19 +21,21 @@ jobs:
       - name: Setup Composer
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
-      - name: Setup node
-        uses: actions/setup-node@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          registry-url: 'https://npm.pkg.github.com'
+          bun-version: latest
 
       - name: Build plugin
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         run: |
           composer install --no-dev --no-scripts
           composer run strauss-release
-          npm install --legacy-peer-deps
-          npm run build
+          # `bun install` runs the root postinstall, which builds the @kadence/*
+          # source packages (bun blocks their own prepare scripts; npm does not).
+          bun install --frozen-lockfile
+          bun run build
 
       - name: Create plugin archive
         run: |
