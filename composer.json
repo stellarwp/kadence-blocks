@@ -110,6 +110,8 @@
 			"@php bin/pup.phar"
 		],
 		"release:prep": "dev_scripts/release-prep.sh",
+		"changelog:add": "npx --no-install changelogger add --auto-filename",
+		"changelog:write": "dev_scripts/write-changelog.sh",
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
