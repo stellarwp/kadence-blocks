@@ -26,6 +26,7 @@
         "gulpfile",
         "hcaptcha",
         "kadence",
+        "kadencewp",
         "lottiefiles",
         "lwsw",
         "mbstring",
@@ -38,10 +39,14 @@
         "puprc",
         "recaptcha",
         "scroller",
+        "shivammathur",
         "slic",
         "slidy",
         "splide",
         "splidejs",
-        "stellarwp"
+        "stellarwp",
+        "subteam",
+        "wearerequired",
+        "wpunit"
     ]
 }
