@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
  * default, variant names, bound properties, per-property bindings (structure) and resolved preview
  * values.
  *
- * Structure comes from the registry ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::to_ui_array()});
+ * Structure comes from the registry ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::to_ui_schema()});
  * the variant list and resolved values come from the {@see Variant_Resolver} against the live store. A
  * block registered but absent from the document (Unknown_Variant_Exception) is skipped, and a single
  * variant that fails to resolve is omitted, so one malformed block never breaks the whole feed. The
@@ -83,7 +83,7 @@ final class Variants {
 			}
 
 			$out[ $block ] = array_merge(
-				$set->to_ui_array(),
+				$set->to_ui_schema(),
 				[
 					'default'    => $default,
 					'names'      => $names,
