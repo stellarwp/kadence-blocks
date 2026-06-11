@@ -56,8 +56,9 @@ final class Projector {
 	private const SYNC_MARKER_OPTION = 'kadence_blocks_design_tokens_palette_sync';
 
 	/**
-	 * Sentinel for the existence probe. A value a real option is overwhelmingly unlikely to equal, so
-	 * get_option($key, SENTINEL) === SENTINEL reliably means "absent".
+	 * Sentinel for the existence probe. Null bytes (\0) cannot survive a MySQL utf8/utf8mb4 round-trip,
+	 * so no real stored option value can ever equal this — get_option($key, SENTINEL) === SENTINEL
+	 * reliably means "absent".
 	 *
 	 * @since TBD
 	 *
