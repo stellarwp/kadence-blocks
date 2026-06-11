@@ -131,7 +131,10 @@ final class Localizer {
 		}
 
 		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version );
-		$json = wp_json_encode( $feed );
+		$json = wp_json_encode(
+			$feed,
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+		);
 
 		if ( $json === false ) {
 			return; // Feed cannot be serialized — skip rather than inject malformed JS.
@@ -139,7 +142,7 @@ final class Localizer {
 
 		wp_add_inline_script(
 			self::HANDLE,
-			'window.' . self::OBJECT . ' = ' . $json . ';',
+			'window.' . self::OBJECT . ' = ' . addslashes( $json ) . ';',
 			'before'
 		);
 	}

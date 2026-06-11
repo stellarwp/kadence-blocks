@@ -67,7 +67,7 @@ final class LocalizerTest extends TestCase {
 		}
 
 		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( $json, true );
+		$decoded = json_decode( stripslashes( $json ), true );
 
 		return is_array( $decoded ) ? $decoded : null;
 	}
