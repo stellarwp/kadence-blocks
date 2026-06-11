@@ -17,7 +17,9 @@ final class Get_Known_Plugins {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @return array<string, array{name: string, page_url: string}>
+	 * @return array<string, array{name: string, page_url: string, constant: string, is_premium: bool}>
+	 *
+	 * @phpstan-return array<string, array{name: string, page_url: string, constant: string, is_premium: bool}>
 	 */
 	public function __invoke(): array {
 		$default_page = admin_url( 'admin.php?page=kadence-blocks' );
