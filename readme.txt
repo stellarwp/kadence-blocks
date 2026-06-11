@@ -385,7 +385,7 @@ Release Date: 14th August 2025
 * Fix: bad class name in heading block
 * Fix: Row Layout Block Tablet/Mobile Spacing Issue
 * Fix: Nested Navigation Block does not work properly in Dashboard > Kadence > Navigations
-* Fix: Countdown Block repeater date is wrong in some sitiuations
+* Fix: Countdown Block repeater date is wrong in some situations
 * Fix: Icon color issue in search block
 * Fix: Freeze submenu preview setting for hover to open
 
@@ -474,7 +474,7 @@ Release Date: May 1st 2025
 * Enhancement: Improved design library navigation, filtering, and sorting.
 * Fix: Comma separated CC field not sending to multiple users.
 * Fix: Transparent Logo Reverts to Default Logo After Scrolling Back Up with Sticky Header Enabled.
-* Fix: Text alignemnt on frontend in table block.
+* Fix: Text alignment on frontend in table block.
 
 = 3.5.5 =
 Release Date: April 28th 2025
