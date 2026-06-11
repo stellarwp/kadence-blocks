@@ -91,7 +91,7 @@
 			"content"
 		],
 		"types": {
-			"add": "Add",
+			"feature": "Add",
 			"update": "Update",
 			"tweak": "Tweak",
 			"fix": "Fix",
