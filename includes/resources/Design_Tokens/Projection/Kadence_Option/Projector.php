@@ -231,11 +231,11 @@ final class Projector {
 	 * @return void
 	 */
 	private function sync_theme_palette( array $entries ): void {
-		$raw = get_option( self::THEME_PALETTE_OPTION, self::ABSENT );
-		if ( $raw === self::ABSENT ) {
+		if ( ! $this->theme_palette_exists() ) {
 			return; // raced away between probe and here; never create.
 		}
 
+		$raw     = get_option( self::THEME_PALETTE_OPTION, '' );
 		$decoded = $this->decode( is_string( $raw ) ? $raw : '' );
 		$merged  = $this->builder->merge_theme_palette( $decoded, $entries );
 
