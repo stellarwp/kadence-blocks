@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -67,13 +68,35 @@ final class LocalizerTest extends TestCase {
 		}
 
 		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( stripslashes( $json ), true );
+		$decoded = json_decode( $json, true );
 
 		return is_array( $decoded ) ? $decoded : null;
 	}
 
 	private function localizer(): Localizer {
 		return $this->container->get( Localizer::class );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItAttachesTheFeedOnTheStyleBookScreen(): void {
+		wp_register_script(
+			Asset_Loader::get_script_handle(),
+			'https://example.test/admin-kadence-style-book.js',
+			[],
+			'1',
+			true
+		);
+		wp_enqueue_script( Asset_Loader::get_script_handle() );
+
+		$this->localizer()->localize();
+
+		$data = wp_scripts()->get_data( Asset_Loader::get_script_handle(), 'before' );
+		$this->assertIsArray( $data );
+
+		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		$this->assertStringContainsString( 'window.kadenceDesignTokens', $inline );
 	}
 
 	public function testItAttachesTheFeedWithSchemaValuesAndRest(): void {
