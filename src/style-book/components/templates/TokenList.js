@@ -44,16 +44,7 @@ function groupTokens(tokens) {
  * @param {string}   [props.emptyMessage] Message when no tokens match.
  * @return {JSX.Element} Token list template.
  */
-export function TokenList({
-	tokens,
-	values,
-	isReady,
-	isActive,
-	isResolved,
-	onSave,
-	getFieldState,
-	emptyMessage,
-}) {
+export function TokenList({ tokens, values, isReady, isActive, isResolved, onSave, getFieldState, emptyMessage }) {
 	const grouped = useMemo(() => groupTokens(tokens), [tokens]);
 
 	if (!isReady) {

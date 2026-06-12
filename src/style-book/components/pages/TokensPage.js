@@ -16,21 +16,9 @@ import { StyleBookShell } from '../templates/StyleBookShell';
  * @return {JSX.Element} Style Book page.
  */
 export function TokensPage() {
-	const {
-		tokens,
-		isReady,
-		isActive,
-		isResolved,
-		values: feedValues,
-		rest,
-		version,
-		feed,
-	} = useDesignTokensFeed();
+	const { tokens, isReady, isActive, isResolved, values: feedValues, rest, version, feed } = useDesignTokensFeed();
 	const { values, saveToken, getFieldState } = useTokenEditor(rest, feedValues);
-	const { section, setSection, sections } = useStyleBookNavigation(
-		tokens,
-		feed?.variants ?? {}
-	);
+	const { section, setSection, sections } = useStyleBookNavigation(tokens, feed?.variants ?? {});
 
 	const sharedListProps = {
 		tokens,
@@ -57,22 +45,11 @@ export function TokensPage() {
 	} else if (section === SECTION_VARIANTS) {
 		content = <VariantsPage variants={feed?.variants ?? {}} />;
 	} else {
-		content = (
-			<FoundationPage
-				sectionId={section}
-				sections={sections}
-				{...sharedListProps}
-			/>
-		);
+		content = <FoundationPage sectionId={section} sections={sections} {...sharedListProps} />;
 	}
 
 	return (
-		<StyleBookShell
-			section={section}
-			sections={sections}
-			onNavigate={setSection}
-			version={version}
-		>
+		<StyleBookShell section={section} sections={sections} onNavigate={setSection} version={version}>
 			{content}
 		</StyleBookShell>
 	);

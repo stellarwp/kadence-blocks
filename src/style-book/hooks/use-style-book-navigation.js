@@ -16,12 +16,9 @@ import { buildNavigationSections } from '../helpers/navigation';
  * @param {Record<string, object>} variants Variants section from the feed.
  * @return {{ section: string, setSection: Function, sections: object[] }}
  */
-export function useStyleBookNavigation( tokens, variants ) {
-	const sections = useMemo(
-		() => buildNavigationSections( tokens, variants ),
-		[ tokens, variants ]
-	);
-	const [ section, setSection ] = useState( SECTION_OVERVIEW );
+export function useStyleBookNavigation(tokens, variants) {
+	const sections = useMemo(() => buildNavigationSections(tokens, variants), [tokens, variants]);
+	const [section, setSection] = useState(SECTION_OVERVIEW);
 
 	return {
 		section,

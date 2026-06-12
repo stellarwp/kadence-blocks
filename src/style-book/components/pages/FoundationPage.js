@@ -24,7 +24,7 @@ import { TokenList } from '../templates/TokenList';
  * @param {Function} props.getFieldState Field state accessor.
  * @return {JSX.Element|null} Foundation page or null when unknown.
  */
-export function FoundationPage( {
+export function FoundationPage({
 	sectionId,
 	sections,
 	tokens,
@@ -34,34 +34,31 @@ export function FoundationPage( {
 	isResolved,
 	onSave,
 	getFieldState,
-} ) {
-	const section = findSection( sections, sectionId );
+}) {
+	const section = findSection(sections, sectionId);
 
-	if ( ! section || section.kind !== 'foundation' ) {
+	if (!section || section.kind !== 'foundation') {
 		return null;
 	}
 
-	const filtered = filterTokensByType( tokens, section.type );
+	const filtered = filterTokensByType(tokens, section.type);
 
 	return (
 		<div className="kadence-style-book__foundation-page">
 			<header className="kadence-style-book__page-header">
-				<h2>{ section.label }</h2>
-				<p>{ section.description }</p>
+				<h2>{section.label}</h2>
+				<p>{section.description}</p>
 			</header>
 
 			<TokenList
-				tokens={ filtered }
-				values={ values }
-				isReady={ isReady }
-				isActive={ isActive }
-				isResolved={ isResolved }
-				onSave={ onSave }
-				getFieldState={ getFieldState }
-				emptyMessage={ __(
-					'No tokens are registered for this foundation yet.',
-					'kadence-blocks'
-				) }
+				tokens={filtered}
+				values={values}
+				isReady={isReady}
+				isActive={isActive}
+				isResolved={isResolved}
+				onSave={onSave}
+				getFieldState={getFieldState}
+				emptyMessage={__('No tokens are registered for this foundation yet.', 'kadence-blocks')}
 			/>
 		</div>
 	);

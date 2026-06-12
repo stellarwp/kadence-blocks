@@ -22,83 +22,83 @@ import { TokenTypeBadge } from '../atoms/TokenTypeBadge';
  * @param {object}   props.fieldState   Save status for this field.
  * @return {JSX.Element} Color token field row.
  */
-export function ColorTokenField( { token, value, onSave, fieldState } ) {
-	const [ draft, setDraft ] = useState( value ?? '' );
-	const isDirty = draft !== ( value ?? '' );
+export function ColorTokenField({ token, value, onSave, fieldState }) {
+	const [draft, setDraft] = useState(value ?? '');
+	const isDirty = draft !== (value ?? '');
 	const isSaving = fieldState.status === 'saving';
 
-	useEffect( () => {
-		setDraft( value ?? '' );
-	}, [ value ] );
+	useEffect(() => {
+		setDraft(value ?? '');
+	}, [value]);
 
-	const handleSave = async ( nextValue = draft ) => {
-		if ( isSaving ) {
+	const handleSave = async (nextValue = draft) => {
+		if (isSaving) {
 			return;
 		}
 
-		await onSave( token.id, token.type, nextValue );
+		await onSave(token.id, token.type, nextValue);
 	};
 
 	return (
 		<div className="kadence-style-book__token-field kadence-style-book__token-field--color">
 			<div className="kadence-style-book__token-field-meta">
 				<Dropdown
-					popoverProps={ { placement: 'bottom-start' } }
-					renderToggle={ ( { isOpen, onToggle } ) => (
+					popoverProps={{ placement: 'bottom-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
 						<button
 							type="button"
 							className="kadence-style-book__color-picker-toggle"
-							style={ { backgroundColor: draft || '#ffffff' } }
-							onClick={ onToggle }
-							aria-expanded={ isOpen }
-							aria-label={ __( 'Open color picker', 'kadence-blocks' ) }
-							disabled={ isSaving }
+							style={{ backgroundColor: draft || '#ffffff' }}
+							onClick={onToggle}
+							aria-expanded={isOpen}
+							aria-label={__('Open color picker', 'kadence-blocks')}
+							disabled={isSaving}
 						/>
-					) }
-					renderContent={ () => (
+					)}
+					renderContent={() => (
 						<div className="kadence-style-book__color-picker-popover">
 							<ColorPicker
-								color={ toPickerColor( draft ) }
-								onChangeComplete={ ( color ) => {
-									const next = fromPickerColor( color );
-									setDraft( next );
-									void handleSave( next );
-								} }
-								enableAlpha={ false }
+								color={toPickerColor(draft)}
+								onChangeComplete={(color) => {
+									const next = fromPickerColor(color);
+									setDraft(next);
+									void handleSave(next);
+								}}
+								enableAlpha={false}
 							/>
 						</div>
-					) }
+					)}
 				/>
 				<div className="kadence-style-book__token-field-labels">
-					<strong className="kadence-style-book__token-label">{ token.label }</strong>
-					<code className="kadence-style-book__token-id">{ token.id }</code>
+					<strong className="kadence-style-book__token-label">{token.label}</strong>
+					<code className="kadence-style-book__token-id">{token.id}</code>
 				</div>
-				<TokenTypeBadge type={ token.type } />
+				<TokenTypeBadge type={token.type} />
 			</div>
 
 			<div className="kadence-style-book__token-field-controls">
 				<TextControl
 					className="kadence-style-book__token-input"
-					label={ __( 'Hex value', 'kadence-blocks' ) }
-					value={ draft }
-					onChange={ setDraft }
-					onBlur={ () => {
-						if ( isDirty && ! isSaving ) {
+					label={__('Hex value', 'kadence-blocks')}
+					value={draft}
+					onChange={setDraft}
+					onBlur={() => {
+						if (isDirty && !isSaving) {
 							void handleSave();
 						}
-					} }
-					disabled={ isSaving }
-					help={ token.cssVar }
+					}}
+					disabled={isSaving}
+					help={token.cssVar}
 				/>
 				<Button
 					variant="secondary"
-					onClick={ () => void handleSave() }
-					disabled={ ! isDirty || isSaving }
-					isBusy={ isSaving }
+					onClick={() => void handleSave()}
+					disabled={!isDirty || isSaving}
+					isBusy={isSaving}
 				>
-					{ __( 'Save', 'kadence-blocks' ) }
+					{__('Save', 'kadence-blocks')}
 				</Button>
-				<SaveStatus status={ fieldState.status } error={ fieldState.error } />
+				<SaveStatus status={fieldState.status} error={fieldState.error} />
 			</div>
 		</div>
 	);

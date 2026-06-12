@@ -18,65 +18,61 @@ import { NavSectionLabel } from '../atoms/NavSectionLabel';
  * @param {Function} props.onNavigate Section change handler.
  * @return {JSX.Element} Sidebar navigation.
  */
-export function Sidebar( { section, sections, onNavigate } ) {
-	const overview = sections.filter( ( item ) => item.kind === 'overview' );
-	const foundations = sections.filter( ( item ) => item.kind === 'foundation' );
-	const variants = sections.filter( ( item ) => item.kind === 'variants' );
+export function Sidebar({ section, sections, onNavigate }) {
+	const overview = sections.filter((item) => item.kind === 'overview');
+	const foundations = sections.filter((item) => item.kind === 'foundation');
+	const variants = sections.filter((item) => item.kind === 'variants');
 
 	return (
 		<aside className="kadence-style-book__sidebar">
-			{ overview.length > 0 && (
+			{overview.length > 0 && (
 				<div className="kadence-style-book__nav-section">
-					<NavSectionLabel>{ __( 'Style Book', 'kadence-blocks' ) }</NavSectionLabel>
+					<NavSectionLabel>{__('Style Book', 'kadence-blocks')}</NavSectionLabel>
 					<ul className="kadence-style-book__nav-list">
-						{ overview.map( ( item ) => (
-							<NavItem
-								key={ item.id }
-								active={ section === item.id }
-								onClick={ () => onNavigate( item.id ) }
-							>
-								{ item.label }
+						{overview.map((item) => (
+							<NavItem key={item.id} active={section === item.id} onClick={() => onNavigate(item.id)}>
+								{item.label}
 							</NavItem>
-						) ) }
+						))}
 					</ul>
 				</div>
-			) }
+			)}
 
-			{ foundations.length > 0 && (
+			{foundations.length > 0 && (
 				<div className="kadence-style-book__nav-section">
-					<NavSectionLabel>{ __( 'Foundations', 'kadence-blocks' ) }</NavSectionLabel>
+					<NavSectionLabel>{__('Foundations', 'kadence-blocks')}</NavSectionLabel>
 					<ul className="kadence-style-book__nav-list">
-						{ foundations.map( ( item ) => (
+						{foundations.map((item) => (
 							<NavItem
-								key={ item.id }
-								active={ section === item.id }
-								count={ item.count }
-								onClick={ () => onNavigate( item.id ) }
+								key={item.id}
+								active={section === item.id}
+								count={item.count}
+								onClick={() => onNavigate(item.id)}
 							>
-								{ item.label }
+								{item.label}
 							</NavItem>
-						) ) }
+						))}
 					</ul>
 				</div>
-			) }
+			)}
 
-			{ variants.length > 0 && (
+			{variants.length > 0 && (
 				<div className="kadence-style-book__nav-section">
-					<NavSectionLabel>{ __( 'Presets', 'kadence-blocks' ) }</NavSectionLabel>
+					<NavSectionLabel>{__('Presets', 'kadence-blocks')}</NavSectionLabel>
 					<ul className="kadence-style-book__nav-list">
-						{ variants.map( ( item ) => (
+						{variants.map((item) => (
 							<NavItem
-								key={ item.id }
-								active={ section === item.id }
-								count={ item.count }
-								onClick={ () => onNavigate( item.id ) }
+								key={item.id}
+								active={section === item.id}
+								count={item.count}
+								onClick={() => onNavigate(item.id)}
 							>
-								{ item.label }
+								{item.label}
 							</NavItem>
-						) ) }
+						))}
 					</ul>
 				</div>
-			) }
+			)}
 		</aside>
 	);
 }
