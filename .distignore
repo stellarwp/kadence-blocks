@@ -44,3 +44,4 @@ dev_scripts/
 diff.txt
 diffcs.txt
 phpcs.json
+changelog/

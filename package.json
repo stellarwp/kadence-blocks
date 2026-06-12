@@ -86,5 +86,25 @@
 		"install": "^0.13.0",
 		"prettier": "^3.6.0"
 	},
-	"postcss": {}
+	"postcss": {},
+	"changelogger": {
+		"changesDir": "changelog",
+		"ordering": [
+			"type",
+			"content"
+		],
+		"types": {
+			"feature": "Add",
+			"update": "Update",
+			"tweak": "Tweak",
+			"fix": "Fix",
+			"security": "Security"
+		},
+		"files": [
+			{
+				"path": "readme.txt",
+				"strategy": "dev_scripts/lib/changelog-strategy.js"
+			}
+		]
+	}
 }
