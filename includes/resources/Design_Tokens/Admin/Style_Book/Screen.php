@@ -37,7 +37,6 @@ final class Screen {
 	 * @return void
 	 */
 	public function render(): void {
-		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
 		?>
 		<div class="wrap kadence_blocks_dash kadence-style-book-wrap">
 			<div class="kadence_blocks_dash_head_container">
