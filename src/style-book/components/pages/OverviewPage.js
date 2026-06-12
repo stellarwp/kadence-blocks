@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { sampleColorValues } from '../../helpers/colors';
-import { filterTokensByType } from '../../helpers/navigation';
+import { filterTokensByGroup } from '../../helpers/navigation';
 
 /**
  * Overview card linking into a sidebar section.
@@ -32,20 +32,17 @@ function OverviewCard({ title, subtitle, onClick, children }) {
 }
 
 /**
- * Style Book overview with at-a-glance previews per foundation.
+ * Style Book overview with at-a-glance previews per foundation group.
  *
  * @param {object}   props            Component props.
  * @param {object[]} props.sections   Navigation sections (excluding overview).
  * @param {object[]} props.tokens     Flat token list.
  * @param {Record<string, string>} props.values Resolved values.
- * @param {Record<string, object>} props.variants Variants feed section.
  * @param {Function} props.onNavigate Section change handler.
  * @return {JSX.Element} Overview page.
  */
-export function OverviewPage({ sections, tokens, values, variants, onNavigate }) {
-	const foundationSections = sections.filter((section) => section.kind !== 'overview');
-	const colorTokens = filterTokensByType(tokens, 'color');
-	const colorSamples = sampleColorValues(colorTokens, values);
+export function OverviewPage({ sections, tokens, values, onNavigate }) {
+	const foundationSections = sections.filter((section) => section.kind === 'foundation');
 
 	return (
 		<div className="kadence-style-book__overview">
@@ -60,9 +57,11 @@ export function OverviewPage({ sections, tokens, values, variants, onNavigate })
 			</header>
 
 			<div className="kadence-style-book__overview-grid">
-				{foundationSections
-					.filter((section) => section.kind === 'foundation')
-					.map((section) => (
+				{foundationSections.map((section) => {
+					const groupTokens = filterTokensByGroup(tokens, section.groupName);
+					const colorSamples = section.showColorPreview ? sampleColorValues(groupTokens, values) : [];
+
+					return (
 						<OverviewCard
 							key={section.id}
 							title={section.label}
@@ -73,7 +72,7 @@ export function OverviewPage({ sections, tokens, values, variants, onNavigate })
 							}
 							onClick={() => onNavigate(section.id)}
 						>
-							{section.type === 'color' ? (
+							{section.showColorPreview ? (
 								<div className="kadence-style-book__overview-swatches">
 									{colorSamples.map((color) => (
 										<span
@@ -87,28 +86,8 @@ export function OverviewPage({ sections, tokens, values, variants, onNavigate })
 								<p className="kadence-style-book__overview-hint">{section.description}</p>
 							)}
 						</OverviewCard>
-					))}
-
-				{foundationSections
-					.filter((section) => section.kind === 'variants')
-					.map((section) => (
-						<OverviewCard
-							key={section.id}
-							title={section.label}
-							subtitle={
-								section.count === 1
-									? __('1 block', 'kadence-blocks')
-									: `${section.count} ${__('blocks', 'kadence-blocks')}`
-							}
-							onClick={() => onNavigate(section.id)}
-						>
-							<ul className="kadence-style-book__overview-variant-list">
-								{Object.keys(variants).map((block) => (
-									<li key={block}>{block.replace('kadence/', '')}</li>
-								))}
-							</ul>
-						</OverviewCard>
-					))}
+					);
+				})}
 			</div>
 		</div>
 	);
