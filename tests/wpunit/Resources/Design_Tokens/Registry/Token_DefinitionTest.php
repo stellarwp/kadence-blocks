@@ -121,6 +121,10 @@ final class Token_DefinitionTest extends TestCase {
 
 	/**
 	 * @dataProvider malformedIdProvider
+	 *
+	 * @param string $id
+	 *
+	 * @return void
 	 */
 	public function testItThrowsWhenIdHasAnInvalidCharset( string $id ): void {
 		$this->expectException( InvalidArgumentException::class );
