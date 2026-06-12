@@ -141,7 +141,7 @@ final class Token_DefinitionTest extends TestCase {
 		return [
 			'space'        => [ 'semantic.color.button bg' ],
 			'slash'        => [ 'semantic/color/button-bg' ],
-			'uppercase'    => [ 'semantic.Color.button-bg' ],
+			'underscore'   => [ 'semantic.color.button_bg' ],
 			'leading dot'  => [ '.semantic.color.button-bg' ],
 			'trailing dot' => [ 'semantic.color.button-bg.' ],
 		];
