@@ -9,29 +9,25 @@ import { __ } from '@wordpress/i18n';
  * @param {{ status: string, error?: string|null }} props Component props.
  * @return {JSX.Element|null} Status message or null when idle.
  */
-export function SaveStatus( { status, error = null } ) {
-	if ( status === 'saving' ) {
+export function SaveStatus({ status, error = null }) {
+	if (status === 'saving') {
 		return (
 			<span className="kadence-style-book__save-status kadence-style-book__save-status--saving">
-				{ __( 'Saving…', 'kadence-blocks' ) }
+				{__('Saving…', 'kadence-blocks')}
 			</span>
 		);
 	}
 
-	if ( status === 'saved' ) {
+	if (status === 'saved') {
 		return (
 			<span className="kadence-style-book__save-status kadence-style-book__save-status--saved">
-				{ __( 'Saved', 'kadence-blocks' ) }
+				{__('Saved', 'kadence-blocks')}
 			</span>
 		);
 	}
 
-	if ( status === 'error' && error ) {
-		return (
-			<span className="kadence-style-book__save-status kadence-style-book__save-status--error">
-				{ error }
-			</span>
-		);
+	if (status === 'error' && error) {
+		return <span className="kadence-style-book__save-status kadence-style-book__save-status--error">{error}</span>;
 	}
 
 	return null;

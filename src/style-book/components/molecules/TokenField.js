@@ -22,56 +22,51 @@ import { TokenTypeBadge } from '../atoms/TokenTypeBadge';
  * @param {object}   props.fieldState   Save status for this field.
  * @return {JSX.Element} Token field row.
  */
-export function TokenField( { token, value, onSave, fieldState } ) {
-	const [ draft, setDraft ] = useState( value ?? '' );
-	const isDirty = draft !== ( value ?? '' );
+export function TokenField({ token, value, onSave, fieldState }) {
+	const [draft, setDraft] = useState(value ?? '');
+	const isDirty = draft !== (value ?? '');
 	const isSaving = fieldState.status === 'saving';
 
-	useEffect( () => {
-		setDraft( value ?? '' );
-	}, [ value ] );
+	useEffect(() => {
+		setDraft(value ?? '');
+	}, [value]);
 
 	const handleSave = async () => {
-		if ( ! isDirty || isSaving ) {
+		if (!isDirty || isSaving) {
 			return;
 		}
 
-		await onSave( token.id, token.type, draft );
+		await onSave(token.id, token.type, draft);
 	};
 
 	return (
 		<div className="kadence-style-book__token-field">
 			<div className="kadence-style-book__token-field-meta">
-				<TokenSwatch type={ token.type } value={ draft } />
+				<TokenSwatch type={token.type} value={draft} />
 				<div className="kadence-style-book__token-field-labels">
-					<strong className="kadence-style-book__token-label">{ token.label }</strong>
-					<code className="kadence-style-book__token-id">{ token.id }</code>
+					<strong className="kadence-style-book__token-label">{token.label}</strong>
+					<code className="kadence-style-book__token-id">{token.id}</code>
 				</div>
-				<TokenTypeBadge type={ token.type } />
+				<TokenTypeBadge type={token.type} />
 			</div>
 
 			<div className="kadence-style-book__token-field-controls">
 				<TextControl
 					className="kadence-style-book__token-input"
-					value={ draft }
-					onChange={ setDraft }
-					onBlur={ () => {
-						if ( isDirty && ! isSaving ) {
+					value={draft}
+					onChange={setDraft}
+					onBlur={() => {
+						if (isDirty && !isSaving) {
 							void handleSave();
 						}
-					} }
-					disabled={ isSaving }
-					help={ token.cssVar }
+					}}
+					disabled={isSaving}
+					help={token.cssVar}
 				/>
-				<Button
-					variant="secondary"
-					onClick={ handleSave }
-					disabled={ ! isDirty || isSaving }
-					isBusy={ isSaving }
-				>
-					{ __( 'Save', 'kadence-blocks' ) }
+				<Button variant="secondary" onClick={handleSave} disabled={!isDirty || isSaving} isBusy={isSaving}>
+					{__('Save', 'kadence-blocks')}
 				</Button>
-				<SaveStatus status={ fieldState.status } error={ fieldState.error } />
+				<SaveStatus status={fieldState.status} error={fieldState.error} />
 			</div>
 		</div>
 	);

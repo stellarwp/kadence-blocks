@@ -16,35 +16,34 @@ import { TokenList } from '../templates/TokenList';
  * @return {JSX.Element} Tokens editor page.
  */
 export function TokensPage() {
-	const { tokens, isReady, isActive, isResolved, values: feedValues, rest, version } =
-		useDesignTokensFeed();
-	const { values, saveToken, getFieldState } = useTokenEditor( rest, feedValues );
+	const { tokens, isReady, isActive, isResolved, values: feedValues, rest, version } = useDesignTokensFeed();
+	const { values, saveToken, getFieldState } = useTokenEditor(rest, feedValues);
 
 	return (
 		<div className="kadence-style-book__tokens-page">
 			<header className="kadence-style-book__header">
-				<h1 className="kadence-style-book__title">{ __( 'Style Book', 'kadence-blocks' ) }</h1>
+				<h1 className="kadence-style-book__title">{__('Style Book', 'kadence-blocks')}</h1>
 				<p className="kadence-style-book__intro">
-					{ __(
+					{__(
 						'Preview and edit Kadence design tokens. Changes save to the token store via the REST API.',
 						'kadence-blocks'
-					) }
+					)}
 				</p>
-				{ version ? (
+				{version ? (
 					<p className="kadence-style-book__version">
-						{ __( 'Store version:', 'kadence-blocks' ) } <code>{ version }</code>
+						{__('Store version:', 'kadence-blocks')} <code>{version}</code>
 					</p>
-				) : null }
+				) : null}
 			</header>
 
 			<TokenList
-				tokens={ tokens }
-				values={ values }
-				isReady={ isReady }
-				isActive={ isActive }
-				isResolved={ isResolved }
-				onSave={ saveToken }
-				getFieldState={ getFieldState }
+				tokens={tokens}
+				values={values}
+				isReady={isReady}
+				isActive={isActive}
+				isResolved={isResolved}
+				onSave={saveToken}
+				getFieldState={getFieldState}
 			/>
 		</div>
 	);

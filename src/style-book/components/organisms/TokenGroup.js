@@ -14,20 +14,20 @@ import { TokenField } from '../molecules/TokenField';
  * @param {Function} props.getFieldState Field state accessor.
  * @return {JSX.Element} Token group section.
  */
-export function TokenGroup( { groupName, tokens, values, onSave, getFieldState } ) {
+export function TokenGroup({ groupName, tokens, values, onSave, getFieldState }) {
 	return (
 		<section className="kadence-style-book__token-group">
-			<h2 className="kadence-style-book__token-group-title">{ groupName }</h2>
+			<h2 className="kadence-style-book__token-group-title">{groupName}</h2>
 			<div className="kadence-style-book__token-group-list">
-				{ tokens.map( ( token ) => (
+				{tokens.map((token) => (
 					<TokenField
-						key={ token.id }
-						token={ token }
-						value={ values[ token.id ] ?? '' }
-						onSave={ onSave }
-						fieldState={ getFieldState( token.id ) }
+						key={token.id}
+						token={token}
+						value={values[token.id] ?? ''}
+						onSave={onSave}
+						fieldState={getFieldState(token.id)}
 					/>
-				) ) }
+				))}
 			</div>
 		</section>
 	);
