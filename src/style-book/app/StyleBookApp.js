@@ -1,20 +1,13 @@
 /**
- * WordPress dependencies
+ * Internal dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { TokensPage } from '../components/pages/TokensPage';
 
 /**
- * The root Style Book admin screen.
+ * Root Style Book application shell.
  *
- * @return {JSX.Element} The Style Book scaffold.
+ * @return {JSX.Element} Style Book app.
  */
 export function StyleBookApp() {
-	return (
-		<div className="kadence-style-book">
-			<h1 className="kadence-style-book__title">{__('Style Book', 'kadence-blocks')}</h1>
-			<p className="kadence-style-book__intro">
-				{__('Preview and manage Kadence design tokens from one place.', 'kadence-blocks')}
-			</p>
-		</div>
-	);
+	return <TokensPage />;
 }
