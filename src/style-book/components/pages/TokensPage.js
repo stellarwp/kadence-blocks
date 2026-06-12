@@ -1,51 +1,79 @@
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
+import { SECTION_OVERVIEW, SECTION_VARIANTS } from '../../constants/navigation';
 import { useDesignTokensFeed } from '../../hooks/use-design-tokens-feed';
+import { useStyleBookNavigation } from '../../hooks/use-style-book-navigation';
 import { useTokenEditor } from '../../hooks/use-token-editor';
-import { TokenList } from '../templates/TokenList';
+import { FoundationPage } from '../pages/FoundationPage';
+import { OverviewPage } from '../pages/OverviewPage';
+import { VariantsPage } from '../pages/VariantsPage';
+import { StyleBookShell } from '../templates/StyleBookShell';
 
 /**
- * Style Book tokens page — read and edit resolved design token values.
+ * Style Book application page — sidebar shell and section routing.
  *
- * @return {JSX.Element} Tokens editor page.
+ * @return {JSX.Element} Style Book page.
  */
 export function TokensPage() {
-	const { tokens, isReady, isActive, isResolved, values: feedValues, rest, version } =
-		useDesignTokensFeed();
+	const {
+		tokens,
+		isReady,
+		isActive,
+		isResolved,
+		values: feedValues,
+		rest,
+		version,
+		feed,
+	} = useDesignTokensFeed();
 	const { values, saveToken, getFieldState } = useTokenEditor( rest, feedValues );
+	const { section, setSection, sections } = useStyleBookNavigation(
+		tokens,
+		feed?.variants ?? {}
+	);
 
-	return (
-		<div className="kadence-style-book__tokens-page">
-			<header className="kadence-style-book__header">
-				<h1 className="kadence-style-book__title">{ __( 'Style Book', 'kadence-blocks' ) }</h1>
-				<p className="kadence-style-book__intro">
-					{ __(
-						'Preview and edit Kadence design tokens. Changes save to the token store via the REST API.',
-						'kadence-blocks'
-					) }
-				</p>
-				{ version ? (
-					<p className="kadence-style-book__version">
-						{ __( 'Store version:', 'kadence-blocks' ) } <code>{ version }</code>
-					</p>
-				) : null }
-			</header>
+	const sharedListProps = {
+		tokens,
+		values,
+		isReady,
+		isActive,
+		isResolved,
+		onSave: saveToken,
+		getFieldState,
+	};
 
-			<TokenList
+	let content = null;
+
+	if ( section === SECTION_OVERVIEW ) {
+		content = (
+			<OverviewPage
+				sections={ sections }
 				tokens={ tokens }
 				values={ values }
-				isReady={ isReady }
-				isActive={ isActive }
-				isResolved={ isResolved }
-				onSave={ saveToken }
-				getFieldState={ getFieldState }
+				variants={ feed?.variants ?? {} }
+				onNavigate={ setSection }
 			/>
-		</div>
+		);
+	} else if ( section === SECTION_VARIANTS ) {
+		content = <VariantsPage variants={ feed?.variants ?? {} } />;
+	} else {
+		content = (
+			<FoundationPage
+				sectionId={ section }
+				sections={ sections }
+				{ ...sharedListProps }
+			/>
+		);
+	}
+
+	return (
+		<StyleBookShell
+			section={ section }
+			sections={ sections }
+			onNavigate={ setSection }
+			version={ version }
+		>
+			{ content }
+		</StyleBookShell>
 	);
 }

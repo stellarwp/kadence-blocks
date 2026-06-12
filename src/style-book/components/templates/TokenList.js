@@ -41,6 +41,7 @@ function groupTokens( tokens ) {
  * @param {boolean}  props.isResolved   Whether values resolved successfully.
  * @param {Function} props.onSave       Save handler for token fields.
  * @param {Function} props.getFieldState Field state accessor.
+ * @param {string}   [props.emptyMessage] Message when no tokens match.
  * @return {JSX.Element} Token list template.
  */
 export function TokenList( {
@@ -51,6 +52,7 @@ export function TokenList( {
 	isResolved,
 	onSave,
 	getFieldState,
+	emptyMessage,
 } ) {
 	const grouped = useMemo( () => groupTokens( tokens ), [ tokens ] );
 
@@ -81,16 +83,22 @@ export function TokenList( {
 				</Notice>
 			) }
 
-			{ Object.entries( grouped ).map( ( [ groupName, groupTokensList ] ) => (
-				<TokenGroup
-					key={ groupName }
-					groupName={ groupName }
-					tokens={ groupTokensList }
-					values={ values }
-					onSave={ onSave }
-					getFieldState={ getFieldState }
-				/>
-			) ) }
+			{ tokens.length === 0 ? (
+				<p className="kadence-style-book__empty">
+					{ emptyMessage ?? __( 'No tokens available.', 'kadence-blocks' ) }
+				</p>
+			) : (
+				Object.entries( grouped ).map( ( [ groupName, groupTokensList ] ) => (
+					<TokenGroup
+						key={ groupName }
+						groupName={ groupName }
+						tokens={ groupTokensList }
+						values={ values }
+						onSave={ onSave }
+						getFieldState={ getFieldState }
+					/>
+				) )
+			) }
 		</div>
 	);
 }
