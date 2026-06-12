@@ -5,6 +5,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Menu;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Screen;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -25,6 +28,13 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Builder::class );
 		$this->container->singleton( Variants::class );
 		$this->container->singleton( Localizer::class );
+		$this->container->singleton( Screen::class );
+		$this->container->singleton( Asset_Loader::class );
+		$this->container->singleton( Menu::class );
+
+		// Register after Kadence_Blocks_Settings::add_menu() so the kadence-blocks parent exists.
+		add_action( 'admin_menu', $this->container->callback( Menu::class, 'register_site_menu' ), 11 );
+		add_action( 'network_admin_menu', $this->container->callback( Menu::class, 'register_network_menu' ), 11 );
 
 		// admin_head fires after the dashboard's admin_print_styles-{page} enqueue and before the footer
 		// where admin-kadence-home prints, so the handle is enqueued when the Localizer's guard runs.
