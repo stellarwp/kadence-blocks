@@ -20,7 +20,7 @@
 			"dirs": [
 				"."
 			],
-			"skip_directories": "vendor|vendor-prefixed|node_modules|dist|build|bin"
+			"skip_directories": "vendor|vendor-prefixed|node_modules|dist|build|bin|dev_scripts|.git|.github"
 		},
 		"version-conflict": {
 			"fail_method": "error",

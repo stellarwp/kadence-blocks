@@ -111,9 +111,12 @@
 			"rm -f ./bin/strauss.phar"
 		],
 		"pup": [
-			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",
+			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/2.0.0/pup.phar",
 			"@php bin/pup.phar"
 		],
+		"release:prep": "dev_scripts/release-prep.sh",
+		"changelog:add": "dev_scripts/changelogger.sh add --significance patch --auto-filename",
+		"changelog:write": "dev_scripts/write-changelog.sh",
 		"wp-cli": [
 			"test -f ./bin/wp-cli.phar || curl -o bin/wp-cli.phar -L -C - https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
 			"@php -d memory_limit=4G bin/wp-cli.phar"
