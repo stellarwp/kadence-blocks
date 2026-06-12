@@ -1,0 +1,45 @@
+{
+    "version": 2,
+    "settings": {
+        "color": {
+            "palette": {
+                "theme": [
+                    {
+                        "slug": "button-bg",
+                        "name": "Button Background",
+                        "color": "var(--kb-token--semantic--color--button-bg)"
+                    }
+                ]
+            }
+        },
+        "typography": {
+            "fontFamilies": {
+                "theme": [
+                    {
+                        "slug": "body",
+                        "name": "Body Font",
+                        "fontFamily": "var(--kb-token--semantic--font--body)"
+                    }
+                ]
+            }
+        },
+        "spacing": {
+            "spacingSizes": [
+                {
+                    "slug": "md",
+                    "name": "Medium",
+                    "size": "var(--kb-token--semantic--spacing--md)"
+                }
+            ]
+        },
+        "shadow": {
+            "presets": [
+                {
+                    "slug": "card",
+                    "name": "Card",
+                    "shadow": "var(--kb-token--semantic--shadow--card)"
+                }
+            ]
+        }
+    }
+}

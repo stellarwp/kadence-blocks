@@ -64,6 +64,7 @@
 		"codeception/util-universalframework": "^1.0",
 		"exussum12/coverage-checker": "^1.0",
 		"lucatume/wp-browser": "<3.5",
+		"lucatume/wp-snaphot-assertions": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"phpstan/extension-installer": "^1.4",
 		"sabberworm/php-css-parser": "^8.4",
@@ -77,6 +78,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"KadenceWP\\KadenceBlocks\\Dev\\": "dev_scripts/src/",
 			"Tests\\": "tests/",
 			"Tests\\Acceptance\\": "tests/acceptance/",
 			"Tests\\Support\\": "tests/_support/",
@@ -84,6 +86,9 @@
 		}
 	},
 	"scripts": {
+		"generate-dtcg-schema": [
+			"@php dev_scripts/bin/generate-dtcg-schema.php"
+		],
 		"stellar-uplink": [
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
@@ -138,7 +143,7 @@
 		],
 		"phpcs": "phpcs --standard=phpcs.xml",
 		"phpcs-autofix": "phpcbf --standard=phpcs.xml",
-		"phpcs-ci": "dev_scripts/partial-phpcs.sh diff",
+		"phpcs-ci": "dev_scripts/bin/partial-phpcs.sh diff",
 		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=4096M",
 		"phpstan-baseline": "./vendor/bin/phpstan analyse --memory-limit=4096M --level max --configuration phpstan.neon --generate-baseline"
 	},
