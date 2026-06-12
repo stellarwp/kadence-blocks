@@ -14,13 +14,13 @@ import { resolvedPath, tokenPath } from './paths';
  * @param {{ root: string, nonce: string }} rest REST descriptor from the feed.
  * @return {void}
  */
-export function configureRestClient( rest ) {
-	if ( ! rest?.root || ! rest?.nonce ) {
+export function configureRestClient(rest) {
+	if (!rest?.root || !rest?.nonce) {
 		return;
 	}
 
-	apiFetch.use( apiFetch.createNonceMiddleware( rest.nonce ) );
-	apiFetch.use( apiFetch.createRootURLMiddleware( rest.root ) );
+	apiFetch.use(apiFetch.createNonceMiddleware(rest.nonce));
+	apiFetch.use(apiFetch.createRootURLMiddleware(rest.root));
 }
 
 /**
@@ -30,8 +30,8 @@ export function configureRestClient( rest ) {
  * @param {string} slug      Token set slug.
  * @return {Promise<{ by_id: Record<string, string>, version: string }>} Resolved payload.
  */
-export function fetchResolvedTokens( namespace, slug ) {
-	return apiFetch( { path: resolvedPath( namespace, slug ) } );
+export function fetchResolvedTokens(namespace, slug) {
+	return apiFetch({ path: resolvedPath(namespace, slug) });
 }
 
 /**
@@ -43,10 +43,10 @@ export function fetchResolvedTokens( namespace, slug ) {
  * @param {string}               slug      Token set slug.
  * @return {Promise<object>} Updated document item.
  */
-export function saveTokenLeaf( namespace, tokenId, leaf, slug ) {
-	return apiFetch( {
-		path: tokenPath( namespace, tokenId, slug ),
+export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
+	return apiFetch({
+		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
-	} );
+	});
 }

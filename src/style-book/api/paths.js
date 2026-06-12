@@ -7,8 +7,8 @@ import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function documentPath( namespace, slug = DEFAULT_TOKEN_SET_SLUG ) {
-	return `/${ namespace }/documents/${ slug }`;
+export function documentPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/documents/${slug}`;
 }
 
 /**
@@ -18,8 +18,8 @@ export function documentPath( namespace, slug = DEFAULT_TOKEN_SET_SLUG ) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function resolvedPath( namespace, slug = DEFAULT_TOKEN_SET_SLUG ) {
-	return `${ documentPath( namespace, slug ) }/resolved`;
+export function resolvedPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `${documentPath(namespace, slug)}/resolved`;
 }
 
 /**
@@ -30,6 +30,6 @@ export function resolvedPath( namespace, slug = DEFAULT_TOKEN_SET_SLUG ) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function tokenPath( namespace, tokenId, slug = DEFAULT_TOKEN_SET_SLUG ) {
-	return `${ documentPath( namespace, slug ) }/tokens/${ tokenId }`;
+export function tokenPath(namespace, tokenId, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `${documentPath(namespace, slug)}/tokens/${tokenId}`;
 }
