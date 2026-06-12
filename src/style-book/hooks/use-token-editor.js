@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -20,6 +20,10 @@ import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
 export function useTokenEditor( rest, initialValues ) {
 	const [ values, setValues ] = useState( initialValues );
 	const [ fieldState, setFieldState ] = useState( {} );
+
+	useEffect( () => {
+		setValues( initialValues );
+	}, [ initialValues ] );
 
 	const refreshValues = useCallback( async () => {
 		if ( ! rest?.namespace ) {
