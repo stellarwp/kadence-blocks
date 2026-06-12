@@ -19,14 +19,14 @@ import { filterTokensByGroup } from '../../helpers/navigation';
  * @param {import('react').ReactNode} props.children Preview content.
  * @return {JSX.Element} Overview card.
  */
-function OverviewCard( { title, subtitle, onClick, children } ) {
+function OverviewCard({ title, subtitle, onClick, children }) {
 	return (
-		<button type="button" className="kadence-style-book__overview-card" onClick={ onClick }>
+		<button type="button" className="kadence-style-book__overview-card" onClick={onClick}>
 			<div className="kadence-style-book__overview-card-head">
-				<strong>{ title }</strong>
-				{ subtitle ? <span>{ subtitle }</span> : null }
+				<strong>{title}</strong>
+				{subtitle ? <span>{subtitle}</span> : null}
 			</div>
-			<div className="kadence-style-book__overview-card-body">{ children }</div>
+			<div className="kadence-style-book__overview-card-body">{children}</div>
 		</button>
 	);
 }
@@ -41,55 +41,53 @@ function OverviewCard( { title, subtitle, onClick, children } ) {
  * @param {Function} props.onNavigate Section change handler.
  * @return {JSX.Element} Overview page.
  */
-export function OverviewPage( { sections, tokens, values, onNavigate } ) {
-	const foundationSections = sections.filter( ( section ) => section.kind === 'foundation' );
+export function OverviewPage({ sections, tokens, values, onNavigate }) {
+	const foundationSections = sections.filter((section) => section.kind === 'foundation');
 
 	return (
 		<div className="kadence-style-book__overview">
 			<header className="kadence-style-book__page-header">
-				<h2>{ __( 'Overview', 'kadence-blocks' ) }</h2>
+				<h2>{__('Overview', 'kadence-blocks')}</h2>
 				<p>
-					{ __(
+					{__(
 						'A snapshot of your design tokens. Choose a section in the sidebar or click a card to edit.',
 						'kadence-blocks'
-					) }
+					)}
 				</p>
 			</header>
 
 			<div className="kadence-style-book__overview-grid">
-				{ foundationSections.map( ( section ) => {
-					const groupTokens = filterTokensByGroup( tokens, section.groupName );
-					const colorSamples = section.showColorPreview
-						? sampleColorValues( groupTokens, values )
-						: [];
+				{foundationSections.map((section) => {
+					const groupTokens = filterTokensByGroup(tokens, section.groupName);
+					const colorSamples = section.showColorPreview ? sampleColorValues(groupTokens, values) : [];
 
 					return (
 						<OverviewCard
-							key={ section.id }
-							title={ section.label }
+							key={section.id}
+							title={section.label}
 							subtitle={
 								section.count === 1
-									? __( '1 token', 'kadence-blocks' )
-									: `${ section.count } ${ __( 'tokens', 'kadence-blocks' ) }`
+									? __('1 token', 'kadence-blocks')
+									: `${section.count} ${__('tokens', 'kadence-blocks')}`
 							}
-							onClick={ () => onNavigate( section.id ) }
+							onClick={() => onNavigate(section.id)}
 						>
-							{ section.showColorPreview ? (
+							{section.showColorPreview ? (
 								<div className="kadence-style-book__overview-swatches">
-									{ colorSamples.map( ( color ) => (
+									{colorSamples.map((color) => (
 										<span
-											key={ color }
+											key={color}
 											className="kadence-style-book__overview-swatch"
-											style={ { backgroundColor: color } }
+											style={{ backgroundColor: color }}
 										/>
-									) ) }
+									))}
 								</div>
 							) : (
-								<p className="kadence-style-book__overview-hint">{ section.description }</p>
-							) }
+								<p className="kadence-style-book__overview-hint">{section.description}</p>
+							)}
 						</OverviewCard>
 					);
-				} ) }
+				})}
 			</div>
 		</div>
 	);

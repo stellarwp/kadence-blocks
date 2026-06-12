@@ -9,8 +9,8 @@ import { normalizeHexColor } from './tokens';
  * @param {string} value Resolved color string.
  * @return {string} Hex color suitable as a picker default.
  */
-export function toPickerColor( value ) {
-	return normalizeHexColor( value ) ?? '#000000';
+export function toPickerColor(value) {
+	return normalizeHexColor(value) ?? '#000000';
 }
 
 /**
@@ -19,11 +19,11 @@ export function toPickerColor( value ) {
  * @param {{ hex?: string }} color ColorPicker value object.
  * @return {string} Uppercase hex color.
  */
-export function fromPickerColor( color ) {
+export function fromPickerColor(color) {
 	const hex = color?.hex ?? '';
 
-	if ( hex.length === 9 ) {
-		return hex.slice( 0, 7 ).toUpperCase();
+	if (hex.length === 9) {
+		return hex.slice(0, 7).toUpperCase();
 	}
 
 	return hex.toUpperCase();
@@ -37,9 +37,9 @@ export function fromPickerColor( color ) {
  * @param {number}                limit  Maximum swatches.
  * @return {string[]} Hex or CSS color strings.
  */
-export function sampleColorValues( tokens, values, limit = 8 ) {
+export function sampleColorValues(tokens, values, limit = 8) {
 	return tokens
-		.slice( 0, limit )
-		.map( ( token ) => values[ token.id ] ?? '' )
-		.filter( Boolean );
+		.slice(0, limit)
+		.map((token) => values[token.id] ?? '')
+		.filter(Boolean);
 }

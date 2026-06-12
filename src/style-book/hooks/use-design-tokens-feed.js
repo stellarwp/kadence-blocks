@@ -15,21 +15,21 @@ import { flattenSchemaTokens, getDesignTokensFeed } from '../helpers/tokens';
  * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean }}
  */
 export function useDesignTokensFeed() {
-	const feed = useMemo( () => getDesignTokensFeed(), [] );
-	const tokens = useMemo( () => flattenSchemaTokens( feed?.schema ), [ feed ] );
+	const feed = useMemo(() => getDesignTokensFeed(), []);
+	const tokens = useMemo(() => flattenSchemaTokens(feed?.schema), [feed]);
 
-	useEffect( () => {
-		if ( feed?.rest ) {
-			configureRestClient( feed.rest );
+	useEffect(() => {
+		if (feed?.rest) {
+			configureRestClient(feed.rest);
 		}
-	}, [ feed ] );
+	}, [feed]);
 
 	return {
 		feed,
 		tokens,
 		isReady: feed !== null,
-		isActive: Boolean( feed?.active ),
-		isResolved: Boolean( feed?.resolved ),
+		isActive: Boolean(feed?.active),
+		isResolved: Boolean(feed?.resolved),
 		values: feed?.values ?? {},
 		rest: feed?.rest ?? null,
 		version: feed?.version ?? '',

@@ -11,10 +11,10 @@ import { GenericTokenField } from './GenericTokenField';
  * @param {object} props Token field props forwarded to the typed editor.
  * @return {JSX.Element} Typed token field row.
  */
-export function TokenField( props ) {
-	if ( isColorType( props.token.type ) ) {
-		return <ColorTokenField { ...props } />;
+export function TokenField(props) {
+	if (isColorType(props.token.type)) {
+		return <ColorTokenField {...props} />;
 	}
 
-	return <GenericTokenField { ...props } />;
+	return <GenericTokenField {...props} />;
 }

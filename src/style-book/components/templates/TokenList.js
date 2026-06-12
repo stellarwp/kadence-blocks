@@ -17,18 +17,18 @@ import { TokenGroup } from '../organisms/TokenGroup';
  * @param {object[]} tokens Flat token list from the feed.
  * @return {Record<string, object[]>} Tokens keyed by group name.
  */
-function groupTokens( tokens ) {
-	return tokens.reduce( ( groups, token ) => {
-		const key = token.group || __( 'Other', 'kadence-blocks' );
+function groupTokens(tokens) {
+	return tokens.reduce((groups, token) => {
+		const key = token.group || __('Other', 'kadence-blocks');
 
-		if ( ! groups[ key ] ) {
-			groups[ key ] = [];
+		if (!groups[key]) {
+			groups[key] = [];
 		}
 
-		groups[ key ].push( token );
+		groups[key].push(token);
 
 		return groups;
-	}, {} );
+	}, {});
 }
 
 /**
@@ -46,7 +46,7 @@ function groupTokens( tokens ) {
  * @param {boolean}  [props.groupBySchema] Whether to subgroup by schema group label.
  * @return {JSX.Element} Token list template.
  */
-export function TokenList( {
+export function TokenList({
 	tokens,
 	values,
 	isReady,
@@ -56,10 +56,10 @@ export function TokenList( {
 	getFieldState,
 	emptyMessage,
 	groupBySchema = true,
-} ) {
-	const grouped = useMemo( () => groupTokens( tokens ), [ tokens ] );
+}) {
+	const grouped = useMemo(() => groupTokens(tokens), [tokens]);
 
-	if ( ! isReady ) {
+	if (!isReady) {
 		return (
 			<div className="kadence-style-book__loading">
 				<Spinner />
@@ -67,53 +67,53 @@ export function TokenList( {
 		);
 	}
 
-	if ( ! isActive ) {
+	if (!isActive) {
 		return (
-			<Notice status="warning" isDismissible={ false }>
-				{ __( 'Design tokens are not active on this site.', 'kadence-blocks' ) }
+			<Notice status="warning" isDismissible={false}>
+				{__('Design tokens are not active on this site.', 'kadence-blocks')}
 			</Notice>
 		);
 	}
 
 	return (
 		<div className="kadence-style-book__token-list">
-			{ ! isResolved && (
-				<Notice status="warning" isDismissible={ false }>
-					{ __(
+			{!isResolved && (
+				<Notice status="warning" isDismissible={false}>
+					{__(
 						'Token values could not be resolved. You can still browse structure, but previews may be empty.',
 						'kadence-blocks'
-					) }
+					)}
 				</Notice>
-			) }
+			)}
 
-			{ tokens.length === 0 ? (
+			{tokens.length === 0 ? (
 				<p className="kadence-style-book__empty">
-					{ emptyMessage ?? __( 'No tokens available.', 'kadence-blocks' ) }
+					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
 			) : groupBySchema ? (
-				Object.entries( grouped ).map( ( [ groupName, groupTokensList ] ) => (
+				Object.entries(grouped).map(([groupName, groupTokensList]) => (
 					<TokenGroup
-						key={ groupName }
-						groupName={ groupName }
-						tokens={ groupTokensList }
-						values={ values }
-						onSave={ onSave }
-						getFieldState={ getFieldState }
+						key={groupName}
+						groupName={groupName}
+						tokens={groupTokensList}
+						values={values}
+						onSave={onSave}
+						getFieldState={getFieldState}
 					/>
-				) )
+				))
 			) : (
 				<div className="kadence-style-book__token-group-list">
-					{ tokens.map( ( token ) => (
+					{tokens.map((token) => (
 						<TokenField
-							key={ token.id }
-							token={ token }
-							value={ values[ token.id ] ?? '' }
-							onSave={ onSave }
-							fieldState={ getFieldState( token.id ) }
+							key={token.id}
+							token={token}
+							value={values[token.id] ?? ''}
+							onSave={onSave}
+							fieldState={getFieldState(token.id)}
 						/>
-					) ) }
+					))}
 				</div>
-			) }
+			)}
 		</div>
 	);
 }

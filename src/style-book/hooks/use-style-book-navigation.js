@@ -15,9 +15,9 @@ import { buildNavigationSections } from '../helpers/navigation';
  * @param {object[]} tokens Flat token list from the feed.
  * @return {{ section: string, setSection: Function, sections: object[] }}
  */
-export function useStyleBookNavigation( tokens ) {
-	const sections = useMemo( () => buildNavigationSections( tokens ), [ tokens ] );
-	const [ section, setSection ] = useState( SECTION_OVERVIEW );
+export function useStyleBookNavigation(tokens) {
+	const sections = useMemo(() => buildNavigationSections(tokens), [tokens]);
+	const [section, setSection] = useState(SECTION_OVERVIEW);
 
 	return {
 		section,

@@ -19,23 +19,23 @@ import { Sidebar } from '../organisms/Sidebar';
  * @param {import('react').ReactNode} props.children Main content.
  * @return {JSX.Element} Style Book layout shell.
  */
-export function StyleBookShell( { section, sections, onNavigate, version, children } ) {
+export function StyleBookShell({ section, sections, onNavigate, version, children }) {
 	return (
 		<div className="kadence-style-book">
 			<header className="kadence-style-book__top-bar">
 				<div>
-					<h1 className="kadence-style-book__title">{ __( 'Style Book', 'kadence-blocks' ) }</h1>
-					{ version ? (
+					<h1 className="kadence-style-book__title">{__('Style Book', 'kadence-blocks')}</h1>
+					{version ? (
 						<p className="kadence-style-book__version">
-							{ __( 'Store version:', 'kadence-blocks' ) } <code>{ version }</code>
+							{__('Store version:', 'kadence-blocks')} <code>{version}</code>
 						</p>
-					) : null }
+					) : null}
 				</div>
 			</header>
 
 			<div className="kadence-style-book__layout">
-				<Sidebar section={ section } sections={ sections } onNavigate={ onNavigate } />
-				<main className="kadence-style-book__main">{ children }</main>
+				<Sidebar section={section} sections={sections} onNavigate={onNavigate} />
+				<main className="kadence-style-book__main">{children}</main>
 			</div>
 		</div>
 	);
