@@ -7,56 +7,81 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import {
+	GROUP_ORDER,
+	GROUP_SECTIONS,
 	SECTION_OVERVIEW,
-	SECTION_VARIANTS,
-	TOKEN_TYPE_SECTIONS,
+	groupSectionId,
 } from '../constants/navigation';
 
 /**
- * Filter tokens to a specific DTCG type.
+ * Filter tokens belonging to a schema group.
  *
- * @param {object[]} tokens Flat token list.
- * @param {string}   type   Token type id.
+ * @param {object[]} tokens    Flat token list.
+ * @param {string}   groupName Display group name.
  * @return {object[]} Matching tokens.
  */
-export function filterTokensByType( tokens, type ) {
-	return tokens.filter( ( token ) => token.type === type );
+export function filterTokensByGroup( tokens, groupName ) {
+	return tokens.filter( ( token ) => token.group === groupName );
 }
 
 /**
- * Count tokens grouped by type.
+ * Count tokens per schema group.
  *
  * @param {object[]} tokens Flat token list.
- * @return {Record<string, number>} Counts keyed by type.
+ * @return {Record<string, number>} Counts keyed by group label.
  */
-export function countTokensByType( tokens ) {
+export function countTokensByGroup( tokens ) {
 	return tokens.reduce( ( counts, token ) => {
-		counts[ token.type ] = ( counts[ token.type ] ?? 0 ) + 1;
+		const group = token.group || __( 'Other', 'kadence-blocks' );
+		counts[ group ] = ( counts[ group ] ?? 0 ) + 1;
 		return counts;
 	}, {} );
 }
 
 /**
- * Build sidebar sections from the available token catalog and variants feed.
+ * Build sidebar sections from token schema groups.
  *
- * @param {object[]}              tokens   Flat token list from the feed schema.
- * @param {Record<string, object>} variants Variants section from the feed.
+ * @param {object[]} tokens Flat token list from the feed schema.
  * @return {object[]} Navigation sections for the sidebar and overview cards.
  */
-export function buildNavigationSections( tokens, variants = {} ) {
-	const counts = countTokensByType( tokens );
-	const foundations = TOKEN_TYPE_SECTIONS.filter( ( section ) => counts[ section.type ] > 0 ).map(
-		( section ) => ( {
-			id: section.id,
-			kind: 'foundation',
-			label: section.label(),
-			description: section.description(),
-			type: section.type,
-			count: counts[ section.type ],
-		} )
-	);
+export function buildNavigationSections( tokens ) {
+	const counts = countTokensByGroup( tokens );
 
-	const sections = [
+	const foundations = Object.entries( counts ).map( ( [ groupName, count ] ) => {
+		const id = groupSectionId( groupName );
+		const meta = GROUP_SECTIONS[ id ] ?? {};
+
+		return {
+			id,
+			kind: 'foundation',
+			label: groupName,
+			groupName,
+			description: meta.description?.() ?? '',
+			showColorPreview: Boolean( meta.showColorPreview ),
+			count,
+		};
+	} );
+
+	foundations.sort( ( a, b ) => {
+		const aIndex = GROUP_ORDER.indexOf( a.id );
+		const bIndex = GROUP_ORDER.indexOf( b.id );
+
+		if ( aIndex === -1 && bIndex === -1 ) {
+			return a.label.localeCompare( b.label );
+		}
+
+		if ( aIndex === -1 ) {
+			return 1;
+		}
+
+		if ( bIndex === -1 ) {
+			return -1;
+		}
+
+		return aIndex - bIndex;
+	} );
+
+	return [
 		{
 			id: SECTION_OVERVIEW,
 			kind: 'overview',
@@ -64,21 +89,6 @@ export function buildNavigationSections( tokens, variants = {} ) {
 		},
 		...foundations,
 	];
-
-	if ( Object.keys( variants ).length > 0 ) {
-		sections.push( {
-			id: SECTION_VARIANTS,
-			kind: 'variants',
-			label: __( 'Block Presets', 'kadence-blocks' ),
-			description: __(
-				'Per-block variant sets such as button styles.',
-				'kadence-blocks'
-			),
-			count: Object.keys( variants ).length,
-		} );
-	}
-
-	return sections;
 }
 
 /**

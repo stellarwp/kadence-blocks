@@ -12,15 +12,11 @@ import { buildNavigationSections } from '../helpers/navigation';
 /**
  * Track the active Style Book section and derive sidebar items.
  *
- * @param {object[]}              tokens   Flat token list from the feed.
- * @param {Record<string, object>} variants Variants section from the feed.
+ * @param {object[]} tokens Flat token list from the feed.
  * @return {{ section: string, setSection: Function, sections: object[] }}
  */
-export function useStyleBookNavigation( tokens, variants ) {
-	const sections = useMemo(
-		() => buildNavigationSections( tokens, variants ),
-		[ tokens, variants ]
-	);
+export function useStyleBookNavigation( tokens ) {
+	const sections = useMemo( () => buildNavigationSections( tokens ), [ tokens ] );
 	const [ section, setSection ] = useState( SECTION_OVERVIEW );
 
 	return {

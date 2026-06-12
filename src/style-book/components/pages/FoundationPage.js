@@ -1,16 +1,11 @@
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
-import { findSection, filterTokensByType } from '../../helpers/navigation';
+import { findSection, filterTokensByGroup } from '../../helpers/navigation';
 import { TokenList } from '../templates/TokenList';
 
 /**
- * Foundation editor page for a single token type (colors, dimensions, etc.).
+ * Foundation editor page for a schema group (Brand, Spacing, Font Sizes, etc.).
  *
  * @param {object}   props              Component props.
  * @param {string}   props.sectionId    Active foundation section id.
@@ -41,7 +36,7 @@ export function FoundationPage( {
 		return null;
 	}
 
-	const filtered = filterTokensByType( tokens, section.type );
+	const filtered = filterTokensByGroup( tokens, section.groupName );
 
 	return (
 		<div className="kadence-style-book__foundation-page">
@@ -58,10 +53,7 @@ export function FoundationPage( {
 				isResolved={ isResolved }
 				onSave={ onSave }
 				getFieldState={ getFieldState }
-				emptyMessage={ __(
-					'No tokens are registered for this foundation yet.',
-					'kadence-blocks'
-				) }
+				groupBySchema={ false }
 			/>
 		</div>
 	);
