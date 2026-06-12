@@ -59,9 +59,7 @@ export function OverviewPage({ sections, tokens, values, onNavigate }) {
 			<div className="kadence-style-book__overview-grid">
 				{foundationSections.map((section) => {
 					const groupTokens = filterTokensByGroup(tokens, section.groupName);
-					const colorSamples = section.showColorPreview
-						? sampleColorValues(groupTokens, values)
-						: [];
+					const colorSamples = section.showColorPreview ? sampleColorValues(groupTokens, values) : [];
 
 					return (
 						<OverviewCard

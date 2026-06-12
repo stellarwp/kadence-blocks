@@ -86,6 +86,6 @@ export const GROUP_SECTIONS = {
 		description: () => __('Typographic size scale used across the system.', 'kadence-blocks'),
 	},
 	'font-families': {
-		description: () => __("Font stack primitives for sans, serif, and monospace.", 'kadence-blocks'),
+		description: () => __('Font stack primitives for sans, serif, and monospace.', 'kadence-blocks'),
 	},
 };
