@@ -2,8 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Target;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Abstract_Target;
 
 /**
  * Normalizes a token's "kb_spacing_slot" projection into one of Kadence Blocks' fixed spacing slugs.
@@ -18,7 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  *
  * @since TBD
  */
-final class Spacing_Target implements Target {
+final class Spacing_Target extends Abstract_Target {
 
 	/**
 	 * The projection key a token declares to claim a spacing slug.
@@ -27,7 +26,7 @@ final class Spacing_Target implements Target {
 	 *
 	 * @var string
 	 */
-	private const PROJECTION = 'kb_spacing_slot';
+	protected const PROJECTION = 'kb_spacing_slot';
 
 	/**
 	 * The custom-property prefix Kadence Blocks emits each spacing slug under.
@@ -36,7 +35,7 @@ final class Spacing_Target implements Target {
 	 *
 	 * @var string
 	 */
-	private const VAR_PREFIX = '--global-kb-spacing-';
+	protected const VAR_PREFIX = '--global-kb-spacing-';
 
 	/**
 	 * The spacing slugs Kadence Blocks defines (see includes/init.php / class-kadence-blocks-css.php).
@@ -46,67 +45,5 @@ final class Spacing_Target implements Target {
 	 *
 	 * @var string[]
 	 */
-	private const SLOTS = [ 'ss-auto', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
-
-	/**
-	 * The claimed spacing slug, e.g. "lg".
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $slot;
-
-	/**
-	 * @param string $slot The claimed spacing slug.
-	 */
-	private function __construct( string $slot ) {
-		$this->slot = $slot;
-	}
-
-	/**
-	 * Get the projection key.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_projection_key(): string {
-		return self::PROJECTION;
-	}
-
-	/**
-	 * Resolve a token's kb_spacing_slot config to a target, or null when the token declares no usable
-	 * spacing slot (so callers skip it).
-	 *
-	 * @since TBD
-	 *
-	 * @param Token_Definition $token The token definition.
-	 *
-	 * @return self|null
-	 */
-	public static function from_token( Token_Definition $token ): ?self {
-		if ( ! $token->has_projection( self::PROJECTION ) ) {
-			return null;
-		}
-
-		$slot = $token->projections[ self::PROJECTION ] ?? null;
-
-		if ( ! is_string( $slot ) || ! in_array( $slot, self::SLOTS, true ) ) {
-			return null;
-		}
-
-		return new self( $slot );
-	}
-
-	/**
-	 * The Kadence Blocks custom property this slug is emitted under, e.g. "--global-kb-spacing-lg".
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function css_property(): string {
-		return self::VAR_PREFIX . $this->slot;
-	}
+	protected const SLOTS = [ 'ss-auto', 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 }
