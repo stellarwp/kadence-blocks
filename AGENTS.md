@@ -156,7 +156,7 @@ the `Baseline_Guard` sees declared tokens with no baseline entry and (with `WP_D
 Fix it by flushing Redis directly:
 
 ```bash
-# from the lando app root (e.g. ~/stellarwp/sfwd-lms)
+# from the lando app root
 lando ssh -s redis -c 'redis-cli flushall'
 ```
 
