@@ -16,33 +16,12 @@ export function getAsyncData() {
 	const [isLoadingAI, setLoadingAI] = useState(false);
 	const [error, setError] = useState(false);
 
-	let data_key =
-		undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_key
-			? kadence_blocks_params.proData.api_key
-			: '';
-	let data_email =
-		undefined !== kadence_blocks_params &&
-		kadence_blocks_params?.proData &&
-		kadence_blocks_params?.proData?.api_email
-			? kadence_blocks_params.proData.api_email
-			: '';
 	const product_id =
 		undefined !== kadence_blocks_params &&
 		kadence_blocks_params?.proData &&
 		kadence_blocks_params?.proData?.product_id
 			? kadence_blocks_params.proData.product_id
 			: '';
-	if (!data_key) {
-		data_key =
-			undefined !== kadence_blocks_params &&
-			kadence_blocks_params?.proData &&
-			kadence_blocks_params?.proData?.ithemes_key
-				? kadence_blocks_params.proData.ithemes_key
-				: '';
-		if (data_key) {
-			data_email = 'iThemes';
-		}
-	}
 	/**
 	 * Get remaining credits.
 	 *
@@ -573,12 +552,6 @@ export function getAsyncData() {
 			};
 			if (library_url) {
 				args.library_url = library_url;
-			}
-			if (data_key) {
-				args.api_key = data_key;
-			}
-			if (data_email) {
-				args.api_email = data_email;
 			}
 			if (product_id) {
 				args.product_id = product_id;

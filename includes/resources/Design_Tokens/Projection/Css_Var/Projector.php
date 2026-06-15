@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
-use RuntimeException;
+use Throwable;
 
 /**
  * Projects the resolved token set into the WordPress style pipeline.
@@ -160,7 +160,7 @@ final class Projector {
 		try {
 			$version  = $this->store->get_version();
 			$resolved = $this->resolver->resolve();
-		} catch ( RuntimeException $e ) {
+		} catch ( Throwable $e ) {
 			return '';
 		}
 

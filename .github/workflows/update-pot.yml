@@ -23,16 +23,21 @@ jobs:
           php-version: '8.2'
           coverage: none
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
+          bun-version: latest
 
       - name: Install dependencies
-        run: npm ci
+        env:
+          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        run: |
+          # `bun install` runs the root postinstall, which builds the @kadence/*
+          # source packages (bun blocks their own prepare scripts; npm does not).
+          bun install --frozen-lockfile
 
       - name: Build assets
-        run: npm run build
+        run: bun run build
 
       - name: Install WP-CLI
         run: composer wp

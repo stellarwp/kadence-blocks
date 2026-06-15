@@ -1,0 +1,20 @@
+{
+    "palette": [
+        {
+            "color": "#3182CE",
+            "name": "Button Background",
+            "slug": "palette1"
+        },
+        {
+            "color": "#aabbcc",
+            "name": "Custom Entry",
+            "slug": "palette5"
+        },
+        {
+            "color": "#FFFFFF",
+            "name": "Button Text",
+            "slug": "palette2"
+        }
+    ],
+    "override": false
+}

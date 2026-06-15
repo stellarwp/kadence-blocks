@@ -121,11 +121,18 @@ jobs:
             Please wait while the build completes...
 
       # ------------------------------------------------------------------------------
-      # Setup Node.
+      # Setup Node (still required: the @kadence/* package build loop uses npm).
       # ------------------------------------------------------------------------------
       - uses: actions/setup-node@v4
         with:
           registry-url: 'https://npm.pkg.github.com'
+
+      # ------------------------------------------------------------------------------
+      # Setup Bun (the .puprc build runs `bun install` / `bun run build`).
+      # ------------------------------------------------------------------------------
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       # ------------------------------------------------------------------------------
       # Setup PHP.
@@ -205,6 +212,7 @@ jobs:
         env:
           COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
           NODE_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN  }}
+          BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         run: composer -- pup build
 
       - name: pup check

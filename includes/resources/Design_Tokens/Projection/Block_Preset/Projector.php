@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
-use RuntimeException;
+use Throwable;
 
 /**
  * Projects a block's preset — its `$default` variant — onto Kadence Blocks' per-block attribute defaults.
@@ -75,7 +75,7 @@ final class Projector {
 
 		try {
 			$values = $this->resolver->resolve_default( $block );
-		} catch ( RuntimeException $e ) {
+		} catch ( Throwable $e ) {
 			// No `$default` defined for the block, or the token graph cannot resolve (alias cycle/dangling
 			// reference). This runs in the render path, so fail soft to KB's defaults rather than fatally.
 			return $defaults;

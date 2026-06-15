@@ -814,7 +814,21 @@ final class Documents_Controller extends Controller {
 			);
 		}
 
-		return $this->persist( (string) wp_json_encode( $candidate ), $slug, $title, $status );
+		$encoded = wp_json_encode( $candidate );
+
+		// Guard the encode: a false return cast to "" would clear the whole set on persist instead of storing it.
+		if ( $encoded === false ) {
+			return new WP_Error(
+				'rest_design_tokens_save_failed',
+				__( 'The design token document could not be encoded.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::INTERNAL_SERVER_ERROR,
+					'slug'   => $slug,
+				]
+			);
+		}
+
+		return $this->persist( $encoded, $slug, $title, $status );
 	}
 
 	/**

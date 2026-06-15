@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
-use RuntimeException;
+use Throwable;
 
 /**
  * Projects the selectable-variant CSS into the WordPress style pipeline.
@@ -113,7 +113,7 @@ final class Projector {
 	private function build_css(): string {
 		try {
 			$version = $this->store->get_version();
-		} catch ( RuntimeException $e ) {
+		} catch ( Throwable $e ) {
 			return '';
 		}
 

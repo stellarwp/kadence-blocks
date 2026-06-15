@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use RuntimeException;
@@ -95,10 +96,10 @@ final class Legacy_Filter_Bridge {
 			return $colors;
 		}
 
-		foreach ( $this->registry->by_projection( self::SLOT ) as $id => $token ) {
-			$slot = $token->projections[ self::SLOT ] ?? null;
-			if ( ! is_string( $slot ) || preg_match( '/^palette[1-9]$/', $slot ) !== 1 ) {
-				continue;
+		foreach ( $this->registry->by_projection( Kadence_Palette_Slot::get_projection_key() ) as $id => $token ) {
+			$slot = Kadence_Palette_Slot::from_token( $token );
+			if ( $slot === null ) {
+				continue; // not a palette slot (e.g. a font-size kadence_slot) — leave to font_sizes().
 			}
 
 			$value = $resolved->value( $id );
@@ -106,10 +107,9 @@ final class Legacy_Filter_Bridge {
 				continue;
 			}
 
-			// Point the slot at the token var so blocks react to variant overrides, with the
-			// resolved literal as a fallback for preview iframes that build their own palette
-			// CSS without the token definitions.
-			$colors[ '--global-' . $slot ] = sprintf( 'var(%s, %s)', $token->css_var, $value );
+			// Point the slot at the token var so blocks react to variant overrides, with the resolved
+			// literal as a fallback for preview iframes that build their own palette CSS.
+			$colors[ '--global-' . $slot->slug ] = sprintf( 'var(%s, %s)', $token->css_var, $value );
 		}
 
 		return $colors;

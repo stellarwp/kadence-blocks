@@ -45,7 +45,7 @@ export function LargeBanner({
 	siteName = '',
 }) {
 	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
-	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
+	const data_key = !!window?.kadence_blocks_params?.proData?.hasApiKey;
 	const [isVisible, setIsVisible] = useState(false);
 	const [availableCredits, setAvailableCredits] = useState(false);
 	const toggleVisible = () => {

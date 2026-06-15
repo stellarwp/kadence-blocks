@@ -3,6 +3,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
+use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 
 /**
@@ -24,6 +26,9 @@ final class Token_Registry {
 
 	/** @var array<string, Variant_Set> Keyed by block name. */
 	private array $variant_sets = [];
+
+	/** @var array<string, Adapter_Interface> Keyed by block name. */
+	private array $adapters = [];
 
 	/**
 	 * Whether token projection is active. Flipped off by the fail-closed guard so projectors and the
@@ -62,6 +67,32 @@ final class Token_Registry {
 		$variant_set = Variant_Set::from_array( $set );
 
 		$this->variant_sets[ $variant_set->block ] = $variant_set;
+	}
+
+	/**
+	 * Register a per-block adapter — a named transform keyed to the Kadence Blocks block type it adapts.
+	 * At most one adapter per block; a later registration for the same block replaces the earlier one.
+	 *
+	 * @since TBD
+	 *
+	 * @param Adapter_Interface $adapter The adapter to register.
+	 *
+	 * @throws InvalidArgumentException When the adapter declares no block (an empty BLOCK const).
+	 *
+	 * @return void
+	 */
+	public function register_adapter( Adapter_Interface $adapter ): void {
+		$block = $adapter->get_block();
+
+		// A concrete adapter that forgets to override BLOCK would register under the empty key and silently
+		// never match, so its apply() would never run. Fail loudly so the misconfiguration surfaces.
+		if ( $block === '' ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Adapter %s must override the BLOCK constant with the block type it adapts.', get_class( $adapter ) )
+			);
+		}
+
+		$this->adapters[ $block ] = $adapter;
 	}
 
 	// ---- Lookups consumed by projectors and the UI ------------------------------------------------
@@ -151,6 +182,43 @@ final class Token_Registry {
 	}
 
 	/**
+	 * All registered variant sets, keyed by block name in registration order. The admin UI feed
+	 * iterates this to render per-block variant editors; mirrors all() for tokens.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, Variant_Set>
+	 */
+	public function variant_sets(): array {
+		return $this->variant_sets;
+	}
+
+	/**
+	 * The adapter registered for a Kadence Blocks block, or null when the block has none (the default —
+	 * its CSS vars already carry the tokens).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The Kadence Blocks block name, e.g. "kadence/advancedheading".
+	 *
+	 * @return Adapter_Interface|null
+	 */
+	public function adapter_for_block( string $block ): ?Adapter_Interface {
+		return $this->adapters[ $block ] ?? null;
+	}
+
+	/**
+	 * All registered adapters, keyed by Kadence Blocks block name.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, Adapter_Interface>
+	 */
+	public function adapters(): array {
+		return $this->adapters;
+	}
+
+	/**
 	 * The block names that have a registered variant set, in registration order. Projectors walk these to
 	 * emit each block's variant output; the variant values themselves come from the document via the
 	 * Variant_Resolver.
@@ -203,7 +271,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The schema the admin React app consumes (SOFT-3385). A token registered in PHP appears in the
+	 * The schema the admin React app consumes. A token registered in PHP appears in the
 	 * UI with no JS change. Values are NOT included here — the resolver supplies current values
 	 * separately; this is structure only.
 	 *
