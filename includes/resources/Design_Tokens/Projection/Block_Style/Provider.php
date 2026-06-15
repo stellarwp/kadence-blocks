@@ -27,9 +27,11 @@ final class Provider extends Provider_Contract {
 		// Register the block styles once block types are available.
 		add_action( 'init', $this->container->callback( Registrar::class, 'register' ), 20 );
 
-		// Scoped variant CSS, appended after the token vars (Css_Var enqueues at 100).
-		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 100 );
-		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 5 );
+		// Scoped variant CSS, appended after the base token vars and the kbVariant overrides so it follows
+		// them in source order (front end: Css_Var at 100, Variant at 110; editor: Css_Var at 5, Variant at
+		// 10). Stepped by 10 to leave room for third parties to inject between the projectors.
+		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 120 );
+		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 20 );
 
 		// $default baseline into theme.json. Same hooks and priority as the Theme_Json projector, so the
 		// styles merge alongside its preset settings.

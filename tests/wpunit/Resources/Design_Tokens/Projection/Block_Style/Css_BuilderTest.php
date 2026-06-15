@@ -51,10 +51,10 @@ final class Css_BuilderTest extends TestCase {
 		);
 	}
 
-	public function testItPassesLiteralValuesThroughAndScopesPerVariant(): void {
+	public function testItResolvesAliasedValuesAndScopesPerVariant(): void {
 		$css = $this->builder->css();
 
-		// ghost's button-bg is the literal "transparent" in the baseline.
+		// ghost's button-bg aliases {primitive.color.transparent}, which flattens to transparent.
 		$this->assertStringContainsString( '--kb-token--variant--core-button--ghost--button-bg:transparent;', $css );
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-ghost{', $css );
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-secondary{', $css );

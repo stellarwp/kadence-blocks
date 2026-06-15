@@ -3,6 +3,9 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Wp_Preset_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
@@ -11,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for native block-style variants — "Projector B" for non-Kadence blocks.
+ * Builds the scoped CSS for native block-style variants on non-Kadence blocks.
  *
  * A native block (core/button and the like) reaches its variants through WordPress's own block-style
  * system: each named variant is registered with register_block_style(), so the editor adds an
@@ -38,16 +41,8 @@ use RuntimeException;
  */
 final class Css_Builder {
 
-	/**
-	 * Scope for the global variant-var definitions. Matches the token backbone's scope (see
-	 * Css_Var\Css_Builder::SCOPE) so the variant vars live everywhere KB prints variables; :where() adds
-	 * no specificity.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const ROOT_SCOPE = ':root,:root:where(.kb-tokens)';
+	use Sanitizes_Css_Identifier;
+	use Sanitizes_Css_Value;
 
 	/**
 	 * The variant var namespace, appended after the shared --kb-token-- prefix.
@@ -172,7 +167,7 @@ final class Css_Builder {
 			}
 		}
 
-		$css = $globals === '' ? '' : self::ROOT_SCOPE . '{' . $globals . '}';
+		$css = $globals === '' ? '' : Scope::root() . '{' . $globals . '}';
 
 		return $css . $scoped;
 	}
@@ -249,10 +244,10 @@ final class Css_Builder {
 		$name      = $parts[1] ?? $namespace;
 
 		if ( $namespace === 'core' ) {
-			return '.wp-block-' . Style::ident( $name );
+			return '.wp-block-' . self::sanitize_identifier( $name );
 		}
 
-		return '.wp-block-' . Style::ident( $namespace ) . '-' . Style::ident( $name );
+		return '.wp-block-' . self::sanitize_identifier( $namespace ) . '-' . self::sanitize_identifier( $name );
 	}
 
 	/**
@@ -269,25 +264,8 @@ final class Css_Builder {
 	 */
 	private function variant_var( string $block, string $variant, string $property ): string {
 		return Css_Var::get_prefix() . self::VARIANT_SEGMENT
-			. Style::ident( $block ) . '--'
-			. Style::ident( $variant ) . '--'
-			. Style::ident( $property );
-	}
-
-	/**
-	 * Defense-in-depth sanitizer for a custom-property value: strips control characters and the characters
-	 * that could close a declaration or inject a rule ("{", "}", ";", "<", ">"). Not esc_attr(), which
-	 * would mangle legitimate CSS such as a font-family stack.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $value The raw CSS value.
-	 *
-	 * @return string
-	 */
-	private function sanitize_value( string $value ): string {
-		$value = preg_replace( '/[\x00-\x1F\x7F]/', '', $value ) ?? '';
-
-		return str_replace( [ '{', '}', ';', '<', '>' ], '', $value );
+			. self::sanitize_identifier( $block ) . '--'
+			. self::sanitize_identifier( $variant ) . '--'
+			. self::sanitize_identifier( $property );
 	}
 }

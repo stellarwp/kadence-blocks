@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
@@ -39,6 +40,7 @@ use RuntimeException;
  */
 final class Css_Builder {
 
+	use Sanitizes_Css_Identifier;
 	use Sanitizes_Css_Value;
 
 	/**
@@ -123,7 +125,7 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = '.wp-block-' . $this->sanitize_identifier( str_replace( '/', '-', $block ) );
+			$selector = '.wp-block-' . self::sanitize_identifier( str_replace( '/', '-', $block ) );
 
 			foreach ( $names as $variant ) {
 				try {
@@ -155,7 +157,7 @@ final class Css_Builder {
 				}
 
 				if ( $declarations !== '' ) {
-					$scoped .= $selector . '.kb-variant--' . $this->sanitize_identifier( $variant ) . '{' . $declarations . '}';
+					$scoped .= $selector . '.kb-variant--' . self::sanitize_identifier( $variant ) . '{' . $declarations . '}';
 				}
 			}
 		}
@@ -234,23 +236,8 @@ final class Css_Builder {
 	 */
 	private function variant_var( string $block, string $variant, string $property ): string {
 		return Css_Var::get_prefix() . self::VARIANT_SEGMENT
-			. $this->sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
-			. $this->sanitize_identifier( $variant ) . '--'
-			. $this->sanitize_identifier( $property );
-	}
-
-	/**
-	 * Reduce a segment to a CSS-identifier-safe form, so a variant slug or block name can never break out
-	 * of a selector or a custom-property name. Keeps word characters and hyphens; collapses anything else
-	 * to a single hyphen.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $segment The raw segment.
-	 *
-	 * @return string
-	 */
-	private function sanitize_identifier( string $segment ): string {
-		return (string) preg_replace( '/[^A-Za-z0-9_-]+/', '-', $segment );
+			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
+			. self::sanitize_identifier( $variant ) . '--'
+			. self::sanitize_identifier( $property );
 	}
 }

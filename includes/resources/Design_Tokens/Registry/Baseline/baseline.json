@@ -49,6 +49,10 @@
 					"$type": "color",
 					"$value": "#1A202C"
 				}
+			},
+			"transparent": {
+				"$type": "color",
+				"$value": "transparent"
 			}
 		},
 		"dimension": {
@@ -470,7 +474,7 @@
 					"ghost": {
 						"label": "Ghost",
 						"tokens": {
-							"button-bg": "transparent",
+							"button-bg": "{primitive.color.transparent}",
 							"button-text": "{primitive.color.brand.primary}"
 						}
 					}

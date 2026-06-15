@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
+
 /**
  * Single source for the native block-style naming, so the name passed to register_block_style() and the
  * class the scoped CSS targets can never drift apart.
@@ -15,6 +17,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style;
  */
 final class Style {
 
+	use Sanitizes_Css_Identifier;
+
 	/**
 	 * The register_block_style() "name" prefix.
 	 *
@@ -22,7 +26,7 @@ final class Style {
 	 *
 	 * @var string
 	 */
-	public const NAME_PREFIX = 'kb-';
+	private const NAME_PREFIX = 'kb-';
 
 	/**
 	 * The selector class WordPress outputs for a kb- style name (is-style- + the name).
@@ -31,7 +35,7 @@ final class Style {
 	 *
 	 * @var string
 	 */
-	public const CLASS_PREFIX = 'is-style-kb-';
+	private const CLASS_PREFIX = 'is-style-kb-';
 
 	/**
 	 * The register_block_style() name for a variant slug, e.g. "ghost" => "kb-ghost".
@@ -43,7 +47,7 @@ final class Style {
 	 * @return string
 	 */
 	public static function name( string $variant ): string {
-		return self::NAME_PREFIX . self::ident( $variant );
+		return self::NAME_PREFIX . self::sanitize_identifier( $variant );
 	}
 
 	/**
@@ -56,7 +60,7 @@ final class Style {
 	 * @return string
 	 */
 	public static function selector_class( string $variant ): string {
-		return self::CLASS_PREFIX . self::ident( $variant );
+		return self::CLASS_PREFIX . self::sanitize_identifier( $variant );
 	}
 
 	/**
@@ -71,20 +75,5 @@ final class Style {
 	 */
 	public static function is_native( string $block ): bool {
 		return strpos( $block, 'kadence/' ) !== 0;
-	}
-
-	/**
-	 * Reduce a segment to a CSS-identifier-safe form, so a variant slug or block name can never break out
-	 * of a selector or a class name. Keeps word characters and hyphens; collapses anything else to a single
-	 * hyphen.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $segment The raw segment.
-	 *
-	 * @return string
-	 */
-	public static function ident( string $segment ): string {
-		return (string) preg_replace( '/[^A-Za-z0-9_-]+/', '-', $segment );
 	}
 }
