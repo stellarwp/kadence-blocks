@@ -29,7 +29,7 @@ use RuntimeException;
  * rule per (block, css_prop) that points the property at the token variable. Because the rule's selector
  * is a single `.wp-block-*` class (plus an optional descendant suffix), the block's OWN CSS — which it
  * only emits when the attribute is set, and emits at higher specificity — always wins. The result is
- * exactly the desired behaviour with zero block-editor changes and zero control changes:
+ * exactly the desired behavior with zero block-editor changes and zero control changes:
  *
  *   - attribute unset            → the block emits nothing → this token default applies (the site-wide value);
  *   - attribute set to any value → the block's higher-specificity rule wins, including an explicit `0`.
