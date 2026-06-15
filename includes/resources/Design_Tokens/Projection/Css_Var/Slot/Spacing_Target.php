@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Abstract_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Abstract_Target;
 
 /**
  * Normalizes a token's "kb_spacing_slot" projection into one of Kadence Blocks' fixed spacing slugs.

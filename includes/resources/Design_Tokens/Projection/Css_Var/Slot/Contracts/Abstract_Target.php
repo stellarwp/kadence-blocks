@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 

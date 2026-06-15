@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection\Slot;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var\Slot;
 
 use Generator;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Spacing_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use Tests\Support\Classes\TestCase;
 

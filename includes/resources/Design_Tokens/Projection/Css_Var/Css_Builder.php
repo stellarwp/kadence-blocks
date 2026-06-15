@@ -2,9 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Target;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Gap_Target;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Spacing_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Gap_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
@@ -14,13 +14,17 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 /**
  * Builds the CSS custom-property output for a resolved token set — the CSS-variable backbone.
  *
- * Emits two declaration blocks, both scoped to ":root,:root:where(.kb-tokens)":
+ * Emits three families of declarations, all scoped to ":root,:root:where(.kb-tokens)":
  *
  *   1. The --kb-token--* family, straight from the Resolver's css-var => value map. This is the
  *      single source other projectors and adapters point at.
  *   2. A --wp--preset--<category>--<slug>: var(--kb-token--*) bridge for every token that declares a
  *      "wp_preset" projection, so WordPress preset variables (and the editor swatches that read them)
  *      resolve to the token value without a second copy of it.
+ *   3. The --global-kb-<family>-<slug> slot overrides (see the Slot sub-namespace) for tokens that
+ *      claim a Kadence Blocks spacing/gap slug — redefining KB's own global var to the token. This is
+ *      the dimension counterpart of the color/font-size legacy bridge, for the families KB exposes no
+ *      filter for.
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
  * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping.
