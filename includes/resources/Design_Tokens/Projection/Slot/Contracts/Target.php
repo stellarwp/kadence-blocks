@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 
@@ -17,7 +17,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  *
  * @since TBD
  */
-interface Slot_Target {
+interface Target {
 
 	/**
 	 * The projection key a token declares to claim a slot in this family, e.g. "kb_spacing_slot".

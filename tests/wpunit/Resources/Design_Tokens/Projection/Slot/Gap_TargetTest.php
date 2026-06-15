@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Slot;
 
 use Generator;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kb_Gap_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Gap_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use Tests\Support\Classes\TestCase;
 
@@ -12,13 +12,13 @@ use Tests\Support\Classes\TestCase;
  * variable slugs and the custom property that slug is emitted under, rejecting absent or unknown slugs —
  * including the alias and literal-only gutter presets that have no variable to redirect.
  */
-final class Kb_Gap_TargetTest extends TestCase {
+final class Gap_TargetTest extends TestCase {
 
 	/**
 	 * @return void
 	 */
 	public function testItResolvesAKnownGapSlug(): void {
-		$target = Kb_Gap_Target::from_token( $this->token( 'md' ) );
+		$target = Gap_Target::from_token( $this->token( 'md' ) );
 
 		$this->assertNotNull( $target );
 		$this->assertSame( 'md', $target->slot );
@@ -33,7 +33,7 @@ final class Kb_Gap_TargetTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRejectsAnUnusableSlot( $slot ): void {
-		$this->assertNull( Kb_Gap_Target::from_token( $this->token( $slot ) ) );
+		$this->assertNull( Gap_Target::from_token( $this->token( $slot ) ) );
 	}
 
 	/**
@@ -48,14 +48,14 @@ final class Kb_Gap_TargetTest extends TestCase {
 			]
 		);
 
-		$this->assertNull( Kb_Gap_Target::from_token( $token ) );
+		$this->assertNull( Gap_Target::from_token( $token ) );
 	}
 
 	/**
 	 * @return void
 	 */
 	public function testItExposesItsProjectionKey(): void {
-		$this->assertSame( 'kb_gap_slot', Kb_Gap_Target::get_projection_key() );
+		$this->assertSame( 'kb_gap_slot', Gap_Target::get_projection_key() );
 	}
 
 	/**

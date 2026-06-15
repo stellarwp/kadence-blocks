@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Slot_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 
 /**
@@ -18,7 +18,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
  *
  * @since TBD
  */
-final class Kb_Spacing_Target implements Slot_Target {
+final class Spacing_Target implements Target {
 
 	/**
 	 * The projection key a token declares to claim a spacing slug.

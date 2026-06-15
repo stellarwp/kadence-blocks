@@ -1,9 +1,9 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Slot;
 
 use Generator;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kb_Spacing_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use Tests\Support\Classes\TestCase;
 
@@ -12,13 +12,13 @@ use Tests\Support\Classes\TestCase;
  * fixed spacing slugs and the custom property that slug is emitted under, rejecting absent or unknown
  * slugs so the Css_Var override never points at a slug no block reads.
  */
-final class Kb_Spacing_TargetTest extends TestCase {
+final class Spacing_TargetTest extends TestCase {
 
 	/**
 	 * @return void
 	 */
 	public function testItResolvesAKnownSpacingSlug(): void {
-		$target = Kb_Spacing_Target::from_token( $this->token( 'lg' ) );
+		$target = Spacing_Target::from_token( $this->token( 'lg' ) );
 
 		$this->assertNotNull( $target );
 		$this->assertSame( 'lg', $target->slot );
@@ -33,7 +33,7 @@ final class Kb_Spacing_TargetTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRejectsAnUnusableSlot( $slot ): void {
-		$this->assertNull( Kb_Spacing_Target::from_token( $this->token( $slot ) ) );
+		$this->assertNull( Spacing_Target::from_token( $this->token( $slot ) ) );
 	}
 
 	/**
@@ -48,14 +48,14 @@ final class Kb_Spacing_TargetTest extends TestCase {
 			]
 		);
 
-		$this->assertNull( Kb_Spacing_Target::from_token( $token ) );
+		$this->assertNull( Spacing_Target::from_token( $token ) );
 	}
 
 	/**
 	 * @return void
 	 */
 	public function testItExposesItsProjectionKey(): void {
-		$this->assertSame( 'kb_spacing_slot', Kb_Spacing_Target::get_projection_key() );
+		$this->assertSame( 'kb_spacing_slot', Spacing_Target::get_projection_key() );
 	}
 
 	/**

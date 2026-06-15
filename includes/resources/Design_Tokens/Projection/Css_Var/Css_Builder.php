@@ -2,9 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Slot_Target;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kb_Gap_Target;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kb_Spacing_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Contracts\Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Gap_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
@@ -76,8 +76,8 @@ final class Css_Builder {
 	public function css( Resolved_Tokens $resolved ): string {
 		$tokens  = $this->token_block( $resolved->by_var() );
 		$presets = $this->preset_block( $resolved );
-		$spacing = $this->slot_block( $resolved, Kb_Spacing_Target::class );
-		$gap     = $this->slot_block( $resolved, Kb_Gap_Target::class );
+		$spacing = $this->slot_block( $resolved, Spacing_Target::class );
+		$gap     = $this->slot_block( $resolved, Gap_Target::class );
 
 		return $tokens . $presets . $spacing . $gap;
 	}
@@ -189,8 +189,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens             $resolved     The resolved token maps.
-	 * @param class-string<Slot_Target>   $target_class The slot-target type for this family.
+	 * @param Resolved_Tokens        $resolved     The resolved token maps.
+	 * @param class-string<Target>   $target_class The slot-target type for this family.
 	 *
 	 * @return string
 	 */
