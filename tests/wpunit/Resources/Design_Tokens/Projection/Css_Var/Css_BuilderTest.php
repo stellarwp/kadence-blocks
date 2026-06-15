@@ -154,6 +154,101 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertSame( '', $css );
 	}
 
+	// ---- Spacing override block ---------------------------------------------------------------------
+
+	public function testItEmitsSpacingOverrideForAClaimedSlot(): void {
+		$id  = 'semantic.spacing.block';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'Block spacing',
+				'projections' => [ 'kb_spacing_slot' => 'lg' ],
+			]
+		);
+
+		// The slug variable is redefined as the token var, with the resolved length as a literal fallback.
+		$css = $this->builder()->css( $this->resolved( [ $id => '2rem' ], [ $var => '2rem' ] ) );
+
+		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . $var . ',2rem);', $css );
+	}
+
+	public function testItSkipsSpacingOverrideForAnUnknownSlot(): void {
+		$id  = 'semantic.spacing.block';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'Block spacing',
+				'projections' => [ 'kb_spacing_slot' => 'enormous' ], // not a slug KB ships.
+			]
+		);
+
+		$css = $this->builder()->css( $this->resolved( [ $id => '2rem' ], [ $var => '2rem' ] ) );
+
+		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
+	}
+
+	public function testItSkipsSpacingOverrideWhenTokenHasNoResolvedValue(): void {
+		$id  = 'semantic.spacing.block';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'Block spacing',
+				'projections' => [ 'kb_spacing_slot' => 'lg' ],
+			]
+		);
+
+		// by_id is empty — no resolved value, so no override (it would resolve to nothing in the browser).
+		$css = $this->builder()->css( $this->resolved( [], [ $var => '2rem' ] ) );
+
+		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
+	}
+
+	public function testItEmitsGapOverrideForAClaimedSlot(): void {
+		$id  = 'semantic.gap.layout';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'Layout gap',
+				'projections' => [ 'kb_gap_slot' => 'md' ],
+			]
+		);
+
+		// The gap variable is defined as the token var, with the resolved length as a literal fallback.
+		$css = $this->builder()->css( $this->resolved( [ $id => '2rem' ], [ $var => '2rem' ] ) );
+
+		$this->assertStringContainsString( '--global-kb-gap-md:var(' . $var . ',2rem);', $css );
+	}
+
+	public function testItSkipsGapOverrideForAnAliasSlot(): void {
+		$id  = 'semantic.gap.layout';
+		$var = Css_Var::from_id( $id );
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'Layout gap',
+				'projections' => [ 'kb_gap_slot' => 'default' ], // an alias for --global-kb-gap-md, not its own var.
+			]
+		);
+
+		$css = $this->builder()->css( $this->resolved( [ $id => '2rem' ], [ $var => '2rem' ] ) );
+
+		$this->assertStringNotContainsString( '--global-kb-gap-', $css );
+	}
+
 	// ---- sanitize_value -------------------------------------------------------------------------------
 
 	public function testSanitizerStripsBreakoutCharacters(): void {

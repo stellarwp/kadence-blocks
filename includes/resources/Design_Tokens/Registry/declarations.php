@@ -42,6 +42,23 @@ return [
 			'label' => __( 'Media Radius', 'kadence-blocks' ),
 			'group' => __( 'Brand', 'kadence-blocks' ),
 		],
+		[
+			// Spacing uses the global-var slot, not the block-default rule: a spacing token claims the KB
+			// preset slug it maps to, and the Css_Var builder redefines --global-kb-spacing-<slot> to it, so a
+			// block storing that spacing preset follows the token without a specificity war on padding.
+			'id'          => 'semantic.spacing.section',
+			'type'        => 'dimension',
+			'label'       => __( 'Section Spacing', 'kadence-blocks' ),
+			'group'       => __( 'Layout', 'kadence-blocks' ),
+			'projections' => [ 'kb_spacing_slot' => 'xl' ], // semantic.spacing.section resolves to space.xl.
+		],
+		[
+			'id'          => 'semantic.spacing.block',
+			'type'        => 'dimension',
+			'label'       => __( 'Block Spacing', 'kadence-blocks' ),
+			'group'       => __( 'Layout', 'kadence-blocks' ),
+			'projections' => [ 'kb_spacing_slot' => 'lg' ], // semantic.spacing.block resolves to space.lg.
+		],
 	],
 	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
 	// token reference where the property is already a registered token, an inline target otherwise).
