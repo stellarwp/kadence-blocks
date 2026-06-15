@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette Fghi redbodycolor .
+// cspell:ignore palette Fghi redbodycolor xxs xxl .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\TestCase;
 
 final class Css_BuilderTest extends TestCase {
@@ -247,6 +248,29 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder()->css( $this->resolved( [ $id => '2rem' ], [ $var => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-gap-', $css );
+	}
+
+	/**
+	 * Built from the real registry and resolver, the shipped declarations emit a slot override for every
+	 * spacing and gap step Kadence Blocks ships, so each --global-kb-spacing-* / --global-kb-gap-* slug
+	 * follows its token. The default resolves from baseline (no overrides), so each override carries the
+	 * token var with KB's own length as the literal fallback.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitEverySpacingAndGapSlot(): void {
+		$registry = $this->container->get( Token_Registry::class );
+		$resolved = $this->container->get( Token_Resolver::class )->resolve();
+
+		$css = ( new Css_Builder( $registry ) )->css( $resolved );
+
+		foreach ( [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ] as $slug ) {
+			$this->assertStringContainsString( '--global-kb-spacing-' . $slug . ':var(', $css );
+		}
+
+		foreach ( [ 'none', 'xs', 'sm', 'md', 'lg' ] as $slug ) {
+			$this->assertStringContainsString( '--global-kb-gap-' . $slug . ':var(', $css );
+		}
 	}
 
 	// ---- sanitize_value -------------------------------------------------------------------------------

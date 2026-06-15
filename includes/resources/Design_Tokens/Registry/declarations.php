@@ -1,65 +1,84 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn .
+// cspell:ignore advancedbtn xxs xxl .
 // The single declaration point. Adding an entry here automatically reaches every projector and the
 // admin UI. Returned as data (rather than calling the global helper) so the Provider can register it
-// directly against the container. This ships a small representative set; the full catalog is registered
-// incrementally by the per-block wiring work and the variant-set work, each of which owns its tokens'
-// projection targets. The shipped baseline must contain an entry for every token registered here, or
-// the guard fails closed.
+// directly against the container. The shipped baseline must contain an entry for every token registered
+// here, or the guard fails closed.
 //
 // Loaded on `init` (see Registry\Provider) so the __() label/group calls don't trigger the
 // _load_textdomain_just_in_time notice — translations must not load before init.
 
+// The spacing/gap scales mirror the fixed slugs Kadence Blocks ships (class-kadence-blocks-css.php). Each
+// slug becomes a token claiming that slug: the Css_Var builder redefines --global-kb-spacing-<slug> /
+// --global-kb-gap-<slug> as the token, so a block already storing that slug follows the token with no
+// block change and a site owner can retune each step. Defaults match KB's own values, so registering them
+// changes nothing until overridden. ss-auto is omitted: it resolves to "auto", not a length.
+$spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
+$gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
+
+$spacing_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'          => 'semantic.spacing.' . $slug,
+			'type'        => 'dimension',
+			'label'       => strtoupper( $slug ),
+			'group'       => __( 'Spacing', 'kadence-blocks' ),
+			'projections' => [ 'kb_spacing_slot' => $slug ],
+		];
+	},
+	$spacing_slugs
+);
+
+$gap_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'          => 'semantic.gap.' . $slug,
+			'type'        => 'dimension',
+			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
+			'group'       => __( 'Gap', 'kadence-blocks' ),
+			'projections' => [ 'kb_gap_slot' => $slug ],
+		];
+	},
+	$gap_slugs
+);
+
 return [
-	'tokens'       => [
+	'tokens'       => array_merge(
 		[
-			'id'          => 'semantic.color.button-bg',
-			'type'        => 'color',
-			'label'       => __( 'Button Background', 'kadence-blocks' ),
-			'group'       => __( 'Brand', 'kadence-blocks' ),
-			'projections' => [
-				'wp_preset'    => 'color',     // → theme.json preset + --wp--preset--color--button-bg.
-				'kadence_slot' => 'palette1',  // → --global-palette1 + kadence_blocks_colors slug.
-				'site_editor'  => true,
+			[
+				'id'          => 'semantic.color.button-bg',
+				'type'        => 'color',
+				'label'       => __( 'Button Background', 'kadence-blocks' ),
+				'group'       => __( 'Brand', 'kadence-blocks' ),
+				'projections' => [
+					'wp_preset'    => 'color',     // → theme.json preset + --wp--preset--color--button-bg.
+					'kadence_slot' => 'palette1',  // → --global-palette1 + kadence_blocks_colors slug.
+					'site_editor'  => true,
+				],
+			],
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => __( 'Button Text', 'kadence-blocks' ),
+				'group'       => __( 'Brand', 'kadence-blocks' ),
+				'projections' => [
+					'wp_preset'    => 'color',
+					'kadence_slot' => 'palette2',
+					'site_editor'  => true,
+				],
+			],
+			[
+				// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default
+				// CSS projector points kadence/image's border-radius at that variable as a low-specificity default.
+				'id'    => 'semantic.radius.media',
+				'type'  => 'dimension',
+				'label' => __( 'Media Radius', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 		],
-		[
-			'id'          => 'semantic.color.button-text',
-			'type'        => 'color',
-			'label'       => __( 'Button Text', 'kadence-blocks' ),
-			'group'       => __( 'Brand', 'kadence-blocks' ),
-			'projections' => [
-				'wp_preset'    => 'color',
-				'kadence_slot' => 'palette2',
-				'site_editor'  => true,
-			],
-		],
-		[
-			// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default
-			// CSS projector points kadence/image's border-radius at that variable as a low-specificity default.
-			'id'    => 'semantic.radius.media',
-			'type'  => 'dimension',
-			'label' => __( 'Media Radius', 'kadence-blocks' ),
-			'group' => __( 'Brand', 'kadence-blocks' ),
-		],
-		[
-			// Spacing uses the global-var slot, not the block-default rule: a spacing token claims the KB
-			// preset slug it maps to, and the Css_Var builder redefines --global-kb-spacing-<slot> to it, so a
-			// block storing that spacing preset follows the token without a specificity war on padding.
-			'id'          => 'semantic.spacing.section',
-			'type'        => 'dimension',
-			'label'       => __( 'Section Spacing', 'kadence-blocks' ),
-			'group'       => __( 'Layout', 'kadence-blocks' ),
-			'projections' => [ 'kb_spacing_slot' => 'xl' ], // semantic.spacing.section resolves to space.xl.
-		],
-		[
-			'id'          => 'semantic.spacing.block',
-			'type'        => 'dimension',
-			'label'       => __( 'Block Spacing', 'kadence-blocks' ),
-			'group'       => __( 'Layout', 'kadence-blocks' ),
-			'projections' => [ 'kb_spacing_slot' => 'lg' ], // semantic.spacing.block resolves to space.lg.
-		],
-	],
+		$spacing_tokens,
+		$gap_tokens
+	),
 	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
 	// token reference where the property is already a registered token, an inline target otherwise).
 	// The variant NAMES, the default ($default) and the values all live in the baseline document under
