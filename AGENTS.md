@@ -143,6 +143,30 @@ bunx cspell lint -c .cspell.json --no-progress --no-must-find-files --dot <files
 Needs Node >= 22.18. If the default shell is on an older Node, switch first (e.g. via nvm:
 `nvm use 22`).
 
+### Flushing the design-tokens baseline cache
+
+The decoded `baseline.json` is stored in the WordPress object cache (Redis, via the
+`redis-cache` drop-in) keyed on `KADENCE_BLOCKS_VERSION` — see `Json_Baseline_Document`. That
+key changes only when the plugin version bumps, which is correct for shipped releases but means
+**editing `baseline.json` in place during development does NOT invalidate the cache**. The stale
+decoded baseline keeps being served while `declarations.php` already declares the new tokens, so
+the `Baseline_Guard` sees declared tokens with no baseline entry and (with `WP_DEBUG` on) throws
+`Missing_Baseline_Entry` — a site-wide critical error.
+
+Fix it by flushing Redis directly:
+
+```bash
+# from the lando app root (e.g. ~/stellarwp/sfwd-lms)
+lando ssh -s redis -c 'redis-cli flushall'
+```
+
+Do NOT reach for `lando wp cache flush` here: wp-cli boots WordPress, the guard fires on `init`,
+and it throws before the flush command runs. The out-of-band Redis flush is the escape hatch.
+(Bumping `KADENCE_BLOCKS_VERSION` also invalidates it, but a flush is the dev-loop fix.) Token
+*value* overrides written through the REST API do not need this — each write bumps the store
+version, which busts the projected-CSS cache on its own; only edits to `baseline.json` itself go
+stale this way.
+
 ## Git, commits, and PRs
 
 - **Backtick `@`-mentions in commit/PR text.** Wrap any `@`-prefixed token in backticks —
