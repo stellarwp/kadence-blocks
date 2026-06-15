@@ -489,7 +489,10 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * This block is conditionally dynamic. It's only rendered dynamically if the heading includes an icon.
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array    $attributes     The block attributes.
+	 * @param string   $unique_id      The blocks attr ID.
+	 * @param string   $content        The saved block markup.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return string Returns the block output.
 	 */
@@ -802,7 +805,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$textShadow['vOffset'] = $textShadow['vOffset'] ?? 1;
 			$textShadow['blur']    = $textShadow['blur'] ?? 1;
 			$textShadow['color']   = $textShadow['color'] ?? null;
-			$textShadow['opacity'] = $textShadow['opacity'] ?? 1.0; // Default is 0.2, but if it's undefed they set it at a time when the block defaults it to 1.0
+			$textShadow['opacity'] = $textShadow['opacity'] ?? 1.0; // Default is 0.2, but if it's undefined they set it at a time when the block defaults it to 1.0
 		}
 
 		if (!empty($attributes['textShadowTablet']) && is_array($attributes['textShadowTablet'][0])) {

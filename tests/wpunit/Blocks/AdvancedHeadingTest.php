@@ -39,9 +39,12 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 	public function testPlainHeadingResolvesDynamicLinkFromAttributeNotBakedContent() {
 		$shortcode = 'kb_test_dynamic_link';
 		$resolved  = 'https://example.com/correct-per-post/';
-		add_shortcode( $shortcode, function () use ( $resolved ) {
-			return $resolved;
-		} );
+		add_shortcode(
+			$shortcode,
+			function () use ( $resolved ) {
+				return $resolved;
+			}
+		);
 
 		$unique_id  = '123_abcd';
 		$link_value = '[' . $shortcode . ']';
