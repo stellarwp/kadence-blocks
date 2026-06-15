@@ -73,7 +73,7 @@ class AdvancedHeadingTest extends KadenceBlocksUnit {
 	 * A static (non-shortcode) link must pass through build_html untouched.
 	 */
 	public function testPlainHeadingLeavesStaticLinkUntouched() {
-		$unique_id  = '456_efgh';
+		$unique_id  = '456_1234';
 		$static_url = 'https://example.com/static/';
 		$attributes = [
 			'uniqueID' => $unique_id,
