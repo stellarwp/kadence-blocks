@@ -297,6 +297,14 @@
 			"media": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.radius.none}"
+			},
+			"rowlayout": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.none}"
+			},
+			"column": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.none}"
 			}
 		},
 		"borderWidth": {
@@ -434,6 +442,7 @@
 						"tokens": {
 							"background": "{semantic.color.rowlayout-bg}",
 							"border": "{semantic.color.border}",
+							"borderRadius": "{semantic.radius.rowlayout}",
 							"padding": "{semantic.spacing.section}"
 						}
 					}
@@ -445,6 +454,7 @@
 						"tokens": {
 							"background": "{semantic.color.column-bg}",
 							"border": "{semantic.color.border}",
+							"borderRadius": "{semantic.radius.column}",
 							"padding": "{semantic.spacing.block}"
 						}
 					}

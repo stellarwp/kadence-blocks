@@ -78,6 +78,21 @@ return [
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
+				// Block-specific radius defaults, mirroring semantic.radius.media for the image. Each aliases
+				// radius.none (resolves to 0), so a fresh Row Layout / Column stays square — KB's own default —
+				// while a site owner can round one block type by overriding its token.
+				'id'    => 'semantic.radius.rowlayout',
+				'type'  => 'dimension',
+				'label' => __( 'Row Layout Radius', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.radius.column',
+				'type'  => 'dimension',
+				'label' => __( 'Column Radius', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
 				// Block-specific background defaults for the block-default CSS projector. Each aliases the
 				// transparent primitive (see baseline), so a fresh Row Layout / Column stays transparent — KB's
 				// own default — while a site owner can brand one block type's background by overriding its token,
@@ -148,13 +163,17 @@ return [
 			// wins. Padding follows the spacing tokens through the slug bridge, not a binding here.
 			'block'    => 'kadence/rowlayout',
 			'bindings' => [
-				'background' => [
+				'background'   => [
 					'token'    => 'semantic.color.rowlayout-bg',
 					'css_prop' => 'background-color',
 				],
-				'border'     => [
+				'border'       => [
 					'token'    => 'semantic.color.border',
 					'css_prop' => 'border-color',
+				],
+				'borderRadius' => [
+					'token'    => 'semantic.radius.rowlayout',
+					'css_prop' => 'border-radius',
 				],
 			],
 		],
@@ -164,14 +183,19 @@ return [
 			// column's own transparent-by-default override seam, distinct from the row's.
 			'block'    => 'kadence/column',
 			'bindings' => [
-				'background' => [
+				'background'   => [
 					'token'        => 'semantic.color.column-bg',
 					'css_prop'     => 'background-color',
 					'css_selector' => '> .kt-inside-inner-col',
 				],
-				'border'     => [
+				'border'       => [
 					'token'        => 'semantic.color.border',
 					'css_prop'     => 'border-color',
+					'css_selector' => '> .kt-inside-inner-col',
+				],
+				'borderRadius' => [
+					'token'        => 'semantic.radius.column',
+					'css_prop'     => 'border-radius',
 					'css_selector' => '> .kt-inside-inner-col',
 				],
 			],

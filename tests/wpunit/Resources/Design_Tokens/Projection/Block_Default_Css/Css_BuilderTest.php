@@ -81,10 +81,12 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ), $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.rowlayout' ), $css );
 		$this->assertStringContainsString(
 			'.wp-block-kadence-column> .kt-inside-inner-col{background-color:var(' . Css_Var::from_id( 'semantic.color.column-bg' ),
 			$css
 		);
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.column' ), $css );
 	}
 
 	/**
