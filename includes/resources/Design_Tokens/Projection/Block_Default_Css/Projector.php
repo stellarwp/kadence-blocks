@@ -21,23 +21,29 @@ use Throwable;
 final class Projector {
 
 	/**
-	 * @var Token_Registry
+	 * The token registry, used to gate projection on the registry being active.
 	 *
 	 * @since TBD
+	 *
+	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @var Token_Store
+	 * The store, for the cache-busting version.
 	 *
 	 * @since TBD
+	 *
+	 * @var Token_Store
 	 */
 	private Token_Store $store;
 
 	/**
-	 * @var Css_Builder
+	 * The block-default CSS builder.
 	 *
 	 * @since TBD
+	 *
+	 * @var Css_Builder
 	 */
 	private Css_Builder $css_builder;
 

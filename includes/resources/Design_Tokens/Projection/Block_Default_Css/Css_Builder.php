@@ -9,7 +9,7 @@ use RuntimeException;
 
 /**
  * Builds the low-specificity, block-scoped CSS that gives a block's dimension property a token-driven
- * default, e.g. `.wp-block-kadence-image img { border-radius: var(--kb-token--semantic--radius--media, 1rem) }`.
+ * default, e.g. `.wp-block-kadence-image img { border-radius: var(--kb-token--semantic--radius--media, 0) }`.
  *
  * WHY THIS EXISTS — the use case, in full:
  *
@@ -58,16 +58,20 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * @var Token_Registry The registry the variant sets (and their bindings) are read from.
+	 * The registry the variant sets (and their bindings) are read from.
 	 *
 	 * @since TBD
+	 *
+	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @var Variant_Resolver Resolves each block's `$default` variant to its `property => value` map.
+	 * Resolves each block's `$default` variant to its `property => value` map.
 	 *
 	 * @since TBD
+	 *
+	 * @var Variant_Resolver
 	 */
 	private Variant_Resolver $variants;
 
@@ -143,7 +147,7 @@ final class Css_Builder {
 				}
 
 				$var      = $this->registry->css_var_for( (string) $binding->token );
-				$suffix   = $binding->css_selector() ?? '';
+				$suffix   = $this->selector_suffix( $binding->css_selector() );
 
 				$by_suffix[ $suffix ][] = $prop . ':var(' . $var . ',' . $this->sanitize_value( $value ) . ')';
 			}
@@ -187,5 +191,29 @@ final class Css_Builder {
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
 		return $this->memo[ $memo_key ] = $css;
+	}
+
+	/**
+	 * Compose a binding's optional `css_selector` into the suffix appended after the block's `.wp-block-*`
+	 * class. A bare selector (e.g. `img`) is treated as a descendant and gets the combinator space inserted
+	 * for it, so the declaration never has to carry a load-bearing leading space. A suffix that already
+	 * opens with a combinator or attachment character (`>`, `+`, `~`, `.`, `:`, `#`, `[`, `&`) is used
+	 * verbatim, so child combinators (`> img`) and compound/stateful selectors (`.is-style-rounded`) stay
+	 * expressible. Empty when the binding names no descendant — the rule targets the block root.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $selector The binding's raw `css_selector`, or null when it names none.
+	 *
+	 * @return string The selector suffix, ready to concatenate after the block class.
+	 */
+	private function selector_suffix( ?string $selector ): string {
+		$selector = trim( (string) $selector );
+
+		if ( $selector === '' ) {
+			return '';
+		}
+
+		return strpbrk( $selector[0], '>+~.:#[&' ) === false ? ' ' . $selector : $selector;
 	}
 }

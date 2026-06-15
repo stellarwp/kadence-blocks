@@ -8,6 +8,9 @@ use Tests\Support\Classes\TestCase;
 
 final class BindingTest extends TestCase {
 
+	/**
+	 * @return void
+	 */
 	public function testItParsesATokenReference(): void {
 		$binding = Binding::from_array( 'button-bg', [ 'token' => 'semantic.color.button-bg' ] );
 
@@ -16,6 +19,9 @@ final class BindingTest extends TestCase {
 		$this->assertSame( [], $binding->projections );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItParsesInlineTargets(): void {
 		$binding = Binding::from_array(
 			'button-bg',
@@ -36,12 +42,18 @@ final class BindingTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItAcceptsTheBlockAttrTarget(): void {
 		$binding = Binding::from_array( 'button-bg', [ 'block_attr' => 'background' ] );
 
 		$this->assertSame( [ 'block_attr' => 'background' ], $binding->projections );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testBlockAttrReturnsTheBoundAttributeOrNull(): void {
 		$bound = Binding::from_array(
 			'button-bg',
@@ -57,6 +69,9 @@ final class BindingTest extends TestCase {
 		$this->assertNull( $unbound->block_attr() );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItAcceptsTheCssPropAndSelectorTargets(): void {
 		$binding = Binding::from_array(
 			'borderRadius',
@@ -71,6 +86,9 @@ final class BindingTest extends TestCase {
 		$this->assertSame( ' img', $binding->css_selector() );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testCssPropAndSelectorReturnNullWhenAbsent(): void {
 		// A binding with no css_prop/css_selector feeds no block-default rule.
 		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
@@ -79,18 +97,27 @@ final class BindingTest extends TestCase {
 		$this->assertNull( $binding->css_selector() );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItThrowsWhenCssPropIsNotAString(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Binding::from_array( 'borderRadius', [ 'css_prop' => true ] );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItAcceptsTheCssVarFlag(): void {
 		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
 
 		$this->assertSame( [ 'css_var' => true ], $binding->projections );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItIgnoresUnrecognisedKeys(): void {
 		$binding = Binding::from_array(
 			'button-bg',
@@ -103,6 +130,9 @@ final class BindingTest extends TestCase {
 		$this->assertSame( [ 'kadence_slot' => 'palette1' ], $binding->projections );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItAcceptsATokenReferenceWithAnInlineTarget(): void {
 		// Both forms compose: a token reference plus a block_attr the token never carries.
 		$binding = Binding::from_array(
@@ -118,24 +148,36 @@ final class BindingTest extends TestCase {
 		$this->assertSame( [ 'block_attr' => 'background' ], $binding->projections );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItThrowsOnAnEmptyTokenReference(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Binding::from_array( 'button-bg', [ 'token' => '' ] );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItThrowsWhenNeitherFormIsPresent(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Binding::from_array( 'button-bg', [] );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItThrowsWhenAStringTargetIsNotAString(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Binding::from_array( 'button-bg', [ 'kadence_slot' => true ] );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItThrowsWhenCssVarIsNotTrue(): void {
 		$this->expectException( InvalidArgumentException::class );
 

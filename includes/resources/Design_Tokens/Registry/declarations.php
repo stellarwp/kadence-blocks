@@ -67,7 +67,7 @@ return [
 				'borderRadius' => [
 					'token'        => 'semantic.radius.media',
 					'css_prop'     => 'border-radius',
-					'css_selector' => ' img',
+					'css_selector' => 'img',
 				],
 			],
 		],

@@ -10,6 +10,9 @@ use Tests\Support\Classes\TestCase;
  */
 final class ProjectorTest extends TestCase {
 
+	/**
+	 * @return void
+	 */
 	public function testItEnqueuesOnTheFrontEndAfterTheTokenVars(): void {
 		global $wp_filter;
 
@@ -18,6 +21,9 @@ final class ProjectorTest extends TestCase {
 		$this->assertArrayHasKey( 120, $callbacks );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testItEnqueuesInTheEditorAfterTheTokenVars(): void {
 		global $wp_filter;
 

@@ -15,14 +15,15 @@ use InvalidArgumentException;
  *     registered token's projections, so a variant retargets the exact variable the base property
  *     already feeds and there is no duplicated projection to drift.
  *   - **Inline target** — `['kadence_slot' => 'palette3']` (and/or `wp_preset`, `block_attr`,
- *     `css_var`). For a property that is not (yet) a registered token, or to add a target the token
- *     does not carry.
+ *     `css_var`, `css_prop`, `css_selector`). For a property that is not (yet) a registered token, or
+ *     to add a target the token does not carry.
  *   - **Both** — e.g. `['token' => 'semantic.color.button-bg', 'block_attr' => 'background']`. The
  *     inline targets supplement (and override) the referenced token's projections, which is how a
  *     token-backed property still declares the `block_attr` a block preset needs.
  *
  * {@see Token_Registry::effective_projections()} merges the two. The projection vocabulary is the same
- * one tokens use, with one addition — `block_attr`, which tokens never carry.
+ * one tokens use, with three additions — `block_attr`, `css_prop`, and `css_selector`, which tokens
+ * never carry.
  *
  * @since TBD
  */
@@ -88,8 +89,11 @@ final class Binding {
 
 	/**
 	 * Inline target: a selector suffix appended after the block's `.wp-block-*` class for the `css_prop`
-	 * rule, when the property is rendered on a descendant rather than the block root (e.g. " img" for an
-	 * image). Optional; the rule targets the block root when omitted.
+	 * rule, when the property is rendered on a descendant rather than the block root (e.g. `img` for an
+	 * image). A bare selector is treated as a descendant — the projector inserts the combinator space, so
+	 * no load-bearing leading space is needed; a value that opens with a combinator or attachment character
+	 * (`>`, `+`, `~`, `.`, `:`, `#`, `[`, `&`) is used verbatim. Optional; the rule targets the block root
+	 * when omitted.
 	 *
 	 * @since TBD
 	 *
