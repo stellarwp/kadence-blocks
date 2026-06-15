@@ -265,6 +265,14 @@
 			"icon": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
+			},
+			"rowlayout-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
+			},
+			"column-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
 			}
 		},
 		"spacing": {
@@ -424,7 +432,8 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
-							"background": "{semantic.color.surface}",
+							"background": "{semantic.color.rowlayout-bg}",
+							"border": "{semantic.color.border}",
 							"padding": "{semantic.spacing.section}"
 						}
 					}
@@ -434,7 +443,8 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
-							"background": "{semantic.color.surface-alt}",
+							"background": "{semantic.color.column-bg}",
+							"border": "{semantic.color.border}",
 							"padding": "{semantic.spacing.block}"
 						}
 					}
