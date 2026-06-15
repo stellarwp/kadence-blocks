@@ -8,18 +8,20 @@
 // Loaded on `init` (see Registry\Provider) so the __() label/group calls don't trigger the
 // _load_textdomain_just_in_time notice — translations must not load before init.
 
-// The spacing/gap scales mirror the fixed slugs Kadence Blocks ships (class-kadence-blocks-css.php). Each
-// slug becomes a token claiming that slug: the Css_Var builder redefines --global-kb-spacing-<slug> /
-// --global-kb-gap-<slug> as the token, so a block already storing that slug follows the token with no
-// block change and a site owner can retune each step. Defaults match KB's own values, so registering them
-// changes nothing until overridden. ss-auto is omitted: it resolves to "auto", not a length.
+// The spacing/gap scale steps are primitives (the slug IS a scale step), each claiming the Kadence Blocks
+// slug it backs (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-spacing-<slug> /
+// --global-kb-gap-<slug> as the primitive token, so a block already storing that slug follows it and a site
+// owner can retune each step. Usage-specific intent (semantic.spacing.section/.block/.inline) aliases the
+// scale and is where intent-based delivery points — mirroring how semantic.radius.media aliases the radius
+// scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto is
+// omitted: it resolves to "auto", not a length.
 $spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
 $spacing_tokens = array_map(
 	static function ( string $slug ): array {
 		return [
-			'id'          => 'semantic.spacing.' . $slug,
+			'id'          => 'primitive.dimension.spacing.' . $slug,
 			'type'        => 'dimension',
 			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
@@ -32,7 +34,7 @@ $spacing_tokens = array_map(
 $gap_tokens = array_map(
 	static function ( string $slug ): array {
 		return [
-			'id'          => 'semantic.gap.' . $slug,
+			'id'          => 'primitive.dimension.gap.' . $slug,
 			'type'        => 'dimension',
 			'label'       => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
 			'group'       => __( 'Gap', 'kadence-blocks' ),

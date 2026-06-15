@@ -56,7 +56,7 @@
 			}
 		},
 		"dimension": {
-			"space": {
+			"spacing": {
 				"xxs": {
 					"$type": "dimension",
 					"$value": "0.5rem"
@@ -268,67 +268,17 @@
 			}
 		},
 		"spacing": {
-			"xxs": {
+			"inline": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.xxs}"
+				"$value": "{primitive.dimension.spacing.md}"
 			},
-			"xs": {
+			"block": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.xs}"
+				"$value": "{primitive.dimension.spacing.lg}"
 			},
-			"sm": {
+			"section": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.sm}"
-			},
-			"md": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.md}"
-			},
-			"lg": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.lg}"
-			},
-			"xl": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.xl}"
-			},
-			"xxl": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.xxl}"
-			},
-			"3xl": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.3xl}"
-			},
-			"4xl": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.4xl}"
-			},
-			"5xl": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.space.5xl}"
-			}
-		},
-		"gap": {
-			"none": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.gap.none}"
-			},
-			"xs": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.gap.xs}"
-			},
-			"sm": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.gap.sm}"
-			},
-			"md": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.gap.md}"
-			},
-			"lg": {
-				"$type": "dimension",
-				"$value": "{primitive.dimension.gap.lg}"
+				"$value": "{primitive.dimension.spacing.xl}"
 			}
 		},
 		"radius": {
@@ -475,7 +425,7 @@
 						"label": "Default",
 						"tokens": {
 							"background": "{semantic.color.surface}",
-							"padding": "{semantic.spacing.xl}"
+							"padding": "{semantic.spacing.section}"
 						}
 					}
 				},
@@ -485,7 +435,7 @@
 						"label": "Default",
 						"tokens": {
 							"background": "{semantic.color.surface-alt}",
-							"padding": "{semantic.spacing.lg}"
+							"padding": "{semantic.spacing.block}"
 						}
 					}
 				},
