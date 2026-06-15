@@ -628,7 +628,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			// HTML-escapes the value itself; esc_url would double-encode ampersands.
 			$resolved_link = esc_url_raw( do_shortcode( $attributes['link'] ) );
 			$p             = new WP_HTML_Tag_Processor( $content );
-			if ( $p->next_tag( 'a' ) ) {
+			if ( $p->next_tag( [ 'tag_name' => 'a' ] ) ) {
 				$p->set_attribute( 'href', $resolved_link );
 				$content = $p->get_updated_html();
 			}
