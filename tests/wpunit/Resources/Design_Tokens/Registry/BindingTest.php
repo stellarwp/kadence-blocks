@@ -57,6 +57,34 @@ final class BindingTest extends TestCase {
 		$this->assertNull( $unbound->block_attr() );
 	}
 
+	public function testItAcceptsTheCssPropAndSelectorTargets(): void {
+		$binding = Binding::from_array(
+			'borderRadius',
+			[
+				'token'        => 'semantic.radius.media',
+				'css_prop'     => 'border-radius',
+				'css_selector' => ' img',
+			]
+		);
+
+		$this->assertSame( 'border-radius', $binding->css_prop() );
+		$this->assertSame( ' img', $binding->css_selector() );
+	}
+
+	public function testCssPropAndSelectorReturnNullWhenAbsent(): void {
+		// A binding with no css_prop/css_selector feeds no block-default rule.
+		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
+
+		$this->assertNull( $binding->css_prop() );
+		$this->assertNull( $binding->css_selector() );
+	}
+
+	public function testItThrowsWhenCssPropIsNotAString(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array( 'borderRadius', [ 'css_prop' => true ] );
+	}
+
 	public function testItAcceptsTheCssVarFlag(): void {
 		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
 

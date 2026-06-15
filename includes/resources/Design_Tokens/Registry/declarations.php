@@ -34,6 +34,14 @@ return [
 				'site_editor'  => true,
 			],
 		],
+		[
+			// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default
+			// CSS projector points kadence/image's border-radius at that variable as a low-specificity default.
+			'id'    => 'semantic.radius.media',
+			'type'  => 'dimension',
+			'label' => __( 'Media Radius', 'kadence-blocks' ),
+			'group' => __( 'Brand', 'kadence-blocks' ),
+		],
 	],
 	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
 	// token reference where the property is already a registered token, an inline target otherwise).
@@ -48,6 +56,19 @@ return [
 				'button-text'   => [ 'token' => 'semantic.color.button-text' ],
 				'button-border' => [ 'kadence_slot' => 'palette3' ],            // not a token yet → inline target.
 				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
+			],
+		],
+		[
+			// Image radius: the $default binds borderRadius to the media-radius token. The block-default-CSS
+			// projector emits a low-specificity `.wp-block-kadence-image img { border-radius: var(...) }` rule,
+			// so a fresh image follows the token while any radius the user sets (including 0) still wins.
+			'block'    => 'kadence/image',
+			'bindings' => [
+				'borderRadius' => [
+					'token'        => 'semantic.radius.media',
+					'css_prop'     => 'border-radius',
+					'css_selector' => ' img',
+				],
 			],
 		],
 	],

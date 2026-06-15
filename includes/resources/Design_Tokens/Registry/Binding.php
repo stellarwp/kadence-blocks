@@ -75,13 +75,36 @@ final class Binding {
 	private const CSS_VAR = 'css_var';
 
 	/**
+	 * Inline target: a CSS property the block renders as a raw literal (e.g. "border-radius"), so the
+	 * block-default-CSS projector can emit a low-specificity block-scoped rule pointing it at the bound
+	 * token's variable. Used for the dimension families KB gives no ownable variable for (radius, icon
+	 * size); see that projector's Css_Builder for the full rationale.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CSS_PROP = 'css_prop';
+
+	/**
+	 * Inline target: a selector suffix appended after the block's `.wp-block-*` class for the `css_prop`
+	 * rule, when the property is rendered on a descendant rather than the block root (e.g. " img" for an
+	 * image). Optional; the rule targets the block root when omitted.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CSS_SELECTOR = 'css_selector';
+
+	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
 	 * @since TBD
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::WP_PRESET, self::BLOCK_ATTR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::WP_PRESET, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
@@ -199,6 +222,36 @@ final class Binding {
 		$attribute = $this->projections[ self::BLOCK_ATTR ] ?? null;
 
 		return is_string( $attribute ) ? $attribute : null;
+	}
+
+	/**
+	 * The CSS property this binding feeds a block-scoped default rule for, or null when it declares none.
+	 * Read by the block-default-CSS projector to emit `<prop>: var(--kb-token--*)` for a dimension the
+	 * block renders as a literal. Always an inline target — tokens never carry a `css_prop` — so it is read
+	 * straight off this binding.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function css_prop(): ?string {
+		$property = $this->projections[ self::CSS_PROP ] ?? null;
+
+		return is_string( $property ) ? $property : null;
+	}
+
+	/**
+	 * The selector suffix for this binding's `css_prop` rule (e.g. " img"), or null when the property is
+	 * rendered on the block root. Inline only.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function css_selector(): ?string {
+		$selector = $this->projections[ self::CSS_SELECTOR ] ?? null;
+
+		return is_string( $selector ) ? $selector : null;
 	}
 
 	/**
