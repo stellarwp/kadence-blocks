@@ -246,7 +246,7 @@
 			},
 			"media": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.lg}"
+				"$value": "{primitive.dimension.radius.none}"
 			}
 		},
 		"borderWidth": {
