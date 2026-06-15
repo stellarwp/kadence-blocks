@@ -805,7 +805,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$textShadow['vOffset'] = $textShadow['vOffset'] ?? 1;
 			$textShadow['blur']    = $textShadow['blur'] ?? 1;
 			$textShadow['color']   = $textShadow['color'] ?? null;
-			$textShadow['opacity'] = $textShadow['opacity'] ?? 1.0; // Default is 0.2, but if it's undefined they set it at a time when the block defaults it to 1.0
+			$textShadow['opacity'] = $textShadow['opacity'] ?? 1.0; // Default is 0.2, but if it's undefed they set it at a time when the block defaults it to 1.0
 		}
 
 		if (!empty($attributes['textShadowTablet']) && is_array($attributes['textShadowTablet'][0])) {
