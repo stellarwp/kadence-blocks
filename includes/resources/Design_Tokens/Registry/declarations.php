@@ -59,6 +59,13 @@ return [
 			],
 		],
 		[
+			'block'    => 'core/button',
+			'bindings' => [
+				'button-bg'   => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's wp_preset → --wp--preset--color--button-bg.
+				'button-text' => [ 'token' => 'semantic.color.button-text' ],
+			],
+		],
+		[
 			// Image radius: the $default binds borderRadius to the media-radius token. The block-default-CSS
 			// projector emits a low-specificity `.wp-block-kadence-image img { border-radius: var(...) }` rule,
 			// so a fresh image follows the token while any radius the user sets (including 0) still wins.

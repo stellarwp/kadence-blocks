@@ -66,6 +66,17 @@ final class Variant_ResolverTest extends TestCase {
 		$this->assertFalse( $this->resolver->has_variant( 'kadence/nope', 'primary' ) );
 	}
 
+	public function testItReadsAVariantLabelFromTheDocument(): void {
+		$this->assertSame( 'Ghost', $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary' ) );
+	}
+
+	public function testLabelIsNullForAnUnknownVariantOrBlock(): void {
+		// A non-throwing lookup, mirroring has_variant().
+		$this->assertNull( $this->resolver->label( self::BUTTON, 'outline' ) );
+		$this->assertNull( $this->resolver->label( 'kadence/nope', 'ghost' ) );
+	}
+
 	public function testValuePropertiesAreTheUnionAcrossVariants(): void {
 		$properties = $this->resolver->value_properties( self::BUTTON );
 
