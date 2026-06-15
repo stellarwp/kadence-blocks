@@ -96,7 +96,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->image_registry() )->css();
 
 		$this->assertStringContainsString( '.wp-block-kadence-image img{border-radius:var(' . $var . ',0);}', $css );
-		$this->assertStringNotContainsString( '.wp-block-kadence-imageimg', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-imageimg', $css ); // cspell:disable-line -- Checking for invalid selector.
 	}
 
 	/**
