@@ -265,6 +265,14 @@
 			"icon": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
+			},
+			"rowlayout-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
+			},
+			"column-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
 			}
 		},
 		"spacing": {
@@ -287,6 +295,14 @@
 				"$value": "{primitive.dimension.radius.md}"
 			},
 			"media": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.none}"
+			},
+			"rowlayout": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.none}"
+			},
+			"column": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.radius.none}"
 			}
@@ -424,7 +440,9 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
-							"background": "{semantic.color.surface}",
+							"background": "{semantic.color.rowlayout-bg}",
+							"border": "{semantic.color.border}",
+							"borderRadius": "{semantic.radius.rowlayout}",
 							"padding": "{semantic.spacing.section}"
 						}
 					}
@@ -434,7 +452,9 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
-							"background": "{semantic.color.surface-alt}",
+							"background": "{semantic.color.column-bg}",
+							"border": "{semantic.color.border}",
+							"borderRadius": "{semantic.radius.column}",
 							"padding": "{semantic.spacing.block}"
 						}
 					}
