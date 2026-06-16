@@ -56,24 +56,66 @@
 			}
 		},
 		"dimension": {
-			"space": {
-				"xs": {
-					"$type": "dimension",
-					"$value": "0.25rem"
-				},
-				"sm": {
+			"spacing": {
+				"xxs": {
 					"$type": "dimension",
 					"$value": "0.5rem"
 				},
-				"md": {
+				"xs": {
 					"$type": "dimension",
 					"$value": "1rem"
 				},
-				"lg": {
+				"sm": {
+					"$type": "dimension",
+					"$value": "1.5rem"
+				},
+				"md": {
 					"$type": "dimension",
 					"$value": "2rem"
 				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "3rem"
+				},
 				"xl": {
+					"$type": "dimension",
+					"$value": "4rem"
+				},
+				"xxl": {
+					"$type": "dimension",
+					"$value": "5rem"
+				},
+				"3xl": {
+					"$type": "dimension",
+					"$value": "6.5rem"
+				},
+				"4xl": {
+					"$type": "dimension",
+					"$value": "8rem"
+				},
+				"5xl": {
+					"$type": "dimension",
+					"$value": "10rem"
+				}
+			},
+			"gap": {
+				"none": {
+					"$type": "dimension",
+					"$value": "0rem"
+				},
+				"xs": {
+					"$type": "dimension",
+					"$value": "0.5rem"
+				},
+				"sm": {
+					"$type": "dimension",
+					"$value": "1rem"
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "2rem"
+				},
+				"lg": {
 					"$type": "dimension",
 					"$value": "4rem"
 				}
@@ -228,15 +270,15 @@
 		"spacing": {
 			"inline": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.md}"
+				"$value": "{primitive.dimension.spacing.md}"
 			},
 			"block": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.lg}"
+				"$value": "{primitive.dimension.spacing.lg}"
 			},
 			"section": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.space.xl}"
+				"$value": "{primitive.dimension.spacing.xl}"
 			}
 		},
 		"radius": {
