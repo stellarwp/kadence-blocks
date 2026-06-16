@@ -14,7 +14,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class Variant_ResolverTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 
@@ -24,13 +24,12 @@ final class Variant_ResolverTest extends TestCase {
 		$this->resolver = $this->container->get( Variant_Resolver::class );
 	}
 
-	public function testItResolvesGhostBindingsMixingLiteralsAndAliases(): void {
-		$values = $this->resolver->resolve( self::BUTTON, 'ghost' );
+	public function testItResolvesAliasBindingsForSecondary(): void {
+		$values = $this->resolver->resolve( self::BUTTON, 'secondary' );
 
-		// Literal passes through; aliases flatten through the token graph.
-		$this->assertSame( 'transparent', $values['button-bg'] );
-		$this->assertSame( '#3182CE', $values['button-text'] );   // {primitive.color.brand.primary}
-		$this->assertSame( '#3182CE', $values['button-border'] );
+		// Aliases flatten through the token graph.
+		$this->assertSame( '#2C5282', $values['button-bg'] );     // {primitive.color.brand.secondary}
+		$this->assertSame( '#ffffff', $values['button-text'] );   // {primitive.color.neutral.0}
 		$this->assertSame( '0.5rem', $values['button-radius'] );  // {semantic.radius.control} -> radius.md
 	}
 
@@ -52,7 +51,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItListsTheDocumentsVariantNames(): void {
-		$this->assertSame( [ 'primary', 'secondary', 'ghost' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
 	}
 
 	public function testDefaultVariantReadsTheDollarDefault(): void {
@@ -60,21 +59,22 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testHasVariant(): void {
-		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'ghost' ) );
-		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'outline' ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'secondary' ) );
+		// "ghost" is not a V1 Button variant (the native Outline style covers it).
+		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'ghost' ) );
 		// Unknown block is false, not an error.
 		$this->assertFalse( $this->resolver->has_variant( 'kadence/nope', 'primary' ) );
 	}
 
 	public function testItReadsAVariantLabelFromTheDocument(): void {
-		$this->assertSame( 'Ghost', $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertSame( 'Secondary', $this->resolver->label( self::BUTTON, 'secondary' ) );
 		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary' ) );
 	}
 
 	public function testLabelIsNullForAnUnknownVariantOrBlock(): void {
 		// A non-throwing lookup, mirroring has_variant().
-		$this->assertNull( $this->resolver->label( self::BUTTON, 'outline' ) );
-		$this->assertNull( $this->resolver->label( 'kadence/nope', 'ghost' ) );
+		$this->assertNull( $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertNull( $this->resolver->label( 'kadence/nope', 'primary' ) );
 	}
 
 	public function testValuePropertiesAreTheUnionAcrossVariants(): void {
@@ -82,7 +82,7 @@ final class Variant_ResolverTest extends TestCase {
 
 		sort( $properties );
 		$this->assertSame(
-			[ 'button-bg', 'button-border', 'button-radius', 'button-text' ],
+			[ 'button-bg', 'button-radius', 'button-text' ],
 			$properties
 		);
 	}

@@ -156,7 +156,7 @@
 					"$value": "4px"
 				}
 			},
-			"iconSize": {
+			"icon-size": {
 				"sm": {
 					"$type": "dimension",
 					"$value": "1rem"
@@ -297,10 +297,10 @@
 				"$value": "{primitive.dimension.borderWidth.sm}"
 			}
 		},
-		"iconSize": {
+		"icon-size": {
 			"default": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.iconSize.md}"
+				"$value": "{primitive.dimension.icon-size.md}"
 			}
 		},
 		"typography": {
@@ -449,7 +449,7 @@
 						}
 					}
 				},
-				"kadence/advancedbtn": {
+				"kadence/singlebtn": {
 					"$default": "primary",
 					"primary": {
 						"label": "Primary",
@@ -464,15 +464,6 @@
 						"tokens": {
 							"button-bg": "{primitive.color.brand.secondary}",
 							"button-text": "{primitive.color.neutral.0}",
-							"button-radius": "{semantic.radius.control}"
-						}
-					},
-					"ghost": {
-						"label": "Ghost",
-						"tokens": {
-							"button-bg": "transparent",
-							"button-text": "{primitive.color.brand.primary}",
-							"button-border": "{primitive.color.brand.primary}",
 							"button-radius": "{semantic.radius.control}"
 						}
 					}
@@ -493,7 +484,7 @@
 						"label": "Default",
 						"tokens": {
 							"color": "{semantic.color.icon}",
-							"size": "{semantic.iconSize.default}"
+							"size": "{semantic.icon-size.default}"
 						}
 					}
 				},
@@ -511,13 +502,6 @@
 						"tokens": {
 							"button-bg": "{primitive.color.brand.secondary}",
 							"button-text": "{primitive.color.neutral.0}"
-						}
-					},
-					"ghost": {
-						"label": "Ghost",
-						"tokens": {
-							"button-bg": "{primitive.color.transparent}",
-							"button-text": "{primitive.color.brand.primary}"
 						}
 					}
 				}

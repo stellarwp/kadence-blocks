@@ -16,7 +16,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class ProjectorTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 

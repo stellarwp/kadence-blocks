@@ -14,7 +14,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class VariantsTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 
@@ -35,16 +35,16 @@ final class VariantsTest extends TestCase {
 		$button = $variants[ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
-		$this->assertSame( [ 'primary', 'secondary', 'ghost' ], $button['names'] );
+		$this->assertSame( [ 'primary', 'secondary' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
 
 		// Structure: bindings carry the token reference / inline targets.
 		$this->assertArrayHasKey( 'bindings', $button );
 		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
 
-		// Resolved preview values per variant — aliases flattened, literals passed through.
+		// Resolved preview values per variant — aliases flattened to their primitive color.
 		$this->assertSame( '#3182CE', $button['values']['primary']['button-bg'] );
-		$this->assertSame( 'transparent', $button['values']['ghost']['button-bg'] );
+		$this->assertSame( '#2C5282', $button['values']['secondary']['button-bg'] );
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {

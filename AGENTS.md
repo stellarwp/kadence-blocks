@@ -69,6 +69,19 @@ the team enforces in review; follow them exactly.
 - Ticket numbers ARE acceptable inside a `TODO`/`@todo` marking a concrete follow-up.
 - After edits, `grep -rn "SOFT-" includes/` to confirm none leaked in.
 
+### Design token ids are kebab-case
+
+- **Token names in `baseline.json` and `declarations.php` must be kebab-case, never camelCase.**
+  A registered token id is validated as `^[a-z0-9]+([.-][a-z0-9]+)*$` (lowercase alphanumeric
+  segments separated by `.` or `-`), because it feeds `Css_Var::from_id()` which only swaps `.`
+  for `--`. A camelCase segment (`iconSize`, `borderWidth`) throws at registration, so use
+  `icon-size`, `border-width`, etc. This applies to every layer of a token path — a `semantic`
+  alias and the `primitive` it points at must both be kebab-case, and any `{alias}` reference in
+  the baseline must match.
+- Note the DTCG `$type` values are a separate vocabulary and stay as the spec defines them
+  (`fontFamily`, `fontWeight`, `cubicBezier`); the kebab-case rule is about token *names* (keys
+  and ids), not `$type`.
+
 ## Tests
 
 - **Data providers use `Generator`, not arrays.** A provider `yield`s each case; the return

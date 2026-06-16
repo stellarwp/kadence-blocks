@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -17,21 +18,24 @@ use RuntimeException;
  *
  * A Kadence block has no native style-variation system, so a selected variant reaches output purely
  * through the cascade: the editor adds a "kb-variant--<name>" class to the block, and this builder emits,
- * per (block, variant), a rule that retargets the --global-paletteN custom properties the block's
- * render_color() already consumes. Picking the variant therefore re-skins the block with zero changes to
- * its render path; an unselected block keeps its $default (the block preset).
+ * per (block, variant), a rule that retargets the --global-* custom properties (a numbered palette slot
+ * or a named button slot) the block's render_color() already consumes. Picking the variant therefore
+ * re-skins the block with zero changes to its render path.
  *
- * Two declaration blocks are emitted:
+ * Three declaration blocks are emitted:
  *
  *   1. A global --kb-token--variant--<block>--<variant>--<property> definition for every bound value, so
  *      a variant's values surface as named token vars in the same graph as every other token.
  *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
- *      --global-paletteN at its variant var. The var is always co-emitted in (1) in the same stylesheet,
+ *      --global-<slot> at its variant var. The var is always co-emitted in (1) in the same stylesheet,
  *      so the reference resolves without a literal fallback.
+ *   3. A class-less ".wp-block-<block>" rule pointing each --global-<slot> at the $default variant's var,
+ *      so a block with no variant selected still shows its preset (the $default look) — the Kadence
+ *      analogue of the block preset, for color slots that have no attribute to seed.
  *
  * Scoping is per (block, variant): the same variant name on two blocks ("ghost" on a Button and a Row)
- * gets its own block-qualified rule, so values never collide. Only named variants are emitted; the
- * "$default" is the preset, applied through KB's attribute defaults rather than a class.
+ * gets its own block-qualified rule, so values never collide. Both named variants and the "$default"
+ * preset carry ordinary class/element specificity, so a per-instance edit still wins.
  *
  * Nothing here is !important and the scope carries ordinary class specificity, so a per-instance inline
  * style still wins over a variant. Values are sanitized defensively before they reach a declaration.
@@ -51,6 +55,23 @@ final class Css_Builder {
 	 * @var string
 	 */
 	private const VARIANT_SEGMENT = 'variant--';
+
+	/**
+	 * Kadence theme global custom-property slots a variant may retarget beyond the numbered palette
+	 * (palette1..9). These are the button's own color slots — the exact --global-* properties the
+	 * button render path already consumes — so a variant re-skins the button with no change to its
+	 * render path.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const NAMED_GLOBAL_SLOTS = [
+		'palette-btn-bg',
+		'palette-btn',
+		'palette-btn-bg-hover',
+		'palette-btn-hover',
+	];
 
 	/**
 	 * Object-cache group shared with the rest of the Design Tokens module.
@@ -97,8 +118,9 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the full variant CSS for a token set: the global variant-var block followed by the per
-	 * (block, variant) scoped rules. Empty when no registered block contributes a palette-targeted value.
+	 * Build the full variant CSS for a token set: the global variant-var block, the per (block, variant)
+	 * scoped rules, and a class-less $default rule per block. Empty when no registered block contributes a
+	 * slot-targeted value.
 	 *
 	 * @since TBD
 	 *
@@ -111,6 +133,10 @@ final class Css_Builder {
 		$scoped  = '';
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
+			if ( Style::is_native( $block ) ) {
+				continue; // Native blocks reach their variants through the Block_Style (register_block_style) path.
+			}
+
 			$set = $this->registry->for_block( $block );
 
 			if ( $set === null ) {
@@ -126,6 +152,9 @@ final class Css_Builder {
 			}
 
 			$selector = '.wp-block-' . self::sanitize_identifier( str_replace( '/', '-', $block ) );
+
+			// Keep each variant's slot declarations so the $default's can be re-emitted, class-less, below.
+			$variant_declarations = [];
 
 			foreach ( $names as $variant ) {
 				try {
@@ -143,7 +172,7 @@ final class Css_Builder {
 						continue;
 					}
 
-					$slot = $this->palette_slot( $binding );
+					$slot = $this->global_slot( $binding );
 
 					if ( $slot === null ) {
 						continue;
@@ -157,8 +186,25 @@ final class Css_Builder {
 				}
 
 				if ( $declarations !== '' ) {
-					$scoped .= $selector . '.kb-variant--' . self::sanitize_identifier( $variant ) . '{' . $declarations . '}';
+					$variant_declarations[ $variant ] = $declarations;
+					$scoped                          .= $selector . '.kb-variant--' . self::sanitize_identifier( $variant ) . '{' . $declarations . '}';
 				}
+			}
+
+			/**
+			 * The $default look: a block with no variant selected still shows its preset. Point the same slots
+			 * at the $default variant's var on the class-less block selector. Its lower specificity yields to
+			 * the kb-variant-- rules above (a selected variant) and to a per-instance edit, so it only fills
+			 * the gap.
+			 */
+			try {
+				$default = $this->variants->default_variant( $block );
+			} catch ( RuntimeException $e ) {
+				$default = '';
+			}
+
+			if ( $default !== '' && isset( $variant_declarations[ $default ] ) ) {
+				$scoped .= $selector . '{' . $variant_declarations[ $default ] . '}';
 			}
 		}
 
@@ -201,21 +247,27 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The Kadence palette slot a binding targets (palette1..9), or null when it targets no palette slot.
+	 * The Kadence global custom-property slot a binding targets, or null when it targets none.
 	 *
-	 * Reads the binding's effective projections so a token-reference binding inherits the referenced
-	 * token's slot and an inline binding declares its own; both reach the same --global-paletteN.
+	 * Recognizes the numbered palette slots (palette1..9 → --global-paletteN) and the named button
+	 * slots in {@see NAMED_GLOBAL_SLOTS} (e.g. palette-btn-bg → --global-palette-btn-bg). Reads the
+	 * binding's effective projections so a token-reference binding inherits the referenced token's
+	 * slot and an inline binding declares its own; both reach the same --global-<slot>.
 	 *
 	 * @since TBD
 	 *
 	 * @param Binding $binding The variant binding.
 	 *
-	 * @return string|null The slot ("palette3"), or null.
+	 * @return string|null The slot ("palette3", "palette-btn-bg"), or null.
 	 */
-	private function palette_slot( Binding $binding ): ?string {
+	private function global_slot( Binding $binding ): ?string {
 		$slot = $this->registry->effective_projections( $binding )[ Binding::get_kadence_slot_key() ] ?? null;
 
-		if ( is_string( $slot ) && preg_match( '/^palette[1-9]$/', $slot ) === 1 ) {
+		if ( ! is_string( $slot ) ) {
+			return null;
+		}
+
+		if ( preg_match( '/^palette[1-9]$/', $slot ) === 1 || in_array( $slot, self::NAMED_GLOBAL_SLOTS, true ) ) {
 			return $slot;
 		}
 

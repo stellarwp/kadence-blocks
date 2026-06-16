@@ -13,7 +13,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class Effective_VariantsTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	/**
 	 * @var Token_Store
@@ -45,7 +45,6 @@ final class Effective_VariantsTest extends TestCase {
 		$this->assertSame( 'primary', $node['$default'] );
 		$this->assertArrayHasKey( 'primary', $node );
 		$this->assertArrayHasKey( 'secondary', $node );
-		$this->assertArrayHasKey( 'ghost', $node );
 	}
 
 	/**
@@ -53,7 +52,7 @@ final class Effective_VariantsTest extends TestCase {
 	 */
 	public function testAStoredOverrideAddsAVariantAlongsideTheBaselineOnes(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/advancedbtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
 			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
@@ -64,25 +63,25 @@ final class Effective_VariantsTest extends TestCase {
 		$this->assertArrayHasKey( 'outline', $node );
 		$this->assertSame( 'Outline', $node['outline']['label'] );
 		$this->assertArrayHasKey( 'primary', $node );
-		$this->assertArrayHasKey( 'ghost', $node );
+		$this->assertArrayHasKey( 'secondary', $node );
 	}
 
 	/**
 	 * @return void
 	 */
 	public function testAStoredOverrideMergesIntoAVariantsTokensPerProperty(): void {
-		// Override just one property of the baseline "ghost" variant.
+		// Override just one property of the baseline "secondary" variant.
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/advancedbtn":{'
-			. '"ghost":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
 		);
 
-		$ghost = $this->variants->block( self::BUTTON )['ghost'];
+		$secondary = $this->variants->block( self::BUTTON )['secondary'];
 
 		// The overridden property wins; the variant's other baseline tokens and its label survive.
-		$this->assertSame( '#000000', $ghost['tokens']['button-bg'] );
-		$this->assertSame( '{primitive.color.brand.primary}', $ghost['tokens']['button-text'] );
-		$this->assertSame( 'Ghost', $ghost['label'] );
+		$this->assertSame( '#000000', $secondary['tokens']['button-bg'] );
+		$this->assertSame( '{primitive.color.neutral.0}', $secondary['tokens']['button-text'] );
+		$this->assertSame( 'Secondary', $secondary['label'] );
 	}
 
 	/**

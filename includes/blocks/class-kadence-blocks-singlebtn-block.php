@@ -355,6 +355,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
+		if ( ! empty( $attributes['kbVariant'] ) ) {
+			/**
+			 * The selected design-token variant outputs a kb-variant--<slug> class the Design Tokens variant
+			 * projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
+			 * the editor save filter; the sanitizer mirrors the projector's so the class matches the selector.
+			 */
+			$classes[] = 'kb-variant--' . preg_replace( '/[^A-Za-z0-9_-]+/', '-', $attributes['kbVariant'] );
+		}
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';

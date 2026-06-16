@@ -77,23 +77,58 @@ return [
 				'label' => __( 'Media Radius', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
+			[
+				/**
+				 * Control radius (buttons, inputs). Registered so Css_Var emits
+				 * --kb-token--semantic--radius--control; the button's own default border-radius rule references
+				 * that variable directly (the button is never empty, so the low-specificity block-default CSS
+				 * mechanism can't reach it). Resolves to the radius scale's "md" step, the design system's
+				 * control radius. A user's explicit radius still wins by specificity.
+				 */
+				'id'    => 'semantic.radius.control',
+				'type'  => 'dimension',
+				'label' => __( 'Control Radius', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				/**
+				 * Default icon size. Registered so Css_Var emits --kb-token--semantic--icon-size--default; the
+				 * button's --kb-button-icon-size default references it, so a button icon follows the token while
+				 * an explicit per-button icon size still wins.
+				 */
+				'id'    => 'semantic.icon-size.default',
+				'type'  => 'dimension',
+				'label' => __( 'Icon Size', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
 		],
 		$spacing_tokens,
 		$gap_tokens
 	),
-	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
-	// token reference where the property is already a registered token, an inline target otherwise).
-	// The variant NAMES, the default ($default) and the values all live in the baseline document under
-	// $extensions…variants.<block>; this declares only the structural wiring. Inline slot values here
-	// (e.g. palette3) are placeholders until the per-block wiring tickets vet them against the block.
+	/**
+	 * Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
+	 * token reference where the property is already a registered token, an inline target otherwise).
+	 * The variant NAMES, the default ($default) and the values all live in the baseline document under
+	 * $extensions…variants.<block>; this declares only the structural wiring.
+	 */
 	'variant_sets' => [
 		[
-			'block'    => 'kadence/advancedbtn',
+			/**
+			 * The variant lives on the child Single Button (each button in a group is skinned individually),
+			 * not the advancedbtn container. Variants are a pure COLOR axis: they retarget the Kadence theme's
+			 * button-specific palette vars (the exact custom properties the button's render path already
+			 * consumes), so a variant composes with the block's existing "Button Inherit Styles" shape (Fill /
+			 * Outline / Theme Base) instead of fighting it — Fill reads --global-palette-btn-bg for its
+			 * background, Outline reads it for border+text, so one color variant skins both shapes. Picking a
+			 * variant re-skins a button with zero changes to its render path; a fresh button follows the
+			 * $default. The inline kadence_slot overrides the referenced token's numbered slot for this binding
+			 * only (Token_Registry::effective_projections merges inline over the token).
+			 */
+			'block'    => 'kadence/singlebtn',
 			'bindings' => [
-				'button-bg'     => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's projections.
-				'button-text'   => [ 'token' => 'semantic.color.button-text' ],
-				'button-border' => [ 'kadence_slot' => 'palette3' ],            // not a token yet → inline target.
-				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
+				'button-bg'     => [ 'token' => 'semantic.color.button-bg', 'kadence_slot' => 'palette-btn-bg' ],
+				'button-text'   => [ 'token' => 'semantic.color.button-text', 'kadence_slot' => 'palette-btn' ],
+				'button-radius' => [ 'css_var' => true ], // token-var only (no preset bucket).
 			],
 		],
 		[

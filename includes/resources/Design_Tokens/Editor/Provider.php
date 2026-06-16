@@ -1,0 +1,35 @@
+<?php declare( strict_types=1 );
+
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
+
+use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
+
+/**
+ * Registers the block-editor variant catalog: binds the catalog builder and localizer as singletons,
+ * then hooks the localizer onto enqueue_block_editor_assets so the early-filters bundle receives
+ * window.kadenceDesignTokensVariants for the variant picker.
+ *
+ * @since TBD
+ */
+final class Provider extends Provider_Contract {
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function register(): void {
+		$this->container->singleton( Variant_Catalog::class );
+		$this->container->singleton( Localizer::class );
+
+		/**
+		 * The editor-assets class enqueues kadence-blocks-early-filters-js on enqueue_block_editor_assets at
+		 * the default priority (10). The Localizer attaches its inline script to that handle, so it must run
+		 * strictly LATER — a higher priority guarantees the handle exists, where matching 10 would leave the
+		 * order registration-dependent. 20 sits clear of that default with headroom for others to slot
+		 * between. The Localizer also guards on wp_script_is( …, 'enqueued' ), so a missing handle no-ops
+		 * rather than fatals.
+		 */
+		add_action( 'enqueue_block_editor_assets', $this->container->callback( Localizer::class, 'localize' ), 20 );
+	}
+}
