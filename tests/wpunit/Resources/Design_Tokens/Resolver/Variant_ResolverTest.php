@@ -39,12 +39,12 @@ final class Variant_ResolverTest extends TestCase {
 	public function testItFlattensMultiHopAliasesForThePrimaryVariant(): void {
 		$values = $this->resolver->resolve( self::BUTTON, 'primary' );
 
-		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.primary} -> #3182CE
-		$this->assertSame( '#3182CE', $values['button-bg'] );
+		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.button} -> #3633e1
+		$this->assertSame( '#3633e1', $values['button-bg'] );
 		// button-text -> {semantic.color.button-primary-text} -> {primitive.color.neutral.0} -> #ffffff
 		$this->assertSame( '#ffffff', $values['button-text'] );
-		// Hover darkens to a dedicated darker-primary shade (brand.primary-dark), decoupled from brand.secondary.
-		$this->assertSame( '#2C5282', $values['button-bg-hover'] );
+		// Hover -> {semantic.color.button-primary-bg-hover} -> {primitive.color.brand.button-hover} -> #2f2ffc
+		$this->assertSame( '#2f2ffc', $values['button-bg-hover'] );
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );
 	}
 

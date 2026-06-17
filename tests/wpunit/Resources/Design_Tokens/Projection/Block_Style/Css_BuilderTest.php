@@ -37,7 +37,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder->css();
 
 		// core/button's primary resolves to the brand button colors, surfaced as variant vars...
-		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-bg:#3182CE;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-bg:#3633e1;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-text:#ffffff;', $css );
 		// ...and the scoped rule re-targets the WordPress preset vars the block consumes at its $default.
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-primary{', $css );

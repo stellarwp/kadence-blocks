@@ -7,10 +7,6 @@
 					"$type": "color",
 					"$value": "#3182CE"
 				},
-				"primary-dark": {
-					"$type": "color",
-					"$value": "#2C5282"
-				},
 				"secondary": {
 					"$type": "color",
 					"$value": "#2B6CB0"
@@ -18,6 +14,14 @@
 				"accent": {
 					"$type": "color",
 					"$value": "#ED8936"
+				},
+				"button": {
+					"$type": "color",
+					"$value": "#3633e1"
+				},
+				"button-hover": {
+					"$type": "color",
+					"$value": "#2f2ffc"
 				}
 			},
 			"neutral": {
@@ -264,15 +268,15 @@
 			},
 			"button-bg": {
 				"$type": "color",
-				"$value": "{semantic.color.button-primary-bg}"
+				"$value": "{primitive.color.brand.button}"
 			},
 			"button-text": {
 				"$type": "color",
-				"$value": "{semantic.color.button-primary-text}"
+				"$value": "{primitive.color.neutral.0}"
 			},
 			"button-primary-bg": {
 				"$type": "color",
-				"$value": "{primitive.color.brand.primary}"
+				"$value": "{primitive.color.brand.button}"
 			},
 			"button-primary-text": {
 				"$type": "color",
@@ -280,7 +284,7 @@
 			},
 			"button-primary-bg-hover": {
 				"$type": "color",
-				"$value": "{primitive.color.brand.primary-dark}"
+				"$value": "{primitive.color.brand.button-hover}"
 			},
 			"button-primary-text-hover": {
 				"$type": "color",

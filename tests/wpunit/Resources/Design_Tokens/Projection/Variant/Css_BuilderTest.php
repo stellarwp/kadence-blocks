@@ -55,8 +55,8 @@ final class Css_BuilderTest extends TestCase {
 	public function testItDefinesTheVariantVars(): void {
 		$css = $this->builder( $this->registry )->css();
 
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3182CE;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2C5282;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3633e1;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2f2ffc;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#1A202C;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:#2D3748;', $css );
 	}

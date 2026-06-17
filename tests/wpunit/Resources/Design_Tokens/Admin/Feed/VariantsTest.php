@@ -43,7 +43,7 @@ final class VariantsTest extends TestCase {
 		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
 
 		// Resolved preview values per variant — aliases flattened to their primitive color.
-		$this->assertSame( '#3182CE', $button['values']['primary']['button-bg'] );
+		$this->assertSame( '#3633e1', $button['values']['primary']['button-bg'] );
 		$this->assertSame( '#1A202C', $button['values']['secondary']['button-bg'] );
 	}
 
