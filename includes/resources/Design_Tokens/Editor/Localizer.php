@@ -48,23 +48,23 @@ final class Localizer {
 	private Token_Registry $registry;
 
 	/**
-	 * The catalog builder.
+	 * The variant catalog builder.
 	 *
 	 * @since TBD
 	 *
 	 * @var Variant_Catalog
 	 */
-	private Variant_Catalog $catalog;
+	private Variant_Catalog $variant_catalog;
 
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry  $registry The token registry.
-	 * @param Variant_Catalog $catalog  The catalog builder.
+	 * @param Token_Registry  $registry        The token registry.
+	 * @param Variant_Catalog $variant_catalog The variant catalog builder.
 	 */
-	public function __construct( Token_Registry $registry, Variant_Catalog $catalog ) {
-		$this->registry = $registry;
-		$this->catalog  = $catalog;
+	public function __construct( Token_Registry $registry, Variant_Catalog $variant_catalog ) {
+		$this->registry        = $registry;
+		$this->variant_catalog = $variant_catalog;
 	}
 
 	/**
@@ -84,7 +84,7 @@ final class Localizer {
 		}
 
 		$json = wp_json_encode(
-			$this->catalog->all(),
+			$this->variant_catalog->all(),
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 		);
 
