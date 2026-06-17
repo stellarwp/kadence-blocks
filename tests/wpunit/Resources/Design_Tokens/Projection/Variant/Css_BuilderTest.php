@@ -56,7 +56,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css();
 
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3182CE;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2B6CB0;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2C5282;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#1A202C;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:#2D3748;', $css );
 	}

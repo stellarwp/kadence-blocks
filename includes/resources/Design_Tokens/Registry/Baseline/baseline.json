@@ -7,6 +7,10 @@
 					"$type": "color",
 					"$value": "#3182CE"
 				},
+				"primary-dark": {
+					"$type": "color",
+					"$value": "#2C5282"
+				},
 				"secondary": {
 					"$type": "color",
 					"$value": "#2B6CB0"
@@ -276,7 +280,7 @@
 			},
 			"button-primary-bg-hover": {
 				"$type": "color",
-				"$value": "{primitive.color.brand.secondary}"
+				"$value": "{primitive.color.brand.primary-dark}"
 			},
 			"button-primary-text-hover": {
 				"$type": "color",

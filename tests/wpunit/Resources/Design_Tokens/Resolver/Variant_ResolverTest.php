@@ -43,8 +43,8 @@ final class Variant_ResolverTest extends TestCase {
 		$this->assertSame( '#3182CE', $values['button-bg'] );
 		// button-text -> {semantic.color.button-primary-text} -> {primitive.color.neutral.0} -> #ffffff
 		$this->assertSame( '#ffffff', $values['button-text'] );
-		// Hover points at the legacy darker shade (brand.secondary), matching the theme's palette2 hover.
-		$this->assertSame( '#2B6CB0', $values['button-bg-hover'] );
+		// Hover darkens to a dedicated darker-primary shade (brand.primary-dark), decoupled from brand.secondary.
+		$this->assertSame( '#2C5282', $values['button-bg-hover'] );
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );
 	}
 
