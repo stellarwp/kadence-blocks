@@ -44,7 +44,7 @@ final class VariantsTest extends TestCase {
 
 		// Resolved preview values per variant — aliases flattened to their primitive color.
 		$this->assertSame( '#3182CE', $button['values']['primary']['button-bg'] );
-		$this->assertSame( '#2C5282', $button['values']['secondary']['button-bg'] );
+		$this->assertSame( '#1A202C', $button['values']['secondary']['button-bg'] );
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {

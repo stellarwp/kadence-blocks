@@ -38,6 +38,8 @@
         "crawlable",
         "curlopt",
         "customizer",
+        "dashicon",
+        "dashicons",
         "diffcs",
         "distignore",
         "dotlottie",
@@ -60,6 +62,10 @@
         "kadencewp",
         "kbcustom",
         "kbcustomicons",
+        "ktanimate",
+        "ktanimateadd",
+        "ktanimatepreview",
+        "ktdynamic",
         "lightbox",
         "LONGTEXT",
         "lottieanimation",
@@ -109,6 +115,7 @@
         "sunsetting",
         "tabindex",
         "tableofcontents",
+        "textcolor",
         "trailingslashit",
         "uncollapsed",
         "unrecognised",
@@ -122,6 +129,7 @@
         "wpdb",
         "wpml",
         "wpunit",
-        "writefunction"
+        "writefunction",
+        "xlarge"
     ]
 }

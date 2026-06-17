@@ -78,7 +78,7 @@ final class ProjectorTest extends TestCase {
 
 		$this->assertIsArray( $decoded );
 		$by_slug = array_column( $decoded['palette'], null, 'slug' );
-		// The shipped declarations include button-bg => palette1.
+		// The shipped declarations map primitive.color.brand.primary => palette1.
 		$this->assertArrayHasKey( 'palette1', $by_slug );
 		$this->assertMatchesRegularExpression( '/^#[0-9a-fA-F]{3,8}$/', $by_slug['palette1']['color'] );
 	}
@@ -121,9 +121,9 @@ final class ProjectorTest extends TestCase {
 					'slug'  => 'palette2',
 				],
 				[
-					'color' => '#old5',
-					'name'  => 'Palette Color 5',
-					'slug'  => 'palette5',
+					'color' => '#old3',
+					'name'  => 'Theme Extra',
+					'slug'  => 'theme-extra',
 				],
 			],
 		];
@@ -137,8 +137,8 @@ final class ProjectorTest extends TestCase {
 
 		// Token-claimed slots must be overwritten.
 		$this->assertNotSame( '#old1', $by_slug['palette1']['color'] );
-		// Unclaimed slots must be untouched.
-		$this->assertSame( '#old5', $by_slug['palette5']['color'] );
+		// A slug no token claims must be untouched.
+		$this->assertSame( '#old3', $by_slug['theme-extra']['color'] );
 	}
 
 	public function testReconcileNeverCreatesThemePaletteWhenAbsent(): void {

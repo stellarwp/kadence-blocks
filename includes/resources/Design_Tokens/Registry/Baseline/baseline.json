@@ -9,7 +9,7 @@
 				},
 				"secondary": {
 					"$type": "color",
-					"$value": "#2C5282"
+					"$value": "#2B6CB0"
 				},
 				"accent": {
 					"$type": "color",
@@ -40,6 +40,10 @@
 				"500": {
 					"$type": "color",
 					"$value": "#718096"
+				},
+				"600": {
+					"$type": "color",
+					"$value": "#4A5568"
 				},
 				"700": {
 					"$type": "color",
@@ -256,9 +260,41 @@
 			},
 			"button-bg": {
 				"$type": "color",
-				"$value": "{primitive.color.brand.primary}"
+				"$value": "{semantic.color.button-primary-bg}"
 			},
 			"button-text": {
+				"$type": "color",
+				"$value": "{semantic.color.button-primary-text}"
+			},
+			"button-primary-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.primary}"
+			},
+			"button-primary-text": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.0}"
+			},
+			"button-primary-bg-hover": {
+				"$type": "color",
+				"$value": "{primitive.color.brand.secondary}"
+			},
+			"button-primary-text-hover": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.0}"
+			},
+			"button-secondary-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.900}"
+			},
+			"button-secondary-text": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.0}"
+			},
+			"button-secondary-bg-hover": {
+				"$type": "color",
+				"$value": "{primitive.color.neutral.700}"
+			},
+			"button-secondary-text-hover": {
 				"$type": "color",
 				"$value": "{primitive.color.neutral.0}"
 			},
@@ -396,7 +432,7 @@
 						"label": "Kadence",
 						"tokens": {
 							"primitive.color.brand.primary": "#3182CE",
-							"primitive.color.brand.secondary": "#2C5282",
+							"primitive.color.brand.secondary": "#2B6CB0",
 							"primitive.color.brand.accent": "#ED8936"
 						}
 					},
@@ -454,16 +490,20 @@
 					"primary": {
 						"label": "Primary",
 						"tokens": {
-							"button-bg": "{semantic.color.button-bg}",
-							"button-text": "{semantic.color.button-text}",
+							"button-bg": "{semantic.color.button-primary-bg}",
+							"button-text": "{semantic.color.button-primary-text}",
+							"button-bg-hover": "{semantic.color.button-primary-bg-hover}",
+							"button-text-hover": "{semantic.color.button-primary-text-hover}",
 							"button-radius": "{semantic.radius.control}"
 						}
 					},
 					"secondary": {
 						"label": "Secondary",
 						"tokens": {
-							"button-bg": "{primitive.color.brand.secondary}",
-							"button-text": "{primitive.color.neutral.0}",
+							"button-bg": "{semantic.color.button-secondary-bg}",
+							"button-text": "{semantic.color.button-secondary-text}",
+							"button-bg-hover": "{semantic.color.button-secondary-bg-hover}",
+							"button-text-hover": "{semantic.color.button-secondary-text-hover}",
 							"button-radius": "{semantic.radius.control}"
 						}
 					}
@@ -493,15 +533,15 @@
 					"primary": {
 						"label": "Primary",
 						"tokens": {
-							"button-bg": "{semantic.color.button-bg}",
-							"button-text": "{semantic.color.button-text}"
+							"button-bg": "{semantic.color.button-primary-bg}",
+							"button-text": "{semantic.color.button-primary-text}"
 						}
 					},
 					"secondary": {
 						"label": "Secondary",
 						"tokens": {
-							"button-bg": "{primitive.color.brand.secondary}",
-							"button-text": "{primitive.color.neutral.0}"
+							"button-bg": "{semantic.color.button-secondary-bg}",
+							"button-text": "{semantic.color.button-secondary-text}"
 						}
 					}
 				}

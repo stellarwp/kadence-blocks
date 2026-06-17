@@ -28,7 +28,7 @@ final class Provider extends Provider_Contract {
 		 * strictly LATER — a higher priority guarantees the handle exists, where matching 10 would leave the
 		 * order registration-dependent. 20 sits clear of that default with headroom for others to slot
 		 * between. The Localizer also guards on wp_script_is( …, 'enqueued' ), so a missing handle no-ops
-		 * rather than fatals.
+		 * rather than triggering a fatal error.
 		 */
 		add_action( 'enqueue_block_editor_assets', $this->container->callback( Localizer::class, 'localize' ), 20 );
 	}

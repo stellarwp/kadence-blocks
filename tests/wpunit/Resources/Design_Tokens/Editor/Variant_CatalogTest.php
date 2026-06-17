@@ -45,8 +45,14 @@ final class Variant_CatalogTest extends TestCase {
 		$this->assertSame( 'primary', $button['default'] );
 		$this->assertSame(
 			[
-				[ 'slug' => 'primary', 'label' => 'Primary' ],
-				[ 'slug' => 'secondary', 'label' => 'Secondary' ],
+				[
+					'slug'  => 'primary',
+					'label' => 'Primary',
+				],
+				[
+					'slug'  => 'secondary',
+					'label' => 'Secondary',
+				],
 			],
 			$button['variants']
 		);

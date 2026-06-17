@@ -80,7 +80,7 @@ final class Effective_VariantsTest extends TestCase {
 
 		// The overridden property wins; the variant's other baseline tokens and its label survive.
 		$this->assertSame( '#000000', $secondary['tokens']['button-bg'] );
-		$this->assertSame( '{primitive.color.neutral.0}', $secondary['tokens']['button-text'] );
+		$this->assertSame( '{semantic.color.button-secondary-text}', $secondary['tokens']['button-text'] );
 		$this->assertSame( 'Secondary', $secondary['label'] );
 	}
 

@@ -56,7 +56,9 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css();
 
 		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3182CE;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#2C5282;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2B6CB0;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#1A202C;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:#2D3748;', $css );
 	}
 
 	/**
@@ -71,7 +73,9 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-variant--secondary{'
 				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);}',
+				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);}',
 			$css
 		);
 	}
@@ -88,7 +92,9 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
 				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--primary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);}',
+				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);}',
 			$css
 		);
 	}

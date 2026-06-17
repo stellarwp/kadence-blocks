@@ -54,8 +54,8 @@ final class Css_BuilderTest extends TestCase {
 	public function testItResolvesAliasedValuesAndScopesPerVariant(): void {
 		$css = $this->builder->css();
 
-		// secondary's button-bg aliases {primitive.color.brand.secondary}, which flattens to its hex.
-		$this->assertStringContainsString( '--kb-token--variant--core-button--secondary--button-bg:#2C5282;', $css );
+		// secondary's button-bg aliases {semantic.color.button-secondary-bg}, which flattens to neutral.900.
+		$this->assertStringContainsString( '--kb-token--variant--core-button--secondary--button-bg:#1A202C;', $css );
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-secondary{', $css );
 	}
 
