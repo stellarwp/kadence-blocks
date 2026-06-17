@@ -168,6 +168,44 @@ return [
 				'label' => __( 'Icon Size', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
+			[
+				// Block-specific radius defaults, mirroring semantic.radius.media for the image. Each aliases
+				// radius.none (resolves to 0), so a fresh Row Layout / Column stays square — KB's own default —
+				// while a site owner can round one block type by overriding its token.
+				'id'    => 'semantic.radius.rowlayout',
+				'type'  => 'dimension',
+				'label' => __( 'Row Layout Radius', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.radius.column',
+				'type'  => 'dimension',
+				'label' => __( 'Column Radius', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
+				// Block-specific background defaults for the block-default CSS projector. Each aliases the
+				// transparent primitive (see baseline), so a fresh Row Layout / Column stays transparent — KB's
+				// own default — while a site owner can brand one block type's background by overriding its token,
+				// without touching the shared surface colors or the transparent primitive. Registered here only
+				// so Css_Var emits each --kb-token--* variable the low-specificity rule points at.
+				'id'    => 'semantic.color.rowlayout-bg',
+				'type'  => 'color',
+				'label' => __( 'Row Layout Background', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.color.column-bg',
+				'type'  => 'color',
+				'label' => __( 'Column Background', 'kadence-blocks' ),
+				'group' => __( 'Layout', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.color.border',
+				'type'  => 'color',
+				'label' => __( 'Border', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
 		],
 		$button_color_tokens,
 		$palette_tokens,
@@ -221,6 +259,52 @@ return [
 					'token'        => 'semantic.radius.media',
 					'css_prop'     => 'border-radius',
 					'css_selector' => 'img',
+				],
+			],
+		],
+		[
+			// Row Layout: low-specificity block-default rules on the block root (where KB renders both).
+			// Background follows the block's own rowlayout-bg token, which aliases the transparent
+			// primitive — so an uncustomized row stays transparent (KB's own default) unless a site owner brands
+			// that token. Border color follows the brand border token (invisible until a border is added). A
+			// value the user sets is a per-instance rule of equal specificity but later source order, so it still
+			// wins. Padding follows the spacing tokens through the slug bridge, not a binding here.
+			'block'    => 'kadence/rowlayout',
+			'bindings' => [
+				'background'   => [
+					'token'    => 'semantic.color.rowlayout-bg',
+					'css_prop' => 'background-color',
+				],
+				'border'       => [
+					'token'    => 'semantic.color.border',
+					'css_prop' => 'border-color',
+				],
+				'borderRadius' => [
+					'token'    => 'semantic.radius.rowlayout',
+					'css_prop' => 'border-radius',
+				],
+			],
+		],
+		[
+			// Column (Section): same as Row Layout, but KB renders the background and border on the inner
+			// `.kt-inside-inner-col` child, so the rules target that descendant. column-bg is the
+			// column's own transparent-by-default override seam, distinct from the row's.
+			'block'    => 'kadence/column',
+			'bindings' => [
+				'background'   => [
+					'token'        => 'semantic.color.column-bg',
+					'css_prop'     => 'background-color',
+					'css_selector' => '> .kt-inside-inner-col',
+				],
+				'border'       => [
+					'token'        => 'semantic.color.border',
+					'css_prop'     => 'border-color',
+					'css_selector' => '> .kt-inside-inner-col',
+				],
+				'borderRadius' => [
+					'token'        => 'semantic.radius.column',
+					'css_prop'     => 'border-radius',
+					'css_selector' => '> .kt-inside-inner-col',
 				],
 			],
 		],

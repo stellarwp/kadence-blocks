@@ -67,6 +67,31 @@ final class Css_BuilderTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testTheShippedDeclarationsEmitTheRowLayoutAndColumnColorRules(): void {
+		// Row Layout / Column follow the tokens through a low-specificity block-default rule: the row on the
+		// block root, the column on its inner `.kt-inside-inner-col` child. Background follows each block's own
+		// background token (which aliases the transparent primitive, so an uncustomized block stays transparent
+		// — KB's own default); border color follows the brand border token.
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-rowlayout{background-color:var(' . Css_Var::from_id( 'semantic.color.rowlayout-bg' ),
+			$css
+		);
+		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ), $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.rowlayout' ), $css );
+		$this->assertStringContainsString(
+			'.wp-block-kadence-column> .kt-inside-inner-col{background-color:var(' . Css_Var::from_id( 'semantic.color.column-bg' ),
+			$css
+		);
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.column' ), $css );
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testItContributesNothingForABindingWithoutACssProp(): void {
 		// A block_attr-only binding (the block-preset path) declares no css_prop, so it feeds no rule here.
 		$registry = new Token_Registry();
