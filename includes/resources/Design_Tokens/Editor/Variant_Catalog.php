@@ -74,10 +74,20 @@ final class Variant_Catalog {
 				];
 			}
 
-			$out[ $block ] = [
+			$entry = [
 				'default'  => $default,
 				'variants' => $variants,
 			];
+
+			// The picker's control label (the variant axis), declared on the variant set. Omitted when the
+			// block declares none, so the editor falls back to its default label.
+			$set = $this->registry->for_block( $block );
+
+			if ( $set !== null && $set->label !== null ) {
+				$entry['label'] = $set->label;
+			}
+
+			$out[ $block ] = $entry;
 		}
 
 		return $out;

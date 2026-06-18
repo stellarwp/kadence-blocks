@@ -8,11 +8,11 @@ import { assign, get } from 'lodash';
 import { Button, Modal, PanelBody } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { blockExists } from '@kadence/helpers';
-import { KadenceRadioButtons } from '@kadence/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
+import { VariantPicker, blockVariants } from './extension/variant-picker';
 
 /**
  * Add animation attributes
@@ -169,20 +169,13 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
 
 /**
- * The design-token variant catalog the editor localizer prints — block name -> { default, variants } —
- * or an empty object when the token registry is inactive (no variants offered).
- *
- * @return {Object} The catalog keyed by block name.
- */
-function variantCatalog() {
-	return get(window, 'kadenceDesignTokensVariants', {}) || {};
-}
-
-/**
  * Add a "Design Variant" picker to the inspector of any block that opts into kbVariant support and has
  * variants defined in the design-token document. Selecting an option writes the kbVariant attribute,
  * which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped CSS hooks.
  * An empty value selects the block's $default preset look.
+ *
+ * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
+ * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
  *
  * @since TBD
  */
@@ -194,30 +187,25 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const variants = get(variantCatalog(), [name, 'variants'], []);
+		const support = getBlockSupport(name, 'kbVariant');
 
-		if (!variants.length) {
+		if (support && typeof support === 'object' && support.inlinePicker) {
 			return <BlockEdit {...props} />;
 		}
 
-		const options = [
-			{ label: __('Default', 'kadence-blocks'), value: '' },
-			...variants.map((variant) => ({ label: variant.label, value: variant.slug })),
-		];
+		if (!blockVariants(name).length) {
+			return <BlockEdit {...props} />;
+		}
 
 		return (
 			<>
 				<BlockEdit {...props} />
 				{isSelected && (
-					<InspectorControls>
+					<InspectorControls group="styles">
 						<PanelBody title={__('Design Variant', 'kadence-blocks')} initialOpen={false}>
-							<KadenceRadioButtons
-								label={__('Variant', 'kadence-blocks')}
-								className={'kb-variant-picker'}
+							<VariantPicker
+								name={name}
 								value={get(attributes, 'kbVariant', '')}
-								options={options}
-								hideLabel={false}
-								wrap={true}
 								onChange={(value) => setAttributes({ kbVariant: value })}
 							/>
 						</PanelBody>

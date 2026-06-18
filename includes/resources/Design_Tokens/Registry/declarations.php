@@ -234,6 +234,7 @@ return [
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
 			'block'    => 'kadence/singlebtn',
+			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
 			'bindings' => [
 				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
 				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],

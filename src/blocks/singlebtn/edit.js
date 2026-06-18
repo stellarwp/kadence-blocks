@@ -83,6 +83,7 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
+import { VariantPicker, blockVariants } from '../../extension/variant-picker';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -832,6 +833,19 @@ export default function KadenceButtonEdit(props) {
 
 						{activeTab === 'style' && (
 							<>
+								{blockVariants(name).length > 0 && (
+									<KadencePanelBody
+										title={__('Design Variant', 'kadence-blocks')}
+										initialOpen={true}
+										panelName={'kb-adv-single-btn-variant'}
+									>
+										<VariantPicker
+											name={name}
+											value={attributes.kbVariant || ''}
+											onChange={(value) => setAttributes({ kbVariant: value })}
+										/>
+									</KadencePanelBody>
+								)}
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (
 									<>
 										<KadencePanelBody

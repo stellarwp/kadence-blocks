@@ -769,7 +769,9 @@
 		"reusable": false,
 		"kbMetadata": true,
 		"kbContentLabel": "text",
-		"kbVariant": true
+		"kbVariant": {
+			"inlinePicker": true
+		}
 	},
 	"usesContext": [
 		"postId",
