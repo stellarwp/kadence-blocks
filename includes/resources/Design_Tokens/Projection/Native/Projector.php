@@ -44,7 +44,7 @@ final class Projector {
 	 * @since TBD
 	 *
 	 * @param Token_Registry $registry    The token registry, for the active gate.
-	 * @param Styles[]        $stylesheets The native-block companion stylesheets.
+	 * @param Styles[]       $stylesheets The native-block companion stylesheets.
 	 */
 	public function __construct( Token_Registry $registry, array $stylesheets ) {
 		$this->registry    = $registry;

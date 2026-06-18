@@ -245,7 +245,7 @@ return [
 		],
 		[
 			/**
-			 * core/button is a pure COLOR axis, exactly like the Kadence button, and reuses the SAME mechanism:
+			 * The core/button block is a pure COLOR axis, like the Kadence button, and reuses the SAME mechanism:
 			 * the variant retargets the Kadence theme's button slots (--global-palette-btn-*), and a small
 			 * stylesheet (Native\Styles\Button) makes the native button link consume those vars for Fill /
 			 * Outline / hover — the core/button analogue of the Kadence button's SCSS. The color variant
