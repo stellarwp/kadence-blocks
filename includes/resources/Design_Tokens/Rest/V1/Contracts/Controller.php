@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;
