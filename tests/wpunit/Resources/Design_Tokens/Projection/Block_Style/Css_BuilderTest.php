@@ -37,7 +37,7 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder->css();
 
 		// core/button's primary resolves to the brand button colors, surfaced as variant vars...
-		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-bg:#3182CE;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-bg:#3633e1;', $css );
 		$this->assertStringContainsString( '--kb-token--variant--core-button--primary--button-text:#ffffff;', $css );
 		// ...and the scoped rule re-targets the WordPress preset vars the block consumes at its $default.
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-primary{', $css );
@@ -54,9 +54,8 @@ final class Css_BuilderTest extends TestCase {
 	public function testItResolvesAliasedValuesAndScopesPerVariant(): void {
 		$css = $this->builder->css();
 
-		// ghost's button-bg aliases {primitive.color.transparent}, which flattens to transparent.
-		$this->assertStringContainsString( '--kb-token--variant--core-button--ghost--button-bg:transparent;', $css );
-		$this->assertStringContainsString( '.wp-block-button.is-style-kb-ghost{', $css );
+		// secondary's button-bg aliases {semantic.color.button-secondary-bg}, which flattens to neutral.900.
+		$this->assertStringContainsString( '--kb-token--variant--core-button--secondary--button-bg:#1A202C;', $css );
 		$this->assertStringContainsString( '.wp-block-button.is-style-kb-secondary{', $css );
 	}
 

@@ -28,8 +28,7 @@ final class RegistrarTest extends TestCase {
 
 		$this->assertArrayHasKey( 'kb-primary', $styles );
 		$this->assertArrayHasKey( 'kb-secondary', $styles );
-		$this->assertArrayHasKey( 'kb-ghost', $styles );
-		$this->assertSame( 'Ghost', $styles['kb-ghost']['label'] );
+		$this->assertSame( 'Secondary', $styles['kb-secondary']['label'] );
 	}
 
 	public function testItDoesNotRegisterStylesForKadenceBlocks(): void {

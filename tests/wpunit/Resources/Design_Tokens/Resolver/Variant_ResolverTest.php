@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
@@ -14,7 +15,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class Variant_ResolverTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 
@@ -24,23 +25,27 @@ final class Variant_ResolverTest extends TestCase {
 		$this->resolver = $this->container->get( Variant_Resolver::class );
 	}
 
-	public function testItResolvesGhostBindingsMixingLiteralsAndAliases(): void {
-		$values = $this->resolver->resolve( self::BUTTON, 'ghost' );
+	public function testItResolvesAliasBindingsForSecondary(): void {
+		$values = $this->resolver->resolve( self::BUTTON, 'secondary' );
 
-		// Literal passes through; aliases flatten through the token graph.
-		$this->assertSame( 'transparent', $values['button-bg'] );
-		$this->assertSame( '#3182CE', $values['button-text'] );   // {primitive.color.brand.primary}
-		$this->assertSame( '#3182CE', $values['button-border'] );
-		$this->assertSame( '0.5rem', $values['button-radius'] );  // {semantic.radius.control} -> radius.md
+		// Aliases flatten through the token graph. Secondary is the dark/charcoal identity.
+		$this->assertSame( '#1A202C', $values['button-bg'] );           // {semantic.color.button-secondary-bg} -> neutral.900
+		$this->assertSame( '#ffffff', $values['button-text'] );         // {semantic.color.button-secondary-text} -> neutral.0
+		$this->assertSame( '#2D3748', $values['button-bg-hover'] );     // {semantic.color.button-secondary-bg-hover} -> neutral.700
+		$this->assertSame( '#ffffff', $values['button-text-hover'] );   // {semantic.color.button-secondary-text-hover} -> neutral.0
+		$this->assertSame( '0.5rem', $values['button-radius'] );        // {semantic.radius.control} -> radius.md
 	}
 
 	public function testItFlattensMultiHopAliasesForThePrimaryVariant(): void {
 		$values = $this->resolver->resolve( self::BUTTON, 'primary' );
 
-		// button-bg -> {semantic.color.button-bg} -> {primitive.color.brand.primary} -> #3182CE
-		$this->assertSame( '#3182CE', $values['button-bg'] );
-		// button-text -> {semantic.color.button-text} -> {primitive.color.neutral.0} -> #ffffff
+		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.button} -> #3633e1
+		$this->assertSame( '#3633e1', $values['button-bg'] );
+		// button-text -> {semantic.color.button-primary-text} -> {primitive.color.neutral.0} -> #ffffff
 		$this->assertSame( '#ffffff', $values['button-text'] );
+		// Hover -> {semantic.color.button-primary-bg-hover} -> {primitive.color.brand.button-hover} -> #2f2ffc
+		$this->assertSame( '#2f2ffc', $values['button-bg-hover'] );
+		$this->assertSame( '#ffffff', $values['button-text-hover'] );
 	}
 
 	public function testResolveDefaultUsesTheDeclaredDefault(): void {
@@ -52,7 +57,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItListsTheDocumentsVariantNames(): void {
-		$this->assertSame( [ 'primary', 'secondary', 'ghost' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
 	}
 
 	public function testDefaultVariantReadsTheDollarDefault(): void {
@@ -60,21 +65,22 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testHasVariant(): void {
-		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'ghost' ) );
-		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'outline' ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'secondary' ) );
+		// "ghost" is not a V1 Button variant (the native Outline style covers it).
+		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'ghost' ) );
 		// Unknown block is false, not an error.
 		$this->assertFalse( $this->resolver->has_variant( 'kadence/nope', 'primary' ) );
 	}
 
 	public function testItReadsAVariantLabelFromTheDocument(): void {
-		$this->assertSame( 'Ghost', $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertSame( 'Secondary', $this->resolver->label( self::BUTTON, 'secondary' ) );
 		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary' ) );
 	}
 
 	public function testLabelIsNullForAnUnknownVariantOrBlock(): void {
 		// A non-throwing lookup, mirroring has_variant().
-		$this->assertNull( $this->resolver->label( self::BUTTON, 'outline' ) );
-		$this->assertNull( $this->resolver->label( 'kadence/nope', 'ghost' ) );
+		$this->assertNull( $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertNull( $this->resolver->label( 'kadence/nope', 'primary' ) );
 	}
 
 	public function testValuePropertiesAreTheUnionAcrossVariants(): void {
@@ -82,7 +88,7 @@ final class Variant_ResolverTest extends TestCase {
 
 		sort( $properties );
 		$this->assertSame(
-			[ 'button-bg', 'button-border', 'button-radius', 'button-text' ],
+			[ 'button-bg', 'button-bg-hover', 'button-radius', 'button-text', 'button-text-hover' ],
 			$properties
 		);
 	}
@@ -100,15 +106,17 @@ final class Variant_ResolverTest extends TestCase {
 		$this->assertSame( [], $report['unbound'], 'Valued properties with no binding.' );
 		$this->assertSame( [], $report['unvalued'], 'Bindings no variant ever sets.' );
 
-		// A token-ref binding must resolve to the referenced token's projections. An empty result would
-		// mean a typo'd token id silently produced no projection (effective_projections fails soft), so
-		// assert the reference actually lands.
+		/**
+		 * The Kadence button bindings retarget a global slot directly — the per-variant VALUE comes from
+		 * the variant token map, so the binding carries a kadence_slot projection rather than a token ref.
+		 * Assert the slot actually lands (an empty result would mean the binding silently projected nothing).
+		 */
 		$binding = $set->binding( 'button-bg' );
 		$this->assertNotNull( $binding, 'button-bg should be bound.' );
-		$this->assertTrue( $binding->is_token_ref(), 'button-bg should be a token reference.' );
-		$this->assertNotEmpty(
-			$registry->effective_projections( $binding ),
-			'The button-bg token reference should resolve to the token projections.'
+		$this->assertSame(
+			'palette-btn-bg',
+			$registry->effective_projections( $binding )[ Binding::get_kadence_slot_key() ] ?? null,
+			'The button-bg binding should retarget the palette-btn-bg slot.'
 		);
 	}
 

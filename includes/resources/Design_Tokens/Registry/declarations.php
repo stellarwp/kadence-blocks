@@ -44,18 +44,86 @@ $gap_tokens = array_map(
 	$gap_slugs
 );
 
+/**
+ * The brand + neutral primitives ARE the site's global color palette: each claims a Kadence palette slot
+ * (palette1..9), so --global-paletteN follows the primitive and the legacy kadence_blocks_colors palette
+ * stays in sync. Values mirror Kadence's default palette (brand at 1-2, a dark→light neutral ramp at 3-9,
+ * white at 9), so activation changes nothing until a primitive is overridden. Semantic colors deliberately
+ * do NOT claim a slot — they deliver at the block level — so writing a semantic never re-skins the palette.
+ */
+$palette_slots = [
+	'primitive.color.brand.primary'   => [ 'palette1', __( 'Brand Primary', 'kadence-blocks' ) ],
+	'primitive.color.brand.secondary' => [ 'palette2', __( 'Brand Secondary', 'kadence-blocks' ) ],
+	'primitive.color.neutral.900'     => [ 'palette3', __( 'Neutral 900', 'kadence-blocks' ) ],
+	'primitive.color.neutral.700'     => [ 'palette4', __( 'Neutral 700', 'kadence-blocks' ) ],
+	'primitive.color.neutral.600'     => [ 'palette5', __( 'Neutral 600', 'kadence-blocks' ) ],
+	'primitive.color.neutral.500'     => [ 'palette6', __( 'Neutral 500', 'kadence-blocks' ) ],
+	'primitive.color.neutral.100'     => [ 'palette7', __( 'Neutral 100', 'kadence-blocks' ) ],
+	'primitive.color.neutral.50'      => [ 'palette8', __( 'Neutral 50', 'kadence-blocks' ) ],
+	'primitive.color.neutral.0'       => [ 'palette9', __( 'Neutral 0', 'kadence-blocks' ) ],
+];
+
+$palette_tokens = [];
+foreach ( $palette_slots as $token_id => $slot_label ) {
+	$palette_tokens[] = [
+		'id'          => $token_id,
+		'type'        => 'color',
+		'label'       => $slot_label[1],
+		'group'       => __( 'Palette', 'kadence-blocks' ),
+		'projections' => [
+			'kadence_slot' => $slot_label[0],
+			'site_editor'  => true,
+		],
+	];
+}
+
+/**
+ * Per-variant button color semantics (primary/secondary, resting + hover). The Button variant maps
+ * reference these, and each is site_editor-surfaced so a site owner recolors one variant through the
+ * standard token path without touching the global palette. They carry no kadence_slot or wp_preset of
+ * their own: the Kadence button reads them via the variant's retarget bindings below, and the shared
+ * semantic.color.button-bg / button-text bucket (which keeps the wp_preset for core/button and aliases
+ * the primary pair) means overriding a primary semantic cascades to the native button too.
+ */
+$button_color_labels = [
+	'button-primary-bg'           => __( 'Button Primary Background', 'kadence-blocks' ),
+	'button-primary-text'         => __( 'Button Primary Text', 'kadence-blocks' ),
+	'button-primary-bg-hover'     => __( 'Button Primary Background (Hover)', 'kadence-blocks' ),
+	'button-primary-text-hover'   => __( 'Button Primary Text (Hover)', 'kadence-blocks' ),
+	'button-secondary-bg'         => __( 'Button Secondary Background', 'kadence-blocks' ),
+	'button-secondary-text'       => __( 'Button Secondary Text', 'kadence-blocks' ),
+	'button-secondary-bg-hover'   => __( 'Button Secondary Background (Hover)', 'kadence-blocks' ),
+	'button-secondary-text-hover' => __( 'Button Secondary Text (Hover)', 'kadence-blocks' ),
+];
+
+$button_color_tokens = [];
+foreach ( $button_color_labels as $suffix => $label ) {
+	$button_color_tokens[] = [
+		'id'          => 'semantic.color.' . $suffix,
+		'type'        => 'color',
+		'label'       => $label,
+		'group'       => __( 'Brand', 'kadence-blocks' ),
+		'projections' => [ 'site_editor' => true ],
+	];
+}
+
 return [
 	'tokens'       => array_merge(
 		[
 			[
+				/**
+				 * Semantic colors are a block-level intent, not a global-palette slot: they project to a
+				 * theme.json color preset (--wp--preset--color--button-bg, consumed by the button render path
+				 * and the variant system) but deliberately claim NO kadence_slot, so writing button-bg never
+				 * re-skins --global-paletteN. Mapping the brand primitives onto the global palette is separate.
+				 */
 				'id'          => 'semantic.color.button-bg',
 				'type'        => 'color',
 				'label'       => __( 'Button Background', 'kadence-blocks' ),
 				'group'       => __( 'Brand', 'kadence-blocks' ),
 				'projections' => [
-					'wp_preset'    => 'color',     // → theme.json preset + --wp--preset--color--button-bg.
-					'kadence_slot' => 'palette1',  // → --global-palette1 + kadence_blocks_colors slug.
-					'site_editor'  => true,
+					'wp_preset'   => 'color', // → theme.json preset + --wp--preset--color--button-bg.
+					'site_editor' => true,
 				],
 			],
 			[
@@ -64,9 +132,8 @@ return [
 				'label'       => __( 'Button Text', 'kadence-blocks' ),
 				'group'       => __( 'Brand', 'kadence-blocks' ),
 				'projections' => [
-					'wp_preset'    => 'color',
-					'kadence_slot' => 'palette2',
-					'site_editor'  => true,
+					'wp_preset'   => 'color',
+					'site_editor' => true,
 				],
 			],
 			[
@@ -75,6 +142,30 @@ return [
 				'id'    => 'semantic.radius.media',
 				'type'  => 'dimension',
 				'label' => __( 'Media Radius', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				/**
+				 * Control radius (buttons, inputs). Registered so Css_Var emits
+				 * --kb-token--semantic--radius--control; the button's own default border-radius rule references
+				 * that variable directly (the button is never empty, so the low-specificity block-default CSS
+				 * mechanism can't reach it). Resolves to the radius scale's "md" step, the design system's
+				 * control radius. A user's explicit radius still wins by specificity.
+				 */
+				'id'    => 'semantic.radius.control',
+				'type'  => 'dimension',
+				'label' => __( 'Control Radius', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				/**
+				 * Default icon size. Registered so Css_Var emits --kb-token--semantic--icon-size--default; the
+				 * button's --kb-button-icon-size default references it, so a button icon follows the token while
+				 * an explicit per-button icon size still wins.
+				 */
+				'id'    => 'semantic.icon-size.default',
+				'type'  => 'dimension',
+				'label' => __( 'Icon Size', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
@@ -116,22 +207,39 @@ return [
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 		],
+		$button_color_tokens,
+		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens
 	),
-	// Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
-	// token reference where the property is already a registered token, an inline target otherwise).
-	// The variant NAMES, the default ($default) and the values all live in the baseline document under
-	// $extensions…variants.<block>; this declares only the structural wiring. Inline slot values here
-	// (e.g. palette3) are placeholders until the per-block wiring tickets vet them against the block.
+	/**
+	 * Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
+	 * token reference where the property is already a registered token, an inline target otherwise).
+	 * The variant NAMES, the default ($default) and the values all live in the baseline document under
+	 * $extensions…variants.<block>; this declares only the structural wiring.
+	 */
 	'variant_sets' => [
 		[
-			'block'    => 'kadence/advancedbtn',
+			/**
+			 * The variant lives on the child Single Button (each button in a group is skinned individually),
+			 * not the advancedbtn container. Variants are a pure COLOR axis: they retarget the Kadence theme's
+			 * button-specific palette vars (the exact custom properties the button's render path already
+			 * consumes), so a variant composes with the block's existing "Button Inherit Styles" shape (Fill /
+			 * Outline / Theme Base) instead of fighting it — Fill reads --global-palette-btn-bg / -btn for its
+			 * background + text, Outline reads --global-palette-btn-bg for border + text, and both read the
+			 * matching -hover slots on :hover/:focus, so one color variant skins every shape and state. Each
+			 * binding names only the slot it retargets; the per-variant VALUE comes from the variant's token
+			 * map (which references the per-variant button-color semantics), so primary and secondary are
+			 * symmetric and each is overridable on its own semantic. Picking a variant re-skins a button with
+			 * zero changes to its render path; a fresh button follows the $default.
+			 */
+			'block'    => 'kadence/singlebtn',
 			'bindings' => [
-				'button-bg'     => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's projections.
-				'button-text'   => [ 'token' => 'semantic.color.button-text' ],
-				'button-border' => [ 'kadence_slot' => 'palette3' ],            // not a token yet → inline target.
-				'button-radius' => [ 'css_var' => true ],                       // token-var only (no preset bucket).
+				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
+				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
+				'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
+				'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
+				'button-radius'     => [ 'css_var' => true ], // token-var only (no preset bucket).
 			],
 		],
 		[

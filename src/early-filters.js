@@ -5,8 +5,10 @@
 import { addFilter } from '@wordpress/hooks';
 import { hasBlockSupport, getBlockSupport, createBlock } from '@wordpress/blocks';
 import { assign, get } from 'lodash';
-import { Button, Modal } from '@wordpress/components';
+import { Button, Modal, PanelBody } from '@wordpress/components';
+import { InspectorControls } from '@wordpress/block-editor';
 import { blockExists } from '@kadence/helpers';
+import { KadenceRadioButtons } from '@kadence/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
@@ -165,6 +167,67 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 	};
 }, 'withBlockVariantClass');
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
+
+/**
+ * The design-token variant catalog the editor localizer prints — block name -> { default, variants } —
+ * or an empty object when the token registry is inactive (no variants offered).
+ *
+ * @return {Object} The catalog keyed by block name.
+ */
+function variantCatalog() {
+	return get(window, 'kadenceDesignTokensVariants', {}) || {};
+}
+
+/**
+ * Add a "Design Variant" picker to the inspector of any block that opts into kbVariant support and has
+ * variants defined in the design-token document. Selecting an option writes the kbVariant attribute,
+ * which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped CSS hooks.
+ * An empty value selects the block's $default preset look.
+ *
+ * @since TBD
+ */
+const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
+	return (props) => {
+		const { name, attributes, setAttributes, isSelected } = props;
+
+		if (!hasBlockSupport(name, 'kbVariant')) {
+			return <BlockEdit {...props} />;
+		}
+
+		const variants = get(variantCatalog(), [name, 'variants'], []);
+
+		if (!variants.length) {
+			return <BlockEdit {...props} />;
+		}
+
+		const options = [
+			{ label: __('Default', 'kadence-blocks'), value: '' },
+			...variants.map((variant) => ({ label: variant.label, value: variant.slug })),
+		];
+
+		return (
+			<>
+				<BlockEdit {...props} />
+				{isSelected && (
+					<InspectorControls>
+						<PanelBody title={__('Design Variant', 'kadence-blocks')} initialOpen={false}>
+							<KadenceRadioButtons
+								label={__('Variant', 'kadence-blocks')}
+								className={'kb-variant-picker'}
+								value={get(attributes, 'kbVariant', '')}
+								options={options}
+								hideLabel={false}
+								wrap={true}
+								onChange={(value) => setAttributes({ kbVariant: value })}
+							/>
+						</PanelBody>
+					</InspectorControls>
+				)}
+			</>
+		);
+	};
+}, 'withVariantPicker');
+addFilter('editor.BlockEdit', 'kadence/kb-variant-picker', withVariantPicker);
 
 const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
