@@ -3,7 +3,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Style\Style;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -14,13 +13,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable Kadence block variants.
+ * Builds the scoped CSS for selectable block variants — Kadence blocks and core/button alike.
  *
- * A Kadence block has no native style-variation system, so a selected variant reaches output purely
- * through the cascade: the editor adds a "kb-variant--<name>" class to the block, and this builder emits,
- * per (block, variant), a rule that retargets the --global-* custom properties (a numbered palette slot
- * or a named button slot) the block's render_color() already consumes. Picking the variant therefore
- * re-skins the block with zero changes to its render path.
+ * A selected variant reaches output purely through the cascade: the editor adds a "kb-variant--<name>"
+ * class to the block, and this builder emits, per (block, variant), a rule that retargets the --global-*
+ * custom properties (a numbered palette slot or a named button slot) the block consumes. Kadence blocks
+ * consume these in their render path / SCSS; core/button consumes the same button slots through a small
+ * companion stylesheet (Native\Styles\Button), so one retarget path re-skins both with zero changes to a
+ * block's markup. The selector is block-aware: core/button resolves to ".wp-block-button".
  *
  * Three declaration blocks are emitted:
  *
@@ -133,10 +133,6 @@ final class Css_Builder {
 		$scoped  = '';
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
-			if ( Style::is_native( $block ) ) {
-				continue; // Native blocks reach their variants through the Block_Style (register_block_style) path.
-			}
-
 			$set = $this->registry->for_block( $block );
 
 			if ( $set === null ) {
@@ -151,7 +147,7 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = '.wp-block-' . self::sanitize_identifier( str_replace( '/', '-', $block ) );
+			$selector = $this->block_selector( $block );
 
 			// Keep each variant's slot declarations so the $default's can be re-emitted, class-less, below.
 			$variant_declarations = [];
@@ -187,7 +183,7 @@ final class Css_Builder {
 
 				if ( $declarations !== '' ) {
 					$variant_declarations[ $variant ] = $declarations;
-					$scoped                          .= $selector . '.kb-variant--' . self::sanitize_identifier( $variant ) . '{' . $declarations . '}';
+					$scoped                          .= $selector . '.' . Style::variant_class( $variant ) . '{' . $declarations . '}';
 				}
 			}
 
@@ -272,6 +268,29 @@ final class Css_Builder {
 		}
 
 		return null;
+	}
+
+	/**
+	 * The block's CSS class selector: a Kadence (or any namespaced) block => ".wp-block-<namespace>-<name>";
+	 * a core block => ".wp-block-<name>" (WordPress drops the "core/" namespace), so core/button resolves to
+	 * ".wp-block-button" rather than ".wp-block-core-button".
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 *
+	 * @return string
+	 */
+	private function block_selector( string $block ): string {
+		$parts     = explode( '/', $block, 2 );
+		$namespace = $parts[0];
+		$name      = $parts[1] ?? $namespace;
+
+		if ( $namespace === 'core' ) {
+			return '.wp-block-' . self::sanitize_identifier( $name );
+		}
+
+		return '.wp-block-' . self::sanitize_identifier( $namespace ) . '-' . self::sanitize_identifier( $name );
 	}
 
 	/**

@@ -81,6 +81,23 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * core/button reuses the same --global-palette-btn-* retarget as the Kadence button; its selector
+	 * strips the "core/" namespace to ".wp-block-button" (not ".wp-block-core-button").
+	 *
+	 * @return void
+	 */
+	public function testItRetargetsButtonSlotsForANativeBlock(): void {
+		$css = $this->builder( $this->registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-button.kb-variant--secondary{'
+				. '--global-palette-btn-bg:var(--kb-token--variant--core-button--secondary--button-bg);',
+			$css
+		);
+		$this->assertStringNotContainsString( '.wp-block-core-button', $css );
+	}
+
+	/**
 	 * The $default (primary) is re-emitted on the class-less block selector, so a button with no variant
 	 * selected still shows its preset look.
 	 *
