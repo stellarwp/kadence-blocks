@@ -376,13 +376,7 @@ export default function KadenceButtonEdit(props) {
 		{ value: 'full', label: __('Full', 'kadence-blocks') },
 	];
 	const defineWidthType = (type) => {
-		if ('full' === type) {
-			//updateParentBlock( 'forceFullwidth', true );
-			setAttributes({ widthType: type });
-		} else {
-			//updateParentBlock( 'forceFullwidth', false );
-			setAttributes({ widthType: type });
-		}
+		setAttributes({ widthType: type });
 	};
 	const buttonStyleOptions = supportsSecondaryButton
 		? [
