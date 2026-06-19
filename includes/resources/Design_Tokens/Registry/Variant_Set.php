@@ -44,7 +44,8 @@ final class Variant_Set {
 
 	/**
 	 * The editor picker's control label for this block's variant axis (e.g. "Style"), or null to fall back
-	 * to the editor's default label. Names the CONTROL, not a variant.
+	 * to the editor's default label. Names the CONTROL, not a variant. For a multi-axis (grouped) block,
+	 * this is the fallback when a group declares no label of its own; see {@see self::$group_labels}.
 	 *
 	 * @since TBD
 	 *
@@ -53,16 +54,29 @@ final class Variant_Set {
 	public ?string $label;
 
 	/**
+	 * Per-group editor picker control labels, keyed by group slug, for a multi-axis (grouped) block (e.g.
+	 * "color" => "Color", "emphasis" => "Emphasis"). Empty for a flat block, which uses {@see self::$label}
+	 * for its single axis. Names the CONTROL for each axis, not a variant.
+	 *
 	 * @since TBD
 	 *
-	 * @param string                 $block    The block name.
-	 * @param array<string, Binding> $bindings Per-property bindings.
-	 * @param string|null            $label    The picker control label, or null for the editor default.
+	 * @var array<string, string>
 	 */
-	private function __construct( string $block, array $bindings, ?string $label ) {
-		$this->block    = $block;
-		$this->bindings = $bindings;
-		$this->label    = $label;
+	public array $group_labels;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param string                 $block        The block name.
+	 * @param array<string, Binding> $bindings     Per-property bindings.
+	 * @param string|null            $label        The picker control label, or null for the editor default.
+	 * @param array<string, string>  $group_labels Per-group control labels, keyed by group slug.
+	 */
+	private function __construct( string $block, array $bindings, ?string $label, array $group_labels ) {
+		$this->block        = $block;
+		$this->bindings     = $bindings;
+		$this->label        = $label;
+		$this->group_labels = $group_labels;
 	}
 
 	/**
@@ -71,11 +85,12 @@ final class Variant_Set {
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
-	 *                                  {@see Binding::from_array()}) and optional "label" (the picker
-	 *                                  control label). Variant names, default and values are document data,
-	 *                                  not declared here.
+	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
+	 *                                  label), and optional "groups" (group slug => { "label" } for a
+	 *                                  multi-axis block). Variant names, default and values are document
+	 *                                  data, not declared here.
 	 *
-	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
+	 * @throws InvalidArgumentException When "block" is missing or a binding/group is malformed.
 	 *
 	 * @return self
 	 */
@@ -89,8 +104,24 @@ final class Variant_Set {
 		return new self(
 			$set['block'],
 			self::bindings( $set['block'], $set['bindings'] ?? [] ),
-			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null
+			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null,
+			self::group_labels( $set['block'], $set['groups'] ?? [] )
 		);
+	}
+
+	/**
+	 * The editor picker control label for one of the block's variant groups (axes): the group's own
+	 * declared label, falling back to {@see self::$label} (the single-axis label) when the group declares
+	 * none — including for a flat block's implicit single group. Null when neither is declared.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group The variant group slug (the implicit-group sentinel for a flat block).
+	 *
+	 * @return string|null
+	 */
+	public function group_label( string $group ): ?string {
+		return $this->group_labels[ $group ] ?? $this->label;
 	}
 
 	/**
@@ -185,5 +216,44 @@ final class Variant_Set {
 		}
 
 		return $bindings;
+	}
+
+	/**
+	 * Build the group slug => control label map from a declaration's "groups". Each entry is a group slug
+	 * mapping to a config array; only a non-empty string "label" is read (a group may declare other config
+	 * later). A group with no usable label is simply omitted, so {@see self::group_label()} falls back to
+	 * the single-axis label.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block    The block name, for error messages.
+	 * @param mixed  $declared The declared "groups" value.
+	 *
+	 * @throws InvalidArgumentException When "groups" is not a map of group => config.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function group_labels( string $block, $declared ): array {
+		if ( ! is_array( $declared ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Variant-set "%s" declaration "groups" must be a map of group => config.', $block )
+			);
+		}
+
+		$labels = [];
+
+		foreach ( $declared as $group => $config ) {
+			if ( ! is_string( $group ) || $group === '' || ! is_array( $config ) ) {
+				throw new InvalidArgumentException(
+					sprintf( 'Variant-set "%s" has a malformed group; each must be "group" => config array.', $block )
+				);
+			}
+
+			if ( isset( $config['label'] ) && is_string( $config['label'] ) && $config['label'] !== '' ) {
+				$labels[ $group ] = $config['label'];
+			}
+		}
+
+		return $labels;
 	}
 }

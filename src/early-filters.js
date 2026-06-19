@@ -12,7 +12,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { VariantPicker, blockVariants } from './extension/variant-picker';
+import { VariantPicker, blockGroups } from './extension/variant-picker';
 
 /**
  * Add animation attributes
@@ -96,17 +96,20 @@ export function enableNativeBlockVariants(settings, name) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enableNativeBlockVariants);
 
 /**
- * Add the kbVariant attribute to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariant / kbVariants attributes to any block that opts in via the `kbVariant` block support.
  *
- * The attribute holds the slug of the selected design-token variant (e.g. "ghost"); empty means the
- * block keeps its $default look (the block preset). The scoped CSS that re-skins the block for a
- * selected variant is emitted server-side by the Design Tokens variant projector.
+ * `kbVariant` holds the slug of the selected variant for a flat (single-axis) block (e.g. "ghost").
+ * `kbVariants` is the per-group map for a multi-axis block (e.g. { color: "secondary", emphasis: "outline" }):
+ * one selection per group, composing into one class per group. A block uses one or the other depending on
+ * whether its catalog entry is grouped; empty in either case keeps the block's $default look (the block
+ * preset). The scoped CSS that re-skins the block for a selected variant is emitted server-side by the
+ * Design Tokens variant projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant attribute added.
+ * @return {Object} The block settings with the kbVariant / kbVariants attributes added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
@@ -114,6 +117,10 @@ export function blockVariantAttribute(settings) {
 			kbVariant: {
 				type: 'string',
 				default: '',
+			},
+			kbVariants: {
+				type: 'object',
+				default: {},
 			},
 		});
 	}
@@ -123,7 +130,22 @@ export function blockVariantAttribute(settings) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVariantAttribute);
 
 /**
- * The class a selected variant outputs, or an empty string when none is selected.
+ * Sanitize one slug segment to the projector's PHP `Sanitizes_Css_Identifier` charset, so a class always
+ * matches the scoped selector the projector emits even if a slug carries an unexpected character.
+ *
+ * @param {string} segment The raw slug segment.
+ *
+ * @since TBD
+ *
+ * @return {string} The sanitized segment.
+ */
+function sanitizeVariantSegment(segment) {
+	return (segment || '').replace(/[^A-Za-z0-9_-]+/g, '-');
+}
+
+/**
+ * The class a flat block's selected variant outputs, or an empty string when none is selected. Mirrors the
+ * projector's PHP `Style::variant_class()`.
  *
  * @param {string} kbVariant The selected variant slug.
  *
@@ -132,16 +154,60 @@ addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVaria
  * @return {string} The `kb-variant--<slug>` class, or an empty string.
  */
 function kbVariantClassName(kbVariant) {
-	// Mirror the projector's PHP Css_Builder::sanitize_identifier() sanitizer, so the output class always
-	// matches the scoped selector the projector emits even if a slug carries an unexpected character.
-	const slug = (kbVariant || '').replace(/[^A-Za-z0-9_-]+/g, '-');
+	const slug = sanitizeVariantSegment(kbVariant);
 
 	return slug ? `kb-variant--${slug}` : '';
 }
 
 /**
- * Append the kb-variant--<name> class to a block's saved markup, so the projector's scoped overrides
- * apply on the front end. A no-op for blocks that do not opt in or have no variant selected.
+ * The classes a grouped block's per-group selections output: one `kb-variant--<group>--<slug>` per group
+ * with a non-empty selection. Mirrors the projector's PHP `Style::group_variant_class()`; each segment is
+ * sanitized independently so the group and variant slugs cannot merge across the "--" delimiter.
+ *
+ * @param {Object} kbVariants The kbVariants map (group slug => selected variant slug).
+ *
+ * @since TBD
+ *
+ * @return {string} The space-joined classes, or an empty string.
+ */
+function kbVariantsClassNames(kbVariants) {
+	if (!kbVariants || typeof kbVariants !== 'object') {
+		return '';
+	}
+
+	return Object.keys(kbVariants)
+		.map((group) => {
+			const groupSlug = sanitizeVariantSegment(group);
+			const variantSlug = sanitizeVariantSegment(kbVariants[group]);
+
+			return groupSlug && variantSlug ? `kb-variant--${groupSlug}--${variantSlug}` : '';
+		})
+		.filter(Boolean)
+		.join(' ');
+}
+
+/**
+ * The full set of variant classes for a block's attributes: the flat `kbVariant` class and every grouped
+ * `kbVariants` class. A block uses one attribute or the other, so the empty one contributes nothing.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {string} The space-joined variant classes, or an empty string.
+ */
+function variantClassNames(attributes) {
+	return [
+		kbVariantClassName(get(attributes, 'kbVariant', '')),
+		kbVariantsClassNames(get(attributes, 'kbVariants', {})),
+	]
+		.filter(Boolean)
+		.join(' ');
+}
+
+/**
+ * Append the kb-variant-- classes to a block's saved markup, so the projector's scoped overrides apply on
+ * the front end. A no-op for blocks that do not opt in or have no variant selected.
  *
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
@@ -149,14 +215,14 @@ function kbVariantClassName(kbVariant) {
  *
  * @since TBD
  *
- * @return {Object} The props, with the variant class appended when one is selected.
+ * @return {Object} The props, with the variant classes appended when a variant is selected.
  */
 export function blockVariantSaveClass(props, blockType, attributes) {
 	if (!hasBlockSupport(blockType, 'kbVariant')) {
 		return props;
 	}
 
-	const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+	const variantClass = variantClassNames(attributes);
 
 	if (variantClass) {
 		props.className = props.className ? `${props.className} ${variantClass}` : variantClass;
@@ -167,8 +233,8 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
 
 /**
- * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
- * live with the same scoped overrides the front end uses.
+ * Mirror the kb-variant-- classes onto the block in the editor canvas, so a selected variant previews live
+ * with the same scoped overrides the front end uses.
  *
  * @since TBD
  */
@@ -180,7 +246,7 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 			return <BlockListBlock {...props} />;
 		}
 
-		const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+		const variantClass = variantClassNames(attributes);
 
 		if (!variantClass) {
 			return <BlockListBlock {...props} />;
@@ -195,9 +261,10 @@ addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantC
 
 /**
  * Add a "Design Variant" picker to the inspector of any block that opts into kbVariant support and has
- * variants defined in the design-token document. Selecting an option writes the kbVariant attribute,
- * which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped CSS hooks.
- * An empty value selects the block's $default preset look.
+ * variants defined in the design-token document. A flat block renders one single-select control writing the
+ * kbVariant attribute; a grouped (multi-axis) block renders one control per group, each writing its slot in
+ * the kbVariants map. The save/preview filters turn either into the kb-variant-- classes the projector's
+ * scoped CSS hooks; an empty value selects that axis's $default preset look.
  *
  * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
  * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
@@ -218,7 +285,7 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		if (!blockVariants(name).length) {
+		if (!blockGroups(name).length) {
 			return <BlockEdit {...props} />;
 		}
 
@@ -228,11 +295,7 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Variant', 'kadence-blocks')} initialOpen={false}>
-							<VariantPicker
-								name={name}
-								value={get(attributes, 'kbVariant', '')}
-								onChange={(value) => setAttributes({ kbVariant: value })}
-							/>
+							<VariantPicker name={name} attributes={attributes} setAttributes={setAttributes} />
 						</PanelBody>
 					</InspectorControls>
 				)}

@@ -28,7 +28,8 @@ final class Variant_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The shipped Button reports its default and its named variants as { slug, label } for the picker.
+	 * The shipped Button is flat: it reports a single implicit group whose default and named variants
+	 * ({ slug, label }) the picker offers, labeled by the variant set's control label.
 	 *
 	 * @return void
 	 */
@@ -40,11 +41,18 @@ final class Variant_CatalogTest extends TestCase {
 
 		$this->assertArrayHasKey( self::BUTTON, $catalog );
 
-		$button = $catalog[ self::BUTTON ];
+		$groups = $catalog[ self::BUTTON ]['groups'];
 
-		$this->assertSame( 'primary', $button['default'] );
+		$this->assertCount( 1, $groups, 'A flat block surfaces a single implicit group.' );
+
+		$group = $groups[0];
+
+		$this->assertTrue( $group['implicit'] );
+		// The implicit group carries no slug; the editor keys off "implicit" to write the kbVariant string.
+		$this->assertSame( '', $group['group'] );
+		$this->assertSame( 'primary', $group['default'] );
 		// The picker's control label, declared on the variant set in declarations.php.
-		$this->assertSame( 'Style', $button['label'] );
+		$this->assertSame( 'Style', $group['label'] );
 		$this->assertSame(
 			[
 				[
@@ -56,7 +64,7 @@ final class Variant_CatalogTest extends TestCase {
 					'label' => 'Secondary',
 				],
 			],
-			$button['variants']
+			$group['variants']
 		);
 	}
 

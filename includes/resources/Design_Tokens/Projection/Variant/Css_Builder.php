@@ -22,20 +22,26 @@ use RuntimeException;
  * companion stylesheet (Native\Styles\Button), so one retarget path re-skins both with zero changes to a
  * block's markup. The selector is block-aware: core/button resolves to ".wp-block-button".
  *
- * Three declaration blocks are emitted:
+ * A block's variants may be organized into named GROUPS (independent single-select axes). The build
+ * iterates each block's groups and emits, per (block, group, variant), the same three declaration blocks
+ * below. A grouped selection carries the group in both the class and the var name; a flat block's single
+ * implicit group omits the group segment, so its output is identical to an ungrouped block.
  *
- *   1. A global --kb-token--variant--<block>--<variant>--<property> definition for every bound value, so
- *      a variant's values surface as named token vars in the same graph as every other token.
- *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
- *      --global-<slot> at its variant var. The var is always co-emitted in (1) in the same stylesheet,
- *      so the reference resolves without a literal fallback.
- *   3. A class-less ".wp-block-<block>" rule pointing each --global-<slot> at the $default variant's var,
- *      so a block with no variant selected still shows its preset (the $default look) — the Kadence
- *      analogue of the block preset, for color slots that have no attribute to seed.
+ * Three declaration blocks are emitted (the "<group>--" segment is present only for an explicit group):
  *
- * Scoping is per (block, variant): the same variant name on two blocks ("ghost" on a Button and a Row)
- * gets its own block-qualified rule, so values never collide. Both named variants and the "$default"
- * preset carry ordinary class/element specificity, so a per-instance edit still wins.
+ *   1. A global --kb-token--variant--<block>--<group>--<variant>--<property> definition for every bound
+ *      value, so a variant's values surface as named token vars in the same graph as every other token.
+ *   2. Per (block, group, variant) scoped rules — ".wp-block-<block>.kb-variant--<group>--<variant>" —
+ *      pointing each --global-<slot> at its variant var. The var is always co-emitted in (1) in the same
+ *      stylesheet, so the reference resolves without a literal fallback.
+ *   3. A class-less ".wp-block-<block>" rule per group, pointing each --global-<slot> at that group's
+ *      $default variant's var, so a block with no variant selected still shows each group's preset (the
+ *      $default look) — the Kadence analogue of the block preset, for color slots with no attribute to seed.
+ *
+ * Scoping is per (block, group, variant): the same variant name on two blocks ("ghost" on a Button and a
+ * Row), or on two groups, gets its own qualified rule, so values never collide. When two groups retarget
+ * the same --global-<slot>, their selected-variant rules carry equal specificity, so source order decides:
+ * groups are emitted in document order, so the later group wins for a shared slot.
  *
  * Nothing here is !important and the scope carries ordinary class specificity, so a per-instance inline
  * style still wins over a variant. Values are sanitized defensively before they reach a declaration.
@@ -118,9 +124,9 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the full variant CSS for a token set: the global variant-var block, the per (block, variant)
-	 * scoped rules, and a class-less $default rule per block. Empty when no registered block contributes a
-	 * slot-targeted value.
+	 * Build the full variant CSS for a token set: the global variant-var block, the per (block, group,
+	 * variant) scoped rules, and a class-less $default rule per group. Empty when no registered block
+	 * contributes a slot-targeted value.
 	 *
 	 * @since TBD
 	 *
@@ -142,71 +148,99 @@ final class Css_Builder {
 			try {
 				// A block may carry registered bindings before the document defines its variants; that is not
 				// an error, it simply contributes nothing yet, so skip it rather than fail the whole build.
-				$names = $this->variants->names( $block );
+				$groups = $this->variants->groups( $block );
 			} catch ( RuntimeException $e ) {
 				continue;
 			}
 
 			$selector = $this->block_selector( $block );
 
-			// Keep each variant's slot declarations so the $default's can be re-emitted, class-less, below.
-			$variant_declarations = [];
-
-			foreach ( $names as $variant ) {
+			// Groups are emitted in document order: when two groups share a --global-<slot>, equal specificity
+			// means the later group's rule wins by source order.
+			foreach ( $groups as $group ) {
 				try {
-					$values = $this->variants->resolve( $block, $variant, $slug );
+					$names = $this->variants->names( $block, $group );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
 
-				$declarations = '';
+				// Keep each variant's slot declarations so the group's $default can be re-emitted, class-less, below.
+				$variant_declarations = [];
 
-				foreach ( $values as $property => $value ) {
-					$binding = $set->binding( $property );
-
-					if ( $binding === null ) {
+				foreach ( $names as $variant ) {
+					try {
+						$values = $this->variants->resolve( $block, $variant, $slug, $group );
+					} catch ( RuntimeException $e ) {
 						continue;
 					}
 
-					$slot = $this->global_slot( $binding );
+					$declarations = '';
 
-					if ( $slot === null ) {
-						continue;
+					foreach ( $values as $property => $value ) {
+						$binding = $set->binding( $property );
+
+						if ( $binding === null ) {
+							continue;
+						}
+
+						$slot = $this->global_slot( $binding );
+
+						if ( $slot === null ) {
+							continue;
+						}
+
+						$var     = $this->variant_var( $block, $group, $variant, $property );
+						$literal = $this->sanitize_value( $value );
+
+						$globals      .= $var . ':' . $literal . ';';
+						$declarations .= '--global-' . $slot . ':var(' . $var . ');';
 					}
 
-					$var     = $this->variant_var( $block, $variant, $property );
-					$literal = $this->sanitize_value( $value );
-
-					$globals      .= $var . ':' . $literal . ';';
-					$declarations .= '--global-' . $slot . ':var(' . $var . ');';
+					if ( $declarations !== '' ) {
+						$variant_declarations[ $variant ] = $declarations;
+						$scoped                          .= $selector . '.' . $this->variant_class( $group, $variant ) . '{' . $declarations . '}';
+					}
 				}
 
-				if ( $declarations !== '' ) {
-					$variant_declarations[ $variant ] = $declarations;
-					$scoped                          .= $selector . '.' . Style::variant_class( $variant ) . '{' . $declarations . '}';
+				/**
+				 * The group's $default look: a block with no variant selected for this group still shows its
+				 * preset. Point the same slots at the group's $default variant's var on the class-less block
+				 * selector. Its lower specificity yields to the kb-variant-- rules above (a selected variant)
+				 * and to a per-instance edit, so it only fills the gap.
+				 */
+				try {
+					$default = $this->variants->default_variant( $block, $group );
+				} catch ( RuntimeException $e ) {
+					$default = '';
 				}
-			}
 
-			/**
-			 * The $default look: a block with no variant selected still shows its preset. Point the same slots
-			 * at the $default variant's var on the class-less block selector. Its lower specificity yields to
-			 * the kb-variant-- rules above (a selected variant) and to a per-instance edit, so it only fills
-			 * the gap.
-			 */
-			try {
-				$default = $this->variants->default_variant( $block );
-			} catch ( RuntimeException $e ) {
-				$default = '';
-			}
-
-			if ( $default !== '' && isset( $variant_declarations[ $default ] ) ) {
-				$scoped .= $selector . '{' . $variant_declarations[ $default ] . '}';
+				if ( $default !== '' && isset( $variant_declarations[ $default ] ) ) {
+					$scoped .= $selector . '{' . $variant_declarations[ $default ] . '}';
+				}
 			}
 		}
 
 		$css = $globals === '' ? '' : Scope::root() . '{' . $globals . '}';
 
 		return $css . $scoped;
+	}
+
+	/**
+	 * The variant class for a (group, variant): the flat "kb-variant--<variant>" for a block's implicit
+	 * single group, or the grouped "kb-variant--<group>--<variant>" for an explicit group. Delegates to
+	 * {@see Style} so the class shape matches the editor's and never drifts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group   The variant group (the implicit-group sentinel for a flat block).
+	 * @param string $variant The variant slug.
+	 *
+	 * @return string
+	 */
+	private function variant_class( string $group, string $variant ): string {
+		return $group === Variant_Resolver::IMPLICIT_GROUP
+			? Style::variant_class( $variant )
+			: Style::group_variant_class( $group, $variant );
 	}
 
 	/**
@@ -294,20 +328,29 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The variant var name for a (block, variant, property): "--kb-token--variant--<block>--<variant>--
-	 * <property>", e.g. --kb-token--variant--kadence-advancedbtn--ghost--button-bg.
+	 * The variant var name for a (block, group, variant, property): "--kb-token--variant--<block>--
+	 * <group>--<variant>--<property>", e.g. --kb-token--variant--kadence-advancedbtn--emphasis--ghost--
+	 * button-bg. A block's implicit single group omits the "<group>--" segment, so a flat block keeps the
+	 * "--kb-token--variant--<block>--<variant>--<property>" shape unchanged.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block    The block name.
+	 * @param string $group    The variant group (the implicit-group sentinel for a flat block).
 	 * @param string $variant  The variant slug.
 	 * @param string $property The block property.
 	 *
 	 * @return string
 	 */
-	private function variant_var( string $block, string $variant, string $property ): string {
-		return Css_Var::get_prefix() . self::VARIANT_SEGMENT
-			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
+	private function variant_var( string $block, string $group, string $variant, string $property ): string {
+		$var = Css_Var::get_prefix() . self::VARIANT_SEGMENT
+			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--';
+
+		if ( $group !== Variant_Resolver::IMPLICIT_GROUP ) {
+			$var .= self::sanitize_identifier( $group ) . '--';
+		}
+
+		return $var
 			. self::sanitize_identifier( $variant ) . '--'
 			. self::sanitize_identifier( $property );
 	}

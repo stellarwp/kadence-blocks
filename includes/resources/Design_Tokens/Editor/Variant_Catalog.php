@@ -48,46 +48,71 @@ final class Variant_Catalog {
 	}
 
 	/**
-	 * The catalog, keyed by block name.
+	 * The catalog, keyed by block name, each carrying its variant groups (axes). A flat block surfaces a
+	 * single group flagged "implicit": the editor renders one picker writing the `kbVariant` string. A
+	 * grouped block surfaces one entry per axis: the editor renders one picker per group, each writing its
+	 * slot in the `kbVariants` map.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, array{default: string, variants: array<int, array{slug: string, label: string}>}>
+	 * @return array<string, array{groups: array<int, array{group: string, implicit: bool, default: string, variants: array<int, array{slug: string, label: string}>, label?: string}>}>
 	 */
 	public function all(): array {
 		$out = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
 			try {
-				$names   = $this->variants->names( $block );
-				$default = $this->variants->default_variant( $block );
+				$groups = $this->variants->groups( $block );
 			} catch ( Unknown_Variant_Exception $e ) {
 				continue; // Block registered but not defined in the document — skip, fail soft.
 			}
 
-			$variants = [];
+			$set            = $this->registry->for_block( $block );
+			$group_entries = [];
 
-			foreach ( $names as $name ) {
-				$variants[] = [
-					'slug'  => $name,
-					'label' => $this->variants->label( $block, $name ) ?? $name,
+			foreach ( $groups as $group ) {
+				try {
+					$names   = $this->variants->names( $block, $group );
+					$default = $this->variants->default_variant( $block, $group );
+				} catch ( Unknown_Variant_Exception $e ) {
+					continue; // One malformed group never empties the rest of the block's axes.
+				}
+
+				$implicit = $group === Variant_Resolver::IMPLICIT_GROUP;
+				$variants = [];
+
+				foreach ( $names as $name ) {
+					$variants[] = [
+						'slug'  => $name,
+						'label' => $this->variants->label( $block, $name, $group ) ?? $name,
+					];
+				}
+
+				$entry = [
+					// The implicit group is addressed by the `kbVariant` string, not a map key, so it carries no
+					// group slug; the editor keys off "implicit" to choose the attribute it writes.
+					'group'    => $implicit ? '' : $group,
+					'implicit' => $implicit,
+					'default'  => $default,
+					'variants' => $variants,
 				];
+
+				// The picker's control label (the axis), declared on the variant set. Omitted when the block
+				// declares none, so the editor falls back to its default label.
+				$label = $set !== null ? $set->group_label( $group ) : null;
+
+				if ( $label !== null ) {
+					$entry['label'] = $label;
+				}
+
+				$group_entries[] = $entry;
 			}
 
-			$entry = [
-				'default'  => $default,
-				'variants' => $variants,
-			];
-
-			// The picker's control label (the variant axis), declared on the variant set. Omitted when the
-			// block declares none, so the editor falls back to its default label.
-			$set = $this->registry->for_block( $block );
-
-			if ( $set !== null && $set->label !== null ) {
-				$entry['label'] = $set->label;
+			if ( $group_entries === [] ) {
+				continue;
 			}
 
-			$out[ $block ] = $entry;
+			$out[ $block ] = [ 'groups' => $group_entries ];
 		}
 
 		return $out;
