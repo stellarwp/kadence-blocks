@@ -3,23 +3,24 @@
 namespace Tests\wpunit\Classes;
 
 use Kadence_Blocks_CSS;
-use Tests\Support\Classes\KadenceBlocksUnit;
+use Kadence_Blocks_Footer_CSS;
+use Tests\wpunit\KadenceBlocksTestCase;
 
-class FrontendFooterCssTest extends KadenceBlocksUnit {
+class FrontendFooterCssTest extends KadenceBlocksTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		Kadence_Blocks_CSS::$styles             = [];
-		Kadence_Blocks_CSS::$head_styles        = [];
-		Kadence_Blocks_CSS::$custom_styles      = [];
-		Kadence_Blocks_CSS::$head_custom_styles = [];
+		Kadence_Blocks_CSS::$styles        = [];
+		Kadence_Blocks_CSS::$head_styles   = [];
+		Kadence_Blocks_CSS::$custom_styles = [];
+		Kadence_Blocks_Footer_CSS::get_instance()->capture_head_custom_styles();
 	}
 
 	protected function tearDown(): void {
-		Kadence_Blocks_CSS::$styles             = [];
-		Kadence_Blocks_CSS::$head_styles        = [];
-		Kadence_Blocks_CSS::$custom_styles      = [];
-		Kadence_Blocks_CSS::$head_custom_styles = [];
+		Kadence_Blocks_CSS::$styles        = [];
+		Kadence_Blocks_CSS::$head_styles   = [];
+		Kadence_Blocks_CSS::$custom_styles = [];
+		Kadence_Blocks_Footer_CSS::get_instance()->capture_head_custom_styles();
 		wp_deregister_style( 'kadence_blocks_footer_css' );
 		wp_deregister_style( 'kadence_blocks_footer_custom_css' );
 		remove_all_filters( 'kadence_blocks_render_footer_css' );
@@ -39,10 +40,8 @@ class FrontendFooterCssTest extends KadenceBlocksUnit {
 			'kb-advancedbtnBODY' => '.kb-body{background:blue}',
 		];
 
-		$css = Kadence_Blocks_CSS::get_instance();
-
 		ob_start();
-		$css->frontend_footer_block_css();
+		Kadence_Blocks_Footer_CSS::get_instance()->render_footer_block_css();
 		$output = ob_get_clean();
 
 		$this->assertStringContainsString( '.kb-body{background:blue}', $output, 'Body-rendered block CSS is flushed to the footer.' );
@@ -56,16 +55,13 @@ class FrontendFooterCssTest extends KadenceBlocksUnit {
 	public function test_footer_outputs_custom_css_post_head_delta() {
 		add_filter( 'kadence_blocks_render_footer_css', '__return_true' );
 
-		Kadence_Blocks_CSS::$head_custom_styles = [ 'kb-customHEAD' => '.kb-custom-head{margin:0}' ];
-		Kadence_Blocks_CSS::$custom_styles      = [
-			'kb-customHEAD' => '.kb-custom-head{margin:0}',
-			'kb-customBODY' => '.kb-custom-body{padding:10px}',
-		];
+		Kadence_Blocks_CSS::$custom_styles = [ 'kb-customHEAD' => '.kb-custom-head{margin:0}' ];
+		Kadence_Blocks_Footer_CSS::get_instance()->capture_head_custom_styles();
 
-		$css = Kadence_Blocks_CSS::get_instance();
+		Kadence_Blocks_CSS::$custom_styles['kb-customBODY'] = '.kb-custom-body{padding:10px}';
 
 		ob_start();
-		$css->frontend_footer_block_css();
+		Kadence_Blocks_Footer_CSS::get_instance()->render_footer_block_css();
 		$output = ob_get_clean();
 
 		$this->assertStringContainsString( '.kb-custom-body{padding:10px}', $output, 'Body-rendered Custom CSS is flushed to the footer.' );
@@ -81,10 +77,8 @@ class FrontendFooterCssTest extends KadenceBlocksUnit {
 		Kadence_Blocks_CSS::$styles        = [ 'kb-advancedbtnBODY' => '.kb-body{background:blue}' ];
 		Kadence_Blocks_CSS::$custom_styles = [ 'kb-customBODY' => '.kb-custom-body{padding:10px}' ];
 
-		$css = Kadence_Blocks_CSS::get_instance();
-
 		ob_start();
-		$css->frontend_footer_block_css();
+		Kadence_Blocks_Footer_CSS::get_instance()->render_footer_block_css();
 		$output = ob_get_clean();
 
 		$this->assertSame( '', trim( $output ), 'Nothing is printed when footer rendering is disabled.' );

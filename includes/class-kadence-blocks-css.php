@@ -38,13 +38,6 @@ class Kadence_Blocks_CSS {
 	public static $custom_styles = array();
 
 	/**
-	 * Custom CSS already printed in the head, snapshotted at head-print time.
-	 *
-	 * @var array<string, string>
-	 */
-	public static $head_custom_styles = array();
-
-	/**
 	 * The css group id.
 	 *
 	 * @access protected
@@ -266,7 +259,6 @@ class Kadence_Blocks_CSS {
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_block_css' ), 180 );
-		add_action( 'wp_footer', array( $this, 'frontend_footer_block_css' ) );
 	}
 
 	/**
@@ -274,8 +266,7 @@ class Kadence_Blocks_CSS {
 	 */
 	public function frontend_block_css() {
 		if ( ! empty( self::$styles ) ) {
-			self::$head_styles        = self::$styles;
-			self::$head_custom_styles = self::$custom_styles;
+			self::$head_styles = self::$styles;
 			$output = '';
 			foreach ( self::$styles as $key => $value ) {
 				$output .= $value;
@@ -298,56 +289,6 @@ class Kadence_Blocks_CSS {
 			}
 		}
 	}
-
-	/**
-	 * Print dynamic block CSS generated after the head style print.
-	 *
-	 * Under block (FSE) themes, blocks rendered in the page body — query loops,
-	 * template parts and third-party loop renderers such as Shop Kit product loops —
-	 * build their CSS after frontend_block_css() has already printed in the head, so
-	 * it would otherwise never reach the page. Flush that post-head delta here.
-	 * Classic themes inline this CSS in the block content during render, so they are
-	 * gated out to avoid duplicate output.
-	 *
-	 * @since 3.7.6
-	 *
-	 * @return void
-	 */
-	public function frontend_footer_block_css() {
-		if ( is_admin() || is_feed() || ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) ) {
-			return;
-		}
-		if ( ! apply_filters( 'kadence_blocks_render_footer_css', wp_is_block_theme() ) ) {
-			return;
-		}
-		$late_styles = array_diff_key( self::$styles, self::$head_styles );
-		if ( ! empty( $late_styles ) ) {
-			$output = '';
-			foreach ( $late_styles as $value ) {
-				$output .= $value;
-			}
-			if ( ! empty( $output ) ) {
-				wp_register_style( 'kadence_blocks_footer_css', false );
-				wp_enqueue_style( 'kadence_blocks_footer_css' );
-				wp_add_inline_style( 'kadence_blocks_footer_css', $output );
-				wp_print_styles( 'kadence_blocks_footer_css' );
-			}
-		}
-		$late_custom_styles = array_diff_key( self::$custom_styles, self::$head_custom_styles );
-		if ( ! empty( $late_custom_styles ) ) {
-			$custom_output = '';
-			foreach ( $late_custom_styles as $value ) {
-				$custom_output .= $value;
-			}
-			if ( ! empty( $custom_output ) ) {
-				wp_register_style( 'kadence_blocks_footer_custom_css', false );
-				wp_enqueue_style( 'kadence_blocks_footer_custom_css' );
-				wp_add_inline_style( 'kadence_blocks_footer_custom_css', $custom_output );
-				wp_print_styles( 'kadence_blocks_footer_custom_css' );
-			}
-		}
-	}
-
 	/**
 	 * Sets a style id to keep a record of rendering.
 	 *
