@@ -36,6 +36,8 @@ class Kadence_Blocks_Footer_CSS {
 	/**
 	 * Instance control.
 	 *
+	 * @since TBD
+	 *
 	 * @return Kadence_Blocks_Footer_CSS
 	 */
 	public static function get_instance() {
@@ -47,6 +49,8 @@ class Kadence_Blocks_Footer_CSS {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since TBD
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'capture_head_custom_styles' ), 181 );
@@ -60,6 +64,8 @@ class Kadence_Blocks_Footer_CSS {
 	 * the Custom CSS array after this point comes from body-rendered blocks and is the delta the
 	 * footer flushes.
 	 *
+	 * @since TBD
+	 *
 	 * @return void
 	 */
 	public function capture_head_custom_styles() {
@@ -71,6 +77,8 @@ class Kadence_Blocks_Footer_CSS {
 	 *
 	 * Classic themes inline this CSS in the block content during render, so they are gated out
 	 * via the kadence_blocks_render_footer_css filter to avoid duplicate output.
+	 *
+	 * @since TBD
 	 *
 	 * @return void
 	 */
