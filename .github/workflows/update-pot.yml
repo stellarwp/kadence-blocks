@@ -31,6 +31,7 @@ jobs:
       - name: Install dependencies
         env:
           BUN_AUTH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         run: |
           # `bun install` runs the root postinstall, which builds the @kadence/*
           # source packages (bun blocks their own prepare scripts; npm does not).

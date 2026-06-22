@@ -489,7 +489,10 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * This block is conditionally dynamic. It's only rendered dynamically if the heading includes an icon.
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array    $attributes     The block attributes.
+	 * @param string   $unique_id      The blocks attr ID.
+	 * @param string   $content        The saved block markup.
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return string Returns the block output.
 	 */
@@ -616,6 +619,21 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				}
 				$wrapper_attributes = implode( ' ', $wrapper_attributes );
 				$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
+			}
+		} elseif ( ! empty( $attributes['link'] ) && false !== strpos( $attributes['link'], '[' ) ) {
+			// Plain heading: the dynamic link lives as a shortcode in the saved anchor's href.
+			// In a query loop the saved markup is resolved once (with the first/queried post's
+			// context) and the baked HTML is reused for every item, so the href is wrong for all
+			// but the first post. Re-resolve from the (unbaked) link attribute in this per-post
+			// render callback and overwrite the anchor's href, matching how the icon/gradient
+			// path above and the single button block build their links.
+			// esc_url_raw (not esc_url) because WP_HTML_Tag_Processor::set_attribute()
+			// HTML-escapes the value itself; esc_url would double-encode ampersands.
+			$resolved_link = esc_url_raw( do_shortcode( $attributes['link'] ) );
+			$p             = new WP_HTML_Tag_Processor( $content );
+			if ( $p->next_tag( [ 'tag_name' => 'a' ] ) ) {
+				$p->set_attribute( 'href', $resolved_link );
+				$content = $p->get_updated_html();
 			}
 		}
 
