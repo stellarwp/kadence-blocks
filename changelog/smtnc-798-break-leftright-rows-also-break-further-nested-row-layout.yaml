@@ -1,5 +1,0 @@
-significance: patch
-type: fix
-entry: '"Row Layout Block breakout left/right margins no longer incorrectly
-  apply to columns inside nested row layouts in the editor"'
-timestamp: 2026-06-23T18:21:19.294Z
