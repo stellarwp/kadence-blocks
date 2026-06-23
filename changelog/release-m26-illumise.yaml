@@ -1,0 +1,5 @@
+significance: patch
+type: fix
+entry: Advanced Text Block dynamic links now resolve to the correct post when
+  used inside a query loop
+timestamp: 2026-06-23T18:31:33.339Z
