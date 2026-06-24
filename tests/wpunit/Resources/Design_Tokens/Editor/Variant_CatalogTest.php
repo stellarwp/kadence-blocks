@@ -43,6 +43,8 @@ final class Variant_CatalogTest extends TestCase {
 		$button = $catalog[ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
+		// The picker's control label, declared on the variant set in declarations.php.
+		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
 				[
