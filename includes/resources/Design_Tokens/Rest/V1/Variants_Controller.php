@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use WP_Error;
 use WP_Http;

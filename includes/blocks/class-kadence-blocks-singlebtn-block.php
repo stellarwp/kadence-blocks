@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Utils\Cast;
+
 /**
  * Class to Build the Single Button.
  *
@@ -363,7 +365,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			 * projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
 			 * the editor save filter; the sanitizer mirrors the projector's so the class matches the selector.
 			 */
-			$classes[] = 'kb-variant--' . preg_replace( '/[^A-Za-z0-9_-]+/', '-', $this->attribute_string( $attributes, 'kbVariant' ) );
+			$classes[] = 'kb-variant--' . preg_replace( '/[^A-Za-z0-9_-]+/', '-', Cast::to_string( $attributes['kbVariant'] ) );
 		}
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
@@ -376,13 +378,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => implode( ' ', $classes ),
 		];
 		if ( ! empty( $attributes['anchor'] ) ) {
-			$wrapper_args['id'] = $this->attribute_string( $attributes, 'anchor' );
+			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}
 		if ( ! empty( $attributes['label'] ) ) {
-			$wrapper_args['aria-label'] = $this->attribute_string( $attributes, 'label' );
+			$wrapper_args['aria-label'] = Cast::to_string( $attributes['label'] );
 		}
 		if ( ! empty( $attributes['link'] ) ) {
-			$wrapper_args['href'] = esc_url( do_shortcode( $this->attribute_string( $attributes, 'link' ) ) );
+			$wrapper_args['href'] = esc_url( do_shortcode( Cast::to_string( $attributes['link'] ) ) );
 			$rel_add              = '';
 			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
 				$wrapper_args['download'] = '';
@@ -405,9 +407,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['type'] = 'submit';
 		}
 		if ( ! empty( $attributes['tooltip'] ) ) {
-			$wrapper_args['data-kb-tooltip-content'] = esc_attr( $this->attribute_string( $attributes, 'tooltip' ) );
+			$wrapper_args['data-kb-tooltip-content'] = esc_attr( Cast::to_string( $attributes['tooltip'] ) );
 			if ( ! empty( $attributes['tooltipPlacement'] ) ) {
-				$wrapper_args['data-tooltip-placement'] = esc_attr( $this->attribute_string( $attributes, 'tooltipPlacement' ) );
+				$wrapper_args['data-tooltip-placement'] = esc_attr( Cast::to_string( $attributes['tooltipPlacement'] ) );
 			}
 		}
 		if ( isset( $attributes['buttonRole'] ) && $attributes['buttonRole'] ) {
@@ -424,7 +426,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$text     = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
 		$svg_icon = '';
 		if ( ! empty( $attributes['icon'] ) ) {
-			$type         = substr( $this->attribute_string( $attributes, 'icon' ), 0, 2 );
+			$type         = substr( Cast::to_string( $attributes['icon'] ), 0, 2 );
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
 			$stroke_width = false;
@@ -436,8 +438,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$hidden   = ( empty( $title ) ? true : false );
 			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $title, $hidden );
 		}
-		$icon_left  = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'left' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $this->attribute_string( $attributes, 'icon' ) ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
-		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $this->attribute_string( $attributes, 'icon' ) ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
+		$icon_left  = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'left' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( Cast::to_string( $attributes['icon'] ) ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
+		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( Cast::to_string( $attributes['icon'] ) ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
 		$html_tag   = ! empty( $attributes['link'] ) ? 'a' : 'span';
 
 		// Try to Detect if this is a show more button and make it a button.
@@ -483,22 +485,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
 	}
 
-	/**
-	 * Safely coerce a block attribute to a string.
-	 *
-	 * Block attributes arrive as mixed, so a non-scalar (or absent) value yields an empty string rather
-	 * than a type error.
-	 *
-	 * @param array<string, mixed> $attributes The block attributes.
-	 * @param string               $key        The attribute key to read.
-	 *
-	 * @return string
-	 */
-	private function attribute_string( array $attributes, string $key ): string {
-		$value = $attributes[ $key ] ?? '';
-
-		return is_scalar( $value ) ? (string) $value : '';
-	}
 }
 
 Kadence_Blocks_Singlebtn_Block::get_instance();
