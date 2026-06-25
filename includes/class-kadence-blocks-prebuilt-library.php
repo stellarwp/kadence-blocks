@@ -817,6 +817,11 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function process_pattern_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
+
+		if ( ! current_user_can( 'upload_files' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to upload files.', 'kadence-blocks' ) );
+		}
+
 		$data = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
 		$data = $this->process_pattern_content( $data );
 		if ( ! $data ) {
@@ -916,6 +921,11 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
+
+		if ( ! current_user_can( 'upload_files' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission to upload files.', 'kadence-blocks' ) );
+		}
+
 		$data           = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
 		$import_library = empty( $_POST['import_library'] ) ? 'standard' : sanitize_text_field( $_POST['import_library'] );
 		$import_type    = empty( $_POST['import_type'] ) ? 'pattern' : sanitize_text_field( $_POST['import_type'] );
@@ -1043,6 +1053,9 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @param array $image_data the image data to import.
 	 */
 	public function import_image( $image_data ) {
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return $image_data;
+		}
 		$local_image = $this->check_for_local_image( $image_data );
 		if ( $local_image['status'] ) {
 			return $local_image['image'];
