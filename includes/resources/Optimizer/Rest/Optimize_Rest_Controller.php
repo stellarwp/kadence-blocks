@@ -741,7 +741,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	private function get_path_for_post( int $post_id ): ?Path {
 		$post_path = $this->get_post_path( $post_id );
 
-		if ( $post_path === '' ) {
+		if ( $post_path === ''  || str_contains( $post_path, '?' ) ) {
 			return null;
 		}
 
