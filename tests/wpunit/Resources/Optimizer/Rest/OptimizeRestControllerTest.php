@@ -446,6 +446,68 @@ final class OptimizeRestControllerTest extends OptimizerTestCase {
 		$this->assertEquals( 'rest_kb_optimizer_create_failed_excluded', $response->get_error_code() );
 	}
 
+	public function testDeleteOperatesOnServerDerivedPathNotClientPath(): void {
+		// Seed analysis for the published post under its server-derived path.
+		$analysis = WebsiteAnalysis::from( $this->getTestAnalysisData() );
+		$this->store->set( $this->path, $analysis );
+
+		// A contributor who owns a separate, pending post they are allowed to delete.
+		$contributor = $this->factory()->user->create_and_get( [ 'role' => 'contributor' ] );
+		$own_post_id = $this->factory()->post->create(
+			[
+				'post_status' => 'pending',
+				'post_author' => $contributor->ID,
+			]
+		);
+
+		wp_set_current_user( $contributor->ID );
+
+		// Authorize with the contributor's own post ID, but supply the other post's path.
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $own_post_id );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
+
+		// The capability check passes for the contributor's own post.
+		$this->assertTrue( $this->controller->delete_item_permissions_check( $request ) );
+
+		$this->controller->delete_item( $request );
+
+		// The other post's data must remain: the delete is keyed on the server-derived
+		// path of the authorized post, not on the supplied path.
+		$this->assertInstanceOf( WebsiteAnalysis::class, $this->store->get( $this->path ) );
+	}
+
+	public function testGetReturnsServerDerivedPathData(): void {
+		// Seed analysis for the published post under its server-derived path.
+		$analysis = WebsiteAnalysis::from( $this->getTestAnalysisData() );
+		$this->store->set( $this->path, $analysis );
+
+		$contributor = $this->factory()->user->create_and_get( [ 'role' => 'contributor' ] );
+		$own_post_id = $this->factory()->post->create(
+			[
+				'post_status' => 'pending',
+				'post_author' => $contributor->ID,
+			]
+		);
+
+		wp_set_current_user( $contributor->ID );
+
+		// Authorize with the contributor's own post ID, but supply the other post's path.
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, Optimize_Rest_Controller::ROUTE );
+		$request->set_param( Optimize_Rest_Controller::POST_ID, $own_post_id );
+		$request->set_param( Optimize_Rest_Controller::POST_PATH, $this->path->path() );
+
+		// The capability check passes for the contributor's own post.
+		$this->assertTrue( $this->controller->get_item_permissions_check( $request ) );
+
+		$response = $this->controller->get_item( $request );
+
+		// The other post's analysis is not returned: reads are keyed on the
+		// server-derived path of the authorized post.
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertEquals( 'rest_kb_optimizer_read_not_found', $response->get_error_code() );
+	}
+
 	private function getTestAnalysisData(): array {
 		$decoded = json_decode(
 			$this->fixture( 'resources/optimizer/result.json' ),
