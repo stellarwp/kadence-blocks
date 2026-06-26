@@ -68,6 +68,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-google-fonts.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-helper.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-css.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-footer-css.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-table-of-contents.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-duplicate-post.php';

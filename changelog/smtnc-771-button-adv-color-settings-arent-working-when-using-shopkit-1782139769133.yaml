@@ -1,0 +1,5 @@
+significance: patch
+type: feature
+entry: "`kadence_blocks_render_footer_css` filter to control whether late,
+  body-rendered block CSS is output in the footer."
+timestamp: 2026-06-22T14:49:29.132Z
