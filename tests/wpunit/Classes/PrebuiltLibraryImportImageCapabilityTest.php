@@ -69,7 +69,12 @@ class PrebuiltLibraryImportImageCapabilityTest extends KadenceBlocksTestCase {
 		$this->assertFalse( current_user_can( 'upload_files' ), 'Pre-condition: contributors lack upload_files.' );
 
 		$before = $this->attachment_count();
-		$result = $this->library()->import_image( [ 'url' => $source_url, 'id' => 0 ] );
+		$result = $this->library()->import_image(
+			[
+				'url' => $source_url,
+				'id'  => 0,
+			]
+		);
 
 		// The capability guard returns the input untouched before any attachment
 		// lookup or creation, so the seeded local image is NOT returned.
@@ -87,7 +92,12 @@ class PrebuiltLibraryImportImageCapabilityTest extends KadenceBlocksTestCase {
 		$this->assertFalse( current_user_can( 'upload_files' ), 'Pre-condition: subscribers lack upload_files.' );
 
 		$before = $this->attachment_count();
-		$result = $this->library()->import_image( [ 'url' => $source_url, 'id' => 0 ] );
+		$result = $this->library()->import_image(
+			[
+				'url' => $source_url,
+				'id'  => 0,
+			]
+		);
 
 		$this->assertSame( 0, $result['id'] );
 		$this->assertSame( $source_url, $result['url'] );
@@ -104,7 +114,12 @@ class PrebuiltLibraryImportImageCapabilityTest extends KadenceBlocksTestCase {
 
 		// Passing the capability guard, import_image() reaches check_for_local_image()
 		// and returns the existing local attachment (no remote download in the test).
-		$result = $this->library()->import_image( [ 'url' => $source_url, 'id' => 0 ] );
+		$result = $this->library()->import_image(
+			[
+				'url' => $source_url,
+				'id'  => 0,
+			]
+		);
 
 		$this->assertEquals( $attachment_id, $result['id'] );
 	}
@@ -115,7 +130,12 @@ class PrebuiltLibraryImportImageCapabilityTest extends KadenceBlocksTestCase {
 		$contributor = self::factory()->user->create( [ 'role' => 'contributor' ] );
 		wp_set_current_user( $contributor );
 
-		$result = $this->rest_controller()->import_image( [ 'url' => $source_url, 'id' => 0 ] );
+		$result = $this->rest_controller()->import_image(
+			[
+				'url' => $source_url,
+				'id'  => 0,
+			]
+		);
 
 		$this->assertSame( 0, $result['id'] );
 		$this->assertSame( $source_url, $result['url'] );
