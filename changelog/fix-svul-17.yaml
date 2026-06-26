@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Hardened capability checks in the pattern and template import process.
+timestamp: 2026-06-25T17:38:07.975Z
