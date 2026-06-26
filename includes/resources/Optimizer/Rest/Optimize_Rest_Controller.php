@@ -150,7 +150,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 			);
 		}
 
-		$path = $this->get_path_for_post( (int) $post_id );
+		$path = $this->get_path_for_post( $post_id );
 
 		if ( ! $path instanceof Path ) {
 			return new WP_Error(
@@ -207,7 +207,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$post_path = $request->get_param( self::POST_PATH );
 		$post_id   = $request->get_param( self::POST_ID );
 
-		$path = $this->get_path_for_post( (int) $post_id );
+		$path = $this->get_path_for_post( $post_id );
 
 		if ( ! $path instanceof Path ) {
 			return new WP_Error(
@@ -255,7 +255,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 		$post_path = $request->get_param( self::POST_PATH );
 
 		// Derive the path from the authorized post ID; never trust the client path.
-		$path = $this->get_path_for_post( (int) $post_id );
+		$path = $this->get_path_for_post( $post_id );
 
 		if ( ! $path instanceof Path ) {
 			return new WP_Error(
@@ -367,7 +367,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 
 		foreach ( $post_ids as $post_id ) {
 			// Derive the path from the authorized post ID; never trust the client path.
-			$path = $this->get_path_for_post( (int) $post_id );
+			$path = $this->get_path_for_post( $post_id );
 
 			if ( ! $path instanceof Path ) {
 				$results['failed'][] = [
@@ -734,11 +734,12 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The authorized post ID.
+	 * @param mixed $post_id The authorized post ID, as received from the request.
 	 *
 	 * @return Path|null The derived path, or null when one cannot be built.
 	 */
-	private function get_path_for_post( int $post_id ): ?Path {
+	private function get_path_for_post( $post_id ): ?Path {
+		$post_id   = is_numeric( $post_id ) ? (int) $post_id : 0;
 		$post_path = $this->get_post_path( $post_id );
 
 		if ( $post_path === '' || str_contains( $post_path, '?' ) ) {
