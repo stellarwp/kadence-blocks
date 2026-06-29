@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_History_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Documents_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
@@ -580,7 +581,7 @@ final class DocumentsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testDeleteItemResetsTheSetToBaseline(): void {
+	public function testDeleteItemResetsTheDefaultSetToBaselineInsteadOfRemovingIt(): void {
 		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
@@ -589,7 +590,11 @@ final class DocumentsControllerTest extends TestCase {
 		$response = $this->controller->delete_item( $request );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( [], $response->get_data()['document'] );
+		$this->assertTrue( $response->get_data()['deleted'] );
+
+		// The canonical set is never removed: its row survives and now renders from baseline.
+		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
 	}
 
 	/**
@@ -680,7 +685,7 @@ final class DocumentsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testCollectionPostRejectsANonDefaultSlug(): void {
+	public function testCollectionPostCreatesANonDefaultSet(): void {
 		$response = $this->controller->create_item(
 			$this->write_request(
 				'POST',
@@ -689,18 +694,106 @@ final class DocumentsControllerTest extends TestCase {
 					'primitive' => [
 						'color' => [
 							'brand' => [
-								Token_Type::get_type_key() => 'color',
-								Sentinels::get_value_key() => '#3182CE',
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
 							],
 						],
 					],
-				] 
+				]
 			)
 		);
 
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+		$this->assertSame( 'other-brand', $response->get_data()['slug'] );
+		$this->assertTrue( $this->store->exists( 'other-brand' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCollectionListsEveryStoredSetAndAlwaysIncludesTheDefault(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a' );
+		$this->store->save_document( '{"set":"b"}', 'brand-b' );
+
+		$data  = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$slugs = array_column( $data, 'slug' );
+
+		// The two stored sets plus the always-present default, which has no row of its own here.
+		$this->assertContains( Token_Store::default_slug(), $slugs );
+		$this->assertContains( 'brand-a', $slugs );
+		$this->assertContains( 'brand-b', $slugs );
+		$this->assertCount( 3, $slugs );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItReadsANonDefaultSet(): void {
+		$document = '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}';
+		$this->store->save_document( $document, 'brand-b' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( 'brand-b', $data['slug'] );
+		$this->assertSame( json_decode( $document, true ), $data['document'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteItemRemovesANonDefaultSet(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}', 'brand-b' );
+
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$response = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertTrue( $response->get_data()['deleted'] );
+		$this->assertSame( 'brand-b', $response->get_data()['previous']['slug'] );
+		$this->assertFalse( $this->store->exists( 'brand-b' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteItemReturnsNotFoundForAnUnknownNonDefaultSet(): void {
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'never-existed' );
+
+		$response = $this->controller->delete_item( $request );
+
 		$this->assertInstanceOf( WP_Error::class, $response );
-		$this->assertSame( 'rest_design_tokens_unsupported_slug', $response->get_error_code() );
-		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+		$this->assertSame( 'rest_design_tokens_not_found', $response->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteItemPurgesTheSetsHistory(): void {
+		$history = $this->container->get( Token_History_Store::class );
+
+		// Two saves leave one archived snapshot for the set.
+		$this->store->save_document( '{"v":1}', 'brand-b' );
+		$this->store->save_document( '{"v":2}', 'brand-b' );
+		$this->assertSame( 1, $history->count( 'brand-b' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$this->controller->delete_item( $request );
+
+		// Deleting the set drops its trail too, leaving no orphaned history.
+		$this->assertSame( 0, $history->count( 'brand-b' ) );
 	}
 
 	/**

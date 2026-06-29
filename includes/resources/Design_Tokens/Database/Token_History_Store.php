@@ -142,6 +142,26 @@ final class Token_History_Store extends Query {
 	}
 
 	/**
+	 * Drop every snapshot for a token set.
+	 *
+	 * Called once a set's row has been deleted, so its trail leaves no orphaned history behind. Wired to
+	 * Token_Store's deleted action by Provider, keeping this store the sole writer of its own table.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug whose snapshots to drop.
+	 *
+	 * @return void
+	 *
+	 * @throws DatabaseQueryException If the delete fails.
+	 */
+	public function forget( string $slug = '' ): void {
+		$this->qb()
+			->where( 'slug', $slug === '' ? self::default_slug() : $slug )
+			->delete();
+	}
+
+	/**
 	 * Prune a token set's trail to its retention limit, deleting the oldest
 	 * surplus snapshots so only the most-recent N remain.
 	 *
