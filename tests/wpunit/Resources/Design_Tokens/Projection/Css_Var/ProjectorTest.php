@@ -3,6 +3,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -12,10 +14,26 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Covers the CSS-variable projector: it appends the resolved --kb-token--* declarations to KB's front-end
- * and editor style handles, routes the legacy color/font-size filters through the bridge, and is a no-op
- * when the registry is deactivated.
+ * and editor style handles, routes the legacy color/font-size filters through the bridge, is a no-op when
+ * the registry is deactivated, and honors the active set — the declarations carry the active set's resolved
+ * values, so pointing the active-set pointer at another set changes what is projected to the front end.
  */
 final class ProjectorTest extends TestCase {
+
+	/**
+	 * The shipped baseline resolves semantic.color.button-bg through primitive.color.brand.button, so an
+	 * override of that primitive surfaces as a literal in the projected CSS.
+	 *
+	 * @var string
+	 */
+	private const BASELINE_BUTTON = '#3633e1';
+
+	/**
+	 * A sentinel value, absent from the baseline, that a non-default set overrides the button primitive to.
+	 *
+	 * @var string
+	 */
+	private const BRAND_B_BUTTON = '#123456';
 
 	/**
 	 * @var Projector
@@ -28,6 +46,16 @@ final class ProjectorTest extends TestCase {
 	private Token_Registry $registry;
 
 	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
+
+	/**
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -36,11 +64,11 @@ final class ProjectorTest extends TestCase {
 		// Projector was registered as a singleton during module bootstrap.
 		$this->projector = $this->container->get( Projector::class );
 		$this->registry  = $this->container->get( Token_Registry::class );
+		$this->store     = $this->container->get( Token_Store::class );
+		$this->active    = $this->container->get( Active_Set_Store::class );
 
 		// Register the KB style handles the hooks append to.
-		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
-			wp_register_style( 'kadence-blocks-global-variables', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-		}
+		$this->register_front_handle();
 		if ( ! wp_style_is( 'kadence-blocks-global-editor-styles', 'registered' ) ) {
 			wp_register_style( 'kadence-blocks-global-editor-styles', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
@@ -163,5 +191,104 @@ final class ProjectorTest extends TestCase {
 
 		$this->assertSame( $colors, $this->projector->filter_global_colors( $colors ) );
 		$this->assertSame( $sizes, $this->projector->filter_font_sizes( $sizes ) );
+	}
+
+	// ---- Active set ----------------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testItProjectsTheDefaultSetsBaselineValuesWhenDefaultIsActive(): void {
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
+		$this->assertStringNotContainsString( self::BRAND_B_BUTTON, $css );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testItProjectsTheActiveSetsResolvedValuesToTheFrontEnd(): void {
+		$this->store->save_document( $this->brand_b_document(), 'brand-b' );
+		$this->active->set( 'brand-b' );
+
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		$this->assertStringContainsString( self::BRAND_B_BUTTON, $css );
+		$this->assertStringNotContainsString( self::BASELINE_BUTTON, $css );
+	}
+
+	/**
+	 * Pointing the pointer back at the default set reverts what is projected, proving the projector reads
+	 * the pointer on each build rather than caching the first set it saw.
+	 *
+	 * @return void
+	 */
+	public function testPointingBackAtTheDefaultRevertsWhatIsProjected(): void {
+		$this->store->save_document( $this->brand_b_document(), 'brand-b' );
+
+		$this->active->set( 'brand-b' );
+		$this->projector->enqueue_front_end();
+		$this->assertStringContainsString( self::BRAND_B_BUTTON, $this->inline_css() );
+
+		// A fresh handle drops the brand-b declarations so the next build is asserted in isolation.
+		$this->register_front_handle();
+
+		$this->active->set( Token_Store::default_slug() );
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
+		$this->assertStringNotContainsString( self::BRAND_B_BUTTON, $css );
+	}
+
+	/**
+	 * An overrides-only DTCG document that retargets the button primitive the shipped baseline resolves
+	 * semantic.color.button-bg through.
+	 *
+	 * @return string
+	 */
+	private function brand_b_document(): string {
+		return (string) wp_json_encode(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'button' => [
+								'$type'  => 'color',
+								'$value' => self::BRAND_B_BUTTON,
+							],
+						],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Register (or reset) the KB front-end style handle the projector appends its declarations to.
+	 *
+	 * @return void
+	 */
+	private function register_front_handle(): void {
+		if ( wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
+			wp_deregister_style( 'kadence-blocks-global-variables' );
+		}
+
+		wp_register_style( 'kadence-blocks-global-variables', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+	}
+
+	/**
+	 * The inline CSS the projector appended to the front-end handle, flattened to a single string.
+	 *
+	 * @return string
+	 */
+	private function inline_css(): string {
+		return implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
 	}
 }

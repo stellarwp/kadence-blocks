@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -41,25 +42,37 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
+	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * @var Json_Builder
 	 */
 	private Json_Builder $builder;
 
 	/**
-	 * @param Token_Registry     $registry
-	 * @param Token_Resolver     $resolver
-	 * @param Token_Store        $store
-	 * @param Json_Builder $builder
+	 * @param Token_Registry   $registry
+	 * @param Token_Resolver   $resolver
+	 * @param Token_Store      $store
+	 * @param Active_Set_Store $active
+	 * @param Json_Builder     $builder
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
+		Active_Set_Store $active,
 		Json_Builder $builder
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->store    = $store;
+		$this->active   = $active;
 		$this->builder  = $builder;
 	}
 
@@ -101,9 +114,11 @@ final class Projector {
 	 * @return array<string, mixed>
 	 */
 	private function payload(): array {
+		$slug = $this->active->get();
+
 		try {
-			$version  = $this->store->get_version();
-			$resolved = $this->resolver->resolve();
+			$version  = $this->store->get_version( $slug );
+			$resolved = $this->resolver->resolve( $slug );
 		} catch ( RuntimeException $e ) {
 			return [];
 		}
