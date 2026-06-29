@@ -814,7 +814,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Ajax function for processing the import data.
 	 *
-	 * @since TBD Require the upload_files capability.
+	 * @since 3.7.8 Require the upload_files capability.
 	 */
 	public function process_pattern_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -920,7 +920,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Ajax function for processing the import data.
 	 *
-	 * @since TBD Require the upload_files capability.
+	 * @since 3.7.8 Require the upload_files capability.
 	 */
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -1054,7 +1054,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Import an image.
 	 *
-	 * @since TBD Require the upload_files capability.
+	 * @since 3.7.8 Require the upload_files capability.
 	 *
 	 * @param array $image_data the image data to import.
 	 */

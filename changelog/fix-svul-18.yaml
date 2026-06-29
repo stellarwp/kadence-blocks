@@ -1,4 +1,0 @@
-significance: patch
-type: security
-entry: Enhanced authorization checks on the performance optimizer data endpoints.
-timestamp: 2026-06-25T20:08:38.002Z

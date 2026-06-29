@@ -114,7 +114,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Save optimizer data for a post.
 	 *
-	 * @since TBD Derive the stored path from the post ID.
+	 * @since 3.7.8 Derive the stored path from the post ID.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -197,7 +197,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Get optimizer data for a post.
 	 *
-	 * @since TBD Derive the stored path from the post ID.
+	 * @since 3.7.8 Derive the stored path from the post ID.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -244,7 +244,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Delete optimizer data for a post.
 	 *
-	 * @since TBD Derive the stored path from the post ID.
+	 * @since 3.7.8 Derive the stored path from the post ID.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -351,7 +351,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	/**
 	 * Delete optimizer data for multiple posts at once.
 	 *
-	 * @since TBD Derive each stored path from its post ID.
+	 * @since 3.7.8 Derive each stored path from its post ID.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -732,7 +732,7 @@ final class Optimize_Rest_Controller extends WP_REST_Controller {
 	 * capability check, so the object authorized and the object accessed are the
 	 * same. Client-supplied paths are never used to key stored data.
 	 *
-	 * @since TBD
+	 * @since 3.7.8
 	 *
 	 * @param mixed $post_id The authorized post ID, as received from the request.
 	 *
