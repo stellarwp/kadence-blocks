@@ -1,0 +1,12 @@
+@use '../../styles/tokens' as *;
+
+@mixin styles {
+	.kadence-style-book__swatch {
+		display: inline-block;
+		width: $swatch-size;
+		height: $swatch-size;
+		border: 1px solid $color-border-strong;
+		border-radius: $radius-sm;
+		flex-shrink: 0;
+	}
+}

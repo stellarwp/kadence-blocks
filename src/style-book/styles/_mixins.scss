@@ -1,0 +1,47 @@
+@use 'tokens' as *;
+
+@mixin flex-column($gap) {
+	display: flex;
+	flex-direction: column;
+	gap: $gap;
+}
+
+@mixin flex-row($gap, $align: center) {
+	display: flex;
+	align-items: $align;
+	gap: $gap;
+}
+
+@mixin flex-row-wrap($gap, $align: flex-start) {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: $align;
+	gap: $gap;
+}
+
+@mixin body-text {
+	margin: 0;
+	max-width: $content-max-width;
+	color: $color-text-secondary;
+	font-size: $font-size-body;
+	line-height: 1.6;
+}
+
+@mixin section-heading($size: $font-size-heading) {
+	margin: 0 0 $spacing-md;
+	font-size: $size;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+@mixin card-surface {
+	padding: $spacing-lg;
+	border: 1px solid $color-border;
+	border-radius: $radius-sm;
+	background: $color-surface;
+}
+
+@mixin meta-text {
+	font-size: $font-size-meta;
+	color: $color-text-muted;
+}

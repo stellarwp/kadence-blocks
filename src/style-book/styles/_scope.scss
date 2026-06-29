@@ -1,0 +1,6 @@
+// Scope Style Book rules under the PHP-rendered admin wrapper.
+@mixin style-book-wrap {
+	.kadence-style-book-wrap {
+		@content;
+	}
+}

@@ -1,0 +1,52 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// Shared BEM block for every `kadence-style-book__token-*` element.
+@mixin block {
+	&-list {
+		@include flex-column($spacing-xl);
+	}
+
+	&-group {
+		&-title {
+			@include section-heading;
+		}
+
+		&-list {
+			@include flex-column($spacing-lg);
+		}
+	}
+
+	&-field {
+		@include flex-column($spacing-md);
+		@include card-surface;
+
+		&-meta {
+			@include flex-row($spacing-md);
+		}
+
+		&-labels {
+			@include flex-column($spacing-xs);
+			flex: 1;
+			min-width: 0;
+		}
+
+		&-controls {
+			@include flex-row-wrap($spacing-md);
+		}
+	}
+
+	&-label {
+		font-size: $font-size-body;
+	}
+
+	&-id {
+		@include meta-text;
+		word-break: break-all;
+	}
+
+	&-input {
+		flex: 1 1 $input-min-width;
+		margin-bottom: 0;
+	}
+}

@@ -1,0 +1,31 @@
+// Style Book design tokens (admin palette — mirrors WordPress core grays).
+
+$color-text-secondary: #50575e;
+$color-text-muted: #646970;
+$color-border: #dcdcde;
+$color-border-strong: #c3c4c7;
+$color-surface: #fff;
+$color-surface-muted: #f0f0f1;
+$color-success: #008a20;
+$color-error: #d63638;
+
+$radius-sm: 4px;
+$radius-pill: 999px;
+
+$font-size-title: 1.5rem;
+$font-size-heading: 1.125rem;
+$font-size-body: 0.9375rem;
+$font-size-small: 0.8125rem;
+$font-size-meta: 0.75rem;
+$font-size-badge: 0.6875rem;
+
+$spacing-xs: 0.125rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 0.75rem;
+$spacing-lg: 1rem;
+$spacing-xl: 1.5rem;
+$spacing-2xl: 2rem;
+
+$content-max-width: 40rem;
+$swatch-size: 1.75rem;
+$input-min-width: 16rem;
