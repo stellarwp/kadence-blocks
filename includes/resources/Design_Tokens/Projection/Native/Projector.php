@@ -4,8 +4,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles\Contracts\Styles;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Enqueues the companion stylesheets that let native (non-Kadence) blocks consume the design-token variant
