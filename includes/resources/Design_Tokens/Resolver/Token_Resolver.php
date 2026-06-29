@@ -49,6 +49,15 @@ final class Token_Resolver {
 	 */
 	private array $memo = [];
 
+	/**
+	 * Wire the token store, effective-document builder, and value renderer.
+	 *
+	 * @since TBD
+	 *
+	 * @param Token_Store        $store     The token set store.
+	 * @param Effective_Document $effective Builds the baseline-merged effective document.
+	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
+	 */
 	public function __construct(
 		Token_Store $store,
 		Effective_Document $effective,
@@ -62,6 +71,8 @@ final class Token_Resolver {
 	/**
 	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $slug The token set slug to resolve.
 	 *
@@ -107,6 +118,8 @@ final class Token_Resolver {
 	 * write layer to reject aliasing cycles and dangling aliases before committing. A dry run by
 	 * nature: it never touches the store or the memo.
 	 *
+	 * @since TBD
+	 *
 	 * @param array<string,mixed> $overrides Decoded candidate overrides.
 	 *
 	 * @throws Alias_Cycle_Exception    When the candidate introduces an unresolvable cycle.
@@ -117,7 +130,9 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Walk an effective document into the two flat maps.
+	 * Walk an effective document into the flat maps.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string,mixed> $document
 	 */
@@ -138,6 +153,8 @@ final class Token_Resolver {
 
 	/**
 	 * Depth-first walk, collecting every token leaf.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string,mixed>  $node             The current group node.
 	 * @param string               $prefix           The dot-path accumulated so far.
@@ -203,6 +220,8 @@ final class Token_Resolver {
 	 * immediate target (the chain is preserved across tokens by the cascade) and only ever runs after
 	 * resolve_value() has already rejected cycles and dangling aliases for the same leaf.
 	 *
+	 * @since TBD
+	 *
 	 * @param mixed $value
 	 *
 	 * @return mixed The value with aliases replaced by var() references.
@@ -227,6 +246,8 @@ final class Token_Resolver {
 	/**
 	 * Resolve a raw $value to a literal: aliases follow their reference recursively;
 	 * composite arrays resolve field by field; scalars and lists pass through.
+	 *
+	 * @since TBD
 	 *
 	 * @param mixed               $value
 	 * @param array<string,mixed> $document
@@ -291,6 +312,8 @@ final class Token_Resolver {
 	/**
 	 * Look up a leaf node by dot-path within the effective document.
 	 *
+	 * @since TBD
+	 *
 	 * @param string              $path     The dot-path to look up.
 	 * @param array<string,mixed> $document The effective document to search.
 	 *
@@ -309,6 +332,11 @@ final class Token_Resolver {
 	}
 
 	/**
+	 * Whether the array is a zero-indexed list (a fontFamily stack or stacked shadow) rather than an
+	 * associative composite map.
+	 *
+	 * @since TBD
+	 *
 	 * @param array<mixed> $value
 	 */
 	private function is_list( array $value ): bool {

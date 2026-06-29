@@ -38,6 +38,11 @@ final class Resolved_Tokens {
 	private array $by_id_target;
 
 	/**
+	 * Build the resolved maps. The projection defaults to the literal var map when omitted, so a
+	 * caller with no aliases to preserve constructs with just the two literal maps.
+	 *
+	 * @since TBD
+	 *
 	 * @param array<string,string> $by_id            token-id => literal CSS value.
 	 * @param array<string,string> $by_var           css-var => literal CSS value.
 	 * @param array<string,string> $by_var_projected css-var => var()-preserving CSS value; defaults to
@@ -51,30 +56,72 @@ final class Resolved_Tokens {
 		$this->by_id_target     = $by_id_target;
 	}
 
-	/** @return array<string,string> */
+	/**
+	 * The flat literal map keyed by token id, the source for host-publishing surfaces.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> token-id => literal CSS value
+	 */
 	public function by_id(): array {
 		return $this->by_id;
 	}
 
-	/** @return array<string,string> */
+	/**
+	 * The flat literal map keyed by css-var.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> css-var => literal CSS value
+	 */
 	public function by_var(): array {
 		return $this->by_var;
 	}
 
-	/** @return array<string,string> css-var => var()-preserving CSS value */
+	/**
+	 * The css-var projection form, with alias indirection preserved as var() references.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> css-var => var()-preserving CSS value
+	 */
 	public function projected_vars(): array {
 		return $this->by_var_projected;
 	}
 
-	/** @return array<string,string> token-id => target token-id */
+	/**
+	 * The immediate alias target per reference-valued token.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string> token-id => target token-id
+	 */
 	public function target_ids(): array {
 		return $this->by_id_target;
 	}
 
+	/**
+	 * The literal CSS value for a token, or null when the token is unknown.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id The token id.
+	 *
+	 * @return string|null
+	 */
 	public function value( string $id ): ?string {
 		return $this->by_id[ $id ] ?? null;
 	}
 
+	/**
+	 * The immediate alias target for a token, or null when the token is not reference-valued.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id The token id.
+	 *
+	 * @return string|null
+	 */
 	public function target( string $id ): ?string {
 		return $this->by_id_target[ $id ] ?? null;
 	}
