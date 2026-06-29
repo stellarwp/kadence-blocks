@@ -244,7 +244,7 @@ final class Token_Store extends Query {
 	/**
 	 * List every stored token set, as its slug, title and version.
 	 *
-	 * The default set is not synthesised here: a set appears only once it has a row, so a site that has
+	 * The default set is not synthesized here: a set appears only once it has a row, so a site that has
 	 * never written the default returns an empty list. Callers that must always surface the default
 	 * (the REST collection) layer that invariant on top.
 	 *
