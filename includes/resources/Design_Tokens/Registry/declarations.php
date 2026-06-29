@@ -244,10 +244,24 @@ return [
 			],
 		],
 		[
+			/**
+			 * The core/button block is a pure COLOR axis, like the Kadence button, and reuses the SAME mechanism:
+			 * the variant retargets the Kadence theme's button slots (--global-palette-btn-*), and a small
+			 * stylesheet (Native\Styles\Button) makes the native button link consume those vars for Fill /
+			 * Outline / hover — the core/button analogue of the Kadence button's SCSS. The color variant
+			 * is an additive kb-variant-- class (NOT a register_block_style() block style), so it composes with
+			 * WordPress's own single-select "Outline" block style; because the consuming CSS is scoped to that
+			 * class, an unstyled core/button keeps its native theme look until a variant is selected. These
+			 * bindings match the Kadence button's so one retarget path serves both; the per-variant VALUES live
+			 * in the baseline document.
+			 */
 			'block'    => 'core/button',
+			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
 			'bindings' => [
-				'button-bg'   => [ 'token' => 'semantic.color.button-bg' ],   // reuse the token's wp_preset → --wp--preset--color--button-bg.
-				'button-text' => [ 'token' => 'semantic.color.button-text' ],
+				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
+				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
+				'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
+				'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
 			],
 		],
 		[
