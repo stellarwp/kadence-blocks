@@ -1,7 +1,7 @@
 <?php declare( strict_types=1 );
 // cspell:ignore palette pagenow .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -10,11 +10,26 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
-final class Projection_ProviderTest extends TestCase {
+/**
+ * Covers the CSS-variable projector: it appends the resolved --kb-token--* declarations to KB's front-end
+ * and editor style handles, routes the legacy color/font-size filters through the bridge, and is a no-op
+ * when the registry is deactivated.
+ */
+final class ProjectorTest extends TestCase {
 
+	/**
+	 * @var Projector
+	 */
 	private Projector $projector;
+
+	/**
+	 * @var Token_Registry
+	 */
 	private Token_Registry $registry;
 
+	/**
+	 * @return void
+	 */
 	protected function setUp(): void {
 		parent::setUp();
 
@@ -31,16 +46,18 @@ final class Projection_ProviderTest extends TestCase {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function tearDown(): void {
 		wp_deregister_style( 'kadence-blocks-global-variables' );
 		wp_deregister_style( 'kadence-blocks-global-editor-styles' );
 
 		// Re-activate the registry in case a test called deactivate() on the singleton.
-		$this->container->get( Token_Registry::class )->activate();
+		$this->registry->activate();
 
-		// Clear the Token_Resolver singleton's in-memory memo so calls to resolve() made
-		// during these tests do not short-circuit object-cache checks in later test classes.
-		/** @var Token_Resolver $resolver */
+		// Clear the Token_Resolver singleton's in-memory memo so calls to resolve() made during these
+		// tests do not short-circuit object-cache checks in later test classes.
 		$resolver      = $this->container->get( Token_Resolver::class );
 		$memo_property = new ReflectionProperty( Token_Resolver::class, 'memo' );
 		$memo_property->setAccessible( true );
@@ -51,6 +68,9 @@ final class Projection_ProviderTest extends TestCase {
 
 	// ---- Front-end enqueue ---------------------------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	public function testEnqueueFrontEndAppendsInlineStyleToGlobalVariablesHandle(): void {
 		$this->projector->enqueue_front_end();
 
@@ -65,6 +85,9 @@ final class Projection_ProviderTest extends TestCase {
 
 	// ---- Editor enqueue -------------------------------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	public function testEnqueueEditorAppendsInlineStyleToEditorHandle(): void {
 		global $pagenow;
 		$prev    = $pagenow;
@@ -85,6 +108,9 @@ final class Projection_ProviderTest extends TestCase {
 
 	// ---- Filter routing -------------------------------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	public function testFilterGlobalColorsRoutesToBridge(): void {
 		$input  = [
 			'--global-palette1' => '#3182CE',
@@ -97,6 +123,9 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertArrayHasKey( '--global-palette2', $result );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testFilterFontSizesPassesThroughWhenNoFontSizeTokensRegistered(): void {
 		$input  = [ 'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)' ];
 		$result = $this->projector->filter_font_sizes( $input );
@@ -107,6 +136,9 @@ final class Projection_ProviderTest extends TestCase {
 
 	// ---- Deactivated registry (fail-closed) ----------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	public function testNothingIsEmittedWhenRegistryIsDeactivated(): void {
 		$this->registry->deactivate();
 
@@ -120,6 +152,9 @@ final class Projection_ProviderTest extends TestCase {
 		$this->assertEmpty( $editor_inline );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testFiltersReturnInputUnchangedWhenRegistryIsDeactivated(): void {
 		$this->registry->deactivate();
 
