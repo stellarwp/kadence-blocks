@@ -122,30 +122,34 @@ final class Token_Resolver {
 	 * @param array<string,mixed> $document
 	 */
 	private function resolve_document( array $document ): Resolved_Tokens {
-		$by_id  = [];
-		$by_var = [];
+		$by_id            = [];
+		$by_var           = [];
+		$by_var_projected = [];
+		$by_id_target     = [];
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target );
 			}
 		}
 
-		return new Resolved_Tokens( $by_id, $by_var );
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
 	}
 
 	/**
 	 * Depth-first walk, collecting every token leaf.
 	 *
-	 * @param array<string,mixed>  $node     The current group node.
-	 * @param string               $prefix   The dot-path accumulated so far.
-	 * @param array<string,mixed>  $document Full effective doc, for alias lookups.
-	 * @param array<string,string> $by_id    By-reference id => CSS value map.
-	 * @param array<string,string> $by_var   By-reference css-var => CSS value map.
+	 * @param array<string,mixed>  $node             The current group node.
+	 * @param string               $prefix           The dot-path accumulated so far.
+	 * @param array<string,mixed>  $document         Full effective doc, for alias lookups.
+	 * @param array<string,string> $by_id            By-reference id => literal CSS value map.
+	 * @param array<string,string> $by_var           By-reference css-var => literal CSS value map.
+	 * @param array<string,string> $by_var_projected By-reference css-var => var()-preserving CSS value map.
+	 * @param array<string,string> $by_id_target     By-reference id => target id map (whole-$value aliases only).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -157,17 +161,67 @@ final class Token_Resolver {
 			$path = $prefix . '.' . $key;
 
 			if ( array_key_exists( '$value', $child ) ) {
-				$type  = $child[ Token_Type::get_type_key() ] ?? '';
-				$value = $this->resolve_value( $child['$value'], $document, [] );
-				$css   = $this->renderer->render( (string) $type, $value );
+				$raw   = $child['$value'];
+				$type  = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
+				$value = $this->resolve_value( $raw, $document, [] );
+				$css   = $this->renderer->render( $type, $value );
+				$var   = Css_Var::from_id( $path );
 
-				$by_id[ $path ]                      = $css;
-				$by_var[ Css_Var::from_id( $path ) ] = $css;
+				$by_id[ $path ] = $css;
+				$by_var[ $var ] = $css;
+
+				if ( is_string( $raw ) && Alias::is_alias( $raw ) ) {
+					// Whole-$value alias: the token's variable points straight at its immediate
+					// target's variable (bypassing the type renderer, which expects a literal), so the
+					// indirection survives into CSS and dependents follow live. resolve_value() has
+					// already validated the alias (no cycle, not dangling), so the target is a real leaf
+					// this same walk emits a --kb-token--* var for. The literal above still feeds host
+					// surfaces.
+					$target_id                = Alias::path_of( $raw );
+					$by_id_target[ $path ]    = $target_id;
+					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id ) . ')';
+				} else {
+					// A composite (shadow/typography) may alias individual fields; project those to
+					// var() references and render the shorthand around them. Scalars and lists carry no
+					// alias and render identically to the literal.
+					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw ) );
+				}
+
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target );
 		}
+	}
+
+	/**
+	 * Project a raw $value for the css-var output, preserving alias indirection as var() references
+	 * instead of flattening to literals: a whole-string alias (e.g. a composite field that is one)
+	 * becomes var(--<target>); a composite recurses field by field; scalars and lists pass through.
+	 *
+	 * Unlike resolve_value() this neither follows alias chains nor re-validates them — it stops at the
+	 * immediate target (the chain is preserved across tokens by the cascade) and only ever runs after
+	 * resolve_value() has already rejected cycles and dangling aliases for the same leaf.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return mixed The value with aliases replaced by var() references.
+	 */
+	private function project_value( $value ) {
+		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+		}
+
+		if ( is_array( $value ) && ! $this->is_list( $value ) ) {
+			$projected = [];
+			foreach ( $value as $field => $sub ) {
+				$projected[ $field ] = $this->project_value( $sub );
+			}
+
+			return $projected;
+		}
+
+		return $value;
 	}
 
 	/**

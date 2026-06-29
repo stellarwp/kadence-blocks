@@ -78,7 +78,7 @@ final class Css_Builder {
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
 	public function css( Resolved_Tokens $resolved ): string {
-		$tokens  = $this->token_block( $resolved->by_var() );
+		$tokens  = $this->token_block( $resolved );
 		$presets = $this->preset_block( $resolved );
 		$spacing = $this->slot_block( $resolved, Spacing_Target::class );
 		$gap     = $this->slot_block( $resolved, Gap_Target::class );
@@ -121,21 +121,29 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the --kb-token--* declarations from the resolver's css-var => value map.
+	 * Emit the --kb-token--* declarations from the resolver's projected css-var => value map.
+	 *
+	 * The projection preserves alias indirection: a reference-valued token reads
+	 * `var(--kb-token--<target>)` and a composite keeps a `var()` for any aliased field, so editing a
+	 * referenced token updates every dependent token live, with no server re-resolve. A raw-valued token
+	 * (a primitive, or a semantic overridden to a literal) emits the literal — the value lives once, at
+	 * the leaf. var() references derive from the alias grammar (`[\w.-]+`) and survive sanitization
+	 * untouched, which still strips any breakout characters from the literal portions.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,string> $by_var css-var => CSS value.
+	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
 	 * @return string
 	 */
-	private function token_block( array $by_var ): string {
-		if ( $by_var === [] ) {
+	private function token_block( Resolved_Tokens $resolved ): string {
+		$projected = $resolved->projected_vars();
+		if ( $projected === [] ) {
 			return '';
 		}
 
 		$declarations = '';
-		foreach ( $by_var as $var => $value ) {
+		foreach ( $projected as $var => $value ) {
 			$declarations .= $var . ':' . $this->sanitize_value( $value ) . ';';
 		}
 
