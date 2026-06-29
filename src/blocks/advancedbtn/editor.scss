@@ -219,13 +219,13 @@
 	padding: 0.4em 1em;
 	cursor: pointer;
 	font-size: 1.125rem;
-	border-radius: 3px;
+	border-radius: var(--kb-token--semantic--radius--control, 3px);
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;
 }
 .kt-button.kb-btn-global-fill {
 	border: 0px solid transparent;
-	border-radius: 3px;
+	border-radius: var(--kb-token--semantic--radius--control, 3px);
 	background: var(--global-palette-btn-bg, #3633e1);
 	color: var(--global-palette-btn, #ffffff);
 	&:hover {
@@ -379,7 +379,7 @@
 	gap: 0.5em;
 
 	&.icon-reveal {
-		$icon-size: var(--kb-button-icon-size, 24px);
+		$icon-size: var(--kb-button-icon-size, var(--kb-token--semantic--icon-size--default, 24px));
 
 		.kt-btn-svg-icon {
 			transition:

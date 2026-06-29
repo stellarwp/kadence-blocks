@@ -20,7 +20,7 @@ use WP_REST_Server;
  */
 final class VariantsControllerTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	/**
 	 * @var Token_Store
@@ -127,7 +127,7 @@ final class VariantsControllerTest extends TestCase {
 		$this->assertSame( self::BUTTON, $data['block'] );
 		$this->assertSame( 'primary', $data['default'] );
 		$this->assertArrayHasKey( 'primary', $data['variants'] );
-		$this->assertArrayHasKey( 'ghost', $data['variants'] );
+		$this->assertArrayHasKey( 'secondary', $data['variants'] );
 	}
 
 	/**
@@ -135,7 +135,7 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testGetItemReflectsAStoredOverride(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/advancedbtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
 			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
@@ -182,7 +182,7 @@ final class VariantsControllerTest extends TestCase {
 		// The new variant lands while the baseline siblings and the default survive.
 		$this->assertArrayHasKey( 'outline', $data['variants'] );
 		$this->assertArrayHasKey( 'primary', $data['variants'] );
-		$this->assertArrayHasKey( 'ghost', $data['variants'] );
+		$this->assertArrayHasKey( 'secondary', $data['variants'] );
 		$this->assertSame( 'primary', $data['default'] );
 	}
 
@@ -293,7 +293,7 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testDeleteVariantIsAnIdempotentNoOpWhenAbsent(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/advancedbtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
 			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
@@ -431,7 +431,7 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testAWriteBumpsTheVersion(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/advancedbtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
 			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
@@ -494,7 +494,7 @@ final class VariantsControllerTest extends TestCase {
 	 * carrying any extra body parameters.
 	 *
 	 * @param string               $method The HTTP method.
-	 * @param string               $block  The block name, e.g. "kadence/advancedbtn".
+	 * @param string               $block  The block name, e.g. "kadence/singlebtn".
 	 * @param array<string, mixed> $extra  Extra parameters (variant, label, tokens, variants, default).
 	 *
 	 * @return WP_REST_Request

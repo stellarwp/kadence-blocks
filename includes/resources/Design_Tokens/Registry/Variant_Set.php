@@ -8,11 +8,13 @@ use InvalidArgumentException;
  * Immutable registration that a block accepts variants, plus its per-property bindings — the *structure*
  * half of the variant model, and the only part that cannot live in the document.
  *
- * It deliberately holds NO variant names, default, labels or values: those are document data
- * (`$extensions.com.kadence.designTokens.variants.<block>` — the `$default`, the variant keys, and each
- * variant's `tokens`), read through the Variant_Resolver. Keeping them out of the registry means a
+ * It deliberately holds NO variant names, default or values, and no per-variant labels: those are document
+ * data (`$extensions.com.kadence.designTokens.variants.<block>` — the `$default`, the variant keys, and
+ * each variant's `tokens`), read through the Variant_Resolver. Keeping them out of the registry means a
  * single source of truth for the variant list (so a user-added variant in the store is honoured) and no
- * drift between a declaration and the document.
+ * drift between a declaration and the document. The optional `label` is the one exception — it names the
+ * editor picker CONTROL (the variant axis), not a variant, so it is structural editor config and is
+ * declared here.
  *
  * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); all variants of a block share
  * the same bindings, since "the button's background" maps to the same output slot whichever variant is
@@ -41,14 +43,26 @@ final class Variant_Set {
 	public array $bindings;
 
 	/**
+	 * The editor picker's control label for this block's variant axis (e.g. "Style"), or null to fall back
+	 * to the editor's default label. Names the CONTROL, not a variant.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	public ?string $label;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param string                 $block    The block name.
 	 * @param array<string, Binding> $bindings Per-property bindings.
+	 * @param string|null            $label    The picker control label, or null for the editor default.
 	 */
-	private function __construct( string $block, array $bindings ) {
+	private function __construct( string $block, array $bindings, ?string $label ) {
 		$this->block    = $block;
 		$this->bindings = $bindings;
+		$this->label    = $label;
 	}
 
 	/**
@@ -56,9 +70,10 @@ final class Variant_Set {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set The declaration: "block" and optional "bindings" (property =>
-	 *                                  {@see Binding::from_array()}). Variant names, default and values
-	 *                                  are document data, not declared here.
+	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
+	 *                                  {@see Binding::from_array()}) and optional "label" (the picker
+	 *                                  control label). Variant names, default and values are document data,
+	 *                                  not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
 	 *
@@ -71,7 +86,11 @@ final class Variant_Set {
 			throw new InvalidArgumentException( 'Variant-set declaration is missing required string "block".' );
 		}
 
-		return new self( $set['block'], self::bindings( $set['block'], $set['bindings'] ?? [] ) );
+		return new self(
+			$set['block'],
+			self::bindings( $set['block'], $set['bindings'] ?? [] ),
+			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null
+		);
 	}
 
 	/**

@@ -23,6 +23,7 @@ final class Design_Tokens_Provider extends Provider {
 		Foundation_Presets\Provider::class,
 		Rest\Provider::class,
 		Admin\Provider::class,
+		Editor\Provider::class,
 	];
 
 	public function register(): void {

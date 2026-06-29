@@ -17,7 +17,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class ProjectorTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 
@@ -59,8 +59,8 @@ final class ProjectorTest extends TestCase {
 
 		$css = implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
 
-		$this->assertStringContainsString( '.wp-block-kadence-advancedbtn.kb-variant--primary{', $css );
-		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-advancedbtn--primary--button-bg', $css );
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-variant--primary{', $css );
+		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-singlebtn--primary--button-bg', $css );
 	}
 
 	public function testItIsANoopWhenTheRegistryIsDeactivated(): void {
