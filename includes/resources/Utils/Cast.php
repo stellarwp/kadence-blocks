@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Utils;
+namespace KadenceWP\KadenceBlocks\Utils;
 
 /**
  * Safe type-casting utilities for Design Token values.

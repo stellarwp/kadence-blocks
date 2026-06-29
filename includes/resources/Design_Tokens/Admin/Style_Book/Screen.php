@@ -19,17 +19,6 @@ final class Screen {
 	private const ROOT_ID = 'kadence-style-book-root';
 
 	/**
-	 * The DOM id the React bundle mounts into.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_root_id(): string {
-		return self::ROOT_ID;
-	}
-
-	/**
 	 * Output the Style Book screen markup.
 	 *
 	 * @since TBD

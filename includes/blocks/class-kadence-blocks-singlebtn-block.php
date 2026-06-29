@@ -5,10 +5,14 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore glight glightbox ktblocksvideopop plyr .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Class to Build the Single Button.
@@ -97,7 +101,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( 'ul.menu .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 			$css->add_property( 'width', 'initial' );
 		}
-		// standard styles
+		// Standard styles.
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type       = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
@@ -230,24 +234,29 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build up the dynamic styles for a size.
 	 *
-	 * @param string $size The size.
-	 * @return array
+	 * @param string               $css        The CSS builder instance.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param string               $unique_id  The block's unique id.
+	 * @param string               $size       The responsive size.
+	 *
+	 * @return void
 	 */
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		/** @var Kadence_Blocks_CSS $css */
 		$sized_attributes         = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
 		$css->set_media_state( strtolower( $size ) );
 
-		// standard transparent styles
+		// Standard transparent styles.
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type_transparent       = ! empty( $attributes['backgroundTransparentType'] ) ? $attributes['backgroundTransparentType'] : 'normal';
 		$bg_hover_type_transparent = ! empty( $attributes['backgroundTransparentHoverType'] ) ? $attributes['backgroundTransparentHoverType'] : 'normal';
 		if ( ! empty( $attributes['colorTransparent'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['colorTransparent'] ) );
+			$css->add_property( 'color', $css->render_color( Cast::to_string( $attributes['colorTransparent'] ) ) );
 		}
 		if ( 'normal' === $bg_type_transparent && ! empty( $attributes['backgroundTransparent'] ) ) {
-			$css->add_property( 'background', $css->render_color( $attributes['backgroundTransparent'] ) . ( 'gradient' === $bg_hover_type_transparent ? ' !important' : '' ) );
+			$css->add_property( 'background', $css->render_color( Cast::to_string( $attributes['backgroundTransparent'] ) ) . ( 'gradient' === $bg_hover_type_transparent ? ' !important' : '' ) );
 		}
 		if ( 'gradient' === $bg_type_transparent && ! empty( $attributes['gradientTransparent'] ) ) {
 			$css->add_property( 'background', $attributes['gradientTransparent'] . ' !important' );
@@ -262,18 +271,18 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// hover transparent styles
+		// Hover transparent styles.
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
 		if ( ! empty( $attributes['colorTransparentHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['colorTransparentHover'] ) );
+			$css->add_property( 'color', $css->render_color( Cast::to_string( $attributes['colorTransparentHover'] ) ) );
 		}
 		if ( 'gradient' !== $bg_type_transparent && 'normal' === $bg_hover_type_transparent && ! empty( $attributes['backgroundTransparentHover'] ) ) {
-			$css->add_property( 'background', $css->render_color( $attributes['backgroundTransparentHover'] ) );
+			$css->add_property( 'background', $css->render_color( Cast::to_string( $attributes['backgroundTransparentHover'] ) ) );
 		}
 		$css->render_measure_output( $attributes, 'borderTransparentHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderTransparentHoverStyle', true );
 		if ( isset( $attributes['displayHoverShadowTransparent'] ) && true === $attributes['displayHoverShadowTransparent'] ) {
-			if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
+			if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
 				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 			}
@@ -284,15 +293,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// standard sticky styles
+		// Standard sticky styles.
 		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type_sticky       = ! empty( $attributes['backgroundStickyType'] ) ? $attributes['backgroundStickyType'] : 'normal';
 		$bg_hover_type_sticky = ! empty( $attributes['backgroundStickyHoverType'] ) ? $attributes['backgroundStickyHoverType'] : 'normal';
 		if ( ! empty( $attributes['colorSticky'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['colorSticky'] ) );
+			$css->add_property( 'color', $css->render_color( Cast::to_string( $attributes['colorSticky'] ) ) );
 		}
 		if ( 'normal' === $bg_type_sticky && ! empty( $attributes['backgroundSticky'] ) ) {
-			$css->add_property( 'background', $css->render_color( $attributes['backgroundSticky'] ) . ( 'gradient' === $bg_hover_type_sticky ? ' !important' : '' ) );
+			$css->add_property( 'background', $css->render_color( Cast::to_string( $attributes['backgroundSticky'] ) ) . ( 'gradient' === $bg_hover_type_sticky ? ' !important' : '' ) );
 		}
 		if ( 'gradient' === $bg_type_sticky && ! empty( $attributes['gradientSticky'] ) ) {
 			$css->add_property( 'background', $attributes['gradientSticky'] . ' !important' );
@@ -307,18 +316,18 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// hover sticky styles
+		// Hover sticky styles.
 		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
 		if ( ! empty( $attributes['colorStickyHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['colorStickyHover'] ) );
+			$css->add_property( 'color', $css->render_color( Cast::to_string( $attributes['colorStickyHover'] ) ) );
 		}
 		if ( 'gradient' !== $bg_type_sticky && 'normal' === $bg_hover_type_sticky && ! empty( $attributes['backgroundStickyHover'] ) ) {
-			$css->add_property( 'background', $css->render_color( $attributes['backgroundStickyHover'] ) );
+			$css->add_property( 'background', $css->render_color( Cast::to_string( $attributes['backgroundStickyHover'] ) ) );
 		}
 		$css->render_measure_output( $attributes, 'borderStickyHoverRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
 		if ( isset( $attributes['displayHoverShadowSticky'] ) && true === $attributes['displayHoverShadowSticky'] ) {
-			if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
+			if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
 				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
 				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
 			}
@@ -333,10 +342,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build HTML for dynamic blocks
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
-	 * @param WP_Block   $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 * @param string               $unique_id The block's unique id.
+	 * @param string               $content The block inner content.
+	 * @param WP_Block             $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -345,34 +354,42 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
 
-		$inheritClassSuffix = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'inherit' : $attributes['inheritStyles'];
+		$inherit_class_suffix = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'inherit' : $attributes['inheritStyles'];
 
 		$classes   = [ 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id ];
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
-		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $inheritClassSuffix : 'kb-btn-global-fill';
+		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $inherit_class_suffix : 'kb-btn-global-fill';
 		$classes[] = ! empty( $attributes['inheritStyles'] ) && 'inherit-secondary' === $attributes['inheritStyles'] ? 'button-style-secondary' : '';
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
+		if ( ! empty( $attributes['kbVariant'] ) ) {
+			/**
+			 * The selected design-token variant outputs a kb-variant--<slug> class the Design Tokens variant
+			 * projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
+			 * the editor save filter; the sanitizer mirrors the projector's so the class matches the selector.
+			 */
+			$classes[] = 'kb-variant--' . preg_replace( '/[^A-Za-z0-9_-]+/', '-', Cast::to_string( $attributes['kbVariant'] ) );
+		}
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
 		}
-		if ( ! empty( $attributes['inheritStyles'] ) && ('inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles']) ) {
+		if ( ! empty( $attributes['inheritStyles'] ) && ( 'inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles'] ) ) {
 			$classes[] = 'wp-block-button__link';
 		}
 		$wrapper_args = [
 			'class' => implode( ' ', $classes ),
 		];
 		if ( ! empty( $attributes['anchor'] ) ) {
-			$wrapper_args['id'] = $attributes['anchor'];
+			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}
 		if ( ! empty( $attributes['label'] ) ) {
-			$wrapper_args['aria-label'] = $attributes['label'];
+			$wrapper_args['aria-label'] = Cast::to_string( $attributes['label'] );
 		}
 		if ( ! empty( $attributes['link'] ) ) {
-			$wrapper_args['href'] = esc_url( do_shortcode( $attributes['link'] ) );
+			$wrapper_args['href'] = esc_url( do_shortcode( Cast::to_string( $attributes['link'] ) ) );
 			$rel_add              = '';
 			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
 				$wrapper_args['download'] = '';
@@ -395,9 +412,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['type'] = 'submit';
 		}
 		if ( ! empty( $attributes['tooltip'] ) ) {
-			$wrapper_args['data-kb-tooltip-content'] = esc_attr( $attributes['tooltip'] );
+			$wrapper_args['data-kb-tooltip-content'] = esc_attr( Cast::to_string( $attributes['tooltip'] ) );
 			if ( ! empty( $attributes['tooltipPlacement'] ) ) {
-				$wrapper_args['data-tooltip-placement'] = esc_attr( $attributes['tooltipPlacement'] );
+				$wrapper_args['data-tooltip-placement'] = esc_attr( Cast::to_string( $attributes['tooltipPlacement'] ) );
 			}
 		}
 		if ( isset( $attributes['buttonRole'] ) && $attributes['buttonRole'] ) {
@@ -414,7 +431,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$text     = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
 		$svg_icon = '';
 		if ( ! empty( $attributes['icon'] ) ) {
-			$type         = substr( $attributes['icon'], 0, 2 );
+			$type         = substr( Cast::to_string( $attributes['icon'] ), 0, 2 );
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
 			$stroke_width = false;
@@ -426,12 +443,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$hidden   = ( empty( $title ) ? true : false );
 			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $title, $hidden );
 		}
-		$icon_left  = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'left' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
-		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
+		$icon_left  = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'left' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( Cast::to_string( $attributes['icon'] ) ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
+		$icon_right = ! empty( $svg_icon ) && ! empty( $attributes['iconSide'] ) && 'right' === $attributes['iconSide'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( Cast::to_string( $attributes['icon'] ) ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
 		$html_tag   = ! empty( $attributes['link'] ) ? 'a' : 'span';
 
 		// Try to Detect if this is a show more button and make it a button.
-		if ( isset( $attributes['lock'] ) && $attributes['lock'] && isset( $attributes['lock']['remove'] ) && $attributes['lock']['remove'] && isset( $attributes['lock']['move'] ) && $attributes['lock']['move'] && empty( $attributes['link'] ) ) {
+		if ( isset( $attributes['lock'] ) && $attributes['lock'] && is_array( $attributes['lock'] ) && isset( $attributes['lock']['remove'] ) && $attributes['lock']['remove'] && isset( $attributes['lock']['move'] ) && $attributes['lock']['move'] && empty( $attributes['link'] ) ) {
 			$html_tag = 'button';
 		}
 
