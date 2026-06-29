@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Registers the Style Book submenu under the Kadence admin menu.

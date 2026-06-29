@@ -69,6 +69,19 @@ the team enforces in review; follow them exactly.
 - Ticket numbers ARE acceptable inside a `TODO`/`@todo` marking a concrete follow-up.
 - After edits, `grep -rn "SOFT-" includes/` to confirm none leaked in.
 
+### Design token ids are kebab-case
+
+- **Token names in `baseline.json` and `declarations.php` must be kebab-case, never camelCase.**
+  A registered token id is validated as `^[a-z0-9]+([.-][a-z0-9]+)*$` (lowercase alphanumeric
+  segments separated by `.` or `-`), because it feeds `Css_Var::from_id()` which only swaps `.`
+  for `--`. A camelCase segment (`iconSize`, `borderWidth`) throws at registration, so use
+  `icon-size`, `border-width`, etc. This applies to every layer of a token path — a `semantic`
+  alias and the `primitive` it points at must both be kebab-case, and any `{alias}` reference in
+  the baseline must match.
+- Note the DTCG `$type` values are a separate vocabulary and stay as the spec defines them
+  (`fontFamily`, `fontWeight`, `cubicBezier`); the kebab-case rule is about token *names* (keys
+  and ids), not `$type`.
+
 ## Tests
 
 - **Data providers use `Generator`, not arrays.** A provider `yield`s each case; the return
@@ -142,6 +155,30 @@ bunx cspell lint -c .cspell.json --no-progress --no-must-find-files --dot <files
 
 Needs Node >= 22.18. If the default shell is on an older Node, switch first (e.g. via nvm:
 `nvm use 22`).
+
+### Flushing the design-tokens baseline cache
+
+The decoded `baseline.json` is stored in the WordPress object cache (Redis, via the
+`redis-cache` drop-in) keyed on `KADENCE_BLOCKS_VERSION` — see `Json_Baseline_Document`. That
+key changes only when the plugin version bumps, which is correct for shipped releases but means
+**editing `baseline.json` in place during development does NOT invalidate the cache**. The stale
+decoded baseline keeps being served while `declarations.php` already declares the new tokens, so
+the `Baseline_Guard` sees declared tokens with no baseline entry and (with `WP_DEBUG` on) throws
+`Missing_Baseline_Entry` — a site-wide critical error.
+
+Fix it by flushing Redis directly:
+
+```bash
+# from the lando app root
+lando ssh -s redis -c 'redis-cli flushall'
+```
+
+Do NOT reach for `lando wp cache flush` here: wp-cli boots WordPress, the guard fires on `init`,
+and it throws before the flush command runs. The out-of-band Redis flush is the escape hatch.
+(Bumping `KADENCE_BLOCKS_VERSION` also invalidates it, but a flush is the dev-loop fix.) Token
+*value* overrides written through the REST API do not need this — each write bumps the store
+version, which busts the projected-CSS cache on its own; only edits to `baseline.json` itself go
+stale this way.
 
 ## Git, commits, and PRs
 

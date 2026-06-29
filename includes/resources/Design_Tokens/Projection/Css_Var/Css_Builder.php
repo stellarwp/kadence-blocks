@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Gap_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
@@ -11,13 +14,17 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 /**
  * Builds the CSS custom-property output for a resolved token set — the CSS-variable backbone.
  *
- * Emits two declaration blocks, both scoped to ":root,:root:where(.kb-tokens)":
+ * Emits three families of declarations, all scoped to ":root,:root:where(.kb-tokens)":
  *
  *   1. The --kb-token--* family, straight from the Resolver's css-var => value map. This is the
  *      single source other projectors and adapters point at.
  *   2. A --wp--preset--<category>--<slug>: var(--kb-token--*) bridge for every token that declares a
  *      "wp_preset" projection, so WordPress preset variables (and the editor swatches that read them)
  *      resolve to the token value without a second copy of it.
+ *   3. The --global-kb-<family>-<slug> slot overrides (see the Slot sub-namespace) for tokens that
+ *      claim a Kadence Blocks spacing/gap slug — redefining KB's own global var to the token. This is
+ *      the dimension counterpart of the color/font-size legacy bridge, for the families KB exposes no
+ *      filter for.
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
  * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping.
@@ -73,8 +80,10 @@ final class Css_Builder {
 	public function css( Resolved_Tokens $resolved ): string {
 		$tokens  = $this->token_block( $resolved->by_var() );
 		$presets = $this->preset_block( $resolved );
+		$spacing = $this->slot_block( $resolved, Spacing_Target::class );
+		$gap     = $this->slot_block( $resolved, Gap_Target::class );
 
-		return $tokens . $presets;
+		return $tokens . $presets . $spacing . $gap;
 	}
 
 	/**
@@ -165,6 +174,47 @@ final class Css_Builder {
 
 			$preset        = Wp_Preset_Var::from( $target->category, $target->slug );
 			$declarations .= $preset . ':var(' . $token->css_var . ');';
+		}
+
+		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
+	}
+
+	/**
+	 * Emit the `--global-kb-<family>-<slug>: var(--kb-token--*, <literal>)` overrides for tokens claiming a
+	 * slot in the given family (spacing, gap, …).
+	 *
+	 * Kadence Blocks renders a dimension attribute that holds a preset slug as
+	 * `var(--global-kb-<family>-<slug>, <fallback>)` but, unlike colors and font sizes, ships those slug
+	 * values as plain literals with no filter to override (and for gap does not define the variable at
+	 * all). Defining the slug variable here — under the same `:root` scope, later in source order than KB's
+	 * own definition — redirects every block already storing that slug at the token, with the resolved
+	 * length as a literal fallback for contexts that lack the token vars (e.g. preview iframes). It is the
+	 * dimension counterpart of the color/font-size legacy bridge for the families KB exposes no filter for.
+	 *
+	 * @since TBD
+	 *
+	 * @param Resolved_Tokens        $resolved     The resolved token maps.
+	 * @param class-string<Target>   $target_class The slot-target type for this family.
+	 *
+	 * @return string
+	 */
+	private function slot_block( Resolved_Tokens $resolved, string $target_class ): string {
+		$declarations = '';
+
+		// The slot and css_var come from developer-declared registry config; only the resolved literal
+		// fallback can carry stored values, so just that is sanitized (as in token_block()).
+		foreach ( $this->registry->by_projection( $target_class::get_projection_key() ) as $id => $token ) {
+			$target = $target_class::from_token( $token );
+			if ( $target === null ) {
+				continue;
+			}
+
+			$value = $resolved->value( $id );
+			if ( $value === null || $value === '' ) {
+				continue;
+			}
+
+			$declarations .= $target->css_property() . ':var(' . $token->css_var . ',' . $this->sanitize_value( $value ) . ');';
 		}
 
 		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';

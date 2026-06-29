@@ -5,12 +5,14 @@
 import { addFilter } from '@wordpress/hooks';
 import { hasBlockSupport, getBlockSupport, createBlock } from '@wordpress/blocks';
 import { assign, get } from 'lodash';
-import { Button, Modal } from '@wordpress/components';
+import { Button, Modal, PanelBody } from '@wordpress/components';
+import { InspectorControls } from '@wordpress/block-editor';
 import { blockExists } from '@kadence/helpers';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
+import { VariantPicker, blockVariants } from './extension/variant-picker';
 
 /**
  * Add animation attributes
@@ -67,6 +69,31 @@ function convertArrayTitleToString(arr) {
 }
 
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
+
+/**
+ * Opt native (non-Kadence) blocks into the design-token variant system by granting them `kbVariant`
+ * support, so the shared attribute, save/preview class filters and picker treat them like any opted-in
+ * Kadence block. The color variant is therefore an additive `kb-variant--<slug>` class (not a
+ * register_block_style() block style), so it composes with WordPress's own single-select block styles
+ * (e.g. the built-in "Outline") instead of replacing one with the other.
+ *
+ * Registered before {@link blockVariantAttribute} so the support is present when the attribute is added.
+ *
+ * @param {Object} settings The block settings.
+ * @param {string} name     The block name.
+ *
+ * @since TBD
+ *
+ * @return {Object} The block settings, with kbVariant support added for supported native blocks.
+ */
+export function enableNativeBlockVariants(settings, name) {
+	if (name === 'core/button') {
+		settings.supports = assign({}, settings.supports, { kbVariant: true });
+	}
+
+	return settings;
+}
+addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enableNativeBlockVariants);
 
 /**
  * Add the kbVariant attribute to any block that opts in via the `kbVariant` block support.
@@ -165,6 +192,55 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 	};
 }, 'withBlockVariantClass');
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
+
+/**
+ * Add a "Design Variant" picker to the inspector of any block that opts into kbVariant support and has
+ * variants defined in the design-token document. Selecting an option writes the kbVariant attribute,
+ * which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped CSS hooks.
+ * An empty value selects the block's $default preset look.
+ *
+ * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
+ * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
+ *
+ * @since TBD
+ */
+const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
+	return (props) => {
+		const { name, attributes, setAttributes, isSelected } = props;
+
+		if (!hasBlockSupport(name, 'kbVariant')) {
+			return <BlockEdit {...props} />;
+		}
+
+		const support = getBlockSupport(name, 'kbVariant');
+
+		if (support && typeof support === 'object' && support.inlinePicker) {
+			return <BlockEdit {...props} />;
+		}
+
+		if (!blockVariants(name).length) {
+			return <BlockEdit {...props} />;
+		}
+
+		return (
+			<>
+				<BlockEdit {...props} />
+				{isSelected && (
+					<InspectorControls group="styles">
+						<PanelBody title={__('Design Variant', 'kadence-blocks')} initialOpen={false}>
+							<VariantPicker
+								name={name}
+								value={get(attributes, 'kbVariant', '')}
+								onChange={(value) => setAttributes({ kbVariant: value })}
+							/>
+						</PanelBody>
+					</InspectorControls>
+				)}
+			</>
+		);
+	};
+}, 'withVariantPicker');
+addFilter('editor.BlockEdit', 'kadence/kb-variant-picker', withVariantPicker);
 
 const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
