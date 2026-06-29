@@ -33,8 +33,8 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Menu::class );
 
 		// Register after Kadence_Blocks_Settings::add_menu() so the kadence-blocks parent exists.
-		add_action( 'admin_menu', $this->container->callback( Menu::class, 'register_site_menu' ), 11 );
-		add_action( 'network_admin_menu', $this->container->callback( Menu::class, 'register_network_menu' ), 11 );
+		add_action( 'admin_menu', $this->container->callback( Menu::class, 'register_site_menu' ), 20 );
+		add_action( 'network_admin_menu', $this->container->callback( Menu::class, 'register_network_menu' ), 20 );
 
 		// admin_head fires after the dashboard's admin_print_styles-{page} enqueue and before the footer
 		// where admin-kadence-home prints, so the handle is enqueued when the Localizer's guard runs.

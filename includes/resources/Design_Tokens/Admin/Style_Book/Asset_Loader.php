@@ -98,7 +98,7 @@ final class Asset_Loader {
 			self::SCRIPT_HANDLE,
 			'kadenceStyleBookParams',
 			[
-				'pVersion' => KADENCE_BLOCKS_VERSION,
+				'pluginVersion' => KADENCE_BLOCKS_VERSION,
 			]
 		);
 

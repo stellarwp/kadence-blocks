@@ -13,7 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use WP_Error;
 use WP_Http;

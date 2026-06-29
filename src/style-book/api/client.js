@@ -11,6 +11,8 @@ import { resolvedPath, tokenPath } from './paths';
 /**
  * Configure apiFetch middleware from the localized REST descriptor.
  *
+ * @since TBD
+ *
  * @param {{ root: string, nonce: string }} rest REST descriptor from the feed.
  * @return {void}
  */
@@ -26,6 +28,8 @@ export function configureRestClient(rest) {
 /**
  * Fetch the resolved token value map.
  *
+ * @since TBD
+ *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token set slug.
  * @return {Promise<{ by_id: Record<string, string>, version: string }>} Resolved payload.
@@ -36,6 +40,8 @@ export function fetchResolvedTokens(namespace, slug) {
 
 /**
  * Persist a single token leaf via the REST API.
+ *
+ * @since TBD
  *
  * @param {string}               namespace REST namespace.
  * @param {string}               tokenId   Dot-path token id.

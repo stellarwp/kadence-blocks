@@ -16,7 +16,7 @@ use Tests\Support\Classes\TestCase;
  */
 final class ProjectorTest extends TestCase {
 
-	private const BUTTON = 'kadence/advancedbtn';
+	private const BUTTON = 'kadence/singlebtn';
 
 	private Variant_Resolver $resolver;
 
@@ -29,8 +29,8 @@ final class ProjectorTest extends TestCase {
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {
 		$defaults = $this->projector( $this->button_set() )->add_preset_defaults( [], self::BUTTON );
 
-		// Button's $default is "primary": button-bg -> #3182CE, button-text -> #ffffff.
-		$this->assertSame( '#3182CE', $defaults['background'] );
+		// Button's $default is "primary": button-bg -> #3633e1, button-text -> #ffffff.
+		$this->assertSame( '#3633e1', $defaults['background'] );
 		$this->assertSame( '#ffffff', $defaults['color'] );
 		// button-radius has no block_attr, so it never reaches an attribute default.
 		$this->assertArrayNotHasKey( 'button-radius', $defaults );
@@ -47,7 +47,7 @@ final class ProjectorTest extends TestCase {
 		);
 
 		// The preset overwrites a default it binds...
-		$this->assertSame( '#3182CE', $defaults['background'] );
+		$this->assertSame( '#3633e1', $defaults['background'] );
 		// ...adds a binding the incoming defaults did not carry...
 		$this->assertSame( '#ffffff', $defaults['color'] );
 		// ...and leaves an unrelated default untouched, proving an overlay merge rather than a wholesale

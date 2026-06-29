@@ -56,10 +56,10 @@ final class RegistrationHelperTest extends TestCase {
 	}
 
 	public function testDeclarationsFileRegisteredTheButtonVariantSet(): void {
-		$set = $this->registry->for_block( 'kadence/advancedbtn' );
+		$set = $this->registry->for_block( 'kadence/singlebtn' );
 
 		$this->assertNotNull( $set );
-		$this->assertSame( 'kadence/advancedbtn', $set->block );
+		$this->assertSame( 'kadence/singlebtn', $set->block );
 		$this->assertNotNull( $set->binding( 'button-bg' ) );
 	}
 

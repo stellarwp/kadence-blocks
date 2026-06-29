@@ -18,13 +18,17 @@ final class Effective_DocumentTest extends TestCase {
 			'primitive'   => [
 				'color' => [
 					'brand' => [
+						/**
+						 * Synthetic sentinel values: this is a Fake_Baseline_Document exercising the merge
+						 * logic, intentionally independent of the shipped baseline's real palette.
+						 */
 						'primary'   => [
 							'$type'  => 'color',
-							'$value' => '#3182CE',
+							'$value' => '#111111',
 						],
 						'secondary' => [
 							'$type'  => 'color',
-							'$value' => '#2C5282',
+							'$value' => '#222222',
 						],
 					],
 				],
@@ -79,7 +83,7 @@ final class Effective_DocumentTest extends TestCase {
 
 		$this->assertSame( '#000000', $document['primitive']['color']['brand']['primary']['$value'] );
 		// Untouched siblings survive the merge.
-		$this->assertSame( '#2C5282', $document['primitive']['color']['brand']['secondary']['$value'] );
+		$this->assertSame( '#222222', $document['primitive']['color']['brand']['secondary']['$value'] );
 	}
 
 	public function testATokenAbsentFromOverridesFallsBackToBaseline(): void {
@@ -120,7 +124,7 @@ final class Effective_DocumentTest extends TestCase {
 
 		// RESET keeps the baseline value; the entry must survive with its original data.
 		$this->assertArrayHasKey( 'secondary', $document['primitive']['color']['brand'] );
-		$this->assertSame( '#2C5282', $document['primitive']['color']['brand']['secondary']['$value'] );
+		$this->assertSame( '#222222', $document['primitive']['color']['brand']['secondary']['$value'] );
 	}
 
 	public function testADisabledSentinelRemovesTheBaselineEntry(): void {
