@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { sampleColorValues } from '../../helpers/colors';
 import { filterTokensByType } from '../../helpers/navigation';
+import './overview-page.scss';
 
 /**
  * Overview card linking into a sidebar section.

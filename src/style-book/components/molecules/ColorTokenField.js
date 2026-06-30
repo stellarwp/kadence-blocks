@@ -11,6 +11,8 @@ import { __ } from '@wordpress/i18n';
 import { fromPickerColor, toPickerColor } from '../../helpers/colors';
 import { SaveStatus } from '../atoms/SaveStatus';
 import { TokenTypeBadge } from '../atoms/TokenTypeBadge';
+import './token-field.scss';
+import './color-token-field.scss';
 
 /**
  * Color token row with a picker popover and hex input.

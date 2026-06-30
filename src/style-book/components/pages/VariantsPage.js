@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import './variants-page.scss';
 
 /**
  * Block presets / variants overview with resolved preview values.

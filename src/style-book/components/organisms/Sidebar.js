@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { NavItem } from '../atoms/NavItem';
 import { NavSectionLabel } from '../atoms/NavSectionLabel';
+import './sidebar.scss';
 
 /**
  * Style Book sidebar with overview, foundations, and presets sections.

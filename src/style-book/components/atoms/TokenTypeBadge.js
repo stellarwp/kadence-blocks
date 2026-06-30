@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import './token-type-badge.scss';
 
 /**
  * Display the token type as a compact label.
