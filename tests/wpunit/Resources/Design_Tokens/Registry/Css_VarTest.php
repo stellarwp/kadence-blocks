@@ -31,4 +31,29 @@ final class Css_VarTest extends TestCase {
 			Css_Var::from_id( 'semantic.color.button-bg' )
 		);
 	}
+
+	/**
+	 * A non-empty namespace is inserted as a leading segment after the prefix, so each set's tokens get
+	 * their own --kb-token--<set>--* namespace.
+	 *
+	 * @return void
+	 */
+	public function testItNamespacesUnderASet(): void {
+		$this->assertSame(
+			'--kb-token--dark--semantic--color--button-bg',
+			Css_Var::from_id( 'semantic.color.button-bg', 'dark' )
+		);
+	}
+
+	/**
+	 * An empty namespace yields the canonical name, identical to the single-argument call.
+	 *
+	 * @return void
+	 */
+	public function testAnEmptyNamespaceYieldsTheCanonicalName(): void {
+		$this->assertSame(
+			Css_Var::from_id( 'semantic.color.button-bg' ),
+			Css_Var::from_id( 'semantic.color.button-bg', '' )
+		);
+	}
 }

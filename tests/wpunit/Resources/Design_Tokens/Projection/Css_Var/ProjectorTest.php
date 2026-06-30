@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -196,6 +197,17 @@ final class ProjectorTest extends TestCase {
 	// ---- Active set ----------------------------------------------------------------------------------
 
 	/**
+	 * The button primitive id the shipped baseline resolves semantic.color.button-bg through; the
+	 * canonical alias layer re-points its var at the active set's namespaced var.
+	 *
+	 * @var string
+	 */
+	private const BUTTON_PRIMITIVE = 'primitive.color.brand.button';
+
+	/**
+	 * With only the default set, its baseline literal is emitted under the default namespace and the
+	 * canonical alias layer points at that default namespace.
+	 *
 	 * @return void
 	 */
 	public function testItProjectsTheDefaultSetsBaselineValuesWhenDefaultIsActive(): void {
@@ -204,10 +216,16 @@ final class ProjectorTest extends TestCase {
 		$css = $this->inline_css();
 
 		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
-		$this->assertStringNotContainsString( self::BRAND_B_BUTTON, $css );
+		// The default set's pointer appears twice: once in the :root alias layer (default is active), once
+		// in the default switch selector.
+		$this->assertSame( 2, substr_count( $css, $this->pointer_to_set( Token_Store::default_slug() ) ) );
 	}
 
 	/**
+	 * Every set is emitted simultaneously, so both the default and the active set's literals are present;
+	 * pointing the active set at brand-b re-points the canonical alias layer at the brand-b namespace
+	 * (with no re-resolve of the document), which is the switch.
+	 *
 	 * @return void
 	 */
 	public function testItProjectsTheActiveSetsResolvedValuesToTheFrontEnd(): void {
@@ -218,13 +236,20 @@ final class ProjectorTest extends TestCase {
 
 		$css = $this->inline_css();
 
+		// Both sets' literals are present (Option B emits every set), each under its own namespace.
 		$this->assertStringContainsString( self::BRAND_B_BUTTON, $css );
-		$this->assertStringNotContainsString( self::BASELINE_BUTTON, $css );
+		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
+
+		// The active set's pointer is in both the alias layer and its switch selector (twice); a non-active
+		// set's is only in its switch selector (once). So the alias layer targets brand-b.
+		$this->assertSame( 2, substr_count( $css, $this->pointer_to_set( 'brand-b' ) ) );
+		$this->assertSame( 1, substr_count( $css, $this->pointer_to_set( Token_Store::default_slug() ) ) );
 	}
 
 	/**
-	 * Pointing the pointer back at the default set reverts what is projected, proving the projector reads
-	 * the pointer on each build rather than caching the first set it saw.
+	 * Pointing the pointer back at the default set re-points the alias layer at the default namespace,
+	 * proving the projector reads the pointer on each build rather than caching the first set it saw. Both
+	 * sets' namespaced literals remain present throughout — only the alias layer's target changes.
 	 *
 	 * @return void
 	 */
@@ -233,9 +258,10 @@ final class ProjectorTest extends TestCase {
 
 		$this->active->set( 'brand-b' );
 		$this->projector->enqueue_front_end();
-		$this->assertStringContainsString( self::BRAND_B_BUTTON, $this->inline_css() );
+		// brand-b active: its pointer is in the alias layer plus its switch selector.
+		$this->assertSame( 2, substr_count( $this->inline_css(), $this->pointer_to_set( 'brand-b' ) ) );
 
-		// A fresh handle drops the brand-b declarations so the next build is asserted in isolation.
+		// A fresh handle drops the prior build so the next one is asserted in isolation.
 		$this->register_front_handle();
 
 		$this->active->set( Token_Store::default_slug() );
@@ -243,8 +269,31 @@ final class ProjectorTest extends TestCase {
 
 		$css = $this->inline_css();
 
-		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
-		$this->assertStringNotContainsString( self::BRAND_B_BUTTON, $css );
+		// The alias layer now targets the default set; brand-b drops back to switch-selector only.
+		$this->assertSame( 2, substr_count( $css, $this->pointer_to_set( Token_Store::default_slug() ) ) );
+		$this->assertSame( 1, substr_count( $css, $this->pointer_to_set( 'brand-b' ) ) );
+	}
+
+	/**
+	 * Every stored set plus the default is emitted at once: each as a namespaced --kb-token--<set>--* block
+	 * carrying its own literal, plus a per-set [data-kb-token-set="<set>"] switch selector.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsEverySetNamespacedWithASwitchSelector(): void {
+		$this->store->save_document( $this->brand_b_document(), 'brand-b' );
+
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		// Each set's button primitive is defined under its own namespace.
+		$this->assertStringContainsString( Css_Var::from_id( self::BUTTON_PRIMITIVE, Token_Store::default_slug() ) . ':' . self::BASELINE_BUTTON, $css );
+		$this->assertStringContainsString( Css_Var::from_id( self::BUTTON_PRIMITIVE, 'brand-b' ) . ':' . self::BRAND_B_BUTTON, $css );
+
+		// Each set carries its own client-side switch selector.
+		$this->assertStringContainsString( '[data-kb-token-set="' . Token_Store::default_slug() . '"]{', $css );
+		$this->assertStringContainsString( '[data-kb-token-set="brand-b"]{', $css );
 	}
 
 	/**
@@ -281,6 +330,19 @@ final class ProjectorTest extends TestCase {
 		}
 
 		wp_register_style( 'kadence-blocks-global-variables', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+	}
+
+	/**
+	 * The declaration that points the canonical button-primitive var at a given set's namespaced var. It
+	 * appears in that set's switch selector always, and additionally in the :root alias layer when the set
+	 * is active — so its occurrence count distinguishes the active set (2) from a non-active set (1).
+	 *
+	 * @param string $slug The set slug the canonical var is pointed at.
+	 *
+	 * @return string
+	 */
+	private function pointer_to_set( string $slug ): string {
+		return Css_Var::from_id( self::BUTTON_PRIMITIVE ) . ':var(' . Css_Var::from_id( self::BUTTON_PRIMITIVE, $slug ) . ');';
 	}
 
 	/**
