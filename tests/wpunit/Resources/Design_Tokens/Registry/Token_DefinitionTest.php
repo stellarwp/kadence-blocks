@@ -148,6 +148,7 @@ final class Token_DefinitionTest extends TestCase {
 			'underscore'   => [ 'semantic.color.button_bg' ],
 			'leading dot'  => [ '.semantic.color.button-bg' ],
 			'trailing dot' => [ 'semantic.color.button-bg.' ],
+			'camelCase'    => [ 'semantic.color.buttonBg' ],
 		];
 	}
 
