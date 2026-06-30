@@ -753,6 +753,10 @@
 		"iconReveal": {
 			"type": "boolean",
 			"default": false
+		},
+		"kbVariant": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -764,7 +768,10 @@
 		"html": false,
 		"reusable": false,
 		"kbMetadata": true,
-		"kbContentLabel": "text"
+		"kbContentLabel": "text",
+		"kbVariant": {
+			"inlinePicker": true
+		}
 	},
 	"usesContext": [
 		"postId",

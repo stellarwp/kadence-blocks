@@ -151,7 +151,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$this->assertArrayHasKey( '$extensions', $document );
 		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['primary']['$value'] );
 		$this->assertArrayHasKey(
-			'kadence/advancedbtn',
+			'kadence/singlebtn',
 			$document['$extensions']['com.kadence.designTokens']['variants']
 		);
 	}
