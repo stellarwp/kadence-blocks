@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { isColorType, normalizeHexColor } from '../../helpers/tokens';
+import './token-swatch.scss';
 
 /**
  * A small color preview swatch for color tokens.

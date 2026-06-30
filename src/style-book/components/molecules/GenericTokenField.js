@@ -11,6 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { SaveStatus } from '../atoms/SaveStatus';
 import { TokenSwatch } from '../atoms/TokenSwatch';
 import { TokenTypeBadge } from '../atoms/TokenTypeBadge';
+import './token-field.scss';
 
 /**
  * Text-based token row for non-color types.

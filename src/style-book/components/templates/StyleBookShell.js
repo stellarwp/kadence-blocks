@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Sidebar } from '../organisms/Sidebar';
+import './style-book-shell.scss';
 
 /**
  * Two-column shell with sidebar navigation and a scrollable content area.
