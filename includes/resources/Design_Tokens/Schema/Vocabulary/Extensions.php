@@ -56,6 +56,16 @@ final class Extensions {
 	private const SECTION_VARIANTS = 'variants';
 
 	/**
+	 * The user-created primitives section in the $extensions namespace.
+	 * NOT returned by get_sections() — it is not preset/variant-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_USER_PRIMITIVES = 'userPrimitives';
+
+	/**
 	 * The key naming a group's default preset slug.
 	 *
 	 * @since TBD
@@ -124,6 +134,18 @@ final class Extensions {
 	 */
 	public static function get_section_variants(): string {
 		return self::SECTION_VARIANTS;
+	}
+
+	/**
+	 * The user-created primitives section name in the $extensions namespace.
+	 * NOT returned by get_sections() — it is not preset/variant-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_user_primitives(): string {
+		return self::SECTION_USER_PRIMITIVES;
 	}
 
 	/**
