@@ -17,5 +17,11 @@ export function TokenSwatch({ type, value }) {
 	const hex = normalizeHexColor(value);
 	const background = hex ?? value;
 
-	return <span className="kadence-style-book__swatch" style={{ backgroundColor: background }} aria-hidden="true" />;
+	return (
+		<span
+			className="kadence-blocks-style-book__swatch"
+			style={{ backgroundColor: background }}
+			aria-hidden="true"
+		/>
+	);
 }

@@ -39,8 +39,8 @@ export function FoundationPage({
 	const filtered = filterTokensByGroup(tokens, section.groupName);
 
 	return (
-		<div className="kadence-style-book__foundation-page">
-			<header className="kadence-style-book__page-header">
+		<div className="kadence-blocks-style-book__foundation-page">
+			<header className="kadence-blocks-style-book__page-header">
 				<h2>{section.label}</h2>
 				<p>{section.description}</p>
 			</header>

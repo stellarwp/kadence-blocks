@@ -16,9 +16,9 @@ import { TokenField } from '../molecules/TokenField';
  */
 export function TokenGroup({ groupName, tokens, values, onSave, getFieldState }) {
 	return (
-		<section className="kadence-style-book__token-group">
-			<h2 className="kadence-style-book__token-group-title">{groupName}</h2>
-			<div className="kadence-style-book__token-group-list">
+		<section className="kadence-blocks-style-book__token-group">
+			<h2 className="kadence-blocks-style-book__token-group-title">{groupName}</h2>
+			<div className="kadence-blocks-style-book__token-group-list">
 				{tokens.map((token) => (
 					<TokenField
 						key={token.id}

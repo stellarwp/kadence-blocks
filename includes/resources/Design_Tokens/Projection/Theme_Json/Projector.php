@@ -21,6 +21,9 @@ use WP_Theme_JSON_Data;
  * Token preset lists are merged onto whatever the incoming theme.json already declares, so KB adds to
  * — never replaces — the active theme's palette and KB's own kadence_blocks_colors injection.
  *
+ * Only the active set's tokens populate these presets (the core color picker); non-active sets stay
+ * CSS-var-only and never enter theme.json.
+ *
  * @since TBD
  */
 final class Projector {

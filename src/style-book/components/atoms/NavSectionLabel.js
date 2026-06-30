@@ -5,5 +5,5 @@
  * @return {JSX.Element} Section label.
  */
 export function NavSectionLabel({ children }) {
-	return <div className="kadence-style-book__nav-section-label">{children}</div>;
+	return <div className="kadence-blocks-style-book__nav-section-label">{children}</div>;
 }

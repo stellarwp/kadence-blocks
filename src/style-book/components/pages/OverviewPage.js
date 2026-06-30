@@ -21,12 +21,12 @@ import { filterTokensByGroup } from '../../helpers/navigation';
  */
 function OverviewCard({ title, subtitle, onClick, children }) {
 	return (
-		<button type="button" className="kadence-style-book__overview-card" onClick={onClick}>
-			<div className="kadence-style-book__overview-card-head">
+		<button type="button" className="kadence-blocks-style-book__overview-card" onClick={onClick}>
+			<div className="kadence-blocks-style-book__overview-card-head">
 				<strong>{title}</strong>
 				{subtitle ? <span>{subtitle}</span> : null}
 			</div>
-			<div className="kadence-style-book__overview-card-body">{children}</div>
+			<div className="kadence-blocks-style-book__overview-card-body">{children}</div>
 		</button>
 	);
 }
@@ -45,8 +45,8 @@ export function OverviewPage({ sections, tokens, values, onNavigate }) {
 	const foundationSections = sections.filter((section) => section.kind === 'foundation');
 
 	return (
-		<div className="kadence-style-book__overview">
-			<header className="kadence-style-book__page-header">
+		<div className="kadence-blocks-style-book__overview">
+			<header className="kadence-blocks-style-book__page-header">
 				<h2>{__('Overview', 'kadence-blocks')}</h2>
 				<p>
 					{__(
@@ -56,7 +56,7 @@ export function OverviewPage({ sections, tokens, values, onNavigate }) {
 				</p>
 			</header>
 
-			<div className="kadence-style-book__overview-grid">
+			<div className="kadence-blocks-style-book__overview-grid">
 				{foundationSections.map((section) => {
 					const groupTokens = filterTokensByGroup(tokens, section.groupName);
 					const colorSamples = section.showColorPreview ? sampleColorValues(groupTokens, values) : [];
@@ -73,17 +73,17 @@ export function OverviewPage({ sections, tokens, values, onNavigate }) {
 							onClick={() => onNavigate(section.id)}
 						>
 							{section.showColorPreview ? (
-								<div className="kadence-style-book__overview-swatches">
+								<div className="kadence-blocks-style-book__overview-swatches">
 									{colorSamples.map((color) => (
 										<span
 											key={color}
-											className="kadence-style-book__overview-swatch"
+											className="kadence-blocks-style-book__overview-swatch"
 											style={{ backgroundColor: color }}
 										/>
 									))}
 								</div>
 							) : (
-								<p className="kadence-style-book__overview-hint">{section.description}</p>
+								<p className="kadence-blocks-style-book__overview-hint">{section.description}</p>
 							)}
 						</OverviewCard>
 					);

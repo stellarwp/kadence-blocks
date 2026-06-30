@@ -61,7 +61,7 @@ export function TokenList({
 
 	if (!isReady) {
 		return (
-			<div className="kadence-style-book__loading">
+			<div className="kadence-blocks-style-book__loading">
 				<Spinner />
 			</div>
 		);
@@ -76,7 +76,7 @@ export function TokenList({
 	}
 
 	return (
-		<div className="kadence-style-book__token-list">
+		<div className="kadence-blocks-style-book__token-list">
 			{!isResolved && (
 				<Notice status="warning" isDismissible={false}>
 					{__(
@@ -87,7 +87,7 @@ export function TokenList({
 			)}
 
 			{tokens.length === 0 ? (
-				<p className="kadence-style-book__empty">
+				<p className="kadence-blocks-style-book__empty">
 					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
 			) : groupBySchema ? (
@@ -102,7 +102,7 @@ export function TokenList({
 					/>
 				))
 			) : (
-				<div className="kadence-style-book__token-group-list">
+				<div className="kadence-blocks-style-book__token-group-list">
 					{tokens.map((token) => (
 						<TokenField
 							key={token.id}

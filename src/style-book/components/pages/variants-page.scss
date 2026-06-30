@@ -2,11 +2,11 @@
 @use '../../styles/mixins' as *;
 
 @mixin styles {
-	.kadence-style-book__variants-list {
+	.kadence-blocks-style-book__variants-list {
 		@include flex-column($spacing-xl);
 	}
 
-	.kadence-style-book__variant-block-head {
+	.kadence-blocks-style-book__variant-block-head {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
@@ -19,18 +19,18 @@
 		}
 	}
 
-	.kadence-style-book__variant-default {
+	.kadence-blocks-style-book__variant-default {
 		color: $color-text-muted;
 		font-size: $font-size-small;
 	}
 
-	.kadence-style-book__variant-grid {
+	.kadence-blocks-style-book__variant-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax($variant-card-min, 1fr));
 		gap: $spacing-lg;
 	}
 
-	.kadence-style-book__variant-card {
+	.kadence-blocks-style-book__variant-card {
 		padding: $spacing-lg;
 		border: 1px solid $color-border;
 		border-radius: $radius-sm;
@@ -42,11 +42,11 @@
 		}
 	}
 
-	.kadence-style-book__variant-props {
+	.kadence-blocks-style-book__variant-props {
 		margin: 0;
 	}
 
-	.kadence-style-book__variant-prop {
+	.kadence-blocks-style-book__variant-prop {
 		display: grid;
 		grid-template-columns: $variant-prop-label 1fr;
 		gap: $spacing-sm;
@@ -66,7 +66,7 @@
 		}
 	}
 
-	.kadence-style-book__variant-value {
+	.kadence-blocks-style-book__variant-value {
 		@include flex-row(0.35rem);
 	}
 }

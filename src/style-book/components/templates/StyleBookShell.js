@@ -21,21 +21,21 @@ import { Sidebar } from '../organisms/Sidebar';
  */
 export function StyleBookShell({ section, sections, onNavigate, version, children }) {
 	return (
-		<div className="kadence-style-book">
-			<header className="kadence-style-book__top-bar">
+		<div className="kadence-blocks-style-book">
+			<header className="kadence-blocks-style-book__top-bar">
 				<div>
-					<h1 className="kadence-style-book__title">{__('Style Book', 'kadence-blocks')}</h1>
+					<h1 className="kadence-blocks-style-book__title">{__('Style Book', 'kadence-blocks')}</h1>
 					{version ? (
-						<p className="kadence-style-book__version">
+						<p className="kadence-blocks-style-book__version">
 							{__('Store version:', 'kadence-blocks')} <code>{version}</code>
 						</p>
 					) : null}
 				</div>
 			</header>
 
-			<div className="kadence-style-book__layout">
+			<div className="kadence-blocks-style-book__layout">
 				<Sidebar section={section} sections={sections} onNavigate={onNavigate} />
-				<main className="kadence-style-book__main">{children}</main>
+				<main className="kadence-blocks-style-book__main">{children}</main>
 			</div>
 		</div>
 	);

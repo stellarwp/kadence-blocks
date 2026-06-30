@@ -11,18 +11,22 @@
  */
 export function NavItem({ active, disabled = false, onClick, count, children }) {
 	return (
-		<li className="kadence-style-book__nav-item">
+		<li className="kadence-blocks-style-book__nav-item">
 			<button
 				type="button"
-				className={['kadence-style-book__nav-button', active ? 'is-active' : '', disabled ? 'is-disabled' : '']
+				className={[
+					'kadence-blocks-style-book__nav-button',
+					active ? 'is-active' : '',
+					disabled ? 'is-disabled' : '',
+				]
 					.filter(Boolean)
 					.join(' ')}
 				onClick={disabled ? undefined : onClick}
 				disabled={disabled}
 			>
-				<span className="kadence-style-book__nav-button-label">{children}</span>
+				<span className="kadence-blocks-style-book__nav-button-label">{children}</span>
 				{typeof count === 'number' ? (
-					<span className="kadence-style-book__nav-button-count">{count}</span>
+					<span className="kadence-blocks-style-book__nav-button-count">{count}</span>
 				) : null}
 			</button>
 		</li>

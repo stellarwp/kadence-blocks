@@ -16,7 +16,7 @@ final class Screen {
 	 *
 	 * @var string
 	 */
-	private const ROOT_ID = 'kadence-style-book-root';
+	private const ROOT_ID = 'kadence-blocks-style-book-root';
 
 	/**
 	 * Output the Style Book screen markup.
@@ -27,10 +27,10 @@ final class Screen {
 	 */
 	public function render(): void {
 		?>
-		<div class="wrap kadence_blocks_dash kadence-style-book-wrap">
+		<div class="wrap kadence_blocks_dash kadence-blocks-style-book-wrap">
 			<div class="kadence_blocks_dash_head_container">
 				<div class="kadence_blocks_dash_wrap">
-					<div id="<?php echo esc_attr( self::ROOT_ID ); ?>" class="kadence-style-book-root"></div>
+					<div id="<?php echo esc_attr( self::ROOT_ID ); ?>" class="kadence-blocks-style-book-root"></div>
 				</div>
 			</div>
 		</div>
