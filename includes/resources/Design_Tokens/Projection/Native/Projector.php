@@ -22,6 +22,13 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * styling is gone, so the design system owns every such block's default; otherwise only a block that opts in
  * with a selected variant is styled. The same flag is passed to every companion.
  *
+ * This override gate plus per-variant opt-in is the only path by which a token set styles a native block,
+ * and it is the policy across multiple token sets: only the active set may own a native block's class-less
+ * default, and only under the override flag. A non-active set never force-styles a native block — it exists
+ * solely as namespaced CSS custom properties on the Css_Var surface, reachable only through an explicit
+ * per-block set override — so adding or switching sets cannot silently restyle existing native blocks on
+ * update.
+ *
  * @since TBD
  */
 final class Projector {
