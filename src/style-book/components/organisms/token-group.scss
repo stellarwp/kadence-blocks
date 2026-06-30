@@ -1,0 +1,10 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-book__token-group-title {
+	@include section-heading;
+}
+
+.kadence-blocks-style-book__token-group-list {
+	@include flex-column($spacing-lg);
+}

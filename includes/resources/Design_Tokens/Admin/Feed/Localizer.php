@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -36,7 +37,21 @@ final class Localizer {
 	 *
 	 * @var string
 	 */
-	private const HANDLE = 'admin-kadence-home';
+	private const DASHBOARD_HANDLE = 'admin-kadence-home';
+
+	/**
+	 * Script handles that receive the design-token feed when enqueued on the current screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	private function handles(): array {
+		return [
+			self::DASHBOARD_HANDLE,
+			Asset_Loader::get_script_handle(),
+		];
+	}
 
 	/**
 	 * The JS global the React app reads.
@@ -111,8 +126,10 @@ final class Localizer {
 	 * @return void
 	 */
 	public function localize(): void {
-		if ( ! wp_script_is( self::HANDLE, 'enqueued' ) ) {
-			return; // Not the dashboard page — nothing to attach to.
+		$handle = $this->resolve_handle();
+
+		if ( $handle === null ) {
+			return; // No supported admin bundle on this screen.
 		}
 
 		$slug    = Token_Store::default_slug();
@@ -141,10 +158,27 @@ final class Localizer {
 		}
 
 		wp_add_inline_script(
-			self::HANDLE,
-			'window.' . self::OBJECT . ' = ' . addslashes( $json ) . ';',
+			$handle,
+			'window.' . self::OBJECT . ' = ' . $json . ';',
 			'before'
 		);
+	}
+
+	/**
+	 * The first supported script handle enqueued on the current screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	private function resolve_handle(): ?string {
+		foreach ( $this->handles() as $handle ) {
+			if ( wp_script_is( $handle, 'enqueued' ) ) {
+				return $handle;
+			}
+		}
+
+		return null;
 	}
 
 	/**

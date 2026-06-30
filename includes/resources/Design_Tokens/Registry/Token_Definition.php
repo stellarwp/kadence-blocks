@@ -109,8 +109,8 @@ final class Token_Definition {
 		$label = self::require_string( $definition['label'] ?? null, 'label' );
 
 		// Guard the id charset at declaration time: it feeds Css_Var::from_id() which only swaps "." for
-		// "--", so an id with a space or slash would silently yield an invalid CSS custom-property name.
-		// A DTCG dot-path is lowercase alphanumeric segments separated by "." or "-".
+		// "--", so an id with a space, slash, or uppercase letter would silently yield an invalid CSS
+		// custom-property name. Segments must be lowercase kebab-case (e.g. primitive.dimension.border-width.sm).
 		if ( ! preg_match( '/^[a-z0-9]+([.-][a-z0-9]+)*$/', $id ) ) {
 			throw new InvalidArgumentException(
 				sprintf( 'Design token id "%s" must be a dot-path of lowercase alphanumeric segments separated by "." or "-".', $id )
