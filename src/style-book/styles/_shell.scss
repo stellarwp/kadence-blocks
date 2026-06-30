@@ -1,7 +1,5 @@
 @use 'tokens' as *;
 
-@mixin styles {
-	.kadence-blocks-style-book-root {
-		min-height: $shell-min-height;
-	}
+.kadence-blocks-style-book-root {
+	min-height: $shell-min-height;
 }

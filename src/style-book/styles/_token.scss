@@ -1,8 +1,7 @@
 @use 'tokens' as *;
 @use 'mixins' as *;
 
-// Shared BEM block for every `kadence-blocks-style-book__token-*` element.
-@mixin block {
+.kadence-blocks-style-book__token {
 	&-list {
 		@include flex-column($spacing-xl);
 	}
