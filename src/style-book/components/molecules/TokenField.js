@@ -3,6 +3,7 @@
  */
 import { useEffect, useState } from '@wordpress/element';
 import { Button, TextControl } from '@wordpress/components';
+import './token-field.scss';
 import { __ } from '@wordpress/i18n';
 
 /**

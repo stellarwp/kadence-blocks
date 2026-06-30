@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { TokenField } from '../molecules/TokenField';
+import './token-group.scss';
 
 /**
  * A schema group of editable tokens.
