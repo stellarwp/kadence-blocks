@@ -96,7 +96,7 @@ final class Variant_Resolver {
 				continue;
 			}
 
-			$values[ (string) $property ] = $this->project( $value );
+			$values[ $property ] = $this->project( $value );
 		}
 
 		return $values;
@@ -141,7 +141,7 @@ final class Variant_Resolver {
 			$flat = $this->flatten( $value, $resolved );
 
 			if ( $flat !== null ) {
-				$values[ (string) $property ] = $flat;
+				$values[ $property ] = $flat;
 			}
 		}
 
@@ -267,7 +267,7 @@ final class Variant_Resolver {
 
 		foreach ( $this->names( $block ) as $variant ) {
 			foreach ( array_keys( $this->variant_tokens( $block, $variant ) ) as $property ) {
-				$properties[ (string) $property ] = true;
+				$properties[ $property ] = true;
 			}
 		}
 
