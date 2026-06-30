@@ -3,6 +3,8 @@
  */
 import { useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import '../../styles/_token.scss';
+import './token-list.scss';
 import { Notice, Spinner } from '@wordpress/components';
 
 /**
