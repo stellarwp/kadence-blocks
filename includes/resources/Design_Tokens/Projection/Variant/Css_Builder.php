@@ -25,7 +25,10 @@ use RuntimeException;
  * Three declaration blocks are emitted:
  *
  *   1. A global --kb-token--variant--<block>--<variant>--<property> definition for every bound value, so
- *      a variant's values surface as named token vars in the same graph as every other token.
+ *      a variant's values surface as named token vars in the same graph as every other token. The value
+ *      preserves alias indirection (Variant_Resolver::resolve): a binding that aliases a token reads
+ *      var(--kb-token--<target>) so the variant var chains to the semantic/primitive it points at and
+ *      follows a token edit live; a literal binding emits the literal.
  *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
  *      --global-<slot> at its variant var. The var is always co-emitted in (1) in the same stylesheet,
  *      so the reference resolves without a literal fallback.
@@ -174,10 +177,10 @@ final class Css_Builder {
 						continue;
 					}
 
-					$var     = $this->variant_var( $block, $variant, $property );
-					$literal = $this->sanitize_value( $value );
+					$var       = $this->variant_var( $block, $variant, $property );
+					$projected = $this->sanitize_value( $value );
 
-					$globals      .= $var . ':' . $literal . ';';
+					$globals      .= $var . ':' . $projected . ';';
 					$declarations .= '--global-' . $slot . ':var(' . $var . ');';
 				}
 

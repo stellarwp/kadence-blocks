@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -83,6 +84,15 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
+	 * Owns the active-set pointer, read at sync time so the synced options follow the active set.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * The palette builder.
 	 *
 	 * @since TBD
@@ -102,11 +112,13 @@ final class Projector {
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
+		Active_Set_Store $active,
 		Palette_Builder $builder
 	) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->store    = $store;
+		$this->active   = $active;
 		$this->builder  = $builder;
 	}
 
@@ -152,17 +164,19 @@ final class Projector {
 			return;
 		}
 
+		$slug          = $this->active->get();
 		$theme_present = $this->theme_palette_exists();
-		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version() . ':' . ( $theme_present ? '1' : '0' );
+		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version( $slug ) . ':' . ( $theme_present ? '1' : '0' );
 
-		// Skip the resolve + writes when neither the store version nor the theme-option presence changed
-		// since the last successful sync. The theme-present bit is what catches a theme switch.
+		// Skip the resolve + writes when neither the active set's version nor the theme-option presence
+		// changed since the last successful sync. Switching the active set changes its version, so the
+		// signature flips and the next reconcile re-syncs; the theme-present bit catches a theme switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;
 		}
 
 		try {
-			$resolved = $this->resolver->resolve();
+			$resolved = $this->resolver->resolve( $slug );
 		} catch ( RuntimeException $e ) {
 			// Corrupt stored document (alias cycle / dangling alias from a raw DB write). Fail open:
 			// leave both options exactly as they are; do NOT advance the marker, so a later clean write

@@ -48,17 +48,19 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Each variant's resolved value lives as a co-emitted global token var, aliases flattened to literals.
+	 * Each variant's value lives as a co-emitted global token var that preserves the alias indirection:
+	 * the variant var reads var(--kb-token--<semantic>) rather than a flattened hex, so a token edit flows
+	 * through the chain live.
 	 *
 	 * @return void
 	 */
 	public function testItDefinesTheVariantVars(): void {
 		$css = $this->builder( $this->registry )->css();
 
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3633e1;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2f2ffc;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#1A202C;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:#2D3748;', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:var(--kb-token--semantic--color--button-primary-bg-hover);', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:var(--kb-token--semantic--color--button-secondary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:var(--kb-token--semantic--color--button-secondary-bg-hover);', $css );
 	}
 
 	/**

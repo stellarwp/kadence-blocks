@@ -33,10 +33,11 @@ use WP_REST_Server;
  * rejects alias cycles and dangling aliases (HTTP 422) before anything is committed, then a single
  * Token_Store::save_document() that bumps the version and fires the change action.
  *
- * A single token set ships under Token_Store::default_slug(); the slug parameter and the collection
- * are modelled now so the surface does not change when multi-set support arrives. Until then a
- * non-default slug is rejected: reads return 404 (no such set), writes return 422 (multi-set authoring
- * is unsupported).
+ * The module holds any number of named token sets, each keyed by slug. The default set under
+ * Token_Store::default_slug() is the always-present canonical set; writing an arbitrary valid slug
+ * creates or updates that set, and reading or resolving an unknown slug returns 404. The default set
+ * cannot be deleted — a DELETE against it resets it to baseline, while a DELETE against any other set
+ * removes it entirely.
  *
  * @since TBD
  */
@@ -326,9 +327,8 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Read the collection of token-set documents.
 	 *
-	 * Only a single set ships under Token_Store::default_slug() and the store exposes no listing method,
-	 * so the collection is the one default set. Enumerating multiple sets awaits a future
-	 * Token_Store::list_stores() that lands with multi-brand support.
+	 * Lists every stored set. The default set is always included even before it has a row, since it
+	 * renders from baseline and must always be addressable; a stored default is not duplicated.
 	 *
 	 * @since TBD
 	 *
@@ -337,16 +337,23 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$items = [ $this->prepare_item( Token_Store::default_slug() ) ];
+		$slugs = array_column( $this->store->list_stores(), 'slug' );
 
-		return new WP_REST_Response( $items, WP_Http::OK );
+		// The default set is always addressable, even with no row yet (it renders from baseline), so
+		// surface it whether or not the store has persisted it.
+		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {
+			array_unshift( $slugs, Token_Store::default_slug() );
+		}
+
+		$items = array_map( [ $this, 'prepare_item' ], $slugs );
+
+		return new WP_REST_Response( array_values( $items ), WP_Http::OK );
 	}
 
 	/**
 	 * Read a single token-set document by slug.
 	 *
-	 * Only the default set exists, so any other slug is unknown. Validating arbitrary slugs against the
-	 * stored sets awaits a future Token_Store::list_stores() that lands with multi-brand support.
+	 * The default set is always known; any other slug must have a stored row, otherwise it is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -357,7 +364,7 @@ final class Documents_Controller extends Controller {
 	public function get_item( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		if ( $slug !== Token_Store::default_slug() ) {
+		if ( ! $this->is_known_set( $slug ) ) {
 			return $this->not_found( $slug );
 		}
 
@@ -380,7 +387,7 @@ final class Documents_Controller extends Controller {
 	public function get_resolved( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		if ( $slug !== Token_Store::default_slug() ) {
+		if ( ! $this->is_known_set( $slug ) ) {
 			return $this->not_found( $slug );
 		}
 
@@ -409,11 +416,11 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Create-or-merge the default set from the collection route (POST /documents).
+	 * Create-or-merge a set from the collection route (POST /documents).
 	 *
 	 * Per the WordPress partial-update convention, the provided document is deep-merged into whatever is
-	 * stored; merging into an empty set simply creates it. v1 ships a single set, so an explicit
-	 * non-default slug is rejected as unsupported.
+	 * stored; merging into an empty (or not-yet-existing) set simply creates it. The slug defaults to the
+	 * default set when omitted, since the collection route carries no slug path segment.
 	 *
 	 * @since TBD
 	 *
@@ -472,9 +479,12 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Reset the whole set to baseline (DELETE /documents/{slug}).
+	 * Delete a token set (DELETE /documents/{slug}).
 	 *
-	 * Stores an empty overrides document, so the set then renders entirely from baseline.
+	 * Delegates to Token_Store::delete(), which owns the rule that the default set is never removed
+	 * (deleting it clears its overrides to baseline) while any other set is dropped outright. An unknown
+	 * non-default set is a 404. The prior state is captured before the delete and returned as the deleted
+	 * resource, following the WordPress delete-response shape.
 	 *
 	 * @since TBD
 	 *
@@ -485,13 +495,32 @@ final class Documents_Controller extends Controller {
 	public function delete_item( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		$error = $this->guard_slug( $slug );
-
-		if ( $error instanceof WP_Error ) {
-			return $error;
+		if ( ! $this->is_known_set( $slug ) ) {
+			return $this->not_found( $slug );
 		}
 
-		return $this->persist( '', $slug, '', WP_Http::OK );
+		$previous = $this->prepare_item( $slug );
+
+		try {
+			$this->store->delete( $slug );
+		} catch ( DatabaseQueryException $e ) {
+			return new WP_Error(
+				'rest_design_tokens_delete_failed',
+				__( 'The design token set could not be deleted.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::INTERNAL_SERVER_ERROR,
+					'slug'   => $slug,
+				]
+			);
+		}
+
+		return new WP_REST_Response(
+			[
+				'deleted'  => true,
+				'previous' => $previous,
+			],
+			WP_Http::OK
+		);
 	}
 
 	/**
@@ -511,12 +540,6 @@ final class Documents_Controller extends Controller {
 	public function set_token( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 		$path = Cast::to_string( $request->get_param( self::PATH_PARAM ) );
-
-		$error = $this->guard_slug( $slug );
-
-		if ( $error instanceof WP_Error ) {
-			return $error;
-		}
 
 		// The leaf is the whole JSON body. Decode the raw body directly rather than via
 		// get_json_params(), which is populated only once WordPress parses the request during dispatch.
@@ -584,12 +607,6 @@ final class Documents_Controller extends Controller {
 	 */
 	public function delete_token( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
-
-		$error = $this->guard_slug( $slug );
-
-		if ( $error instanceof WP_Error ) {
-			return $error;
-		}
 
 		$path      = Cast::to_string( $request->get_param( self::PATH_PARAM ) );
 		$stored    = $this->read_stored_document( $slug );
@@ -760,9 +777,9 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Run the shared write pipeline against a candidate document, then commit it.
 	 *
-	 * Rejects a non-default slug as unsupported, then: validates the DTCG grammar (HTTP 422 on failure),
-	 * dry-runs the Resolver to reject alias cycles / dangling aliases before commit (HTTP 422), and
-	 * finally persists. An empty candidate clears the overrides (the set renders from baseline) and needs
+	 * Validates the DTCG grammar (HTTP 422 on failure), dry-runs the Resolver to reject alias cycles /
+	 * dangling aliases before commit (HTTP 422), and finally persists. Writing a slug with no row yet
+	 * creates that set. An empty candidate clears the overrides (the set renders from baseline) and needs
 	 * no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
 	 * @since TBD
@@ -774,12 +791,6 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	private function validate_and_save( array $candidate, string $slug, string $title ) {
-		$error = $this->guard_slug( $slug );
-
-		if ( $error instanceof WP_Error ) {
-			return $error;
-		}
-
 		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
 		$status = $this->store->get_version( $slug ) !== '' ? WP_Http::OK : WP_Http::CREATED;
 
@@ -861,28 +872,19 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a write to any set other than the default one. v1 ships a single set; multi-set support lands
-	 * later, so writing another slug is unsupported rather than a silent miss.
+	 * Whether a slug names a readable token set.
+	 *
+	 * The default set is always known — it renders from baseline even before it has a row — and any other
+	 * slug is known once it has a stored row.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The requested slug.
 	 *
-	 * @return WP_Error|null A WP_Error when the slug is unsupported, null when it is the default set.
+	 * @return bool
 	 */
-	private function guard_slug( string $slug ): ?WP_Error {
-		if ( $slug === Token_Store::default_slug() ) {
-			return null;
-		}
-
-		return new WP_Error(
-			'rest_design_tokens_unsupported_slug',
-			__( 'Only the default design token set can be written in this version.', 'kadence-blocks' ),
-			[
-				'status' => WP_Http::UNPROCESSABLE_ENTITY,
-				'slug'   => $slug,
-			]
-		);
+	private function is_known_set( string $slug ): bool {
+		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 
 	/**
