@@ -9,14 +9,12 @@
 	flex-shrink: 0;
 }
 
-@mixin styles {
-	.kadence-blocks-style-book__swatch {
-		@include color-preview;
-	}
+.kadence-blocks-style-book__swatch {
+	@include color-preview;
+}
 
-	.kadence-blocks-style-book__color-picker-toggle {
-		@include color-preview;
-		padding: 0;
-		cursor: pointer;
-	}
+.kadence-blocks-style-book__color-picker-toggle {
+	@include color-preview;
+	padding: 0;
+	cursor: pointer;
 }

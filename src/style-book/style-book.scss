@@ -1,32 +1,12 @@
-@use 'styles/scope' as *;
-@use 'styles/shell' as shell;
-@use 'styles/layout' as layout;
-@use 'styles/token' as token;
-@use 'components/templates/style-book-shell' as style-book-shell;
-@use 'components/organisms/sidebar' as sidebar;
-@use 'components/templates/token-list' as token-list;
-@use 'components/pages/overview-page' as overview-page;
-@use 'components/pages/variants-page' as variants-page;
-@use 'components/molecules/color-token-field' as color-token-field;
-@use 'components/atoms/token-swatch' as token-swatch;
-@use 'components/atoms/token-type-badge' as token-type-badge;
-@use 'components/atoms/save-status' as save-status;
-
-@include style-book-wrap {
-	@include shell.styles;
-	@include layout.styles;
-	@include style-book-shell.styles;
-	@include sidebar.styles;
-	@include token-list.styles;
-	@include overview-page.styles;
-	@include variants-page.styles;
-	@include color-token-field.styles;
-
-	.kadence-blocks-style-book__token {
-		@include token.block;
-	}
-
-	@include token-swatch.styles;
-	@include token-type-badge.styles;
-	@include save-status.styles;
-}
+@use 'styles/shell';
+@use 'styles/layout';
+@use 'styles/token';
+@use 'components/templates/style-book-shell';
+@use 'components/organisms/sidebar';
+@use 'components/templates/token-list';
+@use 'components/pages/overview-page';
+@use 'components/pages/variants-page';
+@use 'components/molecules/color-token-field';
+@use 'components/atoms/token-swatch';
+@use 'components/atoms/token-type-badge';
+@use 'components/atoms/save-status';

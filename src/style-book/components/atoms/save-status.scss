@@ -1,20 +1,18 @@
 @use '../../styles/tokens' as *;
 
-@mixin styles {
-	.kadence-blocks-style-book__save-status {
-		font-size: $font-size-small;
-		line-height: 2.2;
+.kadence-blocks-style-book__save-status {
+	font-size: $font-size-small;
+	line-height: 2.2;
 
-		&--saving {
-			color: $color-text-muted;
-		}
+	&--saving {
+		color: $color-text-muted;
+	}
 
-		&--saved {
-			color: $color-success;
-		}
+	&--saved {
+		color: $color-success;
+	}
 
-		&--error {
-			color: $color-error;
-		}
+	&--error {
+		color: $color-error;
 	}
 }

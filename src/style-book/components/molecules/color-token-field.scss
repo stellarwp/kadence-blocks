@@ -1,7 +1,5 @@
 @use '../../styles/tokens' as *;
 
-@mixin styles {
-	.kadence-blocks-style-book__color-picker-popover {
-		padding: $spacing-md;
-	}
+.kadence-blocks-style-book__color-picker-popover {
+	padding: $spacing-md;
 }
