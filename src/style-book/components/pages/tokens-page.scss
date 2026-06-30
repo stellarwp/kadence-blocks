@@ -2,20 +2,20 @@
 @use '../../styles/mixins' as *;
 
 @mixin styles {
-	.kadence-style-book__header {
+	.kadence-blocks-style-book__header {
 		margin-bottom: $spacing-xl;
 	}
 
-	.kadence-style-book__title {
+	.kadence-blocks-style-book__title {
 		@include section-heading($font-size-title);
 	}
 
-	.kadence-style-book__intro,
-	.kadence-style-book__version {
+	.kadence-blocks-style-book__intro,
+	.kadence-blocks-style-book__version {
 		@include body-text;
 	}
 
-	.kadence-style-book__version {
+	.kadence-blocks-style-book__version {
 		margin-top: $spacing-sm;
 		font-size: $font-size-small;
 	}

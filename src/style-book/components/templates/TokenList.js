@@ -48,7 +48,7 @@ export function TokenList({ tokens, values, isReady, isActive, isResolved, onSav
 
 	if (!isReady) {
 		return (
-			<div className="kadence-style-book__loading">
+			<div className="kadence-blocks-style-book__loading">
 				<Spinner />
 			</div>
 		);
@@ -63,7 +63,7 @@ export function TokenList({ tokens, values, isReady, isActive, isResolved, onSav
 	}
 
 	return (
-		<div className="kadence-style-book__token-list">
+		<div className="kadence-blocks-style-book__token-list">
 			{!isResolved && (
 				<Notice status="warning" isDismissible={false}>
 					{__(

@@ -40,19 +40,19 @@ export function TokenField({ token, value, onSave, fieldState }) {
 	};
 
 	return (
-		<div className="kadence-style-book__token-field">
-			<div className="kadence-style-book__token-field-meta">
+		<div className="kadence-blocks-style-book__token-field">
+			<div className="kadence-blocks-style-book__token-field-meta">
 				<TokenSwatch type={token.type} value={draft} />
-				<div className="kadence-style-book__token-field-labels">
-					<strong className="kadence-style-book__token-label">{token.label}</strong>
-					<code className="kadence-style-book__token-id">{token.id}</code>
+				<div className="kadence-blocks-style-book__token-field-labels">
+					<strong className="kadence-blocks-style-book__token-label">{token.label}</strong>
+					<code className="kadence-blocks-style-book__token-id">{token.id}</code>
 				</div>
 				<TokenTypeBadge type={token.type} />
 			</div>
 
-			<div className="kadence-style-book__token-field-controls">
+			<div className="kadence-blocks-style-book__token-field-controls">
 				<TextControl
-					className="kadence-style-book__token-input"
+					className="kadence-blocks-style-book__token-input"
 					value={draft}
 					onChange={setDraft}
 					onBlur={() => {

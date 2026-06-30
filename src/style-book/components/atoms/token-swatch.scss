@@ -1,7 +1,7 @@
 @use '../../styles/tokens' as *;
 
 @mixin styles {
-	.kadence-style-book__swatch {
+	.kadence-blocks-style-book__swatch {
 		display: inline-block;
 		width: $swatch-size;
 		height: $swatch-size;

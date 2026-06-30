@@ -12,7 +12,7 @@
 	@include tokens-page.styles;
 	@include token-list.styles;
 
-	.kadence-style-book__token {
+	.kadence-blocks-style-book__token {
 		@include token.block;
 	}
 
