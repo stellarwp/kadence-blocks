@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Projector;
@@ -23,11 +24,14 @@ final class ProjectorTest extends TestCase {
 
 	private Token_Store $store;
 
+	private Active_Set_Store $active;
+
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->resolver = $this->container->get( Variant_Resolver::class );
 		$this->store    = $this->container->get( Token_Store::class );
+		$this->active   = $this->container->get( Active_Set_Store::class );
 
 		// Register the KB style handles the projector appends to.
 		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
@@ -84,7 +88,7 @@ final class ProjectorTest extends TestCase {
 	 * Build the projector with a given registry, the real variant resolver and the store.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
-		return new Projector( $registry, $this->store, new Css_Builder( $registry, $this->resolver ) );
+		return new Projector( $registry, $this->store, $this->active, new Css_Builder( $registry, $this->resolver ) );
 	}
 
 	/**
