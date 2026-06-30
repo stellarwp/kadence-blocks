@@ -1,0 +1,7 @@
+@use 'tokens' as *;
+
+@mixin styles {
+	.kadence-style-book-root {
+		min-height: $shell-min-height;
+	}
+}

@@ -27,6 +27,8 @@ final class Provider extends Provider_Contract {
 		Block_Preset\Provider::class,
 		Kadence_Option\Provider::class,
 		Variant\Provider::class,
+		Native\Provider::class,
+		Block_Default_Css\Provider::class,
 		Adapter\Provider::class,
 	];
 

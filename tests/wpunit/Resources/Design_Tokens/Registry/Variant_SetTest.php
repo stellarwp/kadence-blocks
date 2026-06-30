@@ -27,6 +27,22 @@ final class Variant_SetTest extends TestCase {
 		$this->assertSame( 'kadence/advancedbtn', Variant_Set::from_array( $this->declaration() )->block );
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testItRetainsTheControlLabelWhenDeclared(): void {
+		$set = Variant_Set::from_array( $this->declaration() + [ 'label' => 'Style' ] );
+
+		$this->assertSame( 'Style', $set->label );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testTheControlLabelIsNullWhenOmitted(): void {
+		$this->assertNull( Variant_Set::from_array( $this->declaration() )->label );
+	}
+
 	public function testItParsesTokenReferenceAndInlineBindings(): void {
 		$set = Variant_Set::from_array( $this->declaration() );
 
