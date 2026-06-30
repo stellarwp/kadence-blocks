@@ -3,9 +3,11 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Flattens a block variant's token bindings to CSS-ready values — the variant counterpart of the
@@ -19,6 +21,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
  * `property => value`; the projection *target* for each property comes from the Variant_Set's
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding} — value and target are kept separate
  * so each downstream projector maps them its own way.
+ *
+ * Two value forms are exposed, mirroring the Token_Resolver's literal/projected split: resolve() yields
+ * the flattened literal (for projections that need a concrete value — block-attribute presets, the
+ * dimension default fallbacks), while resolve_projected() preserves an alias as a `var(--kb-token--
+ * <target>)` reference (for the css-var projection, so a variant var chains to the semantic/primitive it
+ * points at and follows a token edit live).
  *
  * Variant definitions are read from the shipped baseline. The core Resolver's Effective_Document
  * deliberately strips `$extensions`, so variants are resolved here rather than through that deep-merge.
@@ -79,6 +87,44 @@ final class Variant_Resolver {
 			if ( $flat !== null ) {
 				$values[ (string) $property ] = $flat;
 			}
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Resolve a variant's bindings to a `property => value` map for the css-var projection, preserving
+	 * alias indirection: an alias binding becomes a `var(--kb-token--<target>)` reference (so the variant
+	 * var chains to the semantic/primitive it points at and follows a token edit live) while a literal
+	 * passes straight through.
+	 *
+	 * The property set matches resolve() exactly — a property is included only when its value also flattens
+	 * to a concrete literal — so only the value *form* differs, not which properties project. Gating on the
+	 * literal is what guarantees an aliased target actually resolves to a real token, hence that its
+	 * `--kb-token--*` var is emitted by the base projection for the reference to point at.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
+	 * @param string $variant The variant slug, e.g. "ghost".
+	 * @param string $slug    The token set whose resolved values aliases resolve against.
+	 *
+	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
+	 *
+	 * @return array<string, string> property => var()-preserving CSS value.
+	 */
+	public function resolve_projected( string $block, string $variant, string $slug = 'default' ): array {
+		$tokens   = $this->variant_tokens( $block, $variant );
+		$resolved = $this->resolver->resolve( $slug );
+
+		$values = [];
+
+		foreach ( $tokens as $property => $value ) {
+			if ( $this->flatten( $value, $resolved ) === null ) {
+				continue;
+			}
+
+			$values[ (string) $property ] = $this->project( $value );
 		}
 
 		return $values;
@@ -224,6 +270,26 @@ final class Variant_Resolver {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Project one binding value for the css-var output: an alias becomes a `var(--kb-token--<target>)`
+	 * reference to its immediate target; a literal (string or number) passes through. The var counterpart
+	 * of flatten(), called only after flatten() has confirmed the value resolves, so the target var is
+	 * guaranteed to be emitted.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw binding value (alias string or literal).
+	 *
+	 * @return string
+	 */
+	private function project( $value ): string {
+		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+		}
+
+		return Cast::to_string( $value );
 	}
 
 	/**

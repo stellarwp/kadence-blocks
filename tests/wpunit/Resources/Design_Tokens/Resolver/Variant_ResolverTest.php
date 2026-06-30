@@ -48,6 +48,38 @@ final class Variant_ResolverTest extends TestCase {
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );
 	}
 
+	/**
+	 * resolve_projected() preserves alias indirection: each aliased binding reads a var() reference to its
+	 * IMMEDIATE target (the semantic it points at), not the fully-resolved primitive leaf, so the variant
+	 * var chains through the cascade and follows a token edit live. resolve() still yields the flattened
+	 * literal for the projections that need a concrete value.
+	 *
+	 * @return void
+	 */
+	public function testResolveProjectedPreservesAliasIndirection(): void {
+		$projected = $this->resolver->resolve_projected( self::BUTTON, 'primary' );
+
+		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg)', $projected['button-bg'] );
+		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-text)', $projected['button-text'] );
+		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg-hover)', $projected['button-bg-hover'] );
+		$this->assertSame( 'var(--kb-token--semantic--radius--control)', $projected['button-radius'] );
+
+		// The literal form is still available for host-facing projections — both forms are exposed.
+		$this->assertSame( '#3633e1', $this->resolver->resolve( self::BUTTON, 'primary' )['button-bg'] );
+	}
+
+	/**
+	 * The projected map covers exactly the same properties as resolve() — only the value form differs.
+	 *
+	 * @return void
+	 */
+	public function testResolveProjectedMatchesTheResolveInclusionSet(): void {
+		$this->assertSame(
+			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary' ) ),
+			array_keys( $this->resolver->resolve_projected( self::BUTTON, 'secondary' ) )
+		);
+	}
+
 	public function testResolveDefaultUsesTheDeclaredDefault(): void {
 		// The baseline's $default for the button is "primary".
 		$this->assertSame(
