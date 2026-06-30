@@ -69,6 +69,20 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * A namespace argument namespaces the var() target to that set, so a per-set variant var chains to the
+	 * set's namespaced token and the chain stays inside the set (the basis for client-side palette switching
+	 * of variants).
+	 *
+	 * @return void
+	 */
+	public function testResolveNamespacesTheVarTarget(): void {
+		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark' );
+
+		$this->assertSame( 'var(--kb-token--dark--semantic--color--button-primary-bg)', $projected['button-bg'] );
+		$this->assertSame( 'var(--kb-token--dark--semantic--radius--control)', $projected['button-radius'] );
+	}
+
+	/**
 	 * resolve() and resolve_literal() cover exactly the same properties — only the value form differs.
 	 *
 	 * @return void
