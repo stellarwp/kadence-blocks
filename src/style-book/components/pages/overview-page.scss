@@ -2,13 +2,13 @@
 @use '../../styles/mixins' as *;
 
 @mixin styles {
-	.kadence-style-book__overview-grid {
+	.kadence-blocks-style-book__overview-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax($overview-card-min, 1fr));
 		gap: $spacing-lg;
 	}
 
-	.kadence-style-book__overview-card {
+	.kadence-blocks-style-book__overview-card {
 		@include flex-column($spacing-md);
 		@include card-surface;
 		text-align: left;
@@ -21,7 +21,7 @@
 		}
 	}
 
-	.kadence-style-book__overview-card-head {
+	.kadence-blocks-style-book__overview-card-head {
 		@include flex-column(0.15rem);
 
 		strong {
@@ -34,28 +34,28 @@
 		}
 	}
 
-	.kadence-style-book__overview-swatches {
+	.kadence-blocks-style-book__overview-swatches {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.35rem;
 	}
 
-	.kadence-style-book__overview-swatch {
+	.kadence-blocks-style-book__overview-swatch {
 		width: $overview-swatch-size;
 		height: $overview-swatch-size;
 		border: 1px solid rgba(0, 0, 0, 0.12);
 		border-radius: $radius-pill;
 	}
 
-	.kadence-style-book__overview-hint,
-	.kadence-style-book__overview-variant-list {
+	.kadence-blocks-style-book__overview-hint,
+	.kadence-blocks-style-book__overview-variant-list {
 		margin: 0;
 		color: $color-text-muted;
 		font-size: $font-size-small;
 		line-height: 1.5;
 	}
 
-	.kadence-style-book__overview-variant-list {
+	.kadence-blocks-style-book__overview-variant-list {
 		padding-left: $spacing-lg;
 	}
 }

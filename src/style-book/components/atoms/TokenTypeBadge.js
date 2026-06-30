@@ -10,5 +10,5 @@ import { __ } from '@wordpress/i18n';
  * @return {JSX.Element} Type badge.
  */
 export function TokenTypeBadge({ type }) {
-	return <span className="kadence-style-book__type-badge">{type || __('unknown', 'kadence-blocks')}</span>;
+	return <span className="kadence-blocks-style-book__type-badge">{type || __('unknown', 'kadence-blocks')}</span>;
 }

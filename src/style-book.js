@@ -6,7 +6,7 @@ import { StyleBookApp } from './style-book/app/StyleBookApp';
 import './style-book/style-book.scss';
 
 wp.domReady(() => {
-	const container = document.getElementById('kadence-style-book-root');
+	const container = document.getElementById('kadence-blocks-style-book-root');
 
 	if (!container) {
 		return;

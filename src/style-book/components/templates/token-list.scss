@@ -1,7 +1,7 @@
 @use '../../styles/tokens' as *;
 
 @mixin styles {
-	.kadence-style-book__loading {
+	.kadence-blocks-style-book__loading {
 		display: flex;
 		justify-content: center;
 		padding: $spacing-2xl 0;

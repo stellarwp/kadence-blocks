@@ -10,11 +10,11 @@
 }
 
 @mixin styles {
-	.kadence-style-book__swatch {
+	.kadence-blocks-style-book__swatch {
 		@include color-preview;
 	}
 
-	.kadence-style-book__color-picker-toggle {
+	.kadence-blocks-style-book__color-picker-toggle {
 		@include color-preview;
 		padding: 0;
 		cursor: pointer;

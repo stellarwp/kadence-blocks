@@ -1,7 +1,7 @@
 @use 'tokens' as *;
 
 @mixin styles {
-	.kadence-style-book__page-header {
+	.kadence-blocks-style-book__page-header {
 		margin-bottom: $spacing-xl;
 
 		h2 {
@@ -19,7 +19,7 @@
 		}
 	}
 
-	.kadence-style-book__empty {
+	.kadence-blocks-style-book__empty {
 		margin: 0;
 		color: $color-text-muted;
 		font-size: $font-size-overview;

@@ -24,11 +24,11 @@ export function Sidebar({ section, sections, onNavigate }) {
 	const variants = sections.filter((item) => item.kind === 'variants');
 
 	return (
-		<aside className="kadence-style-book__sidebar">
+		<aside className="kadence-blocks-style-book__sidebar">
 			{overview.length > 0 && (
-				<div className="kadence-style-book__nav-section">
+				<div className="kadence-blocks-style-book__nav-section">
 					<NavSectionLabel>{__('Style Book', 'kadence-blocks')}</NavSectionLabel>
-					<ul className="kadence-style-book__nav-list">
+					<ul className="kadence-blocks-style-book__nav-list">
 						{overview.map((item) => (
 							<NavItem key={item.id} active={section === item.id} onClick={() => onNavigate(item.id)}>
 								{item.label}
@@ -39,9 +39,9 @@ export function Sidebar({ section, sections, onNavigate }) {
 			)}
 
 			{foundations.length > 0 && (
-				<div className="kadence-style-book__nav-section">
+				<div className="kadence-blocks-style-book__nav-section">
 					<NavSectionLabel>{__('Foundations', 'kadence-blocks')}</NavSectionLabel>
-					<ul className="kadence-style-book__nav-list">
+					<ul className="kadence-blocks-style-book__nav-list">
 						{foundations.map((item) => (
 							<NavItem
 								key={item.id}
@@ -57,9 +57,9 @@ export function Sidebar({ section, sections, onNavigate }) {
 			)}
 
 			{variants.length > 0 && (
-				<div className="kadence-style-book__nav-section">
+				<div className="kadence-blocks-style-book__nav-section">
 					<NavSectionLabel>{__('Presets', 'kadence-blocks')}</NavSectionLabel>
-					<ul className="kadence-style-book__nav-list">
+					<ul className="kadence-blocks-style-book__nav-list">
 						{variants.map((item) => (
 							<NavItem
 								key={item.id}

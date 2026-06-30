@@ -1,7 +1,7 @@
 @use '../../styles/tokens' as *;
 
 @mixin styles {
-	.kadence-style-book__type-badge {
+	.kadence-blocks-style-book__type-badge {
 		display: inline-flex;
 		padding: $spacing-xs $spacing-sm;
 		border-radius: $radius-pill;

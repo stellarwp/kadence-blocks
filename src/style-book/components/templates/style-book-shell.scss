@@ -2,7 +2,7 @@
 @use '../../styles/mixins' as *;
 
 @mixin styles {
-	.kadence-style-book {
+	.kadence-blocks-style-book {
 		@include flex-column(0);
 		min-height: $shell-min-height;
 		background: $color-surface;
@@ -11,33 +11,33 @@
 		overflow: hidden;
 	}
 
-	.kadence-style-book__top-bar {
+	.kadence-blocks-style-book__top-bar {
 		padding: $spacing-lg 1.25rem;
 		border-bottom: 1px solid $color-border;
 		background: $color-surface;
 	}
 
-	.kadence-style-book__title {
+	.kadence-blocks-style-book__title {
 		margin: 0;
 		font-size: $font-size-shell-title;
 		font-weight: 600;
 		line-height: 1.3;
 	}
 
-	.kadence-style-book__version {
+	.kadence-blocks-style-book__version {
 		margin: 0.35rem 0 0;
 		color: $color-text-muted;
 		font-size: $font-size-meta;
 		line-height: 1.4;
 	}
 
-	.kadence-style-book__layout {
+	.kadence-blocks-style-book__layout {
 		display: grid;
 		grid-template-columns: $sidebar-width minmax(0, 1fr);
 		min-height: $layout-min-height;
 	}
 
-	.kadence-style-book__main {
+	.kadence-blocks-style-book__main {
 		padding: $spacing-xl;
 		overflow-y: auto;
 		background: $color-surface;

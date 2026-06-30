@@ -40,14 +40,14 @@ export function ColorTokenField({ token, value, onSave, fieldState }) {
 	};
 
 	return (
-		<div className="kadence-style-book__token-field kadence-style-book__token-field--color">
-			<div className="kadence-style-book__token-field-meta">
+		<div className="kadence-blocks-style-book__token-field kadence-blocks-style-book__token-field--color">
+			<div className="kadence-blocks-style-book__token-field-meta">
 				<Dropdown
 					popoverProps={{ placement: 'bottom-start' }}
 					renderToggle={({ isOpen, onToggle }) => (
 						<button
 							type="button"
-							className="kadence-style-book__color-picker-toggle"
+							className="kadence-blocks-style-book__color-picker-toggle"
 							style={{ backgroundColor: draft || '#ffffff' }}
 							onClick={onToggle}
 							aria-expanded={isOpen}
@@ -56,7 +56,7 @@ export function ColorTokenField({ token, value, onSave, fieldState }) {
 						/>
 					)}
 					renderContent={() => (
-						<div className="kadence-style-book__color-picker-popover">
+						<div className="kadence-blocks-style-book__color-picker-popover">
 							<ColorPicker
 								color={toPickerColor(draft)}
 								onChangeComplete={(color) => {
@@ -69,16 +69,16 @@ export function ColorTokenField({ token, value, onSave, fieldState }) {
 						</div>
 					)}
 				/>
-				<div className="kadence-style-book__token-field-labels">
-					<strong className="kadence-style-book__token-label">{token.label}</strong>
-					<code className="kadence-style-book__token-id">{token.id}</code>
+				<div className="kadence-blocks-style-book__token-field-labels">
+					<strong className="kadence-blocks-style-book__token-label">{token.label}</strong>
+					<code className="kadence-blocks-style-book__token-id">{token.id}</code>
 				</div>
 				<TokenTypeBadge type={token.type} />
 			</div>
 
-			<div className="kadence-style-book__token-field-controls">
+			<div className="kadence-blocks-style-book__token-field-controls">
 				<TextControl
-					className="kadence-style-book__token-input"
+					className="kadence-blocks-style-book__token-input"
 					label={__('Hex value', 'kadence-blocks')}
 					value={draft}
 					onChange={setDraft}

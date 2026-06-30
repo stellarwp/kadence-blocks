@@ -1,18 +1,18 @@
 @use '../../styles/tokens' as *;
 
 @mixin styles {
-	.kadence-style-book__sidebar {
+	.kadence-blocks-style-book__sidebar {
 		padding: $spacing-md 0;
 		border-right: 1px solid $color-border;
 		background: $color-surface-sidebar;
 		overflow-y: auto;
 	}
 
-	.kadence-style-book__nav-section + .kadence-style-book__nav-section {
+	.kadence-blocks-style-book__nav-section + .kadence-blocks-style-book__nav-section {
 		margin-top: $spacing-sm;
 	}
 
-	.kadence-style-book__nav-section-label {
+	.kadence-blocks-style-book__nav-section-label {
 		padding: $spacing-sm $spacing-lg;
 		color: $color-text-muted;
 		font-size: $font-size-nav-label;
@@ -21,13 +21,13 @@
 		letter-spacing: 0.04em;
 	}
 
-	.kadence-style-book__nav-list {
+	.kadence-blocks-style-book__nav-list {
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
 
-	.kadence-style-book__nav-button {
+	.kadence-blocks-style-book__nav-button {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -52,7 +52,7 @@
 		}
 	}
 
-	.kadence-style-book__nav-button-count {
+	.kadence-blocks-style-book__nav-button-count {
 		min-width: 1.25rem;
 		padding: 0.1rem 0.35rem;
 		border-radius: $radius-pill;
