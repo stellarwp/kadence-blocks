@@ -26,9 +26,9 @@ use RuntimeException;
  *
  *   1. A global --kb-token--variant--<block>--<variant>--<property> definition for every bound value, so
  *      a variant's values surface as named token vars in the same graph as every other token. The value
- *      preserves alias indirection (Variant_Resolver::resolve_projected): a binding that aliases a token
- *      reads var(--kb-token--<target>) so the variant var chains to the semantic/primitive it points at
- *      and follows a token edit live; a literal binding emits the literal.
+ *      preserves alias indirection (Variant_Resolver::resolve): a binding that aliases a token reads
+ *      var(--kb-token--<target>) so the variant var chains to the semantic/primitive it points at and
+ *      follows a token edit live; a literal binding emits the literal.
  *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
  *      --global-<slot> at its variant var. The var is always co-emitted in (1) in the same stylesheet,
  *      so the reference resolves without a literal fallback.
@@ -157,7 +157,7 @@ final class Css_Builder {
 
 			foreach ( $names as $variant ) {
 				try {
-					$values = $this->variants->resolve_projected( $block, $variant, $slug );
+					$values = $this->variants->resolve( $block, $variant, $slug );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}

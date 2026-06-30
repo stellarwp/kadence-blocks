@@ -26,7 +26,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItResolvesAliasBindingsForSecondary(): void {
-		$values = $this->resolver->resolve( self::BUTTON, 'secondary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
 
 		// Aliases flatten through the token graph. Secondary is the dark/charcoal identity.
 		$this->assertSame( '#1A202C', $values['button-bg'] );           // {semantic.color.button-secondary-bg} -> neutral.900
@@ -37,7 +37,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItFlattensMultiHopAliasesForThePrimaryVariant(): void {
-		$values = $this->resolver->resolve( self::BUTTON, 'primary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'primary' );
 
 		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.button} -> #3633e1
 		$this->assertSame( '#3633e1', $values['button-bg'] );
@@ -49,41 +49,41 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * resolve_projected() preserves alias indirection: each aliased binding reads a var() reference to its
-	 * IMMEDIATE target (the semantic it points at), not the fully-resolved primitive leaf, so the variant
-	 * var chains through the cascade and follows a token edit live. resolve() still yields the flattened
-	 * literal for the projections that need a concrete value.
+	 * resolve() (the default form) preserves alias indirection: each aliased binding reads a var()
+	 * reference to its IMMEDIATE target (the semantic it points at), not the fully-resolved primitive leaf,
+	 * so the variant var chains through the cascade and follows a token edit live. resolve_literal() still
+	 * yields the flattened literal for the surfaces that need a concrete value.
 	 *
 	 * @return void
 	 */
-	public function testResolveProjectedPreservesAliasIndirection(): void {
-		$projected = $this->resolver->resolve_projected( self::BUTTON, 'primary' );
+	public function testResolvePreservesAliasIndirection(): void {
+		$projected = $this->resolver->resolve( self::BUTTON, 'primary' );
 
 		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg)', $projected['button-bg'] );
 		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-text)', $projected['button-text'] );
 		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg-hover)', $projected['button-bg-hover'] );
 		$this->assertSame( 'var(--kb-token--semantic--radius--control)', $projected['button-radius'] );
 
-		// The literal form is still available for host-facing projections — both forms are exposed.
-		$this->assertSame( '#3633e1', $this->resolver->resolve( self::BUTTON, 'primary' )['button-bg'] );
+		// The literal form is still available for the concrete-value surfaces — both forms are exposed.
+		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'primary' )['button-bg'] );
 	}
 
 	/**
-	 * The projected map covers exactly the same properties as resolve() — only the value form differs.
+	 * resolve() and resolve_literal() cover exactly the same properties — only the value form differs.
 	 *
 	 * @return void
 	 */
-	public function testResolveProjectedMatchesTheResolveInclusionSet(): void {
+	public function testResolveAndResolveLiteralShareTheInclusionSet(): void {
 		$this->assertSame(
-			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary' ) ),
-			array_keys( $this->resolver->resolve_projected( self::BUTTON, 'secondary' ) )
+			array_keys( $this->resolver->resolve_literal( self::BUTTON, 'secondary' ) ),
+			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary' ) )
 		);
 	}
 
 	public function testResolveDefaultUsesTheDeclaredDefault(): void {
-		// The baseline's $default for the button is "primary".
+		// The baseline's $default for the button is "primary"; resolve_default() returns literals.
 		$this->assertSame(
-			$this->resolver->resolve( self::BUTTON, 'primary' ),
+			$this->resolver->resolve_literal( self::BUTTON, 'primary' ),
 			$this->resolver->resolve_default( self::BUTTON )
 		);
 	}

@@ -22,11 +22,12 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding} — value and target are kept separate
  * so each downstream projector maps them its own way.
  *
- * Two value forms are exposed, mirroring the Token_Resolver's literal/projected split: resolve() yields
- * the flattened literal (for projections that need a concrete value — block-attribute presets, the
- * dimension default fallbacks), while resolve_projected() preserves an alias as a `var(--kb-token--
- * <target>)` reference (for the css-var projection, so a variant var chains to the semantic/primitive it
- * points at and follows a token edit live).
+ * Two value forms are exposed, mirroring the Token_Resolver's literal/projected split. resolve() is the
+ * default: it preserves an alias as a `var(--kb-token--<target>)` reference (for the css-var projection,
+ * so a variant var chains to the semantic/primitive it points at and follows a token edit live).
+ * resolve_literal() is the opt-in exception: it flattens the alias to its concrete leaf value for the
+ * surfaces that cannot consume a var() chain (block-attribute presets, the dimension-default fallback,
+ * the editor variant-catalog feed).
  *
  * Variant definitions are read from the shipped baseline. The core Resolver's Effective_Document
  * deliberately strips `$extensions`, so variants are resolved here rather than through that deep-merge.
@@ -61,46 +62,17 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * Resolve a variant's bindings to a `property => value` map. Aliases flatten through the resolved
-	 * token map; literals pass through. A property whose alias resolves to nothing is omitted (it would
-	 * render to an empty value), so callers only ever see usable values.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
-	 * @param string $variant The variant slug, e.g. "ghost".
-	 * @param string $slug    The token set whose resolved values aliases resolve against.
-	 *
-	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
-	 *
-	 * @return array<string, string> property => resolved CSS value.
-	 */
-	public function resolve( string $block, string $variant, string $slug = 'default' ): array {
-		$tokens   = $this->variant_tokens( $block, $variant );
-		$resolved = $this->resolver->resolve( $slug );
-
-		$values = [];
-
-		foreach ( $tokens as $property => $value ) {
-			$flat = $this->flatten( $value, $resolved );
-
-			if ( $flat !== null ) {
-				$values[ (string) $property ] = $flat;
-			}
-		}
-
-		return $values;
-	}
-
-	/**
 	 * Resolve a variant's bindings to a `property => value` map for the css-var projection, preserving
 	 * alias indirection: an alias binding becomes a `var(--kb-token--<target>)` reference (so the variant
 	 * var chains to the semantic/primitive it points at and follows a token edit live) while a literal
 	 * passes straight through.
 	 *
-	 * The property set matches resolve() exactly — a property is included only when its value also flattens
-	 * to a concrete literal — so only the value *form* differs, not which properties project. Gating on the
-	 * literal is what guarantees an aliased target actually resolves to a real token, hence that its
+	 * This is the default form — the chain stays intact end to end, with the concrete value living only at
+	 * the leaf (the primitive). Reach for resolve_literal() only on a surface that cannot consume a var().
+	 *
+	 * A property whose alias resolves to nothing is omitted — the same property set resolve_literal()
+	 * produces — so only the value *form* differs, not which properties resolve. Gating on the literal
+	 * (via flatten()) is what guarantees an aliased target resolves to a real token, hence that its
 	 * `--kb-token--*` var is emitted by the base projection for the reference to point at.
 	 *
 	 * @since TBD
@@ -113,7 +85,7 @@ final class Variant_Resolver {
 	 *
 	 * @return array<string, string> property => var()-preserving CSS value.
 	 */
-	public function resolve_projected( string $block, string $variant, string $slug = 'default' ): array {
+	public function resolve( string $block, string $variant, string $slug = 'default' ): array {
 		$tokens   = $this->variant_tokens( $block, $variant );
 		$resolved = $this->resolver->resolve( $slug );
 
@@ -131,7 +103,60 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * Resolve the block's default ("preset") variant.
+	 * Resolve a variant's bindings to a `property => value` map of flattened LITERALS — each alias
+	 * collapsed to its final leaf value (a hex/length), not a `var()` reference.
+	 *
+	 * This is the opt-in exception to resolve(), for the surfaces that cannot consume a var() chain and so
+	 * need a concrete value:
+	 *
+	 *   - block-attribute presets ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector}):
+	 *     the value seeds a block attribute an editor control reads back — a color picker can't parse
+	 *     `var(...)` into a swatch and a numeric slider can't hold a string, so the default must be concrete;
+	 *   - the block-default dimension CSS ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}):
+	 *     the literal is the `var(--token, <here>)` fallback for contexts that lack the token vars (e.g. a
+	 *     preview iframe);
+	 *   - the editor variant-catalog feed ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants}):
+	 *     the UI renders each value as a swatch.
+	 *
+	 * Everywhere else prefer resolve() so the indirection survives and the value follows a token edit live.
+	 * A property whose alias resolves to nothing is omitted, matching resolve()'s property set.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
+	 * @param string $variant The variant slug, e.g. "ghost".
+	 * @param string $slug    The token set whose resolved values aliases resolve against.
+	 *
+	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
+	 *
+	 * @return array<string, string> property => flattened literal CSS value.
+	 */
+	public function resolve_literal( string $block, string $variant, string $slug = 'default' ): array {
+		$tokens   = $this->variant_tokens( $block, $variant );
+		$resolved = $this->resolver->resolve( $slug );
+
+		$values = [];
+
+		foreach ( $tokens as $property => $value ) {
+			$flat = $this->flatten( $value, $resolved );
+
+			if ( $flat !== null ) {
+				$values[ (string) $property ] = $flat;
+			}
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Resolve the block's default ("preset") variant to flattened LITERALS.
+	 *
+	 * Returns literals — it delegates to resolve_literal(), not resolve() — because its only callers are
+	 * concrete-value surfaces: Block_Preset seeds the value into a block attribute default an editor
+	 * control reads back, and Block_Default_Css uses it as the literal fallback inside `var(--token, …)`.
+	 * Neither can consume a var() chain, so the default must be a concrete leaf value here. The css-var
+	 * projection never calls this — it walks the named variants through resolve() (projected) and re-emits
+	 * the `$default`'s declarations from those, so the default still chains in CSS.
 	 *
 	 * @since TBD
 	 *
@@ -140,10 +165,10 @@ final class Variant_Resolver {
 	 *
 	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
 	 *
-	 * @return array<string, string> property => resolved CSS value.
+	 * @return array<string, string> property => flattened literal CSS value.
 	 */
 	public function resolve_default( string $block, string $slug = 'default' ): array {
-		return $this->resolve( $block, $this->default_variant( $block ), $slug );
+		return $this->resolve_literal( $block, $this->default_variant( $block ), $slug );
 	}
 
 	/**

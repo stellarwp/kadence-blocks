@@ -76,7 +76,8 @@ final class Variants {
 
 			foreach ( $names as $variant ) {
 				try {
-					$values[ $variant ] = $this->variants->resolve( $block, $variant, $slug );
+					// Literal values: the editor renders each as a swatch, which a var() chain can't paint.
+					$values[ $variant ] = $this->variants->resolve_literal( $block, $variant, $slug );
 				} catch ( Unknown_Variant_Exception $e ) {
 					continue; // Omit a single unresolvable variant; keep the rest.
 				}
