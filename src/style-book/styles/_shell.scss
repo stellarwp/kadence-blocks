@@ -1,5 +1,5 @@
-@mixin styles {
-	.kadence-blocks-style-book-root {
-		min-height: 24rem;
-	}
+@use 'tokens' as *;
+
+.kadence-blocks-style-book-root {
+	min-height: 24rem;
 }

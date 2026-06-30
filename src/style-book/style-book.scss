@@ -1,22 +1,7 @@
-@use 'styles/scope' as *;
-@use 'styles/shell' as shell;
-@use 'styles/token' as token;
-@use 'components/pages/tokens-page' as tokens-page;
-@use 'components/templates/token-list' as token-list;
-@use 'components/atoms/token-swatch' as token-swatch;
-@use 'components/atoms/token-type-badge' as token-type-badge;
-@use 'components/atoms/save-status' as save-status;
-
-@include style-book-wrap {
-	@include shell.styles;
-	@include tokens-page.styles;
-	@include token-list.styles;
-
-	.kadence-blocks-style-book__token {
-		@include token.block;
-	}
-
-	@include token-swatch.styles;
-	@include token-type-badge.styles;
-	@include save-status.styles;
-}
+@use 'styles/shell';
+@use 'styles/token';
+@use 'components/pages/tokens-page';
+@use 'components/templates/token-list';
+@use 'components/atoms/token-swatch';
+@use 'components/atoms/token-type-badge';
+@use 'components/atoms/save-status';

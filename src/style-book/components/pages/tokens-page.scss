@@ -1,22 +1,20 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-@mixin styles {
-	.kadence-blocks-style-book__header {
-		margin-bottom: $spacing-xl;
-	}
+.kadence-blocks-style-book__header {
+	margin-bottom: $spacing-xl;
+}
 
-	.kadence-blocks-style-book__title {
-		@include section-heading($font-size-title);
-	}
+.kadence-blocks-style-book__title {
+	@include section-heading($font-size-title);
+}
 
-	.kadence-blocks-style-book__intro,
-	.kadence-blocks-style-book__version {
-		@include body-text;
-	}
+.kadence-blocks-style-book__intro,
+.kadence-blocks-style-book__version {
+	@include body-text;
+}
 
-	.kadence-blocks-style-book__version {
-		margin-top: $spacing-sm;
-		font-size: $font-size-small;
-	}
+.kadence-blocks-style-book__version {
+	margin-top: $spacing-sm;
+	font-size: $font-size-small;
 }

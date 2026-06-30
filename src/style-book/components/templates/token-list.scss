@@ -1,9 +1,7 @@
 @use '../../styles/tokens' as *;
 
-@mixin styles {
-	.kadence-blocks-style-book__loading {
-		display: flex;
-		justify-content: center;
-		padding: $spacing-2xl 0;
-	}
+.kadence-blocks-style-book__loading {
+	display: flex;
+	justify-content: center;
+	padding: $spacing-2xl 0;
 }
