@@ -15,6 +15,12 @@ use Throwable;
  * styles and feeds the legacy color/font-size filters — all gated on Token_Registry::is_active()
  * so a deactivated registry leaves KB's behavior untouched.
  *
+ * This is the non-coercive surface: a custom property placed in :root styles nothing until something
+ * references it. When the module emits multiple token sets simultaneously, every non-active set appears
+ * here only as namespaced --kb-token--<set>--* custom properties; a non-active set never feeds the
+ * native-block or theme.json styling paths and is reachable only through an explicit per-block set
+ * override. Only the active set's tokens reach those coercive surfaces.
+ *
  * @since TBD
  */
 final class Projector {
