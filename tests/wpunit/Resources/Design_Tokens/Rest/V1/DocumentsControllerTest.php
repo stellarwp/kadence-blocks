@@ -579,6 +579,9 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * DELETE on the default set responds 200, reports deleted, and clears the row to baseline
+	 * while keeping it present rather than removing it.
+	 *
 	 * @return void
 	 */
 	public function testDeleteItemResetsTheDefaultSetToBaselineInsteadOfRemovingIt(): void {
@@ -683,6 +686,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * POST to the collection with a non-default slug creates that set and responds 201.
+	 *
 	 * @return void
 	 */
 	public function testCollectionPostCreatesANonDefaultSet(): void {
@@ -712,6 +717,9 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The collection lists every stored set plus the always-present default, even when the
+	 * default has no row of its own.
+	 *
 	 * @return void
 	 */
 	public function testCollectionListsEveryStoredSetAndAlwaysIncludesTheDefault(): void {
@@ -729,6 +737,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * GET on a non-default slug returns that set's slug and decoded document.
+	 *
 	 * @return void
 	 */
 	public function testItReadsANonDefaultSet(): void {
@@ -745,6 +755,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * DELETE on a non-default set responds 200, reports the removed set, and drops its row.
+	 *
 	 * @return void
 	 */
 	public function testDeleteItemRemovesANonDefaultSet(): void {
@@ -763,6 +775,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * DELETE on a non-default slug that was never stored responds 404 not found.
+	 *
 	 * @return void
 	 */
 	public function testDeleteItemReturnsNotFoundForAnUnknownNonDefaultSet(): void {
@@ -777,6 +791,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting a non-default set also purges its history, leaving no orphaned snapshots.
+	 *
 	 * @return void
 	 */
 	public function testDeleteItemPurgesTheSetsHistory(): void {
