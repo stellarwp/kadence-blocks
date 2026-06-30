@@ -69,12 +69,22 @@ final class Token_Definition {
 	public array $projections;
 
 	/**
-	 * @param string               $id          DTCG dot-path id.
-	 * @param string               $type        DTCG $type.
-	 * @param string               $label       Human-readable label.
-	 * @param string               $group       UI grouping bucket.
-	 * @param string               $css_var     Canonical (or overridden) CSS custom-property name.
-	 * @param array<string, mixed> $projections Projection targets keyed by projection id.
+	 * Whether this token was created by a user (not shipped with the plugin).
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $user_created;
+
+	/**
+	 * @param string               $id           DTCG dot-path id.
+	 * @param string               $type         DTCG $type.
+	 * @param string               $label        Human-readable label.
+	 * @param string               $group        UI grouping bucket.
+	 * @param string               $css_var      Canonical (or overridden) CSS custom-property name.
+	 * @param array<string, mixed> $projections  Projection targets keyed by projection id.
+	 * @param bool                 $user_created Whether the token was created by a user.
 	 */
 	private function __construct(
 		string $id,
@@ -82,14 +92,16 @@ final class Token_Definition {
 		string $label,
 		string $group,
 		string $css_var,
-		array $projections
+		array $projections,
+		bool $user_created = false
 	) {
-		$this->id          = $id;
-		$this->type        = $type;
-		$this->label       = $label;
-		$this->group       = $group;
-		$this->css_var     = $css_var;
-		$this->projections = $projections;
+		$this->id           = $id;
+		$this->type         = $type;
+		$this->label        = $label;
+		$this->group        = $group;
+		$this->css_var      = $css_var;
+		$this->projections  = $projections;
+		$this->user_created = $user_created;
 	}
 
 	/**
@@ -127,6 +139,11 @@ final class Token_Definition {
 			throw new InvalidArgumentException( 'Design token declaration "projections" must be an array.' );
 		}
 
+		$user_created = $definition['user_created'] ?? false;
+		if ( ! is_bool( $user_created ) ) {
+			throw new InvalidArgumentException( 'Design token declaration "user_created" must be a boolean.' );
+		}
+
 		return new self(
 			$id,
 			$type,
@@ -134,7 +151,8 @@ final class Token_Definition {
 			$group ?? '',
 			// css_var override is rare; default is derived and impossible to drift from the id.
 			$css_var ?? Css_Var::from_id( $id ),
-			$projections
+			$projections,
+			$user_created
 		);
 	}
 
@@ -185,6 +203,17 @@ final class Token_Definition {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Whether this token was created by a user rather than shipped with the plugin.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_user_created(): bool {
+		return $this->user_created;
 	}
 
 	/**
