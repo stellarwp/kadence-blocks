@@ -289,6 +289,133 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
+	 * With no rows stored, listing the sets yields an empty array.
+	 *
+	 * @return void
+	 */
+	public function testListStoresIsEmptyWhenNoRowsExist(): void {
+		$this->assertSame( [], $this->store->list_stores() );
+	}
+
+	/**
+	 * Listing returns one slug/title/version entry per stored set, ordered by slug ascending.
+	 *
+	 * @return void
+	 */
+	public function testListStoresReturnsEverySetWithSlugTitleAndVersionOrderedBySlug(): void {
+		$this->store->save_document( '{"set":"b"}', 'set-b', 'Brand B' );
+		$this->store->save_document( '{"set":"a"}', 'set-a', 'Brand A' );
+
+		$sets = $this->store->list_stores();
+
+		$this->assertCount( 2, $sets );
+
+		// Ordered by slug ascending, independent of insertion order.
+		$this->assertSame( 'set-a', $sets[0]['slug'] );
+		$this->assertSame( 'set-b', $sets[1]['slug'] );
+
+		$this->assertSame( 'Brand A', $sets[0]['title'] );
+		$this->assertSame( [ 'slug', 'title', 'version' ], array_keys( $sets[0] ) );
+		$this->assertMatchesRegularExpression( '/^[a-f0-9]{32}$/', $sets[0]['version'] );
+	}
+
+	/**
+	 * exists() is false before a set is saved and true once its row is written.
+	 *
+	 * @return void
+	 */
+	public function testExistsReflectsWhetherASetHasARow(): void {
+		$this->assertFalse( $this->store->exists( 'brand-b' ) );
+
+		$this->store->save_document( '{}', 'brand-b' );
+
+		$this->assertTrue( $this->store->exists( 'brand-b' ) );
+	}
+
+	/**
+	 * Deleting a non-default set removes only that row and leaves its siblings intact.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRemovesOnlyTheTargetSet(): void {
+		$this->store->save_document( '{"set":"a"}', 'set-a' );
+		$this->store->save_document( '{"set":"b"}', 'set-b' );
+
+		$this->store->delete( 'set-a' );
+
+		$this->assertFalse( $this->store->exists( 'set-a' ) );
+		$this->assertTrue( $this->store->exists( 'set-b' ) );
+		$this->assertSame( 1, $this->count_rows() );
+	}
+
+	/**
+	 * Deleting a set fires the deleted action, passing the removed set's slug.
+	 *
+	 * @return void
+	 */
+	public function testDeleteFiresTheDeletedActionWithTheSlug(): void {
+		$this->store->save_document( '{}', 'set-a' );
+
+		$fired = [];
+		add_action(
+			Token_Store::deleted_action(),
+			static function ( $slug ) use ( &$fired ): void {
+				$fired[] = $slug;
+			}
+		);
+
+		$this->store->delete( 'set-a' );
+
+		$this->assertSame( [ 'set-a' ], $fired );
+	}
+
+	/**
+	 * Deleting the default set clears its row to baseline rather than removing it, and never
+	 * signals removal for the canonical set.
+	 *
+	 * @return void
+	 */
+	public function testDeleteResetsTheDefaultSetToBaselineInsteadOfRemovingItsRow(): void {
+		$this->store->save_document( '{"v":1}' );
+
+		$fired = 0;
+		add_action(
+			Token_Store::deleted_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		$this->store->delete( Token_Store::default_slug() );
+
+		// The canonical set's row survives, cleared to baseline, and removal is never signalled for it.
+		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+		$this->assertSame( 1, $this->count_rows() );
+		$this->assertSame( 0, $fired );
+	}
+
+	/**
+	 * Deleting a set that was never saved is a no-op and does not fire the deleted action.
+	 *
+	 * @return void
+	 */
+	public function testDeleteIsANoOpAndDoesNotFireForAMissingSet(): void {
+		$fired = 0;
+		add_action(
+			Token_Store::deleted_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		$this->store->delete( 'never-saved' );
+
+		$this->assertSame( 0, $fired );
+		$this->assertSame( 0, $this->count_rows() );
+	}
+
+	/**
 	 * Read the title column directly (test-only inspection of the table).
 	 */
 	private function read_title( ?string $slug = null ): ?string {

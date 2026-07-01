@@ -104,11 +104,28 @@ the team enforces in review; follow them exactly.
 
   Single-arg cases can stay on one line: `yield 'color' => [ 'type' => 'color' ];`.
 
-- **Every test method has complete phpdoc.** That means `@dataProvider` (when applicable), one
-  `@param` per parameter (including typed ones like `bool $expected`), and `@return void`.
-  Methods with no params still get a docblock with just `@return void`. Private test helpers
-  also get full `@param`/`@return`. phpcs does NOT enforce this in `tests/`, so it must be done
-  by hand.
+- **Every test method has complete phpdoc.** That means a one-line description summarizing what
+  the test asserts, then (separated by a blank line) `@dataProvider` (when applicable), one
+  `@param` per parameter (including typed ones like `bool $expected`), and `@return void`. The
+  description is required even when the method name is already descriptive — write the sentence,
+  don't lean on the name. Methods with no params still get the description plus `@return void`.
+  Private test helpers also get a description and full `@param`/`@return`. phpcs does NOT enforce
+  this in `tests/`, so it must be done by hand.
+
+  ```php
+  /**
+   * Deleting a non-default set removes only that row and leaves its siblings intact.
+   *
+   * @return void
+   */
+  public function testDeleteRemovesOnlyTheTargetSet(): void {
+  ```
+
+  This rule wins over the surrounding code. If existing methods in the file you're touching
+  have no docblocks (or docblocks with no description), do NOT match them — that's a pre-existing
+  gap, not the convention. Every test method you add or edit gets the complete docblock above
+  regardless of what its neighbors do, and you never drop the description or docblock to "stay
+  consistent" with undocumented siblings.
 
 ## Static analysis
 
