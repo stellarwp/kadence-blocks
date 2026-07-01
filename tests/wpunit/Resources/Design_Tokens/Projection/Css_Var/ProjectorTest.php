@@ -37,6 +37,14 @@ final class ProjectorTest extends TestCase {
 	private const BRAND_B_BUTTON = '#123456';
 
 	/**
+	 * The button primitive id the shipped baseline resolves semantic.color.button-bg through; the
+	 * canonical alias layer re-points its var at the active set's namespaced var.
+	 *
+	 * @var string
+	 */
+	private const BUTTON_PRIMITIVE = 'primitive.color.brand.button';
+
+	/**
 	 * @var Projector
 	 */
 	private Projector $projector;
@@ -195,14 +203,6 @@ final class ProjectorTest extends TestCase {
 	}
 
 	// ---- Active set ----------------------------------------------------------------------------------
-
-	/**
-	 * The button primitive id the shipped baseline resolves semantic.color.button-bg through; the
-	 * canonical alias layer re-points its var at the active set's namespaced var.
-	 *
-	 * @var string
-	 */
-	private const BUTTON_PRIMITIVE = 'primitive.color.brand.button';
 
 	/**
 	 * With only the default set, its baseline literal is emitted under the default namespace and the
