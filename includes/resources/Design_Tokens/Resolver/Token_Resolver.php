@@ -45,7 +45,8 @@ final class Token_Resolver {
 	/**
 	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
 	 * the cache prefix (which distinguishes the canonical "resolved_tokens_{slug}" and namespaced
-	 * "resolved_tokens_ns_{slug}" forms) followed by the store version, e.g. "resolved_tokens_default_v3".
+	 * "resolved_tokens_namespaced_{slug}" forms) followed by the store version, e.g.
+	 * "resolved_tokens_default_v3".
 	 *
 	 * @var array<string,Resolved_Tokens>
 	 */
@@ -108,7 +109,7 @@ final class Token_Resolver {
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
 	 */
 	public function resolve_namespaced( string $slug ): Resolved_Tokens {
-		return $this->load( $slug, $slug, 'resolved_tokens_ns_' . $slug );
+		return $this->load( $slug, $slug, 'resolved_tokens_namespaced_' . $slug );
 	}
 
 	/**
