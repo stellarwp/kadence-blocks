@@ -757,7 +757,7 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * The namespaced form caches under its own key (resolved_tokens_ns_<slug>_<version>), distinct from the
+	 * The namespaced form caches under its own key (resolved_tokens_namespaced_<slug>_<version>), distinct from the
 	 * canonical resolve() key, so the two never collide.
 	 *
 	 * @return void
@@ -773,7 +773,7 @@ final class Token_ResolverTest extends TestCase {
 		);
 
 		$version   = $store->get_version();
-		$cache_key = 'resolved_tokens_ns_default_' . $version;
+		$cache_key = 'resolved_tokens_namespaced_default_' . $version;
 
 		wp_cache_delete( $cache_key, 'kb_design_tokens' );
 
