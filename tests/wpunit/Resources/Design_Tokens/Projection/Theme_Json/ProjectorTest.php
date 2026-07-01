@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Theme_Json;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Theme_Json\Json_Builder;
@@ -76,6 +77,7 @@ final class ProjectorTest extends TestCase {
 			$empty_registry,
 			$this->container->get( Token_Resolver::class ),
 			$this->container->get( Token_Store::class ),
+			$this->container->get( Active_Set_Store::class ),
 			new Json_Builder( $empty_registry )
 		);
 

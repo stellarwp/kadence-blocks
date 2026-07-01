@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -41,6 +42,15 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
+	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * @var Css_Builder
 	 */
 	private Css_Builder $css_builder;
@@ -51,9 +61,12 @@ final class Projector {
 	private Legacy_Filter_Bridge $bridge;
 
 	/**
+	 * @since TBD
+	 *
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
+	 * @param Active_Set_Store     $active
 	 * @param Css_Builder          $css_builder
 	 * @param Legacy_Filter_Bridge $bridge
 	 */
@@ -61,12 +74,14 @@ final class Projector {
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
+		Active_Set_Store $active,
 		Css_Builder $css_builder,
 		Legacy_Filter_Bridge $bridge
 	) {
 		$this->registry    = $registry;
 		$this->resolver    = $resolver;
 		$this->store       = $store;
+		$this->active      = $active;
 		$this->css_builder = $css_builder;
 		$this->bridge      = $bridge;
 	}
@@ -163,9 +178,11 @@ final class Projector {
 	 * @return string
 	 */
 	private function build_css(): string {
+		$slug = $this->active->get();
+
 		try {
-			$version  = $this->store->get_version();
-			$resolved = $this->resolver->resolve();
+			$version  = $this->store->get_version( $slug );
+			$resolved = $this->resolver->resolve( $slug );
 		} catch ( Throwable $e ) {
 			return '';
 		}

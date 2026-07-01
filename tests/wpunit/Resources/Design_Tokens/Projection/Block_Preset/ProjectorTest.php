@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Preset;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
@@ -103,7 +104,7 @@ final class ProjectorTest extends TestCase {
 	 * Build the projector with a given registry and the real (baseline-backed) variant resolver.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
-		return new Projector( $registry, $this->resolver );
+		return new Projector( $registry, $this->resolver, $this->container->get( Active_Set_Store::class ) );
 	}
 
 	/**
