@@ -108,6 +108,15 @@ final class Projector {
 	 */
 	private bool $reconciled_this_request = false;
 
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry   $registry
+	 * @param Token_Resolver   $resolver
+	 * @param Token_Store      $store
+	 * @param Active_Set_Store $active
+	 * @param Palette_Builder  $builder
+	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,

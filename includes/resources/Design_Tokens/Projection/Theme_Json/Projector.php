@@ -56,6 +56,8 @@ final class Projector {
 	private Json_Builder $builder;
 
 	/**
+	 * @since TBD
+	 *
 	 * @param Token_Registry   $registry
 	 * @param Token_Resolver   $resolver
 	 * @param Token_Store      $store

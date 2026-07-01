@@ -55,6 +55,8 @@ final class Projector {
 	private Legacy_Filter_Bridge $bridge;
 
 	/**
+	 * @since TBD
+	 *
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
