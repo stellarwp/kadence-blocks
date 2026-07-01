@@ -27,7 +27,7 @@
 	line-height: 1.6;
 }
 
-@mixin section-heading($size: $font-size-heading) {
+@mixin section-heading($size: $font-size-group-title) {
 	margin: 0 0 $spacing-md;
 	font-size: $size;
 	font-weight: 600;

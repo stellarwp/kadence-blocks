@@ -1,5 +1,5 @@
 @use 'tokens' as *;
 
 .kadence-blocks-style-book-root {
-	min-height: 24rem;
+	min-height: $shell-min-height;
 }
