@@ -77,15 +77,18 @@ final class Variant_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
-	 * @param string $variant The variant slug, e.g. "ghost".
-	 * @param string $slug    The token set whose resolved values aliases resolve against.
+	 * @param string $block     The block name, e.g. "kadence/advancedbtn".
+	 * @param string $variant   The variant slug, e.g. "ghost".
+	 * @param string $slug      The token set whose resolved values aliases resolve against.
+	 * @param string $namespace Css-var namespace for the var() target ('' for the canonical name). When set,
+	 *                          an alias becomes var(--kb-token--<namespace>--<target>), so a namespaced
+	 *                          variant var chains to that set's namespaced token and stays inside the set.
 	 *
 	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
 	 *
 	 * @return array<string, string> property => var()-preserving CSS value.
 	 */
-	public function resolve( string $block, string $variant, string $slug = 'default' ): array {
+	public function resolve( string $block, string $variant, string $slug = 'default', string $namespace = '' ): array {
 		$tokens   = $this->variant_tokens( $block, $variant );
 		$resolved = $this->resolver->resolve( $slug );
 
@@ -96,7 +99,7 @@ final class Variant_Resolver {
 				continue;
 			}
 
-			$values[ $property ] = $this->project( $value );
+			$values[ $property ] = $this->project( $value, $namespace );
 		}
 
 		return $values;
@@ -305,13 +308,14 @@ final class Variant_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed $value The raw binding value (alias string or literal).
+	 * @param mixed  $value     The raw binding value (alias string or literal).
+	 * @param string $namespace Css-var namespace for the var() target ('' for the canonical name).
 	 *
 	 * @return string
 	 */
-	private function project( $value ): string {
+	private function project( $value, string $namespace = '' ): string {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
-			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $namespace ) . ')';
 		}
 
 		return Cast::to_string( $value );
