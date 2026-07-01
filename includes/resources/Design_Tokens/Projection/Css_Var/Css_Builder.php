@@ -76,6 +76,10 @@ final class Css_Builder {
 	private const SWITCH_ATTR = 'data-kb-token-set';
 
 	/**
+	 * The registry the token sets are resolved and projected from.
+	 *
+	 * @since TBD
+	 *
 	 * @var Token_Registry
 	 */
 	private Token_Registry $registry;
@@ -84,6 +88,8 @@ final class Css_Builder {
 	 * Per-request memo of built CSS, keyed on the object-cache key of each cached fragment plus the
 	 * full-assembly signature, so a write (which bumps a set's version) invalidates the affected entries
 	 * without an explicit purge hook.
+	 *
+	 * @since TBD
 	 *
 	 * @var array<string,string>
 	 */
