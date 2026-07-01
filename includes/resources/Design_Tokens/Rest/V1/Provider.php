@@ -36,6 +36,8 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
+		$this->container->singleton( Document_Write_Pipeline::class, Document_Write_Pipeline::class );
+
 		foreach ( self::CONTROLLERS as $controller ) {
 			add_action( 'rest_api_init', $this->container->callback( $controller, 'register_routes' ) );
 		}
