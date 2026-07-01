@@ -25,8 +25,8 @@ final class Css_BuilderTest extends TestCase {
 		return new Css_Builder( $this->registry );
 	}
 
-	private function resolved( array $by_id = [], array $by_var = [], array $by_id_target = [], array $by_var_target = [] ): Resolved_Tokens {
-		return new Resolved_Tokens( $by_id, $by_var, $by_id_target, $by_var_target );
+	private function resolved( array $by_id = [], array $by_var = [], array $by_var_projected = [], array $by_id_target = [] ): Resolved_Tokens {
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
 	}
 
 	// ---- Token block -------------------------------------------------------------------------------
