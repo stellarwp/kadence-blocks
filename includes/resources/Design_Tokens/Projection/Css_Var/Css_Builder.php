@@ -41,9 +41,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
  * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping. The
- * `[data-kb-token-set]` switch selector carries ordinary attribute specificity (equal to :root) and is
- * emitted after the alias layer, so it wins by source order for elements that carry it. Nothing here is
- * !important — per-instance variant overrides must be able to win by ordinary cascade.
+ * `[data-kb-token-set]` switch selector declares `--kb-token--<id>` directly on the element that carries
+ * the attribute, so that element and its subtree use the directly-declared value in preference to the one
+ * inherited from the :root alias layer — a directly-cascaded value always beats an inherited one, so
+ * source order does not matter (the two rules target different elements). Nothing here is !important —
+ * per-instance variant overrides must be able to win by ordinary cascade.
  *
  * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Projector.
  *
@@ -328,7 +330,8 @@ final class Css_Builder {
 	/**
 	 * Emit a set's switch selector: under `[data-kb-token-set="<set>"]`, re-point every canonical
 	 * `--kb-token--<id>` at that set's namespaced var for the matched element's subtree. Nesting works
-	 * because the attribute rule wins by source order over the alias layer for the elements that carry it.
+	 * because the attribute rule declares the property directly on the elements that carry it, overriding
+	 * the value they would otherwise inherit from the :root alias layer.
 	 *
 	 * This re-points the canonical token layer only: content that reads `--kb-token--*` directly follows
 	 * it, but the :root-declared bridges (preset/slot) and any host/theme custom property that reads a
