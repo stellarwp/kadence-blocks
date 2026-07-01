@@ -1,0 +1,63 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-book {
+	&__overview {
+		&-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax($overview-card-min, 1fr));
+			gap: $spacing-lg;
+		}
+
+		&-card {
+			@include flex-column($spacing-md);
+			@include card-surface;
+			text-align: left;
+			cursor: pointer;
+			transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+			&:hover {
+				border-color: $color-accent;
+				box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+			}
+		}
+
+		&-card-head {
+			@include flex-column(0.15rem);
+
+			strong {
+				font-size: $font-size-body;
+			}
+
+			span {
+				color: $color-text-muted;
+				font-size: $font-size-meta;
+			}
+		}
+
+		&-swatches {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.35rem;
+		}
+
+		&-swatch {
+			width: $overview-swatch-size;
+			height: $overview-swatch-size;
+			border: 1px solid rgba(0, 0, 0, 0.12);
+			border-radius: $radius-pill;
+		}
+
+		&-hint,
+		&-variant-list {
+			margin: 0;
+			color: $color-text-muted;
+			font-size: $font-size-small;
+			line-height: 1.5;
+		}
+
+		&-variant-list {
+			padding-left: $spacing-lg;
+		}
+	}
+}
