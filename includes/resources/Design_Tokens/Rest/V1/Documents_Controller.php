@@ -4,12 +4,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
@@ -163,6 +165,15 @@ final class Documents_Controller extends Controller {
 	private Effective_Document $effective;
 
 	/**
+	 * Inspects documents for the presence of user-created primitives.
+	 *
+	 * @since TBD
+	 *
+	 * @var User_Primitive_Index
+	 */
+	private User_Primitive_Index $user_primitive_index;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -183,25 +194,28 @@ final class Documents_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The sole gateway to the kb_design_tokens table.
-	 * @param Token_Resolver     $resolver  Flattens a stored token set and dry-runs candidate overrides.
-	 * @param Dtcg_Validator     $validator Validates the DTCG grammar of a candidate document.
-	 * @param Mutator            $mutator   Assembles the candidate overrides document.
-	 * @param Effective_Document $effective Builds the effective document for $type inference.
+	 * @param Token_Store          $store                 The sole gateway to the kb_design_tokens table.
+	 * @param Token_Resolver       $resolver              Flattens a stored token set and dry-runs candidate overrides.
+	 * @param Dtcg_Validator       $validator             Validates the DTCG grammar of a candidate document.
+	 * @param Mutator              $mutator               Assembles the candidate overrides document.
+	 * @param Effective_Document   $effective             Builds the effective document for $type inference.
+	 * @param User_Primitive_Index $user_primitive_index  Inspects documents for user-created primitives.
 	 */
 	public function __construct(
 		Token_Store $store,
 		Token_Resolver $resolver,
 		Dtcg_Validator $validator,
 		Mutator $mutator,
-		Effective_Document $effective
+		Effective_Document $effective,
+		User_Primitive_Index $user_primitive_index
 	) {
-		$this->store     = $store;
-		$this->resolver  = $resolver;
-		$this->validator = $validator;
-		$this->mutator   = $mutator;
-		$this->effective = $effective;
-		$this->rest_base = 'documents';
+		$this->store                = $store;
+		$this->resolver             = $resolver;
+		$this->validator            = $validator;
+		$this->mutator              = $mutator;
+		$this->effective            = $effective;
+		$this->user_primitive_index = $user_primitive_index;
+		$this->rest_base            = 'documents';
 	}
 
 	/**
@@ -450,9 +464,16 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function patch_item( $request ) {
-		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$slug    = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$partial = $this->read_document_param( $request );
 
-		$candidate = $this->mutator->merge( $this->read_stored_document( $slug ), $this->read_document_param( $request ) );
+		$error = $this->guard_reserved_in_partial( $partial, $slug );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$candidate = $this->mutator->merge( $this->read_stored_document( $slug ), $partial );
 
 		return $this->validate_and_save( $candidate, $slug, Cast::to_string( $request->get_param( self::TITLE_PARAM ) ) );
 	}
@@ -469,7 +490,19 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function update_item( $request ) {
-		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$slug   = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$stored = $this->read_stored_document( $slug );
+
+		if ( ! empty( $this->user_primitive_index->all( $stored ) ) ) {
+			return new WP_Error(
+				'rest_design_tokens_put_not_allowed',
+				__( 'Bulk replace is not allowed while user-created primitives exist. Delete them first or use PATCH.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::CONFLICT,
+					'slug'   => $slug,
+				]
+			);
+		}
 
 		return $this->validate_and_save(
 			$this->read_document_param( $request ),
@@ -607,8 +640,19 @@ final class Documents_Controller extends Controller {
 	 */
 	public function delete_token( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$path = Cast::to_string( $request->get_param( self::PATH_PARAM ) );
 
-		$path      = Cast::to_string( $request->get_param( self::PATH_PARAM ) );
+		if ( $this->is_reserved_custom_path( $path ) ) {
+			return new WP_Error(
+				'rest_design_tokens_reserved_path',
+				__( 'Use the user-primitives endpoint to delete a custom primitive.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::FORBIDDEN,
+					'path'   => $path,
+				]
+			);
+		}
+
 		$stored    = $this->read_stored_document( $slug );
 		$candidate = $this->mutator->remove( $stored, $path );
 
@@ -1162,6 +1206,112 @@ final class Documents_Controller extends Controller {
 			'version'  => $this->store->get_version( $slug ),
 			'document' => $this->read_stored_document( $slug ),
 		];
+	}
+
+	/**
+	 * Reject a partial document that writes into reserved namespaces.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
+	 * @param string               $slug
+	 *
+	 * @return WP_Error|null
+	 */
+	private function guard_reserved_in_partial( array $partial, string $slug ): ?WP_Error {
+		$primitive = $partial['primitive'] ?? null;
+		/** @var array<string, mixed> $primitive_node */
+		$primitive_node = is_array( $primitive ) ? $primitive : [];
+		$paths          = $this->collect_reserved_paths_in( $primitive_node, 'primitive' );
+
+		if ( empty( $paths ) && ! $this->has_reserved_extension( $partial ) ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_reserved_path',
+			__( 'The primitive.*.custom.* namespace is reserved for user-created primitives. Use the user-primitives endpoint.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::FORBIDDEN,
+				'slug'   => $slug,
+				'paths'  => $paths,
+			]
+		);
+	}
+
+	/**
+	 * Walk the primitive subtree and collect paths at primitive.*.custom depth or deeper.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node
+	 * @param string               $prefix
+	 *
+	 * @return string[]
+	 */
+	private function collect_reserved_paths_in( array $node, string $prefix ): array {
+		$found    = [];
+		$segments = explode( '.', $prefix );
+
+		// At primitive.<type>.custom depth (3 segments: primitive, type, custom) or deeper: reserved.
+		if ( count( $segments ) >= 3 && $segments[2] === 'custom' ) {
+			return [ $prefix ];
+		}
+
+		foreach ( $node as $key => $child ) {
+			if ( is_string( $key ) && strncmp( $key, '$', 1 ) === 0 ) {
+				continue;
+			}
+
+			if ( is_array( $child ) ) {
+				/** @var array<string, mixed> $child */
+				$found = array_merge( $found, $this->collect_reserved_paths_in( $child, $prefix . '.' . $key ) );
+			}
+		}
+
+		return $found;
+	}
+
+	/**
+	 * Whether the partial writes into the userPrimitives extension section.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $partial
+	 *
+	 * @return bool
+	 */
+	private function has_reserved_extension( array $partial ): bool {
+		$ext_data = $partial[ Extensions::get_extensions_key() ] ?? null;
+
+		if ( ! is_array( $ext_data ) ) {
+			return false;
+		}
+
+		$ns_data = $ext_data[ Extensions::get_namespace() ] ?? null;
+
+		if ( ! is_array( $ns_data ) ) {
+			return false;
+		}
+
+		return array_key_exists( Extensions::get_section_user_primitives(), $ns_data );
+	}
+
+	/**
+	 * Whether a dot-path addresses the custom sub-namespace of a primitive type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path
+	 *
+	 * @return bool
+	 */
+	private function is_reserved_custom_path( string $path ): bool {
+		$segments = explode( '.', $path );
+
+		return count( $segments ) >= 3
+			&& $segments[0] === 'primitive'
+			&& $segments[2] === 'custom';
 	}
 
 	/**
