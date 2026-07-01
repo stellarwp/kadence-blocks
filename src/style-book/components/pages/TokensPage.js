@@ -1,14 +1,41 @@
 /**
+ * WordPress dependencies
+ */
+import { useCallback, useState } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
-import { SECTION_OVERVIEW } from '../../constants/navigation';
+import { DEFAULT_TOKEN_SET_SLUG } from '../../constants';
+import { CUSTOM_COLORS_GROUP_LABEL, SECTION_OVERVIEW } from '../../constants/navigation';
 import { findSection } from '../../helpers/navigation';
 import { useDesignTokensFeed } from '../../hooks/use-design-tokens-feed';
 import { useStyleBookNavigation } from '../../hooks/use-style-book-navigation';
 import { useTokenEditor } from '../../hooks/use-token-editor';
+import { useUserPrimitiveEditor } from '../../hooks/use-user-primitive-editor';
 import { FoundationPage } from '../pages/FoundationPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { StyleBookShell } from '../templates/StyleBookShell';
+
+/**
+ * Build an optimistic token definition from a create payload.
+ *
+ * @param {object} payload Create request payload { id, label, $value }.
+ * @return {object} Token definition ready for the flat token list.
+ */
+function tokenFromCreatePayload(payload) {
+	const id = `primitive.color.custom.${payload.id}`;
+	const label = payload.label?.trim() || payload.id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+	return {
+		id,
+		type: 'color',
+		label,
+		cssVar: `--kb-${id.replace(/\./g, '-')}`,
+		group: CUSTOM_COLORS_GROUP_LABEL,
+		userCreated: true,
+	};
+}
 
 /**
  * Style Book application page — sidebar shell and section routing.
@@ -16,9 +43,52 @@ import { StyleBookShell } from '../templates/StyleBookShell';
  * @return {JSX.Element} Style Book page.
  */
 export function TokensPage() {
-	const { tokens, isReady, isActive, isResolved, values: feedValues, rest, version } = useDesignTokensFeed();
-	const { values, saveToken, getFieldState } = useTokenEditor(rest, feedValues);
+	const {
+		tokens: feedTokens,
+		isReady,
+		isActive,
+		isResolved,
+		values: feedValues,
+		rest,
+		version,
+	} = useDesignTokensFeed();
+
+	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues);
+
+	const [localTokens, setLocalTokens] = useState(null);
+	const tokens = localTokens ?? feedTokens;
+
 	const { section, setSection, sections } = useStyleBookNavigation(tokens);
+
+	const { createPrimitive, deletePrimitive, renamePrimitive, fetchPreview } = useUserPrimitiveEditor(
+		version,
+		DEFAULT_TOKEN_SET_SLUG
+	);
+
+	const handleMutationSuccess = useCallback(
+		({ type, payload, id, oldId, newToken }) => {
+			setLocalTokens((current) => {
+				const base = current ?? feedTokens;
+
+				if (type === 'create') {
+					return [...base, tokenFromCreatePayload(payload)];
+				}
+
+				if (type === 'delete') {
+					return base.filter((t) => t.id !== id);
+				}
+
+				if (type === 'rename' && oldId && newToken) {
+					return base.map((t) => (t.id === oldId ? newToken : t));
+				}
+
+				return base;
+			});
+
+			void refreshValues();
+		},
+		[feedTokens, refreshValues]
+	);
 
 	const sharedListProps = {
 		tokens,
@@ -28,6 +98,11 @@ export function TokensPage() {
 		isResolved,
 		onSave: saveToken,
 		getFieldState,
+		onCreatePrimitive: createPrimitive,
+		onDeletePrimitive: deletePrimitive,
+		onRenamePrimitive: renamePrimitive,
+		onFetchPreview: fetchPreview,
+		onMutationSuccess: handleMutationSuccess,
 	};
 
 	let content = null;

@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -208,5 +209,62 @@ final class LocalizerTest extends TestCase {
 	public function testTheModuleWiresTheLocalizerOntoAdminHead(): void {
 		$this->assertInstanceOf( Localizer::class, $this->container->get( Localizer::class ) );
 		$this->assertNotFalse( has_action( 'admin_head' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testUserPrimitivesReachTheLocalizedSchemaWithUserCreatedFlag(): void {
+		$store = $this->container->get( Token_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'color' => [
+						'custom' => [
+							'brand-blue' => [
+								'$type'  => 'color',
+								'$value' => '#1a56db',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							'primitive.color.custom.brand-blue' => [ 'label' => 'Brand Blue' ],
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+		$this->assertTrue( $feed['active'] );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'primitive.color.custom.brand-blue' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'User primitive must appear in the localized schema.' );
+		$this->assertTrue( $found['userCreated'], 'User primitive must carry userCreated: true.' );
+		$this->assertSame( 'Brand Blue', $found['label'] );
 	}
 }

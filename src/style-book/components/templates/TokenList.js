@@ -35,16 +35,21 @@ function groupTokens(tokens) {
 /**
  * Full token editor list grouped by schema sections.
  *
- * @param {object}   props              Component props.
- * @param {object[]} props.tokens       Flat token definitions.
+ * @param {object}   props                      Component props.
+ * @param {object[]} props.tokens               Flat token definitions.
  * @param {Record<string, string>} props.values Resolved values.
- * @param {boolean}  props.isReady      Whether the feed loaded.
- * @param {boolean}  props.isActive     Whether design tokens are active.
- * @param {boolean}  props.isResolved   Whether values resolved successfully.
- * @param {Function} props.onSave       Save handler for token fields.
- * @param {Function} props.getFieldState Field state accessor.
- * @param {string}   [props.emptyMessage] Message when no tokens match.
- * @param {boolean}  [props.groupBySchema] Whether to subgroup by schema group label.
+ * @param {boolean}  props.isReady              Whether the feed loaded.
+ * @param {boolean}  props.isActive             Whether design tokens are active.
+ * @param {boolean}  props.isResolved           Whether values resolved successfully.
+ * @param {Function} props.onSave               Save handler for token fields.
+ * @param {Function} props.getFieldState        Field state accessor.
+ * @param {string}   [props.emptyMessage]       Message when no tokens match.
+ * @param {boolean}  [props.groupBySchema]      Whether to subgroup by schema group label.
+ * @param {Function} [props.onCreatePrimitive]  Async create fn.
+ * @param {Function} [props.onDeletePrimitive]  Async delete fn.
+ * @param {Function} [props.onRenamePrimitive]  Async rename fn.
+ * @param {Function} [props.onFetchPreview]     Async preview fn.
+ * @param {Function} [props.onMutationSuccess]  Mutation success callback.
  * @return {JSX.Element} Token list template.
  */
 export function TokenList({
@@ -57,6 +62,11 @@ export function TokenList({
 	getFieldState,
 	emptyMessage,
 	groupBySchema = true,
+	onCreatePrimitive,
+	onDeletePrimitive,
+	onRenamePrimitive,
+	onFetchPreview,
+	onMutationSuccess,
 }) {
 	const grouped = useMemo(() => groupTokens(tokens), [tokens]);
 
@@ -92,16 +102,26 @@ export function TokenList({
 					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
 			) : groupBySchema ? (
-				Object.entries(grouped).map(([groupName, groupTokensList]) => (
-					<TokenGroup
-						key={groupName}
-						groupName={groupName}
-						tokens={groupTokensList}
-						values={values}
-						onSave={onSave}
-						getFieldState={getFieldState}
-					/>
-				))
+				Object.entries(grouped).map(([groupName, groupTokensList]) => {
+					const hasUserCreated = groupTokensList.some((t) => t.userCreated);
+
+					return (
+						<TokenGroup
+							key={groupName}
+							groupName={groupName}
+							tokens={groupTokensList}
+							values={values}
+							onSave={onSave}
+							getFieldState={getFieldState}
+							isUserCreatedGroup={hasUserCreated}
+							onCreatePrimitive={hasUserCreated ? onCreatePrimitive : undefined}
+							onDeletePrimitive={hasUserCreated ? onDeletePrimitive : undefined}
+							onRenamePrimitive={hasUserCreated ? onRenamePrimitive : undefined}
+							onFetchPreview={hasUserCreated ? onFetchPreview : undefined}
+							onMutationSuccess={hasUserCreated ? onMutationSuccess : undefined}
+						/>
+					);
+				})
 			) : (
 				<div className="kadence-blocks-style-book__token-group-list">
 					{tokens.map((token) => (

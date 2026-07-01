@@ -79,5 +79,6 @@ export function useTokenEditor(rest, initialValues) {
 		values,
 		saveToken,
 		getFieldState,
+		refreshValues,
 	};
 }
