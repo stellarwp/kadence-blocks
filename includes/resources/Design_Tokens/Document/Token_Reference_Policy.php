@@ -4,7 +4,6 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
-use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
  * Scans all alias locations in a stored overrides document for references to a given id.
@@ -121,19 +120,44 @@ final class Token_Reference_Policy {
 				continue;
 			}
 
-			$type   = $child[ Token_Type::get_type_key() ] ?? '';
-			$fields = Token_Type::is_composite( (string) $type ) ? Token_Type::composite_fields( (string) $type ) : [];
+			if ( is_array( $value ) ) {
+				$this->scan_composite_value(
+					$value,
+					$path . '.$value',
+					$alias,
+					Token_Reference::get_kind_composite_field(),
+					$references
+				);
+			}
+		}
+	}
 
-			if ( is_array( $value ) && ! empty( $fields ) ) {
-				foreach ( $fields as $field => $_ ) {
-					if ( isset( $value[ $field ] ) && $value[ $field ] === $alias ) {
-						$references[] = new Token_Reference(
-							Token_Reference::get_kind_composite_field(),
-							$path . '.$value.' . $field,
-							false
-						);
-					}
-				}
+	/**
+	 * Recursively scan a composite $value structure for alias references at any nesting depth.
+	 * Generic over shape so future composite/list sub-fields cannot silently bypass detection.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $value
+	 * @param string                   $prefix
+	 * @param string                   $alias
+	 * @param string                   $kind
+	 * @param Token_Reference[]        $references
+	 *
+	 * @return void
+	 */
+	private function scan_composite_value( array $value, string $prefix, string $alias, string $kind, array &$references ): void {
+		foreach ( $value as $field => $sub_value ) {
+			$path = $prefix . '.' . $field;
+
+			if ( $sub_value === $alias ) {
+				$references[] = new Token_Reference( $kind, $path, false );
+
+				continue;
+			}
+
+			if ( is_array( $sub_value ) ) {
+				$this->scan_composite_value( $sub_value, $path, $alias, $kind, $references );
 			}
 		}
 	}
@@ -201,12 +225,16 @@ final class Token_Reference_Policy {
 				}
 
 				foreach ( $tokens as $token_path => $value ) {
+					$path = $prefix . '.' . $group . '.' . $preset_name . '.' . Extensions::get_tokens_key() . '.' . $token_path;
+
 					if ( $value === $alias ) {
-						$references[] = new Token_Reference(
-							Token_Reference::get_kind_extension(),
-							$prefix . '.' . $group . '.' . $preset_name . '.' . Extensions::get_tokens_key() . '.' . $token_path,
-							false
-						);
+						$references[] = new Token_Reference( Token_Reference::get_kind_extension(), $path, false );
+
+						continue;
+					}
+
+					if ( is_array( $value ) ) {
+						$this->scan_composite_value( $value, $path, $alias, Token_Reference::get_kind_extension(), $references );
 					}
 				}
 			}

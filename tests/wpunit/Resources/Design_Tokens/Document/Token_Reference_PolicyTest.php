@@ -149,6 +149,41 @@ final class Token_Reference_PolicyTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// nested composite field alias (unsupported) — recursion is generic, not a
+	// fixed field-list walk, so a sub-field nested inside an array is still found
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testNestedCompositeFieldAliasReturnsUnsupportedCompositeFieldReference(): void {
+		$id  = 'primitive.color.custom.shadow-base';
+		$doc = [
+			'semantic' => [
+				'shadow' => [
+					'layered' => [
+						'$type'  => 'shadow',
+						'$value' => [
+							'layers' => [
+								[
+									'color' => '{' . $id . '}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$refs = $this->policy->find( $doc, $id );
+
+		$this->assertCount( 1, $refs );
+		$this->assertSame( Token_Reference::get_kind_composite_field(), $refs[0]->kind );
+		$this->assertSame( 'semantic.shadow.layered.$value.layers.0.color', $refs[0]->path );
+		$this->assertFalse( $refs[0]->supported );
+	}
+
+	// -------------------------------------------------------------------------
 	// extension preset tokens map (unsupported)
 	// -------------------------------------------------------------------------
 
