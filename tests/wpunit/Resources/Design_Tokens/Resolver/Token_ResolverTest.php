@@ -115,6 +115,287 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '0px 2px 8px 0px #1A202C', $resolver->resolve_overrides( [] )->value( 'semantic.shadow.card' ) );
 	}
 
+	/**
+	 * A reference-valued token exposes its immediate alias target (by id and by css-var) alongside the
+	 * flattened literal; a raw-valued token exposes no target.
+	 *
+	 * @return void
+	 */
+	public function testItExposesTheImmediateAliasTargetForAReferenceValuedToken(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+
+		// The reference-valued semantic carries its immediate target, the literal-valued primitive does not.
+		$this->assertSame( 'primitive.color.brand.primary', $resolved->target( 'semantic.color.button-bg' ) );
+		$this->assertNull( $resolved->target( 'primitive.color.brand.primary' ) );
+
+		// The css-var projection reads a var() reference to the target's variable.
+		$this->assertSame(
+			'var(' . Css_Var::from_id( 'primitive.color.brand.primary' ) . ')',
+			$resolved->projected_vars()[ Css_Var::from_id( 'semantic.color.button-bg' ) ]
+		);
+
+		// The literal is still produced for host-publishing surfaces.
+		$this->assertSame( '#3182CE', $resolved->value( 'semantic.color.button-bg' ) );
+	}
+
+	/**
+	 * Every link of a chain records its own immediate target — not the final leaf — so each declaration
+	 * is a single var() hop and the cascade chains. The literal leaf records no target.
+	 *
+	 * @return void
+	 */
+	public function testItRecordsEachTokensImmediateTargetInAChain(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'c' => [
+							'$type'  => 'color',
+							'$value' => '#abcdef',
+						],
+						'b' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.c}',
+						],
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.b}',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+
+		$this->assertSame( 'primitive.color.b', $resolved->target( 'primitive.color.a' ) );
+		$this->assertSame( 'primitive.color.c', $resolved->target( 'primitive.color.b' ) );
+		$this->assertNull( $resolved->target( 'primitive.color.c' ) );
+	}
+
+	/**
+	 * A composite token (a shadow whose color field is an alias) is not a top-level reference: its
+	 * $value is an array, so it records no target and keeps its flattened literal.
+	 *
+	 * @return void
+	 */
+	public function testACompositeWithAnAliasFieldExposesNoTopLevelTarget(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'ink' => [
+							'$type'  => 'color',
+							'$value' => '#1A202C',
+						],
+					],
+				],
+				'semantic'  => [
+					'shadow' => [
+						'card' => [
+							'$type'  => 'shadow',
+							'$value' => [
+								'color'   => '{primitive.color.ink}',
+								'offsetX' => '0px',
+								'offsetY' => '2px',
+								'blur'    => '8px',
+								'spread'  => '0px',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+
+		// Not a top-level reference (its $value is an array), so no target id is recorded...
+		$this->assertNull( $resolved->target( 'semantic.shadow.card' ) );
+
+		// ...and the host-facing literal still flattens the aliased color field.
+		$this->assertSame( '0px 2px 8px 0px #1A202C', $resolved->value( 'semantic.shadow.card' ) );
+
+		// But the css-var projection keeps the aliased color as a var() reference, so the shadow
+		// color follows the primitive live. var() is valid anywhere in a value, shorthands included.
+		$this->assertSame(
+			'0px 2px 8px 0px var(' . Css_Var::from_id( 'primitive.color.ink' ) . ')',
+			$resolved->projected_vars()[ Css_Var::from_id( 'semantic.shadow.card' ) ]
+		);
+	}
+
+	/**
+	 * A baseline alias overridden to a literal is "explicitly set": its effective $value is no longer an
+	 * alias, so it exposes no target and emits the literal — the indirection only applies when unset.
+	 *
+	 * @return void
+	 */
+	public function testASemanticOverriddenToALiteralExposesNoTarget(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides(
+			[
+				'semantic' => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '#FF0000',
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertNull( $resolved->target( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#FF0000', $resolved->value( 'semantic.color.button-bg' ) );
+	}
+
+	/**
+	 * Overriding a baseline alias to a different alias retargets the indirection: the effective $value is
+	 * still a reference, just to a new leaf.
+	 *
+	 * @return void
+	 */
+	public function testASemanticOverriddenToADifferentAliasRetargets(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'brand'   => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+						'neutral' => [
+							'900' => [
+								'$type'  => 'color',
+								'$value' => '#1A202C',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides(
+			[
+				'semantic' => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.neutral.900}',
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertSame( 'primitive.color.neutral.900', $resolved->target( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#1A202C', $resolved->value( 'semantic.color.button-bg' ) );
+	}
+
+	/**
+	 * Overriding the primitive a semantic alias points at leaves the alias untouched: the semantic keeps
+	 * the same target id while its resolved literal reflects the new primitive value — this is what lets
+	 * a palette edit follow live through the var() chain with no re-targeting.
+	 *
+	 * @return void
+	 */
+	public function testOverridingTheTargetPrimitiveKeepsTheSameTargetButNewValue(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#3182CE',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'color' => [
+						'button-bg' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.brand.primary}',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides(
+			[
+				'primitive' => [
+					'color' => [
+						'brand' => [
+							'primary' => [
+								'$type'  => 'color',
+								'$value' => '#000000',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertSame( 'primitive.color.brand.primary', $resolved->target( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#000000', $resolved->value( 'semantic.color.button-bg' ) );
+	}
+
 	public function testFontFamilyListsRenderCommaSeparated(): void {
 		$resolver = $this->resolver_for(
 			[

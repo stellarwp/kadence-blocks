@@ -25,8 +25,8 @@ final class Css_BuilderTest extends TestCase {
 		return new Css_Builder( $this->registry );
 	}
 
-	private function resolved( array $by_id = [], array $by_var = [] ): Resolved_Tokens {
-		return new Resolved_Tokens( $by_id, $by_var );
+	private function resolved( array $by_id = [], array $by_var = [], array $by_var_projected = [], array $by_id_target = [] ): Resolved_Tokens {
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
 	}
 
 	// ---- Token block -------------------------------------------------------------------------------
@@ -37,6 +37,85 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder()->css( $this->resolved( [], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( $var . ':#3182CE;', $css );
+	}
+
+	/**
+	 * A reference-valued token points its variable at the target's variable rather than the literal, so
+	 * the alias indirection survives into CSS and dependents follow live.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsAVarChainForAReferenceValuedToken(): void {
+		$var    = Css_Var::from_id( 'semantic.color.button-bg' );
+		$target = Css_Var::from_id( 'primitive.color.brand.primary' );
+
+		$css = $this->builder()->css(
+			$this->resolved(
+				[ 'semantic.color.button-bg' => '#3182CE' ],
+				[ $var => '#3182CE' ],
+				[ $var => 'var(' . $target . ')' ],
+				[ 'semantic.color.button-bg' => 'primitive.color.brand.primary' ]
+			)
+		);
+
+		$this->assertStringContainsString( $var . ':var(' . $target . ');', $css );
+		// The literal must NOT be emitted for the reference token's own declaration.
+		$this->assertStringNotContainsString( $var . ':#3182CE;', $css );
+	}
+
+	/**
+	 * A raw-valued token (no target) still emits its literal even when other tokens in the same set are
+	 * references.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsTheLiteralForARawValuedTokenAlongsideAReference(): void {
+		$ref_var    = Css_Var::from_id( 'semantic.color.button-bg' );
+		$target_var = Css_Var::from_id( 'primitive.color.brand.primary' );
+
+		$css = $this->builder()->css(
+			$this->resolved(
+				[
+					'semantic.color.button-bg'      => '#3182CE',
+					'primitive.color.brand.primary' => '#3182CE',
+				],
+				[
+					$ref_var    => '#3182CE',
+					$target_var => '#3182CE',
+				],
+				[
+					$ref_var    => 'var(' . $target_var . ')',
+					$target_var => '#3182CE',
+				],
+				[ 'semantic.color.button-bg' => 'primitive.color.brand.primary' ]
+			)
+		);
+
+		// The reference chains, the leaf primitive carries the literal.
+		$this->assertStringContainsString( $ref_var . ':var(' . $target_var . ');', $css );
+		$this->assertStringContainsString( $target_var . ':#3182CE;', $css );
+	}
+
+	/**
+	 * A composite whose projected value embeds a var() reference (a shadow with an aliased color field)
+	 * emits that var() inside the token declaration's shorthand.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsACompositeWithAnEmbeddedVarReference(): void {
+		$var       = Css_Var::from_id( 'semantic.shadow.card' );
+		$color_var = Css_Var::from_id( 'primitive.color.ink' );
+		$projected = '0px 2px 8px 0px var(' . $color_var . ')';
+
+		$css = $this->builder()->css(
+			$this->resolved(
+				[ 'semantic.shadow.card' => '0px 2px 8px 0px #1A202C' ],
+				[ $var => '0px 2px 8px 0px #1A202C' ],
+				[ $var => $projected ]
+			)
+		);
+
+		$this->assertStringContainsString( $var . ':' . $projected . ';', $css );
 	}
 
 	public function testItScopesToBothSelectors(): void {
