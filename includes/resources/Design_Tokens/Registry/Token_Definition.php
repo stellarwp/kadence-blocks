@@ -139,11 +139,6 @@ final class Token_Definition {
 			throw new InvalidArgumentException( 'Design token declaration "projections" must be an array.' );
 		}
 
-		$user_created = $definition['user_created'] ?? false;
-		if ( ! is_bool( $user_created ) ) {
-			throw new InvalidArgumentException( 'Design token declaration "user_created" must be a boolean.' );
-		}
-
 		return new self(
 			$id,
 			$type,
@@ -151,9 +146,36 @@ final class Token_Definition {
 			$group ?? '',
 			// css_var override is rare; default is derived and impossible to drift from the id.
 			$css_var ?? Css_Var::from_id( $id ),
-			$projections,
-			$user_created
+			$projections
 		);
+	}
+
+	/**
+	 * The only factory that produces a user-created definition.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id    Canonical dot-path id.
+	 * @param string $type  DTCG $type.
+	 * @param string $label Display label; derived from the terminal slug when empty.
+	 *
+	 * @throws \InvalidArgumentException When the id fails the charset check.
+	 *
+	 * @return self
+	 */
+	public static function from_user_primitive( string $id, string $type, string $label = '' ): self {
+		if ( ! preg_match( '/^[a-z0-9]+([.-][a-z0-9]+)*$/', $id ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token id "%s" must be a dot-path of lowercase alphanumeric segments.', $id )
+			);
+		}
+
+		if ( $label === '' ) {
+			$segments = explode( '.', $id );
+			$label    = ucwords( str_replace( '-', ' ', (string) end( $segments ) ) );
+		}
+
+		return new self( $id, $type, $label, '', Css_Var::from_id( $id ), [], true );
 	}
 
 	/**

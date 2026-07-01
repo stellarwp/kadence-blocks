@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
+use Generator;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use Tests\Support\Classes\TestCase;
@@ -178,5 +179,82 @@ final class Token_DefinitionTest extends TestCase {
 			'non-string css_var'    => [ $base + [ 'css_var' => 123 ] ],
 			'non-array projections' => [ $base + [ 'projections' => 'wp_preset' ] ],
 		];
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testFromUserPrimitiveProducesUserCreatedToken(): void {
+		$token = Token_Definition::from_user_primitive( 'user.color.primary-blue', 'color', 'Primary Blue' );
+
+		$this->assertTrue( $token->is_user_created() );
+		$this->assertSame( 'user.color.primary-blue', $token->id );
+		$this->assertSame( 'color', $token->type );
+		$this->assertSame( 'Primary Blue', $token->label );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testFromArrayProducesNonUserCreatedToken(): void {
+		$token = Token_Definition::from_array(
+			[
+				'id'    => 'semantic.color.button-bg',
+				'type'  => 'color',
+				'label' => 'Button Background',
+			]
+		);
+
+		$this->assertFalse( $token->is_user_created() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testFromUserPrimitiveThrowsOnInvalidId(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Token_Definition::from_user_primitive( 'user.color.primaryBlue', 'color' );
+	}
+
+	/**
+	 * @dataProvider userPrimitiveLabelDerivationProvider
+	 *
+	 * @param string $id
+	 * @param string $expected_label
+	 *
+	 * @return void
+	 */
+	public function testFromUserPrimitiveDerivesLabelFromTerminalSlug( string $id, string $expected_label ): void {
+		$token = Token_Definition::from_user_primitive( $id, 'color' );
+
+		$this->assertSame( $expected_label, $token->label );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function userPrimitiveLabelDerivationProvider(): Generator {
+		yield 'hyphenated slug' => [
+			'id'             => 'user.color.primary-blue',
+			'expected_label' => 'Primary Blue',
+		];
+		yield 'single segment' => [
+			'id'             => 'primary',
+			'expected_label' => 'Primary',
+		];
+		yield 'multi-word slug' => [
+			'id'             => 'user.color.brand-accent-dark',
+			'expected_label' => 'Brand Accent Dark',
+		];
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testFromUserPrimitiveUsesExplicitLabelWhenProvided(): void {
+		$token = Token_Definition::from_user_primitive( 'user.color.primary-blue', 'color', 'My Custom Label' );
+
+		$this->assertSame( 'My Custom Label', $token->label );
 	}
 }
