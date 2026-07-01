@@ -20,7 +20,7 @@ final class User_Primitive_Index {
 	 *
 	 * @param array<string, mixed> $document
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string, array{label: string}>
 	 */
 	public function all( array $document ): array {
 		$map = $this->read_map( $document );
@@ -51,13 +51,7 @@ final class User_Primitive_Index {
 	public function label_for( array $document, string $id ): ?string {
 		$entry = $this->all( $document )[ $id ] ?? null;
 
-		if ( ! is_array( $entry ) ) {
-			return null;
-		}
-
-		$label = $entry['label'] ?? null;
-
-		return is_string( $label ) ? $label : null;
+		return is_array( $entry ) ? $entry['label'] : null;
 	}
 
 	/**
