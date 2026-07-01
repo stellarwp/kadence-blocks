@@ -9,7 +9,6 @@ import { Notice, Spinner } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { TokenField } from '../molecules/TokenField';
 import { TokenGroup } from '../organisms/TokenGroup';
 
 /**
@@ -97,7 +96,7 @@ export function TokenList({
 				</Notice>
 			)}
 
-			{tokens.length === 0 ? (
+			{tokens.length === 0 && !onCreatePrimitive ? (
 				<p className="kadence-blocks-style-book__empty">
 					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
@@ -123,17 +122,22 @@ export function TokenList({
 					);
 				})
 			) : (
-				<div className="kadence-blocks-style-book__token-group-list">
-					{tokens.map((token) => (
-						<TokenField
-							key={token.id}
-							token={token}
-							value={values[token.id] ?? ''}
-							onSave={onSave}
-							fieldState={getFieldState(token.id)}
-						/>
-					))}
-				</div>
+				// The section's own <header> already shows the group title, so the
+				// nested TokenGroup renders without a heading — only its add/rename/
+				// delete controls, which is what a single, ungrouped section needs.
+				<TokenGroup
+					groupName=""
+					tokens={tokens}
+					values={values}
+					onSave={onSave}
+					getFieldState={getFieldState}
+					isUserCreatedGroup={Boolean(onCreatePrimitive)}
+					onCreatePrimitive={onCreatePrimitive}
+					onDeletePrimitive={onDeletePrimitive}
+					onRenamePrimitive={onRenamePrimitive}
+					onFetchPreview={onFetchPreview}
+					onMutationSuccess={onMutationSuccess}
+				/>
 			)}
 		</div>
 	);

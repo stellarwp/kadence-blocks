@@ -6,7 +6,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { GROUP_ORDER, GROUP_SECTIONS, SECTION_OVERVIEW, groupSectionId } from '../constants/navigation';
+import {
+	CUSTOM_COLORS_GROUP_LABEL,
+	GROUP_ORDER,
+	GROUP_SECTIONS,
+	SECTION_OVERVIEW,
+	groupSectionId,
+} from '../constants/navigation';
 
 /**
  * Filter tokens belonging to a schema group.
@@ -42,6 +48,12 @@ export function countTokensByGroup(tokens) {
 export function buildNavigationSections(tokens) {
 	const counts = countTokensByGroup(tokens);
 
+	// The Custom Colors section is always reachable, even with zero user-created
+	// primitives yet, so there is a way to create the first one.
+	if (!(CUSTOM_COLORS_GROUP_LABEL in counts)) {
+		counts[CUSTOM_COLORS_GROUP_LABEL] = 0;
+	}
+
 	const foundations = Object.entries(counts).map(([groupName, count]) => {
 		const id = groupSectionId(groupName);
 		const meta = GROUP_SECTIONS[id] ?? {};
@@ -53,6 +65,7 @@ export function buildNavigationSections(tokens) {
 			groupName,
 			description: meta.description?.() ?? '',
 			showColorPreview: Boolean(meta.showColorPreview),
+			isUserCreated: Boolean(meta.isUserCreated),
 			count,
 		};
 	});

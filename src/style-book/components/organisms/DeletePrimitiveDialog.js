@@ -41,6 +41,7 @@ export function DeletePrimitiveDialog({ token, onFetchPreview, onDelete, onSucce
 
 		if (result.ok) {
 			setPreview(result.data);
+			setSaveStatus({ status: 'idle', error: null });
 		} else {
 			setPreviewError(result.error);
 		}
@@ -69,7 +70,10 @@ export function DeletePrimitiveDialog({ token, onFetchPreview, onDelete, onSucce
 		}
 
 		if (result.isConflict) {
-			setSaveStatus({ status: 'idle', error: null });
+			setSaveStatus({
+				status: 'error',
+				error: __('The token set changed since this preview loaded. Refreshing…', 'kadence-blocks'),
+			});
 			void fetchPreview();
 			return;
 		}

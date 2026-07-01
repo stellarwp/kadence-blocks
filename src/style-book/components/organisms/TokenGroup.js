@@ -54,21 +54,25 @@ export function TokenGroup({
 	const [deleteToken, setDeleteToken] = useState(null);
 	const [renameToken, setRenameToken] = useState(null);
 
+	const showAddButton = isUserCreatedGroup && Boolean(onCreatePrimitive);
+
 	return (
 		<section className="kadence-blocks-style-book__token-group">
-			<div className="kadence-blocks-style-book__token-group-header">
-				<h2 className="kadence-blocks-style-book__token-group-title">{groupName}</h2>
-				{isUserCreatedGroup && onCreatePrimitive && (
-					<Button
-						variant="secondary"
-						size="small"
-						onClick={() => setAddOpen(true)}
-						className="kadence-blocks-style-book__token-group-add"
-					>
-						{__('Add Color', 'kadence-blocks')}
-					</Button>
-				)}
-			</div>
+			{(groupName || showAddButton) && (
+				<div className="kadence-blocks-style-book__token-group-header">
+					{groupName && <h2 className="kadence-blocks-style-book__token-group-title">{groupName}</h2>}
+					{showAddButton && (
+						<Button
+							variant="secondary"
+							size="small"
+							onClick={() => setAddOpen(true)}
+							className="kadence-blocks-style-book__token-group-add"
+						>
+							{__('Add Color', 'kadence-blocks')}
+						</Button>
+					)}
+				</div>
+			)}
 
 			<div className="kadence-blocks-style-book__token-group-list">
 				{tokens.map((token) => (

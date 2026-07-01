@@ -71,6 +71,14 @@ export function AddPrimitiveDialog({ onCreate, onClose }) {
 		if (result.ok) {
 			setSaveStatus({ status: 'saved', error: null });
 			onClose();
+		} else if (result.isConflict) {
+			setSaveStatus({
+				status: 'error',
+				error: __(
+					'The token set changed since this page loaded. Reload the page and try again.',
+					'kadence-blocks'
+				),
+			});
 		} else {
 			setSaveStatus({ status: 'error', error: result.error });
 		}

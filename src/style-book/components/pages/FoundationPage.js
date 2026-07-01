@@ -47,6 +47,7 @@ export function FoundationPage({
 	}
 
 	const filtered = filterTokensByGroup(tokens, section.groupName);
+	const isUserCreatedSection = Boolean(section.isUserCreated);
 
 	return (
 		<div className="kadence-blocks-style-book__foundation-page">
@@ -64,11 +65,11 @@ export function FoundationPage({
 				onSave={onSave}
 				getFieldState={getFieldState}
 				groupBySchema={false}
-				onCreatePrimitive={onCreatePrimitive}
-				onDeletePrimitive={onDeletePrimitive}
-				onRenamePrimitive={onRenamePrimitive}
-				onFetchPreview={onFetchPreview}
-				onMutationSuccess={onMutationSuccess}
+				onCreatePrimitive={isUserCreatedSection ? onCreatePrimitive : undefined}
+				onDeletePrimitive={isUserCreatedSection ? onDeletePrimitive : undefined}
+				onRenamePrimitive={isUserCreatedSection ? onRenamePrimitive : undefined}
+				onFetchPreview={isUserCreatedSection ? onFetchPreview : undefined}
+				onMutationSuccess={isUserCreatedSection ? onMutationSuccess : undefined}
 			/>
 		</div>
 	);

@@ -80,7 +80,10 @@ export function RenamePrimitiveDialog({ token, onRename, onSuccess, onClose }) {
 		} else if (result.isConflict) {
 			setSaveStatus({
 				status: 'error',
-				error: __('That ID is already in use. Choose a different one.', 'kadence-blocks'),
+				error: __(
+					'The token set changed since this page loaded. Reload the page and try again.',
+					'kadence-blocks'
+				),
 			});
 		} else {
 			setSaveStatus({ status: 'error', error: result.error });
