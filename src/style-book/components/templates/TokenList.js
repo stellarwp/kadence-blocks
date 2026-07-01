@@ -9,6 +9,7 @@ import { Notice, Spinner } from '@wordpress/components';
 /**
  * Internal dependencies
  */
+import { TokenField } from '../molecules/TokenField';
 import { TokenGroup } from '../organisms/TokenGroup';
 
 /**
@@ -43,9 +44,20 @@ function groupTokens(tokens) {
  * @param {Function} props.onSave       Save handler for token fields.
  * @param {Function} props.getFieldState Field state accessor.
  * @param {string}   [props.emptyMessage] Message when no tokens match.
+ * @param {boolean}  [props.groupBySchema] Whether to subgroup by schema group label.
  * @return {JSX.Element} Token list template.
  */
-export function TokenList({ tokens, values, isReady, isActive, isResolved, onSave, getFieldState, emptyMessage }) {
+export function TokenList({
+	tokens,
+	values,
+	isReady,
+	isActive,
+	isResolved,
+	onSave,
+	getFieldState,
+	emptyMessage,
+	groupBySchema = true,
+}) {
 	const grouped = useMemo(() => groupTokens(tokens), [tokens]);
 
 	if (!isReady) {
@@ -79,7 +91,7 @@ export function TokenList({ tokens, values, isReady, isActive, isResolved, onSav
 				<p className="kadence-blocks-style-book__empty">
 					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
-			) : (
+			) : groupBySchema ? (
 				Object.entries(grouped).map(([groupName, groupTokensList]) => (
 					<TokenGroup
 						key={groupName}
@@ -90,6 +102,18 @@ export function TokenList({ tokens, values, isReady, isActive, isResolved, onSav
 						getFieldState={getFieldState}
 					/>
 				))
+			) : (
+				<div className="kadence-blocks-style-book__token-group-list">
+					{tokens.map((token) => (
+						<TokenField
+							key={token.id}
+							token={token}
+							value={values[token.id] ?? ''}
+							onSave={onSave}
+							fieldState={getFieldState(token.id)}
+						/>
+					))}
+				</div>
 			)}
 		</div>
 	);
