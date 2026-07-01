@@ -32,6 +32,8 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @param array<string,string> $by_id     Canonical token-id => literal value.
 	 * @param array<string,string> $projected Slug-namespaced css-var => projected value.
+	 *
+	 * @return Resolved_Tokens
 	 */
 	private function set( array $by_id, array $projected ): Resolved_Tokens {
 		return new Resolved_Tokens( $by_id, [], $projected );
@@ -41,6 +43,8 @@ final class Css_BuilderTest extends TestCase {
 	 * Render a single default set as the active set — the common single-palette shape.
 	 *
 	 * @param Resolved_Tokens $resolved The default set's namespaced resolved maps.
+	 *
+	 * @return string
 	 */
 	private function css_default( Resolved_Tokens $resolved ): string {
 		return $this->builder()->css( [ 'default' => $resolved ], 'default' );
@@ -48,6 +52,11 @@ final class Css_BuilderTest extends TestCase {
 
 	// ---- Namespaced definition block ----------------------------------------------------------------
 
+	/**
+	 * A token's literal value lives once, under its slug-namespaced css-var in the definition block.
+	 *
+	 * @return void
+	 */
 	public function testItEmitsTheLiteralUnderTheNamespacedVar(): void {
 		$id  = 'semantic.color.button-bg';
 		$ns  = Css_Var::from_id( $id, 'default' );
@@ -126,6 +135,12 @@ final class Css_BuilderTest extends TestCase {
 
 	// ---- Switch selectors ---------------------------------------------------------------------------
 
+	/**
+	 * Each set emits a `[data-kb-token-set="<set>"]` switch selector that re-points the canonical var at
+	 * that set's namespaced var.
+	 *
+	 * @return void
+	 */
 	public function testItEmitsASwitchSelectorForTheSet(): void {
 		$id = 'semantic.color.button-bg';
 
@@ -139,6 +154,11 @@ final class Css_BuilderTest extends TestCase {
 		);
 	}
 
+	/**
+	 * The public switch-attribute accessor returns the same attribute name used in the emitted selector.
+	 *
+	 * @return void
+	 */
 	public function testTheSwitchAttributeAccessorMatchesTheEmittedSelector(): void {
 		$this->assertSame( 'data-kb-token-set', Css_Builder::get_switch_attribute() );
 	}
@@ -172,6 +192,12 @@ final class Css_BuilderTest extends TestCase {
 
 	// ---- Scope / structure --------------------------------------------------------------------------
 
+	/**
+	 * The namespaced and alias blocks are scoped to both the bare `:root` and the `:where(.kb-tokens)`
+	 * selectors, with bare `:root` leading for editor-iframe coverage.
+	 *
+	 * @return void
+	 */
 	public function testItScopesNamespacedAndAliasBlocksToBothSelectors(): void {
 		$id  = 'semantic.color.button-bg';
 		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
@@ -193,12 +219,22 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '!important', $css );
 	}
 
+	/**
+	 * A set with no tokens produces no CSS.
+	 *
+	 * @return void
+	 */
 	public function testEmptySetProducesNoCss(): void {
 		$css = $this->css_default( $this->set( [], [] ) );
 
 		$this->assertSame( '', $css );
 	}
 
+	/**
+	 * When the active slug is absent from the resolved sets, no CSS is produced.
+	 *
+	 * @return void
+	 */
 	public function testMissingActiveSetProducesNoCss(): void {
 		$css = $this->builder()->css( [ 'dark' => $this->set( [], [] ) ], 'default' );
 
@@ -457,6 +493,11 @@ final class Css_BuilderTest extends TestCase {
 		);
 	}
 
+	/**
+	 * The active fragment is served verbatim from the object cache when a cached entry is present.
+	 *
+	 * @return void
+	 */
 	public function testActiveFragmentIsServedFromObjectCache(): void {
 		$id       = 'semantic.color.button-bg';
 		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] );
