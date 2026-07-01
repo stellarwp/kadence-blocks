@@ -205,6 +205,147 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * Write a document only when the stored version matches expected_version.
+	 *
+	 * First write: expected_version must be an empty string; the row must not yet exist.
+	 * Subsequent writes: expected_version must match the current stored version.
+	 *
+	 * Returns true on success, false on version mismatch (caller maps to 409).
+	 * Throws DatabaseQueryException on a real write failure.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $document         The raw DTCG JSON to persist.
+	 * @param string $expected_version The version the caller last read. Empty for first write.
+	 * @param string $slug             The token set slug.
+	 * @param string $title            Optional label; left untouched when empty.
+	 *
+	 * @return bool True on success; false when the version does not match.
+	 *
+	 * @throws DatabaseQueryException If the write fails.
+	 */
+	public function save_document_conditional(
+		string $document,
+		string $expected_version,
+		string $slug = self::DEFAULT_SLUG,
+		string $title = ''
+	): bool {
+		$previous = $this->qb()
+						->where( 'slug', $slug )
+						->get( ARRAY_A );
+
+		if ( ! is_array( $previous ) ) {
+			// First write — expected_version must be empty.
+			if ( $expected_version !== '' ) {
+				return false;
+			}
+
+			$data = [
+				'slug'       => $slug,
+				'document'   => $document,
+				'version'    => $this->hash_document( $document ),
+				'updated_at' => current_time( 'mysql', true ),
+			];
+
+			if ( $title !== '' ) {
+				$data['title'] = $title;
+			}
+
+			try {
+				$this->qb()->insert( $data );
+			} catch ( DatabaseQueryException $e ) {
+				// Duplicate-key on concurrent first write → conflict, not 500.
+				return false;
+			}
+
+			$this->changed( $slug );
+
+			return true;
+		}
+
+		// Subsequent write — must match.
+		if ( (string) ( $previous['version'] ?? '' ) !== $expected_version ) {
+			return false;
+		}
+
+		$new_version = $this->hash_document( $document );
+		$data        = [
+			'document'   => $document,
+			'version'    => $new_version,
+			'updated_at' => current_time( 'mysql', true ),
+		];
+
+		if ( $title !== '' ) {
+			$data['title'] = $title;
+		}
+
+		// Conditional UPDATE: WHERE slug = ? AND version = ? prevents a concurrent overwrite.
+		$affected = $this->qb()
+						->where( 'slug', $slug )
+						->where( 'version', $expected_version )
+						->update( $data );
+
+		// Zero affected rows means the version changed concurrently.
+		if ( (int) $affected === 0 ) {
+			return false;
+		}
+
+		$this->superseded( $slug, (string) ( $previous['document'] ?? '' ), $expected_version );
+		$this->changed( $slug );
+
+		return true;
+	}
+
+	/**
+	 * Delete a named token set only when the stored version matches expected_version.
+	 *
+	 * The default set is never row-deleted; use save_document_conditional with an empty
+	 * document to reset it instead.
+	 *
+	 * Returns true on success, false on version mismatch or if slug is the default set.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug             The named set slug.
+	 * @param string $expected_version The version the caller last read.
+	 *
+	 * @return bool True on success; false on mismatch or default-set attempt.
+	 *
+	 * @throws DatabaseQueryException If the delete fails.
+	 */
+	public function delete_document_conditional( string $slug, string $expected_version ): bool {
+		if ( $slug === self::DEFAULT_SLUG ) {
+			return false;
+		}
+
+		$previous = $this->qb()
+						->where( 'slug', $slug )
+						->get( ARRAY_A );
+
+		if ( ! is_array( $previous ) ) {
+			return false;
+		}
+
+		if ( (string) ( $previous['version'] ?? '' ) !== $expected_version ) {
+			return false;
+		}
+
+		$affected = $this->qb()
+						->where( 'slug', $slug )
+						->where( 'version', $expected_version )
+						->delete();
+
+		// Zero affected rows means the version changed concurrently.
+		if ( (int) $affected === 0 ) {
+			return false;
+		}
+
+		$this->deleted( $slug );
+
+		return true;
+	}
+
+	/**
 	 * Re-hash a token set's version to bust caches without changing its document.
 	 *
 	 * No-op when the set does not exist — there is nothing cached to invalidate.
