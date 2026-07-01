@@ -179,10 +179,12 @@ final class Projector {
 	 * so repeated calls within the same request are free.
 	 *
 	 * Each set is resolved with its css-var names namespaced to its own slug, then the builder emits the
-	 * namespaced blocks, the active-set alias layer, and the per-set switch selectors. Returns an empty
-	 * string when a stored document cannot be resolved (e.g. an alias cycle introduced by a direct DB
-	 * write that bypassed the REST validation gate) so the page does not crash — the inline style is
-	 * simply omitted and KB falls back to its existing variables.
+	 * namespaced blocks, the active-set alias layer, and the per-set switch selectors. A set whose stored
+	 * document cannot be resolved (e.g. an alias cycle introduced by a direct DB write that bypassed the
+	 * REST validation gate) is skipped rather than fatal, so one broken set never suppresses the others.
+	 * Returns an empty string only when the active set is the one that cannot be resolved — the builder's
+	 * own guard yields '' when the active slug is absent — so the page falls back to KB's existing
+	 * variables without crashing.
 	 *
 	 * @since TBD
 	 *
@@ -190,19 +192,27 @@ final class Projector {
 	 */
 	private function build_css(): string {
 		try {
-			$active           = $this->active->get();
-			$resolved_by_slug = [];
-			$versions         = [];
-
-			foreach ( $this->set_slugs() as $slug ) {
-				$resolved_by_slug[ $slug ] = $this->resolver->resolve_namespaced( $slug );
-				$versions[ $slug ]         = $this->store->get_version( $slug );
-			}
-
-			return $this->css_builder->css_for_version( $resolved_by_slug, $versions, $active );
+			$active = $this->active->get();
 		} catch ( Throwable $e ) {
 			return '';
 		}
+
+		$resolved_by_slug = [];
+		$versions         = [];
+
+		foreach ( $this->set_slugs() as $slug ) {
+			try {
+				$resolved_by_slug[ $slug ] = $this->resolver->resolve_namespaced( $slug );
+				$versions[ $slug ]         = $this->store->get_version( $slug );
+			} catch ( Throwable $e ) {
+				// A single set that cannot be resolved is omitted, not fatal: the remaining sets and the
+				// active alias layer still render. If the active set is the one that failed it is absent
+				// from $resolved_by_slug, and css_for_version() returns '' on its own.
+				continue;
+			}
+		}
+
+		return $this->css_builder->css_for_version( $resolved_by_slug, $versions, $active );
 	}
 
 	/**

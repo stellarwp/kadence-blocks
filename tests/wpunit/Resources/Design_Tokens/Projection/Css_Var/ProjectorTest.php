@@ -297,6 +297,44 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * A non-active set whose stored document cannot be resolved (here, an alias cycle) is skipped rather
+	 * than fatal: the remaining sets and the active alias layer still project, so one broken set never
+	 * suppresses the whole stylesheet.
+	 *
+	 * @return void
+	 */
+	public function testABrokenNonActiveSetDoesNotSuppressTheOtherSets(): void {
+		$this->store->save_document( $this->cyclic_document(), 'brand-b' );
+
+		// Default stays active and resolves cleanly.
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		// The default set still projects its baseline literal and canonical alias layer.
+		$this->assertStringContainsString( self::BASELINE_BUTTON, $css );
+		$this->assertSame( 2, substr_count( $css, $this->pointer_to_set( Token_Store::default_slug() ) ) );
+
+		// The broken brand-b set is omitted entirely — no switch selector for it.
+		$this->assertStringNotContainsString( '[data-kb-token-set="brand-b"]', $css );
+	}
+
+	/**
+	 * When the active set is the one that cannot be resolved, the whole stylesheet is suppressed rather
+	 * than emitting an alias layer that points at a set with no definition block.
+	 *
+	 * @return void
+	 */
+	public function testABrokenActiveSetSuppressesAllCss(): void {
+		$this->store->save_document( $this->cyclic_document(), 'brand-b' );
+		$this->active->set( 'brand-b' );
+
+		$this->projector->enqueue_front_end();
+
+		$this->assertSame( '', $this->inline_css() );
+	}
+
+	/**
 	 * An overrides-only DTCG document that retargets the button primitive the shipped baseline resolves
 	 * semantic.color.button-bg through.
 	 *
@@ -312,6 +350,31 @@ final class ProjectorTest extends TestCase {
 								'$type'  => 'color',
 								'$value' => self::BRAND_B_BUTTON,
 							],
+						],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * A DTCG document whose two primitives alias each other, forming an unresolvable cycle — the shape a
+	 * direct DB write could introduce past the REST validation gate.
+	 *
+	 * @return string
+	 */
+	private function cyclic_document(): string {
+		return (string) wp_json_encode(
+			[
+				'primitive' => [
+					'color' => [
+						'a' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.b}',
+						],
+						'b' => [
+							'$type'  => 'color',
+							'$value' => '{primitive.color.a}',
 						],
 					],
 				],
