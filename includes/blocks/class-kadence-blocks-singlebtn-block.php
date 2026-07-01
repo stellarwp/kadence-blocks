@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -20,6 +21,8 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * @category class
  */
 class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
+	use Sanitizes_Css_Identifier;
+
 	/**
 	 * Instance of this class
 	 *
@@ -363,9 +366,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			/**
 			 * The selected design-token variant outputs a kb-variant--<slug> class the Design Tokens variant
 			 * projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
-			 * the editor save filter; the sanitizer mirrors the projector's so the class matches the selector.
+			 * the editor save filter; the shared Sanitizes_Css_Identifier sanitizer keeps the slug matching the
+			 * selector the projected CSS targets.
 			 */
-			$classes[] = 'kb-variant--' . preg_replace( '/[^A-Za-z0-9_-]+/', '-', Cast::to_string( $attributes['kbVariant'] ) );
+			$classes[] = 'kb-variant--' . self::sanitize_identifier( Cast::to_string( $attributes['kbVariant'] ) );
 		}
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
@@ -382,9 +386,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			 * A per-block token-set override outputs a data-kb-token-set="<slug>" attribute the Design Tokens
 			 * projector's [data-kb-token-set] switch selectors re-point the block's canonical token vars
 			 * through. This is a dynamic block, so the attribute is added here rather than by the editor save
-			 * filter; the sanitizer mirrors the projector's so the value matches the selector.
+			 * filter; the shared Sanitizes_Css_Identifier sanitizer keeps the slug matching the switch selector.
 			 */
-			$wrapper_args['data-kb-token-set'] = Cast::to_string( preg_replace( '/[^A-Za-z0-9_-]+/', '-', Cast::to_string( $attributes['kbTokenSet'] ) ) );
+			$wrapper_args['data-kb-token-set'] = self::sanitize_identifier( Cast::to_string( $attributes['kbTokenSet'] ) );
 		}
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
