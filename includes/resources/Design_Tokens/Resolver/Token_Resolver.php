@@ -43,7 +43,9 @@ final class Token_Resolver {
 	private Css_Renderer $renderer;
 
 	/**
-	 * Per-request memo of resolved results, keyed on "{slug}:{store-version}".
+	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
+	 * the cache prefix (which distinguishes the canonical "resolved_tokens_{slug}" and namespaced
+	 * "resolved_tokens_ns_{slug}" forms) followed by the store version, e.g. "resolved_tokens_default_v3".
 	 *
 	 * @var array<string,Resolved_Tokens>
 	 */
