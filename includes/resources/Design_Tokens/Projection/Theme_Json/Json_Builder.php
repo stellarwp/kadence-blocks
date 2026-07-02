@@ -45,37 +45,6 @@ final class Json_Builder {
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
 
-	/**
-	 * Maps a wp_preset category to the theme.json settings path and the per-entry value key.
-	 *
-	 * 'path'      => path segments under "settings" where the preset list lives.
-	 * 'value_key' => the key on each preset entry that carries the value (alongside slug/name).
-	 *
-	 * Categories absent from this map (e.g. a radius token's "radius") are skipped: they have no
-	 * native theme.json preset bucket and surface only as custom vars / block bindings.
-	 *
-	 * @since TBD
-	 *
-	 * @var array<string, array{path: string[], value_key: string}>
-	 */
-	private const BUCKETS = [
-		'color'       => [
-			'path'      => [ 'color', 'palette', 'theme' ],
-			'value_key' => 'color',
-		],
-		'font-family' => [
-			'path'      => [ 'typography', 'fontFamilies', 'theme' ],
-			'value_key' => 'fontFamily',
-		],
-		'spacing'     => [
-			'path'      => [ 'spacing', 'spacingSizes' ],
-			'value_key' => 'size',
-		],
-		'shadow'      => [
-			'path'      => [ 'shadow', 'presets' ],
-			'value_key' => 'shadow',
-		],
-	];
 
 	/**
 	 * The token registry.
@@ -187,7 +156,7 @@ final class Json_Builder {
 
 		foreach ( $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) as $id => $token ) {
 			$target = Wp_Preset_Target::from_token( $token );
-			if ( $target === null || ! isset( self::BUCKETS[ $target->category ] ) ) {
+			if ( $target === null || Preset_Bucket::path_for( $target->category ) === null ) {
 				continue; // Unmapped category (e.g. radius) — no native bucket; skip.
 			}
 
@@ -203,7 +172,10 @@ final class Json_Builder {
 		$settings = [];
 
 		foreach ( $by_category as $category => $entries ) {
-			$settings = $this->set_path( $settings, self::BUCKETS[ $category ]['path'], $entries );
+			$path = Preset_Bucket::path_for( $category );
+			if ( $path !== null ) {
+				$settings = $this->set_path( $settings, $path, $entries );
+			}
 		}
 
 		return $settings;
@@ -220,7 +192,7 @@ final class Json_Builder {
 	 * @return array<string, string>
 	 */
 	private function preset_entry( Token_Definition $token, Wp_Preset_Target $target ): array {
-		$value_key = self::BUCKETS[ $target->category ]['value_key'];
+		$value_key = Preset_Bucket::value_key_for( $target->category );
 
 		return [
 			'slug'     => $target->slug,
