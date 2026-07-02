@@ -142,14 +142,12 @@ final class User_Primitive_Registrar {
 	/**
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $document
+	 * @param array<string, mixed> $node The document root, walked segment by segment as $id is traversed.
 	 * @param string               $id
 	 *
 	 * @return string|null
 	 */
-	private function type_from_tree( array $document, string $id ): ?string {
-		$node = $document;
-
+	private function type_from_tree( array $node, string $id ): ?string {
 		foreach ( explode( '.', $id ) as $segment ) {
 			if ( ! is_array( $node ) || ! array_key_exists( $segment, $node ) ) {
 				return null;
