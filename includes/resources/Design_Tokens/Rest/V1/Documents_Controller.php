@@ -656,10 +656,13 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Remove a single token override by dot-path (DELETE /documents/{slug}/tokens/{path}).
 	 *
-	 * Dropping the override reverts that token to its baseline value. Idempotent: when nothing is stored
-	 * at the path, the set is returned unchanged without a write. The resulting document runs the same
-	 * write pipeline as every other write, so a delete that would leave another override aliasing the
-	 * removed token is rejected (HTTP 422) before commit rather than persisting a dangling alias.
+	 * Dropping the override reverts that token to its baseline value. Idempotent for any non-reserved path:
+	 * when nothing is stored there, the set is returned unchanged without a write. A path inside
+	 * primitive.*.custom.* is not idempotent — it is always rejected with HTTP 403, whether or not anything
+	 * is stored there, since deleting a custom primitive must go through the user-primitives endpoint. The
+	 * resulting document runs the same write pipeline as every other write, so a delete that would leave
+	 * another override aliasing the removed token is rejected (HTTP 422) before commit rather than
+	 * persisting a dangling alias.
 	 *
 	 * @since TBD
 	 *
