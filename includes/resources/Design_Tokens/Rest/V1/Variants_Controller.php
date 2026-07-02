@@ -458,6 +458,12 @@ final class Variants_Controller extends Controller {
 		$slug      = $this->slug( $request );
 		$candidate = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
 
+		$error = $this->guard_surface( $candidate, $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
@@ -503,6 +509,12 @@ final class Variants_Controller extends Controller {
 		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
 
 		$error = $this->guard_default_present( $candidate, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_surface( $candidate, $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -946,6 +958,75 @@ final class Variants_Controller extends Controller {
 				'default' => $default,
 			]
 		);
+	}
+
+	/**
+	 * Reject a written variant that does not set exactly the block's bound surface.
+	 *
+	 * A user variant clones the surface an existing variant controls: it supplies values for the block's
+	 * bound properties and nothing else. So a property with no binding (unbound) is rejected — it could
+	 * never project — and a bound property the variant leaves unset is rejected too, since a variant must
+	 * value the full surface. Only the variants carried by the request are checked, each against its
+	 * post-merge token set, so a partial edit that would drop a bound property is caught while the baseline
+	 * variants are left alone.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
+	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param string               $block      The block name.
+	 *
+	 * @return WP_Error|null A WP_Error when a written variant's surface is wrong, null otherwise.
+	 */
+	private function guard_surface( array $candidate, array $block_node, string $block ): ?WP_Error {
+		$set = $this->registry->for_block( $block );
+
+		if ( $set === null ) {
+			return null;
+		}
+
+		$node       = $this->variants->for_overrides( $candidate )[ $block ] ?? [];
+		$effective  = is_array( $node ) ? $node : [];
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( array_keys( $block_node ) as $slug ) {
+			// $default and any other "$"-prefixed metadata key is not a named variant with a surface.
+			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			$variant = isset( $effective[ $slug ] ) && is_array( $effective[ $slug ] ) ? $effective[ $slug ] : [];
+			$tokens  = isset( $variant[ $tokens_key ] ) && is_array( $variant[ $tokens_key ] ) ? $variant[ $tokens_key ] : [];
+			$report  = $set->consistency( array_keys( $tokens ) );
+
+			if ( $report['unbound'] !== [] ) {
+				return new WP_Error(
+					'rest_design_tokens_unbound_property',
+					__( 'A variant can only set properties the block binds.', 'kadence-blocks' ),
+					[
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'      => $block,
+						'variant'    => (string) $slug,
+						'properties' => $report['unbound'],
+					]
+				);
+			}
+
+			if ( $report['unvalued'] !== [] ) {
+				return new WP_Error(
+					'rest_design_tokens_incomplete_surface',
+					__( 'A variant must set every property the block binds.', 'kadence-blocks' ),
+					[
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'      => $block,
+						'variant'    => (string) $slug,
+						'properties' => $report['unvalued'],
+					]
+				);
+			}
+		}
+
+		return null;
 	}
 
 	/**
