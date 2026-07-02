@@ -84,7 +84,9 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { VariantPicker, blockVariants } from '../../extension/variant-picker';
+import { VariantPicker, blockVariants, activeSet } from '../../extension/variant-picker';
+import { SaveVariantModal } from '../../extension/variant-picker/SaveVariantModal';
+import { hasVariantsRest } from '../../extension/variants/api/client';
 import { TokenSetPicker, selectableSets } from '../../extension/token-set-picker';
 
 export default function KadenceButtonEdit(props) {
@@ -275,6 +277,7 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
+	const [savingVariant, setSavingVariant] = useState(false);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -829,7 +832,8 @@ export default function KadenceButtonEdit(props) {
 
 						{activeTab === 'style' && (
 							<>
-								{(blockVariants(name).length > 0 || selectableSets().length >= 2) && (
+								{(blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 ||
+									selectableSets().length >= 2) && (
 									<KadencePanelBody
 										title={__('Design Tokens', 'kadence-blocks')}
 										initialOpen={true}
@@ -844,16 +848,31 @@ export default function KadenceButtonEdit(props) {
 												/>
 											</SubsectionWrap>
 										)}
-										{blockVariants(name).length > 0 && (
+										{blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 && (
 											<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
 												<VariantPicker
 													name={name}
+													set={attributes.kbTokenSet || activeSet()}
 													value={attributes.kbVariant || ''}
 													onChange={(value) => setAttributes({ kbVariant: value })}
 												/>
+												{hasVariantsRest() && (
+													<Button variant="secondary" onClick={() => setSavingVariant(true)}>
+														{__('Save as new variant', 'kadence-blocks')}
+													</Button>
+												)}
 											</SubsectionWrap>
 										)}
 									</KadencePanelBody>
+								)}
+								{savingVariant && (
+									<SaveVariantModal
+										blockName={name}
+										set={attributes.kbTokenSet || activeSet()}
+										source={attributes.kbVariant || ''}
+										onClose={() => setSavingVariant(false)}
+										onCreated={(slug) => setAttributes({ kbVariant: slug })}
+									/>
 								)}
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (
 									<>
