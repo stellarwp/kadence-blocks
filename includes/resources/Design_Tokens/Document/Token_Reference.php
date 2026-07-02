@@ -10,6 +10,33 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 final class Token_Reference {
 
 	/**
+	 * The reference kind. One of the KIND_* values.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $kind;
+
+	/**
+	 * The canonical dot-path of the token holding the reference.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $path;
+
+	/**
+	 * Whether the phase-1 cascade can automatically handle this reference.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	public bool $supported;
+
+	/**
 	 * Semantic layer override with a direct $value alias.
 	 *
 	 * @since TBD
@@ -39,6 +66,19 @@ final class Token_Reference {
 	/**
 	 * @since TBD
 	 *
+	 * @param string $kind      One of the KIND_* values.
+	 * @param string $path      Canonical dot-path of the referencing token.
+	 * @param bool   $supported Whether the cascade can handle this reference.
+	 */
+	public function __construct( string $kind, string $path, bool $supported ) {
+		$this->kind      = $kind;
+		$this->path      = $path;
+		$this->supported = $supported;
+	}
+
+	/**
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	public static function get_kind_semantic_override(): string {
@@ -61,45 +101,5 @@ final class Token_Reference {
 	 */
 	public static function get_kind_extension(): string {
 		return self::KIND_EXTENSION;
-	}
-
-	/**
-	 * The reference kind. One of the KIND_* values.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $kind;
-
-	/**
-	 * The canonical dot-path of the token holding the reference.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $path;
-
-	/**
-	 * Whether the phase-1 cascade can automatically handle this reference.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	public bool $supported;
-
-	/**
-	 * @since TBD
-	 *
-	 * @param string $kind      One of the KIND_* values.
-	 * @param string $path      Canonical dot-path of the referencing token.
-	 * @param bool   $supported Whether the cascade can handle this reference.
-	 */
-	public function __construct( string $kind, string $path, bool $supported ) {
-		$this->kind      = $kind;
-		$this->path      = $path;
-		$this->supported = $supported;
 	}
 }
