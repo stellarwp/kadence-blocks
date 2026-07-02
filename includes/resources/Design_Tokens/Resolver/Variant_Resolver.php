@@ -2,7 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -29,19 +28,21 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * surfaces that cannot consume a var() chain (block-attribute presets, the dimension-default fallback,
  * the editor variant-catalog feed).
  *
- * Variant definitions are read from the shipped baseline. The core Resolver's Effective_Document
- * deliberately strips `$extensions`, so variants are resolved here rather than through that deep-merge.
+ * Variant definitions are read per token set through {@see Effective_Variants}: the shipped baseline's
+ * variants deep-merged with that set's stored overrides, so a variant a user authored through the store
+ * is resolved alongside the baseline ones. The core Resolver's Effective_Document deliberately strips
+ * `$extensions`, so variants are resolved here rather than through that deep-merge.
  *
  * @since TBD
  */
 final class Variant_Resolver {
 
 	/**
-	 * @var Baseline_Document The shipped baseline the variant definitions are read from.
+	 * @var Effective_Variants The per-set effective (baseline ⊕ overrides) variant definitions are read from.
 	 *
 	 * @since TBD
 	 */
-	private Baseline_Document $baseline;
+	private Effective_Variants $variants;
 
 	/**
 	 * @var Token_Resolver The token resolver whose flattened id map variant aliases are looked up in.
@@ -53,11 +54,11 @@ final class Variant_Resolver {
 	/**
 	 * @since TBD
 	 *
-	 * @param Baseline_Document $baseline The shipped baseline document.
-	 * @param Token_Resolver    $resolver The token resolver.
+	 * @param Effective_Variants $variants The per-set effective variant definitions.
+	 * @param Token_Resolver     $resolver The token resolver.
 	 */
-	public function __construct( Baseline_Document $baseline, Token_Resolver $resolver ) {
-		$this->baseline = $baseline;
+	public function __construct( Effective_Variants $variants, Token_Resolver $resolver ) {
+		$this->variants = $variants;
 		$this->resolver = $resolver;
 	}
 
@@ -79,7 +80,7 @@ final class Variant_Resolver {
 	 *
 	 * @param string $block     The block name, e.g. "kadence/advancedbtn".
 	 * @param string $variant   The variant slug, e.g. "ghost".
-	 * @param string $slug      The token set whose resolved values aliases resolve against.
+	 * @param string $slug      The token set whose effective variants and resolved values are read.
 	 * @param string $namespace Css-var namespace for the var() target ('' for the canonical name). When set,
 	 *                          an alias becomes var(--kb-token--<namespace>--<target>), so a namespaced
 	 *                          variant var chains to that set's namespaced token and stays inside the set.
@@ -89,7 +90,7 @@ final class Variant_Resolver {
 	 * @return array<string, string> property => var()-preserving CSS value.
 	 */
 	public function resolve( string $block, string $variant, string $slug = 'default', string $namespace = '' ): array {
-		$tokens   = $this->variant_tokens( $block, $variant );
+		$tokens   = $this->variant_tokens( $block, $variant, $slug );
 		$resolved = $this->resolver->resolve( $slug );
 
 		$values = [];
@@ -128,14 +129,14 @@ final class Variant_Resolver {
 	 *
 	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
 	 * @param string $variant The variant slug, e.g. "ghost".
-	 * @param string $slug    The token set whose resolved values aliases resolve against.
+	 * @param string $slug    The token set whose effective variants and resolved values are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
 	 *
 	 * @return array<string, string> property => flattened literal CSS value.
 	 */
 	public function resolve_literal( string $block, string $variant, string $slug = 'default' ): array {
-		$tokens   = $this->variant_tokens( $block, $variant );
+		$tokens   = $this->variant_tokens( $block, $variant, $slug );
 		$resolved = $this->resolver->resolve( $slug );
 
 		$values = [];
@@ -164,33 +165,34 @@ final class Variant_Resolver {
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
-	 * @param string $slug  The token set aliases resolve against.
+	 * @param string $slug  The token set whose effective variants and resolved values are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
 	 *
 	 * @return array<string, string> property => flattened literal CSS value.
 	 */
 	public function resolve_default( string $block, string $slug = 'default' ): array {
-		return $this->resolve_literal( $block, $this->default_variant( $block ), $slug );
+		return $this->resolve_literal( $block, $this->default_variant( $block, $slug ), $slug );
 	}
 
 	/**
-	 * The variant slugs a block declares, in document order — the document being the single source of
-	 * truth for the variant list (a user-added variant in the store would appear here once override
-	 * merging lands).
+	 * The variant slugs a block declares for a set, in document order — the effective set (baseline ⊕ the
+	 * set's stored overrides) being the source of truth, so a user-added variant in the store appears here
+	 * alongside the baseline ones.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block defines no variants.
 	 *
 	 * @return string[]
 	 */
-	public function names( string $block ): array {
+	public function names( string $block, string $slug = 'default' ): array {
 		$names = [];
 
-		foreach ( array_keys( $this->block_variants( $block ) ) as $key ) {
+		foreach ( array_keys( $this->block_variants( $block, $slug ) ) as $key ) {
 			// Skip `$default` and any other DTCG metadata key; only named variants are slugs.
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue;
@@ -203,39 +205,41 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * Whether a block declares the given variant. False for an unknown block (no throw), so callers can
-	 * validate a selection without first checking the block exists.
+	 * Whether a block declares the given variant in a set. False for an unknown block (no throw), so callers
+	 * can validate a selection without first checking the block exists.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
 	 * @param string $name  The variant slug.
+	 * @param string $slug  The token set whose effective variants are read.
 	 *
 	 * @return bool
 	 */
-	public function has_variant( string $block, string $name ): bool {
-		$section = $this->variants_section();
+	public function has_variant( string $block, string $name, string $slug = 'default' ): bool {
+		$section = $this->variants_section( $slug );
 
 		if ( ! isset( $section[ $block ] ) || ! is_array( $section[ $block ] ) ) {
 			return false;
 		}
 
-		return in_array( $name, $this->names( $block ), true );
+		return in_array( $name, $this->names( $block, $slug ), true );
 	}
 
 	/**
-	 * The human-readable label a block's variant declares in the document, or null when the block, the
-	 * variant, or its label is absent. A lookup convenience that never throws, mirroring has_variant().
+	 * The human-readable label a block's variant declares in a set, or null when the block, the variant, or
+	 * its label is absent. A lookup convenience that never throws, mirroring has_variant().
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block   The block name.
 	 * @param string $variant The variant slug.
+	 * @param string $slug    The token set whose effective variants are read.
 	 *
 	 * @return string|null
 	 */
-	public function label( string $block, string $variant ): ?string {
-		$block_node = $this->variants_section()[ $block ] ?? null;
+	public function label( string $block, string $variant, string $slug = 'default' ): ?string {
+		$block_node = $this->variants_section( $slug )[ $block ] ?? null;
 
 		if ( ! is_array( $block_node ) ) {
 			return null;
@@ -253,28 +257,52 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The union of every property the block's variants set a value for — what a {@see
+	 * The union of every property the block's variants set a value for in a set — what a {@see
 	 * \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::consistency()} check compares the
 	 * bindings against, and what a block preset iterates.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block defines no variants.
 	 *
 	 * @return string[]
 	 */
-	public function value_properties( string $block ): array {
+	public function value_properties( string $block, string $slug = 'default' ): array {
 		$properties = [];
 
-		foreach ( $this->names( $block ) as $variant ) {
-			foreach ( array_keys( $this->variant_tokens( $block, $variant ) ) as $property ) {
+		foreach ( $this->names( $block, $slug ) as $variant ) {
+			foreach ( array_keys( $this->variant_tokens( $block, $variant, $slug ) ) as $property ) {
 				$properties[ $property ] = true;
 			}
 		}
 
 		return array_keys( $properties );
+	}
+
+	/**
+	 * The block's default variant slug for a set, read from the effective set's `$default` — the single
+	 * source of truth for the default (no registry mirror to drift from).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
+	 *
+	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
+	 *
+	 * @return string
+	 */
+	public function default_variant( string $block, string $slug = 'default' ): string {
+		$default = $this->block_variants( $block, $slug )[ Extensions::get_default_key() ] ?? '';
+
+		if ( ! is_string( $default ) || $default === '' ) {
+			throw Unknown_Variant_Exception::no_default( $block );
+		}
+
+		return $default;
 	}
 
 	/**
@@ -322,7 +350,7 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The property => value map for a variant, or throw when the block/variant is undefined.
+	 * The property => value map for a variant in a set, or throw when the block/variant is undefined.
 	 *
 	 * A variant that exists but carries no `tokens` map — or a non-array one — resolves to an empty map,
 	 * not an error: a variant may legitimately set no values (it then contributes nothing downstream).
@@ -333,13 +361,14 @@ final class Variant_Resolver {
 	 *
 	 * @param string $block   The block name.
 	 * @param string $variant The variant slug.
+	 * @param string $slug    The token set whose effective variants are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function variant_tokens( string $block, string $variant ): array {
-		$block_variants = $this->block_variants( $block );
+	private function variant_tokens( string $block, string $variant, string $slug = 'default' ): array {
+		$block_variants = $this->block_variants( $block, $slug );
 
 		if ( ! isset( $block_variants[ $variant ] ) || ! is_array( $block_variants[ $variant ] ) ) {
 			throw Unknown_Variant_Exception::for_variant( $block, $variant );
@@ -351,40 +380,19 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The block's default variant slug, read from the document's `$default` — the single source of truth
-	 * for the default (no registry mirror to drift from).
+	 * The variants node for a block in a set (its `$default` plus named variants), or throw when undefined.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
-	 *
-	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
-	 *
-	 * @return string
-	 */
-	public function default_variant( string $block ): string {
-		$default = $this->block_variants( $block )[ Extensions::get_default_key() ] ?? '';
-
-		if ( ! is_string( $default ) || $default === '' ) {
-			throw Unknown_Variant_Exception::no_default( $block );
-		}
-
-		return $default;
-	}
-
-	/**
-	 * The variants node for a block (its `$default` plus named variants), or throw when undefined.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
 	 *
 	 * @throws Unknown_Variant_Exception When the block defines no variants.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function block_variants( string $block ): array {
-		$variants = $this->variants_section();
+	private function block_variants( string $block, string $slug = 'default' ): array {
+		$variants = $this->variants_section( $slug );
 
 		if ( ! isset( $variants[ $block ] ) || ! is_array( $variants[ $block ] ) ) {
 			throw Unknown_Variant_Exception::for_block( $block );
@@ -394,25 +402,16 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The whole variants section from the baseline, or an empty array when absent.
+	 * The whole effective variants section for a set (baseline ⊕ the set's stored overrides), or an empty
+	 * array when absent.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $slug The token set whose effective variants are read.
+	 *
 	 * @return array<string, mixed>
 	 */
-	private function variants_section(): array {
-		$node = $this->baseline->document();
-
-		$path = Extensions::get_variants_path();
-
-		foreach ( $path as $key ) {
-			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) ) {
-				return [];
-			}
-
-			$node = $node[ $key ];
-		}
-
-		return is_array( $node ) ? $node : [];
+	private function variants_section( string $slug = 'default' ): array {
+		return $this->variants->section( $slug );
 	}
 }
