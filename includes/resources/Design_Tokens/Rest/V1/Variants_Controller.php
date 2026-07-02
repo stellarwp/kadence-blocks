@@ -469,6 +469,12 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
+		$error = $this->guard_reserved_slugs( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
@@ -518,6 +524,12 @@ final class Variants_Controller extends Controller {
 		}
 
 		$error = $this->guard_variant_shape( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_reserved_slugs( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -944,6 +956,41 @@ final class Variants_Controller extends Controller {
 				return new WP_Error(
 					'rest_design_tokens_invalid',
 					__( 'Each variant must be an object with an optional string label and a token map.', 'kadence-blocks' ),
+					[
+						'status'  => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'   => $block,
+						'variant' => (string) $slug,
+					]
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Reject a variant whose slug is reserved. "default" is the literal used by the block's `/default`
+	 * sub-route and by `delete_variant`, so a variant named "default" could never be deleted or set through
+	 * the dedicated route; refuse to create one.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's variant node being written.
+	 * @param string               $block      The block name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when a reserved slug is used, null otherwise.
+	 */
+	private function guard_reserved_slugs( array $block_node, string $block ): ?WP_Error {
+		foreach ( array_keys( $block_node ) as $slug ) {
+			// $default and any other "$"-prefixed metadata key is not a named variant.
+			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			if ( (string) $slug === self::DEFAULT_ROUTE ) {
+				return new WP_Error(
+					'rest_design_tokens_reserved_slug',
+					__( 'The variant slug "default" is reserved.', 'kadence-blocks' ),
 					[
 						'status'  => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'   => $block,

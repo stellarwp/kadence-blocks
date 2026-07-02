@@ -548,6 +548,29 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Creating a variant named "default" is rejected: the slug is reserved for the block's default sub-route
+	 * and could never be deleted or set through the dedicated route.
+	 *
+	 * @return void
+	 */
+	public function testCreatingAVariantNamedDefaultIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'default',
+					'tokens'  => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testAMalformedVariantShapeReturns422(): void {
