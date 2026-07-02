@@ -1,5 +1,5 @@
 /**
- * "Save as new variant" / "Edit variant" modal.
+ * "Create new variant" / "Edit variant" modal.
  *
  * Create mode clones an existing variant's surface for a block: the user picks a variant to clone from,
  * edits the value of each bound property, names the variant, and saves a new one. Edit mode pre-fills from an
@@ -44,7 +44,7 @@ function seedValues(properties, tokens) {
 }
 
 /**
- * The save/edit variant modal.
+ * The create/edit variant modal.
  *
  * @param {Object}   props           The component props.
  * @param {string}   props.blockName The block name, e.g. "kadence/advancedbtn".
@@ -146,7 +146,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 
 	return (
 		<Modal
-			title={isEdit ? __('Edit variant', 'kadence-blocks') : __('Save as new variant', 'kadence-blocks')}
+			title={isEdit ? __('Edit variant', 'kadence-blocks') : __('Create new variant', 'kadence-blocks')}
 			onRequestClose={onClose}
 			className="kb-save-variant-modal"
 		>
