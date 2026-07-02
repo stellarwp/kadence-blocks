@@ -175,17 +175,7 @@ final class Token_Store extends Query {
 						->where( 'slug', $slug )
 						->get( ARRAY_A );
 
-		$data = [
-			'slug'       => $slug,
-			'document'   => $document,
-			'version'    => $this->hash_document( $document ),
-			'updated_at' => current_time( 'mysql', true ),
-		];
-
-		// Only write the title when provided, so a document-only save doesn't wipe it.
-		if ( $title !== '' ) {
-			$data['title'] = $title;
-		}
+		$data = $this->build_document_data( $document, $title, $slug );
 
 		// upsert() is a non-atomic SELECT-then-INSERT/UPDATE, not an atomic
 		// INSERT ... ON DUPLICATE KEY. Two concurrent first-writes for the same
@@ -240,16 +230,7 @@ final class Token_Store extends Query {
 				return false;
 			}
 
-			$data = [
-				'slug'       => $slug,
-				'document'   => $document,
-				'version'    => $this->hash_document( $document ),
-				'updated_at' => current_time( 'mysql', true ),
-			];
-
-			if ( $title !== '' ) {
-				$data['title'] = $title;
-			}
+			$data = $this->build_document_data( $document, $title, $slug );
 
 			try {
 				$this->qb()->insert( $data );
@@ -268,16 +249,7 @@ final class Token_Store extends Query {
 			return false;
 		}
 
-		$new_version = $this->hash_document( $document );
-		$data        = [
-			'document'   => $document,
-			'version'    => $new_version,
-			'updated_at' => current_time( 'mysql', true ),
-		];
-
-		if ( $title !== '' ) {
-			$data['title'] = $title;
-		}
+		$data = $this->build_document_data( $document, $title );
 
 		// Conditional UPDATE: WHERE slug = ? AND version = ? prevents a concurrent overwrite.
 		$affected = $this->qb()
@@ -473,6 +445,39 @@ final class Token_Store extends Query {
 
 		// Reached only on a successful delete — a failed delete throws above.
 		$this->deleted( $slug );
+	}
+
+	/**
+	 * Build the document/version/updated_at/title column data shared by every write path.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $document The raw DTCG JSON to persist.
+	 * @param string      $title    Optional label. Omitted from the array (not just left
+	 *                              empty) when blank, so a document-only write does not
+	 *                              wipe an existing title.
+	 * @param string|null $slug     The slug to include for an insert/upsert, or null to
+	 *                              omit it for an UPDATE that is already scoped by a
+	 *                              WHERE clause.
+	 *
+	 * @return array<string,string> The column data, ready for insert(), upsert(), or update().
+	 */
+	private function build_document_data( string $document, string $title, ?string $slug = null ): array {
+		$data = [
+			'document'   => $document,
+			'version'    => $this->hash_document( $document ),
+			'updated_at' => current_time( 'mysql', true ),
+		];
+
+		if ( $slug !== null ) {
+			$data = [ 'slug' => $slug ] + $data;
+		}
+
+		if ( $title !== '' ) {
+			$data['title'] = $title;
+		}
+
+		return $data;
 	}
 
 	/**
