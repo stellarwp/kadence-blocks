@@ -757,6 +757,10 @@
 		"kbVariant": {
 			"type": "string",
 			"default": ""
+		},
+		"kbTokenSet": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
