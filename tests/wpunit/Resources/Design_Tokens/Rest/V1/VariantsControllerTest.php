@@ -187,6 +187,50 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A write carrying a known `set` slug lands in that set and reports it, while the default set is left
+	 * untouched — so a variant authored for a block on a non-default set does not leak into the default set.
+	 *
+	 * @return void
+	 */
+	public function testWritesTargetTheNamedSetLeavingDefaultUntouched(): void {
+		// The target set must already exist for the `set` parameter to be honored.
+		$this->store->save_document( '', 'dark' );
+
+		$tokens = [
+			'button-bg'         => '#ff0000',
+			'button-text'       => '#ffffff',
+			'button-bg-hover'   => '#cc0000',
+			'button-text-hover' => '#ffffff',
+			'button-radius'     => '1rem',
+		];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					'label'   => 'Accent',
+					'tokens'  => $tokens,
+					'set'     => 'dark',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( 'dark', $response->get_data()['slug'] );
+		$this->assertArrayHasKey( 'accent', $response->get_data()['variants'] );
+
+		// Reading the dark set sees the new variant.
+		$dark = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON, [ 'set' => 'dark' ] ) );
+		$this->assertArrayHasKey( 'accent', $dark->get_data()['variants'] );
+
+		// The default set never saw the write.
+		$default = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
+		$this->assertArrayNotHasKey( 'accent', $default->get_data()['variants'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testCreateRequiresAVariantSlug(): void {
