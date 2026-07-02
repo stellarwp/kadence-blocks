@@ -105,6 +105,51 @@ final class Effective_Variants {
 	}
 
 	/**
+	 * The named variant slugs a set defines for a block that are NOT in the baseline — i.e. the user-created
+	 * ones. A slug that shadows a baseline variant is excluded, since deleting it reverts to baseline rather
+	 * than removing it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name, e.g. "kadence/advancedbtn".
+	 * @param string $slug  The token set slug.
+	 *
+	 * @return string[]
+	 */
+	public function user_created( string $block, string $slug = 'default' ): array {
+		$baseline_block  = $this->variants_of( $this->baseline->document() )[ $block ] ?? [];
+		$effective_block = $this->section( $slug )[ $block ] ?? [];
+
+		$baseline_names  = $this->named_of( is_array( $baseline_block ) ? $baseline_block : [] );
+		$effective_names = $this->named_of( is_array( $effective_block ) ? $effective_block : [] );
+
+		return array_values( array_diff( $effective_names, $baseline_names ) );
+	}
+
+	/**
+	 * The named variant slugs of a block variant node, skipping "$"-prefixed metadata keys.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The block's variant node.
+	 *
+	 * @return string[]
+	 */
+	private function named_of( array $node ): array {
+		$names = [];
+
+		foreach ( array_keys( $node ) as $key ) {
+			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
+				continue;
+			}
+
+			$names[] = (string) $key;
+		}
+
+		return $names;
+	}
+
+	/**
 	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 *
 	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than
