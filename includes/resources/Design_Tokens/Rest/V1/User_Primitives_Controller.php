@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -307,7 +308,7 @@ final class User_Primitives_Controller extends Controller {
 	 * @return WP_Error|null
 	 */
 	private function validate_canonical_id( string $id ): ?WP_Error {
-		if ( preg_match( '/^primitive\.color\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*$/', $id ) ) {
+		if ( Reserved_Namespace::is_reserved_id( $id ) ) {
 			return null;
 		}
 

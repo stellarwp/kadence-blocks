@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
@@ -674,7 +675,7 @@ final class Documents_Controller extends Controller {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 		$path = Cast::to_string( $request->get_param( self::PATH_PARAM ) );
 
-		if ( $this->is_reserved_custom_path( $path ) ) {
+		if ( Reserved_Namespace::contains_reserved_path( $path ) ) {
 			return new WP_Error(
 				'rest_design_tokens_reserved_path',
 				__( 'Use the user-primitives endpoint to delete a custom primitive.', 'kadence-blocks' ),
@@ -1280,7 +1281,7 @@ final class Documents_Controller extends Controller {
 		$primitive = $partial['primitive'] ?? null;
 		/** @var array<string, mixed> $primitive_node */
 		$primitive_node = is_array( $primitive ) ? $primitive : [];
-		$paths          = $this->collect_reserved_paths_in( $primitive_node, 'primitive' );
+		$paths          = Reserved_Namespace::find_in( $primitive_node, 'primitive' );
 
 		if ( empty( $paths ) && ! $this->has_reserved_extension( $partial ) && ! $this->has_unsupported_reserved_alias( $partial ) ) {
 			return null;
@@ -1317,50 +1318,21 @@ final class Documents_Controller extends Controller {
 			return false;
 		}
 
-		if ( ! preg_match_all( '/\{(primitive\.[a-z0-9]+(?:-[a-z0-9]+)*\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*)\}/', $encoded, $matches ) ) {
+		if ( ! preg_match_all( '/\{([a-z0-9.-]+)\}/', $encoded, $matches ) ) {
 			return false;
 		}
 
 		foreach ( array_unique( $matches[1] ) as $referenced_id ) {
+			if ( ! Reserved_Namespace::is_reserved_id( $referenced_id ) ) {
+				continue;
+			}
+
 			if ( ! $this->reference_policy->all_supported( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	/**
-	 * Walk the primitive subtree and collect paths at primitive.*.custom depth or deeper.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $node
-	 * @param string               $prefix
-	 *
-	 * @return string[]
-	 */
-	private function collect_reserved_paths_in( array $node, string $prefix ): array {
-		$found    = [];
-		$segments = explode( '.', $prefix );
-
-		// At primitive.<type>.custom depth (3 segments: primitive, type, custom) or deeper: reserved.
-		if ( count( $segments ) >= 3 && $segments[2] === 'custom' ) {
-			return [ $prefix ];
-		}
-
-		foreach ( $node as $key => $child ) {
-			if ( is_string( $key ) && strncmp( $key, '$', 1 ) === 0 ) {
-				continue;
-			}
-
-			if ( is_array( $child ) ) {
-				/** @var array<string, mixed> $child */
-				$found = array_merge( $found, $this->collect_reserved_paths_in( $child, $prefix . '.' . $key ) );
-			}
-		}
-
-		return $found;
 	}
 
 	/**
@@ -1386,23 +1358,6 @@ final class Documents_Controller extends Controller {
 		}
 
 		return array_key_exists( Extensions::get_section_user_primitives(), $ns_data );
-	}
-
-	/**
-	 * Whether a dot-path addresses the custom sub-namespace of a primitive type.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $path
-	 *
-	 * @return bool
-	 */
-	private function is_reserved_custom_path( string $path ): bool {
-		$segments = explode( '.', $path );
-
-		return count( $segments ) >= 3
-			&& $segments[0] === 'primitive'
-			&& $segments[2] === 'custom';
 	}
 
 	/**
