@@ -858,7 +858,7 @@ export default function KadenceButtonEdit(props) {
 												/>
 												{hasVariantsRest() && (
 													<Button variant="secondary" onClick={() => setSavingVariant(true)}>
-														{__('Save as new variant', 'kadence-blocks')}
+														{__('Create new variant', 'kadence-blocks')}
 													</Button>
 												)}
 											</SubsectionWrap>

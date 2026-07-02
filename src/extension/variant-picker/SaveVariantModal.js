@@ -1,5 +1,5 @@
 /**
- * "Save as new variant" modal.
+ * "Create new variant" modal.
  *
  * Clones an existing variant's surface for a block: the user picks a variant to clone from, edits the value
  * of each bound property, names the variant, and saves. The new variant is written through the variants REST
@@ -43,7 +43,7 @@ function seedValues(properties, tokens) {
 }
 
 /**
- * The save-as-new-variant modal.
+ * The create-new-variant modal.
  *
  * @param {Object}   props           The component props.
  * @param {string}   props.blockName The block name, e.g. "kadence/advancedbtn".
@@ -134,7 +134,7 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 
 	return (
 		<Modal
-			title={__('Save as new variant', 'kadence-blocks')}
+			title={__('Create new variant', 'kadence-blocks')}
 			onRequestClose={onClose}
 			className="kb-save-variant-modal"
 		>

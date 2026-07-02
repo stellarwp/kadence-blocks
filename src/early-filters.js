@@ -338,7 +338,7 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 									/>
 									{hasVariantsRest() && (
 										<Button variant="secondary" onClick={() => setSaving(true)}>
-											{__('Save as new variant', 'kadence-blocks')}
+											{__('Create new variant', 'kadence-blocks')}
 										</Button>
 									)}
 								</SubsectionWrap>
