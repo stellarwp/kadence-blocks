@@ -2,6 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
+
 /**
  * Derives the canonical CSS custom-property name from a token id.
  *
@@ -17,6 +19,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
  * @since TBD
  */
 final class Css_Var {
+
+	use Sanitizes_Css_Identifier;
 
 	private const PREFIX = '--kb-token--';
 
@@ -51,6 +55,10 @@ final class Css_Var {
 	public static function from_id( string $id, string $namespace = '' ): string {
 		$name = str_replace( '.', '--', $id );
 
-		return self::PREFIX . ( $namespace === '' ? '' : $namespace . '--' ) . $name;
+		if ( $namespace !== '' ) {
+			$namespace = self::sanitize_identifier( $namespace ) . '--';
+		}
+
+		return self::PREFIX . $namespace . $name;
 	}
 }
