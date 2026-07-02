@@ -134,7 +134,7 @@ final class User_Primitive_Document_Validator {
 		if ( $type !== Token_Type::get_type_color() ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
-				sprintf( 'User primitive "%s" tree leaf has $type "%s"; only "color" is allowed in phase one.', $id, Cast::to_string( $type ) )
+				sprintf( 'User primitive "%s" tree leaf has $type "%s"; only "color" is allowed at this time.', $id, Cast::to_string( $type ) )
 			);
 		}
 
@@ -143,7 +143,7 @@ final class User_Primitive_Document_Validator {
 		} elseif ( Alias::is_alias( $leaf['$value'] ) ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
-				sprintf( 'User primitive "%s" $value must be a literal; aliases are not allowed on user primitives in phase one.', $id )
+				sprintf( 'User primitive "%s" $value must be a literal; aliases are not allowed on user primitives at this time.', $id )
 			);
 		}
 
