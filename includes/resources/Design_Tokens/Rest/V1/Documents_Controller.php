@@ -5,6 +5,8 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -175,6 +177,24 @@ final class Documents_Controller extends Controller {
 	private User_Primitive_Index $user_primitive_index;
 
 	/**
+	 * Enforces the user-primitive document invariant on every write.
+	 *
+	 * @since TBD
+	 *
+	 * @var User_Primitive_Document_Validator
+	 */
+	private User_Primitive_Document_Validator $user_primitive_validator;
+
+	/**
+	 * Scans a candidate document for alias references to a user primitive.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Reference_Policy
+	 */
+	private Token_Reference_Policy $reference_policy;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -195,12 +215,14 @@ final class Documents_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store          $store                 The sole gateway to the kb_design_tokens table.
-	 * @param Token_Resolver       $resolver              Flattens a stored token set and dry-runs candidate overrides.
-	 * @param Dtcg_Validator       $validator             Validates the DTCG grammar of a candidate document.
-	 * @param Mutator              $mutator               Assembles the candidate overrides document.
-	 * @param Effective_Document   $effective             Builds the effective document for $type inference.
-	 * @param User_Primitive_Index $user_primitive_index  Inspects documents for user-created primitives.
+	 * @param Token_Store                       $store                 The sole gateway to the kb_design_tokens table.
+	 * @param Token_Resolver                    $resolver              Flattens a stored token set and dry-runs candidate overrides.
+	 * @param Dtcg_Validator                    $validator             Validates the DTCG grammar of a candidate document.
+	 * @param Mutator                           $mutator               Assembles the candidate overrides document.
+	 * @param Effective_Document                $effective             Builds the effective document for $type inference.
+	 * @param User_Primitive_Index              $user_primitive_index  Inspects documents for user-created primitives.
+	 * @param User_Primitive_Document_Validator $user_primitive_validator Enforces the user-primitive document invariant.
+	 * @param Token_Reference_Policy            $reference_policy      Scans for alias references to a user primitive.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -208,15 +230,19 @@ final class Documents_Controller extends Controller {
 		Dtcg_Validator $validator,
 		Mutator $mutator,
 		Effective_Document $effective,
-		User_Primitive_Index $user_primitive_index
+		User_Primitive_Index $user_primitive_index,
+		User_Primitive_Document_Validator $user_primitive_validator,
+		Token_Reference_Policy $reference_policy
 	) {
-		$this->store                = $store;
-		$this->resolver             = $resolver;
-		$this->validator            = $validator;
-		$this->mutator              = $mutator;
-		$this->effective            = $effective;
-		$this->user_primitive_index = $user_primitive_index;
-		$this->rest_base            = 'documents';
+		$this->store                    = $store;
+		$this->resolver                 = $resolver;
+		$this->validator                = $validator;
+		$this->mutator                  = $mutator;
+		$this->effective                = $effective;
+		$this->user_primitive_index     = $user_primitive_index;
+		$this->user_primitive_validator = $user_primitive_validator;
+		$this->reference_policy         = $reference_policy;
+		$this->rest_base                = 'documents';
 	}
 
 	/**
@@ -836,11 +862,48 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	private function validate_and_save( array $candidate, string $slug, string $title ) {
+		$expected_version = $this->store->get_version( $slug );
+
 		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
-		$status = $this->store->get_version( $slug ) !== '' ? WP_Http::OK : WP_Http::CREATED;
+		$status = $expected_version !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
-			return $this->persist( '', $slug, $title, $status );
+			return $this->persist( '', $slug, $title, $status, $expected_version );
+		}
+
+		$invariant_errors = $this->user_primitive_validator->validate( $candidate );
+
+		if ( ! empty( $invariant_errors ) ) {
+			return new WP_Error(
+				'rest_design_tokens_user_primitive_invalid',
+				__( 'The user primitive document invariant failed.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::UNPROCESSABLE_ENTITY,
+					'slug'   => $slug,
+					'errors' => array_map(
+						static fn( $error ): array => [
+							'id'      => $error->get_id(),
+							'message' => $error->get_message(),
+						],
+						$invariant_errors
+					),
+				]
+			);
+		}
+
+		foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
+			$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
+
+			if ( ! $this->reference_policy->all_supported( $references ) ) {
+				return new WP_Error(
+					'rest_design_tokens_user_primitive_reference_unsupported',
+					__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
+					[
+						'status' => WP_Http::UNPROCESSABLE_ENTITY,
+						'slug'   => $slug,
+					]
+				);
+			}
 		}
 
 		$result = $this->validator->validate( $candidate, Dtcg_Validator::get_context_overrides() );
@@ -884,30 +947,43 @@ final class Documents_Controller extends Controller {
 			);
 		}
 
-		return $this->persist( $encoded, $slug, $title, $status );
+		return $this->persist( $encoded, $slug, $title, $status, $expected_version );
 	}
 
 	/**
-	 * Commit a raw document string to the store and build the response, mapping a write failure to 500.
+	 * Commit a raw document string to the store and build the response, mapping a write failure to 500 and a
+	 * version mismatch to 409.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the set).
-	 * @param string $slug     The token set slug.
-	 * @param string $title    Optional label; left untouched on update when empty.
-	 * @param int    $status   The success status code.
+	 * @param string $document         The raw overrides-only DTCG JSON (empty string clears the set).
+	 * @param string $slug             The token set slug.
+	 * @param string $title            Optional label; left untouched on update when empty.
+	 * @param int    $status           The success status code.
+	 * @param string $expected_version The version read at the start of this write; empty only for a first write.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function persist( string $document, string $slug, string $title, int $status ) {
+	private function persist( string $document, string $slug, string $title, int $status, string $expected_version ) {
 		try {
-			$this->store->save_document( $document, $slug, $title );
+			$saved = $this->store->save_document_conditional( $document, $expected_version, $slug, $title );
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
 				__( 'The design token set could not be saved.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
+					'slug'   => $slug,
+				]
+			);
+		}
+
+		if ( ! $saved ) {
+			return new WP_Error(
+				'rest_design_tokens_conflict',
+				__( 'The token set was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::CONFLICT,
 					'slug'   => $slug,
 				]
 			);
@@ -1201,7 +1277,7 @@ final class Documents_Controller extends Controller {
 		$primitive_node = is_array( $primitive ) ? $primitive : [];
 		$paths          = $this->collect_reserved_paths_in( $primitive_node, 'primitive' );
 
-		if ( empty( $paths ) && ! $this->has_reserved_extension( $partial ) ) {
+		if ( empty( $paths ) && ! $this->has_reserved_extension( $partial ) && ! $this->has_unsupported_reserved_alias( $partial ) ) {
 			return null;
 		}
 
@@ -1214,6 +1290,39 @@ final class Documents_Controller extends Controller {
 				'paths'  => $paths,
 			]
 		);
+	}
+
+	/**
+	 * Whether the partial contains an alias pointing into the reserved custom-primitive namespace from a
+	 * location the phase-1 cascade does not support (anywhere other than a direct semantic-layer override).
+	 *
+	 * Reuses Token_Reference_Policy::find(), the same classifier the delete-reference-preview endpoint
+	 * uses, rather than re-implementing alias-location parsing here.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $partial The incoming partial (not the merged candidate).
+	 *
+	 * @return bool
+	 */
+	private function has_unsupported_reserved_alias( array $partial ): bool {
+		$encoded = wp_json_encode( $partial );
+
+		if ( ! is_string( $encoded ) ) {
+			return false;
+		}
+
+		if ( ! preg_match_all( '/\{(primitive\.[a-z0-9]+(?:-[a-z0-9]+)*\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*)\}/', $encoded, $matches ) ) {
+			return false;
+		}
+
+		foreach ( array_unique( $matches[1] ) as $referenced_id ) {
+			if ( ! $this->reference_policy->all_supported( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

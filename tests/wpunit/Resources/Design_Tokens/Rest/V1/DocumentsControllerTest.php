@@ -1119,6 +1119,130 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function testPatchBlocksAnAliasIntoTheReservedNamespaceOutsideTheSemanticLayer(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'accent' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchAllowsASemanticAliasIntoTheReservedNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'semantic' => [
+						'color' => [
+							'accent' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRejectsAnUnsupportedAliasIntoTheUserPrimitiveNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		// A PUT to a single baseline-layer token whose $value aliases a user primitive from outside the
+		// semantic layer must be rejected, even though set_token() never runs guard_reserved_in_partial().
+		$response = $this->controller->set_token(
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand.accent',
+				[
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
 	 * Build a bulk-write request carrying the slug, document and optional title as parameters.
 	 *
 	 * @param string               $method   The HTTP method.
