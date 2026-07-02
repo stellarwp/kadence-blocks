@@ -508,7 +508,9 @@ final class Documents_Controller extends Controller {
 	/**
 	 * Replace the whole overrides document for the set (PUT /documents/{slug}).
 	 *
-	 * Unlike POST/PATCH, this drops any stored path absent from the body.
+	 * Unlike POST/PATCH, this drops any stored path absent from the body. Rejected with HTTP 409 while the
+	 * stored document has any user-created primitive, since a full replace has no way to express
+	 * "preserve these" — delete them first or use PATCH instead.
 	 *
 	 * @since TBD
 	 *
