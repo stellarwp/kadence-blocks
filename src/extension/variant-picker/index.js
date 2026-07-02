@@ -87,6 +87,19 @@ export function blockDefaultVariant(name, set) {
 }
 
 /**
+ * Whether a variant slug is a user-created one for a block in a set (editable and deletable). A baseline
+ * variant, or one that only shadows a baseline variant, is not.
+ *
+ * @param {string} name The block name.
+ * @param {string} set  The token set slug.
+ * @param {string} slug The variant slug.
+ * @return {boolean} True when the variant is user-created.
+ */
+export function isUserVariant(name, set, slug) {
+	return blockVariants(name, set).some((variant) => variant.slug === slug && variant.userCreated);
+}
+
+/**
  * Append a user-created variant to the in-memory catalog for a set, so the picker offers it without a page
  * reload. A no-op when the block has no catalog entry for the set.
  *

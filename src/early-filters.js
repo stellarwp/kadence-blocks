@@ -14,8 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
-import { SaveVariantModal } from './extension/variant-picker/SaveVariantModal';
-import { hasVariantsRest } from './extension/variants/api/client';
+import { VariantActions } from './extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 
 /**
@@ -293,8 +292,6 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
 
-		const [saving, setSaving] = useState(false);
-
 		if (!hasBlockSupport(name, 'kbVariant')) {
 			return <BlockEdit {...props} />;
 		}
@@ -336,24 +333,16 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 										value={get(attributes, 'kbVariant', '')}
 										onChange={(value) => setAttributes({ kbVariant: value })}
 									/>
-									{hasVariantsRest() && (
-										<Button variant="secondary" onClick={() => setSaving(true)}>
-											{__('Save as new variant', 'kadence-blocks')}
-										</Button>
-									)}
+									<VariantActions
+										blockName={name}
+										set={set}
+										selected={get(attributes, 'kbVariant', '')}
+										onSelect={(slug) => setAttributes({ kbVariant: slug })}
+									/>
 								</SubsectionWrap>
 							)}
 						</PanelBody>
 					</InspectorControls>
-				)}
-				{saving && (
-					<SaveVariantModal
-						blockName={name}
-						set={set}
-						source={get(attributes, 'kbVariant', '')}
-						onClose={() => setSaving(false)}
-						onCreated={(slug) => setAttributes({ kbVariant: slug })}
-					/>
 				)}
 			</>
 		);

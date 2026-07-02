@@ -1,11 +1,12 @@
 /**
- * "Save as new variant" modal.
+ * "Save as new variant" / "Edit variant" modal.
  *
- * Clones an existing variant's surface for a block: the user picks a variant to clone from, edits the value
- * of each bound property, names the variant, and saves. The new variant is written through the variants REST
- * endpoint (which aliases matching literals, validates the full surface, and rejects dangling aliases), then
- * appended to the in-memory catalog and selected on the block. Works for any block that registers a variant
- * set — it seeds from an existing variant's values, so it needs no per-block knowledge.
+ * Create mode clones an existing variant's surface for a block: the user picks a variant to clone from,
+ * edits the value of each bound property, names the variant, and saves a new one. Edit mode pre-fills from an
+ * existing user variant and saves back under the same slug. Either way the write goes through the variants
+ * REST endpoint (which aliases matching literals, validates the full surface, and rejects dangling aliases),
+ * then the in-memory catalog is updated and the variant selected on the block. It seeds from an existing
+ * variant's values, so it needs no per-block knowledge and works for any block that registers a variant set.
  */
 import { Modal, TextControl, SelectControl, Button, Notice, Spinner } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
@@ -43,19 +44,21 @@ function seedValues(properties, tokens) {
 }
 
 /**
- * The save-as-new-variant modal.
+ * The save/edit variant modal.
  *
  * @param {Object}   props           The component props.
  * @param {string}   props.blockName The block name, e.g. "kadence/advancedbtn".
  * @param {string}   props.set       The token set the block is on.
- * @param {string}   [props.source]  The variant slug to clone from initially.
+ * @param {string}   [props.source]  The variant slug to clone from initially (create mode).
+ * @param {string}   [props.editSlug] When set, edit this existing variant in place instead of creating one.
  * @param {Function} props.onClose   Called to dismiss the modal.
- * @param {Function} props.onCreated Called with the new variant slug after a successful save.
+ * @param {Function} props.onSaved   Called with the variant slug after a successful save.
  *
  * @return {Object} The modal element.
  */
-export function SaveVariantModal({ blockName, set, source, onClose, onCreated }) {
+export function SaveVariantModal({ blockName, set, source, editSlug = '', onClose, onSaved }) {
 	const properties = blockProperties(blockName, set);
+	const isEdit = editSlug !== '';
 
 	const [status, setStatus] = useState('loading');
 	const [error, setError] = useState('');
@@ -64,7 +67,8 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 	const [label, setLabel] = useState('');
 	const [values, setValues] = useState({});
 
-	// Load the block's variants for the set, then seed the form from the chosen (or default) source variant.
+	// Load the block's variants for the set, then seed the form: from the edited variant in edit mode, or
+	// from the chosen (or default) source variant in create mode.
 	useEffect(() => {
 		let cancelled = false;
 
@@ -75,12 +79,20 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 				}
 
 				const map = get(payload, 'variants', {}) || {};
-				const initialSource =
-					source && map[source] ? source : get(payload, 'default', Object.keys(map)[0] || '');
+				const seedSlug = isEdit
+					? editSlug
+					: source && map[source]
+						? source
+						: get(payload, 'default', Object.keys(map)[0] || '');
 
 				setVariants(map);
-				setSourceSlug(initialSource);
-				setValues(seedValues(properties, get(map, [initialSource, 'tokens'], {})));
+				setSourceSlug(seedSlug);
+				setValues(seedValues(properties, get(map, [seedSlug, 'tokens'], {})));
+
+				if (isEdit) {
+					setLabel(get(map, [editSlug, 'label'], editSlug));
+				}
+
 				setStatus('ready');
 			})
 			.catch((caught) => {
@@ -94,14 +106,14 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 			cancelled = true;
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [blockName, set]);
+	}, [blockName, set, editSlug]);
 
 	const existingSlugs = Object.keys(variants);
-	const slug = dedupeSlug(deriveSlug(label), existingSlugs);
+	const slug = isEdit ? editSlug : dedupeSlug(deriveSlug(label), existingSlugs);
 	const canSave = status !== 'saving' && label.trim() !== '' && properties.length > 0;
 
 	/**
-	 * Reseed the form values when the user chooses a different variant to clone from.
+	 * Reseed the form values when the user chooses a different variant to clone from (create mode).
 	 *
 	 * @param {string} next The newly chosen source variant slug.
 	 * @return {void}
@@ -112,7 +124,7 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 	};
 
 	/**
-	 * Write the new variant, then append it to the catalog and select it on the block.
+	 * Write the variant, then update the catalog and select it on the block.
 	 *
 	 * @return {void}
 	 */
@@ -123,7 +135,7 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set)
 			.then(() => {
 				appendVariant(blockName, set, { slug, label: label.trim(), userCreated: true });
-				onCreated(slug);
+				onSaved(slug);
 				onClose();
 			})
 			.catch((caught) => {
@@ -134,7 +146,7 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 
 	return (
 		<Modal
-			title={__('Save as new variant', 'kadence-blocks')}
+			title={isEdit ? __('Edit variant', 'kadence-blocks') : __('Save as new variant', 'kadence-blocks')}
 			onRequestClose={onClose}
 			className="kb-save-variant-modal"
 		>
@@ -159,13 +171,13 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 						value={label}
 						onChange={setLabel}
 						help={
-							label.trim() !== ''
+							!isEdit && label.trim() !== ''
 								? sprintf(/* translators: %s: variant slug. */ __('Slug: %s', 'kadence-blocks'), slug)
 								: ''
 						}
 					/>
 
-					{existingSlugs.length > 0 && (
+					{!isEdit && existingSlugs.length > 0 && (
 						<SelectControl
 							label={__('Clone values from', 'kadence-blocks')}
 							value={sourceSlug}
@@ -207,7 +219,7 @@ export function SaveVariantModal({ blockName, set, source, onClose, onCreated })
 							{__('Cancel', 'kadence-blocks')}
 						</Button>
 						<Button variant="primary" onClick={onSave} isBusy={status === 'saving'} disabled={!canSave}>
-							{__('Create variant', 'kadence-blocks')}
+							{isEdit ? __('Save changes', 'kadence-blocks') : __('Create variant', 'kadence-blocks')}
 						</Button>
 					</div>
 				</>
