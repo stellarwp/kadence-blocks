@@ -1,7 +1,7 @@
 /**
  * Create / edit / delete controls for a block's design-token variants.
  *
- * Renders a "Save as new variant" button for every block, and, when the selected variant is a user-created
+ * Renders a "Create new variant" button for every block, and, when the selected variant is a user-created
  * one, "Edit" and "Delete" buttons. Deleting the variant the set currently defaults to first reassigns the
  * default to another variant (so the default is never left dangling), then removes it. Shared by the generic
  * inspector panel and a block's inline picker so the controls stay identical wherever they surface. Renders
@@ -76,7 +76,7 @@ export function VariantActions({ blockName, set, selected, onSelect }) {
 			)}
 
 			<Button variant="secondary" onClick={() => setMode('create')}>
-				{__('Save as new variant', 'kadence-blocks')}
+				{__('Create new variant', 'kadence-blocks')}
 			</Button>
 
 			{canManage && !confirming && (
