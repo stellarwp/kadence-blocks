@@ -2,7 +2,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -23,7 +22,6 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	private function make_registrar( Token_Registry $registry, TestLogger $logger ): User_Primitive_Registrar {
 		return new User_Primitive_Registrar(
 			$this->container->get( Token_Store::class ),
-			$this->container->get( Active_Set_Store::class ),
 			$registry,
 			new User_Primitive_Index(),
 			$logger
@@ -68,7 +66,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testBootWithEmptyActiveSetDocumentRegistersNothing(): void {
+	public function testBootWithNoStoredDocumentsRegistersNothing(): void {
 		$registry  = new Token_Registry();
 		$registrar = $this->make_registrar( $registry, new TestLogger() );
 
@@ -103,28 +101,24 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testUserPrimitivesInInactiveSetAreNotRegistered(): void {
+	public function testUserPrimitivesInEveryStoredSetAreRegistered(): void {
 		$store    = $this->container->get( Token_Store::class );
-		$active   = $this->container->get( Active_Set_Store::class );
 		$registry = new Token_Registry();
 
-		// Save primitives to an inactive set only.
+		// Save primitives to a set other than the default. Every stored set is synced, not only the
+		// active one — the multi-set projection renders every set, so it needs every set's primitives.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
-
-		// Active set remains "default", which has no document.
-		$this->assertSame( Token_Store::default_slug(), $active->get() );
 
 		$this->make_registrar( $registry, new TestLogger() )->sync();
 
-		$this->assertSame( [], $registry->user_created_ids() );
+		$this->assertSame( [ 'primitive.brand-color' ], $registry->user_created_ids() );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testActiveSetChangeTriggersSyncReplacingRegistrations(): void {
+	public function testSyncAccumulatesPrimitivesAcrossAllStoredSets(): void {
 		$store    = $this->container->get( Token_Store::class );
-		$active   = $this->container->get( Active_Set_Store::class );
 		$registry = new Token_Registry();
 		$logger   = new TestLogger();
 		$reg      = $this->make_registrar( $registry, $logger );
@@ -134,19 +128,41 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$reg->sync();
 		$this->assertSame( [ 'primitive.default-color' ], $registry->user_created_ids() );
 
-		// Populate and activate brand-b.
+		// Populate a second set.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
-		$active->set( 'brand-b' );
 		$reg->sync();
 
-		// Old set's primitives removed; new set's registered.
-		$this->assertSame( [ 'primitive.brand-color' ], $registry->user_created_ids() );
+		// Both sets' primitives are registered; a set no longer has to be active to appear.
+		$this->assertSame( [ 'primitive.default-color', 'primitive.brand-color' ], $registry->user_created_ids() );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testWriteToActiveSlugTriggersReload(): void {
+	public function testCollidingIdAcrossSetsKeepsDefaultAndLogsWarning(): void {
+		$store    = $this->container->get( Token_Store::class );
+		$registry = new Token_Registry();
+		$logger   = new TestLogger();
+
+		// Two different sets independently define the same canonical id.
+		$store->save_document( $this->encode_document( 'primitive.color.custom.blue', 'color', 'Default Blue' ) );
+		$store->save_document( $this->encode_document( 'primitive.color.custom.blue', 'color', 'Brand Blue' ), 'brand-b' );
+
+		$this->make_registrar( $registry, $logger )->sync();
+
+		// The default set's definition wins; the registry has no per-set namespacing to keep both.
+		$this->assertSame( [ 'primitive.color.custom.blue' ], $registry->user_created_ids() );
+
+		$token = $registry->get( 'primitive.color.custom.blue' );
+		$this->assertNotNull( $token );
+		$this->assertSame( 'Default Blue', $token->label );
+		$this->assertTrue( $logger->hasWarningRecords() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWriteToSameSlugTriggersReload(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 		$reg      = $this->make_registrar( $registry, new TestLogger() );
@@ -155,7 +171,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$reg->sync();
 		$this->assertSame( [ 'primitive.my-color' ], $registry->user_created_ids() );
 
-		// Overwrite the active set document with a different primitive.
+		// Overwrite the default set's document with a different primitive.
 		$store->save_document( $this->encode_document( 'primitive.other-color', 'color', 'Other Color' ) );
 		$reg->sync();
 
@@ -165,7 +181,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testWriteToInactiveSlugLeavesRegistryUnchanged(): void {
+	public function testWriteToAnySetAddsToTheRegistry(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 		$reg      = $this->make_registrar( $registry, new TestLogger() );
@@ -174,12 +190,11 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$reg->sync();
 		$this->assertSame( [ 'primitive.my-color' ], $registry->user_created_ids() );
 
-		// Write to an inactive set — active is still "default".
+		// Writing to a different set adds to the registry rather than replacing it.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
 		$reg->sync();
 
-		// Active-set primitives unchanged.
-		$this->assertSame( [ 'primitive.my-color' ], $registry->user_created_ids() );
+		$this->assertSame( [ 'primitive.my-color', 'primitive.brand-color' ], $registry->user_created_ids() );
 	}
 
 	/**

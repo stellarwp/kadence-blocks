@@ -2,7 +2,6 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
@@ -49,7 +48,6 @@ final class Provider extends Provider_Contract {
 		add_action( 'init', [ $this, 'sync_user_primitives' ], 0 );
 		add_action( 'init', [ $this, 'guard_baseline' ], 1 );
 		add_action( Token_Store::changed_action(), [ $this, 'sync_user_primitives_on_change' ], 0 );
-		add_action( Active_Set_Store::changed_action(), [ $this, 'sync_user_primitives_on_active_change' ], 0, 2 );
 	}
 
 	/**
@@ -100,34 +98,14 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * @since TBD
+	 * Every stored set is synced regardless of which one changed or which one is active — the
+	 * multi-set projection renders every set, so every set's user primitives must stay registered.
 	 *
-	 * @param string $slug The token set slug that changed.
+	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function sync_user_primitives_on_change( string $slug ): void {
-		/** @var Active_Set_Store $active */
-		$active = $this->container->get( Active_Set_Store::class );
-
-		if ( $slug !== $active->get() ) {
-			return;
-		}
-
-		/** @var User_Primitive_Registrar $registrar */
-		$registrar = $this->container->get( User_Primitive_Registrar::class );
-		$registrar->sync();
-	}
-
-	/**
-	 * @since TBD
-	 *
-	 * @param string $new_slug      The newly active set.
-	 * @param string $previous_slug The previously active set.
-	 *
-	 * @return void
-	 */
-	public function sync_user_primitives_on_active_change( string $new_slug, string $previous_slug ): void {
+	public function sync_user_primitives_on_change(): void {
 		/** @var User_Primitive_Registrar $registrar */
 		$registrar = $this->container->get( User_Primitive_Registrar::class );
 		$registrar->sync();
