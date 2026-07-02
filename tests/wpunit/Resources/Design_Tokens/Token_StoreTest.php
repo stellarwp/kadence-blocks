@@ -379,6 +379,233 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( 0, $this->count_rows() );
 	}
 
+	// -------------------------------------------------------------------------
+	// save_document_conditional() tests
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalFirstWriteWithEmptyVersionSucceeds(): void {
+		$result = $this->store->save_document_conditional( '{"v":1}', '' );
+
+		$this->assertTrue( $result );
+		$this->assertSame( '{"v":1}', $this->store->get_document() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalFirstWriteWithNonEmptyVersionFails(): void {
+		$result = $this->store->save_document_conditional( '{"v":1}', 'stale-version' );
+
+		$this->assertFalse( $result );
+		$this->assertSame( 0, $this->count_rows() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalUpdateWithCorrectVersionSucceeds(): void {
+		$this->store->save_document( '{"v":1}' );
+		$version = $this->store->get_version();
+
+		$result = $this->store->save_document_conditional( '{"v":2}', $version );
+
+		$this->assertTrue( $result );
+		$this->assertSame( '{"v":2}', $this->store->get_document() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalUpdateWithStaleVersionFails(): void {
+		$this->store->save_document( '{"v":1}' );
+
+		$result = $this->store->save_document_conditional( '{"v":2}', 'wrong-version' );
+
+		$this->assertFalse( $result );
+		$this->assertSame( '{"v":1}', $this->store->get_document() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalVersionChangesOnSuccess(): void {
+		$this->store->save_document( '{"v":1}' );
+		$before = $this->store->get_version();
+
+		$this->store->save_document_conditional( '{"v":2}', $before );
+		$after = $this->store->get_version();
+
+		$this->assertNotSame( $before, $after );
+		$this->assertMatchesRegularExpression( '/^[a-f0-9]{32}$/', $after );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalChangedActionFiresOnlyOnSuccess(): void {
+		$this->store->save_document( '{"v":1}' );
+		$version = $this->store->get_version();
+
+		$fired = 0;
+		add_action(
+			Token_Store::changed_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		// Stale write: no action.
+		$this->store->save_document_conditional( '{"v":2}', 'wrong-version' );
+		$this->assertSame( 0, $fired );
+
+		// Correct write: action fires.
+		$this->store->save_document_conditional( '{"v":2}', $version );
+		$this->assertSame( 1, $fired );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalSupersededFiresOnlyOnSuccessfulUpdate(): void {
+		$superseded = 0;
+		add_action(
+			Token_Store::superseded_action(),
+			static function () use ( &$superseded ): void {
+				++$superseded;
+			}
+		);
+
+		// First write has no prior state to supersede.
+		$this->store->save_document_conditional( '{"v":1}', '' );
+		$this->assertSame( 0, $superseded );
+
+		$version = $this->store->get_version();
+
+		// Successful update: superseded fires.
+		$this->store->save_document_conditional( '{"v":2}', $version );
+		$this->assertSame( 1, $superseded );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSaveConditionalSupersededDoesNotFireOnFirstWrite(): void {
+		$fired = 0;
+		add_action(
+			Token_Store::superseded_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		$this->store->save_document_conditional( '{"first":true}', '' );
+
+		$this->assertSame( 0, $fired );
+	}
+
+	/**
+	 * Simulates two concurrent writers who both read the same version and race to update.
+	 *
+	 * @return void
+	 */
+	public function testSaveConditionalConcurrentStaleUpdateSecondReturnsFalse(): void {
+		$this->store->save_document( '{"v":1}' );
+		$version = $this->store->get_version();
+
+		// First writer wins.
+		$first = $this->store->save_document_conditional( '{"v":2}', $version );
+		// Second writer uses the same stale version.
+		$second = $this->store->save_document_conditional( '{"v":3}', $version );
+
+		$this->assertTrue( $first );
+		$this->assertFalse( $second );
+		$this->assertSame( '{"v":2}', $this->store->get_document() );
+	}
+
+	// -------------------------------------------------------------------------
+	// delete_document_conditional() tests
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteConditionalNamedSetWithCorrectVersionSucceeds(): void {
+		$this->store->save_document( '{}', 'named-set' );
+		$version = $this->store->get_version( 'named-set' );
+
+		$result = $this->store->delete_document_conditional( 'named-set', $version );
+
+		$this->assertTrue( $result );
+		$this->assertFalse( $this->store->exists( 'named-set' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteConditionalNamedSetWithStaleVersionFails(): void {
+		$this->store->save_document( '{}', 'named-set' );
+
+		$result = $this->store->delete_document_conditional( 'named-set', 'stale-version' );
+
+		$this->assertFalse( $result );
+		$this->assertTrue( $this->store->exists( 'named-set' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteConditionalDefaultSetReturnsFalse(): void {
+		$this->store->save_document( '{"v":1}' );
+		$version = $this->store->get_version();
+
+		$result = $this->store->delete_document_conditional( Token_Store::default_slug(), $version );
+
+		$this->assertFalse( $result );
+		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteConditionalFiresDeletedActionOnSuccess(): void {
+		$this->store->save_document( '{}', 'named-set' );
+		$version = $this->store->get_version( 'named-set' );
+
+		$fired = [];
+		add_action(
+			Token_Store::deleted_action(),
+			static function ( $slug ) use ( &$fired ): void {
+				$fired[] = $slug;
+			}
+		);
+
+		$this->store->delete_document_conditional( 'named-set', $version );
+
+		$this->assertSame( [ 'named-set' ], $fired );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteConditionalDoesNotFireDeletedActionOnMismatch(): void {
+		$this->store->save_document( '{}', 'named-set' );
+
+		$fired = 0;
+		add_action(
+			Token_Store::deleted_action(),
+			static function () use ( &$fired ): void {
+				++$fired;
+			}
+		);
+
+		$this->store->delete_document_conditional( 'named-set', 'stale-version' );
+
+		$this->assertSame( 0, $fired );
+	}
+
 	/**
 	 * Read the title column directly (test-only inspection of the table).
 	 */
