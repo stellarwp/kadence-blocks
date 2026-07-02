@@ -121,7 +121,7 @@ final class User_Primitive_Document_Validator {
 			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" collides with a system-registered token.', $id ) );
 		}
 
-		$leaf = $this->node_at( $document, $id );
+		$leaf = Document_Path::node_at( $document, $id );
 
 		if ( $leaf === null ) {
 			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" envelope entry has no matching tree leaf.', $id ) );
@@ -206,29 +206,5 @@ final class User_Primitive_Document_Validator {
 	 */
 	private function is_allowed_id( string $id ): bool {
 		return (bool) preg_match( '/^primitive\.color\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*$/', $id );
-	}
-
-	/**
-	 * Read a node by dot-path from a decoded document.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $document
-	 * @param string               $path
-	 *
-	 * @return array<string, mixed>|null
-	 */
-	private function node_at( array $document, string $path ): ?array {
-		$node = $document;
-
-		foreach ( explode( '.', $path ) as $segment ) {
-			if ( ! is_array( $node ) || ! array_key_exists( $segment, $node ) ) {
-				return null;
-			}
-
-			$node = $node[ $segment ];
-		}
-
-		return is_array( $node ) ? $node : null;
 	}
 }

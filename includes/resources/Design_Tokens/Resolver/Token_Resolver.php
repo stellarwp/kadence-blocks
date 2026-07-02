@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -320,15 +321,7 @@ final class Token_Resolver {
 	 * @return array<string,mixed>|null
 	 */
 	private function lookup( string $path, array $document ): ?array {
-		$node = $document;
-		foreach ( explode( '.', $path ) as $segment ) {
-			if ( ! is_array( $node ) || ! isset( $node[ $segment ] ) ) {
-				return null;
-			}
-			$node = $node[ $segment ];
-		}
-
-		return is_array( $node ) ? $node : null;
+		return Document_Path::node_at( $document, $path );
 	}
 
 	/**
