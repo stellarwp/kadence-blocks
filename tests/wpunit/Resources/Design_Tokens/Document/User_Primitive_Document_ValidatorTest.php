@@ -301,14 +301,7 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 	public function testIdCollidingWithUserCreatedRegistryTokenReturnsNoSystemCollisionError(): void {
 		$id       = 'primitive.color.custom.brand';
 		$registry = new Token_Registry();
-		$registry->register(
-			[
-				'id'           => $id,
-				'type'         => 'color',
-				'label'        => 'User Brand',
-				'user_created' => true,
-			] 
-		);
+		$registry->register_user_primitive( $id, 'color', 'User Brand' );
 		$sut = new User_Primitive_Document_Validator( $this->index, $this->baseline, $registry );
 		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
 
