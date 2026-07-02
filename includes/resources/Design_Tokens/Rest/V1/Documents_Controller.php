@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -568,7 +569,7 @@ final class Documents_Controller extends Controller {
 		$is_sentinel = Sentinels::is_reset( $leaf ) || Sentinels::has_disabled( $leaf );
 
 		if ( ! $is_sentinel && ! array_key_exists( Token_Type::get_type_key(), $leaf ) ) {
-			$existing  = $this->node_at( $effective, $path );
+			$existing  = Document_Path::node_at( $effective, $path );
 			$node_type = is_array( $existing ) ? ( $existing[ Token_Type::get_type_key() ] ?? null ) : null;
 
 			if ( ! is_string( $node_type ) ) {
@@ -962,30 +963,6 @@ final class Documents_Controller extends Controller {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Find the node at a dot-path within a document, or null when the path is absent.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $document The document to walk.
-	 * @param string               $path     The dot-path to look up.
-	 *
-	 * @return array<string, mixed>|null
-	 */
-	private function node_at( array $document, string $path ): ?array {
-		$node = $document;
-
-		foreach ( explode( '.', $path ) as $segment ) {
-			if ( ! is_array( $node ) || ! array_key_exists( $segment, $node ) ) {
-				return null;
-			}
-
-			$node = $node[ $segment ];
-		}
-
-		return is_array( $node ) ? $node : null;
 	}
 
 	/**

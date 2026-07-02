@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
@@ -136,17 +137,7 @@ final class Document_Write_Pipeline {
 	 * @return array<string, mixed>|null
 	 */
 	public function node_at( array $document, string $path ): ?array {
-		$node = $document;
-
-		foreach ( explode( '.', $path ) as $segment ) {
-			if ( ! is_array( $node ) || ! array_key_exists( $segment, $node ) ) {
-				return null;
-			}
-
-			$node = $node[ $segment ];
-		}
-
-		return is_array( $node ) ? $node : null;
+		return Document_Path::node_at( $document, $path );
 	}
 
 	/**
