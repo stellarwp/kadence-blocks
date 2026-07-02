@@ -38,7 +38,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
 final class Variant_Resolver {
 
 	/**
-	 * @var Effective_Variants The per-set effective (baseline ⊕ overrides) variant definitions are read from.
+	 * @var Effective_Variants The per-set effective variant definitions (the baseline deep-merged with the set's stored overrides) are read from.
 	 *
 	 * @since TBD
 	 */
@@ -176,9 +176,9 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The variant slugs a block declares for a set, in document order — the effective set (baseline ⊕ the
-	 * set's stored overrides) being the source of truth, so a user-added variant in the store appears here
-	 * alongside the baseline ones.
+	 * The variant slugs a block declares for a set, in document order — the effective set (the baseline
+	 * deep-merged with the set's stored overrides) being the source of truth, so a user-added variant in the
+	 * store appears here alongside the baseline ones.
 	 *
 	 * @since TBD
 	 *
@@ -402,8 +402,8 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The whole effective variants section for a set (baseline ⊕ the set's stored overrides), or an empty
-	 * array when absent.
+	 * The whole effective variants section for a set (the baseline deep-merged with the set's stored
+	 * overrides), or an empty array when absent.
 	 *
 	 * @since TBD
 	 *
