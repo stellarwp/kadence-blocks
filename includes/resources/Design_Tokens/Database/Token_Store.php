@@ -264,7 +264,7 @@ final class Token_Store extends Query {
 		}
 
 		// Subsequent write — must match.
-		if ( (string) ( $previous['version'] ?? '' ) !== $expected_version ) {
+		if ( Cast::to_string( $previous['version'] ?? '' ) !== $expected_version ) {
 			return false;
 		}
 
