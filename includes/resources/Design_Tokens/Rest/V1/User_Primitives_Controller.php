@@ -494,6 +494,10 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Rename a user-defined primitive and rewrite direct alias references in the semantic layer.
 	 *
+	 * Rejects the rename when a reference outside that layer exists (e.g. a composite field or a
+	 * primitive-layer override aliasing the old id) — the phase-1 cascade cannot rewrite those, so
+	 * proceeding would leave them silently pointing at an id that no longer exists.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -523,6 +527,30 @@ final class User_Primitives_Controller extends Controller {
 				[
 					'status' => WP_Http::NOT_FOUND,
 					'id'     => $old_id,
+				]
+			);
+		}
+
+		$references = $this->policy->find( $stored, $old_id );
+
+		if ( ! $this->policy->all_supported( $references ) ) {
+			$unsupported = array_filter( $references, fn( $r ) => ! $r->supported );
+
+			return new WP_Error(
+				'rest_design_tokens_unsupported_references',
+				__( 'This primitive has references that cannot be automatically resolved. Remove them manually before renaming.', 'kadence-blocks' ),
+				[
+					'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+					'id'         => $old_id,
+					'references' => array_values(
+						array_map(
+							fn( $r ) => [
+								'kind' => $r->kind,
+								'path' => $r->path,
+							],
+							$unsupported
+						)
+					),
 				]
 			);
 		}
