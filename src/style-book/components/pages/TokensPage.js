@@ -20,6 +20,10 @@ import { StyleBookShell } from '../templates/StyleBookShell';
 /**
  * Build an optimistic token definition from a create payload.
  *
+ * The `cssVar` mirrors `Css_Var::from_id()` on the PHP side: prefix `--kb-token--`, then every
+ * `.` in the dot-path id replaced with `--`. Ids and var names must not drift, so this is the
+ * one JS spot that reconstructs the rule for the optimistic, pre-refresh token entry.
+ *
  * @param {object} payload Create request payload { id, label, $value }.
  * @return {object} Token definition ready for the flat token list.
  */
@@ -31,7 +35,7 @@ function tokenFromCreatePayload(payload) {
 		id,
 		type: 'color',
 		label,
-		cssVar: `--kb-${id.replace(/\./g, '-')}`,
+		cssVar: `--kb-token--${id.replace(/\./g, '--')}`,
 		group: CUSTOM_COLORS_GROUP_LABEL,
 		userCreated: true,
 	};
