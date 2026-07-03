@@ -195,7 +195,14 @@ final class User_Primitives_Controller extends Controller {
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::USER_PRIMITIVES_ROUTE,
 			[
 				[
+					// Creating a single primitive is one addressed write — POST and PUT are identical here.
 					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'create_item' ],
+					'permission_callback' => [ $this, 'create_item_permissions_check' ],
+					'args'                => $this->get_create_params(),
+				],
+				[
+					'methods'             => 'PUT',
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 					'args'                => $this->get_create_params(),
@@ -221,7 +228,14 @@ final class User_Primitives_Controller extends Controller {
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::USER_PRIMITIVES_ROUTE . '/' . self::ID_ROUTE . '/' . self::RENAME_ROUTE,
 			[
 				[
+					// Renaming is one addressed write — POST and PUT are identical here.
 					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'rename_item' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_rename_params(),
+				],
+				[
+					'methods'             => 'PUT',
 					'callback'            => [ $this, 'rename_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_rename_params(),
