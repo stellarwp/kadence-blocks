@@ -98,7 +98,7 @@ final class User_Primitive_Document_Validator {
 	private function check_envelope_entry( array $document, string $id, $entry ): array {
 		$errors = [];
 
-		if ( ! User_Primitive_Id::is_valid_id( $id ) ) {
+		if ( ! Reserved_Namespace::is_reserved_id( $id ) ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
 				sprintf( 'User primitive id "%s" is not in the allowed namespace (primitive.color.custom.*).', $id )
@@ -185,7 +185,7 @@ final class User_Primitive_Document_Validator {
 				continue;
 			}
 
-			$id = User_Primitive_Id::canonical( $slug );
+			$id = Reserved_Namespace::canonical( $slug );
 
 			if ( ! $this->index->has( $document, $id ) ) {
 				$orphans[] = $id;
