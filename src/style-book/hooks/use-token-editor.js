@@ -13,11 +13,17 @@ import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
 /**
  * Manage token save state and refresh resolved values after writes.
  *
- * @param {{ namespace: string }|null} rest REST descriptor from the feed.
- * @param {Record<string, string>}   initialValues Resolved values keyed by token id.
- * @return {{ values: Record<string, string>, saveToken: Function, getFieldState: Function }}
+ * The document version changes on every write to the set, including ones made outside this
+ * hook (e.g. a user-primitive create/rename/delete), so `onVersionChange` is called whenever a
+ * fresh version is read here — this keeps a version shared across the app instead of each write
+ * surface tracking a copy that can drift stale relative to the others.
+ *
+ * @param {{ namespace: string }|null} rest             REST descriptor from the feed.
+ * @param {Record<string, string>}     initialValues    Resolved values keyed by token id.
+ * @param {Function}                   [onVersionChange] Called with the latest document version.
+ * @return {{ values: Record<string, string>, saveToken: Function, getFieldState: Function, refreshValues: Function }}
  */
-export function useTokenEditor(rest, initialValues) {
+export function useTokenEditor(rest, initialValues, onVersionChange) {
 	const [values, setValues] = useState(initialValues);
 	const [fieldState, setFieldState] = useState({});
 
@@ -32,7 +38,11 @@ export function useTokenEditor(rest, initialValues) {
 
 		const resolved = await fetchResolvedTokens(rest.namespace, DEFAULT_TOKEN_SET_SLUG);
 		setValues(resolved?.by_id ?? {});
-	}, [rest]);
+
+		if (resolved?.version) {
+			onVersionChange?.(resolved.version);
+		}
+	}, [rest, onVersionChange]);
 
 	const saveToken = useCallback(
 		async (tokenId, type, nextValue) => {

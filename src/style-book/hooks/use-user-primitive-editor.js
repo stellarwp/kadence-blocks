@@ -16,16 +16,22 @@ import {
 const HTTP_CONFLICT = 409;
 
 /**
- * Manage user-primitive mutations (create, delete, rename) and version tracking.
+ * Manage user-primitive mutations (create, delete, rename).
+ *
+ * `version` is a controlled value owned by the caller rather than local state: the document
+ * version also changes from writes made outside this hook (e.g. a semantic-token edit), so a
+ * copy tracked only from this hook's own responses can go stale and trip the write guard with a
+ * false-positive conflict. `onVersionChange` reports this hook's own successful writes back to
+ * that shared value.
  *
  * @since TBD
  *
- * @param {string} initialVersion Feed version string from the localized payload.
- * @param {string} slug           Token set slug.
- * @return {{ version: string, isPending: boolean, fetchPreview: Function, createPrimitive: Function, deletePrimitive: Function, renamePrimitive: Function }}
+ * @param {string}   version          Current document version, from the shared version state.
+ * @param {string}   slug             Token set slug.
+ * @param {Function} onVersionChange  Called with the latest document version after a successful write.
+ * @return {{ isPending: boolean, fetchPreview: Function, createPrimitive: Function, deletePrimitive: Function, renamePrimitive: Function }}
  */
-export function useUserPrimitiveEditor(initialVersion, slug) {
-	const [version, setVersion] = useState(initialVersion);
+export function useUserPrimitiveEditor(version, slug, onVersionChange) {
 	const [isPending, setIsPending] = useState(false);
 
 	const fetchPreview = useCallback(
@@ -48,7 +54,7 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				const data = await createUserPrimitive(slug, { ...payload, version });
 
 				if (data?.version) {
-					setVersion(data.version);
+					onVersionChange?.(data.version);
 				}
 
 				return { ok: true, data };
@@ -64,7 +70,7 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				setIsPending(false);
 			}
 		},
-		[slug, version]
+		[slug, version, onVersionChange]
 	);
 
 	const deletePrimitive = useCallback(
@@ -75,7 +81,7 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				const data = await deleteUserPrimitive(slug, id, previewVersion);
 
 				if (data?.version) {
-					setVersion(data.version);
+					onVersionChange?.(data.version);
 				}
 
 				return { ok: true, data };
@@ -91,7 +97,7 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				setIsPending(false);
 			}
 		},
-		[slug]
+		[slug, onVersionChange]
 	);
 
 	const renamePrimitive = useCallback(
@@ -102,7 +108,7 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				const data = await renameUserPrimitive(slug, id, { ...payload, version });
 
 				if (data?.version) {
-					setVersion(data.version);
+					onVersionChange?.(data.version);
 				}
 
 				return { ok: true, data };
@@ -118,11 +124,10 @@ export function useUserPrimitiveEditor(initialVersion, slug) {
 				setIsPending(false);
 			}
 		},
-		[slug, version]
+		[slug, version, onVersionChange]
 	);
 
 	return {
-		version,
 		isPending,
 		fetchPreview,
 		createPrimitive,

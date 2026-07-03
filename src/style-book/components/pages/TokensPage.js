@@ -50,10 +50,16 @@ export function TokensPage() {
 		isResolved,
 		values: feedValues,
 		rest,
-		version,
+		version: initialVersion,
 	} = useDesignTokensFeed();
 
-	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues);
+	// Shared across every write surface on this page: the document version changes on any
+	// write to the set (a semantic-token edit, a primitive create/rename/delete), so tracking it
+	// once here — rather than letting each hook keep its own copy — keeps the write guard from
+	// tripping a false-positive conflict when one surface's write is followed by another's.
+	const [version, setVersion] = useState(initialVersion);
+
+	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues, setVersion);
 
 	const [localTokens, setLocalTokens] = useState(null);
 	const tokens = localTokens ?? feedTokens;
@@ -62,7 +68,8 @@ export function TokensPage() {
 
 	const { createPrimitive, deletePrimitive, renamePrimitive, fetchPreview } = useUserPrimitiveEditor(
 		version,
-		DEFAULT_TOKEN_SET_SLUG
+		DEFAULT_TOKEN_SET_SLUG,
+		setVersion
 	);
 
 	const handleMutationSuccess = useCallback(
