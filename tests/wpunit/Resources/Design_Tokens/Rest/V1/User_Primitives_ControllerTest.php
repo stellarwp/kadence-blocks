@@ -897,13 +897,14 @@ final class User_Primitives_ControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Rename rewrites aliases in the semantic layer but leaves the extension layer untouched.
-	 * Extension tokens are not resolved by the pipeline so a stale reference there does not
-	 * cause a validation failure.
+	 * A rename is blocked when a reference outside the semantic layer exists (here, an
+	 * extension-section alias). The phase-1 cascade can only rewrite direct semantic-layer
+	 * `$value` aliases, so proceeding would leave the extension reference silently pointing at
+	 * an id that no longer exists.
 	 *
 	 * @return void
 	 */
-	public function testRenameRewritesAliasesInSemanticLayerOnly(): void {
+	public function testRenameReturns422ForUnsupportedExtensionReference(): void {
 		$slug   = Token_Store::default_slug();
 		$old_id = 'primitive.color.custom.alias-src';
 		$doc    = $this->doc_with_primitive( $old_id, 'Alias Src' );
@@ -917,7 +918,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 			],
 		];
 
-		// Extension token referencing the same primitive (should NOT be rewritten).
+		// Extension token referencing the same primitive (unsupported — blocks the rename).
 		$ext_ref_value = '{' . $old_id . '}';
 		$doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_foundation_presets() ] = [
 			'color' => [
@@ -936,23 +937,51 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$request  = $this->make_rename_request( $slug, $old_id, $new_slug, $version );
 		$result   = $this->controller->rename_item( $request );
 
-		// The rename succeeds: the pipeline does not resolve extension layer tokens.
-		$this->assertInstanceOf( WP_REST_Response::class, $result );
-		$this->assertSame( WP_Http::OK, $result->get_status() );
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unsupported_references', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
 
-		$data      = $result->get_data();
-		$doc_after = $data['document'];
-		$new_id    = 'primitive.color.custom.' . $new_slug;
+	/**
+	 * A rename is also blocked when another primitive-layer token has a composite field aliasing
+	 * the old id (e.g. a shadow primitive's `color` field) — that reference lives outside the
+	 * semantic layer, so it would be silently left pointing at the renamed-away id.
+	 *
+	 * @return void
+	 */
+	public function testRenameReturns422ForUnsupportedPrimitiveLayerCompositeReference(): void {
+		$slug   = Token_Store::default_slug();
+		$old_id = 'primitive.color.custom.shadow-color';
+		$doc    = $this->doc_with_primitive( $old_id, 'Shadow Color' );
 
-		// Semantic alias was rewritten.
-		$this->assertSame( '{' . $new_id . '}', $doc_after['semantic']['color']['primary']['$value'] );
+		$doc['primitive'] = array_merge(
+			$doc['primitive'] ?? [],
+			[
+				'shadow' => [
+					'soft' => [
+						'$type'  => 'shadow',
+						'$value' => [
+							'color'   => '{' . $old_id . '}',
+							'offsetX' => '0',
+							'offsetY' => '2px',
+							'blur'    => '4px',
+							'spread'  => '0',
+						],
+					],
+				],
+			]
+		);
 
-		// Extension alias was NOT rewritten — still points to the old id.
-		$ext_after = $doc_after[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_foundation_presets() ];
-		$this->assertSame( $ext_ref_value, $ext_after['color']['preset-x'][ Extensions::get_tokens_key() ]['semantic.color.primary'] );
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
 
-		// rewrittenPaths contains only the semantic path.
-		$this->assertContains( 'semantic.color.primary', $data['rewrittenPaths'] );
+		$new_slug = 'new-shadow-color';
+		$request  = $this->make_rename_request( $slug, $old_id, $new_slug, $version );
+		$result   = $this->controller->rename_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unsupported_references', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
 	}
 
 	/**

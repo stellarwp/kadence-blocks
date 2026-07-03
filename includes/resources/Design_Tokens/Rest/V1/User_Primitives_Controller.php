@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -195,7 +196,14 @@ final class User_Primitives_Controller extends Controller {
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::USER_PRIMITIVES_ROUTE,
 			[
 				[
+					// Creating a single primitive is one addressed write — POST and PUT are identical here.
 					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'create_item' ],
+					'permission_callback' => [ $this, 'create_item_permissions_check' ],
+					'args'                => $this->get_create_params(),
+				],
+				[
+					'methods'             => 'PUT',
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 					'args'                => $this->get_create_params(),
@@ -221,7 +229,14 @@ final class User_Primitives_Controller extends Controller {
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::USER_PRIMITIVES_ROUTE . '/' . self::ID_ROUTE . '/' . self::RENAME_ROUTE,
 			[
 				[
+					// Renaming is one addressed write — POST and PUT are identical here.
 					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'rename_item' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_rename_params(),
+				],
+				[
+					'methods'             => 'PUT',
 					'callback'            => [ $this, 'rename_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_rename_params(),
@@ -308,7 +323,7 @@ final class User_Primitives_Controller extends Controller {
 
 		$slug_input = Cast::to_string( $request->get_param( 'id' ) );
 
-		if ( ! preg_match( '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug_input ) ) {
+		if ( ! Reserved_Namespace::is_valid_slug( $slug_input ) ) {
 			return new WP_Error(
 				'rest_invalid_param',
 				__( 'The id must be a lowercase kebab-case slug with no dots (e.g. my-color).', 'kadence-blocks' ),
@@ -322,7 +337,7 @@ final class User_Primitives_Controller extends Controller {
 		$type      = Cast::to_string( $request->get_param( '$type' ) );
 		$value     = $request->get_param( '$value' );
 		$label     = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $slug_input );
-		$canonical = 'primitive.color.custom.' . $slug_input;
+		$canonical = Reserved_Namespace::canonical( $slug_input );
 		$stored    = $this->pipeline->load_document( $slug );
 
 		if ( $type !== Token_Type::get_type_color() ) {
@@ -403,7 +418,10 @@ final class User_Primitives_Controller extends Controller {
 			return $error;
 		}
 
-		if ( $this->baseline->has( $id ) ) {
+		$existing  = $this->registry->get( $id );
+		$is_system = $this->baseline->has( $id ) || ( $existing !== null && ! $existing->is_user_created() );
+
+		if ( $is_system ) {
 			return new WP_Error(
 				'rest_design_tokens_locked',
 				__( 'System primitives cannot be deleted.', 'kadence-blocks' ),
@@ -476,6 +494,10 @@ final class User_Primitives_Controller extends Controller {
 	/**
 	 * Rename a user-defined primitive and rewrite direct alias references in the semantic layer.
 	 *
+	 * Rejects the rename when a reference outside that layer exists (e.g. a composite field or a
+	 * primitive-layer override aliasing the old id) — the phase-1 cascade cannot rewrite those, so
+	 * proceeding would leave them silently pointing at an id that no longer exists.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -509,6 +531,30 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
+		$references = $this->policy->find( $stored, $old_id );
+
+		if ( ! $this->policy->all_supported( $references ) ) {
+			$unsupported = array_filter( $references, fn( $r ) => ! $r->supported );
+
+			return new WP_Error(
+				'rest_design_tokens_unsupported_references',
+				__( 'This primitive has references that cannot be automatically resolved. Remove them manually before renaming.', 'kadence-blocks' ),
+				[
+					'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+					'id'         => $old_id,
+					'references' => array_values(
+						array_map(
+							fn( $r ) => [
+								'kind' => $r->kind,
+								'path' => $r->path,
+							],
+							$unsupported
+						)
+					),
+				]
+			);
+		}
+
 		$old_leaf = $this->pipeline->node_at( $stored, $old_id );
 		$type     = is_array( $old_leaf ) ? ( $old_leaf[ Token_Type::get_type_key() ] ?? null ) : null;
 
@@ -523,7 +569,7 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$new_id    = 'primitive.color.custom.' . $new_slug;
+		$new_id    = Reserved_Namespace::canonical( $new_slug );
 		$new_label = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $new_slug );
 
 		if ( $this->baseline->has( $new_id ) || $this->index->has( $stored, $new_id ) ) {
@@ -718,7 +764,7 @@ final class User_Primitives_Controller extends Controller {
 	 * @return WP_Error|null
 	 */
 	private function validate_canonical_id( string $id ): ?WP_Error {
-		if ( preg_match( '/^primitive\.color\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*$/', $id ) ) {
+		if ( Reserved_Namespace::is_reserved_id( $id ) ) {
 			return null;
 		}
 
@@ -782,7 +828,7 @@ final class User_Primitives_Controller extends Controller {
 				'description' => __( 'The terminal slug for the new primitive (kebab-case, no dots).', 'kadence-blocks' ),
 				'type'        => 'string',
 				'required'    => true,
-				'pattern'     => '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+				'pattern'     => Reserved_Namespace::get_slug_pattern(),
 			],
 			'$type'          => [
 				'description' => __( 'The DTCG $type for the new primitive.', 'kadence-blocks' ),
@@ -858,7 +904,7 @@ final class User_Primitives_Controller extends Controller {
 				'description' => __( 'The new terminal slug (kebab-case, no dots).', 'kadence-blocks' ),
 				'type'        => 'string',
 				'required'    => true,
-				'pattern'     => '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+				'pattern'     => Reserved_Namespace::get_slug_pattern(),
 			],
 			'version'        => [
 				'description' => __( 'The version token the client last read.', 'kadence-blocks' ),
