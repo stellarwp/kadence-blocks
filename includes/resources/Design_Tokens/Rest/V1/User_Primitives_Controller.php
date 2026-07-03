@@ -418,7 +418,10 @@ final class User_Primitives_Controller extends Controller {
 			return $error;
 		}
 
-		if ( $this->baseline->has( $id ) ) {
+		$existing  = $this->registry->get( $id );
+		$is_system = $this->baseline->has( $id ) || ( $existing !== null && ! $existing->is_user_created() );
+
+		if ( $is_system ) {
 			return new WP_Error(
 				'rest_design_tokens_locked',
 				__( 'System primitives cannot be deleted.', 'kadence-blocks' ),
