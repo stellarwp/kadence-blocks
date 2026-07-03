@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Id;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
@@ -322,7 +323,7 @@ final class User_Primitives_Controller extends Controller {
 
 		$slug_input = Cast::to_string( $request->get_param( 'id' ) );
 
-		if ( ! preg_match( '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug_input ) ) {
+		if ( ! User_Primitive_Id::is_valid_slug( $slug_input ) ) {
 			return new WP_Error(
 				'rest_invalid_param',
 				__( 'The id must be a lowercase kebab-case slug with no dots (e.g. my-color).', 'kadence-blocks' ),
@@ -336,7 +337,7 @@ final class User_Primitives_Controller extends Controller {
 		$type      = Cast::to_string( $request->get_param( '$type' ) );
 		$value     = $request->get_param( '$value' );
 		$label     = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $slug_input );
-		$canonical = 'primitive.color.custom.' . $slug_input;
+		$canonical = User_Primitive_Id::canonical( $slug_input );
 		$stored    = $this->pipeline->load_document( $slug );
 
 		if ( $type !== Token_Type::get_type_color() ) {
@@ -537,7 +538,7 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$new_id    = 'primitive.color.custom.' . $new_slug;
+		$new_id    = User_Primitive_Id::canonical( $new_slug );
 		$new_label = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $new_slug );
 
 		if ( $this->baseline->has( $new_id ) || $this->index->has( $stored, $new_id ) ) {
@@ -732,7 +733,7 @@ final class User_Primitives_Controller extends Controller {
 	 * @return WP_Error|null
 	 */
 	private function validate_canonical_id( string $id ): ?WP_Error {
-		if ( preg_match( '/^primitive\.color\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*$/', $id ) ) {
+		if ( User_Primitive_Id::is_valid_id( $id ) ) {
 			return null;
 		}
 
@@ -796,7 +797,7 @@ final class User_Primitives_Controller extends Controller {
 				'description' => __( 'The terminal slug for the new primitive (kebab-case, no dots).', 'kadence-blocks' ),
 				'type'        => 'string',
 				'required'    => true,
-				'pattern'     => '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+				'pattern'     => User_Primitive_Id::get_slug_pattern(),
 			],
 			'$type'          => [
 				'description' => __( 'The DTCG $type for the new primitive.', 'kadence-blocks' ),
@@ -872,7 +873,7 @@ final class User_Primitives_Controller extends Controller {
 				'description' => __( 'The new terminal slug (kebab-case, no dots).', 'kadence-blocks' ),
 				'type'        => 'string',
 				'required'    => true,
-				'pattern'     => '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+				'pattern'     => User_Primitive_Id::get_slug_pattern(),
 			],
 			'version'        => [
 				'description' => __( 'The version token the client last read.', 'kadence-blocks' ),

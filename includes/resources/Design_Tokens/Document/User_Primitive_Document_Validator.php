@@ -98,7 +98,7 @@ final class User_Primitive_Document_Validator {
 	private function check_envelope_entry( array $document, string $id, $entry ): array {
 		$errors = [];
 
-		if ( ! $this->is_allowed_id( $id ) ) {
+		if ( ! User_Primitive_Id::is_valid_id( $id ) ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
 				sprintf( 'User primitive id "%s" is not in the allowed namespace (primitive.color.custom.*).', $id )
@@ -185,7 +185,7 @@ final class User_Primitive_Document_Validator {
 				continue;
 			}
 
-			$id = 'primitive.color.custom.' . $slug;
+			$id = User_Primitive_Id::canonical( $slug );
 
 			if ( ! $this->index->has( $document, $id ) ) {
 				$orphans[] = $id;
@@ -193,18 +193,5 @@ final class User_Primitive_Document_Validator {
 		}
 
 		return $orphans;
-	}
-
-	/**
-	 * Whether a canonical id is in the allowed phase-1 namespace.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $id
-	 *
-	 * @return bool
-	 */
-	private function is_allowed_id( string $id ): bool {
-		return (bool) preg_match( '/^primitive\.color\.custom\.[a-z0-9]+(?:-[a-z0-9]+)*$/', $id );
 	}
 }
