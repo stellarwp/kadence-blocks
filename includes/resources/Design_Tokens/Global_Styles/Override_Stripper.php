@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles;
 
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use WP_Post;
 
 /**
@@ -21,6 +22,22 @@ use WP_Post;
  * @since TBD
  */
 final class Override_Stripper {
+
+	/**
+	 * @since TBD
+	 *
+	 * @var LoggerInterface
+	 */
+	private LoggerInterface $logger;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param LoggerInterface $logger Logger for a failed post_content restore write.
+	 */
+	public function __construct( LoggerInterface $logger ) {
+		$this->logger = $logger;
+	}
 
 	/**
 	 * Strip overrides for every synced target, restoring var(--kb-token--*).
@@ -59,12 +76,26 @@ final class Override_Stripper {
 			return;
 		}
 
-		wp_update_post(
+		$result = wp_update_post(
 			[
 				'ID'           => $post->ID,
 				'post_content' => wp_slash( $encoded ),
-			]
+			],
+			true
 		);
+
+		if ( is_wp_error( $result ) ) {
+			// The token store already holds the synced literal by this point — a failed restore
+			// leaves the CPT out of sync with it until the next successful edit. Log so that
+			// divergence is diagnosable instead of silent.
+			$this->logger->error(
+				sprintf(
+					'Override_Stripper failed to restore wp_global_styles post %d: %s',
+					$post->ID,
+					$result->get_error_message()
+				)
+			);
+		}
 	}
 
 	/**
@@ -102,6 +133,7 @@ final class Override_Stripper {
 				return true;
 			}
 		}
+		unset( $entry );
 
 		return false;
 	}
