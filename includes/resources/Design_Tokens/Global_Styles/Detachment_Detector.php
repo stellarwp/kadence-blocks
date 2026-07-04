@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 
 /**
  * Derives "detached from brand": a token whose baseline $value is an alias (the normal shape for
@@ -61,7 +62,7 @@ final class Detachment_Detector {
 	 */
 	public function is_detached( string $token_id, array $overrides ): bool {
 		$baseline_leaf = $this->leaf_at( $this->baseline->document(), $token_id );
-		if ( $baseline_leaf === null || ! Alias::is_alias( $baseline_leaf['$value'] ?? null ) ) {
+		if ( $baseline_leaf === null || ! Alias::is_alias( $baseline_leaf[ Sentinels::get_value_key() ] ?? null ) ) {
 			return false; // No alias relationship in the baseline to have lost.
 		}
 
@@ -74,7 +75,7 @@ final class Detachment_Detector {
 		// skipping it and keeping the baseline leaf in place (Effective_Document::merge_node()),
 		// so $effective_leaf can never itself be the reset sentinel here — it is either the
 		// baseline alias (reset case) or a real stored literal/alias override.
-		$value = $effective_leaf['$value'] ?? null;
+		$value = $effective_leaf[ Sentinels::get_value_key() ] ?? null;
 
 		return ! Alias::is_alias( $value );
 	}
@@ -99,6 +100,6 @@ final class Detachment_Detector {
 			$node = $node[ $segment ];
 		}
 
-		return is_array( $node ) && array_key_exists( '$value', $node ) ? $node : null;
+		return is_array( $node ) && array_key_exists( Sentinels::get_value_key(), $node ) ? $node : null;
 	}
 }
