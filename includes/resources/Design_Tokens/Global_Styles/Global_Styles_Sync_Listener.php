@@ -219,7 +219,7 @@ final class Global_Styles_Sync_Listener {
 
 	/**
 	 * Find every syncable preset whose new value differs from its canonical var(--kb-token--*)
-	 * form, paired with the new literal to sync.
+	 * form AND from its own pre-write value, paired with the new literal to sync.
 	 *
 	 * @since TBD
 	 *
@@ -234,9 +234,10 @@ final class Global_Styles_Sync_Listener {
 		foreach ( $this->locator->locate() as $target ) {
 			$canonical = 'var(' . $target->token->css_var . ')';
 			$new_value = $this->entry_value( $after, $target );
+			$old_value = $this->entry_value( $before, $target );
 
-			if ( $new_value === null || $new_value === $canonical ) {
-				continue; // Untouched, or already restored by a prior pass — nothing to do.
+			if ( $new_value === null || $new_value === $canonical || $new_value === $old_value ) {
+				continue; // Untouched, already restored by a prior pass, or unchanged since the last save.
 			}
 
 			$changed[] = [ $target, $new_value ];

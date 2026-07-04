@@ -132,6 +132,35 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 	}
 
 	/**
+	 * Saving the post again with the exact same non-canonical literal (e.g. an unrelated field was
+	 * edited) does not re-sync the unchanged preset to the store.
+	 *
+	 * @return void
+	 */
+	public function testUnchangedLiteralOnSubsequentSaveDoesNotRewriteStore(): void {
+		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
+
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$version_after_sync = $this->store->get_version( $this->active->get() );
+
+		// Re-save with the identical literal, as a second save unrelated to this preset would.
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$this->assertSame( $version_after_sync, $this->store->get_version( $this->active->get() ) );
+	}
+
+	/**
 	 * A malformed literal for one changed preset is caught and logged rather than thrown, and does
 	 * not block a second, valid changed preset in the same payload from syncing.
 	 *
