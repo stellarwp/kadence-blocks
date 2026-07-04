@@ -45,7 +45,6 @@ final class Json_Builder {
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
 
-
 	/**
 	 * The token registry.
 	 *
