@@ -80,6 +80,26 @@ final class Detachment_DetectorTest extends TestCase {
 	}
 
 	/**
+	 * A DISABLE sentinel override removes the token from the effective document entirely, so there
+	 * is no effective leaf left to compare against the baseline alias — not detached.
+	 *
+	 * @return void
+	 */
+	public function testDisabledSentinelOverrideIsNotDetached(): void {
+		$detector = $this->detector_for( $this->baseline() );
+
+		$overrides = [
+			'semantic' => [
+				'color' => [
+					'button-bg' => [ '$disabled' => true ],
+				],
+			],
+		];
+
+		$this->assertFalse( $detector->is_detached( 'semantic.color.button-bg', $overrides ) );
+	}
+
+	/**
 	 * A token whose baseline is already a literal has no alias relationship to lose, so overriding
 	 * it with a different literal is an ordinary edit, not a detachment.
 	 *
