@@ -27,6 +27,8 @@ final class Override_StripperTest extends TestCase {
 	private Token_Definition $button_bg;
 
 	/**
+	 * Boot the container and resolve the stripper and token fixture shared by every test below.
+	 *
 	 * @return void
 	 */
 	protected function setUp(): void {
