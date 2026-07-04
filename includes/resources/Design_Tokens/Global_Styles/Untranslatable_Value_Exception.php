@@ -6,8 +6,8 @@ use Exception;
 
 /**
  * Thrown when a Site Editor preset value cannot be translated to a DTCG leaf — an unsupported
- * category (e.g. "shadow") or a malformed literal (empty, or a color that matches neither hex nor
- * a CSS color function).
+ * category (e.g. "shadow") or a malformed literal (an empty color/dimension/font-family value, or
+ * a font-family stack that is only commas).
  *
  * @since TBD
  */
