@@ -187,6 +187,34 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 	}
 
 	/**
+	 * The full wp_after_insert_post → sync → synced_action → strip chain lands both halves of the
+	 * two-way sync in the same request: the token store holds the user's literal, and the CPT is
+	 * restored to var(--kb-token--*).
+	 *
+	 * @return void
+	 */
+	public function testFullChainSyncsStoreAndRestoresCanonicalVarInSameRequest(): void {
+		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
+
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$leaf = $this->stored_leaf( 'semantic', 'color', 'button-bg' );
+		$this->assertSame( '#3182ce', $leaf['$value'] ?? null );
+
+		$restored = get_post( $post->ID );
+		$decoded  = json_decode( $restored->post_content, true );
+		$entries  = is_array( $decoded ) ? ( $decoded['settings']['color']['palette']['theme'] ?? null ) : null;
+
+		$this->assertIsArray( $entries );
+		$this->assertSame( $this->canonical_button_bg(), $entries[0]['color'] ?? null );
+	}
+
+	/**
 	 * Create a wp_global_styles post row with the given decoded post_content.
 	 *
 	 * @param array<string, mixed> $document The decoded theme.json-shaped document.
