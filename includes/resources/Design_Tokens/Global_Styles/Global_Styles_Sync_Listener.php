@@ -209,7 +209,11 @@ final class Global_Styles_Sync_Listener {
 			 * @param array<int, Preset_Target> $synced The presets that were synced.
 			 * @param WP_Post                   $post   The wp_global_styles post.
 			 */
-			do_action( self::SYNCED_ACTION, $synced, $post );
+			// do_action_ref_array(), not do_action(): do_action()'s single-object-array backward-
+			// compatibility unwrap (`array( &$this )`, wp-includes/plugin.php) silently collapses
+			// $synced to its bare element whenever exactly one preset is synced, handing subscribers
+			// a lone Preset_Target instead of a one-item list.
+			do_action_ref_array( self::SYNCED_ACTION, [ $synced, $post ] );
 		}
 	}
 
