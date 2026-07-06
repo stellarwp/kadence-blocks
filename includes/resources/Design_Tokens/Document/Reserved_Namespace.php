@@ -46,8 +46,13 @@ final class Reserved_Namespace {
 	 * @return bool
 	 */
 	public static function is_reserved_id( string $id ): bool {
+		$types = array_map(
+			static fn( string $type ): string => preg_quote( $type, '/' ),
+			Token_Type::all()
+		);
+
 		return (bool) preg_match(
-			'/^' . self::LAYER . '\.(?:' . implode( '|', Token_Type::all() ) . ')\.' . self::SEGMENT . '\.[a-z0-9]+(?:-[a-z0-9]+)*$/',
+			'/^' . self::LAYER . '\.(?:' . implode( '|', $types ) . ')\.' . self::SEGMENT . '\.[a-z0-9]+(?:-[a-z0-9]+)*$/',
 			$id
 		);
 	}
