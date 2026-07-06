@@ -323,5 +323,36 @@ return [
 				],
 			],
 		],
+		[
+			// Icon color: the $default binds color to the brand icon-color token. The block-default-CSS
+			// projector emits a low-specificity `.wp-block-kadence-single-icon *.kb-svg-icon-wrap
+			// { color: var(...) }` rule, so a fresh icon follows the token while any color the user sets
+			// still wins (equal specificity, later source order). The binding lives on `single-icon` (the
+			// 3.0 child block that actually owns `color`/`size`), not the legacy `kadence/icon` container,
+			// which has no top-level color/size attribute of its own to bind.
+			//
+			// The leading `*` is load-bearing, not decorative: Css_Builder::selector_suffix() treats a
+			// selector starting with `.` as an already-attached compound (the same element as the block root,
+			// e.g. `.is-style-rounded`), not a descendant — a bare `.kb-svg-icon-wrap` would produce
+			// `.wp-block-kadence-single-icon.kb-svg-icon-wrap`, which never matches because the wrap span is a
+			// descendant of the block root, not the root itself (and isn't always a direct child either — it
+			// sits inside an `<a>` when the icon is linked — so a `>` child combinator would also be wrong).
+			// Prefixing with `*` keeps the selector's first character outside selector_suffix()'s
+			// attach-verbatim set, so it gets the normal descendant-space treatment; the universal selector
+			// contributes no specificity, so this is identical in effect to a hand-written
+			// `.wp-block-kadence-single-icon .kb-svg-icon-wrap` descendant rule.
+			//
+			// `size` is deliberately NOT bound here: it is rendered two incompatible ways (an SVG prop in
+			// the editor, a `font-size` CSS rule on the front end) and is never empty, so it cannot use this
+			// low-specificity-CSS-default mechanism at all.
+			'block'    => 'kadence/single-icon',
+			'bindings' => [
+				'color' => [
+					'token'        => 'semantic.color.icon',
+					'css_prop'     => 'color',
+					'css_selector' => '*.kb-svg-icon-wrap',
+				],
+			],
+		],
 	],
 ];
