@@ -8,11 +8,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
  * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches
- * two globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants
- * (the variant catalog the variant picker reads) and window.kadenceDesignTokensSets (the token-set catalog
- * the per-block set-override picker reads). Guarded on wp_script_is( …, 'enqueued' ) so it runs only where
- * that bundle loads, and skipped entirely when the registry is fail-closed (a deactivated registry projects
- * nothing, so the pickers offer nothing).
+ * three globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants
+ * (the variant catalog the variant picker reads), window.kadenceDesignTokensSets (the token-set catalog
+ * the per-block set-override picker reads), and window.kadenceDesignTokensPresetDefaults (the per-block
+ * attribute-default catalog the block-registration filter reads). Guarded on wp_script_is( …, 'enqueued' )
+ * so it runs only where that bundle loads, and skipped entirely when the registry is fail-closed (a
+ * deactivated registry projects nothing, so the pickers offer nothing).
  *
  * Emitted with wp_add_inline_script + wp_json_encode; the JSON_HEX_* flags make the payload safe to
  * inline inside a <script> (no </script> breakout, no & ambiguity) without further escaping.
@@ -49,6 +50,15 @@ final class Localizer {
 	private const SETS_OBJECT = 'kadenceDesignTokensSets';
 
 	/**
+	 * The JS global the block-registration preset-default filter reads.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const PRESET_DEFAULTS_OBJECT = 'kadenceDesignTokensPresetDefaults';
+
+	/**
 	 * The token registry, for the fail-closed gate.
 	 *
 	 * @since TBD
@@ -76,16 +86,32 @@ final class Localizer {
 	private Set_Catalog $set_catalog;
 
 	/**
+	 * The per-block attribute-default catalog builder.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Registry  $registry        The token registry.
-	 * @param Variant_Catalog $variant_catalog The variant catalog builder.
-	 * @param Set_Catalog     $set_catalog     The token-set catalog builder.
+	 * @var Block_Preset_Catalog
 	 */
-	public function __construct( Token_Registry $registry, Variant_Catalog $variant_catalog, Set_Catalog $set_catalog ) {
+	private Block_Preset_Catalog $preset_defaults;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry       $registry        The token registry.
+	 * @param Variant_Catalog      $variant_catalog The variant catalog builder.
+	 * @param Set_Catalog          $set_catalog     The token-set catalog builder.
+	 * @param Block_Preset_Catalog $preset_defaults The per-block attribute-default catalog builder.
+	 */
+	public function __construct(
+		Token_Registry $registry,
+		Variant_Catalog $variant_catalog,
+		Set_Catalog $set_catalog,
+		Block_Preset_Catalog $preset_defaults
+	) {
 		$this->registry        = $registry;
 		$this->variant_catalog = $variant_catalog;
 		$this->set_catalog     = $set_catalog;
+		$this->preset_defaults = $preset_defaults;
 	}
 
 	/**
@@ -106,6 +132,7 @@ final class Localizer {
 
 		$this->attach( self::VARIANTS_OBJECT, $this->variant_catalog->all() );
 		$this->attach( self::SETS_OBJECT, $this->set_catalog->all() );
+		$this->attach( self::PRESET_DEFAULTS_OBJECT, $this->preset_defaults->all() );
 	}
 
 	/**
