@@ -100,7 +100,7 @@ final class Token_Reference {
 	public string $path;
 
 	/**
-	 * Whether the phase-1 cascade can automatically handle this reference.
+	 * Whether the rename/delete cascade can automatically handle this reference.
 	 *
 	 * @since TBD
 	 *

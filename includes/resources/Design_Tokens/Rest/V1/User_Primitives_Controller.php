@@ -485,7 +485,7 @@ final class User_Primitives_Controller extends Controller {
 	 * semantic layers.
 	 *
 	 * Rejects the rename when an unsupported reference exists (e.g. a composite field or an
-	 * extension preset alias) — the phase-1 cascade cannot rewrite those, so proceeding would
+	 * extension preset alias) — the cascade cannot rewrite those, so proceeding would
 	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since TBD
@@ -751,7 +751,7 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Validate that the supplied id is in the allowed phase-1 user-primitive namespace.
+	 * Validate that the supplied id is in the allowed user-primitive namespace.
 	 *
 	 * @since TBD
 	 *

@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * Enforces the user-primitive document invariant: every envelope entry has a matching valid
  * tree leaf, and every custom tree leaf has a matching envelope entry.
  *
- * Phase 1: only primitive.color.custom.* is accepted.
+ * Only primitive.color.custom.* is accepted.
  *
  * @since TBD
  */

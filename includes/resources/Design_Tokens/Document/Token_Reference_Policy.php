@@ -8,8 +8,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 /**
  * Scans all alias locations in a stored overrides document for references to a given id.
  *
- * Every location is classified with a kind and whether the phase-1 cascade supports it.
- * Phase 1 supports direct $value aliases in the primitive and semantic layers: `all_supported()`
+ * Every location is classified with a kind and whether the rename/delete cascade supports it.
+ * The cascade supports direct $value aliases in the primitive and semantic layers: `all_supported()`
  * reflects that, and gates the rename/delete cascades that rewrite or revert those locations.
  * All other locations (composite fields, extension presets) produce unsupported references
  * that block deletion or rename.
