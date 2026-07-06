@@ -596,7 +596,10 @@ final class User_Primitives_Controller extends Controller {
 		$rewritten = [];
 		$candidate = $this->rewrite_aliases( $candidate, $old_alias, $new_alias, $rewritten );
 
-		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version );
+		// The gate above already required every reference to be rewritable, and rewrite_aliases()
+		// just rewrote them, so skip the pipeline's own unsupported-reference check: it would
+		// otherwise reject the primitive-layer alias this cascade just finished rewriting.
+		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version, WP_Http::OK, true );
 
 		if ( $response instanceof WP_REST_Response && ! empty( $rewritten ) ) {
 			/** @var array<string, mixed> $data */
