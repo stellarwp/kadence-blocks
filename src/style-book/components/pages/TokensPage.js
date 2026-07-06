@@ -6,7 +6,6 @@ import { useCallback, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { DEFAULT_TOKEN_SET_SLUG } from '../../constants';
 import { CUSTOM_COLORS_GROUP_LABEL, SECTION_OVERVIEW } from '../../constants/navigation';
 import { findSection } from '../../helpers/navigation';
 import { useDesignTokensFeed } from '../../hooks/use-design-tokens-feed';
@@ -55,6 +54,7 @@ export function TokensPage() {
 		values: feedValues,
 		rest,
 		version: initialVersion,
+		slug,
 	} = useDesignTokensFeed();
 
 	// Shared across every write surface on this page: the document version changes on any
@@ -63,7 +63,7 @@ export function TokensPage() {
 	// tripping a false-positive conflict when one surface's write is followed by another's.
 	const [version, setVersion] = useState(initialVersion);
 
-	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues, setVersion);
+	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues, setVersion, slug);
 
 	const [localTokens, setLocalTokens] = useState(null);
 	const tokens = localTokens ?? feedTokens;
@@ -72,7 +72,7 @@ export function TokensPage() {
 
 	const { createPrimitive, deletePrimitive, renamePrimitive, fetchPreview } = useUserPrimitiveEditor(
 		version,
-		DEFAULT_TOKEN_SET_SLUG,
+		slug,
 		setVersion
 	);
 
