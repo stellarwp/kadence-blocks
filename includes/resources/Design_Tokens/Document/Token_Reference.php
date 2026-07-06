@@ -37,6 +37,15 @@ final class Token_Reference {
 	private const KIND_EXTENSION = 'extension';
 
 	/**
+	 * Primitive layer override with a direct $value alias to another primitive.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_PRIMITIVE_OVERRIDE = 'primitive_override';
+
+	/**
 	 * @since TBD
 	 *
 	 * @return string
@@ -52,6 +61,15 @@ final class Token_Reference {
 	 */
 	public static function get_kind_composite_field(): string {
 		return self::KIND_COMPOSITE_FIELD;
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_primitive_override(): string {
+		return self::KIND_PRIMITIVE_OVERRIDE;
 	}
 
 	/**

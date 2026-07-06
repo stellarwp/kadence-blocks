@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 use WP_Error;
@@ -492,11 +493,12 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Rename a user-defined primitive and rewrite direct alias references in the semantic layer.
+	 * Rename a user-defined primitive and rewrite direct alias references in the primitive and
+	 * semantic layers.
 	 *
-	 * Rejects the rename when a reference outside that layer exists (e.g. a composite field or a
-	 * primitive-layer override aliasing the old id) — the phase-1 cascade cannot rewrite those, so
-	 * proceeding would leave them silently pointing at an id that no longer exists.
+	 * Rejects the rename when an unsupported reference exists (e.g. a composite field or an
+	 * extension preset alias) — the phase-1 cascade cannot rewrite those, so proceeding would
+	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since TBD
 	 *
@@ -696,7 +698,8 @@ final class User_Primitives_Controller extends Controller {
 
 	/**
 	 * Replace all direct `$value` alias strings that match `$old_alias` with `$new_alias`
-	 * in the semantic layer of `$document`. Collects dot-paths of rewritten tokens.
+	 * in the primitive and semantic layers of `$document`, the same layers scanned by
+	 * `Token_Reference_Policy`. Collects dot-paths of rewritten tokens.
 	 *
 	 * @since TBD
 	 *
@@ -708,13 +711,15 @@ final class User_Primitives_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function rewrite_aliases( array $document, string $old_alias, string $new_alias, array &$rewritten ): array {
-		$semantic = $document['semantic'] ?? null;
+		foreach ( Layers::token_layers() as $layer ) {
+			$layer_tree = $document[ $layer ] ?? null;
 
-		if ( ! is_array( $semantic ) ) {
-			return $document;
+			if ( ! is_array( $layer_tree ) ) {
+				continue;
+			}
+
+			$document[ $layer ] = $this->rewrite_node( $layer_tree, $layer, $old_alias, $new_alias, $rewritten );
 		}
-
-		$document['semantic'] = $this->rewrite_node( $semantic, 'semantic', $old_alias, $new_alias, $rewritten );
 
 		return $document;
 	}

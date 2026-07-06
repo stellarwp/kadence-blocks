@@ -9,8 +9,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * Scans all alias locations in a stored overrides document for references to a given id.
  *
  * Every location is classified with a kind and whether the phase-1 cascade supports it.
- * Phase 1 supports only direct $value aliases in the semantic layer override.
- * All other locations produce unsupported references that block deletion.
+ * Phase 1 supports direct $value aliases in the primitive and semantic layers.
+ * All other locations (composite fields, extension presets) produce unsupported references
+ * that block deletion or rename.
  *
  * @since TBD
  */
@@ -111,11 +112,10 @@ final class Token_Reference_Policy {
 			$value = $child['$value'];
 
 			if ( $value === $alias ) {
-				$supported    = $is_semantic;
 				$kind         = $is_semantic
 					? Token_Reference::get_kind_semantic_override()
-					: Token_Reference::get_kind_composite_field();
-				$references[] = new Token_Reference( $kind, $path, $supported );
+					: Token_Reference::get_kind_primitive_override();
+				$references[] = new Token_Reference( $kind, $path, true );
 
 				continue;
 			}
