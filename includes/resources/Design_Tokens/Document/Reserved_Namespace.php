@@ -5,12 +5,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
- * The single source of truth for the user-primitive reserved namespace: primitive.color.custom.*.
+ * The single source of truth for the user-primitive reserved namespace: primitive.<type>.custom.*.
  *
  * Every write surface that must recognize this namespace (the user-primitive document invariant, the
  * user-primitives controller's id validation, and the generic documents controller's write guards)
- * defers to this class instead of re-deriving the shape on its own, so the phase-1 scope (color only)
- * cannot drift between call sites.
+ * defers to this class instead of re-deriving the shape on its own, so the set of reserved <type>
+ * segments cannot drift between call sites. The <type> segment is validated against every registered
+ * Token_Type rather than hardcoding "color", so a future custom primitive under an existing $type (e.g.
+ * a gap or radius primitive, both "dimension") is guarded automatically.
  *
  * @since TBD
  */
@@ -35,7 +37,7 @@ final class Reserved_Namespace {
 	private const SEGMENT = 'custom';
 
 	/**
-	 * Whether a canonical dot-path id names a user-primitive leaf: primitive.color.custom.<slug>.
+	 * Whether a canonical dot-path id names a user-primitive leaf: primitive.<type>.custom.<slug>.
 	 *
 	 * @since TBD
 	 *
@@ -45,7 +47,7 @@ final class Reserved_Namespace {
 	 */
 	public static function is_reserved_id( string $id ): bool {
 		return (bool) preg_match(
-			'/^' . self::LAYER . '\.' . Token_Type::get_type_color() . '\.' . self::SEGMENT . '\.[a-z0-9]+(?:-[a-z0-9]+)*$/',
+			'/^' . self::LAYER . '\.(?:' . implode( '|', Token_Type::all() ) . ')\.' . self::SEGMENT . '\.[a-z0-9]+(?:-[a-z0-9]+)*$/',
 			$id
 		);
 	}
@@ -67,7 +69,7 @@ final class Reserved_Namespace {
 
 		return count( $segments ) >= 3
 			&& $segments[0] === self::LAYER
-			&& $segments[1] === Token_Type::get_type_color()
+			&& in_array( $segments[1], Token_Type::all(), true )
 			&& $segments[2] === self::SEGMENT;
 	}
 
