@@ -644,6 +644,44 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// delete_item — reverts a primitive-layer direct alias reference
+	// -------------------------------------------------------------------------
+
+	/**
+	 * A delete reverts a direct `$value` alias held by another primitive-layer token (e.g. a
+	 * system primitive pointing at the custom primitive being deleted), the same way it already
+	 * reverts semantic-layer aliases.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRevertsPrimitiveLayerDirectAliasReference(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.base-color';
+		$doc  = $this->doc_with_primitive( $id, 'Base Color' );
+
+		$doc['primitive']['color']['aliased'] = [
+			'$type'  => 'color',
+			'$value' => '{' . $id . '}',
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_delete_request( $slug, $id, $version );
+		$result  = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::OK, $result->get_status() );
+
+		$data = $result->get_data();
+		$this->assertArrayHasKey( 'revertedPaths', $data );
+		$this->assertContains( 'primitive.color.aliased', $data['revertedPaths'] );
+
+		$doc_after = $data['document'];
+		$this->assertNull( $doc_after['primitive']['color']['aliased'] ?? null );
+	}
+
+	// -------------------------------------------------------------------------
 	// delete_item — delete re-runs analysis (not stale preview)
 	// -------------------------------------------------------------------------
 

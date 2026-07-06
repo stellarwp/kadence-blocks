@@ -386,7 +386,9 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a user-defined primitive and revert any supported semantic references.
+	 * Delete a user-defined primitive and revert any supported references to it,
+	 * whether those references live in the semantic layer or are primitive-layer
+	 * direct `$value` aliases.
 	 *
 	 * @since TBD
 	 *
