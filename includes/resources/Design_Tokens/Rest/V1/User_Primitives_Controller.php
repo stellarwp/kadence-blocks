@@ -198,13 +198,7 @@ final class User_Primitives_Controller extends Controller {
 			[
 				[
 					// Creating a single primitive is one addressed write — POST and PUT are identical here.
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'create_item' ],
-					'permission_callback' => [ $this, 'create_item_permissions_check' ],
-					'args'                => $this->get_create_params(),
-				],
-				[
-					'methods'             => 'PUT',
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 					'args'                => $this->get_create_params(),
@@ -231,13 +225,7 @@ final class User_Primitives_Controller extends Controller {
 			[
 				[
 					// Renaming is one addressed write — POST and PUT are identical here.
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'rename_item' ],
-					'permission_callback' => [ $this, 'update_item_permissions_check' ],
-					'args'                => $this->get_rename_params(),
-				],
-				[
-					'methods'             => 'PUT',
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'rename_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_rename_params(),
