@@ -72,10 +72,10 @@ final class Variant_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry    $registry  The token registry.
-	 * @param Variant_Resolver  $variants  The variant resolver.
-	 * @param Token_Store       $store     The persistence gateway.
-	 * @param Active_Set_Store  $active    The active-set pointer.
+	 * @param Token_Registry     $registry  The token registry.
+	 * @param Variant_Resolver   $variants  The variant resolver.
+	 * @param Token_Store        $store     The persistence gateway.
+	 * @param Active_Set_Store   $active    The active-set pointer.
 	 * @param Effective_Variants $effective The effective-variants reader.
 	 */
 	public function __construct(
