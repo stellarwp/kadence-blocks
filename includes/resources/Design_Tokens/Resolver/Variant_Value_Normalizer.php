@@ -70,9 +70,9 @@ final class Variant_Value_Normalizer {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                     $property The property the value is set on, used to break ties.
-	 * @param mixed                      $value    The captured value (alias string or literal).
-	 * @param array<string, string[]>    $index    The normalized-value => semantic-ids map.
+	 * @param string                  $property The property the value is set on, used to break ties.
+	 * @param mixed                   $value    The captured value (alias string or literal).
+	 * @param array<string, string[]> $index    The normalized-value => semantic-ids map.
 	 *
 	 * @return mixed The alias string when matched, otherwise the original value.
 	 */
