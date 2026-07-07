@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Projectors;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -21,6 +22,13 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Css_Builder::class );
 		$this->container->singleton( Projector::class );
+
+		// Contribute this projector's editor CSS to the combined projected-CSS endpoint.
+		/** @var Css_Projectors $projectors */
+		$projectors = $this->container->get( Css_Projectors::class );
+		/** @var Projector $projector */
+		$projector = $this->container->get( Projector::class );
+		$projectors->add( $projector );
 
 		// Front end: append after the token vars (100) and variant overrides (110). These are low-specificity
 		// defaults, so a per-instance value KB renders later still wins regardless of order.

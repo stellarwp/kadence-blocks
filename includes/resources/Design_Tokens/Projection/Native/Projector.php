@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles\Contracts\Styles;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
@@ -31,7 +32,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Css_Projector {
 
 	/**
 	 * @var Token_Registry
