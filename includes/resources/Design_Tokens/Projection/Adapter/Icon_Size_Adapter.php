@@ -6,13 +6,16 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Abstract_
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
- * Gap-fills kadence/single-icon's `size` attribute with the resolved semantic.icon-size.default
- * token value, converted to the raw pixel number the attribute stores, when the stored attributes
- * genuinely omit `size`. Because `size` has no `source` key and defaults to `50`, the block
- * serializer omits it from saved content whenever it was never customized — so this fires for the
- * large majority of currently-published icon blocks, not a narrow legacy case. Intentional: this
- * mirrors the retroactive re-skin behavior kadence/image's borderRadius token already has in
- * production.
+ * Overlays kadence/single-icon's `size` registration default (block.json hardcodes `50`) with the
+ * resolved `semantic.icon-size.default` token value, converted to the raw pixel number the
+ * attribute stores. This runs on `kadence_blocks_block_default_attributes`, which fires with the
+ * block's *registration* defaults, not its stored instance attributes — so overwriting `size` here
+ * is safe: `Kadence_Blocks_Abstract_Block::merge_attributes_with_defaults()` still lets a genuinely
+ * customized instance value win afterward. Because `size` has no `source` key and defaults to `50`,
+ * the block serializer omits it from saved content whenever it was never customized, so an instance
+ * with no stored `size` ends up with this token-resolved default — which covers the large majority
+ * of currently-published icon blocks, not a narrow legacy case. Intentional: this mirrors the
+ * retroactive re-skin behavior kadence/image's borderRadius token already has in production.
  *
  * The rem/em-to-px conversion assumes a 16px root font size — the same assumption an unstyled
  * `rem` makes in a browser. Nothing in this module tracks a site's actual root font size, so this
@@ -63,15 +66,11 @@ final class Icon_Size_Adapter extends Abstract_Adapter {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $attributes The block's attributes.
+	 * @param array<string, mixed> $attributes The block's registration default attributes.
 	 *
-	 * @return array<string, mixed> The transformed attributes.
+	 * @return array<string, mixed> The transformed default attributes.
 	 */
 	public function apply( array $attributes ): array {
-		if ( isset( $attributes['size'] ) ) {
-			return $attributes; // A stored value (including 0) always wins.
-		}
-
 		$length = $this->resolver->resolve()->value( self::TOKEN );
 
 		if ( $length === null ) {

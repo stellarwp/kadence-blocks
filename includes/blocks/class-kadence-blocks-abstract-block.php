@@ -96,6 +96,7 @@ class Kadence_Blocks_Abstract_Block {
 		'accept',
 		'captcha',
 		'submit',
+		'single-icon',
 	];
 
 	/**
