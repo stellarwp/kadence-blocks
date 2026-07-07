@@ -81,6 +81,7 @@ final class Css_BuilderTest extends TestCase {
 			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{color:var(' . Css_Var::from_id( 'semantic.color.icon' ),
 			$css
 		);
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
 	}
 
 	/**
