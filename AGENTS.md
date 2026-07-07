@@ -82,6 +82,20 @@ the team enforces in review; follow them exactly.
   (`fontFamily`, `fontWeight`, `cubicBezier`); the kebab-case rule is about token *names* (keys
   and ids), not `$type`.
 
+### DTCG dimension tokens surfaced as raw numeric attributes need an Adapter
+
+- **A block attribute that stores a design value as a bare number (no unit, no CSS variable
+  indirection) cannot bind to a `dimension` token through a plain `block_attr`/`css_prop`
+  binding.** An SVG icon's pixel `size` is the example: the token resolves to a CSS length string
+  (`"1.5rem"`), and a plain binding has no unit-conversion step to turn that into the raw number
+  the attribute stores. Register a per-block `Adapter`
+  (`Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter`) instead, and do the
+  rem/em-to-px conversion inside it.
+- This is distinct from a block whose attribute is empty-by-default and rendered as a CSS
+  declaration in both the editor and the front end (e.g. `kadence/image`'s `borderRadius`,
+  `kadence/single-icon`'s `color`) — that shape fits the low-specificity `Block_Default_Css`
+  binding directly, with no adapter and no unit conversion needed.
+
 ## Tests
 
 - **Data providers use `Generator`, not arrays.** A provider `yield`s each case; the return
