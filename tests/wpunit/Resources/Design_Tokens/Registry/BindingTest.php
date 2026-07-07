@@ -65,7 +65,7 @@ final class BindingTest extends TestCase {
 		$this->assertSame( 'background', $bound->block_attr() );
 
 		// A binding with no block_attr target has no attribute to seed.
-		$unbound = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
+		$unbound = Binding::from_array( 'button-radius', [ 'css_var' => 'kb-btn-radius' ] );
 		$this->assertNull( $unbound->block_attr() );
 	}
 
@@ -91,7 +91,7 @@ final class BindingTest extends TestCase {
 	 */
 	public function testCssPropAndSelectorReturnNullWhenAbsent(): void {
 		// A binding with no css_prop/css_selector feeds no block-default rule.
-		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
+		$binding = Binding::from_array( 'button-radius', [ 'css_var' => 'kb-btn-radius' ] );
 
 		$this->assertNull( $binding->css_prop() );
 		$this->assertNull( $binding->css_selector() );
@@ -109,10 +109,11 @@ final class BindingTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testItAcceptsTheCssVarFlag(): void {
-		$binding = Binding::from_array( 'button-radius', [ 'css_var' => true ] );
+	public function testItAcceptsACssVarTarget(): void {
+		$binding = Binding::from_array( 'button-radius', [ 'css_var' => 'kb-btn-radius' ] );
 
-		$this->assertSame( [ 'css_var' => true ], $binding->projections );
+		$this->assertSame( 'kb-btn-radius', $binding->css_var() );
+		$this->assertSame( [ 'css_var' => 'kb-btn-radius' ], $binding->projections );
 	}
 
 	/**
@@ -178,7 +179,7 @@ final class BindingTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testItThrowsWhenCssVarIsNotTrue(): void {
+	public function testItThrowsWhenCssVarIsNotAString(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		Binding::from_array( 'button-radius', [ 'css_var' => false ] );

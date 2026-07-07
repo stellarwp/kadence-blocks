@@ -126,7 +126,8 @@ final class Css_BuilderTest extends TestCase {
 				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg);'
 				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);'
 				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);}',
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);}',
 			$css
 		);
 	}
@@ -162,21 +163,32 @@ final class Css_BuilderTest extends TestCase {
 				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--primary--button-bg);'
 				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);'
 				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);}',
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--primary--button-radius);}',
 			$css
 		);
 	}
 
 	/**
-	 * button-radius is bound css_var only (no slot), so it never reaches a --global-* declaration or a
-	 * variant var (a property bound to no slot is dropped before emission).
+	 * button-radius is bound with a css_var (no palette slot), so a selected variant sets the --kb-btn-radius
+	 * variable the button's border-radius reads — via the scoped rule and a per-variant var in the namespaced
+	 * block — so the radius can vary per variant rather than being dropped.
 	 *
 	 * @return void
 	 */
-	public function testItSkipsAPropertyBoundToNoSlot(): void {
+	public function testItProjectsACssVarBindingToItsVariable(): void {
 		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
-		$this->assertStringNotContainsString( 'button-radius', $css );
+		// The scoped rule points --kb-btn-radius at the per-variant var.
+		$this->assertStringContainsString(
+			'--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);',
+			$css
+		);
+		// The namespaced block defines that per-variant var for the set.
+		$this->assertStringContainsString(
+			'--kb-token--default--variant--kadence-singlebtn--secondary--button-radius:',
+			$css
+		);
 	}
 
 	/**

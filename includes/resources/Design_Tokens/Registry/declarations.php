@@ -240,7 +240,7 @@ return [
 				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
 				'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
 				'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
-				'button-radius'     => [ 'css_var' => true ], // token-var only (no preset bucket).
+				'button-radius'     => [ 'css_var' => 'kb-btn-radius' ], // drives --kb-btn-radius so a variant can vary the radius.
 			],
 		],
 		[
