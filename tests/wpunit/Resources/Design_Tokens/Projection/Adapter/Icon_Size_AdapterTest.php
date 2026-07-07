@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Adapter;
 
+use Kadence_Blocks_CSS;
+use Kadence_Blocks_Single_Icon_Block;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Icon_Size_Adapter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Projector;
@@ -9,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use Tests\helpers\CSSTestHelper;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 
@@ -64,16 +67,19 @@ final class Icon_Size_AdapterTest extends TestCase {
 	}
 
 	/**
-	 * A stored `size` of any value, including `0`, always wins over the token-resolved default.
+	 * The adapter runs on the block's registration defaults, not its stored instance attributes, so
+	 * a `size` already present in the given array (e.g. block.json's own hardcoded `50`) is
+	 * overwritten with the resolved token — `Kadence_Blocks_Abstract_Block::merge_attributes_with_defaults()`
+	 * is what lets a genuinely customized instance value win afterward, not a guard in this adapter.
 	 *
 	 * @return void
 	 */
-	public function testStoredSizeIsNeverOverwritten(): void {
+	public function testAnExistingDefaultIsOverwrittenWithTheResolvedToken(): void {
 		$adapter = new Icon_Size_Adapter( $this->resolver_resolving_to( '1.5rem' ) );
 
-		$attributes = $adapter->apply( [ 'size' => 0 ] );
+		$attributes = $adapter->apply( [ 'size' => 50 ] );
 
-		$this->assertSame( [ 'size' => 0 ], $attributes );
+		$this->assertSame( [ 'size' => 24.0 ], $attributes );
 	}
 
 	/**
@@ -162,14 +168,83 @@ final class Icon_Size_AdapterTest extends TestCase {
 	}
 
 	/**
-	 * A stored `size` survives the real filter chain untouched, confirming the adapter's "never
-	 * overwrite a stored value" guarantee holds end-to-end, not just in the isolated unit tests above.
+	 * The real filter chain overwrites `kadence/single-icon`'s registration default (block.json's
+	 * hardcoded `50`) with the resolved token, confirming the fix for the bug that let the adapter's
+	 * own registration default mask the token end-to-end, not just in the isolated unit test above.
 	 *
 	 * @return void
 	 */
-	public function testAStoredSizeSurvivesTheRealFilterChain(): void {
-		$attributes = apply_filters( 'kadence_blocks_block_default_attributes', [ 'size' => 12 ], 'kadence/single-icon' );
+	public function testTheRealFilterChainOverwritesTheBlockJsonDefaultWithTheResolvedToken(): void {
+		$attributes = apply_filters( 'kadence_blocks_block_default_attributes', [ 'size' => 50 ], 'kadence/single-icon' );
 
-		$this->assertSame( [ 'size' => 12 ], $attributes );
+		$this->assertSame( [ 'size' => 24.0 ], $attributes );
+	}
+
+	/**
+	 * A genuinely customized instance `size` still wins over the token-resolved default when a real
+	 * `kadence/single-icon` block renders through `render_css()` itself — the block's registered
+	 * `render_callback`, and the only entry point that actually gates `get_attributes_with_defaults()`
+	 * behind `Kadence_Blocks_Abstract_Block::$supports_merged_defaults`. Calling
+	 * `get_attributes_with_defaults()` directly (as the isolated tests above do) would pass even with
+	 * `single-icon` missing from that allowlist, since the gate lives in the caller, not the method.
+	 *
+	 * `render_css()` only inline-embeds its built CSS into the returned content for a classic theme (a block
+	 * theme's per-block CSS reaches the page through a separate, unrelated mechanism, and the wpunit
+	 * suite runs on a block theme), so this reads the CSS `build_css()` registered into
+	 * `Kadence_Blocks_CSS::$styles` — a side effect of `render_css()` that happens regardless of the
+	 * active theme — rather than the returned `$content`.
+	 *
+	 * @return void
+	 */
+	public function testACustomizedInstanceSizeWinsThroughTheRealRenderPath(): void {
+		$block      = new Kadence_Blocks_Single_Icon_Block();
+		$unique_id  = 'icon-size-adapter-customized';
+		$attributes = [
+			'size'     => 80,
+			'uniqueID' => $unique_id,
+		];
+
+		$block->render_css( $attributes, '<span class="kb-svg-icon-wrap"></span>', null );
+
+		$css_helper = new CSSTestHelper( Kadence_Blocks_CSS::$styles[ 'kb-single-icon' . $unique_id ] ?? '' );
+
+		$this->assertTrue(
+			$css_helper->assertCSSPropertiesEqual(
+				'.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap, .kt-svg-style-stacked.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap',
+				[ 'font-size' => '80px' ]
+			)
+		);
+	}
+
+	/**
+	 * An instance with no stored `size` renders with the token-resolved size when a real
+	 * `kadence/single-icon` block renders through `render_css()` itself — the block's registered
+	 * `render_callback` (see `Kadence_Blocks_Abstract_Block::on_init()`), which is the only entry
+	 * point that actually gates `get_attributes_with_defaults()` behind
+	 * `$supports_merged_defaults`. This is the path a real page render uses, and it is only reachable
+	 * because `single-icon` is registered in that allowlist.
+	 *
+	 * Reads `Kadence_Blocks_CSS::$styles` rather than the returned content; see the note on the
+	 * previous test for why.
+	 *
+	 * @return void
+	 */
+	public function testAMissingInstanceSizeIsFilledWithTheResolvedTokenThroughTheRealRenderPath(): void {
+		$block      = new Kadence_Blocks_Single_Icon_Block();
+		$unique_id  = 'icon-size-adapter-missing';
+		$attributes = [
+			'uniqueID' => $unique_id,
+		];
+
+		$block->render_css( $attributes, '<span class="kb-svg-icon-wrap"></span>', null );
+
+		$css_helper = new CSSTestHelper( Kadence_Blocks_CSS::$styles[ 'kb-single-icon' . $unique_id ] ?? '' );
+
+		$this->assertTrue(
+			$css_helper->assertCSSPropertiesEqual(
+				'.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap, .kt-svg-style-stacked.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap',
+				[ 'font-size' => '24px' ]
+			)
+		);
 	}
 }
