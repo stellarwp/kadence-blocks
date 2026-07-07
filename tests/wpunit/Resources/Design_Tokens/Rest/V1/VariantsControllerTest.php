@@ -511,7 +511,12 @@ final class VariantsControllerTest extends TestCase {
 				[
 					'variant' => 'accent',
 					// #3633e1 matches the primary button background semantic; the rgba value matches nothing.
-					'tokens'  => $this->button_tokens( [ 'button-bg' => '#3633e1', 'button-text' => 'rgba(1,2,3,0.42)' ] ),
+					'tokens'  => $this->button_tokens(
+						[
+							'button-bg'   => '#3633e1',
+							'button-text' => 'rgba(1,2,3,0.42)',
+						] 
+					),
 				]
 			)
 		);

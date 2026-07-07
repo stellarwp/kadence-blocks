@@ -253,10 +253,10 @@ final class Variants_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator            $mutator   Assembles the candidate overrides document.
-	 * @param Token_Resolver     $resolver  Dry-runs a candidate's token layers before commit.
-	 * @param Dtcg_Validator     $validator Validates the DTCG grammar of a candidate document.
+	 * @param Token_Store              $store     The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                  $mutator   Assembles the candidate overrides document.
+	 * @param Token_Resolver           $resolver  Dry-runs a candidate's token layers before commit.
+	 * @param Dtcg_Validator           $validator Validates the DTCG grammar of a candidate document.
 	 * @param Effective_Variants       $variants   Reads the baseline-merged variants section.
 	 * @param Token_Registry           $registry   Declares which blocks accept variants.
 	 * @param Active_Set_Store         $active     Resolves the active set when a request names none.
