@@ -41,5 +41,9 @@ final class Provider extends Provider_Contract {
 		foreach ( self::PROVIDERS as $provider ) {
 			$this->container->register( $provider );
 		}
+
+		// Aggregates every projector's editor CSS for the projected-CSS REST endpoint. Registered after the
+		// sub-providers so the projectors it depends on are already bound.
+		$this->container->singleton( Editor_Css::class );
 	}
 }

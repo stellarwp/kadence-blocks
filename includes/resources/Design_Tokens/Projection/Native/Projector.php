@@ -109,7 +109,7 @@ final class Projector {
 	 *
 	 * @return string
 	 */
-	private function css(): string {
+	public function css(): string {
 		$owns_default = $this->design_system_owns_defaults();
 		$css          = '';
 
