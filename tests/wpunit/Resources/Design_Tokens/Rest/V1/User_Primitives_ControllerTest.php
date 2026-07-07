@@ -644,6 +644,44 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// delete_item — reverts a primitive-layer direct alias reference
+	// -------------------------------------------------------------------------
+
+	/**
+	 * A delete reverts a direct `$value` alias held by another primitive-layer token (e.g. a
+	 * system primitive pointing at the custom primitive being deleted), the same way it already
+	 * reverts semantic-layer aliases.
+	 *
+	 * @return void
+	 */
+	public function testDeleteRevertsPrimitiveLayerDirectAliasReference(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.base-color';
+		$doc  = $this->doc_with_primitive( $id, 'Base Color' );
+
+		$doc['primitive']['color']['aliased'] = [
+			'$type'  => 'color',
+			'$value' => '{' . $id . '}',
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_delete_request( $slug, $id, $version );
+		$result  = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::OK, $result->get_status() );
+
+		$data = $result->get_data();
+		$this->assertArrayHasKey( 'revertedPaths', $data );
+		$this->assertContains( 'primitive.color.aliased', $data['revertedPaths'] );
+
+		$doc_after = $data['document'];
+		$this->assertNull( $doc_after['primitive']['color']['aliased'] ?? null );
+	}
+
+	// -------------------------------------------------------------------------
 	// delete_item — delete re-runs analysis (not stale preview)
 	// -------------------------------------------------------------------------
 
@@ -893,13 +931,13 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// rename_item — rewrite_aliases walks semantic layer only
+	// rename_item — rewrite_aliases walks the primitive and semantic layers
 	// -------------------------------------------------------------------------
 
 	/**
-	 * A rename is blocked when a reference outside the semantic layer exists (here, an
-	 * extension-section alias). The phase-1 cascade can only rewrite direct semantic-layer
-	 * `$value` aliases, so proceeding would leave the extension reference silently pointing at
+	 * A rename is blocked when an unsupported reference exists (here, an extension-section
+	 * alias). The phase-1 cascade can only rewrite direct `$value` aliases in the primitive and
+	 * semantic layers, so proceeding would leave the extension reference silently pointing at
 	 * an id that no longer exists.
 	 *
 	 * @return void
@@ -943,9 +981,43 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A rename rewrites a direct `$value` alias held by another primitive-layer token (e.g. a
+	 * system primitive pointing at the custom primitive being renamed), the same way it already
+	 * rewrites semantic-layer aliases.
+	 *
+	 * @return void
+	 */
+	public function testRenameRewritesPrimitiveLayerDirectAliasReference(): void {
+		$slug   = Token_Store::default_slug();
+		$old_id = 'primitive.color.custom.base-color';
+		$doc    = $this->doc_with_primitive( $old_id, 'Base Color' );
+
+		$doc['primitive']['color']['aliased'] = [
+			'$type'  => 'color',
+			'$value' => '{' . $old_id . '}',
+		];
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$new_slug = 'new-base-color';
+		$request  = $this->make_rename_request( $slug, $old_id, $new_slug, $version );
+		$result   = $this->controller->rename_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+
+		$data      = $result->get_data();
+		$new_alias = '{primitive.color.custom.' . $new_slug . '}';
+		$doc_after = $data['document'];
+
+		$this->assertContains( 'primitive.color.aliased', $data['rewrittenPaths'] );
+		$this->assertSame( $new_alias, $doc_after['primitive']['color']['aliased']['$value'] );
+	}
+
+	/**
 	 * A rename is also blocked when another primitive-layer token has a composite field aliasing
-	 * the old id (e.g. a shadow primitive's `color` field) — that reference lives outside the
-	 * semantic layer, so it would be silently left pointing at the renamed-away id.
+	 * the old id (e.g. a shadow primitive's `color` field) — that reference lives inside a
+	 * composite `$value`, so it would be silently left pointing at the renamed-away id.
 	 *
 	 * @return void
 	 */

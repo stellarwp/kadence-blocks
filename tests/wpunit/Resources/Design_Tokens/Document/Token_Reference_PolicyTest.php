@@ -88,13 +88,13 @@ final class Token_Reference_PolicyTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// primitive layer: direct $value alias (unsupported)
+	// primitive layer: direct $value alias (supported)
 	// -------------------------------------------------------------------------
 
 	/**
 	 * @return void
 	 */
-	public function testPrimitiveLayerDirectValueAliasReturnsUnsupportedCompositeFieldReference(): void {
+	public function testPrimitiveLayerDirectValueAliasReturnsSupportedPrimitiveOverrideReference(): void {
 		$id  = 'primitive.color.custom.brand';
 		$doc = [
 			'primitive' => [
@@ -110,8 +110,9 @@ final class Token_Reference_PolicyTest extends TestCase {
 		$refs = $this->policy->find( $doc, $id );
 
 		$this->assertCount( 1, $refs );
-		$this->assertSame( Token_Reference::get_kind_composite_field(), $refs[0]->kind );
-		$this->assertFalse( $refs[0]->supported );
+		$this->assertSame( Token_Reference::get_kind_primitive_override(), $refs[0]->kind );
+		$this->assertSame( 'primitive.color.alias-token', $refs[0]->path );
+		$this->assertTrue( $refs[0]->supported );
 	}
 
 	// -------------------------------------------------------------------------

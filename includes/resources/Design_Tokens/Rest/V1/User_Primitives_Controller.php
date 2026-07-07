@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 use WP_Error;
@@ -197,13 +198,7 @@ final class User_Primitives_Controller extends Controller {
 			[
 				[
 					// Creating a single primitive is one addressed write — POST and PUT are identical here.
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'create_item' ],
-					'permission_callback' => [ $this, 'create_item_permissions_check' ],
-					'args'                => $this->get_create_params(),
-				],
-				[
-					'methods'             => 'PUT',
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 					'args'                => $this->get_create_params(),
@@ -230,13 +225,7 @@ final class User_Primitives_Controller extends Controller {
 			[
 				[
 					// Renaming is one addressed write — POST and PUT are identical here.
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => [ $this, 'rename_item' ],
-					'permission_callback' => [ $this, 'update_item_permissions_check' ],
-					'args'                => $this->get_rename_params(),
-				],
-				[
-					'methods'             => 'PUT',
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'rename_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_rename_params(),
@@ -397,7 +386,9 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a user-defined primitive and revert any supported semantic references.
+	 * Delete a user-defined primitive and revert any supported references to it,
+	 * whether those references live in the semantic layer or are primitive-layer
+	 * direct `$value` aliases.
 	 *
 	 * @since TBD
 	 *
@@ -492,11 +483,12 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Rename a user-defined primitive and rewrite direct alias references in the semantic layer.
+	 * Rename a user-defined primitive and rewrite direct alias references in the primitive and
+	 * semantic layers.
 	 *
-	 * Rejects the rename when a reference outside that layer exists (e.g. a composite field or a
-	 * primitive-layer override aliasing the old id) — the phase-1 cascade cannot rewrite those, so
-	 * proceeding would leave them silently pointing at an id that no longer exists.
+	 * Rejects the rename when an unsupported reference exists (e.g. a composite field or an
+	 * extension preset alias) — the cascade cannot rewrite those, so proceeding would
+	 * leave them silently pointing at an id that no longer exists.
 	 *
 	 * @since TBD
 	 *
@@ -606,7 +598,10 @@ final class User_Primitives_Controller extends Controller {
 		$rewritten = [];
 		$candidate = $this->rewrite_aliases( $candidate, $old_alias, $new_alias, $rewritten );
 
-		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version );
+		// The gate above already required every reference to be rewritable, and rewrite_aliases()
+		// just rewrote them, so skip the pipeline's own unsupported-reference check: it would
+		// otherwise reject the primitive-layer alias this cascade just finished rewriting.
+		$response = $this->pipeline->validate_and_save( $candidate, $slug, '', $version, WP_Http::OK, true );
 
 		if ( $response instanceof WP_REST_Response && ! empty( $rewritten ) ) {
 			/** @var array<string, mixed> $data */
@@ -696,7 +691,8 @@ final class User_Primitives_Controller extends Controller {
 
 	/**
 	 * Replace all direct `$value` alias strings that match `$old_alias` with `$new_alias`
-	 * in the semantic layer of `$document`. Collects dot-paths of rewritten tokens.
+	 * in the primitive and semantic layers of `$document`, the same layers scanned by
+	 * `Token_Reference_Policy`. Collects dot-paths of rewritten tokens.
 	 *
 	 * @since TBD
 	 *
@@ -708,13 +704,15 @@ final class User_Primitives_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function rewrite_aliases( array $document, string $old_alias, string $new_alias, array &$rewritten ): array {
-		$semantic = $document['semantic'] ?? null;
+		foreach ( Layers::token_layers() as $layer ) {
+			$layer_tree = $document[ $layer ] ?? null;
 
-		if ( ! is_array( $semantic ) ) {
-			return $document;
+			if ( ! is_array( $layer_tree ) ) {
+				continue;
+			}
+
+			$document[ $layer ] = $this->rewrite_node( $layer_tree, $layer, $old_alias, $new_alias, $rewritten );
 		}
-
-		$document['semantic'] = $this->rewrite_node( $semantic, 'semantic', $old_alias, $new_alias, $rewritten );
 
 		return $document;
 	}
@@ -755,7 +753,7 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Validate that the supplied id is in the allowed phase-1 user-primitive namespace.
+	 * Validate that the supplied id is in the allowed user-primitive namespace.
 	 *
 	 * @since TBD
 	 *

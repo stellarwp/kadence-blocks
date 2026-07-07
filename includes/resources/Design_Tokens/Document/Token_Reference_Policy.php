@@ -8,9 +8,15 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 /**
  * Scans all alias locations in a stored overrides document for references to a given id.
  *
- * Every location is classified with a kind and whether the phase-1 cascade supports it.
- * Phase 1 supports only direct $value aliases in the semantic layer override.
- * All other locations produce unsupported references that block deletion.
+ * Every location is classified with a kind and whether the rename/delete cascade supports it.
+ * The cascade supports direct $value aliases in the primitive and semantic layers: `all_supported()`
+ * reflects that, and gates the rename/delete cascades that rewrite or revert those locations.
+ * All other locations (composite fields, extension presets) produce unsupported references
+ * that block deletion or rename.
+ *
+ * A narrower question — whether a fresh write may introduce a reference from outside the
+ * semantic layer — is answered by `all_semantic_overrides()` instead; a primitive-layer direct
+ * alias is cascade-supported but not a legal location for a brand-new write to create.
  *
  * @since TBD
  */
@@ -48,6 +54,31 @@ final class Token_Reference_Policy {
 	public function all_supported( array $references ): bool {
 		foreach ( $references as $ref ) {
 			if ( ! $ref->supported ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether every found reference is a direct $value alias in the semantic layer.
+	 *
+	 * Narrower than `all_supported()`: a primitive-layer direct alias is rewritable by the
+	 * rename cascade (so it counts as "supported" there), but it is not a location a fresh
+	 * write may use to introduce a reference into the reserved user-primitive namespace from
+	 * outside the semantic layer. Write-time guards use this check instead of `all_supported()`
+	 * for that reason.
+	 *
+	 * @since TBD
+	 *
+	 * @param Token_Reference[] $references
+	 *
+	 * @return bool
+	 */
+	public function all_semantic_overrides( array $references ): bool {
+		foreach ( $references as $ref ) {
+			if ( $ref->kind !== Token_Reference::get_kind_semantic_override() ) {
 				return false;
 			}
 		}
@@ -111,11 +142,10 @@ final class Token_Reference_Policy {
 			$value = $child['$value'];
 
 			if ( $value === $alias ) {
-				$supported    = $is_semantic;
 				$kind         = $is_semantic
 					? Token_Reference::get_kind_semantic_override()
-					: Token_Reference::get_kind_composite_field();
-				$references[] = new Token_Reference( $kind, $path, $supported );
+					: Token_Reference::get_kind_primitive_override();
+				$references[] = new Token_Reference( $kind, $path, true );
 
 				continue;
 			}

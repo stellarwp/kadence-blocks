@@ -900,7 +900,7 @@ final class Documents_Controller extends Controller {
 		foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
 			$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
 
-			if ( ! $this->reference_policy->all_supported( $references ) ) {
+			if ( ! $this->reference_policy->all_semantic_overrides( $references ) ) {
 				return new WP_Error(
 					'rest_design_tokens_user_primitive_reference_unsupported',
 					__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
@@ -1299,11 +1299,14 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Whether the partial contains an alias pointing into the reserved custom-primitive namespace from a
-	 * location the phase-1 cascade does not support (anywhere other than a direct semantic-layer override).
+	 * Whether the partial contains an alias pointing into the reserved custom-primitive namespace from
+	 * anywhere other than a direct semantic-layer override.
 	 *
 	 * Reuses Token_Reference_Policy::find(), the same classifier the delete-reference-preview endpoint
-	 * uses, rather than re-implementing alias-location parsing here.
+	 * uses, rather than re-implementing alias-location parsing here. Uses `all_semantic_overrides()`
+	 * rather than `all_supported()`: a primitive-layer direct alias is rewritable by the rename cascade,
+	 * but this guard is about a brand-new write introducing the reference, which only the semantic
+	 * layer may legitimately do.
 	 *
 	 * @since TBD
 	 *
@@ -1327,7 +1330,7 @@ final class Documents_Controller extends Controller {
 				continue;
 			}
 
-			if ( ! $this->reference_policy->all_supported( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
+			if ( ! $this->reference_policy->all_semantic_overrides( $this->reference_policy->find( $partial, $referenced_id ) ) ) {
 				return true;
 			}
 		}
