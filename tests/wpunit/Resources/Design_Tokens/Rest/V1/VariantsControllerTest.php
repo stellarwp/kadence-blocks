@@ -158,6 +158,9 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A create deep-merges a single variant into the set, leaving the baseline siblings and the default in
+	 * place.
+	 *
 	 * @return void
 	 */
 	public function testCreateMergesASingleVariantPreservingSiblingsAndDefault(): void {
@@ -168,7 +171,7 @@ final class VariantsControllerTest extends TestCase {
 				[
 					'variant' => 'outline',
 					'label'   => 'Outline',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
+					'tokens'  => $this->button_tokens(),
 				]
 			)
 		);
@@ -187,6 +190,50 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A write carrying a known `set` slug lands in that set and reports it, while the default set is left
+	 * untouched — so a variant authored for a block on a non-default set does not leak into the default set.
+	 *
+	 * @return void
+	 */
+	public function testWritesTargetTheNamedSetLeavingDefaultUntouched(): void {
+		// The target set must already exist for the `set` parameter to be honored.
+		$this->store->save_document( '', 'dark' );
+
+		$tokens = [
+			'button-bg'         => '#ff0000',
+			'button-text'       => '#ffffff',
+			'button-bg-hover'   => '#cc0000',
+			'button-text-hover' => '#ffffff',
+			'button-radius'     => '1rem',
+		];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					'label'   => 'Accent',
+					'tokens'  => $tokens,
+					'set'     => 'dark',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( 'dark', $response->get_data()['slug'] );
+		$this->assertArrayHasKey( 'accent', $response->get_data()['variants'] );
+
+		// Reading the dark set sees the new variant.
+		$dark = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON, [ 'set' => 'dark' ] ) );
+		$this->assertArrayHasKey( 'accent', $dark->get_data()['variants'] );
+
+		// The default set never saw the write.
+		$default = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
+		$this->assertArrayNotHasKey( 'accent', $default->get_data()['variants'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testCreateRequiresAVariantSlug(): void {
@@ -200,6 +247,9 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A replace (PUT) stores exactly the submitted variant set, dropping any override variant the body omits
+	 * while the baseline variants remain visible.
+	 *
 	 * @return void
 	 */
 	public function testUpdateReplacesTheStoredVariantSet(): void {
@@ -210,8 +260,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'outline',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
-				] 
+					'tokens'  => $this->button_tokens(),
+				]
 			)
 		);
 		$this->controller->create_item(
@@ -220,8 +270,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'dashed',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
-				] 
+					'tokens'  => $this->button_tokens(),
+				]
 			)
 		);
 
@@ -229,7 +279,7 @@ final class VariantsControllerTest extends TestCase {
 			$this->block_request(
 				'PUT',
 				self::BUTTON,
-				[ 'variants' => [ 'outline' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ] ]
+				[ 'variants' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ] ]
 			)
 		);
 
@@ -242,6 +292,9 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting the block resets it to baseline: the stored override variant is gone and the baseline variants
+	 * render again.
+	 *
 	 * @return void
 	 */
 	public function testDeleteItemResetsTheBlockToBaseline(): void {
@@ -251,8 +304,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'outline',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
-				] 
+					'tokens'  => $this->button_tokens(),
+				]
 			)
 		);
 
@@ -268,6 +321,8 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Deleting a single override variant drops just that variant from the stored set.
+	 *
 	 * @return void
 	 */
 	public function testDeleteVariantRemovesAnOverrideVariant(): void {
@@ -277,8 +332,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'outline',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
-				] 
+					'tokens'  => $this->button_tokens(),
+				]
 			)
 		);
 
@@ -307,6 +362,9 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Removing a variant the effective set still defaults to is rejected before commit, so the default is
+	 * never left dangling.
+	 *
 	 * @return void
 	 */
 	public function testDeletingTheDefaultVariantIsRejected(): void {
@@ -316,7 +374,7 @@ final class VariantsControllerTest extends TestCase {
 				'PUT',
 				self::BUTTON,
 				[
-					'variants' => [ 'outline' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ],
+					'variants' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ],
 					'default'  => 'outline',
 				]
 			)
@@ -361,6 +419,9 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A token value that is neither an alias nor a non-empty literal is rejected by the DTCG validator, even
+	 * when the surface is otherwise complete.
+	 *
 	 * @return void
 	 */
 	public function testAnInvalidVariantTokenValueReturns422(): void {
@@ -371,8 +432,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'broken',
-					'tokens'  => [ 'button-bg' => '' ],
-				] 
+					'tokens'  => $this->button_tokens( [ 'button-bg' => '' ] ),
+				]
 			)
 		);
 
@@ -382,6 +443,57 @@ final class VariantsControllerTest extends TestCase {
 		$this->assertNotEmpty( $result->get_error_data()['errors'] );
 		// The write was rejected before commit.
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A variant that sets a property the block does not bind is rejected: an unbound property could never
+	 * project, so it must not be storable.
+	 *
+	 * @return void
+	 */
+	public function testAnUnboundPropertyIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					'tokens'  => $this->button_tokens( [ 'not-a-bound-prop' => '#ff0000' ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unbound_property', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertContains( 'not-a-bound-prop', $result->get_error_data()['properties'] );
+	}
+
+	/**
+	 * A variant that leaves a bound property unset is rejected: a variant must value the block's full bound
+	 * surface. The post-merge token set is evaluated, so a partial replace is caught too.
+	 *
+	 * @return void
+	 */
+	public function testAnIncompleteSurfaceIsRejected(): void {
+		$tokens = $this->button_tokens();
+		unset( $tokens['button-radius'] );
+
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					'tokens'  => $tokens,
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_incomplete_surface', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertContains( 'button-radius', $result->get_error_data()['properties'] );
 	}
 
 	/**
@@ -427,6 +539,8 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A committed write re-hashes the set version so downstream caches invalidate.
+	 *
 	 * @return void
 	 */
 	public function testAWriteBumpsTheVersion(): void {
@@ -443,8 +557,8 @@ final class VariantsControllerTest extends TestCase {
 				self::BUTTON,
 				[
 					'variant' => 'dashed',
-					'tokens'  => [ 'button-bg' => 'transparent' ],
-				] 
+					'tokens'  => $this->button_tokens(),
+				]
 			)
 		);
 
@@ -511,6 +625,27 @@ final class VariantsControllerTest extends TestCase {
 		}
 
 		return $request;
+	}
+
+	/**
+	 * The button's full bound surface as literal values, so a written variant satisfies the full-surface
+	 * guard. Individual properties can be overridden for a specific assertion.
+	 *
+	 * @param array<string, string> $overrides Property values to override on the base surface.
+	 *
+	 * @return array<string, string>
+	 */
+	private function button_tokens( array $overrides = [] ): array {
+		return array_merge(
+			[
+				'button-bg'         => 'transparent',
+				'button-text'       => '#ffffff',
+				'button-bg-hover'   => 'transparent',
+				'button-text-hover' => '#ffffff',
+				'button-radius'     => '0.5rem',
+			],
+			$overrides
+		);
 	}
 
 	/**

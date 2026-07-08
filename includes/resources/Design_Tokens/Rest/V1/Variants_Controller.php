@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -39,7 +40,10 @@ use WP_REST_Server;
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
  * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
  *
- * v1 ships a single token set under Token_Store::default_slug(); every route operates on it.
+ * Every route operates on a single token set: the one named by the optional `set` request parameter when
+ * it is a known set, otherwise the active set ({@see Active_Set_Store::get()}, which resolves to
+ * {@see Token_Store::default_slug()} when none is selected). So a read or write lands in whichever set the
+ * editor has the block on, and the default set is used by default.
  *
  * @since TBD
  */
@@ -107,6 +111,15 @@ final class Variants_Controller extends Controller {
 	 * @var string
 	 */
 	private const DEFAULT_PARAM = 'default';
+
+	/**
+	 * The request parameter that carries the token set slug a read/write targets.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SET_PARAM = 'set';
 
 	/**
 	 * The block vendor path segment. A slug-safe class with no slash; the block name is the second segment.
@@ -209,6 +222,15 @@ final class Variants_Controller extends Controller {
 	private Token_Registry $registry;
 
 	/**
+	 * Resolves the active token set when a request names none.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -226,6 +248,7 @@ final class Variants_Controller extends Controller {
 	 * @param Dtcg_Validator     $validator Validates the DTCG grammar of a candidate document.
 	 * @param Effective_Variants $variants  Reads the baseline-merged variants section.
 	 * @param Token_Registry     $registry  Declares which blocks accept variants.
+	 * @param Active_Set_Store   $active    Resolves the active set when a request names none.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -233,7 +256,8 @@ final class Variants_Controller extends Controller {
 		Token_Resolver $resolver,
 		Dtcg_Validator $validator,
 		Effective_Variants $variants,
-		Token_Registry $registry
+		Token_Registry $registry,
+		Active_Set_Store $active
 	) {
 		$this->store     = $store;
 		$this->mutator   = $mutator;
@@ -241,6 +265,7 @@ final class Variants_Controller extends Controller {
 		$this->validator = $validator;
 		$this->variants  = $variants;
 		$this->registry  = $registry;
+		$this->active    = $active;
 		$this->rest_base = 'variants';
 	}
 
@@ -352,7 +377,7 @@ final class Variants_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$slug    = Token_Store::default_slug();
+		$slug    = $this->slug( $request );
 		$section = $this->variants->section( $slug );
 		$blocks  = [];
 
@@ -386,7 +411,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return new WP_REST_Response( $this->prepare_item( $block ), WP_Http::OK );
+		return new WP_REST_Response( $this->prepare_item( $block, $this->slug( $request ) ), WP_Http::OK );
 	}
 
 	/**
@@ -430,9 +455,16 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$candidate = $this->mutator->merge( $this->stored_document(), $this->partial( $block, $block_node ) );
+		$slug      = $this->slug( $request );
+		$candidate = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
 
-		return $this->validate_and_save( $candidate, $block );
+		$error = $this->guard_surface( $candidate, $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -470,8 +502,10 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
+		$slug = $this->slug( $request );
+
 		// Replace, not merge: drop the stored block node first so a variant the body omits does not survive.
-		$stored    = $this->unset_block( $this->stored_document(), $block );
+		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
 		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
 
 		$error = $this->guard_default_present( $candidate, $block );
@@ -480,7 +514,13 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block );
+		$error = $this->guard_surface( $candidate, $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -503,14 +543,15 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$stored    = $this->stored_document();
+		$slug      = $this->slug( $request );
+		$stored    = $this->stored_document( $slug );
 		$candidate = $this->unset_block( $stored, $block );
 
 		if ( $candidate === $stored ) {
-			return new WP_REST_Response( $this->prepare_item( $block ), WP_Http::OK );
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
 		}
 
-		return $this->validate_and_save( $candidate, $block );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -548,11 +589,12 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		$stored    = $this->stored_document();
+		$slug      = $this->slug( $request );
+		$stored    = $this->stored_document( $slug );
 		$candidate = $this->unset_variant( $stored, $block, $variant );
 
 		if ( $candidate === $stored ) {
-			return new WP_REST_Response( $this->prepare_item( $block ), WP_Http::OK );
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
 		}
 
 		$error = $this->guard_default_present( $candidate, $block );
@@ -561,7 +603,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -581,7 +623,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$node = $this->variants->block( $block, Token_Store::default_slug() ) ?? [];
+		$node = $this->variants->block( $block, $this->slug( $request ) ) ?? [];
 
 		return new WP_REST_Response(
 			[
@@ -614,8 +656,9 @@ final class Variants_Controller extends Controller {
 
 		$default = Cast::to_string( $request->get_param( self::DEFAULT_PARAM ) );
 
+		$slug      = $this->slug( $request );
 		$candidate = $this->mutator->merge(
-			$this->stored_document(),
+			$this->stored_document( $slug ),
 			$this->partial( $block, [ Extensions::get_default_key() => $default ] )
 		);
 
@@ -625,7 +668,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -698,15 +741,16 @@ final class Variants_Controller extends Controller {
 	/**
 	 * The query parameters accepted by the collection route.
 	 *
-	 * No collection parameters are accepted yet; the definition is declared explicitly so the surface
-	 * documents itself and gains parameters without changing shape.
+	 * The list is scoped to a single token set via the optional `set` parameter, defaulting to the active set.
 	 *
 	 * @since TBD
 	 *
 	 * @return array<string, mixed>
 	 */
 	public function get_collection_params(): array {
-		return [];
+		return [
+			self::SET_PARAM => $this->set_param(),
+		];
 	}
 
 	/**
@@ -720,17 +764,16 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $block     The block being written, for error context.
+	 * @param string               $slug      The token set slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function validate_and_save( array $candidate, string $block ) {
-		$slug = Token_Store::default_slug();
-
+	private function validate_and_save( array $candidate, string $block, string $slug ) {
 		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
 		$status = $this->store->get_version( $slug ) !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
-			return $this->persist( '', $block, $status );
+			return $this->persist( '', $block, $status, $slug );
 		}
 
 		$result = $this->validator->validate( $candidate, Dtcg_Validator::get_context_overrides() );
@@ -774,23 +817,24 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		return $this->persist( $encoded, $block, $status );
+		return $this->persist( $encoded, $block, $status, $slug );
 	}
 
 	/**
-	 * Commit a raw document string to the store and build the response, mapping a write failure to 500.
+	 * Commit a raw document string to a set and build the response, mapping a write failure to 500.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the set).
 	 * @param string $block    The block being written.
 	 * @param int    $status   The success status code.
+	 * @param string $slug     The token set slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function persist( string $document, string $block, int $status ) {
+	private function persist( string $document, string $block, int $status, string $slug ) {
 		try {
-			$this->store->save_document( $document, Token_Store::default_slug() );
+			$this->store->save_document( $document, $slug );
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
@@ -802,7 +846,7 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		return new WP_REST_Response( $this->prepare_item( $block ), $status );
+		return new WP_REST_Response( $this->prepare_item( $block, $slug ), $status );
 	}
 
 	/**
@@ -917,16 +961,85 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
+	 * Reject a written variant that does not set exactly the block's bound surface.
+	 *
+	 * A user variant clones the surface an existing variant controls: it supplies values for the block's
+	 * bound properties and nothing else. So a property with no binding (unbound) is rejected — it could
+	 * never project — and a bound property the variant leaves unset is rejected too, since a variant must
+	 * value the full surface. Only the variants carried by the request are checked, each against its
+	 * post-merge token set, so a partial edit that would drop a bound property is caught while the baseline
+	 * variants are left alone.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
+	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param string               $block      The block name.
+	 *
+	 * @return WP_Error|null A WP_Error when a written variant's surface is wrong, null otherwise.
+	 */
+	private function guard_surface( array $candidate, array $block_node, string $block ): ?WP_Error {
+		$set = $this->registry->for_block( $block );
+
+		if ( $set === null ) {
+			return null;
+		}
+
+		$node       = $this->variants->for_overrides( $candidate )[ $block ] ?? [];
+		$effective  = is_array( $node ) ? $node : [];
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( array_keys( $block_node ) as $slug ) {
+			// $default and any other "$"-prefixed metadata key is not a named variant with a surface.
+			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			$variant = isset( $effective[ $slug ] ) && is_array( $effective[ $slug ] ) ? $effective[ $slug ] : [];
+			$tokens  = isset( $variant[ $tokens_key ] ) && is_array( $variant[ $tokens_key ] ) ? $variant[ $tokens_key ] : [];
+			$report  = $set->consistency( array_keys( $tokens ) );
+
+			if ( $report['unbound'] !== [] ) {
+				return new WP_Error(
+					'rest_design_tokens_unbound_property',
+					__( 'A variant can only set properties the block binds.', 'kadence-blocks' ),
+					[
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'      => $block,
+						'variant'    => (string) $slug,
+						'properties' => $report['unbound'],
+					]
+				);
+			}
+
+			if ( $report['unvalued'] !== [] ) {
+				return new WP_Error(
+					'rest_design_tokens_incomplete_surface',
+					__( 'A variant must set every property the block binds.', 'kadence-blocks' ),
+					[
+						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'      => $block,
+						'variant'    => (string) $slug,
+						'properties' => $report['unvalued'],
+					]
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Build the response payload for a block's variant set, read from the effective (baseline-merged) set.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
+	 * @param string $slug  The token set slug being read.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function prepare_item( string $block ): array {
-		$slug = Token_Store::default_slug();
+	private function prepare_item( string $block, string $slug ): array {
 		$node = $this->variants->block( $block, $slug ) ?? [];
 
 		return [
@@ -1085,17 +1198,19 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Decode the stored overrides-only document for the default set.
+	 * Decode the stored overrides-only document for a set.
 	 *
 	 * Reuses the reader's single decode seam ({@see Effective_Variants::raw()}) so the controller does not
 	 * decode the store itself.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $slug The token set slug.
+	 *
 	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
 	 */
-	private function stored_document(): array {
-		return $this->variants->raw( Token_Store::default_slug() );
+	private function stored_document( string $slug ): array {
+		return $this->variants->raw( $slug );
 	}
 
 	/**
@@ -1111,6 +1226,41 @@ final class Variants_Controller extends Controller {
 		return Cast::to_string( $request->get_param( self::VENDOR_PARAM ) )
 			. '/'
 			. Cast::to_string( $request->get_param( self::BLOCK_NAME_PARAM ) );
+	}
+
+	/**
+	 * The token set a request targets: the `set` parameter when it names a known set, otherwise the active
+	 * set. An unknown or absent `set` falls back rather than 404ing, so a stale editor pointer degrades to the
+	 * active set instead of failing the write.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return string
+	 */
+	private function slug( WP_REST_Request $request ): string {
+		$set = Cast::to_string( $request->get_param( self::SET_PARAM ) );
+
+		if ( $set !== '' && $this->is_known_set( $set ) ) {
+			return $set;
+		}
+
+		return $this->active->get();
+	}
+
+	/**
+	 * Whether a set slug names a set that exists. The default set is always known even before it has a stored
+	 * row, mirroring the documents controller.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return bool
+	 */
+	private function is_known_set( string $slug ): bool {
+		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 
 	/**
@@ -1136,6 +1286,25 @@ final class Variants_Controller extends Controller {
 				'pattern'           => '^[a-z0-9][a-z0-9-]*$',
 				'sanitize_callback' => 'sanitize_key',
 			],
+			self::SET_PARAM        => $this->set_param(),
+		];
+	}
+
+	/**
+	 * The optional token-set argument shared by every route: names the set a read/write targets, defaulting
+	 * to the active set when absent or unknown.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function set_param(): array {
+		return [
+			'description'       => __( 'Optional token set slug to target; defaults to the active set.', 'kadence-blocks' ),
+			'type'              => 'string',
+			'required'          => false,
+			'pattern'           => '^[\w-]+$',
+			'sanitize_callback' => 'sanitize_key',
 		];
 	}
 
