@@ -302,6 +302,34 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * Two variant sets (groups) on one block reuse the SAME variant slug ("primary") and are active
+	 * alongside each other — each emitting its own "kb-variant--<set>--primary" class. Each set sets its own
+	 * property (Fill's "fill-color", Type's "type-color") on the block's shared bindings, so the shared slug
+	 * resolves through each set's own binding to a different --global-<slot>. Every Fill variant maps through
+	 * Fill's binding, every Type variant through Type's.
+	 *
+	 * @return void
+	 */
+	public function testTwoVariantSetsShareASlugWithTheirOwnBindings(): void {
+		$css = $this->dual_set_builder()->css( [ 'default' ], 'default' );
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-dual-btn.kb-variant--fill--primary{'
+				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-dual-btn--fill--primary--fill-color);}',
+			$css
+		);
+		$this->assertStringContainsString(
+			'.wp-block-kadence-dual-btn.kb-variant--type--primary{'
+				. '--global-palette-btn:var(--kb-token--variant--kadence-dual-btn--type--primary--type-color);}',
+			$css
+		);
+
+		// The two same-slug vars are distinct and carry each set's own value.
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-dual-btn--fill--primary--fill-color:#111111;', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-dual-btn--type--primary--type-color:#222222;', $css );
+	}
+
+	/**
 	 * Build the CSS builder over a controllable grouped baseline fixture and a registry that binds each
 	 * axis's slots. The two axes are ORTHOGONAL — "color" retargets the base fill slots (palette-btn-bg /
 	 * palette-btn), "hover" retargets the hover slots (palette-btn-bg-hover / palette-btn-hover) — so one
@@ -416,6 +444,69 @@ final class Css_BuilderTest extends TestCase {
 								'two'      => [
 									'label'  => 'Two',
 									'tokens' => [ 'button-bg' => '#222222' ],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		return new Css_Builder( $registry, $this->fixture_resolver( $document ) );
+	}
+
+	/**
+	 * Build the CSS builder over a block with two variant sets (fill, type) that each define a "primary"
+	 * variant. The block's one bindings map holds each axis's own property (fill-color, type-color) bound to
+	 * a different slot, so the shared "primary" slug resolves through each set's own binding — no per-group
+	 * binding table is needed.
+	 *
+	 * @return Css_Builder
+	 */
+	private function dual_set_builder(): Css_Builder {
+		$block = 'kadence/dual-btn';
+
+		$registry = new Token_Registry();
+		$registry->register_variant_set(
+			[
+				'block'    => $block,
+				// One block-level bindings map holds every axis's property; each axis sets only its own.
+				'bindings' => [
+					'fill-color' => [ 'kadence_slot' => 'palette-btn-bg' ],
+					'type-color' => [ 'kadence_slot' => 'palette-btn' ],
+				],
+				'groups'   => [
+					'fill' => [ 'label' => 'Fill' ],
+					'type' => [ 'label' => 'Type' ],
+				],
+			]
+		);
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'variants' => [
+						$block => [
+							'fill' => [
+								'$default'  => 'primary',
+								'primary'   => [
+									'label'  => 'Primary',
+									'tokens' => [ 'fill-color' => '#111111' ],
+								],
+								'secondary' => [
+									'label'  => 'Secondary',
+									'tokens' => [ 'fill-color' => '#1a1a1a' ],
+								],
+							],
+							'type' => [
+								'$default' => 'primary',
+								'primary'  => [
+									'label'  => 'Primary',
+									'tokens' => [ 'type-color' => '#222222' ],
+								],
+								'bold'     => [
+									'label'  => 'Bold',
+									'tokens' => [ 'type-color' => '#2a2a2a' ],
 								],
 							],
 						],

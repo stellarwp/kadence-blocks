@@ -16,9 +16,13 @@ use InvalidArgumentException;
  * editor picker CONTROL (the variant axis), not a variant, so it is structural editor config and is
  * declared here; a multi-axis block declares one label per group in `groups` instead.
  *
- * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); all variants of a block share
- * the same bindings, since "the button's background" maps to the same output slot whichever variant is
- * active — only the value changes.
+ * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); all of a block's variants share this
+ * one map, since "the button's background" maps to the same output slot whichever variant is active — only
+ * the value changes. A multi-axis (grouped) block declares every axis's properties in this same map: each
+ * variant set (axis) simply sets its own properties, so two variant sets on one block (e.g. "fill" and
+ * "type") can reuse the same variant slug ("primary") while each maps through its own properties' bindings
+ * to its own output slots. The one per-group addition is the picker label, so each axis can name its own
+ * control; see {@see self::$group_labels}.
  *
  * @since TBD
  */
@@ -34,7 +38,8 @@ final class Variant_Set {
 	public string $block;
 
 	/**
-	 * Per-property bindings, keyed by property name.
+	 * Per-property bindings, keyed by property name. Shared by every variant of the block across all its
+	 * axes; each axis (variant set) sets its own properties, so its variants map through their own bindings.
 	 *
 	 * @since TBD
 	 *
@@ -55,7 +60,7 @@ final class Variant_Set {
 
 	/**
 	 * Per-group editor picker control labels, keyed by group slug, for a multi-axis (grouped) block (e.g.
-	 * "color" => "Color", "hover" => "Hover"). Empty for a flat block, which uses {@see self::$label} for its
+	 * "fill" => "Fill", "type" => "Type"). Empty for a flat block, which uses {@see self::$label} for its
 	 * single axis. Names the CONTROL for each axis, not a variant.
 	 *
 	 * @since TBD
@@ -68,7 +73,7 @@ final class Variant_Set {
 	 * @since TBD
 	 *
 	 * @param string                 $block        The block name.
-	 * @param array<string, Binding> $bindings     Per-property bindings.
+	 * @param array<string, Binding> $bindings     Per-property bindings, shared across the block's axes.
 	 * @param string|null            $label        The picker control label, or null for the editor default.
 	 * @param array<string, string>  $group_labels Per-group control labels, keyed by group slug.
 	 */
@@ -87,8 +92,8 @@ final class Variant_Set {
 	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
 	 *                                  label), and optional "groups" (group slug => { "label" } for a
-	 *                                  multi-axis block). Variant names, default and values are document
-	 *                                  data, not declared here.
+	 *                                  multi-axis block, one label per axis). Variant names, default and
+	 *                                  values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding/group is malformed.
 	 *
