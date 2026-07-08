@@ -43,12 +43,24 @@ final class Token_Resolver {
 	private Css_Renderer $renderer;
 
 	/**
-	 * Per-request memo of resolved results, keyed on "{slug}:{store-version}".
+	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
+	 * the cache prefix (which distinguishes the canonical "resolved_tokens_{slug}" and namespaced
+	 * "resolved_tokens_namespaced_{slug}" forms) followed by the store version, e.g.
+	 * "resolved_tokens_default_v3".
 	 *
 	 * @var array<string,Resolved_Tokens>
 	 */
 	private array $memo = [];
 
+	/**
+	 * Wire the token store, effective-document builder, and value renderer.
+	 *
+	 * @since TBD
+	 *
+	 * @param Token_Store        $store     The token set store.
+	 * @param Effective_Document $effective Builds the baseline-merged effective document.
+	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
+	 */
 	public function __construct(
 		Token_Store $store,
 		Effective_Document $effective,
@@ -63,6 +75,8 @@ final class Token_Resolver {
 	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $slug The token set slug to resolve.
 	 *
 	 * @return Resolved_Tokens
@@ -72,19 +86,60 @@ final class Token_Resolver {
 	 *                                  Writes are gated by resolve_overrides(), so a clean store never hits this.
 	 */
 	public function resolve( string $slug = 'default' ): Resolved_Tokens {
-		$version = $this->store->get_version( $slug );
-		$key     = $slug . ':' . $version;
+		return $this->load( $slug, '', 'resolved_tokens_' . $slug );
+	}
 
-		if ( isset( $this->memo[ $key ] ) ) {
-			return $this->memo[ $key ];
+	/**
+	 * Resolve a stored token set with its css-var names namespaced to the set's own slug
+	 * (`--kb-token--<slug>--*`), for simultaneous multi-set emission. Same cache shape as resolve(),
+	 * under its own key, so the canonical and namespaced forms never collide.
+	 *
+	 * The returned object's projected map carries the namespaced var names and namespaced alias/composite
+	 * targets, so a set's alias chain stays inside the set. The literal id map (by_id) is keyed on the
+	 * canonical dot-path and its values are literals, so it is identical to the canonical resolve — host
+	 * surfaces and the canonical token-id list read it unchanged.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug to resolve and namespace under.
+	 *
+	 * @return Resolved_Tokens
+	 *
+	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
+	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
+	 */
+	public function resolve_namespaced( string $slug ): Resolved_Tokens {
+		return $this->load( $slug, $slug, 'resolved_tokens_namespaced_' . $slug );
+	}
+
+	/**
+	 * Shared resolve path for the canonical and namespaced forms: per-request memo over a persistent
+	 * object-cache entry, both keyed on the store version (bumped on every write, so they self-invalidate).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug         The token set slug to resolve.
+	 * @param string $namespace    Css-var namespace to apply ('' for the canonical names).
+	 * @param string $cache_prefix Cache-key prefix that distinguishes the canonical and namespaced forms.
+	 *
+	 * @return Resolved_Tokens
+	 *
+	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
+	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
+	 */
+	private function load( string $slug, string $namespace, string $cache_prefix ): Resolved_Tokens {
+		$version   = $this->store->get_version( $slug );
+		$cache_key = $cache_prefix . '_' . $version;
+
+		if ( isset( $this->memo[ $cache_key ] ) ) {
+			return $this->memo[ $cache_key ];
 		}
 
 		// L2: persistent object cache (requires a drop-in such as Memcached or Redis) — survives across requests, keyed on the store version.
-		$cache_key = 'resolved_tokens_' . $slug . '_' . $version;
-		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
+		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && $cached instanceof Resolved_Tokens ) {
-			$this->memo[ $key ] = $cached;
+			$this->memo[ $cache_key ] = $cached;
 
 			return $cached;
 		}
@@ -94,10 +149,10 @@ final class Token_Resolver {
 		$over     = is_array( $decoded ) ? $decoded : [];
 		$document = $this->effective->build( $over );
 
-		$result = $this->resolve_document( $document );
+		$result = $this->resolve_document( $document, $namespace );
 
 		wp_cache_set( $cache_key, $result, self::CACHE_GROUP, DAY_IN_SECONDS );
-		$this->memo[ $key ] = $result;
+		$this->memo[ $cache_key ] = $result;
 
 		return $result;
 	}
@@ -106,6 +161,8 @@ final class Token_Resolver {
 	 * Resolve an ad-hoc overrides array against the baseline without persisting — used by the REST
 	 * write layer to reject aliasing cycles and dangling aliases before committing. A dry run by
 	 * nature: it never touches the store or the memo.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string,mixed> $overrides Decoded candidate overrides.
 	 *
@@ -117,35 +174,45 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Walk an effective document into the two flat maps.
+	 * Walk an effective document into the flat maps.
+	 *
+	 * @since TBD
 	 *
 	 * @param array<string,mixed> $document
+	 * @param string              $namespace Css-var namespace to apply to projected names ('' for canonical).
 	 */
-	private function resolve_document( array $document ): Resolved_Tokens {
-		$by_id  = [];
-		$by_var = [];
+	private function resolve_document( array $document, string $namespace = '' ): Resolved_Tokens {
+		$by_id            = [];
+		$by_var           = [];
+		$by_var_projected = [];
+		$by_id_target     = [];
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $namespace );
 			}
 		}
 
-		return new Resolved_Tokens( $by_id, $by_var );
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
 	}
 
 	/**
 	 * Depth-first walk, collecting every token leaf.
 	 *
-	 * @param array<string,mixed>  $node     The current group node.
-	 * @param string               $prefix   The dot-path accumulated so far.
-	 * @param array<string,mixed>  $document Full effective doc, for alias lookups.
-	 * @param array<string,string> $by_id    By-reference id => CSS value map.
-	 * @param array<string,string> $by_var   By-reference css-var => CSS value map.
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>  $node             The current group node.
+	 * @param string               $prefix           The dot-path accumulated so far.
+	 * @param array<string,mixed>  $document         Full effective doc, for alias lookups.
+	 * @param array<string,string> $by_id            By-reference id => literal CSS value map.
+	 * @param array<string,string> $by_var           By-reference css-var => literal CSS value map.
+	 * @param array<string,string> $by_var_projected By-reference css-var => var()-preserving CSS value map.
+	 * @param array<string,string> $by_id_target     By-reference id => target id map (whole-$value aliases only).
+	 * @param string               $namespace        Css-var namespace to apply to projected names ('' for canonical).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, string $namespace = '' ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -157,22 +224,77 @@ final class Token_Resolver {
 			$path = $prefix . '.' . $key;
 
 			if ( array_key_exists( '$value', $child ) ) {
-				$type  = $child[ Token_Type::get_type_key() ] ?? '';
-				$value = $this->resolve_value( $child['$value'], $document, [] );
-				$css   = $this->renderer->render( (string) $type, $value );
+				$raw   = $child['$value'];
+				$type  = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
+				$value = $this->resolve_value( $raw, $document, [] );
+				$css   = $this->renderer->render( $type, $value );
+				$var   = Css_Var::from_id( $path, $namespace );
 
-				$by_id[ $path ]                      = $css;
-				$by_var[ Css_Var::from_id( $path ) ] = $css;
+				$by_id[ $path ] = $css;
+				$by_var[ $var ] = $css;
+
+				if ( is_string( $raw ) && Alias::is_alias( $raw ) ) {
+					// Whole-$value alias: the token's variable points straight at its immediate
+					// target's variable (bypassing the type renderer, which expects a literal), so the
+					// indirection survives into CSS and dependents follow live. resolve_value() has
+					// already validated the alias (no cycle, not dangling), so the target is a real leaf
+					// this same walk emits a --kb-token--* var for. The literal above still feeds host
+					// surfaces. Under a namespace the target name is namespaced too, so the chain stays in-set.
+					$target_id                = Alias::path_of( $raw );
+					$by_id_target[ $path ]    = $target_id;
+					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id, $namespace ) . ')';
+				} else {
+					// A composite (shadow/typography) may alias individual fields; project those to
+					// var() references and render the shorthand around them. Scalars and lists carry no
+					// alias and render identically to the literal.
+					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw, $namespace ) );
+				}
+
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $namespace );
 		}
+	}
+
+	/**
+	 * Project a raw $value for the css-var output, preserving alias indirection as var() references
+	 * instead of flattening to literals: a whole-string alias (e.g. a composite field that is one)
+	 * becomes var(--<target>); a composite recurses field by field; scalars and lists pass through.
+	 *
+	 * Unlike resolve_value() this neither follows alias chains nor re-validates them — it stops at the
+	 * immediate target (the chain is preserved across tokens by the cascade) and only ever runs after
+	 * resolve_value() has already rejected cycles and dangling aliases for the same leaf.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value
+	 * @param string $namespace Css-var namespace to apply to the var() targets ('' for canonical).
+	 *
+	 * @return mixed The value with aliases replaced by var() references.
+	 */
+	private function project_value( $value, string $namespace = '' ) {
+		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $namespace ) . ')';
+		}
+
+		if ( is_array( $value ) && ! $this->is_list( $value ) ) {
+			$projected = [];
+			foreach ( $value as $field => $sub ) {
+				$projected[ $field ] = $this->project_value( $sub, $namespace );
+			}
+
+			return $projected;
+		}
+
+		return $value;
 	}
 
 	/**
 	 * Resolve a raw $value to a literal: aliases follow their reference recursively;
 	 * composite arrays resolve field by field; scalars and lists pass through.
+	 *
+	 * @since TBD
 	 *
 	 * @param mixed               $value
 	 * @param array<string,mixed> $document
@@ -237,6 +359,8 @@ final class Token_Resolver {
 	/**
 	 * Look up a leaf node by dot-path within the effective document.
 	 *
+	 * @since TBD
+	 *
 	 * @param string              $path     The dot-path to look up.
 	 * @param array<string,mixed> $document The effective document to search.
 	 *
@@ -255,6 +379,11 @@ final class Token_Resolver {
 	}
 
 	/**
+	 * Whether the array is a zero-indexed list (a fontFamily stack or stacked shadow) rather than an
+	 * associative composite map.
+	 *
+	 * @since TBD
+	 *
 	 * @param array<mixed> $value
 	 */
 	private function is_list( array $value ): bool {

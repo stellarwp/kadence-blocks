@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use Throwable;
@@ -40,14 +41,25 @@ final class Projector {
 	private Variant_Resolver $resolver;
 
 	/**
+	 * Owns the active-set pointer, read at render time so preset defaults follow the active set.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry The token registry.
 	 * @param Variant_Resolver $resolver The variant resolver.
+	 * @param Active_Set_Store $active   Owns the active-set pointer.
 	 */
-	public function __construct( Token_Registry $registry, Variant_Resolver $resolver ) {
+	public function __construct( Token_Registry $registry, Variant_Resolver $resolver, Active_Set_Store $active ) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
+		$this->active   = $active;
 	}
 
 	/**
@@ -74,7 +86,7 @@ final class Projector {
 		}
 
 		try {
-			$values = $this->resolver->resolve_default( $block );
+			$values = $this->resolver->resolve_default( $block, $this->active->get() );
 		} catch ( Throwable $e ) {
 			// No `$default` defined for the block, or the token graph cannot resolve (alias cycle/dangling
 			// reference). This runs in the render path, so fail soft to KB's defaults rather than fatally.

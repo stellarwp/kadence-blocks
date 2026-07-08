@@ -74,6 +74,7 @@ module.exports = {
 		'extension-image-picker': './src/extension/image-picker/index.js',
 		'extension-admin-notices': './src/extension/admin-notices/index.js',
 		'admin-kadence-home': './src/home.js',
+		'admin-kadence-style-book': './src/style-book.js',
 		'header-visual-builder': './src/header-visual-builder.js',
 		'kadence-optimizer': './includes/resources/Optimizer/assets/js/optimizer/index.js',
 		'lazy-loader': './includes/resources/Optimizer/Lazy_Load/assets/js/lazy-loader/index.js',

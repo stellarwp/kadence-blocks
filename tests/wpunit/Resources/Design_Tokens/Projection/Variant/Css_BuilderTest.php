@@ -3,8 +3,11 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use ReflectionProperty;
@@ -14,7 +17,8 @@ use Tests\Support\Classes\TestCase;
 /**
  * Exercises the selectable-variant CSS builder against the real shipped Button variant set, so these
  * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting,
- * the variant-var indirection, and the class-less $default rule.
+ * the per-set namespaced variant-var indirection, the active-alias layer, the client-side switch selector,
+ * and the class-less $default rule.
  *
  * The grouped (multi-axis) cases run against a controllable baseline fixture — a button with two orthogonal
  * axes, "color" (base fill slots) and "hover" (hover slots) — so they guard the grouped class/var shape and
@@ -55,27 +59,77 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Each variant's resolved value lives as a co-emitted global token var, aliases flattened to literals.
+	 * Each variant's value lives as a per-set namespaced token var that preserves the alias indirection
+	 * inside the set (var(--kb-token--<set>--<semantic>)), and the canonical variant var is pointed at the
+	 * active set's namespaced one by the alias layer — so a token edit flows through the chain live and the
+	 * variant follows the active set.
 	 *
 	 * @return void
 	 */
-	public function testItDefinesTheVariantVars(): void {
-		$css = $this->builder( $this->registry )->css();
+	public function testItDefinesTheVariantVarsNamespacedWithAnAliasLayer(): void {
+		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:#3633e1;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg-hover:#2f2ffc;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:#1A202C;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover:#2D3748;', $css );
+		// The namespaced variant var chains to that set's namespaced semantic.
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
+
+		// The canonical variant var is pointed at the active set's namespaced variant var (the alias layer).
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);', $css );
+	}
+
+	/**
+	 * Every set is emitted simultaneously: both namespaces carry their variant vars, and each set has a
+	 * [data-kb-token-set] switch selector re-pointing the canonical variant var, so a body class swaps the
+	 * variant palette client-side.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsEverySetNamespacedWithASwitchSelector(): void {
+		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'default' );
+
+		// Both sets' namespaced variant vars are present (dark resolves from baseline here, namespaced).
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--dark--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
+
+		// The dark switch selector re-points the canonical variant var at the dark namespace.
+		$this->assertStringContainsString(
+			'[data-kb-token-set="dark"]{',
+			$css
+		);
+		$this->assertStringContainsString(
+			'--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);',
+			$css
+		);
+	}
+
+	/**
+	 * The :root alias layer targets the active set: the active set's canonical re-point appears twice (the
+	 * :root alias plus its own switch selector), a non-active set's only once (its switch selector).
+	 *
+	 * @return void
+	 */
+	public function testItPointsTheAliasLayerAtTheActiveSet(): void {
+		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'dark' );
+
+		$this->assertSame(
+			2,
+			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);' )
+		);
+		$this->assertSame(
+			1,
+			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);' )
+		);
 	}
 
 	/**
 	 * A named variant retargets the button's own --global-palette-btn-* slots (the vars the button render
-	 * path consumes), not the numbered palette, at the co-emitted variant var.
+	 * path consumes), not the numbered palette, at the canonical variant var — so it follows the alias /
+	 * switch layers.
 	 *
 	 * @return void
 	 */
 	public function testItRetargetsButtonSlotsForANamedVariant(): void {
-		$css = $this->builder( $this->registry )->css();
+		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-variant--secondary{'
@@ -94,7 +148,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRetargetsButtonSlotsForANativeBlock(): void {
-		$css = $this->builder( $this->registry )->css();
+		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-button.kb-variant--secondary{'
@@ -111,7 +165,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItEmitsTheDefaultPresetOnTheBareSelector(): void {
-		$css = $this->builder( $this->registry )->css();
+		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
@@ -124,12 +178,13 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * button-radius is bound css_var only (no slot), so it never reaches a --global-* declaration.
+	 * button-radius is bound css_var only (no slot), so it never reaches a --global-* declaration or a
+	 * variant var (a property bound to no slot is dropped before emission).
 	 *
 	 * @return void
 	 */
 	public function testItSkipsAPropertyBoundToNoSlot(): void {
-		$css = $this->builder( $this->registry )->css();
+		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringNotContainsString( 'button-radius', $css );
 	}
@@ -138,7 +193,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItIsEmptyWhenNoVariantSetsAreRegistered(): void {
-		$this->assertSame( '', $this->builder( new Token_Registry() )->css() );
+		$this->assertSame( '', $this->builder( new Token_Registry() )->css( [ 'default' ], 'default' ) );
 	}
 
 	/**
@@ -156,20 +211,31 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '', $this->builder( $registry )->css() );
+		$this->assertSame( '', $this->builder( $registry )->css( [ 'default' ], 'default' ) );
 	}
 
 	/**
-	 * Each (group, variant) value lives as a co-emitted global token var whose name folds in the group, so
+	 * Build the CSS builder with a given registry and the real (baseline-backed) variant resolver.
+	 *
+	 * @param Token_Registry $registry The registry to build from.
+	 *
+	 * @return Css_Builder
+	 */
+	private function builder( Token_Registry $registry ): Css_Builder {
+		return new Css_Builder( $registry, $this->resolver );
+	}
+
+	/**
+	 * Each (group, variant) value lives as a per-set namespaced token var whose name folds in the group, so
 	 * two axes never collide on a shared property.
 	 *
 	 * @return void
 	 */
 	public function testItFoldsTheGroupIntoTheVariantVar(): void {
-		$css = $this->grouped_builder()->css();
+		$css = $this->grouped_builder()->css( [ 'default' ], 'default' );
 
-		$this->assertStringContainsString( '--kb-token--variant--kadence-grouped-btn--color--secondary--button-bg:#111111;', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-grouped-btn--hover--bold--button-bg-hover:#000000;', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-grouped-btn--color--secondary--button-bg:#111111;', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-grouped-btn--hover--bold--button-bg-hover:#000000;', $css );
 	}
 
 	/**
@@ -179,7 +245,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItScopesEachGroupedVariantToItsGroupClass(): void {
-		$css = $this->grouped_builder()->css();
+		$css = $this->grouped_builder()->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-grouped-btn.kb-variant--color--secondary{'
@@ -203,7 +269,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItEmitsAClassLessDefaultPerGroup(): void {
-		$css = $this->grouped_builder()->css();
+		$css = $this->grouped_builder()->css( [ 'default' ], 'default' );
 
 		// color $default is "primary".
 		$this->assertStringContainsString(
@@ -225,7 +291,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheLaterGroupWinsForASharedSlot(): void {
-		$css = $this->overlapping_builder()->css();
+		$css = $this->overlapping_builder()->css( [ 'default' ], 'default' );
 
 		$first  = strpos( $css, '--kb-token--variant--kadence-overlap-btn--first--one--button-bg)' );
 		$second = strpos( $css, '--kb-token--variant--kadence-overlap-btn--second--two--button-bg)' );
@@ -233,17 +299,6 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertNotFalse( $first );
 		$this->assertNotFalse( $second );
 		$this->assertGreaterThan( $first, $second, 'The later group must follow the earlier one in source order.' );
-	}
-
-	/**
-	 * Build the CSS builder with a given registry and the real (baseline-backed) variant resolver.
-	 *
-	 * @param Token_Registry $registry The registry to build from.
-	 *
-	 * @return Css_Builder
-	 */
-	private function builder( Token_Registry $registry ): Css_Builder {
-		return new Css_Builder( $registry, $this->resolver );
 	}
 
 	/**
@@ -319,12 +374,7 @@ final class Css_BuilderTest extends TestCase {
 			],
 		];
 
-		$resolver = new Variant_Resolver(
-			new Fake_Baseline_Document( $document ),
-			$this->container->get( Token_Resolver::class )
-		);
-
-		return new Css_Builder( $registry, $resolver );
+		return new Css_Builder( $registry, $this->fixture_resolver( $document ) );
 	}
 
 	/**
@@ -374,11 +424,25 @@ final class Css_BuilderTest extends TestCase {
 			],
 		];
 
-		$resolver = new Variant_Resolver(
+		return new Css_Builder( $registry, $this->fixture_resolver( $document ) );
+	}
+
+	/**
+	 * Build a Variant_Resolver over a controllable baseline fixture document, through a real
+	 * Effective_Variants (no stored overrides for the fixture blocks). The fixture's literal values never
+	 * reach the Token_Resolver.
+	 *
+	 * @param array<string, mixed> $document The fake baseline document.
+	 *
+	 * @return Variant_Resolver
+	 */
+	private function fixture_resolver( array $document ): Variant_Resolver {
+		$variants = new Effective_Variants(
 			new Fake_Baseline_Document( $document ),
-			$this->container->get( Token_Resolver::class )
+			$this->container->get( Token_Store::class ),
+			$this->container->get( Mutator::class )
 		);
 
-		return new Css_Builder( $registry, $resolver );
+		return new Variant_Resolver( $variants, $this->container->get( Token_Resolver::class ) );
 	}
 }

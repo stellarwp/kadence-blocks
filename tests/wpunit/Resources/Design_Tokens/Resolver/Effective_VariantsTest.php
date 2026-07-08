@@ -114,4 +114,26 @@ final class Effective_VariantsTest extends TestCase {
 	public function testItReturnsNullForABlockWithNoVariants(): void {
 		$this->assertNull( $this->variants->block( 'kadence/not-a-block' ) );
 	}
+
+	/**
+	 * user_created() reports the override-only variant slugs: a baseline variant is excluded, an override-only
+	 * one is included, and a slug that shadows a baseline variant is excluded (deleting it reverts to
+	 * baseline rather than removing it).
+	 *
+	 * @return void
+	 */
+	public function testUserCreatedReportsOverrideOnlyVariants(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}},'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+		);
+
+		$user_created = $this->variants->user_created( self::BUTTON );
+
+		$this->assertContains( 'outline', $user_created );
+		$this->assertNotContains( 'primary', $user_created );
+		// "secondary" shadows a baseline variant, so it is not user-created.
+		$this->assertNotContains( 'secondary', $user_created );
+	}
 }

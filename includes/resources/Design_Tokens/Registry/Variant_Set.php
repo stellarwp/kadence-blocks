@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * single source of truth for the variant list (so a user-added variant in the store is honoured) and no
  * drift between a declaration and the document. The optional `label` is the one exception — it names the
  * editor picker CONTROL (the variant axis), not a variant, so it is structural editor config and is
- * declared here.
+ * declared here; a multi-axis block declares one label per group in `groups` instead.
  *
  * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); all variants of a block share
  * the same bindings, since "the button's background" maps to the same output slot whichever variant is
@@ -55,8 +55,8 @@ final class Variant_Set {
 
 	/**
 	 * Per-group editor picker control labels, keyed by group slug, for a multi-axis (grouped) block (e.g.
-	 * "color" => "Color", "emphasis" => "Emphasis"). Empty for a flat block, which uses {@see self::$label}
-	 * for its single axis. Names the CONTROL for each axis, not a variant.
+	 * "color" => "Color", "hover" => "Hover"). Empty for a flat block, which uses {@see self::$label} for its
+	 * single axis. Names the CONTROL for each axis, not a variant.
 	 *
 	 * @since TBD
 	 *
@@ -110,6 +110,19 @@ final class Variant_Set {
 	}
 
 	/**
+	 * The binding for a property, or null when the block declares none.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $property The block property, e.g. "button-bg".
+	 *
+	 * @return Binding|null
+	 */
+	public function binding( string $property ): ?Binding {
+		return $this->bindings[ $property ] ?? null;
+	}
+
+	/**
 	 * The editor picker control label for one of the block's variant groups (axes): the group's own
 	 * declared label, falling back to {@see self::$label} (the single-axis label) when the group declares
 	 * none — including for a flat block's implicit single group. Null when neither is declared.
@@ -122,19 +135,6 @@ final class Variant_Set {
 	 */
 	public function group_label( string $group ): ?string {
 		return $this->group_labels[ $group ] ?? $this->label;
-	}
-
-	/**
-	 * The binding for a property, or null when the block declares none.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $property The block property, e.g. "button-bg".
-	 *
-	 * @return Binding|null
-	 */
-	public function binding( string $property ): ?Binding {
-		return $this->bindings[ $property ] ?? null;
 	}
 
 	/**
@@ -181,6 +181,35 @@ final class Variant_Set {
 		}
 
 		return [ 'bindings' => $bindings ];
+	}
+
+	/**
+	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's variant
+	 * form can render the right control per property. Read from the referenced token's group segment when the
+	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
+	 * property name (e.g. `button-bg` => "color", `button-radius` => "dimension"). Falls back to "text".
+	 *
+	 * @since TBD
+	 *
+	 * @param string $property The bound property, e.g. "button-bg".
+	 *
+	 * @return string One of "color", "dimension" or "text".
+	 */
+	public function kind( string $property ): string {
+		$binding = $this->binding( $property );
+
+		if ( $binding !== null && $binding->token !== null ) {
+			$segments = explode( '.', $binding->token );
+			$group    = self::classify( $segments[1] ?? '' );
+
+			if ( $group !== '' ) {
+				return $group;
+			}
+		}
+
+		$by_name = self::classify( $property );
+
+		return $by_name !== '' ? $by_name : 'text';
 	}
 
 	/**
@@ -255,5 +284,34 @@ final class Variant_Set {
 		}
 
 		return $labels;
+	}
+
+	/**
+	 * Classify a term (a token group segment or a property name) into a coarse input kind, or "" when it
+	 * matches neither a dimension nor a color. Dimension terms are checked first so "borderRadius" resolves to
+	 * "dimension" rather than matching the "border" color term.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $term The term to classify.
+	 *
+	 * @return string "color", "dimension" or "".
+	 */
+	private static function classify( string $term ): string {
+		$term = strtolower( $term );
+
+		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'size', 'height', 'dimension' ] as $needle ) {
+			if ( strpos( $term, $needle ) !== false ) {
+				return 'dimension';
+			}
+		}
+
+		foreach ( [ 'color', 'bg', 'background', 'text', 'border', 'fill', 'stroke' ] as $needle ) {
+			if ( strpos( $term, $needle ) !== false ) {
+				return 'color';
+			}
+		}
+
+		return '';
 	}
 }

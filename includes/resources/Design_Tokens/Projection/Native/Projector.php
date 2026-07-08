@@ -2,10 +2,11 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles\Contracts\Styles;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Cast;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Enqueues the companion stylesheets that let native (non-Kadence) blocks consume the design-token variant
@@ -22,9 +23,16 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
  * styling is gone, so the design system owns every such block's default; otherwise only a block that opts in
  * with a selected variant is styled. The same flag is passed to every companion.
  *
+ * This override gate plus per-variant opt-in is the only path by which a token set styles a native block,
+ * and it is the policy across multiple token sets: only the active set may own a native block's class-less
+ * default, and only under the override flag. A non-active set never force-styles a native block — it exists
+ * solely as namespaced CSS custom properties on the Css_Var surface, reachable only through an explicit
+ * per-block set override — so adding or switching sets cannot silently restyle existing native blocks on
+ * update.
+ *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Css_Projector {
 
 	/**
 	 * @var Token_Registry
@@ -102,7 +110,7 @@ final class Projector {
 	 *
 	 * @return string
 	 */
-	private function css(): string {
+	public function css(): string {
 		$owns_default = $this->design_system_owns_defaults();
 		$css          = '';
 

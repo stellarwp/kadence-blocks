@@ -8,11 +8,14 @@ import { assign, get } from 'lodash';
 import { Button, Modal, PanelBody } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { blockExists } from '@kadence/helpers';
+import { SubsectionWrap } from '@kadence/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { VariantPicker, blockGroups } from './extension/variant-picker';
+import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
+import { VariantActions } from './extension/variant-picker/VariantActions';
+import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 
 /**
  * Add animation attributes
@@ -96,20 +99,19 @@ export function enableNativeBlockVariants(settings, name) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enableNativeBlockVariants);
 
 /**
- * Add the kbVariant / kbVariants attributes to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
  *
- * `kbVariant` holds the slug of the selected variant for a flat (single-axis) block (e.g. "ghost").
- * `kbVariants` is the per-group map for a multi-axis block (e.g. { color: "secondary", emphasis: "outline" }):
- * one selection per group, composing into one class per group. A block uses one or the other depending on
- * whether its catalog entry is grouped; empty in either case keeps the block's $default look (the block
- * preset). The scoped CSS that re-skins the block for a selected variant is emitted server-side by the
- * Design Tokens variant projector.
+ * kbVariant holds the slug of the selected design-token variant (e.g. "ghost"); empty means the block
+ * keeps its $default look (the block preset). kbTokenSet holds the slug of a per-block token-set override
+ * (e.g. "dark"); empty means the block follows the active set. The scoped CSS that re-skins the block for a
+ * selected variant and the switch selectors a set override re-points through are both emitted server-side
+ * by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant / kbVariants attributes added.
+ * @return {Object} The block settings with the kbVariant and kbTokenSet attributes added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
@@ -118,9 +120,9 @@ export function blockVariantAttribute(settings) {
 				type: 'string',
 				default: '',
 			},
-			kbVariants: {
-				type: 'object',
-				default: {},
+			kbTokenSet: {
+				type: 'string',
+				default: '',
 			},
 		});
 	}
@@ -130,22 +132,24 @@ export function blockVariantAttribute(settings) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVariantAttribute);
 
 /**
- * Sanitize one slug segment to the projector's PHP `Sanitizes_Css_Identifier` charset, so a class always
- * matches the scoped selector the projector emits even if a slug carries an unexpected character.
+ * Sanitize a design-token slug to the identifier form the projector emits.
  *
- * @param {string} segment The raw slug segment.
+ * Mirrors the projector's PHP Css_Builder::sanitize_identifier() sanitizer, so a slug written to a class
+ * or a data attribute always matches the scoped selector / switch selector the projector emits even if it
+ * carries an unexpected character.
+ *
+ * @param {string} slug The raw slug.
  *
  * @since TBD
  *
- * @return {string} The sanitized segment.
+ * @return {string} The sanitized slug.
  */
-function sanitizeVariantSegment(segment) {
-	return (segment || '').replace(/[^A-Za-z0-9_-]+/g, '-');
+function sanitizeTokenIdentifier(slug) {
+	return (slug || '').replace(/[^A-Za-z0-9_-]+/g, '-');
 }
 
 /**
- * The class a flat block's selected variant outputs, or an empty string when none is selected. Mirrors the
- * projector's PHP `Style::variant_class()`.
+ * The class a selected variant outputs, or an empty string when none is selected.
  *
  * @param {string} kbVariant The selected variant slug.
  *
@@ -154,60 +158,14 @@ function sanitizeVariantSegment(segment) {
  * @return {string} The `kb-variant--<slug>` class, or an empty string.
  */
 function kbVariantClassName(kbVariant) {
-	const slug = sanitizeVariantSegment(kbVariant);
+	const slug = sanitizeTokenIdentifier(kbVariant);
 
 	return slug ? `kb-variant--${slug}` : '';
 }
 
 /**
- * The classes a grouped block's per-group selections output: one `kb-variant--<group>--<slug>` per group
- * with a non-empty selection. Mirrors the projector's PHP `Style::group_variant_class()`; each segment is
- * sanitized independently so the group and variant slugs cannot merge across the "--" delimiter.
- *
- * @param {Object} kbVariants The kbVariants map (group slug => selected variant slug).
- *
- * @since TBD
- *
- * @return {string} The space-joined classes, or an empty string.
- */
-function kbVariantsClassNames(kbVariants) {
-	if (!kbVariants || typeof kbVariants !== 'object') {
-		return '';
-	}
-
-	return Object.keys(kbVariants)
-		.map((group) => {
-			const groupSlug = sanitizeVariantSegment(group);
-			const variantSlug = sanitizeVariantSegment(kbVariants[group]);
-
-			return groupSlug && variantSlug ? `kb-variant--${groupSlug}--${variantSlug}` : '';
-		})
-		.filter(Boolean)
-		.join(' ');
-}
-
-/**
- * The full set of variant classes for a block's attributes: the flat `kbVariant` class and every grouped
- * `kbVariants` class. A block uses one attribute or the other, so the empty one contributes nothing.
- *
- * @param {Object} attributes The block attributes.
- *
- * @since TBD
- *
- * @return {string} The space-joined variant classes, or an empty string.
- */
-function variantClassNames(attributes) {
-	return [
-		kbVariantClassName(get(attributes, 'kbVariant', '')),
-		kbVariantsClassNames(get(attributes, 'kbVariants', {})),
-	]
-		.filter(Boolean)
-		.join(' ');
-}
-
-/**
- * Append the kb-variant-- classes to a block's saved markup, so the projector's scoped overrides apply on
- * the front end. A no-op for blocks that do not opt in or have no variant selected.
+ * Append the kb-variant--<name> class to a block's saved markup, so the projector's scoped overrides
+ * apply on the front end. A no-op for blocks that do not opt in or have no variant selected.
  *
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
@@ -215,14 +173,14 @@ function variantClassNames(attributes) {
  *
  * @since TBD
  *
- * @return {Object} The props, with the variant classes appended when a variant is selected.
+ * @return {Object} The props, with the variant class appended when one is selected.
  */
 export function blockVariantSaveClass(props, blockType, attributes) {
 	if (!hasBlockSupport(blockType, 'kbVariant')) {
 		return props;
 	}
 
-	const variantClass = variantClassNames(attributes);
+	const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
 
 	if (variantClass) {
 		props.className = props.className ? `${props.className} ${variantClass}` : variantClass;
@@ -233,8 +191,36 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
 
 /**
- * Mirror the kb-variant-- classes onto the block in the editor canvas, so a selected variant previews live
- * with the same scoped overrides the front end uses.
+ * Append the data-kb-token-set="<slug>" attribute to a block's saved markup when it is pinned to a token
+ * set, so the projector's `[data-kb-token-set]` switch selectors re-point the block's canonical token vars
+ * at that set on the front end. A no-op for blocks that do not opt in or follow the active set.
+ *
+ * @param {Object} props      The save element props.
+ * @param {Object} blockType  The block type.
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {Object} The props, with the data attribute appended when a set is pinned.
+ */
+export function blockTokenSetSaveAttr(props, blockType, attributes) {
+	if (!hasBlockSupport(blockType, 'kbVariant')) {
+		return props;
+	}
+
+	const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
+
+	if (slug) {
+		props['data-kb-token-set'] = slug;
+	}
+
+	return props;
+}
+addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-token-set-save-attr', blockTokenSetSaveAttr);
+
+/**
+ * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
+ * live with the same scoped overrides the front end uses.
  *
  * @since TBD
  */
@@ -246,7 +232,7 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 			return <BlockListBlock {...props} />;
 		}
 
-		const variantClass = variantClassNames(attributes);
+		const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
 
 		if (!variantClass) {
 			return <BlockListBlock {...props} />;
@@ -260,14 +246,45 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
 
 /**
- * Add a "Design Variant" picker to the inspector of any block that opts into kbVariant support and has
- * variants defined in the design-token document. A flat block renders one single-select control writing the
- * kbVariant attribute; a grouped (multi-axis) block renders one control per group, each writing its slot in
- * the kbVariants map. The save/preview filters turn either into the kb-variant-- classes the projector's
- * scoped CSS hooks; an empty value selects that axis's $default preset look.
+ * Mirror the data-kb-token-set="<slug>" attribute onto the block in the editor canvas, so a pinned set
+ * previews live with the same switch-selector re-pointing the front end uses. Added via wrapperProps so it
+ * lands on the same block wrapper the variant class and scoped rules target.
  *
- * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
- * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
+ * @since TBD
+ */
+const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
+	return (props) => {
+		const { name, attributes } = props;
+
+		if (!hasBlockSupport(name, 'kbVariant')) {
+			return <BlockListBlock {...props} />;
+		}
+
+		const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
+
+		if (!slug) {
+			return <BlockListBlock {...props} />;
+		}
+
+		const wrapperProps = { ...(props.wrapperProps || {}), 'data-kb-token-set': slug };
+
+		return <BlockListBlock {...props} wrapperProps={wrapperProps} />;
+	};
+}, 'withBlockTokenSetAttr');
+addFilter('editor.BlockListBlock', 'kadence/kb-token-set-attr', withBlockTokenSetAttr);
+
+/**
+ * Add the design-token pickers to the inspector of any block that opts into kbVariant support, under a
+ * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Variants"
+ * subsection (the variant picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
+ * filters turn into the data-kb-token-set attribute the projector's switch selectors re-point through;
+ * selecting a variant writes the kbVariant attribute, which the save/preview filters turn into the
+ * kb-variant--<slug> class the projector's scoped CSS hooks. An empty set follows the active set; an empty
+ * variant selects the block's $default preset look. Each subsection is shown only when it has something to
+ * offer (two or more sets / any variants), and the panel is skipped when neither does.
+ *
+ * A block whose `kbVariant` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
+ * block placing them under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
  *
  * @since TBD
  */
@@ -285,7 +302,11 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		if (!blockGroups(name).length) {
+		const set = get(attributes, 'kbTokenSet', '') || activeSet();
+		const hasVariants = blockVariants(name, set).length > 0;
+		const hasSets = selectableSets().length >= 2;
+
+		if (!hasVariants && !hasSets) {
 			return <BlockEdit {...props} />;
 		}
 
@@ -294,8 +315,32 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				<BlockEdit {...props} />
 				{isSelected && (
 					<InspectorControls group="styles">
-						<PanelBody title={__('Design Variant', 'kadence-blocks')} initialOpen={false}>
-							<VariantPicker name={name} attributes={attributes} setAttributes={setAttributes} />
+						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
+							{hasSets && (
+								<SubsectionWrap label={__('Token Set', 'kadence-blocks')}>
+									<TokenSetPicker
+										value={get(attributes, 'kbTokenSet', '')}
+										onChange={(value) => setAttributes({ kbTokenSet: value })}
+										label=""
+									/>
+								</SubsectionWrap>
+							)}
+							{hasVariants && (
+								<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
+									<VariantPicker
+										name={name}
+										set={set}
+										value={get(attributes, 'kbVariant', '')}
+										onChange={(value) => setAttributes({ kbVariant: value })}
+									/>
+									<VariantActions
+										blockName={name}
+										set={set}
+										selected={get(attributes, 'kbVariant', '')}
+										onSelect={(slug) => setAttributes({ kbVariant: slug })}
+									/>
+								</SubsectionWrap>
+							)}
 						</PanelBody>
 					</InspectorControls>
 				)}

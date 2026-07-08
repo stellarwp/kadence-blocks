@@ -3,8 +3,11 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Variant_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use Tests\Support\Classes\TestCase;
 
@@ -16,7 +19,15 @@ final class Variant_CatalogTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
-	private Variant_Resolver $resolver;
+	/**
+	 * @var Variant_Catalog
+	 */
+	private Variant_Catalog $catalog;
+
+	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
 
 	/**
 	 * @return void
@@ -24,52 +35,79 @@ final class Variant_CatalogTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		$this->catalog = $this->container->get( Variant_Catalog::class );
+		$this->store   = $this->container->get( Token_Store::class );
 	}
 
 	/**
-	 * The shipped Button is flat: it reports a single implicit group whose default and named variants
-	 * ({ slug, label }) the picker offers, labeled by the variant set's control label.
+	 * The catalog reports the active set and, per set, the shipped Button's default and its named variants as
+	 * { slug, label, userCreated }, plus the picker control label and the controllable surface.
 	 *
 	 * @return void
 	 */
-	public function testItBuildsTheButtonCatalog(): void {
-		/** @var Token_Registry $registry */
-		$registry = $this->container->get( Token_Registry::class );
+	public function testItBuildsTheButtonCatalogForTheDefaultSet(): void {
+		$catalog = $this->catalog->all();
 
-		$catalog = ( new Variant_Catalog( $registry, $this->resolver ) )->all();
+		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );
+		$this->assertArrayHasKey( self::BUTTON, $catalog['sets'][ Token_Store::default_slug() ] );
 
-		$this->assertArrayHasKey( self::BUTTON, $catalog );
+		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$groups = $catalog[ self::BUTTON ]['groups'];
-
-		$this->assertCount( 1, $groups, 'A flat block surfaces a single implicit group.' );
-
-		$group = $groups[0];
-
-		$this->assertTrue( $group['implicit'] );
-		// The implicit group carries no slug; the editor keys off "implicit" to write the kbVariant string.
-		$this->assertSame( '', $group['group'] );
-		$this->assertSame( 'primary', $group['default'] );
+		$this->assertSame( 'primary', $button['default'] );
 		// The picker's control label, declared on the variant set in declarations.php.
-		$this->assertSame( 'Style', $group['label'] );
+		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
 				[
-					'slug'  => 'primary',
-					'label' => 'Primary',
+					'slug'        => 'primary',
+					'label'       => 'Primary',
+					'userCreated' => false,
 				],
 				[
-					'slug'  => 'secondary',
-					'label' => 'Secondary',
+					'slug'        => 'secondary',
+					'label'       => 'Secondary',
+					'userCreated' => false,
 				],
 			],
-			$group['variants']
+			$button['variants']
 		);
 	}
 
 	/**
-	 * A block registered but absent from the document is skipped rather than emitted empty.
+	 * The per-block surface lists every bound property with its coarse input kind, so a color property reads
+	 * as "color" and the radius property as "dimension".
+	 *
+	 * @return void
+	 */
+	public function testItExposesTheControllableSurface(): void {
+		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+
+		$kinds = wp_list_pluck( $properties, 'kind', 'key' );
+
+		$this->assertSame( 'color', $kinds['button-bg'] );
+		$this->assertSame( 'dimension', $kinds['button-radius'] );
+	}
+
+	/**
+	 * A variant authored into a set is flagged userCreated, while the baseline variants are not.
+	 *
+	 * @return void
+	 */
+	public function testItFlagsUserCreatedVariants(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
+		);
+
+		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['variants'];
+		$flags    = wp_list_pluck( $variants, 'userCreated', 'slug' );
+
+		$this->assertTrue( $flags['accent'] );
+		$this->assertFalse( $flags['primary'] );
+	}
+
+	/**
+	 * A block registered but absent from a set is skipped rather than emitted empty.
 	 *
 	 * @return void
 	 */
@@ -77,8 +115,14 @@ final class Variant_CatalogTest extends TestCase {
 		$registry = new Token_Registry();
 		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block' ] );
 
-		$catalog = ( new Variant_Catalog( $registry, $this->resolver ) )->all();
+		$catalog = ( new Variant_Catalog(
+			$registry,
+			$this->container->get( Variant_Resolver::class ),
+			$this->store,
+			$this->container->get( Active_Set_Store::class ),
+			$this->container->get( Effective_Variants::class )
+		) )->all();
 
-		$this->assertSame( [], $catalog );
+		$this->assertSame( [], $catalog['sets'][ Token_Store::default_slug() ] );
 	}
 }

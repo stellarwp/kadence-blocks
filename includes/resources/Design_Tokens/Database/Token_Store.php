@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Database;
 
 use KadenceWP\KadenceBlocks\Database\Query;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * The sole gateway to the kb_design_tokens table.
@@ -41,7 +42,15 @@ final class Token_Store extends Query {
 	private const SUPERSEDED_ACTION = 'kadence_blocks_design_tokens_superseded';
 
 	/**
-	 * @var string The default token set slug. v1 ships a single set under this slug.
+	 * @var string Action fired after a set's row is deleted, carrying the slug, so
+	 *             consumers (the history store) can drop the set's related state.
+	 *
+	 * @since TBD
+	 */
+	private const DELETED_ACTION = 'kadence_blocks_design_tokens_deleted';
+
+	/**
+	 * @var string The default token set slug, the always-present canonical set.
 	 *
 	 * @since TBD
 	 */
@@ -70,6 +79,18 @@ final class Token_Store extends Query {
 	 */
 	public static function superseded_action(): string {
 		return self::SUPERSEDED_ACTION;
+	}
+
+	/**
+	 * The action hook that fires after a set's row is deleted, for callers that need to drop a set's
+	 * related state once it is gone.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function deleted_action(): string {
+		return self::DELETED_ACTION;
 	}
 
 	/**
@@ -221,6 +242,99 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * List every stored token set, as its slug, title and version.
+	 *
+	 * The default set is not synthesized here: a set appears only once it has a row, so a site that has
+	 * never written the default returns an empty list. Callers that must always surface the default
+	 * (the REST collection) layer that invariant on top.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<int,array{slug:string,title:string,version:string}> The sets, ordered by slug.
+	 */
+	public function list_stores(): array {
+		$rows = $this->qb()
+					->select( 'slug', 'title', 'version' )
+					->orderBy( 'slug', 'ASC' )
+					->getAll( ARRAY_A );
+
+		if ( ! is_array( $rows ) ) {
+			return [];
+		}
+
+		return array_map(
+			static fn( array $row ): array => [
+				'slug'    => Cast::to_string( $row['slug'] ?? '' ),
+				'title'   => Cast::to_string( $row['title'] ?? '' ),
+				'version' => Cast::to_string( $row['version'] ?? '' ),
+			],
+			$rows
+		);
+	}
+
+	/**
+	 * Whether a token set has a stored row.
+	 *
+	 * A set with no row renders entirely from baseline; the default set may legitimately have no row
+	 * yet, so callers that treat the default as always-known must account for that themselves.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return bool
+	 */
+	public function exists( string $slug ): bool {
+		return is_array(
+			$this->qb()
+				->where( 'slug', $slug )
+				->get( ARRAY_A )
+		);
+	}
+
+	/**
+	 * Delete a token set.
+	 *
+	 * The default set is the always-present canonical set and is never physically removed: deleting it
+	 * clears its overrides back to baseline (the row stays). Any other set's row is dropped outright,
+	 * which signals its removal so related state (its history) can be dropped too. Removing a set that
+	 * does not exist is a no-op — there is nothing to remove and nothing to signal. This guard is enforced
+	 * here so every caller is protected, not just the REST surface.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return void
+	 *
+	 * @throws DatabaseQueryException If the write fails. The deleted action only fires on a successful
+	 *                                removal, since a failed write throws before deleted() is reached.
+	 */
+	public function delete( string $slug = self::DEFAULT_SLUG ): void {
+		// The canonical set cannot be removed; clearing its overrides is the strongest delete it supports.
+		if ( $slug === self::DEFAULT_SLUG ) {
+			$this->save_document( '', $slug );
+
+			return;
+		}
+
+		$row = $this->qb()
+					->where( 'slug', $slug )
+					->get( ARRAY_A );
+
+		if ( ! is_array( $row ) ) {
+			return;
+		}
+
+		$this->qb()
+			->where( 'slug', $slug )
+			->delete();
+
+		// Reached only on a successful delete — a failed delete throws above.
+		$this->deleted( $slug );
+	}
+
+	/**
 	 * Derive a content-based, cache-busting version hash.
 	 *
 	 * The microtime() salt guarantees the hash changes on every write, so repeated
@@ -277,5 +391,23 @@ final class Token_Store extends Query {
 		 * @param string $version  The now-previous version hash.
 		 */
 		do_action( self::SUPERSEDED_ACTION, $slug, $document, $version );
+	}
+
+	/**
+	 * Signal that a token set's row was deleted so consumers can drop its related state.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug that was deleted.
+	 *
+	 * @return void
+	 */
+	private function deleted( string $slug ): void {
+		/**
+		 * Fires after a design token set's row is deleted.
+		 *
+		 * @param string $slug The token set slug that was deleted.
+		 */
+		do_action( self::DELETED_ACTION, $slug );
 	}
 }

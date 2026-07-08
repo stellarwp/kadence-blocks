@@ -2,7 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
@@ -17,7 +19,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Css_Projector {
 
 	/**
 	 * @var Token_Registry
@@ -34,6 +36,15 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
+	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * @var Css_Builder
 	 *
 	 * @since TBD
@@ -43,13 +54,15 @@ final class Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry $registry    The token registry.
-	 * @param Token_Store    $store       The store, for the cache-busting version.
-	 * @param Css_Builder    $css_builder The variant CSS builder.
+	 * @param Token_Registry   $registry    The token registry.
+	 * @param Token_Store      $store       The store, for the cache-busting version.
+	 * @param Active_Set_Store $active      Owns the active-set pointer.
+	 * @param Css_Builder      $css_builder The variant CSS builder.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Css_Builder $css_builder ) {
+	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
 		$this->store       = $store;
+		$this->active      = $active;
 		$this->css_builder = $css_builder;
 	}
 
@@ -65,7 +78,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-variables', $css );
@@ -92,7 +105,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -100,23 +113,49 @@ final class Projector {
 	}
 
 	/**
-	 * Build the variant CSS for the current set, via the builder's version-keyed cache.
+	 * Build the variant CSS for every token set at once, via the builder's fragment cache.
 	 *
-	 * Returns an empty string when the store version cannot be read or a variant cannot be resolved (e.g.
-	 * an alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
+	 * Each set's variants are emitted as namespaced --kb-token--<set>--variant--* vars plus a switch
+	 * selector; the active set additionally drives the canonical alias layer and the coercive scoped rules.
+	 * Returns an empty string when the store version cannot be read or a variant cannot be resolved (e.g. an
+	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
 	 * inline style is simply omitted and KB falls back to its $default look.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	private function build_css(): string {
+	public function css(): string {
 		try {
-			$version = $this->store->get_version();
+			$active   = $this->active->get();
+			$versions = [];
+
+			foreach ( $this->set_slugs() as $slug ) {
+				$versions[ $slug ] = $this->store->get_version( $slug );
+			}
+
+			return $this->css_builder->css_for_version( $versions, $active );
 		} catch ( Throwable $e ) {
 			return '';
 		}
+	}
 
-		return $this->css_builder->css_for_version( $version, Token_Store::default_slug() );
+	/**
+	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders from
+	 * baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
+	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	private function set_slugs(): array {
+		$slugs = array_column( $this->store->list_stores(), 'slug' );
+
+		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {
+			array_unshift( $slugs, Token_Store::default_slug() );
+		}
+
+		return $slugs;
 	}
 }

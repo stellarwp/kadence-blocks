@@ -1,105 +1,179 @@
 /**
- * Shared design-token variant picker.
+ * Shared design-token color-variant picker.
  *
- * The catalog (block name -> { groups: [ { group, implicit, label, default, variants } ] }) is printed by
- * the server-side editor localizer to `window.kadenceDesignTokensVariants`. A block's variants are
- * organized into groups (axes): a flat block surfaces a single group flagged `implicit`, while a grouped
- * block surfaces one entry per axis. {@link VariantPicker} renders one single-select control per group and
- * writes the right attribute for each — the `kbVariant` string for the implicit group (the back-compat
- * single-axis alias), or the group's slot in the `kbVariants` map for an explicit axis. Both the generic
- * inspector picker (src/early-filters.js) and a block that renders the picker inline in its own Style tab
- * (e.g. kadence/singlebtn) use it, so the control stays identical wherever it surfaces.
+ * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensVariants`,
+ * keyed by token set: `{ active, sets: { <slug>: { <block>: { default, variants, properties, label? } } } }`.
+ * Reads take the set a block is on (its `kbTokenSet`, or the active set) so the picker shows that set's
+ * variants. Both the generic inspector picker (src/early-filters.js) and a block that renders the picker
+ * inline in its own Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it
+ * surfaces.
  */
 import { get } from 'lodash';
 import { KadenceRadioButtons } from '@kadence/components';
 import { __ } from '@wordpress/i18n';
 
 /**
- * The design-token variant catalog the editor localizer prints, or an empty object when the token
+ * The whole design-token variant catalog the editor localizer prints, or an empty object when the token
  * registry is inactive (no variants offered).
  *
- * @return {Object} The catalog keyed by block name.
+ * @return {Object} The catalog ({ active, sets }).
  */
 function variantCatalog() {
 	return get(window, 'kadenceDesignTokensVariants', {}) || {};
 }
 
 /**
- * The variant groups (axes) defined for a block, or an empty array when it has none.
+ * The active token set slug, defaulting to "default".
+ *
+ * @return {string} The active set slug.
+ */
+export function activeSet() {
+	return get(variantCatalog(), 'active', 'default') || 'default';
+}
+
+/**
+ * The per-block catalog for a set, defaulting to the active set.
+ *
+ * @param {string} [set] The token set slug.
+ * @return {Object} The per-block catalog for the set.
+ */
+function setBlocks(set) {
+	return get(variantCatalog(), ['sets', set || activeSet()], {}) || {};
+}
+
+/**
+ * The variants defined for a block in a set, or an empty array when it has none.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {Array} The block's variants ([{ slug, label, userCreated }]).
+ */
+export function blockVariants(name, set) {
+	return get(setBlocks(set), [name, 'variants'], []);
+}
+
+/**
+ * The picker control label a block declares for its variant axis (the variant set's `label` in
+ * declarations.php), or an empty string when it declares none.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {string} The control label, or an empty string.
+ */
+export function blockVariantLabel(name, set) {
+	return get(setBlocks(set), [name, 'label'], '');
+}
+
+/**
+ * The controllable surface for a block: one { key, kind, token } entry per bound property.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {Array} The block's surface ([{ key, kind, token }]).
+ */
+export function blockProperties(name, set) {
+	return get(setBlocks(set), [name, 'properties'], []);
+}
+
+/**
+ * The block's default variant slug in a set.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {string} The default variant slug, or an empty string.
+ */
+export function blockDefaultVariant(name, set) {
+	return get(setBlocks(set), [name, 'default'], '');
+}
+
+/**
+ * Whether a variant slug is a user-created one for a block in a set (editable and deletable). A baseline
+ * variant, or one that only shadows a baseline variant, is not.
  *
  * @param {string} name The block name.
- *
- * @return {Array} The block's groups ([{ group, implicit, label, default, variants }]).
+ * @param {string} set  The token set slug.
+ * @param {string} slug The variant slug.
+ * @return {boolean} True when the variant is user-created.
  */
-export function blockGroups(name) {
-	return get(variantCatalog(), [name, 'groups'], []);
+export function isUserVariant(name, set, slug) {
+	return blockVariants(name, set).some((variant) => variant.slug === slug && variant.userCreated);
 }
 
 /**
- * The radio options for a group: a leading "Default" (empty value, the group's $default look) followed by
- * each named variant.
+ * Append a user-created variant to the in-memory catalog for a set, so the picker offers it without a page
+ * reload. A no-op when the block has no catalog entry for the set.
  *
- * @param {Array} variants The group's variants ([{ slug, label }]).
- *
- * @return {Array} The radio options ([{ label, value }]).
+ * @param {string} name    The block name.
+ * @param {string} set     The token set slug.
+ * @param {Object} variant The variant to append ({ slug, label, userCreated }).
+ * @return {void}
  */
-function variantOptions(variants) {
-	return [
-		{ label: __('Default', 'kadence-blocks'), value: '' },
-		...variants.map((variant) => ({ label: variant.label, value: variant.slug })),
-	];
+export function appendVariant(name, set, variant) {
+	const block = get(variantCatalog(), ['sets', set || activeSet(), name]);
+
+	if (!block || !Array.isArray(block.variants)) {
+		return;
+	}
+
+	if (!block.variants.some((existing) => existing.slug === variant.slug)) {
+		block.variants.push(variant);
+	}
 }
 
 /**
- * The design-token variant picker for a block: one single-select control per variant group (axis). Renders
- * nothing when the block has no groups in the document. Each control reads and writes its own attribute, so
- * the axes are independent and a block stays back-compatible:
+ * Remove a variant from the in-memory catalog for a set, so the picker drops it without a page reload.
  *
- *   - the implicit group (a flat block's single axis) reads/writes the `kbVariant` string;
- *   - an explicit group reads/writes its slot in the `kbVariants` map.
- *
- * An empty value selects that axis's $default look. The save/preview filters turn either attribute into the
- * kb-variant-- classes the projector's scoped CSS hooks.
- *
- * @param {Object}   props               The component props.
- * @param {string}   props.name          The block name, used to read its groups from the catalog.
- * @param {Object}   props.attributes    The block attributes (read for kbVariant / kbVariants).
- * @param {Function} props.setAttributes Called to write the selected attribute(s).
- * @param {string}   [props.className]   The control class.
- *
- * @return {Object|null} The picker elements, or null when the block has no groups.
+ * @param {string} name The block name.
+ * @param {string} set  The token set slug.
+ * @param {string} slug The variant slug to remove.
+ * @return {void}
  */
-export function VariantPicker({ name, attributes, setAttributes, className }) {
-	const groups = blockGroups(name);
+export function removeVariant(name, set, slug) {
+	const block = get(variantCatalog(), ['sets', set || activeSet(), name]);
 
-	if (!groups.length) {
+	if (!block || !Array.isArray(block.variants)) {
+		return;
+	}
+
+	block.variants = block.variants.filter((existing) => existing.slug !== slug);
+}
+
+/**
+ * The color-variant picker for a block. Renders nothing when the block has no variants in the set.
+ * Selecting an option writes the kbVariant attribute (via onChange); an empty value selects the block's
+ * $default look.
+ *
+ * @param {Object}   props             The component props.
+ * @param {string}   props.name        The block name, used to read its variants from the catalog.
+ * @param {string}   props.value       The currently selected variant slug.
+ * @param {Function} props.onChange    Called with the selected slug.
+ * @param {string}   [props.set]       The token set the block is on; defaults to the active set.
+ * @param {string}   [props.label]     The control label; defaults to the block's declared label, then a generic fallback.
+ * @param {string}   [props.className] The control class.
+ *
+ * @return {Object|null} The picker element, or null when the block has no variants.
+ */
+export function VariantPicker({ name, value, onChange, set, label, className }) {
+	const variants = blockVariants(name, set);
+
+	if (!variants.length) {
 		return null;
 	}
 
-	const kbVariant = get(attributes, 'kbVariant', '');
-	const kbVariants = get(attributes, 'kbVariants', {});
+	const options = [
+		{ label: __('Default', 'kadence-blocks'), value: '' },
+		...variants.map((variant) => ({ label: variant.label, value: variant.slug })),
+	];
 
 	return (
-		<>
-			{groups.map((group) => {
-				const value = group.implicit ? kbVariant : get(kbVariants, group.group, '');
-				const onChange = group.implicit
-					? (slug) => setAttributes({ kbVariant: slug })
-					: (slug) => setAttributes({ kbVariants: { ...kbVariants, [group.group]: slug } });
-
-				return (
-					<KadenceRadioButtons
-						key={group.group || '__implicit'}
-						label={group.label || group.group || __('Variant', 'kadence-blocks')}
-						className={className || 'kb-variant-picker'}
-						value={value}
-						options={variantOptions(group.variants)}
-						hideLabel={false}
-						wrap={true}
-						onChange={onChange}
-					/>
-				);
-			})}
-		</>
+		<KadenceRadioButtons
+			label={label || blockVariantLabel(name, set) || __('Variant', 'kadence-blocks')}
+			className={className || 'kb-variant-picker'}
+			value={value || ''}
+			options={options}
+			hideLabel={false}
+			wrap={true}
+			onChange={onChange}
+		/>
 	);
 }

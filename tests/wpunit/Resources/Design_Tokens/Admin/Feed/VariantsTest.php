@@ -24,9 +24,6 @@ final class VariantsTest extends TestCase {
 		$this->resolver = $this->container->get( Variant_Resolver::class );
 	}
 
-	/**
-	 * @return void
-	 */
 	public function testItBuildsStructureAndResolvedValuesForTheShippedButton(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
@@ -37,28 +34,19 @@ final class VariantsTest extends TestCase {
 
 		$button = $variants[ self::BUTTON ];
 
-		// Bindings and the bound-property union are block-wide.
-		$this->assertArrayHasKey( 'bindings', $button );
-		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
+		$this->assertSame( 'primary', $button['default'] );
+		$this->assertSame( [ 'primary', 'secondary' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
 
-		// The shipped Button is flat: one implicit group carries the default, names and resolved values.
-		$this->assertCount( 1, $button['groups'] );
-
-		$group = $button['groups'][0];
-
-		$this->assertTrue( $group['implicit'] );
-		$this->assertSame( 'primary', $group['default'] );
-		$this->assertSame( [ 'primary', 'secondary' ], $group['names'] );
+		// Structure: bindings carry the token reference / inline targets.
+		$this->assertArrayHasKey( 'bindings', $button );
+		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
 
 		// Resolved preview values per variant — aliases flattened to their primitive color.
-		$this->assertSame( '#3633e1', $group['values']['primary']['button-bg'] );
-		$this->assertSame( '#1A202C', $group['values']['secondary']['button-bg'] );
+		$this->assertSame( '#3633e1', $button['values']['primary']['button-bg'] );
+		$this->assertSame( '#1A202C', $button['values']['secondary']['button-bg'] );
 	}
 
-	/**
-	 * @return void
-	 */
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {
 		// A fresh registry whose only variant set has no matching variants in the shipped baseline.
 		$registry = new Token_Registry();

@@ -41,13 +41,13 @@ final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 			]
 		);
 
-		$var      = Css_Var::from_id( 'semantic.color.button-bg' );
 		$resolved = new Resolved_Tokens(
 			[ 'semantic.color.button-bg' => '#3182CE' ],
-			[ $var => '#3182CE' ]
+			[],
+			[ Css_Var::from_id( 'semantic.color.button-bg', 'default' ) => '#3182CE' ]
 		);
 
-		$css = $this->builder()->css( $resolved );
+		$css = $this->builder()->css( [ 'default' => $resolved ], 'default' );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertStringContainsString( Scope::root(), $css );
