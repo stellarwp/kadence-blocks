@@ -47,10 +47,10 @@ final class RestorerTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testStripRewritesLiteralToCanonicalVarAndPersists(): void {
+	public function testRestoreSyncedRewritesLiteralToCanonicalVarAndPersists(): void {
 		$post = $this->create_global_styles_post( $this->document_with_button_bg( '#3182ce' ) );
 
-		$this->restorer->strip( [ $this->button_bg_target() ], $post );
+		$this->restorer->restore_synced( [ $this->button_bg_target() ], $post );
 
 		$leaf = $this->stored_button_bg_value( get_post( $post->ID ) );
 		$this->assertSame( $this->canonical_button_bg(), $leaf );
@@ -66,7 +66,7 @@ final class RestorerTest extends TestCase {
 
 		$before = get_post( $post->ID );
 
-		$this->restorer->strip( [], $post );
+		$this->restorer->restore_synced( [], $post );
 
 		$after = get_post( $post->ID );
 
@@ -94,7 +94,7 @@ final class RestorerTest extends TestCase {
 			$missing_token
 		);
 
-		$this->restorer->strip( [ $missing_target, $this->button_bg_target() ], $post );
+		$this->restorer->restore_synced( [ $missing_target, $this->button_bg_target() ], $post );
 
 		$leaf = $this->stored_button_bg_value( get_post( $post->ID ) );
 		$this->assertSame( $this->canonical_button_bg(), $leaf );
@@ -103,7 +103,7 @@ final class RestorerTest extends TestCase {
 	/**
 	 * An empty JSON object elsewhere in the document (e.g. "custom": {}) round-trips as "{}", not
 	 * "[]" — decoding to associative arrays would lose the distinction and corrupt the document's
-	 * shape on the write this strip() call triggers.
+	 * shape on the write this restore() call triggers.
 	 *
 	 * @return void
 	 */
@@ -117,7 +117,7 @@ final class RestorerTest extends TestCase {
 			]
 		);
 
-		$this->restorer->strip( [ $this->button_bg_target() ], $post );
+		$this->restorer->restore_synced( [ $this->button_bg_target() ], $post );
 
 		$decoded = json_decode( get_post( $post->ID )->post_content );
 		$this->assertIsObject( $decoded->custom );
@@ -138,7 +138,7 @@ final class RestorerTest extends TestCase {
 
 		$before = get_post( $post->ID );
 
-		$this->restorer->strip( [ $this->button_bg_target() ], $post );
+		$this->restorer->restore_synced( [ $this->button_bg_target() ], $post );
 
 		$after = get_post( $post->ID );
 

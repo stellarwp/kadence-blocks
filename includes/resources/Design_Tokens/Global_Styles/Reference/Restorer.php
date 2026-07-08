@@ -41,7 +41,7 @@ final class Restorer {
 	}
 
 	/**
-	 * Strip overrides for every synced target, restoring var(--kb-token--*).
+	 * Restore every synced target's entry, rewriting it back to var(--kb-token--*).
 	 *
 	 * @since TBD
 	 *
@@ -50,7 +50,7 @@ final class Restorer {
 	 *
 	 * @return void
 	 */
-	public function strip( array $synced, WP_Post $post ): void {
+	public function restore_synced( array $synced, WP_Post $post ): void {
 		if ( $synced === [] ) {
 			return;
 		}
@@ -67,7 +67,7 @@ final class Restorer {
 		$changed = false;
 
 		foreach ( $synced as $target ) {
-			if ( $this->restore( $decoded, $target ) ) {
+			if ( $this->restore_entry( $decoded, $target ) ) {
 				$changed = true;
 			}
 		}
@@ -118,7 +118,7 @@ final class Restorer {
 	 *
 	 * @return bool Whether an entry was found and rewritten.
 	 */
-	private function restore( object $document, Preset_Target $target ): bool {
+	private function restore_entry( object $document, Preset_Target $target ): bool {
 		if ( ! isset( $document->settings ) || ! is_object( $document->settings ) ) {
 			return false;
 		}

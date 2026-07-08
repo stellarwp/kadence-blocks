@@ -39,6 +39,6 @@ final class Listener {
 	 * @return void
 	 */
 	public function on_synced( array $synced, WP_Post $post ): void {
-		$this->restorer->strip( $synced, $post );
+		$this->restorer->restore_synced( $synced, $post );
 	}
 }

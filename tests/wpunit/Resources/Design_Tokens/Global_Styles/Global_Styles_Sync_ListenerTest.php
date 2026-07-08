@@ -187,7 +187,7 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 	}
 
 	/**
-	 * The full wp_after_insert_post → sync → synced_action → strip chain lands both halves of the
+	 * The full wp_after_insert_post → sync → synced_action → restore chain lands both halves of the
 	 * two-way sync in the same request: the token store holds the user's literal, and the CPT is
 	 * restored to var(--kb-token--*).
 	 *
