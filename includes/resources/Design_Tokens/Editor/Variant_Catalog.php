@@ -48,19 +48,21 @@ final class Variant_Catalog {
 	}
 
 	/**
-	 * The catalog, keyed by block name.
+	 * The catalog for a token set, keyed by block name.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $slug The token set whose effective variants are read.
+	 *
 	 * @return array<string, array{default: string, variants: array<int, array{slug: string, label: string}>}>
 	 */
-	public function all(): array {
+	public function all( string $slug = 'default' ): array {
 		$out = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
 			try {
-				$names   = $this->variants->names( $block );
-				$default = $this->variants->default_variant( $block );
+				$names   = $this->variants->names( $block, $slug );
+				$default = $this->variants->default_variant( $block, $slug );
 			} catch ( Unknown_Variant_Exception $e ) {
 				continue; // Block registered but not defined in the document — skip, fail soft.
 			}
@@ -70,7 +72,7 @@ final class Variant_Catalog {
 			foreach ( $names as $name ) {
 				$variants[] = [
 					'slug'  => $name,
-					'label' => $this->variants->label( $block, $name ) ?? $name,
+					'label' => $this->variants->label( $block, $name, $slug ) ?? $name,
 				];
 			}
 

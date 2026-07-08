@@ -316,7 +316,7 @@ final class Css_Builder {
 			try {
 				// A block may carry registered bindings before the document defines its variants; that is not
 				// an error, it simply contributes nothing yet, so skip it rather than fail the whole build.
-				$names = $this->variants->names( $block );
+				$names = $this->variants->names( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				continue;
 			}
@@ -361,7 +361,7 @@ final class Css_Builder {
 			}
 
 			try {
-				$default = $this->variants->default_variant( $block );
+				$default = $this->variants->default_variant( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				$default = '';
 			}
