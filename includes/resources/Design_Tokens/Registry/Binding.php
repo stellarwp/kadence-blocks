@@ -66,8 +66,10 @@ final class Binding {
 	private const BLOCK_ATTR = 'block_attr';
 
 	/**
-	 * Inline target (boolean flag): the property surfaces only as its `--kb-token--*` var, with no
-	 * preset/slot bucket (e.g. border-radius, which WordPress has no preset category for).
+	 * Inline target: a KB-owned CSS custom property this property drives, named without the leading `--`
+	 * (e.g. "kb-btn-radius" → `--kb-btn-radius`). For a property with no Kadence palette slot or WordPress
+	 * preset bucket (e.g. border-radius): the block reads `var(--<css_var>, <token fallback>)`, and a selected
+	 * variant sets `--<css_var>` on its scope so the value can vary per variant.
 	 *
 	 * @since TBD
 	 *
@@ -108,7 +110,7 @@ final class Binding {
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::WP_PRESET, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::WP_PRESET, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::CSS_VAR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a
@@ -259,6 +261,21 @@ final class Binding {
 	}
 
 	/**
+	 * The KB-owned CSS custom property this binding drives (named without the leading `--`, e.g.
+	 * "kb-btn-radius"), or null when it declares none. Read by the variant projector to set that variable on a
+	 * selected variant's scope so the value can vary per variant. Inline only.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function css_var(): ?string {
+		$name = $this->projections[ self::CSS_VAR ] ?? null;
+
+		return is_string( $name ) ? $name : null;
+	}
+
+	/**
 	 * Extract and validate the inline projection targets from a binding declaration.
 	 *
 	 * @since TBD
@@ -285,16 +302,6 @@ final class Binding {
 			}
 
 			$inline[ $key ] = $spec[ $key ];
-		}
-
-		if ( array_key_exists( self::CSS_VAR, $spec ) ) {
-			if ( $spec[ self::CSS_VAR ] !== true ) {
-				throw new InvalidArgumentException(
-					sprintf( 'Binding "%s" target "%s" must be true when present.', $property, self::CSS_VAR )
-				);
-			}
-
-			$inline[ self::CSS_VAR ] = true;
 		}
 
 		return $inline;
