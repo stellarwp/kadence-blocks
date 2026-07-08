@@ -170,7 +170,7 @@ final class Token_Registry {
 
 	/**
 	 * The block's preset / default-variant set (the one declared without an explicit group — see
-	 * {@see Variant_Set::IMPLICIT_GROUP}), or null. This is the no-picker set the block-preset and
+	 * {@see Variant_Set::get_implicit_group_key()}), or null. This is the no-picker set the block-preset and
 	 * block-default-CSS projectors consume; a block that only registers named (picker-driven) sets returns
 	 * null here. Use {@see self::for_variant_set()} to address a named set.
 	 *
@@ -181,12 +181,12 @@ final class Token_Registry {
 	 * @return Variant_Set|null
 	 */
 	public function for_block( string $block ): ?Variant_Set {
-		return $this->variant_sets[ $block ][ Variant_Set::IMPLICIT_GROUP ] ?? null;
+		return $this->variant_sets[ $block ][ Variant_Set::get_implicit_group_key() ] ?? null;
 	}
 
 	/**
 	 * A specific variant set of a block by its group slug, or null when the block registers none under that
-	 * slug. Pass {@see Variant_Set::IMPLICIT_GROUP} for the preset set, or a named slug (e.g. "style") for a
+	 * slug. Pass {@see Variant_Set::get_implicit_group_key()} for the preset set, or a named slug (e.g. "style") for a
 	 * picker-driven set. This is the per-set lookup the variant projector uses.
 	 *
 	 * @since TBD

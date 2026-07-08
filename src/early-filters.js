@@ -99,19 +99,19 @@ export function enableNativeBlockVariants(settings, name) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enableNativeBlockVariants);
 
 /**
- * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariants and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
  *
- * kbVariant holds the slug of the selected design-token variant (e.g. "ghost"); empty means the block
- * keeps its $default look (the block preset). kbTokenSet holds the slug of a per-block token-set override
- * (e.g. "dark"); empty means the block follows the active set. The scoped CSS that re-skins the block for a
- * selected variant and the switch selectors a set override re-points through are both emitted server-side
- * by the Design Tokens projector.
+ * kbVariants is a map of group slug => selected variant slug (e.g. { style: "ghost" }); an absent or empty
+ * entry means the block keeps that group's $default look (the block preset). kbTokenSet holds the slug of a
+ * per-block token-set override (e.g. "dark"); empty means the block follows the active set. The scoped CSS
+ * that re-skins the block for a selected variant and the switch selectors a set override re-points through
+ * are both emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant and kbTokenSet attributes added.
+ * @return {Object} The block settings with the kbVariants and kbTokenSet attributes added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
@@ -291,10 +291,10 @@ addFilter('editor.BlockListBlock', 'kadence/kb-token-set-attr', withBlockTokenSe
  * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Variants"
  * subsection (the variant picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
  * filters turn into the data-kb-token-set attribute the projector's switch selectors re-point through;
- * selecting a variant writes the kbVariant attribute, which the save/preview filters turn into the
- * kb-variant--<slug> class the projector's scoped CSS hooks. An empty set follows the active set; an empty
- * variant selects the block's $default preset look. Each subsection is shown only when it has something to
- * offer (two or more sets / any variants), and the panel is skipped when neither does.
+ * selecting a variant writes its group's entry in the kbVariants map, which the save/preview filters turn
+ * into the kb-variant--<group>--<slug> class the projector's scoped CSS hooks. An empty set follows the
+ * active set; an empty variant selects the block's $default preset look. Each subsection is shown only when
+ * it has something to offer (two or more sets / any variants), and the panel is skipped when neither does.
  *
  * A block whose `kbVariant` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
  * block placing them under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.

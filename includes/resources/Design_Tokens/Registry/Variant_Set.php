@@ -18,7 +18,7 @@ use InvalidArgumentException;
  *
  *   - **Named set** (a `group` is declared, e.g. "style"): a picker-driven axis. The editor renders a
  *     control for it and the variant projector emits `kb-variant--<group>--<variant>` rules.
- *   - **Preset / default-variant set** (no `group`, so `group` is {@see self::IMPLICIT_GROUP}): the block's
+ *   - **Preset / default-variant set** (no `group`, so `group` is {@see self::IMPLICIT_GROUP_KEY}): the block's
  *     default look, with NO picker. It seeds block attributes / low-specificity CSS through
  *     {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector} and
  *     {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}, not the picker.
@@ -49,7 +49,7 @@ final class Variant_Set {
 	 *
 	 * @var string
 	 */
-	public const IMPLICIT_GROUP = '$single';
+	private const IMPLICIT_GROUP_KEY = '$single';
 
 	/**
 	 * The block name, e.g. "kadence/advancedbtn".
@@ -61,7 +61,7 @@ final class Variant_Set {
 	public string $block;
 
 	/**
-	 * The set's group slug (the axis name, e.g. "style"), or {@see self::IMPLICIT_GROUP} for a preset /
+	 * The set's group slug (the axis name, e.g. "style"), or {@see self::IMPLICIT_GROUP_KEY} for a preset /
 	 * default-variant set that shows no picker.
 	 *
 	 * @since TBD
@@ -93,7 +93,7 @@ final class Variant_Set {
 	 * @since TBD
 	 *
 	 * @param string                 $block    The block name.
-	 * @param string                 $group    The set's group slug, or {@see self::IMPLICIT_GROUP} for a preset set.
+	 * @param string                 $group    The set's group slug, or {@see self::IMPLICIT_GROUP_KEY} for a preset set.
 	 * @param array<string, Binding> $bindings Per-property bindings.
 	 * @param string|null            $label    The picker control label, or null for the editor default.
 	 */
@@ -102,6 +102,19 @@ final class Variant_Set {
 		$this->group    = $group;
 		$this->bindings = $bindings;
 		$this->label    = $label;
+	}
+
+	/**
+	 * The group slug of a preset / default-variant set — the sentinel a set declared without an explicit
+	 * `group` is stored under and returned as. Exposed for callers that branch on the implicit group (the
+	 * resolver, projector, REST controller and admin feed).
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_implicit_group_key(): string {
+		return self::IMPLICIT_GROUP_KEY;
 	}
 
 	/**
@@ -129,7 +142,7 @@ final class Variant_Set {
 		// A non-empty "group" names a picker-driven set; its absence marks a preset / default-variant set.
 		$group = isset( $set['group'] ) && is_string( $set['group'] ) && $set['group'] !== ''
 			? $set['group']
-			: self::IMPLICIT_GROUP;
+			: self::IMPLICIT_GROUP_KEY;
 
 		return new self(
 			$set['block'],

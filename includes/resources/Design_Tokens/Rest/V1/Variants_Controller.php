@@ -411,7 +411,7 @@ final class Variants_Controller extends Controller {
 
 				$blocks[] = [
 					'block'   => $block,
-					'group'   => $group === Variant_Set::IMPLICIT_GROUP ? '' : $group,
+					'group'   => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 					'default' => $this->default_of( $node ),
 					'names'   => $this->variant_names( $node ),
 				];
@@ -687,7 +687,7 @@ final class Variants_Controller extends Controller {
 		return new WP_REST_Response(
 			[
 				'block'   => $block,
-				'group'   => $group === Variant_Set::IMPLICIT_GROUP ? '' : $group,
+				'group'   => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 				'default' => $this->default_of( $node ),
 			],
 			WP_Http::OK
@@ -1224,7 +1224,7 @@ final class Variants_Controller extends Controller {
 
 		return [
 			'block'    => $block,
-			'group'    => $group === Variant_Set::IMPLICIT_GROUP ? '' : $group,
+			'group'    => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 			'slug'     => $slug,
 			'version'  => $this->store->get_version( $slug ),
 			'default'  => $this->default_of( $node ),
@@ -1270,7 +1270,7 @@ final class Variants_Controller extends Controller {
 	 */
 	private function partial( string $block, string $group, array $block_node ): array {
 		// A named set nests its variants under the set slug; a preset (implicit) set sits directly on the block.
-		$node = $group === Variant_Set::IMPLICIT_GROUP ? $block_node : [ $group => $block_node ];
+		$node = $group === Variant_Set::get_implicit_group_key() ? $block_node : [ $group => $block_node ];
 
 		return [
 			Extensions::get_extensions_key() => [
@@ -1341,7 +1341,7 @@ final class Variants_Controller extends Controller {
 	private function node_path( string $block, string $group ): array {
 		$path = array_merge( $this->variants_path(), [ $block ] );
 
-		if ( $group !== Variant_Set::IMPLICIT_GROUP ) {
+		if ( $group !== Variant_Set::get_implicit_group_key() ) {
 			$path[] = $group;
 		}
 
@@ -1363,7 +1363,7 @@ final class Variants_Controller extends Controller {
 	private function set_node( array $section, string $block, string $group ): array {
 		$node = isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
 
-		if ( $group === Variant_Set::IMPLICIT_GROUP ) {
+		if ( $group === Variant_Set::get_implicit_group_key() ) {
 			return $node;
 		}
 
@@ -1393,13 +1393,13 @@ final class Variants_Controller extends Controller {
 			array_filter(
 				$this->registry->sets_for_block( $block ),
 				static function ( string $slug ): bool {
-					return $slug !== Variant_Set::IMPLICIT_GROUP;
+					return $slug !== Variant_Set::get_implicit_group_key();
 				},
 				ARRAY_FILTER_USE_KEY
 			)
 		);
 
-		return count( $named ) === 1 ? (string) $named[0] : Variant_Set::IMPLICIT_GROUP;
+		return count( $named ) === 1 ? (string) $named[0] : Variant_Set::get_implicit_group_key();
 	}
 
 	/**

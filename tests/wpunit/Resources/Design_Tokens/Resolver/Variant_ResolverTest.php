@@ -315,7 +315,7 @@ final class Variant_ResolverTest extends TestCase {
 		$resolver = $this->grouped_resolver();
 
 		$this->assertSame( [ 'color', 'hover' ], $resolver->groups( 'kadence/grouped-btn' ) );
-		$this->assertSame( [ Variant_Set::IMPLICIT_GROUP ], $resolver->groups( 'kadence/flat-btn' ) );
+		$this->assertSame( [ Variant_Set::get_implicit_group_key() ], $resolver->groups( 'kadence/flat-btn' ) );
 	}
 
 	/**

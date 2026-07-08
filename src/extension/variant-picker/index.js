@@ -181,8 +181,8 @@ export function removeVariant(name, set, slug) {
 
 /**
  * The color-variant picker for a block. Renders nothing when the block has no variants in the set.
- * Selecting an option writes the kbVariant attribute (via onChange); an empty value selects the block's
- * $default look.
+ * Selecting an option calls onChange with the chosen variant slug (the caller writes it into the block's
+ * kbVariants map under this control's group); an empty value selects the block's $default look.
  *
  * @param {Object}   props             The component props.
  * @param {string}   props.name        The block name, used to read its variants from the catalog.

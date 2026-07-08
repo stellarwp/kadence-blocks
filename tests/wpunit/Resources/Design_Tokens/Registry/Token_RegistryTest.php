@@ -156,8 +156,8 @@ final class Token_RegistryTest extends TestCase {
 			array_keys( $sets )
 		);
 		// Each block maps to its sets keyed by group slug; these register no group, so the preset (implicit) key.
-		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn'][ Variant_Set::IMPLICIT_GROUP ]->block );
-		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading'][ Variant_Set::IMPLICIT_GROUP ]->block );
+		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn'][ Variant_Set::get_implicit_group_key() ]->block );
+		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading'][ Variant_Set::get_implicit_group_key() ]->block );
 	}
 
 	public function testIsActiveByDefaultAndDeactivates(): void {

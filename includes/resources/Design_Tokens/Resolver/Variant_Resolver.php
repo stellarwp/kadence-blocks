@@ -33,7 +33,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * set): the document then nests `variants.<block>.<group>.{ $default, <variant> }`, and each set resolves
  * independently. A block may instead ship a single flat PRESET set (`variants.<block>.{ $default,
  * <variant> }`) — its default look, with no picker — which is read through the
- * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::IMPLICIT_GROUP} sentinel. So every
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::get_implicit_group_key()} sentinel. So every
  * accessor takes an optional `$group`: a null argument resolves to that single implicit preset set, while a
  * named set is addressed by its slug. A user-authored variant (added through the store) is a variant within
  * its set, so it sits underneath the per-set override merge unchanged.
@@ -74,7 +74,7 @@ final class Variant_Resolver {
 
 	/**
 	 * The variant groups (axes) a block declares for a set, in document order. A grouped block returns its
-	 * explicit group slugs; a flat block returns a single-element list naming the {@see Variant_Set::IMPLICIT_GROUP}
+	 * explicit group slugs; a flat block returns a single-element list naming the {@see Variant_Set::get_implicit_group_key()}
 	 * sentinel, so callers can iterate axes uniformly whether or not the block is grouped.
 	 *
 	 * @since TBD
@@ -90,7 +90,7 @@ final class Variant_Resolver {
 		$node = $this->block_variants( $block, $slug );
 
 		if ( ! $this->node_is_grouped( $node ) ) {
-			return [ Variant_Set::IMPLICIT_GROUP ];
+			return [ Variant_Set::get_implicit_group_key() ];
 		}
 
 		$groups = [];
@@ -469,7 +469,7 @@ final class Variant_Resolver {
 	 */
 	private function group_node( string $block, string $slug, ?string $group ): array {
 		$node        = $this->block_variants( $block, $slug );
-		$is_implicit = $group === null || $group === Variant_Set::IMPLICIT_GROUP;
+		$is_implicit = $group === null || $group === Variant_Set::get_implicit_group_key();
 
 		if ( ! $this->node_is_grouped( $node ) ) {
 			if ( $is_implicit ) {

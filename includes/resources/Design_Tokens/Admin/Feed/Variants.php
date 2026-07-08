@@ -90,7 +90,7 @@ final class Variants {
 					$set->to_ui_schema(),
 					[
 						// A preset (implicit) set carries no picker slug; the editor keys off the empty group.
-						'group'      => $group === Variant_Set::IMPLICIT_GROUP ? '' : $group,
+						'group'      => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 						'default'    => $default,
 						'names'      => $names,
 						'properties' => array_keys( $set->bindings ),

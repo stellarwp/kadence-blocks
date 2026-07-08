@@ -619,7 +619,7 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function variant_class( string $group, string $variant ): string {
-		return $group === Variant_Set::IMPLICIT_GROUP
+		return $group === Variant_Set::get_implicit_group_key()
 			? Style::variant_class( $variant )
 			: Style::group_variant_class( $group, $variant );
 	}
@@ -646,7 +646,7 @@ final class Css_Builder {
 			. ( $namespace === '' ? '' : self::sanitize_identifier( $namespace ) . '--' )
 			. self::VARIANT_SEGMENT
 			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
-			. ( $group === Variant_Set::IMPLICIT_GROUP ? '' : self::sanitize_identifier( $group ) . '--' )
+			. ( $group === Variant_Set::get_implicit_group_key() ? '' : self::sanitize_identifier( $group ) . '--' )
 			. self::sanitize_identifier( $variant ) . '--'
 			. self::sanitize_identifier( $property );
 	}

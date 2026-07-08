@@ -130,7 +130,7 @@ final class Variant_Catalog {
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
 			foreach ( $this->registry->sets_for_block( $block ) as $group => $set ) {
-				if ( $group === Variant_Set::IMPLICIT_GROUP ) {
+				if ( $group === Variant_Set::get_implicit_group_key() ) {
 					continue; // A preset / default-variant set shows no picker, so it is not offered here.
 				}
 

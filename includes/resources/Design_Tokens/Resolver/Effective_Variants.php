@@ -145,7 +145,7 @@ final class Effective_Variants {
 	private function group_node( array $section, string $block, ?string $group ): array {
 		$node = isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
 
-		if ( $group === null || $group === Variant_Set::IMPLICIT_GROUP ) {
+		if ( $group === null || $group === Variant_Set::get_implicit_group_key() ) {
 			return $node;
 		}
 
