@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use Tests\Support\Classes\TestCase;
 
 final class Token_RegistryTest extends TestCase {
@@ -154,8 +155,9 @@ final class Token_RegistryTest extends TestCase {
 			[ 'kadence/advancedbtn', 'kadence/advancedheading' ],
 			array_keys( $sets )
 		);
-		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn']->block );
-		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading']->block );
+		// Each block maps to its sets keyed by group slug; these register no group, so the preset (implicit) key.
+		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn'][ Variant_Set::get_implicit_group_key() ]->block );
+		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading'][ Variant_Set::get_implicit_group_key() ]->block );
 	}
 
 	public function testIsActiveByDefaultAndDeactivates(): void {

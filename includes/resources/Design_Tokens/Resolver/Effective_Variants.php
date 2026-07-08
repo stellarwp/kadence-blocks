@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
 /**
@@ -111,19 +112,44 @@ final class Effective_Variants {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name, e.g. "kadence/advancedbtn".
-	 * @param string $slug  The token set slug.
+	 * @param string      $block The block name, e.g. "kadence/advancedbtn".
+	 * @param string      $slug  The token set slug.
+	 * @param string|null $group The variant set (axis) to read; null / the implicit sentinel reads the
+	 *                           block's flat preset set. A named button set passes its group (e.g. "style").
 	 *
 	 * @return string[]
 	 */
-	public function user_created( string $block, string $slug = 'default' ): array {
-		$baseline_block  = $this->variants_of( $this->baseline->document() )[ $block ] ?? [];
-		$effective_block = $this->section( $slug )[ $block ] ?? [];
+	public function user_created( string $block, string $slug = 'default', ?string $group = null ): array {
+		$baseline_block  = $this->group_node( $this->variants_of( $this->baseline->document() ), $block, $group );
+		$effective_block = $this->group_node( $this->section( $slug ), $block, $group );
 
-		$baseline_names  = $this->named_of( is_array( $baseline_block ) ? $baseline_block : [] );
-		$effective_names = $this->named_of( is_array( $effective_block ) ? $effective_block : [] );
+		$baseline_names  = $this->named_of( $baseline_block );
+		$effective_names = $this->named_of( $effective_block );
 
 		return array_values( array_diff( $effective_names, $baseline_names ) );
+	}
+
+	/**
+	 * The variant-bearing node for a (block, group) within a variants section: the block node itself for a
+	 * flat preset set (a null or implicit-sentinel group), or the block's `<group>` sub-map for a named set.
+	 * An absent block or group yields an empty array, so the callers above fail soft.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $section The variants section (baseline or effective).
+	 * @param string               $block   The block name.
+	 * @param string|null          $group   The variant set group, or null / the implicit sentinel.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function group_node( array $section, string $block, ?string $group ): array {
+		$node = isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
+
+		if ( $group === null || $group === Variant_Set::get_implicit_group_key() ) {
+			return $node;
+		}
+
+		return isset( $node[ $group ] ) && is_array( $node[ $group ] ) ? $node[ $group ] : [];
 	}
 
 	/**

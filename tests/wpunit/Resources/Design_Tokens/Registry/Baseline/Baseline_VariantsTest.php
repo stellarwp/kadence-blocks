@@ -33,23 +33,63 @@ final class Baseline_VariantsTest extends TestCase {
 		foreach ( $section as $block => $node ) {
 			$this->assertIsArray( $node, sprintf( 'Variant node for "%s" must be an object.', $block ) );
 
-			$names = $this->named_variants( $node );
-			$this->assertNotEmpty( $names, sprintf( 'Block "%s" declares no named variants.', $block ) );
+			// A block is either a flat preset set, or a container of named sets (a named child that is an
+			// array without a "tokens" key is itself a set). Assert each set's shape either way.
+			if ( $this->is_grouped( $node ) ) {
+				foreach ( $this->named_variants( $node ) as $group ) {
+					$this->assertIsArray( $node[ $group ], sprintf( '"%s" set "%s" must be an object.', $block, $group ) );
+					$this->assertSetShape( (string) $block . '.' . $group, $node[ $group ] );
+				}
 
-			// $default must be a non-empty string naming one of the block's own variants.
-			$this->assertArrayHasKey( '$default', $node, sprintf( 'Block "%s" is missing $default.', $block ) );
-			$default = $node['$default'];
-			$this->assertIsString( $default, sprintf( 'Block "%s" $default must be a string.', $block ) );
-			$this->assertContains(
-				$default,
-				$names,
-				sprintf( 'Block "%s" $default "%s" does not name a defined variant.', $block, $default )
-			);
-
-			foreach ( $names as $name ) {
-				$this->assertVariantShape( (string) $block, $name, $node[ $name ] );
+				continue;
 			}
+
+			$this->assertSetShape( (string) $block, $node );
 		}
+	}
+
+	/**
+	 * Assert one variant set node is well-formed: a `$default` naming one of its own variants, and every
+	 * named variant carrying a label and a non-empty tokens map.
+	 *
+	 * @param string               $where The block[.set] label, for failure messages.
+	 * @param array<string, mixed> $node  The set's variant node.
+	 *
+	 * @return void
+	 */
+	private function assertSetShape( string $where, array $node ): void {
+		$names = $this->named_variants( $node );
+		$this->assertNotEmpty( $names, sprintf( 'Set "%s" declares no named variants.', $where ) );
+
+		// $default must be a non-empty string naming one of the set's own variants.
+		$this->assertArrayHasKey( '$default', $node, sprintf( 'Set "%s" is missing $default.', $where ) );
+		$default = $node['$default'];
+		$this->assertIsString( $default, sprintf( 'Set "%s" $default must be a string.', $where ) );
+		$this->assertContains(
+			$default,
+			$names,
+			sprintf( 'Set "%s" $default "%s" does not name a defined variant.', $where, $default )
+		);
+
+		foreach ( $names as $name ) {
+			$this->assertVariantShape( $where, $name, $node[ $name ] );
+		}
+	}
+
+	/**
+	 * Whether a block node is a container of named sets rather than a flat set: a named child that is an
+	 * array without a "tokens" key is a set. Mirrors Variant_Resolver's shape detection.
+	 *
+	 * @param array<string, mixed> $node The block's variant node.
+	 *
+	 * @return bool
+	 */
+	private function is_grouped( array $node ): bool {
+		foreach ( $this->named_variants( $node ) as $name ) {
+			return is_array( $node[ $name ] ) && ! array_key_exists( 'tokens', $node[ $name ] );
+		}
+
+		return false;
 	}
 
 	/**
