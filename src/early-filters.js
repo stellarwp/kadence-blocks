@@ -13,7 +13,9 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { VariantPicker, blockVariants } from './extension/variant-picker';
+import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
+import { SaveVariantModal } from './extension/variant-picker/SaveVariantModal';
+import { hasVariantsRest } from './extension/variants/api/client';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 
 /**
@@ -291,6 +293,8 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
 
+		const [saving, setSaving] = useState(false);
+
 		if (!hasBlockSupport(name, 'kbVariant')) {
 			return <BlockEdit {...props} />;
 		}
@@ -301,7 +305,8 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const hasVariants = blockVariants(name).length > 0;
+		const set = get(attributes, 'kbTokenSet', '') || activeSet();
+		const hasVariants = blockVariants(name, set).length > 0;
 		const hasSets = selectableSets().length >= 2;
 
 		if (!hasVariants && !hasSets) {
@@ -327,13 +332,28 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 								<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
 									<VariantPicker
 										name={name}
+										set={set}
 										value={get(attributes, 'kbVariant', '')}
 										onChange={(value) => setAttributes({ kbVariant: value })}
 									/>
+									{hasVariantsRest() && (
+										<Button variant="secondary" onClick={() => setSaving(true)}>
+											{__('Create new variant', 'kadence-blocks')}
+										</Button>
+									)}
 								</SubsectionWrap>
 							)}
 						</PanelBody>
 					</InspectorControls>
+				)}
+				{saving && (
+					<SaveVariantModal
+						blockName={name}
+						set={set}
+						source={get(attributes, 'kbVariant', '')}
+						onClose={() => setSaving(false)}
+						onCreated={(slug) => setAttributes({ kbVariant: slug })}
+					/>
 				)}
 			</>
 		);
