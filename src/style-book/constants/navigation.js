@@ -9,12 +9,24 @@ import { __ } from '@wordpress/i18n';
 export const SECTION_OVERVIEW = 'overview';
 
 /**
+ * Section id for user-created color primitives.
+ */
+export const SECTION_CUSTOM_COLORS = 'custom-colors';
+
+/**
+ * Group label assigned to user-created primitives in the JS layer.
+ * Must match the label used in groupSectionId() below.
+ */
+export const CUSTOM_COLORS_GROUP_LABEL = __('Custom Colors', 'kadence-blocks');
+
+/**
  * Preferred sidebar order for foundation groups.
  */
 export const GROUP_ORDER = [
 	'brand',
 	'neutral',
 	'semantic-colors',
+	'custom-colors',
 	'spacing',
 	'border-radius',
 	'border-width',
@@ -49,6 +61,8 @@ export function groupSectionId(groupName) {
 			return 'font-sizes';
 		case __('Font Families', 'kadence-blocks'):
 			return 'font-families';
+		case __('Custom Colors', 'kadence-blocks'):
+			return 'custom-colors';
 		default:
 			return groupName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 	}
@@ -87,5 +101,10 @@ export const GROUP_SECTIONS = {
 	},
 	'font-families': {
 		description: () => __('Font stack primitives for sans, serif, and monospace.', 'kadence-blocks'),
+	},
+	'custom-colors': {
+		description: () => __('User-created color primitives for this site.', 'kadence-blocks'),
+		showColorPreview: true,
+		isUserCreated: true,
 	},
 };

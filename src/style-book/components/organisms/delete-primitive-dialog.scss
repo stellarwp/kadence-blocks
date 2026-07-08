@@ -1,0 +1,74 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-book__delete-primitive {
+	&-dialog {
+		min-width: 28rem;
+	}
+
+	&-description {
+		margin: 0 0 $spacing-md;
+	}
+
+	&-loading {
+		@include flex-row($spacing-sm);
+		color: $color-text-secondary;
+		font-size: $font-size-small;
+		margin-bottom: $spacing-md;
+	}
+
+	&-error {
+		color: $color-error;
+		font-size: $font-size-small;
+		margin: 0 0 $spacing-md;
+	}
+
+	&-refs {
+		margin-bottom: $spacing-lg;
+
+		&-heading {
+			font-size: $font-size-small;
+			font-weight: 600;
+			margin: 0 0 $spacing-sm;
+		}
+
+		&-list {
+			list-style: none;
+			margin: 0 0 $spacing-sm;
+			padding: 0;
+			@include flex-column($spacing-xs);
+		}
+	}
+
+	&-ref {
+		@include flex-row($spacing-sm);
+		font-size: $font-size-small;
+
+		code {
+			color: $color-text-secondary;
+		}
+	}
+
+	&-action {
+		@include meta-text;
+
+		&--unsupported {
+			color: $color-error;
+		}
+
+		&--supported {
+			color: $color-success;
+		}
+	}
+
+	&-blocked {
+		color: $color-error;
+		font-size: $font-size-small;
+		margin: $spacing-sm 0 0;
+	}
+
+	&-actions {
+		@include flex-row($spacing-md);
+		padding-top: $spacing-sm;
+	}
+}

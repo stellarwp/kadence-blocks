@@ -2,6 +2,7 @@
     "active": true,
     "resolved": true,
     "version": "v7",
+    "slug": "default",
     "schema": {
         "groups": {
             "Brand": [

@@ -9,7 +9,6 @@ import { Notice, Spinner } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { TokenField } from '../molecules/TokenField';
 import { TokenGroup } from '../organisms/TokenGroup';
 
 /**
@@ -35,16 +34,21 @@ function groupTokens(tokens) {
 /**
  * Full token editor list grouped by schema sections.
  *
- * @param {object}   props              Component props.
- * @param {object[]} props.tokens       Flat token definitions.
+ * @param {object}   props                      Component props.
+ * @param {object[]} props.tokens               Flat token definitions.
  * @param {Record<string, string>} props.values Resolved values.
- * @param {boolean}  props.isReady      Whether the feed loaded.
- * @param {boolean}  props.isActive     Whether design tokens are active.
- * @param {boolean}  props.isResolved   Whether values resolved successfully.
- * @param {Function} props.onSave       Save handler for token fields.
- * @param {Function} props.getFieldState Field state accessor.
- * @param {string}   [props.emptyMessage] Message when no tokens match.
- * @param {boolean}  [props.groupBySchema] Whether to subgroup by schema group label.
+ * @param {boolean}  props.isReady              Whether the feed loaded.
+ * @param {boolean}  props.isActive             Whether design tokens are active.
+ * @param {boolean}  props.isResolved           Whether values resolved successfully.
+ * @param {Function} props.onSave               Save handler for token fields.
+ * @param {Function} props.getFieldState        Field state accessor.
+ * @param {string}   [props.emptyMessage]       Message when no tokens match.
+ * @param {boolean}  [props.groupBySchema]      Whether to subgroup by schema group label.
+ * @param {Function} [props.onCreatePrimitive]  Async create fn.
+ * @param {Function} [props.onDeletePrimitive]  Async delete fn.
+ * @param {Function} [props.onRenamePrimitive]  Async rename fn.
+ * @param {Function} [props.onFetchPreview]     Async preview fn.
+ * @param {Function} [props.onMutationSuccess]  Mutation success callback.
  * @return {JSX.Element} Token list template.
  */
 export function TokenList({
@@ -57,6 +61,11 @@ export function TokenList({
 	getFieldState,
 	emptyMessage,
 	groupBySchema = true,
+	onCreatePrimitive,
+	onDeletePrimitive,
+	onRenamePrimitive,
+	onFetchPreview,
+	onMutationSuccess,
 }) {
 	const grouped = useMemo(() => groupTokens(tokens), [tokens]);
 
@@ -87,33 +96,48 @@ export function TokenList({
 				</Notice>
 			)}
 
-			{tokens.length === 0 ? (
+			{tokens.length === 0 && !onCreatePrimitive ? (
 				<p className="kadence-blocks-style-book__empty">
 					{emptyMessage ?? __('No tokens available.', 'kadence-blocks')}
 				</p>
 			) : groupBySchema ? (
-				Object.entries(grouped).map(([groupName, groupTokensList]) => (
-					<TokenGroup
-						key={groupName}
-						groupName={groupName}
-						tokens={groupTokensList}
-						values={values}
-						onSave={onSave}
-						getFieldState={getFieldState}
-					/>
-				))
-			) : (
-				<div className="kadence-blocks-style-book__token-group-list">
-					{tokens.map((token) => (
-						<TokenField
-							key={token.id}
-							token={token}
-							value={values[token.id] ?? ''}
+				Object.entries(grouped).map(([groupName, groupTokensList]) => {
+					const hasUserCreated = groupTokensList.some((t) => t.userCreated);
+
+					return (
+						<TokenGroup
+							key={groupName}
+							groupName={groupName}
+							tokens={groupTokensList}
+							values={values}
 							onSave={onSave}
-							fieldState={getFieldState(token.id)}
+							getFieldState={getFieldState}
+							isUserCreatedGroup={hasUserCreated}
+							onCreatePrimitive={hasUserCreated ? onCreatePrimitive : undefined}
+							onDeletePrimitive={hasUserCreated ? onDeletePrimitive : undefined}
+							onRenamePrimitive={hasUserCreated ? onRenamePrimitive : undefined}
+							onFetchPreview={hasUserCreated ? onFetchPreview : undefined}
+							onMutationSuccess={hasUserCreated ? onMutationSuccess : undefined}
 						/>
-					))}
-				</div>
+					);
+				})
+			) : (
+				// The section's own <header> already shows the group title, so the
+				// nested TokenGroup renders without a heading — only its add/rename/
+				// delete controls, which is what a single, ungrouped section needs.
+				<TokenGroup
+					groupName=""
+					tokens={tokens}
+					values={values}
+					onSave={onSave}
+					getFieldState={getFieldState}
+					isUserCreatedGroup={Boolean(onCreatePrimitive)}
+					onCreatePrimitive={onCreatePrimitive}
+					onDeletePrimitive={onDeletePrimitive}
+					onRenamePrimitive={onRenamePrimitive}
+					onFetchPreview={onFetchPreview}
+					onMutationSuccess={onMutationSuccess}
+				/>
 			)}
 		</div>
 	);

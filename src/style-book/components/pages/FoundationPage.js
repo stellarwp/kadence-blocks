@@ -7,16 +7,21 @@ import { TokenList } from '../templates/TokenList';
 /**
  * Foundation editor page for a schema group (Brand, Spacing, Font Sizes, etc.).
  *
- * @param {object}   props              Component props.
- * @param {string}   props.sectionId    Active foundation section id.
- * @param {object[]} props.sections     Built navigation sections.
- * @param {object[]} props.tokens       Flat token list.
+ * @param {object}   props                      Component props.
+ * @param {string}   props.sectionId            Active foundation section id.
+ * @param {object[]} props.sections             Built navigation sections.
+ * @param {object[]} props.tokens               Flat token list.
  * @param {Record<string, string>} props.values Resolved values.
- * @param {boolean}  props.isReady      Whether the feed loaded.
- * @param {boolean}  props.isActive     Whether design tokens are active.
- * @param {boolean}  props.isResolved   Whether values resolved successfully.
- * @param {Function} props.onSave       Save handler for token fields.
- * @param {Function} props.getFieldState Field state accessor.
+ * @param {boolean}  props.isReady              Whether the feed loaded.
+ * @param {boolean}  props.isActive             Whether design tokens are active.
+ * @param {boolean}  props.isResolved           Whether values resolved successfully.
+ * @param {Function} props.onSave               Save handler for token fields.
+ * @param {Function} props.getFieldState        Field state accessor.
+ * @param {Function} [props.onCreatePrimitive]  Async create fn.
+ * @param {Function} [props.onDeletePrimitive]  Async delete fn.
+ * @param {Function} [props.onRenamePrimitive]  Async rename fn.
+ * @param {Function} [props.onFetchPreview]     Async preview fn.
+ * @param {Function} [props.onMutationSuccess]  Mutation success callback.
  * @return {JSX.Element|null} Foundation page or null when unknown.
  */
 export function FoundationPage({
@@ -29,6 +34,11 @@ export function FoundationPage({
 	isResolved,
 	onSave,
 	getFieldState,
+	onCreatePrimitive,
+	onDeletePrimitive,
+	onRenamePrimitive,
+	onFetchPreview,
+	onMutationSuccess,
 }) {
 	const section = findSection(sections, sectionId);
 
@@ -37,6 +47,7 @@ export function FoundationPage({
 	}
 
 	const filtered = filterTokensByGroup(tokens, section.groupName);
+	const isUserCreatedSection = Boolean(section.isUserCreated);
 
 	return (
 		<div className="kadence-blocks-style-book__foundation-page">
@@ -54,6 +65,11 @@ export function FoundationPage({
 				onSave={onSave}
 				getFieldState={getFieldState}
 				groupBySchema={false}
+				onCreatePrimitive={isUserCreatedSection ? onCreatePrimitive : undefined}
+				onDeletePrimitive={isUserCreatedSection ? onDeletePrimitive : undefined}
+				onRenamePrimitive={isUserCreatedSection ? onRenamePrimitive : undefined}
+				onFetchPreview={isUserCreatedSection ? onFetchPreview : undefined}
+				onMutationSuccess={isUserCreatedSection ? onMutationSuccess : undefined}
 			/>
 		</div>
 	);
