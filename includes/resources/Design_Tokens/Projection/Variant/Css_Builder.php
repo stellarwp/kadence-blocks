@@ -132,7 +132,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}>>
+	 * @var array<string, array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}>>
 	 */
 	private array $collected = [];
 
@@ -306,7 +306,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The set slug to resolve against (and namespace the values to).
 	 *
-	 * @return array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}>
+	 * @return array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}>
 	 */
 	private function collect( string $slug ): array {
 		if ( isset( $this->collected[ $slug ] ) ) {
@@ -362,15 +362,15 @@ final class Css_Builder {
 							continue;
 						}
 
-						$slot = $this->global_slot( $binding );
+						$target = $this->target_var( $binding );
 
-						if ( $slot === null ) {
+						if ( $target === null ) {
 							continue;
 						}
 
 						$properties[ $property ] = [
-							'slot'  => $slot,
-							'value' => $value,
+							'target' => $target,
+							'value'  => $value,
 						];
 					}
 
@@ -414,7 +414,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}> $collected The set's collected variants.
+	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The set's collected variants.
 	 * @param string                                                                                                                                                       $slug      The set slug to namespace the var names under.
 	 *
 	 * @return string
@@ -441,7 +441,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}> $collected   The active set's collected variants.
+	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected   The active set's collected variants.
 	 * @param string                                                                                                                                                       $active_slug The active set slug.
 	 *
 	 * @return string
@@ -460,7 +460,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}> $collected The set's collected variants.
+	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The set's collected variants.
 	 * @param string                                                                                                                                                       $slug      The set slug.
 	 *
 	 * @return string
@@ -482,7 +482,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}> $collected The collected variants whose ids drive the layer.
+	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The collected variants whose ids drive the layer.
 	 * @param string                                                                                                                                                       $slug      The set slug the canonical names are pointed at.
 	 *
 	 * @return string
@@ -511,7 +511,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{slot:string, value:string}>>}>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The active set's collected variants.
 	 *
 	 * @return string
 	 */
@@ -529,7 +529,7 @@ final class Css_Builder {
 					$declarations = '';
 
 					foreach ( $properties as $property => $info ) {
-						$declarations .= '--global-' . $info['slot'] . ':var(' . $this->variant_var( $block, $group, $variant, $property ) . ');';
+						$declarations .= $info['target'] . ':var(' . $this->variant_var( $block, $group, $variant, $property ) . ');';
 					}
 
 					if ( $declarations !== '' ) {
@@ -553,6 +553,36 @@ final class Css_Builder {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * The CSS custom property a selected variant sets for a binding, or null when the binding drives none.
+	 *
+	 * A binding that targets a Kadence palette slot resolves to `--global-<slot>` (the color path); a binding
+	 * that declares a `css_var` resolves to `--<css_var>` (e.g. `--kb-btn-radius` for border-radius, which has
+	 * no palette slot). The variant's scoped rule sets this property to the per-variant value, so it can vary
+	 * per variant while the block reads the same variable.
+	 *
+	 * @since TBD
+	 *
+	 * @param Binding $binding The variant binding.
+	 *
+	 * @return string|null The full custom-property name (e.g. "--global-palette-btn-bg", "--kb-btn-radius"), or null.
+	 */
+	private function target_var( Binding $binding ): ?string {
+		$slot = $this->global_slot( $binding );
+
+		if ( $slot !== null ) {
+			return '--global-' . $slot;
+		}
+
+		$css_var = $binding->css_var();
+
+		if ( $css_var !== null ) {
+			return '--' . $css_var;
+		}
+
+		return null;
 	}
 
 	/**

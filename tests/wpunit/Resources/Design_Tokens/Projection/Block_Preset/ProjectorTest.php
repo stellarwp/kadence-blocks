@@ -157,7 +157,7 @@ final class ProjectorTest extends TestCase {
 						'token'      => 'semantic.color.button-text',
 						'block_attr' => 'color',
 					],
-					'button-radius' => [ 'css_var' => true ], // no block_attr -> skipped.
+					'button-radius' => [ 'css_var' => 'kb-btn-radius' ], // no block_attr -> skipped.
 				],
 			]
 		);
