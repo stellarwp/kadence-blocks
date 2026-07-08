@@ -23,7 +23,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  *
  * @since TBD
  */
-final class Detachment_Detector {
+final class Detached_Token_Detector {
 
 	/**
 	 * @since TBD
