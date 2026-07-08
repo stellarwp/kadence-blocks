@@ -48,20 +48,40 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * Build from the real registry (declarations loaded on init). Image radius and icon color are the
+	 * css_prop-bound cases that fit this projector: each attribute is empty by default and rendered as CSS
+	 * in both editor and front end. Button radius (own 3px default) and icon size (rendered as inline SVG
+	 * width/height, never empty) do not fit it, so the shipped declarations bind neither and emit no rule
+	 * for them.
+	 *
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheImageRadiusRule(): void {
-		// Build from the real registry (declarations loaded on init). Image radius is the css_prop-bound case
-		// that fits this projector: the attribute is empty by default and rendered as CSS in both editor and
-		// front end. Button radius (own 3px default) and icon size (rendered as inline SVG width/height, never
-		// empty) do not fit it, so the shipped declarations bind only the image and emit no rule for them.
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
 
 		$this->assertStringContainsString( '.wp-block-kadence-image img{border-radius:var(', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-advancedbtn', $css );
-		$this->assertStringNotContainsString( '.wp-block-kadence-icon', $css );
+	}
+
+	/**
+	 * The icon color binding registered for `kadence/single-icon` emits a low-specificity rule pointing the
+	 * `.kb-svg-icon-wrap` descendant's `color` at the brand icon-color token, while the legacy `kadence/icon`
+	 * container (which has no top-level color/size attribute to bind) emits nothing.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitTheSingleIconColorRule(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{color:var(' . Css_Var::from_id( 'semantic.color.icon' ),
+			$css
+		);
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
 	}
 
 	/**
