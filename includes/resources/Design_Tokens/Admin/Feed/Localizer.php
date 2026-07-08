@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -81,6 +82,17 @@ final class Localizer {
 	private Token_Store $store;
 
 	/**
+	 * The active-set pointer — the same slug the registry's user primitives and every projector
+	 * (CSS vars, theme.json, presets, variants) resolve against, so the dashboard edits the set that
+	 * is actually live rather than always the default one.
+	 *
+	 * @since TBD
+	 *
+	 * @var Active_Set_Store
+	 */
+	private Active_Set_Store $active;
+
+	/**
 	 * The variants section builder.
 	 *
 	 * @since TBD
@@ -101,19 +113,22 @@ final class Localizer {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Resolver $resolver     The token resolver.
-	 * @param Token_Store    $store        The token store.
-	 * @param Variants       $variant_feed The variants section builder.
-	 * @param Builder        $builder      The pure payload assembler.
+	 * @param Token_Resolver   $resolver     The token resolver.
+	 * @param Token_Store      $store        The token store.
+	 * @param Active_Set_Store $active       The active-set pointer.
+	 * @param Variants         $variant_feed The variants section builder.
+	 * @param Builder          $builder      The pure payload assembler.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
+		Active_Set_Store $active,
 		Variants $variant_feed,
 		Builder $builder
 	) {
 		$this->resolver     = $resolver;
 		$this->store        = $store;
+		$this->active       = $active;
 		$this->variant_feed = $variant_feed;
 		$this->builder      = $builder;
 	}
@@ -132,7 +147,11 @@ final class Localizer {
 			return; // No supported admin bundle on this screen.
 		}
 
-		$slug    = Token_Store::default_slug();
+		// The active set, not always Token_Store::default_slug() — the registry's user primitives and
+		// every projector already resolve against whichever set is active, so the dashboard must read
+		// (and, via the REST descriptor's slug, write) the same set or edits land in a document that
+		// is not the one being displayed.
+		$slug    = $this->active->get();
 		$version = $this->store->get_version( $slug );
 
 		$values   = [];
@@ -147,7 +166,7 @@ final class Localizer {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version );
+		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version, $slug );
 		$json = wp_json_encode(
 			$feed,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT

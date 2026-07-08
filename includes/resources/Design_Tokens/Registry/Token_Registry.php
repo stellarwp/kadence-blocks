@@ -39,6 +39,59 @@ final class Token_Registry {
 	private bool $active = true;
 
 	/**
+	 * Register a user-created primitive. Throws when the id is already held by a non-user-created token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id
+	 * @param string $type
+	 * @param string $label
+	 *
+	 * @throws \RuntimeException When the id belongs to a system registration.
+	 *
+	 * @return void
+	 */
+	public function register_user_primitive( string $id, string $type, string $label = '' ): void {
+		if ( isset( $this->tokens[ $id ] ) && ! $this->tokens[ $id ]->is_user_created() ) {
+			throw new \RuntimeException(
+				sprintf( 'Cannot register user primitive "%s": id is already registered as a system token.', $id )
+			);
+		}
+
+		$this->tokens[ $id ] = Token_Definition::from_user_primitive( $id, $type, $label );
+	}
+
+	/**
+	 * Remove a user-created primitive. Only removes the entry when it is user-created.
+	 * No-op when the id is absent or belongs to a system token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id
+	 *
+	 * @return void
+	 */
+	public function deregister_user_primitive( string $id ): void {
+		if ( isset( $this->tokens[ $id ] ) && $this->tokens[ $id ]->is_user_created() ) {
+			unset( $this->tokens[ $id ] );
+		}
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function user_created_ids(): array {
+		return array_keys(
+			array_filter(
+				$this->tokens,
+				static fn( Token_Definition $t ): bool => $t->is_user_created()
+			)
+		);
+	}
+
+	/**
 	 * Register a single token from its declaration array.
 	 *
 	 * @since TBD
@@ -289,6 +342,7 @@ final class Token_Registry {
 				'label'       => $token->label,
 				'cssVar'      => $token->css_var,
 				'projections' => $token->projections,
+				'userCreated' => $token->is_user_created(),
 			];
 		}
 
@@ -320,7 +374,11 @@ final class Token_Registry {
 	public function missing_from_baseline( Baseline_Document $baseline ): array {
 		$missing = [];
 
-		foreach ( $this->tokens as $id => $_token ) {
+		foreach ( $this->tokens as $id => $token ) {
+			if ( $token->is_user_created() ) {
+				continue;
+			}
+
 			if ( ! $baseline->has( $id ) ) {
 				$missing[] = $id;
 			}

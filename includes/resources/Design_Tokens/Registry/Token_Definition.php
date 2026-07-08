@@ -69,12 +69,22 @@ final class Token_Definition {
 	public array $projections;
 
 	/**
-	 * @param string               $id          DTCG dot-path id.
-	 * @param string               $type        DTCG $type.
-	 * @param string               $label       Human-readable label.
-	 * @param string               $group       UI grouping bucket.
-	 * @param string               $css_var     Canonical (or overridden) CSS custom-property name.
-	 * @param array<string, mixed> $projections Projection targets keyed by projection id.
+	 * Whether this token was created by a user (not shipped with the plugin).
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private bool $user_created;
+
+	/**
+	 * @param string               $id           DTCG dot-path id.
+	 * @param string               $type         DTCG $type.
+	 * @param string               $label        Human-readable label.
+	 * @param string               $group        UI grouping bucket.
+	 * @param string               $css_var      Canonical (or overridden) CSS custom-property name.
+	 * @param array<string, mixed> $projections  Projection targets keyed by projection id.
+	 * @param bool                 $user_created Whether the token was created by a user.
 	 */
 	private function __construct(
 		string $id,
@@ -82,14 +92,16 @@ final class Token_Definition {
 		string $label,
 		string $group,
 		string $css_var,
-		array $projections
+		array $projections,
+		bool $user_created = false
 	) {
-		$this->id          = $id;
-		$this->type        = $type;
-		$this->label       = $label;
-		$this->group       = $group;
-		$this->css_var     = $css_var;
-		$this->projections = $projections;
+		$this->id           = $id;
+		$this->type         = $type;
+		$this->label        = $label;
+		$this->group        = $group;
+		$this->css_var      = $css_var;
+		$this->projections  = $projections;
+		$this->user_created = $user_created;
 	}
 
 	/**
@@ -139,6 +151,34 @@ final class Token_Definition {
 	}
 
 	/**
+	 * The only factory that produces a user-created definition.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id    Canonical dot-path id.
+	 * @param string $type  DTCG $type.
+	 * @param string $label Display label; derived from the terminal slug when empty.
+	 *
+	 * @throws \InvalidArgumentException When the id fails the charset check.
+	 *
+	 * @return self
+	 */
+	public static function from_user_primitive( string $id, string $type, string $label = '' ): self {
+		if ( ! preg_match( '/^[a-z0-9]+([.-][a-z0-9]+)*$/', $id ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token id "%s" must be a dot-path of lowercase alphanumeric segments.', $id )
+			);
+		}
+
+		if ( $label === '' ) {
+			$segments = explode( '.', $id );
+			$label    = ucwords( str_replace( '-', ' ', (string) end( $segments ) ) );
+		}
+
+		return new self( $id, $type, $label, '', Css_Var::from_id( $id ), [], true );
+	}
+
+	/**
 	 * Require a declaration value to be a present, non-empty string.
 	 *
 	 * Avoid empty() so a legitimate "0" string is not mistaken for a missing value.
@@ -185,6 +225,17 @@ final class Token_Definition {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Whether this token was created by a user rather than shipped with the plugin.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_user_created(): bool {
+		return $this->user_created;
 	}
 
 	/**

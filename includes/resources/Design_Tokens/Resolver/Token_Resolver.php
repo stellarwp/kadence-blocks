@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -119,7 +120,7 @@ final class Token_Resolver {
 	 * @since TBD
 	 *
 	 * @param string $slug         The token set slug to resolve.
-	 * @param string $namespace    Css-var namespace to apply ('' for the canonical names).
+	 * @param string $var_namespace    Css-var namespace to apply ('' for the canonical names).
 	 * @param string $cache_prefix Cache-key prefix that distinguishes the canonical and namespaced forms.
 	 *
 	 * @return Resolved_Tokens
@@ -127,7 +128,7 @@ final class Token_Resolver {
 	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
 	 */
-	private function load( string $slug, string $namespace, string $cache_prefix ): Resolved_Tokens {
+	private function load( string $slug, string $var_namespace, string $cache_prefix ): Resolved_Tokens {
 		$version   = $this->store->get_version( $slug );
 		$cache_key = $cache_prefix . '_' . $version;
 
@@ -149,7 +150,7 @@ final class Token_Resolver {
 		$over     = is_array( $decoded ) ? $decoded : [];
 		$document = $this->effective->build( $over );
 
-		$result = $this->resolve_document( $document, $namespace );
+		$result = $this->resolve_document( $document, $var_namespace );
 
 		wp_cache_set( $cache_key, $result, self::CACHE_GROUP, DAY_IN_SECONDS );
 		$this->memo[ $cache_key ] = $result;
@@ -179,9 +180,9 @@ final class Token_Resolver {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $document
-	 * @param string              $namespace Css-var namespace to apply to projected names ('' for canonical).
+	 * @param string              $var_namespace Css-var namespace to apply to projected names ('' for canonical).
 	 */
-	private function resolve_document( array $document, string $namespace = '' ): Resolved_Tokens {
+	private function resolve_document( array $document, string $var_namespace = '' ): Resolved_Tokens {
 		$by_id            = [];
 		$by_var           = [];
 		$by_var_projected = [];
@@ -189,7 +190,7 @@ final class Token_Resolver {
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $namespace );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $var_namespace );
 			}
 		}
 
@@ -208,11 +209,11 @@ final class Token_Resolver {
 	 * @param array<string,string> $by_var           By-reference css-var => literal CSS value map.
 	 * @param array<string,string> $by_var_projected By-reference css-var => var()-preserving CSS value map.
 	 * @param array<string,string> $by_id_target     By-reference id => target id map (whole-$value aliases only).
-	 * @param string               $namespace        Css-var namespace to apply to projected names ('' for canonical).
+	 * @param string               $var_namespace        Css-var namespace to apply to projected names ('' for canonical).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, string $namespace = '' ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, string $var_namespace = '' ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -228,7 +229,7 @@ final class Token_Resolver {
 				$type  = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
 				$value = $this->resolve_value( $raw, $document, [] );
 				$css   = $this->renderer->render( $type, $value );
-				$var   = Css_Var::from_id( $path, $namespace );
+				$var   = Css_Var::from_id( $path, $var_namespace );
 
 				$by_id[ $path ] = $css;
 				$by_var[ $var ] = $css;
@@ -242,18 +243,18 @@ final class Token_Resolver {
 					// surfaces. Under a namespace the target name is namespaced too, so the chain stays in-set.
 					$target_id                = Alias::path_of( $raw );
 					$by_id_target[ $path ]    = $target_id;
-					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id, $namespace ) . ')';
+					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id, $var_namespace ) . ')';
 				} else {
 					// A composite (shadow/typography) may alias individual fields; project those to
 					// var() references and render the shorthand around them. Scalars and lists carry no
 					// alias and render identically to the literal.
-					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw, $namespace ) );
+					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw, $var_namespace ) );
 				}
 
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $namespace );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $var_namespace );
 		}
 	}
 
@@ -269,19 +270,19 @@ final class Token_Resolver {
 	 * @since TBD
 	 *
 	 * @param mixed  $value
-	 * @param string $namespace Css-var namespace to apply to the var() targets ('' for canonical).
+	 * @param string $var_namespace Css-var namespace to apply to the var() targets ('' for canonical).
 	 *
 	 * @return mixed The value with aliases replaced by var() references.
 	 */
-	private function project_value( $value, string $namespace = '' ) {
+	private function project_value( $value, string $var_namespace = '' ) {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
-			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $namespace ) . ')';
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $var_namespace ) . ')';
 		}
 
 		if ( is_array( $value ) && ! $this->is_list( $value ) ) {
 			$projected = [];
 			foreach ( $value as $field => $sub ) {
-				$projected[ $field ] = $this->project_value( $sub, $namespace );
+				$projected[ $field ] = $this->project_value( $sub, $var_namespace );
 			}
 
 			return $projected;
@@ -367,15 +368,7 @@ final class Token_Resolver {
 	 * @return array<string,mixed>|null
 	 */
 	private function lookup( string $path, array $document ): ?array {
-		$node = $document;
-		foreach ( explode( '.', $path ) as $segment ) {
-			if ( ! is_array( $node ) || ! isset( $node[ $segment ] ) ) {
-				return null;
-			}
-			$node = $node[ $segment ];
-		}
-
-		return is_array( $node ) ? $node : null;
+		return Document_Path::node_at( $document, $path );
 	}
 
 	/**
