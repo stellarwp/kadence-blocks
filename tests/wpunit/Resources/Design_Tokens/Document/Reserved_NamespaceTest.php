@@ -68,6 +68,94 @@ final class Reserved_NamespaceTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// is_valid_slug()
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @dataProvider slugProvider
+	 *
+	 * @param string $slug     The terminal slug under test.
+	 * @param bool   $expected Whether $slug should be recognized as valid.
+	 *
+	 * @return void
+	 */
+	public function testIsValidSlug( string $slug, bool $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::is_valid_slug( $slug ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function slugProvider(): Generator {
+		yield 'a single word' => [
+			'slug'     => 'blue',
+			'expected' => true,
+		];
+
+		yield 'a hyphenated slug' => [
+			'slug'     => 'brand-accent',
+			'expected' => true,
+		];
+
+		yield 'uppercase letters' => [
+			'slug'     => 'Blue',
+			'expected' => false,
+		];
+
+		yield 'a dot' => [
+			'slug'     => 'brand.accent',
+			'expected' => false,
+		];
+
+		yield 'a leading dash' => [
+			'slug'     => '-blue',
+			'expected' => false,
+		];
+
+		yield 'a double dash' => [
+			'slug'     => 'brand--accent',
+			'expected' => false,
+		];
+
+		yield 'an empty string' => [
+			'slug'     => '',
+			'expected' => false,
+		];
+	}
+
+	// -------------------------------------------------------------------------
+	// canonical()
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testCanonicalBuildsTheFullIdFromASlug(): void {
+		$this->assertSame( 'primitive.color.custom.brand-accent', Reserved_Namespace::canonical( 'brand-accent' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCanonicalOutputIsRecognizedAsReserved(): void {
+		$this->assertTrue( Reserved_Namespace::is_reserved_id( Reserved_Namespace::canonical( 'brand-accent' ) ) );
+	}
+
+	// -------------------------------------------------------------------------
+	// get_slug_pattern()
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @return void
+	 */
+	public function testGetSlugPatternIsAnchored(): void {
+		$pattern = Reserved_Namespace::get_slug_pattern();
+
+		$this->assertSame( 1, preg_match( '/' . $pattern . '/', 'brand-accent' ) );
+		$this->assertSame( 0, preg_match( '/' . $pattern . '/', 'primitive.color.custom.brand-accent' ) );
+	}
+
+	// -------------------------------------------------------------------------
 	// contains_reserved_path()
 	// -------------------------------------------------------------------------
 
