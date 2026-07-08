@@ -12,7 +12,9 @@ import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { SaveVariantModal } from './SaveVariantModal';
 import { blockVariants, blockDefaultVariant, isUserVariant, removeVariant } from './index';
-import { hasVariantsRest, deleteVariant, setVariantDefault } from '../variants/api/client';
+import { deleteVariant, setVariantDefault } from '../variants/api/client';
+import { hasDesignTokensRest } from '../design-tokens/rest';
+import { refreshProjectedCss } from '../design-tokens/live-css';
 
 /**
  * The variant create/edit/delete controls.
@@ -31,7 +33,7 @@ export function VariantActions({ blockName, set, selected, onSelect }) {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 
-	if (!hasVariantsRest()) {
+	if (!hasDesignTokensRest()) {
 		return null;
 	}
 
@@ -57,6 +59,7 @@ export function VariantActions({ blockName, set, selected, onSelect }) {
 			.then(() => deleteVariant(blockName, selected, set))
 			.then(() => {
 				removeVariant(blockName, set, selected);
+				refreshProjectedCss();
 				onSelect('');
 				setConfirming(false);
 				setBusy(false);

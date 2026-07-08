@@ -14,6 +14,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { blockProperties, appendVariant } from './index';
 import { getBlockVariants, createVariant } from '../variants/api/client';
+import { refreshProjectedCss } from '../design-tokens/live-css';
 import { deriveSlug, dedupeSlug } from '../variants/slug';
 
 /**
@@ -135,6 +136,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set)
 			.then(() => {
 				appendVariant(blockName, set, { slug, label: label.trim(), userCreated: true });
+				refreshProjectedCss();
 				onSaved(slug);
 				onClose();
 			})

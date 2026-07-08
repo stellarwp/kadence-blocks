@@ -2,42 +2,14 @@
  * REST client for the Design Tokens variants resource.
  *
  * Uses the editor's already-configured `@wordpress/api-fetch` (root + nonce), reading only the REST
- * namespace from the localized descriptor `window.kadenceDesignTokensRest`. Every call targets a specific
- * token set via the `set` parameter (query for reads/deletes, body for writes); an absent set lets the
- * server fall back to the active set.
+ * namespace from the shared design-tokens descriptor. Every call targets a specific token set via the `set`
+ * parameter (query for reads/deletes, body for writes); an absent set lets the server fall back to the
+ * active set.
  */
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import { get } from 'lodash';
+import { designTokensNamespace } from '../../design-tokens/rest';
 import { variantsBlockPath, variantItemPath, variantDefaultPath } from './paths';
-
-/**
- * The localized REST descriptor, or an empty object when the design-token registry is inactive.
- *
- * @return {Object} The descriptor ({ root, namespace, nonce }).
- */
-function descriptor() {
-	return get(window, 'kadenceDesignTokensRest', {}) || {};
-}
-
-/**
- * The REST namespace the variant routes register under.
- *
- * @return {string} The namespace, e.g. "kb-design-tokens/v1".
- */
-export function variantsNamespace() {
-	return descriptor().namespace || 'kb-design-tokens/v1';
-}
-
-/**
- * Whether the editor has the REST descriptor needed to talk to the variants API. When false, the
- * "save as new variant" affordance is hidden.
- *
- * @return {boolean} True when the descriptor is present.
- */
-export function hasVariantsRest() {
-	return Boolean(descriptor().namespace);
-}
 
 /**
  * Read a block's effective variant set for a token set.
@@ -48,7 +20,7 @@ export function hasVariantsRest() {
  */
 export function getBlockVariants(block, set) {
 	return apiFetch({
-		path: addQueryArgs(variantsBlockPath(variantsNamespace(), block), set ? { set } : {}),
+		path: addQueryArgs(variantsBlockPath(designTokensNamespace(), block), set ? { set } : {}),
 	});
 }
 
@@ -65,7 +37,7 @@ export function getBlockVariants(block, set) {
  */
 export function createVariant(block, { variant, label, tokens }, set) {
 	return apiFetch({
-		path: variantsBlockPath(variantsNamespace(), block),
+		path: variantsBlockPath(designTokensNamespace(), block),
 		method: 'POST',
 		data: { variant, label, tokens, ...(set ? { set } : {}) },
 	});
@@ -81,7 +53,7 @@ export function createVariant(block, { variant, label, tokens }, set) {
  */
 export function setVariantDefault(block, defaultVariant, set) {
 	return apiFetch({
-		path: variantDefaultPath(variantsNamespace(), block),
+		path: variantDefaultPath(designTokensNamespace(), block),
 		method: 'PUT',
 		data: { default: defaultVariant, ...(set ? { set } : {}) },
 	});
@@ -97,7 +69,7 @@ export function setVariantDefault(block, defaultVariant, set) {
  */
 export function deleteVariant(block, variant, set) {
 	return apiFetch({
-		path: addQueryArgs(variantItemPath(variantsNamespace(), block, variant), set ? { set } : {}),
+		path: addQueryArgs(variantItemPath(designTokensNamespace(), block, variant), set ? { set } : {}),
 		method: 'DELETE',
 	});
 }
