@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
@@ -18,7 +19,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Css_Projector {
 
 	/**
 	 * @var Token_Registry
@@ -77,7 +78,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-variables', $css );
@@ -104,7 +105,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -124,7 +125,7 @@ final class Projector {
 	 *
 	 * @return string
 	 */
-	private function build_css(): string {
+	public function css(): string {
 		try {
 			$active   = $this->active->get();
 			$versions = [];

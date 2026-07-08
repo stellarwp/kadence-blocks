@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Projectors;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
@@ -21,6 +22,13 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Css_Builder::class );
 		$this->container->singleton( Legacy_Filter_Bridge::class );
 		$this->container->singleton( Projector::class );
+
+		// Contribute this projector's editor CSS to the combined projected-CSS endpoint.
+		/** @var Css_Projectors $projectors */
+		$projectors = $this->container->get( Css_Projectors::class );
+		/** @var Projector $projector */
+		$projector = $this->container->get( Projector::class );
+		$projectors->add( $projector );
 
 		// Front end: append our declarations to the global-variables handle (KB enqueues at 90).
 		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 100 );

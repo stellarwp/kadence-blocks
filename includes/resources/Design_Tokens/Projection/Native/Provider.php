@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Projectors;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles\Button;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
@@ -43,6 +44,13 @@ final class Provider extends Provider_Contract {
 				return new Projector( $registry, [ $button ] );
 			}
 		);
+
+		// Contribute this projector's editor CSS to the combined projected-CSS endpoint.
+		/** @var Css_Projectors $projectors */
+		$projectors = $this->container->get( Css_Projectors::class );
+		/** @var Projector $projector */
+		$projector = $this->container->get( Projector::class );
+		$projectors->add( $projector );
 
 		// Companion CSS, appended after the base token vars and the kbVariant retarget so it follows them in
 		// source order (front end: Css_Var at 100, Variant at 110; editor: Css_Var at 5, Variant at 10).
