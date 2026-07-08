@@ -54,4 +54,15 @@ final class Layers {
 	public static function token_layers(): array {
 		return self::TOKEN_LAYERS;
 	}
+
+	/**
+	 * The "semantic" layer name — the role-based layer a variant value aliases into.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_semantic(): string {
+		return self::SEMANTIC;
+	}
 }

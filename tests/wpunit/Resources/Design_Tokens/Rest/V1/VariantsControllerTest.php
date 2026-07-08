@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Variants_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use ReflectionClass;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
@@ -494,6 +495,61 @@ final class VariantsControllerTest extends TestCase {
 		$this->assertSame( 'rest_design_tokens_incomplete_surface', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
 		$this->assertContains( 'button-radius', $result->get_error_data()['properties'] );
+	}
+
+	/**
+	 * A captured literal that matches a semantic is stored as that semantic's alias, so the variant re-joins
+	 * the theming cascade, while a literal with no match is stored as-is.
+	 *
+	 * @return void
+	 */
+	public function testCreateAliasesAMatchingLiteral(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					// #3633e1 matches the primary button background semantic; the rgba value matches nothing.
+					'tokens'  => $this->button_tokens(
+						[
+							'button-bg'   => '#3633e1',
+							'button-text' => 'rgba(1,2,3,0.42)',
+						] 
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$tokens = $response->get_data()['variants']['accent']['tokens'];
+
+		$this->assertTrue( Alias::is_alias( $tokens['button-bg'] ) );
+		$this->assertSame( 'rgba(1,2,3,0.42)', $tokens['button-text'] );
+	}
+
+	/**
+	 * A hand-supplied variant alias that does not resolve to a token is rejected before commit, since a
+	 * dangling variant alias lives under $extensions where the token dry-run never sees it.
+	 *
+	 * @return void
+	 */
+	public function testADanglingVariantAliasIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'variant' => 'accent',
+					'tokens'  => $this->button_tokens( [ 'button-bg' => '{semantic.color.does-not-exist}' ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
 	}
 
 	/**

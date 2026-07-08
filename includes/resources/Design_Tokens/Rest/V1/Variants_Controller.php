@@ -10,8 +10,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Value_Normalizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 use KadenceWP\KadenceBlocks\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
@@ -231,6 +233,15 @@ final class Variants_Controller extends Controller {
 	private Active_Set_Store $active;
 
 	/**
+	 * Rewrites captured literal variant values into semantic aliases where one matches.
+	 *
+	 * @since TBD
+	 *
+	 * @var Variant_Value_Normalizer
+	 */
+	private Variant_Value_Normalizer $normalizer;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -242,13 +253,14 @@ final class Variants_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator            $mutator   Assembles the candidate overrides document.
-	 * @param Token_Resolver     $resolver  Dry-runs a candidate's token layers before commit.
-	 * @param Dtcg_Validator     $validator Validates the DTCG grammar of a candidate document.
-	 * @param Effective_Variants $variants  Reads the baseline-merged variants section.
-	 * @param Token_Registry     $registry  Declares which blocks accept variants.
-	 * @param Active_Set_Store   $active    Resolves the active set when a request names none.
+	 * @param Token_Store              $store     The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                  $mutator   Assembles the candidate overrides document.
+	 * @param Token_Resolver           $resolver  Dry-runs a candidate's token layers before commit.
+	 * @param Dtcg_Validator           $validator Validates the DTCG grammar of a candidate document.
+	 * @param Effective_Variants       $variants   Reads the baseline-merged variants section.
+	 * @param Token_Registry           $registry   Declares which blocks accept variants.
+	 * @param Active_Set_Store         $active     Resolves the active set when a request names none.
+	 * @param Variant_Value_Normalizer $normalizer Rewrites captured literals into semantic aliases.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -257,16 +269,18 @@ final class Variants_Controller extends Controller {
 		Dtcg_Validator $validator,
 		Effective_Variants $variants,
 		Token_Registry $registry,
-		Active_Set_Store $active
+		Active_Set_Store $active,
+		Variant_Value_Normalizer $normalizer
 	) {
-		$this->store     = $store;
-		$this->mutator   = $mutator;
-		$this->resolver  = $resolver;
-		$this->validator = $validator;
-		$this->variants  = $variants;
-		$this->registry  = $registry;
-		$this->active    = $active;
-		$this->rest_base = 'variants';
+		$this->store      = $store;
+		$this->mutator    = $mutator;
+		$this->resolver   = $resolver;
+		$this->validator  = $validator;
+		$this->variants   = $variants;
+		$this->registry   = $registry;
+		$this->active     = $active;
+		$this->normalizer = $normalizer;
+		$this->rest_base  = 'variants';
 	}
 
 	/**
@@ -455,10 +469,17 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$slug      = $this->slug( $request );
-		$candidate = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
+		$slug       = $this->slug( $request );
+		$block_node = $this->normalize_block_node( $block_node, $slug );
+		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
 
 		$error = $this->guard_surface( $candidate, $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_aliases_resolve( $block_node, $block, $slug );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -502,7 +523,8 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$slug = $this->slug( $request );
+		$slug       = $this->slug( $request );
+		$block_node = $this->normalize_block_node( $block_node, $slug );
 
 		// Replace, not merge: drop the stored block node first so a variant the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
@@ -515,6 +537,12 @@ final class Variants_Controller extends Controller {
 		}
 
 		$error = $this->guard_surface( $candidate, $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_aliases_resolve( $block_node, $block, $slug );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1021,6 +1049,86 @@ final class Variants_Controller extends Controller {
 						'block'      => $block,
 						'variant'    => (string) $slug,
 						'properties' => $report['unvalued'],
+					]
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Rewrite each named variant's captured literal values into semantic aliases where one matches the set,
+	 * so a value captured off a block instance re-joins the theming cascade rather than freezing as a literal.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param string               $slug       The token set the values are matched against.
+	 *
+	 * @return array<string, mixed> The variant node with literals aliased where a semantic matches.
+	 */
+	private function normalize_block_node( array $block_node, string $slug ): array {
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( $block_node as $variant_slug => $variant ) {
+			// $default and any other "$"-prefixed metadata key carries no token map to normalize.
+			if ( is_string( $variant_slug ) && strpos( $variant_slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			if ( ! is_array( $variant ) || ! isset( $variant[ $tokens_key ] ) || ! is_array( $variant[ $tokens_key ] ) ) {
+				continue;
+			}
+
+			$variant[ $tokens_key ]      = $this->normalizer->normalize( $variant[ $tokens_key ], $slug );
+			$block_node[ $variant_slug ] = $variant;
+		}
+
+		return $block_node;
+	}
+
+	/**
+	 * Reject a written variant whose token map carries an alias that does not resolve in the target set.
+	 *
+	 * Variant token values live under `$extensions`, which the Resolver's dry-run (which walks only the token
+	 * layers) never sees, so a dangling variant alias would otherwise slip past validation and fail silently
+	 * at projection. Normalizer-minted aliases resolve by construction; this only catches a hand-supplied or
+	 * stale alias. Only the aliases the request carries are checked.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param string               $block      The block name, for error context.
+	 * @param string               $slug       The token set the aliases resolve against.
+	 *
+	 * @return WP_Error|null A WP_Error when an alias does not resolve, null otherwise.
+	 */
+	private function guard_aliases_resolve( array $block_node, string $block, string $slug ): ?WP_Error {
+		$resolved   = $this->resolver->resolve( $slug );
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( $block_node as $variant_slug => $variant ) {
+			if ( is_string( $variant_slug ) && strpos( $variant_slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			$tokens = is_array( $variant ) && isset( $variant[ $tokens_key ] ) && is_array( $variant[ $tokens_key ] ) ? $variant[ $tokens_key ] : [];
+
+			foreach ( $tokens as $property => $value ) {
+				if ( ! Alias::is_alias( $value ) || $resolved->value( Alias::path_of( $value ) ) !== null ) {
+					continue;
+				}
+
+				return new WP_Error(
+					'rest_design_tokens_unresolvable',
+					__( 'A variant alias does not resolve to a token.', 'kadence-blocks' ),
+					[
+						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'    => $block,
+						'variant'  => (string) $variant_slug,
+						'property' => (string) $property,
+						'alias'    => $value,
 					]
 				);
 			}
