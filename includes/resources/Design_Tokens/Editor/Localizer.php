@@ -3,16 +3,18 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 
 /**
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
- * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches
- * two globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants
- * (the variant catalog the variant picker reads) and window.kadenceDesignTokensSets (the token-set catalog
- * the per-block set-override picker reads). Guarded on wp_script_is( …, 'enqueued' ) so it runs only where
- * that bundle loads, and skipped entirely when the registry is fail-closed (a deactivated registry projects
- * nothing, so the pickers offer nothing).
+ * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches three
+ * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants (the
+ * per-set variant catalog the variant picker and the "save as new variant" form read),
+ * window.kadenceDesignTokensSets (the token-set catalog the per-block set-override picker reads), and
+ * window.kadenceDesignTokensRest (the REST descriptor the variant writes POST to). Guarded on
+ * wp_script_is( …, 'enqueued' ) so it runs only where that bundle loads, and skipped entirely when the
+ * registry is fail-closed (a deactivated registry projects nothing, so the pickers offer nothing).
  *
  * Emitted with wp_add_inline_script + wp_json_encode; the JSON_HEX_* flags make the payload safe to
  * inline inside a <script> (no </script> breakout, no & ambiguity) without further escaping.
@@ -47,6 +49,15 @@ final class Localizer {
 	 * @var string
 	 */
 	private const SETS_OBJECT = 'kadenceDesignTokensSets';
+
+	/**
+	 * The JS global the variant writes read for the REST root, namespace and nonce.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const REST_OBJECT = 'kadenceDesignTokensRest';
 
 	/**
 	 * The token registry, for the fail-closed gate.
@@ -106,6 +117,23 @@ final class Localizer {
 
 		$this->attach( self::VARIANTS_OBJECT, $this->variant_catalog->all() );
 		$this->attach( self::SETS_OBJECT, $this->set_catalog->all() );
+		$this->attach( self::REST_OBJECT, $this->rest() );
+	}
+
+	/**
+	 * The REST descriptor the editor's variant writes POST to: the wp-json root, the v1 namespace, and a
+	 * nonce. Mirrors the admin feed's descriptor so the editor's variants client reuses the same middleware.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{root: string, namespace: string, nonce: string}
+	 */
+	private function rest(): array {
+		return [
+			'root'      => esc_url_raw( rest_url() ),
+			'namespace' => Controller::namespace(),
+			'nonce'     => wp_create_nonce( 'wp_rest' ),
+		];
 	}
 
 	/**
