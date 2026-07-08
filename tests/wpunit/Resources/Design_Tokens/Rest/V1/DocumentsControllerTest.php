@@ -871,6 +871,378 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingIntoPrimitiveCustomNamespace(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'custom' => [
+								'foo' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#aabbcc',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingDeeperThanPrimitiveCustomNamespace(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'custom' => [
+								'foo' => [
+									'bar' => [
+										Token_Type::get_type_key() => 'color',
+										Sentinels::get_value_key() => '#aabbcc',
+									],
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksWritingIntoReservedExtensionSection(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.foo' => [ 'label' => 'Foo' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * PATCH with unreserved paths is allowed even when the stored document already contains user primitives.
+	 *
+	 * @return void
+	 */
+	public function testPatchWithUnreservedPathsSucceedsWhenStoredDocHasUserPrimitives(): void {
+		// Store a document that already carries a user primitive in $extensions.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'my-color' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#112233',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.my-color' => [ 'label' => 'My Color' ],
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		// A PATCH that only touches an unreserved path should succeed.
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPutIsRejectedWhileUserPrimitivesExist(): void {
+		// Store a document that carries user primitives in $extensions.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'my-color' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#112233',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.my-color' => [ 'label' => 'My Color' ],
+							],
+						],
+					],
+				] 
+			)
+		);
+
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'primary' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#3182CE',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_put_not_allowed', $response->get_error_code() );
+		$this->assertSame( WP_Http::CONFLICT, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPutProceedsWhenStoredDocHasNoUserPrimitives(): void {
+		$this->store->save_document( '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}' );
+
+		$response = $this->controller->update_item(
+			$this->write_request(
+				'PUT',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'b' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '#bbbbbb',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$document = $response->get_data()['document'];
+		$this->assertArrayNotHasKey( 'a', $document['primitive']['color'] );
+		$this->assertArrayHasKey( 'b', $document['primitive']['color'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenBlocksReservedCustomPath(): void {
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.custom.foo' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeleteTokenDoesNotBlockNonCustomPath(): void {
+		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
+
+		$response = $this->controller->delete_token(
+			$this->token_path_request( 'DELETE', Token_Store::default_slug(), 'primitive.color.brand.primary' )
+		);
+
+		// The guard does not fire — the delete proceeds normally.
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchBlocksAnAliasIntoTheReservedNamespaceOutsideTheSemanticLayer(): void {
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'primitive' => [
+						'color' => [
+							'brand' => [
+								'accent' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+								],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_reserved_path', $response->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testPatchAllowsASemanticAliasIntoTheReservedNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$response = $this->controller->patch_item(
+			$this->write_request(
+				'PATCH',
+				Token_Store::default_slug(),
+				[
+					'semantic' => [
+						'color' => [
+							'accent' => [
+								Token_Type::get_type_key() => 'color',
+								Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+							],
+						],
+					],
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testSetTokenRejectsAnUnsupportedAliasIntoTheUserPrimitiveNamespace(): void {
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'primitive'   => [
+						'color' => [
+							'custom' => [
+								'blue' => [
+									Token_Type::get_type_key() => 'color',
+									Sentinels::get_value_key() => '#0000ff',
+								],
+							],
+						],
+					],
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'userPrimitives' => [
+								'primitive.color.custom.blue' => [ 'label' => 'Blue' ],
+							],
+						],
+					],
+				]
+			)
+		);
+
+		// A PUT to a single baseline-layer token whose $value aliases a user primitive from outside the
+		// semantic layer must be rejected, even though set_token() never runs guard_reserved_in_partial().
+		$response = $this->controller->set_token(
+			$this->token_request(
+				'PUT',
+				Token_Store::default_slug(),
+				'primitive.color.brand.accent',
+				[
+					Token_Type::get_type_key() => 'color',
+					Sentinels::get_value_key() => '{primitive.color.custom.blue}',
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $response->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
 	 * Build a bulk-write request carrying the slug, document and optional title as parameters.
 	 *
 	 * @param string               $method   The HTTP method.
