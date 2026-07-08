@@ -70,11 +70,11 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		// The namespaced variant var chains to that set's namespaced semantic.
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--style--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
 
 		// The canonical variant var is pointed at the active set's namespaced variant var (the alias layer).
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--style--primary--button-bg);', $css );
 	}
 
 	/**
@@ -88,8 +88,8 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'default' );
 
 		// Both sets' namespaced variant vars are present (dark resolves from baseline here, namespaced).
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--dark--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--dark--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
 
 		// The dark switch selector re-points the canonical variant var at the dark namespace.
 		$this->assertStringContainsString(
@@ -97,7 +97,7 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);',
+			'--kb-token--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--style--primary--button-bg);',
 			$css
 		);
 	}
@@ -113,11 +113,11 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertSame(
 			2,
-			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);' )
+			substr_count( $css, '--kb-token--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--style--primary--button-bg);' )
 		);
 		$this->assertSame(
 			1,
-			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);' )
+			substr_count( $css, '--kb-token--variant--kadence-singlebtn--style--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--style--primary--button-bg);' )
 		);
 	}
 
@@ -132,11 +132,11 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
-			'.wp-block-kadence-singlebtn.kb-variant--secondary{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);}',
+			'.wp-block-kadence-singlebtn.kb-variant--style--secondary{'
+				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--style--secondary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--style--secondary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--style--secondary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--style--secondary--button-text-hover);}',
 			$css
 		);
 	}
@@ -151,8 +151,8 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		$this->assertStringContainsString(
-			'.wp-block-button.kb-variant--secondary{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--core-button--secondary--button-bg);',
+			'.wp-block-button.kb-variant--style--secondary{'
+				. '--global-palette-btn-bg:var(--kb-token--variant--core-button--style--secondary--button-bg);',
 			$css
 		);
 		$this->assertStringNotContainsString( '.wp-block-core-button', $css );
@@ -169,10 +169,10 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--primary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);}',
+				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--style--primary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--style--primary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--style--primary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--style--primary--button-text-hover);}',
 			$css
 		);
 	}
@@ -344,15 +344,22 @@ final class Css_BuilderTest extends TestCase {
 		$registry->register_variant_set(
 			[
 				'block'    => $block,
+				'group'    => 'color',
+				'label'    => 'Color',
 				'bindings' => [
-					'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
-					'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
+					'button-bg'   => [ 'kadence_slot' => 'palette-btn-bg' ],
+					'button-text' => [ 'kadence_slot' => 'palette-btn' ],
+				],
+			]
+		);
+		$registry->register_variant_set(
+			[
+				'block'    => $block,
+				'group'    => 'hover',
+				'label'    => 'Hover',
+				'bindings' => [
 					'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
 					'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
-				],
-				'groups'   => [
-					'color' => [ 'label' => 'Color' ],
-					'hover' => [ 'label' => 'Hover' ],
 				],
 			]
 		);
@@ -419,11 +426,17 @@ final class Css_BuilderTest extends TestCase {
 		$registry->register_variant_set(
 			[
 				'block'    => $block,
+				'group'    => 'first',
+				'label'    => 'First',
 				'bindings' => [ 'button-bg' => [ 'kadence_slot' => 'palette-btn-bg' ] ],
-				'groups'   => [
-					'first'  => [ 'label' => 'First' ],
-					'second' => [ 'label' => 'Second' ],
-				],
+			]
+		);
+		$registry->register_variant_set(
+			[
+				'block'    => $block,
+				'group'    => 'second',
+				'label'    => 'Second',
+				'bindings' => [ 'button-bg' => [ 'kadence_slot' => 'palette-btn-bg' ] ],
 			]
 		);
 
@@ -470,15 +483,17 @@ final class Css_BuilderTest extends TestCase {
 		$registry->register_variant_set(
 			[
 				'block'    => $block,
-				// One block-level bindings map holds every axis's property; each axis sets only its own.
-				'bindings' => [
-					'fill-color' => [ 'kadence_slot' => 'palette-btn-bg' ],
-					'type-color' => [ 'kadence_slot' => 'palette-btn' ],
-				],
-				'groups'   => [
-					'fill' => [ 'label' => 'Fill' ],
-					'type' => [ 'label' => 'Type' ],
-				],
+				'group'    => 'fill',
+				'label'    => 'Fill',
+				'bindings' => [ 'fill-color' => [ 'kadence_slot' => 'palette-btn-bg' ] ],
+			]
+		);
+		$registry->register_variant_set(
+			[
+				'block'    => $block,
+				'group'    => 'type',
+				'label'    => 'Type',
+				'bindings' => [ 'type-color' => [ 'kadence_slot' => 'palette-btn' ] ],
 			]
 		);
 

@@ -13,7 +13,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
+import { VariantPicker, blockVariants, activeSet, blockSetGroup } from './extension/variant-picker';
 import { VariantActions } from './extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 
@@ -116,9 +116,9 @@ addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enabl
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
 		settings.attributes = assign(settings.attributes, {
-			kbVariant: {
-				type: 'string',
-				default: '',
+			kbVariants: {
+				type: 'object',
+				default: {},
 			},
 			kbTokenSet: {
 				type: 'string',
@@ -149,18 +149,31 @@ function sanitizeTokenIdentifier(slug) {
 }
 
 /**
- * The class a selected variant outputs, or an empty string when none is selected.
+ * The classes a block's selected variants output: one `kb-variant--<group>--<slug>` per variant set with a
+ * non-empty selection in the `kbVariants` map. Each segment is sanitized independently so the group and
+ * variant slugs cannot merge across the "--" delimiter, mirroring the projector's PHP
+ * Style::group_variant_class().
  *
- * @param {string} kbVariant The selected variant slug.
+ * @param {Object} kbVariants The kbVariants map (variant-set group slug => selected variant slug).
  *
  * @since TBD
  *
- * @return {string} The `kb-variant--<slug>` class, or an empty string.
+ * @return {string} The space-joined variant classes, or an empty string.
  */
-function kbVariantClassName(kbVariant) {
-	const slug = sanitizeTokenIdentifier(kbVariant);
+function kbVariantsClassNames(kbVariants) {
+	if (!kbVariants || typeof kbVariants !== 'object') {
+		return '';
+	}
 
-	return slug ? `kb-variant--${slug}` : '';
+	return Object.keys(kbVariants)
+		.map((group) => {
+			const groupSlug = sanitizeTokenIdentifier(group);
+			const variantSlug = sanitizeTokenIdentifier(kbVariants[group]);
+
+			return groupSlug && variantSlug ? `kb-variant--${groupSlug}--${variantSlug}` : '';
+		})
+		.filter(Boolean)
+		.join(' ');
 }
 
 /**
@@ -180,7 +193,7 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 		return props;
 	}
 
-	const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+	const variantClass = kbVariantsClassNames(get(attributes, 'kbVariants', {}));
 
 	if (variantClass) {
 		props.className = props.className ? `${props.className} ${variantClass}` : variantClass;
@@ -232,7 +245,7 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 			return <BlockListBlock {...props} />;
 		}
 
-		const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+		const variantClass = kbVariantsClassNames(get(attributes, 'kbVariants', {}));
 
 		if (!variantClass) {
 			return <BlockListBlock {...props} />;
@@ -303,12 +316,17 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 		}
 
 		const set = get(attributes, 'kbTokenSet', '') || activeSet();
+		const group = blockSetGroup(name, set);
 		const hasVariants = blockVariants(name, set).length > 0;
 		const hasSets = selectableSets().length >= 2;
 
 		if (!hasVariants && !hasSets) {
 			return <BlockEdit {...props} />;
 		}
+
+		const selected = get(attributes, ['kbVariants', group], '');
+		const selectVariant = (value) =>
+			setAttributes({ kbVariants: { ...get(attributes, 'kbVariants', {}), [group]: value } });
 
 		return (
 			<>
@@ -327,17 +345,12 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 							)}
 							{hasVariants && (
 								<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
-									<VariantPicker
-										name={name}
-										set={set}
-										value={get(attributes, 'kbVariant', '')}
-										onChange={(value) => setAttributes({ kbVariant: value })}
-									/>
+									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
 									<VariantActions
 										blockName={name}
 										set={set}
-										selected={get(attributes, 'kbVariant', '')}
-										onSelect={(slug) => setAttributes({ kbVariant: slug })}
+										selected={selected}
+										onSelect={selectVariant}
 									/>
 								</SubsectionWrap>
 							)}

@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
@@ -315,12 +316,6 @@ final class Css_Builder {
 		$out = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
-			$set = $this->registry->for_block( $block );
-
-			if ( $set === null ) {
-				continue;
-			}
-
 			try {
 				// A block may carry registered bindings before the document defines its variants; that is not
 				// an error, it simply contributes nothing yet, so skip it rather than fail the whole build.
@@ -334,6 +329,15 @@ final class Css_Builder {
 			// Groups are collected in document order: when two groups share a --global-<slot>, equal
 			// specificity means the later group's scoped rule wins by source order.
 			foreach ( $groups as $group ) {
+				// Each set (axis) owns its bindings, so look them up per group — the button's "style" set, a
+				// preset block's implicit set. A group the document defines but the registry never declared a
+				// set for contributes nothing (no bindings), so skip it.
+				$set = $this->registry->for_variant_set( $block, $group );
+
+				if ( $set === null ) {
+					continue;
+				}
+
 				try {
 					$names = $this->variants->names( $block, $slug, $group );
 				} catch ( RuntimeException $e ) {
@@ -615,7 +619,7 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function variant_class( string $group, string $variant ): string {
-		return $group === Variant_Resolver::IMPLICIT_GROUP
+		return $group === Variant_Set::IMPLICIT_GROUP
 			? Style::variant_class( $variant )
 			: Style::group_variant_class( $group, $variant );
 	}
@@ -642,7 +646,7 @@ final class Css_Builder {
 			. ( $namespace === '' ? '' : self::sanitize_identifier( $namespace ) . '--' )
 			. self::VARIANT_SEGMENT
 			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
-			. ( $group === Variant_Resolver::IMPLICIT_GROUP ? '' : self::sanitize_identifier( $group ) . '--' )
+			. ( $group === Variant_Set::IMPLICIT_GROUP ? '' : self::sanitize_identifier( $group ) . '--' )
 			. self::sanitize_identifier( $variant ) . '--'
 			. self::sanitize_identifier( $property );
 	}

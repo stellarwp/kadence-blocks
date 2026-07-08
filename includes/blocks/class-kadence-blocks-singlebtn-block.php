@@ -367,14 +367,21 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
-		if ( ! empty( $attributes['kbVariant'] ) ) {
+		if ( ! empty( $attributes['kbVariants'] ) && is_array( $attributes['kbVariants'] ) ) {
 			/**
-			 * The selected design-token variant outputs a kb-variant--<slug> class the Design Tokens variant
-			 * projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
-			 * the editor save filter; the shared Sanitizes_Css_Identifier sanitizer keeps the slug matching the
-			 * selector the projected CSS targets.
+			 * Each selected design-token variant outputs a kb-variant--<group>--<slug> class (one per variant
+			 * set/axis) the Design Tokens variant projector's scoped CSS hooks. This is a dynamic block, so the
+			 * classes are added here rather than by the editor save filter; each segment is sanitized with the
+			 * shared Sanitizes_Css_Identifier so the slugs match the selector the projected CSS targets.
 			 */
-			$classes[] = 'kb-variant--' . self::sanitize_identifier( Cast::to_string( $attributes['kbVariant'] ) );
+			foreach ( $attributes['kbVariants'] as $variant_group => $variant_slug ) {
+				$group_id = self::sanitize_identifier( Cast::to_string( $variant_group ) );
+				$slug_id  = self::sanitize_identifier( Cast::to_string( $variant_slug ) );
+
+				if ( $group_id !== '' && $slug_id !== '' ) {
+					$classes[] = 'kb-variant--' . $group_id . '--' . $slug_id;
+				}
+			}
 		}
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {

@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -26,6 +27,11 @@ final class Variant_ResolverTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
+	/**
+	 * The button's picker-driven variant set (its Style axis); the button's variants nest under this group.
+	 */
+	private const STYLE = 'style';
+
 	private Variant_Resolver $resolver;
 
 	protected function setUp(): void {
@@ -35,7 +41,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItResolvesAliasBindingsForSecondary(): void {
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary', 'default', self::STYLE );
 
 		// Aliases flatten through the token graph. Secondary is the dark/charcoal identity.
 		$this->assertSame( '#1A202C', $values['button-bg'] );           // {semantic.color.button-secondary-bg} -> neutral.900
@@ -46,7 +52,7 @@ final class Variant_ResolverTest extends TestCase {
 	}
 
 	public function testItFlattensMultiHopAliasesForThePrimaryVariant(): void {
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'primary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'primary', 'default', self::STYLE );
 
 		// button-bg -> {semantic.color.button-primary-bg} -> {primitive.color.brand.button} -> #3633e1
 		$this->assertSame( '#3633e1', $values['button-bg'] );
@@ -66,7 +72,7 @@ final class Variant_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	public function testResolvePreservesAliasIndirection(): void {
-		$projected = $this->resolver->resolve( self::BUTTON, 'primary' );
+		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'default', '', self::STYLE );
 
 		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-bg)', $projected['button-bg'] );
 		$this->assertSame( 'var(--kb-token--semantic--color--button-primary-text)', $projected['button-text'] );
@@ -74,7 +80,7 @@ final class Variant_ResolverTest extends TestCase {
 		$this->assertSame( 'var(--kb-token--semantic--radius--control)', $projected['button-radius'] );
 
 		// The literal form is still available for the concrete-value surfaces — both forms are exposed.
-		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'primary' )['button-bg'] );
+		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'primary', 'default', self::STYLE )['button-bg'] );
 	}
 
 	/**
@@ -85,7 +91,7 @@ final class Variant_ResolverTest extends TestCase {
 	 * @return void
 	 */
 	public function testResolveNamespacesTheVarTarget(): void {
-		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark' );
+		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark', self::STYLE );
 
 		$this->assertSame( 'var(--kb-token--dark--semantic--color--button-primary-bg)', $projected['button-bg'] );
 		$this->assertSame( 'var(--kb-token--dark--semantic--radius--control)', $projected['button-radius'] );
@@ -98,43 +104,43 @@ final class Variant_ResolverTest extends TestCase {
 	 */
 	public function testResolveAndResolveLiteralShareTheInclusionSet(): void {
 		$this->assertSame(
-			array_keys( $this->resolver->resolve_literal( self::BUTTON, 'secondary' ) ),
-			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary' ) )
+			array_keys( $this->resolver->resolve_literal( self::BUTTON, 'secondary', 'default', self::STYLE ) ),
+			array_keys( $this->resolver->resolve( self::BUTTON, 'secondary', 'default', '', self::STYLE ) )
 		);
 	}
 
 	public function testResolveDefaultUsesTheDeclaredDefault(): void {
 		// The baseline's $default for the button is "primary"; resolve_default() returns literals.
 		$this->assertSame(
-			$this->resolver->resolve_literal( self::BUTTON, 'primary' ),
-			$this->resolver->resolve_default( self::BUTTON )
+			$this->resolver->resolve_literal( self::BUTTON, 'primary', 'default', self::STYLE ),
+			$this->resolver->resolve_default( self::BUTTON, 'default', self::STYLE )
 		);
 	}
 
 	public function testItListsTheDocumentsVariantNames(): void {
-		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON, 'default', self::STYLE ) );
 	}
 
 	public function testDefaultVariantReadsTheDollarDefault(): void {
-		$this->assertSame( 'primary', $this->resolver->default_variant( self::BUTTON ) );
+		$this->assertSame( 'primary', $this->resolver->default_variant( self::BUTTON, 'default', self::STYLE ) );
 	}
 
 	public function testHasVariant(): void {
-		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'secondary' ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'secondary', 'default', self::STYLE ) );
 		// "ghost" is not a V1 Button variant (the native Outline style covers it).
-		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'ghost' ) );
+		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'ghost', 'default', self::STYLE ) );
 		// Unknown block is false, not an error.
 		$this->assertFalse( $this->resolver->has_variant( 'kadence/nope', 'primary' ) );
 	}
 
 	public function testItReadsAVariantLabelFromTheDocument(): void {
-		$this->assertSame( 'Secondary', $this->resolver->label( self::BUTTON, 'secondary' ) );
-		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary' ) );
+		$this->assertSame( 'Secondary', $this->resolver->label( self::BUTTON, 'secondary', 'default', self::STYLE ) );
+		$this->assertSame( 'Primary', $this->resolver->label( self::BUTTON, 'primary', 'default', self::STYLE ) );
 	}
 
 	public function testLabelIsNullForAnUnknownVariantOrBlock(): void {
 		// A non-throwing lookup, mirroring has_variant().
-		$this->assertNull( $this->resolver->label( self::BUTTON, 'ghost' ) );
+		$this->assertNull( $this->resolver->label( self::BUTTON, 'ghost', 'default', self::STYLE ) );
 		$this->assertNull( $this->resolver->label( 'kadence/nope', 'primary' ) );
 	}
 
@@ -151,7 +157,7 @@ final class Variant_ResolverTest extends TestCase {
 	public function testTheShippedButtonSetIsConsistent(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
-		$set      = $registry->for_block( self::BUTTON );
+		$set      = $registry->for_variant_set( self::BUTTON, self::STYLE );
 
 		$this->assertNotNull( $set, 'The Button variant set should be registered at boot.' );
 
@@ -208,16 +214,16 @@ final class Variant_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( [ 'primary', 'secondary', 'accent' ], $this->resolver->names( self::BUTTON ) );
-		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent' ) );
-		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent' ) );
+		$this->assertSame( [ 'primary', 'secondary', 'accent' ], $this->resolver->names( self::BUTTON, 'default', self::STYLE ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent', 'default', self::STYLE ) );
+		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent', 'default', self::STYLE ) );
 
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'accent' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'accent', 'default', self::STYLE );
 		$this->assertSame( '#ff0000', $values['button-bg'] );
 		$this->assertSame( '1rem', $values['button-radius'] );
 
 		// A stored literal has no alias, so the projected form passes it through unchanged.
-		$this->assertSame( '#ff0000', $this->resolver->resolve( self::BUTTON, 'accent' )['button-bg'] );
+		$this->assertSame( '#ff0000', $this->resolver->resolve( self::BUTTON, 'accent', 'default', '', self::STYLE )['button-bg'] );
 	}
 
 	/**
@@ -229,7 +235,7 @@ final class Variant_ResolverTest extends TestCase {
 	public function testAStoredOverrideWinsOverTheBaselineVariantValue(): void {
 		$this->seedVariant( Token_Store::default_slug(), 'secondary', 'Secondary', [ 'button-bg' => '#000000' ] );
 
-		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary', 'default', self::STYLE );
 
 		// The overridden property takes the stored value.
 		$this->assertSame( '#000000', $values['button-bg'] );
@@ -257,12 +263,12 @@ final class Variant_ResolverTest extends TestCase {
 			]
 		);
 
-		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent', 'dark' ) );
-		$this->assertContains( 'accent', $this->resolver->names( self::BUTTON, 'dark' ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent', 'dark', self::STYLE ) );
+		$this->assertContains( 'accent', $this->resolver->names( self::BUTTON, 'dark', self::STYLE ) );
 
 		// The default set never saw the write.
-		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'accent' ) );
-		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'accent', 'default', self::STYLE ) );
+		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON, 'default', self::STYLE ) );
 	}
 
 	/**
@@ -284,9 +290,11 @@ final class Variant_ResolverTest extends TestCase {
 				'com.kadence.designTokens' => [
 					'variants' => [
 						self::BUTTON => [
-							$variant => [
-								'label'  => $label,
-								'tokens' => $tokens,
+							self::STYLE => [
+								$variant => [
+									'label'  => $label,
+									'tokens' => $tokens,
+								],
 							],
 						],
 					],
@@ -307,7 +315,7 @@ final class Variant_ResolverTest extends TestCase {
 		$resolver = $this->grouped_resolver();
 
 		$this->assertSame( [ 'color', 'hover' ], $resolver->groups( 'kadence/grouped-btn' ) );
-		$this->assertSame( [ Variant_Resolver::IMPLICIT_GROUP ], $resolver->groups( 'kadence/flat-btn' ) );
+		$this->assertSame( [ Variant_Set::IMPLICIT_GROUP ], $resolver->groups( 'kadence/flat-btn' ) );
 	}
 
 	/**

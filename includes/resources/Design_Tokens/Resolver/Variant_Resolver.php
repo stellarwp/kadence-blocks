@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
@@ -28,13 +29,14 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * surfaces that cannot consume a var() chain (block-attribute presets, the dimension-default fallback,
  * the editor variant-catalog feed).
  *
- * A block's variants may be organized into named GROUPS (independent single-select axes, e.g. a "color"
- * group alongside a "hover" group): the document then nests `variants.<block>.<group>.{ $default,
- * <variant> }`. The flat shape (`variants.<block>.{ $default, <variant> }`) is read as the degenerate
- * single group — addressed by the {@see Variant_Resolver::IMPLICIT_GROUP} sentinel — so every accessor
- * takes an optional `$group` and a flat block resolves through that one implicit group with no group
- * argument. A user-authored variant (added through the store) is a flat variant within its block or
- * group, so it sits underneath the per-set override merge unchanged.
+ * A block's variants can be organized as named variant SETS (picker-driven axes, e.g. a button's "style"
+ * set): the document then nests `variants.<block>.<group>.{ $default, <variant> }`, and each set resolves
+ * independently. A block may instead ship a single flat PRESET set (`variants.<block>.{ $default,
+ * <variant> }`) — its default look, with no picker — which is read through the
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::IMPLICIT_GROUP} sentinel. So every
+ * accessor takes an optional `$group`: a null argument resolves to that single implicit preset set, while a
+ * named set is addressed by its slug. A user-authored variant (added through the store) is a variant within
+ * its set, so it sits underneath the per-set override merge unchanged.
  *
  * Variant definitions are read per token set through {@see Effective_Variants}: the shipped baseline's
  * variants deep-merged with that set's stored overrides, so a variant a user authored through the store
@@ -44,17 +46,6 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * @since TBD
  */
 final class Variant_Resolver {
-
-	/**
-	 * The sentinel naming a flat block's single implicit group. A `$`-prefixed id so it can never collide
-	 * with a real (kebab-case) group slug, and is skipped by the same `$`-prefix filter that skips
-	 * `$default`. A null `$group` argument resolves to this for a flat block.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const IMPLICIT_GROUP = '$single';
 
 	/**
 	 * @var Effective_Variants The per-set effective variant definitions (the baseline deep-merged with the set's stored overrides) are read from.
@@ -83,7 +74,7 @@ final class Variant_Resolver {
 
 	/**
 	 * The variant groups (axes) a block declares for a set, in document order. A grouped block returns its
-	 * explicit group slugs; a flat block returns a single-element list naming the {@see self::IMPLICIT_GROUP}
+	 * explicit group slugs; a flat block returns a single-element list naming the {@see Variant_Set::IMPLICIT_GROUP}
 	 * sentinel, so callers can iterate axes uniformly whether or not the block is grouped.
 	 *
 	 * @since TBD
@@ -99,7 +90,7 @@ final class Variant_Resolver {
 		$node = $this->block_variants( $block, $slug );
 
 		if ( ! $this->node_is_grouped( $node ) ) {
-			return [ self::IMPLICIT_GROUP ];
+			return [ Variant_Set::IMPLICIT_GROUP ];
 		}
 
 		$groups = [];
@@ -478,7 +469,7 @@ final class Variant_Resolver {
 	 */
 	private function group_node( string $block, string $slug, ?string $group ): array {
 		$node        = $this->block_variants( $block, $slug );
-		$is_implicit = $group === null || $group === self::IMPLICIT_GROUP;
+		$is_implicit = $group === null || $group === Variant_Set::IMPLICIT_GROUP;
 
 		if ( ! $this->node_is_grouped( $node ) ) {
 			if ( $is_implicit ) {

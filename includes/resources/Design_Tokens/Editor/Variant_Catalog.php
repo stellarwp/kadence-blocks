@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
@@ -13,12 +14,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
  * Builds the per-set variant catalog the block editor's variant picker and "save as new variant" form read.
  *
  * Keyed by token set so the picker can show the variants for whichever set a block is on (its `kbTokenSet`,
- * or the active set), not just the active one: `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per
- * block it carries the `$default` slug, the named variants as { slug, label, userCreated }, the picker
- * control label, and the controllable surface as { key, kind, token } per bound property so the form can
- * render one input per property. It carries no resolved token values, so it cannot raise the alias-cycle
- * errors the admin feed must guard; a block registered but absent from a set (Unknown_Variant_Exception) is
- * skipped, so one undefined block never empties the catalog.
+ * or the active set), not just the active one, then by block and by variant SET (axis):
+ * `{ active: <slug>, sets: { <slug>: { <block>: { <group>: {…} } } } }`. Per variant set it carries the
+ * `$default` slug, the named variants as { slug, label, userCreated }, the picker control label, and the
+ * controllable surface as { key, kind, token } per bound property so the form can render one input per
+ * property. Only NAMED (picker-driven) sets appear; a block's preset / default-variant set (the implicit
+ * group) has no picker and is omitted. It carries no resolved token values, so it cannot raise the
+ * alias-cycle errors the admin feed must guard; a set registered but absent from a token set
+ * (Unknown_Variant_Exception) is skipped, so one undefined set never empties the catalog.
  *
  * @since TBD
  */
@@ -113,75 +116,75 @@ final class Variant_Catalog {
 	}
 
 	/**
-	 * The per-block catalog for one set.
+	 * The per-block, per-variant-set catalog for one token set. Only NAMED (picker-driven) sets are
+	 * surfaced; a block's preset / default-variant set (the implicit group) has no picker, so it is skipped.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The token set slug.
 	 *
-	 * @return array<string, mixed> block => { default, variants, properties, label? }.
+	 * @return array<string, array<string, mixed>> block => group => { group, default, variants, properties, label? }.
 	 */
 	private function for_set( string $slug ): array {
 		$out = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
-			try {
-				$names   = $this->variants->names( $block, $slug );
-				$default = $this->variants->default_variant( $block, $slug );
-			} catch ( Unknown_Variant_Exception $e ) {
-				continue; // Block registered but not defined in this set — skip, fail soft.
-			}
+			foreach ( $this->registry->sets_for_block( $block ) as $group => $set ) {
+				if ( $group === Variant_Set::IMPLICIT_GROUP ) {
+					continue; // A preset / default-variant set shows no picker, so it is not offered here.
+				}
 
-			$user_created = $this->effective->user_created( $block, $slug );
+				try {
+					$names   = $this->variants->names( $block, $slug, $group );
+					$default = $this->variants->default_variant( $block, $slug, $group );
+				} catch ( Unknown_Variant_Exception $e ) {
+					continue; // Set registered but not defined in this token set — skip, fail soft.
+				}
 
-			$variants = [];
+				$user_created = $this->effective->user_created( $block, $slug, $group );
 
-			foreach ( $names as $name ) {
-				$variants[] = [
-					'slug'        => $name,
-					'label'       => $this->variants->label( $block, $name, $slug ) ?? $name,
-					'userCreated' => in_array( $name, $user_created, true ),
+				$variants = [];
+
+				foreach ( $names as $name ) {
+					$variants[] = [
+						'slug'        => $name,
+						'label'       => $this->variants->label( $block, $name, $slug, $group ) ?? $name,
+						'userCreated' => in_array( $name, $user_created, true ),
+					];
+				}
+
+				$entry = [
+					'group'      => $group,
+					'default'    => $default,
+					'variants'   => $variants,
+					'properties' => $this->properties_for( $set ),
 				];
+
+				// The picker's control label (the set's axis), declared on the variant set. Omitted when the
+				// set declares none, so the editor falls back to its default label.
+				if ( $set->label !== null ) {
+					$entry['label'] = $set->label;
+				}
+
+				$out[ $block ][ $group ] = $entry;
 			}
-
-			$entry = [
-				'default'    => $default,
-				'variants'   => $variants,
-				'properties' => $this->properties_for( $block ),
-			];
-
-			// The picker's control label (the variant axis), declared on the variant set. Omitted when the
-			// block declares none, so the editor falls back to its default label.
-			$set = $this->registry->for_block( $block );
-
-			if ( $set !== null && $set->label !== null ) {
-				$entry['label'] = $set->label;
-			}
-
-			$out[ $block ] = $entry;
 		}
 
 		return $out;
 	}
 
 	/**
-	 * The controllable surface for a block: one { key, kind, token } entry per bound property, in binding
-	 * order, so the editor form renders an input per property. Set-independent structure read from the
-	 * registry's bindings.
+	 * The controllable surface for a variant set: one { key, kind, token } entry per bound property, in
+	 * binding order, so the editor form renders an input per property. Set-structure read from the set's
+	 * bindings.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name.
+	 * @param Variant_Set $set The variant set.
 	 *
 	 * @return array<int, array{key: string, kind: string, token: string|null}>
 	 */
-	private function properties_for( string $block ): array {
-		$set = $this->registry->for_block( $block );
-
-		if ( $set === null ) {
-			return [];
-		}
-
+	private function properties_for( Variant_Set $set ): array {
 		$properties = [];
 
 		foreach ( $set->bindings as $property => $binding ) {
