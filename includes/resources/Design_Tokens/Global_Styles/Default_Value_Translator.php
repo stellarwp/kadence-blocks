@@ -92,6 +92,11 @@ final class Default_Value_Translator implements Value_Translator {
 	 * (Schema\Validation\Values\Font_Family_Value), so a plain family name is wrapped, and a
 	 * comma-separated stack is split into its elements.
 	 *
+	 * Each element also has its surrounding quotes stripped (e.g. `"Segoe UI"` -> `Segoe UI`):
+	 * Css_Renderer::font_family() re-wraps any element containing a space in quotes when
+	 * rendering back to CSS, so a literal that already arrived quoted would otherwise come out
+	 * double-quoted (`""Segoe UI""`).
+	 *
 	 * @since TBD
 	 *
 	 * @param string $value The font family value to translate.
@@ -103,7 +108,10 @@ final class Default_Value_Translator implements Value_Translator {
 	private function font_family( string $value ): array {
 		$families = array_values(
 			array_filter(
-				array_map( 'trim', explode( ',', $value ) ),
+				array_map(
+					static fn( string $family ): string => trim( $family, " \t\n\r\0\x0B\"'" ),
+					explode( ',', $value )
+				),
 				static fn( string $family ): bool => $family !== ''
 			)
 		);
