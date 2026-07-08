@@ -37,6 +37,15 @@ final class Reserved_Namespace {
 	private const SEGMENT = 'custom';
 
 	/**
+	 * The kebab-case pattern a terminal slug must match, without anchors or delimiters.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SLUG_PATTERN = '[a-z0-9]+(?:-[a-z0-9]+)*';
+
+	/**
 	 * Whether a canonical dot-path id names a user-primitive leaf: primitive.<type>.custom.<slug>.
 	 *
 	 * @since TBD
@@ -52,9 +61,46 @@ final class Reserved_Namespace {
 		);
 
 		return (bool) preg_match(
-			'/^' . self::LAYER . '\.(?:' . implode( '|', $types ) . ')\.' . self::SEGMENT . '\.[a-z0-9]+(?:-[a-z0-9]+)*$/',
+			'/^' . self::LAYER . '\.(?:' . implode( '|', $types ) . ')\.' . self::SEGMENT . '\.' . self::SLUG_PATTERN . '$/',
 			$id
 		);
+	}
+
+	/**
+	 * The anchored, unescaped slug pattern, suitable for a REST `args` `pattern` entry.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_slug_pattern(): string {
+		return '^' . self::SLUG_PATTERN . '$';
+	}
+
+	/**
+	 * Whether a terminal slug (not a full id) is valid kebab-case.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The terminal slug.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid_slug( string $slug ): bool {
+		return (bool) preg_match( '/' . self::get_slug_pattern() . '/', $slug );
+	}
+
+	/**
+	 * Build the canonical id for a terminal slug: primitive.color.custom.<slug>.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The terminal slug.
+	 *
+	 * @return string
+	 */
+	public static function canonical( string $slug ): string {
+		return self::LAYER . '.' . Token_Type::get_type_color() . '.' . self::SEGMENT . '.' . $slug;
 	}
 
 	/**

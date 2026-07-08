@@ -200,11 +200,20 @@ final class Document_Write_Pipeline {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $candidate        Full candidate overrides document.
-	 * @param string               $slug             Token set slug.
-	 * @param string               $title            Optional label.
-	 * @param string               $expected_version The version the caller last read.
-	 * @param int                  $success_status   HTTP status on success (200 or 201).
+	 * @param array<string, mixed> $candidate                            Full candidate overrides document.
+	 * @param string               $slug                                 Token set slug.
+	 * @param string               $title                                Optional label.
+	 * @param string               $expected_version                    The version the caller last read.
+	 * @param int                  $success_status                      HTTP status on success (200 or 201).
+	 * @param bool                 $skip_user_primitive_reference_check Whether to skip the check that
+	 *                                                                   rejects a user-primitive reference
+	 *                                                                   from outside the semantic layer.
+	 *                                                                   The rename cascade passes true: it
+	 *                                                                   already gated on and rewrote those
+	 *                                                                   references before building
+	 *                                                                   $candidate, so re-checking here
+	 *                                                                   would reject the very reference it
+	 *                                                                   just rewrote.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -213,7 +222,8 @@ final class Document_Write_Pipeline {
 		string $slug,
 		string $title,
 		string $expected_version,
-		int $success_status = WP_Http::OK
+		int $success_status = WP_Http::OK,
+		bool $skip_user_primitive_reference_check = false
 	) {
 		if ( $candidate !== [] ) {
 			$invariant_errors = $this->user_primitive_validator->validate( $candidate );
@@ -236,18 +246,20 @@ final class Document_Write_Pipeline {
 				);
 			}
 
-			foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
-				$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
+			if ( ! $skip_user_primitive_reference_check ) {
+				foreach ( array_keys( $this->user_primitive_index->all( $candidate ) ) as $user_primitive_id ) {
+					$references = $this->reference_policy->find( $candidate, (string) $user_primitive_id );
 
-				if ( ! $this->reference_policy->all_supported( $references ) ) {
-					return new WP_Error(
-						'rest_design_tokens_user_primitive_reference_unsupported',
-						__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
-						[
-							'status' => WP_Http::UNPROCESSABLE_ENTITY,
-							'slug'   => $slug,
-						]
-					);
+					if ( ! $this->reference_policy->all_semantic_overrides( $references ) ) {
+						return new WP_Error(
+							'rest_design_tokens_user_primitive_reference_unsupported',
+							__( 'The document contains an unsupported reference to a user primitive.', 'kadence-blocks' ),
+							[
+								'status' => WP_Http::UNPROCESSABLE_ENTITY,
+								'slug'   => $slug,
+							]
+						);
+					}
 				}
 			}
 

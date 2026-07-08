@@ -28,7 +28,7 @@ final class Token_Reference {
 	public string $path;
 
 	/**
-	 * Whether the phase-1 cascade can automatically handle this reference.
+	 * Whether the rename/delete cascade can automatically handle this reference.
 	 *
 	 * @since TBD
 	 *
@@ -64,6 +64,15 @@ final class Token_Reference {
 	private const KIND_EXTENSION = 'extension';
 
 	/**
+	 * Primitive layer override with a direct $value alias to another primitive.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_PRIMITIVE_OVERRIDE = 'primitive_override';
+
+	/**
 	 * @since TBD
 	 *
 	 * @param string $kind      One of the KIND_* values.
@@ -92,6 +101,15 @@ final class Token_Reference {
 	 */
 	public static function get_kind_composite_field(): string {
 		return self::KIND_COMPOSITE_FIELD;
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_primitive_override(): string {
+		return self::KIND_PRIMITIVE_OVERRIDE;
 	}
 
 	/**
