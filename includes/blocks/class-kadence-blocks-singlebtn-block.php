@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Renders_Variant_Classes;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -22,6 +23,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  */
 class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	use Sanitizes_Css_Identifier;
+	use Renders_Variant_Classes;
 
 	/**
 	 * Instance of this class
@@ -367,22 +369,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
-		if ( ! empty( $attributes['kbVariants'] ) && is_array( $attributes['kbVariants'] ) ) {
-			/**
-			 * Each selected design-token variant outputs a kb-variant--<group>--<slug> class (one per variant
-			 * set/axis) the Design Tokens variant projector's scoped CSS hooks. This is a dynamic block, so the
-			 * classes are added here rather than by the editor save filter; each segment is sanitized with the
-			 * shared Sanitizes_Css_Identifier so the slugs match the selector the projected CSS targets.
-			 */
-			foreach ( $attributes['kbVariants'] as $variant_group => $variant_slug ) {
-				$group_id = self::sanitize_identifier( Cast::to_string( $variant_group ) );
-				$slug_id  = self::sanitize_identifier( Cast::to_string( $variant_slug ) );
-
-				if ( $group_id !== '' && $slug_id !== '' ) {
-					$classes[] = 'kb-variant--' . $group_id . '--' . $slug_id;
-				}
-			}
-		}
+		// Each selected design-token variant outputs a kb-variant--<group>--<slug> class (one per variant
+		// set/axis) the Design Tokens variant projector's scoped CSS hooks. This is a dynamic block, so the
+		// classes are added here rather than by the editor save filter.
+		$classes = array_merge( $classes, $this->variant_classes( $attributes['kbVariants'] ?? [] ) );
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
