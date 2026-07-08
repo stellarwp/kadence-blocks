@@ -85,8 +85,7 @@ import {
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { VariantPicker, blockVariants, activeSet } from '../../extension/variant-picker';
-import { SaveVariantModal } from '../../extension/variant-picker/SaveVariantModal';
-import { hasVariantsRest } from '../../extension/variants/api/client';
+import { VariantActions } from '../../extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from '../../extension/token-set-picker';
 
 export default function KadenceButtonEdit(props) {
@@ -277,7 +276,6 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
-	const [savingVariant, setSavingVariant] = useState(false);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -856,23 +854,15 @@ export default function KadenceButtonEdit(props) {
 													value={attributes.kbVariant || ''}
 													onChange={(value) => setAttributes({ kbVariant: value })}
 												/>
-												{hasVariantsRest() && (
-													<Button variant="secondary" onClick={() => setSavingVariant(true)}>
-														{__('Create new variant', 'kadence-blocks')}
-													</Button>
-												)}
+												<VariantActions
+													blockName={name}
+													set={attributes.kbTokenSet || activeSet()}
+													selected={attributes.kbVariant || ''}
+													onSelect={(slug) => setAttributes({ kbVariant: slug })}
+												/>
 											</SubsectionWrap>
 										)}
 									</KadencePanelBody>
-								)}
-								{savingVariant && (
-									<SaveVariantModal
-										blockName={name}
-										set={attributes.kbTokenSet || activeSet()}
-										source={attributes.kbVariant || ''}
-										onClose={() => setSavingVariant(false)}
-										onCreated={(slug) => setAttributes({ kbVariant: slug })}
-									/>
 								)}
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (
 									<>
