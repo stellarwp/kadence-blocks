@@ -1,7 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Reference;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Preset_Target;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 use WP_Post;
 
@@ -21,7 +22,7 @@ use WP_Post;
  *
  * @since TBD
  */
-final class Override_Stripper {
+final class Restorer {
 
 	/**
 	 * @since TBD
@@ -54,8 +55,12 @@ final class Override_Stripper {
 			return;
 		}
 
-		$decoded = json_decode( $post->post_content, true );
-		if ( ! is_array( $decoded ) ) {
+		// Decoded as objects, not associative arrays: an empty JSON object ("settings": {})
+		// would otherwise decode to [] and re-encode as [] instead of {}, corrupting the
+		// document's shape. JSON arrays (e.g. a palette's list of preset entries) still decode
+		// to PHP arrays either way, so list traversal below is unaffected.
+		$decoded = json_decode( $post->post_content );
+		if ( ! is_object( $decoded ) ) {
 			return; // Malformed post_content — nothing safe to rewrite.
 		}
 
@@ -84,56 +89,60 @@ final class Override_Stripper {
 			true
 		);
 
-		if ( is_wp_error( $result ) ) {
-			// The token store already holds the synced literal by this point — a failed restore
-			// leaves the CPT out of sync with it until the next successful edit. Log so that
-			// divergence is diagnosable instead of silent.
-			$this->logger->error(
-				sprintf(
-					'Override_Stripper failed to restore wp_global_styles post %d: %s',
-					$post->ID,
-					$result->get_error_message()
-				)
-			);
+		if ( ! is_wp_error( $result ) ) {
+			return;
 		}
+
+		// The token store already holds the synced literal by this point — a failed restore
+		// leaves the CPT out of sync with it until the next successful edit. Log so that
+		// divergence is diagnosable instead of silent.
+		$this->logger->error(
+			sprintf(
+				'Restorer failed to restore wp_global_styles post %d: %s',
+				$post->ID,
+				$result->get_error_message()
+			)
+		);
 	}
 
 	/**
 	 * Restore one target's entry to var(--kb-token--*) within the decoded document, in place.
 	 *
+	 * Objects mutate by handle, so rewriting a nested entry here is visible on $document without
+	 * needing explicit by-reference traversal.
+	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $document The decoded theme.json-shaped document (modified in place).
-	 * @param Preset_Target        $target   The target to restore.
+	 * @param object        $document The decoded theme.json-shaped document (modified in place).
+	 * @param Preset_Target $target   The target to restore.
 	 *
 	 * @return bool Whether an entry was found and rewritten.
 	 */
-	private function restore( array &$document, Preset_Target $target ): bool {
-		if ( ! isset( $document['settings'] ) || ! is_array( $document['settings'] ) ) {
+	private function restore( object $document, Preset_Target $target ): bool {
+		if ( ! isset( $document->settings ) || ! is_object( $document->settings ) ) {
 			return false;
 		}
 
-		$cursor = &$document['settings'];
+		$cursor = $document->settings;
 
 		foreach ( $target->path as $segment ) {
-			if ( ! isset( $cursor[ $segment ] ) || ! is_array( $cursor[ $segment ] ) ) {
+			if ( ! is_object( $cursor ) || ! isset( $cursor->$segment ) ) {
 				return false;
 			}
-			$cursor = &$cursor[ $segment ];
+			$cursor = $cursor->$segment;
 		}
 
 		if ( ! is_array( $cursor ) ) {
 			return false;
 		}
 
-		foreach ( $cursor as &$entry ) {
-			if ( is_array( $entry ) && ( $entry['slug'] ?? null ) === $target->slug ) {
-				$entry[ $target->value_key ] = 'var(' . $target->token->css_var . ')';
+		foreach ( $cursor as $entry ) {
+			if ( is_object( $entry ) && ( $entry->slug ?? null ) === $target->slug ) {
+				$entry->{$target->value_key} = 'var(' . $target->token->css_var . ')';
 
 				return true;
 			}
 		}
-		unset( $entry );
 
 		return false;
 	}

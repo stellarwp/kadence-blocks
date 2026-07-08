@@ -1,25 +1,26 @@
 <?php declare( strict_types=1 );
 
-namespace Tests\wpunit\Resources\Design_Tokens\Global_Styles;
+namespace Tests\wpunit\Resources\Design_Tokens\Global_Styles\Reference;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Override_Stripper;
 use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Preset_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Reference\Restorer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\TestCase;
+use stdClass;
 use WP_Post;
 
 /**
- * Covers Override_Stripper against the real, shipped registry (semantic.color.button-bg is
+ * Covers Restorer against the real, shipped registry (semantic.color.button-bg is
  * wp_preset + site_editor opted-in), restoring a synced preset entry back to its canonical
  * var(--kb-token--*) form.
  */
-final class Override_StripperTest extends TestCase {
+final class RestorerTest extends TestCase {
 
 	/**
-	 * @var Override_Stripper
+	 * @var Restorer
 	 */
-	private Override_Stripper $stripper;
+	private Restorer $restorer;
 
 	/**
 	 * @var Token_Definition
@@ -27,14 +28,14 @@ final class Override_StripperTest extends TestCase {
 	private Token_Definition $button_bg;
 
 	/**
-	 * Boot the container and resolve the stripper and token fixture shared by every test below.
+	 * Boot the container and resolve the restorer and token fixture shared by every test below.
 	 *
 	 * @return void
 	 */
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->stripper = $this->container->get( Override_Stripper::class );
+		$this->restorer = $this->container->get( Restorer::class );
 
 		$token = $this->container->get( Token_Registry::class )->get( 'semantic.color.button-bg' );
 		$this->assertNotNull( $token, 'Fixture assumption: semantic.color.button-bg must be registered.' );
@@ -49,7 +50,7 @@ final class Override_StripperTest extends TestCase {
 	public function testStripRewritesLiteralToCanonicalVarAndPersists(): void {
 		$post = $this->create_global_styles_post( $this->document_with_button_bg( '#3182ce' ) );
 
-		$this->stripper->strip( [ $this->button_bg_target() ], $post );
+		$this->restorer->strip( [ $this->button_bg_target() ], $post );
 
 		$leaf = $this->stored_button_bg_value( get_post( $post->ID ) );
 		$this->assertSame( $this->canonical_button_bg(), $leaf );
@@ -65,7 +66,7 @@ final class Override_StripperTest extends TestCase {
 
 		$before = get_post( $post->ID );
 
-		$this->stripper->strip( [], $post );
+		$this->restorer->strip( [], $post );
 
 		$after = get_post( $post->ID );
 
@@ -93,10 +94,33 @@ final class Override_StripperTest extends TestCase {
 			$missing_token
 		);
 
-		$this->stripper->strip( [ $missing_target, $this->button_bg_target() ], $post );
+		$this->restorer->strip( [ $missing_target, $this->button_bg_target() ], $post );
 
 		$leaf = $this->stored_button_bg_value( get_post( $post->ID ) );
 		$this->assertSame( $this->canonical_button_bg(), $leaf );
+	}
+
+	/**
+	 * An empty JSON object elsewhere in the document (e.g. "custom": {}) round-trips as "{}", not
+	 * "[]" — decoding to associative arrays would lose the distinction and corrupt the document's
+	 * shape on the write this strip() call triggers.
+	 *
+	 * @return void
+	 */
+	public function testEmptyJsonObjectRoundTripsAsObjectNotArray(): void {
+		$post = self::factory()->post->create_and_get(
+			[
+				'post_type'    => 'wp_global_styles',
+				'post_content' => wp_json_encode(
+					array_merge( $this->document_with_button_bg( '#3182ce' ), [ 'custom' => new stdClass() ] )
+				),
+			]
+		);
+
+		$this->restorer->strip( [ $this->button_bg_target() ], $post );
+
+		$decoded = json_decode( get_post( $post->ID )->post_content );
+		$this->assertIsObject( $decoded->custom );
 	}
 
 	/**
@@ -114,7 +138,7 @@ final class Override_StripperTest extends TestCase {
 
 		$before = get_post( $post->ID );
 
-		$this->stripper->strip( [ $this->button_bg_target() ], $post );
+		$this->restorer->strip( [ $this->button_bg_target() ], $post );
 
 		$after = get_post( $post->ID );
 

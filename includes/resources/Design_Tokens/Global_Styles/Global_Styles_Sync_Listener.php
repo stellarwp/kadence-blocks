@@ -140,7 +140,7 @@ final class Global_Styles_Sync_Listener {
 	}
 
 	/**
-	 * The action hook fired after presets are synced, for downstream listeners (Override_Stripper,
+	 * The action hook fired after presets are synced, for downstream listeners (Restorer,
 	 * and eventually the detached-from-brand surfacing feature).
 	 *
 	 * @since TBD

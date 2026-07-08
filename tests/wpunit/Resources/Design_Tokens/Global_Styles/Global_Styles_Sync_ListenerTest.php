@@ -104,7 +104,7 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 
 	/**
 	 * A second, self-triggered pass whose new value already equals the canonical var(--kb-token--*)
-	 * form (the Override_Stripper restore) does not write to the store again.
+	 * form (the Restorer restore) does not write to the store again.
 	 *
 	 * @return void
 	 */
@@ -120,7 +120,7 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 
 		$version_after_sync = $this->store->get_version( $this->active->get() );
 
-		// Simulate Override_Stripper restoring the preset entry back to the canonical var() form.
+		// Simulate Restorer restoring the preset entry back to the canonical var() form.
 		wp_update_post(
 			[
 				'ID'           => $post->ID,
