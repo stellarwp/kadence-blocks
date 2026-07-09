@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Length_To_Px;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
@@ -18,6 +19,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * @since TBD
  */
 final class Block_Preset_Catalog {
+
+	use Converts_Length_To_Px;
 
 	/**
 	 * Block => attribute => resolved-token dot-path. Each entry's value is looked up via the
@@ -83,31 +86,5 @@ final class Block_Preset_Catalog {
 		}
 
 		return $out;
-	}
-
-	/**
-	 * Convert a resolved CSS length to a raw pixel number, assuming the browser/CSS default root
-	 * font size (16px) for `rem`/`em` — the only units this token family's baseline values use.
-	 * Returns null for a value this catalog cannot safely convert (already px, or an unrecognized
-	 * unit), so the caller can leave the attribute as block.json's own default rather than guess.
-	 *
-	 * Deliberately a separate private copy from Icon_Size_Adapter::to_px() rather than a shared
-	 * trait/helper — this repo's own AGENTS.md instructs against abstracting a two-caller case,
-	 * and no third consumer of this conversion exists.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $length A resolved CSS length, e.g. "1.5rem", "24px".
-	 *
-	 * @return float|null The pixel value, or null when the unit is not rem/em/px.
-	 */
-	private function to_px( string $length ): ?float {
-		if ( ! preg_match( '/^(-?[0-9.]+)(px|rem|em)$/', trim( $length ), $matches ) ) {
-			return null;
-		}
-
-		$number = (float) $matches[1];
-
-		return $matches[2] === 'px' ? $number : $number * 16.0;
 	}
 }
