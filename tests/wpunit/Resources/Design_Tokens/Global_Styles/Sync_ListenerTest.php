@@ -4,18 +4,18 @@ namespace Tests\wpunit\Resources\Design_Tokens\Global_Styles;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Global_Styles_Sync_Listener;
+use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Sync_Listener;
 use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Preset_Target;
 use Tests\Support\Classes\TestCase;
 use WP_Post;
 
 /**
- * Covers Global_Styles_Sync_Listener against the real, shipped registry (semantic.color.button-bg
+ * Covers Sync_Listener against the real, shipped registry (semantic.color.button-bg
  * and semantic.color.button-text are both wp_preset + site_editor opted-in) and a real
  * wp_global_styles post row, since the listener is bound to wp_update_post()'s own
  * wp_after_insert_post hook rather than anything the REST server needs to be booted for.
  */
-final class Global_Styles_Sync_ListenerTest extends TestCase {
+final class Sync_ListenerTest extends TestCase {
 
 	/**
 	 * @var Token_Store
@@ -166,7 +166,7 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 		$captured = [];
 
 		add_action(
-			Global_Styles_Sync_Listener::synced_action(),
+			Sync_Listener::synced_action(),
 			static function ( array $synced ) use ( &$captured ): void {
 				$captured = $synced;
 			}

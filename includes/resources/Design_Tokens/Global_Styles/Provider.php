@@ -21,7 +21,7 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Site_Editor_Preset_Locator::class );
 		$this->container->singleton( Value_Translator::class, Default_Value_Translator::class );
-		$this->container->singleton( Global_Styles_Sync_Listener::class );
+		$this->container->singleton( Sync_Listener::class );
 		$this->container->singleton( Restorer::class );
 		$this->container->singleton( Listener::class );
 
@@ -30,13 +30,13 @@ final class Provider extends Provider_Contract {
 		// WP_REST_Posts_Controller).
 		add_action(
 			'wp_after_insert_post',
-			$this->container->callback( Global_Styles_Sync_Listener::class, 'on_after_insert_post' ),
+			$this->container->callback( Sync_Listener::class, 'on_after_insert_post' ),
 			10,
 			4
 		);
 
 		add_action(
-			Global_Styles_Sync_Listener::synced_action(),
+			Sync_Listener::synced_action(),
 			$this->container->callback( Listener::class, 'on_synced' ),
 			10,
 			2

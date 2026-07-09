@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Preset_Target;
 use WP_Post;
 
 /**
- * Binds Restorer to Global_Styles_Sync_Listener::synced_action().
+ * Binds Restorer to Sync_Listener::synced_action().
  *
  * @since TBD
  */
@@ -29,7 +29,7 @@ final class Listener {
 	}
 
 	/**
-	 * Handle Global_Styles_Sync_Listener::synced_action().
+	 * Handle Sync_Listener::synced_action().
 	 *
 	 * @since TBD
 	 *

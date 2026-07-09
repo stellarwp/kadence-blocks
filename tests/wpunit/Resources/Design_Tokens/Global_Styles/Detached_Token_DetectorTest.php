@@ -3,18 +3,18 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Global_Styles;
 
 use Generator;
-use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Detachment_Detector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles\Detached_Token_Detector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Covers Detachment_Detector's derivation of "detached from brand" against a synthetic baseline
+ * Covers Detached_Token_Detector's derivation of "detached from brand" against a synthetic baseline
  * for each transition, and against the real, shipped baseline for one real semantic token to
  * guard against the baseline changing shape under this test.
  */
-final class Detachment_DetectorTest extends TestCase {
+final class Detached_Token_DetectorTest extends TestCase {
 
 	/**
 	 * A token whose baseline aliases a primitive, overridden with a literal, is detached.
@@ -80,6 +80,26 @@ final class Detachment_DetectorTest extends TestCase {
 	}
 
 	/**
+	 * A DISABLE sentinel override removes the token from the effective document entirely, so there
+	 * is no effective leaf left to compare against the baseline alias — not detached.
+	 *
+	 * @return void
+	 */
+	public function testDisabledSentinelOverrideIsNotDetached(): void {
+		$detector = $this->detector_for( $this->baseline() );
+
+		$overrides = [
+			'semantic' => [
+				'color' => [
+					'button-bg' => [ '$disabled' => true ],
+				],
+			],
+		];
+
+		$this->assertFalse( $detector->is_detached( 'semantic.color.button-bg', $overrides ) );
+	}
+
+	/**
 	 * A token whose baseline is already a literal has no alias relationship to lose, so overriding
 	 * it with a different literal is an ordinary edit, not a detachment.
 	 *
@@ -127,7 +147,7 @@ final class Detachment_DetectorTest extends TestCase {
 	 * @return void
 	 */
 	public function testAgainstTheRealShippedBaseline( array $overrides, bool $expected ): void {
-		$detector = new Detachment_Detector(
+		$detector = new Detached_Token_Detector(
 			$this->container->get( Baseline_Document::class ),
 			$this->container->get( Effective_Document::class )
 		);
@@ -160,16 +180,16 @@ final class Detachment_DetectorTest extends TestCase {
 	}
 
 	/**
-	 * Build a Detachment_Detector wired to a Fake_Baseline_Document for the given decoded baseline.
+	 * Build a Detached_Token_Detector wired to a Fake_Baseline_Document for the given decoded baseline.
 	 *
 	 * @param array<string, mixed> $baseline The decoded baseline document.
 	 *
-	 * @return Detachment_Detector
+	 * @return Detached_Token_Detector
 	 */
-	private function detector_for( array $baseline ): Detachment_Detector {
+	private function detector_for( array $baseline ): Detached_Token_Detector {
 		$document = new Fake_Baseline_Document( $baseline );
 
-		return new Detachment_Detector( $document, new Effective_Document( $document ) );
+		return new Detached_Token_Detector( $document, new Effective_Document( $document ) );
 	}
 
 	/**

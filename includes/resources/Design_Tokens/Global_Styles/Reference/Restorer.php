@@ -8,15 +8,15 @@ use WP_Post;
 
 /**
  * Restores synced preset entries in a wp_global_styles post back to var(--kb-token--*), so the
- * CSS variable stays the single source of truth after Global_Styles_Sync_Listener has written the
+ * CSS variable stays the single source of truth after Sync_Listener has written the
  * user's literal into the token store.
  *
- * Listens on Global_Styles_Sync_Listener::synced_action(), which already carries the exact
+ * Listens on Sync_Listener::synced_action(), which already carries the exact
  * Preset_Target objects that were synced — this class only writes, it never re-derives which
  * presets changed or where they live.
  *
  * The wp_update_post() call below re-fires wp_after_insert_post, but that pass is a guaranteed
- * no-op: Global_Styles_Sync_Listener compares against the canonical var(--kb-token--*) form
+ * no-op: Sync_Listener compares against the canonical var(--kb-token--*) form
  * (which this class is about to restore), not the previous literal, so nothing "changes" on the
  * second pass. See the Phase 3 plan for the full self-terminating argument.
  *

@@ -153,6 +153,35 @@ final class Variant_Set {
 	}
 
 	/**
+	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's variant
+	 * form can render the right control per property. Read from the referenced token's group segment when the
+	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
+	 * property name (e.g. `button-bg` => "color", `button-radius` => "dimension"). Falls back to "text".
+	 *
+	 * @since TBD
+	 *
+	 * @param string $property The bound property, e.g. "button-bg".
+	 *
+	 * @return string One of "color", "dimension" or "text".
+	 */
+	public function kind( string $property ): string {
+		$binding = $this->binding( $property );
+
+		if ( $binding !== null && $binding->token !== null ) {
+			$segments = explode( '.', $binding->token );
+			$group    = self::classify( $segments[1] ?? '' );
+
+			if ( $group !== '' ) {
+				return $group;
+			}
+		}
+
+		$by_name = self::classify( $property );
+
+		return $by_name !== '' ? $by_name : 'text';
+	}
+
+	/**
 	 * Build the property => Binding map from a declaration's "bindings".
 	 *
 	 * @since TBD
@@ -185,5 +214,34 @@ final class Variant_Set {
 		}
 
 		return $bindings;
+	}
+
+	/**
+	 * Classify a term (a token group segment or a property name) into a coarse input kind, or "" when it
+	 * matches neither a dimension nor a color. Dimension terms are checked first so "borderRadius" resolves to
+	 * "dimension" rather than matching the "border" color term.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $term The term to classify.
+	 *
+	 * @return string "color", "dimension" or "".
+	 */
+	private static function classify( string $term ): string {
+		$term = strtolower( $term );
+
+		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'size', 'height', 'dimension' ] as $needle ) {
+			if ( strpos( $term, $needle ) !== false ) {
+				return 'dimension';
+			}
+		}
+
+		foreach ( [ 'color', 'bg', 'background', 'text', 'border', 'fill', 'stroke' ] as $needle ) {
+			if ( strpos( $term, $needle ) !== false ) {
+				return 'color';
+			}
+		}
+
+		return '';
 	}
 }

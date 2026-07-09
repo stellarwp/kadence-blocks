@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
@@ -66,6 +67,20 @@ final class Variant_ResolverTest extends TestCase {
 
 		// The literal form is still available for the concrete-value surfaces — both forms are exposed.
 		$this->assertSame( '#3633e1', $this->resolver->resolve_literal( self::BUTTON, 'primary' )['button-bg'] );
+	}
+
+	/**
+	 * A namespace argument namespaces the var() target to that set, so a per-set variant var chains to the
+	 * set's namespaced token and the chain stays inside the set (the basis for client-side palette switching
+	 * of variants).
+	 *
+	 * @return void
+	 */
+	public function testResolveNamespacesTheVarTarget(): void {
+		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark' );
+
+		$this->assertSame( 'var(--kb-token--dark--semantic--color--button-primary-bg)', $projected['button-bg'] );
+		$this->assertSame( 'var(--kb-token--dark--semantic--radius--control)', $projected['button-radius'] );
 	}
 
 	/**
@@ -162,5 +177,115 @@ final class Variant_ResolverTest extends TestCase {
 		$this->expectException( Unknown_Variant_Exception::class );
 
 		$this->resolver->resolve( self::BUTTON, 'not-a-variant' );
+	}
+
+	/**
+	 * A variant authored into the store (not the baseline) is resolved alongside the baseline variants: it
+	 * appears in the name list, and its values resolve, because definitions are now read through the
+	 * effective (baseline deep-merged with stored overrides) set.
+	 *
+	 * @return void
+	 */
+	public function testItResolvesAVariantAuthoredIntoTheStore(): void {
+		$this->seedVariant(
+			Token_Store::default_slug(),
+			'accent',
+			'Accent',
+			[
+				'button-bg'         => '#ff0000',
+				'button-text'       => '#ffffff',
+				'button-bg-hover'   => '#cc0000',
+				'button-text-hover' => '#ffffff',
+				'button-radius'     => '1rem',
+			]
+		);
+
+		$this->assertSame( [ 'primary', 'secondary', 'accent' ], $this->resolver->names( self::BUTTON ) );
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent' ) );
+		$this->assertSame( 'Accent', $this->resolver->label( self::BUTTON, 'accent' ) );
+
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'accent' );
+		$this->assertSame( '#ff0000', $values['button-bg'] );
+		$this->assertSame( '1rem', $values['button-radius'] );
+
+		// A stored literal has no alias, so the projected form passes it through unchanged.
+		$this->assertSame( '#ff0000', $this->resolver->resolve( self::BUTTON, 'accent' )['button-bg'] );
+	}
+
+	/**
+	 * A stored override for an existing baseline variant wins over the baseline value for that property,
+	 * while the variant's other properties keep their baseline values.
+	 *
+	 * @return void
+	 */
+	public function testAStoredOverrideWinsOverTheBaselineVariantValue(): void {
+		$this->seedVariant( Token_Store::default_slug(), 'secondary', 'Secondary', [ 'button-bg' => '#000000' ] );
+
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'secondary' );
+
+		// The overridden property takes the stored value.
+		$this->assertSame( '#000000', $values['button-bg'] );
+		// A property the override does not touch still resolves from the baseline alias.
+		$this->assertSame( '#ffffff', $values['button-text'] );
+	}
+
+	/**
+	 * Variant definitions are per token set: a variant authored into one set is visible only for that set,
+	 * and the default set is left untouched.
+	 *
+	 * @return void
+	 */
+	public function testStoredVariantsAreScopedToTheirSet(): void {
+		$this->seedVariant(
+			'dark',
+			'accent',
+			'Accent',
+			[
+				'button-bg'         => '#ff0000',
+				'button-text'       => '#ffffff',
+				'button-bg-hover'   => '#cc0000',
+				'button-text-hover' => '#ffffff',
+				'button-radius'     => '1rem',
+			]
+		);
+
+		$this->assertTrue( $this->resolver->has_variant( self::BUTTON, 'accent', 'dark' ) );
+		$this->assertContains( 'accent', $this->resolver->names( self::BUTTON, 'dark' ) );
+
+		// The default set never saw the write.
+		$this->assertFalse( $this->resolver->has_variant( self::BUTTON, 'accent' ) );
+		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON ) );
+	}
+
+	/**
+	 * Persist a single button variant into a token set's overrides document.
+	 *
+	 * @param string                $slug    The token set slug to write into.
+	 * @param string                $variant The variant slug.
+	 * @param string                $label   The variant label.
+	 * @param array<string, string> $tokens  The property => value map for the variant.
+	 *
+	 * @return void
+	 */
+	private function seedVariant( string $slug, string $variant, string $label, array $tokens ): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'variants' => [
+						self::BUTTON => [
+							$variant => [
+								'label'  => $label,
+								'tokens' => $tokens,
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ), $slug );
 	}
 }

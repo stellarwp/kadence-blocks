@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
@@ -17,14 +18,25 @@ use Throwable;
  * so a deactivated registry leaves KB's behavior untouched.
  *
  * This is the non-coercive surface: a custom property placed in :root styles nothing until something
- * references it. When the module emits multiple token sets simultaneously, every non-active set appears
- * here only as namespaced --kb-token--<set>--* custom properties; a non-active set never feeds the
- * native-block or theme.json styling paths and is reachable only through an explicit per-block set
- * override. Only the active set's tokens reach those coercive surfaces.
+ * references it. Every token set is emitted simultaneously — each as namespaced --kb-token--<set>--*
+ * custom properties — plus an active-set alias layer (canonical --kb-token--<id> pointed at the active
+ * set) and a per-set [data-kb-token-set="<set>"] switch selector. The complete palette switch is the
+ * active-set pointer: it re-points the :root alias layer, so the whole cascade (including the preset/slot
+ * bridges and host surfaces, which read the canonical names at :root) re-resolves with no re-render. The
+ * client-side [data-kb-token-set] attribute re-points the canonical token layer for a subtree, so it
+ * live-swaps content that reads --kb-token--* directly, but not the :root-resolved bridges (a fuller
+ * client-side switcher is follow-up work). A non-active set never feeds the native-block or theme.json
+ * styling paths and is reachable only through an explicit per-block set override; only the active set's
+ * tokens reach those coercive surfaces.
+ *
+ * Payload note (per the no-silent-caps principle): simultaneous emission costs, on top of one copy of
+ * the literals (each set's namespaced block), roughly (2N + 1) x M thin var() indirection lines for N
+ * sets of M tokens — the alias layer plus one switch selector per set. At realistic sizes this is
+ * single-digit kilobytes and highly gzip-compressible (it is near-identical repeated indirection).
  *
  * @since TBD
  */
-final class Projector {
+final class Projector implements Css_Projector {
 
 	/**
 	 * @var Token_Registry
@@ -98,7 +110,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-variables', $css );
 		}
@@ -129,7 +141,7 @@ final class Projector {
 			return;
 		}
 
-		$css = $this->build_css();
+		$css = $this->css();
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
 		}
@@ -166,28 +178,63 @@ final class Projector {
 	}
 
 	/**
-	 * Build the projected CSS from the current resolved token set, using the per-request memo
-	 * and object cache so repeated calls within the same request are free.
+	 * Build the projected CSS for every token set at once, using the per-request memo and object cache
+	 * so repeated calls within the same request are free.
 	 *
-	 * Returns an empty string when the stored document cannot be resolved (e.g. an alias cycle
-	 * introduced by a direct DB write that bypassed the REST validation gate) so the page does
-	 * not crash — the inline style is simply omitted and KB falls back to its existing variables.
+	 * Each set is resolved with its css-var names namespaced to its own slug, then the builder emits the
+	 * namespaced blocks, the active-set alias layer, and the per-set switch selectors. A set whose stored
+	 * document cannot be resolved (e.g. an alias cycle introduced by a direct DB write that bypassed the
+	 * REST validation gate) is skipped rather than fatal, so one broken set never suppresses the others.
+	 * Returns an empty string only when the active set is the one that cannot be resolved — the builder's
+	 * own guard yields '' when the active slug is absent — so the page falls back to KB's existing
+	 * variables without crashing.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	private function build_css(): string {
-		$slug = $this->active->get();
-
+	public function css(): string {
 		try {
-			$version  = $this->store->get_version( $slug );
-			$resolved = $this->resolver->resolve( $slug );
+			$active = $this->active->get();
 		} catch ( Throwable $e ) {
 			return '';
 		}
 
-		return $this->css_builder->css_for_version( $resolved, $version );
+		$resolved_by_slug = [];
+		$versions         = [];
+
+		foreach ( $this->set_slugs() as $slug ) {
+			try {
+				$resolved_by_slug[ $slug ] = $this->resolver->resolve_namespaced( $slug );
+				$versions[ $slug ]         = $this->store->get_version( $slug );
+			} catch ( Throwable $e ) {
+				// A single set that cannot be resolved is omitted, not fatal: the remaining sets and the
+				// active alias layer still render. If the active set is the one that failed it is absent
+				// from $resolved_by_slug, and css_for_version() returns '' on its own.
+				continue;
+			}
+		}
+
+		return $this->css_builder->css_for_version( $resolved_by_slug, $versions, $active );
+	}
+
+	/**
+	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders
+	 * from baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
+	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	private function set_slugs(): array {
+		$slugs = array_column( $this->store->list_stores(), 'slug' );
+
+		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {
+			array_unshift( $slugs, Token_Store::default_slug() );
+		}
+
+		return $slugs;
 	}
 
 	/**

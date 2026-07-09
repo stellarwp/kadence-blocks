@@ -140,6 +140,30 @@ final class Default_Value_TranslatorTest extends TestCase {
 	}
 
 	/**
+	 * A quoted family name (e.g. from `-apple-system, "Segoe UI", Roboto`) has its surrounding
+	 * quotes stripped, so Css_Renderer::font_family() re-wrapping it in quotes on render doesn't
+	 * double them up into `""Segoe UI""`.
+	 *
+	 * @return void
+	 */
+	public function testFontFamilyStripsSurroundingQuotes(): void {
+		$result = $this->translator->translate( 'font-family', '-apple-system, "Segoe UI", Roboto' );
+
+		$this->assertSame( [ '-apple-system', 'Segoe UI', 'Roboto' ], $result['$value'] );
+	}
+
+	/**
+	 * A single-quoted family name has its surrounding quotes stripped too.
+	 *
+	 * @return void
+	 */
+	public function testFontFamilyStripsSingleQuotes(): void {
+		$result = $this->translator->translate( 'font-family', "'Segoe UI', Roboto" );
+
+		$this->assertSame( [ 'Segoe UI', 'Roboto' ], $result['$value'] );
+	}
+
+	/**
 	 * An empty font family value throws.
 	 *
 	 * @return void

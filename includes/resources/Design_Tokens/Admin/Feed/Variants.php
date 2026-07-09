@@ -65,9 +65,9 @@ final class Variants {
 
 		foreach ( $this->registry->variant_sets() as $block => $set ) {
 			try {
-				$names      = $this->variants->names( $block );
-				$default    = $this->variants->default_variant( $block );
-				$properties = $this->variants->value_properties( $block );
+				$names      = $this->variants->names( $block, $slug );
+				$default    = $this->variants->default_variant( $block, $slug );
+				$properties = $this->variants->value_properties( $block, $slug );
 			} catch ( Unknown_Variant_Exception $e ) {
 				continue; // Block registered but not defined in the document — skip, fail soft.
 			}

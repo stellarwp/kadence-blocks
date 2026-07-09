@@ -45,6 +45,7 @@ import {
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
 	Tooltip,
+	SubsectionWrap,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
@@ -83,7 +84,9 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { VariantPicker, blockVariants } from '../../extension/variant-picker';
+import { VariantPicker, blockVariants, activeSet } from '../../extension/variant-picker';
+import { VariantActions } from '../../extension/variant-picker/VariantActions';
+import { TokenSetPicker, selectableSets } from '../../extension/token-set-picker';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -827,17 +830,38 @@ export default function KadenceButtonEdit(props) {
 
 						{activeTab === 'style' && (
 							<>
-								{blockVariants(name).length > 0 && (
+								{(blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 ||
+									selectableSets().length >= 2) && (
 									<KadencePanelBody
-										title={__('Design Variant', 'kadence-blocks')}
+										title={__('Design Tokens', 'kadence-blocks')}
 										initialOpen={true}
 										panelName={'kb-adv-single-btn-variant'}
 									>
-										<VariantPicker
-											name={name}
-											value={attributes.kbVariant || ''}
-											onChange={(value) => setAttributes({ kbVariant: value })}
-										/>
+										{selectableSets().length >= 2 && (
+											<SubsectionWrap label={__('Token Set', 'kadence-blocks')}>
+												<TokenSetPicker
+													value={attributes.kbTokenSet || ''}
+													onChange={(value) => setAttributes({ kbTokenSet: value })}
+													label=""
+												/>
+											</SubsectionWrap>
+										)}
+										{blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 && (
+											<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
+												<VariantPicker
+													name={name}
+													set={attributes.kbTokenSet || activeSet()}
+													value={attributes.kbVariant || ''}
+													onChange={(value) => setAttributes({ kbVariant: value })}
+												/>
+												<VariantActions
+													blockName={name}
+													set={attributes.kbTokenSet || activeSet()}
+													selected={attributes.kbVariant || ''}
+													onSelect={(slug) => setAttributes({ kbVariant: slug })}
+												/>
+											</SubsectionWrap>
+										)}
 									</KadencePanelBody>
 								)}
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (

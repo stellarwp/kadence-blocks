@@ -31,7 +31,7 @@ use WP_Post;
  *
  * @since TBD
  */
-final class Global_Styles_Sync_Listener {
+final class Sync_Listener {
 
 	/**
 	 * The wp_global_styles post type this listener reacts to.
@@ -205,21 +205,23 @@ final class Global_Styles_Sync_Listener {
 			}
 		}
 
-		if ( $synced !== [] ) {
-			/**
-			 * Fires after Site Editor edits to token-backed presets are synced to the store.
-			 *
-			 * @since TBD
-			 *
-			 * @param array<int, Preset_Target> $synced The presets that were synced.
-			 * @param WP_Post                   $post   The wp_global_styles post.
-			 */
-			// do_action_ref_array(), not do_action(): do_action()'s single-object-array backward-
-			// compatibility unwrap (`array( &$this )`, wp-includes/plugin.php) silently collapses
-			// $synced to its bare element whenever exactly one preset is synced, handing subscribers
-			// a lone Preset_Target instead of a one-item list.
-			do_action_ref_array( self::SYNCED_ACTION, [ $synced, $post ] );
+		if ( $synced === [] ) {
+			return;
 		}
+
+		/**
+		 * Fires after Site Editor edits to token-backed presets are synced to the store.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<int, Preset_Target> $synced The presets that were synced.
+		 * @param WP_Post                   $post   The wp_global_styles post.
+		 */
+		// do_action_ref_array(), not do_action(): do_action()'s single-object-array backward-
+		// compatibility unwrap (`array( &$this )`, wp-includes/plugin.php) silently collapses
+		// $synced to its bare element whenever exactly one preset is synced, handing subscribers
+		// a lone Preset_Target instead of a one-item list.
+		do_action_ref_array( self::SYNCED_ACTION, [ $synced, $post ] );
 	}
 
 	/**
@@ -248,7 +250,7 @@ final class Global_Styles_Sync_Listener {
 			$new_value = $this->entry_value( $after, $target );
 
 			if ( $new_value === null || $new_value === $canonical ) {
-				continue; // Untouched, or already restored by a prior pass — nothing to do.
+				continue; // Untouched, or already restored by a prior pass.
 			}
 
 			if ( $this->already_synced( $stored, $target, $new_value ) ) {

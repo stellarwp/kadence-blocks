@@ -9,7 +9,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Global_Styles;
  * Deliberately does NOT handle "shadow": the Site Editor's shadow preset value is a CSS shorthand
  * string, while the DTCG shadow $type is a structured, alias-able composite object
  * (Schema\Vocabulary\Token_Type). Translating shorthand -> structured correctly is out of scope
- * for this ticket; a changed shadow preset is skipped upstream (Global_Styles_Sync_Listener) and
+ * for this ticket; a changed shadow preset is skipped upstream (Sync_Listener) and
  * reported, not guessed at.
  *
  * @since TBD
