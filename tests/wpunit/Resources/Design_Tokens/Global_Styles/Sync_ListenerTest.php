@@ -104,7 +104,7 @@ final class Sync_ListenerTest extends TestCase {
 
 	/**
 	 * A second, self-triggered pass whose new value already equals the canonical var(--kb-token--*)
-	 * form (the Override_Stripper restore) does not write to the store again.
+	 * form (the Restorer restore) does not write to the store again.
 	 *
 	 * @return void
 	 */
@@ -120,40 +120,11 @@ final class Sync_ListenerTest extends TestCase {
 
 		$version_after_sync = $this->store->get_version( $this->active->get() );
 
-		// Simulate Override_Stripper restoring the preset entry back to the canonical var() form.
+		// Simulate Restorer restoring the preset entry back to the canonical var() form.
 		wp_update_post(
 			[
 				'ID'           => $post->ID,
 				'post_content' => wp_json_encode( $this->document_with_button_bg( $this->canonical_button_bg() ) ),
-			]
-		);
-
-		$this->assertSame( $version_after_sync, $this->store->get_version( $this->active->get() ) );
-	}
-
-	/**
-	 * Saving the post again with the exact same non-canonical literal (e.g. an unrelated field was
-	 * edited) does not re-sync the unchanged preset to the store.
-	 *
-	 * @return void
-	 */
-	public function testUnchangedLiteralOnSubsequentSaveDoesNotRewriteStore(): void {
-		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
-
-		wp_update_post(
-			[
-				'ID'           => $post->ID,
-				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
-			]
-		);
-
-		$version_after_sync = $this->store->get_version( $this->active->get() );
-
-		// Re-save with the identical literal, as a second save unrelated to this preset would.
-		wp_update_post(
-			[
-				'ID'           => $post->ID,
-				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
 			]
 		);
 
@@ -213,6 +184,67 @@ final class Sync_ListenerTest extends TestCase {
 		$this->assertCount( 1, $captured );
 		$this->assertInstanceOf( Preset_Target::class, $captured[0] );
 		$this->assertSame( 'button-bg', $captured[0]->slug );
+	}
+
+	/**
+	 * The full wp_after_insert_post → sync → synced_action → restore chain lands both halves of the
+	 * two-way sync in the same request: the token store holds the user's literal, and the CPT is
+	 * restored to var(--kb-token--*).
+	 *
+	 * @return void
+	 */
+	public function testFullChainSyncsStoreAndRestoresCanonicalVarInSameRequest(): void {
+		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
+
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$leaf = $this->stored_leaf( 'semantic', 'color', 'button-bg' );
+		$this->assertSame( '#3182ce', $leaf['$value'] ?? null );
+
+		$restored = get_post( $post->ID );
+		$decoded  = json_decode( $restored->post_content, true );
+		$entries  = is_array( $decoded ) ? ( $decoded['settings']['color']['palette']['theme'] ?? null ) : null;
+
+		$this->assertIsArray( $entries );
+		$this->assertSame( $this->canonical_button_bg(), $entries[0]['color'] ?? null );
+	}
+
+	/**
+	 * A second save carrying the exact same literal that was already synced and restored to
+	 * var(--kb-token--*) does not re-sync or bump the store's version, even though the post's
+	 * $post_before reflects the restored canonical form rather than the literal from the prior
+	 * save.
+	 *
+	 * @return void
+	 */
+	public function testUnchangedLiteralOnSubsequentSaveDoesNotRewriteStore(): void {
+		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
+
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$version_after_sync = $this->store->get_version( $this->active->get() );
+
+		// The Site Editor client is unaware Restorer already rewrote the CPT to the canonical
+		// var() form, so a subsequent, unrelated save resends the same literal it originally
+		// submitted.
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$this->assertSame( $version_after_sync, $this->store->get_version( $this->active->get() ) );
 	}
 
 	/**
