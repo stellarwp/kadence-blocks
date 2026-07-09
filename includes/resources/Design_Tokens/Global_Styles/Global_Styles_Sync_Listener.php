@@ -160,24 +160,29 @@ final class Global_Styles_Sync_Listener {
 	 * @param WP_Post      $post        The post after the write.
 	 * @param bool         $update      Whether this was an update (unused; a create has no
 	 *                                  presets to have changed, so the diff naturally no-ops).
-	 * @param WP_Post|null $post_before The post before the write, or null for a new post.
+	 * @param WP_Post|null $post_before The post before the write, or null for a new post (unused;
+	 *                                  kept for the hook's exact signature — a target's
+	 *                                  already-synced state is checked against the token store,
+	 *                                  not $post_before, since Restorer's own wp_update_post()
+	 *                                  call has already rewritten it to the canonical form by
+	 *                                  the time a later save runs).
 	 *
 	 * @return void
 	 */
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter -- $update and $post_before are kept to match wp_after_insert_post's exact signature.
 	public function on_after_insert_post( int $post_id, WP_Post $post, bool $update, ?WP_Post $post_before ): void {
 		if ( $post->post_type !== self::POST_TYPE ) {
 			return;
 		}
 
-		$before = $this->decode( $post_before !== null ? $post_before->post_content : '' );
-		$after  = $this->decode( $post->post_content );
+		$after = $this->decode( $post->post_content );
+		$slug  = $this->active->get();
 
-		$changed = $this->find_changed_targets( $before, $after );
+		$changed = $this->find_changed_targets( $slug, $after );
 		if ( $changed === [] ) {
 			return;
 		}
 
-		$slug   = $this->active->get();
 		$synced = [];
 
 		foreach ( $changed as [ $target, $literal ] ) {
@@ -218,18 +223,25 @@ final class Global_Styles_Sync_Listener {
 	}
 
 	/**
-	 * Find every syncable preset whose new value differs from its canonical var(--kb-token--*)
-	 * form, paired with the new literal to sync.
+	 * Find every syncable preset whose new value differs from both its canonical
+	 * var(--kb-token--*) form and whatever literal the store already holds for it, paired with
+	 * the new literal to sync.
+	 *
+	 * Checked against the store's current value rather than $post_before: Restorer's own
+	 * wp_update_post() call rewrites $post_before's would-be literal back to the canonical form
+	 * within the same request, so a later save resending the exact literal already synced would
+	 * otherwise look "changed" purely because of Restorer's own rewrite.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $before Decoded pre-write theme.json-shaped document.
+	 * @param string               $slug  The active token set slug.
 	 * @param array<string, mixed> $after  Decoded post-write theme.json-shaped document.
 	 *
 	 * @return array<int, array{0: Preset_Target, 1: string}>
 	 */
-	private function find_changed_targets( array $before, array $after ): array {
+	private function find_changed_targets( string $slug, array $after ): array {
 		$changed = [];
+		$stored  = $this->decode( $this->store->get_document( $slug ) );
 
 		foreach ( $this->locator->locate() as $target ) {
 			$canonical = 'var(' . $target->token->css_var . ')';
@@ -239,10 +251,48 @@ final class Global_Styles_Sync_Listener {
 				continue; // Untouched, or already restored by a prior pass — nothing to do.
 			}
 
+			if ( $this->already_synced( $stored, $target, $new_value ) ) {
+				continue; // The store already holds this exact literal — nothing new to sync.
+			}
+
 			$changed[] = [ $target, $new_value ];
 		}
 
 		return $changed;
+	}
+
+	/**
+	 * Whether a target's new literal translates to the exact leaf the store already holds for it,
+	 * making a sync a no-op.
+	 *
+	 * A translation failure is left for sync_target() to throw and log the same way it always
+	 * has, rather than being swallowed here as "already synced".
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $stored  The active token set's currently stored document.
+	 * @param Preset_Target        $target  The target to check.
+	 * @param string               $literal The new literal read from the Global Styles preset entry.
+	 *
+	 * @return bool
+	 */
+	private function already_synced( array $stored, Preset_Target $target, string $literal ): bool {
+		try {
+			$leaf = $this->translator->translate( $target->category, $literal );
+		} catch ( Untranslatable_Value_Exception $e ) {
+			return false;
+		}
+
+		$cursor = $stored;
+
+		foreach ( explode( '.', $target->token->id ) as $segment ) {
+			if ( ! is_array( $cursor ) || ! isset( $cursor[ $segment ] ) ) {
+				return false;
+			}
+			$cursor = $cursor[ $segment ];
+		}
+
+		return $cursor === $leaf;
 	}
 
 	/**

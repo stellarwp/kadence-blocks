@@ -215,6 +215,39 @@ final class Global_Styles_Sync_ListenerTest extends TestCase {
 	}
 
 	/**
+	 * A second save carrying the exact same literal that was already synced and restored to
+	 * var(--kb-token--*) does not re-sync or bump the store's version, even though the post's
+	 * $post_before reflects the restored canonical form rather than the literal from the prior
+	 * save.
+	 *
+	 * @return void
+	 */
+	public function testUnchangedLiteralOnSubsequentSaveDoesNotRewriteStore(): void {
+		$post = $this->create_global_styles_post( $this->document_with_button_bg( $this->canonical_button_bg() ) );
+
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$version_after_sync = $this->store->get_version( $this->active->get() );
+
+		// The Site Editor client is unaware Restorer already rewrote the CPT to the canonical
+		// var() form, so a subsequent, unrelated save resends the same literal it originally
+		// submitted.
+		wp_update_post(
+			[
+				'ID'           => $post->ID,
+				'post_content' => wp_json_encode( $this->document_with_button_bg( '#3182ce' ) ),
+			]
+		);
+
+		$this->assertSame( $version_after_sync, $this->store->get_version( $this->active->get() ) );
+	}
+
+	/**
 	 * Create a wp_global_styles post row with the given decoded post_content.
 	 *
 	 * @param array<string, mixed> $document The decoded theme.json-shaped document.
