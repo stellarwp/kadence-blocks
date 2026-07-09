@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Length_To_Px;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Number_To_Px;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  */
 final class Block_Preset_Catalog {
 
-	use Converts_Length_To_Px;
+	use Converts_Number_To_Px;
 
 	/**
 	 * Block => attribute => resolved-token dot-path. Each entry's value is looked up via the

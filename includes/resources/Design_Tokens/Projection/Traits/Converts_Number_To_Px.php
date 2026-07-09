@@ -9,7 +9,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits;
  *
  * @since TBD
  */
-trait Converts_Length_To_Px {
+trait Converts_Number_To_Px {
 
 	/**
 	 * Convert a resolved CSS length to a raw pixel number, assuming the browser/CSS default root

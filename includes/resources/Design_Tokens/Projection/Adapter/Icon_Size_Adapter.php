@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Abstract_Adapter;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Length_To_Px;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Converts_Number_To_Px;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
@@ -30,7 +30,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  */
 final class Icon_Size_Adapter extends Abstract_Adapter {
 
-	use Converts_Length_To_Px;
+	use Converts_Number_To_Px;
 
 	/**
 	 * @since TBD
