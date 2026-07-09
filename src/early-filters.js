@@ -131,6 +131,40 @@ export function blockVariantAttribute(settings) {
 addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVariantAttribute);
 
 /**
+ * Override a block's registered attribute defaults with the resolved design-token value, read
+ * from window.kadenceDesignTokensPresetDefaults (Editor\Localizer, Editor\Block_Preset_Catalog).
+ * So a freshly inserted block starts at the brand's token-resolved value instead of the block's
+ * own hardcoded static default — without touching the attribute's type or the block's save
+ * output for existing content (which already has an explicit stored value).
+ *
+ * @param {Object} settings The block settings.
+ * @param {string} name     The block name.
+ *
+ * @since TBD
+ *
+ * @return {Object} The block settings, with any catalog-covered attribute defaults overridden.
+ */
+export function blockPresetAttributeDefault(settings, name) {
+	const catalog = window.kadenceDesignTokensPresetDefaults;
+	const entry = catalog && catalog[name];
+
+	if (!entry) {
+		return settings;
+	}
+
+	Object.keys(entry).forEach((attribute) => {
+		if (settings.attributes && settings.attributes[attribute]) {
+			settings.attributes[attribute] = assign({}, settings.attributes[attribute], {
+				default: entry[attribute],
+			});
+		}
+	});
+
+	return settings;
+}
+addFilter('blocks.registerBlockType', 'kadence/preset-attribute-default', blockPresetAttributeDefault);
+
+/**
  * Sanitize a design-token slug to the identifier form the projector emits.
  *
  * Mirrors the projector's PHP Css_Builder::sanitize_identifier() sanitizer, so a slug written to a class
