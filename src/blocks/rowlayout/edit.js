@@ -249,7 +249,7 @@ const KadenceRowLayout = (props) => {
 	/**
 	 * Update all child Column blocks with a new vertical alignment setting
 	 * based on whatever alignment is passed in. This allows change to parent
-	 * to overide anything set on a individual column basis.
+	 * to override anything set on a individual column basis.
 	 *
 	 * @param {string} verticalAlignment the vertical alignment setting
 	 */
@@ -1184,16 +1184,16 @@ const KadenceRowLayout = (props) => {
 									: ''}
 								{breakoutLeft
 									? `@media (min-width: 1290px) {
-											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
+											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
 												isSelected ? 2 : 1
 											}) > .kadence-inner-column-inner {
 												margin-inline-start: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important;
 										}}
 										@media (max-width: 1289px) {
-											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} .wp-block-kadence-column:nth-child(${
+											.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(${
 												isSelected ? 2 : 1
 											}) > .kadence-inner-column-inner {
-												margin-inline-start: calc( ${paddingRightBreakout} * -1 ) !important;
+												margin-inline-start: calc( ${paddingLeftBreakout} * -1 ) !important;
 										}}`
 									: ''}
 							</>

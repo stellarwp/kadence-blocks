@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
@@ -27,6 +28,15 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * resolve_literal() is the opt-in exception: it flattens the alias to its concrete leaf value for the
  * surfaces that cannot consume a var() chain (block-attribute presets, the dimension-default fallback,
  * the editor variant-catalog feed).
+ *
+ * A block's variants can be organized as named variant SETS (picker-driven axes, e.g. a button's "style"
+ * set): the document then nests `variants.<block>.<group>.{ $default, <variant> }`, and each set resolves
+ * independently. A block may instead ship a single flat PRESET set (`variants.<block>.{ $default,
+ * <variant> }`) — its default look, with no picker — which is read through the
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::get_implicit_group_key()} sentinel. So every
+ * accessor takes an optional `$group`: a null argument resolves to that single implicit preset set, while a
+ * named set is addressed by its slug. A user-authored variant (added through the store) is a variant within
+ * its set, so it sits underneath the per-set override merge unchanged.
  *
  * Variant definitions are read per token set through {@see Effective_Variants}: the shipped baseline's
  * variants deep-merged with that set's stored overrides, so a variant a user authored through the store
@@ -63,6 +73,60 @@ final class Variant_Resolver {
 	}
 
 	/**
+	 * The variant groups (axes) a block declares for a set, in document order. A grouped block returns its
+	 * explicit group slugs; a flat block returns a single-element list naming the {@see Variant_Set::get_implicit_group_key()}
+	 * sentinel, so callers can iterate axes uniformly whether or not the block is grouped.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
+	 *
+	 * @throws Unknown_Variant_Exception When the block defines no variants.
+	 *
+	 * @return string[]
+	 */
+	public function groups( string $block, string $slug = 'default' ): array {
+		$node = $this->block_variants( $block, $slug );
+
+		if ( ! $this->node_is_grouped( $node ) ) {
+			return [ Variant_Set::get_implicit_group_key() ];
+		}
+
+		$groups = [];
+
+		foreach ( array_keys( $node ) as $key ) {
+			// Skip `$default` and any other DTCG metadata key; only named groups are axes.
+			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
+				continue;
+			}
+
+			$groups[] = (string) $key;
+		}
+
+		return $groups;
+	}
+
+	/**
+	 * Whether the block organizes its variants into explicit named groups (multi-axis), as opposed to the
+	 * flat single-axis shape read as one implicit group. False for an unknown block (no throw).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 * @param string $slug  The token set whose effective variants are read.
+	 *
+	 * @return bool
+	 */
+	public function is_grouped( string $block, string $slug = 'default' ): bool {
+		try {
+			return $this->node_is_grouped( $this->block_variants( $block, $slug ) );
+		} catch ( Unknown_Variant_Exception $e ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Resolve a variant's bindings to a `property => value` map for the css-var projection, preserving
 	 * alias indirection: an alias binding becomes a `var(--kb-token--<target>)` reference (so the variant
 	 * var chains to the semantic/primitive it points at and follows a token edit live) while a literal
@@ -78,19 +142,20 @@ final class Variant_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block     The block name, e.g. "kadence/advancedbtn".
-	 * @param string $variant   The variant slug, e.g. "ghost".
-	 * @param string $slug      The token set whose effective variants and resolved values are read.
-	 * @param string $css_namespace Css-var namespace for the var() target ('' for the canonical name). When set,
-	 *                          an alias becomes var(--kb-token--<namespace>--<target>), so a namespaced
-	 *                          variant var chains to that set's namespaced token and stays inside the set.
+	 * @param string      $block         The block name, e.g. "kadence/advancedbtn".
+	 * @param string      $variant       The variant slug, e.g. "ghost".
+	 * @param string      $slug          The token set whose effective variants and resolved values are read.
+	 * @param string      $css_namespace Css-var namespace for the var() target ('' for the canonical name). When set,
+	 *                                   an alias becomes var(--kb-token--<namespace>--<target>), so a namespaced
+	 *                                   variant var chains to that set's namespaced token and stays inside the set.
+	 * @param string|null $group         The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
+	 * @throws Unknown_Variant_Exception When the block, group or variant is not defined.
 	 *
 	 * @return array<string, string> property => var()-preserving CSS value.
 	 */
-	public function resolve( string $block, string $variant, string $slug = 'default', string $css_namespace = '' ): array {
-		$tokens   = $this->variant_tokens( $block, $variant, $slug );
+	public function resolve( string $block, string $variant, string $slug = 'default', string $css_namespace = '', ?string $group = null ): array {
+		$tokens   = $this->variant_tokens( $block, $variant, $slug, $group );
 		$resolved = $this->resolver->resolve( $slug );
 
 		$values = [];
@@ -127,16 +192,17 @@ final class Variant_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block   The block name, e.g. "kadence/advancedbtn".
-	 * @param string $variant The variant slug, e.g. "ghost".
-	 * @param string $slug    The token set whose effective variants and resolved values are read.
+	 * @param string      $block   The block name, e.g. "kadence/advancedbtn".
+	 * @param string      $variant The variant slug, e.g. "ghost".
+	 * @param string      $slug    The token set whose effective variants and resolved values are read.
+	 * @param string|null $group   The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
+	 * @throws Unknown_Variant_Exception When the block, group or variant is not defined.
 	 *
 	 * @return array<string, string> property => flattened literal CSS value.
 	 */
-	public function resolve_literal( string $block, string $variant, string $slug = 'default' ): array {
-		$tokens   = $this->variant_tokens( $block, $variant, $slug );
+	public function resolve_literal( string $block, string $variant, string $slug = 'default', ?string $group = null ): array {
+		$tokens   = $this->variant_tokens( $block, $variant, $slug, $group );
 		$resolved = $this->resolver->resolve( $slug );
 
 		$values = [];
@@ -153,7 +219,7 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * Resolve the block's default ("preset") variant to flattened LITERALS.
+	 * Resolve a group's default ("preset") variant to flattened LITERALS.
 	 *
 	 * Returns literals — it delegates to resolve_literal(), not resolve() — because its only callers are
 	 * concrete-value surfaces: Block_Preset seeds the value into a block attribute default an editor
@@ -164,35 +230,37 @@ final class Variant_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name.
-	 * @param string $slug  The token set whose effective variants and resolved values are read.
+	 * @param string      $block The block name.
+	 * @param string      $slug  The token set whose effective variants and resolved values are read.
+	 * @param string|null $group The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
+	 * @throws Unknown_Variant_Exception When the block is not defined or the group declares no default.
 	 *
 	 * @return array<string, string> property => flattened literal CSS value.
 	 */
-	public function resolve_default( string $block, string $slug = 'default' ): array {
-		return $this->resolve_literal( $block, $this->default_variant( $block, $slug ), $slug );
+	public function resolve_default( string $block, string $slug = 'default', ?string $group = null ): array {
+		return $this->resolve_literal( $block, $this->default_variant( $block, $slug, $group ), $slug, $group );
 	}
 
 	/**
-	 * The variant slugs a block declares for a set, in document order — the effective set (the baseline
+	 * The variant slugs a group declares for a set, in document order — the effective set (the baseline
 	 * deep-merged with the set's stored overrides) being the source of truth, so a user-added variant in the
 	 * store appears here alongside the baseline ones.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name.
-	 * @param string $slug  The token set whose effective variants are read.
+	 * @param string      $block The block name.
+	 * @param string      $slug  The token set whose effective variants are read.
+	 * @param string|null $group The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block defines no variants.
+	 * @throws Unknown_Variant_Exception When the block or group defines no variants.
 	 *
 	 * @return string[]
 	 */
-	public function names( string $block, string $slug = 'default' ): array {
+	public function names( string $block, string $slug = 'default', ?string $group = null ): array {
 		$names = [];
 
-		foreach ( array_keys( $this->block_variants( $block, $slug ) ) as $key ) {
+		foreach ( array_keys( $this->group_node( $block, $slug, $group ) ) as $key ) {
 			// Skip `$default` and any other DTCG metadata key; only named variants are slugs.
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue;
@@ -205,47 +273,47 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * Whether a block declares the given variant in a set. False for an unknown block (no throw), so callers
-	 * can validate a selection without first checking the block exists.
+	 * Whether a block's group declares the given variant in a set. False for an unknown block or group (no
+	 * throw), so callers can validate a selection without first checking the block exists.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name.
-	 * @param string $name  The variant slug.
-	 * @param string $slug  The token set whose effective variants are read.
+	 * @param string      $block The block name.
+	 * @param string      $name  The variant slug.
+	 * @param string      $slug  The token set whose effective variants are read.
+	 * @param string|null $group The variant group, or null for a flat block's implicit group.
 	 *
 	 * @return bool
 	 */
-	public function has_variant( string $block, string $name, string $slug = 'default' ): bool {
-		$section = $this->variants_section( $slug );
-
-		if ( ! isset( $section[ $block ] ) || ! is_array( $section[ $block ] ) ) {
+	public function has_variant( string $block, string $name, string $slug = 'default', ?string $group = null ): bool {
+		try {
+			return in_array( $name, $this->names( $block, $slug, $group ), true );
+		} catch ( Unknown_Variant_Exception $e ) {
 			return false;
 		}
-
-		return in_array( $name, $this->names( $block, $slug ), true );
 	}
 
 	/**
-	 * The human-readable label a block's variant declares in a set, or null when the block, the variant, or
-	 * its label is absent. A lookup convenience that never throws, mirroring has_variant().
+	 * The human-readable label a block's variant declares in a set, or null when the block, the group, the
+	 * variant, or its label is absent. A lookup convenience that never throws, mirroring has_variant().
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block   The block name.
-	 * @param string $variant The variant slug.
-	 * @param string $slug    The token set whose effective variants are read.
+	 * @param string      $block   The block name.
+	 * @param string      $variant The variant slug.
+	 * @param string      $slug    The token set whose effective variants are read.
+	 * @param string|null $group   The variant group, or null for a flat block's implicit group.
 	 *
 	 * @return string|null
 	 */
-	public function label( string $block, string $variant, string $slug = 'default' ): ?string {
-		$block_node = $this->variants_section( $slug )[ $block ] ?? null;
-
-		if ( ! is_array( $block_node ) ) {
+	public function label( string $block, string $variant, string $slug = 'default', ?string $group = null ): ?string {
+		try {
+			$group_node = $this->group_node( $block, $slug, $group );
+		} catch ( Unknown_Variant_Exception $e ) {
 			return null;
 		}
 
-		$variant_node = $block_node[ $variant ] ?? null;
+		$variant_node = $group_node[ $variant ] ?? null;
 
 		if ( ! is_array( $variant_node ) ) {
 			return null;
@@ -257,9 +325,9 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The union of every property the block's variants set a value for in a set — what a {@see
-	 * \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::consistency()} check compares the
-	 * bindings against, and what a block preset iterates.
+	 * The union of every property the block's variants set a value for in a set, across all of its groups —
+	 * what a {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set::consistency()} check compares
+	 * the (per-block) bindings against, and what a block preset iterates.
 	 *
 	 * @since TBD
 	 *
@@ -273,9 +341,11 @@ final class Variant_Resolver {
 	public function value_properties( string $block, string $slug = 'default' ): array {
 		$properties = [];
 
-		foreach ( $this->names( $block, $slug ) as $variant ) {
-			foreach ( array_keys( $this->variant_tokens( $block, $variant, $slug ) ) as $property ) {
-				$properties[ $property ] = true;
+		foreach ( $this->groups( $block, $slug ) as $group ) {
+			foreach ( $this->names( $block, $slug, $group ) as $variant ) {
+				foreach ( array_keys( $this->variant_tokens( $block, $variant, $slug, $group ) ) as $property ) {
+					$properties[ $property ] = true;
+				}
 			}
 		}
 
@@ -283,20 +353,21 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The block's default variant slug for a set, read from the effective set's `$default` — the single
+	 * A group's default variant slug for a set, read from the effective set's `$default` — the single
 	 * source of truth for the default (no registry mirror to drift from).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block The block name.
-	 * @param string $slug  The token set whose effective variants are read.
+	 * @param string      $block The block name.
+	 * @param string      $slug  The token set whose effective variants are read.
+	 * @param string|null $group The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block is not defined or declares no default.
+	 * @throws Unknown_Variant_Exception When the block is not defined or the group declares no default.
 	 *
 	 * @return string
 	 */
-	public function default_variant( string $block, string $slug = 'default' ): string {
-		$default = $this->block_variants( $block, $slug )[ Extensions::get_default_key() ] ?? '';
+	public function default_variant( string $block, string $slug = 'default', ?string $group = null ): string {
+		$default = $this->group_node( $block, $slug, $group )[ Extensions::get_default_key() ] ?? '';
 
 		if ( ! is_string( $default ) || $default === '' ) {
 			throw Unknown_Variant_Exception::no_default( $block );
@@ -350,37 +421,74 @@ final class Variant_Resolver {
 	}
 
 	/**
-	 * The property => value map for a variant in a set, or throw when the block/variant is undefined.
+	 * The property => value map for a variant in a set, or throw when the block/group/variant is undefined.
 	 *
 	 * A variant that exists but carries no `tokens` map — or a non-array one — resolves to an empty map,
 	 * not an error: a variant may legitimately set no values (it then contributes nothing downstream).
-	 * Only an undefined block or variant is an error; a malformed-but-present `tokens` fails soft, in line
-	 * with the resolver's other lookups.
+	 * Only an undefined block, group or variant is an error; a malformed-but-present `tokens` fails soft,
+	 * in line with the resolver's other lookups.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block   The block name.
-	 * @param string $variant The variant slug.
-	 * @param string $slug    The token set whose effective variants are read.
+	 * @param string      $block   The block name.
+	 * @param string      $variant The variant slug.
+	 * @param string      $slug    The token set whose effective variants are read.
+	 * @param string|null $group   The variant group, or null for a flat block's implicit group.
 	 *
-	 * @throws Unknown_Variant_Exception When the block or variant is not defined.
+	 * @throws Unknown_Variant_Exception When the block, group or variant is not defined.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function variant_tokens( string $block, string $variant, string $slug = 'default' ): array {
-		$block_variants = $this->block_variants( $block, $slug );
+	private function variant_tokens( string $block, string $variant, string $slug = 'default', ?string $group = null ): array {
+		$group_node = $this->group_node( $block, $slug, $group );
 
-		if ( ! isset( $block_variants[ $variant ] ) || ! is_array( $block_variants[ $variant ] ) ) {
+		if ( ! isset( $group_node[ $variant ] ) || ! is_array( $group_node[ $variant ] ) ) {
 			throw Unknown_Variant_Exception::for_variant( $block, $variant );
 		}
 
-		$tokens = $block_variants[ $variant ][ Extensions::get_tokens_key() ] ?? [];
+		$tokens = $group_node[ $variant ][ Extensions::get_tokens_key() ] ?? [];
 
 		return is_array( $tokens ) ? $tokens : [];
 	}
 
 	/**
-	 * The variants node for a block in a set (its `$default` plus named variants), or throw when undefined.
+	 * The variant-bearing node for a (block, group) in a set: the `$default` plus named variants the rest
+	 * of the resolver reads. For a flat block the block node itself is the single implicit group, so a null
+	 * or implicit-sentinel `$group` returns it; an explicit group name then walks one level deeper. A group
+	 * mismatch (an explicit name on a flat block, or a null/implicit lookup on a grouped block) throws.
+	 *
+	 * @since TBD
+	 *
+	 * @param string      $block The block name.
+	 * @param string      $slug  The token set whose effective variants are read.
+	 * @param string|null $group The variant group, or null for a flat block's implicit group.
+	 *
+	 * @throws Unknown_Variant_Exception When the block defines no variants or the group is unknown.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function group_node( string $block, string $slug, ?string $group ): array {
+		$node        = $this->block_variants( $block, $slug );
+		$is_implicit = $group === null || $group === Variant_Set::get_implicit_group_key();
+
+		if ( ! $this->node_is_grouped( $node ) ) {
+			if ( $is_implicit ) {
+				return $node;
+			}
+
+			throw Unknown_Variant_Exception::for_group( $block, (string) $group );
+		}
+
+		if ( $is_implicit || ! isset( $node[ $group ] ) || ! is_array( $node[ $group ] ) ) {
+			throw Unknown_Variant_Exception::for_group( $block, (string) $group );
+		}
+
+		return $node[ $group ];
+	}
+
+	/**
+	 * The raw variants node for a block in a set — either a flat `{ $default, <variant> }` map or a grouped
+	 * `{ <group>: { $default, <variant> } }` map — or throw when the block is undefined.
 	 *
 	 * @since TBD
 	 *
@@ -399,6 +507,31 @@ final class Variant_Resolver {
 		}
 
 		return $variants[ $block ];
+	}
+
+	/**
+	 * Whether a block node nests named groups rather than variants directly. A variant always carries a
+	 * `tokens` key; a group node does not (it holds `$default` and nested variants). So the block is
+	 * grouped when its first named (non-`$`) child is an array with no `tokens` key. A block is uniformly
+	 * flat or grouped — pinned by the baseline shape test.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The raw block variants node.
+	 *
+	 * @return bool
+	 */
+	private function node_is_grouped( array $node ): bool {
+		foreach ( $node as $key => $child ) {
+			// Skip `$default` and any other DTCG metadata key; only named children disambiguate the shape.
+			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
+				continue;
+			}
+
+			return is_array( $child ) && ! array_key_exists( Extensions::get_tokens_key(), $child );
+		}
+
+		return false;
 	}
 
 	/**

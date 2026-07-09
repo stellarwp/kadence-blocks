@@ -136,8 +136,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testGetItemReflectsAStoredOverride(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}}'
 		);
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
@@ -349,8 +349,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testDeleteVariantIsAnIdempotentNoOpWhenAbsent(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
@@ -624,8 +624,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testAWriteBumpsTheVersion(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );

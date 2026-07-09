@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.7.6
+ * Version: 3.7.8
  * Requires PHP: 7.4
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,14 +20,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.7.6' );
+define( 'KADENCE_BLOCKS_VERSION', '3.7.8' );
 
 /**
  * Plugin basename, e.g. "kadence-blocks/kadence-blocks.php".
  *
  * @since 3.7.0
  */
-if ( ! defined('KADENCE_BLOCKS_PLUGIN_BASENAME') ) {
+if ( ! defined( 'KADENCE_BLOCKS_PLUGIN_BASENAME' ) ) {
 	define( 'KADENCE_BLOCKS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 }
 

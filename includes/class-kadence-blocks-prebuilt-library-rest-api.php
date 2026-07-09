@@ -2881,9 +2881,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Import an image for the design library/patterns.
 	 *
+	 * @since 3.7.8 Require the upload_files capability.
+	 *
 	 * @param array $image_data the image data to import.
 	 */
 	public function import_image( $image_data ) {
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return $image_data;
+		}
 		$local_image = $this->check_for_local_image( $image_data );
 		if ( $local_image['status'] ) {
 			return $local_image['image'];

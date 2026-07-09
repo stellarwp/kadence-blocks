@@ -61,7 +61,7 @@ final class Projected_Css_ControllerTest extends TestCase {
 		$css = $this->css();
 
 		$this->assertStringContainsString( '--kb-token--', $css, 'The token vars layer should be present.' );
-		$this->assertStringContainsString( 'kb-variant--accent', $css, 'The stored variant scoped rule should be present.' );
+		$this->assertStringContainsString( 'kb-variant--style--accent', $css, 'The stored variant scoped rule should be present.' );
 	}
 
 	/**
@@ -135,14 +135,16 @@ final class Projected_Css_ControllerTest extends TestCase {
 				'com.kadence.designTokens' => [
 					'variants' => [
 						self::BUTTON => [
-							$variant => [
-								'label'  => 'Accent',
-								'tokens' => [
-									'button-bg'         => '#ff0000',
-									'button-text'       => '#ffffff',
-									'button-bg-hover'   => '#cc0000',
-									'button-text-hover' => '#ffffff',
-									'button-radius'     => '1rem',
+							'style' => [
+								$variant => [
+									'label'  => 'Accent',
+									'tokens' => [
+										'button-bg'         => '#ff0000',
+										'button-text'       => '#ffffff',
+										'button-bg-hover'   => '#cc0000',
+										'button-text-hover' => '#ffffff',
+										'button-radius'     => '1rem',
+									],
 								],
 							],
 						],
