@@ -51,8 +51,9 @@ final class Variant_CatalogTest extends TestCase {
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );
 		$this->assertArrayHasKey( self::BUTTON, $catalog['sets'][ Token_Store::default_slug() ] );
 
-		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style'];
 
+		$this->assertSame( 'style', $button['group'] );
 		$this->assertSame( 'primary', $button['default'] );
 		// The picker's control label, declared on the variant set in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
@@ -80,7 +81,7 @@ final class Variant_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItExposesTheControllableSurface(): void {
-		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style']['properties'];
 
 		$kinds = wp_list_pluck( $properties, 'kind', 'key' );
 
@@ -95,11 +96,11 @@ final class Variant_CatalogTest extends TestCase {
 	 */
 	public function testItFlagsUserCreatedVariants(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}}'
 		);
 
-		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['variants'];
+		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style']['variants'];
 		$flags    = wp_list_pluck( $variants, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
