@@ -2,11 +2,13 @@
  * Shared design-token color-variant picker.
  *
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensVariants`,
- * keyed by token set: `{ active, sets: { <slug>: { <block>: { default, variants, properties, label? } } } }`.
- * Reads take the set a block is on (its `kbTokenSet`, or the active set) so the picker shows that set's
- * variants. Both the generic inspector picker (src/early-filters.js) and a block that renders the picker
- * inline in its own Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it
- * surfaces.
+ * keyed by token set then by block then by variant SET (axis):
+ * `{ active, sets: { <slug>: { <block>: { <group>: { group, default, variants, properties, label? } } } } }`.
+ * Reads take the token set a block is on (its `kbTokenSet`, or the active set). A picker-driven block
+ * registers one named variant set (e.g. the button's "style"); these readers resolve that sole set, and its
+ * selection lives in the `kbVariants` map keyed by the set's group. Both the generic inspector picker
+ * (src/early-filters.js) and a block that renders the picker inline in its own Style tab (e.g.
+ * kadence/singlebtn) use this so the control stays identical wherever it surfaces.
  */
 import { get } from 'lodash';
 import { KadenceRadioButtons } from '@kadence/components';
@@ -32,62 +34,100 @@ export function activeSet() {
 }
 
 /**
- * The per-block catalog for a set, defaulting to the active set.
+ * The per-block catalog for a token set, defaulting to the active set.
  *
  * @param {string} [set] The token set slug.
- * @return {Object} The per-block catalog for the set.
+ * @return {Object} The per-block catalog for the set (block => { group => entry }).
  */
 function setBlocks(set) {
 	return get(variantCatalog(), ['sets', set || activeSet()], {}) || {};
 }
 
 /**
- * The variants defined for a block in a set, or an empty array when it has none.
+ * A block's variant sets (axes) for a token set, keyed by group slug.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {Object} The block's sets ({ group => entry }).
+ */
+function blockSets(name, set) {
+	return get(setBlocks(set), [name], {}) || {};
+}
+
+/**
+ * The group slug of a block's variant set (its picker axis) for a token set — a picker-driven block
+ * registers one, so this is that sole set's group. Empty when the block offers no set.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {string} The variant-set group slug, or an empty string.
+ */
+export function blockSetGroup(name, set) {
+	const groups = Object.keys(blockSets(name, set));
+
+	return groups.length ? groups[0] : '';
+}
+
+/**
+ * The catalog entry for a block's sole variant set in a token set, or null when it offers none.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {Object|null} The set entry ({ group, default, variants, properties, label? }).
+ */
+function soleSet(name, set) {
+	const group = blockSetGroup(name, set);
+
+	return group ? blockSets(name, set)[group] : null;
+}
+
+/**
+ * The variants defined for a block's set, or an empty array when it has none.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
  * @return {Array} The block's variants ([{ slug, label, userCreated }]).
  */
 export function blockVariants(name, set) {
-	return get(setBlocks(set), [name, 'variants'], []);
+	return get(soleSet(name, set), 'variants', []);
 }
 
 /**
- * The picker control label a block declares for its variant axis (the variant set's `label` in
- * declarations.php), or an empty string when it declares none.
+ * The picker control label a block declares for its variant set (the set's `label` in declarations.php),
+ * or an empty string when it declares none.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
  * @return {string} The control label, or an empty string.
  */
 export function blockVariantLabel(name, set) {
-	return get(setBlocks(set), [name, 'label'], '');
+	return get(soleSet(name, set), 'label', '');
 }
 
 /**
- * The controllable surface for a block: one { key, kind, token } entry per bound property.
+ * The controllable surface for a block's set: one { key, kind, token } entry per bound property.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
  * @return {Array} The block's surface ([{ key, kind, token }]).
  */
 export function blockProperties(name, set) {
-	return get(setBlocks(set), [name, 'properties'], []);
+	return get(soleSet(name, set), 'properties', []);
 }
 
 /**
- * The block's default variant slug in a set.
+ * The block set's default variant slug in a token set.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
  * @return {string} The default variant slug, or an empty string.
  */
 export function blockDefaultVariant(name, set) {
-	return get(setBlocks(set), [name, 'default'], '');
+	return get(soleSet(name, set), 'default', '');
 }
 
 /**
- * Whether a variant slug is a user-created one for a block in a set (editable and deletable). A baseline
+ * Whether a variant slug is a user-created one for a block's set (editable and deletable). A baseline
  * variant, or one that only shadows a baseline variant, is not.
  *
  * @param {string} name The block name.
@@ -100,8 +140,8 @@ export function isUserVariant(name, set, slug) {
 }
 
 /**
- * Append a user-created variant to the in-memory catalog for a set, so the picker offers it without a page
- * reload. A no-op when the block has no catalog entry for the set.
+ * Append a user-created variant to the in-memory catalog for a block's set, so the picker offers it without
+ * a page reload. A no-op when the block has no set for the token set.
  *
  * @param {string} name    The block name.
  * @param {string} set     The token set slug.
@@ -109,19 +149,20 @@ export function isUserVariant(name, set, slug) {
  * @return {void}
  */
 export function appendVariant(name, set, variant) {
-	const block = get(variantCatalog(), ['sets', set || activeSet(), name]);
+	const entry = soleSet(name, set);
 
-	if (!block || !Array.isArray(block.variants)) {
+	if (!entry || !Array.isArray(entry.variants)) {
 		return;
 	}
 
-	if (!block.variants.some((existing) => existing.slug === variant.slug)) {
-		block.variants.push(variant);
+	if (!entry.variants.some((existing) => existing.slug === variant.slug)) {
+		entry.variants.push(variant);
 	}
 }
 
 /**
- * Remove a variant from the in-memory catalog for a set, so the picker drops it without a page reload.
+ * Remove a variant from the in-memory catalog for a block's set, so the picker drops it without a page
+ * reload.
  *
  * @param {string} name The block name.
  * @param {string} set  The token set slug.
@@ -129,19 +170,19 @@ export function appendVariant(name, set, variant) {
  * @return {void}
  */
 export function removeVariant(name, set, slug) {
-	const block = get(variantCatalog(), ['sets', set || activeSet(), name]);
+	const entry = soleSet(name, set);
 
-	if (!block || !Array.isArray(block.variants)) {
+	if (!entry || !Array.isArray(entry.variants)) {
 		return;
 	}
 
-	block.variants = block.variants.filter((existing) => existing.slug !== slug);
+	entry.variants = entry.variants.filter((existing) => existing.slug !== slug);
 }
 
 /**
  * The color-variant picker for a block. Renders nothing when the block has no variants in the set.
- * Selecting an option writes the kbVariant attribute (via onChange); an empty value selects the block's
- * $default look.
+ * Selecting an option calls onChange with the chosen variant slug (the caller writes it into the block's
+ * kbVariants map under this control's group); an empty value selects the block's $default look.
  *
  * @param {Object}   props             The component props.
  * @param {string}   props.name        The block name, used to read its variants from the catalog.

@@ -195,6 +195,30 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.variants.kadence/x.default.tokens.bg',
 		];
+		// A grouped (multi-axis) variant nests its tokens one level deeper, under a group: the validator
+		// descends to the tokens map wherever it sits, so the deep value is still reported.
+		yield 'bad grouped extension value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'variants' => [
+							'kadence/x' => [
+								'emphasis' => [
+									'$default' => 'solid',
+									'solid'    => [
+										'label'  => 'Solid',
+										'tokens' => [ 'bg' => [ 'nested' => 1 ] ],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.variants.kadence/x.emphasis.solid.tokens.bg',
+		];
 	}
 
 	/**

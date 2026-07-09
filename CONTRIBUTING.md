@@ -17,9 +17,10 @@ The `@stellarwp` scope resolves to GitHub Packages (`npm.pkg.github.com`), which
 
    ```
    BUN_AUTH_TOKEN=your_token_here
+   GITHUB_TOKEN=your_token_here
    ```
 
-   Bun reads `BUN_AUTH_TOKEN` from this `.env` file when authenticating to the `@stellarwp` registry. Do not commit `.env`.
+   Bun reads `BUN_AUTH_TOKEN` from this `.env` file when authenticating to the `@stellarwp` registry. `GITHUB_TOKEN` (the same token works) authenticates the `github:stellarwp/...` tarball fetches for the `@kadence/*` packages — without it those downloads hit GitHub's unauthenticated rate limit and fail with 504s. Do not commit `.env`.
 
 ## 2. Install PHP dependencies
 
