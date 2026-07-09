@@ -12,7 +12,7 @@ import { Modal, TextControl, SelectControl, Button, Notice, Spinner } from '@wor
 import { useState, useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { blockProperties, appendVariant } from './index';
+import { blockProperties, appendVariant, blockSetGroup } from './index';
 import { getBlockVariants, createVariant } from '../variants/api/client';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { deriveSlug, dedupeSlug } from '../variants/slug';
@@ -59,6 +59,7 @@ function seedValues(properties, tokens) {
  */
 export function SaveVariantModal({ blockName, set, source, editSlug = '', onClose, onSaved }) {
 	const properties = blockProperties(blockName, set);
+	const variantSet = blockSetGroup(blockName, set);
 	const isEdit = editSlug !== '';
 
 	const [status, setStatus] = useState('loading');
@@ -73,7 +74,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 	useEffect(() => {
 		let cancelled = false;
 
-		getBlockVariants(blockName, set)
+		getBlockVariants(blockName, set, variantSet)
 			.then((payload) => {
 				if (cancelled) {
 					return;
@@ -133,7 +134,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 		setStatus('saving');
 		setError('');
 
-		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set)
+		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set, variantSet)
 			.then(() => {
 				appendVariant(blockName, set, { slug, label: label.trim(), userCreated: true });
 				refreshProjectedCss();
