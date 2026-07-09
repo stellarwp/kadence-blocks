@@ -2,6 +2,7 @@
     "active": true,
     "resolved": true,
     "version": "v7",
+    "slug": "default",
     "schema": {
         "groups": {
             "Brand": [
@@ -13,7 +14,8 @@
                     "projections": {
                         "wp_preset": "color",
                         "kadence_slot": "palette1"
-                    }
+                    },
+                    "userCreated": false
                 },
                 {
                     "id": "semantic.color.button-text",
@@ -22,7 +24,8 @@
                     "cssVar": "--kb-token--semantic--color--button-text",
                     "projections": {
                         "wp_preset": "color"
-                    }
+                    },
+                    "userCreated": false
                 }
             ],
             "Layout": [
@@ -33,7 +36,8 @@
                     "cssVar": "--kb-token--semantic--spacing--md",
                     "projections": {
                         "wp_preset": "spacing"
-                    }
+                    },
+                    "userCreated": false
                 }
             ]
         }

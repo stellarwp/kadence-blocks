@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Definition;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
+use RuntimeException;
 use Tests\Support\Classes\TestCase;
 
 final class Token_RegistryTest extends TestCase {
@@ -120,7 +121,7 @@ final class Token_RegistryTest extends TestCase {
 
 		$entry = $schema['groups']['Brand'][0];
 		$this->assertSame(
-			[ 'id', 'type', 'label', 'cssVar', 'projections' ],
+			[ 'id', 'type', 'label', 'cssVar', 'projections', 'userCreated' ],
 			array_keys( $entry )
 		);
 		$this->assertArrayNotHasKey( 'value', $entry );
@@ -183,5 +184,118 @@ final class Token_RegistryTest extends TestCase {
 		};
 
 		$this->assertSame( [ 'semantic.spacing.md' ], $this->registry->missing_from_baseline( $baseline ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveAddsUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$token = $this->registry->get( 'user.color.brand' );
+		$this->assertNotNull( $token );
+		$this->assertTrue( $token->is_user_created() );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveReplacesExistingUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Old Label' );
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'New Label' );
+
+		$token = $this->registry->get( 'user.color.brand' );
+		$this->assertNotNull( $token );
+		$this->assertSame( 'New Label', $token->label );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRegisterUserPrimitiveThrowsWhenIdIsSystemToken(): void {
+		$this->register_button_bg();
+
+		$this->expectException( RuntimeException::class );
+
+		$this->registry->register_user_primitive( 'semantic.color.button-bg', 'color', 'Brand' );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveRemovesUserCreatedToken(): void {
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+		$this->registry->deregister_user_primitive( 'user.color.brand' );
+
+		$this->assertNull( $this->registry->get( 'user.color.brand' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveIsNoOpForSystemToken(): void {
+		$this->register_button_bg();
+		$this->registry->deregister_user_primitive( 'semantic.color.button-bg' );
+
+		$this->assertNotNull( $this->registry->get( 'semantic.color.button-bg' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDeregisterUserPrimitiveIsNoOpForAbsentId(): void {
+		$this->registry->deregister_user_primitive( 'user.color.nonexistent' );
+
+		$this->assertFalse( $this->registry->has( 'user.color.nonexistent' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testUserCreatedIdsReturnsOnlyUserCreatedIds(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+		$this->registry->register_user_primitive( 'user.color.accent', 'color', 'Accent' );
+
+		$this->assertSame(
+			[ 'user.color.brand', 'user.color.accent' ],
+			$this->registry->user_created_ids()
+		);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testMissingFromBaselineSkipsUserCreatedTokens(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$baseline = new class() implements Baseline_Document {
+			public function has( string $id ): bool {
+				return false;
+			}
+
+			public function document(): array {
+				return [];
+			}
+		};
+
+		$this->assertSame( [ 'semantic.color.button-bg' ], $this->registry->missing_from_baseline( $baseline ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testToUiSchemaEmitsUserCreatedField(): void {
+		$this->register_button_bg();
+		$this->registry->register_user_primitive( 'user.color.brand', 'color', 'Brand' );
+
+		$schema = $this->registry->to_ui_schema();
+
+		$system_entry = $schema['groups']['Brand'][0];
+		$this->assertFalse( $system_entry['userCreated'] );
+
+		$user_entry = $schema['groups'][''][0];
+		$this->assertTrue( $user_entry['userCreated'] );
 	}
 }

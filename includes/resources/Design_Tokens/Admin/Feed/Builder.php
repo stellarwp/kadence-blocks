@@ -47,16 +47,18 @@ final class Builder {
 	 * @param array<string, mixed>                                  $variants Per-block variant structure + values.
 	 * @param array{root: string, namespace: string, nonce: string} $rest     REST root, namespace and nonce.
 	 * @param string                                                $version  Store version hash ('' from baseline).
+	 * @param string                                                $slug     The token set slug the values/version/schema were resolved against.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $variants, array $rest, string $version ): array {
+	public function build( array $values, bool $resolved, array $variants, array $rest, string $version, string $slug ): array {
 		$active = $this->registry->is_active();
 
 		return [
 			'active'   => $active,
 			'resolved' => $active && $resolved,
 			'version'  => $version,
+			'slug'     => $slug,
 			'schema'   => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
 			'values'   => $active ? $values : [],
 			'variants' => $active ? $variants : [],

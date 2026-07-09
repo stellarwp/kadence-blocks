@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Baseline\Json_Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
@@ -44,7 +45,9 @@ final class Provider extends Provider_Contract {
 		// third parties on a later hook (init:2+) skip baseline validation and is_active() is not
 		// re-checked. Re-validating late registrations is out of scope until the real baseline lands.
 		add_action( 'init', [ $this, 'register_declarations' ], 0 );
+		add_action( 'init', [ $this, 'sync_user_primitives' ], 0 );
 		add_action( 'init', [ $this, 'guard_baseline' ], 1 );
+		add_action( Token_Store::changed_action(), [ $this, 'sync_user_primitives_on_change' ], 0 );
 	}
 
 	/**
@@ -81,6 +84,31 @@ final class Provider extends Provider_Contract {
 		foreach ( $declarations['variant_sets'] as $variant_set ) {
 			$registry->register_variant_set( $variant_set );
 		}
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function sync_user_primitives(): void {
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+	}
+
+	/**
+	 * Every stored set is synced regardless of which one changed or which one is active — the
+	 * multi-set projection renders every set, so every set's user primitives must stay registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function sync_user_primitives_on_change(): void {
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
 	}
 
 	/**

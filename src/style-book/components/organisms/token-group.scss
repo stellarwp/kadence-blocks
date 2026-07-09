@@ -1,10 +1,39 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
-.kadence-blocks-style-book__token-group-title {
-	@include section-heading;
+.kadence-blocks-style-book__token-group {
+	&-header {
+		@include flex-row($spacing-md);
+		align-items: baseline;
+		margin-bottom: $spacing-md;
+	}
+
+	&-title {
+		margin: 0;
+		font-size: $font-size-group-title;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	&-add {
+		margin-left: auto;
+	}
+
+	&-list {
+		@include flex-column($spacing-lg);
+	}
 }
 
-.kadence-blocks-style-book__token-group-list {
-	@include flex-column($spacing-lg);
+.kadence-blocks-style-book__token-row {
+	position: relative;
+
+	&--user-created {
+		border-left: 3px solid $color-accent;
+		padding-left: $spacing-md;
+	}
+
+	&-controls {
+		@include flex-row($spacing-sm);
+		margin-top: $spacing-xs;
+	}
 }
