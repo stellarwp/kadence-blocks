@@ -21,6 +21,7 @@ final class Design_Tokens_Provider extends Provider {
 		Resolver\Provider::class,
 		Projection\Provider::class,
 		Foundation_Presets\Provider::class,
+		Global_Styles\Provider::class,
 		Rest\Provider::class,
 		Admin\Provider::class,
 		Editor\Provider::class,

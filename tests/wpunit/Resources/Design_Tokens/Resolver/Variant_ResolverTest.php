@@ -440,14 +440,14 @@ final class Variant_ResolverTest extends TestCase {
 								'subtle'   => [
 									'label'  => 'Subtle',
 									'tokens' => [
-										'button-bg-hover'   => '#2f2ffc',
+										'button-bg-hover' => '#2f2ffc',
 										'button-text-hover' => '#ffffff',
 									],
 								],
 								'bold'     => [
 									'label'  => 'Bold',
 									'tokens' => [
-										'button-bg-hover'   => '#000000',
+										'button-bg-hover' => '#000000',
 										'button-text-hover' => '#ffffff',
 									],
 								],

@@ -1536,14 +1536,14 @@ final class Variants_Controller extends Controller {
 	 */
 	private function get_block_params(): array {
 		return [
-			self::VENDOR_PARAM     => [
+			self::VENDOR_PARAM      => [
 				'description'       => __( 'The block vendor segment, e.g. kadence.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[a-z][a-z0-9-]*$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::BLOCK_NAME_PARAM => [
+			self::BLOCK_NAME_PARAM  => [
 				'description'       => __( 'The block name segment, e.g. advancedbtn.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
