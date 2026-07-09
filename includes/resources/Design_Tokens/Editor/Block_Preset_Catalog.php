@@ -10,11 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * early-filters.js reads to seed a freshly inserted block's attribute default from a resolved
  * token, instead of the hardcoded static default in block.json.
  *
- * Scoped to kadence/single-icon's `size` today — the only block/attribute pair this ticket needs.
- * Not a general "any block, any attribute" registry: extend the ENTRIES map (or promote to a
- * declarations-driven shape) only when a second real consumer needs it, matching this module's
- * existing preference for composable-but-not-speculative catalogs (see Variant_Catalog, which
- * itself started scoped to what the variant picker needed).
+ * Covers kadence/single-icon's `size` (a scalar pixel default) and kadence/singlebtn's
+ * `borderRadius` (a 4-corner pixel default) — the anticipated second consumer this module's
+ * composable-but-not-speculative preference (see Variant_Catalog) was waiting on before
+ * generalizing. Not a general "any block, any attribute" registry: keep extending the ENTRIES
+ * map (or promote to a declarations-driven shape) only when a further real consumer needs it,
+ * rather than opening it up ahead of demand.
  *
  * @since TBD
  */
@@ -23,17 +24,47 @@ final class Block_Preset_Catalog {
 	use Converts_Length_To_Px;
 
 	/**
-	 * Block => attribute => resolved-token dot-path. Each entry's value is looked up via the
-	 * resolver and, when present, exposed to JS as a raw number (this catalog only supports
-	 * numeric attribute defaults today — the one case this ticket has).
+	 * Scalar shape: the resolved token is exposed to JS as a bare float, matching a numeric
+	 * attribute default (e.g. kadence/single-icon's `size`).
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, string>>
+	 * @var string
+	 */
+	private const SHAPE_SCALAR = 'scalar';
+
+	/**
+	 * Corners shape: the resolved token is exposed to JS as a 4-element float array — the same
+	 * resolved value repeated across the top/right/bottom/left corners, matching a corner-array
+	 * attribute default (e.g. kadence/singlebtn's `borderRadius`).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SHAPE_CORNERS = 'corners';
+
+	/**
+	 * Block => attribute => { token dot-path, output shape }. Each entry's token is looked up
+	 * via the resolver and, when present, converted to a pixel value and emitted to JS in the
+	 * entry's shape — a bare float for `scalar`, a 4-element float array for `corners`.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, array<string, array{token: string, shape: string}>>
 	 */
 	private const ENTRIES = [
 		'kadence/single-icon' => [
-			'size' => 'semantic.icon-size.default',
+			'size' => [
+				'token' => 'semantic.icon-size.default',
+				'shape' => self::SHAPE_SCALAR,
+			],
+		],
+		'kadence/singlebtn'   => [
+			'borderRadius' => [
+				'token' => 'semantic.radius.control',
+				'shape' => self::SHAPE_CORNERS,
+			],
 		],
 	];
 
@@ -54,22 +85,23 @@ final class Block_Preset_Catalog {
 	}
 
 	/**
-	 * The catalog, keyed by block name then attribute name, each value the resolved numeric
-	 * default. A block/attribute whose token does not resolve, or whose resolved value is not a
-	 * convertible numeric length, is omitted — the editor filter falls back to block.json's own
-	 * default for it.
+	 * The catalog, keyed by block name then attribute name, each value the resolved pixel
+	 * default in the entry's shape — a bare float for `scalar`, a 4-element float array (the
+	 * value repeated per corner) for `corners`. A block/attribute whose token does not resolve,
+	 * or whose resolved value is not a convertible numeric length, is omitted — the editor
+	 * filter falls back to block.json's own default for it.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, array<string, float>>
+	 * @return array<string, array<string, float|array<int, float>>>
 	 */
 	public function all(): array {
 		$resolved = $this->resolver->resolve();
 		$out      = [];
 
 		foreach ( self::ENTRIES as $block => $attributes ) {
-			foreach ( $attributes as $attribute => $token_id ) {
-				$value = $resolved->value( $token_id );
+			foreach ( $attributes as $attribute => $spec ) {
+				$value = $resolved->value( $spec['token'] );
 
 				if ( $value === null ) {
 					continue;
@@ -81,7 +113,9 @@ final class Block_Preset_Catalog {
 					continue;
 				}
 
-				$out[ $block ][ $attribute ] = $px;
+				$out[ $block ][ $attribute ] = $spec['shape'] === self::SHAPE_CORNERS
+					? [ $px, $px, $px, $px ]
+					: $px;
 			}
 		}
 
