@@ -56,10 +56,12 @@ final class RegistrationHelperTest extends TestCase {
 	}
 
 	public function testDeclarationsFileRegisteredTheButtonVariantSet(): void {
-		$set = $this->registry->for_block( 'kadence/singlebtn' );
+		// The button registers a named "style" set (its picker axis), not a preset/implicit set.
+		$set = $this->registry->for_variant_set( 'kadence/singlebtn', 'style' );
 
 		$this->assertNotNull( $set );
 		$this->assertSame( 'kadence/singlebtn', $set->block );
+		$this->assertSame( 'style', $set->group );
 		$this->assertNotNull( $set->binding( 'button-bg' ) );
 	}
 

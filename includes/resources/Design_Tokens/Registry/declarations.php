@@ -234,13 +234,14 @@ return [
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
 			'block'    => 'kadence/singlebtn',
+			'group'    => 'style', // a named, picker-driven set (the button's Style axis), keyed variants.<block>.style.
 			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
 			'bindings' => [
 				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
 				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
 				'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
 				'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
-				'button-radius'     => [ 'css_var' => true ], // token-var only (no preset bucket).
+				'button-radius'     => [ 'css_var' => 'kb-btn-radius' ], // drives --kb-btn-radius so a variant can vary the radius.
 			],
 		],
 		[
@@ -256,6 +257,7 @@ return [
 			 * in the baseline document.
 			 */
 			'block'    => 'core/button',
+			'group'    => 'style', // a named, picker-driven set (the button's Style axis), keyed variants.<block>.style.
 			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
 			'bindings' => [
 				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],

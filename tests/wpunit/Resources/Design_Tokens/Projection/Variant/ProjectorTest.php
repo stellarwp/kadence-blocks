@@ -63,8 +63,8 @@ final class ProjectorTest extends TestCase {
 
 		$css = implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
 
-		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-variant--primary{', $css );
-		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-singlebtn--primary--button-bg', $css );
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-variant--style--primary{', $css );
+		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-singlebtn--style--primary--button-bg', $css );
 	}
 
 	public function testItIsANoopWhenTheRegistryIsDeactivated(): void {
@@ -99,6 +99,7 @@ final class ProjectorTest extends TestCase {
 		$registry->register_variant_set(
 			[
 				'block'    => self::BUTTON,
+				'group'    => 'style',
 				'bindings' => [
 					'button-bg'   => [ 'kadence_slot' => 'palette1' ],
 					'button-text' => [ 'kadence_slot' => 'palette9' ],

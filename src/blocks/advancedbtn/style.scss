@@ -38,7 +38,7 @@
 	padding: 0.4em 1em;
 	cursor: pointer;
 	font-size: 1.125rem;
-	border-radius: var(--kb-token--semantic--radius--control, 3px);
+	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;
 	&:hover {
@@ -47,7 +47,7 @@
 }
 .kb-button.kb-btn-global-fill {
 	border: 0px solid transparent;
-	border-radius: var(--kb-token--semantic--radius--control, 3px);
+	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	background: var(--global-palette-btn-bg, #3633e1);
 	color: var(--global-palette-btn, #ffffff);
 	&:hover {

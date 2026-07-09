@@ -93,4 +93,18 @@ final class Alias {
 
 		return substr( $value, 1, -1 );
 	}
+
+	/**
+	 * Wrap a dot-path into an alias string. The inverse of path_of(), so callers that mint an alias (e.g.
+	 * the variant value normalizer) do not hard-code the brace delimiters.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id A dot-path into the document, e.g. "semantic.color.button-primary-bg".
+	 *
+	 * @return string The alias string, e.g. "{semantic.color.button-primary-bg}".
+	 */
+	public static function wrap( string $id ): string {
+		return '{' . $id . '}';
+	}
 }

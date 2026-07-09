@@ -1,4 +1,9 @@
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Read the localized design-token feed from the window global.
  *
  * @return {object|null} Feed payload or null when unavailable.
@@ -10,6 +15,10 @@ export function getDesignTokensFeed() {
 /**
  * Flatten schema groups into a single token list.
  *
+ * User-created primitives have no server-assigned group (empty string); they
+ * are reassigned to the "Custom Colors" display group here so the navigation
+ * and group-by-schema views can surface them in a dedicated section.
+ *
  * @param {{ groups?: Record<string, object[]> }} schema UI schema from the feed.
  * @return {object[]} Token definitions with their group name attached.
  */
@@ -18,10 +27,12 @@ export function flattenSchemaTokens(schema) {
 		return [];
 	}
 
+	const customColorsLabel = __('Custom Colors', 'kadence-blocks');
+
 	return Object.entries(schema.groups).flatMap(([groupName, tokens]) =>
 		tokens.map((token) => ({
 			...token,
-			group: groupName,
+			group: !groupName && token.userCreated ? customColorsLabel : groupName,
 		}))
 	);
 }

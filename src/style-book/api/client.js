@@ -6,7 +6,14 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import { resolvedPath, tokenPath } from './paths';
+import {
+	resolvedPath,
+	tokenPath,
+	userPrimitiveReferencesPath,
+	userPrimitivesPath,
+	userPrimitivePath,
+	userPrimitiveRenamePath,
+} from './paths';
 
 /**
  * Configure apiFetch middleware from the localized REST descriptor.
@@ -54,5 +61,71 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
+	});
+}
+
+/**
+ * Fetch the alias-reference preview for a user primitive.
+ *
+ * @since TBD
+ *
+ * @param {string} slug Token set slug.
+ * @param {string} id   Canonical dot-path id of the user primitive.
+ * @return {Promise<{ id: string, label: string, version: string, deletable: boolean, references: object[] }>} Preview payload.
+ */
+export function fetchUserPrimitiveReferences(slug, id) {
+	return apiFetch({ path: userPrimitiveReferencesPath(slug, id) });
+}
+
+/**
+ * Create a new user-defined color primitive.
+ *
+ * @since TBD
+ *
+ * @param {string} slug    Token set slug.
+ * @param {object} payload Request body including id, $type, $value, label, version.
+ * @return {Promise<object>} Created document item with version.
+ */
+export function createUserPrimitive(slug, payload) {
+	return apiFetch({
+		path: userPrimitivesPath(slug),
+		method: 'POST',
+		data: payload,
+	});
+}
+
+/**
+ * Delete a user-defined primitive.
+ *
+ * @since TBD
+ *
+ * @param {string} slug    Token set slug.
+ * @param {string} id      Canonical dot-path id of the user primitive.
+ * @param {string} version Version token the client last read.
+ * @return {Promise<object>} Delete result with version.
+ */
+export function deleteUserPrimitive(slug, id, version) {
+	return apiFetch({
+		path: userPrimitivePath(slug, id),
+		method: 'DELETE',
+		data: { version },
+	});
+}
+
+/**
+ * Rename a user-defined primitive.
+ *
+ * @since TBD
+ *
+ * @param {string} slug    Token set slug.
+ * @param {string} id      Current canonical dot-path id.
+ * @param {object} payload Request body including new_id, label, version.
+ * @return {Promise<object>} Rename result with version and rewrittenPaths.
+ */
+export function renameUserPrimitive(slug, id, payload) {
+	return apiFetch({
+		path: userPrimitiveRenamePath(slug, id),
+		method: 'POST',
+		data: payload,
 	});
 }

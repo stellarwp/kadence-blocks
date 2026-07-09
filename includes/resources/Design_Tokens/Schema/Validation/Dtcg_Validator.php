@@ -317,9 +317,15 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * Validate the $extensions layer to this ticket's scope: every preset / variant `tokens` map value
-	 * must be an alias or a literal scalar. $default / label / structural variant semantics are
-	 * deferred to the variant data-model work, and any non-Kadence extension namespace is passed through untouched.
+	 * Validate the $extensions layer to this scope: every preset / variant `tokens` map value must be an
+	 * alias or a literal scalar. $default / label / structural variant semantics are validated elsewhere,
+	 * and any non-Kadence extension namespace is passed through untouched.
+	 *
+	 * Each owned section is walked without assuming a fixed depth: a `tokens` map can sit at varying depths — a
+	 * foundation preset and a flat variant nest it two levels under the section (group/preset → tokens,
+	 * block/variant → tokens), while a grouped (multi-axis) variant nests it three levels down
+	 * (block → group → variant → tokens). The walk descends every array branch and validates each `tokens`
+	 * map it finds, so all of these are covered by the same logic.
 	 *
 	 * @since TBD
 	 *
@@ -346,34 +352,47 @@ final class Dtcg_Validator {
 				continue;
 			}
 
-			foreach ( $namespace[ $section ] as $group => $preset_set ) {
-				if ( ! is_array( $preset_set ) ) {
-					continue;
+			$errors = array_merge(
+				$errors,
+				$this->validate_extension_tokens( $namespace[ $section ], $base . '.' . $section )
+			);
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Recursively validate every `tokens` map within a section subtree, regardless of nesting depth. A node
+	 * carrying a `tokens` map has each of its values checked; every other array branch is descended into.
+	 * The `$default` slug (and any other non-array metadata) is a leaf with no `tokens` map, so it is
+	 * skipped naturally.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $node   The current subtree node.
+	 * @param string                   $prefix Dot-path to the node, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_extension_tokens( array $node, string $prefix ): array {
+		$tokens_key = Extensions::get_tokens_key();
+		$errors     = [];
+
+		if ( isset( $node[ $tokens_key ] ) && is_array( $node[ $tokens_key ] ) ) {
+			foreach ( $node[ $tokens_key ] as $token_path => $value ) {
+				$error = $this->validate_extension_value( $value, $prefix . '.' . $tokens_key . '.' . $token_path );
+
+				if ( $error !== null ) {
+					$errors[] = $error;
 				}
+			}
 
-				foreach ( $preset_set as $preset_name => $preset ) {
-					$tokens_key = Extensions::get_tokens_key();
+			return $errors;
+		}
 
-					// $default names a preset; its structure is the variant data model's concern.
-					if (
-						$preset_name === Extensions::get_default_key()
-						|| ! is_array( $preset )
-						|| ! isset( $preset[ $tokens_key ] )
-						|| ! is_array( $preset[ $tokens_key ] )
-					) {
-						continue;
-					}
-
-					$prefix = sprintf( '%s.%s.%s.%s.%s', $base, $section, $group, $preset_name, $tokens_key );
-
-					foreach ( $preset[ $tokens_key ] as $token_path => $value ) {
-						$error = $this->validate_extension_value( $value, $prefix . '.' . $token_path );
-
-						if ( $error !== null ) {
-							$errors[] = $error;
-						}
-					}
-				}
+		foreach ( $node as $key => $child ) {
+			if ( is_array( $child ) ) {
+				$errors = array_merge( $errors, $this->validate_extension_tokens( $child, $prefix . '.' . $key ) );
 			}
 		}
 

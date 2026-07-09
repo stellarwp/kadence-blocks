@@ -14,6 +14,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
  * "is-style-outline" and "kb-variant--secondary" at once. The editor adds the class via the shared kbVariant
  * save/preview filters (see src/early-filters.js), mirroring the same sanitizer used here.
  *
+ * A variant may belong to a named GROUP (axis). A grouped selection carries the group in the class —
+ * "kb-variant--<group>--<variant>" — so two independently chosen axes (e.g. a color and an emphasis)
+ * compose as two classes on one block. A flat block's implicit single group omits the group segment and
+ * keeps the "kb-variant--<variant>" shape, so stored documents are unaffected.
+ *
  * @since TBD
  */
 final class Style {
@@ -41,5 +46,22 @@ final class Style {
 	 */
 	public static function variant_class( string $variant ): string {
 		return self::CLASS_PREFIX . self::sanitize_identifier( $variant );
+	}
+
+	/**
+	 * The class a grouped variant selection outputs, e.g. ("emphasis", "outline") =>
+	 * "kb-variant--emphasis--outline". Each segment is sanitized independently so the group and variant
+	 * slugs cannot merge across the "--" delimiter, mirroring the JS kbVariantsClassNames() sanitizer so the
+	 * class always matches the selector the projected CSS targets.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group   The variant group (axis) slug.
+	 * @param string $variant The variant slug.
+	 *
+	 * @return string
+	 */
+	public static function group_variant_class( string $group, string $variant ): string {
+		return self::CLASS_PREFIX . self::sanitize_identifier( $group ) . '--' . self::sanitize_identifier( $variant );
 	}
 }

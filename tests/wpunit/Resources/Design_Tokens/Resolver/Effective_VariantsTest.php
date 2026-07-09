@@ -39,7 +39,7 @@ final class Effective_VariantsTest extends TestCase {
 	 * @return void
 	 */
 	public function testItReturnsTheBaselineVariantsWhenNothingIsStored(): void {
-		$node = $this->variants->block( self::BUTTON );
+		$node = $this->variants->block( self::BUTTON )['style'];
 
 		$this->assertIsArray( $node );
 		$this->assertSame( 'primary', $node['$default'] );
@@ -52,11 +52,11 @@ final class Effective_VariantsTest extends TestCase {
 	 */
 	public function testAStoredOverrideAddsAVariantAlongsideTheBaselineOnes(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}}'
 		);
 
-		$node = $this->variants->block( self::BUTTON );
+		$node = $this->variants->block( self::BUTTON )['style'];
 
 		$this->assertIsArray( $node );
 		// The override-only variant appears next to the baseline ones.
@@ -72,11 +72,11 @@ final class Effective_VariantsTest extends TestCase {
 	public function testAStoredOverrideMergesIntoAVariantsTokensPerProperty(): void {
 		// Override just one property of the baseline "secondary" variant.
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
-			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}}'
 		);
 
-		$secondary = $this->variants->block( self::BUTTON )['secondary'];
+		$secondary = $this->variants->block( self::BUTTON )['style']['secondary'];
 
 		// The overridden property wins; the variant's other baseline tokens and its label survive.
 		$this->assertSame( '#000000', $secondary['tokens']['button-bg'] );
@@ -93,7 +93,9 @@ final class Effective_VariantsTest extends TestCase {
 				'com.kadence.designTokens' => [
 					'variants' => [
 						self::BUTTON => [
-							'outline' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ],
+							'style' => [
+								'outline' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ],
+							],
 						],
 					],
 				],
@@ -102,8 +104,8 @@ final class Effective_VariantsTest extends TestCase {
 
 		$section = $this->variants->for_overrides( $candidate );
 
-		$this->assertArrayHasKey( 'outline', $section[ self::BUTTON ] );
-		$this->assertArrayHasKey( 'primary', $section[ self::BUTTON ] );
+		$this->assertArrayHasKey( 'outline', $section[ self::BUTTON ]['style'] );
+		$this->assertArrayHasKey( 'primary', $section[ self::BUTTON ]['style'] );
 		// The store was never written.
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
 	}
@@ -113,5 +115,27 @@ final class Effective_VariantsTest extends TestCase {
 	 */
 	public function testItReturnsNullForABlockWithNoVariants(): void {
 		$this->assertNull( $this->variants->block( 'kadence/not-a-block' ) );
+	}
+
+	/**
+	 * user_created() reports the override-only variant slugs: a baseline variant is excluded, an override-only
+	 * one is included, and a slug that shadows a baseline variant is excluded (deleting it reverts to
+	 * baseline rather than removing it).
+	 *
+	 * @return void
+	 */
+	public function testUserCreatedReportsOverrideOnlyVariants(): void {
+		$this->store->save_document(
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}},'
+			. '"secondary":{"tokens":{"button-bg":"#000000"}}}}}}}}'
+		);
+
+		$user_created = $this->variants->user_created( self::BUTTON, 'default', 'style' );
+
+		$this->assertContains( 'outline', $user_created );
+		$this->assertNotContains( 'primary', $user_created );
+		// "secondary" shadows a baseline variant, so it is not user-created.
+		$this->assertNotContains( 'secondary', $user_created );
 	}
 }

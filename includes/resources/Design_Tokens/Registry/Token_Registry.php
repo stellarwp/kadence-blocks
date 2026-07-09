@@ -24,7 +24,7 @@ final class Token_Registry {
 	/** @var array<string, Token_Definition> Keyed by token id, insertion-ordered. */
 	private array $tokens = [];
 
-	/** @var array<string, Variant_Set> Keyed by block name. */
+	/** @var array<string, array<string, Variant_Set>> Keyed by block name, then by set group slug. */
 	private array $variant_sets = [];
 
 	/** @var array<string, Adapter_Interface> Keyed by block name. */
@@ -37,6 +37,59 @@ final class Token_Registry {
 	 * @var bool
 	 */
 	private bool $active = true;
+
+	/**
+	 * Register a user-created primitive. Throws when the id is already held by a non-user-created token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id
+	 * @param string $type
+	 * @param string $label
+	 *
+	 * @throws \RuntimeException When the id belongs to a system registration.
+	 *
+	 * @return void
+	 */
+	public function register_user_primitive( string $id, string $type, string $label = '' ): void {
+		if ( isset( $this->tokens[ $id ] ) && ! $this->tokens[ $id ]->is_user_created() ) {
+			throw new \RuntimeException(
+				sprintf( 'Cannot register user primitive "%s": id is already registered as a system token.', $id )
+			);
+		}
+
+		$this->tokens[ $id ] = Token_Definition::from_user_primitive( $id, $type, $label );
+	}
+
+	/**
+	 * Remove a user-created primitive. Only removes the entry when it is user-created.
+	 * No-op when the id is absent or belongs to a system token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id
+	 *
+	 * @return void
+	 */
+	public function deregister_user_primitive( string $id ): void {
+		if ( isset( $this->tokens[ $id ] ) && $this->tokens[ $id ]->is_user_created() ) {
+			unset( $this->tokens[ $id ] );
+		}
+	}
+
+	/**
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function user_created_ids(): array {
+		return array_keys(
+			array_filter(
+				$this->tokens,
+				static fn( Token_Definition $t ): bool => $t->is_user_created()
+			)
+		);
+	}
 
 	/**
 	 * Register a single token from its declaration array.
@@ -66,7 +119,7 @@ final class Token_Registry {
 	public function register_variant_set( array $set ): void {
 		$variant_set = Variant_Set::from_array( $set );
 
-		$this->variant_sets[ $variant_set->block ] = $variant_set;
+		$this->variant_sets[ $variant_set->block ][ $variant_set->group ] = $variant_set;
 	}
 
 	/**
@@ -169,7 +222,10 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Variant set registered for a block, or null.
+	 * The block's preset / default-variant set (the one declared without an explicit group — see
+	 * {@see Variant_Set::get_implicit_group_key()}), or null. This is the no-picker set the block-preset and
+	 * block-default-CSS projectors consume; a block that only registers named (picker-driven) sets returns
+	 * null here. Use {@see self::for_variant_set()} to address a named set.
 	 *
 	 * @since TBD
 	 *
@@ -178,16 +234,47 @@ final class Token_Registry {
 	 * @return Variant_Set|null
 	 */
 	public function for_block( string $block ): ?Variant_Set {
-		return $this->variant_sets[ $block ] ?? null;
+		return $this->variant_sets[ $block ][ Variant_Set::get_implicit_group_key() ] ?? null;
 	}
 
 	/**
-	 * All registered variant sets, keyed by block name in registration order. The admin UI feed
-	 * iterates this to render per-block variant editors; mirrors all() for tokens.
+	 * A specific variant set of a block by its group slug, or null when the block registers none under that
+	 * slug. Pass {@see Variant_Set::get_implicit_group_key()} for the preset set, or a named slug (e.g. "style") for a
+	 * picker-driven set. This is the per-set lookup the variant projector uses.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $block The block name.
+	 * @param string $group The set group slug.
+	 *
+	 * @return Variant_Set|null
+	 */
+	public function for_variant_set( string $block, string $group ): ?Variant_Set {
+		return $this->variant_sets[ $block ][ $group ] ?? null;
+	}
+
+	/**
+	 * Every variant set a block registers, keyed by group slug (in registration order), or an empty array
+	 * when the block registers none. The "does this block accept variants" guard and the editor read this to
+	 * see all of a block's sets — preset and named alike.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 *
 	 * @return array<string, Variant_Set>
+	 */
+	public function sets_for_block( string $block ): array {
+		return $this->variant_sets[ $block ] ?? [];
+	}
+
+	/**
+	 * All registered variant sets, keyed by block name then by set group slug, in registration order. The
+	 * admin UI feed iterates this to render per-block, per-set variant editors; mirrors all() for tokens.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, array<string, Variant_Set>>
 	 */
 	public function variant_sets(): array {
 		return $this->variant_sets;
@@ -289,6 +376,7 @@ final class Token_Registry {
 				'label'       => $token->label,
 				'cssVar'      => $token->css_var,
 				'projections' => $token->projections,
+				'userCreated' => $token->is_user_created(),
 			];
 		}
 
@@ -320,7 +408,11 @@ final class Token_Registry {
 	public function missing_from_baseline( Baseline_Document $baseline ): array {
 		$missing = [];
 
-		foreach ( $this->tokens as $id => $_token ) {
+		foreach ( $this->tokens as $id => $token ) {
+			if ( $token->is_user_created() ) {
+				continue;
+			}
+
 			if ( ! $baseline->has( $id ) ) {
 				$missing[] = $id;
 			}

@@ -4,27 +4,59 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the block-preset projector against the real shipped Button variants, with a synthetic variant
- * set supplying the `block_attr` bindings the shipped declarations do not carry yet (those arrive with the
- * Button wiring, SOFT-3406). Values come from the baseline; this proves the property -> attribute mapping
- * and the overlay semantics.
+ * Exercises the block-preset projector against a flat preset variant set — the no-picker "default variant"
+ * case the projector serves. A controllable fixture baseline supplies a single `$default` variant of literal
+ * values, and a synthetic variant set supplies the `block_attr` bindings; together they prove the
+ * property -> attribute mapping and the overlay semantics.
  */
 final class ProjectorTest extends TestCase {
 
-	private const BUTTON = 'kadence/singlebtn';
+	private const BUTTON = 'kadence/preset-btn';
 
 	private Variant_Resolver $resolver;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		// A flat preset block: one $default variant of literal values, so resolve_default() is deterministic.
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'variants' => [
+						self::BUTTON => [
+							'$default' => 'primary',
+							'primary'  => [
+								'label'  => 'Primary',
+								'tokens' => [
+									'button-bg'     => '#3633e1',
+									'button-text'   => '#ffffff',
+									'button-radius' => '0.5rem',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$variants = new Effective_Variants(
+			new Fake_Baseline_Document( $document ),
+			$this->container->get( Token_Store::class ),
+			$this->container->get( Mutator::class )
+		);
+
+		$this->resolver = new Variant_Resolver( $variants, $this->container->get( Token_Resolver::class ) );
 	}
 
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {
@@ -125,7 +157,7 @@ final class ProjectorTest extends TestCase {
 						'token'      => 'semantic.color.button-text',
 						'block_attr' => 'color',
 					],
-					'button-radius' => [ 'css_var' => true ], // no block_attr -> skipped.
+					'button-radius' => [ 'css_var' => 'kb-btn-radius' ], // no block_attr -> skipped.
 				],
 			]
 		);

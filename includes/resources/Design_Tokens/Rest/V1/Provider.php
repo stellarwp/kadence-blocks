@@ -28,6 +28,8 @@ final class Provider extends Provider_Contract {
 		Schema_Controller::class,
 		Variants_Controller::class,
 		Active_Set_Controller::class,
+		Projected_Css_Controller::class,
+		User_Primitives_Controller::class,
 	];
 
 	/**
@@ -36,6 +38,8 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
+		$this->container->singleton( Document_Write_Pipeline::class, Document_Write_Pipeline::class );
+
 		foreach ( self::CONTROLLERS as $controller ) {
 			add_action( 'rest_api_init', $this->container->callback( $controller, 'register_routes' ) );
 		}
