@@ -85,6 +85,24 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
+	 * `color`/`size` attribute to bind, so none of Phases 1-3's wiring — all of which keys off the
+	 * `kadence/single-icon` child block — ever registers a variant set for `kadence/icon` and the builder
+	 * emits no rule scoped to it, confirming the legacy shape stays unaffected after this ticket's changes.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitNoRuleForTheLegacyIconBlock(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon.', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon{', $css );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitTheRowLayoutAndColumnColorRules(): void {
