@@ -51,4 +51,19 @@ final class Unknown_Variant_Exception extends RuntimeException {
 	public static function no_default( string $block ): self {
 		return new self( sprintf( 'Block "%s" has no default variant.', $block ) );
 	}
+
+	/**
+	 * The block has no variant group by the requested name (or an implicit-group lookup was asked of a
+	 * grouped block, or an explicit-group lookup of a flat one).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block The block name.
+	 * @param string $group The requested group slug.
+	 *
+	 * @return self
+	 */
+	public static function for_group( string $block, string $group ): self {
+		return new self( sprintf( 'Unknown variant group "%s" for block "%s".', $group, $block ) );
+	}
 }
