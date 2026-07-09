@@ -206,6 +206,44 @@ return [
 				'label' => __( 'Border', 'kadence-blocks' ),
 				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
+			[
+				// Image background default for the block-default CSS projector, mirroring rowlayout-bg/column-bg.
+				// Aliases the transparent primitive, so a fresh image stays transparent (KB's own default) until a
+				// site owner brands it. Registered so Css_Var emits --kb-token--semantic--color--image-bg.
+				'id'    => 'semantic.color.image-bg',
+				'type'  => 'color',
+				'label' => __( 'Image Background', 'kadence-blocks' ),
+				'group' => __( 'Media', 'kadence-blocks' ),
+			],
+			[
+				// Border width, shared with the brand border color. Registered so Css_Var emits
+				// --kb-token--semantic--border-width--default; the block-default CSS projector points the image's
+				// border-width at it. Resolves to 1px but stays invisible until a border style is set, so a fresh
+				// image is unchanged while a site owner can retune image border thickness by overriding the token.
+				'id'    => 'semantic.border-width.default',
+				'type'  => 'dimension',
+				'label' => __( 'Border Width', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				// Image shadow default. Registered so Css_Var emits --kb-token--semantic--shadow--media; the
+				// block-default CSS projector points kadence/image's box-shadow at it. Resolves to an invisible
+				// (transparent, zero) shadow, matching KB's default (box shadow is off by default), while a site
+				// owner can give every image a shadow by overriding the token.
+				'id'    => 'semantic.shadow.media',
+				'type'  => 'shadow',
+				'label' => __( 'Media Shadow', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				// Image padding default. Registered so Css_Var emits --kb-token--semantic--spacing--media-padding;
+				// the block-default CSS projector points the image wrapper's padding at it. Resolves to 0 (KB's
+				// default) so a fresh image is unchanged; a site owner can add image padding by overriding it.
+				'id'    => 'semantic.spacing.media-padding',
+				'type'  => 'dimension',
+				'label' => __( 'Media Padding', 'kadence-blocks' ),
+				'group' => __( 'Media', 'kadence-blocks' ),
+			],
 		],
 		$button_color_tokens,
 		$palette_tokens,
@@ -267,15 +305,46 @@ return [
 			],
 		],
 		[
-			// Image radius: the $default binds borderRadius to the media-radius token. The block-default-CSS
-			// projector emits a low-specificity `.wp-block-kadence-image img { border-radius: var(...) }` rule,
-			// so a fresh image follows the token while any radius the user sets (including 0) still wins.
+			// Image color/border/shadow/radius: low-specificity block-default-CSS rules on the rendered
+			// `<img>`, where KB paints background, border, box-shadow, and border-radius. The projector groups
+			// these into one `.wp-block-kadence-image img { ... }` rule (padding gets its own descendant rule
+			// below). Each token is seeded to KB's existing default (transparent background, invisible border
+			// until a style is set, no shadow, square corners), so a fresh image is unchanged; any value the
+			// user sets renders at higher specificity (the `.kb-image<uid>` instance selector) and still wins.
 			'block'    => 'kadence/image',
 			'bindings' => [
+				'background'   => [
+					'token'        => 'semantic.color.image-bg',
+					'css_prop'     => 'background-color',
+					'css_selector' => 'img',
+				],
+				'border'       => [
+					'token'        => 'semantic.color.border',
+					'css_prop'     => 'border-color',
+					'css_selector' => 'img',
+				],
+				'borderWidth'  => [
+					'token'        => 'semantic.border-width.default',
+					'css_prop'     => 'border-width',
+					'css_selector' => 'img',
+				],
 				'borderRadius' => [
 					'token'        => 'semantic.radius.media',
 					'css_prop'     => 'border-radius',
 					'css_selector' => 'img',
+				],
+				'shadow'       => [
+					'token'        => 'semantic.shadow.media',
+					'css_prop'     => 'box-shadow',
+					'css_selector' => 'img',
+				],
+				// Padding is rendered on the `.kb-img` wrapper, a descendant of the block root. The leading `*`
+				// forces Css_Builder::selector_suffix() to treat `.kb-img` as a descendant (a bare `.kb-img`
+				// would compound onto the root and never match) — see the icon color binding for the rationale.
+				'padding'      => [
+					'token'        => 'semantic.spacing.media-padding',
+					'css_prop'     => 'padding',
+					'css_selector' => '*.kb-img',
 				],
 			],
 		],
