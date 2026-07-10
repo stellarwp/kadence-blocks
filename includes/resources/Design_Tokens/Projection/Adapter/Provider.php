@@ -28,7 +28,9 @@ final class Provider extends Provider_Contract {
 	 *
 	 * @var class-string<Adapter_Interface>[]
 	 */
-	private const ADAPTERS = [];
+	private const ADAPTERS = [
+		Icon_Size_Adapter::class,
+	];
 
 	/**
 	 * @inheritDoc
@@ -63,7 +65,7 @@ final class Provider extends Provider_Contract {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
 
-		foreach ( self::ADAPTERS as $adapter ) { // @phpstan-ignore foreach.emptyArray (Remove once ADAPTERS lists an adapter.)
+		foreach ( self::ADAPTERS as $adapter ) {
 			/** @var Adapter_Interface $instance */
 			$instance = $this->container->get( $adapter );
 			$registry->register_adapter( $instance );

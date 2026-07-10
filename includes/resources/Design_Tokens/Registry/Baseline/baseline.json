@@ -574,7 +574,7 @@
 						}
 					}
 				},
-				"kadence/icon": {
+				"kadence/single-icon": {
 					"$default": "default",
 					"default": {
 						"label": "Default",

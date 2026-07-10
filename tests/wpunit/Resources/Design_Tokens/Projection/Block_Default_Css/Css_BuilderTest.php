@@ -82,7 +82,43 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '.wp-block-kadence-image img{margin', $css );
 		$this->assertStringNotContainsString( 'margin:var(', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-advancedbtn', $css );
-		$this->assertStringNotContainsString( '.wp-block-kadence-icon', $css );
+	}
+
+	/**
+	 * The icon color binding registered for `kadence/single-icon` emits a low-specificity rule pointing the
+	 * `.kb-svg-icon-wrap` descendant's `color` at the brand icon-color token, while the legacy `kadence/icon`
+	 * container (which has no top-level color/size attribute to bind) emits nothing.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitTheSingleIconColorRule(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-single-icon *.kb-svg-icon-wrap{color:var(' . Css_Var::from_id( 'semantic.color.icon' ),
+			$css
+		);
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
+	}
+
+	/**
+	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
+	 * `color`/`size` attribute to bind, so none of Phases 1-3's wiring — all of which keys off the
+	 * `kadence/single-icon` child block — ever registers a variant set for `kadence/icon` and the builder
+	 * emits no rule scoped to it, confirming the legacy shape stays unaffected after this ticket's changes.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitNoRuleForTheLegacyIconBlock(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon.', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
+		$this->assertStringNotContainsString( '.wp-block-kadence-icon{', $css );
 	}
 
 	/**
