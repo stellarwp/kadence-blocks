@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Projectors;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles\Button;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Native\Styles;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
@@ -28,7 +28,8 @@ final class Provider extends Provider_Contract {
 	 * @since TBD
 	 */
 	public function register(): void {
-		$this->container->singleton( Button::class );
+		$this->container->singleton( Styles\Button::class );
+		$this->container->singleton( Styles\Image::class );
 
 		// The projector takes the list of native-block companion stylesheets; grow this list to support
 		// another native block.
@@ -38,10 +39,13 @@ final class Provider extends Provider_Contract {
 				/** @var Token_Registry $registry */
 				$registry = $this->container->get( Token_Registry::class );
 
-				/** @var Button $button */
-				$button = $this->container->get( Button::class );
+				/** @var Styles\Button $button */
+				$button = $this->container->get( Styles\Button::class );
 
-				return new Projector( $registry, [ $button ] );
+				/** @var Styles\Image $image */
+				$image = $this->container->get( Styles\Image::class );
+
+				return new Projector( $registry, [ $button, $image ] );
 			}
 		);
 
