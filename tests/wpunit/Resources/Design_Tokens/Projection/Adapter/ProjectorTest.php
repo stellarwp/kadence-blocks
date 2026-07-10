@@ -85,6 +85,31 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape, rendered by
+	 * `Kadence_Blocks_Icon_Block::build_css()`) has no registered adapter — the shipped
+	 * `Icon_Size_Adapter::BLOCK` is `kadence/single-icon`, a different block name — so the real, shipped
+	 * registry's by-block-name lookup for `kadence/icon` finds nothing and the legacy attributes pass
+	 * through byte-for-byte unchanged.
+	 *
+	 * @return void
+	 */
+	public function testItIsANoopForTheLegacyIconBlock(): void {
+		$attributes = [
+			'icons' => [
+				[
+					'color' => '#3182ce',
+					'size'  => 50,
+				],
+			],
+		];
+
+		$registry  = $this->container->get( Token_Registry::class );
+		$projected = $this->projector( $registry )->apply( $attributes, 'kadence/icon' );
+
+		$this->assertSame( $attributes, $projected );
+	}
+
+	/**
 	 * Build the projector with a given registry.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
