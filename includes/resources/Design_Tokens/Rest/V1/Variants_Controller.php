@@ -6,7 +6,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -123,15 +122,6 @@ final class Variants_Controller extends Controller {
 	 * @var string
 	 */
 	private const SET_PARAM = 'set';
-
-	/**
-	 * The request parameter that carries the variant set (axis) group slug a read/write targets.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const VARIANT_SET_PARAM = 'variant_set';
 
 	/**
 	 * The block vendor path segment. A slug-safe class with no slash; the block name is the second segment.
@@ -405,17 +395,14 @@ final class Variants_Controller extends Controller {
 		$section = $this->variants->section( $slug );
 		$blocks  = [];
 
-		foreach ( $this->registry->variant_sets() as $block => $sets ) {
-			foreach ( $sets as $group => $set ) {
-				$node = $this->set_node( $section, $block, $group );
+		foreach ( array_keys( $this->registry->variant_sets() ) as $block ) {
+			$node = $this->set_node( $section, $block );
 
-				$blocks[] = [
-					'block'   => $block,
-					'group'   => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
-					'default' => $this->default_of( $node ),
-					'names'   => $this->variant_names( $node ),
-				];
-			}
+			$blocks[] = [
+				'block'   => $block,
+				'default' => $this->default_of( $node ),
+				'names'   => $this->variant_names( $node ),
+			];
 		}
 
 		return new WP_REST_Response( [ 'blocks' => $blocks ], WP_Http::OK );
@@ -432,14 +419,13 @@ final class Variants_Controller extends Controller {
 	 */
 	public function get_item( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		return new WP_REST_Response( $this->prepare_item( $block, $group, $this->slug( $request ) ), WP_Http::OK );
+		return new WP_REST_Response( $this->prepare_item( $block, $this->slug( $request ) ), WP_Http::OK );
 	}
 
 	/**
@@ -456,7 +442,6 @@ final class Variants_Controller extends Controller {
 	 */
 	public function create_item( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -492,9 +477,9 @@ final class Variants_Controller extends Controller {
 
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
-		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $group, $block_node ) );
+		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
 
-		$error = $this->guard_surface( $candidate, $block_node, $block, $group );
+		$error = $this->guard_surface( $candidate, $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -506,7 +491,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block, $group, $slug );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -523,7 +508,6 @@ final class Variants_Controller extends Controller {
 	 */
 	public function update_item( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -555,16 +539,16 @@ final class Variants_Controller extends Controller {
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 
 		// Replace, not merge: drop the stored block node first so a variant the body omits does not survive.
-		$stored    = $this->unset_block( $this->stored_document( $slug ), $block, $group );
-		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $group, $block_node ) );
+		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
+		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
 
-		$error = $this->guard_default_present( $candidate, $block, $group );
+		$error = $this->guard_default_present( $candidate, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		$error = $this->guard_surface( $candidate, $block_node, $block, $group );
+		$error = $this->guard_surface( $candidate, $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -576,7 +560,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block, $group, $slug );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -593,7 +577,6 @@ final class Variants_Controller extends Controller {
 	 */
 	public function delete_item( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -602,13 +585,13 @@ final class Variants_Controller extends Controller {
 
 		$slug      = $this->slug( $request );
 		$stored    = $this->stored_document( $slug );
-		$candidate = $this->unset_block( $stored, $block, $group );
+		$candidate = $this->unset_block( $stored, $block );
 
 		if ( $candidate === $stored ) {
-			return new WP_REST_Response( $this->prepare_item( $block, $group, $slug ), WP_Http::OK );
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
 		}
 
-		return $this->validate_and_save( $candidate, $block, $group, $slug );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -627,7 +610,6 @@ final class Variants_Controller extends Controller {
 	 */
 	public function delete_variant( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -649,19 +631,19 @@ final class Variants_Controller extends Controller {
 
 		$slug      = $this->slug( $request );
 		$stored    = $this->stored_document( $slug );
-		$candidate = $this->unset_variant( $stored, $block, $group, $variant );
+		$candidate = $this->unset_variant( $stored, $block, $variant );
 
 		if ( $candidate === $stored ) {
-			return new WP_REST_Response( $this->prepare_item( $block, $group, $slug ), WP_Http::OK );
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
 		}
 
-		$error = $this->guard_default_present( $candidate, $block, $group );
+		$error = $this->guard_default_present( $candidate, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block, $group, $slug );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -675,19 +657,17 @@ final class Variants_Controller extends Controller {
 	 */
 	public function get_default( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		$node = $this->set_node( $this->variants->section( $this->slug( $request ) ), $block, $group );
+		$node = $this->set_node( $this->variants->section( $this->slug( $request ) ), $block );
 
 		return new WP_REST_Response(
 			[
 				'block'   => $block,
-				'group'   => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 				'default' => $this->default_of( $node ),
 			],
 			WP_Http::OK
@@ -708,7 +688,6 @@ final class Variants_Controller extends Controller {
 	 */
 	public function set_default( $request ) {
 		$block = $this->block_from( $request );
-		$group = $this->group_from( $request, $block );
 		$error = $this->guard_block( $block );
 
 		if ( $error instanceof WP_Error ) {
@@ -720,16 +699,16 @@ final class Variants_Controller extends Controller {
 		$slug      = $this->slug( $request );
 		$candidate = $this->mutator->merge(
 			$this->stored_document( $slug ),
-			$this->partial( $block, $group, [ Extensions::get_default_key() => $default ] )
+			$this->partial( $block, [ Extensions::get_default_key() => $default ] )
 		);
 
-		$error = $this->guard_default_present( $candidate, $block, $group );
+		$error = $this->guard_default_present( $candidate, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
 		}
 
-		return $this->validate_and_save( $candidate, $block, $group, $slug );
+		return $this->validate_and_save( $candidate, $block, $slug );
 	}
 
 	/**
@@ -825,17 +804,16 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $block     The block being written, for error context.
-	 * @param string               $group     The variant set group (the implicit sentinel for a preset set).
 	 * @param string               $slug      The token set slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function validate_and_save( array $candidate, string $block, string $group, string $slug ) {
+	private function validate_and_save( array $candidate, string $block, string $slug ) {
 		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
 		$status = $this->store->get_version( $slug ) !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
-			return $this->persist( '', $block, $group, $status, $slug );
+			return $this->persist( '', $block, $status, $slug );
 		}
 
 		$result = $this->validator->validate( $candidate, Dtcg_Validator::get_context_overrides() );
@@ -879,7 +857,7 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		return $this->persist( $encoded, $block, $group, $status, $slug );
+		return $this->persist( $encoded, $block, $status, $slug );
 	}
 
 	/**
@@ -889,13 +867,12 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the set).
 	 * @param string $block    The block being written.
-	 * @param string $group    The variant set group (the implicit sentinel for a preset set).
 	 * @param int    $status   The success status code.
 	 * @param string $slug     The token set slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	private function persist( string $document, string $block, string $group, int $status, string $slug ) {
+	private function persist( string $document, string $block, int $status, string $slug ) {
 		try {
 			$this->store->save_document( $document, $slug );
 		} catch ( DatabaseQueryException $e ) {
@@ -909,7 +886,7 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		return new WP_REST_Response( $this->prepare_item( $block, $group, $slug ), $status );
+		return new WP_REST_Response( $this->prepare_item( $block, $slug ), $status );
 	}
 
 	/**
@@ -922,7 +899,7 @@ final class Variants_Controller extends Controller {
 	 * @return WP_Error|null A WP_Error when the block accepts no variants, null otherwise.
 	 */
 	private function guard_block( string $block ): ?WP_Error {
-		if ( $this->registry->sets_for_block( $block ) !== [] ) {
+		if ( $this->registry->for_block( $block ) !== null ) {
 			return null;
 		}
 
@@ -1036,12 +1013,11 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $candidate The candidate overrides document.
 	 * @param string               $block     The block name.
-	 * @param string               $group     The variant set group (the implicit sentinel for a preset set).
 	 *
 	 * @return WP_Error|null A WP_Error when the default is dangling, null otherwise.
 	 */
-	private function guard_default_present( array $candidate, string $block, string $group ): ?WP_Error {
-		$node    = $this->set_node( $this->variants->for_overrides( $candidate ), $block, $group );
+	private function guard_default_present( array $candidate, string $block ): ?WP_Error {
+		$node    = $this->set_node( $this->variants->for_overrides( $candidate ), $block );
 		$default = $this->default_of( $node );
 
 		if ( $default === '' || in_array( $default, $this->variant_names( $node ), true ) ) {
@@ -1060,32 +1036,30 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a written variant that does not set exactly the block's bound surface.
+	 * Reject a written variant that sets a property the block does not bind.
 	 *
-	 * A user variant clones the surface an existing variant controls: it supplies values for the block's
-	 * bound properties and nothing else. So a property with no binding (unbound) is rejected — it could
-	 * never project — and a bound property the variant leaves unset is rejected too, since a variant must
-	 * value the full surface. Only the variants carried by the request are checked, each against its
-	 * post-merge token set, so a partial edit that would drop a bound property is caught while the baseline
-	 * variants are left alone.
+	 * A variant may define any subset of the block's bound surface — different variants may define
+	 * different subsets, and a property a variant omits is inherited from the block `$default` through the
+	 * cascade — so an incomplete surface is allowed. But a property with no binding (unbound) is still
+	 * rejected: it could never project. Only the variants carried by the request are checked, each against
+	 * its post-merge token set, so a partial edit is validated while the baseline variants are left alone.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
 	 * @param array<string, mixed> $block_node The set's variant node from the request.
 	 * @param string               $block      The block name.
-	 * @param string               $group      The variant set group (the implicit sentinel for a preset set).
 	 *
-	 * @return WP_Error|null A WP_Error when a written variant's surface is wrong, null otherwise.
+	 * @return WP_Error|null A WP_Error when a written variant sets an unbound property, null otherwise.
 	 */
-	private function guard_surface( array $candidate, array $block_node, string $block, string $group ): ?WP_Error {
-		$set = $this->registry->for_variant_set( $block, $group );
+	private function guard_surface( array $candidate, array $block_node, string $block ): ?WP_Error {
+		$set = $this->registry->for_block( $block );
 
 		if ( $set === null ) {
 			return null;
 		}
 
-		$effective  = $this->set_node( $this->variants->for_overrides( $candidate ), $block, $group );
+		$effective  = $this->set_node( $this->variants->for_overrides( $candidate ), $block );
 		$tokens_key = Extensions::get_tokens_key();
 
 		foreach ( array_keys( $block_node ) as $slug ) {
@@ -1107,19 +1081,6 @@ final class Variants_Controller extends Controller {
 						'block'      => $block,
 						'variant'    => (string) $slug,
 						'properties' => $report['unbound'],
-					]
-				);
-			}
-
-			if ( $report['unvalued'] !== [] ) {
-				return new WP_Error(
-					'rest_design_tokens_incomplete_surface',
-					__( 'A variant must set every property the block binds.', 'kadence-blocks' ),
-					[
-						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'      => $block,
-						'variant'    => (string) $slug,
-						'properties' => $report['unvalued'],
 					]
 				);
 			}
@@ -1214,17 +1175,15 @@ final class Variants_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
-	 * @param string $group The variant set group (the implicit sentinel for a preset set).
 	 * @param string $slug  The token set slug being read.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function prepare_item( string $block, string $group, string $slug ): array {
-		$node = $this->set_node( $this->variants->section( $slug ), $block, $group );
+	private function prepare_item( string $block, string $slug ): array {
+		$node = $this->set_node( $this->variants->section( $slug ), $block );
 
 		return [
 			'block'    => $block,
-			'group'    => $group === Variant_Set::get_implicit_group_key() ? '' : $group,
 			'slug'     => $slug,
 			'version'  => $this->store->get_version( $slug ),
 			'default'  => $this->default_of( $node ),
@@ -1263,20 +1222,16 @@ final class Variants_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param string               $block      The block name.
-	 * @param string               $group      The variant set group (the implicit sentinel for a preset set).
-	 * @param array<string, mixed> $block_node The set's variant node.
+	 * @param array<string, mixed> $block_node The block's variant node.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function partial( string $block, string $group, array $block_node ): array {
-		// A named set nests its variants under the set slug; a preset (implicit) set sits directly on the block.
-		$node = $group === Variant_Set::get_implicit_group_key() ? $block_node : [ $group => $block_node ];
-
+	private function partial( string $block, array $block_node ): array {
 		return [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
 					Extensions::get_section_variants() => [
-						$block => $node,
+						$block => $block_node,
 					],
 				],
 			],
@@ -1284,36 +1239,32 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Remove the stored variant-set node (`variants.<block>[.<group>]`), pruning any ancestor emptied by the
-	 * removal.
+	 * Remove the stored variant-set node (`variants.<block>`), pruning any ancestor emptied by the removal.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $document The stored overrides document.
 	 * @param string               $block    The block name.
-	 * @param string               $group    The variant set group (the implicit sentinel for a preset set).
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function unset_block( array $document, string $block, string $group ): array {
-		return $this->mutator->remove_by_keys( $document, $this->node_path( $block, $group ) );
+	private function unset_block( array $document, string $block ): array {
+		return $this->mutator->remove_by_keys( $document, $this->node_path( $block ) );
 	}
 
 	/**
-	 * Remove one stored variant (`variants.<block>[.<group>].<variant>`), pruning any ancestor emptied by the
-	 * removal.
+	 * Remove one stored variant (`variants.<block>.<variant>`), pruning any ancestor emptied by the removal.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $document The stored overrides document.
 	 * @param string               $block    The block name.
-	 * @param string               $group    The variant set group (the implicit sentinel for a preset set).
 	 * @param string               $variant  The variant slug.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function unset_variant( array $document, string $block, string $group, string $variant ): array {
-		return $this->mutator->remove_by_keys( $document, array_merge( $this->node_path( $block, $group ), [ $variant ] ) );
+	private function unset_variant( array $document, string $block, string $variant ): array {
+		return $this->mutator->remove_by_keys( $document, array_merge( $this->node_path( $block ), [ $variant ] ) );
 	}
 
 	/**
@@ -1328,78 +1279,31 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The document key-path to a variant set's node: `variants.<block>` for a preset (implicit) set, or
-	 * `variants.<block>.<group>` for a named set.
+	 * The document key-path to a block's variant node: `variants.<block>`.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
-	 * @param string $group The variant set group (the implicit sentinel for a preset set).
 	 *
 	 * @return string[]
 	 */
-	private function node_path( string $block, string $group ): array {
-		$path = array_merge( $this->variants_path(), [ $block ] );
-
-		if ( $group !== Variant_Set::get_implicit_group_key() ) {
-			$path[] = $group;
-		}
-
-		return $path;
+	private function node_path( string $block ): array {
+		return array_merge( $this->variants_path(), [ $block ] );
 	}
 
 	/**
-	 * The variant-bearing node for a (block, group) within a variants section: the block node itself for a
-	 * preset (implicit) set, or its `<group>` sub-map for a named set. Absent block/group yields an empty array.
+	 * The variant-bearing node for a block within a variants section — its `{ $default, <variant> }` map — or
+	 * an empty array when absent.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $section The variants section.
 	 * @param string               $block   The block name.
-	 * @param string               $group   The variant set group.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function set_node( array $section, string $block, string $group ): array {
-		$node = isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
-
-		if ( $group === Variant_Set::get_implicit_group_key() ) {
-			return $node;
-		}
-
-		return isset( $node[ $group ] ) && is_array( $node[ $group ] ) ? $node[ $group ] : [];
-	}
-
-	/**
-	 * The variant set (axis) a request targets: the `variant_set` parameter when it names a set the block
-	 * registers, otherwise the block's sole named set, else its preset (implicit) set. So a button request
-	 * defaults to its "style" set without the caller naming it, while a preset block resolves to the implicit set.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @param string          $block   The block name.
-	 *
-	 * @return string
-	 */
-	private function group_from( WP_REST_Request $request, string $block ): string {
-		$group = Cast::to_string( $request->get_param( self::VARIANT_SET_PARAM ) );
-
-		if ( $group !== '' && $this->registry->for_variant_set( $block, $group ) !== null ) {
-			return $group;
-		}
-
-		$named = array_keys(
-			array_filter(
-				$this->registry->sets_for_block( $block ),
-				static function ( string $slug ): bool {
-					return $slug !== Variant_Set::get_implicit_group_key();
-				},
-				ARRAY_FILTER_USE_KEY
-			)
-		);
-
-		return count( $named ) === 1 ? (string) $named[0] : Variant_Set::get_implicit_group_key();
+	private function set_node( array $section, string $block ): array {
+		return isset( $section[ $block ] ) && is_array( $section[ $block ] ) ? $section[ $block ] : [];
 	}
 
 	/**
@@ -1551,7 +1455,6 @@ final class Variants_Controller extends Controller {
 				'sanitize_callback' => 'sanitize_key',
 			],
 			self::SET_PARAM         => $this->set_param(),
-			self::VARIANT_SET_PARAM => $this->variant_set_param(),
 		];
 	}
 
@@ -1566,24 +1469,6 @@ final class Variants_Controller extends Controller {
 	private function set_param(): array {
 		return [
 			'description'       => __( 'Optional token set slug to target; defaults to the active set.', 'kadence-blocks' ),
-			'type'              => 'string',
-			'required'          => false,
-			'pattern'           => '^[\w-]+$',
-			'sanitize_callback' => 'sanitize_key',
-		];
-	}
-
-	/**
-	 * The optional variant-set argument: names the variant set (axis) a read/write targets, defaulting to the
-	 * block's sole named set (or its preset set) when absent.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function variant_set_param(): array {
-		return [
-			'description'       => __( 'Optional variant set (axis) group slug.', 'kadence-blocks' ),
 			'type'              => 'string',
 			'required'          => false,
 			'pattern'           => '^[\w-]+$',

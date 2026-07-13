@@ -5,51 +5,34 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 use InvalidArgumentException;
 
 /**
- * Immutable registration of one block variant SET — a named axis of mutually-exclusive variants, plus its
- * per-property bindings. The *structure* half of the variant model, and the only part that cannot live in
- * the document.
+ * Immutable registration of the ONE variant set a block accepts — the block's full bindable surface: the
+ * per-property bindings any of its variants may draw from. The *structure* half of the variant model, and
+ * the only part that cannot live in the document.
  *
- * A block can register more than one set (e.g. a button's "style" axis alongside some other axis); each is
- * its own Variant_Set with its own bindings and picker label, keyed in the registry by (block, group).
- * Because each set owns its bindings, two sets on one block can reuse the same property name (each binds it
- * to its own output) and the same variant slug.
+ * A block declares exactly one set. Its `bindings` are the union of every property any variant may control;
+ * a given variant in the document may define any subset of them (and different variants may define
+ * different subsets), inheriting the rest from the block `$default` through the cascade.
  *
- * Two kinds of set exist:
- *
- *   - **Named set** (a `group` is declared, e.g. "style"): a picker-driven axis. The editor renders a
- *     control for it and the variant projector emits `kb-variant--<group>--<variant>` rules.
- *   - **Preset / default-variant set** (no `group`, so `group` is {@see self::IMPLICIT_GROUP_KEY}): the block's
- *     default look, with NO picker. It seeds block attributes / low-specificity CSS through
- *     {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector} and
- *     {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}, not the picker.
+ * A set with a `label` is picker-driven: the editor renders a Design Variants control for it and the
+ * variant projector emits `kb-variant--<variant>` rules. A set with no `label` is a preset / default look
+ * with NO picker: it seeds block attributes / low-specificity CSS through
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector} and
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder} instead.
  *
  * It deliberately holds NO variant names, default or values, and no per-variant labels: those are document
- * data (`$extensions.com.kadence.designTokens.variants.<block>[.<group>]` — the `$default`, the variant
- * keys, and each variant's `tokens`), read through the Variant_Resolver. Keeping them out of the registry
- * means a single source of truth for the variant list (so a user-added variant in the store is honoured)
- * and no drift between a declaration and the document. The `label` is the one exception — it names the
- * editor picker CONTROL for the set (the axis), not a variant, so it is structural editor config declared
- * here.
+ * data (`$extensions.com.kadence.designTokens.variants.<block>` — the `$default`, the variant keys, and
+ * each variant's `tokens`), read through the Variant_Resolver. Keeping them out of the registry means a
+ * single source of truth for the variant list (so a user-added variant in the store is honoured) and no
+ * drift between a declaration and the document. The `label` is the one exception — it names the editor
+ * picker CONTROL, not a variant, so it is structural editor config declared here.
  *
- * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); every variant in the set shares
- * them, since "the button's background" maps to the same output slot whichever variant is active — only
- * the value changes.
+ * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); every variant shares them, since
+ * "the button's background" maps to the same output slot whichever variant is active — only the value
+ * changes.
  *
  * @since TBD
  */
 final class Variant_Set {
-
-	/**
-	 * The group slug of a preset / default-variant set — a set declared without an explicit `group`. It is
-	 * `$`-prefixed so it can never collide with a real (kebab-case) set slug, and is the key such a set is
-	 * stored under in the registry and returned as by the resolver's implicit-group reads. A named
-	 * (picker-driven) set declares its own group instead.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const IMPLICIT_GROUP_KEY = '$single';
 
 	/**
 	 * The block name, e.g. "kadence/advancedbtn".
@@ -61,17 +44,8 @@ final class Variant_Set {
 	public string $block;
 
 	/**
-	 * The set's group slug (the axis name, e.g. "style"), or {@see self::IMPLICIT_GROUP_KEY} for a preset /
-	 * default-variant set that shows no picker.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $group;
-
-	/**
-	 * Per-property bindings for this set, keyed by property name. Shared by every variant in the set.
+	 * The block's bindable surface, keyed by property name — the union of properties any variant may
+	 * control. Shared by every variant; a variant defines values for any subset of these.
 	 *
 	 * @since TBD
 	 *
@@ -80,8 +54,8 @@ final class Variant_Set {
 	public array $bindings;
 
 	/**
-	 * The editor picker's control label for this set's axis (e.g. "Style"), or null to fall back to the
-	 * editor's default label. Names the CONTROL, not a variant. Unused for a preset set (it has no picker).
+	 * The editor picker's control label (e.g. "Style"), or null for a preset set that shows no picker.
+	 * Names the CONTROL, not a variant.
 	 *
 	 * @since TBD
 	 *
@@ -93,28 +67,13 @@ final class Variant_Set {
 	 * @since TBD
 	 *
 	 * @param string                 $block    The block name.
-	 * @param string                 $group    The set's group slug, or {@see self::IMPLICIT_GROUP_KEY} for a preset set.
-	 * @param array<string, Binding> $bindings Per-property bindings.
-	 * @param string|null            $label    The picker control label, or null for the editor default.
+	 * @param array<string, Binding> $bindings The block's bindable surface, keyed by property.
+	 * @param string|null            $label    The picker control label, or null for a preset set.
 	 */
-	private function __construct( string $block, string $group, array $bindings, ?string $label ) {
+	private function __construct( string $block, array $bindings, ?string $label ) {
 		$this->block    = $block;
-		$this->group    = $group;
 		$this->bindings = $bindings;
 		$this->label    = $label;
-	}
-
-	/**
-	 * The group slug of a preset / default-variant set — the sentinel a set declared without an explicit
-	 * `group` is stored under and returned as. Exposed for callers that branch on the implicit group (the
-	 * resolver, projector, REST controller and admin feed).
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_implicit_group_key(): string {
-		return self::IMPLICIT_GROUP_KEY;
 	}
 
 	/**
@@ -122,11 +81,10 @@ final class Variant_Set {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set The declaration: "block", optional "group" (the set/axis slug; omit
-	 *                                  for a preset / default-variant set), optional "bindings" (property =>
+	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}) and optional "label" (the picker control
-	 *                                  label). Variant names, default and values are document data, not
-	 *                                  declared here.
+	 *                                  label; omit for a preset set with no picker). Variant names, default
+	 *                                  and values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
 	 *
@@ -139,14 +97,8 @@ final class Variant_Set {
 			throw new InvalidArgumentException( 'Variant-set declaration is missing required string "block".' );
 		}
 
-		// A non-empty "group" names a picker-driven set; its absence marks a preset / default-variant set.
-		$group = isset( $set['group'] ) && is_string( $set['group'] ) && $set['group'] !== ''
-			? $set['group']
-			: self::IMPLICIT_GROUP_KEY;
-
 		return new self(
 			$set['block'],
-			$group,
 			self::bindings( $set['block'], $set['bindings'] ?? [] ),
 			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null
 		);

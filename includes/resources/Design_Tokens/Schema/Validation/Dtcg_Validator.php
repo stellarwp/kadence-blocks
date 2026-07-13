@@ -322,10 +322,9 @@ final class Dtcg_Validator {
 	 * and any non-Kadence extension namespace is passed through untouched.
 	 *
 	 * Each owned section is walked without assuming a fixed depth: a `tokens` map can sit at varying depths — a
-	 * foundation preset and a flat variant nest it two levels under the section (group/preset → tokens,
-	 * block/variant → tokens), while a grouped (multi-axis) variant nests it three levels down
-	 * (block → group → variant → tokens). The walk descends every array branch and validates each `tokens`
-	 * map it finds, so all of these are covered by the same logic.
+	 * foundation preset and a variant nest it two levels under the section (preset → tokens, block/variant →
+	 * tokens). The walk descends every array branch and validates each `tokens` map it finds, so all of these
+	 * are covered by the same logic.
 	 *
 	 * @since TBD
 	 *

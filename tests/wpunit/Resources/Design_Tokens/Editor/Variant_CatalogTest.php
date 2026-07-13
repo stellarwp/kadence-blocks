@@ -51,9 +51,8 @@ final class Variant_CatalogTest extends TestCase {
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );
 		$this->assertArrayHasKey( self::BUTTON, $catalog['sets'][ Token_Store::default_slug() ] );
 
-		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style'];
+		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
-		$this->assertSame( 'style', $button['group'] );
 		$this->assertSame( 'primary', $button['default'] );
 		// The picker's control label, declared on the variant set in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
@@ -81,7 +80,7 @@ final class Variant_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItExposesTheControllableSurface(): void {
-		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style']['properties'];
+		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
 
 		$kinds = wp_list_pluck( $properties, 'kind', 'key' );
 
@@ -96,11 +95,11 @@ final class Variant_CatalogTest extends TestCase {
 	 */
 	public function testItFlagsUserCreatedVariants(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
-			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
 		);
 
-		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['style']['variants'];
+		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['variants'];
 		$flags    = wp_list_pluck( $variants, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
@@ -113,8 +112,10 @@ final class Variant_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSkipsABlockAbsentFromTheDocument(): void {
+		// A picker set (it declares a label) whose block has no variants in the baseline — the names() lookup
+		// throws Unknown_Variant_Exception and the block is skipped rather than emitted empty.
 		$registry = new Token_Registry();
-		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block' ] );
+		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block', 'label' => 'Style' ] );
 
 		$catalog = ( new Variant_Catalog(
 			$registry,
