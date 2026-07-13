@@ -221,7 +221,15 @@ final class Variant_ResolverTest extends TestCase {
 	 */
 	public function testAVariantMayDefineASubsetOfTheSurface(): void {
 		// Only two of the five bound properties.
-		$this->seedVariant( Token_Store::default_slug(), 'accent', 'Accent', [ 'button-bg' => '#ff0000', 'button-text' => '#ffffff' ] );
+		$this->seedVariant(
+			Token_Store::default_slug(),
+			'accent',
+			'Accent',
+			[
+				'button-bg'   => '#ff0000',
+				'button-text' => '#ffffff',
+			]
+		);
 
 		$values = $this->resolver->resolve_literal( self::BUTTON, 'accent' );
 

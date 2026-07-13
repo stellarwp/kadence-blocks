@@ -115,7 +115,12 @@ final class Variant_CatalogTest extends TestCase {
 		// A picker set (it declares a label) whose block has no variants in the baseline — the names() lookup
 		// throws Unknown_Variant_Exception and the block is skipped rather than emitted empty.
 		$registry = new Token_Registry();
-		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block', 'label' => 'Style' ] );
+		$registry->register_variant_set(
+			[
+				'block' => 'kadence/not-a-real-block',
+				'label' => 'Style',
+			]
+		);
 
 		$catalog = ( new Variant_Catalog(
 			$registry,
