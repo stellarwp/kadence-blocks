@@ -754,9 +754,9 @@
 			"type": "boolean",
 			"default": false
 		},
-		"kbVariants": {
-			"type": "object",
-			"default": {}
+		"kbVariant": {
+			"type": "string",
+			"default": ""
 		},
 		"kbTokenSet": {
 			"type": "string",

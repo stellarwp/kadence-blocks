@@ -11,7 +11,7 @@ import { Button, Notice } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { SaveVariantModal } from './SaveVariantModal';
-import { blockVariants, blockDefaultVariant, isUserVariant, removeVariant, blockSetGroup } from './index';
+import { blockVariants, blockDefaultVariant, isUserVariant, removeVariant } from './index';
 import { deleteVariant, setVariantDefault } from '../variants/api/client';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
@@ -48,17 +48,15 @@ export function VariantActions({ blockName, set, selected, onSelect }) {
 		setBusy(true);
 		setError('');
 
-		const variantSet = blockSetGroup(blockName, set);
 		const isDefault = blockDefaultVariant(blockName, set) === selected;
 		const fallback = blockVariants(blockName, set)
 			.map((variant) => variant.slug)
 			.find((slug) => slug !== selected);
 
-		const reassign =
-			isDefault && fallback ? setVariantDefault(blockName, fallback, set, variantSet) : Promise.resolve();
+		const reassign = isDefault && fallback ? setVariantDefault(blockName, fallback, set) : Promise.resolve();
 
 		reassign
-			.then(() => deleteVariant(blockName, selected, set, variantSet))
+			.then(() => deleteVariant(blockName, selected, set))
 			.then(() => {
 				removeVariant(blockName, set, selected);
 				refreshProjectedCss();
