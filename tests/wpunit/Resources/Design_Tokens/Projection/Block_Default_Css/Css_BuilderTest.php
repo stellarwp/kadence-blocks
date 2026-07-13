@@ -10,9 +10,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the block-default CSS builder against the real shipped Image `$default`, proving it emits a
- * low-specificity, block-scoped rule pointing the bound css_prop at the token variable — the mechanism
- * used for dimensions (radius) KB renders as literals with no ownable variable.
+ * Exercises the block-default CSS builder against the real shipped declarations, proving it emits
+ * low-specificity, block-scoped rules pointing each bound css_prop at its token variable — the mechanism
+ * used for the surfaces KB renders as literals with no ownable variable (image background/border/border
+ * width/radius/shadow/padding, Row Layout / Column color + radius).
  */
 final class Css_BuilderTest extends TestCase {
 
@@ -48,20 +49,38 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Build from the real registry (declarations loaded on init). Image radius and icon color are the
-	 * css_prop-bound cases that fit this projector: each attribute is empty by default and rendered as CSS
-	 * in both editor and front end. Button radius (own 3px default) and icon size (rendered as inline SVG
-	 * width/height, never empty) do not fit it, so the shipped declarations bind neither and emit no rule
-	 * for them.
+	 * The shipped Image declarations emit every color/border/shadow/radius surface bound to the rendered
+	 * `<img>` as one grouped, low-specificity rule (background, border color, border width, radius, shadow),
+	 * plus a separate padding rule on the `.kb-img` wrapper — each pointing the css_prop at its token var with
+	 * the resolved default as the fallback, so a fresh image is unchanged and any user value wins by
+	 * specificity. Margin is deliberately absent: the image has no clean token delivery for it.
 	 *
 	 * @return void
 	 */
-	public function testTheShippedDeclarationsEmitTheImageRadiusRule(): void {
+	public function testTheShippedDeclarationsEmitTheImageSurfaceRules(): void {
 		$registry = $this->container->get( Token_Registry::class );
 
 		$css = $this->builder( $registry )->css();
 
-		$this->assertStringContainsString( '.wp-block-kadence-image img{border-radius:var(', $css );
+		// The <img> surfaces group into one rule, opening with the first bound property (background-color).
+		$this->assertStringContainsString(
+			'.wp-block-kadence-image img{background-color:var(' . Css_Var::from_id( 'semantic.color.image-bg' ) . ',transparent);',
+			$css
+		);
+		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
+		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.media' ) . ',0);', $css );
+
+		// Padding is rendered on the `.kb-img` descendant, so it gets its own rule.
+		$this->assertStringContainsString(
+			'.wp-block-kadence-image *.kb-img{padding:var(' . Css_Var::from_id( 'semantic.spacing.media-padding' ) . ',0);}',
+			$css
+		);
+
+		// The block-default projector emits no margin rule for the image (no css_prop binding) and no rule
+		// for blocks the shipped declarations don't bind (button, the legacy icon container).
+		$this->assertStringNotContainsString( '.wp-block-kadence-image img{margin', $css );
+		$this->assertStringNotContainsString( 'margin:var(', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-advancedbtn', $css );
 	}
 
@@ -100,6 +119,25 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '.wp-block-kadence-icon.', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-icon ', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-icon{', $css );
+	}
+
+	/**
+	 * The Image shadow binding proves a composite `shadow` token with an aliased color field resolves end
+	 * to end through this projector: the shipped `semantic.shadow.media` (color `{primitive.color.transparent}`,
+	 * zero offsets/blur/spread) flattens and renders to `0px 0px 0px 0px transparent` as the box-shadow rule's
+	 * var() fallback — invisible, matching an image's off-by-default box shadow, and overridable to any shadow.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedImageShadowResolvesAComposedShadowWithAnAliasedColor(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'box-shadow:var(' . Css_Var::from_id( 'semantic.shadow.media' ) . ',0px 0px 0px 0px transparent);',
+			$css
+		);
 	}
 
 	/**

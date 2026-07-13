@@ -108,6 +108,10 @@
 				"5xl": {
 					"$type": "dimension",
 					"$value": "10rem"
+				},
+				"none": {
+					"$type": "dimension",
+					"$value": "0"
 				}
 			},
 			"gap": {
@@ -154,7 +158,7 @@
 					"$value": "9999px"
 				}
 			},
-			"borderWidth": {
+			"border-width": {
 				"sm": {
 					"$type": "dimension",
 					"$value": "1px"
@@ -317,6 +321,10 @@
 			"column-bg": {
 				"$type": "color",
 				"$value": "{primitive.color.transparent}"
+			},
+			"image-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
 			}
 		},
 		"spacing": {
@@ -331,6 +339,10 @@
 			"section": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.spacing.xl}"
+			},
+			"media-padding": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.spacing.none}"
 			}
 		},
 		"radius": {
@@ -351,10 +363,10 @@
 				"$value": "{primitive.dimension.radius.none}"
 			}
 		},
-		"borderWidth": {
+		"border-width": {
 			"default": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.borderWidth.sm}"
+				"$value": "{primitive.dimension.border-width.sm}"
 			}
 		},
 		"icon-size": {
@@ -391,6 +403,16 @@
 					"offsetX": "0px",
 					"offsetY": "2px",
 					"blur": "8px",
+					"spread": "0px"
+				}
+			},
+			"media": {
+				"$type": "shadow",
+				"$value": {
+					"color": "{primitive.color.transparent}",
+					"offsetX": "0px",
+					"offsetY": "0px",
+					"blur": "0px",
 					"spread": "0px"
 				}
 			}
@@ -508,8 +530,12 @@
 					"default": {
 						"label": "Default",
 						"tokens": {
+							"background": "{semantic.color.image-bg}",
+							"border": "{semantic.color.border}",
+							"borderWidth": "{semantic.border-width.default}",
 							"borderRadius": "{semantic.radius.media}",
-							"shadow": "{semantic.shadow.card}"
+							"shadow": "{semantic.shadow.media}",
+							"padding": "{semantic.spacing.media-padding}"
 						}
 					}
 				},
