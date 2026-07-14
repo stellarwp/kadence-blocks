@@ -32,11 +32,15 @@ final class Token_Registry_VariantsTest extends TestCase {
 			[
 				'block'    => 'kadence/advancedbtn',
 				'bindings' => [
-					'button-bg'      => [ 'token' => 'semantic.color.button-bg' ],
-					'button-border'  => [ 'kadence_slot' => 'palette3' ],
-					'button-bg-attr' => [
+					'button-bg'         => [ 'token' => 'semantic.color.button-bg' ],
+					'button-border'     => [ 'kadence_slot' => 'palette3' ],
+					'button-bg-attr'    => [
 						'token'      => 'semantic.color.button-bg',
 						'block_attr' => 'background',
+					],
+					'button-bg-control' => [
+						'token'        => 'semantic.color.button-bg',
+						'control_attr' => 'background',
 					],
 				],
 			]
@@ -105,5 +109,30 @@ final class Token_Registry_VariantsTest extends TestCase {
 		$binding = $registry->for_block( 'kadence/advancedbtn' )->binding( 'button-bg' );
 
 		$this->assertSame( [], $registry->effective_projections( $binding ) );
+	}
+
+	/**
+	 * A binding's control_attr never appears in its effective projections, so no projector (including the
+	 * block-preset seeder) ever sees it and nothing is seeded from it — the guarantee the editor's
+	 * "empty = bound" detection depends on.
+	 *
+	 * @return void
+	 */
+	public function testEffectiveProjectionsExcludeControlAttr(): void {
+		$registry = $this->registry();
+		$binding  = $registry->for_block( 'kadence/advancedbtn' )->binding( 'button-bg-control' );
+
+		$this->assertSame( 'background', $binding->control_attr() );
+
+		$projections = $registry->effective_projections( $binding );
+
+		$this->assertSame(
+			[
+				'kadence_slot' => 'palette1',
+				'wp_preset'    => 'color',
+			],
+			$projections
+		);
+		$this->assertArrayNotHasKey( 'control_attr', $projections );
 	}
 }
