@@ -1,0 +1,70 @@
+/**
+ * Design-system control indicators.
+ *
+ * Styling for the bound / overridden indicator that mounts beside (or inside the label of) a
+ * design-token-mapped control. Matches the block editor's existing control-label type scale so the
+ * indicator reads as part of the control, not a new UI.
+ */
+
+.kb-token-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+
+.kb-token-indicator--bound {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #007cba;
+}
+
+.kb-token-indicator__dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #d67635;
+}
+
+.kb-token-indicator--highlight {
+	.kb-token-indicator__dot {
+		box-shadow: 0 0 0 2px rgba(214, 118, 53, 0.35);
+	}
+}
+
+.kb-token-indicator__reset {
+	height: auto;
+	min-height: 0;
+	padding: 0 4px;
+	font-size: 11px;
+	line-height: 1.4;
+}
+
+.kb-token-label {
+	display: inline-flex;
+	align-items: center;
+}
+
+.kb-token-label__text {
+	display: inline-block;
+}
+
+.kb-token-control-row {
+	.kb-token-control-row__header {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		margin-bottom: 4px;
+	}
+
+	.kb-token-control-row__heading {
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		color: #1e1e1e;
+	}
+}
