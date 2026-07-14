@@ -96,6 +96,33 @@ the team enforces in review; follow them exactly.
   `kadence/single-icon`'s `color`) — that shape fits the low-specificity `Block_Default_Css`
   binding directly, with no adapter and no unit conversion needed.
 
+## JavaScript coding conventions
+
+### Docblocks
+
+- **`@since TBD` on every new JS function, hook, component, and exported helper.** Just like PHP,
+  new JavaScript gets a `@since TBD` tag in its JSDoc block. This applies to functions, React
+  components, custom hooks, store selectors/actions/reducers, and exported helpers the change adds.
+  Only tag the code the change introduces — do not retrofit pre-existing functions in a file you are
+  only partially touching.
+
+- **Placement differs from PHP.** In this repo's JS, the `@since TBD` line goes **after** the
+  `@param` block and **before** `@return`, with a blank ` *` line on each side (not before `@param`
+  the way PHP puts it before `@var`). Match `src/early-filters.js` exactly. A function with no
+  params puts `@since TBD` between the description and `@return`.
+
+  ```js
+  /**
+   * Description.
+   *
+   * @param {Object} settings The block settings.
+   *
+   * @since TBD
+   *
+   * @return {Object} The updated settings.
+   */
+  ```
+
 ## Tests
 
 - **Data providers use `Generator`, not arrays.** A provider `yield`s each case; the return
