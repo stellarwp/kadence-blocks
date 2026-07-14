@@ -53,6 +53,8 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 	 * Clear every mapped override for the block, so all mapped controls fall back to the selected
 	 * variant's values (served by the existing scoped CSS), then refresh the live preview.
 	 *
+	 * @since TBD
+	 *
 	 * @return {void}
 	 */
 	const onResetAll = () => {

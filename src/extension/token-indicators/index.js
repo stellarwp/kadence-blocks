@@ -44,6 +44,9 @@ function unitAttrFor(kind, attr) {
  *
  * @param {string} blockName The block name.
  * @param {string} [set]     The token set slug; defaults to the active set.
+ *
+ * @since TBD
+ *
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
 export function mappedAttrsFor(blockName, set) {
@@ -123,6 +126,9 @@ export function useVariantBinding(blockName, attributes) {
  *
  * @param {string} attr The primary attribute name.
  * @param {string} kind The property kind, so a dimension also clears its companions.
+ *
+ * @since TBD
+ *
  * @return {Object} The attribute patch to pass to `setAttributes`.
  */
 export function resetAttrPatch(attr, kind) {
