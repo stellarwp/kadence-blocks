@@ -873,6 +873,8 @@ export default function KadenceButtonEdit(props) {
 															set={set}
 															selected={selected}
 															onSelect={selectVariant}
+															attributes={attributes}
+															setAttributes={setAttributes}
 														/>
 													</SubsectionWrap>
 												);

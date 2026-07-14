@@ -48,6 +48,21 @@ function defaultVariantFor(values) {
 }
 
 /**
+ * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
+ * Skips properties with no control attribute. Independent of the selected variant (reset-all clears every
+ * mapped override regardless of which variant is active).
+ *
+ * @param {string} blockName The block name.
+ * @param {string} [set]     The token set slug; defaults to the active set.
+ * @return {Array} The mapped attributes ([{ attr, kind }]).
+ */
+export function mappedAttrsFor(blockName, set) {
+	return blockProperties(blockName, set || activeSet())
+		.filter((property) => !!property.control_attr)
+		.map((property) => ({ attr: property.control_attr, kind: property.kind }));
+}
+
+/**
  * The design-token binding state for a block's mapped controls, keyed by the control's attribute name.
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
