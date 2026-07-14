@@ -77,14 +77,28 @@ export function blockVariantLabel(name, set) {
 }
 
 /**
- * The controllable surface for a block's set: one { key, kind, token } entry per bound property.
+ * The controllable surface for a block's set: one { key, kind, token, control_attr } entry per bound
+ * property.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
- * @return {Array} The block's surface ([{ key, kind, token }]).
+ * @return {Array} The block's surface ([{ key, kind, token, control_attr }]).
  */
 export function blockProperties(name, set) {
 	return get(blockEntry(name, set), 'properties', []);
+}
+
+/**
+ * The per-variant resolved values for a block's set: `{ <variantSlug>: { <property>: literalValue } }`.
+ * Empty object when the block offers none. Used by the token-indicators hook to compare a control's
+ * current value against the selected variant's value.
+ *
+ * @param {string} name  The block name.
+ * @param {string} [set] The token set slug; defaults to the active set.
+ * @return {Object} The per-variant value map.
+ */
+export function blockVariantValues(name, set) {
+	return get(blockEntry(name, set), 'values', {}) || {};
 }
 
 /**
