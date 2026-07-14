@@ -18,7 +18,7 @@ import { deleteVariant, setVariantDefault } from '../variants/api/client';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { TOKEN_INDICATORS_STORE } from '../token-indicators/store';
-import { mappedAttrsFor } from '../token-indicators';
+import { mappedAttrsFor, resetAttrPatch } from '../token-indicators';
 
 /**
  * The variant create/edit/delete controls, plus the design-system actions: a highlight-edits toggle and a
@@ -56,18 +56,10 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 	 * @return {void}
 	 */
 	const onResetAll = () => {
-		const patch = {};
-
-		mappedAttrsFor(blockName, set).forEach(({ attr, kind }) => {
-			patch[attr] = '';
-
-			if (kind === 'dimension') {
-				const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
-				patch[`${attr}Unit`] = '';
-				patch[`tablet${capitalized}`] = '';
-				patch[`mobile${capitalized}`] = '';
-			}
-		});
+		const patch = mappedAttrsFor(blockName, set).reduce(
+			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
+			{}
+		);
 
 		setAttributes(patch);
 		refreshProjectedCss();

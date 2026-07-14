@@ -103,14 +103,40 @@ export function useVariantBinding(blockName, attributes) {
 }
 
 /**
- * Clear a mapped control's attribute(s) so the block falls back to the existing variant-scoped CSS (the
- * `.wp-block-*.kb-variant--<variant>` retarget) or the preset default — no new render path. A `color`/
- * `text` control clears its single attribute to `''`. A `dimension` control (e.g. `borderRadius`) also
- * clears its unit companion and its `tablet*`/`mobile*` companions by convention; the primary and
- * companion array attributes reset to the block's declared default shape — a 4-side
- * `['', '', '', '']` array, per `block.json` (e.g. `borderRadius`, `tabletBorderRadius`,
- * `mobileBorderRadius`) — not a bare `''`, and the unit resets to `'px'` (`borderRadiusUnit`'s declared
- * default), not `''`.
+ * The `setAttributes` patch that clears a mapped control's attribute(s) back to their block.json default
+ * shape, so the block falls back to the existing variant-scoped CSS (the `.wp-block-*.kb-variant--<variant>`
+ * retarget) or the preset default — no new render path. A `color`/`text` control clears its single
+ * attribute to `''`. A `dimension` control (e.g. `borderRadius`) also clears its unit companion and its
+ * `tablet*`/`mobile*` companions by convention; the primary and companion array attributes reset to the
+ * block's declared default shape — a 4-side `['', '', '', '']` array, per `block.json` (e.g. `borderRadius`,
+ * `tabletBorderRadius`, `mobileBorderRadius`) — not a bare `''`, and the unit resets to `'px'`
+ * (`borderRadiusUnit`'s declared default), not `''`.
+ *
+ * Shared by the per-control reset (`resetAttr`) and the picker's reset-all, so their clearing convention
+ * cannot drift.
+ *
+ * @param {string} attr The primary attribute name.
+ * @param {string} kind The property kind, so a dimension also clears its companions.
+ * @return {Object} The attribute patch to pass to `setAttributes`.
+ */
+export function resetAttrPatch(attr, kind) {
+	if (kind !== 'dimension') {
+		return { [attr]: '' };
+	}
+
+	const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
+	const emptySides = ['', '', '', ''];
+
+	return {
+		[attr]: emptySides,
+		[`${attr}Unit`]: 'px',
+		[`tablet${capitalized}`]: emptySides,
+		[`mobile${capitalized}`]: emptySides,
+	};
+}
+
+/**
+ * Clear a mapped control's attribute(s) back to their block.json default shape (see `resetAttrPatch`).
  *
  * @param {string}   attr          The primary attribute name.
  * @param {Function} setAttributes The block's setAttributes.
@@ -118,19 +144,5 @@ export function useVariantBinding(blockName, attributes) {
  * @return {void}
  */
 export function resetAttr(attr, setAttributes, kind) {
-	if (kind !== 'dimension') {
-		setAttributes({ [attr]: '' });
-
-		return;
-	}
-
-	const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
-	const emptySides = ['', '', '', ''];
-
-	setAttributes({
-		[attr]: emptySides,
-		[`${attr}Unit`]: 'px',
-		[`tablet${capitalized}`]: emptySides,
-		[`mobile${capitalized}`]: emptySides,
-	});
+	setAttributes(resetAttrPatch(attr, kind));
 }
