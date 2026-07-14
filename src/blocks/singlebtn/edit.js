@@ -913,7 +913,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Color Hover', 'kadence-blocks')}
 																attr="colorHover"
@@ -949,7 +948,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Background Color', 'kadence-blocks')}
 																attr="backgroundHover"
@@ -1126,7 +1124,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Color', 'kadence-blocks')}
 																attr="color"
@@ -1160,7 +1157,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Background Color', 'kadence-blocks')}
 																attr="background"
