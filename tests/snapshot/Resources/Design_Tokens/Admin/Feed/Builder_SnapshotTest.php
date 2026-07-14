@@ -34,12 +34,12 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 				'Button Background',
 				'Brand',
 				[
-					'wp_preset'    => 'color',
 					'kadence_slot' => 'palette1',
+					'site_editor'  => true,
 				],
 			],
-			[ 'semantic.color.button-text', 'color', 'Button Text', 'Brand', [ 'wp_preset' => 'color' ] ],
-			[ 'semantic.spacing.md', 'dimension', 'Medium', 'Layout', [ 'wp_preset' => 'spacing' ] ],
+			[ 'semantic.color.button-text', 'color', 'Button Text', 'Brand', [ 'site_editor' => true ] ],
+			[ 'semantic.spacing.md', 'dimension', 'Medium', 'Layout', [ 'site_editor' => true ] ],
 		];
 
 		$values = [];

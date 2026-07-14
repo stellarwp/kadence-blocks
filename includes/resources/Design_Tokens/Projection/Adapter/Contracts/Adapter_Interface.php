@@ -18,7 +18,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts;
  * default path is "no adapter — the CSS variable just works."
  *
  * The block key is read through a get_*() accessor over a const rather than a public const, matching
- * the module's idiom (e.g. {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target}).
+ * the module's idiom (e.g. {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding::get_kadence_slot_key()}).
  * {@see Abstract_Adapter} supplies get_block() so a concrete adapter only declares its block const and
  * the transform.
  *

@@ -354,6 +354,10 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A write-through patch preserves the stored `$extensions` layer verbatim. The `variants` entry uses a
+	 * block the registry does not recognize, so the endpoint must round-trip the opaque extension data
+	 * untouched rather than validate or strip it.
+	 *
 	 * @return void
 	 */
 	public function testMergePreservesTheExtensionsLayer(): void {

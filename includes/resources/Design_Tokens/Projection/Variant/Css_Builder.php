@@ -14,15 +14,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable block variants — Kadence blocks and core/button alike — across
- * every token set at once, so a variant follows palette switching the same way the raw token layer does.
+ * Builds the scoped CSS for selectable Kadence block variants across every token set at once, so a variant
+ * follows palette switching the same way the raw token layer does.
  *
  * A selected variant reaches output purely through the cascade: the editor adds a "kb-variant--<name>"
  * class to the block, and this builder emits, per (block, variant), a rule that retargets the --global-*
- * custom properties (a numbered palette slot or a named button slot) the block consumes. Kadence blocks
- * consume these in their render path / SCSS; core/button consumes the same button slots through a small
- * companion stylesheet (Native\Styles\Button), so one retarget path re-skins both with zero changes to a
- * block's markup. The selector is block-aware: core/button resolves to ".wp-block-button".
+ * custom properties (a numbered palette slot or a named button slot) the block consumes in its render path
+ * / SCSS, re-skinning it with zero changes to the block's markup.
  *
  * A block declares one flat variant list, and each variant may define a different subset of the block's
  * bound surface; the build emits, per variant, exactly the properties that variant resolves. Two variants
@@ -621,9 +619,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The block's CSS class selector: a Kadence (or any namespaced) block => ".wp-block-<namespace>-<name>";
-	 * a core block => ".wp-block-<name>" (WordPress drops the "core/" namespace), so core/button resolves to
-	 * ".wp-block-button" rather than ".wp-block-core-button".
+	 * The block's CSS class selector: a Kadence (or any namespaced) block => ".wp-block-<namespace>-<name>".
 	 *
 	 * @since TBD
 	 *
@@ -635,10 +631,6 @@ final class Css_Builder {
 		$parts     = explode( '/', $block, 2 );
 		$namespace = $parts[0];
 		$name      = $parts[1] ?? $namespace;
-
-		if ( $namespace === 'core' ) {
-			return '.wp-block-' . self::sanitize_identifier( $name );
-		}
 
 		return '.wp-block-' . self::sanitize_identifier( $namespace ) . '-' . self::sanitize_identifier( $name );
 	}

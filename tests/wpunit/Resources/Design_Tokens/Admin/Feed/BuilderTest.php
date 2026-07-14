@@ -20,7 +20,7 @@ final class BuilderTest extends TestCase {
 				'type'        => 'color',
 				'label'       => 'Button Background',
 				'group'       => 'Brand',
-				'projections' => [ 'wp_preset' => 'color' ],
+				'projections' => [ 'site_editor' => true ],
 			]
 		);
 	}

@@ -241,9 +241,16 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertSame( '', $css );
 	}
 
-	// ---- Preset block -------------------------------------------------------------------------------
+	// ---- No theme.json preset bridge ----------------------------------------------------------------
 
-	public function testItEmitsWpPresetBridgeForBareStringCategory(): void {
+	/**
+	 * The design system does not project tokens into theme.json, so the CSS-var output never emits a
+	 * `--wp--preset--*` bridge — a regression guard against re-introducing core-block / global-styles
+	 * impact, even for a color token surfaced in the Style Book.
+	 *
+	 * @return void
+	 */
+	public function testItNeverEmitsAWpPresetBridge(): void {
 		$id = 'semantic.color.button-bg';
 
 		$this->registry->register(
@@ -251,71 +258,10 @@ final class Css_BuilderTest extends TestCase {
 				'id'          => $id,
 				'type'        => 'color',
 				'label'       => 'Button Background',
-				'projections' => [ 'wp_preset' => 'color' ],
+				'projections' => [ 'site_editor' => true ],
 			]
 		);
 
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
-
-		// The preset bridges to the CANONICAL token var, so it follows the active alias layer.
-		$this->assertStringContainsString( '--wp--preset--color--button-bg:var(' . Css_Var::from_id( $id ) . ');', $css );
-	}
-
-	public function testItHonorsExplicitCategoryAndSlug(): void {
-		$id = 'semantic.color.button-bg';
-
-		$this->registry->register(
-			[
-				'id'          => $id,
-				'type'        => 'color',
-				'label'       => 'Button Background',
-				'projections' => [ 'wp_preset' => [ 'category' => 'color', 'slug' => 'btn' ] ],
-			]
-		);
-
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
-
-		$this->assertStringContainsString( '--wp--preset--color--btn:var(' . Css_Var::from_id( $id ) . ');', $css );
-	}
-
-	public function testItSkipsPresetWhenTokenHasNoResolvedValue(): void {
-		$id = 'semantic.color.button-bg';
-
-		$this->registry->register(
-			[
-				'id'          => $id,
-				'type'        => 'color',
-				'label'       => 'Button Background',
-				'projections' => [ 'wp_preset' => 'color' ],
-			]
-		);
-
-		// by_id is empty — no resolved value for this id.
-		$css = $this->css_default( $this->set( [], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
-
-		$this->assertStringNotContainsString( '--wp--preset--', $css );
-	}
-
-	public function testItSkipsPresetWhenTokenHasEmptyStringResolvedValue(): void {
-		$id = 'semantic.color.button-bg';
-
-		$this->registry->register(
-			[
-				'id'          => $id,
-				'type'        => 'color',
-				'label'       => 'Button Background',
-				'projections' => [ 'wp_preset' => 'color' ],
-			]
-		);
-
-		// by_id has the key but with an empty value (e.g. an unrecognized $type rendered to '').
-		$css = $this->css_default( $this->set( [ $id => '' ], [ Css_Var::from_id( $id, 'default' ) => '' ] ) );
-
-		$this->assertStringNotContainsString( '--wp--preset--', $css );
-	}
-
-	public function testNoPresetTokensProducesNoPresetBlock(): void {
-		$id  = 'semantic.color.button-bg';
 		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '--wp--preset--', $css );
