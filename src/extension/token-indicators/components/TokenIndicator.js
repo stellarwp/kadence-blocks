@@ -29,7 +29,11 @@ export function TokenIndicator({ state, onReset }) {
 	if (!state.overridden) {
 		return (
 			<Tooltip text={__('Bound to the selected design variant', 'kadence-blocks')}>
-				<span className="kb-token-indicator kb-token-indicator--bound" aria-hidden="true" />
+				<span
+					className="kb-token-indicator kb-token-indicator--bound"
+					role="img"
+					aria-label={__('Bound to the selected design variant', 'kadence-blocks')}
+				/>
 			</Tooltip>
 		);
 	}

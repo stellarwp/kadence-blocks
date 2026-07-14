@@ -13,7 +13,7 @@
  */
 
 import { get } from 'lodash';
-import { activeSet, blockProperties, blockVariantValues } from '../variant-picker';
+import { activeSet, blockDefaultVariant, blockProperties, blockVariantValues } from '../variant-picker';
 import { isEmptyValue, matchesVariant } from './normalize';
 import './token-indicators.scss';
 
@@ -32,19 +32,6 @@ export { TokenControlRow } from './components/TokenControlRow';
  */
 function unitAttrFor(kind, attr) {
 	return kind === 'dimension' ? `${attr}Unit` : '';
-}
-
-/**
- * The default variant slug to fall back to when the block has no explicit `kbVariant`: the first variant
- * present in the resolved-values map (the catalog lists them in default-first order). '' when none.
- *
- * @param {Object} values The per-variant value map.
- * @return {string} The fallback variant slug, or ''.
- */
-function defaultVariantFor(values) {
-	const slugs = Object.keys(values || {});
-
-	return slugs.length ? slugs[0] : '';
 }
 
 /**
@@ -75,9 +62,11 @@ export function useVariantBinding(blockName, attributes) {
 	const properties = blockProperties(blockName, set);
 	const values = blockVariantValues(blockName, set);
 
-	// The variant whose surface drives the indicators: the explicit selection, or the block's default
-	// look when none is chosen. When neither resolves, no control is bound.
-	const activeVariant = selected || defaultVariantFor(values);
+	// The variant whose surface drives the indicators: the explicit selection, or the set's authoritative
+	// default variant when none is chosen (kbVariant is '' on every freshly inserted block, so this
+	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
+	// neither resolves, no control is bound.
+	const activeVariant = selected || blockDefaultVariant(blockName, set);
 	const variantValues = get(values, activeVariant, {});
 
 	const state = {};
