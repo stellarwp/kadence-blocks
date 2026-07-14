@@ -272,8 +272,7 @@ return [
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
 			'block'    => 'kadence/singlebtn',
-			'group'    => 'style', // a named, picker-driven set (the button's Style axis), keyed variants.<block>.style.
-			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
+			'label'    => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
 			'bindings' => [
 				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
 				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
@@ -295,8 +294,7 @@ return [
 			 * in the baseline document.
 			 */
 			'block'    => 'core/button',
-			'group'    => 'style', // a named, picker-driven set (the button's Style axis), keyed variants.<block>.style.
-			'label'    => __( 'Style', 'kadence-blocks' ), // the editor picker's control label for the variant axis.
+			'label'    => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
 			'bindings' => [
 				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
 				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],

@@ -24,7 +24,7 @@ final class Token_Registry {
 	/** @var array<string, Token_Definition> Keyed by token id, insertion-ordered. */
 	private array $tokens = [];
 
-	/** @var array<string, array<string, Variant_Set>> Keyed by block name, then by set group slug. */
+	/** @var array<string, Variant_Set> The one set a block accepts, keyed by block name. */
 	private array $variant_sets = [];
 
 	/** @var array<string, Adapter_Interface> Keyed by block name. */
@@ -107,8 +107,8 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Register a block's variant set — the variants it accepts, its default, and the per-property
-	 * bindings.
+	 * Register a block's variant set — its bindable surface and picker label. One set per block; a later
+	 * registration for the same block replaces the earlier one.
 	 *
 	 * @since TBD
 	 *
@@ -119,7 +119,7 @@ final class Token_Registry {
 	public function register_variant_set( array $set ): void {
 		$variant_set = Variant_Set::from_array( $set );
 
-		$this->variant_sets[ $variant_set->block ][ $variant_set->group ] = $variant_set;
+		$this->variant_sets[ $variant_set->block ] = $variant_set;
 	}
 
 	/**
@@ -222,10 +222,9 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The block's preset / default-variant set (the one declared without an explicit group — see
-	 * {@see Variant_Set::get_implicit_group_key()}), or null. This is the no-picker set the block-preset and
-	 * block-default-CSS projectors consume; a block that only registers named (picker-driven) sets returns
-	 * null here. Use {@see self::for_variant_set()} to address a named set.
+	 * The one variant set a block registers, or null when it registers none. Both the picker-driven and the
+	 * preset (no-picker) projectors read this; distinguish the two by the set's `label` (a picker set
+	 * declares one, a preset set does not).
 	 *
 	 * @since TBD
 	 *
@@ -234,47 +233,16 @@ final class Token_Registry {
 	 * @return Variant_Set|null
 	 */
 	public function for_block( string $block ): ?Variant_Set {
-		return $this->variant_sets[ $block ][ Variant_Set::get_implicit_group_key() ] ?? null;
+		return $this->variant_sets[ $block ] ?? null;
 	}
 
 	/**
-	 * A specific variant set of a block by its group slug, or null when the block registers none under that
-	 * slug. Pass {@see Variant_Set::get_implicit_group_key()} for the preset set, or a named slug (e.g. "style") for a
-	 * picker-driven set. This is the per-set lookup the variant projector uses.
+	 * All registered variant sets, keyed by block name, in registration order. The admin UI feed iterates
+	 * this to render per-block variant editors; mirrors all() for tokens.
 	 *
 	 * @since TBD
-	 *
-	 * @param string $block The block name.
-	 * @param string $group The set group slug.
-	 *
-	 * @return Variant_Set|null
-	 */
-	public function for_variant_set( string $block, string $group ): ?Variant_Set {
-		return $this->variant_sets[ $block ][ $group ] ?? null;
-	}
-
-	/**
-	 * Every variant set a block registers, keyed by group slug (in registration order), or an empty array
-	 * when the block registers none. The "does this block accept variants" guard and the editor read this to
-	 * see all of a block's sets — preset and named alike.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $block The block name.
 	 *
 	 * @return array<string, Variant_Set>
-	 */
-	public function sets_for_block( string $block ): array {
-		return $this->variant_sets[ $block ] ?? [];
-	}
-
-	/**
-	 * All registered variant sets, keyed by block name then by set group slug, in registration order. The
-	 * admin UI feed iterates this to render per-block, per-set variant editors; mirrors all() for tokens.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, array<string, Variant_Set>>
 	 */
 	public function variant_sets(): array {
 		return $this->variant_sets;

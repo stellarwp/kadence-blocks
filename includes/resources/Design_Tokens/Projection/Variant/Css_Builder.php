@@ -10,7 +10,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 use RuntimeException;
 
@@ -25,34 +24,33 @@ use RuntimeException;
  * companion stylesheet (Native\Styles\Button), so one retarget path re-skins both with zero changes to a
  * block's markup. The selector is block-aware: core/button resolves to ".wp-block-button".
  *
- * A block's variants may be organized into named GROUPS (independent single-select axes). The build
- * iterates each block's groups and emits, per (block, group, variant), the same layers below. A grouped
- * selection folds the group into both the class ("kb-variant--<group>--<variant>") and the variant var
- * name; a flat block's single implicit group omits the group segment, so its output is identical to an
- * ungrouped block. When two groups retarget the same --global-<slot>, their selected-variant rules carry
- * equal specificity, so source order decides: groups are emitted in document order, so the later group
- * wins for a shared slot.
+ * A block declares one flat variant list, and each variant may define a different subset of the block's
+ * bound surface; the build emits, per variant, exactly the properties that variant resolves. Two variants
+ * that both retarget the same --global-<slot> carry equal specificity, so the selected-variant rule wins
+ * over the class-less $default rule by higher specificity, and a per-instance edit wins over both.
  *
  * The emission mirrors the raw-token (Css_Var) projection so a variant var is just another token in the
  * same multi-set graph:
  *
  *   1. One namespaced variant-var block per set —
- *      --kb-token--<set>--variant--<block>--[<group>--]<variant>--<property>: <value-or-var> — where an
- *      aliased binding reads var(--kb-token--<set>--<target>), so the variant chains to that set's
- *      namespaced token and a set's chain stays inside the set; a literal binding emits the literal.
+ *      --kb-token--<set>--variant--<block>--<variant>--<property>: <value-or-var> — where an aliased
+ *      binding reads var(--kb-token--<set>--<target>), so the variant chains to that set's namespaced token
+ *      and a set's chain stays inside the set; a literal binding emits the literal.
  *   2. An active-set alias layer pointing each canonical variant var at the active set's namespaced one
  *      (--kb-token--variant--…: var(--kb-token--<active>--variant--…)).
  *   3. One [data-kb-token-set="<set>"] switch selector per set re-pointing the canonical variant vars at
  *      that set, so a body class / container attribute swaps the variant palette client-side — the scoped
  *      rules below read the canonical variant var on the block element, so they follow it for their subtree.
- *   4. Per (block, group, variant) scoped rules — ".wp-block-<block>.kb-variant--[<group>--]<variant>" —
- *      pointing each --global-<slot> at the canonical variant var, plus a class-less ".wp-block-<block>"
- *      rule per group for its $default variant so a block with no variant selected still shows its preset.
- *      These are the coercive surface, built from the active set only.
+ *   4. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
+ *      --global-<slot> at the canonical variant var. These read the canonical var (which the switch
+ *      selectors re-point per set), so a rule is set-independent and is emitted from every set's fragment —
+ *      a variant that exists only in a non-active set (e.g. a user-created variant on the "dark" set) still
+ *      gets its retarget rule. A class-less ".wp-block-<block>" rule for the active set's $default variant
+ *      is emitted alongside the active fragment, so a block with no variant selected still shows its preset.
  *
- * Scoping is per (block, group, variant): the same variant name on two blocks ("ghost" on a Button and a
- * Row), or on two groups, gets its own qualified rule, so values never collide. Both named variants and
- * the "$default" preset carry ordinary class/element specificity, so a per-instance edit still wins.
+ * Scoping is per (block, variant): the same variant name on two blocks ("ghost" on a Button and a Row) gets
+ * its own qualified rule, so values never collide. Both named variants and the "$default" preset carry
+ * ordinary class/element specificity, so a per-instance edit still wins.
  *
  * Nothing here is !important and the scope carries ordinary class specificity, so a per-instance inline
  * style still wins over a variant. Values are sanitized defensively before they reach a declaration.
@@ -132,7 +130,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>>
 	 */
 	private array $collected = [];
 
@@ -266,8 +264,11 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) a set's per-set fragment: its namespaced variant-var block followed by its switch
-	 * selector. The single assembly definition shared by css() and the cached set_fragment().
+	 * Build (uncached) a set's per-set fragment: its namespaced variant-var block, its switch selector, and
+	 * its per-variant scoped retarget rules. The scoped rules read the canonical variant var (which the
+	 * switch selectors re-point per set), so emitting them from every set's fragment — not just the active
+	 * one — is what lets a variant that exists only in a non-active set still retarget its slots when a block
+	 * is placed on that set. A rule shared across sets is byte-identical, so the duplication is inert.
 	 *
 	 * @since TBD
 	 *
@@ -278,11 +279,13 @@ final class Css_Builder {
 	private function build_set_fragment( string $slug ): string {
 		$collected = $this->collect( $slug );
 
-		return $this->namespaced_block( $collected, $slug ) . $this->switch_block( $collected, $slug );
+		return $this->namespaced_block( $collected, $slug )
+			. $this->switch_block( $collected, $slug )
+			. $this->scoped_variants( $collected );
 	}
 
 	/**
-	 * Build (uncached) the active fragment: the canonical alias layer plus the coercive scoped rules. The
+	 * Build (uncached) the active fragment: the canonical alias layer plus the class-less $default rules. The
 	 * single assembly definition shared by css() and the cached active_fragment().
 	 *
 	 * @since TBD
@@ -294,11 +297,11 @@ final class Css_Builder {
 	private function build_active_fragment( string $active_slug ): string {
 		$collected = $this->collect( $active_slug );
 
-		return $this->alias_block( $collected, $active_slug ) . $this->scoped_block( $collected );
+		return $this->alias_block( $collected, $active_slug ) . $this->scoped_default( $collected );
 	}
 
 	/**
-	 * Walk every (block, group, variant, property) that resolves to a slot-targeted value for a set, into a
+	 * Walk every (block, variant, property) that resolves to a slot-targeted value for a set, into a
 	 * structure the layers below build from. The projected value namespaces its var() target to the set, so
 	 * an aliased variant chains to that set's namespaced token. Memoized per slug for the request.
 	 *
@@ -306,7 +309,7 @@ final class Css_Builder {
 	 *
 	 * @param string $slug The set slug to resolve against (and namespace the values to).
 	 *
-	 * @return array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}>
+	 * @return array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>
 	 */
 	private function collect( string $slug ): array {
 		if ( isset( $this->collected[ $slug ] ) ) {
@@ -316,92 +319,69 @@ final class Css_Builder {
 		$out = [];
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
+			// A block may carry registered bindings before the document defines its variants; that is not an
+			// error, it simply contributes nothing yet, so skip a block whose set the registry never declared.
+			$set = $this->registry->for_block( $block );
+
+			if ( $set === null ) {
+				continue;
+			}
+
 			try {
-				// A block may carry registered bindings before the document defines its variants; that is not
-				// an error, it simply contributes nothing yet, so skip it rather than fail the whole build.
-				$groups = $this->variants->groups( $block, $slug );
+				$names = $this->variants->names( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				continue;
 			}
 
-			$group_data = [];
+			$variants = [];
 
-			// Groups are collected in document order: when two groups share a --global-<slot>, equal
-			// specificity means the later group's scoped rule wins by source order.
-			foreach ( $groups as $group ) {
-				// Each set (axis) owns its bindings, so look them up per group — the button's "style" set, a
-				// preset block's implicit set. A group the document defines but the registry never declared a
-				// set for contributes nothing (no bindings), so skip it.
-				$set = $this->registry->for_variant_set( $block, $group );
-
-				if ( $set === null ) {
-					continue;
-				}
-
+			foreach ( $names as $variant ) {
 				try {
-					$names = $this->variants->names( $block, $slug, $group );
+					$values = $this->variants->resolve( $block, $variant, $slug, $slug );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
 
-				$variants = [];
+				$properties = [];
 
-				foreach ( $names as $variant ) {
-					try {
-						$values = $this->variants->resolve( $block, $variant, $slug, $slug, $group );
-					} catch ( RuntimeException $e ) {
+				foreach ( $values as $property => $value ) {
+					$binding = $set->binding( $property );
+
+					if ( $binding === null ) {
 						continue;
 					}
 
-					$properties = [];
+					$target = $this->target_var( $binding );
 
-					foreach ( $values as $property => $value ) {
-						$binding = $set->binding( $property );
-
-						if ( $binding === null ) {
-							continue;
-						}
-
-						$target = $this->target_var( $binding );
-
-						if ( $target === null ) {
-							continue;
-						}
-
-						$properties[ $property ] = [
-							'target' => $target,
-							'value'  => $value,
-						];
+					if ( $target === null ) {
+						continue;
 					}
 
-					if ( $properties !== [] ) {
-						$variants[ $variant ] = $properties;
-					}
+					$properties[ $property ] = [
+						'target' => $target,
+						'value'  => $value,
+					];
 				}
 
-				if ( $variants === [] ) {
-					continue;
+				if ( $properties !== [] ) {
+					$variants[ $variant ] = $properties;
 				}
-
-				try {
-					$default = $this->variants->default_variant( $block, $slug, $group );
-				} catch ( RuntimeException $e ) {
-					$default = '';
-				}
-
-				$group_data[ $group ] = [
-					'default'  => $default,
-					'variants' => $variants,
-				];
 			}
 
-			if ( $group_data === [] ) {
+			if ( $variants === [] ) {
 				continue;
+			}
+
+			try {
+				$default = $this->variants->default_variant( $block, $slug );
+			} catch ( RuntimeException $e ) {
+				$default = '';
 			}
 
 			$out[ $block ] = [
 				'selector' => $this->block_selector( $block ),
-				'groups'   => $group_data,
+				'default'  => $default,
+				'variants' => $variants,
 			];
 		}
 
@@ -414,8 +394,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The set's collected variants.
-	 * @param string                                                                                                                                                       $slug      The set slug to namespace the var names under.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected variants.
+	 * @param string                                                                                                                            $slug      The set slug to namespace the var names under.
 	 *
 	 * @return string
 	 */
@@ -423,11 +403,9 @@ final class Css_Builder {
 		$declarations = '';
 
 		foreach ( $collected as $block => $data ) {
-			foreach ( $data['groups'] as $group => $group_data ) {
-				foreach ( $group_data['variants'] as $variant => $properties ) {
-					foreach ( $properties as $property => $info ) {
-						$declarations .= $this->variant_var( $block, $group, $variant, $property, $slug ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
-					}
+			foreach ( $data['variants'] as $variant => $properties ) {
+				foreach ( $properties as $property => $info ) {
+					$declarations .= $this->variant_var( $block, $variant, $property, $slug ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
 				}
 			}
 		}
@@ -441,8 +419,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected   The active set's collected variants.
-	 * @param string                                                                                                                                                       $active_slug The active set slug.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected   The active set's collected variants.
+	 * @param string                                                                                                                            $active_slug The active set slug.
 	 *
 	 * @return string
 	 */
@@ -460,8 +438,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The set's collected variants.
-	 * @param string                                                                                                                                                       $slug      The set slug.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected variants.
+	 * @param string                                                                                                                            $slug      The set slug.
 	 *
 	 * @return string
 	 */
@@ -482,8 +460,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The collected variants whose ids drive the layer.
-	 * @param string                                                                                                                                                       $slug      The set slug the canonical names are pointed at.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The collected variants whose ids drive the layer.
+	 * @param string                                                                                                                            $slug      The set slug the canonical names are pointed at.
 	 *
 	 * @return string
 	 */
@@ -491,11 +469,9 @@ final class Css_Builder {
 		$declarations = '';
 
 		foreach ( $collected as $block => $data ) {
-			foreach ( $data['groups'] as $group => $group_data ) {
-				foreach ( $group_data['variants'] as $variant => $properties ) {
-					foreach ( $properties as $property => $info ) {
-						$declarations .= $this->variant_var( $block, $group, $variant, $property ) . ':var(' . $this->variant_var( $block, $group, $variant, $property, $slug ) . ');';
-					}
+			foreach ( $data['variants'] as $variant => $properties ) {
+				foreach ( $properties as $property => $info ) {
+					$declarations .= $this->variant_var( $block, $variant, $property ) . ':var(' . $this->variant_var( $block, $variant, $property, $slug ) . ');';
 				}
 			}
 		}
@@ -504,55 +480,86 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the coercive scoped rules from the active set's collected variants: per (block, group, variant) a
-	 * ".wp-block-<block>.kb-variant--[<group>--]<variant>" rule pointing each --global-<slot> at the
-	 * canonical variant var, plus a class-less ".wp-block-<block>" rule per group re-emitting that group's
-	 * $default variant's declarations so an unselected block still shows its preset.
+	 * Emit the per-variant scoped rules from a set's collected variants: per (block, variant) a
+	 * ".wp-block-<block>.kb-variant--<variant>" rule pointing each --global-<slot> at the canonical variant
+	 * var. Called for every set (not just the active one), so a variant that exists only in a non-active set
+	 * still gets its retarget rule; the rule body is set-independent (it reads the canonical var the switch
+	 * selectors re-point), so a rule shared across sets is byte-identical.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, groups:array<string, array{default:string, variants:array<string, array<string, array{target:string, value:string}>>}>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected variants.
 	 *
 	 * @return string
 	 */
-	private function scoped_block( array $collected ): string {
+	private function scoped_variants( array $collected ): string {
 		$css = '';
 
 		foreach ( $collected as $block => $data ) {
-			$selector = $data['selector'];
+			foreach ( $data['variants'] as $variant => $properties ) {
+				$declarations = $this->slot_declarations( $block, $variant, $properties );
 
-			foreach ( $data['groups'] as $group => $group_data ) {
-				// Keep each variant's slot declarations so the group's $default can be re-emitted, class-less, below.
-				$variant_declarations = [];
-
-				foreach ( $group_data['variants'] as $variant => $properties ) {
-					$declarations = '';
-
-					foreach ( $properties as $property => $info ) {
-						$declarations .= $info['target'] . ':var(' . $this->variant_var( $block, $group, $variant, $property ) . ');';
-					}
-
-					if ( $declarations !== '' ) {
-						$variant_declarations[ $variant ] = $declarations;
-						$css                             .= $selector . '.' . $this->variant_class( $group, $variant ) . '{' . $declarations . '}';
-					}
-				}
-
-				/**
-				 * The group's $default look: a block with no variant selected for this group still shows its
-				 * preset. Point the same slots at the group's $default variant's var on the class-less block
-				 * selector. Its lower specificity yields to the kb-variant-- rules above (a selected variant)
-				 * and to a per-instance edit, so it only fills the gap.
-				 */
-				$default = $group_data['default'];
-
-				if ( $default !== '' && isset( $variant_declarations[ $default ] ) ) {
-					$css .= $selector . '{' . $variant_declarations[ $default ] . '}';
+				if ( $declarations !== '' ) {
+					$css .= $data['selector'] . '.' . Style::variant_class( $variant ) . '{' . $declarations . '}';
 				}
 			}
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Emit the class-less $default rules from the active set's collected variants: per block a
+	 * ".wp-block-<block>" rule re-emitting the $default variant's declarations so a block with no variant
+	 * selected still shows its preset. Its lower specificity yields to the kb-variant-- rules (a selected
+	 * variant) and to a per-instance edit, so it only fills the gap. Built from the active set — the preset a
+	 * block shows when it follows the active set with no selection.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 *
+	 * @return string
+	 */
+	private function scoped_default( array $collected ): string {
+		$css = '';
+
+		foreach ( $collected as $block => $data ) {
+			$default = $data['default'];
+
+			if ( $default === '' || ! isset( $data['variants'][ $default ] ) ) {
+				continue;
+			}
+
+			$declarations = $this->slot_declarations( $block, $default, $data['variants'][ $default ] );
+
+			if ( $declarations !== '' ) {
+				$css .= $data['selector'] . '{' . $declarations . '}';
+			}
+		}
+
+		return $css;
+	}
+
+	/**
+	 * Build the `--global-<slot>:var(<canonical variant var>);` declarations for one variant's properties.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                                                     $block      The block name.
+	 * @param string                                                     $variant    The variant slug.
+	 * @param array<string, array{target:string, value:string}>         $properties The variant's collected properties.
+	 *
+	 * @return string
+	 */
+	private function slot_declarations( string $block, string $variant, array $properties ): string {
+		$declarations = '';
+
+		foreach ( $properties as $property => $info ) {
+			$declarations .= $info['target'] . ':var(' . $this->variant_var( $block, $variant, $property ) . ');';
+		}
+
+		return $declarations;
 	}
 
 	/**
@@ -637,33 +644,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The variant class for a (group, variant): the flat "kb-variant--<variant>" for a block's implicit
-	 * single group, or the grouped "kb-variant--<group>--<variant>" for an explicit group. Delegates to
-	 * {@see Style} so the class shape matches the editor's and never drifts.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $group   The variant group (the implicit-group sentinel for a flat block).
-	 * @param string $variant The variant slug.
-	 *
-	 * @return string
-	 */
-	private function variant_class( string $group, string $variant ): string {
-		return $group === Variant_Set::get_implicit_group_key()
-			? Style::variant_class( $variant )
-			: Style::group_variant_class( $group, $variant );
-	}
-
-	/**
-	 * The variant var name for a (block, group, variant, property), optionally namespaced to a token set:
-	 * "--kb-token--[<set>--]variant--<block>--[<group>--]<variant>--<property>", e.g.
-	 * --kb-token--dark--variant--kadence-advancedbtn--emphasis--ghost--button-bg. A block's implicit single
-	 * group omits the "<group>--" segment, so a flat block keeps the ungrouped var shape unchanged.
+	 * The variant var name for a (block, variant, property), optionally namespaced to a token set:
+	 * "--kb-token--[<set>--]variant--<block>--<variant>--<property>", e.g.
+	 * --kb-token--dark--variant--kadence-singlebtn--secondary--button-bg.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block     The block name.
-	 * @param string $group     The variant group (the implicit-group sentinel for a flat block).
 	 * @param string $variant   The variant slug.
 	 * @param string $property  The block property.
 	 * @param string $namespace Optional token-set slug to namespace the variable under. Empty yields the
@@ -671,12 +658,11 @@ final class Css_Builder {
 	 *
 	 * @return string
 	 */
-	private function variant_var( string $block, string $group, string $variant, string $property, string $namespace = '' ): string {
+	private function variant_var( string $block, string $variant, string $property, string $namespace = '' ): string {
 		return Css_Var::get_prefix()
 			. ( $namespace === '' ? '' : self::sanitize_identifier( $namespace ) . '--' )
 			. self::VARIANT_SEGMENT
 			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
-			. ( $group === Variant_Set::get_implicit_group_key() ? '' : self::sanitize_identifier( $group ) . '--' )
 			. self::sanitize_identifier( $variant ) . '--'
 			. self::sanitize_identifier( $property );
 	}

@@ -136,8 +136,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testGetItemReflectsAStoredOverride(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
-			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
@@ -349,8 +349,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testDeleteVariantIsAnIdempotentNoOpWhenAbsent(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
@@ -471,16 +471,17 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A variant that leaves a bound property unset is rejected: a variant must value the block's full bound
-	 * surface. The post-merge token set is evaluated, so a partial replace is caught too.
+	 * A variant may define a SUBSET of the block's bound surface: a variant that leaves a bound property
+	 * unset is accepted and stored with exactly the properties it defines. The property it omits is inherited
+	 * from the block $default through the cascade rather than being required here.
 	 *
 	 * @return void
 	 */
-	public function testAnIncompleteSurfaceIsRejected(): void {
+	public function testAnIncompleteSurfaceIsAccepted(): void {
 		$tokens = $this->button_tokens();
 		unset( $tokens['button-radius'] );
 
-		$result = $this->controller->create_item(
+		$response = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
@@ -491,10 +492,13 @@ final class VariantsControllerTest extends TestCase {
 			)
 		);
 
-		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'rest_design_tokens_incomplete_surface', $result->get_error_code() );
-		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
-		$this->assertContains( 'button-radius', $result->get_error_data()['properties'] );
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+
+		// The variant is stored with only the properties it defined; button-radius is absent.
+		$stored = $response->get_data()['variants']['accent']['tokens'];
+		$this->assertArrayHasKey( 'button-bg', $stored );
+		$this->assertArrayNotHasKey( 'button-radius', $stored );
 	}
 
 	/**
@@ -624,8 +628,8 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testAWriteBumpsTheVersion(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{"style":{'
-			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}}'
+			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );

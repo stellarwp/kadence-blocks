@@ -32,10 +32,10 @@ final class VariantsTest extends TestCase {
 
 		$this->assertArrayHasKey( self::BUTTON, $variants );
 
-		// The button's variants live under its named "style" set (block => group => entry).
-		$button = $variants[ self::BUTTON ]['style'];
+		// The button's variants live directly under the block (one flat set per block).
+		$button = $variants[ self::BUTTON ];
 
-		$this->assertSame( 'style', $button['group'] );
+		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame( 'primary', $button['default'] );
 		$this->assertSame( [ 'primary', 'secondary' ], $button['names'] );
 		$this->assertContains( 'button-bg', $button['properties'] );
