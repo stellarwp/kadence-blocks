@@ -112,10 +112,8 @@ return [
 			[
 				/**
 				 * Semantic brand colors surfaced in the Style Book: they emit their --kb-token--* var via
-				 * Css_Var and deliberately claim NO kadence_slot (so writing button-bg never re-skins
-				 * --global-paletteN) and NO theme.json preset -- the design system does not project tokens into
-				 * theme.json, so it never reaches core blocks, other blocks, or global styles. Mapping the brand
-				 * primitives onto the global palette is separate.
+				 * Css_Var and deliberately claim NO kadence_slot, so writing button-bg never re-skins
+				 * --global-paletteN. Mapping the brand primitives onto the global palette is separate.
 				 */
 				'id'          => 'semantic.color.button-bg',
 				'type'        => 'color',

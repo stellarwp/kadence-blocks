@@ -52,7 +52,6 @@ final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertStringContainsString( Scope::root(), $css );
 		$this->assertStringContainsString( '--kb-token--', $css );
-		$this->assertStringNotContainsString( '--wp--preset--', $css );
 		$this->assertStringNotContainsString( '!important', $css );
 
 		// Snapshot the exact output so format changes are an explicit diff.

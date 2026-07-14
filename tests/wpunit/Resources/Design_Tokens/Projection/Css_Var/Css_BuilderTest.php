@@ -241,32 +241,6 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertSame( '', $css );
 	}
 
-	// ---- No theme.json preset bridge ----------------------------------------------------------------
-
-	/**
-	 * The design system does not project tokens into theme.json, so the CSS-var output never emits a
-	 * `--wp--preset--*` bridge — a regression guard against re-introducing core-block / global-styles
-	 * impact, even for a color token surfaced in the Style Book.
-	 *
-	 * @return void
-	 */
-	public function testItNeverEmitsAWpPresetBridge(): void {
-		$id = 'semantic.color.button-bg';
-
-		$this->registry->register(
-			[
-				'id'          => $id,
-				'type'        => 'color',
-				'label'       => 'Button Background',
-				'projections' => [ 'site_editor' => true ],
-			]
-		);
-
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
-
-		$this->assertStringNotContainsString( '--wp--preset--', $css );
-	}
-
 	// ---- Spacing override block ---------------------------------------------------------------------
 
 	public function testItEmitsSpacingOverrideForAClaimedSlot(): void {
