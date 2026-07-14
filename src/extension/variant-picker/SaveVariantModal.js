@@ -1,18 +1,20 @@
 /**
  * "Create new variant" / "Edit variant" modal.
  *
- * Create mode clones an existing variant's surface for a block: the user picks a variant to clone from,
- * edits the value of each bound property, names the variant, and saves a new one. Edit mode pre-fills from an
- * existing user variant and saves back under the same slug. Either way the write goes through the variants
- * REST endpoint (which aliases matching literals, validates the full surface, and rejects dangling aliases),
- * then the in-memory catalog is updated and the variant selected on the block. It seeds from an existing
- * variant's values, so it needs no per-block knowledge and works for any block that registers a variant set.
+ * Create mode captures the full bound surface for a block: the modal shows every bound property, seeded from
+ * the currently-selected variant's resolved token values (a complete snapshot, not a delta from a previous
+ * selection); the user edits any value, names the variant, and saves the whole surface as the new variant's
+ * tokens. Edit mode pre-fills from an existing user variant and saves back under the same slug. Either way
+ * the write goes through the variants REST endpoint (which aliases matching literals and rejects dangling
+ * aliases; a subset of the surface is accepted, an unbound property is not), then the in-memory catalog is
+ * updated and the variant selected on the block. It seeds from an existing variant's values, so it needs no
+ * per-block knowledge and works for any block that registers a variant set.
  */
 import { Modal, TextControl, SelectControl, Button, Notice, Spinner } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { blockProperties, appendVariant, blockSetGroup } from './index';
+import { blockProperties, appendVariant } from './index';
 import { getBlockVariants, createVariant } from '../variants/api/client';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { deriveSlug, dedupeSlug } from '../variants/slug';
@@ -59,7 +61,6 @@ function seedValues(properties, tokens) {
  */
 export function SaveVariantModal({ blockName, set, source, editSlug = '', onClose, onSaved }) {
 	const properties = blockProperties(blockName, set);
-	const variantSet = blockSetGroup(blockName, set);
 	const isEdit = editSlug !== '';
 
 	const [status, setStatus] = useState('loading');
@@ -74,7 +75,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 	useEffect(() => {
 		let cancelled = false;
 
-		getBlockVariants(blockName, set, variantSet)
+		getBlockVariants(blockName, set)
 			.then((payload) => {
 				if (cancelled) {
 					return;
@@ -134,7 +135,7 @@ export function SaveVariantModal({ blockName, set, source, editSlug = '', onClos
 		setStatus('saving');
 		setError('');
 
-		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set, variantSet)
+		createVariant(blockName, { variant: slug, label: label.trim(), tokens: values }, set)
 			.then(() => {
 				appendVariant(blockName, set, { slug, label: label.trim(), userCreated: true });
 				refreshProjectedCss();
