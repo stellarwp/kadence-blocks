@@ -15,6 +15,9 @@ const actions = {
 	 * Set the highlight-edits flag.
 	 *
 	 * @param {boolean} on Whether to highlight overridden controls.
+	 *
+	 * @since TBD
+	 *
 	 * @return {Object} The action.
 	 */
 	setHighlightEdits(on) {
@@ -27,6 +30,9 @@ const selectors = {
 	 * Whether highlight-edits is on.
 	 *
 	 * @param {Object} state The store state.
+	 *
+	 * @since TBD
+	 *
 	 * @return {boolean} True when overridden controls should be highlighted.
 	 */
 	isHighlightingEdits(state) {
@@ -39,6 +45,9 @@ const selectors = {
  *
  * @param {Object} state  The current state.
  * @param {Object} action The dispatched action.
+ *
+ * @since TBD
+ *
  * @return {Object} The next state.
  */
 function reducer(state = DEFAULT_STATE, action) {

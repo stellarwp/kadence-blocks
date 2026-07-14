@@ -28,6 +28,9 @@ export { TokenControlRow } from './components/TokenControlRow';
  *
  * @param {string} kind The property kind.
  * @param {string} attr The primary attribute name.
+ *
+ * @since TBD
+ *
  * @return {string} The unit attribute name, or ''.
  */
 function unitAttrFor(kind, attr) {
@@ -54,6 +57,9 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
+ *
+ * @since TBD
+ *
  * @return {Object} attrName => { property, token, kind, variantValue, bound, overridden }.
  */
 export function useVariantBinding(blockName, attributes) {
@@ -141,6 +147,9 @@ export function resetAttrPatch(attr, kind) {
  * @param {string}   attr          The primary attribute name.
  * @param {Function} setAttributes The block's setAttributes.
  * @param {string}   kind          The property kind, so a dimension also clears its companions.
+ *
+ * @since TBD
+ *
  * @return {void}
  */
 export function resetAttr(attr, setAttributes, kind) {

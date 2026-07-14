@@ -20,6 +20,8 @@ import { get } from 'lodash';
  * `SinglePopColorControl`, the swatch component behind `PopColorControl`). Empty when the params are
  * absent, so an unresolved slug simply compares as itself — the degrade-safe fallback.
  *
+ * @since TBD
+ *
  * @return {Object} slug ('paletteN') => color literal.
  */
 function paletteMap() {
@@ -41,6 +43,9 @@ function paletteMap() {
  * produces a false match, at worst a false override.
  *
  * @param {*} value The stored color value (slug or literal), possibly empty.
+ *
+ * @since TBD
+ *
  * @return {string} The comparable literal, or '' when empty.
  */
 export function normalizeColor(value) {
@@ -60,6 +65,9 @@ export function normalizeColor(value) {
  * override yields one entry per touched side — the shape a side-aware compare needs.
  *
  * @param {*} value The stored dimension value (number, string, or 4-side array).
+ *
+ * @since TBD
+ *
  * @return {string[]} The populated sides as trimmed strings; empty array when nothing is set.
  */
 function dimensionSides(value) {
@@ -77,6 +85,9 @@ function dimensionSides(value) {
  *
  * @param {*}      value The stored dimension value (number, string, or 4-side array).
  * @param {string} unit  The companion unit attribute (e.g. `borderRadiusUnit`).
+ *
+ * @since TBD
+ *
  * @return {{ value: string, unit: string }} The canonical dimension, `value: ''` when empty.
  */
 export function normalizeDimension(value, unit) {
@@ -93,6 +104,9 @@ export function normalizeDimension(value, unit) {
  * Normalize a text attribute for compare.
  *
  * @param {*} value The stored value.
+ *
+ * @since TBD
+ *
  * @return {string} The trimmed string, or '' when empty.
  */
 export function normalizeText(value) {
@@ -109,6 +123,9 @@ export function normalizeText(value) {
  *
  * @param {string} kind  The property kind ('color' | 'dimension' | 'text').
  * @param {*}      value The stored primary attribute value.
+ *
+ * @since TBD
+ *
  * @return {boolean} True when the value is unset/empty.
  */
 export function isEmptyValue(kind, value) {
@@ -124,6 +141,9 @@ export function isEmptyValue(kind, value) {
  * against the control's separate value/unit attributes.
  *
  * @param {string} literal The resolved dimension literal.
+ *
+ * @since TBD
+ *
  * @return {{ value: string, unit: string }} The parsed value and unit.
  */
 function parseDimensionLiteral(literal) {
@@ -145,6 +165,9 @@ function parseDimensionLiteral(literal) {
  * @param {*}      value        The stored primary attribute value.
  * @param {string} unit         The companion unit (dimension only; '' otherwise).
  * @param {string} variantValue The variant's resolved literal for this property.
+ *
+ * @since TBD
+ *
  * @return {boolean} True when the stored value matches the variant value.
  */
 export function matchesVariant(kind, value, unit, variantValue) {

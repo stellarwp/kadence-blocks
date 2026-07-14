@@ -17,6 +17,9 @@ import { TOKEN_INDICATORS_STORE } from '../store';
  * @param {Object}   [props.state] The attribute's binding state from useVariantBinding, or undefined when
  *                                 the control is not mapped for the selected variant.
  * @param {Function} props.onReset Called to clear the control's override back to the variant value.
+ *
+ * @since TBD
+ *
  * @return {Object|null} The indicator element, or null when the control is not bound.
  */
 export function TokenIndicator({ state, onReset }) {
