@@ -15,6 +15,9 @@ import { TokenIndicator } from './TokenIndicator';
  * @param {string}   props.attr    The attribute the control writes (the indicator's key).
  * @param {Object}   props.binding The block's binding map from useVariantBinding.
  * @param {Function} props.onReset Called with `attr` to reset that control's override.
+ *
+ * @since TBD
+ *
  * @return {Object} The label node.
  */
 export function TokenLabel({ text, attr, binding, onReset }) {

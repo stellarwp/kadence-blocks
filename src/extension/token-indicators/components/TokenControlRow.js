@@ -17,6 +17,9 @@ import { TokenIndicator } from './TokenIndicator';
  * @param {Object}   props.binding   The block's binding map from useVariantBinding.
  * @param {Function} props.onReset   Called with `attr` to reset that control's override.
  * @param {Object}   props.children  The wrapped control element, rendered untouched.
+ *
+ * @since TBD
+ *
  * @return {Object} The wrapped control with its adjacent indicator.
  */
 export function TokenControlRow({ heading, attr, binding, onReset, children }) {
