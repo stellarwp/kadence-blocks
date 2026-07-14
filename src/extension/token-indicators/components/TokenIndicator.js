@@ -54,7 +54,11 @@ export function TokenIndicator({ state, onReset }) {
 	return (
 		<span className={className}>
 			<Tooltip text={__('Overrides the selected design variant', 'kadence-blocks')}>
-				<span className="kb-token-indicator__icon-wrap" role="img" aria-hidden="true">
+				<span
+					className="kb-token-indicator__icon-wrap"
+					role="img"
+					aria-label={__('Overridden — differs from the selected variant', 'kadence-blocks')}
+				>
 					<Icon icon={designSystemIcon} size={14} />
 					<span className="kb-token-indicator__dot" />
 				</span>
