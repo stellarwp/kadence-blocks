@@ -4,6 +4,9 @@
  * wrapped control is passed through as children with all its own props intact; only an adjacent indicator
  * (and an optional heading) is added. Renders just the children when the attribute is not mapped for the
  * selected variant, so an unmapped control looks identical to today.
+ *
+ * Per the Figma reference, the indicator sits right-aligned at the end of the control's row (the heading
+ * on the left, the indicator on the right) — see `.kb-token-control-row__header` in `token-indicators.scss`.
  */
 
 import { TokenIndicator } from './TokenIndicator';

@@ -1,13 +1,18 @@
 /**
  * The per-control design-system indicator: a design-system icon when the control is bound to the active
- * variant, an override dot plus a reset affordance when the control has diverged from it, and nothing when
- * the control is not mapped for the selected variant. Purely additive — it renders inside a control's
- * label node and never touches the control's value.
+ * variant, that same icon with a small override dot plus an undo-arrow reset button when the control has
+ * diverged from it, and nothing when the control is not mapped for the selected variant. Purely additive —
+ * it renders inside a control's label node (or a sibling row) and never touches the control's value.
+ *
+ * The bound icon reuses `@wordpress/icons`' `styles` glyph — the same mark the block editor uses for
+ * Global Styles — as a stand-in design-system/token mark. Swap for the exact Figma glyph (node
+ * 160-12291) once design provides that asset as an SVG.
  */
 
-import { Button, Tooltip } from '@wordpress/components';
+import { Button, Icon, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+import { styles as designSystemIcon, undo as undoIcon } from '@wordpress/icons';
 import { TOKEN_INDICATORS_STORE } from '../store';
 
 /**
@@ -36,7 +41,9 @@ export function TokenIndicator({ state, onReset }) {
 					className="kb-token-indicator kb-token-indicator--bound"
 					role="img"
 					aria-label={__('Bound to the selected design variant', 'kadence-blocks')}
-				/>
+				>
+					<Icon icon={designSystemIcon} size={14} />
+				</span>
 			</Tooltip>
 		);
 	}
@@ -47,18 +54,21 @@ export function TokenIndicator({ state, onReset }) {
 	return (
 		<span className={className}>
 			<Tooltip text={__('Overrides the selected design variant', 'kadence-blocks')}>
-				<span className="kb-token-indicator__dot" aria-hidden="true" />
+				<span className="kb-token-indicator__icon-wrap" role="img" aria-hidden="true">
+					<Icon icon={designSystemIcon} size={14} />
+					<span className="kb-token-indicator__dot" />
+				</span>
 			</Tooltip>
 			<Button
 				className="kb-token-indicator__reset"
+				icon={undoIcon}
+				iconSize={14}
 				variant="tertiary"
 				isSmall
 				onClick={onReset}
 				label={__('Reset to variant value', 'kadence-blocks')}
 				showTooltip
-			>
-				{__('Reset', 'kadence-blocks')}
-			</Button>
+			/>
 		</span>
 	);
 }

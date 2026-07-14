@@ -4,44 +4,57 @@
  * Styling for the bound / overridden indicator that mounts beside (or inside the label of) a
  * design-token-mapped control. Matches the block editor's existing control-label type scale so the
  * indicator reads as part of the control, not a new UI.
+ *
+ * Per the Figma reference, a bound control shows a small design-system icon right-aligned at the end of
+ * the control's row; an overridden control keeps that icon but adds a small red dot plus an undo-arrow
+ * reset button.
  */
 
 .kb-token-indicator {
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	gap: 2px;
 	margin-left: 4px;
 	vertical-align: middle;
 }
 
 .kb-token-indicator--bound {
-	display: inline-block;
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: #007cba;
+	display: inline-flex;
+	align-items: center;
+	color: #6647c1;
+}
+
+.kb-token-indicator__icon-wrap {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	color: #6647c1;
 }
 
 .kb-token-indicator__dot {
+	position: absolute;
+	top: -2px;
+	right: -2px;
 	display: inline-block;
-	width: 8px;
-	height: 8px;
+	width: 6px;
+	height: 6px;
 	border-radius: 50%;
-	background: #d67635;
+	background: #cc1818;
+	border: 1px solid #fff;
 }
 
 .kb-token-indicator--highlight {
 	.kb-token-indicator__dot {
-		box-shadow: 0 0 0 2px rgba(214, 118, 53, 0.35);
+		box-shadow: 0 0 0 2px rgba(204, 24, 24, 0.35);
 	}
 }
 
 .kb-token-indicator__reset {
-	height: auto;
+	height: 20px;
 	min-height: 0;
-	padding: 0 4px;
-	font-size: 11px;
-	line-height: 1.4;
+	width: 20px;
+	padding: 0;
+	color: #cc1818;
 }
 
 .kb-token-label {
@@ -57,6 +70,7 @@
 	.kb-token-control-row__header {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 4px;
 		margin-bottom: 4px;
 	}
@@ -66,5 +80,9 @@
 		font-weight: 500;
 		text-transform: uppercase;
 		color: #1e1e1e;
+	}
+
+	.kb-token-indicator {
+		margin-left: 0;
 	}
 }
