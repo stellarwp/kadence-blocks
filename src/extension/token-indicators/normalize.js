@@ -54,26 +54,39 @@ export function normalizeColor(value) {
 }
 
 /**
+ * The populated sides of a stored dimension value, each trimmed to a string. A measurement control writes
+ * a 4-side array (`[top, right, bottom, left]`) where an untouched side is `''`; a scalar value is a
+ * single side. Empty/undefined sides are dropped, so an all-empty value yields `[]` and a per-corner
+ * override yields one entry per touched side — the shape a side-aware compare needs.
+ *
+ * @param {*} value The stored dimension value (number, string, or 4-side array).
+ * @return {string[]} The populated sides as trimmed strings; empty array when nothing is set.
+ */
+function dimensionSides(value) {
+	const raw = Array.isArray(value) ? value : [value];
+
+	return raw.filter((side) => side !== '' && side !== undefined && side !== null).map((side) => String(side).trim());
+}
+
+/**
  * Normalize a dimension attribute to `{ value, unit }`. A measurement control writes a 4-side array
- * (`[top, right, bottom, left]`); a uniform value is taken from the first defined side. An empty value
- * yields an empty marker so "no override" is detectable.
+ * (`[top, right, bottom, left]`); the representative value is the first populated side. An empty value
+ * yields an empty marker so "no override" is detectable. This is the scalar view used for empty
+ * detection and the single-value path; the bound-vs-overridden compare uses the side-aware `matchesVariant`
+ * so a per-corner override is not masked by a matching first side.
  *
  * @param {*}      value The stored dimension value (number, string, or 4-side array).
  * @param {string} unit  The companion unit attribute (e.g. `borderRadiusUnit`).
  * @return {{ value: string, unit: string }} The canonical dimension, `value: ''` when empty.
  */
 export function normalizeDimension(value, unit) {
-	let scalar = value;
+	const sides = dimensionSides(value);
 
-	if (Array.isArray(value)) {
-		scalar = value.find((side) => side !== '' && side !== undefined && side !== null);
-	}
-
-	if (scalar === undefined || scalar === null || scalar === '') {
+	if (!sides.length) {
 		return { value: '', unit: '' };
 	}
 
-	return { value: String(scalar).trim(), unit: String(unit || '').trim() };
+	return { value: sides[0], unit: String(unit || '').trim() };
 }
 
 /**
@@ -136,10 +149,20 @@ function parseDimensionLiteral(literal) {
  */
 export function matchesVariant(kind, value, unit, variantValue) {
 	if (kind === 'dimension') {
-		const stored = normalizeDimension(value, unit);
+		const sides = dimensionSides(value);
+		const storedUnit = String(unit || '').trim();
 		const variant = parseDimensionLiteral(variantValue);
 
-		return stored.value === variant.value && (stored.unit === variant.unit || variant.unit === '');
+		if (!sides.length) {
+			return false;
+		}
+
+		const unitMatches = variant.unit === '' || storedUnit === variant.unit;
+
+		// Side-aware: a stored dimension matches only when EVERY populated side equals the variant value.
+		// A per-corner override (e.g. `['8','8','8','4']` vs `8px`) leaves one side differing and so reads
+		// as overridden, not still-bound.
+		return unitMatches && sides.every((side) => side === variant.value);
 	}
 
 	if (kind === 'color') {
