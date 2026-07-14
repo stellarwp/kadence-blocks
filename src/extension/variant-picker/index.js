@@ -95,6 +95,9 @@ export function blockProperties(name, set) {
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active set.
+ *
+ * @since TBD
+ *
  * @return {Object} The per-variant value map.
  */
 export function blockVariantValues(name, set) {
