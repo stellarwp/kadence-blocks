@@ -211,7 +211,6 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 					blockName={blockName}
 					set={tokenSet}
 					source={selected}
-					editSlug=""
 					onClose={() => setSaving(false)}
 					onSaved={(slug) => selectVariant(slug)}
 				/>

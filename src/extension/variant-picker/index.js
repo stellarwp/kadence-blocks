@@ -197,7 +197,7 @@ export function VariantPicker({ name, value, onChange, set, label, className }) 
 
 	return (
 		<KadenceRadioButtons
-			label={label || blockVariantLabel(name, set) || __('Variant', 'kadence-blocks')}
+			label={label || blockVariantLabel(name, set) || __('Preset', 'kadence-blocks')}
 			className={className || 'kb-variant-picker'}
 			value={value || ''}
 			options={options}

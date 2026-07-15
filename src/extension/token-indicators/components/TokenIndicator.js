@@ -31,11 +31,11 @@ export function TokenIndicator({ state, onReset }) {
 
 	if (!state.overridden) {
 		return (
-			<Tooltip text={__('Bound to the selected design variant', 'kadence-blocks')}>
+			<Tooltip text={__('Bound to the selected design preset', 'kadence-blocks')}>
 				<span
 					className="kb-token-indicator kb-token-indicator--bound"
 					role="img"
-					aria-label={__('Bound to the selected design variant', 'kadence-blocks')}
+					aria-label={__('Bound to the selected design preset', 'kadence-blocks')}
 				/>
 			</Tooltip>
 		);
@@ -46,7 +46,7 @@ export function TokenIndicator({ state, onReset }) {
 
 	return (
 		<span className={className}>
-			<Tooltip text={__('Overrides the selected design variant', 'kadence-blocks')}>
+			<Tooltip text={__('Overrides the selected design preset', 'kadence-blocks')}>
 				<span className="kb-token-indicator__dot" aria-hidden="true" />
 			</Tooltip>
 			<Button
@@ -54,7 +54,7 @@ export function TokenIndicator({ state, onReset }) {
 				variant="tertiary"
 				isSmall
 				onClick={onReset}
-				label={__('Reset to variant value', 'kadence-blocks')}
+				label={__('Reset to preset value', 'kadence-blocks')}
 				showTooltip
 			>
 				{__('Reset', 'kadence-blocks')}

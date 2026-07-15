@@ -93,7 +93,7 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 				setBusy(false);
 			})
 			.catch((caught) => {
-				setError(caught?.message || __('Could not delete the variant.', 'kadence-blocks'));
+				setError(caught?.message || __('Could not delete the preset.', 'kadence-blocks'));
 				setBusy(false);
 			});
 	};
@@ -107,26 +107,21 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 			)}
 
 			<Button variant="secondary" onClick={() => setMode('create')}>
-				{__('Create new variant', 'kadence-blocks')}
+				{__('Save as a new preset', 'kadence-blocks')}
 			</Button>
 
 			{canManage && !confirming && (
-				<>
-					<Button variant="tertiary" onClick={() => setMode('edit')}>
-						{__('Edit variant', 'kadence-blocks')}
-					</Button>
-					<Button variant="tertiary" isDestructive onClick={() => setConfirming(true)}>
-						{__('Delete variant', 'kadence-blocks')}
-					</Button>
-				</>
+				<Button variant="tertiary" isDestructive onClick={() => setConfirming(true)}>
+					{__('Delete preset', 'kadence-blocks')}
+				</Button>
 			)}
 
 			{canManage && confirming && (
 				<>
 					<p>
 						{sprintf(
-							/* translators: %s: variant slug. */
-							__('Delete the "%s" variant? This cannot be undone.', 'kadence-blocks'),
+							/* translators: %s: preset slug. */
+							__('Delete the "%s" preset? This cannot be undone.', 'kadence-blocks'),
 							selected
 						)}
 					</p>
@@ -141,13 +136,13 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 
 			<ToggleControl
 				label={__('Highlight edits', 'kadence-blocks')}
-				help={__('Emphasize controls that override the selected variant.', 'kadence-blocks')}
+				help={__('Emphasize controls that override the selected preset.', 'kadence-blocks')}
 				checked={highlighting}
 				onChange={(on) => setHighlightEdits(on)}
 			/>
 
 			<Button variant="tertiary" onClick={onResetAll}>
-				{__('Reset all to variant', 'kadence-blocks')}
+				{__('Reset all to preset', 'kadence-blocks')}
 			</Button>
 
 			{mode !== 'none' && (
@@ -155,7 +150,6 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 					blockName={blockName}
 					set={set}
 					source={selected}
-					editSlug={mode === 'edit' ? selected : ''}
 					onClose={() => setMode('none')}
 					onSaved={(slug) => onSelect(slug)}
 				/>
