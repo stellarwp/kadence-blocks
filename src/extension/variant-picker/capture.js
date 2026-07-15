@@ -24,6 +24,8 @@ import { normalizeColor, normalizeDimension, normalizeText, isEmptyValue } from 
  */
 function attrToLiteral(kind, value, unit) {
 	if (kind === 'dimension') {
+		// A preset token is a single scalar, so a per-corner override (e.g. `['8','8','8','4']`) narrows to
+		// its first populated side — matching how the indicator's bound/overridden compare reads a dimension.
 		const dimension = normalizeDimension(value, unit);
 
 		return dimension.value === '' ? '' : `${dimension.value}${dimension.unit}`;
@@ -59,6 +61,8 @@ export function capturedTokens(blockName, set, attributes) {
 		const attr = property.control_attr;
 		const raw = attr ? get(attributes, attr, '') : '';
 		const unit = property.kind === 'dimension' && attr ? get(attributes, `${attr}Unit`, '') : '';
+		// "Edited" here is simply "the control carries a value" — we snapshot the current visual state, so a
+		// value that happens to equal the preset is captured all the same (no differs-from-preset compare).
 		const edited = attr && !isEmptyValue(property.kind, raw);
 
 		tokens[property.key] = edited ? attrToLiteral(property.kind, raw, unit) : get(presetValues, property.key, '');
