@@ -187,14 +187,15 @@ final class Token_Resolver {
 		$by_var           = [];
 		$by_var_projected = [];
 		$by_id_target     = [];
+		$by_id_composite  = [];
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $css_namespace );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_id_composite, $css_namespace );
 			}
 		}
 
-		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target, $by_id_composite );
 	}
 
 	/**
@@ -208,12 +209,13 @@ final class Token_Resolver {
 	 * @param array<string,string> $by_id            By-reference id => literal CSS value map.
 	 * @param array<string,string> $by_var           By-reference css-var => literal CSS value map.
 	 * @param array<string,string> $by_var_projected By-reference css-var => var()-preserving CSS value map.
-	 * @param array<string,string> $by_id_target     By-reference id => target id map (whole-$value aliases only).
-	 * @param string               $css_namespace        Css-var namespace to apply to projected names ('' for canonical).
+	 * @param array<string,string>              $by_id_target     By-reference id => target id map (whole-$value aliases only).
+	 * @param array<string,array<string,mixed>> $by_id_composite  By-reference id => resolved composite sub-field map.
+	 * @param string                            $css_namespace    Css-var namespace to apply to projected names ('' for canonical).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, string $css_namespace = '' ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, array &$by_id_composite, string $css_namespace = '' ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -233,6 +235,12 @@ final class Token_Resolver {
 
 				$by_id[ $path ] = $css;
 				$by_var[ $var ] = $css;
+
+				// A composite token also carries its resolved sub-field map, for consumers that need the
+				// individual properties (e.g. a per-block adapter) rather than the rendered shorthand.
+				if ( Token_Type::is_composite( $type ) && is_array( $value ) ) {
+					$by_id_composite[ $path ] = $value;
+				}
 
 				if ( is_string( $raw ) && Alias::is_alias( $raw ) ) {
 					// Whole-$value alias: the token's variable points straight at its immediate
@@ -254,7 +262,7 @@ final class Token_Resolver {
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $css_namespace );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_id_composite, $css_namespace );
 		}
 	}
 

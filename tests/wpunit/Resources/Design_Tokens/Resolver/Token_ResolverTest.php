@@ -247,6 +247,46 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * composite() exposes a composite token's resolved sub-field map with aliases flattened field by field
+	 * — a typography token whose fontFamily aliases a primitive resolves to that primitive's family list.
+	 *
+	 * @return void
+	 */
+	public function testCompositeExposesTheResolvedSubFieldMapWithAliasesFlattened(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'fontFamily' => [
+						'sans' => [
+							'$type'  => 'fontFamily',
+							'$value' => [ 'Inter', 'system-ui', 'sans-serif' ],
+						],
+					],
+				],
+				'semantic'   => [
+					'typography' => [
+						'control' => [
+							'$type'  => 'typography',
+							'$value' => [
+								'fontFamily' => '{primitive.fontFamily.sans}',
+								'fontWeight' => 400,
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->assertSame(
+			[
+				'fontFamily' => [ 'Inter', 'system-ui', 'sans-serif' ],
+				'fontWeight' => 400,
+			],
+			$resolver->resolve()->composite( 'semantic.typography.control' )
+		);
+	}
+
+	/**
 	 * A baseline alias overridden to a literal is "explicitly set": its effective $value is no longer an
 	 * alias, so it exposes no target and emits the literal — the indirection only applies when unset.
 	 *

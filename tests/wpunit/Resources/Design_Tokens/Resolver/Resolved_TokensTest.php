@@ -78,4 +78,25 @@ final class Resolved_TokensTest extends TestCase {
 
 		$this->assertNull( $resolved->target( 'primitive.color.brand.primary' ) );
 	}
+
+	/**
+	 * composite() returns the resolved sub-field map for a composite token and null for a token absent
+	 * from that map (a scalar token, or an unknown id).
+	 *
+	 * @return void
+	 */
+	public function testCompositeReturnsTheSubFieldMapOrNull(): void {
+		$bundle   = [ 'fontFamily' => [ 'Inter', 'sans-serif' ], 'fontWeight' => 400 ];
+		$resolved = new Resolved_Tokens(
+			[ 'semantic.typography.control' => '', 'semantic.color.text' => '#111' ],
+			[],
+			[],
+			[],
+			[ 'semantic.typography.control' => $bundle ]
+		);
+
+		$this->assertSame( $bundle, $resolved->composite( 'semantic.typography.control' ) );
+		$this->assertNull( $resolved->composite( 'semantic.color.text' ) );
+		$this->assertNull( $resolved->composite( 'nope.not.here' ) );
+	}
 }
