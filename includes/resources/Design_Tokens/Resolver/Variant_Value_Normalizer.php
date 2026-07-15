@@ -109,7 +109,17 @@ final class Variant_Value_Normalizer {
 				continue;
 			}
 
-			$index[ $this->normalize_value( $value ) ][] = (string) $id;
+			$normalized = $this->normalize_value( $value );
+
+			// An empty resolved value is not a useful match target: a semantic that renders to nothing
+			// (e.g. a typography token carrying only a family, whose `font` shorthand needs a size and so
+			// renders empty) would otherwise let an invalid empty literal alias onto it. Skipping empties
+			// keeps an empty captured value a literal, which the DTCG grammar then rejects as it should.
+			if ( $normalized === '' ) {
+				continue;
+			}
+
+			$index[ $normalized ][] = (string) $id;
 		}
 
 		return $index;

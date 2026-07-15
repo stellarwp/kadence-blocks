@@ -105,4 +105,17 @@ final class Variant_Value_NormalizerTest extends TestCase {
 			'The hover property should prefer a hover-role semantic.'
 		);
 	}
+
+	/**
+	 * An empty captured literal is never aliased onto a semantic that resolves to an empty value (such as the
+	 * family-only semantic.typography.control, whose `font` shorthand renders empty). It stays an empty
+	 * literal so the DTCG grammar rejects it downstream.
+	 *
+	 * @return void
+	 */
+	public function testItDoesNotAliasAnEmptyLiteralToAnEmptyResolvingSemantic(): void {
+		$result = $this->normalizer->normalize( [ 'button-bg' => '' ], self::SET );
+
+		$this->assertSame( '', $result['button-bg'] );
+	}
 }
