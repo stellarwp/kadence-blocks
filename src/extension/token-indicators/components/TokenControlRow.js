@@ -3,9 +3,12 @@
  * rendered as visible content (e.g. `PopColorControl`, which forwards `label` to a Button tooltip). The
  * wrapped control is passed through as children with all its own props intact; only an adjacent indicator
  * (and an optional heading) is added. Renders just the children when the attribute is not mapped for the
- * selected variant, so an unmapped control looks identical to today.
+ * selected preset, so an unmapped control looks identical to today. When "highlight edits" is on and this
+ * control overrides its preset, the whole row is tinted a warning color so the edit stands out.
  */
 
+import { useSelect } from '@wordpress/data';
+import { TOKEN_INDICATORS_STORE } from '../store';
 import { TokenIndicator } from './TokenIndicator';
 
 /**
@@ -24,9 +27,12 @@ import { TokenIndicator } from './TokenIndicator';
  */
 export function TokenControlRow({ heading, attr, binding, onReset, children }) {
 	const state = binding ? binding[attr] : undefined;
+	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
+	const highlight = highlighting && !!state?.overridden;
+	const className = 'kb-token-control-row' + (highlight ? ' kb-token-control-row--highlight' : '');
 
 	return (
-		<div className="kb-token-control-row">
+		<div className={className}>
 			<div className="kb-token-control-row__header">
 				{heading ? <span className="kb-token-control-row__heading">{heading}</span> : null}
 				<TokenIndicator state={state} onReset={() => onReset(attr)} />

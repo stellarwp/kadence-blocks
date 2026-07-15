@@ -899,6 +899,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btncolorhover-${colorResetNonce}`}
+																	hideClear
 																	label={__('Color Hover', 'kadence-blocks')}
 																	value={colorHover ? colorHover : ''}
 																	default={''}
@@ -935,6 +936,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btnbghover-${colorResetNonce}`}
+																	hideClear
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={backgroundHover ? backgroundHover : ''}
 																	default={''}
@@ -1112,6 +1114,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btncolor-${colorResetNonce}`}
+																	hideClear
 																	label={__('Color', 'kadence-blocks')}
 																	value={color ? color : ''}
 																	default={''}
@@ -1146,6 +1149,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btnbg-${colorResetNonce}`}
+																	hideClear
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={background ? background : ''}
 																	default={''}
@@ -1174,7 +1178,6 @@ export default function KadenceButtonEdit(props) {
 																	text={__('Border Radius', 'kadence-blocks')}
 																	attr="borderRadius"
 																	binding={tokenBinding}
-																	onReset={resetToken}
 																/>
 															}
 															value={borderRadius}

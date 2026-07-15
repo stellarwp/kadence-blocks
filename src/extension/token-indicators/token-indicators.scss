@@ -1,47 +1,40 @@
 /**
  * Design-system control indicators.
  *
- * Styling for the bound / overridden indicator that mounts beside (or inside the label of) a
- * design-token-mapped control. Matches the block editor's existing control-label type scale so the
- * indicator reads as part of the control, not a new UI.
+ * Styling for the override indicator that mounts beside (or inside the label of) a design-token-mapped
+ * control. Matches the block editor's existing control-label type scale so the indicator reads as part of
+ * the control, not a new UI.
  */
 
 .kb-token-indicator {
 	display: inline-flex;
+	flex: 1 1 auto;
 	align-items: center;
 	gap: 4px;
-	margin-left: 4px;
+	min-width: 0;
 	vertical-align: middle;
 }
 
-.kb-token-indicator--bound {
-	display: inline-block;
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: #007cba;
-}
-
+// The "overridden" badge: a 4x4 red dot, matching the variant button's edit dot.
 .kb-token-indicator__dot {
-	display: inline-block;
-	width: 8px;
-	height: 8px;
+	align-self: flex-start;
+	width: 4px;
+	height: 4px;
 	border-radius: 50%;
-	background: #d67635;
+	background: #cc1818;
 }
 
-.kb-token-indicator--highlight {
-	.kb-token-indicator__dot {
-		box-shadow: 0 0 0 2px rgba(214, 118, 53, 0.35);
-	}
-}
-
-.kb-token-indicator__reset {
+// The reset affordance: an icon button pushed to the right edge of the control's header.
+.kb-token-indicator__reset.components-button {
+	margin-left: auto;
+	min-width: 0;
 	height: auto;
-	min-height: 0;
-	padding: 0 4px;
-	font-size: 11px;
-	line-height: 1.4;
+	padding: 0;
+
+	svg {
+		width: 14px;
+		height: 15px;
+	}
 }
 
 .kb-token-label {
@@ -54,10 +47,16 @@
 }
 
 .kb-token-control-row {
+	position: relative;
+
+	&:not(:last-child) {
+		margin-bottom: 16px;
+	}
+
 	.kb-token-control-row__header {
 		display: flex;
 		align-items: center;
-		gap: 4px;
+		gap: 1px;
 		margin-bottom: 4px;
 	}
 
@@ -66,5 +65,18 @@
 		font-weight: 500;
 		text-transform: uppercase;
 		color: #1e1e1e;
+	}
+}
+
+.kb-token-control-row--highlight {
+	&::before {
+		background: rgba(240, 184, 73, 0.25);
+		content: '';
+		height: calc(100% + 16px);
+		left: -16px;
+		position: absolute;
+		top: -8px;
+		width: calc(100% + 32px);
+		z-index: -1;
 	}
 }
