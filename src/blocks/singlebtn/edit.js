@@ -922,7 +922,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={'btncolorhover'}
-																	label={__('Color Hover', 'kadence-blocks')}
+																	swatchLabel={__('Color Hover', 'kadence-blocks')}
 																	value={colorHover ? colorHover : ''}
 																	default={''}
 																	onChange={(value) =>
@@ -958,7 +958,10 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={'btnbghover'}
-																	label={__('Background Color', 'kadence-blocks')}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
 																	value={backgroundHover ? backgroundHover : ''}
 																	default={''}
 																	onChange={(value) =>
@@ -1135,7 +1138,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={'btncolor'}
-																	label={__('Color', 'kadence-blocks')}
+																	swatchLabel={__('Color', 'kadence-blocks')}
 																	value={color ? color : ''}
 																	default={''}
 																	onChange={(value) =>
@@ -1169,7 +1172,10 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={'btnbg'}
-																	label={__('Background Color', 'kadence-blocks')}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
 																	value={background ? background : ''}
 																	default={''}
 																	onChange={(value) =>
