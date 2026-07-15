@@ -33,6 +33,27 @@
 		white-space: nowrap;
 	}
 
+	.kb-variant-button__edited {
+		color: #949494;
+	}
+
+	.kb-variant-button__icon {
+		position: relative;
+		display: inline-flex;
+		flex: 0 0 auto;
+	}
+
+	// The "has edits" badge: a 5x5 dot pinned to the top-right corner of the icon.
+	.kb-variant-button__dot {
+		position: absolute;
+		top: -5px;
+		right: -2.5px;
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: #cc1818;
+	}
+
 	svg {
 		flex: 0 0 auto;
 		width: 14px;
