@@ -76,31 +76,44 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const edited = Object.values(useVariantBinding(blockName, attributes)).some((entry) => entry.overridden);
 
 	/**
-	 * Select a variant on the block by writing its slug into the kbVariant attribute.
+	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
+	 * carries no leftover edit.
 	 *
-	 * @param {string} slug The variant slug to select.
+	 * @since TBD
+	 *
+	 * @return {Object} The reset patch.
+	 */
+	const resetPatch = () =>
+		mappedAttrsFor(blockName, tokenSet).reduce(
+			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
+			{}
+		);
+
+	/**
+	 * Select a preset and clear any overrides in the same write, so the newly selected preset shows its
+	 * own values with no edits carried over from the previous selection.
+	 *
+	 * @param {string} slug The preset slug to select.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
-	const selectVariant = (slug) => setAttributes({ kbVariant: slug });
+	const selectVariant = (slug) => {
+		setAttributes({ ...resetPatch(), kbVariant: slug });
+		refreshProjectedCss();
+	};
 
 	/**
 	 * Clear every mapped override for the block, so all mapped controls fall back to the selected
-	 * variant's values (served by the existing scoped CSS), then refresh the live preview.
+	 * preset's values (served by the existing scoped CSS), then refresh the live preview.
 	 *
 	 * @since TBD
 	 *
 	 * @return {void}
 	 */
 	const onResetAll = () => {
-		const patch = mappedAttrsFor(blockName, tokenSet).reduce(
-			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
-			{}
-		);
-
-		setAttributes(patch);
+		setAttributes(resetPatch());
 		refreshProjectedCss();
 	};
 
