@@ -130,7 +130,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 					)}
 					renderContent={({ onClose }) => (
 						<>
-							<MenuGroup>
+							<MenuGroup label={__('Presets', 'kadence-blocks')}>
 								{variants.map((variant) => {
 									const isCurrent = variant.slug === currentSlug;
 
@@ -157,6 +157,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 							</MenuGroup>
 							<MenuGroup>
 								<MenuItem
+									className="kb-variant-button__action"
 									role="menuitemcheckbox"
 									aria-checked={highlighting}
 									disabled={!edited}
@@ -168,7 +169,13 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 									{__('Highlight Edits', 'kadence-blocks')}
 								</MenuItem>
 								<MenuItem
+									className="kb-variant-button__action"
 									disabled={!edited}
+									suffix={
+										edited ? (
+											<Icon className="kb-variant-button__reset-suffix" icon={resetIcon} />
+										) : null
+									}
 									onClick={() => {
 										onResetAll();
 										onClose();
@@ -177,13 +184,14 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 									{__('Reset', 'kadence-blocks')}
 								</MenuItem>
 								<MenuItem
+									className="kb-variant-button__action"
 									disabled={!edited || !hasDesignTokensRest()}
 									onClick={() => {
 										setSaving(true);
 										onClose();
 									}}
 								>
-									{__('Save As a New Variant', 'kadence-blocks')}
+									{__('Save As a New Preset', 'kadence-blocks')}
 								</MenuItem>
 							</MenuGroup>
 						</>
@@ -192,7 +200,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 				<Button
 					className="kb-variant-button__reset"
 					icon={resetIcon}
-					label={__('Reset to variant', 'kadence-blocks')}
+					label={__('Reset to preset', 'kadence-blocks')}
 					showTooltip
 					disabled={!edited}
 					onClick={onResetAll}
