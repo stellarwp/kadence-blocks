@@ -180,4 +180,57 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( 't.$value.fontWeight', $errors[0]->path );
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}
+
+	/**
+	 * A typography token carrying only the required fontFamily is valid — the optional text-style fields
+	 * may all be omitted (the shipped semantic.typography.control shape).
+	 *
+	 * @return void
+	 */
+	public function testTypographyAcceptsFontFamilyOnly(): void {
+		$value = [ 'fontFamily' => '{primitive.fontFamily.sans}' ];
+
+		$this->assertSame( [], ( new Typography_Value() )->validate( $value, 't.$value' ) );
+	}
+
+	/**
+	 * A missing fontFamily is reported as a missing required sub-field.
+	 *
+	 * @return void
+	 */
+	public function testTypographyReportsMissingFontFamily(): void {
+		$errors = ( new Typography_Value() )->validate( [ 'fontWeight' => 400 ], 't.$value' );
+
+		$this->assertCount( 1, $errors );
+		$this->assertSame( 't.$value.fontFamily', $errors[0]->path );
+		$this->assertSame( Validation_Error::get_code_composite_field_missing(), $errors[0]->code );
+	}
+
+	/**
+	 * The optional fontStyle/textTransform/letterSpacing fields validate against their kinds when present:
+	 * valid keywords/lengths pass and a bogus fontStyle is rejected.
+	 *
+	 * @return void
+	 */
+	public function testTypographyValidatesOptionalTextStyleFields(): void {
+		$valid = [
+			'fontFamily'    => '{primitive.fontFamily.sans}',
+			'fontStyle'     => 'italic',
+			'textTransform' => 'uppercase',
+			'letterSpacing' => '-0.01em',
+		];
+		$this->assertSame( [], ( new Typography_Value() )->validate( $valid, 't.$value' ) );
+
+		$errors = ( new Typography_Value() )->validate(
+			[
+				'fontFamily' => '{primitive.fontFamily.sans}',
+				'fontStyle'  => 'slanted',
+			],
+			't.$value'
+		);
+
+		$this->assertCount( 1, $errors );
+		$this->assertSame( 't.$value.fontStyle', $errors[0]->path );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+	}
 }

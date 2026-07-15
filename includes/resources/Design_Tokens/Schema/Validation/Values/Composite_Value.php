@@ -10,10 +10,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 
 /**
  * Shared walk for a composite $value (shadow, typography): an alias for the whole value, or an object
- * whose every declared sub-field validates "alias OR literal-of-kind" via Kind.
+ * whose required sub-fields are all present and every declared sub-field validates "alias OR
+ * literal-of-kind" via Kind. Optional sub-fields (Token_Type::optional_composite_fields()) may be
+ * omitted, but validate against their kind when present.
  *
- * The field => kind map comes from Token_Type::composite_fields(), so adding or reshaping a composite
- * is a data edit there, not a change here. Subclasses only name their $type.
+ * The field => kind maps come from Token_Type::composite_fields() / optional_composite_fields(), so
+ * adding or reshaping a composite is a data edit there, not a change here. Subclasses only name their
+ * $type.
  *
  * @since TBD
  */
@@ -65,11 +68,13 @@ abstract class Composite_Value implements Value_Validator {
 			];
 		}
 
-		$fields = Token_Type::composite_fields( $this->type() );
-		$errors = [];
+		$required = Token_Type::composite_fields( $this->type() );
+		$optional = Token_Type::optional_composite_fields( $this->type() );
+		$known    = $required + $optional;
+		$errors   = [];
 
-		// Every declared sub-field must be present and valid for its kind.
-		foreach ( $fields as $field => $kind ) {
+		// Every required sub-field must be present and valid for its kind.
+		foreach ( $required as $field => $kind ) {
 			if ( ! array_key_exists( $field, $value ) ) {
 				$errors[] = new Validation_Error(
 					$path . '.' . $field,
@@ -83,9 +88,16 @@ abstract class Composite_Value implements Value_Validator {
 			$errors = array_merge( $errors, Kind::validate( $kind, $value[ $field ], $path . '.' . $field ) );
 		}
 
-		// Any sub-field not in the map (and not a "$"-prefixed extension) is unknown.
+		// Optional sub-fields may be omitted, but validate against their kind when present.
+		foreach ( $optional as $field => $kind ) {
+			if ( array_key_exists( $field, $value ) ) {
+				$errors = array_merge( $errors, Kind::validate( $kind, $value[ $field ], $path . '.' . $field ) );
+			}
+		}
+
+		// Any sub-field in neither map (and not a "$"-prefixed extension) is unknown.
 		foreach ( array_keys( $value ) as $field ) {
-			if ( isset( $fields[ $field ] ) || ( is_string( $field ) && strncmp( $field, '$', 1 ) === 0 ) ) {
+			if ( isset( $known[ $field ] ) || ( is_string( $field ) && strncmp( $field, '$', 1 ) === 0 ) ) {
 				continue;
 			}
 

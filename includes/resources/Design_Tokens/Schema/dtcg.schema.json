@@ -262,10 +262,7 @@
                 {
                     "type": "object",
                     "required": [
-                        "fontFamily",
-                        "fontSize",
-                        "fontWeight",
-                        "lineHeight"
+                        "fontFamily"
                     ],
                     "properties": {
                         "fontFamily": {
@@ -315,6 +312,36 @@
                                         "string",
                                         "number"
                                     ]
+                                }
+                            ]
+                        },
+                        "fontStyle": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "textTransform": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "letterSpacing": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/alias"
+                                },
+                                {
+                                    "type": "string"
                                 }
                             ]
                         }

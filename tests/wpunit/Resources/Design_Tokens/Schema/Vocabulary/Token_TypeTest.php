@@ -90,24 +90,45 @@ final class Token_TypeTest extends TestCase {
 	}
 
 	/**
+	 * Typography requires only fontFamily; the other text-style properties are optional.
+	 *
 	 * @return void
 	 */
 	public function testTypographyFieldsMapToTheirKinds(): void {
 		$this->assertSame(
 			[
 				'fontFamily' => 'fontFamily',
-				'fontSize'   => 'dimension',
-				'fontWeight' => 'fontWeight',
-				'lineHeight' => 'lineHeight',
 			],
 			Token_Type::composite_fields( Token_Type::get_type_typography() )
 		);
 	}
 
 	/**
+	 * Typography's optional sub-fields map to their kinds so a token may carry any of them.
+	 *
+	 * @return void
+	 */
+	public function testTypographyOptionalFieldsMapToTheirKinds(): void {
+		$this->assertSame(
+			[
+				'fontSize'      => 'dimension',
+				'fontWeight'    => 'fontWeight',
+				'lineHeight'    => 'lineHeight',
+				'fontStyle'     => 'fontStyle',
+				'textTransform' => 'textTransform',
+				'letterSpacing' => 'dimension',
+			],
+			Token_Type::optional_composite_fields( Token_Type::get_type_typography() )
+		);
+	}
+
+	/**
+	 * A non-composite type has no required and no optional sub-fields.
+	 *
 	 * @return void
 	 */
 	public function testNonCompositeTypesHaveNoFields(): void {
 		$this->assertSame( [], Token_Type::composite_fields( Token_Type::get_type_color() ) );
+		$this->assertSame( [], Token_Type::optional_composite_fields( Token_Type::get_type_color() ) );
 	}
 }

@@ -87,6 +87,10 @@ final class Kind {
 				return Literals::is_font_weight( $value );
 			case Token_Type::get_kind_line_height():
 				return Literals::is_line_height( $value );
+			case Token_Type::get_kind_font_style():
+				return Literals::is_font_style( $value );
+			case Token_Type::get_kind_text_transform():
+				return Literals::is_text_transform( $value );
 			default:
 				return false;
 		}

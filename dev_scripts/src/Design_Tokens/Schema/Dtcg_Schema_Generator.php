@@ -212,7 +212,8 @@ final class Dtcg_Schema_Generator {
 	}
 
 	/**
-	 * The object shape for a composite type: every sub-field required, each "alias OR kind shape".
+	 * The object shape for a composite type: required sub-fields listed in `required`, optional sub-fields
+	 * present in `properties` but not required; each sub-field is "alias OR kind shape".
 	 *
 	 * @since TBD
 	 *
@@ -221,10 +222,11 @@ final class Dtcg_Schema_Generator {
 	 * @return array<string, mixed>
 	 */
 	private function composite_shape( string $type ): array {
-		$fields     = Token_Type::composite_fields( $type );
+		$required   = Token_Type::composite_fields( $type );
+		$optional   = Token_Type::optional_composite_fields( $type );
 		$properties = [];
 
-		foreach ( $fields as $field => $kind ) {
+		foreach ( $required + $optional as $field => $kind ) {
 			$properties[ $field ] = [
 				'anyOf' => [
 					[ '$ref' => '#/definitions/alias' ],
@@ -235,7 +237,7 @@ final class Dtcg_Schema_Generator {
 
 		return [
 			'type'                 => 'object',
-			'required'             => array_keys( $fields ),
+			'required'             => array_keys( $required ),
 			'properties'           => $properties,
 			'additionalProperties' => false,
 		];
