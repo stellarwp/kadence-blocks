@@ -13,10 +13,11 @@
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Icon, check, globe } from '@wordpress/icons';
+import { Icon, check } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { activeSet, blockVariants, blockDefaultVariant } from './index';
+import { variantIcon } from './icons';
 import { SaveVariantModal } from './SaveVariantModal';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
@@ -111,7 +112,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 				renderToggle={({ isOpen, onToggle }) => (
 					<Button
 						className="kb-variant-button"
-						icon={globe}
+						icon={variantIcon}
 						iconPosition="right"
 						aria-expanded={isOpen}
 						onClick={onToggle}
