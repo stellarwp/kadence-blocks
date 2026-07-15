@@ -270,14 +270,6 @@
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
 			},
-			"button-bg": {
-				"$type": "color",
-				"$value": "{primitive.color.brand.button}"
-			},
-			"button-text": {
-				"$type": "color",
-				"$value": "{primitive.color.neutral.0}"
-			},
 			"button-primary-bg": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.button}"

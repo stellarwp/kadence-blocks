@@ -605,7 +605,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$before = $resolver->resolve();
 
-		$this->assertSame( '#3633e1', $before->value( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#3633e1', $before->value( 'semantic.color.button-primary-bg' ) );
 
 		$store->save_document(
 			(string) wp_json_encode(
@@ -626,7 +626,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$after = $resolver->resolve();
 
-		$this->assertSame( '#FF0000', $after->value( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#FF0000', $after->value( 'semantic.color.button-primary-bg' ) );
 	}
 
 	/**
@@ -793,8 +793,8 @@ final class Token_ResolverTest extends TestCase {
 		/** @var Token_Store $store */
 		$store = $this->container->get( Token_Store::class );
 
-		// Empty store: button-bg resolves through the shipped baseline to brand.button (#3633e1).
-		$this->assertSame( '#3633e1', $resolver->resolve()->value( 'semantic.color.button-bg' ) );
+		// Empty store: button-primary-bg resolves through the shipped baseline to brand.button (#3633e1).
+		$this->assertSame( '#3633e1', $resolver->resolve()->value( 'semantic.color.button-primary-bg' ) );
 
 		// Override brand.button; the write bumps the store version, invalidating the per-request memo.
 		$store->save_document(
@@ -814,6 +814,6 @@ final class Token_ResolverTest extends TestCase {
 			)
 		);
 
-		$this->assertSame( '#000000', $resolver->resolve()->value( 'semantic.color.button-bg' ) );
+		$this->assertSame( '#000000', $resolver->resolve()->value( 'semantic.color.button-primary-bg' ) );
 	}
 }

@@ -107,23 +107,6 @@ return [
 	'tokens'       => array_merge(
 		[
 			[
-				/**
-				 * Semantic brand colors that emit their --kb-token--* var via Css_Var and deliberately claim
-				 * NO kadence_slot, so setting one never re-skins --global-paletteN. Mapping the brand primitives
-				 * onto the global palette is separate.
-				 */
-				'id'    => 'semantic.color.button-bg',
-				'type'  => 'color',
-				'label' => __( 'Button Background', 'kadence-blocks' ),
-				'group' => __( 'Brand', 'kadence-blocks' ),
-			],
-			[
-				'id'    => 'semantic.color.button-text',
-				'type'  => 'color',
-				'label' => __( 'Button Text', 'kadence-blocks' ),
-				'group' => __( 'Brand', 'kadence-blocks' ),
-			],
-			[
 				// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default
 				// CSS projector points kadence/image's border-radius at that variable as a low-specificity default.
 				'id'    => 'semantic.radius.media',
