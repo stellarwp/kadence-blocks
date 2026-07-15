@@ -18,3 +18,21 @@ export const variantIcon = (
 		/>
 	</svg>
 );
+
+/**
+ * The reset icon shown beside the variant button: a revert/undo arrow. Paints with `currentColor` so the
+ * button can render it muted (`#949494`) when there is nothing to reset and dark (`#1e1e1e`) when the
+ * block has edits.
+ *
+ * @since TBD
+ *
+ * @type {JSX.Element}
+ */
+export const resetIcon = (
+	<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path
+			d="M2.3025 4.09L4.11583 6.07334L3.205 6.93001L-9.54871e-07 3.465L3.205 5.44186e-06L4.11583 0.856672L2.3025 2.84L4.645 2.84C5.5825 2.84 6.52 2.815 7.45667 2.84C8.64667 2.84084 10.2583 3.04834 11.5925 3.90417C12.9758 4.79167 13.9825 6.32584 13.9825 8.78667C13.9825 10.8525 12.8767 12.8667 10.9408 13.7283C9.42417 14.4058 8.40417 14.395 6.93583 14.385L6.46333 14.3833L6.46333 13.1333C6.61667 13.1333 6.77 13.1333 6.92417 13.135C8.44083 13.1408 9.1775 13.1467 10.4325 12.5875C11.9775 11.8983 12.7325 10.3733 12.7325 8.78667C12.7325 6.72667 11.9217 5.60001 10.9175 4.95667C9.86917 4.28417 8.53083 4.09 7.44833 4.09L7.43167 4.09C6.5025 4.065 5.57417 4.09 4.645 4.09L2.3025 4.09Z"
+			fill="currentColor"
+		/>
+	</svg>
+);

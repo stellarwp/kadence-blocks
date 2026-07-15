@@ -1,11 +1,12 @@
 /**
  * The design-token variant button and its dropdown.
  *
- * Renders above a block's inspector tabs (right after the block card) as a single button showing the
+ * Renders above a block's inspector tabs (right after the block card) as a row: a button showing the
  * block's current variant — the variant icon plus the variant label, with a muted "(Edited)" suffix and
- * a dot on the icon when any mapped control overrides that variant. Clicking it opens a dropdown that
- * lists the block's variants (the current one checked) and the design-system actions: highlight edits,
- * reset all to the variant, and save the current edits as a new variant.
+ * a dot on the icon when any mapped control overrides that variant — followed by a reset button that
+ * clears every override. Clicking the variant button opens a dropdown listing the block's variants (the
+ * current one checked) and the design-system actions: highlight edits, reset all to the variant, and save
+ * the current edits as a new variant.
  *
  * Shared across every variant-enabled block so the control stays identical wherever it surfaces: a block
  * renders it once, above its InspectorControlTabs, passing its name, attributes and setAttributes.
@@ -17,7 +18,7 @@ import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { activeSet, blockVariants, blockDefaultVariant } from './index';
-import { variantIcon } from './icons';
+import { variantIcon, resetIcon } from './icons';
 import { SaveVariantModal } from './SaveVariantModal';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
@@ -105,85 +106,98 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 
 	return (
 		<>
-			<Dropdown
-				className="kb-variant-button__dropdown"
-				contentClassName="kb-variant-button__menu"
-				popoverProps={{ placement: 'left-start' }}
-				renderToggle={({ isOpen, onToggle }) => (
-					<Button className="kb-variant-button" aria-expanded={isOpen} onClick={onToggle}>
-						<span className="kb-variant-button__label">
-							{label}
-							{edited && (
-								<span className="kb-variant-button__edited"> {__('(Edited)', 'kadence-blocks')}</span>
-							)}
-						</span>
-						<span className="kb-variant-button__icon">
-							<Icon icon={variantIcon} />
-							{edited && <span className="kb-variant-button__dot" aria-hidden="true" />}
-						</span>
-					</Button>
-				)}
-				renderContent={({ onClose }) => (
-					<>
-						<MenuGroup>
-							{variants.map((variant) => {
-								const isCurrent = variant.slug === currentSlug;
+			<div className="kb-variant-button__row">
+				<Dropdown
+					className="kb-variant-button__dropdown"
+					contentClassName="kb-variant-button__menu"
+					popoverProps={{ placement: 'left-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
+						<Button className="kb-variant-button" aria-expanded={isOpen} onClick={onToggle}>
+							<span className="kb-variant-button__label">
+								{label}
+								{edited && (
+									<span className="kb-variant-button__edited">
+										{' '}
+										{__('(Edited)', 'kadence-blocks')}
+									</span>
+								)}
+							</span>
+							<span className="kb-variant-button__icon">
+								<Icon icon={variantIcon} />
+								{edited && <span className="kb-variant-button__dot" aria-hidden="true" />}
+							</span>
+						</Button>
+					)}
+					renderContent={({ onClose }) => (
+						<>
+							<MenuGroup>
+								{variants.map((variant) => {
+									const isCurrent = variant.slug === currentSlug;
 
-								return (
-									<MenuItem
-										key={variant.slug}
-										role="menuitemradio"
-										aria-checked={isCurrent}
-										className="kb-variant-button__variant"
-										suffix={
-											isCurrent ? (
-												<Icon className="kb-variant-button__check" icon={check} />
-											) : null
-										}
-										onClick={() => {
-											selectVariant(variant.slug);
-											onClose();
-										}}
-									>
-										{variant.label}
-									</MenuItem>
-								);
-							})}
-						</MenuGroup>
-						<MenuGroup>
-							<MenuItem
-								role="menuitemcheckbox"
-								aria-checked={highlighting}
-								disabled={!edited}
-								suffix={
-									highlighting ? <Icon className="kb-variant-button__check" icon={check} /> : null
-								}
-								onClick={() => setHighlightEdits(!highlighting)}
-							>
-								{__('Highlight Edits', 'kadence-blocks')}
-							</MenuItem>
-							<MenuItem
-								disabled={!edited}
-								onClick={() => {
-									onResetAll();
-									onClose();
-								}}
-							>
-								{__('Reset', 'kadence-blocks')}
-							</MenuItem>
-							<MenuItem
-								disabled={!edited || !hasDesignTokensRest()}
-								onClick={() => {
-									setSaving(true);
-									onClose();
-								}}
-							>
-								{__('Save As a New Variant', 'kadence-blocks')}
-							</MenuItem>
-						</MenuGroup>
-					</>
-				)}
-			/>
+									return (
+										<MenuItem
+											key={variant.slug}
+											role="menuitemradio"
+											aria-checked={isCurrent}
+											className="kb-variant-button__variant"
+											suffix={
+												isCurrent ? (
+													<Icon className="kb-variant-button__check" icon={check} />
+												) : null
+											}
+											onClick={() => {
+												selectVariant(variant.slug);
+												onClose();
+											}}
+										>
+											{variant.label}
+										</MenuItem>
+									);
+								})}
+							</MenuGroup>
+							<MenuGroup>
+								<MenuItem
+									role="menuitemcheckbox"
+									aria-checked={highlighting}
+									disabled={!edited}
+									suffix={
+										highlighting ? <Icon className="kb-variant-button__check" icon={check} /> : null
+									}
+									onClick={() => setHighlightEdits(!highlighting)}
+								>
+									{__('Highlight Edits', 'kadence-blocks')}
+								</MenuItem>
+								<MenuItem
+									disabled={!edited}
+									onClick={() => {
+										onResetAll();
+										onClose();
+									}}
+								>
+									{__('Reset', 'kadence-blocks')}
+								</MenuItem>
+								<MenuItem
+									disabled={!edited || !hasDesignTokensRest()}
+									onClick={() => {
+										setSaving(true);
+										onClose();
+									}}
+								>
+									{__('Save As a New Variant', 'kadence-blocks')}
+								</MenuItem>
+							</MenuGroup>
+						</>
+					)}
+				/>
+				<Button
+					className="kb-variant-button__reset"
+					icon={resetIcon}
+					label={__('Reset to variant', 'kadence-blocks')}
+					showTooltip
+					disabled={!edited}
+					onClick={onResetAll}
+				/>
+			</div>
 			{saving && (
 				<SaveVariantModal
 					blockName={blockName}

@@ -5,9 +5,34 @@
  * bordered box holding the current variant label with the variant icon 4px to its right, and a dropdown
  * that lists the variants and the design-system actions.
  */
+.kb-variant-button__row {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 0 16px 16px;
+}
+
 .kb-variant-button__dropdown {
 	display: block;
-	padding: 0 16px 16px;
+	flex: 1 1 auto;
+	min-width: 0; // let the variant button shrink so the reset button keeps its place.
+}
+
+.kb-variant-button__reset.components-button {
+	flex: 0 0 auto;
+	color: #1e1e1e; // active — the block has edits to reset.
+	margin-right: -6px;
+
+	&:disabled,
+	&[aria-disabled='true'] {
+		color: #949494; // deactivated — nothing to reset.
+		opacity: 1;
+	}
+
+	svg {
+		width: 14px;
+		height: 15px;
+	}
 }
 
 .kb-variant-button.components-button {
