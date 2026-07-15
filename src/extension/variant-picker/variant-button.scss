@@ -90,6 +90,13 @@
 .kb-variant-button__menu {
 	min-width: 220px;
 
+	// The menu group adds its own 8px inline padding on top of each item's 12px, indenting the text to
+	// 20px. Zero it so the item's 12px is the only inline padding.
+	.components-menu-group {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
 	.components-menu-group__label {
 		color: #1e1e1e;
 	}
