@@ -89,6 +89,8 @@
         "mbstring",
         "memize",
         "Menlo",
+        "menuitemcheckbox",
+        "menuitemradio",
         "multisite",
         "multisites",
         "navigations",

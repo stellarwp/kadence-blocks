@@ -1,0 +1,50 @@
+/**
+ * Design-token variant trigger button.
+ *
+ * The single button that stands in for a block's variant selection, shown above the inspector tabs.
+ * Full-width, bordered box with the current variant label on the left and the globe icon on the right,
+ * matching the block-card row it sits under. Visual alignment with Figma is a later step.
+ */
+.kb-variant-button__dropdown {
+	display: block;
+	padding: 0 16px 16px;
+}
+
+.kb-variant-button.components-button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: auto;
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid #dcdcde;
+	border-radius: 2px;
+	text-align: left;
+
+	.kb-variant-button__label {
+		flex: 1 1 auto;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	svg {
+		flex: 0 0 auto;
+	}
+}
+
+.kb-variant-button__menu {
+	min-width: 220px;
+
+	.kb-variant-button__check {
+		fill: var(--wp-admin-theme-color, #3858e9);
+	}
+
+	// Suppress the focus ring that lands on the first item when the menu opens by mouse — but keep it
+	// for keyboard users (`:focus-visible`), so arrowing through the list is still visible.
+	.components-menu-item__button:focus:not(:focus-visible) {
+		box-shadow: none;
+		outline: none;
+	}
+}
