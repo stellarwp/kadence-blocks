@@ -57,59 +57,16 @@ final class Css_RendererTest extends TestCase {
 		$this->assertSame( '0px 2px 8px 0px #1A202C', $this->renderer->render( 'shadow', $shadow ) );
 	}
 
-	public function testTypographyRendersTheFontShorthand(): void {
-		$typography = [
-			'fontFamily' => 'Inter, sans-serif',
-			'fontSize'   => '1.953rem',
-			'fontWeight' => 700,
-			'lineHeight' => 1.2,
-		];
-
-		$this->assertSame( '700 1.953rem/1.2 Inter, sans-serif', $this->renderer->render( 'typography', $typography ) );
-	}
-
-	public function testTypographyRendersAFontFamilyListField(): void {
-		$typography = [
-			'fontFamily' => [ 'Inter', 'system-ui', 'sans-serif' ],
-			'fontSize'   => '1rem',
-			'fontWeight' => 400,
-			'lineHeight' => 1.6,
-		];
-
-		$this->assertSame(
-			'400 1rem/1.6 Inter, system-ui, sans-serif',
-			$this->renderer->render( 'typography', $typography )
-		);
-	}
-
-	public function testCompositeTypesReturnEmptyStringForNonArrayValues(): void {
+	/**
+	 * The shadow composite renders empty for a non-object value rather than a malformed shorthand.
+	 *
+	 * @return void
+	 */
+	public function testShadowReturnsEmptyStringForNonArrayValues(): void {
 		$this->assertSame( '', $this->renderer->render( 'shadow', '#fff' ) );
-		$this->assertSame( '', $this->renderer->render( 'typography', 'nonsense' ) );
 	}
 
 	public function testNonScalarScalarTypeReturnsEmptyString(): void {
 		$this->assertSame( '', $this->renderer->render( 'color', [ 'unexpected' => 'array' ] ) );
-	}
-
-	public function testTypographyReturnsEmptyStringWhenFontSizeIsMissing(): void {
-		$typography = [
-			'fontFamily' => [ 'Inter', 'sans-serif' ],
-			'fontWeight' => 700,
-			'lineHeight' => 1.2,
-		];
-
-		// The CSS `font` shorthand is invalid without a font-size, so nothing is emitted.
-		$this->assertSame( '', $this->renderer->render( 'typography', $typography ) );
-	}
-
-	public function testTypographyReturnsEmptyStringWhenFontFamilyIsMissing(): void {
-		$typography = [
-			'fontSize'   => '1rem',
-			'fontWeight' => 700,
-			'lineHeight' => 1.2,
-		];
-
-		// The CSS `font` shorthand is invalid without a font-family.
-		$this->assertSame( '', $this->renderer->render( 'typography', $typography ) );
 	}
 }

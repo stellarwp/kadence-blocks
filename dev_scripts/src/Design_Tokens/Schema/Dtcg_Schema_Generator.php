@@ -258,9 +258,6 @@ final class Dtcg_Schema_Generator {
 					'items'    => [ 'type' => 'string' ],
 					'minItems' => 1,
 				];
-			case Token_Type::get_kind_font_weight():
-			case Token_Type::get_kind_line_height():
-				return [ 'type' => [ 'string', 'number' ] ];
 			default:
 				// color, dimension.
 				return [ 'type' => 'string' ];

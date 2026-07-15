@@ -64,8 +64,7 @@
                         "color",
                         "dimension",
                         "fontFamily",
-                        "shadow",
-                        "typography"
+                        "shadow"
                     ]
                 },
                 "$value": true,
@@ -126,20 +125,6 @@
                         },
                         "$value": {
                             "$ref": "#/definitions/shadowValue"
-                        }
-                    },
-                    "required": [
-                        "$type",
-                        "$value"
-                    ]
-                },
-                {
-                    "properties": {
-                        "$type": {
-                            "const": "typography"
-                        },
-                        "$value": {
-                            "$ref": "#/definitions/typographyValue"
                         }
                     },
                     "required": [
@@ -246,75 +231,6 @@
                                 },
                                 {
                                     "type": "string"
-                                }
-                            ]
-                        }
-                    },
-                    "additionalProperties": false
-                }
-            ]
-        },
-        "typographyValue": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/alias"
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "fontFamily",
-                        "fontSize",
-                        "fontWeight",
-                        "lineHeight"
-                    ],
-                    "properties": {
-                        "fontFamily": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/alias"
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    },
-                                    "minItems": 1
-                                }
-                            ]
-                        },
-                        "fontSize": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/alias"
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "fontWeight": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/alias"
-                                },
-                                {
-                                    "type": [
-                                        "string",
-                                        "number"
-                                    ]
-                                }
-                            ]
-                        },
-                        "lineHeight": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/alias"
-                                },
-                                {
-                                    "type": [
-                                        "string",
-                                        "number"
-                                    ]
                                 }
                             ]
                         }

@@ -50,8 +50,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$this->assertTrue( $baseline->has( 'primitive.color.neutral.0' ) );
 		// fontFamily leaf whose $value is an array.
 		$this->assertTrue( $baseline->has( 'primitive.fontFamily.sans' ) );
-		// Composite leaves (object $value) are still single tokens, not groups.
-		$this->assertTrue( $baseline->has( 'semantic.typography.heading' ) );
+		// A composite leaf (object $value) is still a single token, not a group.
 		$this->assertTrue( $baseline->has( 'semantic.shadow.card' ) );
 	}
 

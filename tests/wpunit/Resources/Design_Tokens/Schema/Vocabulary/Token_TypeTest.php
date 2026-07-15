@@ -9,11 +9,13 @@ use Tests\Support\Classes\TestCase;
 final class Token_TypeTest extends TestCase {
 
 	/**
+	 * The v1 $type vocabulary is the scalar types plus the shadow composite; there is no typography type.
+	 *
 	 * @return void
 	 */
 	public function testItListsTheV1Types(): void {
 		$this->assertSame(
-			[ 'color', 'dimension', 'fontFamily', 'shadow', 'typography' ],
+			[ 'color', 'dimension', 'fontFamily', 'shadow' ],
 			Token_Type::all()
 		);
 	}
@@ -37,7 +39,6 @@ final class Token_TypeTest extends TestCase {
 		yield 'dimension' => [ 'type' => 'dimension' ];
 		yield 'fontFamily' => [ 'type' => 'fontFamily' ];
 		yield 'shadow' => [ 'type' => 'shadow' ];
-		yield 'typography' => [ 'type' => 'typography' ];
 	}
 
 	/**
@@ -67,7 +68,6 @@ final class Token_TypeTest extends TestCase {
 	 */
 	public function testOnlyCompositeTypesReportComposite(): void {
 		$this->assertTrue( Token_Type::is_composite( Token_Type::get_type_shadow() ) );
-		$this->assertTrue( Token_Type::is_composite( Token_Type::get_type_typography() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_color() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_dimension() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_font_family() ) );
@@ -86,21 +86,6 @@ final class Token_TypeTest extends TestCase {
 				'spread'  => 'dimension',
 			],
 			Token_Type::composite_fields( Token_Type::get_type_shadow() )
-		);
-	}
-
-	/**
-	 * @return void
-	 */
-	public function testTypographyFieldsMapToTheirKinds(): void {
-		$this->assertSame(
-			[
-				'fontFamily' => 'fontFamily',
-				'fontSize'   => 'dimension',
-				'fontWeight' => 'fontWeight',
-				'lineHeight' => 'lineHeight',
-			],
-			Token_Type::composite_fields( Token_Type::get_type_typography() )
 		);
 	}
 
