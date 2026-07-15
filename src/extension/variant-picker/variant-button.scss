@@ -90,15 +90,20 @@
 .kb-variant-button__menu {
 	min-width: 220px;
 
-	// The menu group adds its own 8px inline padding on top of each item's 12px, indenting the text to
-	// 20px. Zero it so the item's 12px is the only inline padding.
 	.components-menu-group {
-		padding-left: 0;
-		padding-right: 0;
+		padding: 4px;
+
+		> [role='group'] {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
 	}
 
 	.components-menu-group__label {
 		color: #1e1e1e;
+		margin: 0;
+		padding: 12px 12px 16px;
 	}
 
 	.components-menu-item__button {
@@ -122,10 +127,10 @@
 
 	// The divider between the variants and the actions: inset 12px from the menu edges.
 	.components-menu-group + .components-menu-group {
-		position: relative;
-		margin-top: 8px;
-		padding-top: 8px;
 		border-top: none;
+		margin-top: 4px;
+		padding: 8px 4px 4px;
+		position: relative;
 
 		&::before {
 			content: '';
@@ -134,6 +139,12 @@
 			right: 12px;
 			left: 12px;
 			border-top: 1px solid #e0e0e0;
+		}
+
+		&:last-child {
+			> [role='group'] {
+				padding-bottom: 8px;
+			}
 		}
 	}
 
