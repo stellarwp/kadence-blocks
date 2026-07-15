@@ -367,6 +367,48 @@
 				"$value": "{primitive.dimension.icon-size.md}"
 			}
 		},
+		"font-family": {
+			"control": {
+				"$type": "fontFamily",
+				"$value": "{primitive.fontFamily.sans}"
+			}
+		},
+		"font-size": {
+			"control": {
+				"$type": "dimension",
+				"$value": "1.125rem"
+			}
+		},
+		"font-weight": {
+			"control": {
+				"$type": "fontWeight",
+				"$value": "normal"
+			}
+		},
+		"line-height": {
+			"control": {
+				"$type": "lineHeight",
+				"$value": "normal"
+			}
+		},
+		"font-style": {
+			"control": {
+				"$type": "fontStyle",
+				"$value": "normal"
+			}
+		},
+		"text-transform": {
+			"control": {
+				"$type": "textTransform",
+				"$value": "none"
+			}
+		},
+		"letter-spacing": {
+			"control": {
+				"$type": "dimension",
+				"$value": "0"
+			}
+		},
 		"shadow": {
 			"card": {
 				"$type": "shadow",

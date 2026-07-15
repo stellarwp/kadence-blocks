@@ -7,7 +7,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Contracts\Value_Vali
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Dimension_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Style_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Weight_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Line_Height_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Shadow_Value;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Text_Transform_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
@@ -75,10 +79,14 @@ final class Dtcg_Validator {
 	 */
 	public function __construct() {
 		$this->validators = [
-			Token_Type::get_type_color()       => new Color_Value(),
-			Token_Type::get_type_dimension()   => new Dimension_Value(),
-			Token_Type::get_type_font_family() => new Font_Family_Value(),
-			Token_Type::get_type_shadow()      => new Shadow_Value(),
+			Token_Type::get_type_color()          => new Color_Value(),
+			Token_Type::get_type_dimension()      => new Dimension_Value(),
+			Token_Type::get_type_font_family()    => new Font_Family_Value(),
+			Token_Type::get_type_font_weight()    => new Font_Weight_Value(),
+			Token_Type::get_type_line_height()    => new Line_Height_Value(),
+			Token_Type::get_type_font_style()     => new Font_Style_Value(),
+			Token_Type::get_type_text_transform() => new Text_Transform_Value(),
+			Token_Type::get_type_shadow()         => new Shadow_Value(),
 		];
 	}
 

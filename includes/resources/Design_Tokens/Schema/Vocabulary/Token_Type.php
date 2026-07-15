@@ -10,8 +10,11 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * no native enums, so the vocabulary is modelled as class constants plus static lookup maps.
  *
  * The shadow composite type holds an object $value whose sub-fields each validate as another $type
- * (color, dimension); composite_fields() returns that field => $type map as DATA so a future shape
- * extends the map rather than rewriting the walker.
+ * (color, dimension); composite_fields() returns the field => $type map as DATA so a future shape
+ * extends the map rather than rewriting the walker. Text-style properties (fontWeight, lineHeight,
+ * fontStyle, textTransform) are plain scalar $types a block binds one discrete token per property —
+ * there is no bundled typography composite, because a block that sets each property individually can
+ * never consume a single `font` shorthand.
  *
  * @since TBD
  */
@@ -27,7 +30,7 @@ final class Token_Type {
 	private const COLOR = 'color';
 
 	/**
-	 * The dimension $type (covers spacing, radius, border-width, icon-size).
+	 * The dimension $type (covers spacing, radius, border-width, icon-size, font-size, letter-spacing).
 	 *
 	 * @since TBD
 	 *
@@ -43,6 +46,42 @@ final class Token_Type {
 	 * @var string
 	 */
 	private const FONT_FAMILY = 'fontFamily';
+
+	/**
+	 * The fontWeight $type (a numeric weight 1-1000 or a CSS weight keyword).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FONT_WEIGHT = 'fontWeight';
+
+	/**
+	 * The lineHeight $type (a unit-less number, a dimension, or "normal").
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const LINE_HEIGHT = 'lineHeight';
+
+	/**
+	 * The fontStyle $type (an enum literal: normal/italic/oblique).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const FONT_STYLE = 'fontStyle';
+
+	/**
+	 * The textTransform $type (an enum literal: none/uppercase/…).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const TEXT_TRANSFORM = 'textTransform';
 
 	/**
 	 * The shadow $type (a composite object $value).
@@ -74,13 +113,17 @@ final class Token_Type {
 		self::COLOR,
 		self::DIMENSION,
 		self::FONT_FAMILY,
+		self::FONT_WEIGHT,
+		self::LINE_HEIGHT,
+		self::FONT_STYLE,
+		self::TEXT_TRANSFORM,
 		self::SHADOW,
 	];
 
 	/**
-	 * The composite types and their sub-field => kind maps. A field absent from the document is a
-	 * missing-field error; a field present but not listed here is an unknown-field error. Every kind is
-	 * validated "alias OR literal-of-kind", so an alias is accepted in any sub-field.
+	 * The composite types and their sub-field => $type maps. A field absent from the document is a
+	 * missing-field error; a field present but not listed here is an unknown-field error. Every field is
+	 * validated "alias OR literal-of-$type", so an alias is accepted in any sub-field.
 	 *
 	 * @var array<string, array<string, string>>
 	 *
@@ -134,13 +177,13 @@ final class Token_Type {
 	}
 
 	/**
-	 * The sub-field => kind map for a composite $type, or an empty array for a non-composite type.
+	 * The sub-field => $type map for a composite $type, or an empty array for a non-composite type.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $type The composite $type.
 	 *
-	 * @return array<string, string> Field name => kind (a $type or a KIND_* constant).
+	 * @return array<string, string> Field name => the sub-field's $type.
 	 */
 	public static function composite_fields( string $type ): array {
 		return self::COMPOSITE_FIELDS[ $type ] ?? [];
@@ -188,6 +231,50 @@ final class Token_Type {
 	 */
 	public static function get_type_font_family(): string {
 		return self::FONT_FAMILY;
+	}
+
+	/**
+	 * The fontWeight $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_font_weight(): string {
+		return self::FONT_WEIGHT;
+	}
+
+	/**
+	 * The lineHeight $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_line_height(): string {
+		return self::LINE_HEIGHT;
+	}
+
+	/**
+	 * The fontStyle $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_font_style(): string {
+		return self::FONT_STYLE;
+	}
+
+	/**
+	 * The textTransform $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_text_transform(): string {
+		return self::TEXT_TRANSFORM;
 	}
 
 	/**

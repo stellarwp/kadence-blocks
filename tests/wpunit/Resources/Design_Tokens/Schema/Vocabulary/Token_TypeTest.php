@@ -9,13 +9,14 @@ use Tests\Support\Classes\TestCase;
 final class Token_TypeTest extends TestCase {
 
 	/**
-	 * The v1 $type vocabulary is the scalar types plus the shadow composite; there is no typography type.
+	 * The v1 $type vocabulary is the scalar types (color, dimension, fontFamily and the text-style
+	 * scalars) plus the shadow composite — there is no typography composite.
 	 *
 	 * @return void
 	 */
 	public function testItListsTheV1Types(): void {
 		$this->assertSame(
-			[ 'color', 'dimension', 'fontFamily', 'shadow' ],
+			[ 'color', 'dimension', 'fontFamily', 'fontWeight', 'lineHeight', 'fontStyle', 'textTransform', 'shadow' ],
 			Token_Type::all()
 		);
 	}
@@ -38,6 +39,10 @@ final class Token_TypeTest extends TestCase {
 		yield 'color' => [ 'type' => 'color' ];
 		yield 'dimension' => [ 'type' => 'dimension' ];
 		yield 'fontFamily' => [ 'type' => 'fontFamily' ];
+		yield 'fontWeight' => [ 'type' => 'fontWeight' ];
+		yield 'lineHeight' => [ 'type' => 'lineHeight' ];
+		yield 'fontStyle' => [ 'type' => 'fontStyle' ];
+		yield 'textTransform' => [ 'type' => 'textTransform' ];
 		yield 'shadow' => [ 'type' => 'shadow' ];
 	}
 
@@ -64,6 +69,8 @@ final class Token_TypeTest extends TestCase {
 	}
 
 	/**
+	 * Shadow is the only composite type; every scalar type (including the text-style scalars) is not.
+	 *
 	 * @return void
 	 */
 	public function testOnlyCompositeTypesReportComposite(): void {
@@ -71,6 +78,8 @@ final class Token_TypeTest extends TestCase {
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_color() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_dimension() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_font_family() ) );
+		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_font_weight() ) );
+		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_text_transform() ) );
 	}
 
 	/**
@@ -90,9 +99,12 @@ final class Token_TypeTest extends TestCase {
 	}
 
 	/**
+	 * A scalar type has no composite sub-fields.
+	 *
 	 * @return void
 	 */
 	public function testNonCompositeTypesHaveNoFields(): void {
 		$this->assertSame( [], Token_Type::composite_fields( Token_Type::get_type_color() ) );
+		$this->assertSame( [], Token_Type::composite_fields( Token_Type::get_type_font_weight() ) );
 	}
 }

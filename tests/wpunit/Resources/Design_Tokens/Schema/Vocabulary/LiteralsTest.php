@@ -281,4 +281,85 @@ final class LiteralsTest extends TestCase {
 			'expected' => false,
 		];
 	}
+
+	/**
+	 * A fontStyle literal is one of the CSS font-style keywords (case-insensitive); anything else is not.
+	 *
+	 * @dataProvider fontStyleProvider
+	 *
+	 * @param mixed $value    The candidate value.
+	 * @param bool  $expected Whether it is a valid fontStyle.
+	 *
+	 * @return void
+	 */
+	public function testFontStyles( $value, bool $expected ): void {
+		$this->assertSame( $expected, Literals::is_font_style( $value ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function fontStyleProvider(): Generator {
+		yield 'normal' => [
+			'value'    => 'normal',
+			'expected' => true,
+		];
+		yield 'italic' => [
+			'value'    => 'italic',
+			'expected' => true,
+		];
+		yield 'mixed case' => [
+			'value'    => 'Italic',
+			'expected' => true,
+		];
+		yield 'unknown word' => [
+			'value'    => 'slanted',
+			'expected' => false,
+		];
+		yield 'number' => [
+			'value'    => 400,
+			'expected' => false,
+		];
+	}
+
+	/**
+	 * A textTransform literal is one of the CSS text-transform keywords (case-insensitive); anything else
+	 * is not.
+	 *
+	 * @dataProvider textTransformProvider
+	 *
+	 * @param mixed $value    The candidate value.
+	 * @param bool  $expected Whether it is a valid textTransform.
+	 *
+	 * @return void
+	 */
+	public function testTextTransforms( $value, bool $expected ): void {
+		$this->assertSame( $expected, Literals::is_text_transform( $value ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function textTransformProvider(): Generator {
+		yield 'none' => [
+			'value'    => 'none',
+			'expected' => true,
+		];
+		yield 'uppercase' => [
+			'value'    => 'uppercase',
+			'expected' => true,
+		];
+		yield 'full-width' => [
+			'value'    => 'full-width',
+			'expected' => true,
+		];
+		yield 'unknown word' => [
+			'value'    => 'bogus',
+			'expected' => false,
+		];
+		yield 'empty' => [
+			'value'    => '',
+			'expected' => false,
+		];
+	}
 }

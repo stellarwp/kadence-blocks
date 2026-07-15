@@ -55,6 +55,36 @@ final class Literals {
 	];
 
 	/**
+	 * The CSS font-style keywords accepted as a fontStyle literal. "oblique <angle>" is intentionally
+	 * not modeled — the keyword forms cover the design-system need.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const FONT_STYLE_KEYWORDS = [
+		'normal',
+		'italic',
+		'oblique',
+	];
+
+	/**
+	 * The CSS text-transform keywords accepted as a textTransform literal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const TEXT_TRANSFORM_KEYWORDS = [
+		'none',
+		'capitalize',
+		'uppercase',
+		'lowercase',
+		'full-width',
+		'full-size-kana',
+	];
+
+	/**
 	 * The CSS named colors (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
 	 * what lets "not-a-color" be rejected while "rebeccapurple" is accepted.
 	 *
@@ -352,6 +382,32 @@ final class Literals {
 		}
 
 		return self::is_dimension( $value );
+	}
+
+	/**
+	 * Whether the value is a valid fontStyle literal: one of the CSS font-style keywords.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The candidate fontStyle.
+	 *
+	 * @return bool
+	 */
+	public static function is_font_style( $value ): bool {
+		return is_string( $value ) && in_array( strtolower( $value ), self::FONT_STYLE_KEYWORDS, true );
+	}
+
+	/**
+	 * Whether the value is a valid textTransform literal: one of the CSS text-transform keywords.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The candidate textTransform.
+	 *
+	 * @return bool
+	 */
+	public static function is_text_transform( $value ): bool {
+		return is_string( $value ) && in_array( strtolower( $value ), self::TEXT_TRANSFORM_KEYWORDS, true );
 	}
 
 	/**
