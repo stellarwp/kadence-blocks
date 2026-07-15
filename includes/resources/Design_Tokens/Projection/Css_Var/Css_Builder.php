@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Builds the CSS custom-property output for every token set at once — the CSS-variable backbone, in the
@@ -62,6 +63,28 @@ final class Css_Builder {
 	 * @var string
 	 */
 	private const CACHE_GROUP = 'kb_design_tokens';
+
+	/**
+	 * A typography composite's sub-field => the CSS property a block reads it as. A composite token can
+	 * only be consumed through a single `font` shorthand var, which is useless to a block that sets its
+	 * properties individually (and renders empty unless the token carries both a size and a family); so
+	 * every typography token is ALSO projected as one custom property per sub-field, named
+	 * `--kb-token--<id>--<css-prop>`, that a block's CSS reads directly (e.g. the Button's `font-family`).
+	 * A composite whose fields are not in this map (a shadow) contributes nothing here.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
+	 */
+	private const TYPOGRAPHY_FIELD_CSS_PROPS = [
+		'fontFamily'    => 'font-family',
+		'fontSize'      => 'font-size',
+		'fontWeight'    => 'font-weight',
+		'lineHeight'    => 'line-height',
+		'fontStyle'     => 'font-style',
+		'textTransform' => 'text-transform',
+		'letterSpacing' => 'letter-spacing',
+	];
 
 	/**
 	 * The HTML attribute a body class / container sets to switch the active token set client-side. Its
@@ -278,7 +301,79 @@ final class Css_Builder {
 	private function build_active_fragment( Resolved_Tokens $active, string $active_slug ): string {
 		return $this->alias_block( $active, $active_slug )
 			. $this->slot_block( $active, Spacing_Target::class )
-			. $this->slot_block( $active, Gap_Target::class );
+			. $this->slot_block( $active, Gap_Target::class )
+			. $this->typography_field_block( $active );
+	}
+
+	/**
+	 * Emit one custom property per typography sub-field — `--kb-token--<id>--<css-prop>: <value>;` — for
+	 * every typography composite in the active set, so a block reads each property (font-family, weight,
+	 * …) directly instead of the single, block-useless `font` shorthand. A field the token omits is not
+	 * emitted, so the block's `var(--…--<prop>)` falls back to its own default; a field the token sets is
+	 * emitted and wins. Resolved to the active set's literals (aliases already flattened); a write
+	 * re-projects, so an override propagates. Non-typography composites (shadow) contribute nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param Resolved_Tokens $active The active set's resolved maps.
+	 *
+	 * @return string
+	 */
+	private function typography_field_block( Resolved_Tokens $active ): string {
+		$declarations = '';
+
+		foreach ( $active->composite_ids() as $id ) {
+			$fields = $active->composite( $id );
+
+			if ( $fields === null ) {
+				continue;
+			}
+
+			$prefix = Css_Var::from_id( $id );
+
+			foreach ( self::TYPOGRAPHY_FIELD_CSS_PROPS as $field => $css_prop ) {
+				if ( ! array_key_exists( $field, $fields ) ) {
+					continue;
+				}
+
+				$value = $this->render_field( $fields[ $field ] );
+
+				if ( $value === '' ) {
+					continue;
+				}
+
+				$declarations .= $prefix . '--' . $css_prop . ':' . $this->sanitize_value( $value ) . ';';
+			}
+		}
+
+		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
+	}
+
+	/**
+	 * Render a resolved typography sub-field to its CSS string: a fontFamily list becomes a comma-joined
+	 * family stack (each space-bearing name quoted); any other field is cast to string.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The resolved sub-field value.
+	 *
+	 * @return string
+	 */
+	private function render_field( $value ): string {
+		if ( is_array( $value ) ) {
+			$families = array_map(
+				static function ( $family ): string {
+					$name = trim( Cast::to_string( $family ), " \t\n\r\0\x0B\"'" );
+
+					return strpos( $name, ' ' ) !== false ? '"' . $name . '"' : $name;
+				},
+				$value
+			);
+
+			return implode( ', ', $families );
+		}
+
+		return Cast::to_string( $value );
 	}
 
 	/**

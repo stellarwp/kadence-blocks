@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette Fghi redbodycolor xxs xxl .
+// cspell:ignore palette Fghi redbodycolor xxs xxl Segoe Helvetica .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
@@ -458,5 +458,73 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_dark_active );
 		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_default_active );
+	}
+
+	// ---- Typography composite per-sub-field vars ----------------------------------------------------
+
+	/**
+	 * A typography composite is projected as one custom property per sub-field it carries, named
+	 * --kb-token--<id>--<css-prop>, so a block reads each property directly. A field the token omits
+	 * is not emitted, so the block's own default (or inheritance) stands.
+	 *
+	 * @return void
+	 */
+	public function testItProjectsTypographyCompositeSubFieldsAsPerPropertyVars(): void {
+		$id       = 'semantic.typography.control';
+		$resolved = new Resolved_Tokens(
+			[ $id => '' ],
+			[],
+			[ Css_Var::from_id( $id, 'default' ) => '' ],
+			[],
+			[ $id => [ 'fontFamily' => [ 'Inter', 'system-ui', 'sans-serif' ], 'fontWeight' => 500 ] ]
+		);
+
+		$css = $this->css_default( $resolved );
+
+		$this->assertStringContainsString( '--kb-token--semantic--typography--control--font-family:Inter, system-ui, sans-serif;', $css );
+		$this->assertStringContainsString( '--kb-token--semantic--typography--control--font-weight:500;', $css );
+		$this->assertStringNotContainsString( '--kb-token--semantic--typography--control--font-size', $css );
+	}
+
+	/**
+	 * A family stack member that already carries surrounding quotes is not double-wrapped when re-quoted
+	 * for containing a space, and a bare space-bearing member is quoted once.
+	 *
+	 * @return void
+	 */
+	public function testItQuotesFamilyStackMembersOnceWithoutDoubleWrapping(): void {
+		$id       = 'semantic.typography.control';
+		$resolved = new Resolved_Tokens(
+			[ $id => '' ],
+			[],
+			[ Css_Var::from_id( $id, 'default' ) => '' ],
+			[],
+			[ $id => [ 'fontFamily' => [ '"Segoe UI"', 'Helvetica Neue', 'sans-serif' ] ] ]
+		);
+
+		$css = $this->css_default( $resolved );
+
+		$this->assertStringContainsString( '--kb-token--semantic--typography--control--font-family:"Segoe UI", "Helvetica Neue", sans-serif;', $css );
+	}
+
+	/**
+	 * A shadow composite contributes no per-property typography vars — its fields are not typography
+	 * properties, so the projection skips them.
+	 *
+	 * @return void
+	 */
+	public function testItDoesNotProjectSubFieldVarsForANonTypographyComposite(): void {
+		$id       = 'semantic.shadow.card';
+		$resolved = new Resolved_Tokens(
+			[ $id => '0 2px 8px #000' ],
+			[],
+			[ Css_Var::from_id( $id, 'default' ) => '0 2px 8px #000' ],
+			[],
+			[ $id => [ 'color' => '#000', 'offsetX' => '0px', 'offsetY' => '2px', 'blur' => '8px', 'spread' => '0px' ] ]
+		);
+
+		$css = $this->css_default( $resolved );
+
+		$this->assertStringNotContainsString( '--kb-token--semantic--shadow--card--', $css );
 	}
 }

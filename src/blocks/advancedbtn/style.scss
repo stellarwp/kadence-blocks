@@ -37,7 +37,17 @@
 	border: 0 solid transparent;
 	padding: 0.4em 1em;
 	cursor: pointer;
-	font-size: 1.125rem;
+	// Typography follows the semantic.typography.control token, one custom property per sub-field, so a
+	// button follows the design system in the editor and on the front end. Each is a low-specificity
+	// default: a per-button typography value renders at the higher `.kb-btn<uid>` specificity and wins,
+	// and a sub-field the token does not set leaves the property to inherit (its current behavior).
+	font-family: var(--kb-token--semantic--typography--control--font-family, inherit);
+	font-size: var(--kb-token--semantic--typography--control--font-size, 1.125rem);
+	font-weight: var(--kb-token--semantic--typography--control--font-weight);
+	font-style: var(--kb-token--semantic--typography--control--font-style);
+	line-height: var(--kb-token--semantic--typography--control--line-height);
+	letter-spacing: var(--kb-token--semantic--typography--control--letter-spacing);
+	text-transform: var(--kb-token--semantic--typography--control--text-transform);
 	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;

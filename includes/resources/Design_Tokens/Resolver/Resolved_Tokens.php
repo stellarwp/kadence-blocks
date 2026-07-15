@@ -155,4 +155,16 @@ final class Resolved_Tokens {
 	public function composite( string $id ): ?array {
 		return $this->by_id_composite[ $id ] ?? null;
 	}
+
+	/**
+	 * The ids of every composite token in this resolution, for a consumer that walks them (e.g. the
+	 * per-sub-field css-var projection).
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function composite_ids(): array {
+		return array_keys( $this->by_id_composite );
+	}
 }

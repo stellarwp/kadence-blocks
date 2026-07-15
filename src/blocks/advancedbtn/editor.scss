@@ -218,7 +218,15 @@
 .kt-button:not(.kb-btn-global-inherit) {
 	padding: 0.4em 1em;
 	cursor: pointer;
-	font-size: 1.125rem;
+	// Mirror of style.scss: the button follows the semantic.typography.control token per sub-field so the
+	// editor preview matches the front end. See the note there.
+	font-family: var(--kb-token--semantic--typography--control--font-family, inherit);
+	font-size: var(--kb-token--semantic--typography--control--font-size, 1.125rem);
+	font-weight: var(--kb-token--semantic--typography--control--font-weight);
+	font-style: var(--kb-token--semantic--typography--control--font-style);
+	line-height: var(--kb-token--semantic--typography--control--line-height);
+	letter-spacing: var(--kb-token--semantic--typography--control--letter-spacing);
+	text-transform: var(--kb-token--semantic--typography--control--text-transform);
 	border-radius: var(--kb-btn-radius, var(--kb-token--semantic--radius--control, 3px));
 	transition: all 0.3s ease-in-out;
 	box-shadow: none;
