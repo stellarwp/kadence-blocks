@@ -274,11 +274,26 @@ return [
 			'block'    => 'kadence/singlebtn',
 			'label'    => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
 			'bindings' => [
-				'button-bg'         => [ 'kadence_slot' => 'palette-btn-bg' ],
-				'button-text'       => [ 'kadence_slot' => 'palette-btn' ],
-				'button-bg-hover'   => [ 'kadence_slot' => 'palette-btn-bg-hover' ],
-				'button-text-hover' => [ 'kadence_slot' => 'palette-btn-hover' ],
-				'button-radius'     => [ 'css_var' => 'kb-btn-radius' ], // drives --kb-btn-radius so a variant can vary the radius.
+				'button-bg'         => [
+					'kadence_slot' => 'palette-btn-bg',
+					'control_attr' => 'background',
+				],
+				'button-text'       => [
+					'kadence_slot' => 'palette-btn',
+					'control_attr' => 'color',
+				],
+				'button-bg-hover'   => [
+					'kadence_slot' => 'palette-btn-bg-hover',
+					'control_attr' => 'backgroundHover',
+				],
+				'button-text-hover' => [
+					'kadence_slot' => 'palette-btn-hover',
+					'control_attr' => 'colorHover',
+				],
+				'button-radius'     => [
+					'css_var'      => 'kb-btn-radius', // drives --kb-btn-radius so a variant can vary the radius.
+					'control_attr' => 'borderRadius',
+				],
 			],
 		],
 		[

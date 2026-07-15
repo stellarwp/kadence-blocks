@@ -132,4 +132,31 @@ final class Variant_CatalogTest extends TestCase {
 
 		$this->assertSame( [], $catalog['sets'][ Token_Store::default_slug() ] );
 	}
+
+	/**
+	 * The Button catalog surfaces each bound property's control attribute and a per-variant resolved-value
+	 * map, so the editor can key an override indicator to a control and compare against the variant value.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesControlAttrAndPerVariantValues(): void {
+		$button = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$by_key = [];
+		foreach ( $button['properties'] as $property ) {
+			$by_key[ $property['key'] ] = $property;
+		}
+
+		$this->assertSame( 'background', $by_key['button-bg']['control_attr'] );
+		$this->assertSame( 'color', $by_key['button-text']['control_attr'] );
+		$this->assertSame( 'backgroundHover', $by_key['button-bg-hover']['control_attr'] );
+		$this->assertSame( 'colorHover', $by_key['button-text-hover']['control_attr'] );
+		$this->assertSame( 'borderRadius', $by_key['button-radius']['control_attr'] );
+
+		// Per-variant resolved values, keyed by variant slug then property id.
+		$this->assertArrayHasKey( 'primary', $button['values'] );
+		$this->assertArrayHasKey( 'secondary', $button['values'] );
+		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );
+		$this->assertNotSame( '', $button['values']['primary']['button-bg'] );
+	}
 }

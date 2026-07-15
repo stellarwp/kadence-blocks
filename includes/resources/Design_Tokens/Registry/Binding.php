@@ -25,6 +25,9 @@ use InvalidArgumentException;
  * one tokens use, with three additions — `block_attr`, `css_prop`, and `css_selector`, which tokens
  * never carry.
  *
+ * A binding may also declare `control_attr`, editor-only metadata kept out of the projection set — see
+ * {@see Binding::control_attr()}.
+ *
  * @since TBD
  */
 final class Binding {
@@ -104,6 +107,19 @@ final class Binding {
 	private const CSS_SELECTOR = 'css_selector';
 
 	/**
+	 * Editor-only target: the block attribute the editor control for this property writes, so the
+	 * indicator layer can tell whether a control is bound to the active variant or has been overridden.
+	 * Deliberately NOT a projection target — it is excluded from STRING_TARGETS / inline_targets(), so it
+	 * never enters $projections and effective_projections() never emits it. That is what keeps a bound but
+	 * untouched attribute EMPTY (nothing is seeded), which the editor's "empty = bound" detection relies on.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CONTROL_ATTR = 'control_attr';
+
+	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
 	 * @since TBD
@@ -141,16 +157,28 @@ final class Binding {
 	public array $projections;
 
 	/**
+	 * The block attribute the editor control for this property writes, or null when the binding declares
+	 * none. Editor-only metadata; kept out of $projections on purpose so no projector seeds it.
+	 *
 	 * @since TBD
 	 *
-	 * @param string               $property    The block property this binding drives.
-	 * @param string|null          $token       Referenced token id, or null when inline.
-	 * @param array<string, mixed> $projections Inline projection targets, empty when a token reference.
+	 * @var string|null
 	 */
-	private function __construct( string $property, ?string $token, array $projections ) {
-		$this->property    = $property;
-		$this->token       = $token;
-		$this->projections = $projections;
+	public ?string $control_attr;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param string               $property     The block property this binding drives.
+	 * @param string|null          $token        Referenced token id, or null when inline.
+	 * @param array<string, mixed> $projections  Inline projection targets, empty when a token reference.
+	 * @param string|null          $control_attr The editor control attribute, or null when none declared.
+	 */
+	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr ) {
+		$this->property     = $property;
+		$this->token        = $token;
+		$this->projections  = $projections;
+		$this->control_attr = $control_attr;
 	}
 
 	/**
@@ -189,7 +217,7 @@ final class Binding {
 			);
 		}
 
-		return new self( $property, $token, $inline );
+		return new self( $property, $token, $inline, self::control_attr_of( $property, $spec ) );
 	}
 
 	/**
@@ -228,6 +256,19 @@ final class Binding {
 		$attribute = $this->projections[ self::BLOCK_ATTR ] ?? null;
 
 		return is_string( $attribute ) ? $attribute : null;
+	}
+
+	/**
+	 * The block attribute the editor control for this property writes, or null when the binding declares
+	 * none. Editor-only: read by the variant catalog so the indicator layer can key an override signal to a
+	 * control. Unlike block_attr(), this is NOT a projection target and never seeds an attribute default.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function control_attr(): ?string {
+		return $this->control_attr;
 	}
 
 	/**
@@ -305,5 +346,35 @@ final class Binding {
 		}
 
 		return $inline;
+	}
+
+	/**
+	 * Extract and validate the editor-only control attribute from a binding declaration. Kept separate from
+	 * inline_targets() on purpose: control_attr is NOT a projection target, so it must never reach
+	 * $projections (and hence effective_projections()).
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $property The block property, for error messages.
+	 * @param array<string, mixed> $spec     The binding declaration.
+	 *
+	 * @throws InvalidArgumentException When the control attribute is present but not a non-empty string.
+	 *
+	 * @return string|null The control attribute, or null when the declaration omits it.
+	 */
+	private static function control_attr_of( string $property, array $spec ): ?string {
+		if ( ! array_key_exists( self::CONTROL_ATTR, $spec ) ) {
+			return null;
+		}
+
+		$value = $spec[ self::CONTROL_ATTR ];
+
+		if ( ! is_string( $value ) || $value === '' ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Binding "%s" target "%s" must be a non-empty string.', $property, self::CONTROL_ATTR )
+			);
+		}
+
+		return $value;
 	}
 }

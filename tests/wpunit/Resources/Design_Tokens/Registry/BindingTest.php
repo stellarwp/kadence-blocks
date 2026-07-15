@@ -184,4 +184,52 @@ final class BindingTest extends TestCase {
 
 		Binding::from_array( 'button-radius', [ 'css_var' => false ] );
 	}
+
+	/**
+	 * A binding parses control_attr into its own field, exposed via control_attr(), separate from the
+	 * projection targets.
+	 *
+	 * @return void
+	 */
+	public function testItParsesTheControlAttrField(): void {
+		$binding = Binding::from_array(
+			'button-bg',
+			[
+				'kadence_slot' => 'palette-btn-bg',
+				'control_attr' => 'background',
+			]
+		);
+
+		$this->assertSame( 'background', $binding->control_attr() );
+		// control_attr is editor-only metadata and must not leak into the projection targets.
+		$this->assertArrayNotHasKey( 'control_attr', $binding->projections );
+	}
+
+	/**
+	 * A binding with no control_attr declaration exposes null.
+	 *
+	 * @return void
+	 */
+	public function testControlAttrIsNullWhenAbsent(): void {
+		$binding = Binding::from_array( 'button-bg', [ 'kadence_slot' => 'palette-btn-bg' ] );
+
+		$this->assertNull( $binding->control_attr() );
+	}
+
+	/**
+	 * An empty-string control_attr is rejected, matching the inline-target validation.
+	 *
+	 * @return void
+	 */
+	public function testItRejectsAnEmptyControlAttr(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array(
+			'button-bg',
+			[
+				'kadence_slot' => 'palette-btn-bg',
+				'control_attr' => '',
+			]
+		);
+	}
 }
