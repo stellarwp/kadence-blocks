@@ -72,17 +72,15 @@ foreach ( $palette_slots as $token_id => $slot_label ) {
 		'group'       => __( 'Palette', 'kadence-blocks' ),
 		'projections' => [
 			'kadence_slot' => $slot_label[0],
-			'site_editor'  => true,
 		],
 	];
 }
 
 /**
  * Per-variant button color semantics (primary/secondary, resting + hover). The Button variant maps
- * reference these, and each is site_editor-surfaced so a site owner recolors one variant through the
- * standard token path without touching the global palette. They carry no kadence_slot of
- * their own: the Kadence button reads them via the variant's retarget bindings below, so overriding a
- * primary semantic recolors that variant through the standard token path.
+ * reference these by value and they carry no projections of their own — the Kadence button reads them
+ * through the variant's retarget bindings below, so overriding a primary semantic recolors that variant
+ * without touching the global palette.
  */
 $button_color_labels = [
 	'button-primary-bg'           => __( 'Button Primary Background', 'kadence-blocks' ),
@@ -98,11 +96,10 @@ $button_color_labels = [
 $button_color_tokens = [];
 foreach ( $button_color_labels as $suffix => $label ) {
 	$button_color_tokens[] = [
-		'id'          => 'semantic.color.' . $suffix,
-		'type'        => 'color',
-		'label'       => $label,
-		'group'       => __( 'Brand', 'kadence-blocks' ),
-		'projections' => [ 'site_editor' => true ],
+		'id'    => 'semantic.color.' . $suffix,
+		'type'  => 'color',
+		'label' => $label,
+		'group' => __( 'Brand', 'kadence-blocks' ),
 	];
 }
 
@@ -111,26 +108,20 @@ return [
 		[
 			[
 				/**
-				 * Semantic brand colors surfaced in the Style Book: they emit their --kb-token--* var via
-				 * Css_Var and deliberately claim NO kadence_slot, so writing button-bg never re-skins
-				 * --global-paletteN. Mapping the brand primitives onto the global palette is separate.
+				 * Semantic brand colors that emit their --kb-token--* var via Css_Var and deliberately claim
+				 * NO kadence_slot, so setting one never re-skins --global-paletteN. Mapping the brand primitives
+				 * onto the global palette is separate.
 				 */
-				'id'          => 'semantic.color.button-bg',
-				'type'        => 'color',
-				'label'       => __( 'Button Background', 'kadence-blocks' ),
-				'group'       => __( 'Brand', 'kadence-blocks' ),
-				'projections' => [
-					'site_editor' => true,
-				],
+				'id'    => 'semantic.color.button-bg',
+				'type'  => 'color',
+				'label' => __( 'Button Background', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
-				'id'          => 'semantic.color.button-text',
-				'type'        => 'color',
-				'label'       => __( 'Button Text', 'kadence-blocks' ),
-				'group'       => __( 'Brand', 'kadence-blocks' ),
-				'projections' => [
-					'site_editor' => true,
-				],
+				'id'    => 'semantic.color.button-text',
+				'type'  => 'color',
+				'label' => __( 'Button Text', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
 			],
 			[
 				// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default

@@ -20,7 +20,7 @@ final class BuilderTest extends TestCase {
 				'type'        => 'color',
 				'label'       => 'Button Background',
 				'group'       => 'Brand',
-				'projections' => [ 'site_editor' => true ],
+				'projections' => [ 'kadence_slot' => 'palette1' ],
 			]
 		);
 	}

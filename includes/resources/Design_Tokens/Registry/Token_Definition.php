@@ -64,7 +64,7 @@ final class Token_Definition {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, mixed> e.g. [ 'kadence_slot' => 'palette1', 'site_editor' => true ]
+	 * @var array<string, mixed> e.g. [ 'kadence_slot' => 'palette1' ]
 	 */
 	public array $projections;
 

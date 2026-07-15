@@ -12,8 +12,7 @@
                     "label": "Button Background",
                     "cssVar": "--kb-token--semantic--color--button-bg",
                     "projections": {
-                        "kadence_slot": "palette1",
-                        "site_editor": true
+                        "kadence_slot": "palette1"
                     },
                     "userCreated": false
                 },
@@ -22,9 +21,7 @@
                     "type": "color",
                     "label": "Button Text",
                     "cssVar": "--kb-token--semantic--color--button-text",
-                    "projections": {
-                        "site_editor": true
-                    },
+                    "projections": [],
                     "userCreated": false
                 }
             ],
@@ -34,9 +31,7 @@
                     "type": "dimension",
                     "label": "Medium",
                     "cssVar": "--kb-token--semantic--spacing--md",
-                    "projections": {
-                        "site_editor": true
-                    },
+                    "projections": [],
                     "userCreated": false
                 }
             ]

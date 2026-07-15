@@ -37,7 +37,7 @@ final class Css_Builder_SnapshotTest extends SnapshotTestCase {
 				'id'          => 'semantic.color.button-bg',
 				'type'        => 'color',
 				'label'       => 'Button Background',
-				'projections' => [ 'site_editor' => true ],
+				'projections' => [],
 			]
 		);
 
