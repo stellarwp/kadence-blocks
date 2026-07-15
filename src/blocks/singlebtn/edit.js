@@ -58,7 +58,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -286,6 +286,27 @@ export default function KadenceButtonEdit(props) {
 			setIsEditingURL(false);
 		}
 	}, [isSelected]);
+
+	// A remount key for the token-mapped color pickers. PopColorControl keeps the picked color in its own
+	// internal state, so clearing the attribute (a per-control revert or the variant Reset-all) updates the
+	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
+	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
+	const [colorResetNonce, setColorResetNonce] = useState(0);
+	const prevTokenColors = useRef({ color, background, colorHover, backgroundHover });
+	useEffect(() => {
+		const prev = prevTokenColors.current;
+		const cleared =
+			(prev.color && !color) ||
+			(prev.background && !background) ||
+			(prev.colorHover && !colorHover) ||
+			(prev.backgroundHover && !backgroundHover);
+
+		if (cleared) {
+			setColorResetNonce((nonce) => nonce + 1);
+		}
+
+		prevTokenColors.current = { color, background, colorHover, backgroundHover };
+	}, [color, background, colorHover, backgroundHover]);
 
 	const themeVersion = window?.kadence_blocks_params?.tVersion ? window.kadence_blocks_params.tVersion : '1.0.0';
 	const supportsSecondaryButton = compareVersions(themeVersion, '1.4.0') >= 0;
@@ -877,7 +898,7 @@ export default function KadenceButtonEdit(props) {
 																onReset={resetToken}
 															>
 																<PopColorControl
-																	key={'btncolorhover'}
+																	key={`btncolorhover-${colorResetNonce}`}
 																	label={__('Color Hover', 'kadence-blocks')}
 																	value={colorHover ? colorHover : ''}
 																	default={''}
@@ -913,7 +934,7 @@ export default function KadenceButtonEdit(props) {
 																onReset={resetToken}
 															>
 																<PopColorControl
-																	key={'btnbghover'}
+																	key={`btnbghover-${colorResetNonce}`}
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={backgroundHover ? backgroundHover : ''}
 																	default={''}
@@ -1090,7 +1111,7 @@ export default function KadenceButtonEdit(props) {
 																onReset={resetToken}
 															>
 																<PopColorControl
-																	key={'btncolor'}
+																	key={`btncolor-${colorResetNonce}`}
 																	label={__('Color', 'kadence-blocks')}
 																	value={color ? color : ''}
 																	default={''}
@@ -1124,7 +1145,7 @@ export default function KadenceButtonEdit(props) {
 																onReset={resetToken}
 															>
 																<PopColorControl
-																	key={'btnbg'}
+																	key={`btnbg-${colorResetNonce}`}
 																	label={__('Background Color', 'kadence-blocks')}
 																	value={background ? background : ''}
 																	default={''}
