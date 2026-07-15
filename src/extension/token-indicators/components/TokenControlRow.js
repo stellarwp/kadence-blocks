@@ -1,10 +1,11 @@
 /**
  * A row wrapper that places the design-system indicator BESIDE a control whose `label` prop is not
  * rendered as visible content (e.g. `PopColorControl`, which forwards `label` to a Button tooltip). The
- * wrapped control is passed through as children with all its own props intact; only an adjacent indicator
- * (and an optional heading) is added. Renders just the children when the attribute is not mapped for the
- * selected preset, so an unmapped control looks identical to today. When "highlight edits" is on and this
- * control overrides its preset, the whole row is tinted a warning color so the edit stands out.
+ * wrapped control is passed through as children with all its own props intact; a header row (an optional
+ * heading plus the indicator) is added above them. The indicator renders only when the attribute is mapped
+ * for the selected preset, so an unmapped control shows just its heading with no indicator. When "highlight
+ * edits" is on and this control overrides its preset, the whole row is tinted a warning color so the edit
+ * stands out.
  */
 
 import { useSelect } from '@wordpress/data';
