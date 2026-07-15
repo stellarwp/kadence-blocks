@@ -8,11 +8,12 @@
  */
 import { Modal, TextControl, Button, Notice } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { appendVariant } from './index';
 import { createVariant } from '../variants/api/client';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { deriveSlug, dedupeSlug } from '../variants/slug';
+import './save-variant-modal.scss';
 
 /**
  * The "save as a new preset" modal.
@@ -73,16 +74,7 @@ export function SaveVariantModal({ blockName, set, tokens, existingSlugs = [], o
 				</Notice>
 			)}
 
-			<TextControl
-				label={__('Preset name', 'kadence-blocks')}
-				value={label}
-				onChange={setLabel}
-				help={
-					label.trim() !== ''
-						? sprintf(/* translators: %s: preset slug. */ __('Slug: %s', 'kadence-blocks'), slug)
-						: ''
-				}
-			/>
+			<TextControl label={__('Preset name', 'kadence-blocks')} value={label} onChange={setLabel} />
 
 			<div className="kb-save-variant-modal__actions">
 				<Button variant="tertiary" onClick={onClose} disabled={saving}>
