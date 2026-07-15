@@ -14,6 +14,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 import { SaveVariantModal } from './SaveVariantModal';
 import { blockVariants, blockDefaultVariant, isUserVariant, removeVariant } from './index';
+import { capturedTokens } from './capture';
 import { deleteVariant, setVariantDefault } from '../variants/api/client';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
@@ -149,7 +150,8 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 				<SaveVariantModal
 					blockName={blockName}
 					set={set}
-					source={selected}
+					tokens={capturedTokens(blockName, set, attributes)}
+					existingSlugs={blockVariants(blockName, set).map((variant) => variant.slug)}
 					onClose={() => setMode('none')}
 					onSaved={(slug) => onSelect(slug)}
 				/>

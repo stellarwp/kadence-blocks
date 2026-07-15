@@ -19,6 +19,7 @@ import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { activeSet, blockVariants, blockDefaultVariant } from './index';
 import { variantIcon, resetIcon } from './icons';
+import { capturedTokens } from './capture';
 import { SaveVariantModal } from './SaveVariantModal';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
@@ -223,7 +224,8 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 				<SaveVariantModal
 					blockName={blockName}
 					set={tokenSet}
-					source={selected}
+					tokens={capturedTokens(blockName, tokenSet, attributes)}
+					existingSlugs={variants.map((variant) => variant.slug)}
 					onClose={() => setSaving(false)}
 					onSaved={(slug) => selectVariant(slug)}
 				/>
