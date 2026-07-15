@@ -51,8 +51,8 @@ final class RegistrationHelperTest extends TestCase {
 	}
 
 	public function testDeclarationsFileRegisteredTheExampleTokens(): void {
-		$this->assertTrue( $this->registry->has( 'semantic.color.button-bg' ) );
-		$this->assertTrue( $this->registry->has( 'semantic.color.button-text' ) );
+		$this->assertTrue( $this->registry->has( 'semantic.color.button-primary-bg' ) );
+		$this->assertTrue( $this->registry->has( 'semantic.color.button-primary-text' ) );
 	}
 
 	public function testDeclarationsFileRegisteredTheButtonVariantSet(): void {

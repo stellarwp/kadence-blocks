@@ -28,18 +28,9 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 	 */
 	public function testFullPayloadMatchesSnapshot(): void {
 		$tokens = [
-			[
-				'semantic.color.button-bg',
-				'color',
-				'Button Background',
-				'Brand',
-				[
-					'wp_preset'    => 'color',
-					'kadence_slot' => 'palette1',
-				],
-			],
-			[ 'semantic.color.button-text', 'color', 'Button Text', 'Brand', [ 'wp_preset' => 'color' ] ],
-			[ 'semantic.spacing.md', 'dimension', 'Medium', 'Layout', [ 'wp_preset' => 'spacing' ] ],
+			[ 'semantic.color.button-bg', 'color', 'Button Background', 'Brand', [ 'kadence_slot' => 'palette1' ] ],
+			[ 'semantic.color.button-text', 'color', 'Button Text', 'Brand', [] ],
+			[ 'semantic.spacing.md', 'dimension', 'Medium', 'Layout', [] ],
 		];
 
 		$values = [];

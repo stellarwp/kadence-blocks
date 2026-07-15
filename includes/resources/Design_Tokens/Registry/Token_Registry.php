@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
  * The single declaration point for design tokens. Holds structure only — never values.
  *
  * Every projector and the admin UI read this one registry, so declaring a token once here makes it
- * reach the custom UI, the theme.json presets, the Kadence palette and the Site Editor without a
+ * reach the custom UI, the Kadence palette and the Site Editor without a
  * second source of truth.
  *
  * Resolved as a singleton from KB's container; tokens are declared during the module's Provider boot
@@ -204,7 +204,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Tokens that declare a given projection target, e.g. all tokens with a "wp_preset" projection.
+	 * Tokens that declare a given projection target, e.g. all tokens with a "kadence_slot" projection.
 	 *
 	 * @since TBD
 	 *

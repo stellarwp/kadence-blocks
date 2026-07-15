@@ -7,7 +7,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 /**
  * Registers the Design Tokens projection providers.
  *
- * Each projector lives in its own sub-namespace (Css_Var, Theme_Json, …) with its own Provider,
+ * Each projector lives in its own sub-namespace (Css_Var, Variant, …) with its own Provider,
  * keeping bindings and hook registrations isolated per target format. This provider boots them.
  *
  * @since TBD
@@ -23,11 +23,9 @@ final class Provider extends Provider_Contract {
 	 */
 	private const PROVIDERS = [
 		Css_Var\Provider::class,
-		Theme_Json\Provider::class,
 		Block_Preset\Provider::class,
 		Kadence_Option\Provider::class,
 		Variant\Provider::class,
-		Native\Provider::class,
 		Block_Default_Css\Provider::class,
 		Adapter\Provider::class,
 	];

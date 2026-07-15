@@ -64,7 +64,7 @@ final class Token_Definition {
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, mixed> e.g. [ 'wp_preset' => 'color', 'kadence_slot' => 'palette1', 'site_editor' => true ]
+	 * @var array<string, mixed> e.g. [ 'kadence_slot' => 'palette1' ]
 	 */
 	public array $projections;
 
@@ -243,7 +243,7 @@ final class Token_Definition {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $projection A projection id, e.g. "wp_preset".
+	 * @param string $projection A projection id, e.g. "kadence_slot".
 	 *
 	 * @return bool
 	 */

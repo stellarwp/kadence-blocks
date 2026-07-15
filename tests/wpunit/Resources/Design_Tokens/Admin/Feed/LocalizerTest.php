@@ -113,15 +113,15 @@ final class LocalizerTest extends TestCase {
 		$this->assertTrue( $feed['resolved'] );
 		$this->assertSame( Token_Store::default_slug(), $feed['slug'] );
 
-		// Structure: the shipped button-bg token reaches the schema.
+		// Structure: the shipped button-primary-bg token reaches the schema.
 		$ids = [];
 		foreach ( $feed['schema']['groups'] as $entries ) {
 			$ids = array_merge( $ids, array_column( $entries, 'id' ) );
 		}
-		$this->assertContains( 'semantic.color.button-bg', $ids );
+		$this->assertContains( 'semantic.color.button-primary-bg', $ids );
 
 		// Values: keyed identically to the schema, the resolved hex.
-		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-bg'] );
+		$this->assertSame( '#3633e1', $feed['values']['semantic.color.button-primary-bg'] );
 
 		// REST descriptor.
 		$this->assertSame( 'kb-design-tokens/v1', $feed['rest']['namespace'] );

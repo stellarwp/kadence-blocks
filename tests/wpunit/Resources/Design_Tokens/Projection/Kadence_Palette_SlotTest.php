@@ -68,6 +68,6 @@ final class Kadence_Palette_SlotTest extends TestCase {
 	}
 
 	public function testFromTokenReturnsNullWhenNoKadenceSlotProjection(): void {
-		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [ 'wp_preset' => 'color' ] ) ) );
+		$this->assertNull( Kadence_Palette_Slot::from_token( $this->token( [] ) ) );
 	}
 }

@@ -12,7 +12,6 @@
                     "label": "Button Background",
                     "cssVar": "--kb-token--semantic--color--button-bg",
                     "projections": {
-                        "wp_preset": "color",
                         "kadence_slot": "palette1"
                     },
                     "userCreated": false
@@ -22,9 +21,7 @@
                     "type": "color",
                     "label": "Button Text",
                     "cssVar": "--kb-token--semantic--color--button-text",
-                    "projections": {
-                        "wp_preset": "color"
-                    },
+                    "projections": [],
                     "userCreated": false
                 }
             ],
@@ -34,9 +31,7 @@
                     "type": "dimension",
                     "label": "Medium",
                     "cssVar": "--kb-token--semantic--spacing--md",
-                    "projections": {
-                        "wp_preset": "spacing"
-                    },
+                    "projections": [],
                     "userCreated": false
                 }
             ]

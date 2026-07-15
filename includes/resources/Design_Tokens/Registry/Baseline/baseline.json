@@ -270,14 +270,6 @@
 				"$type": "color",
 				"$value": "{primitive.color.brand.primary}"
 			},
-			"button-bg": {
-				"$type": "color",
-				"$value": "{primitive.color.brand.button}"
-			},
-			"button-text": {
-				"$type": "color",
-				"$value": "{primitive.color.neutral.0}"
-			},
 			"button-primary-bg": {
 				"$type": "color",
 				"$value": "{primitive.color.brand.button}"
@@ -579,27 +571,6 @@
 						"tokens": {
 							"color": "{semantic.color.icon}",
 							"size": "{semantic.icon-size.default}"
-						}
-					}
-				},
-				"core/button": {
-					"$default": "primary",
-					"primary": {
-						"label": "Primary",
-						"tokens": {
-							"button-bg": "{semantic.color.button-primary-bg}",
-							"button-text": "{semantic.color.button-primary-text}",
-							"button-bg-hover": "{semantic.color.button-primary-bg-hover}",
-							"button-text-hover": "{semantic.color.button-primary-text-hover}"
-						}
-					},
-					"secondary": {
-						"label": "Secondary",
-						"tokens": {
-							"button-bg": "{semantic.color.button-secondary-bg}",
-							"button-text": "{semantic.color.button-secondary-text}",
-							"button-bg-hover": "{semantic.color.button-secondary-bg-hover}",
-							"button-text-hover": "{semantic.color.button-secondary-text-hover}"
 						}
 					}
 				}
