@@ -385,6 +385,35 @@ final class Literals {
 	}
 
 	/**
+	 * Whether the value is a valid clamp preferred (fluid) slot: a plain dimension, a CSS function form,
+	 * or a bare calc-style expression combining number/length/percentage/viewport terms with the math
+	 * operators + - * / (e.g. "0.995rem + 0.326vw", "100% - 20px"). The bare-expression form is what a
+	 * dimension literal rejects — a clamp() argument accepts a <calc-sum> without a calc() wrapper, so the
+	 * preferred slot must too. This is a shape gate, not a full CSS math validator.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The candidate clamp preferred slot.
+	 *
+	 * @return bool
+	 */
+	public static function is_clamp_preferred( $value ): bool {
+		if ( ! is_string( $value ) || trim( $value ) === '' ) {
+			return false;
+		}
+
+		// A single length / "0" / function form (var()/calc()/clamp()/min()/max()) is already a dimension.
+		if ( self::is_dimension( $value ) ) {
+			return true;
+		}
+
+		// A bare calc-style sum: number(+unit) terms joined by + - * / (spaces optional in this shape gate).
+		$term = '-?(?:\d+\.?\d*|\.\d+)(?:' . self::LENGTH_UNITS . ')?';
+
+		return (bool) preg_match( '/^' . $term . '(?:\s*[-+*\/]\s*' . $term . ')+$/i', $value );
+	}
+
+	/**
 	 * Whether the value is a valid fontStyle literal: one of the CSS font-style keywords.
 	 *
 	 * @since TBD
