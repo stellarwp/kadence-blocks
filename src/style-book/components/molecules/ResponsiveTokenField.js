@@ -62,7 +62,8 @@ function hydrate(value, responsive) {
  * Assemble the structured value the save path serializes into a DTCG leaf ($value + $extensions).
  *
  * @param {{ mode: string, desktop: string, tablet: string, mobile: string, clamp: object }} state Editor state.
- * @return {string|{ base: string, responsive?: object, clamp?: object }} Structured value (or a plain string when flat).
+ * @return {{ base: string, responsive?: object, clamp?: object }} Structured value: base plus the stepped
+ *         responsive map, or base plus the clamp slots in fluid mode.
  */
 function toStructuredValue(state) {
 	if (state.mode === 'fluid') {

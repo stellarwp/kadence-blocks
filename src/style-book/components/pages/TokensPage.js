@@ -52,7 +52,7 @@ export function TokensPage() {
 		isActive,
 		isResolved,
 		values: feedValues,
-		responsive,
+		responsive: initialResponsive,
 		rest,
 		version: initialVersion,
 		slug,
@@ -64,7 +64,13 @@ export function TokensPage() {
 	// tripping a false-positive conflict when one surface's write is followed by another's.
 	const [version, setVersion] = useState(initialVersion);
 
-	const { values, saveToken, getFieldState, refreshValues } = useTokenEditor(rest, feedValues, setVersion, slug);
+	const { values, responsive, saveToken, getFieldState, refreshValues } = useTokenEditor(
+		rest,
+		feedValues,
+		initialResponsive,
+		setVersion,
+		slug
+	);
 
 	const [localTokens, setLocalTokens] = useState(null);
 	const tokens = localTokens ?? feedTokens;

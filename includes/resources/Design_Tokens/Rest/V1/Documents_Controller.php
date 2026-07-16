@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
@@ -196,6 +197,16 @@ final class Documents_Controller extends Controller {
 	private Token_Reference_Policy $reference_policy;
 
 	/**
+	 * Extracts the authored responsive / clamp shape per token, so a read of the resolved map can carry the
+	 * per-breakpoint steps the flat by_id map flattens away.
+	 *
+	 * @since TBD
+	 *
+	 * @var Responsive_Feed
+	 */
+	private Responsive_Feed $responsive_feed;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -224,6 +235,7 @@ final class Documents_Controller extends Controller {
 	 * @param User_Primitive_Index              $user_primitive_index  Inspects documents for user-created primitives.
 	 * @param User_Primitive_Document_Validator $user_primitive_validator Enforces the user-primitive document invariant.
 	 * @param Token_Reference_Policy            $reference_policy      Scans for alias references to a user primitive.
+	 * @param Responsive_Feed                   $responsive_feed       Extracts the authored responsive / clamp shape per token.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -233,7 +245,8 @@ final class Documents_Controller extends Controller {
 		Effective_Document $effective,
 		User_Primitive_Index $user_primitive_index,
 		User_Primitive_Document_Validator $user_primitive_validator,
-		Token_Reference_Policy $reference_policy
+		Token_Reference_Policy $reference_policy,
+		Responsive_Feed $responsive_feed
 	) {
 		$this->store                    = $store;
 		$this->resolver                 = $resolver;
@@ -243,6 +256,7 @@ final class Documents_Controller extends Controller {
 		$this->user_primitive_index     = $user_primitive_index;
 		$this->user_primitive_validator = $user_primitive_validator;
 		$this->reference_policy         = $reference_policy;
+		$this->responsive_feed          = $responsive_feed;
 		$this->rest_base                = 'documents';
 	}
 
@@ -420,6 +434,11 @@ final class Documents_Controller extends Controller {
 	 * to its CSS value; a stored set carrying an alias cycle or a dangling alias cannot be flattened, so it
 	 * is surfaced as HTTP 422 rather than a fatal.
 	 *
+	 * Alongside the flat by_id / by_var maps, the response carries the authored responsive / clamp shape per
+	 * token (empty for a set with no responsive tokens). The flat maps lose the per-breakpoint steps, so a
+	 * client that re-reads this endpoint after a write — the Style Book token editor does, to keep its
+	 * per-breakpoint inputs fresh — would otherwise fall back to a stale bootstrap of the responsive shape.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -446,12 +465,15 @@ final class Documents_Controller extends Controller {
 			);
 		}
 
+		$responsive = $this->responsive_feed->from_document( $this->effective->build( $this->read_stored_document( $slug ) ) );
+
 		return new WP_REST_Response(
 			[
-				'slug'    => $slug,
-				'version' => $this->store->get_version( $slug ),
-				'by_id'   => $resolved->by_id(),
-				'by_var'  => $resolved->by_var(),
+				'slug'       => $slug,
+				'version'    => $this->store->get_version( $slug ),
+				'by_id'      => $resolved->by_id(),
+				'by_var'     => $resolved->by_var(),
+				'responsive' => $responsive,
 			],
 			WP_Http::OK
 		);
@@ -799,26 +821,33 @@ final class Documents_Controller extends Controller {
 			'title'      => 'design-token-resolved-map',
 			'type'       => 'object',
 			'properties' => [
-				'slug'    => [
+				'slug'       => [
 					'description' => __( 'The token set slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'version' => [
+				'version'    => [
 					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'by_id'   => array_merge(
+				'by_id'      => array_merge(
 					[ 'description' => __( 'Resolved CSS values keyed by token dot-path id.', 'kadence-blocks' ) ],
 					$css_value_map
 				),
-				'by_var'  => array_merge(
+				'by_var'     => array_merge(
 					[ 'description' => __( 'Resolved CSS values keyed by CSS custom-property name.', 'kadence-blocks' ) ],
 					$css_value_map
 				),
+				'responsive' => [
+					'description'          => __( 'Authored responsive / clamp shape keyed by token dot-path id; present only for tokens that carry a shape.', 'kadence-blocks' ),
+					'type'                 => 'object',
+					'context'              => [ 'view' ],
+					'readonly'             => true,
+					'additionalProperties' => [ 'type' => 'object' ],
+				],
 			],
 		];
 

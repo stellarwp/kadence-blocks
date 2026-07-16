@@ -497,23 +497,27 @@ final class Dtcg_Validator {
 		}
 
 		if ( array_key_exists( $preferred, $clamp ) ) {
-			$errors = array_merge( $errors, $this->validate_clamp_preferred( $clamp[ $preferred ], $path . '.' . $preferred ) );
+			$errors = array_merge( $errors, $this->validate_clamp_preferred( $clamp[ $preferred ], $type, $path . '.' . $preferred ) );
 		}
 
 		return $errors;
 	}
 
 	/**
-	 * Validate a clamp preferred slot: an alias, or a calc-style expression / dimension literal.
+	 * Validate a clamp preferred slot: an alias, a literal of the leaf's own $type, or a bare calc-style
+	 * fluid expression. The $type check is what lets a lineHeight clamp carry a unitless preferred (e.g.
+	 * "1.2") exactly as its min / max slots do; the calc-style branch accepts what a plain type literal
+	 * rejects — a clamp() preferred takes a <calc-sum> like "0.995rem + 0.326vw" without a calc() wrapper.
 	 *
 	 * @since TBD
 	 *
 	 * @param mixed  $value The decoded preferred slot.
+	 * @param string $type  The leaf's $type.
 	 * @param string $path  Dot-path to the slot.
 	 *
 	 * @return Validation_Error[]
 	 */
-	private function validate_clamp_preferred( $value, string $path ): array {
+	private function validate_clamp_preferred( $value, string $type, string $path ): array {
 		if ( Alias::is_alias( $value ) ) {
 			return [];
 		}
@@ -528,6 +532,13 @@ final class Dtcg_Validator {
 			];
 		}
 
+		// A literal of the leaf's own type — a bare dimension, or a unitless lineHeight — is a valid
+		// preferred, mirroring how the min / max slots validate against $this->validators[ $type ].
+		if ( $this->validators[ $type ]->validate( $value, $path ) === [] ) {
+			return [];
+		}
+
+		// A bare calc-style fluid expression, which a plain type literal rejects.
 		if ( Literals::is_clamp_preferred( $value ) ) {
 			return [];
 		}
@@ -536,7 +547,7 @@ final class Dtcg_Validator {
 			new Validation_Error(
 				$path,
 				Validation_Error::get_code_value_invalid(),
-				'The clamp preferred slot must be an alias, a dimension, or a calc-style expression.'
+				'The clamp preferred slot must be an alias, a literal of the token type, or a calc-style expression.'
 			),
 		];
 	}
