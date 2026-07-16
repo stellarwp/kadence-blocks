@@ -15,6 +15,12 @@
 import { get } from 'lodash';
 import { activeSet, blockDefaultVariant, blockProperties, blockVariantValues } from '../variant-picker';
 import { isEmptyValue, matchesVariant } from './normalize';
+import './token-indicators.scss';
+
+export { TOKEN_INDICATORS_STORE } from './store';
+export { TokenIndicator } from './components/TokenIndicator';
+export { TokenLabel } from './components/TokenLabel';
+export { TokenControlRow } from './components/TokenControlRow';
 
 /**
  * The companion unit attribute for a dimension control, by convention `${attr}Unit` (e.g. `borderRadius`

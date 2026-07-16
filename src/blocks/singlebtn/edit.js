@@ -87,6 +87,9 @@ import BackendStyles from './components/backend-styles';
 import { VariantPicker, blockVariants, activeSet } from '../../extension/variant-picker';
 import { VariantActions } from '../../extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from '../../extension/token-set-picker';
+import { useVariantBinding, resetAttr } from '../../extension/token-indicators';
+import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
+import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -263,6 +266,11 @@ export default function KadenceButtonEdit(props) {
 	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
+
+	// Design-token indicators: the per-attribute bound/overridden state for the selected variant, plus a
+	// reset that clears the mapped attribute back to the variant value (served by the existing scoped CSS).
+	const tokenBinding = useVariantBinding('kadence/singlebtn', attributes);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -903,15 +911,23 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															<PopColorControl
-																key={'btncolorhover'}
-																label={__('Color Hover', 'kadence-blocks')}
-																value={colorHover ? colorHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorHover: value })
-																}
-															/>
+															// TODO: confirm exact placement vs Figma node 160-12291
+															<TokenControlRow
+																heading={__('Color Hover', 'kadence-blocks')}
+																attr="colorHover"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={'btncolorhover'}
+																	swatchLabel={__('Color Hover', 'kadence-blocks')}
+																	value={colorHover ? colorHover : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ colorHover: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Hover Type', 'kadence-blocks')}
@@ -931,15 +947,26 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															<PopColorControl
-																key={'btnbghover'}
-																label={__('Background Color', 'kadence-blocks')}
-																value={backgroundHover ? backgroundHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ backgroundHover: value })
-																}
-															/>
+															// TODO: confirm exact placement vs Figma node 160-12291
+															<TokenControlRow
+																heading={__('Background Color', 'kadence-blocks')}
+																attr="backgroundHover"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={'btnbghover'}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
+																	value={backgroundHover ? backgroundHover : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundHover: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<ResponsiveBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1100,13 +1127,23 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															<PopColorControl
-																key={'btncolor'}
-																label={__('Color', 'kadence-blocks')}
-																value={color ? color : ''}
-																default={''}
-																onChange={(value) => setAttributes({ color: value })}
-															/>
+															// TODO: confirm exact placement vs Figma node 160-12291
+															<TokenControlRow
+																heading={__('Color', 'kadence-blocks')}
+																attr="color"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={'btncolor'}
+																	swatchLabel={__('Color', 'kadence-blocks')}
+																	value={color ? color : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ color: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Type', 'kadence-blocks')}
@@ -1124,15 +1161,26 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															<PopColorControl
-																key={'btnbg'}
-																label={__('Background Color', 'kadence-blocks')}
-																value={background ? background : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ background: value })
-																}
-															/>
+															// TODO: confirm exact placement vs Figma node 160-12291
+															<TokenControlRow
+																heading={__('Background Color', 'kadence-blocks')}
+																attr="background"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={'btnbg'}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
+																	value={background ? background : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ background: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<ResponsiveBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1148,7 +1196,14 @@ export default function KadenceButtonEdit(props) {
 															}
 														/>
 														<ResponsiveMeasurementControls
-															label={__('Border Radius', 'kadence-blocks')}
+															label={
+																<TokenLabel
+																	text={__('Border Radius', 'kadence-blocks')}
+																	attr="borderRadius"
+																	binding={tokenBinding}
+																	onReset={resetToken}
+																/>
+															}
 															value={borderRadius}
 															tabletValue={tabletBorderRadius}
 															mobileValue={mobileBorderRadius}
