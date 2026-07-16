@@ -84,7 +84,12 @@ final class Responsive_Attribute_WriterTest extends TestCase {
 			[],
 			[],
 			[],
-			[ 'semantic.font-size.control' => [ 'tablet' => '1.0625rem', 'mobile' => '1rem' ] ]
+			[
+				'semantic.font-size.control' => [
+					'tablet' => '1.0625rem',
+					'mobile' => '1rem',
+				],
+			]
 		);
 	}
 }

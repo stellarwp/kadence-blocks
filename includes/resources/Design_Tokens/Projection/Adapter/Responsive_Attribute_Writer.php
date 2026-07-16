@@ -79,9 +79,9 @@ final class Responsive_Attribute_Writer {
 	 */
 	public function siblings( string $id, string $attribute ): array {
 		return [
-			$attribute                        => (string) ( $this->resolved->value( $id ) ?? '' ),
-			'tablet' . ucfirst( $attribute )  => (string) ( $this->resolved->value_at( $id, Responsive::get_tablet_key() ) ?? '' ),
-			'mobile' . ucfirst( $attribute )  => (string) ( $this->resolved->value_at( $id, Responsive::get_mobile_key() ) ?? '' ),
+			$attribute                       => (string) ( $this->resolved->value( $id ) ?? '' ),
+			'tablet' . ucfirst( $attribute ) => (string) ( $this->resolved->value_at( $id, Responsive::get_tablet_key() ) ?? '' ),
+			'mobile' . ucfirst( $attribute ) => (string) ( $this->resolved->value_at( $id, Responsive::get_mobile_key() ) ?? '' ),
 		];
 	}
 }
