@@ -38,17 +38,91 @@ export function flattenSchemaTokens(schema) {
 }
 
 /**
+ * The vendor-extension namespace the module owns (mirrors Schema\Vocabulary\Extensions::NAMESPACE).
+ *
+ * @type {string}
+ */
+export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
+
+/**
+ * The stepped responsive breakpoint keys, in cascade order (mirrors Schema\Vocabulary\Responsive).
+ *
+ * @type {string[]}
+ */
+export const RESPONSIVE_BREAKPOINTS = ['tablet', 'mobile'];
+
+/**
  * Build a DTCG leaf payload for a token value update.
  *
+ * Accepts either a plain string (a flat token) or a structured value carrying a base plus a per-breakpoint
+ * `responsive` map or a `clamp` map. The responsive / clamp shape is serialized under the leaf's
+ * `$extensions`, and is omitted entirely when it holds no non-empty values, so a desktop-only edit
+ * round-trips as a clean flat leaf (never a degenerate `responsive: {}`).
+ *
  * @param {string} type  Token type from the schema (color, dimension, etc.).
- * @param {string} value Raw value string.
- * @return {{ $type: string, $value: string }} DTCG leaf.
+ * @param {string|{ base?: string, responsive?: Record<string, string>, clamp?: Record<string, string> }} value
+ *                       Raw value string, or a structured responsive / clamp value.
+ * @return {{ $type: string, $value: string, $extensions?: object }} DTCG leaf.
  */
 export function buildTokenLeaf(type, value) {
-	return {
+	if (typeof value === 'string') {
+		return {
+			$type: type,
+			$value: value.trim(),
+		};
+	}
+
+	const leaf = {
 		$type: type,
-		$value: value.trim(),
+		$value: String(value?.base ?? '').trim(),
 	};
+
+	const extension = buildResponsiveExtension(value);
+
+	if (extension) {
+		leaf.$extensions = { [KADENCE_TOKEN_NAMESPACE]: extension };
+	}
+
+	return leaf;
+}
+
+/**
+ * Build the `com.kadence.designTokens` extension body for a structured value, or null when it carries no
+ * non-empty responsive / clamp values.
+ *
+ * @param {{ responsive?: Record<string, string>, clamp?: Record<string, string> }} value Structured value.
+ * @return {{ responsive: object }|{ clamp: object }|null} Extension body, or null.
+ */
+function buildResponsiveExtension(value) {
+	if (value?.clamp) {
+		const min = String(value.clamp.min ?? '').trim();
+		const preferred = String(value.clamp.preferred ?? '').trim();
+		const max = String(value.clamp.max ?? '').trim();
+
+		if (min !== '' && preferred !== '' && max !== '') {
+			return { clamp: { min, preferred, max } };
+		}
+
+		return null;
+	}
+
+	if (value?.responsive) {
+		const responsive = {};
+
+		RESPONSIVE_BREAKPOINTS.forEach((breakpoint) => {
+			const step = String(value.responsive[breakpoint] ?? '').trim();
+
+			if (step !== '') {
+				responsive[breakpoint] = step;
+			}
+		});
+
+		if (Object.keys(responsive).length > 0) {
+			return { responsive };
+		}
+	}
+
+	return null;
 }
 
 /**
@@ -59,6 +133,17 @@ export function buildTokenLeaf(type, value) {
  */
 export function isColorType(type) {
 	return type === 'color';
+}
+
+/**
+ * Whether a token type is responsive-capable (mirrors Schema\Vocabulary\Responsive::is_responsive_capable):
+ * only dimension and lineHeight may carry a per-breakpoint / clamp shape.
+ *
+ * @param {string} type Token type from the schema.
+ * @return {boolean}
+ */
+export function isResponsiveType(type) {
+	return type === 'dimension' || type === 'lineHeight';
 }
 
 /**

@@ -36,6 +36,7 @@ export function useDesignTokensFeed() {
 		isActive: Boolean(feed?.active),
 		isResolved: Boolean(feed?.resolved),
 		values: feed?.values ?? {},
+		responsive: feed?.responsive ?? {},
 		rest: feed?.rest ?? null,
 		version: feed?.version ?? '',
 		slug: feed?.slug ?? DEFAULT_TOKEN_SET_SLUG,

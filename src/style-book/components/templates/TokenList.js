@@ -37,6 +37,7 @@ function groupTokens(tokens) {
  * @param {object}   props                      Component props.
  * @param {object[]} props.tokens               Flat token definitions.
  * @param {Record<string, string>} props.values Resolved values.
+ * @param {Record<string, object>} [props.responsive] Authored responsive / clamp shapes by token id.
  * @param {boolean}  props.isReady              Whether the feed loaded.
  * @param {boolean}  props.isActive             Whether design tokens are active.
  * @param {boolean}  props.isResolved           Whether values resolved successfully.
@@ -54,6 +55,7 @@ function groupTokens(tokens) {
 export function TokenList({
 	tokens,
 	values,
+	responsive,
 	isReady,
 	isActive,
 	isResolved,
@@ -110,6 +112,7 @@ export function TokenList({
 							groupName={groupName}
 							tokens={groupTokensList}
 							values={values}
+							responsive={responsive}
 							onSave={onSave}
 							getFieldState={getFieldState}
 							isUserCreatedGroup={hasUserCreated}
@@ -129,6 +132,7 @@ export function TokenList({
 					groupName=""
 					tokens={tokens}
 					values={values}
+					responsive={responsive}
 					onSave={onSave}
 					getFieldState={getFieldState}
 					isUserCreatedGroup={Boolean(onCreatePrimitive)}

@@ -12,6 +12,7 @@ import { TokenList } from '../templates/TokenList';
  * @param {object[]} props.sections             Built navigation sections.
  * @param {object[]} props.tokens               Flat token list.
  * @param {Record<string, string>} props.values Resolved values.
+ * @param {Record<string, object>} [props.responsive] Authored responsive / clamp shapes by token id.
  * @param {boolean}  props.isReady              Whether the feed loaded.
  * @param {boolean}  props.isActive             Whether design tokens are active.
  * @param {boolean}  props.isResolved           Whether values resolved successfully.
@@ -29,6 +30,7 @@ export function FoundationPage({
 	sections,
 	tokens,
 	values,
+	responsive,
 	isReady,
 	isActive,
 	isResolved,
@@ -59,6 +61,7 @@ export function FoundationPage({
 			<TokenList
 				tokens={filtered}
 				values={values}
+				responsive={responsive}
 				isReady={isReady}
 				isActive={isActive}
 				isResolved={isResolved}

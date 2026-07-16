@@ -52,6 +52,7 @@ export function TokensPage() {
 		isActive,
 		isResolved,
 		values: feedValues,
+		responsive,
 		rest,
 		version: initialVersion,
 		slug,
@@ -104,6 +105,7 @@ export function TokensPage() {
 	const sharedListProps = {
 		tokens,
 		values,
+		responsive,
 		isReady,
 		isActive,
 		isResolved,
