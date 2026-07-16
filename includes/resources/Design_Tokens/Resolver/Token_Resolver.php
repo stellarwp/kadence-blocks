@@ -55,6 +55,17 @@ final class Token_Resolver {
 	private array $memo = [];
 
 	/**
+	 * Per-request memo of effective (baseline-merged) documents, keyed on the slug and store version, so the
+	 * stored document is decoded and merged once per version no matter how many callers need the authored
+	 * view — the resolve path itself, the responsive feed, and the REST resolved read all share one build.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,array<string,mixed>>
+	 */
+	private array $effective_memo = [];
+
+	/**
 	 * Wire the token store, effective-document builder, and value renderer.
 	 *
 	 * @since TBD
@@ -146,10 +157,7 @@ final class Token_Resolver {
 			return $cached;
 		}
 
-		$raw      = $this->store->get_document( $slug );
-		$decoded  = $raw === '' ? [] : json_decode( $raw, true );
-		$over     = is_array( $decoded ) ? $decoded : [];
-		$document = $this->effective->build( $over );
+		$document = $this->effective_document( $slug );
 
 		$result = $this->resolve_document( $document, $css_namespace );
 
@@ -173,6 +181,35 @@ final class Token_Resolver {
 	 */
 	public function resolve_overrides( array $overrides ): Resolved_Tokens {
 		return $this->resolve_document( $this->effective->build( $overrides ) );
+	}
+
+	/**
+	 * The baseline-merged effective document for a stored set, with $extensions intact — the authored view
+	 * the resolved maps flatten away. This is the source the responsive feed and the REST resolved read need
+	 * to recover a token's authored responsive / clamp shape (aliases preserved, unrendered), which the flat
+	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
+	 * the stored document is decoded and merged once rather than rebuilt by every caller.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string,mixed> The effective document.
+	 */
+	public function effective_document( string $slug = 'default' ): array {
+		$cache_key = $slug . '_' . $this->store->get_version( $slug );
+
+		if ( isset( $this->effective_memo[ $cache_key ] ) ) {
+			return $this->effective_memo[ $cache_key ];
+		}
+
+		$raw     = $this->store->get_document( $slug );
+		$decoded = $raw === '' ? [] : json_decode( $raw, true );
+		$over    = is_array( $decoded ) ? $decoded : [];
+
+		$this->effective_memo[ $cache_key ] = $this->effective->build( $over );
+
+		return $this->effective_memo[ $cache_key ];
 	}
 
 	/**
