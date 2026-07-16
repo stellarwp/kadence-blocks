@@ -2,9 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
@@ -821,23 +821,23 @@ final class Documents_Controller extends Controller {
 			'title'      => 'design-token-resolved-map',
 			'type'       => 'object',
 			'properties' => [
-				'slug'    => [
+				'slug'       => [
 					'description' => __( 'The token set slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'version' => [
+				'version'    => [
 					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'by_id'   => array_merge(
+				'by_id'      => array_merge(
 					[ 'description' => __( 'Resolved CSS values keyed by token dot-path id.', 'kadence-blocks' ) ],
 					$css_value_map
 				),
-				'by_var'  => array_merge(
+				'by_var'     => array_merge(
 					[ 'description' => __( 'Resolved CSS values keyed by CSS custom-property name.', 'kadence-blocks' ) ],
 					$css_value_map
 				),
