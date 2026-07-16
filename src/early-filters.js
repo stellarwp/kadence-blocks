@@ -371,6 +371,8 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 										set={set}
 										selected={selected}
 										onSelect={selectVariant}
+										attributes={attributes}
+										setAttributes={setAttributes}
 									/>
 								</SubsectionWrap>
 							)}
