@@ -445,6 +445,38 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A lineHeight leaf carrying a structured clamp with a unitless preferred validates: the preferred slot
+	 * is checked against the leaf's own $type, so a bare "1.35" is accepted exactly as its min / max slots.
+	 *
+	 * @return void
+	 */
+	public function testALineHeightClampWithUnitlessPreferredValidates(): void {
+		$document = [
+			'semantic' => [
+				'line-height' => [
+					'control' => [
+						'$type'       => 'lineHeight',
+						'$value'      => 'clamp(1.2, 1.35, 1.5)',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min'       => '1.2',
+									'preferred' => '1.35',
+									'max'       => '1.5',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * A flat dimension leaf with no responsive / clamp extension still validates, so enabling responsive
 	 * on a previously-flat token is safe against already-stored flat overrides.
 	 *

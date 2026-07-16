@@ -326,10 +326,11 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Render a structured clamp map to a clamp(min, preferred, max) string. Each min / max slot is flattened
-	 * against the leaf's $type; the preferred slot is a calc-style expression rendered as-is. When $projected
-	 * is true, alias slots are preserved as var() references (for the css-var projection); otherwise they are
-	 * flattened to literals (for host surfaces).
+	 * Render a structured clamp map to a clamp(min, preferred, max) string. Every slot — min, preferred and
+	 * max alike — is flattened against the leaf's $type: an alias slot resolves to its target, a literal
+	 * passes through, and the calc-style fluid expression the preferred slot typically holds renders
+	 * verbatim. When $projected is true, alias slots are preserved as var() references (for the css-var
+	 * projection); otherwise they are flattened to literals (for host surfaces).
 	 *
 	 * @since TBD
 	 *
