@@ -816,4 +816,209 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->assertSame( '#000000', $resolver->resolve()->value( 'semantic.color.button-primary-bg' ) );
 	}
+
+	/**
+	 * A stepped responsive dimension keeps its flat base value and adds a per-breakpoint override that the
+	 * projection redeclares: the base is in by_id / by_var, and each breakpoint override is exposed both as a
+	 * projected var map and as a literal via value_at().
+	 *
+	 * @return void
+	 */
+	public function testItExposesPerBreakpointResponsiveOverrides(): void {
+		$resolver = $this->resolver_for(
+			[
+				'semantic' => [
+					'font-size' => [
+						'control' => [
+							'$type'       => 'dimension',
+							'$value'      => '1.125rem',
+							'$extensions' => [
+								'com.kadence.designTokens' => [
+									'responsive' => [
+										'tablet' => '1rem',
+										'mobile' => '0.9rem',
+									],
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+		$var      = Css_Var::from_id( 'semantic.font-size.control' );
+
+		$this->assertSame( '1.125rem', $resolved->value( 'semantic.font-size.control' ) );
+		$this->assertSame( '1.125rem', $resolved->projected_vars()[ $var ] );
+		$this->assertSame(
+			[
+				'tablet' => '1rem',
+				'mobile' => '0.9rem',
+			],
+			$resolved->projected_responsive()[ $var ]
+		);
+		$this->assertSame( '1rem', $resolved->value_at( 'semantic.font-size.control', 'tablet' ) );
+		$this->assertSame( '0.9rem', $resolved->value_at( 'semantic.font-size.control', 'mobile' ) );
+	}
+
+	/**
+	 * A responsive breakpoint slot may itself be an alias: the literal per-breakpoint value flattens to the
+	 * referenced token's value, while the projected form preserves the indirection as a var() reference.
+	 *
+	 * @return void
+	 */
+	public function testAResponsiveSlotCanAlias(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'dimension' => [
+						'font-size' => [
+							'mobile' => [
+								'$type'  => 'dimension',
+								'$value' => '0.875rem',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'font-size' => [
+						'control' => [
+							'$type'       => 'dimension',
+							'$value'      => '1.125rem',
+							'$extensions' => [
+								'com.kadence.designTokens' => [
+									'responsive' => [
+										'mobile' => '{primitive.dimension.font-size.mobile}',
+									],
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+		$var      = Css_Var::from_id( 'semantic.font-size.control' );
+
+		$this->assertSame( '0.875rem', $resolved->value_at( 'semantic.font-size.control', 'mobile' ) );
+		$this->assertSame(
+			'var(' . Css_Var::from_id( 'primitive.dimension.font-size.mobile' ) . ')',
+			$resolved->projected_responsive()[ $var ]['mobile']
+		);
+	}
+
+	/**
+	 * A structured clamp renders to a clamp(min, preferred, max) string for both the literal and projected
+	 * forms, overriding the flat base $value, and produces no per-breakpoint media-query overrides.
+	 *
+	 * @return void
+	 */
+	public function testItRendersAStructuredClampIntoTheValue(): void {
+		$resolver = $this->resolver_for(
+			[
+				'semantic' => [
+					'font-size' => [
+						'control' => [
+							'$type'       => 'dimension',
+							'$value'      => '1.125rem',
+							'$extensions' => [
+								'com.kadence.designTokens' => [
+									'clamp' => [
+										'min'       => '1.1rem',
+										'preferred' => '0.995rem + 0.326vw',
+										'max'       => '1.25rem',
+									],
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+		$var      = Css_Var::from_id( 'semantic.font-size.control' );
+
+		$this->assertSame( 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)', $resolved->value( 'semantic.font-size.control' ) );
+		$this->assertSame( 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)', $resolved->projected_vars()[ $var ] );
+		$this->assertSame( [], $resolved->projected_responsive() );
+	}
+
+	/**
+	 * A clamp bound slot may itself be an alias: the literal clamp flattens the slot to the referenced value,
+	 * while the projected clamp preserves the indirection as a var() reference.
+	 *
+	 * @return void
+	 */
+	public function testAClampSlotCanAlias(): void {
+		$resolver = $this->resolver_for(
+			[
+				'primitive' => [
+					'dimension' => [
+						'font-size' => [
+							'min' => [
+								'$type'  => 'dimension',
+								'$value' => '1.1rem',
+							],
+						],
+					],
+				],
+				'semantic'  => [
+					'font-size' => [
+						'control' => [
+							'$type'       => 'dimension',
+							'$value'      => '1.125rem',
+							'$extensions' => [
+								'com.kadence.designTokens' => [
+									'clamp' => [
+										'min'       => '{primitive.dimension.font-size.min}',
+										'preferred' => '0.995rem + 0.326vw',
+										'max'       => '1.25rem',
+									],
+								],
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+		$var      = Css_Var::from_id( 'semantic.font-size.control' );
+
+		$this->assertSame( 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)', $resolved->value( 'semantic.font-size.control' ) );
+		$this->assertSame(
+			'clamp(var(' . Css_Var::from_id( 'primitive.dimension.font-size.min' ) . '), 0.995rem + 0.326vw, 1.25rem)',
+			$resolved->projected_vars()[ $var ]
+		);
+	}
+
+	/**
+	 * A flat token (no responsive / clamp shape) resolves exactly as before: no per-breakpoint overrides and
+	 * null value_at() at every breakpoint, so enabling responsive elsewhere never perturbs a flat token.
+	 *
+	 * @return void
+	 */
+	public function testAFlatTokenHasNoResponsiveProjection(): void {
+		$resolver = $this->resolver_for(
+			[
+				'semantic' => [
+					'font-size' => [
+						'control' => [
+							'$type'  => 'dimension',
+							'$value' => '1.125rem',
+						],
+					],
+				],
+			]
+		);
+
+		$resolved = $resolver->resolve_overrides( [] );
+
+		$this->assertSame( '1.125rem', $resolved->value( 'semantic.font-size.control' ) );
+		$this->assertSame( [], $resolved->projected_responsive() );
+		$this->assertNull( $resolved->value_at( 'semantic.font-size.control', 'tablet' ) );
+	}
 }
