@@ -205,9 +205,9 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed>  $node             The current group node.
-	 * @param string               $prefix           The dot-path accumulated so far.
-	 * @param array<string,mixed>  $document         Full effective doc, for alias lookups.
+	 * @param array<string,mixed>                $node             The current group node.
+	 * @param string                             $prefix           The dot-path accumulated so far.
+	 * @param array<string,mixed>                $document         Full effective doc, for alias lookups.
 	 * @param array<string,string>               $by_id             By-reference id => literal CSS value map.
 	 * @param array<string,string>               $by_var            By-reference css-var => literal CSS value map.
 	 * @param array<string,string>               $by_var_projected  By-reference css-var => var()-preserving CSS value map.
@@ -275,27 +275,53 @@ final class Token_Resolver {
 
 				// A stepped responsive shape keeps the flat base above and adds a per-breakpoint override the
 				// css-var projection redeclares inside the matching media query; each slot may itself alias.
-				if ( Responsive::has_responsive( $child ) ) {
-					$responsive = Responsive::responsive_of( $child );
-
-					if ( is_array( $responsive ) ) {
-						foreach ( Responsive::get_breakpoint_keys() as $breakpoint ) {
-							if ( ! array_key_exists( $breakpoint, $responsive ) ) {
-								continue;
-							}
-
-							$slot = $responsive[ $breakpoint ];
-
-							$by_id_responsive[ $path ][ $breakpoint ]  = $this->renderer->render( $type, $this->resolve_value( $slot, $document, [] ) );
-							$by_var_responsive[ $var ][ $breakpoint ] = $this->renderer->render( $type, $this->project_value( $slot, $css_namespace ) );
-						}
-					}
-				}
+				$this->collect_responsive_overrides( $child, $type, $path, $var, $document, $css_namespace, $by_id_responsive, $by_var_responsive );
 
 				continue;
 			}
 
 			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive, $css_namespace );
+		}
+	}
+
+	/**
+	 * Collect a leaf's per-breakpoint responsive overrides into the by-id (literal) and by-var (var()-preserving)
+	 * maps. A no-op when the leaf has no responsive shape. Each slot may itself be an alias, flattened for the
+	 * literal form and preserved as a var() reference for the projection form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>                $child             The leaf node.
+	 * @param string                             $type              The leaf's $type.
+	 * @param string                             $path              The token dot-path.
+	 * @param string                             $css_var           The token's css-var name.
+	 * @param array<string,mixed>                $document          Full effective doc, for alias lookups.
+	 * @param string                             $css_namespace     Css-var namespace to apply ('' for canonical).
+	 * @param array<string,array<string,string>> $by_id_responsive  By-reference id => [ breakpoint => literal value ].
+	 * @param array<string,array<string,string>> $by_var_responsive By-reference css-var => [ breakpoint => projected value ].
+	 *
+	 * @return void
+	 */
+	private function collect_responsive_overrides( array $child, string $type, string $path, string $css_var, array $document, string $css_namespace, array &$by_id_responsive, array &$by_var_responsive ): void {
+		if ( ! Responsive::has_responsive( $child ) ) {
+			return;
+		}
+
+		$responsive = Responsive::responsive_of( $child );
+
+		if ( ! is_array( $responsive ) ) {
+			return;
+		}
+
+		foreach ( Responsive::get_breakpoint_keys() as $breakpoint ) {
+			if ( ! array_key_exists( $breakpoint, $responsive ) ) {
+				continue;
+			}
+
+			$slot = $responsive[ $breakpoint ];
+
+			$by_id_responsive[ $path ][ $breakpoint ]     = $this->renderer->render( $type, $this->resolve_value( $slot, $document, [] ) );
+			$by_var_responsive[ $css_var ][ $breakpoint ] = $this->renderer->render( $type, $this->project_value( $slot, $css_namespace ) );
 		}
 	}
 
