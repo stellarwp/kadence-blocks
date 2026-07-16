@@ -193,28 +193,6 @@ final class Responsive {
 	}
 
 	/**
-	 * The module's leaf-extension map ($extensions.com.kadence.designTokens) for a leaf, or an empty
-	 * array when the leaf carries no such extension. The single seam for reading the shape.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed> $leaf The decoded token leaf.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public static function extension_of( array $leaf ): array {
-		$extensions = $leaf[ Extensions::get_extensions_key() ] ?? null;
-
-		if ( ! is_array( $extensions ) ) {
-			return [];
-		}
-
-		$namespace = $extensions[ Extensions::get_namespace() ] ?? null;
-
-		return is_array( $namespace ) ? $namespace : [];
-	}
-
-	/**
 	 * The responsive (stepped) override map for a leaf, or null when absent. A present-but-non-array
 	 * shape returns the raw value so the validator can reject it; readers should treat non-array as
 	 * "no overrides".
@@ -271,5 +249,28 @@ final class Responsive {
 	 */
 	public static function has_clamp( array $leaf ): bool {
 		return array_key_exists( self::CLAMP_KEY, self::extension_of( $leaf ) );
+	}
+
+	/**
+	 * The module's leaf-extension map ($extensions.com.kadence.designTokens) for a leaf, or an empty array
+	 * when the leaf carries no such extension. The shared internal accessor behind the responsive_of() /
+	 * clamp_of() / has_responsive() / has_clamp() readers, which are the seam every consumer goes through.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $leaf The decoded token leaf.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function extension_of( array $leaf ): array {
+		$extensions = $leaf[ Extensions::get_extensions_key() ] ?? null;
+
+		if ( ! is_array( $extensions ) ) {
+			return [];
+		}
+
+		$namespace = $extensions[ Extensions::get_namespace() ] ?? null;
+
+		return is_array( $namespace ) ? $namespace : [];
 	}
 }
