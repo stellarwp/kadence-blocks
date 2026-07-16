@@ -5,7 +5,7 @@
  * label node and never touches the control's value.
  */
 
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { resetIcon, variantIcon } from '../../variant-picker/icons';
 
@@ -41,13 +41,15 @@ export function TokenIndicator({ state, onReset, showReset = true }) {
 
 		return (
 			<span className="kb-token-indicator">
-				<span
-					className="kb-token-indicator__linked"
-					role="img"
-					aria-label={__('Matches the preset value', 'kadence-blocks')}
-				>
-					{variantIcon}
-				</span>
+				<Tooltip text={__('Matches the preset value', 'kadence-blocks')}>
+					<span
+						className="kb-token-indicator__linked"
+						role="img"
+						aria-label={__('Matches the preset value', 'kadence-blocks')}
+					>
+						{variantIcon}
+					</span>
+				</Tooltip>
 			</span>
 		);
 	}
