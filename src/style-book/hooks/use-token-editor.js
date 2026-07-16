@@ -21,19 +21,30 @@ import { buildTokenLeaf } from '../helpers/tokens';
  * `useDesignTokensFeed`) — writing to a different slug than the one being displayed would silently
  * save into a document the page never reads back.
  *
- * @param {{ namespace: string }|null} rest             REST descriptor from the feed.
- * @param {Record<string, string>}     initialValues    Resolved values keyed by token id.
+ * `refreshValues` re-reads both the flat resolved values AND the authored responsive / clamp shape, so a
+ * responsive field hydrates from the same source the write went to. Refreshing only the flat values would
+ * leave the responsive read-model on its page-load bootstrap, and a responsive field re-deriving from that
+ * stale shape after a save would drop the just-saved per-breakpoint steps.
+ *
+ * @param {{ namespace: string }|null} rest              REST descriptor from the feed.
+ * @param {Record<string, string>}     initialValues     Resolved values keyed by token id.
+ * @param {Record<string, object>}     initialResponsive Authored responsive / clamp shape keyed by token id.
  * @param {Function}                   [onVersionChange] Called with the latest document version.
- * @param {string}                     slug             Token set slug.
- * @return {{ values: Record<string, string>, saveToken: Function, getFieldState: Function, refreshValues: Function }}
+ * @param {string}                     slug              Token set slug.
+ * @return {{ values: Record<string, string>, responsive: Record<string, object>, saveToken: Function, getFieldState: Function, refreshValues: Function }}
  */
-export function useTokenEditor(rest, initialValues, onVersionChange, slug) {
+export function useTokenEditor(rest, initialValues, initialResponsive, onVersionChange, slug) {
 	const [values, setValues] = useState(initialValues);
+	const [responsive, setResponsive] = useState(initialResponsive);
 	const [fieldState, setFieldState] = useState({});
 
 	useEffect(() => {
 		setValues(initialValues);
 	}, [initialValues]);
+
+	useEffect(() => {
+		setResponsive(initialResponsive);
+	}, [initialResponsive]);
 
 	const refreshValues = useCallback(async () => {
 		if (!rest?.namespace) {
@@ -42,6 +53,7 @@ export function useTokenEditor(rest, initialValues, onVersionChange, slug) {
 
 		const resolved = await fetchResolvedTokens(rest.namespace, slug);
 		setValues(resolved?.by_id ?? {});
+		setResponsive(resolved?.responsive ?? {});
 
 		if (resolved?.version) {
 			onVersionChange?.(resolved.version);
@@ -91,6 +103,7 @@ export function useTokenEditor(rest, initialValues, onVersionChange, slug) {
 
 	return {
 		values,
+		responsive,
 		saveToken,
 		getFieldState,
 		refreshValues,

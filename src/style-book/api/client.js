@@ -39,7 +39,7 @@ export function configureRestClient(rest) {
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token set slug.
- * @return {Promise<{ by_id: Record<string, string>, version: string }>} Resolved payload.
+ * @return {Promise<{ by_id: Record<string, string>, responsive: Record<string, object>, version: string }>} Resolved payload.
  */
 export function fetchResolvedTokens(namespace, slug) {
 	return apiFetch({ path: resolvedPath(namespace, slug) });

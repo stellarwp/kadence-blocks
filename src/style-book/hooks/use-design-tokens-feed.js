@@ -17,7 +17,7 @@ import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
  * active set, not necessarily the default one (see `Admin\Feed\Localizer`). Every write this page
  * makes must target that same slug, or an edit lands in a document other than the one being shown.
  *
- * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, rest: object|null, version: string, slug: string }}
+ * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, responsive: Record<string, object>, rest: object|null, version: string, slug: string }}
  */
 export function useDesignTokensFeed() {
 	const feed = useMemo(() => getDesignTokensFeed(), []);
