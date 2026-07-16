@@ -86,8 +86,18 @@ final class Resolved_TokensTest extends TestCase {
 	 * @return void
 	 */
 	public function testItExposesThePerBreakpointResponsiveMaps(): void {
-		$by_var_responsive = [ '--kb-token--semantic--font-size--control' => [ 'tablet' => '1rem', 'mobile' => '0.9rem' ] ];
-		$by_id_responsive  = [ 'semantic.font-size.control' => [ 'tablet' => '1rem', 'mobile' => '0.9rem' ] ];
+		$by_var_responsive = [
+			'--kb-token--semantic--font-size--control' => [
+				'tablet' => '1rem',
+				'mobile' => '0.9rem',
+			],
+		];
+		$by_id_responsive  = [
+			'semantic.font-size.control' => [
+				'tablet' => '1rem',
+				'mobile' => '0.9rem',
+			],
+		];
 
 		$resolved = new Resolved_Tokens(
 			[ 'semantic.font-size.control' => '1.125rem' ],
