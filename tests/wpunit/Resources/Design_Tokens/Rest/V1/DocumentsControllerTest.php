@@ -181,6 +181,36 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The resolved read carries the authored responsive shape per token alongside the flat maps, so a client
+	 * re-reading after a write sees the per-breakpoint steps the flat by_id map flattens away.
+	 *
+	 * @return void
+	 */
+	public function testItReturnsTheAuthoredResponsiveShapeAlongsideTheFlatMaps(): void {
+		$this->store->save_document(
+			'{"semantic":{"font-size":{"probe":{"$type":"dimension","$value":"1.125rem",'
+			. '"$extensions":{"com.kadence.designTokens":{"responsive":{"tablet":"1.0625rem","mobile":"1rem"}}}}}}}'
+		);
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_resolved( $request )->get_data();
+
+		$this->assertArrayHasKey( 'responsive', $data );
+		$this->assertSame(
+			[
+				'base'       => '1.125rem',
+				'responsive' => [
+					'tablet' => '1.0625rem',
+					'mobile' => '1rem',
+				],
+			],
+			$data['responsive']['semantic.font-size.probe']
+		);
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItReturns422WhenAStoredDocumentHasAnAliasCycle(): void {
