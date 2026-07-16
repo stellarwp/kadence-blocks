@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
@@ -181,7 +182,9 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Token_Store::class ),
 			$this->container->get( Active_Set_Store::class ),
 			$this->container->get( Variants::class ),
-			$this->container->get( Builder::class )
+			$this->container->get( Builder::class ),
+			$this->container->get( Effective_Document::class ),
+			$this->container->get( Responsive_Feed::class )
 		);
 
 		$localizer->localize();

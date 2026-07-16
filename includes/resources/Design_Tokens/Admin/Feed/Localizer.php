@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -111,26 +112,50 @@ final class Localizer {
 	private Builder $builder;
 
 	/**
+	 * Builds the baseline-merged effective document the responsive feed is extracted from.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver   $resolver     The token resolver.
-	 * @param Token_Store      $store        The token store.
-	 * @param Active_Set_Store $active       The active-set pointer.
-	 * @param Variants         $variant_feed The variants section builder.
-	 * @param Builder          $builder      The pure payload assembler.
+	 * @var Effective_Document
+	 */
+	private Effective_Document $effective;
+
+	/**
+	 * Extracts the raw authored responsive / clamp shapes for the editor to hydrate from.
+	 *
+	 * @since TBD
+	 *
+	 * @var Responsive_Feed
+	 */
+	private Responsive_Feed $responsive_feed;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver     $resolver        The token resolver.
+	 * @param Token_Store        $store           The token store.
+	 * @param Active_Set_Store   $active          The active-set pointer.
+	 * @param Variants           $variant_feed    The variants section builder.
+	 * @param Builder            $builder         The pure payload assembler.
+	 * @param Effective_Document $effective       The effective-document builder.
+	 * @param Responsive_Feed    $responsive_feed The responsive / clamp shape extractor.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
 		Active_Set_Store $active,
 		Variants $variant_feed,
-		Builder $builder
+		Builder $builder,
+		Effective_Document $effective,
+		Responsive_Feed $responsive_feed
 	) {
-		$this->resolver     = $resolver;
-		$this->store        = $store;
-		$this->active       = $active;
-		$this->variant_feed = $variant_feed;
-		$this->builder      = $builder;
+		$this->resolver        = $resolver;
+		$this->store           = $store;
+		$this->active          = $active;
+		$this->variant_feed    = $variant_feed;
+		$this->builder         = $builder;
+		$this->effective       = $effective;
+		$this->responsive_feed = $responsive_feed;
 	}
 
 	/**
@@ -154,19 +179,21 @@ final class Localizer {
 		$slug    = $this->active->get();
 		$version = $this->store->get_version( $slug );
 
-		$values   = [];
-		$variants = [];
-		$resolved = false;
+		$values     = [];
+		$variants   = [];
+		$responsive = [];
+		$resolved   = false;
 
 		try {
-			$values   = $this->resolver->resolve( $slug )->by_id();
-			$variants = $this->variant_feed->all( $slug );
-			$resolved = true;
+			$values     = $this->resolver->resolve( $slug )->by_id();
+			$variants   = $this->variant_feed->all( $slug );
+			$responsive = $this->responsive_feed->from_document( $this->effective->build( $this->overrides( $slug ) ) );
+			$resolved   = true;
 		} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version, $slug );
+		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version, $slug, $responsive );
 		$json = wp_json_encode(
 			$feed,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
@@ -181,6 +208,27 @@ final class Localizer {
 			'window.' . self::OBJECT . ' = ' . $json . ';',
 			'before'
 		);
+	}
+
+	/**
+	 * The decoded stored overrides for a set, or an empty array when the set has no stored document.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function overrides( string $slug ): array {
+		$raw = $this->store->get_document( $slug );
+
+		if ( $raw === '' ) {
+			return [];
+		}
+
+		$decoded = json_decode( $raw, true );
+
+		return is_array( $decoded ) ? $decoded : [];
 	}
 
 	/**
