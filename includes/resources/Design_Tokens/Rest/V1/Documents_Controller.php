@@ -465,7 +465,7 @@ final class Documents_Controller extends Controller {
 			);
 		}
 
-		$responsive = $this->responsive_feed->from_document( $this->effective->build( $this->read_stored_document( $slug ) ) );
+		$responsive = $this->responsive_feed->from_document( $this->resolver->effective_document( $slug ) );
 
 		return new WP_REST_Response(
 			[
