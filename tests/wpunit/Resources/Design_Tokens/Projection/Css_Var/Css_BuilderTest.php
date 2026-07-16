@@ -442,8 +442,9 @@ final class Css_BuilderTest extends TestCase {
 		$default = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id, 'default' ) => '#111' ] );
 		$dark    = $this->set( [ $id => '#eee' ], [ Css_Var::from_id( $id, 'dark' ) => '#eee' ] );
 
-		// Seed the dark per-set fragment with a sentinel.
-		$dark_key = 'projected_css_set_' . KADENCE_BLOCKS_VERSION . '_dark_v1';
+		// Seed the dark per-set fragment with a sentinel. The cache key carries the breakpoint signature,
+		// "none" here because css_for_version() is called with no breakpoints.
+		$dark_key = 'projected_css_set_' . KADENCE_BLOCKS_VERSION . '_dark_v1_none';
 		wp_cache_set( $dark_key, '--dark-fragment-sentinel:1;', 'kb_design_tokens', DAY_IN_SECONDS );
 
 		$builder  = $this->builder();
@@ -458,5 +459,61 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_dark_active );
 		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_default_active );
+	}
+
+	/**
+	 * A responsive set redeclares each affected `--kb-token--<set>--*` var inside the tablet and mobile
+	 * media queries (at :root, tablet before mobile), on top of the base :root declaration, so a consuming
+	 * block inherits the per-breakpoint value with no block change.
+	 *
+	 * @return void
+	 */
+	public function testItRedeclaresResponsiveVarsInsideMediaQueries(): void {
+		$id  = 'semantic.font-size.control';
+		$var = Css_Var::from_id( $id, 'default' );
+
+		$resolved = new Resolved_Tokens(
+			[ $id => '1.125rem' ],
+			[],
+			[ $var => '1.125rem' ],
+			[],
+			[ $var => [ 'tablet' => '1rem', 'mobile' => '0.9rem' ] ]
+		);
+
+		$breakpoints = [
+			'tablet' => '(max-width: 1024px)',
+			'mobile' => '(max-width: 767px)',
+		];
+
+		$css = $this->builder()->css_for_version( [ 'default' => $resolved ], [ 'default' => 'v1' ], 'default', $breakpoints );
+
+		$this->assertStringContainsString( $var . ':1.125rem;', $css );
+		$this->assertStringContainsString( '@media all and (max-width: 1024px){' . Scope::root() . '{' . $var . ':1rem;}}', $css );
+		$this->assertStringContainsString( '@media all and (max-width: 767px){' . Scope::root() . '{' . $var . ':0.9rem;}}', $css );
+		$this->assertLessThan(
+			(int) strpos( $css, '(max-width: 767px)' ),
+			(int) strpos( $css, '(max-width: 1024px)' ),
+			'The tablet override must precede the mobile override so the narrower max-width wins by source order.'
+		);
+	}
+
+	/**
+	 * A flat set (no responsive overrides) emits no media queries, so responsive support never perturbs the
+	 * projected CSS of a flat document.
+	 *
+	 * @return void
+	 */
+	public function testAFlatSetEmitsNoMediaQueries(): void {
+		$id       = 'semantic.color.text';
+		$resolved = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id, 'default' ) => '#111' ] );
+
+		$css = $this->builder()->css_for_version(
+			[ 'default' => $resolved ],
+			[ 'default' => 'v1' ],
+			'default',
+			[ 'tablet' => '(max-width: 1024px)', 'mobile' => '(max-width: 767px)' ]
+		);
+
+		$this->assertStringNotContainsString( '@media', $css );
 	}
 }

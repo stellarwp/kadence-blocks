@@ -122,17 +122,20 @@ final class Css_Builder {
 	 *                                                         (from Token_Resolver::resolve_namespaced()).
 	 * @param string                        $active_slug      The active set's slug — the set the canonical
 	 *                                                         alias layer points at.
+	 * @param array<string,string>          $breakpoints      Breakpoint => media-query string (e.g.
+	 *                                                         "tablet" => "(max-width: 1024px)"), for the
+	 *                                                         per-breakpoint responsive var redeclaration.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
-	public function css( array $resolved_by_slug, string $active_slug ): string {
+	public function css( array $resolved_by_slug, string $active_slug, array $breakpoints = [] ): string {
 		if ( ! isset( $resolved_by_slug[ $active_slug ] ) ) {
 			return '';
 		}
 
 		$css = '';
 		foreach ( $resolved_by_slug as $slug => $resolved ) {
-			$css .= $this->build_set_fragment( $resolved, (string) $slug );
+			$css .= $this->build_set_fragment( $resolved, (string) $slug, $breakpoints );
 		}
 
 		return $css . $this->build_active_fragment( $resolved_by_slug[ $active_slug ], $active_slug );
@@ -152,15 +155,18 @@ final class Css_Builder {
 	 * @param array<string,Resolved_Tokens> $resolved_by_slug Each set slug => its namespaced resolved maps.
 	 * @param array<string,string>          $versions         Each set slug => the store version it was built from.
 	 * @param string                        $active_slug      The active set's slug.
+	 * @param array<string,string>          $breakpoints      Breakpoint => media-query string, for the
+	 *                                                         per-breakpoint responsive var redeclaration.
 	 *
 	 * @return string
 	 */
-	public function css_for_version( array $resolved_by_slug, array $versions, string $active_slug ): string {
+	public function css_for_version( array $resolved_by_slug, array $versions, string $active_slug, array $breakpoints = [] ): string {
 		if ( ! isset( $resolved_by_slug[ $active_slug ] ) ) {
 			return '';
 		}
 
-		$signature = 'assembly:' . $active_slug;
+		$breakpoint_signature = $this->breakpoint_signature( $breakpoints );
+		$signature            = 'assembly:' . $active_slug . '@' . $breakpoint_signature;
 		foreach ( $resolved_by_slug as $slug => $resolved ) {
 			$signature .= '|' . (string) $slug . ':' . ( $versions[ $slug ] ?? '' );
 		}
@@ -172,7 +178,7 @@ final class Css_Builder {
 		$css = '';
 		foreach ( $resolved_by_slug as $slug => $resolved ) {
 			$slug = (string) $slug;
-			$css .= $this->set_fragment( $resolved, $slug, (string) ( $versions[ $slug ] ?? '' ) );
+			$css .= $this->set_fragment( $resolved, $slug, (string) ( $versions[ $slug ] ?? '' ), $breakpoints );
 		}
 
 		$css .= $this->active_fragment(
@@ -191,14 +197,16 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The set's namespaced resolved maps.
-	 * @param string          $slug     The set slug.
-	 * @param string          $version  The store version the set was built from.
+	 * @param Resolved_Tokens      $resolved    The set's namespaced resolved maps.
+	 * @param string               $slug        The set slug.
+	 * @param string               $version     The store version the set was built from.
+	 * @param array<string,string> $breakpoints Breakpoint => media-query string, folded into the cache key
+	 *                                           because the emitted CSS depends on the active breakpoints.
 	 *
 	 * @return string
 	 */
-	public function set_fragment( Resolved_Tokens $resolved, string $slug, string $version ): string {
-		$cache_key = 'projected_css_set_' . KADENCE_BLOCKS_VERSION . '_' . $slug . '_' . $version;
+	public function set_fragment( Resolved_Tokens $resolved, string $slug, string $version, array $breakpoints = [] ): string {
+		$cache_key = 'projected_css_set_' . KADENCE_BLOCKS_VERSION . '_' . $slug . '_' . $version . '_' . $this->breakpoint_signature( $breakpoints );
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {
 			return $this->memo[ $cache_key ];
@@ -210,7 +218,7 @@ final class Css_Builder {
 			return $this->memo[ $cache_key ] = $cached;
 		}
 
-		$css = $this->build_set_fragment( $resolved, $slug );
+		$css = $this->build_set_fragment( $resolved, $slug, $breakpoints );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
@@ -255,13 +263,14 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The set's namespaced resolved maps.
-	 * @param string          $slug     The set slug.
+	 * @param Resolved_Tokens      $resolved    The set's namespaced resolved maps.
+	 * @param string               $slug        The set slug.
+	 * @param array<string,string> $breakpoints Breakpoint => media-query string.
 	 *
 	 * @return string
 	 */
-	private function build_set_fragment( Resolved_Tokens $resolved, string $slug ): string {
-		return $this->namespaced_block( $resolved ) . $this->switch_block( $resolved, $slug );
+	private function build_set_fragment( Resolved_Tokens $resolved, string $slug, array $breakpoints = [] ): string {
+		return $this->namespaced_block( $resolved, $breakpoints ) . $this->switch_block( $resolved, $slug );
 	}
 
 	/**
@@ -294,11 +303,13 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens $resolved The set's namespaced resolved maps.
+	 * @param Resolved_Tokens      $resolved    The set's namespaced resolved maps.
+	 * @param array<string,string> $breakpoints Breakpoint => media-query string, for the responsive
+	 *                                           redeclaration blocks appended after the base declarations.
 	 *
 	 * @return string
 	 */
-	private function namespaced_block( Resolved_Tokens $resolved ): string {
+	private function namespaced_block( Resolved_Tokens $resolved, array $breakpoints = [] ): string {
 		$projected = $resolved->projected_vars();
 		if ( $projected === [] ) {
 			return '';
@@ -309,7 +320,71 @@ final class Css_Builder {
 			$declarations .= $var . ':' . $this->sanitize_value( $value ) . ';';
 		}
 
-		return Scope::root() . '{' . $declarations . '}';
+		return Scope::root() . '{' . $declarations . '}' . $this->responsive_blocks( $resolved->projected_responsive(), $breakpoints );
+	}
+
+	/**
+	 * Emit the per-breakpoint responsive redeclarations: for each breakpoint that has overrides, redeclare
+	 * the affected `--kb-token--<set>--*` vars inside that breakpoint's `@media` block, at the same :root
+	 * scope, so a value declared once at :root is overridden within the query and every consuming token /
+	 * block follows for free. Breakpoints are emitted in the given order (tablet before mobile), so the
+	 * narrower max-width override wins by source order. A document with no responsive tokens emits nothing,
+	 * keeping flat output byte-for-byte unchanged.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<string,string>> $responsive  css-var => [ breakpoint => value ] overrides.
+	 * @param array<string,string>               $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	private function responsive_blocks( array $responsive, array $breakpoints ): string {
+		if ( $responsive === [] ) {
+			return '';
+		}
+
+		$css = '';
+		foreach ( $breakpoints as $breakpoint => $query ) {
+			if ( $query === '' ) {
+				continue;
+			}
+
+			$declarations = '';
+			foreach ( $responsive as $var => $by_breakpoint ) {
+				if ( ! isset( $by_breakpoint[ $breakpoint ] ) ) {
+					continue;
+				}
+
+				$declarations .= $var . ':' . $this->sanitize_value( $by_breakpoint[ $breakpoint ] ) . ';';
+			}
+
+			if ( $declarations === '' ) {
+				continue;
+			}
+
+			$css .= '@media all and ' . $query . '{' . Scope::root() . '{' . $declarations . '}}';
+		}
+
+		return $css;
+	}
+
+	/**
+	 * A short, stable signature of the active breakpoint media-query strings, folded into fragment cache
+	 * keys so a change to the filterable breakpoints busts the projected-CSS cache. serialize() keeps this
+	 * dependency-free (the builder stays WordPress-agnostic).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	private function breakpoint_signature( array $breakpoints ): string {
+		if ( $breakpoints === [] ) {
+			return 'none';
+		}
+
+		return substr( md5( serialize( $breakpoints ) ), 0, 12 );
 	}
 
 	/**
