@@ -21,6 +21,8 @@ namespace KadenceWP\KadenceBlocks\Dev\Design_Tokens\Schema;
 // cspell:ignore justinrainbow .
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
@@ -134,7 +136,7 @@ final class Dtcg_Schema_Generator {
 				'oneOf'                => $this->value_branches(),
 				'additionalProperties' => false,
 			],
-		] + $this->value_definitions();
+		] + $this->value_definitions() + $this->responsive_definitions();
 	}
 
 	/**
@@ -149,11 +151,19 @@ final class Dtcg_Schema_Generator {
 		$branches = [];
 
 		foreach ( Token_Type::all() as $type ) {
+			$properties = [
+				'$type'  => [ 'const' => $type ],
+				'$value' => [ '$ref' => '#/definitions/' . $this->value_def_name( $type ) ],
+			];
+
+			// Responsive-capable types further constrain $extensions to the responsive / clamp shape; other
+			// types keep the generic leaf-level $extensions:{type:object}.
+			if ( Responsive::is_responsive_capable( $type ) ) {
+				$properties['$extensions'] = [ '$ref' => '#/definitions/' . $this->extensions_def_name( $type ) ];
+			}
+
 			$branches[] = [
-				'properties' => [
-					'$type'  => [ 'const' => $type ],
-					'$value' => [ '$ref' => '#/definitions/' . $this->value_def_name( $type ) ],
-				],
+				'properties' => $properties,
 				'required'   => [ '$type', '$value' ],
 			];
 		}
@@ -248,6 +258,69 @@ final class Dtcg_Schema_Generator {
 	}
 
 	/**
+	 * The per-type $extensions definitions for responsive-capable types. Each models the module's
+	 * leaf-extension namespace carrying an optional per-breakpoint `responsive` map and an optional
+	 * structured `clamp` map; each breakpoint / bound slot is "alias OR the type's literal shape". Mutual
+	 * exclusivity of responsive vs clamp and the not-allowed-on-other-types rule are enforced by the PHP
+	 * validator (the authority), not encoded here; other namespaces / keys stay permitted (additive).
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function responsive_definitions(): array {
+		$defs = [];
+
+		foreach ( Token_Type::all() as $type ) {
+			if ( ! Responsive::is_responsive_capable( $type ) ) {
+				continue;
+			}
+
+			$slot = [
+				'anyOf' => [
+					[ '$ref' => '#/definitions/alias' ],
+					$this->literal_shape( $type ),
+				],
+			];
+
+			$defs[ $this->extensions_def_name( $type ) ] = [
+				'type'       => 'object',
+				'properties' => [
+					Extensions::get_namespace() => [
+						'type'       => 'object',
+						'properties' => [
+							Responsive::get_responsive_key() => [
+								'type'                 => 'object',
+								'properties'           => [
+									Responsive::get_tablet_key() => $slot,
+									Responsive::get_mobile_key() => $slot,
+								],
+								'additionalProperties' => false,
+							],
+							Responsive::get_clamp_key()      => [
+								'type'                 => 'object',
+								'required'             => [
+									Responsive::get_clamp_min_key(),
+									Responsive::get_clamp_preferred_key(),
+									Responsive::get_clamp_max_key(),
+								],
+								'properties'           => [
+									Responsive::get_clamp_min_key()       => $slot,
+									Responsive::get_clamp_preferred_key() => [ 'type' => 'string' ],
+									Responsive::get_clamp_max_key()       => $slot,
+								],
+								'additionalProperties' => false,
+							],
+						],
+					],
+				],
+			];
+		}
+
+		return $defs;
+	}
+
+	/**
 	 * Stable definition name for a type's $value schema.
 	 *
 	 * @since TBD
@@ -258,5 +331,18 @@ final class Dtcg_Schema_Generator {
 	 */
 	private function value_def_name( string $type ): string {
 		return $type . 'Value';
+	}
+
+	/**
+	 * Stable definition name for a responsive-capable type's $extensions schema.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type A responsive-capable $type.
+	 *
+	 * @return string
+	 */
+	private function extensions_def_name( string $type ): string {
+		return $type . 'Extensions';
 	}
 }
