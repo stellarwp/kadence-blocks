@@ -183,7 +183,6 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Active_Set_Store::class ),
 			$this->container->get( Variants::class ),
 			$this->container->get( Builder::class ),
-			$this->container->get( Effective_Document::class ),
 			$this->container->get( Responsive_Feed::class )
 		);
 

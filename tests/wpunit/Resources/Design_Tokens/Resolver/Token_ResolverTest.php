@@ -59,6 +59,44 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '#3182CE', $by_id['primitive.color.brand.primary'] );
 	}
 
+	/**
+	 * effective_document() returns the baseline-merged document with a stored leaf's authored $extensions
+	 * intact, so the responsive feed and the REST resolved read can recover the authored responsive / clamp
+	 * shape the flat resolved maps drop.
+	 *
+	 * @return void
+	 */
+	public function testEffectiveDocumentPreservesAStoredLeafsAuthoredExtensions(): void {
+		$resolver = $this->resolver_for(
+			[
+				'semantic' => [
+					'font-size' => [
+						'control' => [
+							'$type'  => 'dimension',
+							'$value' => '1rem',
+						],
+					],
+				],
+			]
+		);
+
+		$this->container->get( Token_Store::class )->save_document(
+			'{"semantic":{"font-size":{"control":{"$type":"dimension","$value":"1.125rem",'
+			. '"$extensions":{"com.kadence.designTokens":{"responsive":{"tablet":"1.0625rem","mobile":"1rem"}}}}}}}'
+		);
+
+		$leaf = $resolver->effective_document( Token_Store::default_slug() )['semantic']['font-size']['control'];
+
+		$this->assertSame( '1.125rem', $leaf['$value'] );
+		$this->assertSame(
+			[
+				'tablet' => '1.0625rem',
+				'mobile' => '1rem',
+			],
+			$leaf['$extensions']['com.kadence.designTokens']['responsive']
+		);
+	}
+
 	public function testItCollapsesAMultiHopAliasChain(): void {
 		$resolver = $this->resolver_for(
 			[
