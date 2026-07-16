@@ -24,6 +24,18 @@
 	background: #cc1818;
 }
 
+.kb-token-indicator__linked {
+	display: inline-flex;
+	align-items: center;
+	margin-left: auto;
+	color: #3858e9;
+
+	svg {
+		width: 14px;
+		height: 12px;
+	}
+}
+
 // The reset affordance: an icon button pushed to the right edge of the control's header.
 .kb-token-indicator__reset.components-button {
 	margin-left: auto;
