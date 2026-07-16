@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Schema\Vocabulary;
 
 use Generator;
+use ReflectionMethod;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use Tests\Support\Classes\TestCase;
@@ -126,7 +127,7 @@ final class ResponsiveTest extends TestCase {
 		$this->assertFalse( Responsive::has_clamp( $leaf ) );
 		$this->assertNull( Responsive::responsive_of( $leaf ) );
 		$this->assertNull( Responsive::clamp_of( $leaf ) );
-		$this->assertSame( [], Responsive::extension_of( $leaf ) );
+		$this->assertSame( [], $this->extensionOf( $leaf ) );
 	}
 
 	/**
@@ -144,7 +145,7 @@ final class ResponsiveTest extends TestCase {
 		];
 
 		$this->assertFalse( Responsive::has_responsive( $leaf ) );
-		$this->assertSame( [], Responsive::extension_of( $leaf ) );
+		$this->assertSame( [], $this->extensionOf( $leaf ) );
 	}
 
 	/**
@@ -154,5 +155,20 @@ final class ResponsiveTest extends TestCase {
 	 */
 	public function testTheBreakpointKeys(): void {
 		$this->assertSame( [ 'tablet', 'mobile' ], Responsive::get_breakpoint_keys() );
+	}
+
+	/**
+	 * Invoke the private Responsive::extension_of() via reflection, so its behavior stays directly covered
+	 * even though it is no longer part of the public reader seam.
+	 *
+	 * @param array<string, mixed> $leaf The decoded token leaf.
+	 *
+	 * @return array<string, mixed> The module leaf-extension map.
+	 */
+	private function extensionOf( array $leaf ): array {
+		$method = new ReflectionMethod( Responsive::class, 'extension_of' );
+		$method->setAccessible( true );
+
+		return $method->invoke( null, $leaf );
 	}
 }
