@@ -899,7 +899,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btncolorhover-${colorResetNonce}`}
-																	hideClear
+																	hideClear={!!tokenBinding.colorHover?.bound}
 																	swatchLabel={__('Color Hover', 'kadence-blocks')}
 																	value={colorHover ? colorHover : ''}
 																	default={''}
@@ -936,7 +936,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btnbghover-${colorResetNonce}`}
-																	hideClear
+																	hideClear={!!tokenBinding.backgroundHover?.bound}
 																	swatchLabel={__(
 																		'Background Color',
 																		'kadence-blocks'
@@ -1117,7 +1117,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btncolor-${colorResetNonce}`}
-																	hideClear
+																	hideClear={!!tokenBinding.color?.bound}
 																	swatchLabel={__('Color', 'kadence-blocks')}
 																	value={color ? color : ''}
 																	default={''}
@@ -1152,7 +1152,7 @@ export default function KadenceButtonEdit(props) {
 															>
 																<PopColorControl
 																	key={`btnbg-${colorResetNonce}`}
-																	hideClear
+																	hideClear={!!tokenBinding.background?.bound}
 																	swatchLabel={__(
 																		'Background Color',
 																		'kadence-blocks'
