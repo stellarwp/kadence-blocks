@@ -1,12 +1,13 @@
 /**
  * Unified (Harbor) license activation flow.
  *
- * Validation and Pro install/activate are still simulated until the real
- * unified-license endpoints are wired up.
+ * Saves the key via Harbor's REST API (`liquidweb/harbor/v1/license`).
+ * Pro install/activate remains simulated until that flow is wired up.
  */
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 
 const STEPS = {
 	INPUT: 'input',
@@ -15,6 +16,10 @@ const STEPS = {
 	INSTALLING: 'installing',
 	DONE: 'done',
 };
+
+// #todo- should come from PHP.
+const HARBOR_LICENSE_PATH = '/liquidweb/harbor/v1/license';
+const UNIFIED_KEY_PREFIX = 'LWSW-';
 
 /**
  * @param {Object}   props
@@ -27,20 +32,37 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 	const [error, setError] = useState('');
 	const [installStatus, setInstallStatus] = useState('');
 
-	const handleActivate = () => {
-		const key = licenseKey.trim();
+	const handleActivate = async () => {
+		const key = licenseKey.trim().toUpperCase();
 		if (!key) {
 			setError(__('Please enter your unified license key.', 'kadence-blocks'));
 			return;
 		}
 
+		if (!key.startsWith(UNIFIED_KEY_PREFIX)) {
+			setError(
+				__('Unified license keys start with "LWSW-". Please check your key and try again.', 'kadence-blocks')
+			);
+			return;
+		}
+
 		setError('');
+		setLicenseKey(key);
 		setStep(STEPS.LOADING);
 
-		// Simulated API call — no unified-license REST/AJAX endpoint exists yet.
-		window.setTimeout(() => {
+		try {
+			await apiFetch({
+				path: HARBOR_LICENSE_PATH,
+				method: 'POST',
+				data: { key },
+			});
 			setStep(STEPS.SUCCESS);
-		}, 1500);
+		} catch (err) {
+			setError(
+				err?.message || __('Liquid Web Software Manager failed to validate your license.', 'kadence-blocks')
+			);
+			setStep(STEPS.INPUT);
+		}
 	};
 
 	const handleDownloadActivate = () => {
