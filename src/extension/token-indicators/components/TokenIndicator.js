@@ -56,7 +56,13 @@ export function TokenIndicator({ state, onReset, showReset = true }) {
 
 	return (
 		<span className="kb-token-indicator">
-			<span className="kb-token-indicator__dot" aria-hidden="true" />
+			<Tooltip text={__('Overrides the preset value', 'kadence-blocks')}>
+				<span
+					className="kb-token-indicator__dot"
+					role="img"
+					aria-label={__('Overrides the preset value', 'kadence-blocks')}
+				/>
+			</Tooltip>
 			{showReset && (
 				<Button
 					className="kb-token-indicator__reset"
