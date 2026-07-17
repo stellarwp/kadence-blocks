@@ -3,7 +3,6 @@
 namespace KadenceWP\KadenceBlocks\Harbor;
 
 use KadenceWP\KadenceBlocks\Harbor\Actions\Get_Known_Plugins;
-use KadenceWP\KadenceBlocks\Harbor\Actions\Render_Harbor_License_Notice;
 use KadenceWP\KadenceBlocks\Harbor\Actions\Report_Legacy_Licenses;
 use KadenceWP\KadenceBlocks\Harbor\Actions\Suppress_Legacy_Inactive_Notices;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
@@ -35,17 +34,8 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'kadence_blocks_ai_disabled', [ $this, 'is_ai_disabled' ] );
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
-		#todo - review this
-		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
-			// Harbor notice is now rendered in the React license modal
-			// (src/license-modal/license-modal.js → HarborLicenseNotice).
-			/* add_action(
-				"stellarwp/uplink/{$slug}/license_field_after_form",
-				new Render_Harbor_License_Notice( $plugin['name'] )
-			);
-
-			add_filter( "stellarwp/uplink/{$slug}/plugin_notices", [ $this, 'suppress_inline_license_notices' ] ); */
-		}
+		// Legacy Uplink license fields are replaced by the React license modal UI.
+		add_filter( 'kadence_blocks_pro_should_display_legacy_license_field', '__return_false' );
 
 		add_action( 'admin_init', new Suppress_Legacy_Inactive_Notices() );
 	}

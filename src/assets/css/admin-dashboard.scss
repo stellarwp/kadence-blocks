@@ -1063,6 +1063,11 @@ h5.kt-main-subtitle {
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	grid-gap: 24px;
 }
+
+.license-section {
+	margin-bottom: 1rem;
+}
+
 .license-section h2 {
     display: -webkit-flex;
     display: flex;

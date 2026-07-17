@@ -5,7 +5,7 @@
 
 .kt-license-modal {
 	.components-modal__content {
-		padding: 0 20px 32px;
+		padding: 0 24px 28px;
 	}
 
 	.kt-license-intro {
@@ -201,51 +201,108 @@
 		flex-shrink: 0;
 	}
 
-	// Legacy (Kadence) license view — reflow Uplink's own field/button markup into a row.
+	// Legacy (Kadence) license view — restyle Uplink's form-table markup for the modal.
 	.kt-license-view-legacy {
+		.kt-legacy-license-field-mount {
+			margin-bottom: 8px;
+		}
+
 		.stellarwp-uplink__settingsform {
-			display: flex;
-			flex-wrap: wrap;
-			align-items: flex-start;
-			gap: 10px;
+			display: block;
+			margin: 0;
+		}
+
+		table.form-table {
+			display: block;
+			margin: 0;
+			border: 0;
+
+			tbody,
+			tr,
+			th,
+			td {
+				display: block;
+				width: 100%;
+				padding: 0;
+				margin: 0;
+				border: 0;
+				box-sizing: border-box;
+			}
+
+			// Label is already conveyed by the modal title / intro.
+			th {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border: 0;
+			}
 		}
 
 		.stellarwp-uplink__license-field {
-			flex: 1 1 240px;
 			margin: 0;
 		}
 
-		input.stellarwp-uplink__settings-field {
-			width: 100%;
+		input.stellarwp-uplink__settings-field,
+		input[type='text'].stellarwp-uplink__settings-field,
+		.regular-text {
+			width: 100% !important;
+			max-width: 100%;
 			box-sizing: border-box;
 			height: auto;
+			margin: 0;
 			padding: 11px 14px;
 			font-size: 14px;
+			border: 1px solid #8c8f94;
+			border-radius: 4px;
+			box-shadow: none;
+
+			&:focus {
+				border-color: #2563eb;
+				box-shadow: 0 0 0 1px #2563eb;
+			}
 		}
 
 		p.submit {
-			margin: 0;
-			flex: 0 0 auto;
+			display: block;
+			width: 100%;
+			margin: 14px 0 0;
 			padding: 0;
+			text-align: left;
+			box-sizing: border-box;
 		}
 
-		p.submit .button-primary {
+		p.submit .button-primary,
+		p.submit .button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
 			height: auto;
+			margin: 0;
 			padding: 11px 26px;
 			font-size: 14px;
 			font-weight: 600;
+			line-height: 1.2;
 			border-radius: 4px;
 			background: #e2574c;
 			border-color: #e2574c;
 			color: #fff;
+			float: none;
 
-			&:hover {
+			&:hover,
+			&:focus {
 				background: #d5473c;
 				border-color: #d5473c;
+				color: #fff;
 			}
 		}
 
-		.tooltip.description {
+		.tooltip.description,
+		p.description {
 			margin: 10px 0 0;
 			color: #50575e;
 			font-size: 13px;
@@ -257,7 +314,7 @@
 		border: 1px solid #bfdbfe;
 		border-radius: 6px;
 		padding: 16px 18px;
-		margin-top: 24px;
+		margin-top: 20px;
 
 		h4 {
 			margin: 0 0 6px;
@@ -283,6 +340,10 @@
 				text-decoration: underline;
 			}
 		}
+	}
+
+	.kt-license-toggle-back {
+		margin-bottom: 4px;
 	}
 }
 

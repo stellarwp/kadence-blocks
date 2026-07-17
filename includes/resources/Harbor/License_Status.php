@@ -9,44 +9,53 @@ use KadenceWP\KadenceBlocks\Harbor\Licensing\Unified_License_Strategy;
 /**
  * Resolves the active license strategy for admin UI and key lookups.
  *
- * Strategies are evaluated in order; the first active strategy wins. By default
- * Kadence (Uplink) licenses are preferred over Harbor unified licenses when both
- * are active.
+ * Resolution rules:
+ * 1. Legacy (Kadence) active → Legacy strategy
+ * 2. Unified active → Unified strategy
+ * 3. Neither active → Unified strategy (default entry / inactive UI)
+ * 4. Both active → Legacy strategy (Kadence preferred)
  *
  * @since TBD
  */
 final class License_Status {
 
 	/**
-	 * @var list<License_Strategy>
+	 * @var Legacy_License_Strategy
 	 */
-	private array $strategies;
+	private Legacy_License_Strategy $legacy;
 
 	/**
-	 * @param list<License_Strategy>|null $strategies Ordered strategies; first active wins.
+	 * @var Unified_License_Strategy
 	 */
-	public function __construct( ?array $strategies = null ) {
-		$this->strategies = $strategies ?? [
-			new Legacy_License_Strategy(),
-			new Unified_License_Strategy(),
-		];
+	private Unified_License_Strategy $unified;
+
+	/**
+	 * @param Legacy_License_Strategy|null  $legacy  Optional legacy strategy.
+	 * @param Unified_License_Strategy|null $unified Optional unified strategy.
+	 */
+	public function __construct( ?Legacy_License_Strategy $legacy = null, ?Unified_License_Strategy $unified = null ) {
+		$this->legacy  = $legacy ?? new Legacy_License_Strategy();
+		$this->unified = $unified ?? new Unified_License_Strategy();
 	}
 
 	/**
-	 * The first active license strategy, or null when none are authorized.
+	 * Resolve the license strategy using the preference rules above.
+	 *
+	 * Always returns a strategy. When neither license is active, returns the
+	 * unified strategy so the inactive UI defaults to the unified entry flow.
 	 *
 	 * @since TBD
 	 *
-	 * @return License_Strategy|null
+	 * @return License_Strategy
 	 */
-	public function resolve(): ?License_Strategy {
-		foreach ( $this->strategies as $strategy ) {
-			if ( $strategy->is_active() ) {
-				return $strategy;
-			}
+	public function resolve(): License_Strategy {
+		// Rules 1 & 4: Kadence wins whenever it is active (including when both are).
+		if ( $this->legacy->is_active() ) {
+			return $this->legacy;
 		}
 
-		return null;
+		// Rules 2 & 3: unified when it is active, otherwise default to unified.
+		return $this->unified;
 	}
 
 	/**
@@ -59,14 +68,11 @@ final class License_Status {
 	 * @return string The unified license key, or an empty string if not found.
 	 */
 	public function get_unified_key(): string {
-		return ( new Unified_License_Strategy() )->get_key();
+		return $this->unified->get_key();
 	}
 
 	/**
 	 * License status payload for the settings sidebar UI.
-	 *
-	 * Prefers a Kadence (Uplink) license when active; otherwise falls back to a
-	 * Harbor unified license. Returns type "none" when unauthorized.
 	 *
 	 * @since TBD
 	 *
@@ -79,18 +85,6 @@ final class License_Status {
 	 * }
 	 */
 	public function get_ui_status(): array {
-		$strategy = $this->resolve();
-
-		if ( null === $strategy ) {
-			return [
-				'type'      => 'none',
-				'maskedKey' => '',
-				'fullKey'   => '',
-				'expires'   => '',
-				'manageUrl' => '',
-			];
-		}
-
-		return $strategy->get_ui_status();
+		return $this->resolve()->get_ui_status();
 	}
 }
