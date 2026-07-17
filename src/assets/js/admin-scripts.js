@@ -560,3 +560,43 @@ jQuery(document).ready(function ($) {
 		});
 	});
 })(jQuery, window, document);
+/**
+ * Ajax activate the Kadence Blocks Pro plugin.
+ */
+(function ($, window, document, undefined) {
+	'use strict';
+
+	$(function () {
+		$('.kt-activate-pro-button').on('click', function (event) {
+			event.preventDefault();
+			const $button = $(this);
+
+			if ($button.hasClass('updating-message') || $button.hasClass('button-disabled')) {
+				return;
+			}
+
+			$button.addClass('updating-message').text($button.data('activating-label'));
+
+			$.post(
+				kt_blocks_params.ajaxurl,
+				{
+					action: 'kadence_blocks_activate_pro',
+					wpnonce: $button.data('nonce'),
+				},
+				function (response) {
+					if (response && response.success) {
+						$button.removeClass('updating-message').addClass('button-disabled').text($button.data('activated-label'));
+						location.reload();
+					} else {
+						$button.removeClass('updating-message').text($button.data('inactive-label'));
+						window.alert((response && response.data && response.data.message) || 'Error');
+					}
+				}
+			).fail(function () {
+				$button.removeClass('updating-message').text($button.data('inactive-label'));
+				window.alert('Error');
+			});
+		});
+	});
+})(jQuery, window, document);
+

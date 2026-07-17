@@ -1,0 +1,293 @@
+.kt-license-modal.components-modal__frame {
+	max-width: 460px;
+	width: 100%;
+}
+
+.kt-license-modal {
+	.components-modal__content {
+		padding: 0 20px 32px;
+	}
+
+	.kt-license-intro {
+		margin: 0 0 20px;
+		color: #3c434a;
+		line-height: 1.6;
+
+		a {
+			color: #2563eb;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.kt-license-toggle {
+		text-align: center;
+		margin: 24px 0 0;
+		color: #6b7280;
+		font-size: 12px;
+		line-height: 1.8;
+	}
+
+	.kt-license-toggle-link {
+		appearance: none;
+		background: none;
+		border: 0;
+		padding: 0;
+		/* color: #2563eb; */
+		text-decoration: underline;
+		font-weight: 500;
+		cursor: pointer;
+		font-size: inherit;
+		font-family: inherit;
+
+		&:hover {
+			color: #1d4ed8;
+		}
+	}
+
+	.kt-license-toggle-back {
+		text-align: left;
+		margin-top: 20px;
+
+		.kt-license-toggle-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			color: #50575e;
+			text-decoration: none;
+			font-weight: 500;
+
+			&:hover {
+				color: #1e1e1e;
+			}
+		}
+	}
+
+	.kt-unified-input-row {
+		display: flex;
+		gap: 8px;
+		align-items: stretch;
+
+		.components-base-control {
+			flex: 1;
+			margin: 0;
+		}
+
+		.components-base-control__field {
+			margin: 0;
+		}
+
+		.components-text-control__input,
+		.kt-unified-license-key input {
+			margin: 0;
+			height: auto;
+			padding: 11px 14px;
+			font-size: 14px;
+			border: 2px solid #2563eb;
+			border-radius: 4px;
+			box-shadow: none;
+
+			&::placeholder {
+				color: #a7aaad;
+			}
+
+			&:focus {
+				border-color: #1d4ed8;
+				box-shadow: none;
+			}
+
+			&:disabled {
+				background: #f6f7f7;
+				border-color: #dcdcde;
+			}
+		}
+
+		.kt-unified-activate-button {
+			flex-shrink: 0;
+			height: auto;
+			padding: 0 28px;
+			font-size: 14px;
+			font-weight: 600;
+			border-radius: 4px;
+			background: #e2574c;
+			border-color: #e2574c;
+			color: #fff;
+			justify-content: center;
+
+			&:hover:not(:disabled) {
+				background: #d5473c;
+				border-color: #d5473c;
+				color: #fff;
+			}
+
+			&:disabled {
+				opacity: 0.7;
+			}
+		}
+	}
+
+	.kt-unified-error {
+		color: #d63638;
+		margin: 8px 0 0;
+	}
+
+	.kt-unified-step-loading,
+	.kt-unified-step-installing {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 4px 0;
+	}
+
+	.kt-unified-success-message {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-weight: 600;
+
+		.dashicons-yes-alt {
+			color: #00a32a;
+		}
+	}
+
+	.kt-unified-download-button {
+		margin-top: 12px;
+		width: 100%;
+		height: auto;
+		padding: 12px 0;
+		justify-content: center;
+		align-items: center;
+		gap: 6px;
+		display: inline-flex;
+		background: #e2574c;
+		border-color: #e2574c;
+		font-weight: 600;
+		color: #fff;
+
+		.dashicons-download {
+			line-height: 1;
+		}
+
+		&:hover {
+			background: #d5473c;
+			border-color: #d5473c;
+			color: #fff;
+		}
+	}
+
+	.kt-unified-reload-link {
+		appearance: none;
+		background: none;
+		border: 0;
+		padding: 0;
+		color: #2271b1;
+		text-decoration: underline;
+		cursor: pointer;
+		font-size: inherit;
+		font-family: inherit;
+	}
+
+	.kt-spinner {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border: 2px solid #dcdcde;
+		border-top-color: #2563eb;
+		border-radius: 50%;
+		animation: kt-license-spin 0.7s linear infinite;
+		flex-shrink: 0;
+	}
+
+	// Legacy (Kadence) license view — reflow Uplink's own field/button markup into a row.
+	.kt-license-view-legacy {
+		.stellarwp-uplink__settingsform {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: flex-start;
+			gap: 10px;
+		}
+
+		.stellarwp-uplink__license-field {
+			flex: 1 1 240px;
+			margin: 0;
+		}
+
+		input.stellarwp-uplink__settings-field {
+			width: 100%;
+			box-sizing: border-box;
+			height: auto;
+			padding: 11px 14px;
+			font-size: 14px;
+		}
+
+		p.submit {
+			margin: 0;
+			flex: 0 0 auto;
+			padding: 0;
+		}
+
+		p.submit .button-primary {
+			height: auto;
+			padding: 11px 26px;
+			font-size: 14px;
+			font-weight: 600;
+			border-radius: 4px;
+			background: #e2574c;
+			border-color: #e2574c;
+			color: #fff;
+
+			&:hover {
+				background: #d5473c;
+				border-color: #d5473c;
+			}
+		}
+
+		.tooltip.description {
+			margin: 10px 0 0;
+			color: #50575e;
+			font-size: 13px;
+		}
+	}
+
+	.kt-harbor-notice-box {
+		background: #eff6ff;
+		border: 1px solid #bfdbfe;
+		border-radius: 6px;
+		padding: 16px 18px;
+		margin-top: 24px;
+
+		h4 {
+			margin: 0 0 6px;
+			color: #1d4ed8;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+
+			.dashicons {
+				color: #1d4ed8;
+			}
+		}
+
+		p {
+			margin: 0;
+			color: #1d4ed8;
+			font-size: 13px;
+			line-height: 1.6;
+
+			a {
+				color: #1d4ed8;
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+@keyframes kt-license-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}

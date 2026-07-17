@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_field;
 use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
@@ -20,6 +21,13 @@ use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
  * @category class
  */
 class Kadence_Blocks_Settings {
+
+	/**
+	 * Plugin basename for Kadence Blocks Pro, relative to the plugins directory.
+	 *
+	 * @var string
+	 */
+	const PRO_PLUGIN_FILE = 'kadence-blocks-pro/kadence-blocks-pro.php';
 
 	/**
 	 * Settings of this class
@@ -73,6 +81,7 @@ class Kadence_Blocks_Settings {
 		}
 		add_action( 'wp_ajax_kadence_blocks_activate_deactivate', [ $this, 'ajax_blocks_activate_deactivate' ], 10, 0 );
 		add_action( 'wp_ajax_kadence_blocks_save_config', [ $this, 'ajax_blocks_save_config' ], 10, 0 );
+		add_action( 'wp_ajax_kadence_blocks_activate_pro', [ $this, 'ajax_activate_pro' ], 10, 0 );
 		add_action( 'wp_ajax_kadence_post_default_width', [ $this, 'ajax_default_editor_width' ], 10, 0 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'deregister_blocks' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
@@ -85,6 +94,7 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_head-post.php', [ $this, 'admin_editor_width' ], 100 );
 		add_action( 'admin_head-post-new.php', [ $this, 'admin_editor_width' ], 100 );
 		add_action( 'kadence_blocks_dash_side_panel_pro', [ $this, 'admin_pro_kadence_notice' ], 10 );
+		add_action( 'kadence_blocks_dash_side_panel_license', [ $this, 'admin_license_key_notice' ], 10 );
 		add_filter( 'stellarwp/telemetry/kadence-blocks/optin_args', [ $this, 'optin_notice_args' ], 10 );
 		add_filter( 'stellarwp/telemetry/kadence-blocks/exit_interview_args', [ $this, 'exit_interview_args' ], 10 );
 	}
@@ -726,6 +736,7 @@ class Kadence_Blocks_Settings {
 			'updated'  => __( 'Updated', 'kadence-blocks' ),
 			'config'   => __( 'Config', 'kadence-blocks' ),
 			'settings' => __( 'Default Settings', 'kadence-blocks' ),
+			'license'  => __( 'Enter License Key', 'kadence-blocks' ),
 		];
 		$settings = [
 			'kadence/spacer'          => [
@@ -802,6 +813,22 @@ class Kadence_Blocks_Settings {
 				'texts'               => $texts,
 			]
 		);
+
+		if ( ! kadence_blocks_is_license_authorized() ) {
+			$license_modal_meta = kadence_blocks_get_asset_file( 'dist/admin-license-modal' );
+			wp_enqueue_script( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.js', $license_modal_meta['dependencies'], $license_modal_meta['version'], true );
+			wp_enqueue_style( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.css', [ 'wp-components' ], $license_modal_meta['version'] );
+			wp_localize_script(
+				'admin-kadence-license-modal',
+				'kadenceLicenseModalParams',
+				[
+					'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+					'wpnonce'        => wp_create_nonce( 'kadence-blocks-manage' ),
+					'licensePageUrl' => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
+				]
+			);
+			wp_set_script_translations( 'admin-kadence-license-modal', 'kadence-blocks' );
+		}
 	}
 	/**
 	 * Loads admin style sheets and scripts
@@ -1423,6 +1450,7 @@ class Kadence_Blocks_Settings {
 						<?php do_action( 'kadence_blocks_dash_side_panel' ); ?>
 						<?php if ( apply_filters( 'kadence_blocks_dash_brand_sidebar', true ) ) { ?>
 							<?php do_action( 'kadence_blocks_dash_side_panel_pro' ); ?>
+							<?php do_action( 'kadence_blocks_dash_side_panel_license' ); ?>
 							<div class="community-section sidebar-section components-panel">
 								<div class="components-panel__body is-opened">
 									<h2><?php esc_html_e( 'Web Creators Community', 'kadence-blocks' ); ?></h2>
@@ -1454,27 +1482,92 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
+	 * Whether the Kadence Blocks Pro plugin is present on disk but not currently active.
+	 *
+	 * @return bool
+	 */
+	private function is_pro_installed_but_inactive() {
+		return ! class_exists( 'Kadence_Blocks_Pro' ) && file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE );
+	}
+	/**
 	 * Admin Pro Kadence Notice.
 	 */
 	public function admin_pro_kadence_notice() {
-		if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
-			?>
-			<div class="pro-section sidebar-section components-panel">
-				<div class="components-panel__body is-opened">
-					<h2><?php esc_html_e( 'Kadence Blocks Pro', 'kadence-blocks' ); ?></h2>
-					<ul>
-						<li><?php esc_html_e( '10 Pro Blocks', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Pro Block Addons', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Dynamic Content', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Custom Icons', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Custom Fonts', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Premium Design Library', 'kadence-blocks' ); ?></li>
-					</ul>
-					<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Upgrade Kadence Blocks', 'kadence-blocks' ); ?></a>
-				</div>
-			</div>
-			<?php
+		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+			return;
 		}
+		$pro_installed = $this->is_pro_installed_but_inactive();
+		?>
+		<div class="pro-section sidebar-section components-panel">
+			<div class="components-panel__body is-opened">
+				<h2><?php esc_html_e( 'Kadence Blocks Pro', 'kadence-blocks' ); ?></h2>
+				<ul>
+					<li><?php esc_html_e( '10 Pro Blocks', 'kadence-blocks' ); ?></li>
+					<li><?php esc_html_e( 'Pro Block Addons', 'kadence-blocks' ); ?></li>
+					<li><?php esc_html_e( 'Dynamic Content', 'kadence-blocks' ); ?></li>
+					<li><?php esc_html_e( 'Custom Icons', 'kadence-blocks' ); ?></li>
+					<li><?php esc_html_e( 'Custom Fonts', 'kadence-blocks' ); ?></li>
+					<li><?php esc_html_e( 'Premium Design Library', 'kadence-blocks' ); ?></li>
+				</ul>
+				<?php if ( $pro_installed && current_user_can( 'activate_plugins' ) ) : ?>
+					<a
+						href="#"
+						class="sidebar-btn-link kt-activate-pro-button"
+						data-nonce="<?php echo esc_attr( wp_create_nonce( 'kadence-blocks-activate-pro' ) ); ?>"
+						data-inactive-label="<?php esc_attr_e( 'Activate Kadence Blocks Pro', 'kadence-blocks' ); ?>"
+						data-activating-label="<?php esc_attr_e( 'Activating…', 'kadence-blocks' ); ?>"
+						data-activated-label="<?php esc_attr_e( 'Activated', 'kadence-blocks' ); ?>"
+					><?php esc_html_e( 'Activate Kadence Blocks Pro', 'kadence-blocks' ); ?></a>
+				<?php else : ?>
+					<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Upgrade Kadence Blocks', 'kadence-blocks' ); ?></a>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php
+	}
+	/**
+	 * Activate the Kadence Blocks Pro plugin via ajax.
+	 */
+	public function ajax_activate_pro() {
+		check_ajax_referer( 'kadence-blocks-activate-pro', 'wpnonce' );
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			wp_send_json_error( [ 'message' => __( 'You do not have permission to activate plugins.', 'kadence-blocks' ) ] );
+		}
+		if ( ! file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE ) ) {
+			wp_send_json_error( [ 'message' => __( 'Kadence Blocks Pro could not be found.', 'kadence-blocks' ) ] );
+		}
+		if ( ! function_exists( 'activate_plugin' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$result = activate_plugin( self::PRO_PLUGIN_FILE );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( [ 'message' => $result->get_error_message() ] );
+		}
+		wp_send_json_success();
+	}
+	/**
+	 * License key sidebar notice.
+	 *
+	 * Shows a button that opens a React popup for entering either a unified
+	 * (Harbor) license key or a legacy Kadence license key, when no license is
+	 * currently authorized.
+	 */
+	public function admin_license_key_notice() {
+		if ( kadence_blocks_is_license_authorized() ) {
+			return;
+		}
+		?>
+		<div class="license-section sidebar-section components-panel">
+			<div class="components-panel__body is-opened">
+				<h2><?php esc_html_e( 'License', 'kadence-blocks' ); ?></h2>
+				<p><?php esc_html_e( 'Enter your license key to unlock updates, premium blocks, and support.', 'kadence-blocks' ); ?></p>
+				<div id="kt-license-modal-root"></div>
+			</div>
+		</div>
+		<div id="kt-legacy-license-field" hidden>
+			<?php get_license_field()->render_single( 'kadence-blocks', false, true ); ?>
+		</div>
+		<?php
 	}
 	/**
 	 * Get array of Kadence Blocks.

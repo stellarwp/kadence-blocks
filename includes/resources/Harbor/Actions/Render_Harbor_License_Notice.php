@@ -34,17 +34,18 @@ final class Render_Harbor_License_Notice {
 			return;
 		}
 		?>
-		<hr style="margin: 20px 0;"/>
-		<h4><span class="dashicons dashicons-info" style="vertical-align: middle; margin-right: 4px;"></span><?php esc_html_e( 'Liquid Web Software Manager', 'kadence-blocks' ); ?></h4>
-		<p class="tooltip description"><?php echo wp_kses(
-			sprintf(
-				/* translators: 1: product name, 2: URL to the Liquid Web Software Manager page. */
-				__( '%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous %1$s account. If you purchased a new plan through Liquid Web, your products are managed through the <a href="%2$s">Liquid Web Software Manager</a>.', 'kadence-blocks' ),
-				esc_html( $this->product_name ),
-				esc_url( $url )
-			),
-			[ 'a' => [ 'href' => [] ] ]
-		); ?></p>
+		<div class="kt-harbor-notice-box">
+			<h4><span class="dashicons dashicons-info" aria-hidden="true"></span><?php esc_html_e( 'Liquid Web Software Manager', 'kadence-blocks' ); ?></h4>
+			<p><?php echo wp_kses(
+				sprintf(
+					/* translators: 1: product name, 2: URL to the Liquid Web Software Manager page. */
+					__( '%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous %1$s account. If you purchased a new plan through Liquid Web, enter your Kadence license key from here.', 'kadence-blocks' ),
+					esc_html( $this->product_name ),
+					esc_url( $url )
+				),
+				[ 'a' => [ 'href' => [] ] ]
+			); ?></p>
+		</div>
 		<?php
 	}
 

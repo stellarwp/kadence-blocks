@@ -36,12 +36,14 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
 		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
-			add_action(
+			// Harbor notice is now rendered in the React license modal
+			// (src/license-modal/license-modal.js → HarborLicenseNotice).
+			/* add_action(
 				"stellarwp/uplink/{$slug}/license_field_after_form",
 				new Render_Harbor_License_Notice( $plugin['name'] )
 			);
 
-			add_filter( "stellarwp/uplink/{$slug}/plugin_notices", [ $this, 'suppress_inline_license_notices' ] );
+			add_filter( "stellarwp/uplink/{$slug}/plugin_notices", [ $this, 'suppress_inline_license_notices' ] ); */
 		}
 
 		add_action( 'admin_init', new Suppress_Legacy_Inactive_Notices() );

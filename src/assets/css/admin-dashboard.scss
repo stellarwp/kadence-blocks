@@ -995,6 +995,32 @@ h5.kt-main-subtitle {
 	&:hover {
 		background: #0073e6;
 	}
+	&.updating-message,
+	&.button-disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+}
+.side-panel .license-section.components-panel a.sidebar-btn-link,
+.side-panel .license-section.components-panel button.sidebar-btn-link {
+	margin-top: 10px;
+	margin-bottom: 0px;
+	display: inline-block;
+	padding: 10px 0;
+	width: 100%;
+	text-align: center;
+	background: #1e1e1e;
+	border-radius: 3px;
+	font-size: 14px;
+	color: white;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	border: 0;
+	height: auto;
+	cursor: pointer;
+	&:hover {
+		background: #383838;
+	}
 }
 
 .kb-container {
