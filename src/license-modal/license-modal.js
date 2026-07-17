@@ -36,7 +36,7 @@ function HarborLicenseNotice({ licensePageUrl }) {
 					sprintf(
 						/* translators: %s: product name (e.g. Kadence Blocks). */
 						__(
-							'%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous %1$s account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.',
+							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing legacy licenses from your previous %1$s account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
 							'kadence-blocks'
 						),
 						productName
