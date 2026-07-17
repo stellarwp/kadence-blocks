@@ -49,12 +49,12 @@ final class License_Status {
 	 * @return License_Strategy
 	 */
 	public function resolve(): License_Strategy {
-		// Rules 1 & 4: Kadence wins whenever it is active (including when both are).
+		// Kadence wins whenever it is active (including when both are).
 		if ( $this->legacy->is_active() ) {
 			return $this->legacy;
 		}
 
-		// Rules 2 & 3: unified when it is active, otherwise default to unified.
+		// Unified when it is active, otherwise default to unified.
 		return $this->unified;
 	}
 
