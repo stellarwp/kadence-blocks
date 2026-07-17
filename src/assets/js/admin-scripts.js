@@ -585,7 +585,10 @@ jQuery(document).ready(function ($) {
 				},
 				function (response) {
 					if (response && response.success) {
-						$button.removeClass('updating-message').addClass('button-disabled').text($button.data('activated-label'));
+						$button
+							.removeClass('updating-message')
+							.addClass('button-disabled')
+							.text($button.data('activated-label'));
 						location.reload();
 					} else {
 						$button.removeClass('updating-message').text($button.data('inactive-label'));
@@ -599,4 +602,3 @@ jQuery(document).ready(function ($) {
 		});
 	});
 })(jQuery, window, document);
-

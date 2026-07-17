@@ -69,13 +69,10 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 							'kadence-blocks'
 						)}{' '}
 						{licensePageUrl &&
-							createInterpolateElement(
-								__('Get your license key <a>here</a>.', 'kadence-blocks'),
-								{
-									// eslint-disable-next-line jsx-a11y/anchor-has-content
-									a: <a href={licensePageUrl} target="_blank" rel="noopener noreferrer" />,
-								}
-							)}
+							createInterpolateElement(__('Get your license key <a>here</a>.', 'kadence-blocks'), {
+								// eslint-disable-next-line jsx-a11y/anchor-has-content
+								a: <a href={licensePageUrl} target="_blank" rel="noopener noreferrer" />,
+							})}
 					</p>
 					<div className="kt-unified-input-row">
 						<TextControl
@@ -86,11 +83,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 							__nextHasNoMarginBottom
 							__next40pxDefaultSize
 						/>
-						<Button
-							className="kt-unified-activate-button"
-							variant="primary"
-							onClick={handleActivate}
-						>
+						<Button className="kt-unified-activate-button" variant="primary" onClick={handleActivate}>
 							{__('Activate', 'kadence-blocks')}
 						</Button>
 					</div>
@@ -113,11 +106,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 						<span className="dashicons dashicons-yes-alt" aria-hidden="true" />
 						{__('License activated! Your unified license is now connected.', 'kadence-blocks')}
 					</p>
-					<Button
-						className="kt-unified-download-button"
-						variant="primary"
-						onClick={handleDownloadActivate}
-					>
+					<Button className="kt-unified-download-button" variant="primary" onClick={handleDownloadActivate}>
 						<span className="dashicons dashicons-download" aria-hidden="true" />
 						{__('Install and Activate Kadence Blocks Pro', 'kadence-blocks')}
 					</Button>
