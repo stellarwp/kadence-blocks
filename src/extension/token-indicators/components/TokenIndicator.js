@@ -1,64 +1,77 @@
 /**
- * The per-control design-system indicator: a design-system icon when the control is bound to the active
- * variant, an override dot plus a reset affordance when the control has diverged from it, and nothing when
- * the control is not mapped for the selected variant. Purely additive — it renders inside a control's
+ * The per-control design-system indicator. When the control overrides its selected preset it shows a red
+ * edit dot plus a reset affordance; when it still matches the preset it shows the design-token glyph in the
+ * accent color in that same reset slot; nothing otherwise. Purely additive — it renders inside a control's
  * label node and never touches the control's value.
  */
 
 import { Button, Tooltip } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { TOKEN_INDICATORS_STORE } from '../store';
+import { resetIcon, variantIcon } from '../../variant-picker/icons';
 
 /**
- * The design-system indicator for one mapped control.
+ * The design-system indicator for one mapped control. Three states: overridden shows a red edit dot
+ * (matching the variant button's dot) and, when `showReset` is set, a reset icon that clears the override;
+ * matching the preset shows the design-token glyph in the accent color, occupying the same reset slot as a
+ * non-interactive "linked to the design system" mark; unmapped renders nothing. The matching mark only
+ * renders where a reset would (`showReset`), so the dot-only label path is left unchanged. A control whose
+ * own header already carries the reset passes `showReset={false}` so the dot alone marks the edit.
  *
- * @param {Object}   props         The component props.
- * @param {Object}   [props.state] The attribute's binding state from useVariantBinding, or undefined when
- *                                 the control is not mapped for the selected variant.
- * @param {Function} props.onReset Called to clear the control's override back to the variant value.
+ * @param {Object}   props             The component props.
+ * @param {Object}   [props.state]     The attribute's binding state from useVariantBinding, or undefined when
+ *                                     the control is not mapped for the selected preset.
+ * @param {Function} props.onReset     Called to clear the control's override back to the preset value.
+ * @param {boolean}  [props.showReset] Whether to render the reset icon / matching mark (default true).
  *
  * @since TBD
  *
- * @return {Object|null} The indicator element, or null when the control is not bound.
+ * @return {Object|null} The indicator element, or null when the control is unmapped.
  */
-export function TokenIndicator({ state, onReset }) {
-	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
-
+export function TokenIndicator({ state, onReset, showReset = true }) {
 	if (!state || !state.bound) {
 		return null;
 	}
 
+	// Matches the selected preset: a non-interactive design-system mark in the reset slot, shown only where
+	// a reset would otherwise appear (so the dot-only label path stays as it was).
 	if (!state.overridden) {
+		if (!showReset) {
+			return null;
+		}
+
 		return (
-			<Tooltip text={__('Bound to the selected design variant', 'kadence-blocks')}>
-				<span
-					className="kb-token-indicator kb-token-indicator--bound"
-					role="img"
-					aria-label={__('Bound to the selected design variant', 'kadence-blocks')}
-				/>
-			</Tooltip>
+			<span className="kb-token-indicator">
+				<Tooltip text={__('Matches the preset value', 'kadence-blocks')}>
+					<span
+						className="kb-token-indicator__linked"
+						role="img"
+						aria-label={__('Matches the preset value', 'kadence-blocks')}
+					>
+						{variantIcon}
+					</span>
+				</Tooltip>
+			</span>
 		);
 	}
 
-	const className =
-		'kb-token-indicator kb-token-indicator--overridden' + (highlighting ? ' kb-token-indicator--highlight' : '');
-
 	return (
-		<span className={className}>
-			<Tooltip text={__('Overrides the selected design variant', 'kadence-blocks')}>
-				<span className="kb-token-indicator__dot" aria-hidden="true" />
+		<span className="kb-token-indicator">
+			<Tooltip text={__('Overrides the preset value', 'kadence-blocks')}>
+				<span
+					className="kb-token-indicator__dot"
+					role="img"
+					aria-label={__('Overrides the preset value', 'kadence-blocks')}
+				/>
 			</Tooltip>
-			<Button
-				className="kb-token-indicator__reset"
-				variant="tertiary"
-				isSmall
-				onClick={onReset}
-				label={__('Reset to variant value', 'kadence-blocks')}
-				showTooltip
-			>
-				{__('Reset', 'kadence-blocks')}
-			</Button>
+			{showReset && (
+				<Button
+					className="kb-token-indicator__reset"
+					icon={resetIcon}
+					onClick={onReset}
+					label={__('Reset to preset value', 'kadence-blocks')}
+					showTooltip
+				/>
+			)}
 		</span>
 	);
 }
