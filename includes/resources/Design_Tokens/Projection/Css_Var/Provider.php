@@ -21,7 +21,7 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Css_Builder::class );
 		$this->container->singleton( Legacy_Filter_Bridge::class );
-		$this->container->singleton( Scale_Reader::class );
+		$this->container->singleton( Slot_Target_Reader::class );
 		$this->container->singleton( Projector::class );
 
 		// Contribute this projector's editor CSS to the combined projected-CSS endpoint.
