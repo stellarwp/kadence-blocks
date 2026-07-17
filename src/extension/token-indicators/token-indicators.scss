@@ -69,6 +69,13 @@
 		margin-bottom: 16px;
 	}
 
+	// Keep the row's real content above the highlight tint (see --highlight below), so the tint never
+	// needs a negative z-index that an opaque ancestor background could swallow.
+	> * {
+		position: relative;
+		z-index: 1;
+	}
+
 	.kb-token-control-row__header {
 		display: flex;
 		flex: 1;
@@ -77,15 +84,15 @@
 	}
 }
 
+// The edit-highlight tint: an inset overlay behind the row's content (which sits at z-index 1 above),
+// bleeding into the panel padding without negative z-index or width/height calc() hacks.
 .kb-token-control-row--highlight {
 	&::before {
 		background: rgba(240, 184, 73, 0.25);
 		content: '';
-		height: calc(100% + 16px);
-		left: -16px;
+		inset: -8px -16px;
+		pointer-events: none;
 		position: absolute;
-		top: -8px;
-		width: calc(100% + 32px);
-		z-index: -1;
+		z-index: 0;
 	}
 }
