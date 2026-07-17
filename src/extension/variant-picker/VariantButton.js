@@ -65,6 +65,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
 	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
+	const binding = useVariantBinding(blockName, attributes);
 	const variants = blockVariants(blockName, tokenSet);
 
 	if (!variants.length) {
@@ -74,7 +75,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const selected = get(attributes, 'kbVariant', '');
 	const currentSlug = selected || blockDefaultVariant(blockName, tokenSet);
 	const label = currentVariantLabel(blockName, tokenSet, selected);
-	const edited = Object.values(useVariantBinding(blockName, attributes)).some((entry) => entry.overridden);
+	const edited = Object.values(binding).some((entry) => entry.overridden);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
