@@ -23,7 +23,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Scale_Reader {
+final class Slot_Target_Reader {
 
 	/**
 	 * @var Token_Registry
@@ -69,7 +69,7 @@ final class Scale_Reader {
 	 * @return array<string,string> Slug => resolved scale value (a length, or a clamp() string for a fluid
 	 *                              family).
 	 */
-	public function scale( string $target_class ): array {
+	public function read( string $target_class ): array {
 		if ( ! $this->registry->is_active() ) {
 			return [];
 		}

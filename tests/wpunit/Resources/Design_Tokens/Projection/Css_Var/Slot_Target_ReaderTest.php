@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Scale_Reader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot_Target_Reader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Font_Size_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Gap_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
@@ -17,12 +17,12 @@ use Tests\Support\Classes\TestCase;
  * slug => value map (the source of truth KB's legacy --global-kb-* families are fed from), and returns an
  * empty map when the registry is deactivated so callers keep their own fallback.
  */
-final class Scale_ReaderTest extends TestCase {
+final class Slot_Target_ReaderTest extends TestCase {
 
 	/**
-	 * @var Scale_Reader
+	 * @var Slot_Target_Reader
 	 */
-	private Scale_Reader $reader;
+	private Slot_Target_Reader $reader;
 
 	/**
 	 * @var Token_Registry
@@ -35,7 +35,7 @@ final class Scale_ReaderTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->reader   = $this->container->get( Scale_Reader::class );
+		$this->reader   = $this->container->get( Slot_Target_Reader::class );
 		$this->registry = $this->container->get( Token_Registry::class );
 	}
 
@@ -71,7 +71,7 @@ final class Scale_ReaderTest extends TestCase {
 				'xxl'  => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
 				'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
 			],
-			$this->reader->scale( Font_Size_Target::class )
+			$this->reader->read( Font_Size_Target::class )
 		);
 	}
 
@@ -94,7 +94,7 @@ final class Scale_ReaderTest extends TestCase {
 				'4xl' => '8rem',
 				'5xl' => '10rem',
 			],
-			$this->reader->scale( Spacing_Target::class )
+			$this->reader->read( Spacing_Target::class )
 		);
 	}
 
@@ -112,7 +112,7 @@ final class Scale_ReaderTest extends TestCase {
 				'md'   => '2rem',
 				'lg'   => '4rem',
 			],
-			$this->reader->scale( Gap_Target::class )
+			$this->reader->read( Gap_Target::class )
 		);
 	}
 
@@ -125,8 +125,8 @@ final class Scale_ReaderTest extends TestCase {
 	public function testItReturnsAnEmptyMapWhenTheRegistryIsDeactivated(): void {
 		$this->registry->deactivate();
 
-		$this->assertSame( [], $this->reader->scale( Font_Size_Target::class ) );
-		$this->assertSame( [], $this->reader->scale( Spacing_Target::class ) );
-		$this->assertSame( [], $this->reader->scale( Gap_Target::class ) );
+		$this->assertSame( [], $this->reader->read( Font_Size_Target::class ) );
+		$this->assertSame( [], $this->reader->read( Spacing_Target::class ) );
+		$this->assertSame( [], $this->reader->read( Gap_Target::class ) );
 	}
 }

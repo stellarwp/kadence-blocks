@@ -3,7 +3,7 @@
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Foundation_Presets\Selector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Adapter\Contracts\Adapter_Interface;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Scale_Reader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot_Target_Reader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Font_Size_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -116,7 +116,7 @@ if ( ! function_exists( 'kadence_blocks_variable_font_size_scale' ) ) {
 	 * `kadence_blocks_variable_font_sizes` filter (includes/init.php and
 	 * class-kadence-blocks-editor-assets.php) so the shipped clamp() values live once, in the baseline,
 	 * rather than being copied into each emission site. Returns an empty array when token projection is
-	 * unavailable or inactive, so callers keep their own fallback. Thin accessor over the Scale_Reader.
+	 * unavailable or inactive, so callers keep their own fallback. Thin accessor over the Slot_Target_Reader.
 	 *
 	 * @since TBD
 	 *
@@ -124,13 +124,13 @@ if ( ! function_exists( 'kadence_blocks_variable_font_size_scale' ) ) {
 	 */
 	function kadence_blocks_variable_font_size_scale(): array {
 		try {
-			/** @var Scale_Reader $reader */
-			$reader = kadence_blocks()->get( Scale_Reader::class );
+			/** @var Slot_Target_Reader $reader */
+			$reader = kadence_blocks()->get( Slot_Target_Reader::class );
 		} catch ( \Throwable $e ) {
 			return [];
 		}
 
-		return $reader->scale( Font_Size_Target::class );
+		return $reader->read( Font_Size_Target::class );
 	}
 }
 
@@ -140,7 +140,7 @@ if ( ! function_exists( 'kadence_blocks_variable_spacing_scale' ) ) {
 	 * `--global-kb-spacing-*` emission (includes/init.php) so the shipped spacing literals live once, in
 	 * the baseline, rather than being copied into the emission. Returns an empty array when token
 	 * projection is unavailable or inactive, so callers keep their own fallback. Thin accessor over the
-	 * Scale_Reader.
+	 * Slot_Target_Reader.
 	 *
 	 * @since TBD
 	 *
@@ -148,12 +148,12 @@ if ( ! function_exists( 'kadence_blocks_variable_spacing_scale' ) ) {
 	 */
 	function kadence_blocks_variable_spacing_scale(): array {
 		try {
-			/** @var Scale_Reader $reader */
-			$reader = kadence_blocks()->get( Scale_Reader::class );
+			/** @var Slot_Target_Reader $reader */
+			$reader = kadence_blocks()->get( Slot_Target_Reader::class );
 		} catch ( \Throwable $e ) {
 			return [];
 		}
 
-		return $reader->scale( Spacing_Target::class );
+		return $reader->read( Spacing_Target::class );
 	}
 }
