@@ -17,6 +17,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
+use KadenceWP\KadenceBlocks\Harbor\License_Status;
 
 /**
  * Check if we are in AMP Mode.
@@ -169,7 +170,7 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $legacy_key ) ) {
 		return $legacy_key;
 	}
-	return kadence_blocks_get_unified_license_key();
+	return ( new License_Status() )->get_unified_key();
 }
 
 /**
@@ -222,7 +223,7 @@ function kadence_blocks_get_authorized_license_key(): string {
 		}
 	}
 
-	return kadence_blocks_get_unified_license_key();
+	return ( new License_Status() )->get_unified_key();
 }
 
 /**
@@ -358,12 +359,12 @@ function kadence_blocks_get_current_license_data(): array {
  * @return bool
  */
 function kadence_blocks_is_license_authorized(): bool {
-	return false; #todo - remove this once we have a proper license modal
 	if ( kadence_blocks_is_legacy_license_authorized() ) {
 		return true;
 	}
 
-	return lw_harbor_is_product_license_active( 'kadence' );
+	return function_exists( 'lw_harbor_is_product_license_active' )
+		&& lw_harbor_is_product_license_active( 'kadence' );
 }
 
 /**
@@ -487,23 +488,4 @@ function kadence_blocks_get_deprecated_pro_license_data() {
 		$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 	}
 	return $data;
-}
-
-/**
- * Get the unified license key for the plugin.
- *
- * @since TBD
- *
- * @return string The unified license key, or an empty string if not found.
- */
-function kadence_blocks_get_unified_license_key(): string {
-	if (
-		function_exists( 'lw_harbor_get_unified_license_key' )
-		&& function_exists( 'lw_harbor_is_product_license_active' )
-		&& lw_harbor_is_product_license_active( 'kadence' )
-	) {
-		$key = lw_harbor_get_unified_license_key();
-		return ! empty( $key ) ? $key : '';
-	}
-	return '';
 }

@@ -1021,6 +1021,26 @@ h5.kt-main-subtitle {
 	&:hover {
 		background: #383838;
 	}
+
+	&.kt-license-manage-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 10px 12px;
+		background: #fff;
+		border: 1px solid #d1d5db;
+		border-radius: 6px;
+		color: #1e1e1e;
+		font-weight: 500;
+		box-sizing: border-box;
+
+		&:hover {
+			background: #f9fafb;
+			border-color: #9ca3af;
+			color: #1e1e1e;
+		}
+	}
 }
 
 .kb-container {

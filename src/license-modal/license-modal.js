@@ -1,11 +1,13 @@
 /**
- * License key modal app — open button + Modal for unified / legacy license entry.
+ * License key modal app — open button + Modal for unified / legacy license entry,
+ * or the Active status card when a license is already authorized.
  */
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Modal } from '@wordpress/components';
 import UnifiedLicenseView from './unified-license-view';
 import LegacyLicenseField from './legacy-license-field';
+import ActiveLicenseView from './active-license-view';
 
 const VIEWS = {
 	UNIFIED: 'unified',
@@ -13,16 +15,17 @@ const VIEWS = {
 };
 
 const params = window.kadenceLicenseModalParams || {};
+const licenseStatus = params.licenseStatus || {};
 
 /**
  * Harbor notice previously rendered by Render_Harbor_License_Notice on the
  * PHP Uplink license field. That hook is commented out in Harbor_Provider;
  * the notice now lives here on the legacy React view.
  *
- * @param {Object} props
- * @param {string} props.licensePageUrl Harbor / Liquid Web Software Manager URL.
+ * @param {Object}   props
+ * @param {Function} props.onSwitchToUnified Switch to the unified license view.
  */
-function HarborLicenseNotice({ licensePageUrl }) {
+function HarborLicenseNotice({ onSwitchToUnified }) {
 	const productName = __('Kadence Blocks', 'kadence-blocks');
 
 	return (
@@ -36,17 +39,21 @@ function HarborLicenseNotice({ licensePageUrl }) {
 					sprintf(
 						/* translators: %s: product name (e.g. Kadence Blocks). */
 						__(
-							'%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous %1$s account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.',
+							'%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.',
 							'kadence-blocks'
 						),
 						productName
 					),
 					{
 						// eslint-disable-next-line jsx-a11y/anchor-has-content
-						a: licensePageUrl ? (
-							<a href={licensePageUrl} target="_blank" rel="noopener noreferrer" />
-						) : (
-							<span />
+						a: (
+							<a
+								href="#unified-license"
+								onClick={(event) => {
+									event.preventDefault();
+									onSwitchToUnified();
+								}}
+							/>
 						),
 					}
 				)}
@@ -60,8 +67,11 @@ export default function LicenseModalApp() {
 	const [view, setView] = useState(VIEWS.UNIFIED);
 	const [legacyKey, setLegacyKey] = useState(0);
 
-	const openModal = () => {
-		setView(VIEWS.UNIFIED);
+	const licenseType = licenseStatus.type || 'none';
+	const isActive = licenseType === 'unified' || licenseType === 'kadence';
+
+	const openModal = (initialView = VIEWS.UNIFIED) => {
+		setView(initialView);
 		setLegacyKey((key) => key + 1);
 		setIsOpen(true);
 	};
@@ -77,9 +87,29 @@ export default function LicenseModalApp() {
 
 	return (
 		<>
-			<button type="button" className="sidebar-btn-link" onClick={openModal}>
-				{__('Enter License Key', 'kadence-blocks')}
-			</button>
+			{isActive ? (
+				<ActiveLicenseView
+					type={licenseType}
+					maskedKey={licenseStatus.maskedKey || ''}
+					fullKey={licenseStatus.fullKey || ''}
+					expires={licenseStatus.expires || ''}
+					manageUrl={licenseStatus.manageUrl || ''}
+					onManageKadence={() => openModal(VIEWS.LEGACY)}
+				/>
+			) : (
+				<>
+					<h2>{__('License', 'kadence-blocks')}</h2>
+					<p>
+						{__(
+							'Enter your license key to unlock updates, premium blocks, and support.',
+							'kadence-blocks'
+						)}
+					</p>
+					<button type="button" className="sidebar-btn-link" onClick={() => openModal(VIEWS.UNIFIED)}>
+						{__('Enter License Key', 'kadence-blocks')}
+					</button>
+				</>
+			)}
 			{isOpen && (
 				<Modal className="kt-license-modal" title={title} onRequestClose={closeModal}>
 					{view === VIEWS.UNIFIED ? (
@@ -97,7 +127,7 @@ export default function LicenseModalApp() {
 								)}
 							</p>
 							<LegacyLicenseField key={`legacy-${legacyKey}`} />
-							<HarborLicenseNotice licensePageUrl={params.licensePageUrl || ''} />
+							<HarborLicenseNotice onSwitchToUnified={() => setView(VIEWS.UNIFIED)} />
 							<p className="kt-license-toggle kt-license-toggle-back">
 								<button
 									type="button"

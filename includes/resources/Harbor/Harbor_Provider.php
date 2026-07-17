@@ -35,6 +35,7 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'kadence_blocks_ai_disabled', [ $this, 'is_ai_disabled' ] );
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
+		#todo - review this
 		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
 			// Harbor notice is now rendered in the React license modal
 			// (src/license-modal/license-modal.js → HarborLicenseNotice).

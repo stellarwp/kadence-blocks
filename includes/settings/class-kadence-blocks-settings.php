@@ -13,6 +13,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_field;
+use KadenceWP\KadenceBlocks\Harbor\License_Status;
 use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
@@ -814,21 +815,20 @@ class Kadence_Blocks_Settings {
 			]
 		);
 
-		if ( ! kadence_blocks_is_license_authorized() ) {
-			$license_modal_meta = kadence_blocks_get_asset_file( 'dist/admin-license-modal' );
-			wp_enqueue_script( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.js', $license_modal_meta['dependencies'], $license_modal_meta['version'], true );
-			wp_enqueue_style( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.css', [ 'wp-components' ], $license_modal_meta['version'] );
-			wp_localize_script(
-				'admin-kadence-license-modal',
-				'kadenceLicenseModalParams',
-				[
-					'ajaxurl'        => admin_url( 'admin-ajax.php' ),
-					'wpnonce'        => wp_create_nonce( 'kadence-blocks-manage' ),
-					'licensePageUrl' => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
-				]
-			);
-			wp_set_script_translations( 'admin-kadence-license-modal', 'kadence-blocks' );
-		}
+		$license_modal_meta = kadence_blocks_get_asset_file( 'dist/admin-license-modal' );
+		wp_enqueue_script( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.js', $license_modal_meta['dependencies'], $license_modal_meta['version'], true );
+		wp_enqueue_style( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.css', [ 'wp-components' ], $license_modal_meta['version'] );
+		wp_localize_script(
+			'admin-kadence-license-modal',
+			'kadenceLicenseModalParams',
+			[
+				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+				'wpnonce'        => wp_create_nonce( 'kadence-blocks-manage' ),
+				'licensePageUrl' => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
+				'licenseStatus'  => ( new License_Status() )->get_ui_status(),
+			]
+		);
+		wp_set_script_translations( 'admin-kadence-license-modal', 'kadence-blocks' );
 	}
 	/**
 	 * Loads admin style sheets and scripts
@@ -1548,19 +1548,13 @@ class Kadence_Blocks_Settings {
 	/**
 	 * License key sidebar notice.
 	 *
-	 * Shows a button that opens a React popup for entering either a unified
-	 * (Harbor) license key or a legacy Kadence license key, when no license is
-	 * currently authorized.
+	 * Mounts the React license UI: inactive sites get the enter-key modal;
+	 * authorized sites get the Active status card (unified or Kadence).
 	 */
 	public function admin_license_key_notice() {
-		if ( kadence_blocks_is_license_authorized() ) {
-			return;
-		}
 		?>
 		<div class="license-section sidebar-section components-panel">
 			<div class="components-panel__body is-opened">
-				<h2><?php esc_html_e( 'License', 'kadence-blocks' ); ?></h2>
-				<p><?php esc_html_e( 'Enter your license key to unlock updates, premium blocks, and support.', 'kadence-blocks' ); ?></p>
 				<div id="kt-license-modal-root"></div>
 			</div>
 		</div>
