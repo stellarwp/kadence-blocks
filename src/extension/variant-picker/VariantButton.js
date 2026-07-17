@@ -12,7 +12,7 @@
  * renders it once, above its InspectorControlTabs, passing its name, attributes and setAttributes.
  */
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
@@ -66,6 +66,16 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 
 	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
 	const binding = useVariantBinding(blockName, attributes, tokenSet);
+	const edited = Object.values(binding).some((entry) => entry.overridden);
+
+	// With no overrides there is nothing to highlight, so drop the global flag instead of leaving the
+	// disabled "Highlight Edits" toggle stuck in the on state after a reset.
+	useEffect(() => {
+		if (!edited && highlighting) {
+			setHighlightEdits(false);
+		}
+	}, [edited, highlighting, setHighlightEdits]);
+
 	const variants = blockVariants(blockName, tokenSet);
 
 	if (!variants.length) {
@@ -75,7 +85,6 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const selected = get(attributes, 'kbVariant', '');
 	const currentSlug = selected || blockDefaultVariant(blockName, tokenSet);
 	const label = currentVariantLabel(blockName, tokenSet, selected);
-	const edited = Object.values(binding).some((entry) => entry.overridden);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
