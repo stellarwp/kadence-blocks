@@ -140,7 +140,7 @@ if ( ! function_exists( 'kadence_blocks_variable_spacing_scale' ) ) {
 	 * `--global-kb-spacing-*` emission (includes/init.php) so the shipped spacing literals live once, in
 	 * the baseline, rather than being copied into the emission. Returns an empty array when token
 	 * projection is unavailable or inactive, so callers keep their own fallback. Thin accessor over the
-	 * Scale_Reader.
+	 * Slot_Target_Reader.
 	 *
 	 * @since TBD
 	 *
@@ -148,12 +148,12 @@ if ( ! function_exists( 'kadence_blocks_variable_spacing_scale' ) ) {
 	 */
 	function kadence_blocks_variable_spacing_scale(): array {
 		try {
-			/** @var Scale_Reader $reader */
-			$reader = kadence_blocks()->get( Scale_Reader::class );
+			/** @var Slot_Target_Reader $reader */
+			$reader = kadence_blocks()->get( Slot_Target_Reader::class );
 		} catch ( \Throwable $e ) {
 			return [];
 		}
 
-		return $reader->scale( Spacing_Target::class );
+		return $reader->read( Spacing_Target::class );
 	}
 }
