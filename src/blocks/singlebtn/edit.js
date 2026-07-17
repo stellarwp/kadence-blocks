@@ -892,7 +892,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Color Hover', 'kadence-blocks')}
 																attr="colorHover"
@@ -929,7 +928,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Background Color', 'kadence-blocks')}
 																attr="backgroundHover"
@@ -1110,7 +1108,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Color', 'kadence-blocks')}
 																attr="color"
@@ -1145,7 +1142,6 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															// TODO: confirm exact placement vs Figma node 160-12291
 															<TokenControlRow
 																heading={__('Background Color', 'kadence-blocks')}
 																attr="background"
@@ -1180,43 +1176,56 @@ export default function KadenceButtonEdit(props) {
 																setAttributes({ mobileBorderStyle: value })
 															}
 														/>
-														<ResponsiveMeasurementControls
-															label={
-																<TokenLabel
-																	text={__('Border Radius', 'kadence-blocks')}
-																	attr="borderRadius"
-																	binding={tokenBinding}
-																/>
-															}
-															value={borderRadius}
-															tabletValue={tabletBorderRadius}
-															mobileValue={mobileBorderRadius}
-															onChange={(value) => setAttributes({ borderRadius: value })}
-															onChangeTablet={(value) =>
-																setAttributes({ tabletBorderRadius: value })
-															}
-															onChangeMobile={(value) =>
-																setAttributes({ mobileBorderRadius: value })
-															}
-															unit={borderRadiusUnit}
-															units={['px', 'em', 'rem', '%']}
-															onUnit={(value) =>
-																setAttributes({ borderRadiusUnit: value })
-															}
-															max={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 24
-																	: 500
-															}
-															step={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
-															min={0}
-															isBorderRadius={true}
-															allowEmpty={true}
-														/>
+														<TokenControlRow
+															attr="borderRadius"
+															binding={tokenBinding}
+															stacked
+														>
+															<ResponsiveMeasurementControls
+																label={
+																	<TokenLabel
+																		text={__('Border Radius', 'kadence-blocks')}
+																		attr="borderRadius"
+																		binding={tokenBinding}
+																		onReset={resetToken}
+																		showReset
+																	/>
+																}
+																reset={false}
+																value={borderRadius}
+																tabletValue={tabletBorderRadius}
+																mobileValue={mobileBorderRadius}
+																onChange={(value) =>
+																	setAttributes({ borderRadius: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({ tabletBorderRadius: value })
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({ mobileBorderRadius: value })
+																}
+																unit={borderRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({ borderRadiusUnit: value })
+																}
+																max={
+																	borderRadiusUnit === 'em' ||
+																	borderRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderRadiusUnit === 'em' ||
+																	borderRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+														</TokenControlRow>
 														<BoxShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
 															enable={undefined !== displayShadow ? displayShadow : false}

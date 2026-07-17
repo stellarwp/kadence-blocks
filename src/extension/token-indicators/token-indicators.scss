@@ -84,6 +84,51 @@
 	}
 }
 
+// The stacked variant: the header sits above a full-width control (block-level controls like the
+// responsive measurement inputs) instead of beside it.
+.kb-token-control-row--stacked {
+	align-items: stretch;
+	flex-direction: column;
+
+	.kb-token-control-row__header {
+		flex: 0 0 auto;
+	}
+
+	// The wrapped control's title carries the token label inline: the label stretches across the
+	// header's free space so the indicator (dot + reset, or the matching mark) right-aligns inside it
+	// via its own auto margins, with the device tabs and link toggle following on the same row.
+	.kadence-component__header {
+		justify-content: flex-start;
+
+		.kadence-component__header__title.kadence-title-bar.kadence-measure-control__title {
+			margin-bottom: 0;
+		}
+
+		.components-base-control__label {
+			width: 100%;
+		}
+
+		.kb-token-label {
+			display: flex;
+			align-items: center;
+		}
+
+		.kb-token-indicator {
+			padding-right: 4px;
+		}
+
+		.kb-token-indicator__dot {
+			margin-left: 4px;
+		}
+
+		.kb-measure-responsive-options {
+			display: flex;
+			align-items: center;
+			margin-left: auto;
+		}
+	}
+}
+
 // The edit-highlight tint: an inset overlay behind the row's content (which sits at z-index 1 above),
 // bleeding into the panel padding without negative z-index or width/height calc() hacks.
 .kb-token-control-row--highlight {
