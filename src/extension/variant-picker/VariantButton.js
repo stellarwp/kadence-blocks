@@ -65,7 +65,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
 	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
-	const binding = useVariantBinding(blockName, attributes);
+	const binding = useVariantBinding(blockName, attributes, tokenSet);
 	const variants = blockVariants(blockName, tokenSet);
 
 	if (!variants.length) {

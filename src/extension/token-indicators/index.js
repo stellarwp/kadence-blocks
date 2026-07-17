@@ -60,22 +60,24 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
+ * @param {string} [set]      The token set slug; defaults to kbTokenSet, then the active set — pass the
+ *                            caller's resolved set so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, variantValue, bound, overridden }.
  */
-export function useVariantBinding(blockName, attributes) {
-	const set = get(attributes, 'kbTokenSet', '') || activeSet();
+export function useVariantBinding(blockName, attributes, set) {
+	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
 	const selected = get(attributes, 'kbVariant', '');
-	const properties = blockProperties(blockName, set);
-	const values = blockVariantValues(blockName, set);
+	const properties = blockProperties(blockName, resolvedSet);
+	const values = blockVariantValues(blockName, resolvedSet);
 
 	// The variant whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default variant when none is chosen (kbVariant is '' on every freshly inserted block, so this
 	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
 	// neither resolves, no control is bound.
-	const activeVariant = selected || blockDefaultVariant(blockName, set);
+	const activeVariant = selected || blockDefaultVariant(blockName, resolvedSet);
 	const variantValues = get(values, activeVariant, {});
 
 	const state = {};
