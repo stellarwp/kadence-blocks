@@ -5,10 +5,10 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
 /**
  * A projector that builds design-token CSS and appends it to KB's front-end and editor style handles.
  *
- * The shared shape of the CSS-emitting projectors (token vars, variants, native retarget, block defaults):
+ * The shared shape of the CSS-emitting projectors (token vars, variants, block defaults):
  * each enqueues its CSS on the front end and in the editor, and exposes the same string through `css()` — the
  * unguarded builder the enqueue methods wrap behind their context gates. Scoped to the CSS projectors on
- * purpose: other projectors in this namespace feed theme.json presets or seed block attributes rather than a
+ * purpose: other projectors in this namespace seed block attributes or the Kadence palette rather than a
  * style handle, so they are not CSS projectors.
  *
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Editor_Css} aggregates the editor `css()` of every

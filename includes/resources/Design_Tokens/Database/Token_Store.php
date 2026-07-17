@@ -129,7 +129,7 @@ final class Token_Store extends Query {
 	/**
 	 * Read the cache-busting version hash for a token set.
 	 *
-	 * Consumed by downstream caches (e.g. the theme.json preset array is keyed on
+	 * Consumed by downstream caches (e.g. the projected-CSS string is keyed on
 	 * this value) to know when a token set has changed.
 	 *
 	 * @since TBD

@@ -74,31 +74,6 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Opt native (non-Kadence) blocks into the design-token variant system by granting them `kbVariant`
- * support, so the shared attribute, save/preview class filters and picker treat them like any opted-in
- * Kadence block. The color variant is therefore an additive `kb-variant--<slug>` class (not a
- * register_block_style() block style), so it composes with WordPress's own single-select block styles
- * (e.g. the built-in "Outline") instead of replacing one with the other.
- *
- * Registered before {@link blockVariantAttribute} so the support is present when the attribute is added.
- *
- * @param {Object} settings The block settings.
- * @param {string} name     The block name.
- *
- * @since TBD
- *
- * @return {Object} The block settings, with kbVariant support added for supported native blocks.
- */
-export function enableNativeBlockVariants(settings, name) {
-	if (name === 'core/button') {
-		settings.supports = assign({}, settings.supports, { kbVariant: true });
-	}
-
-	return settings;
-}
-addFilter('blocks.registerBlockType', 'kadence/kb-variant-native-support', enableNativeBlockVariants);
-
-/**
  * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
  *
  * kbVariant is the selected variant slug (e.g. "ghost"); an empty value means the block keeps its $default

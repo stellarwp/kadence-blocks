@@ -126,6 +126,10 @@ final class MutatorTest extends TestCase {
 	}
 
 	/**
+	 * A merge preserves the stored `$extensions` layer verbatim. The `variants` entry uses a block the
+	 * registry does not recognize, so the mutator must carry the opaque extension data through untouched
+	 * rather than validate or strip it.
+	 *
 	 * @return void
 	 */
 	public function testMergePreservesTheExtensionsLayer(): void {

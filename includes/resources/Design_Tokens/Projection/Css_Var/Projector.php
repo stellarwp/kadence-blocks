@@ -13,7 +13,7 @@ use Throwable;
 /**
  * Projects the resolved token set into the WordPress style pipeline.
  *
- * Reacts to WordPress hooks to inject --kb-token--* / --wp--preset--* into KB's existing inline
+ * Reacts to WordPress hooks to inject the --kb-token--* custom properties into KB's existing inline
  * styles and feeds the legacy color/font-size filters — all gated on Token_Registry::is_active()
  * so a deactivated registry leaves KB's behavior untouched.
  *

@@ -6,12 +6,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
 
 /**
  * Single source for the variant class a selected design-token variant outputs, so the class the editor
- * adds and the class the projected CSS targets can never drift apart — and so a Kadence block and a native
- * block (core/button) share one class shape for the color axis.
+ * adds and the class the projected CSS targets can never drift apart.
  *
  * A block's variant is an ADDITIVE class (not a register_block_style() block style), so it composes
- * with WordPress's own single-select block styles (e.g. the built-in "Outline"): a button can carry
- * "is-style-outline" and "kb-variant--secondary" at once. The editor adds the class via the shared kbVariant
+ * with any other block style rather than replacing it. The editor adds the class via the shared kbVariant
  * save/preview filters (see src/early-filters.js), mirroring the same sanitizer used here.
  *
  * @since TBD
@@ -21,7 +19,7 @@ final class Style {
 	use Sanitizes_Css_Identifier;
 
 	/**
-	 * The class prefix a selected variant outputs, shared by every block (Kadence and native).
+	 * The class prefix a selected variant outputs, shared by every Kadence block.
 	 *
 	 * @since TBD
 	 *

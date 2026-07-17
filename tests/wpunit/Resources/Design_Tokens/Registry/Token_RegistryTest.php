@@ -25,7 +25,7 @@ final class Token_RegistryTest extends TestCase {
 				'type'        => 'color',
 				'label'       => 'Button Background',
 				'group'       => 'Brand',
-				'projections' => [ 'wp_preset' => 'color' ],
+				'projections' => [ 'kadence_slot' => 'palette1' ],
 			]
 		);
 	}
@@ -74,7 +74,7 @@ final class Token_RegistryTest extends TestCase {
 		$this->register_button_bg();
 		$this->register_spacing_md();
 
-		$presets = $this->registry->by_projection( 'wp_preset' );
+		$presets = $this->registry->by_projection( 'kadence_slot' );
 
 		$this->assertSame( [ 'semantic.color.button-bg' ], array_keys( $presets ) );
 	}

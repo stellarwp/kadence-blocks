@@ -23,7 +23,6 @@ final class Token_Registry_VariantsTest extends TestCase {
 				'label'       => 'Button Background',
 				'projections' => [
 					'kadence_slot' => 'palette1',
-					'wp_preset'    => 'color',
 				],
 			]
 		);
@@ -68,7 +67,6 @@ final class Token_Registry_VariantsTest extends TestCase {
 		$this->assertSame(
 			[
 				'kadence_slot' => 'palette1',
-				'wp_preset'    => 'color',
 			],
 			$registry->effective_projections( $binding )
 		);
@@ -90,7 +88,6 @@ final class Token_Registry_VariantsTest extends TestCase {
 		$this->assertSame(
 			[
 				'kadence_slot' => 'palette1',
-				'wp_preset'    => 'color',
 				'block_attr'   => 'background',
 			],
 			$registry->effective_projections( $binding )
@@ -126,13 +123,7 @@ final class Token_Registry_VariantsTest extends TestCase {
 
 		$projections = $registry->effective_projections( $binding );
 
-		$this->assertSame(
-			[
-				'kadence_slot' => 'palette1',
-				'wp_preset'    => 'color',
-			],
-			$projections
-		);
+		$this->assertSame( [ 'kadence_slot' => 'palette1' ], $projections );
 		$this->assertArrayNotHasKey( 'control_attr', $projections );
 	}
 }

@@ -54,12 +54,12 @@ final class Token_DefinitionTest extends TestCase {
 				'type'        => 'color',
 				'label'       => 'Button Background',
 				'group'       => 'Brand',
-				'projections' => [ 'wp_preset' => 'color' ],
+				'projections' => [ 'kadence_slot' => 'palette1' ],
 			]
 		);
 
 		$this->assertSame( 'Brand', $token->group );
-		$this->assertSame( [ 'wp_preset' => 'color' ], $token->projections );
+		$this->assertSame( [ 'kadence_slot' => 'palette1' ], $token->projections );
 	}
 
 	public function testHasProjectionReportsDeclaredTargets(): void {
@@ -68,12 +68,12 @@ final class Token_DefinitionTest extends TestCase {
 				'id'          => 'semantic.color.button-bg',
 				'type'        => 'color',
 				'label'       => 'Button Background',
-				'projections' => [ 'wp_preset' => 'color' ],
+				'projections' => [ 'kadence_slot' => 'palette1' ],
 			]
 		);
 
-		$this->assertTrue( $token->has_projection( 'wp_preset' ) );
-		$this->assertFalse( $token->has_projection( 'kadence_slot' ) );
+		$this->assertTrue( $token->has_projection( 'kadence_slot' ) );
+		$this->assertFalse( $token->has_projection( 'block_attr' ) );
 	}
 
 	/**
@@ -177,7 +177,7 @@ final class Token_DefinitionTest extends TestCase {
 		return [
 			'non-string group'      => [ $base + [ 'group' => [ 'Brand' ] ] ],
 			'non-string css_var'    => [ $base + [ 'css_var' => 123 ] ],
-			'non-array projections' => [ $base + [ 'projections' => 'wp_preset' ] ],
+			'non-array projections' => [ $base + [ 'projections' => 'not-an-array' ] ],
 		];
 	}
 

@@ -14,9 +14,9 @@ use InvalidArgumentException;
  *   - **Token reference** — `['token' => 'semantic.color.button-bg']`. The property reuses that
  *     registered token's projections, so a variant retargets the exact variable the base property
  *     already feeds and there is no duplicated projection to drift.
- *   - **Inline target** — `['kadence_slot' => 'palette3']` (and/or `wp_preset`, `block_attr`,
- *     `css_var`, `css_prop`, `css_selector`). For a property that is not (yet) a registered token, or
- *     to add a target the token does not carry.
+ *   - **Inline target** — `['kadence_slot' => 'palette3']` (and/or `block_attr`, `css_var`, `css_prop`,
+ *     `css_selector`). For a property that is not (yet) a registered token, or to add a target the token
+ *     does not carry.
  *   - **Both** — e.g. `['token' => 'semantic.color.button-bg', 'block_attr' => 'background']`. The
  *     inline targets supplement (and override) the referenced token's projections, which is how a
  *     token-backed property still declares the `block_attr` a block preset needs.
@@ -49,15 +49,6 @@ final class Binding {
 	 * @var string
 	 */
 	private const KADENCE_SLOT = 'kadence_slot';
-
-	/**
-	 * Inline target: a WordPress preset category → `--wp--preset--<category>--<slug>`.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const WP_PRESET = 'wp_preset';
 
 	/**
 	 * Inline target: a block attribute, so a block preset can seed an attribute default.
@@ -126,7 +117,7 @@ final class Binding {
 	 *
 	 * @var string[]
 	 */
-	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::WP_PRESET, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::CSS_VAR ];
+	private const STRING_TARGETS = [ self::KADENCE_SLOT, self::BLOCK_ATTR, self::CSS_PROP, self::CSS_SELECTOR, self::CSS_VAR ];
 
 	/**
 	 * The block property this binding drives, e.g. "button-bg". Carried for error messages and so a

@@ -8,7 +8,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Wp_Preset_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
@@ -29,9 +28,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *      so a body class / container attribute re-points the canonical token names for that subtree client-side.
  *      Emitted for every set (incl. the active one) so an element can revert to the active set under a
  *      non-active ancestor.
- *   4. The --wp--preset--<category>--<slug>: var(--kb-token--*) bridge and the --global-kb-<family>-<slug>
- *      slot overrides, built from the active set and pointing at the canonical names — so they follow the
- *      active alias layer with no second copy of any value.
+ *   4. The --global-kb-<family>-<slug> slot overrides, built from the active set and pointing at the
+ *      canonical names — so they follow the active alias layer with no second copy of any value.
  *
  * Scope of the client-side switch selector: CSS substitutes a var() inside a custom property at the
  * element where that property is *declared*, so the bridges in (4) — and any host/theme custom property
@@ -220,7 +218,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The active fragment — the canonical alias layer plus the preset and slot bridges — served from /
+	 * The active fragment — the canonical alias layer plus the slot bridges — served from /
 	 * stored in the object cache. Depends only on the active set, so a switch rebuilds just this.
 	 *
 	 * @since TBD
@@ -267,7 +265,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) the active fragment: the canonical alias layer plus the preset and slot bridges.
+	 * Build (uncached) the active fragment: the canonical alias layer plus the slot bridges.
 	 * The single assembly definition shared by css() and the cached active_fragment().
 	 *
 	 * @since TBD
@@ -279,7 +277,6 @@ final class Css_Builder {
 	 */
 	private function build_active_fragment( Resolved_Tokens $active, string $active_slug ): string {
 		return $this->alias_block( $active, $active_slug )
-			. $this->preset_block( $active )
 			. $this->slot_block( $active, Spacing_Target::class )
 			. $this->slot_block( $active, Gap_Target::class );
 	}
@@ -317,7 +314,7 @@ final class Css_Builder {
 
 	/**
 	 * Emit the active-set alias layer: each canonical `--kb-token--<id>` pointed at the active set's
-	 * namespaced var. Block content and the preset/slot bridges reference the canonical name, so they
+	 * namespaced var. Block content and the slot bridges reference the canonical name, so they
 	 * follow the active set with no re-resolve. Re-pointing this layer is the server-side switch.
 	 *
 	 * @since TBD
@@ -340,7 +337,7 @@ final class Css_Builder {
 	 * the value they would otherwise inherit from the :root alias layer.
 	 *
 	 * This re-points the canonical token layer only: content that reads `--kb-token--*` directly follows
-	 * it, but the :root-declared bridges (preset/slot) and any host/theme custom property that reads a
+	 * it, but the :root-declared slot bridges and any host/theme custom property that reads a
 	 * token resolve at :root and follow the active-set pointer instead, not a subtree attribute.
 	 *
 	 * @since TBD
@@ -380,43 +377,6 @@ final class Css_Builder {
 		}
 
 		return $declarations;
-	}
-
-	/**
-	 * Emit the --wp--preset--*: var(--kb-token--*) bridge for tokens declaring a "wp_preset" projection.
-	 *
-	 * Each preset points at its token's variable rather than the literal value, so the two can never
-	 * disagree and a token change updates both in one place.
-	 *
-	 * @since TBD
-	 *
-	 * @param Resolved_Tokens $resolved The resolved token maps.
-	 *
-	 * @return string
-	 */
-	private function preset_block( Resolved_Tokens $resolved ): string {
-		$declarations = '';
-
-		// category, slug and css_var come from developer-declared registry config,
-		// not from the store — no sanitization needed here (contrast with token_block()).
-		foreach ( $this->registry->by_projection( Wp_Preset_Target::get_projection_key() ) as $id => $token ) {
-			// Skip tokens whose value is absent or empty: an empty CSS value would produce a
-			// --wp--preset-- declaration that resolves to nothing in the browser.
-			$value = $resolved->value( $id );
-			if ( $value === null || $value === '' ) {
-				continue;
-			}
-
-			$target = Wp_Preset_Target::from_token( $token );
-			if ( $target === null ) {
-				continue;
-			}
-
-			$preset        = Wp_Preset_Var::from( $target->category, $target->slug );
-			$declarations .= $preset . ':var(' . $token->css_var . ');';
-		}
-
-		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
 	}
 
 	/**

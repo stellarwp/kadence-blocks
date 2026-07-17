@@ -27,8 +27,8 @@ final class BindingTest extends TestCase {
 			'button-bg',
 			[
 				'kadence_slot' => 'palette3',
-				'wp_preset'    => 'color',
-			] 
+				'block_attr'   => 'background',
+			]
 		);
 
 		$this->assertFalse( $binding->is_token_ref() );
@@ -36,9 +36,9 @@ final class BindingTest extends TestCase {
 		$this->assertSame(
 			[
 				'kadence_slot' => 'palette3',
-				'wp_preset'    => 'color',
+				'block_attr'   => 'background',
 			],
-			$binding->projections 
+			$binding->projections
 		);
 	}
 
