@@ -1,7 +1,7 @@
 {
     "version": "0.2",
     "ignorePaths": [
-	"AGENTS.md",
+        "AGENTS.md",
         "package-lock.json",
         "bun.lock",
         "bun.lockb",
@@ -57,6 +57,8 @@
         "gfont",
         "gfonts",
         "ghernkadence",
+        "glightbox",
+        "grecaptcha",
         "gridvisualizer",
         "gulpfile",
         "haspopup",
@@ -78,6 +80,7 @@
         "ktanimateadd",
         "ktanimatepreview",
         "ktdynamic",
+        "ktgooglefonts",
         "lightbox",
         "LONGTEXT",
         "lottieanimation",
