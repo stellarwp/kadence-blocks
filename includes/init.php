@@ -98,14 +98,9 @@ function kadence_blocks_post_block_get_excerpt_length() {
  */
 function kadence_blocks_add_global_gutenberg_inline_styles() {
 	global $content_width;
-	$font_sizes = array(
-		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-	);
+	// The fluid font-size scale is owned by the design-tokens baseline; retrieve it so the shipped clamp()
+	// values are not duplicated here. Empty when token projection is unavailable, leaving the filter intact.
+	$font_sizes = kadence_blocks_variable_font_size_scale();
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
 	foreach ( $font_sizes as $key => $value ) {
@@ -217,14 +212,9 @@ add_action( 'admin_init', 'kadence_blocks_update_global_gutenberg_inline_styles_
  * Add global styles into the frontend.
  */
 function kadence_blocks_add_global_gutenberg_styles_frontend() {
-	$font_sizes = array(
-		'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)',
-		'md' => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
-		'lg' => 'clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
-		'xl' => 'clamp(2.25rem, 1.728rem + 1.63vw, 3rem)',
-		'xxl' => 'clamp(2.5rem, 1.456rem + 3.26vw, 4rem)',
-		'xxxl' => 'clamp(2.75rem, 0.489rem + 7.065vw, 6rem)',
-	);
+	// The fluid font-size scale is owned by the design-tokens baseline; retrieve it so the shipped clamp()
+	// values are not duplicated here. Empty when token projection is unavailable, leaving the filter intact.
+	$font_sizes = kadence_blocks_variable_font_size_scale();
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$css = ':root {';
 	foreach ( $font_sizes as $key => $value ) {

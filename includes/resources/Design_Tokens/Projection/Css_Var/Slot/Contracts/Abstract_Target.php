@@ -48,6 +48,16 @@ abstract class Abstract_Target implements Target {
 	protected const SLOTS = [];
 
 	/**
+	 * The dot-path prefix of the primitive dimension token backing a slug in this family, e.g.
+	 * "primitive.dimension.spacing.". Concrete families override.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const PRIMITIVE_PREFIX = '';
+
+	/**
 	 * The claimed slug, e.g. "lg".
 	 *
 	 * @since TBD
@@ -101,5 +111,23 @@ abstract class Abstract_Target implements Target {
 	 */
 	final public function css_property(): string {
 		return static::VAR_PREFIX . $this->slot;
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	final public function slot(): string {
+		return $this->slot;
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	final public static function get_primitive_id( string $slug ): string {
+		return static::PRIMITIVE_PREFIX . $slug;
 	}
 }

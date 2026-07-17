@@ -9,45 +9,24 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use RuntimeException;
 
 /**
- * Feeds resolved token values into KB's legacy variable families so existing blocks inherit tokens
- * without per-block changes.
+ * Feeds resolved token values into KB's legacy color palette so existing blocks inherit tokens without
+ * per-block changes.
  *
- * Two filter families are supported:
- *
- *   - kadence_blocks_pattern_global_colors  — tokens declaring a kadence_slot of palette[1-9]
- *     override that --global-paletteN entry.
- *   - kadence_blocks_variable_font_sizes    — tokens declaring a font-size slot key override
- *     that key's clamp() value.
- *
- * Each callback is a transform of the incoming array: a token-claimed slot is rewritten to
- * "var(--kb-token--…, <resolved literal>)" so legacy blocks react to variant overrides of
+ * kadence_blocks_pattern_global_colors — tokens declaring a kadence_slot of palette[1-9] override that
+ * --global-paletteN entry. The callback is a transform of the incoming array: a token-claimed slot is
+ * rewritten to "var(--kb-token--…, <resolved literal>)" so legacy blocks react to variant overrides of
  * --kb-token--* with the resolved literal as a fallback for contexts that lack the token definitions
  * (e.g. prebuilt-library preview iframes). Everything else passes through untouched.
  *
- * The color half is a no-op when the Kadence theme owns the palette. Activation is gated upstream
- * by Hooks (it only calls these methods when Token_Registry::is_active()).
+ * The font-size scale is delivered separately, through the --global-kb-font-size-<slug> slot bridge
+ * (Font_Size_Target) in Css_Builder, not this filter.
+ *
+ * A no-op when the Kadence theme owns the palette. Activation is gated upstream by the Projector (it
+ * only calls this when Token_Registry::is_active()).
  *
  * @since TBD
  */
 final class Legacy_Filter_Bridge {
-
-	/**
-	 * The projection key a token uses to claim a Kadence slot.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const SLOT = 'kadence_slot';
-
-	/**
-	 * The font-size keys KB ships; a slot matching one of these feeds the font-size filter.
-	 *
-	 * @since TBD
-	 *
-	 * @var string[]
-	 */
-	private const FONT_SIZE_KEYS = [ 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl' ];
 
 	/**
 	 * @var Token_Registry
@@ -113,40 +92,5 @@ final class Legacy_Filter_Bridge {
 		}
 
 		return $colors;
-	}
-
-	/**
-	 * Filter callback for kadence_blocks_variable_font_sizes.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string> $sizes The current size-key => clamp() map.
-	 *
-	 * @return array<string,string>
-	 */
-	public function font_sizes( array $sizes ): array {
-		try {
-			$resolved = $this->resolver->resolve();
-		} catch ( RuntimeException $e ) {
-			return $sizes;
-		}
-
-		foreach ( $this->registry->by_projection( self::SLOT ) as $id => $token ) {
-			$slot = $token->projections[ self::SLOT ] ?? null;
-			if ( ! is_string( $slot ) || ! in_array( $slot, self::FONT_SIZE_KEYS, true ) ) {
-				continue;
-			}
-
-			$value = $resolved->value( $id );
-			if ( $value === null ) {
-				continue;
-			}
-
-			// Same indirection + literal fallback as global_colors(): reactive where the token vars
-			// exist, falling back to the resolved clamp/length in iframes that lack them.
-			$sizes[ $slot ] = sprintf( 'var(%s, %s)', $token->css_var, $value );
-		}
-
-		return $sizes;
 	}
 }
