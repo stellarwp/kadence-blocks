@@ -6,6 +6,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore editorwidth yourtheme iconset wpmlcore getresponse lotte Sashicons .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
