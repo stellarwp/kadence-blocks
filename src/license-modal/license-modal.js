@@ -37,7 +37,7 @@ function HarborLicenseNotice({ onSwitchToUnified }) {
 			<p>
 				{createInterpolateElement(
 					sprintf(
-						/* translators: %s: product name (e.g. Kadence Blocks). */
+						/* translators: %1$s: product name (e.g. Kadence Blocks). */
 						__(
 							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
 							'kadence-blocks'
@@ -45,8 +45,8 @@ function HarborLicenseNotice({ onSwitchToUnified }) {
 						productName
 					),
 					{
-						// eslint-disable-next-line jsx-a11y/anchor-has-content
 						a: (
+							// eslint-disable-next-line jsx-a11y/anchor-has-content
 							<a
 								href="#unified-license"
 								onClick={(event) => {
