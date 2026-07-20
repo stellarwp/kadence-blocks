@@ -1584,7 +1584,11 @@ class Kadence_Blocks_Settings {
 			</div>
 		</div>
 		<div id="kt-legacy-license-field" hidden>
-			<?php get_license_field()->render_single( 'kadence-blocks', false, true ); ?>
+			<?php
+			// Prefer the slug that currently holds a legacy key (Pro when set, else free).
+			// Pro overrides the Uplink field template for the shared `kadence-blocks` hook prefix.
+			get_license_field()->render_single( kadence_blocks_get_current_product_slug(), false, true );
+			?>
 		</div>
 		<?php
 	}

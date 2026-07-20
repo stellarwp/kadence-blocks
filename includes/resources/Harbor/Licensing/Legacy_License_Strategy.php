@@ -44,8 +44,15 @@ final class Legacy_License_Strategy extends Abstract_License_Strategy {
 			return $this->empty_ui_status();
 		}
 
-		$status         = $this->empty_ui_status();
-		$status['type'] = $this->get_type();
+		$key = $this->get_key();
+
+		$status              = $this->empty_ui_status();
+		$status['type']      = $this->get_type();
+		$status['maskedKey'] = $this->mask_key( $key );
+		$status['fullKey']   = $key;
+		// `expires` and `manageUrl` are left blank: Uplink has no locally stored
+		// expiration for legacy licenses (only a live validate_license() API call
+		// exposes one, unreliably), and no generic manage/renew URL for this product.
 
 		return $status;
 	}

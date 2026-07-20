@@ -247,6 +247,14 @@
 			margin: 0;
 		}
 
+		.stellarwp-uplink__settings-group-inline {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			width: 100%;
+			margin-bottom: 0;
+		}
+
 		input.stellarwp-uplink__settings-field,
 		input[type='text'].stellarwp-uplink__settings-field,
 		.regular-text {
