@@ -100,10 +100,15 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 			return '';
 		}
 
+		$date_format = get_option( 'date_format' );
+		if ( ! is_string( $date_format ) || '' === $date_format ) {
+			$date_format = 'F j, Y';
+		}
+
 		return sprintf(
 			/* translators: %s: localized expiration date. */
 			__( 'Expires on %s', 'kadence-blocks' ),
-			wp_date( get_option( 'date_format' ) ?: 'F j, Y', $timestamp )
+			wp_date( $date_format, $timestamp )
 		);
 	}
 }

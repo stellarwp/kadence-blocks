@@ -1553,7 +1553,7 @@ class Kadence_Blocks_Settings {
 	/**
 	 * Activate the Kadence Blocks Pro plugin via ajax.
 	 */
-	public function ajax_activate_pro() {
+	public function ajax_activate_pro(): void {
 		check_ajax_referer( 'kadence-blocks-activate-pro', 'wpnonce' );
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			wp_send_json_error( [ 'message' => __( 'You do not have permission to activate plugins.', 'kadence-blocks' ) ] );
@@ -1576,7 +1576,7 @@ class Kadence_Blocks_Settings {
 	 * Mounts the React license UI: inactive sites get the enter-key modal;
 	 * authorized sites get the Active status card (unified or Kadence).
 	 */
-	public function admin_license_key_notice() {
+	public function admin_license_key_notice(): void {
 		?>
 		<div class="license-section sidebar-section components-panel">
 			<div class="components-panel__body is-opened">
