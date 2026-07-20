@@ -1,0 +1,139 @@
+/**
+ * Design-system control indicators.
+ *
+ * Styling for the override indicator that mounts beside (or inside the label of) a design-token-mapped
+ * control. Matches the block editor's existing control-label type scale so the indicator reads as part of
+ * the control, not a new UI.
+ */
+
+.kb-token-indicator {
+	display: inline-flex;
+	flex: 1 1 auto;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+	vertical-align: middle;
+}
+
+// The "overridden" badge: a 4x4 red dot, matching the variant button's edit dot.
+.kb-token-indicator__dot {
+	align-self: flex-start;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: #cc1818;
+}
+
+.kb-token-indicator__linked {
+	display: inline-flex;
+	align-items: center;
+	margin-left: auto;
+	color: #3858e9;
+
+	svg {
+		width: 14px;
+		height: 12px;
+	}
+}
+
+// The reset affordance: an icon button pushed to the right edge of the control's header.
+.kb-token-indicator__reset.components-button {
+	margin-left: auto;
+	min-width: 0;
+	height: auto;
+	padding: 0;
+
+	svg {
+		width: 14px;
+		height: 15px;
+	}
+}
+
+.kb-token-label {
+	display: inline-flex;
+	align-items: center;
+}
+
+.kb-token-label__text {
+	display: inline-block;
+}
+
+.kb-token-control-row {
+	align-items: center;
+	display: flex;
+	gap: 8px;
+	justify-content: space-between;
+	position: relative;
+
+	&:not(:last-child) {
+		margin-bottom: 16px;
+	}
+
+	// Keep the row's real content above the highlight tint (see --highlight below), so the tint never
+	// needs a negative z-index that an opaque ancestor background could swallow.
+	> * {
+		position: relative;
+		z-index: 1;
+	}
+
+	.kb-token-control-row__header {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		gap: 1px;
+	}
+}
+
+// The stacked variant: the header sits above a full-width control (block-level controls like the
+// responsive measurement inputs) instead of beside it.
+.kb-token-control-row--stacked {
+	align-items: stretch;
+	flex-direction: column;
+
+	.kb-token-control-row__header {
+		flex: 0 0 auto;
+	}
+
+	// The wrapped control's title carries the token label inline: the label stretches across the
+	// header's free space so the indicator (dot + reset, or the matching mark) right-aligns inside it
+	// via its own auto margins, with the device tabs and link toggle following on the same row.
+	.kadence-component__header {
+		justify-content: flex-start;
+
+		.kadence-component__header__title.kadence-title-bar.kadence-measure-control__title {
+			margin-bottom: 0;
+		}
+
+		.components-base-control__label {
+			width: 100%;
+		}
+
+		.kb-token-label {
+			display: flex;
+			align-items: center;
+		}
+
+		.kb-token-indicator {
+			padding-right: 4px;
+		}
+
+		.kb-measure-responsive-options {
+			display: flex;
+			align-items: center;
+			margin-left: auto;
+		}
+	}
+}
+
+// The edit-highlight tint: an inset overlay behind the row's content (which sits at z-index 1 above),
+// bleeding into the panel padding without negative z-index or width/height calc() hacks.
+.kb-token-control-row--highlight {
+	&::before {
+		background: rgba(240, 184, 73, 0.25);
+		content: '';
+		inset: -8px -16px;
+		pointer-events: none;
+		position: absolute;
+		z-index: 0;
+	}
+}

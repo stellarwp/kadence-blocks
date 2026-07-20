@@ -339,13 +339,15 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 								</SubsectionWrap>
 							)}
 							{hasVariants && (
-								<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
+								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
 									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
 									<VariantActions
 										blockName={name}
 										set={set}
 										selected={selected}
 										onSelect={selectVariant}
+										attributes={attributes}
+										setAttributes={setAttributes}
 									/>
 								</SubsectionWrap>
 							)}

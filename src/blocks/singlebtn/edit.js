@@ -45,7 +45,6 @@ import {
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
 	Tooltip,
-	SubsectionWrap,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId, get } from 'lodash';
@@ -59,7 +58,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -84,9 +83,10 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { VariantPicker, blockVariants, activeSet } from '../../extension/variant-picker';
-import { VariantActions } from '../../extension/variant-picker/VariantActions';
-import { TokenSetPicker, selectableSets } from '../../extension/token-set-picker';
+import { VariantButton } from '../../extension/variant-picker/VariantButton';
+import { useVariantBinding, resetAttr } from '../../extension/token-indicators';
+import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
+import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -264,6 +264,11 @@ export default function KadenceButtonEdit(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
+	// Design-token indicators: the per-attribute bound/overridden state for the selected variant, plus a
+	// reset that clears the mapped attribute back to the variant value (served by the existing scoped CSS).
+	const tokenBinding = useVariantBinding('kadence/singlebtn', attributes);
+	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
@@ -281,6 +286,29 @@ export default function KadenceButtonEdit(props) {
 			setIsEditingURL(false);
 		}
 	}, [isSelected]);
+
+	// A remount key for the token-mapped color pickers. PopColorControl keeps the picked color in its own
+	// internal state, so clearing the attribute (a per-control revert or the variant Reset-all) updates the
+	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
+	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
+	// TODO: remove this stopgap once `@kadence/components` teaches PopColorControl to re-read an externally
+	// cleared value itself (planned alongside the SOFT-3870 component update).
+	const [colorResetNonce, setColorResetNonce] = useState(0);
+	const prevTokenColors = useRef({ color, background, colorHover, backgroundHover });
+	useEffect(() => {
+		const prev = prevTokenColors.current;
+		const cleared =
+			(prev.color && !color) ||
+			(prev.background && !background) ||
+			(prev.colorHover && !colorHover) ||
+			(prev.backgroundHover && !backgroundHover);
+
+		if (cleared) {
+			setColorResetNonce((nonce) => nonce + 1);
+		}
+
+		prevTokenColors.current = { color, background, colorHover, backgroundHover };
+	}, [color, background, colorHover, backgroundHover]);
 
 	const themeVersion = window?.kadence_blocks_params?.tVersion ? window.kadence_blocks_params.tVersion : '1.0.0';
 	const supportsSecondaryButton = compareVersions(themeVersion, '1.4.0') >= 0;
@@ -693,6 +721,8 @@ export default function KadenceButtonEdit(props) {
 			{showSettings('allSettings', 'kadence/advancedbtn') && (
 				<>
 					<InspectorControls>
+						<VariantButton blockName={name} attributes={attributes} setAttributes={setAttributes} />
+
 						<InspectorControlTabs
 							panelName={'singlebtn'}
 							setActiveTab={(value) => setActiveTab(value)}
@@ -830,47 +860,6 @@ export default function KadenceButtonEdit(props) {
 
 						{activeTab === 'style' && (
 							<>
-								{(blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 ||
-									selectableSets().length >= 2) && (
-									<KadencePanelBody
-										title={__('Design Tokens', 'kadence-blocks')}
-										initialOpen={true}
-										panelName={'kb-adv-single-btn-variant'}
-									>
-										{selectableSets().length >= 2 && (
-											<SubsectionWrap label={__('Token Set', 'kadence-blocks')}>
-												<TokenSetPicker
-													value={attributes.kbTokenSet || ''}
-													onChange={(value) => setAttributes({ kbTokenSet: value })}
-													label=""
-												/>
-											</SubsectionWrap>
-										)}
-										{blockVariants(name, attributes.kbTokenSet || activeSet()).length > 0 &&
-											(() => {
-												const set = attributes.kbTokenSet || activeSet();
-												const selected = get(attributes, 'kbVariant', '');
-												const selectVariant = (value) => setAttributes({ kbVariant: value });
-
-												return (
-													<SubsectionWrap label={__('Design Variants', 'kadence-blocks')}>
-														<VariantPicker
-															name={name}
-															set={set}
-															value={selected}
-															onChange={selectVariant}
-														/>
-														<VariantActions
-															blockName={name}
-															set={set}
-															selected={selected}
-															onSelect={selectVariant}
-														/>
-													</SubsectionWrap>
-												);
-											})()}
-									</KadencePanelBody>
-								)}
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (
 									<>
 										<KadencePanelBody
@@ -903,15 +892,23 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundHoverType && (
-															<PopColorControl
-																key={'btncolorhover'}
-																label={__('Color Hover', 'kadence-blocks')}
-																value={colorHover ? colorHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ colorHover: value })
-																}
-															/>
+															<TokenControlRow
+																heading={__('Color Hover', 'kadence-blocks')}
+																attr="colorHover"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={`btncolorhover-${colorResetNonce}`}
+																	hideClear={!!tokenBinding.colorHover?.bound}
+																	swatchLabel={__('Color Hover', 'kadence-blocks')}
+																	value={colorHover ? colorHover : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ colorHover: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Hover Type', 'kadence-blocks')}
@@ -931,15 +928,26 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundHoverType && (
-															<PopColorControl
-																key={'btnbghover'}
-																label={__('Background Color', 'kadence-blocks')}
-																value={backgroundHover ? backgroundHover : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ backgroundHover: value })
-																}
-															/>
+															<TokenControlRow
+																heading={__('Background Color', 'kadence-blocks')}
+																attr="backgroundHover"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={`btnbghover-${colorResetNonce}`}
+																	hideClear={!!tokenBinding.backgroundHover?.bound}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
+																	value={backgroundHover ? backgroundHover : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundHover: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<ResponsiveBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1100,13 +1108,23 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === textBackgroundType && (
-															<PopColorControl
-																key={'btncolor'}
-																label={__('Color', 'kadence-blocks')}
-																value={color ? color : ''}
-																default={''}
-																onChange={(value) => setAttributes({ color: value })}
-															/>
+															<TokenControlRow
+																heading={__('Color', 'kadence-blocks')}
+																attr="color"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={`btncolor-${colorResetNonce}`}
+																	hideClear={!!tokenBinding.color?.bound}
+																	swatchLabel={__('Color', 'kadence-blocks')}
+																	value={color ? color : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ color: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<BackgroundTypeControl
 															label={__('Background Type', 'kadence-blocks')}
@@ -1124,15 +1142,26 @@ export default function KadenceButtonEdit(props) {
 															/>
 														)}
 														{'normal' === backgroundType && (
-															<PopColorControl
-																key={'btnbg'}
-																label={__('Background Color', 'kadence-blocks')}
-																value={background ? background : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({ background: value })
-																}
-															/>
+															<TokenControlRow
+																heading={__('Background Color', 'kadence-blocks')}
+																attr="background"
+																binding={tokenBinding}
+																onReset={resetToken}
+															>
+																<PopColorControl
+																	key={`btnbg-${colorResetNonce}`}
+																	hideClear={!!tokenBinding.background?.bound}
+																	swatchLabel={__(
+																		'Background Color',
+																		'kadence-blocks'
+																	)}
+																	value={background ? background : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ background: value })
+																	}
+																/>
+															</TokenControlRow>
 														)}
 														<ResponsiveBorderControl
 															label={__('Border', 'kadence-blocks')}
@@ -1147,37 +1176,56 @@ export default function KadenceButtonEdit(props) {
 																setAttributes({ mobileBorderStyle: value })
 															}
 														/>
-														<ResponsiveMeasurementControls
-															label={__('Border Radius', 'kadence-blocks')}
-															value={borderRadius}
-															tabletValue={tabletBorderRadius}
-															mobileValue={mobileBorderRadius}
-															onChange={(value) => setAttributes({ borderRadius: value })}
-															onChangeTablet={(value) =>
-																setAttributes({ tabletBorderRadius: value })
-															}
-															onChangeMobile={(value) =>
-																setAttributes({ mobileBorderRadius: value })
-															}
-															unit={borderRadiusUnit}
-															units={['px', 'em', 'rem', '%']}
-															onUnit={(value) =>
-																setAttributes({ borderRadiusUnit: value })
-															}
-															max={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 24
-																	: 500
-															}
-															step={
-																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																	? 0.1
-																	: 1
-															}
-															min={0}
-															isBorderRadius={true}
-															allowEmpty={true}
-														/>
+														<TokenControlRow
+															attr="borderRadius"
+															binding={tokenBinding}
+															stacked
+														>
+															<ResponsiveMeasurementControls
+																label={
+																	<TokenLabel
+																		text={__('Border Radius', 'kadence-blocks')}
+																		attr="borderRadius"
+																		binding={tokenBinding}
+																		onReset={resetToken}
+																		showReset
+																	/>
+																}
+																reset={false}
+																value={borderRadius}
+																tabletValue={tabletBorderRadius}
+																mobileValue={mobileBorderRadius}
+																onChange={(value) =>
+																	setAttributes({ borderRadius: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({ tabletBorderRadius: value })
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({ mobileBorderRadius: value })
+																}
+																unit={borderRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({ borderRadiusUnit: value })
+																}
+																max={
+																	borderRadiusUnit === 'em' ||
+																	borderRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderRadiusUnit === 'em' ||
+																	borderRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+														</TokenControlRow>
 														<BoxShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
 															enable={undefined !== displayShadow ? displayShadow : false}
