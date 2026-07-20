@@ -17,6 +17,8 @@ import './token-field.scss';
  * The stepped device tabs, in cascade order. Desktop is the base ($value); tablet / mobile are the
  * max-width overrides stored under the responsive shape.
  *
+ * @since TBD
+ *
  * @type {{ key: string, label: string }[]}
  */
 const DEVICES = [
@@ -27,6 +29,8 @@ const DEVICES = [
 
 /**
  * Derive the initial editor state from the authored shape (when present) or the flat resolved value.
+ *
+ * @since TBD
  *
  * @param {string}                 value      Flat resolved value (desktop fallback).
  * @param {object|undefined}       responsive Authored shape: { base, responsive?: {...} } or { base, clamp?: {...} }.
@@ -61,6 +65,8 @@ function hydrate(value, responsive) {
 /**
  * Assemble the structured value the save path serializes into a DTCG leaf ($value + $extensions).
  *
+ * @since TBD
+ *
  * @param {{ mode: string, desktop: string, tablet: string, mobile: string, clamp: object }} state Editor state.
  * @return {{ base: string, responsive?: object, clamp?: object }} Structured value: base plus the stepped
  *         responsive map, or base plus the clamp slots in fluid mode.
@@ -86,6 +92,8 @@ function toStructuredValue(state) {
  * mobile) editor with an optional fluid clamp() helper. Desktop is the base value; tablet / mobile and the
  * clamp slots are stored under the token's responsive $extensions. Device state is local to the field so
  * the Style Book admin app needs no block-editor preview store.
+ *
+ * @since TBD
  *
  * @param {object}   props            Component props.
  * @param {object}   props.token      Token definition from the schema.
@@ -115,8 +123,14 @@ export function ResponsiveTokenField({ token, value, responsive, onSave, fieldSt
 	const setClampSlot = (slot, next) =>
 		setState((current) => ({ ...current, clamp: { ...current.clamp, [slot]: next } }));
 
+	// In fluid mode every clamp slot must be filled — otherwise the base would assemble to an invalid
+	// `clamp(, , )` value. Block the save (and disable the button) until the curve is complete.
+	const clampIncomplete =
+		state.mode === 'fluid' &&
+		[state.clamp.min, state.clamp.preferred, state.clamp.max].some((slot) => slot.trim() === '');
+
 	const handleSave = async () => {
-		if (!isDirty || isSaving) {
+		if (!isDirty || isSaving || clampIncomplete) {
 			return;
 		}
 
@@ -193,7 +207,17 @@ export function ResponsiveTokenField({ token, value, responsive, onSave, fieldSt
 					</div>
 				)}
 
-				<Button variant="secondary" onClick={handleSave} disabled={!isDirty || isSaving} isBusy={isSaving}>
+				{clampIncomplete && (
+					<p className="kadence-blocks-style-book__token-hint">
+						{__('Enter all three clamp values (min, preferred, max) to save.', 'kadence-blocks')}
+					</p>
+				)}
+				<Button
+					variant="secondary"
+					onClick={handleSave}
+					disabled={!isDirty || isSaving || clampIncomplete}
+					isBusy={isSaving}
+				>
 					{__('Save', 'kadence-blocks')}
 				</Button>
 				<SaveStatus status={fieldState.status} error={fieldState.error} />
