@@ -35,7 +35,7 @@ final class Harbor_Provider extends Provider {
 		add_filter( 'kadence_blocks_ai_disabled_message', [ $this, 'ai_disabled_message' ] );
 
 		// Legacy Uplink license fields are replaced by the React license modal UI.
-		add_filter( 'kadence_blocks_pro_should_display_legacy_license_field', '__return_false' );
+		add_filter( 'kadence_blocks_pro_should_display_uplink_license_field', '__return_false' );
 
 		add_action( 'admin_init', new Suppress_Legacy_Inactive_Notices() );
 	}
