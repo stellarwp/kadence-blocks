@@ -135,7 +135,7 @@ export default function ActiveLicenseView({
 					: __('Kadence License', 'kadence-blocks')}
 			</p>
 
-			{isUnified ? (
+			{isUnified && (
 				<div className="kt-license-active-meta">
 					{maskedKey && (
 						<div className="kt-license-active-key-row">
@@ -156,8 +156,6 @@ export default function ActiveLicenseView({
 					)}
 					{expires && <p className="kt-license-active-expires">{expires}</p>}
 				</div>
-			) : (
-				<p className="kt-license-active-subtitle">{__('Updates & Support Active', 'kadence-blocks')}</p>
 			)}
 
 			<ul className="kt-license-active-features">
