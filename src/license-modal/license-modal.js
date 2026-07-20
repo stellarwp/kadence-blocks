@@ -39,7 +39,7 @@ function HarborLicenseNotice({ onSwitchToUnified }) {
 					sprintf(
 						/* translators: %s: product name (e.g. Kadence Blocks). */
 						__(
-							'%1$s is now part of Liquid Web\'s software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.',
+							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
 							'kadence-blocks'
 						),
 						productName
@@ -100,10 +100,7 @@ export default function LicenseModalApp() {
 				<>
 					<h2>{__('License', 'kadence-blocks')}</h2>
 					<p>
-						{__(
-							'Enter your license key to unlock updates, premium blocks, and support.',
-							'kadence-blocks'
-						)}
+						{__('Enter your license key to unlock updates, premium blocks, and support.', 'kadence-blocks')}
 					</p>
 					<button type="button" className="sidebar-btn-link" onClick={() => openModal(VIEWS.UNIFIED)}>
 						{__('Enter License Key', 'kadence-blocks')}

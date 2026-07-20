@@ -19,14 +19,7 @@ const FEATURES = [
  * @param {string}   props.manageUrl Software Manager URL (unified only).
  * @param {Function} props.onManageKadence Open modal to manage Kadence key.
  */
-export default function ActiveLicenseView({
-	type,
-	maskedKey,
-	fullKey,
-	expires,
-	manageUrl,
-	onManageKadence,
-}) {
+export default function ActiveLicenseView({ type, maskedKey, fullKey, expires, manageUrl, onManageKadence }) {
 	const [copied, setCopied] = useState(false);
 	const isUnified = type === 'unified';
 
