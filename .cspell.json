@@ -2,6 +2,8 @@
     "version": "0.2",
     "ignorePaths": [
         "includes/assets/css/admin-dashboard.min.css",
+        "src/assets/css/admin-dashboard.scss",
+        ".eslintrc.js",
         "package-lock.json",
         "bun.lock",
         "bun.lockb",

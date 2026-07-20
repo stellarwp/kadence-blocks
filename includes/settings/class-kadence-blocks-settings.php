@@ -246,12 +246,12 @@ class Kadence_Blocks_Settings {
 				$post_type = get_post_type();
 				if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
 					if ( isset( $post_type ) && 'page' === $post_type ) {
-						$defualt_size_type = $editor_widths['page_default'];
+						$default_size_type = $editor_widths['page_default'];
 					} else {
-						$defualt_size_type = $editor_widths['post_default'];
+						$default_size_type = $editor_widths['post_default'];
 					}
 				} else {
-					$defualt_size_type = 'sidebar';
+					$default_size_type = 'sidebar';
 				}
 				if ( isset( $editor_widths['sidebar'] ) && ! empty( $editor_widths['sidebar'] ) ) {
 					$sidebar_size = $editor_widths['sidebar'] + $add_size;
@@ -263,9 +263,9 @@ class Kadence_Blocks_Settings {
 				} else {
 					$nosidebar_size = 1140 + $add_size;
 				}
-				if ( 'sidebar' == $defualt_size_type ) {
+				if ( 'sidebar' == $default_size_type ) {
 					$default_size = $sidebar_size;
-				} elseif ( 'fullwidth' == $defualt_size_type ) {
+				} elseif ( 'fullwidth' == $default_size_type ) {
 					$default_size = 'none';
 				} else {
 					$default_size = $nosidebar_size;
@@ -1237,7 +1237,7 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs post default select feild
+	 * Outputs post default select field
 	 */
 	public function post_default_callback() {
 		$data              = self::get_data_options( 'kt_blocks_editor_width' );
@@ -1250,7 +1250,7 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Outputs post default select feild
+	 * Outputs post default select field
 	 */
 	public function page_default_callback() {
 		$data              = self::get_data_options( 'kt_blocks_editor_width' );
@@ -1316,7 +1316,7 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Checks for kadence classic themes when returning defualt.
+	 * Checks for kadence classic themes when returning default.
 	 */
 	public function show_editor_width() {
 		if ( is_null( self::$editor_width ) ) {
