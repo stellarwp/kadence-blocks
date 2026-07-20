@@ -40,12 +40,16 @@ export function flattenSchemaTokens(schema) {
 /**
  * The vendor-extension namespace the module owns (mirrors Schema\Vocabulary\Extensions::NAMESPACE).
  *
+ * @since TBD
+ *
  * @type {string}
  */
 export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
 
 /**
  * The stepped responsive breakpoint keys, in cascade order (mirrors Schema\Vocabulary\Responsive).
+ *
+ * @since TBD
  *
  * @type {string[]}
  */
@@ -89,6 +93,8 @@ export function buildTokenLeaf(type, value) {
 /**
  * Build the `com.kadence.designTokens` extension body for a structured value, or null when it carries no
  * non-empty responsive / clamp values.
+ *
+ * @since TBD
  *
  * @param {{ responsive?: Record<string, string>, clamp?: Record<string, string> }} value Structured value.
  * @return {{ responsive: object }|{ clamp: object }|null} Extension body, or null.
@@ -138,6 +144,8 @@ export function isColorType(type) {
 /**
  * Whether a token type is responsive-capable (mirrors Schema\Vocabulary\Responsive::is_responsive_capable):
  * only dimension and lineHeight may carry a per-breakpoint / clamp shape.
+ *
+ * @since TBD
  *
  * @param {string} type Token type from the schema.
  * @return {boolean}
