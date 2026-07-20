@@ -64,6 +64,10 @@
                         "color",
                         "dimension",
                         "fontFamily",
+                        "fontWeight",
+                        "lineHeight",
+                        "fontStyle",
+                        "textTransform",
                         "shadow"
                     ]
                 },
@@ -121,6 +125,62 @@
                 {
                     "properties": {
                         "$type": {
+                            "const": "fontWeight"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/fontWeightValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "lineHeight"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/lineHeightValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "fontStyle"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/fontStyleValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
+                            "const": "textTransform"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/textTransformValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
                             "const": "shadow"
                         },
                         "$value": {
@@ -166,6 +226,52 @@
                         "type": "string"
                     },
                     "minItems": 1
+                }
+            ]
+        },
+        "fontWeightValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            ]
+        },
+        "lineHeightValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                }
+            ]
+        },
+        "fontStyleValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "textTransformValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
                 }
             ]
         },

@@ -10,8 +10,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * The shared "alias OR literal-of-kind" decision, single-sourced so a leaf $value and a composite
  * sub-field that share a kind reach the exact same verdict — and the exact same error code.
  *
- * A "kind" is a v1 $type (color, dimension, fontFamily, …), whether it is a leaf token's own $type or
- * the $type of a composite sub-field. validate() makes a three-way decision in a fixed order:
+ * A "kind" is a v1 $type (color, dimension, fontFamily, fontWeight, …), whether it is a leaf token's
+ * own $type or the $type of a composite sub-field. validate() makes a three-way decision in a fixed
+ * order:
  *
  *   1. a well-formed alias        → valid (the Resolver flattens it later; "alias anywhere" lives here).
  *   2. a malformed alias attempt  → CODE_ALIAS_MALFORMED (a value that reaches for a "{…}" but is not
@@ -83,6 +84,14 @@ final class Kind {
 				return Literals::is_dimension( $value );
 			case Token_Type::get_type_font_family():
 				return Literals::is_font_family( $value );
+			case Token_Type::get_type_font_weight():
+				return Literals::is_font_weight( $value );
+			case Token_Type::get_type_line_height():
+				return Literals::is_line_height( $value );
+			case Token_Type::get_type_font_style():
+				return Literals::is_font_style( $value );
+			case Token_Type::get_type_text_transform():
+				return Literals::is_text_transform( $value );
 			default:
 				return false;
 		}

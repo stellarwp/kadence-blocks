@@ -207,12 +207,18 @@ final class Dtcg_Schema_Generator {
 			return $this->composite_shape( $type );
 		}
 
-		// color, dimension: a literal string (hex/function/keyword/length). PHP Literals enforces grammar.
+		// fontWeight (400 / "bold") and lineHeight (1.5 / "1.5rem") accept a number as well as a string.
+		if ( $type === Token_Type::get_type_font_weight() || $type === Token_Type::get_type_line_height() ) {
+			return [ 'type' => [ 'string', 'number' ] ];
+		}
+
+		// color, dimension, fontStyle, textTransform: a literal string. PHP Literals enforces grammar.
 		return [ 'type' => 'string' ];
 	}
 
 	/**
-	 * The object shape for a composite type: every sub-field required, each "alias OR kind shape".
+	 * The object shape for a composite type: every sub-field required, each "alias OR the sub-field's own
+	 * $type shape".
 	 *
 	 * @since TBD
 	 *
@@ -224,11 +230,11 @@ final class Dtcg_Schema_Generator {
 		$fields     = Token_Type::composite_fields( $type );
 		$properties = [];
 
-		foreach ( $fields as $field => $kind ) {
+		foreach ( $fields as $field => $field_type ) {
 			$properties[ $field ] = [
 				'anyOf' => [
 					[ '$ref' => '#/definitions/alias' ],
-					$this->kind_shape( $kind ),
+					$this->literal_shape( $field_type ),
 				],
 			];
 		}
@@ -239,29 +245,6 @@ final class Dtcg_Schema_Generator {
 			'properties'           => $properties,
 			'additionalProperties' => false,
 		];
-	}
-
-	/**
-	 * The permissive non-alias shape for a composite sub-field kind.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $kind A $type or KIND_* constant.
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function kind_shape( string $kind ): array {
-		switch ( $kind ) {
-			case Token_Type::get_type_font_family():
-				return [
-					'type'     => 'array',
-					'items'    => [ 'type' => 'string' ],
-					'minItems' => 1,
-				];
-			default:
-				// color, dimension.
-				return [ 'type' => 'string' ];
-		}
 	}
 
 	/**
