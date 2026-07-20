@@ -822,10 +822,19 @@ class Kadence_Blocks_Settings {
 			'admin-kadence-license-modal',
 			'kadenceLicenseModalParams',
 			[
-				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
-				'wpnonce'        => wp_create_nonce( 'kadence-blocks-manage' ),
-				'licensePageUrl' => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
-				'licenseStatus'  => ( new License_Status() )->get_ui_status(),
+				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
+				'wpnonce'         => wp_create_nonce( 'kadence-blocks-manage' ),
+				'licensePageUrl'  => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
+				'licenseStatus'   => ( new License_Status() )->get_ui_status(),
+				'proFeatureSlug'  => 'kadence-blocks-pro',
+				'proFeatureName'  => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
+				'isProInstalled'  => $this->is_pro_installed(),
+				'isProActive'     => $this->is_pro_active(),
+				'harbor'          => [
+					'licensePath'  => '/liquidweb/harbor/v1/license',
+					'featuresPath' => '/liquidweb/harbor/v1/features',
+					'keyPrefix'    => 'LWSW-',
+				],
 			]
 		);
 		wp_set_script_translations( 'admin-kadence-license-modal', 'kadence-blocks' );
@@ -1482,18 +1491,34 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
+	 * Whether the Kadence Blocks Pro plugin is present on disk.
+	 *
+	 * @return bool
+	 */
+	private function is_pro_installed() {
+		return file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE );
+	}
+	/**
+	 * Whether the Kadence Blocks Pro plugin is currently active.
+	 *
+	 * @return bool
+	 */
+	private function is_pro_active() {
+		return class_exists( 'Kadence_Blocks_Pro' );
+	}
+	/**
 	 * Whether the Kadence Blocks Pro plugin is present on disk but not currently active.
 	 *
 	 * @return bool
 	 */
 	private function is_pro_installed_but_inactive() {
-		return ! class_exists( 'Kadence_Blocks_Pro' ) && file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE );
+		return ! $this->is_pro_active() && $this->is_pro_installed();
 	}
 	/**
 	 * Admin Pro Kadence Notice.
 	 */
 	public function admin_pro_kadence_notice() {
-		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+		if ( $this->is_pro_active() ) {
 			return;
 		}
 		$pro_installed = $this->is_pro_installed_but_inactive();
@@ -1533,7 +1558,7 @@ class Kadence_Blocks_Settings {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			wp_send_json_error( [ 'message' => __( 'You do not have permission to activate plugins.', 'kadence-blocks' ) ] );
 		}
-		if ( ! file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE ) ) {
+		if ( ! $this->is_pro_installed() ) {
 			wp_send_json_error( [ 'message' => __( 'Kadence Blocks Pro could not be found.', 'kadence-blocks' ) ] );
 		}
 		if ( ! function_exists( 'activate_plugin' ) ) {

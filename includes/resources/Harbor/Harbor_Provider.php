@@ -89,11 +89,17 @@ final class Harbor_Provider extends Provider {
 	}
 
 	/**
-	 * Get the premium plugin existence callbacks.
+	 * Whether Harbor should boot its REST/admin providers.
+	 *
+	 * Harbor's gate is all-or-nothing for a request (license, features, admin UI,
+	 * cron, etc.). We cannot register only one route, but we can boot Harbor for
+	 * Harbor REST requests so license save + Pro install/activate work before any
+	 * premium add-on is installed, without enabling the Software Manager UI on
+	 * every normal admin page load.
 	 *
 	 * @since 3.7.2
 	 *
-	 * @param bool $exists Whether a premium plugin exists.
+	 * @param bool $exists Whether a premium plugin already signaled Harbor should boot.
 	 *
 	 * @return bool
 	 */
@@ -117,6 +123,36 @@ final class Harbor_Provider extends Provider {
 			return true;
 		}
 
-		return false;
+		// Boot Harbor for our license/feature REST calls only.
+		return $this->is_harbor_rest_request();
+	}
+
+	/**
+	 * Whether the current request targets Harbor's REST namespace.
+	 *
+	 * Checked during plugins_loaded (before REST_REQUEST is defined), so URI is used.
+	 * Covers both pretty-permalink REST URLs (/wp-json/liquidweb/harbor/..., including a
+	 * filtered `rest_url_prefix`) and the plain-permalink `?rest_route=` query form.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	private function is_harbor_rest_request(): bool {
+		$namespace = 'liquidweb/harbor/';
+
+		$route = $_GET['rest_route'] ?? null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- path check only.
+		if ( is_string( $route ) && false !== strpos( ltrim( $route, '/' ), $namespace ) ) {
+			return true;
+		}
+
+		$uri = $_SERVER['REQUEST_URI'] ?? ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- path check only.
+		if ( ! is_string( $uri ) || '' === $uri ) {
+			return false;
+		}
+
+		$prefix = function_exists( 'rest_get_url_prefix' ) ? rest_get_url_prefix() : 'wp-json';
+
+		return false !== strpos( $uri, '/' . $prefix . '/' . $namespace );
 	}
 }

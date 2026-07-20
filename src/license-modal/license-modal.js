@@ -94,6 +94,8 @@ export default function LicenseModalApp() {
 					fullKey={licenseStatus.fullKey || ''}
 					expires={licenseStatus.expires || ''}
 					manageUrl={licenseStatus.manageUrl || ''}
+					isProInstalled={Boolean(params.isProInstalled)}
+					isProActive={Boolean(params.isProActive)}
 					onManageKadence={() => openModal(VIEWS.LEGACY)}
 				/>
 			) : (
