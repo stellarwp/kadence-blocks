@@ -367,26 +367,6 @@
 				"$value": "{primitive.dimension.icon-size.md}"
 			}
 		},
-		"typography": {
-			"heading": {
-				"$type": "typography",
-				"$value": {
-					"fontFamily": "{primitive.fontFamily.sans}",
-					"fontSize": "{primitive.fontSize.2xl}",
-					"fontWeight": 700,
-					"lineHeight": 1.2
-				}
-			},
-			"body": {
-				"$type": "typography",
-				"$value": {
-					"fontFamily": "{primitive.fontFamily.sans}",
-					"fontSize": "{primitive.fontSize.md}",
-					"fontWeight": 400,
-					"lineHeight": 1.6
-				}
-			}
-		},
 		"shadow": {
 			"card": {
 				"$type": "shadow",
@@ -551,16 +531,6 @@
 							"button-bg-hover": "{semantic.color.button-secondary-bg-hover}",
 							"button-text-hover": "{semantic.color.button-secondary-text-hover}",
 							"button-radius": "{semantic.radius.control}"
-						}
-					}
-				},
-				"kadence/advancedheading": {
-					"$default": "default",
-					"default": {
-						"label": "Default",
-						"tokens": {
-							"typography": "{semantic.typography.heading}",
-							"color": "{semantic.color.text}"
 						}
 					}
 				},

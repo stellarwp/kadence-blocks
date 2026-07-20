@@ -22,8 +22,6 @@ final class Css_Renderer {
 				return $this->font_family( $value );
 			case Token_Type::get_type_shadow():
 				return $this->shadow( $value );
-			case Token_Type::get_type_typography():
-				return $this->typography( $value );
 			case Token_Type::get_type_color():
 			case Token_Type::get_type_dimension():
 			default:
@@ -78,35 +76,5 @@ final class Css_Renderer {
 			$value['spread']  ?? '0',
 			$value['color']   ?? ''
 		) );
-	}
-
-	/**
-	 * Render a typography composite to the CSS `font` shorthand
-	 * ("<weight> <size>/<line-height> <family>"). Emitted as one custom property;
-	 * projectors may also split it into longhand properties if needed.
-	 *
-	 * @param mixed|array{fontFamily: string|string[], fontSize: string, fontWeight: string, lineHeight: string} $value
-	 *              The resolved typography shape; typed loosely so a malformed (non-array) token still degrades to "".
-	 */
-	private function typography( $value ): string {
-		if ( ! is_array( $value ) ) {
-			return '';
-		}
-
-		$weight = $value['fontWeight'] ?? '';
-		$size   = Cast::to_string( $value['fontSize'] ?? '' );
-		$lh     = $value['lineHeight'] ?? '';
-		// fontFamily may resolve to a list (e.g. ["Inter","sans-serif"]); render it as a CSS family list.
-		$family = $this->font_family( $value['fontFamily'] ?? '' );
-
-		// The CSS `font` shorthand is only valid with both a font-size and a font-family;
-		// without either, emit nothing rather than a malformed declaration (e.g. "700 /1.2").
-		if ( $size === '' || $family === '' ) {
-			return '';
-		}
-
-		$size_lh = $lh !== '' ? "{$size}/{$lh}" : $size;
-
-		return trim( sprintf( '%s %s %s', $weight, $size_lh, $family ) );
 	}
 }

@@ -9,10 +9,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 
 /**
- * Shared walk for a composite $value (shadow, typography): an alias for the whole value, or an object
- * whose every declared sub-field validates "alias OR literal-of-kind" via Kind.
+ * Shared walk for a composite $value (shadow): an alias for the whole value, or an object whose every
+ * declared sub-field validates "alias OR literal-of-$type" via Kind.
  *
- * The field => kind map comes from Token_Type::composite_fields(), so adding or reshaping a composite
+ * The field => $type map comes from Token_Type::composite_fields(), so adding or reshaping a composite
  * is a data edit there, not a change here. Subclasses only name their $type.
  *
  * @since TBD
@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 abstract class Composite_Value implements Value_Validator {
 
 	/**
-	 * The composite $type this validator covers (Token_Type::get_type_shadow() or Token_Type::get_type_typography()).
+	 * The composite $type this validator covers (Token_Type::get_type_shadow()).
 	 *
 	 * @since TBD
 	 *

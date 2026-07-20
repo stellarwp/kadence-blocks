@@ -9,11 +9,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * and the Resolver all read, so the type vocabulary cannot drift between them. PHP 7.4 has
  * no native enums, so the vocabulary is modelled as class constants plus static lookup maps.
  *
- * Composite types (shadow, typography) hold an object $value whose sub-fields each validate as a
- * "kind" — usually another $type (color, dimension, fontFamily), and for typography two scale kinds
- * (fontWeight, lineHeight) that are not themselves registrable $types. composite_fields() returns that
- * field => kind map as DATA so a future responsive/clamp shape extends the map rather than
- * rewriting the walker.
+ * The shadow composite type holds an object $value whose sub-fields each validate as another $type
+ * (color, dimension); composite_fields() returns that field => $type map as DATA so a future shape
+ * extends the map rather than rewriting the walker.
  *
  * @since TBD
  */
@@ -56,15 +54,6 @@ final class Token_Type {
 	private const SHADOW = 'shadow';
 
 	/**
-	 * The typography $type (a composite object $value).
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const TYPOGRAPHY = 'typography';
-
-	/**
 	 * The DTCG leaf key whose value is one of the $types above. Single-sourced here so the validator,
 	 * resolver and projectors never hardcode the spelling.
 	 *
@@ -73,25 +62,6 @@ final class Token_Type {
 	 * @var string
 	 */
 	private const KEY = '$type';
-
-	/**
-	 * The fontWeight composite sub-field kind. Not a registrable $type — kept distinct from the $type
-	 * constants so dispatch never confuses "a typography token" with "the fontWeight field inside one".
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const KIND_FONT_WEIGHT = 'fontWeight';
-
-	/**
-	 * The lineHeight composite sub-field kind. Not a registrable $type (see KIND_FONT_WEIGHT).
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const KIND_LINE_HEIGHT = 'lineHeight';
 
 	/**
 	 * Every v1 $type, in declaration order.
@@ -105,7 +75,6 @@ final class Token_Type {
 		self::DIMENSION,
 		self::FONT_FAMILY,
 		self::SHADOW,
-		self::TYPOGRAPHY,
 	];
 
 	/**
@@ -118,18 +87,12 @@ final class Token_Type {
 	 * @since TBD
 	 */
 	private const COMPOSITE_FIELDS = [
-		self::SHADOW     => [
+		self::SHADOW => [
 			'color'   => self::COLOR,
 			'offsetX' => self::DIMENSION,
 			'offsetY' => self::DIMENSION,
 			'blur'    => self::DIMENSION,
 			'spread'  => self::DIMENSION,
-		],
-		self::TYPOGRAPHY => [
-			'fontFamily' => self::FONT_FAMILY,
-			'fontSize'   => self::DIMENSION,
-			'fontWeight' => self::KIND_FONT_WEIGHT,
-			'lineHeight' => self::KIND_LINE_HEIGHT,
 		],
 	];
 
@@ -236,38 +199,5 @@ final class Token_Type {
 	 */
 	public static function get_type_shadow(): string {
 		return self::SHADOW;
-	}
-
-	/**
-	 * The typography $type.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_type_typography(): string {
-		return self::TYPOGRAPHY;
-	}
-
-	/**
-	 * The fontWeight composite sub-field kind.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_kind_font_weight(): string {
-		return self::KIND_FONT_WEIGHT;
-	}
-
-	/**
-	 * The lineHeight composite sub-field kind.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_kind_line_height(): string {
-		return self::KIND_LINE_HEIGHT;
 	}
 }

@@ -8,7 +8,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Dimension_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Shadow_Value;
-use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Typography_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
@@ -80,7 +79,6 @@ final class Dtcg_Validator {
 			Token_Type::get_type_dimension()   => new Dimension_Value(),
 			Token_Type::get_type_font_family() => new Font_Family_Value(),
 			Token_Type::get_type_shadow()      => new Shadow_Value(),
-			Token_Type::get_type_typography()  => new Typography_Value(),
 		];
 	}
 

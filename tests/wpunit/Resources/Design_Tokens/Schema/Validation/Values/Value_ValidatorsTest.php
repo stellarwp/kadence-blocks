@@ -7,7 +7,6 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Dimension_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Shadow_Value;
-use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Typography_Value;
 use Tests\Support\Classes\TestCase;
 
 final class Value_ValidatorsTest extends TestCase {
@@ -146,38 +145,6 @@ final class Value_ValidatorsTest extends TestCase {
 		$errors = ( new Shadow_Value() )->validate( 5, 's.$value' );
 
 		$this->assertCount( 1, $errors );
-		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
-	}
-
-	/**
-	 * @return void
-	 */
-	public function testTypographyAcceptsMixedLiteralsAndAliases(): void {
-		$value = [
-			'fontFamily' => '{primitive.fontFamily.sans}',
-			'fontSize'   => '{primitive.fontSize.2xl}',
-			'fontWeight' => 700,
-			'lineHeight' => 1.2,
-		];
-
-		$this->assertSame( [], ( new Typography_Value() )->validate( $value, 't.$value' ) );
-	}
-
-	/**
-	 * @return void
-	 */
-	public function testTypographyRejectsBadWeight(): void {
-		$value = [
-			'fontFamily' => '{primitive.fontFamily.sans}',
-			'fontSize'   => '1rem',
-			'fontWeight' => 'heavy',
-			'lineHeight' => 1.5,
-		];
-
-		$errors = ( new Typography_Value() )->validate( $value, 't.$value' );
-
-		$this->assertCount( 1, $errors );
-		$this->assertSame( 't.$value.fontWeight', $errors[0]->path );
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}
 }
