@@ -473,7 +473,9 @@ final class Documents_Controller extends Controller {
 				'version'    => $this->store->get_version( $slug ),
 				'by_id'      => $resolved->by_id(),
 				'by_var'     => $resolved->by_var(),
-				'responsive' => $responsive,
+				// An empty PHP array JSON-encodes as [] rather than {}; cast the empty case to an object so
+				// the responsive map keeps a stable object wire type whether or not a token carries the shape.
+				'responsive' => empty( $responsive ) ? (object) [] : $responsive,
 			],
 			WP_Http::OK
 		);
