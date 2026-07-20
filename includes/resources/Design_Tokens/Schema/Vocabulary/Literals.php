@@ -448,6 +448,15 @@ final class Literals {
 	 * would also match, but a DTCG $value is a single token — that concatenation is not a shape this
 	 * module is meant to police, and parsing it would belong in a real CSS parser.
 	 *
+	 * An empty argument IS rejected, though: no CSS <length>/<color> function is valid with a missing
+	 * argument, and that is the shape an incomplete clamp()/var()/calc() takes when a slot is left blank
+	 * (e.g. the token editor's fluid helper before every slot is filled). This catches the whole call
+	 * being empty (func(), clamp(, , )) AND an empty leading or interior positional argument at any depth
+	 * (clamp(, a, b), clamp(1rem, , 2rem), foo(bar(, x))). A TRAILING empty is left alone, because
+	 * var(--x,) is a valid empty custom-property fallback. It stays a shape gate — argument count and type
+	 * are not checked, so e.g. clamp(1rem) (too few args) still passes; that grammar belongs in a real CSS
+	 * parser.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $value The candidate function string.
@@ -455,6 +464,20 @@ final class Literals {
 	 * @return bool
 	 */
 	private static function is_function( string $value ): bool {
-		return (bool) preg_match( '/^[a-z][a-z0-9-]*\(.*\)$/i', $value );
+		if ( ! preg_match( '/^[a-z][a-z0-9-]*\((.*)\)$/i', $value, $matches ) ) {
+			return false;
+		}
+
+		$args = $matches[1];
+
+		// No real arguments at all: func(), clamp(, , ), var(  ).
+		if ( trim( $args, " \t\n\r\0\x0B," ) === '' ) {
+			return false;
+		}
+
+		// An empty leading or interior positional argument: a comma at the start or right after an open
+		// paren, or two commas with nothing between them. A trailing empty (var(--x,)) is intentionally
+		// not matched.
+		return ! (bool) preg_match( '/(?:^|\()\s*,|,\s*,/', $args );
 	}
 }
