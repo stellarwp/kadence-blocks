@@ -826,6 +826,7 @@ class Kadence_Blocks_Settings {
 				'wpnonce'         => wp_create_nonce( 'kadence-blocks-manage' ),
 				'licensePageUrl'  => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
 				'licenseStatus'   => ( new License_Status() )->get_ui_status(),
+				'accountPageUrl'  => 'https://software.liquidweb.com/',
 				'proFeatureSlug'  => 'kadence-blocks-pro',
 				'proFeatureName'  => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
 				'isProInstalled'  => $this->is_pro_installed(),
@@ -834,7 +835,6 @@ class Kadence_Blocks_Settings {
 					'licensePath'  => '/liquidweb/harbor/v1/license',
 					'featuresPath' => '/liquidweb/harbor/v1/features',
 					'keyPrefix'    => 'LWSW-',
-					'accountUrl'   => 'https://software.liquidweb.com/',
 				],
 			]
 		);

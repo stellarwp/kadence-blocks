@@ -130,7 +130,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 								i: <i />,
 								a: (
 									// eslint-disable-next-line jsx-a11y/anchor-has-content
-									<a href={params.harbor.accountUrl} target="_blank" rel="noopener noreferrer" />
+									<a href={params.accountPageUrl} target="_blank" rel="noopener noreferrer" />
 								),
 							}
 						)}
