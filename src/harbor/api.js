@@ -24,6 +24,31 @@ export function storeLicense(key, { network = false } = {}) {
 }
 
 /**
+ * Fetch the currently stored unified license and its products.
+ *
+ * @return {Promise<{key: string|null, products: Array, error: Object|null}>}
+ */
+export function getLicense() {
+	return apiFetch({
+		path: HARBOR_LICENSE_PATH,
+		method: 'GET',
+	});
+}
+
+/**
+ * Force a fresh re-check of the license against the Liquid Web portal,
+ * bypassing any cached product/activation state.
+ *
+ * @return {Promise<{key: string|null, products: Array, error: Object|null}>}
+ */
+export function refreshLicense() {
+	return apiFetch({
+		path: `${HARBOR_LICENSE_PATH}/refresh`,
+		method: 'POST',
+	});
+}
+
+/**
  * Fetch a single Harbor feature by slug.
  *
  * @param {string} slug Feature slug (e.g. kadence-blocks-pro).

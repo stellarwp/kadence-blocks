@@ -14,6 +14,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_field;
 use KadenceWP\KadenceBlocks\Harbor\License_Status;
+use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
 use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
@@ -831,6 +832,20 @@ class Kadence_Blocks_Settings {
 				'proFeatureName'  => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
 				'isProInstalled'  => $this->is_pro_installed(),
 				'isProActive'     => $this->is_pro_active(),
+				'domain'          => function_exists( 'lw_harbor_get_licensed_domain' ) ? lw_harbor_get_licensed_domain() : '',
+				'productSlug'     => 'kadence',
+				'activationUrl'   => class_exists( HarborConfig::class )
+					? HarborConfig::get_portal_base_url() . '/subscriptions/?' . http_build_query(
+						[
+							'portal-referral' => 'plugin',
+							'redirect_url'    => admin_url( 'admin.php?page=lw-software-manager&refresh=auto' ),
+							'domain'          => function_exists( 'lw_harbor_get_licensed_domain' ) ? lw_harbor_get_licensed_domain() : '',
+						],
+						'',
+						'&',
+						PHP_QUERY_RFC3986
+					)
+					: '',
 				'harbor'          => [
 					'licensePath'  => '/liquidweb/harbor/v1/license',
 					'featuresPath' => '/liquidweb/harbor/v1/features',

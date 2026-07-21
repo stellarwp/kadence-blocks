@@ -3,25 +3,35 @@
  *
  * Saves the key and installs Pro via Harbor REST helpers in `src/harbor`.
  */
-import { createInterpolateElement, useState } from '@wordpress/element';
+import { createInterpolateElement, useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
-import { installAndActivateFeature, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
-import { getGlobalParam } from '../harbor/helper';
+import { getLicense, installAndActivateFeature, refreshLicense, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
+import { buildActivationUrl, getGlobalParam } from '../harbor/helper';
 
 const STEPS = {
 	INPUT: 'input',
 	LOADING: 'loading',
 	SUCCESS: 'success',
 	INSTALLING: 'installing',
+	ACTIVATE_DOMAIN: 'activate_domain',
 	DONE: 'done',
 };
 
 const params = getGlobalParam();
 const PRO_FEATURE_SLUG = params.proFeatureSlug || 'kadence-blocks-pro';
 const PRO_FEATURE_NAME = params.proFeatureName || __('Kadence Blocks Pro', 'kadence-blocks');
+const PRODUCT_SLUG = params.productSlug || 'kadence';
 const isProInstalled = Boolean(params.isProInstalled);
 const isProActive = Boolean(params.isProActive);
+
+function findProductEntry(products) {
+	return (products || []).find((product) => product.product_slug === PRODUCT_SLUG) || null;
+}
+
+function isDomainActivated(entry) {
+	return Boolean(entry && entry.is_valid && entry.activated_here === true);
+}
 
 /**
  * @param {Object}   props
@@ -33,6 +43,41 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 	const [licenseKey, setLicenseKey] = useState('');
 	const [error, setError] = useState('');
 	const [installStatus, setInstallStatus] = useState('');
+	const [productEntry, setProductEntry] = useState(null);
+	const [checkingDomain, setCheckingDomain] = useState(false);
+
+	// A key may already be stored (and Pro already active) from a prior visit
+	// without `storeLicense()` ever being called this session — resolve the
+	// correct step from current Harbor state on mount.
+	useEffect(() => {
+		let cancelled = false;
+
+		(async () => {
+			try {
+				const res = await getLicense();
+				if (cancelled || !res?.key) {
+					return;
+				}
+
+				const entry = findProductEntry(res.products);
+				setProductEntry(entry);
+
+				if (!isProActive) {
+					setStep(STEPS.SUCCESS);
+				} else if (isDomainActivated(entry)) {
+					setStep(STEPS.DONE);
+				} else {
+					setStep(STEPS.ACTIVATE_DOMAIN);
+				}
+			} catch (err) {
+				// No stored key or request failed; stay on the input step.
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const handleActivate = async () => {
 		const key = licenseKey.trim().toUpperCase();
@@ -53,8 +98,17 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 		setStep(STEPS.LOADING);
 
 		try {
-			await storeLicense(key);
-			setStep(isProActive ? STEPS.DONE : STEPS.SUCCESS);
+			const res = await storeLicense(key);
+			const entry = findProductEntry(res?.products);
+			setProductEntry(entry);
+
+			if (!isProActive) {
+				setStep(STEPS.SUCCESS);
+			} else if (isDomainActivated(entry)) {
+				setStep(STEPS.DONE);
+			} else {
+				setStep(STEPS.ACTIVATE_DOMAIN);
+			}
 		} catch (err) {
 			setError(
 				err?.message || __('Liquid Web Software Manager failed to validate your license.', 'kadence-blocks')
@@ -104,7 +158,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 					}
 				},
 			});
-			setStep(STEPS.DONE);
+			setStep(isDomainActivated(productEntry) ? STEPS.DONE : STEPS.ACTIVATE_DOMAIN);
 		} catch (err) {
 			setError(
 				err?.message ||
@@ -115,6 +169,32 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 					)
 			);
 			setStep(STEPS.SUCCESS);
+		}
+	};
+
+	const handleRecheckDomain = async () => {
+		setCheckingDomain(true);
+		setError('');
+
+		try {
+			const res = await refreshLicense();
+			const entry = findProductEntry(res?.products);
+			setProductEntry(entry);
+
+			if (isDomainActivated(entry)) {
+				setStep(STEPS.DONE);
+			} else {
+				setError(
+					__(
+						'This website is not activated yet. Complete activation in the Liquid Web portal, then try again.',
+						'kadence-blocks'
+					)
+				);
+			}
+		} catch (err) {
+			setError(err?.message || __('Could not check activation status. Please try again.', 'kadence-blocks'));
+		} finally {
+			setCheckingDomain(false);
 		}
 	};
 
@@ -200,6 +280,45 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 				<div className="kt-unified-step kt-unified-step-installing">
 					<span className="kt-spinner" aria-hidden="true" />
 					<span className="kt-unified-install-status-text">{installStatus}</span>
+				</div>
+			)}
+
+			{step === STEPS.ACTIVATE_DOMAIN && (
+				<div className="kt-unified-step kt-unified-step-activate-domain">
+					<p className="kt-unified-success-message">
+						<span className="dashicons dashicons-info" aria-hidden="true" />
+						{sprintf(
+							/* translators: %s: plugin name */
+							__(
+								'%s is installed and active, but this website still needs to be activated on your license.',
+								'kadence-blocks'
+							),
+							PRO_FEATURE_NAME
+						)}
+					</p>
+					<Button
+						className="kt-unified-activate-domain-button"
+						variant="primary"
+						href={buildActivationUrl(params.activationUrl, PRODUCT_SLUG, productEntry?.tier)}
+						target="_blank"
+						rel="noopener noreferrer"
+						disabled={!params.activationUrl}
+					>
+						{__('Activate this website', 'kadence-blocks')}
+					</Button>
+					<p className="description">
+						<button
+							type="button"
+							className="kt-unified-reload-link"
+							disabled={checkingDomain}
+							onClick={handleRecheckDomain}
+						>
+							{checkingDomain
+								? __('Checking…', 'kadence-blocks')
+								: __("I've activated it — check again", 'kadence-blocks')}
+						</button>
+					</p>
+					{error && <p className="kt-unified-error">{error}</p>}
 				</div>
 			)}
 
