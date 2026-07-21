@@ -158,9 +158,11 @@ class PrebuiltLibraryUrlTest extends KadenceBlocksTestCase {
 		$this->set_property( $library, 'api_key', 'license-key' );
 		$this->set_property( $library, 'api_email', 'license@example.com' );
 
-		$requested = $this->captured_request_url( static function () use ( $library ) {
-			$library->get_remote_url_contents();
-		} );
+		$requested = $this->captured_request_url(
+			static function () use ( $library ) {
+				$library->get_remote_url_contents();
+			}
+		);
 
 		$this->assertStringStartsWith( 'https://startertemplatecloud.com', $requested );
 		$this->assertStringContainsString( 'api_key=license-key', $requested );
@@ -177,9 +179,11 @@ class PrebuiltLibraryUrlTest extends KadenceBlocksTestCase {
 		$this->set_property( $library, 'api_key', 'license-key' );
 		$this->set_property( $library, 'api_email', 'license@example.com' );
 
-		$requested = $this->captured_request_url( static function () use ( $library ) {
-			$library->get_remote_url_contents();
-		} );
+		$requested = $this->captured_request_url(
+			static function () use ( $library ) {
+				$library->get_remote_url_contents();
+			}
+		);
 
 		$this->assertStringStartsWith( 'https://library.example', $requested );
 		$this->assertStringNotContainsString( 'license-key', $requested );
