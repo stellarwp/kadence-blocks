@@ -6,6 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Targ
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Font_Size_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Gap_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -25,18 +26,21 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *   2. The active-set alias layer — `--kb-token--<id>: var(--kb-token--<active>--<id>)` for every active
  *      token, so block content and the bridges below reference the canonical name without knowing which
  *      set is active (the server-side switch: re-point this layer).
- *   3. One switch selector per set — `[data-kb-token-set="<set>"] { --kb-token--<id>: var(--kb-token--<set>--<id>) }`
- *      so a body class / container attribute re-points the canonical token names for that subtree client-side.
- *      Emitted for every set (incl. the active one) so an element can revert to the active set under a
- *      non-active ancestor.
- *   4. The --global-kb-<family>-<slug> slot overrides, built from the active set and pointing at the
- *      canonical names — so they follow the active alias layer with no second copy of any value.
+ *   3. One switch selector per set — `[data-kb-token-set="<set>"] { --kb-token--<id>: var(--kb-token--<set>--<id>); <bridges> }`
+ *      so a container attribute re-points the canonical token names — and the legacy global-var bridges in
+ *      (4) — for that subtree. Emitted for every set (incl. the active one) so an element can revert to the
+ *      active set under a non-active ancestor.
+ *   4. The legacy global-var bridges: the `--global-kb-<family>-<slug>` slot overrides (spacing/gap/font-size)
+ *      and, inside the switch selectors, the `--global-palette*` overrides — each pointing at the canonical
+ *      names with the set's resolved literal as a fallback. Emitted at :root for the active set and inside
+ *      every set's switch selector, so a block pinned to a set resolves these bridges to that set too. (The
+ *      active :root palette itself stays owned by the legacy color filter and is not emitted here.)
  *
- * Scope of the client-side switch selector: CSS substitutes a var() inside a custom property at the
- * element where that property is *declared*, so the bridges in (4) — and any host/theme custom property
- * that reads --kb-token--* — resolve at :root and do not follow a subtree `[data-kb-token-set]` attribute.
- * The attribute live-swaps only content that consumes --kb-token--* directly; the complete palette switch
- * (host surfaces included) is the active-set pointer, which re-points the :root alias layer in (2).
+ * Scope of the switch selector: CSS substitutes a var() inside a custom property at the element where that
+ * property is *declared*. The switch selector therefore re-declares both the canonical layer AND the bridges
+ * in (4) on the attribute-carrying element, so a `[data-kb-token-set]` subtree resolves every token — the
+ * canonical --kb-token--* and the --global-* bridges alike — to that set. (A host/theme custom property that
+ * reads --kb-token--* only at :root still follows the active-set pointer, not a subtree attribute.)
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
  * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping. The
@@ -65,8 +69,9 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The HTML attribute a body class / container sets to switch the active token set client-side. Its
-	 * `[data-kb-token-set="<slug>"]` rule re-points the canonical alias layer at that set's namespaced vars.
+	 * The HTML attribute a container sets to switch the token set for its subtree. Its
+	 * `[data-kb-token-set="<slug>"]` rule re-points the canonical alias layer — and the legacy global-var
+	 * bridges — at that set's namespaced vars.
 	 *
 	 * @since TBD
 	 *
@@ -286,10 +291,10 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function build_active_fragment( Resolved_Tokens $active, string $active_slug ): string {
+		$slots = $this->all_slot_declarations( $active );
+
 		return $this->alias_block( $active, $active_slug )
-			. $this->slot_block( $active, Spacing_Target::class )
-			. $this->slot_block( $active, Gap_Target::class )
-			. $this->slot_block( $active, Font_Size_Target::class );
+			. ( $slots === '' ? '' : Scope::root() . '{' . $slots . '}' );
 	}
 
 	/**
@@ -409,13 +414,15 @@ final class Css_Builder {
 
 	/**
 	 * Emit a set's switch selector: under `[data-kb-token-set="<set>"]`, re-point every canonical
-	 * `--kb-token--<id>` at that set's namespaced var for the matched element's subtree. Nesting works
-	 * because the attribute rule declares the property directly on the elements that carry it, overriding
-	 * the value they would otherwise inherit from the :root alias layer.
+	 * `--kb-token--<id>` at that set's namespaced var — and re-declare the legacy global-var bridges (the
+	 * slot families and the palette) at that set — for the matched element's subtree. Nesting works because
+	 * the attribute rule declares each property directly on the elements that carry it, overriding the value
+	 * they would otherwise inherit from the :root alias layer.
 	 *
-	 * This re-points the canonical token layer only: content that reads `--kb-token--*` directly follows
-	 * it, but the :root-declared slot bridges and any host/theme custom property that reads a
-	 * token resolve at :root and follow the active-set pointer instead, not a subtree attribute.
+	 * Because the bridge and the canonical re-point are declared on the same attribute-carrying element, a
+	 * block pinned to this set resolves every token to it — both content reading `--kb-token--*` directly and
+	 * the `--global-*` bridges. (A host/theme property that reads a token only at :root still follows the
+	 * active-set pointer, not a subtree attribute.)
 	 *
 	 * @since TBD
 	 *
@@ -425,7 +432,14 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function switch_block( Resolved_Tokens $resolved, string $slug ): string {
-		$declarations = $this->point_canonical_at_set( $resolved, $slug );
+		// Re-point the canonical layer AND the legacy global-var bridges (the slot families and the palette)
+		// for the subtree, so a block pinned to this set via [data-kb-token-set] resolves every token — not
+		// just content that reads --kb-token--* directly — to this set. Because the bridge and the canonical
+		// re-point are declared on the same attribute-carrying element, the bridge's var(--kb-token--<id>)
+		// reads the set-pointed value.
+		$declarations = $this->point_canonical_at_set( $resolved, $slug )
+			. $this->all_slot_declarations( $resolved )
+			. $this->palette_declarations( $resolved );
 
 		if ( $declarations === '' ) {
 			return '';
@@ -457,25 +471,41 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the `--global-kb-<family>-<slug>: var(--kb-token--*, <literal>)` overrides for tokens claiming a
-	 * slot in the given family (spacing, gap, …).
+	 * The slot-family bridge declarations for a resolved set: `--global-kb-<family>-<slug>:
+	 * var(--kb-token--<id>, <literal>);` for every spacing, gap and font-size token claiming a slot.
 	 *
 	 * Kadence Blocks renders a dimension attribute that holds a preset slug as
-	 * `var(--global-kb-<family>-<slug>, <fallback>)` but, unlike colors and font sizes, ships those slug
-	 * values as plain literals with no filter to override (and for gap does not define the variable at
-	 * all). Defining the slug variable here — under the same `:root` scope, later in source order than KB's
-	 * own definition — redirects every block already storing that slug at the token, with the resolved
-	 * length as a literal fallback for contexts that lack the token vars (e.g. preview iframes). It is the
-	 * dimension counterpart of the color/font-size legacy bridge for the families KB exposes no filter for.
+	 * `var(--global-kb-<family>-<slug>, <fallback>)` but ships those slug values with no per-set indirection
+	 * of its own (spacing/gap as plain literals, font-size via a filter). Pointing the slug variable at the
+	 * token — later in source order than KB's own definition — redirects every block already storing that
+	 * slug at the token, with the resolved length as a literal fallback for contexts that lack the token vars
+	 * (e.g. preview iframes). Returned as raw declarations (no selector) so the caller can scope them at
+	 * `:root` for the active set or inside a `[data-kb-token-set]` selector for a per-set subtree.
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens        $resolved     The resolved token maps.
-	 * @param class-string<Target>   $target_class The slot-target type for this family.
+	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
 	 * @return string
 	 */
-	private function slot_block( Resolved_Tokens $resolved, string $target_class ): string {
+	private function all_slot_declarations( Resolved_Tokens $resolved ): string {
+		return $this->slot_declarations( $resolved, Spacing_Target::class )
+			. $this->slot_declarations( $resolved, Gap_Target::class )
+			. $this->slot_declarations( $resolved, Font_Size_Target::class );
+	}
+
+	/**
+	 * The bridge declarations for one slot family: `--global-kb-<family>-<slug>: var(--kb-token--<id>,
+	 * <literal>);` for every token claiming a slot in that family.
+	 *
+	 * @since TBD
+	 *
+	 * @param Resolved_Tokens      $resolved     The resolved token maps.
+	 * @param class-string<Target> $target_class The slot-target type for this family.
+	 *
+	 * @return string
+	 */
+	private function slot_declarations( Resolved_Tokens $resolved, string $target_class ): string {
 		$declarations = '';
 
 		// The slot and css_var come from developer-declared registry config; only the resolved literal
@@ -494,6 +524,41 @@ final class Css_Builder {
 			$declarations .= $target->css_property() . ':var(' . $token->css_var . ',' . $this->sanitize_value( $value ) . ');';
 		}
 
-		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
+		return $declarations;
+	}
+
+	/**
+	 * The palette bridge declarations for a resolved set: `--global-<slug>: var(--kb-token--<id>,
+	 * <literal>);` for every token claiming a Kadence palette slot (palette1..9).
+	 *
+	 * The active-set `:root` palette stays owned by the legacy color filter (Legacy_Filter_Bridge, which
+	 * carries the Kadence-theme guard); these declarations are emitted only inside a `[data-kb-token-set]`
+	 * selector, so a block pinned to a set reflects that set's palette without changing the default `:root`
+	 * palette. Same var()-with-literal-fallback shape as the slot families.
+	 *
+	 * @since TBD
+	 *
+	 * @param Resolved_Tokens $resolved The resolved token maps.
+	 *
+	 * @return string
+	 */
+	private function palette_declarations( Resolved_Tokens $resolved ): string {
+		$declarations = '';
+
+		foreach ( $this->registry->by_projection( Kadence_Palette_Slot::get_projection_key() ) as $id => $token ) {
+			$slot = Kadence_Palette_Slot::from_token( $token );
+			if ( $slot === null ) {
+				continue;
+			}
+
+			$value = $resolved->value( $id );
+			if ( $value === null || $value === '' ) {
+				continue;
+			}
+
+			$declarations .= '--global-' . $slot->slug . ':var(' . $token->css_var . ',' . $this->sanitize_value( $value ) . ');';
+		}
+
+		return $declarations;
 	}
 }

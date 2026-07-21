@@ -190,6 +190,77 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( '[data-kb-token-set="dark"]{', $css );
 	}
 
+	/**
+	 * A set's switch selector re-declares the legacy global-var bridges (the slot families and the palette)
+	 * at that set's resolved literals, so a block pinned to a non-active set via [data-kb-token-set] resolves
+	 * its spacing and palette to that set — not just content that reads --kb-token--* directly. The active
+	 * :root still carries the slot bridges (unchanged) and never the palette (that stays with the color filter).
+	 *
+	 * @return void
+	 */
+	public function testEachSetSwitchSelectorReDeclaresTheLegacyBridges(): void {
+		$spacing = 'primitive.dimension.spacing.lg';
+		$palette = 'primitive.color.brand.primary';
+
+		$this->registry->register(
+			[
+				'id'          => $spacing,
+				'type'        => 'dimension',
+				'label'       => 'LG',
+				'projections' => [ 'kb_spacing_slot' => 'lg' ],
+			]
+		);
+		$this->registry->register(
+			[
+				'id'          => $palette,
+				'type'        => 'color',
+				'label'       => 'Brand Primary',
+				'projections' => [ 'kadence_slot' => 'palette1' ],
+			]
+		);
+
+		$default = $this->set(
+			[
+				$spacing => '3rem',
+				$palette => '#3182CE',
+			],
+			[
+				Css_Var::from_id( $spacing, 'default' ) => '3rem',
+				Css_Var::from_id( $palette, 'default' ) => '#3182CE',
+			]
+		);
+		$brand_b = $this->set(
+			[
+				$spacing => '5rem',
+				$palette => '#123456',
+			],
+			[
+				Css_Var::from_id( $spacing, 'brand-b' ) => '5rem',
+				Css_Var::from_id( $palette, 'brand-b' ) => '#123456',
+			]
+		);
+
+		$css = $this->builder()->css( [ 'default' => $default, 'brand-b' => $brand_b ], 'default' );
+
+		$spacing_canonical = Css_Var::from_id( $spacing );
+		$palette_canonical = Css_Var::from_id( $palette );
+
+		// The brand-b switch selector re-points the canonical layer at brand-b...
+		$this->assertStringContainsString(
+			$spacing_canonical . ':var(' . Css_Var::from_id( $spacing, 'brand-b' ) . ');',
+			$css
+		);
+		// ...and re-declares the slot + palette bridges with brand-b's own literals.
+		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . $spacing_canonical . ',5rem);', $css );
+		$this->assertStringContainsString( '--global-palette1:var(' . $palette_canonical . ',#123456);', $css );
+
+		// The active (default) :root still carries the slot bridge at the default literal.
+		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . $spacing_canonical . ',3rem);', $css );
+
+		// The palette bridge lives only in the two switch selectors, never at :root (that stays with the filter).
+		$this->assertSame( 2, substr_count( $css, '--global-palette1:var(' ) );
+	}
+
 	// ---- Scope / structure --------------------------------------------------------------------------
 
 	/**
@@ -338,7 +409,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItEmitsFontSizeOverrideForAClaimedSlot(): void {
-		$id = 'primitive.dimension.font-size.lg';
+		$id = 'semantic.font-size.lg';
 
 		$this->registry->register(
 			[
