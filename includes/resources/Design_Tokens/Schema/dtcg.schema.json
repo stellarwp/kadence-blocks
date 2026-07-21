@@ -101,6 +101,9 @@
                         },
                         "$value": {
                             "$ref": "#/definitions/dimensionValue"
+                        },
+                        "$extensions": {
+                            "$ref": "#/definitions/dimensionExtensions"
                         }
                     },
                     "required": [
@@ -143,6 +146,9 @@
                         },
                         "$value": {
                             "$ref": "#/definitions/lineHeightValue"
+                        },
+                        "$extensions": {
+                            "$ref": "#/definitions/lineHeightExtensions"
                         }
                     },
                     "required": [
@@ -344,6 +350,158 @@
                     "additionalProperties": false
                 }
             ]
+        },
+        "dimensionExtensions": {
+            "type": "object",
+            "properties": {
+                "com.kadence.designTokens": {
+                    "type": "object",
+                    "properties": {
+                        "responsive": {
+                            "type": "object",
+                            "properties": {
+                                "tablet": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "mobile": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "clamp": {
+                            "type": "object",
+                            "required": [
+                                "min",
+                                "preferred",
+                                "max"
+                            ],
+                            "properties": {
+                                "min": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "preferred": {
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        },
+        "lineHeightExtensions": {
+            "type": "object",
+            "properties": {
+                "com.kadence.designTokens": {
+                    "type": "object",
+                    "properties": {
+                        "responsive": {
+                            "type": "object",
+                            "properties": {
+                                "tablet": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "mobile": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "clamp": {
+                            "type": "object",
+                            "required": [
+                                "min",
+                                "preferred",
+                                "max"
+                            ],
+                            "properties": {
+                                "min": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "preferred": {
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/definitions/alias"
+                                        },
+                                        {
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
         }
     }
 }
