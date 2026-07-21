@@ -366,8 +366,8 @@ class KBHeader {
 	}
 
 	/**
-	 * setup the placeholderwrapper and stickywrapper variables for the desktop or tablet container based on the given size.
-	 * potentially by creating the neccessary wrappers
+	 * setup the placeholderWrapper and stickyWrapper variables for the desktop or tablet container based on the given size.
+	 * potentially by creating the necessary wrappers
 	 */
 	createAndSetPlaceholderAndStickyWrappers(size) {
 		const sizedContainerSelector =
@@ -411,7 +411,7 @@ class KBHeader {
 	}
 
 	/**
-	 * update placeholderwrapper and stickywrapper variables according to the current active size.
+	 * update placeholderWrapper and stickyWrapper variables according to the current active size.
 	 */
 	updatePlaceholderAndStickyWrappers() {
 		const stickySectionToUse = this['stickySection' + this.activeSizeCased()];
@@ -427,7 +427,7 @@ class KBHeader {
 	}
 
 	/**
-	 * wrap an arrray of elements in a wrapper
+	 * wrap an array of elements in a wrapper
 	 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
 	 */
 	wrap(toWrap, wrapper) {
@@ -549,7 +549,7 @@ class KBHeader {
 
 		var parent = this.stickyWrapper.parentNode;
 
-		// Run the shrinking / unshrinking processing
+		// Run the shrinking / expanding processing
 		if (this.shrinkMain) {
 			const shrinkHeight =
 				this.activeSize === 'mobile'
@@ -581,7 +581,7 @@ class KBHeader {
 					this.shrinkStartHeight = shrinkHeader.offsetHeight;
 				}
 
-				// either shrink or unshrink the header based on scroll position
+				// either shrink or expand the header based on scroll position
 				const shrinkingHeight = Math.max(shrinkHeight, this.shrinkStartHeight - window.scrollY);
 				shrinkHeader.style.height = 'auto';
 				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
@@ -620,9 +620,9 @@ class KBHeader {
 			this.stickyWrapper.style.top = 'initial';
 		}
 
-		// Run the revealing / hidding processing or the sticky process
+		// Run the revealing / hiding processing or the sticky process
 		if (this.revealScrollUp) {
-			// Run the revealing / hidding processing
+			// Run the revealing / hiding processing
 			var isScrollingDown = currScrollTop > this.lastScrollTop;
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
@@ -680,7 +680,7 @@ class KBHeader {
 		this.lastScrollTop = currScrollTop;
 
 		// Set state classes on the header based on scroll position
-		// TODO not sure if this is neccessary as a seperate block of logic, may be better integrated into the stickychanged function
+		// TODO not sure if this is necessary as a separate block of logic, may be better integrated into the setStickyChanged function
 		if (window.scrollY == totalOffset) {
 			//this.stickyWrapper.style.top = offsetTop + 'px';
 			this.stickyWrapper.classList.add('item-is-fixed');
