@@ -169,11 +169,11 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 		} catch (err) {
 			setError(
 				err?.message ||
-				sprintf(
-					/* translators: %s: plugin name */
-					__('Failed to install or activate %s.', 'kadence-blocks'),
-					PRO_FEATURE_NAME
-				)
+					sprintf(
+						/* translators: %s: plugin name */
+						__('Failed to install or activate %s.', 'kadence-blocks'),
+						PRO_FEATURE_NAME
+					)
 			);
 			setStep(STEPS.SUCCESS);
 		}
@@ -242,15 +242,15 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 							/>
 							{isProInstalled
 								? sprintf(
-									/* translators: %s: plugin name */
-									__('Activate %s', 'kadence-blocks'),
-									PRO_FEATURE_NAME
-								)
+										/* translators: %s: plugin name */
+										__('Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)
 								: sprintf(
-									/* translators: %s: plugin name */
-									__('Install and Activate %s', 'kadence-blocks'),
-									PRO_FEATURE_NAME
-								)}
+										/* translators: %s: plugin name */
+										__('Install and Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)}
 						</Button>
 					)}
 					{error && <p className="kt-unified-error">{error}</p>}
