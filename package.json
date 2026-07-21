@@ -30,7 +30,7 @@
 		"@floating-ui/react": "^0.27.12",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
 		"@kadence/components": "github:stellarwp/kadence-components#1.1.9",
-		"@kadence/helpers": "github:stellarwp/kadence-helpers#1.1.0",
+		"@kadence/helpers": "github:stellarwp/kadence-helpers#soft-3903-js-resolvetokenalias-alias-aware-kadencehelpers-output",
 		"@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
 		"@lottiefiles/dotlottie-react": "^0.15.2",
 		"@react-google-maps/api": "^2.12.0",
