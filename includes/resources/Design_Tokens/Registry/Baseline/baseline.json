@@ -136,6 +136,86 @@
 					"$value": "4rem"
 				}
 			},
+			"font-size": {
+				"sm": {
+					"$type": "dimension",
+					"$value": "0.9rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "0.8rem",
+								"preferred": "0.73rem + 0.217vw",
+								"max": "0.9rem"
+							}
+						}
+					}
+				},
+				"md": {
+					"$type": "dimension",
+					"$value": "1.25rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "1.1rem",
+								"preferred": "0.995rem + 0.326vw",
+								"max": "1.25rem"
+							}
+						}
+					}
+				},
+				"lg": {
+					"$type": "dimension",
+					"$value": "2rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "1.75rem",
+								"preferred": "1.576rem + 0.543vw",
+								"max": "2rem"
+							}
+						}
+					}
+				},
+				"xl": {
+					"$type": "dimension",
+					"$value": "3rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "2.25rem",
+								"preferred": "1.728rem + 1.63vw",
+								"max": "3rem"
+							}
+						}
+					}
+				},
+				"xxl": {
+					"$type": "dimension",
+					"$value": "4rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "2.5rem",
+								"preferred": "1.456rem + 3.26vw",
+								"max": "4rem"
+							}
+						}
+					}
+				},
+				"xxxl": {
+					"$type": "dimension",
+					"$value": "6rem",
+					"$extensions": {
+						"com.kadence.designTokens": {
+							"clamp": {
+								"min": "2.75rem",
+								"preferred": "0.489rem + 7.065vw",
+								"max": "6rem"
+							}
+						}
+					}
+				}
+			},
 			"radius": {
 				"none": {
 					"$type": "dimension",

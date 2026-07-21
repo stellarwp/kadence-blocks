@@ -21,6 +21,7 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->container->singleton( Css_Builder::class );
 		$this->container->singleton( Legacy_Filter_Bridge::class );
+		$this->container->singleton( Slot_Target_Reader::class );
 		$this->container->singleton( Projector::class );
 
 		// Contribute this projector's editor CSS to the combined projected-CSS endpoint.
@@ -38,9 +39,9 @@ final class Provider extends Provider_Contract {
 		// exists and keeps that dependency, which is what gives editor-iframe coverage for free.
 		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 5 );
 
-		// Legacy variable families (init.php applies these in both editor and front-end functions).
+		// Legacy color palette (init.php applies this filter in both editor and front-end functions).
 		// Merge semantics: the bridge overrides only token-claimed slots; everything else passes through.
+		// The font-size scale is delivered by the --global-kb-font-size-<slug> slot bridge in Css_Builder.
 		add_filter( 'kadence_blocks_pattern_global_colors', $this->container->callback( Projector::class, 'filter_global_colors' ), 20 );
-		add_filter( 'kadence_blocks_variable_font_sizes', $this->container->callback( Projector::class, 'filter_font_sizes' ), 20 );
 	}
 }

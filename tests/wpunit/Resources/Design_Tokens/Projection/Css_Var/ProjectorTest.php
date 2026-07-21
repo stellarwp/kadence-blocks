@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette pagenow .
+// cspell:ignore palette pagenow xxl xxxl .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
@@ -15,9 +15,10 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Covers the CSS-variable projector: it appends the resolved --kb-token--* declarations to KB's front-end
- * and editor style handles, routes the legacy color/font-size filters through the bridge, is a no-op when
- * the registry is deactivated, and honors the active set — the declarations carry the active set's resolved
- * values, so pointing the active-set pointer at another set changes what is projected to the front end.
+ * and editor style handles, routes the legacy color filter through the bridge, feeds KB's font-size scale
+ * from the tokens, is a no-op when the registry is deactivated, and honors the active set — the declarations
+ * carry the active set's resolved values, so pointing the active-set pointer at another set changes what is
+ * projected to the front end.
  */
 final class ProjectorTest extends TestCase {
 
@@ -160,15 +161,30 @@ final class ProjectorTest extends TestCase {
 		$this->assertArrayHasKey( '--global-palette2', $result );
 	}
 
+	// ---- Font-size slot bridge -----------------------------------------------------------------------
+
 	/**
+	 * The front-end projection redefines each --global-kb-font-size-<slug> slot as its primitive token var
+	 * (the slug is claimed on the primitive, like spacing/gap), and that primitive carries the shipped
+	 * clamp(), so a block storing a named size follows the token.
+	 *
 	 * @return void
 	 */
-	public function testFilterFontSizesPassesThroughWhenNoFontSizeTokensRegistered(): void {
-		$input  = [ 'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)' ];
-		$result = $this->projector->filter_font_sizes( $input );
+	public function testFrontEndCssRedefinesGlobalFontSizeSlots(): void {
+		$this->projector->enqueue_front_end();
 
-		// Shipped tokens have no kadence_slot font-size entries, so input passes through unchanged.
-		$this->assertSame( $input, $result );
+		$css        = implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
+		$canonical  = Css_Var::from_id( 'primitive.dimension.font-size.lg' );
+		$namespaced = Css_Var::from_id( 'primitive.dimension.font-size.lg', 'default' );
+
+		// The slot points --global-kb-font-size-lg at the primitive token var.
+		$this->assertStringContainsString( '--global-kb-font-size-lg:var(' . $canonical . ',', $css );
+
+		// And that primitive carries the shipped fluid clamp() value.
+		$this->assertStringContainsString(
+			$namespaced . ':clamp(1.75rem, 1.576rem + 0.543vw, 2rem)',
+			$css
+		);
 	}
 
 	// ---- Deactivated registry (fail-closed) ----------------------------------------------------------
@@ -190,16 +206,17 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * A deactivated registry leaves the legacy color filter's input untouched, so KB's own palette survives
+	 * when token projection is off.
+	 *
 	 * @return void
 	 */
-	public function testFiltersReturnInputUnchangedWhenRegistryIsDeactivated(): void {
+	public function testDeactivatedRegistryLeavesColorFilterUnchanged(): void {
 		$this->registry->deactivate();
 
 		$colors = [ '--global-palette1' => '#3182CE' ];
-		$sizes  = [ 'sm' => 'clamp(0.8rem, 0.73rem + 0.217vw, 0.9rem)' ];
 
 		$this->assertSame( $colors, $this->projector->filter_global_colors( $colors ) );
-		$this->assertSame( $sizes, $this->projector->filter_font_sizes( $sizes ) );
 	}
 
 	// ---- Active set ----------------------------------------------------------------------------------

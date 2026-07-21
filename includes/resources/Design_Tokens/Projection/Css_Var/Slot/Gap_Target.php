@@ -50,4 +50,14 @@ final class Gap_Target extends Abstract_Target {
 	 * @var string[]
 	 */
 	protected const SLOTS = [ 'none', 'xs', 'sm', 'md', 'lg' ];
+
+	/**
+	 * The primitive dimension tokens that back the gap slugs; the slug is claimed on the primitive itself,
+	 * so this prefix plus the slug is the projection-holding token's own id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected const PRIMITIVE_PREFIX = 'primitive.dimension.gap.';
 }

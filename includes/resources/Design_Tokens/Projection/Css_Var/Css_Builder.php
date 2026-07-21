@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Target;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Font_Size_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Gap_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Spacing_Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
@@ -287,7 +288,8 @@ final class Css_Builder {
 	private function build_active_fragment( Resolved_Tokens $active, string $active_slug ): string {
 		return $this->alias_block( $active, $active_slug )
 			. $this->slot_block( $active, Spacing_Target::class )
-			. $this->slot_block( $active, Gap_Target::class );
+			. $this->slot_block( $active, Gap_Target::class )
+			. $this->slot_block( $active, Font_Size_Target::class );
 	}
 
 	/**

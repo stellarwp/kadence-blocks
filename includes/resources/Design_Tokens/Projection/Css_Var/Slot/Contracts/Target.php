@@ -48,4 +48,27 @@ interface Target {
 	 * @return string
 	 */
 	public function css_property(): string;
+
+	/**
+	 * The claimed slug, e.g. "lg".
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function slot(): string;
+
+	/**
+	 * The id of the primitive dimension token backing a slug in this family, e.g.
+	 * "primitive.dimension.spacing.lg". For spacing/gap this is the projection-holding token itself; for
+	 * font-size it is the primitive the projection-holding semantic aliases. Used to resolve a slug's
+	 * scale value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The claimed slug, e.g. "lg".
+	 *
+	 * @return string
+	 */
+	public static function get_primitive_id( string $slug ): string;
 }

@@ -164,21 +164,6 @@ final class Projector implements Css_Projector {
 	}
 
 	/**
-	 * @since TBD
-	 *
-	 * @param array<string,string> $sizes
-	 *
-	 * @return array<string,string>
-	 */
-	public function filter_font_sizes( array $sizes ): array {
-		if ( ! $this->is_active() ) {
-			return $sizes;
-		}
-
-		return $this->bridge->font_sizes( $sizes );
-	}
-
-	/**
 	 * Build the projected CSS for every token set at once, using the per-request memo and object cache
 	 * so repeated calls within the same request are free.
 	 *

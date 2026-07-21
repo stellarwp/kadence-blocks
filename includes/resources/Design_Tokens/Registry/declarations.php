@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore advancedbtn xxs xxl .
+// cspell:ignore advancedbtn xxs xxl xxxl .
 // The single declaration point. Adding an entry here automatically reaches every projector and the
 // admin UI. Returned as data (rather than calling the global helper) so the Provider can register it
 // directly against the container. The shipped baseline must contain an entry for every token registered
@@ -42,6 +42,27 @@ $gap_tokens = array_map(
 		];
 	},
 	$gap_slugs
+);
+
+// The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
+// clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
+// (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
+// primitive token, so a block already storing that slug follows it — mirroring spacing/gap. Defaults match
+// KB's own values, so registering them changes nothing until overridden. The button's per-instance default
+// font size is a separate token, semantic.font-size.control -- not a scale step.
+$font_size_slugs = [ 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl' ];
+
+$font_size_primitive_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'          => 'primitive.dimension.font-size.' . $slug,
+			'type'        => 'dimension',
+			'label'       => strtoupper( $slug ),
+			'group'       => __( 'Font Size', 'kadence-blocks' ),
+			'projections' => [ 'kb_font_size_slot' => $slug ],
+		];
+	},
+	$font_size_slugs
 );
 
 /**
@@ -218,7 +239,8 @@ return [
 		$button_color_tokens,
 		$palette_tokens,
 		$spacing_tokens,
-		$gap_tokens
+		$gap_tokens,
+		$font_size_primitive_tokens
 	),
 	/**
 	 * Variant set for the Button block: that it accepts variants, plus the per-property bindings (a

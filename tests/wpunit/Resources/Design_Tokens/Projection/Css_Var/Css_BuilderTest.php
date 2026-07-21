@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-// cspell:ignore palette Fghi redbodycolor xxs xxl .
+// cspell:ignore palette Fghi redbodycolor xxs xxl xxxl .
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
@@ -332,14 +332,37 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Built from the real registry and resolver, the shipped declarations emit a slot override for every
-	 * spacing and gap step Kadence Blocks ships, so each --global-kb-spacing-* / --global-kb-gap-* slug
-	 * follows its token. The default resolves from baseline (no overrides), so each override carries the
-	 * canonical token var with KB's own length as the literal fallback.
+	 * A font-size token that claims a shipped slug redefines --global-kb-font-size-<slug> as the canonical
+	 * token var, with the resolved length as a literal fallback, so a block storing that named size follows it.
 	 *
 	 * @return void
 	 */
-	public function testTheShippedDeclarationsEmitEverySpacingAndGapSlot(): void {
+	public function testItEmitsFontSizeOverrideForAClaimedSlot(): void {
+		$id = 'primitive.dimension.font-size.lg';
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'dimension',
+				'label'       => 'LG',
+				'projections' => [ 'kb_font_size_slot' => 'lg' ],
+			]
+		);
+
+		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+
+		$this->assertStringContainsString( '--global-kb-font-size-lg:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
+	}
+
+	/**
+	 * Built from the real registry and resolver, the shipped declarations emit a slot override for every
+	 * spacing, gap and font-size step Kadence Blocks ships, so each --global-kb-spacing-* / --global-kb-gap-* /
+	 * --global-kb-font-size-* slug follows its token. The default resolves from baseline (no overrides), so
+	 * each override carries the canonical token var with KB's own length as the literal fallback.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitEverySpacingGapAndFontSizeSlot(): void {
 		$registry = $this->container->get( Token_Registry::class );
 		$resolved = $this->container->get( Token_Resolver::class )->resolve_namespaced( 'default' );
 
@@ -351,6 +374,10 @@ final class Css_BuilderTest extends TestCase {
 
 		foreach ( [ 'none', 'xs', 'sm', 'md', 'lg' ] as $slug ) {
 			$this->assertStringContainsString( '--global-kb-gap-' . $slug . ':var(', $css );
+		}
+
+		foreach ( [ 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl' ] as $slug ) {
+			$this->assertStringContainsString( '--global-kb-font-size-' . $slug . ':var(', $css );
 		}
 	}
 
