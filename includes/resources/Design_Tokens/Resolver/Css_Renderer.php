@@ -30,6 +30,23 @@ final class Css_Renderer {
 	}
 
 	/**
+	 * Render a structured clamp to "clamp(<min>, <preferred>, <max>)" from already-rendered slot strings.
+	 * The resolver flattens each slot (following any alias, or preserving it as a var() reference for the
+	 * projection form) before handing the strings here.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $min       The rendered minimum-bound slot.
+	 * @param string $preferred The rendered preferred (fluid) slot.
+	 * @param string $max       The rendered maximum-bound slot.
+	 *
+	 * @return string
+	 */
+	public function clamp( string $min, string $preferred, string $max ): string {
+		return sprintf( 'clamp(%s, %s, %s)', $min, $preferred, $max );
+	}
+
+	/**
 	 * @param mixed $value string[] of family names, or a single string.
 	 */
 	private function font_family( $value ): string {

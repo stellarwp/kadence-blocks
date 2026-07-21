@@ -78,4 +78,51 @@ final class Resolved_TokensTest extends TestCase {
 
 		$this->assertNull( $resolved->target( 'primitive.color.brand.primary' ) );
 	}
+
+	/**
+	 * The per-breakpoint maps round-trip: projected_responsive() exposes the css-var override map and
+	 * value_at() reads the literal override for a token at a breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testItExposesThePerBreakpointResponsiveMaps(): void {
+		$by_var_responsive = [
+			'--kb-token--semantic--font-size--control' => [
+				'tablet' => '1rem',
+				'mobile' => '0.9rem',
+			],
+		];
+		$by_id_responsive  = [
+			'semantic.font-size.control' => [
+				'tablet' => '1rem',
+				'mobile' => '0.9rem',
+			],
+		];
+
+		$resolved = new Resolved_Tokens(
+			[ 'semantic.font-size.control' => '1.125rem' ],
+			[ '--kb-token--semantic--font-size--control' => '1.125rem' ],
+			[],
+			[],
+			$by_var_responsive,
+			$by_id_responsive
+		);
+
+		$this->assertSame( $by_var_responsive, $resolved->projected_responsive() );
+		$this->assertSame( '1rem', $resolved->value_at( 'semantic.font-size.control', 'tablet' ) );
+		$this->assertSame( '0.9rem', $resolved->value_at( 'semantic.font-size.control', 'mobile' ) );
+	}
+
+	/**
+	 * A construction with no responsive maps exposes an empty projection and null value_at() everywhere, so a
+	 * flat document behaves exactly as before.
+	 *
+	 * @return void
+	 */
+	public function testTheResponsiveMapsDefaultToEmpty(): void {
+		$resolved = new Resolved_Tokens( [ 'semantic.font-size.control' => '1.125rem' ], [] );
+
+		$this->assertSame( [], $resolved->projected_responsive() );
+		$this->assertNull( $resolved->value_at( 'semantic.font-size.control', 'tablet' ) );
+	}
 }

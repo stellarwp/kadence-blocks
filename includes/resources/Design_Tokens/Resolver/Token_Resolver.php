@@ -9,6 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Excepti
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
@@ -52,6 +53,17 @@ final class Token_Resolver {
 	 * @var array<string,Resolved_Tokens>
 	 */
 	private array $memo = [];
+
+	/**
+	 * Per-request memo of effective (baseline-merged) documents, keyed on the slug and store version, so the
+	 * stored document is decoded and merged once per version no matter how many callers need the authored
+	 * view — the resolve path itself, the responsive feed, and the REST resolved read all share one build.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string,array<string,mixed>>
+	 */
+	private array $effective_memo = [];
 
 	/**
 	 * Wire the token store, effective-document builder, and value renderer.
@@ -145,10 +157,7 @@ final class Token_Resolver {
 			return $cached;
 		}
 
-		$raw      = $this->store->get_document( $slug );
-		$decoded  = $raw === '' ? [] : json_decode( $raw, true );
-		$over     = is_array( $decoded ) ? $decoded : [];
-		$document = $this->effective->build( $over );
+		$document = $this->effective_document( $slug );
 
 		$result = $this->resolve_document( $document, $css_namespace );
 
@@ -175,6 +184,35 @@ final class Token_Resolver {
 	}
 
 	/**
+	 * The baseline-merged effective document for a stored set, with $extensions intact — the authored view
+	 * the resolved maps flatten away. This is the source the responsive feed and the REST resolved read need
+	 * to recover a token's authored responsive / clamp shape (aliases preserved, unrendered), which the flat
+	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
+	 * the stored document is decoded and merged once rather than rebuilt by every caller.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string,mixed> The effective document.
+	 */
+	public function effective_document( string $slug = 'default' ): array {
+		$cache_key = $slug . '_' . $this->store->get_version( $slug );
+
+		if ( isset( $this->effective_memo[ $cache_key ] ) ) {
+			return $this->effective_memo[ $cache_key ];
+		}
+
+		$raw     = $this->store->get_document( $slug );
+		$decoded = $raw === '' ? [] : json_decode( $raw, true );
+		$over    = is_array( $decoded ) ? $decoded : [];
+
+		$this->effective_memo[ $cache_key ] = $this->effective->build( $over );
+
+		return $this->effective_memo[ $cache_key ];
+	}
+
+	/**
 	 * Walk an effective document into the flat maps.
 	 *
 	 * @since TBD
@@ -183,18 +221,20 @@ final class Token_Resolver {
 	 * @param string              $css_namespace Css-var namespace to apply to projected names ('' for canonical).
 	 */
 	private function resolve_document( array $document, string $css_namespace = '' ): Resolved_Tokens {
-		$by_id            = [];
-		$by_var           = [];
-		$by_var_projected = [];
-		$by_id_target     = [];
+		$by_id             = [];
+		$by_var            = [];
+		$by_var_projected  = [];
+		$by_id_target      = [];
+		$by_var_responsive = [];
+		$by_id_responsive  = [];
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $css_namespace );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive, $css_namespace );
 			}
 		}
 
-		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target );
+		return new Resolved_Tokens( $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive );
 	}
 
 	/**
@@ -202,18 +242,20 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed>  $node             The current group node.
-	 * @param string               $prefix           The dot-path accumulated so far.
-	 * @param array<string,mixed>  $document         Full effective doc, for alias lookups.
-	 * @param array<string,string> $by_id            By-reference id => literal CSS value map.
-	 * @param array<string,string> $by_var           By-reference css-var => literal CSS value map.
-	 * @param array<string,string> $by_var_projected By-reference css-var => var()-preserving CSS value map.
-	 * @param array<string,string> $by_id_target     By-reference id => target id map (whole-$value aliases only).
-	 * @param string               $css_namespace        Css-var namespace to apply to projected names ('' for canonical).
+	 * @param array<string,mixed>                $node             The current group node.
+	 * @param string                             $prefix           The dot-path accumulated so far.
+	 * @param array<string,mixed>                $document         Full effective doc, for alias lookups.
+	 * @param array<string,string>               $by_id             By-reference id => literal CSS value map.
+	 * @param array<string,string>               $by_var            By-reference css-var => literal CSS value map.
+	 * @param array<string,string>               $by_var_projected  By-reference css-var => var()-preserving CSS value map.
+	 * @param array<string,string>               $by_id_target      By-reference id => target id map (whole-$value aliases only).
+	 * @param array<string,array<string,string>> $by_var_responsive By-reference css-var => [ breakpoint => projected value ].
+	 * @param array<string,array<string,string>> $by_id_responsive  By-reference id => [ breakpoint => literal value ].
+	 * @param string                             $css_namespace     Css-var namespace to apply to projected names ('' for canonical).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, string $css_namespace = '' ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, array &$by_var_responsive, array &$by_id_responsive, string $css_namespace = '' ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -225,11 +267,28 @@ final class Token_Resolver {
 			$path = $prefix . '.' . $key;
 
 			if ( array_key_exists( '$value', $child ) ) {
-				$raw   = $child['$value'];
-				$type  = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
+				$raw  = $child['$value'];
+				$type = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
+				$var  = Css_Var::from_id( $path, $css_namespace );
+
+				// A structured clamp is authoritative: it renders to clamp(min, preferred, max) for both the
+				// literal (host) and var()-preserving (projection) forms, overriding whatever the flat base
+				// $value holds (a literal clamp there is treated as a stale cache of this).
+				if ( Responsive::has_clamp( $child ) ) {
+					$clamp = Responsive::clamp_of( $child );
+
+					if ( is_array( $clamp ) ) {
+						$literal                  = $this->render_clamp( $clamp, $type, $document, $css_namespace, false );
+						$by_id[ $path ]           = $literal;
+						$by_var[ $var ]           = $literal;
+						$by_var_projected[ $var ] = $this->render_clamp( $clamp, $type, $document, $css_namespace, true );
+
+						continue;
+					}
+				}
+
 				$value = $this->resolve_value( $raw, $document, [] );
 				$css   = $this->renderer->render( $type, $value );
-				$var   = Css_Var::from_id( $path, $css_namespace );
 
 				$by_id[ $path ] = $css;
 				$by_var[ $var ] = $css;
@@ -251,11 +310,89 @@ final class Token_Resolver {
 					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw, $css_namespace ) );
 				}
 
+				// A stepped responsive shape keeps the flat base above and adds a per-breakpoint override the
+				// css-var projection redeclares inside the matching media query; each slot may itself alias.
+				$this->collect_responsive_overrides( $child, $type, $path, $var, $document, $css_namespace, $by_id_responsive, $by_var_responsive );
+
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $css_namespace );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive, $css_namespace );
 		}
+	}
+
+	/**
+	 * Collect a leaf's per-breakpoint responsive overrides into the by-id (literal) and by-var (var()-preserving)
+	 * maps. A no-op when the leaf has no responsive shape. Each slot may itself be an alias, flattened for the
+	 * literal form and preserved as a var() reference for the projection form.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>                $child             The leaf node.
+	 * @param string                             $type              The leaf's $type.
+	 * @param string                             $path              The token dot-path.
+	 * @param string                             $css_var           The token's css-var name.
+	 * @param array<string,mixed>                $document          Full effective doc, for alias lookups.
+	 * @param string                             $css_namespace     Css-var namespace to apply ('' for canonical).
+	 * @param array<string,array<string,string>> $by_id_responsive  By-reference id => [ breakpoint => literal value ].
+	 * @param array<string,array<string,string>> $by_var_responsive By-reference css-var => [ breakpoint => projected value ].
+	 *
+	 * @return void
+	 */
+	private function collect_responsive_overrides( array $child, string $type, string $path, string $css_var, array $document, string $css_namespace, array &$by_id_responsive, array &$by_var_responsive ): void {
+		if ( ! Responsive::has_responsive( $child ) ) {
+			return;
+		}
+
+		$responsive = Responsive::responsive_of( $child );
+
+		if ( ! is_array( $responsive ) ) {
+			return;
+		}
+
+		foreach ( Responsive::get_breakpoint_keys() as $breakpoint ) {
+			if ( ! array_key_exists( $breakpoint, $responsive ) ) {
+				continue;
+			}
+
+			$slot = $responsive[ $breakpoint ];
+
+			$by_id_responsive[ $path ][ $breakpoint ]     = $this->renderer->render( $type, $this->resolve_value( $slot, $document, [] ) );
+			$by_var_responsive[ $css_var ][ $breakpoint ] = $this->renderer->render( $type, $this->project_value( $slot, $css_namespace ) );
+		}
+	}
+
+	/**
+	 * Render a structured clamp map to a clamp(min, preferred, max) string. Every slot — min, preferred and
+	 * max alike — is flattened against the leaf's $type: an alias slot resolves to its target, a literal
+	 * passes through, and the calc-style fluid expression the preferred slot typically holds renders
+	 * verbatim. When $projected is true, alias slots are preserved as var() references (for the css-var
+	 * projection); otherwise they are flattened to literals (for host surfaces).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $clamp         The decoded clamp map.
+	 * @param string              $type          The leaf's $type.
+	 * @param array<string,mixed> $document      Full effective doc, for alias lookups.
+	 * @param string              $css_namespace Css-var namespace to apply to var() targets ('' for canonical).
+	 * @param bool                $projected     Whether to preserve aliases as var() references.
+	 *
+	 * @return string
+	 */
+	private function render_clamp( array $clamp, string $type, array $document, string $css_namespace, bool $projected ): string {
+		$slot = function ( $value ) use ( $type, $document, $css_namespace, $projected ): string {
+			$flattened = $projected
+				? $this->project_value( $value, $css_namespace )
+				: $this->resolve_value( $value, $document, [] );
+
+			return $this->renderer->render( $type, $flattened );
+		};
+
+		return $this->renderer->clamp(
+			$slot( $clamp[ Responsive::get_clamp_min_key() ] ?? '' ),
+			$slot( $clamp[ Responsive::get_clamp_preferred_key() ] ?? '' ),
+			$slot( $clamp[ Responsive::get_clamp_max_key() ] ?? '' )
+		);
 	}
 
 	/**

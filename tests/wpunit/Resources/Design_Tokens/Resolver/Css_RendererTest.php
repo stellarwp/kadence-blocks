@@ -69,4 +69,16 @@ final class Css_RendererTest extends TestCase {
 	public function testNonScalarScalarTypeReturnsEmptyString(): void {
 		$this->assertSame( '', $this->renderer->render( 'color', [ 'unexpected' => 'array' ] ) );
 	}
+
+	/**
+	 * A structured clamp is assembled into a clamp(min, preferred, max) string from its slot strings.
+	 *
+	 * @return void
+	 */
+	public function testClampAssemblesTheThreeSlots(): void {
+		$this->assertSame(
+			'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+			$this->renderer->clamp( '1.1rem', '0.995rem + 0.326vw', '1.25rem' )
+		);
+	}
 }
