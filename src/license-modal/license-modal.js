@@ -39,7 +39,7 @@ function HarborLicenseNotice({ onSwitchToUnified }) {
 					sprintf(
 						/* translators: %1$s: product name (e.g. Kadence Blocks). */
 						__(
-							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
+							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
 							'kadence-blocks'
 						),
 						productName
@@ -121,7 +121,7 @@ export default function LicenseModalApp() {
 						<div className="kt-license-view kt-license-view-legacy">
 							<p className="kt-license-intro">
 								{__(
-									'If you purchased Kadence Blocks Pro before April 2026, enter your legacy Kadence license key here.',
+									'If you purchased Kadence Blocks Pro before April 2026, enter your Kadence license key here.',
 									'kadence-blocks'
 								)}
 							</p>

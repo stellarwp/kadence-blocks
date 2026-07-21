@@ -7,6 +7,7 @@ import { createInterpolateElement, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
 import { installAndActivateFeature, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
+import { getGlobalParam } from '../harbor/helper';
 
 const STEPS = {
 	INPUT: 'input',
@@ -16,7 +17,7 @@ const STEPS = {
 	DONE: 'done',
 };
 
-const params = window.kadenceLicenseModalParams || {};
+const params = getGlobalParam();
 const PRO_FEATURE_SLUG = params.proFeatureSlug || 'kadence-blocks-pro';
 const PRO_FEATURE_NAME = params.proFeatureName || __('Kadence Blocks Pro', 'kadence-blocks');
 
@@ -120,15 +121,19 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 			{step === STEPS.INPUT && (
 				<div className="kt-unified-step kt-unified-step-input">
 					<p className="kt-license-intro">
-						{__(
-							'Enter the unified license key from your Liquid Web account (starts with "LWSW").',
-							'kadence-blocks'
-						)}{' '}
-						{licensePageUrl &&
-							createInterpolateElement(__('Get your license key <a>here</a>.', 'kadence-blocks'), {
-								// eslint-disable-next-line jsx-a11y/anchor-has-content
-								a: <a href={licensePageUrl} target="_blank" rel="noopener noreferrer" />,
-							})}
+						{createInterpolateElement(
+							__(
+								'Enter your Liquid Web Unified License Key. It starts with <i>LWSW-</i> and can be found in your <a>Liquid Web account</a>.',
+								'kadence-blocks'
+							),
+							{
+								i: <i />,
+								a: (
+									// eslint-disable-next-line jsx-a11y/anchor-has-content
+									<a href={params.harbor.accountUrl} target="_blank" rel="noopener noreferrer" />
+								),
+							}
+						)}
 					</p>
 					<div className="kt-unified-input-row">
 						<TextControl

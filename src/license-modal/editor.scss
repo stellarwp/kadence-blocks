@@ -46,6 +46,14 @@
 		&:hover {
 			color: #1d4ed8;
 		}
+
+		&.kt-license-toggle-link--error {
+			color: #d63638;
+		}
+
+		&.kt-license-toggle-link--error:hover {
+			color: #d63638;
+		}
 	}
 
 	.kt-license-toggle-back {

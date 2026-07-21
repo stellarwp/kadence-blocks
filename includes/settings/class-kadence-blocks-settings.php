@@ -834,6 +834,7 @@ class Kadence_Blocks_Settings {
 					'licensePath'  => '/liquidweb/harbor/v1/license',
 					'featuresPath' => '/liquidweb/harbor/v1/features',
 					'keyPrefix'    => 'LWSW-',
+					'accountUrl'   => 'https://software.liquidweb.com/',
 				],
 			]
 		);
