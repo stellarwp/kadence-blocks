@@ -48,6 +48,14 @@ final class LiteralsTest extends TestCase {
 			'value'    => 'var(--x)',
 			'expected' => true,
 		];
+		yield 'empty color function' => [
+			'value'    => 'rgb()',
+			'expected' => false,
+		];
+		yield 'empty interior color arg' => [
+			'value'    => 'rgb(0, , 0)',
+			'expected' => false,
+		];
 		yield 'named' => [
 			'value'    => 'rebeccapurple',
 			'expected' => true,
@@ -120,6 +128,30 @@ final class LiteralsTest extends TestCase {
 		];
 		yield 'calc()' => [
 			'value'    => 'calc(100% - 8px)',
+			'expected' => true,
+		];
+		yield 'empty clamp' => [
+			'value'    => 'clamp(, , )',
+			'expected' => false,
+		];
+		yield 'empty function' => [
+			'value'    => 'calc()',
+			'expected' => false,
+		];
+		yield 'empty interior clamp arg' => [
+			'value'    => 'clamp(1rem, , 2rem)',
+			'expected' => false,
+		];
+		yield 'empty leading clamp arg' => [
+			'value'    => 'clamp(, 1rem, 2rem)',
+			'expected' => false,
+		];
+		yield 'empty nested arg' => [
+			'value'    => 'max(1rem, min(, 2rem))',
+			'expected' => false,
+		];
+		yield 'var empty fallback allowed' => [
+			'value'    => 'var(--x,)',
 			'expected' => true,
 		];
 		yield 'unitless num' => [

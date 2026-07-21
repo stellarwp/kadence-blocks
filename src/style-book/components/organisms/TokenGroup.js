@@ -27,6 +27,7 @@ import './token-group.scss';
  * @param {string}   props.groupName            Display name for the group.
  * @param {object[]} props.tokens               Tokens belonging to this group.
  * @param {Record<string, string>} props.values Resolved values keyed by token id.
+ * @param {Record<string, object>} [props.responsive] Authored responsive / clamp shapes keyed by token id.
  * @param {Function} props.onSave               Save handler passed to each field.
  * @param {Function} props.getFieldState        Field state accessor.
  * @param {boolean}  [props.isUserCreatedGroup] Whether this is the Custom Colors group.
@@ -41,6 +42,7 @@ export function TokenGroup({
 	groupName,
 	tokens,
 	values,
+	responsive,
 	onSave,
 	getFieldState,
 	isUserCreatedGroup = false,
@@ -83,6 +85,7 @@ export function TokenGroup({
 						<TokenField
 							token={token}
 							value={values[token.id] ?? ''}
+							responsive={responsive?.[token.id]}
 							onSave={onSave}
 							fieldState={getFieldState(token.id)}
 						/>
