@@ -1388,6 +1388,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since TBD Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
@@ -1404,10 +1406,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( ! empty( $library_url ) ) {
 			if ( 'page' === $pattern_type ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page/';
-				$extra       = 'page-item';
+				$extra    = 'page-item';
+				$endpoint = '/wp-json/kadence-cloud/v1/page/';
 			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
+				$endpoint = '/wp-json/kadence-cloud/v1/single/';
+			}
+			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} else {
 			$library_url = $this->get_patterns_single_url();
@@ -1430,7 +1436,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			if ( 'templates' !== $library && 'pages' !== $library && 'template' !== $library ) {
 				$args['data'] = 'true';
 			}
-			if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+			// License credentials are only ever sent to the Kadence library hosts.
+			if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 				$args['api_key'] = $this->api_key;
 				if ( ! empty( $this->api_email ) ) {
 					// Send in case we need to verify with old api.
@@ -1483,6 +1490,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since TBD Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
@@ -1493,7 +1502,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $library_url ) || empty( $key ) ) {
 			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 		}
-		$url = empty( $library_url ) ? '' : rtrim( sanitize_text_field( $library_url ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
+		$url = $this->resolve_connection_url( sanitize_text_field( $library_url ), '/wp-json/kadence-cloud/v1/info/' );
+		if ( empty( $url ) ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
+		}
 		// Do you have the data?
 		$site_url = get_original_domain();
 		$args     = [
@@ -1539,6 +1551,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since TBD Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
@@ -1551,10 +1565,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page-categories/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/page-categories/' : '/wp-json/kadence-cloud/v1/categories/';
+			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_cat_url;
@@ -1648,6 +1662,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since TBD Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
@@ -1660,10 +1676,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/pages/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/pages/' : '/wp-json/kadence-cloud/v1/get/';
+			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_url;
@@ -2349,6 +2365,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since TBD Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2358,7 +2376,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
@@ -2405,6 +2424,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since TBD Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2414,7 +2435,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;

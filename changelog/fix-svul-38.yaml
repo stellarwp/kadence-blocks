@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Hardened library requests to only use known locations.
+timestamp: 2026-07-21T01:04:28.395Z

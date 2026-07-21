@@ -95,4 +95,117 @@ trait API_Url_Trait {
 	protected function get_starter_get_url(): string {
 		return $this->get_starter_base_url() . '/wp-json/kadence-starter/v1/get/';
 	}
+
+	/**
+	 * Resolve the starter-template sites base URL with override.
+	 *
+	 * KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL constant, otherwise production default.
+	 *
+	 * @since TBD
+	 */
+	protected function get_template_sites_base_url(): string {
+		$url = defined( 'KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL' ) && KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL
+			? KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL
+			: 'https://startertemplatecloud.com';
+		return rtrim( (string) $url, '/' );
+	}
+
+	/**
+	 * Whether a URL points at one of the Kadence library hosts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url The URL to check.
+	 */
+	protected function is_kadence_api_url( string $url ): bool {
+		$host = wp_parse_url( $url, PHP_URL_HOST );
+
+		if ( empty( $host ) ) {
+			return false;
+		}
+
+		$allowed = array_filter(
+			[
+				wp_parse_url( $this->get_patterns_base_url(), PHP_URL_HOST ),
+				wp_parse_url( $this->get_starter_base_url(), PHP_URL_HOST ),
+				wp_parse_url( $this->get_template_sites_base_url(), PHP_URL_HOST ),
+			]
+		);
+
+		return in_array( $host, $allowed, true );
+	}
+
+	/**
+	 * The library URLs saved in the cloud connection settings.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_saved_library_urls(): array {
+		$settings = json_decode( (string) get_option( 'kadence_blocks_cloud' ), true );
+		$urls     = [];
+
+		if ( ! empty( $settings['connections'] ) && is_array( $settings['connections'] ) ) {
+			foreach ( $settings['connections'] as $connection ) {
+				if ( ! empty( $connection['url'] ) ) {
+					$urls[] = rtrim( (string) $connection['url'], '/' );
+				}
+			}
+		}
+
+		return $urls;
+	}
+
+	/**
+	 * Resolve a requested library URL into a full endpoint URL.
+	 *
+	 * Only the Kadence library hosts and the saved cloud connections are
+	 * allowed as request targets.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $requested The requested library URL.
+	 * @param string $endpoint  The endpoint path to append.
+	 * @param string $fallback  Returned when no library URL was requested.
+	 *
+	 * @return string Empty string when the requested URL is not allowed.
+	 */
+	protected function resolve_library_url( string $requested, string $endpoint, string $fallback = '' ): string {
+		$requested = rtrim( trim( $requested ), '/' );
+
+		if ( '' === $requested ) {
+			return $fallback;
+		}
+
+		if ( $this->is_kadence_api_url( $requested ) || in_array( $requested, $this->get_saved_library_urls(), true ) ) {
+			return $requested . $endpoint;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Resolve a requested library URL for a connection lookup.
+	 *
+	 * Adding a connection to a new library is limited to users who can manage
+	 * the connection settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $requested The requested library URL.
+	 * @param string $endpoint  The endpoint path to append.
+	 *
+	 * @return string Empty string when the requested URL is not allowed.
+	 */
+	protected function resolve_connection_url( string $requested, string $endpoint ): string {
+		$url = $this->resolve_library_url( $requested, $endpoint );
+
+		if ( '' === $url && current_user_can( 'manage_options' ) ) {
+			$requested = rtrim( trim( $requested ), '/' );
+			$url       = '' === $requested ? '' : $requested . $endpoint;
+		}
+
+		return $url;
+	}
 }
