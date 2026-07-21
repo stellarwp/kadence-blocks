@@ -3,10 +3,10 @@
  *
  * Saves the key and installs Pro via Harbor REST helpers in `src/harbor`.
  */
-import { createInterpolateElement, useEffect, useState } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
-import { getLicense, installAndActivateFeature, refreshLicense, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
+import { installAndActivateFeature, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
 import { buildActivationUrl, getGlobalParam } from '../harbor/helper';
 
 const STEPS = {
@@ -34,50 +34,42 @@ function isDomainActivated(entry) {
 }
 
 /**
+ * Resolve the unified flow step from a Harbor GET /license payload.
+ *
+ * @param {Object|null} license Harbor license response.
+ * @return {{ step: string, entry: Object|null }}
+ */
+function resolveInitialState(license) {
+	if (!license?.key) {
+		return { step: STEPS.INPUT, entry: null };
+	}
+
+	const entry = findProductEntry(license.products);
+
+	if (!isProActive) {
+		return { step: STEPS.SUCCESS, entry };
+	}
+
+	if (isDomainActivated(entry)) {
+		return { step: STEPS.DONE, entry };
+	}
+
+	return { step: STEPS.ACTIVATE_DOMAIN, entry };
+}
+
+/**
  * @param {Object}   props
  * @param {string}   props.licensePageUrl Harbor license page URL, if available.
+ * @param {Object|null} [props.initialLicense] Harbor GET /license payload from LicenseModalApp.
  * @param {Function} props.onSwitchToLegacy Switch to the legacy Kadence key view.
  */
-export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy }) {
-	const [step, setStep] = useState(STEPS.INPUT);
+export default function UnifiedLicenseView({ licensePageUrl, initialLicense = null, onSwitchToLegacy }) {
+	const initial = resolveInitialState(initialLicense);
+	const [step, setStep] = useState(initial.step);
 	const [licenseKey, setLicenseKey] = useState('');
 	const [error, setError] = useState('');
 	const [installStatus, setInstallStatus] = useState('');
-	const [productEntry, setProductEntry] = useState(null);
-	const [checkingDomain, setCheckingDomain] = useState(false);
-
-	// A key may already be stored (and Pro already active) from a prior visit
-	// without `storeLicense()` ever being called this session — resolve the
-	// correct step from current Harbor state on mount.
-	useEffect(() => {
-		let cancelled = false;
-
-		(async () => {
-			try {
-				const res = await getLicense();
-				if (cancelled || !res?.key) {
-					return;
-				}
-
-				const entry = findProductEntry(res.products);
-				setProductEntry(entry);
-
-				if (!isProActive) {
-					setStep(STEPS.SUCCESS);
-				} else if (isDomainActivated(entry)) {
-					setStep(STEPS.DONE);
-				} else {
-					setStep(STEPS.ACTIVATE_DOMAIN);
-				}
-			} catch (err) {
-				// No stored key or request failed; stay on the input step.
-			}
-		})();
-
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+	const [productEntry, setProductEntry] = useState(initial.entry);
 
 	const handleActivate = async () => {
 		const key = licenseKey.trim().toUpperCase();
@@ -169,32 +161,6 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 					)
 			);
 			setStep(STEPS.SUCCESS);
-		}
-	};
-
-	const handleRecheckDomain = async () => {
-		setCheckingDomain(true);
-		setError('');
-
-		try {
-			const res = await refreshLicense();
-			const entry = findProductEntry(res?.products);
-			setProductEntry(entry);
-
-			if (isDomainActivated(entry)) {
-				setStep(STEPS.DONE);
-			} else {
-				setError(
-					__(
-						'This website is not activated yet. Complete activation in the Liquid Web portal, then try again.',
-						'kadence-blocks'
-					)
-				);
-			}
-		} catch (err) {
-			setError(err?.message || __('Could not check activation status. Please try again.', 'kadence-blocks'));
-		} finally {
-			setCheckingDomain(false);
 		}
 	};
 
@@ -296,29 +262,20 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 							PRO_FEATURE_NAME
 						)}
 					</p>
-					<Button
-						className="kt-unified-activate-domain-button"
-						variant="primary"
-						href={buildActivationUrl(params.activationUrl, PRODUCT_SLUG, productEntry?.tier)}
-						target="_blank"
-						rel="noopener noreferrer"
-						disabled={!params.activationUrl}
-					>
-						{__('Activate this website', 'kadence-blocks')}
-					</Button>
-					<p className="description">
-						<button
-							type="button"
-							className="kt-unified-reload-link"
-							disabled={checkingDomain}
-							onClick={handleRecheckDomain}
+					<div className="kt-unified-activate-domain-button-container">
+						<Button
+							className="kt-unified-activate-domain-button"
+							variant="primary"
+							href={buildActivationUrl(params.activationUrl, PRODUCT_SLUG, productEntry?.tier)}
+							target="_blank"
+							rel="noopener noreferrer"
+							disabled={!params.activationUrl}
 						>
-							{checkingDomain
-								? __('Checking…', 'kadence-blocks')
-								: __("I've activated it — check again", 'kadence-blocks')}
-						</button>
-					</p>
-					{error && <p className="kt-unified-error">{error}</p>}
+							{__('Activate this website', 'kadence-blocks')}
+							<span className="dashicons dashicons-external" aria-hidden="true" />
+						</Button>
+						{error && <p className="kt-unified-error">{error}</p>}
+					</div>
 				</div>
 			)}
 
@@ -346,7 +303,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 
 			{step === STEPS.INPUT && (
 				<p className="kt-license-toggle">
-					{__('Purchased your license before April 2026?', 'kadence-blocks')}
+					{__('Purchased your license before May 12, 2026?', 'kadence-blocks')}
 					<br />
 					<button type="button" className="kt-license-toggle-link" onClick={onSwitchToLegacy}>
 						{__('Click here to enter the individual Kadence key.', 'kadence-blocks')}
