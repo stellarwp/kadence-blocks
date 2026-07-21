@@ -243,7 +243,21 @@ class KBHeader {
 	}
 
 	setAutoTransparentSpacing() {
-		const elementToApply = this.root.nextElementSibling;
+		// The transparent header collapses to zero height, so the element that sits under it
+		// is the next one in normal flow. When the header is nested (e.g. inside a block-theme
+		// template part) it is not a direct sibling of that element, so walk up until we find
+		// an ancestor with a following sibling.
+		let node = this.root;
+
+		while (node && !node.nextElementSibling) {
+			node = node.parentElement;
+		}
+
+		const elementToApply = node ? node.nextElementSibling : null;
+
+		if (!elementToApply) {
+			return;
+		}
 
 		elementToApply.style.paddingTop = 'var(--kb-header-height)';
 	}
