@@ -1569,7 +1569,18 @@ class Kadence_Blocks_Settings {
 		?>
 		<div class="license-section sidebar-section components-panel">
 			<div class="components-panel__body is-opened">
-				<div id="kt-license-modal-root"></div>
+				<div id="kt-license-modal-root" class="kt-license-modal-root" aria-busy="true">
+					<div class="kt-skeleton kt-license-skeleton" role="status" aria-label="<?php esc_attr_e( 'Loading license…', 'kadence-blocks' ); ?>">
+						<div class="kt-skeleton__row kt-license-skeleton__header">
+							<span class="kt-skeleton__bone kt-license-skeleton__title"></span>
+						</div>
+						<span class="kt-skeleton__bone kt-license-skeleton__badge"></span>
+						<span class="kt-skeleton__bone kt-license-skeleton__type"></span>
+						<span class="kt-skeleton__bone kt-license-skeleton__key"></span>
+						<span class="kt-skeleton__bone kt-license-skeleton__meta"></span>
+						<span class="kt-skeleton__bone kt-license-skeleton__button"></span>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="kt-legacy-license-field" hidden>
