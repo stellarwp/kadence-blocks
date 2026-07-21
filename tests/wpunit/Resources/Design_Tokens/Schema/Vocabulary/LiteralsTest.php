@@ -362,4 +362,70 @@ final class LiteralsTest extends TestCase {
 			'expected' => false,
 		];
 	}
+
+	/**
+	 * A clamp preferred slot accepts a plain dimension, a CSS function form, or a bare calc-style
+	 * expression combining length / percentage / viewport terms; a lone unitless number, a bare word, or
+	 * an unbalanced expression is not.
+	 *
+	 * @dataProvider clampPreferredProvider
+	 *
+	 * @param mixed $value    The candidate preferred slot.
+	 * @param bool  $expected Whether it is a valid clamp preferred slot.
+	 *
+	 * @return void
+	 */
+	public function testClampPreferred( $value, bool $expected ): void {
+		$this->assertSame( $expected, Literals::is_clamp_preferred( $value ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function clampPreferredProvider(): Generator {
+		yield 'rem + vw' => [
+			'value'    => '0.995rem + 0.326vw',
+			'expected' => true,
+		];
+		yield 'percent minus px' => [
+			'value'    => '100% - 20px',
+			'expected' => true,
+		];
+		yield 'vw times scalar' => [
+			'value'    => '2vw * 1.5',
+			'expected' => true,
+		];
+		yield 'plain dimension' => [
+			'value'    => '1.25rem',
+			'expected' => true,
+		];
+		yield 'calc()' => [
+			'value'    => 'calc(0.995rem + 0.326vw)',
+			'expected' => true,
+		];
+		yield 'lone viewport unit' => [
+			'value'    => '0.326vw',
+			'expected' => true,
+		];
+		yield 'unitless number' => [
+			'value'    => '12',
+			'expected' => false,
+		];
+		yield 'word' => [
+			'value'    => 'fluid',
+			'expected' => false,
+		];
+		yield 'trailing operator' => [
+			'value'    => '1rem +',
+			'expected' => false,
+		];
+		yield 'empty' => [
+			'value'    => '',
+			'expected' => false,
+		];
+		yield 'non-string' => [
+			'value'    => 3,
+			'expected' => false,
+		];
+	}
 }
