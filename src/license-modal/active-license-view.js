@@ -64,15 +64,15 @@ export default function ActiveLicenseView({
 		setInstallStatus(
 			showActivatePro
 				? sprintf(
-						/* translators: %s: plugin name */
-						__('Activating %s…', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
+					/* translators: %s: plugin name */
+					__('Activating %s…', 'kadence-blocks'),
+					PRO_FEATURE_NAME
+				)
 				: sprintf(
-						/* translators: %s: plugin name */
-						__('Preparing to install %s…', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
+					/* translators: %s: plugin name */
+					__('Preparing to install %s…', 'kadence-blocks'),
+					PRO_FEATURE_NAME
+				)
 		);
 
 		try {
@@ -109,11 +109,11 @@ export default function ActiveLicenseView({
 		} catch (err) {
 			setInstallError(
 				err?.message ||
-					sprintf(
-						/* translators: %s: plugin name */
-						__('Failed to install or activate %s.', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
+				sprintf(
+					/* translators: %s: plugin name */
+					__('Failed to install or activate %s.', 'kadence-blocks'),
+					PRO_FEATURE_NAME
+				)
 			);
 			setIsInstalling(false);
 			setInstallStatus('');
@@ -181,20 +181,20 @@ export default function ActiveLicenseView({
 							onClick={handleProAction}
 						>
 							<span
-								className={`dashicons ${showActivatePro ? 'dashicons-yes' : 'dashicons-download'}`}
+								className={showActivatePro ? '' : 'dashicons dashicons-download'}
 								aria-hidden="true"
 							/>
 							{showActivatePro
 								? sprintf(
-										/* translators: %s: plugin name */
-										__('Activate %s', 'kadence-blocks'),
-										PRO_FEATURE_NAME
-									)
+									/* translators: %s: plugin name */
+									__('Activate %s', 'kadence-blocks'),
+									PRO_FEATURE_NAME
+								)
 								: sprintf(
-										/* translators: %s: plugin name */
-										__('Install and Activate %s', 'kadence-blocks'),
-										PRO_FEATURE_NAME
-									)}
+									/* translators: %s: plugin name */
+									__('Install and Activate %s', 'kadence-blocks'),
+									PRO_FEATURE_NAME
+								)}
 						</button>
 					)}
 					{installError && <p className="kt-unified-error">{installError}</p>}
