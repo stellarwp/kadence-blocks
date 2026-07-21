@@ -14,6 +14,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Shadow_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Text_Transform_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Literals;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
@@ -36,9 +38,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  *                         (remove the token) sentinels; outside of those, an override leaf without a
  *                         $type is rejected as $type_unknown.
  *
- * Leaf-level "$"-extensions are passed through without validation and reserved for future responsive /
- * clamp work. The $extensions layer is validated only as far as this ticket's scope: variant / preset
- * `tokens` map values must be alias-or-literal; richer variant semantics are out of scope here.
+ * Leaf-level "$"-extensions carry the responsive / clamp shape (see validate_leaf_extensions): a
+ * dimension / lineHeight leaf may declare a per-breakpoint `responsive` map or a structured `clamp` map
+ * (mutually exclusive) whose slots are validated as alias-or-literal of the leaf's own $type; any other
+ * leaf "$"-extension is passed through untouched. The document-level $extensions layer is validated only
+ * as far as this ticket's scope: variant / preset `tokens` map values must be alias-or-literal; richer
+ * variant semantics are out of scope here.
  *
  * @since TBD
  */
@@ -290,11 +295,10 @@ final class Dtcg_Validator {
 	 * @return Validation_Error[]
 	 */
 	private function validate_typed_leaf( array $leaf, string $path ): array {
-		$errors   = [];
-		$type     = $leaf[ Token_Type::get_type_key() ] ?? null;
-		$has_type = is_string( $type ) && Token_Type::is_valid( $type );
+		$errors = [];
+		$type   = $leaf[ Token_Type::get_type_key() ] ?? null;
 
-		if ( ! $has_type ) {
+		if ( ! is_string( $type ) || ! Token_Type::is_valid( $type ) ) {
 			$errors[] = new Validation_Error(
 				$path . '.$type',
 				Validation_Error::get_code_type_unknown(),
@@ -310,16 +314,242 @@ final class Dtcg_Validator {
 				Validation_Error::get_code_missing_value(),
 				'Token is missing a $value.'
 			);
-
-			return $errors;
-		}
-
-		// Without a known type there is no validator to dispatch the value to.
-		if ( $has_type ) {
+		} elseif ( is_string( $type ) && Token_Type::is_valid( $type ) ) {
+			// Without a known type there is no validator to dispatch the value to.
 			$errors = array_merge( $errors, $this->validators[ $type ]->validate( $leaf['$value'], $path . '.$value' ) );
 		}
 
+		// The responsive / clamp leaf-extension shape is validated against the leaf's own $type, so it can
+		// only run once the type is known; it is independent of whether $value itself validated.
+		if ( is_string( $type ) && Token_Type::is_valid( $type ) ) {
+			$errors = array_merge( $errors, $this->validate_leaf_extensions( $leaf, $type, $path ) );
+		}
+
 		return $errors;
+	}
+
+	/**
+	 * Validate a concrete leaf's responsive / clamp extension shape, when present. A flat leaf (no shape)
+	 * validates trivially, so enabling responsive on a previously-flat token is safe against already-stored
+	 * data. The shape is rejected on non-responsive-capable types, `responsive` and `clamp` are mutually
+	 * exclusive, and each present slot is validated as an alias-or-literal of the leaf's own $type (the
+	 * clamp preferred slot additionally accepts a bare calc-style expression).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $leaf The decoded leaf.
+	 * @param string               $type The leaf's validated $type.
+	 * @param string               $path Dot-path to the leaf.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_leaf_extensions( array $leaf, string $type, string $path ): array {
+		$has_responsive = Responsive::has_responsive( $leaf );
+		$has_clamp      = Responsive::has_clamp( $leaf );
+
+		if ( ! $has_responsive && ! $has_clamp ) {
+			return [];
+		}
+
+		$base = $path . '.' . Extensions::get_extensions_key() . '.' . Extensions::get_namespace();
+
+		if ( ! Responsive::is_responsive_capable( $type ) ) {
+			return [
+				new Validation_Error(
+					$base,
+					Validation_Error::get_code_responsive_not_allowed(),
+					sprintf(
+						'The responsive / clamp shape is not allowed on a "%s" token; only dimension and lineHeight are responsive-capable.',
+						$type
+					)
+				),
+			];
+		}
+
+		if ( $has_responsive && $has_clamp ) {
+			return [
+				new Validation_Error(
+					$base,
+					Validation_Error::get_code_responsive_clamp_conflict(),
+					'A token may carry either a responsive or a clamp shape, not both.'
+				),
+			];
+		}
+
+		if ( $has_responsive ) {
+			return $this->validate_responsive_shape(
+				Responsive::responsive_of( $leaf ),
+				$type,
+				$base . '.' . Responsive::get_responsive_key()
+			);
+		}
+
+		return $this->validate_clamp_shape(
+			Responsive::clamp_of( $leaf ),
+			$type,
+			$base . '.' . Responsive::get_clamp_key()
+		);
+	}
+
+	/**
+	 * Validate a per-breakpoint `responsive` map: a non-empty object whose keys are known breakpoints and
+	 * whose values are each an alias-or-literal of the leaf's $type.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $responsive The decoded responsive map.
+	 * @param string $type       The leaf's $type.
+	 * @param string $path       Dot-path to the responsive map.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_responsive_shape( $responsive, string $type, string $path ): array {
+		if ( ! is_array( $responsive ) || $responsive === [] ) {
+			return [
+				new Validation_Error(
+					$path,
+					Validation_Error::get_code_value_invalid(),
+					'The responsive shape must be a non-empty object of breakpoint overrides.'
+				),
+			];
+		}
+
+		$allowed = Responsive::get_breakpoint_keys();
+		$errors  = [];
+
+		foreach ( $responsive as $breakpoint => $value ) {
+			if ( ! in_array( $breakpoint, $allowed, true ) ) {
+				$errors[] = new Validation_Error(
+					$path . '.' . $breakpoint,
+					Validation_Error::get_code_composite_field_unknown(),
+					sprintf(
+						'Unknown responsive breakpoint "%s"; expected one of: %s.',
+						(string) $breakpoint,
+						implode( ', ', $allowed )
+					)
+				);
+
+				continue;
+			}
+
+			$errors = array_merge( $errors, $this->validators[ $type ]->validate( $value, $path . '.' . $breakpoint ) );
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a structured `clamp` map: an object carrying exactly the min / preferred / max slots. min and
+	 * max are alias-or-literal of the leaf's $type; preferred additionally accepts a bare calc-style
+	 * expression (a clamp() argument is a <calc-sum>, which a plain dimension literal rejects).
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $clamp The decoded clamp map.
+	 * @param string $type  The leaf's $type.
+	 * @param string $path  Dot-path to the clamp map.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_clamp_shape( $clamp, string $type, string $path ): array {
+		if ( ! is_array( $clamp ) ) {
+			return [
+				new Validation_Error(
+					$path,
+					Validation_Error::get_code_value_invalid(),
+					'The clamp shape must be an object with min, preferred and max slots.'
+				),
+			];
+		}
+
+		$min       = Responsive::get_clamp_min_key();
+		$preferred = Responsive::get_clamp_preferred_key();
+		$max       = Responsive::get_clamp_max_key();
+		$required  = [ $min, $preferred, $max ];
+		$errors    = [];
+
+		foreach ( array_keys( $clamp ) as $key ) {
+			if ( ! in_array( $key, $required, true ) ) {
+				$errors[] = new Validation_Error(
+					$path . '.' . $key,
+					Validation_Error::get_code_composite_field_unknown(),
+					sprintf( 'Unknown clamp slot "%s"; expected min, preferred and max.', (string) $key )
+				);
+			}
+		}
+
+		foreach ( $required as $slot ) {
+			if ( ! array_key_exists( $slot, $clamp ) ) {
+				$errors[] = new Validation_Error(
+					$path . '.' . $slot,
+					Validation_Error::get_code_composite_field_missing(),
+					sprintf( 'The clamp shape is missing its required "%s" slot.', $slot )
+				);
+			}
+		}
+
+		if ( array_key_exists( $min, $clamp ) ) {
+			$errors = array_merge( $errors, $this->validators[ $type ]->validate( $clamp[ $min ], $path . '.' . $min ) );
+		}
+
+		if ( array_key_exists( $max, $clamp ) ) {
+			$errors = array_merge( $errors, $this->validators[ $type ]->validate( $clamp[ $max ], $path . '.' . $max ) );
+		}
+
+		if ( array_key_exists( $preferred, $clamp ) ) {
+			$errors = array_merge( $errors, $this->validate_clamp_preferred( $clamp[ $preferred ], $type, $path . '.' . $preferred ) );
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a clamp preferred slot: an alias, a literal of the leaf's own $type, or a bare calc-style
+	 * fluid expression. The $type check is what lets a lineHeight clamp carry a unitless preferred (e.g.
+	 * "1.2") exactly as its min / max slots do; the calc-style branch accepts what a plain type literal
+	 * rejects — a clamp() preferred takes a <calc-sum> like "0.995rem + 0.326vw" without a calc() wrapper.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value The decoded preferred slot.
+	 * @param string $type  The leaf's $type.
+	 * @param string $path  Dot-path to the slot.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_clamp_preferred( $value, string $type, string $path ): array {
+		if ( Alias::is_alias( $value ) ) {
+			return [];
+		}
+
+		if ( Alias::looks_like_alias( $value ) ) {
+			return [
+				new Validation_Error(
+					$path,
+					Validation_Error::get_code_alias_malformed(),
+					'The clamp preferred slot looks like an alias but is not a whole-string "{dot.path}" reference.'
+				),
+			];
+		}
+
+		// A literal of the leaf's own type — a bare dimension, or a unitless lineHeight — is a valid
+		// preferred, mirroring how the min / max slots validate against $this->validators[ $type ].
+		if ( $this->validators[ $type ]->validate( $value, $path ) === [] ) {
+			return [];
+		}
+
+		// A bare calc-style fluid expression, which a plain type literal rejects.
+		if ( Literals::is_clamp_preferred( $value ) ) {
+			return [];
+		}
+
+		return [
+			new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				'The clamp preferred slot must be an alias, a literal of the token type, or a calc-style expression.'
+			),
+		];
 	}
 
 	/**

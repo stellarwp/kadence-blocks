@@ -105,6 +105,24 @@ final class Validation_Error {
 	private const CODE_LEAF_FIELD_UNKNOWN = 'leaf_field_unknown';
 
 	/**
+	 * A leaf carries the responsive / clamp extension shape on a $type that is not responsive-capable.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CODE_RESPONSIVE_NOT_ALLOWED = 'responsive_not_allowed';
+
+	/**
+	 * A leaf carries both the responsive and the clamp extension shapes, which are mutually exclusive.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CODE_RESPONSIVE_CLAMP_CONFLICT = 'responsive_clamp_conflict';
+
+	/**
 	 * DTCG dot-path to the offending node.
 	 *
 	 * @since TBD
@@ -267,5 +285,27 @@ final class Validation_Error {
 	 */
 	public static function get_code_leaf_field_unknown(): string {
 		return self::CODE_LEAF_FIELD_UNKNOWN;
+	}
+
+	/**
+	 * Code: a leaf carries the responsive / clamp shape on a $type that is not responsive-capable.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_code_responsive_not_allowed(): string {
+		return self::CODE_RESPONSIVE_NOT_ALLOWED;
+	}
+
+	/**
+	 * Code: a leaf carries both the responsive and clamp shapes, which are mutually exclusive.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_code_responsive_clamp_conflict(): string {
+		return self::CODE_RESPONSIVE_CLAMP_CONFLICT;
 	}
 }

@@ -16,8 +16,8 @@ final class Provider extends Provider_Contract {
 	 * Concrete v1 REST controllers registered on rest_api_init.
 	 *
 	 * Each entry is resolved from the container and has its routes registered.
-	 * Endpoint controllers are added here as the read, write, variant, and
-	 * Design MD surfaces land.
+	 * Endpoint controllers are added here as the read, write, and variant
+	 * surfaces land.
 	 *
 	 * @since TBD
 	 *

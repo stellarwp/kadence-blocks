@@ -10,9 +10,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 /**
  * Validates a dimension $value: an alias or a length literal ("0", number+unit, or a CSS function).
  *
- * Extension seam for future responsive / clamp() work: when those dimension shapes land, an additional branch
- * for the structured shape goes here, BEFORE delegating the scalar case to Kind, so the scalar path is
- * untouched.
+ * The $value stays a plain scalar even for a responsive / clamp token — that shape lives in the leaf's
+ * $extensions (validated by Dtcg_Validator::validate_leaf_extensions), which reuses this validator to
+ * check each per-breakpoint / clamp slot. So this validator only ever sees the flat base value and needs
+ * no responsive branch of its own.
  *
  * @since TBD
  */

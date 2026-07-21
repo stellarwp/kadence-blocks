@@ -219,6 +219,282 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.variants.kadence/x.emphasis.solid.tokens.bg',
 		];
+		yield 'responsive on non-capable type' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'fontWeight',
+						'$value'      => 'normal',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => [ 'tablet' => 'bold' ],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_responsive_not_allowed(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens',
+		];
+		yield 'responsive and clamp conflict' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => [ 'tablet' => '0.9rem' ],
+								'clamp'      => [
+									'min'       => '1rem',
+									'preferred' => '1vw',
+									'max'       => '2rem',
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_responsive_clamp_conflict(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens',
+		];
+		yield 'unknown breakpoint' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => [ 'desktop' => '1rem' ],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_composite_field_unknown(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.responsive.desktop',
+		];
+		yield 'bad breakpoint value' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => [ 'tablet' => 'red' ],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.responsive.tablet',
+		];
+		yield 'responsive not an object' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => '0.9rem',
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.responsive',
+		];
+		yield 'clamp missing a slot' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min' => '1rem',
+									'max' => '2rem',
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_composite_field_missing(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.clamp.preferred',
+		];
+		yield 'unknown clamp slot' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min'       => '1rem',
+									'preferred' => '1vw',
+									'max'       => '2rem',
+									'ideal'     => '1.5rem',
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_composite_field_unknown(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.clamp.ideal',
+		];
+		yield 'bad clamp preferred' => [
+			'document' => [
+				'semantic' => [
+					'x' => [
+						'$type'       => 'dimension',
+						'$value'      => '1rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min'       => '1rem',
+									'preferred' => 'fluid',
+									'max'       => '2rem',
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_baseline(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.clamp.preferred',
+		];
+	}
+
+	/**
+	 * A dimension leaf carrying a well-formed per-breakpoint responsive map (literal and alias slots)
+	 * validates.
+	 *
+	 * @return void
+	 */
+	public function testAValidResponsiveShapeValidates(): void {
+		$document = [
+			'semantic' => [
+				'font-size' => [
+					'control' => [
+						'$type'       => 'dimension',
+						'$value'      => '1.125rem',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'responsive' => [
+									'tablet' => '1rem',
+									'mobile' => '{primitive.dimension.font-size.mobile}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A dimension leaf carrying a structured clamp (bare calc-style preferred, alias min) validates.
+	 *
+	 * @return void
+	 */
+	public function testAValidClampShapeValidates(): void {
+		$document = [
+			'semantic' => [
+				'font-size' => [
+					'control' => [
+						'$type'       => 'dimension',
+						'$value'      => 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min'       => '{primitive.dimension.font-size.min}',
+									'preferred' => '0.995rem + 0.326vw',
+									'max'       => '1.25rem',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A lineHeight leaf carrying a structured clamp with a unitless preferred validates: the preferred slot
+	 * is checked against the leaf's own $type, so a bare "1.35" is accepted exactly as its min / max slots.
+	 *
+	 * @return void
+	 */
+	public function testALineHeightClampWithUnitlessPreferredValidates(): void {
+		$document = [
+			'semantic' => [
+				'line-height' => [
+					'control' => [
+						'$type'       => 'lineHeight',
+						'$value'      => 'clamp(1.2, 1.35, 1.5)',
+						'$extensions' => [
+							'com.kadence.designTokens' => [
+								'clamp' => [
+									'min'       => '1.2',
+									'preferred' => '1.35',
+									'max'       => '1.5',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A flat dimension leaf with no responsive / clamp extension still validates, so enabling responsive
+	 * on a previously-flat token is safe against already-stored flat overrides.
+	 *
+	 * @return void
+	 */
+	public function testAFlatResponsiveCapableLeafRemainsValid(): void {
+		$document = [
+			'semantic' => [
+				'font-size' => [
+					'control' => [
+						'$type'  => 'dimension',
+						'$value' => '1.125rem',
+					],
+				],
+			],
+		];
+
+		$this->assertTrue( $this->validator->validate( $document, Dtcg_Validator::get_context_baseline() )->is_valid() );
 	}
 
 	/**
