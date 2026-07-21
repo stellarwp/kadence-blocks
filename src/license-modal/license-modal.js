@@ -101,9 +101,7 @@ export default function LicenseModalApp() {
 			) : (
 				<>
 					<h2>{__('License', 'kadence-blocks')}</h2>
-					<p>
-						{__('Enter your license key to unlock updates, premium blocks, and support.', 'kadence-blocks')}
-					</p>
+					<p>{__('Enter your license key to unlock updates and support.', 'kadence-blocks')}</p>
 					<button type="button" className="sidebar-btn-link" onClick={() => openModal(VIEWS.UNIFIED)}>
 						{__('Enter License Key', 'kadence-blocks')}
 					</button>

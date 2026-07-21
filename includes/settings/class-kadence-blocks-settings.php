@@ -1522,7 +1522,6 @@ class Kadence_Blocks_Settings {
 		if ( $this->is_pro_active() ) {
 			return;
 		}
-		$pro_installed = $this->is_pro_installed_but_inactive();
 		?>
 		<div class="pro-section sidebar-section components-panel">
 			<div class="components-panel__body is-opened">
@@ -1535,18 +1534,7 @@ class Kadence_Blocks_Settings {
 					<li><?php esc_html_e( 'Custom Fonts', 'kadence-blocks' ); ?></li>
 					<li><?php esc_html_e( 'Premium Design Library', 'kadence-blocks' ); ?></li>
 				</ul>
-				<?php if ( $pro_installed && current_user_can( 'activate_plugins' ) ) : ?>
-					<a
-						href="#"
-						class="sidebar-btn-link kt-activate-pro-button"
-						data-nonce="<?php echo esc_attr( wp_create_nonce( 'kadence-blocks-activate-pro' ) ); ?>"
-						data-inactive-label="<?php esc_attr_e( 'Activate Kadence Blocks Pro', 'kadence-blocks' ); ?>"
-						data-activating-label="<?php esc_attr_e( 'Activating…', 'kadence-blocks' ); ?>"
-						data-activated-label="<?php esc_attr_e( 'Activated', 'kadence-blocks' ); ?>"
-					><?php esc_html_e( 'Activate Kadence Blocks Pro', 'kadence-blocks' ); ?></a>
-				<?php else : ?>
-					<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Upgrade Kadence Blocks', 'kadence-blocks' ); ?></a>
-				<?php endif; ?>
+				<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Upgrade Kadence Blocks', 'kadence-blocks' ); ?></a>
 			</div>
 		</div>
 		<?php

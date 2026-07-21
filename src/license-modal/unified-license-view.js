@@ -20,6 +20,8 @@ const STEPS = {
 const params = getGlobalParam();
 const PRO_FEATURE_SLUG = params.proFeatureSlug || 'kadence-blocks-pro';
 const PRO_FEATURE_NAME = params.proFeatureName || __('Kadence Blocks Pro', 'kadence-blocks');
+const isProInstalled = Boolean(params.isProInstalled);
+const isProActive = Boolean(params.isProActive);
 
 /**
  * @param {Object}   props
@@ -52,7 +54,7 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 
 		try {
 			await storeLicense(key);
-			setStep(STEPS.SUCCESS);
+			setStep(isProActive ? STEPS.DONE : STEPS.SUCCESS);
 		} catch (err) {
 			setError(
 				err?.message || __('Liquid Web Software Manager failed to validate your license.', 'kadence-blocks')
@@ -167,14 +169,29 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 						<span className="dashicons dashicons-yes-alt" aria-hidden="true" />
 						{__('License activated! Your unified license is now connected.', 'kadence-blocks')}
 					</p>
-					<Button className="kt-unified-download-button" variant="primary" onClick={handleDownloadActivate}>
-						<span className="dashicons dashicons-download" aria-hidden="true" />
-						{sprintf(
-							/* translators: %s: plugin name */
-							__('Install and Activate %s', 'kadence-blocks'),
-							PRO_FEATURE_NAME
-						)}
-					</Button>
+					{!isProActive && (
+						<Button
+							className="kt-unified-download-button"
+							variant="primary"
+							onClick={handleDownloadActivate}
+						>
+							<span
+								className={`dashicons ${isProInstalled ? 'dashicons-yes' : 'dashicons-download'}`}
+								aria-hidden="true"
+							/>
+							{isProInstalled
+								? sprintf(
+										/* translators: %s: plugin name */
+										__('Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)
+								: sprintf(
+										/* translators: %s: plugin name */
+										__('Install and Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)}
+						</Button>
+					)}
 					{error && <p className="kt-unified-error">{error}</p>}
 				</div>
 			)}
