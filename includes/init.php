@@ -130,17 +130,14 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 		}';
 		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--wide-size, var(--wp--style--global--content-size)) }';
 	}
-	$css .= ':root {
-		--global-kb-spacing-xxs: 0.5rem;
-		--global-kb-spacing-xs: 1rem;
-		--global-kb-spacing-sm: 1.5rem;
-		--global-kb-spacing-md: 2rem;
-		--global-kb-spacing-lg: 3rem;
-		--global-kb-spacing-xl: 4rem;
-		--global-kb-spacing-xxl: 5rem;
-		--global-kb-spacing-3xl: 6.5rem;
-		--global-kb-spacing-4xl: 8rem;
-		--global-kb-spacing-5xl: 10rem;
+	// The spacing scale is owned by the design-tokens baseline; retrieve it so the shipped literals are not
+	// duplicated here. Empty when token projection is unavailable, leaving blocks on their own
+	// var(--global-kb-spacing-*, <rem>) fallbacks.
+	$spacing_css = '';
+	foreach ( kadence_blocks_variable_spacing_scale() as $spacing_slug => $spacing_value ) {
+		$spacing_css .= '--global-kb-spacing-' . $spacing_slug . ':' . $spacing_value . ';';
+	}
+	$css .= ':root {' . $spacing_css . '
 		--global-row-edge-sm: 15px;
 		--global-row-edge-theme: var(--global-content-edge-padding);
 		--global-kb-gutter-sm: 1rem;
