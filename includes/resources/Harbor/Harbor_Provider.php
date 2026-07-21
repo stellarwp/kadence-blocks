@@ -128,31 +128,70 @@ final class Harbor_Provider extends Provider {
 	}
 
 	/**
-	 * Whether the current request targets Harbor's REST namespace.
+	 * Whether the current request targets Harbor REST routes used by Kadence Blocks.
 	 *
 	 * Checked during plugins_loaded (before REST_REQUEST is defined), so URI is used.
 	 * Covers both pretty-permalink REST URLs (/wp-json/liquidweb/harbor/..., including a
 	 * filtered `rest_url_prefix`) and the plain-permalink `?rest_route=` query form.
+	 *
+	 * Allowed:
+	 * - /liquidweb/harbor/v1/license[/*] (license modal get/store/refresh)
+	 * - /liquidweb/harbor/v1/features/kadence-blocks[/*]
+	 * - /liquidweb/harbor/v1/features/kadence-blocks-pro[/*]
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
 	private function is_harbor_rest_request(): bool {
+		$path = $this->get_harbor_rest_path();
+		if ( '' === $path ) {
+			return false;
+		}
+
+		// License endpoints used by the Kadence Blocks license modal.
+		if ( 1 === preg_match( '#^liquidweb/harbor/v1/license(?:/|$)#', $path ) ) {
+			return true;
+		}
+
+		// Feature endpoints for Kadence Blocks free/pro only (not other Harbor features).
+		return 1 === preg_match(
+			'#^liquidweb/harbor/v1/features/(?:kadence-blocks-pro|kadence-blocks)(?:/|$)#',
+			$path
+		);
+	}
+
+	/**
+	 * Extract a normalized Harbor REST path from the current request, if any.
+	 *
+	 * @since TBD
+	 *
+	 * @return string Path like "liquidweb/harbor/v1/features/kadence-blocks-pro", or empty.
+	 */
+	private function get_harbor_rest_path(): string {
 		$namespace = 'liquidweb/harbor/';
 
 		$route = $_GET['rest_route'] ?? null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- path check only.
-		if ( is_string( $route ) && false !== strpos( ltrim( $route, '/' ), $namespace ) ) {
-			return true;
+		if ( is_string( $route ) && '' !== $route ) {
+			$path = ltrim( $route, '/' );
+			return false !== strpos( $path, $namespace ) ? strtok( $path, '?' ) : '';
 		}
 
 		$uri = $_SERVER['REQUEST_URI'] ?? ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- path check only.
 		if ( ! is_string( $uri ) || '' === $uri ) {
-			return false;
+			return '';
 		}
 
 		$prefix = function_exists( 'rest_get_url_prefix' ) ? rest_get_url_prefix() : 'wp-json';
+		$needle = '/' . $prefix . '/' . $namespace;
+		$pos    = strpos( $uri, $needle );
+		if ( false === $pos ) {
+			return '';
+		}
 
-		return false !== strpos( $uri, '/' . $prefix . '/' . $namespace );
+		$path = substr( $uri, $pos + strlen( '/' . $prefix . '/' ) );
+		$path = strtok( $path, '?' );
+
+		return is_string( $path ) ? $path : '';
 	}
 }
