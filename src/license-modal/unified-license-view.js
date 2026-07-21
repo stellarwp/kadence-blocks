@@ -80,7 +80,22 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 
 		if (!key.startsWith(UNIFIED_KEY_PREFIX)) {
 			setError(
-				__('Unified license keys start with "LWSW-". Please check your key and try again.', 'kadence-blocks')
+				createInterpolateElement(
+					__(
+						'Unified license keys start with "LWSW-". If you have a Kadence-only license key, <a>click here to enter it</a>.',
+						'kadence-blocks'
+					),
+					{
+						// eslint-disable-next-line jsx-a11y/anchor-has-content
+						a: (
+							<a
+								className="kt-license-toggle-link kt-license-toggle-link--error"
+								href="#"
+								onClick={onSwitchToLegacy}
+							/>
+						),
+					}
+				)
 			);
 			return;
 		}
@@ -154,11 +169,11 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 		} catch (err) {
 			setError(
 				err?.message ||
-					sprintf(
-						/* translators: %s: plugin name */
-						__('Failed to install or activate %s.', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
+				sprintf(
+					/* translators: %s: plugin name */
+					__('Failed to install or activate %s.', 'kadence-blocks'),
+					PRO_FEATURE_NAME
+				)
 			);
 			setStep(STEPS.SUCCESS);
 		}
@@ -227,15 +242,15 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 							/>
 							{isProInstalled
 								? sprintf(
-										/* translators: %s: plugin name */
-										__('Activate %s', 'kadence-blocks'),
-										PRO_FEATURE_NAME
-									)
+									/* translators: %s: plugin name */
+									__('Activate %s', 'kadence-blocks'),
+									PRO_FEATURE_NAME
+								)
 								: sprintf(
-										/* translators: %s: plugin name */
-										__('Install and Activate %s', 'kadence-blocks'),
-										PRO_FEATURE_NAME
-									)}
+									/* translators: %s: plugin name */
+									__('Install and Activate %s', 'kadence-blocks'),
+									PRO_FEATURE_NAME
+								)}
 						</Button>
 					)}
 					{error && <p className="kt-unified-error">{error}</p>}
@@ -285,7 +300,7 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 						<span className="dashicons dashicons-yes-alt" aria-hidden="true" />
 						{sprintf(
 							/* translators: %s: plugin name */
-							__('%s is installed and active!', 'kadence-blocks'),
+							__('%s is installed and active. All set!', 'kadence-blocks'),
 							PRO_FEATURE_NAME
 						)}
 					</p>
