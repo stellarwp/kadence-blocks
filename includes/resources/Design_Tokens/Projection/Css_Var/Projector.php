@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
 
@@ -215,7 +216,26 @@ final class Projector implements Css_Projector {
 			}
 		}
 
-		return $this->css_builder->css_for_version( $resolved_by_slug, $versions, $active );
+		return $this->css_builder->css_for_version( $resolved_by_slug, $versions, $active, $this->breakpoints() );
+	}
+
+	/**
+	 * The breakpoint => media-query string map for the per-breakpoint responsive redeclaration, resolved at
+	 * emit time so the filterable KB breakpoints are final. Keyed to match the resolver's breakpoint keys;
+	 * defaults mirror Kadence_Blocks_CSS::get_media_queries(). Desktop is the base (:root), so only the
+	 * tablet / mobile max-width overrides are needed here.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,string>
+	 */
+	private function breakpoints(): array {
+		return [
+			/** This filter is documented in includes/class-kadence-blocks-css.php */
+			Responsive::get_tablet_key() => (string) apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' ),
+			/** This filter is documented in includes/class-kadence-blocks-css.php */
+			Responsive::get_mobile_key() => (string) apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' ),
+		];
 	}
 
 	/**
