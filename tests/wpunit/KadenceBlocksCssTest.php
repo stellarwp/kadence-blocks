@@ -521,13 +521,28 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testGetTokenReference( $value, ?string $expected ): void {
-		$this->assertSame( $expected, $this->css->get_token_reference( $value ),
+		$this->assertSame( $expected, $this->invokeGetTokenReference( $value ),
 			'Alias recognizer must match the JS resolveTokenAlias output byte-for-byte' );
 
 		if ( null !== $expected ) {
 			$this->assertStringNotContainsString( ',', $expected,
 				'A resolved token reference is a bare var() with no fallback literal' );
 		}
+	}
+
+	/**
+	 * Invokes the private get_token_reference() recognizer via reflection so the direct
+	 * conformance assertions can exercise it without widening its visibility.
+	 *
+	 * @param mixed $value The raw attribute value.
+	 *
+	 * @return string|null The resolved reference, or null when the value is not an alias.
+	 */
+	private function invokeGetTokenReference( $value ): ?string {
+		$method = new \ReflectionMethod( Kadence_Blocks_CSS::class, 'get_token_reference' );
+		$method->setAccessible( true );
+
+		return $method->invoke( $this->css, $value );
 	}
 
 	/**

@@ -1037,7 +1037,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @return string|null The var() reference, or null when the value is not an alias.
 	 */
-	public function get_token_reference( $value ): ?string {
+	private function get_token_reference( $value ): ?string {
 		if ( ! is_string( $value ) || ! Alias::is_alias( $value ) ) {
 			return null;
 		}
