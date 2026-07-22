@@ -1,5 +1,8 @@
 {
     "version": "0.2",
+    "ignoreRegExpList": [
+        "github:[\\w.@/#-]+"
+    ],
     "ignorePaths": [
         "AGENTS.md",
         "package-lock.json",

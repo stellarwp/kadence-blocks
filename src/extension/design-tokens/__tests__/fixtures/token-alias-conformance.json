@@ -1,0 +1,23 @@
+{
+	"_comment": "One source of truth for the {dot.alias} -> var(--kb-token--<id>) transform, shared so the JS and PHP implementations can assert against the same pairs and cannot drift. The JS side asserts resolveTokenAlias(alias) === cssVar and isTokenAlias(alias) === true; the PHP side (Alias::path_of + Css_Var::from_id) must produce byte-identical output for each. 'nonAliases' must be rejected by both. Inputs are canonical and carry no trailing whitespace.",
+	"aliases": [
+		{ "alias": "{semantic.radius.media}", "cssVar": "var(--kb-token--semantic--radius--media)" },
+		{ "alias": "{primitive.color.brand.primary}", "cssVar": "var(--kb-token--primitive--color--brand--primary)" },
+		{ "alias": "{semantic.color.button-primary-bg}", "cssVar": "var(--kb-token--semantic--color--button-primary-bg)" },
+		{ "alias": "{primitive.spacing.md}", "cssVar": "var(--kb-token--primitive--spacing--md)" },
+		{ "alias": "{a}", "cssVar": "var(--kb-token--a)" }
+	],
+	"nonAliases": [
+		"palette1",
+		"#3182CE",
+		"1px solid red",
+		"1px solid {semantic.color.brand}",
+		"{bad path}",
+		"{unclosed",
+		"unopened}",
+		"{}",
+		"16px",
+		"10",
+		""
+	]
+}

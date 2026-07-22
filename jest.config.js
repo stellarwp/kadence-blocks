@@ -1,0 +1,24 @@
+/**
+ * Jest configuration for unit tests.
+ *
+ * Extends the @wordpress/scripts default and forces a single `@wordpress/hooks` instance. In
+ * production `@wordpress/hooks` is externalized to the one `wp.hooks` global, so the filter registry
+ * is shared between this plugin and the bundled `@kadence/helpers` copy. Under jest, node resolution
+ * would otherwise load a nested `@wordpress/hooks` from `node_modules/@kadence/helpers/node_modules`,
+ * splitting the registry so helper `applyFilters` calls never see filters this plugin registered.
+ * Mapping every `@wordpress/hooks` import to the top-level copy mirrors the production single-instance
+ * behavior.
+ */
+const path = require('path');
+const baseConfig = require('@wordpress/scripts/config/jest-unit.config.js');
+
+module.exports = {
+	...baseConfig,
+	moduleNameMapper: {
+		...(baseConfig.moduleNameMapper || {}),
+		'^@wordpress/hooks$': path.join(
+			path.dirname(require.resolve('@wordpress/hooks/package.json')),
+			'build/index.cjs'
+		),
+	},
+};

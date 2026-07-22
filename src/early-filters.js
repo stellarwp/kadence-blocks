@@ -16,6 +16,11 @@ import { useDispatch, select } from '@wordpress/data';
 import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
 import { VariantActions } from './extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
+import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
+
+// Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
+// their `var(--kb-token--<id>)` reference through the library's filter seam.
+registerTokenAliasFilters();
 
 /**
  * Add animation attributes
