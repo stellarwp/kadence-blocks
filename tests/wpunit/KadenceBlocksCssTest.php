@@ -3,6 +3,7 @@
 namespace Tests\wpunit;
 
 use Codeception\TestCase\WPTestCase;
+use Generator;
 use Kadence_Blocks_CSS;
 
 class KadenceBlocksCssTest extends WPTestCase {
@@ -505,6 +506,371 @@ class KadenceBlocksCssTest extends WPTestCase {
 			$this->css->get_media_queries('mobile'),
 			'Mobile media query should match expected value'
 		);
+	}
+
+	/**
+	 * A strict {dot.alias} value resolves to a bare var(--kb-token--<id>) with no
+	 * fallback literal, and every non-alias value (including a malformed brace-string)
+	 * returns null so the caller falls through to its existing numeric/palette handling.
+	 *
+	 * @dataProvider tokenReferenceProvider
+	 *
+	 * @param mixed       $value    The raw attribute value.
+	 * @param string|null $expected The expected resolved reference, or null.
+	 *
+	 * @return void
+	 */
+	public function testGetTokenReference( $value, ?string $expected ): void {
+		$this->assertSame( $expected, $this->css->get_token_reference( $value ),
+			'Alias recognizer must match the JS resolveTokenAlias output byte-for-byte' );
+
+		if ( null !== $expected ) {
+			$this->assertStringNotContainsString( ',', $expected,
+				'A resolved token reference is a bare var() with no fallback literal' );
+		}
+	}
+
+	/**
+	 * Provides alias and non-alias values for the recognizer, mirroring the shared
+	 * token-alias conformance cases the JS side asserts.
+	 *
+	 * @return Generator
+	 */
+	public static function tokenReferenceProvider(): Generator {
+		yield 'semantic radius alias' => [
+			'value'    => '{semantic.radius.media}',
+			'expected' => 'var(--kb-token--semantic--radius--media)',
+		];
+		yield 'single segment alias' => [
+			'value'    => '{a}',
+			'expected' => 'var(--kb-token--a)',
+		];
+		yield 'namespaced path alias' => [
+			'value'    => '{dark.primitive.color.brand.primary}',
+			'expected' => 'var(--kb-token--dark--primitive--color--brand--primary)',
+		];
+		yield 'palette slug is not an alias' => [
+			'value'    => 'palette1',
+			'expected' => null,
+		];
+		yield 'hex is not an alias' => [
+			'value'    => '#3182CE',
+			'expected' => null,
+		];
+		yield 'literal shorthand is not an alias' => [
+			'value'    => '1px solid red',
+			'expected' => null,
+		];
+		yield 'partial interpolation is not an alias' => [
+			'value'    => '1px solid {semantic.color.brand}',
+			'expected' => null,
+		];
+		yield 'malformed alias with a space fails open' => [
+			'value'    => '{bad path}',
+			'expected' => null,
+		];
+		yield 'unclosed brace fails open' => [
+			'value'    => '{unclosed',
+			'expected' => null,
+		];
+		yield 'empty braces fail open' => [
+			'value'    => '{}',
+			'expected' => null,
+		];
+		yield 'pixel literal is not an alias' => [
+			'value'    => '16px',
+			'expected' => null,
+		];
+		yield 'bare number string is not an alias' => [
+			'value'    => '10',
+			'expected' => null,
+		];
+		yield 'empty string is not an alias' => [
+			'value'    => '',
+			'expected' => null,
+		];
+		yield 'integer is not an alias' => [
+			'value'    => 10,
+			'expected' => null,
+		];
+		yield 'null is not an alias' => [
+			'value'    => null,
+			'expected' => null,
+		];
+		yield 'array is not an alias' => [
+			'value'    => [ '{semantic.radius.media}' ],
+			'expected' => null,
+		];
+	}
+
+	/**
+	 * render_color emits the token var for an alias, leaves a malformed brace-string
+	 * untouched (fail open), and renders literals and palette slugs exactly as before.
+	 *
+	 * @return void
+	 */
+	public function testRenderColorResolvesTokenAlias(): void {
+		$this->assertSame(
+			'var(--kb-token--dark--primitive--color--brand--primary)',
+			$this->css->render_color( '{dark.primitive.color.brand.primary}' ),
+			'A color alias resolves to the bare token var'
+		);
+		$this->assertSame(
+			'var(--kb-token--dark--primitive--color--brand--primary)',
+			$this->css->sanitize_color( '{dark.primitive.color.brand.primary}' ),
+			'sanitize_color resolves a color alias the same way'
+		);
+		$this->assertSame(
+			'{bad path}',
+			$this->css->render_color( '{bad path}' ),
+			'A malformed alias fails open and is left untouched'
+		);
+		$this->assertSame(
+			'#123456',
+			$this->css->render_color( '#123456' ),
+			'A literal hex color is unchanged'
+		);
+		$this->assertSame(
+			'var(--global-palette1, #3182CE)',
+			$this->css->render_color( 'palette1' ),
+			'A palette slug still resolves to the global palette var'
+		);
+	}
+
+	/**
+	 * render_border_radius emits a token var (with no unit) for an aliased corner,
+	 * emits nothing for a malformed alias, and keeps numeric corners byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderRadiusResolvesTokenAlias(): void {
+		$this->css->render_border_radius( [ 'borderRadius' => [ '{semantic.radius.media}', 10, '{bad path}', '' ] ] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-left-radius:var(--kb-token--semantic--radius--media)', $output,
+			'An aliased corner emits the token var with no unit' );
+		$this->assertStringContainsString( 'border-top-right-radius:10px', $output,
+			'A numeric corner is still rendered with its unit' );
+		$this->assertStringNotContainsString( 'border-bottom-right-radius', $output,
+			'A malformed alias corner fails open and emits nothing' );
+	}
+
+	/**
+	 * render_measure_range (border-width) emits a token var without a unit for an
+	 * aliased side while leaving numeric sides unchanged.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureRangeResolvesTokenAlias(): void {
+		$this->css->render_measure_range(
+			[ 'borderWidth' => [ '{semantic.border.width}', 2, 2, 2 ] ],
+			'borderWidth',
+			'border-width'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-width:var(--kb-token--semantic--border--width)', $output,
+			'An aliased side emits the token var with no unit' );
+		$this->assertStringContainsString( 'border-right-width:2px', $output,
+			'A numeric side is still rendered with its unit' );
+	}
+
+	/**
+	 * render_range emits a token var without a unit for an aliased value and keeps a
+	 * numeric value byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderRangeResolvesTokenAlias(): void {
+		$this->css->render_range( [ 'width' => '{semantic.size.width}' ], 'width', 'width' );
+		$this->assertStringContainsString( 'width:var(--kb-token--semantic--size--width)', $this->css->css_output(),
+			'An aliased range value emits the token var with no unit' );
+
+		$numeric = new Kadence_Blocks_CSS();
+		$numeric->render_range( [ 'width' => 10 ], 'width', 'width' );
+		$this->assertStringContainsString( 'width:10px', $numeric->css_output(),
+			'A numeric range value is still rendered with its unit' );
+	}
+
+	/**
+	 * render_responsive_range emits a token var per breakpoint for aliased values and
+	 * keeps numeric breakpoints byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderResponsiveRangeResolvesTokenAlias(): void {
+		$this->css->render_responsive_range(
+			[ 'spacing' => [ '{semantic.space.md}', 20, '{semantic.space.sm}' ], 'spacingType' => 'px' ],
+			'spacing',
+			'margin'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--space--md)', $output,
+			'An aliased desktop value emits the token var with no unit' );
+		$this->assertStringContainsString( 'margin:20px', $output,
+			'A numeric tablet value is still rendered with its unit' );
+		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--space--sm)', $output,
+			'An aliased mobile value emits the token var with no unit' );
+	}
+
+	/**
+	 * render_responsive_size resolves an aliased value to the token var without a unit
+	 * even though its gate is an empty-string check rather than is_numeric.
+	 *
+	 * @return void
+	 */
+	public function testRenderResponsiveSizeResolvesTokenAlias(): void {
+		$this->css->render_responsive_size(
+			[ 'width' => '{semantic.size.width}', 'tabletWidth' => '20', 'mobileWidth' => '' ],
+			[ 'width', 'tabletWidth', 'mobileWidth' ],
+			'width'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'width:var(--kb-token--semantic--size--width)', $output,
+			'An aliased desktop value emits the token var with no unit' );
+		$this->assertStringContainsString( 'width:20px', $output,
+			'A literal tablet value is still rendered with its unit' );
+	}
+
+	/**
+	 * render_measure resolves an aliased side to the token var (no unit) within the
+	 * shorthand while numeric sides keep their unit.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureResolvesTokenAlias(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--space--md) 20px 0px 40px',
+			$this->css->render_measure( [ '{semantic.space.md}', 20, '', 40 ] ),
+			'An aliased side is a bare var and non-numeric siblings fall back to 0 with the unit'
+		);
+		$this->assertSame(
+			'10px 20px 30px 40px',
+			$this->css->render_measure( [ 10, 20, 30, 40 ] ),
+			'A fully numeric measure is byte-identical to the pre-alias output'
+		);
+	}
+
+	/**
+	 * render_number returns the token var for an alias, keeps numeric values unchanged,
+	 * and returns false for a malformed brace-string.
+	 *
+	 * @return void
+	 */
+	public function testRenderNumberResolvesTokenAlias(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--size--icon)',
+			$this->css->render_number( '{semantic.size.icon}', 'px' ),
+			'An alias returns the bare token var with no unit'
+		);
+		$this->assertSame(
+			'10px',
+			$this->css->render_number( 10, 'px' ),
+			'A numeric value is still rendered with its unit'
+		);
+		$this->assertFalse(
+			$this->css->render_number( '{bad path}', 'px' ),
+			'A malformed alias fails open and returns false'
+		);
+	}
+
+	/**
+	 * render_shadow resolves an aliased offset to the token var while numeric pieces
+	 * keep their unit, and a fully numeric shadow stays byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowResolvesTokenAlias(): void {
+		$this->assertSame(
+			'var(--kb-token--semantic--shadow--x) 1px 4px 2px rgba(0, 0, 0, 0.5)',
+			$this->css->render_shadow( [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => '{semantic.shadow.x}',
+				'vOffset' => 1,
+				'inset'   => false,
+			] ),
+			'An aliased offset is a bare var while numeric pieces keep their px unit'
+		);
+		$this->assertSame(
+			'1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
+			$this->css->render_shadow( [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'inset'   => false,
+			] ),
+			'A fully numeric shadow is byte-identical to the pre-alias output'
+		);
+	}
+
+	/**
+	 * render_border_styles emits a token var for an aliased width so the width branch
+	 * still fires, while numeric widths remain byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderStylesResolvesTokenWidth(): void {
+		$this->css->render_border_styles( [
+			'borderStyle' => [
+				[
+					'top'    => [ '#000000', 'solid', '{semantic.border.width}' ],
+					'right'  => [ '#000000', 'solid', 1 ],
+					'bottom' => [ '#000000', 'solid', 1 ],
+					'left'   => [ '#000000', 'solid', 1 ],
+					'unit'   => 'px',
+				],
+			],
+		] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top:var(--kb-token--semantic--border--width) solid #000000', $output,
+			'An aliased width resolves to the token var and the width branch still fires' );
+		$this->assertStringContainsString( 'border-right:1px solid #000000', $output,
+			'A numeric width is still rendered with its unit' );
+	}
+
+	/**
+	 * render_typography resolves aliased line-height and letter-spacing values to token
+	 * vars (no unit), and keeps numeric typography values byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyResolvesTokenAlias(): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'lineHeight'    => [ '{semantic.line-height.tight}', '', '' ],
+				'letterSpacing' => [ '{semantic.letter-spacing.wide}', '', '' ],
+			],
+		] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'line-height:var(--kb-token--semantic--line-height--tight)', $output,
+			'An aliased line-height resolves to the token var with no unit' );
+		$this->assertStringContainsString( 'letter-spacing:var(--kb-token--semantic--letter-spacing--wide)', $output,
+			'An aliased letter-spacing resolves to the token var with no unit' );
+
+		$numeric = new Kadence_Blocks_CSS();
+		$numeric->render_typography( [
+			'typography' => [
+				'lineType'      => 'px',
+				'lineHeight'    => [ 1.5, '', '' ],
+				'letterSpacing' => [ 2, '', '' ],
+			],
+		] );
+		$numeric_output = $numeric->css_output();
+
+		$this->assertStringContainsString( 'line-height:1.5px', $numeric_output,
+			'A numeric line-height is still rendered with its unit' );
+		$this->assertStringContainsString( 'letter-spacing:2px', $numeric_output,
+			'A numeric letter-spacing is still rendered with its unit' );
 	}
 
 	protected function _before() {
