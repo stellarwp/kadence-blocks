@@ -12,14 +12,23 @@
  *
  * The library helper is design-token-agnostic; alias resolution only happens because this plugin
  * registers a listener on the helper's `@wordpress/hooks` seam (`registerTokenAliasFilters`). So this
- * exercises the full path with that filter active and asserts three things about the serialized SVG:
- *   1. an aliased `dividerColor` becomes a valid `var(--kb-token--<id>)` in the `stroke` attribute
- *      (a resolvable CSS var, not a raw `{dot.alias}` brace string that would render nothing);
+ * exercises the full path with that filter active and asserts what gets SERIALIZED into the SVG:
+ *   1. an aliased `dividerColor` becomes `var(--kb-token--<id>)` in the `stroke` attribute — the same
+ *      var *shape* a palette slug already produces (`var(--global-paletteN)`), just for a token;
  *   2. a hex color is emitted verbatim; and
  *   3. a palette slug still becomes `var(--global-paletteN)`.
  * (2) and (3) are the regression guard: because the change is strictly additive, existing saved
- * spacers and newly-aliased ones both serialize the same shape they always have, so block validation
- * does not trip on unexpected content.
+ * spacers and newly-aliased ones serialize the same shape they always have, so block validation does
+ * not trip on unexpected content.
+ *
+ * IMPORTANT — this asserts *serialization*, not rendering. `var()` is generally NOT substituted inside
+ * an SVG presentation attribute like `stroke=` (it is a CSS-value function; a presentation-attribute
+ * value is not parsed as a CSS declaration), so a token — OR a palette — color delivered this way may
+ * not actually paint in the browser. That is a pre-existing limitation of the stripe divider's
+ * `stroke=` delivery, not something introduced here; making a token (or palette) stripe truly render
+ * means moving the color into a CSS context, which is out of scope for this ticket (residual JS seam)
+ * and is why the spacer `dividerColor` is held out of the initial alias picker scope. What this test
+ * locks in is that the seam is additive and deterministic at the save-markup boundary.
  *
  * This renders the real save-markup component directly rather than doing a full
  * registerBlockType -> serialize -> parse round-trip: `@wordpress/blocks` is externalized (provided by
@@ -40,10 +49,13 @@ if (typeof global.TextEncoder === 'undefined') {
 }
 const { renderToStaticMarkup } = require('react-dom/server');
 
-// The `@kadence/helpers` barrel eagerly pulls in sibling helpers whose deps are externalized by the
-// plugin's webpack build (and so are unresolvable under jest). Load the single compiled
-// KadenceColorOutput module directly to exercise the real helper (and its `@wordpress/hooks` seam)
-// without the barrel. `@kadence/helpers/package.json` is exposed by the package `exports` map.
+// Import just the compiled KadenceColorOutput leaf module, not the `@kadence/helpers` barrel.
+// Evaluating the barrel would load every sibling helper, and several import WordPress packages the
+// plugin externalizes to `wp.*` globals at build time (e.g. `@wordpress/api-fetch`, `@wordpress/data`)
+// and never installs in node_modules — so the barrel throws "Cannot find module" under jest. The leaf
+// module pulls only its own minimal deps while still exercising the real helper (and its
+// `@wordpress/hooks` seam). The package `exports` map only exposes `.` and `./package.json`, so we
+// resolve the package root via package.json and join the compiled file path.
 const helpersRoot = path.dirname(require.resolve('@kadence/helpers/package.json'));
 const KadenceColorOutput = require(path.join(helpersRoot, 'dist/cjs/kadence-color-output/index.js')).default;
 
