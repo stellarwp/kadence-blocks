@@ -7,6 +7,8 @@
  * @version  1.9
  */
 
+// cSpell:ignore dglobal fontvariants fontsubsets attribtues .
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -138,7 +140,7 @@ class Kadence_Blocks_CSS {
 	protected $_media_state = 'desktop';
 
 	/**
-	 * Stores a list of css properties that require more formating
+	 * Stores a list of css properties that require more formatting
 	 *
 	 * @access private
 	 * @var array
@@ -305,7 +307,7 @@ class Kadence_Blocks_CSS {
 		if ( empty( $style_id ) ) {
 			return;
 		}
-		// Render the css in the output string everytime the style_id changes.
+		// Render the css in the output string every time the style_id changes.
 		if ( ! isset( self::$styles[ $style_id ] ) ) {
 			self::$styles[ $style_id ] = '';
 		}
@@ -359,7 +361,7 @@ class Kadence_Blocks_CSS {
 	 * @return $this
 	 */
 	public function set_selector( $selector = '' ) {
-		// Render the css in the output string everytime the selector changes.
+		// Render the css in the output string every time the selector changes.
 		if ( '' !== $this->_selector ) {
 			$this->add_selector_rules_to_output();
 		}
@@ -580,7 +582,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @param  string $property - the css property
 	 * @param  mixed  $value - the value to be placed with the property
-	 * @param  mixed  $check_empty - the value to be checkd if empty
+	 * @param  mixed  $check_empty - the value to be checked if empty
 	 * @return $this
 	 */
 	public function add_property( $property, $value = null, $check_empty = null ) {
@@ -1029,9 +1031,9 @@ class Kadence_Blocks_CSS {
 	 * var(--kb-token--<id>) with no fallback literal; anything else returns null so
 	 * the caller falls through to its existing numeric/palette handling.
 	 *
-	 * @param mixed $value The raw attribute value.
-	 *
 	 * @since TBD
+	 *
+	 * @param mixed $value The raw attribute value.
 	 *
 	 * @return string|null The var() reference, or null when the value is not an alias.
 	 */
@@ -1605,7 +1607,7 @@ class Kadence_Blocks_CSS {
 		return $shadow_string;
 	}
 
-	
+
 	/**
 	 * Generates the border radius color output.
 	 *
@@ -2139,7 +2141,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $args an array of settings.
 	 * @param string $given_side the side to retrieve a value for (desktop, tablet, mobile).
 	 * @param string $given_size the size to retrieve a value for (top, right, bottom, left).
-	 * @param string $given_value the name of the value to retreive (color, style, width).
+	 * @param string $given_value the name of the value to retrieve (color, style, width).
 	 * @param string $single_styles if this value is being calculated to be output alone.
 	 * @return string
 	 */
@@ -2349,7 +2351,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * @param array  $attributes an array of attributes.
 	 * @param string $name a string of the block attribute name.
-	 * @param string $property a string of the css propery name.
+	 * @param string $property a string of the css property name.
 	 * @param array  $args an array of settings.
 	 * @return string
 	 */
