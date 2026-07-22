@@ -46,6 +46,14 @@
 		&:hover {
 			color: #1d4ed8;
 		}
+
+		&.kt-license-toggle-link--error {
+			color: #d63638;
+		}
+
+		&.kt-license-toggle-link--error:hover {
+			color: #d63638;
+		}
 	}
 
 	.kt-license-toggle-back {
@@ -178,6 +186,14 @@
 		}
 	}
 
+	.kt-unified-activate-domain-button-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		margin-top: 25px;
+	}
+
 	.kt-unified-reload-link {
 		appearance: none;
 		background: none;
@@ -245,6 +261,14 @@
 
 		.stellarwp-uplink__license-field {
 			margin: 0;
+		}
+
+		.stellarwp-uplink__settings-group-inline {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			width: 100%;
+			margin-bottom: 0;
 		}
 
 		input.stellarwp-uplink__settings-field,
@@ -493,6 +517,32 @@
 			border-color: #9ca3af;
 			color: #1e1e1e;
 		}
+	}
+
+	.kt-license-active-install-status {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin: 4px 0 0;
+		font-size: 13px;
+		color: #374151;
+	}
+
+	.kt-spinner {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border: 2px solid #dcdcde;
+		border-top-color: #2563eb;
+		border-radius: 50%;
+		animation: kt-license-spin 0.7s linear infinite;
+		flex-shrink: 0;
+	}
+
+	.kt-unified-error {
+		color: #d63638;
+		margin: 8px 0 0;
+		font-size: 13px;
 	}
 }
 

@@ -7,6 +7,9 @@ $color-gray-600: #718096;
 $color-gray-700: #4a5568;
 $color-gray-800: #2d3748;
 $container-max-width: 1260px;
+
+@import "./skeleton";
+
 // Header.
 #optin-modal-kadence-blocks {
 	position: absolute;
@@ -1040,6 +1043,52 @@ h5.kt-main-subtitle {
 			border-color: #9ca3af;
 			color: #1e1e1e;
 		}
+	}
+}
+
+.side-panel .license-section.components-panel .kt-license-modal-root {
+	min-height: 48px;
+}
+
+.side-panel .license-section.components-panel .kt-license-skeleton {
+	.kt-license-skeleton__header {
+		margin-bottom: 12px;
+	}
+
+	.kt-license-skeleton__title {
+		width: 55%;
+		height: 16px;
+	}
+
+	.kt-license-skeleton__badge {
+		width: 58px;
+		height: 22px;
+		margin-bottom: 14px;
+		border-radius: 999px;
+	}
+
+	.kt-license-skeleton__type {
+		width: 72%;
+		height: 14px;
+		margin-bottom: 10px;
+	}
+
+	.kt-license-skeleton__key {
+		width: 85%;
+		height: 12px;
+		margin-bottom: 8px;
+	}
+
+	.kt-license-skeleton__meta {
+		width: 48%;
+		height: 12px;
+		margin-bottom: 16px;
+	}
+
+	.kt-license-skeleton__button {
+		width: 100%;
+		height: 40px;
+		border-radius: 6px;
 	}
 }
 

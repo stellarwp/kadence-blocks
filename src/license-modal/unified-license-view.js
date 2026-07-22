@@ -1,62 +1,181 @@
 /**
  * Unified (Harbor) license activation flow.
  *
- * Validation and Pro install/activate are still simulated until the real
- * unified-license endpoints are wired up.
+ * Saves the key and installs Pro via Harbor REST helpers in `src/harbor`.
  */
 import { createInterpolateElement, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
+import { installAndActivateFeature, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
+import { buildActivationUrl, getGlobalParam } from '../harbor/helper';
 
 const STEPS = {
 	INPUT: 'input',
 	LOADING: 'loading',
 	SUCCESS: 'success',
 	INSTALLING: 'installing',
+	ACTIVATE_DOMAIN: 'activate_domain',
 	DONE: 'done',
 };
+
+const params = getGlobalParam();
+const PRO_FEATURE_SLUG = params.proFeatureSlug || 'kadence-blocks-pro';
+const PRO_FEATURE_NAME = params.proFeatureName || __('Kadence Blocks Pro', 'kadence-blocks');
+const PRODUCT_SLUG = params.productSlug || 'kadence';
+const isProInstalled = Boolean(params.isProInstalled);
+const isProActive = Boolean(params.isProActive);
+
+function findProductEntry(products) {
+	return (products || []).find((product) => product.product_slug === PRODUCT_SLUG) || null;
+}
+
+function isDomainActivated(entry) {
+	return Boolean(entry && entry.is_valid && entry.activated_here === true);
+}
+
+/**
+ * Resolve the unified flow step from a Harbor GET /license payload.
+ *
+ * @param {Object|null} license Harbor license response.
+ * @return {{ step: string, entry: Object|null }}
+ */
+function resolveInitialState(license) {
+	if (!license?.key) {
+		return { step: STEPS.INPUT, entry: null };
+	}
+
+	const entry = findProductEntry(license.products);
+
+	if (!isProActive) {
+		return { step: STEPS.SUCCESS, entry };
+	}
+
+	if (isDomainActivated(entry)) {
+		return { step: STEPS.DONE, entry };
+	}
+
+	return { step: STEPS.ACTIVATE_DOMAIN, entry };
+}
 
 /**
  * @param {Object}   props
  * @param {string}   props.licensePageUrl Harbor license page URL, if available.
+ * @param {Object|null} [props.initialLicense] Harbor GET /license payload from LicenseModalApp.
  * @param {Function} props.onSwitchToLegacy Switch to the legacy Kadence key view.
  */
-export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy }) {
-	const [step, setStep] = useState(STEPS.INPUT);
+export default function UnifiedLicenseView({ licensePageUrl, initialLicense = null, onSwitchToLegacy }) {
+	const initial = resolveInitialState(initialLicense);
+	const [step, setStep] = useState(initial.step);
 	const [licenseKey, setLicenseKey] = useState('');
 	const [error, setError] = useState('');
 	const [installStatus, setInstallStatus] = useState('');
+	const [productEntry, setProductEntry] = useState(initial.entry);
 
-	const handleActivate = () => {
-		const key = licenseKey.trim();
+	const handleActivate = async () => {
+		const key = licenseKey.trim().toUpperCase();
 		if (!key) {
 			setError(__('Please enter your unified license key.', 'kadence-blocks'));
 			return;
 		}
 
+		if (!key.startsWith(UNIFIED_KEY_PREFIX)) {
+			setError(
+				createInterpolateElement(
+					__(
+						'Unified license keys start with "LWSW-". If you have a Kadence-only license key, <button>click here to enter it</button>.',
+						'kadence-blocks'
+					),
+					{
+						button: (
+							<button
+								type="button"
+								className="kt-license-toggle-link kt-license-toggle-link--error"
+								onClick={onSwitchToLegacy}
+							/>
+						),
+					}
+				)
+			);
+			return;
+		}
+
 		setError('');
+		setLicenseKey(key);
 		setStep(STEPS.LOADING);
 
-		// Simulated API call — no unified-license REST/AJAX endpoint exists yet.
-		window.setTimeout(() => {
-			setStep(STEPS.SUCCESS);
-		}, 1500);
+		try {
+			const res = await storeLicense(key);
+			const entry = findProductEntry(res?.products);
+			setProductEntry(entry);
+
+			if (!isProActive) {
+				setStep(STEPS.SUCCESS);
+			} else if (isDomainActivated(entry)) {
+				setStep(STEPS.DONE);
+			} else {
+				setStep(STEPS.ACTIVATE_DOMAIN);
+			}
+		} catch (err) {
+			setError(
+				err?.message || __('Liquid Web Software Manager failed to validate your license.', 'kadence-blocks')
+			);
+			setStep(STEPS.INPUT);
+		}
 	};
 
-	const handleDownloadActivate = () => {
+	const handleDownloadActivate = async () => {
+		setError('');
 		setStep(STEPS.INSTALLING);
-		setInstallStatus(__('Downloading Kadence Blocks Pro…', 'kadence-blocks'));
+		setInstallStatus(
+			sprintf(
+				/* translators: %s: plugin name */
+				__('Preparing to install %s…', 'kadence-blocks'),
+				PRO_FEATURE_NAME
+			)
+		);
 
-		// Simulated download → install → activate sequence.
-		window.setTimeout(() => {
-			setInstallStatus(__('Installing Kadence Blocks Pro…', 'kadence-blocks'));
-			window.setTimeout(() => {
-				setInstallStatus(__('Activating Kadence Blocks Pro…', 'kadence-blocks'));
-				window.setTimeout(() => {
-					setStep(STEPS.DONE);
-				}, 1000);
-			}, 1200);
-		}, 1200);
+		try {
+			await installAndActivateFeature(PRO_FEATURE_SLUG, {
+				onStatus: (status) => {
+					if (status === 'installing') {
+						setInstallStatus(
+							sprintf(
+								/* translators: %s: plugin name */
+								__('Downloading and installing %s…', 'kadence-blocks'),
+								PRO_FEATURE_NAME
+							)
+						);
+					} else if (status === 'activating') {
+						setInstallStatus(
+							sprintf(
+								/* translators: %s: plugin name */
+								__('Activating %s…', 'kadence-blocks'),
+								PRO_FEATURE_NAME
+							)
+						);
+					} else if (status === 'already_active') {
+						setInstallStatus(
+							sprintf(
+								/* translators: %s: plugin name */
+								__('%s is already active.', 'kadence-blocks'),
+								PRO_FEATURE_NAME
+							)
+						);
+					}
+				},
+			});
+			setStep(isDomainActivated(productEntry) ? STEPS.DONE : STEPS.ACTIVATE_DOMAIN);
+		} catch (err) {
+			setError(
+				err?.message ||
+					sprintf(
+						/* translators: %s: plugin name */
+						__('Failed to install or activate %s.', 'kadence-blocks'),
+						PRO_FEATURE_NAME
+					)
+			);
+			setStep(STEPS.SUCCESS);
+		}
 	};
 
 	return (
@@ -64,15 +183,19 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 			{step === STEPS.INPUT && (
 				<div className="kt-unified-step kt-unified-step-input">
 					<p className="kt-license-intro">
-						{__(
-							'Enter the unified license key from your Liquid Web account (starts with "LWSW").',
-							'kadence-blocks'
-						)}{' '}
-						{licensePageUrl &&
-							createInterpolateElement(__('Get your license key <a>here</a>.', 'kadence-blocks'), {
-								// eslint-disable-next-line jsx-a11y/anchor-has-content
-								a: <a href={licensePageUrl} target="_blank" rel="noopener noreferrer" />,
-							})}
+						{createInterpolateElement(
+							__(
+								'Enter your Liquid Web Unified License Key. It starts with <i>LWSW-</i> and can be found in your <a>Liquid Web account</a>.',
+								'kadence-blocks'
+							),
+							{
+								i: <i />,
+								a: (
+									// eslint-disable-next-line jsx-a11y/anchor-has-content
+									<a href={params.accountPageUrl} target="_blank" rel="noopener noreferrer" />
+								),
+							}
+						)}
 					</p>
 					<div className="kt-unified-input-row">
 						<TextControl
@@ -106,10 +229,30 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 						<span className="dashicons dashicons-yes-alt" aria-hidden="true" />
 						{__('License activated! Your unified license is now connected.', 'kadence-blocks')}
 					</p>
-					<Button className="kt-unified-download-button" variant="primary" onClick={handleDownloadActivate}>
-						<span className="dashicons dashicons-download" aria-hidden="true" />
-						{__('Install and Activate Kadence Blocks Pro', 'kadence-blocks')}
-					</Button>
+					{!isProActive && (
+						<Button
+							className="kt-unified-download-button"
+							variant="primary"
+							onClick={handleDownloadActivate}
+						>
+							<span
+								className={`dashicons ${isProInstalled ? 'dashicons-yes' : 'dashicons-download'}`}
+								aria-hidden="true"
+							/>
+							{isProInstalled
+								? sprintf(
+										/* translators: %s: plugin name */
+										__('Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)
+								: sprintf(
+										/* translators: %s: plugin name */
+										__('Install and Activate %s', 'kadence-blocks'),
+										PRO_FEATURE_NAME
+									)}
+						</Button>
+					)}
+					{error && <p className="kt-unified-error">{error}</p>}
 				</div>
 			)}
 
@@ -120,11 +263,45 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 				</div>
 			)}
 
+			{step === STEPS.ACTIVATE_DOMAIN && (
+				<div className="kt-unified-step kt-unified-step-activate-domain">
+					<p className="kt-unified-success-message">
+						<span className="dashicons dashicons-info" aria-hidden="true" />
+						{sprintf(
+							/* translators: %s: plugin name */
+							__(
+								'%s is installed and active, but this website still needs to be activated on your license.',
+								'kadence-blocks'
+							),
+							PRO_FEATURE_NAME
+						)}
+					</p>
+					<div className="kt-unified-activate-domain-button-container">
+						<Button
+							className="kt-unified-activate-domain-button"
+							variant="primary"
+							href={buildActivationUrl(params.activationUrl, PRODUCT_SLUG, productEntry?.tier)}
+							target="_blank"
+							rel="noopener noreferrer"
+							disabled={!params.activationUrl}
+						>
+							{__('Activate this website', 'kadence-blocks')}
+							<span className="dashicons dashicons-external" aria-hidden="true" />
+						</Button>
+						{error && <p className="kt-unified-error">{error}</p>}
+					</div>
+				</div>
+			)}
+
 			{step === STEPS.DONE && (
 				<div className="kt-unified-step kt-unified-step-done">
 					<p className="kt-unified-success-message">
 						<span className="dashicons dashicons-yes-alt" aria-hidden="true" />
-						{__('Kadence Blocks Pro is installed and active!', 'kadence-blocks')}
+						{sprintf(
+							/* translators: %s: plugin name */
+							__('%s is installed and active. All set!', 'kadence-blocks'),
+							PRO_FEATURE_NAME
+						)}
 					</p>
 					<p className="description">
 						<button
@@ -138,9 +315,9 @@ export default function UnifiedLicenseView({ licensePageUrl, onSwitchToLegacy })
 				</div>
 			)}
 
-			{(step === STEPS.INPUT || step === STEPS.SUCCESS) && (
+			{step === STEPS.INPUT && (
 				<p className="kt-license-toggle">
-					{__('Purchased your license before April 2026?', 'kadence-blocks')}
+					{__('Purchased your license before May 12, 2026?', 'kadence-blocks')}
 					<br />
 					<button type="button" className="kt-license-toggle-link" onClick={onSwitchToLegacy}>
 						{__('Click here to enter the individual Kadence key.', 'kadence-blocks')}

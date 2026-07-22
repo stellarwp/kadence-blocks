@@ -1,13 +1,18 @@
 /**
- * License key modal app — open button + Modal for unified / legacy license entry,
+ * LicenseModalApp — open button + Modal for unified / legacy license entry,
  * or the Active status card when a license is already authorized.
+ *
+ * Fetches Harbor GET /license on mount (cached server-side) so the sidebar
+ * skeleton stays visible until we know whether a stored key needs mid-flow UI.
  */
-import { createInterpolateElement, useState } from '@wordpress/element';
+import { createInterpolateElement, useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Modal } from '@wordpress/components';
+import { getLicense } from '../harbor';
 import UnifiedLicenseView from './unified-license-view';
 import LegacyLicenseField from './legacy-license-field';
 import ActiveLicenseView from './active-license-view';
+import LicenseSkeleton from './license-skeleton';
 
 const VIEWS = {
 	UNIFIED: 'unified',
@@ -37,16 +42,16 @@ function HarborLicenseNotice({ onSwitchToUnified }) {
 			<p>
 				{createInterpolateElement(
 					sprintf(
-						/* translators: %s: product name (e.g. Kadence Blocks). */
+						/* translators: %1$s: product name (e.g. Kadence Blocks). */
 						__(
-							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing legacy licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
+							"%1$s is now part of Liquid Web's software offerings. This field is still available for managing licenses from your previous Kadence account. If you purchased a new plan through Liquid Web, enter your Kadence license key from <a>here</a>.",
 							'kadence-blocks'
 						),
 						productName
 					),
 					{
-						// eslint-disable-next-line jsx-a11y/anchor-has-content
 						a: (
+							// eslint-disable-next-line jsx-a11y/anchor-has-content
 							<a
 								href="#unified-license"
 								onClick={(event) => {
@@ -66,9 +71,36 @@ export default function LicenseModalApp() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [view, setView] = useState(VIEWS.UNIFIED);
 	const [legacyKey, setLegacyKey] = useState(0);
+	const [isLicenseLoading, setIsLicenseLoading] = useState(true);
+	const [harborLicense, setHarborLicense] = useState(null);
 
 	const licenseType = licenseStatus.type || 'none';
 	const isActive = licenseType === 'unified' || licenseType === 'kadence';
+
+	useEffect(() => {
+		let cancelled = false;
+
+		(async () => {
+			try {
+				const res = await getLicense();
+				if (!cancelled) {
+					setHarborLicense(res);
+				}
+			} catch (err) {
+				if (!cancelled) {
+					setHarborLicense(null);
+				}
+			} finally {
+				if (!cancelled) {
+					setIsLicenseLoading(false);
+				}
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const openModal = (initialView = VIEWS.UNIFIED) => {
 		setView(initialView);
@@ -85,6 +117,10 @@ export default function LicenseModalApp() {
 			? __('Enter Kadence License Key', 'kadence-blocks')
 			: __('Enter Unified Liquid Web License Key', 'kadence-blocks');
 
+	if (isLicenseLoading) {
+		return <LicenseSkeleton />;
+	}
+
 	return (
 		<>
 			{isActive ? (
@@ -94,14 +130,14 @@ export default function LicenseModalApp() {
 					fullKey={licenseStatus.fullKey || ''}
 					expires={licenseStatus.expires || ''}
 					manageUrl={licenseStatus.manageUrl || ''}
+					isProInstalled={Boolean(params.isProInstalled)}
+					isProActive={Boolean(params.isProActive)}
 					onManageKadence={() => openModal(VIEWS.LEGACY)}
 				/>
 			) : (
 				<>
 					<h2>{__('License', 'kadence-blocks')}</h2>
-					<p>
-						{__('Enter your license key to unlock updates, premium blocks, and support.', 'kadence-blocks')}
-					</p>
+					<p>{__('Enter your license key to unlock updates and support.', 'kadence-blocks')}</p>
 					<button type="button" className="sidebar-btn-link" onClick={() => openModal(VIEWS.UNIFIED)}>
 						{__('Enter License Key', 'kadence-blocks')}
 					</button>
@@ -113,13 +149,14 @@ export default function LicenseModalApp() {
 						<UnifiedLicenseView
 							key={`unified-${legacyKey}`}
 							licensePageUrl={params.licensePageUrl || ''}
+							initialLicense={harborLicense}
 							onSwitchToLegacy={() => setView(VIEWS.LEGACY)}
 						/>
 					) : (
 						<div className="kt-license-view kt-license-view-legacy">
 							<p className="kt-license-intro">
 								{__(
-									'If you purchased Kadence Blocks Pro before April 2026, enter your legacy Kadence license key here.',
+									'If you purchased Kadence Blocks Pro before May 12, 2026, enter your Kadence license key here.',
 									'kadence-blocks'
 								)}
 							</p>

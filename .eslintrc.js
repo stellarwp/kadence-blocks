@@ -39,6 +39,7 @@ const eslintConfig = {
 		localStorage: 'writable',
 		FormData: 'readonly',
 		location: 'readonly',
+		navigator: 'readonly',
 		FileReader: 'readonly',
 		Headers: 'readonly',
 		pagenow: 'readonly',

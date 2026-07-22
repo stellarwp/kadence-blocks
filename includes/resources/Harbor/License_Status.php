@@ -54,7 +54,7 @@ final class License_Status {
 			return $this->legacy;
 		}
 
-		// Unified when it is active, otherwise default to unified.
+		// Unified when it is active, also unified is the default.
 		return $this->unified;
 	}
 
