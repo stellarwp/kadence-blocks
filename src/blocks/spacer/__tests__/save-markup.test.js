@@ -1,16 +1,30 @@
 /* eslint-env jest */
 /**
- * Spacer save-markup coupling for design-token aliases.
+ * Spacer stripe-divider: a design-token alias must survive into the SAVED block markup.
  *
- * The audit (SOFT-3899) flagged that `kadence/spacer` renders `dividerColor` through
- * `KadenceColorOutput` into an SVG `stroke=` attribute in the SAVED markup
- * (save.js -> svg-pattern.js). Now that `KadenceColorOutput` is alias-aware, an aliased
- * `dividerColor` must serialize into that markup as a valid `var(--kb-token--<id>)` string, and a
- * non-alias color must remain byte-identical (the change is strictly additive).
+ * Most Kadence blocks deliver their design values as CSS injected out-of-band in a `<style>` tag, so
+ * aliasing them is invisible to block validation. `kadence/spacer` is the exception this test guards:
+ * its stripe divider passes `dividerColor` through `KadenceColorOutput` and writes the result directly
+ * into the SVG `stroke=` presentation attribute of the block's serialized `save.js` output
+ * (save.js -> svg-pattern.js). That means the color is baked into stored post content, not just
+ * injected CSS — so whatever `KadenceColorOutput` returns for an aliased `dividerColor` is exactly
+ * what gets persisted and later re-validated by Gutenberg.
  *
- * A full Gutenberg registerBlockType/serialize/parse round-trip is not exercised here because
- * `@wordpress/blocks` is externalized (provided by WP core) and not resolvable in this test harness;
- * this asserts the exact static-markup line the audit called out.
+ * The library helper is design-token-agnostic; alias resolution only happens because this plugin
+ * registers a listener on the helper's `@wordpress/hooks` seam (`registerTokenAliasFilters`). So this
+ * exercises the full path with that filter active and asserts three things about the serialized SVG:
+ *   1. an aliased `dividerColor` becomes a valid `var(--kb-token--<id>)` in the `stroke` attribute
+ *      (a resolvable CSS var, not a raw `{dot.alias}` brace string that would render nothing);
+ *   2. a hex color is emitted verbatim; and
+ *   3. a palette slug still becomes `var(--global-paletteN)`.
+ * (2) and (3) are the regression guard: because the change is strictly additive, existing saved
+ * spacers and newly-aliased ones both serialize the same shape they always have, so block validation
+ * does not trip on unexpected content.
+ *
+ * This renders the real save-markup component directly rather than doing a full
+ * registerBlockType -> serialize -> parse round-trip: `@wordpress/blocks` is externalized (provided by
+ * WordPress core) and unresolvable in this jest harness, so the SVG string produced here IS the
+ * markup line that would be persisted.
  */
 import { TextEncoder, TextDecoder } from 'util';
 import path from 'path';
