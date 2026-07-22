@@ -1,24 +1,36 @@
 /* eslint-env jest */
 /**
- * Blocks-side integration: the alias-aware CSS builder as the plugin consumes it.
+ * Blocks-side integration: the alias-aware CSS builder as the plugin consumes it, end to end.
  *
  * Nearly every Kadence block generates its injected `<style>` through `KadenceBlocksCSS`
- * (`@kadence/helpers`). These tests load the COMPILED package the plugin actually ships (not the
- * source) and assert that a `{dot.alias}` design value resolves to a bare `var(--kb-token--<id>)`
- * across the dimension / border-radius / shadow paths, while every literal stays byte-identical (the
- * change is strictly additive).
+ * (`@kadence/helpers`). The library is token-agnostic — it exposes a `@wordpress/hooks` seam — so this
+ * loads the COMPILED package the plugin actually ships, registers the plugin's real alias filter
+ * (`registerTokenAliasFilters`), and asserts a `{dot.alias}` design value resolves to a bare
+ * `var(--kb-token--<id>)` across the dimension / border-radius paths, while every literal stays
+ * byte-identical. Both sides of the seam are exercised: the compiled helper's `applyFilters` and the
+ * plugin's `addFilter` share the one `wp.hooks` registry.
  *
- * Loaded via the package `exports`-exposed `package.json` + a direct path to the compiled module,
- * because the `@kadence/helpers` barrel eagerly pulls in siblings whose deps are webpack-externalized
- * and unresolvable under jest.
+ * The compiled module is loaded via a direct path (the `@kadence/helpers` barrel eagerly pulls in
+ * siblings whose deps are webpack-externalized and unresolvable under jest).
  */
 import path from 'path';
+import { removeFilter } from '@wordpress/hooks';
+import { registerTokenAliasFilters } from '../register-filters';
 
 const helpersRoot = path.dirname(require.resolve('@kadence/helpers/package.json'));
 const KadenceBlocksCSS = require(path.join(helpersRoot, 'dist/cjs/css/index.js')).default;
 
 const ALIAS = '{semantic.radius.media}';
 const ALIAS_VAR = 'var(--kb-token--semantic--radius--media)';
+
+beforeEach(() => {
+	registerTokenAliasFilters();
+});
+
+afterEach(() => {
+	removeFilter('kadence.helpers.colorValue', 'kadence-blocks/token-alias');
+	removeFilter('kadence.helpers.dimensionValue', 'kadence-blocks/token-alias');
+});
 
 describe('KadenceBlocksCSS render_measure_output (padding/margin/border-radius/border-width)', () => {
 	it('emits a single aliased corner as a bare var and literal corners with their unit', () => {
@@ -101,5 +113,16 @@ describe('KadenceBlocksCSS render_shadow', () => {
 		});
 
 		expect(shadow).toBe('0px 4px 12px 0px #000000');
+	});
+});
+
+describe('the seam is what resolves the alias', () => {
+	it('leaves an alias unresolved when the plugin filter is not registered', () => {
+		removeFilter('kadence.helpers.colorValue', 'kadence-blocks/token-alias');
+		removeFilter('kadence.helpers.dimensionValue', 'kadence-blocks/token-alias');
+
+		// With no listener, the agnostic helper cannot recognize the alias: render_size falls through
+		// its numeric/variable branches and does not emit the token var.
+		expect(new KadenceBlocksCSS().render_size(ALIAS, 'px')).not.toBe(ALIAS_VAR);
 	});
 });

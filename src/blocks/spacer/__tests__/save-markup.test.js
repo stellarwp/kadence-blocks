@@ -15,6 +15,8 @@
 import { TextEncoder, TextDecoder } from 'util';
 import path from 'path';
 import { createElement } from '@wordpress/element';
+import { removeFilter } from '@wordpress/hooks';
+import { registerTokenAliasFilters } from '../../../extension/design-tokens/register-filters';
 
 // jsdom does not define TextEncoder/TextDecoder, which react-dom/server needs at import; polyfill
 // them before requiring it (require, not import, so this runs first).
@@ -26,8 +28,8 @@ const { renderToStaticMarkup } = require('react-dom/server');
 
 // The `@kadence/helpers` barrel eagerly pulls in sibling helpers whose deps are externalized by the
 // plugin's webpack build (and so are unresolvable under jest). Load the single compiled
-// KadenceColorOutput module directly — it has no external deps — to exercise the real alias-aware
-// helper without the barrel. `@kadence/helpers/package.json` is exposed by the package `exports` map.
+// KadenceColorOutput module directly to exercise the real helper (and its `@wordpress/hooks` seam)
+// without the barrel. `@kadence/helpers/package.json` is exposed by the package `exports` map.
 const helpersRoot = path.dirname(require.resolve('@kadence/helpers/package.json'));
 const KadenceColorOutput = require(path.join(
 	helpersRoot,
@@ -63,9 +65,14 @@ describe('spacer stripe divider save markup', () => {
 	// swallow console.error here (@wordpress/jest-console would otherwise fail the test on it).
 	let errorSpy;
 	beforeEach(() => {
+		// The plugin registers alias resolution on the helper's filter seam; an aliased dividerColor
+		// only resolves to a token var because this listener is active.
+		registerTokenAliasFilters();
 		errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 	});
 	afterEach(() => {
+		removeFilter('kadence.helpers.colorValue', 'kadence-blocks/token-alias');
+		removeFilter('kadence.helpers.dimensionValue', 'kadence-blocks/token-alias');
 		errorSpy.mockRestore();
 	});
 
