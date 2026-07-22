@@ -1523,14 +1523,6 @@ class Kadence_Blocks_Settings {
 		return class_exists( 'Kadence_Blocks_Pro' );
 	}
 	/**
-	 * Whether the Kadence Blocks Pro plugin is present on disk but not currently active.
-	 *
-	 * @return bool
-	 */
-	private function is_pro_installed_but_inactive() {
-		return ! $this->is_pro_active() && $this->is_pro_installed();
-	}
-	/**
 	 * Admin Pro Kadence Notice.
 	 */
 	public function admin_pro_kadence_notice() {
