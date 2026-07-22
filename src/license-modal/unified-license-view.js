@@ -82,15 +82,14 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 			setError(
 				createInterpolateElement(
 					__(
-						'Unified license keys start with "LWSW-". If you have a Kadence-only license key, <a>click here to enter it</a>.',
+						'Unified license keys start with "LWSW-". If you have a Kadence-only license key, <button>click here to enter it</button>.',
 						'kadence-blocks'
 					),
 					{
-						// eslint-disable-next-line jsx-a11y/anchor-has-content
-						a: (
-							<a
+						button: (
+							<button
+								type="button"
 								className="kt-license-toggle-link kt-license-toggle-link--error"
-								href="#"
 								onClick={onSwitchToLegacy}
 							/>
 						),
