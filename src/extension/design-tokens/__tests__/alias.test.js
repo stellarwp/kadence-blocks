@@ -1,10 +1,20 @@
 /* eslint-env jest */
 /**
- * Design-token alias primitives + PHP/JS conformance.
+ * Design-token alias primitives, and their byte-for-byte parity with the PHP side.
  *
- * These guard byte-for-byte parity with the PHP transform (`Alias` + `Css_Var::from_id`) via a shared
- * fixture (seeding SOFT-3904), plus the recognition edge cases. The primitives live in this plugin
- * (not `@kadence/helpers`) so the shared library stays token-agnostic.
+ * A block control stores a design-token reference as a whole-string alias, `{dot.alias}`. That same
+ * value is resolved twice: in PHP for the front end (`Alias::path_of` + `Css_Var::from_id`) and in
+ * this JS for the editor preview. If the two ever disagree by a single character, an authored token
+ * would render one way in the editor and another on the front end. These tests lock the JS side to
+ * the PHP output:
+ *   - `isTokenAlias` recognizes exactly what PHP's `Alias::is_alias` recognizes (well-formed braces
+ *     only; non-strings and malformed/partial braces rejected);
+ *   - `resolveTokenAlias` produces the exact `var(--kb-token--<id>)` string PHP emits (dots -> `--`,
+ *     no fallback literal), and passes any non-alias through untouched.
+ *
+ * The expected pairs are kept in a JSON fixture that is intended to be shared with a PHP test so both
+ * languages assert against one source of truth. The primitives live in this plugin (not
+ * `@kadence/helpers`) so the shared library carries no design-token knowledge.
  */
 import { isTokenAlias, resolveTokenAlias, TOKEN_VAR_PREFIX } from '../alias';
 import conformance from './fixtures/token-alias-conformance.json';
@@ -18,12 +28,9 @@ describe('isTokenAlias', () => {
 		expect(isTokenAlias(value)).toBe(false);
 	});
 
-	it.each([null, undefined, 5, 0, true, false, ['{a.b}'], { a: 1 }])(
-		'rejects the non-string %p',
-		(value) => {
-			expect(isTokenAlias(value)).toBe(false);
-		}
-	);
+	it.each([null, undefined, 5, 0, true, false, ['{a.b}'], { a: 1 }])('rejects the non-string %p', (value) => {
+		expect(isTokenAlias(value)).toBe(false);
+	});
 
 	it('rejects an alias with a trailing newline (strict, unlike PHP)', () => {
 		expect(isTokenAlias('{a.b}\n')).toBe(false);
@@ -31,12 +38,9 @@ describe('isTokenAlias', () => {
 });
 
 describe('resolveTokenAlias', () => {
-	it.each(conformance.aliases.map(({ alias, cssVar }) => [alias, cssVar]))(
-		'resolves %s to %s',
-		(alias, cssVar) => {
-			expect(resolveTokenAlias(alias)).toBe(cssVar);
-		}
-	);
+	it.each(conformance.aliases.map(({ alias, cssVar }) => [alias, cssVar]))('resolves %s to %s', (alias, cssVar) => {
+		expect(resolveTokenAlias(alias)).toBe(cssVar);
+	});
 
 	it('builds the var from the TOKEN_VAR_PREFIX constant, with no fallback literal', () => {
 		expect(TOKEN_VAR_PREFIX).toBe('--kb-token--');

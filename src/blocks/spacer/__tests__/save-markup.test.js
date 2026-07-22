@@ -45,10 +45,7 @@ const { renderToStaticMarkup } = require('react-dom/server');
 // KadenceColorOutput module directly to exercise the real helper (and its `@wordpress/hooks` seam)
 // without the barrel. `@kadence/helpers/package.json` is exposed by the package `exports` map.
 const helpersRoot = path.dirname(require.resolve('@kadence/helpers/package.json'));
-const KadenceColorOutput = require(path.join(
-	helpersRoot,
-	'dist/cjs/kadence-color-output/index.js'
-)).default;
+const KadenceColorOutput = require(path.join(helpersRoot, 'dist/cjs/kadence-color-output/index.js')).default;
 
 // SvgPattern reads `wp.element.Component` at module load, so provide the global before requiring it.
 global.wp = { element: require('@wordpress/element') };

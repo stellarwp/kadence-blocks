@@ -1,5 +1,5 @@
 {
-	"_comment": "Shared PHP<->JS conformance fixture for the {dot.alias} -> var(--kb-token--<id>) transform. The JS side asserts resolveTokenAlias(alias) === cssVar and isTokenAlias(alias) === true; the PHP side (Alias::path_of + Css_Var::from_id) must produce byte-identical output. Inputs are canonical and carry no trailing whitespace. Seeds SOFT-3904 next to the PHP transform.",
+	"_comment": "One source of truth for the {dot.alias} -> var(--kb-token--<id>) transform, shared so the JS and PHP implementations can assert against the same pairs and cannot drift. The JS side asserts resolveTokenAlias(alias) === cssVar and isTokenAlias(alias) === true; the PHP side (Alias::path_of + Css_Var::from_id) must produce byte-identical output for each. 'nonAliases' must be rejected by both. Inputs are canonical and carry no trailing whitespace.",
 	"aliases": [
 		{ "alias": "{semantic.radius.media}", "cssVar": "var(--kb-token--semantic--radius--media)" },
 		{ "alias": "{primitive.color.brand.primary}", "cssVar": "var(--kb-token--primitive--color--brand--primary)" },

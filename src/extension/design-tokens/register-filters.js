@@ -11,7 +11,7 @@ import { addFilter, removeFilter } from '@wordpress/hooks';
 import { isTokenAlias, resolveTokenAlias } from './alias';
 
 const NAMESPACE = 'kadence-blocks/token-alias';
-const HOOKS = [ 'kadence.helpers.colorValue', 'kadence.helpers.dimensionValue' ];
+const HOOKS = ['kadence.helpers.colorValue', 'kadence.helpers.dimensionValue'];
 
 /**
  * Resolve a helper value: a design-token alias becomes its CSS var, anything else is unchanged.
@@ -19,8 +19,8 @@ const HOOKS = [ 'kadence.helpers.colorValue', 'kadence.helpers.dimensionValue' ]
  * @param {*} value The raw value the helper received.
  * @return {*} The resolved value.
  */
-function resolveAlias( value ) {
-	return isTokenAlias( value ) ? resolveTokenAlias( value ) : value;
+function resolveAlias(value) {
+	return isTokenAlias(value) ? resolveTokenAlias(value) : value;
 }
 
 /**
@@ -32,8 +32,8 @@ function resolveAlias( value ) {
  * @return {void}
  */
 export function registerTokenAliasFilters() {
-	HOOKS.forEach( ( hook ) => {
-		removeFilter( hook, NAMESPACE );
-		addFilter( hook, NAMESPACE, resolveAlias );
-	} );
+	HOOKS.forEach((hook) => {
+		removeFilter(hook, NAMESPACE);
+		addFilter(hook, NAMESPACE, resolveAlias);
+	});
 }

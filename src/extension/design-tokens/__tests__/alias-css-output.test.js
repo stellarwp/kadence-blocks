@@ -46,7 +46,7 @@ describe('KadenceBlocksCSS render_measure_output (padding/margin/border-radius/b
 		css.render_measure_output([ALIAS, ALIAS, ALIAS, ALIAS], null, null, 'Desktop', 'border-radius', 'px', {}, true);
 
 		// border-radius is a "special" property that also emits vendor-prefixed variants; assert the
-		// standard corner longhands each resolve to the token var.
+		// four standard corner properties each resolve to the token var.
 		expect(css._css).toContain(`border-top-left-radius:${ALIAS_VAR};`);
 		expect(css._css).toContain(`border-top-right-radius:${ALIAS_VAR};`);
 		expect(css._css).toContain(`border-bottom-right-radius:${ALIAS_VAR};`);
@@ -57,9 +57,7 @@ describe('KadenceBlocksCSS render_measure_output (padding/margin/border-radius/b
 		const css = new KadenceBlocksCSS();
 		css.render_measure_output([10, 20, 30, 40], null, null, 'Desktop', 'padding', 'px', {}, true);
 
-		expect(css._css).toBe(
-			'padding-top:10px;padding-right:20px;padding-bottom:30px;padding-left:40px;'
-		);
+		expect(css._css).toBe('padding-top:10px;padding-right:20px;padding-bottom:30px;padding-left:40px;');
 	});
 
 	it('resolves an aliased border-width side to a var (no unit appended)', () => {

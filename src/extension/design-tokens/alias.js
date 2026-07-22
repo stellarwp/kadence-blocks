@@ -34,8 +34,8 @@ const TOKEN_ALIAS_PATTERN = /^\{[\w.-]+\}$/;
  * @param {*} value The value to test.
  * @return {boolean} True when the value is a well-formed alias string.
  */
-export function isTokenAlias( value ) {
-	return typeof value === 'string' && TOKEN_ALIAS_PATTERN.test( value );
+export function isTokenAlias(value) {
+	return typeof value === 'string' && TOKEN_ALIAS_PATTERN.test(value);
 }
 
 /**
@@ -49,12 +49,12 @@ export function isTokenAlias( value ) {
  * @param {*} value A value that may be an alias string, e.g. `{semantic.radius.media}`.
  * @return {*} `var(--kb-token--<id>)` when the value is an alias; otherwise the value unchanged.
  */
-export function resolveTokenAlias( value ) {
-	if ( ! isTokenAlias( value ) ) {
+export function resolveTokenAlias(value) {
+	if (!isTokenAlias(value)) {
 		return value;
 	}
 
-	const id = value.slice( 1, -1 ).replace( /\./g, '--' );
+	const id = value.slice(1, -1).replace(/\./g, '--');
 
 	return 'var(' + TOKEN_VAR_PREFIX + id + ')';
 }
