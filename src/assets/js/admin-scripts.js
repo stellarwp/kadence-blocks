@@ -4,16 +4,16 @@ jQuery(document).ready(function ($) {
 		const contain = $(this).closest('.kad-panel-left');
 		const panel = contain.find('.nav-tab-wrapper');
 		const active = panel.find('.nav-tab-active');
-		const opencontent = $(this).closest('.kad-panel-contain').find('.nav-tab-content.panel_open');
-		const contentid = $(this).data('tab-id');
-		const tab = panel.find('a[data-tab-id="' + contentid + '"]');
-		if (active.data('tab-id') == contentid) {
+		const openContent = $(this).closest('.kad-panel-contain').find('.nav-tab-content.panel_open');
+		const contentId = $(this).data('tab-id');
+		const tab = panel.find('a[data-tab-id="' + contentId + '"]');
+		if (active.data('tab-id') == contentId) {
 			//leave
 		} else {
 			tab.addClass('nav-tab-active');
 			active.removeClass('nav-tab-active');
-			opencontent.removeClass('panel_open');
-			$('#' + contentid).addClass('panel_open');
+			openContent.removeClass('panel_open');
+			$('#' + contentId).addClass('panel_open');
 		}
 
 		return false;
@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
 		e.preventDefault();
 		const selectedSlug = $(this).val();
 		const selectedName = $(this).data('name');
-		const $dialogContiner = $('#js-settings-modal-content');
+		const $dialogContainer = $('#js-settings-modal-content');
 		let settingsContent = '';
 		if (kt_blocks_params.blockConfigSettings[selectedSlug]) {
 			for (const key in kt_blocks_params.blockConfigSettings[selectedSlug]) {
@@ -415,7 +415,7 @@ jQuery(document).ready(function ($) {
 						 * Change button status to kt-block-active
 						 * @param {string} message - the text output.
 						 */
-						function buttonStatusSucess(message) {
+						function buttonStatusSuccess(message) {
 							$button.removeClass('updating-message').addClass('button-disabled').text(message);
 							setTimeout(function () {
 								location.reload();
@@ -438,9 +438,9 @@ jQuery(document).ready(function ($) {
 									config: dataConfig,
 								},
 								success() {
-									buttonStatusSucess(kt_blocks_params.texts.updated);
+									buttonStatusSuccess(kt_blocks_params.texts.updated);
 								},
-								error(jqxhr, textStatus, error) {
+								error(jqXHR, textStatus, error) {
 									console.log(error);
 									buttonStatusDisabled('Error');
 								},
@@ -451,8 +451,8 @@ jQuery(document).ready(function ($) {
 				},
 			],
 		});
-		$dialogContiner.prop('title', kt_blocks_params.texts.config + ' ' + selectedName);
-		$dialogContiner.html(
+		$dialogContainer.prop('title', kt_blocks_params.texts.config + ' ' + selectedName);
+		$dialogContainer.html(
 			'<p class="kt-modal-item-title">' +
 				selectedName +
 				' ' +
@@ -460,7 +460,7 @@ jQuery(document).ready(function ($) {
 				'</p>' +
 				settingsContent
 		);
-		$dialogContiner.dialog(dialogOptions);
+		$dialogContainer.dialog(dialogOptions);
 		$('.kt-init-color').wpColorPicker();
 	});
 });
