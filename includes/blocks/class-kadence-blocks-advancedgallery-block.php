@@ -1132,7 +1132,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$figure_style = '';
 		if ( ! empty( $padding_bottom ) && 'below' === $caption_style ) {
-			$figure_style = ' style="max-width:' . $image['width'] . 'px;"';
+			$figure_style = ' style="max-width:' . esc_attr( $image['width'] ) . 'px;"';
 		}
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ) . '"' . $figure_style . '>';
 		if ( ! empty( $href ) ) {

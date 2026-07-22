@@ -102,7 +102,7 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'logo-title';
-		$layout_class = 'kb-identity-layout-container kb-identity-layout-' . $layout;
+		$layout_class = esc_attr( 'kb-identity-layout-container kb-identity-layout-' . $layout );
 		$content = $this->strip_anchor_tags( $content );
 
 		if (!empty($attributes['urlTransparent'])) {
