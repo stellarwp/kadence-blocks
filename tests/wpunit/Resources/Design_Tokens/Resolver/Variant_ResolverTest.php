@@ -167,6 +167,40 @@ final class Variant_ResolverTest extends TestCase {
 		);
 	}
 
+	/**
+	 * The Advanced Text (heading) variant set is registered at boot and its $default resolves the full
+	 * 12-property core-design and typography surface to the shipped baseline's literal values.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedAdvancedHeadingSetIsRegisteredAndResolvesTheDefault(): void {
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+
+		$this->assertNotNull(
+			$registry->for_block( 'kadence/advancedheading' ),
+			'The Advanced Text variant set should be registered at boot.'
+		);
+
+		$this->assertSame(
+			[
+				'color'         => '#1A202C',
+				'background'    => 'transparent',
+				'typography'    => 'Inter, system-ui, sans-serif',
+				'fontSize'      => '2rem',
+				'fontHeight'    => '1.2',
+				'fontWeight'    => '700',
+				'letterSpacing' => '0',
+				'textTransform' => 'none',
+				'padding'       => '0',
+				'borderColor'   => '#E2E8F0',
+				'borderWidth'   => '1px',
+				'borderRadius'  => '0',
+			],
+			$this->resolver->resolve_default( 'kadence/advancedheading' )
+		);
+	}
+
 	public function testItThrowsForAnUnknownBlock(): void {
 		$this->expectException( Unknown_Variant_Exception::class );
 
