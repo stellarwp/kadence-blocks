@@ -49,9 +49,7 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 			|| ! function_exists( 'lw_harbor_is_product_license_active' )
 			|| ! lw_harbor_is_product_license_active( 'kadence' )
 		) {
-			$this->resolved_key = '';
-
-			return $this->resolved_key;
+			return '';
 		}
 
 		$key = lw_harbor_get_unified_license_key();

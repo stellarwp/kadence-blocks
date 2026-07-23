@@ -2,6 +2,8 @@
 
 namespace Tests\wpunit\Resources\Harbor;
 
+// cspell:ignore NNCR
+
 use KadenceWP\KadenceBlocks\Harbor\License_Status;
 use KadenceWP\KadenceBlocks\Harbor\Licensing\Legacy_License_Strategy;
 use KadenceWP\KadenceBlocks\Harbor\Licensing\Unified_License_Strategy;
