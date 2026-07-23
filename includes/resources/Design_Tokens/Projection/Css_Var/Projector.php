@@ -205,6 +205,19 @@ final class Projector implements Css_Projector {
 	}
 
 	/**
+	 * The editor build, identical to {@see self::css()}: this projector emits `:root { --kb-token--*: … }`
+	 * custom properties, which carry no block-scoped selector, so nothing about the editor's markup shape
+	 * (e.g. a wrapper div) requires a different build.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function editor_css(): string {
+		return $this->css();
+	}
+
+	/**
 	 * The breakpoint => media-query string map for the per-breakpoint responsive redeclaration, resolved at
 	 * emit time so the filterable KB breakpoints are final. Keyed to match the resolver's breakpoint keys;
 	 * defaults mirror Kadence_Blocks_CSS::get_media_queries(). Desktop is the base (:root), so only the

@@ -46,4 +46,15 @@ interface Css_Projector {
 	 * @return string
 	 */
 	public function css(): string;
+
+	/**
+	 * The projector's EDITOR css — identical to css() for a context-independent projector, and overridden
+	 * where the editor needs a differently-scoped selector (e.g. a block whose editor markup wraps the
+	 * bound element in a div, so the front-end selector lands on the wrong node).
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function editor_css(): string;
 }

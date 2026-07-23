@@ -141,6 +141,19 @@ final class Projector implements Css_Projector {
 	}
 
 	/**
+	 * The editor build, identical to {@see self::css()}: this projector's scoped rules retarget the
+	 * `--global-*` slot vars, and slot names carry no dependency on the editor's markup shape (e.g. a
+	 * wrapper div), so nothing needs a different build.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function editor_css(): string {
+		return $this->css();
+	}
+
+	/**
 	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders from
 	 * baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
 	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
