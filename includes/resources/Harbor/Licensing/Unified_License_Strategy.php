@@ -122,4 +122,3 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 		);
 	}
 }
-
