@@ -490,7 +490,7 @@
 			},
 			"heading": {
 				"$type": "fontWeight",
-				"$value": "700"
+				"$value": "400"
 			}
 		},
 		"line-height": {
@@ -500,7 +500,7 @@
 			},
 			"heading": {
 				"$type": "lineHeight",
-				"$value": "1.2"
+				"$value": "1.125"
 			}
 		},
 		"font-style": {

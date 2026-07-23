@@ -191,8 +191,8 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
-		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.2);', $css );
-		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',700);', $css );
+		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
+		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
 		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.control' ) . ',0);', $css );
 		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.control' ) . ',none);', $css );
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
