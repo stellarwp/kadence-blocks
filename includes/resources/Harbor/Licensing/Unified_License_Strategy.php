@@ -10,6 +10,19 @@ namespace KadenceWP\KadenceBlocks\Harbor\Licensing;
 final class Unified_License_Strategy extends Abstract_License_Strategy {
 
 	/**
+	 * Memoized result of {@see get_key()} for this instance.
+	 *
+	 * Null means not yet resolved. Empty string means inactive / no key.
+	 * Strategies are short-lived (constructed per lookup), so this only
+	 * collapses repeated Harbor checks within one object lifetime.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	private ?string $resolved_key = null;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function is_active(): bool {
@@ -27,17 +40,25 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 	 * {@inheritdoc}
 	 */
 	public function get_key(): string {
+		if ( null !== $this->resolved_key ) {
+			return $this->resolved_key;
+		}
+
 		if (
 			! function_exists( 'lw_harbor_get_unified_license_key' )
 			|| ! function_exists( 'lw_harbor_is_product_license_active' )
 			|| ! lw_harbor_is_product_license_active( 'kadence' )
 		) {
-			return '';
+			$this->resolved_key = '';
+
+			return $this->resolved_key;
 		}
 
 		$key = lw_harbor_get_unified_license_key();
 
-		return ! empty( $key ) ? $key : '';
+		$this->resolved_key = ! empty( $key ) ? $key : '';
+
+		return $this->resolved_key;
 	}
 
 	/**

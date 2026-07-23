@@ -1,5 +1,8 @@
 <?php declare( strict_types=1 );
 
+// phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
+// cspell:ignore NNCR SHORTKEY
+
 namespace Tests\wpunit\Resources\Harbor;
 
 use KadenceWP\KadenceBlocks\Harbor\Licensing\Abstract_License_Strategy;
