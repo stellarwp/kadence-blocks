@@ -6,8 +6,9 @@
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, TextControl } from '@wordpress/components';
-import { installAndActivateFeature, storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
+import { storeLicense, UNIFIED_KEY_PREFIX } from '../harbor';
 import { buildActivationUrl, getGlobalParam } from '../harbor/helper';
+import useInstallProFeature from '../harbor/use-install-pro-feature';
 
 const STEPS = {
 	INPUT: 'input',
@@ -68,8 +69,12 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 	const [step, setStep] = useState(initial.step);
 	const [licenseKey, setLicenseKey] = useState('');
 	const [error, setError] = useState('');
-	const [installStatus, setInstallStatus] = useState('');
 	const [productEntry, setProductEntry] = useState(initial.entry);
+	const {
+		status: installStatus,
+		error: installError,
+		install,
+	} = useInstallProFeature(PRO_FEATURE_SLUG, PRO_FEATURE_NAME);
 
 	const handleActivate = async () => {
 		const key = licenseKey.trim().toUpperCase();
@@ -124,56 +129,11 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 	};
 
 	const handleDownloadActivate = async () => {
-		setError('');
 		setStep(STEPS.INSTALLING);
-		setInstallStatus(
-			sprintf(
-				/* translators: %s: plugin name */
-				__('Preparing to install %s…', 'kadence-blocks'),
-				PRO_FEATURE_NAME
-			)
-		);
 
-		try {
-			await installAndActivateFeature(PRO_FEATURE_SLUG, {
-				onStatus: (status) => {
-					if (status === 'installing') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('Downloading and installing %s…', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					} else if (status === 'activating') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('Activating %s…', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					} else if (status === 'already_active') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('%s is already active.', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					}
-				},
-			});
+		if (await install()) {
 			setStep(isDomainActivated(productEntry) ? STEPS.DONE : STEPS.ACTIVATE_DOMAIN);
-		} catch (err) {
-			setError(
-				err?.message ||
-					sprintf(
-						/* translators: %s: plugin name */
-						__('Failed to install or activate %s.', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
-			);
+		} else {
 			setStep(STEPS.SUCCESS);
 		}
 	};
@@ -252,7 +212,7 @@ export default function UnifiedLicenseView({ licensePageUrl, initialLicense = nu
 									)}
 						</Button>
 					)}
-					{error && <p className="kt-unified-error">{error}</p>}
+					{installError && <p className="kt-unified-error">{installError}</p>}
 				</div>
 			)}
 

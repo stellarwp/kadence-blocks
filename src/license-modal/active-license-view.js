@@ -3,7 +3,7 @@
  */
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { installAndActivateFeature } from '../harbor';
+import useInstallProFeature from '../harbor/use-install-pro-feature';
 
 const FEATURES = [
 	__('Updates enabled', 'kadence-blocks'),
@@ -37,9 +37,12 @@ export default function ActiveLicenseView({
 	onManageKadence,
 }) {
 	const [copied, setCopied] = useState(false);
-	const [isInstalling, setIsInstalling] = useState(false);
-	const [installStatus, setInstallStatus] = useState('');
-	const [installError, setInstallError] = useState('');
+	const {
+		isInstalling,
+		status: installStatus,
+		error: installError,
+		install,
+	} = useInstallProFeature(PRO_FEATURE_SLUG, PRO_FEATURE_NAME);
 	const isUnified = type === 'unified';
 	const showInstallPro = isUnified && !isProInstalled;
 	const showActivatePro = isUnified && isProInstalled && !isProActive;
@@ -59,64 +62,8 @@ export default function ActiveLicenseView({
 	};
 
 	const handleProAction = async () => {
-		setInstallError('');
-		setIsInstalling(true);
-		setInstallStatus(
-			showActivatePro
-				? sprintf(
-						/* translators: %s: plugin name */
-						__('Activating %s…', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
-				: sprintf(
-						/* translators: %s: plugin name */
-						__('Preparing to install %s…', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
-		);
-
-		try {
-			await installAndActivateFeature(PRO_FEATURE_SLUG, {
-				onStatus: (status) => {
-					if (status === 'installing') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('Downloading and installing %s…', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					} else if (status === 'activating') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('Activating %s…', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					} else if (status === 'already_active') {
-						setInstallStatus(
-							sprintf(
-								/* translators: %s: plugin name */
-								__('%s is already active.', 'kadence-blocks'),
-								PRO_FEATURE_NAME
-							)
-						);
-					}
-				},
-			});
+		if (await install()) {
 			window.location.reload();
-		} catch (err) {
-			setInstallError(
-				err?.message ||
-					sprintf(
-						/* translators: %s: plugin name */
-						__('Failed to install or activate %s.', 'kadence-blocks'),
-						PRO_FEATURE_NAME
-					)
-			);
-			setIsInstalling(false);
-			setInstallStatus('');
 		}
 	};
 
