@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Harbor\Actions\Suppress_Legacy_Inactive_Notices;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
 use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Harbor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
+use KadenceWP\KadenceBlocks\Harbor\Actions\Render_Harbor_License_Notice;
 use ITSEC_Core;
 
 /**
@@ -36,6 +37,20 @@ final class Harbor_Provider extends Provider {
 
 		// Legacy Uplink license fields are replaced by the React license modal UI.
 		add_filter( 'kadence_blocks_pro_should_display_uplink_license_field', '__return_false' );
+
+		foreach ( ( new Get_Known_Plugins() )() as $slug => $plugin ) {
+			// The harbor notice is added to Kadence Blocks license modal UI, so we don't need to add it here.
+			if ( 'kadence-blocks' === $slug ) {
+				continue;
+			}
+
+			add_action(
+				"stellarwp/uplink/{$slug}/license_field_after_form",
+				new Render_Harbor_License_Notice( $plugin['name'] )
+			);
+
+			add_filter( "stellarwp/uplink/{$slug}/plugin_notices", [ $this, 'suppress_inline_license_notices' ] );
+		}
 
 		add_action( 'admin_init', new Suppress_Legacy_Inactive_Notices() );
 	}
