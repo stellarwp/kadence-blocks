@@ -166,7 +166,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The shipped Advanced Text (heading) declarations emit all 12 bound core-design and typography
+	 * The shipped Advanced Text (heading) declarations emit all 13 bound core-design and typography
 	 * properties as one grouped, low-specificity rule on the block root, each pointing its css_prop at the
 	 * matching token var with the resolved default as the fallback — including the font-family fallback
 	 * stringified to a comma-joined list.
@@ -198,7 +198,8 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);}', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
 	}
 
 	/**
@@ -206,7 +207,7 @@ final class Css_BuilderTest extends TestCase {
 	 * heading element the bindings style — the real heading carries the stable `kadence-advancedheading-text`
 	 * class instead. The declared `editor_selector` re-targets the editor build of the rule at that
 	 * descendant, scoped under `.editor-styles-wrapper` so it still outranks the theme's own per-tag element
-	 * styles there, while still carrying every one of the block's 12 bound declarations.
+	 * styles there, while still carrying every one of the block's 13 bound declarations.
 	 *
 	 * @return void
 	 */
@@ -235,7 +236,8 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);}', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
 
 		// The front-end rule for the SAME block must stay on the block root, with no editor-only prefix.
 		$this->assertStringNotContainsString( '.editor-styles-wrapper', $this->builder( $registry )->css() );

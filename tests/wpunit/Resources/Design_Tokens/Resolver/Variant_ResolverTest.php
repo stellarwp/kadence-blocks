@@ -169,7 +169,7 @@ final class Variant_ResolverTest extends TestCase {
 
 	/**
 	 * The Advanced Text (heading) variant set is registered at boot and its $default resolves the full
-	 * 12-property core-design and typography surface to the shipped baseline's literal values.
+	 * 13-property core-design and typography surface to the shipped baseline's literal values.
 	 *
 	 * @return void
 	 */
@@ -196,6 +196,7 @@ final class Variant_ResolverTest extends TestCase {
 				'borderColor'   => '#E2E8F0',
 				'borderWidth'   => '1px',
 				'borderRadius'  => '0',
+				'borderStyle'   => 'none',
 			],
 			$this->resolver->resolve_default( 'kadence/advancedheading' )
 		);

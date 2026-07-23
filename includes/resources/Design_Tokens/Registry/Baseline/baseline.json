@@ -453,6 +453,12 @@
 				"$value": "{primitive.dimension.border-width.sm}"
 			}
 		},
+		"border-style": {
+			"default": {
+				"$type": "borderStyle",
+				"$value": "none"
+			}
+		},
 		"icon-size": {
 			"default": {
 				"$type": "dimension",
@@ -714,7 +720,8 @@
 							"padding": "{semantic.spacing.heading-padding}",
 							"borderColor": "{semantic.color.border}",
 							"borderWidth": "{semantic.border-width.default}",
-							"borderRadius": "{semantic.radius.heading}"
+							"borderRadius": "{semantic.radius.heading}",
+							"borderStyle": "{semantic.border-style.default}"
 						}
 					}
 				}
