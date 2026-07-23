@@ -43,6 +43,31 @@ final class Variant_SetTest extends TestCase {
 		$this->assertNull( Variant_Set::from_array( $this->declaration() )->label );
 	}
 
+	/**
+	 * A block whose editor markup puts the `.wp-block-*` class on a wrapper rather than the element the
+	 * bindings style (e.g. Advanced Heading) declares an `editor_selector` so the editor build of the
+	 * block-default CSS can retarget the rule at the real element.
+	 *
+	 * @return void
+	 */
+	public function testItRetainsTheEditorSelectorWhenDeclared(): void {
+		$set = Variant_Set::from_array(
+			$this->declaration() + [ 'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text' ]
+		);
+
+		$this->assertSame( '.wp-block-kadence-advancedheading .kadence-advancedheading-text', $set->editor_selector );
+	}
+
+	/**
+	 * A block that renders identically in the editor and on the front end (the common case) omits
+	 * `editor_selector`, and the parser must leave it null rather than defaulting to some other selector.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorSelectorIsNullWhenOmitted(): void {
+		$this->assertNull( Variant_Set::from_array( $this->declaration() )->editor_selector );
+	}
+
 	public function testItParsesTokenReferenceAndInlineBindings(): void {
 		$set = Variant_Set::from_array( $this->declaration() );
 
