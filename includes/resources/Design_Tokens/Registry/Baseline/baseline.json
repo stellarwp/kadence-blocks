@@ -469,6 +469,10 @@
 			"control": {
 				"$type": "fontFamily",
 				"$value": "{primitive.fontFamily.sans}"
+			},
+			"heading": {
+				"$type": "fontFamily",
+				"$value": "{primitive.fontFamily.sans}"
 			}
 		},
 		"font-size": {
@@ -519,10 +523,18 @@
 			"control": {
 				"$type": "textTransform",
 				"$value": "none"
+			},
+			"heading": {
+				"$type": "textTransform",
+				"$value": "none"
 			}
 		},
 		"letter-spacing": {
 			"control": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"heading": {
 				"$type": "dimension",
 				"$value": "0"
 			}
@@ -711,12 +723,12 @@
 						"tokens": {
 							"color": "{semantic.color.text}",
 							"background": "{semantic.color.heading-bg}",
-							"typography": "{semantic.font-family.control}",
+							"typography": "{semantic.font-family.heading}",
 							"fontSize": "{semantic.font-size.heading}",
 							"fontHeight": "{semantic.line-height.heading}",
 							"fontWeight": "{semantic.font-weight.heading}",
-							"letterSpacing": "{semantic.letter-spacing.control}",
-							"textTransform": "{semantic.text-transform.control}",
+							"letterSpacing": "{semantic.letter-spacing.heading}",
+							"textTransform": "{semantic.text-transform.heading}",
 							"padding": "{semantic.spacing.heading-padding}",
 							"borderColor": "{semantic.color.border}",
 							"borderWidth": "{semantic.border-width.default}",

@@ -414,12 +414,13 @@ return [
 			// block-default-CSS rules on the block root (`.wp-block-kadence-advancedheading`), where every
 			// bound attribute is empty by default in block.json — build_css() emits nothing for any of them
 			// until a value is set, so the whole 12-property set fits this mechanism directly with no
-			// per-block adapter and no build_css()/SCSS/editor-JS change. Color, font-family, and the
-			// letter-spacing/text-transform pair reuse the shared `.control` semantics already wired for the
-			// button; font-size/line-height/font-weight are the heading's own re-skin seeds. The rule also
-			// overrides a theme's per-tag element styles (h1/h2/p, specificity 0,0,1), which is what lets the
-			// design-system defaults "re-skin" an unset heading. A per-instance value renders at higher
-			// specificity (the `.kt-adv-heading<uid>` instance selector) and still wins.
+			// per-block adapter and no build_css()/SCSS/editor-JS change. Typography (font-family,
+			// letter-spacing, text-transform) uses the heading's own tokens, kept separate from the
+			// form-control family the Button uses; font-size/line-height/font-weight are the heading's
+			// own re-skin seeds. The rule also overrides a theme's per-tag element styles (h1/h2/p,
+			// specificity 0,0,1), which is what lets the design-system defaults "re-skin" an unset
+			// heading. A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>`
+			// instance selector) and still wins.
 			'block'    => 'kadence/advancedheading',
 			'bindings' => [
 				'color'         => [
@@ -431,7 +432,7 @@ return [
 					'css_prop' => 'background-color',
 				],
 				'typography'    => [
-					'token'    => 'semantic.font-family.control',
+					'token'    => 'semantic.font-family.heading',
 					'css_prop' => 'font-family',
 				],
 				'fontSize'      => [
@@ -447,11 +448,11 @@ return [
 					'css_prop' => 'font-weight',
 				],
 				'letterSpacing' => [
-					'token'    => 'semantic.letter-spacing.control',
+					'token'    => 'semantic.letter-spacing.heading',
 					'css_prop' => 'letter-spacing',
 				],
 				'textTransform' => [
-					'token'    => 'semantic.text-transform.control',
+					'token'    => 'semantic.text-transform.heading',
 					'css_prop' => 'text-transform',
 				],
 				'padding'       => [
