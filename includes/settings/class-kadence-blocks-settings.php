@@ -83,7 +83,6 @@ class Kadence_Blocks_Settings {
 		}
 		add_action( 'wp_ajax_kadence_blocks_activate_deactivate', [ $this, 'ajax_blocks_activate_deactivate' ], 10, 0 );
 		add_action( 'wp_ajax_kadence_blocks_save_config', [ $this, 'ajax_blocks_save_config' ], 10, 0 );
-		add_action( 'wp_ajax_kadence_blocks_activate_pro', [ $this, 'ajax_activate_pro' ], 10, 0 );
 		add_action( 'wp_ajax_kadence_post_default_width', [ $this, 'ajax_default_editor_width' ], 10, 0 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'deregister_blocks' ] );
 		add_action( 'admin_init', [ $this, 'activation_redirect' ] );
@@ -1545,26 +1544,6 @@ class Kadence_Blocks_Settings {
 			</div>
 		</div>
 		<?php
-	}
-	/**
-	 * Activate the Kadence Blocks Pro plugin via ajax.
-	 */
-	public function ajax_activate_pro(): void {
-		check_ajax_referer( 'kadence-blocks-activate-pro', 'wpnonce' );
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			wp_send_json_error( [ 'message' => __( 'You do not have permission to activate plugins.', 'kadence-blocks' ) ] );
-		}
-		if ( ! $this->is_pro_installed() ) {
-			wp_send_json_error( [ 'message' => __( 'Kadence Blocks Pro could not be found.', 'kadence-blocks' ) ] );
-		}
-		if ( ! function_exists( 'activate_plugin' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-		$result = activate_plugin( self::PRO_PLUGIN_FILE );
-		if ( is_wp_error( $result ) ) {
-			wp_send_json_error( [ 'message' => $result->get_error_message() ] );
-		}
-		wp_send_json_success();
 	}
 	/**
 	 * License key sidebar notice.
