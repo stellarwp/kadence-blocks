@@ -470,6 +470,10 @@ return [
 					'token'    => 'semantic.radius.heading',
 					'css_prop' => 'border-radius',
 				],
+				'borderStyle'   => [
+					'token'    => 'semantic.border-style.default',
+					'css_prop' => 'border-style',
+				],
 			],
 		],
 	],

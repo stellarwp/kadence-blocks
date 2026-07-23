@@ -166,7 +166,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The shipped Advanced Text (heading) declarations emit all 12 bound core-design and typography
+	 * The shipped Advanced Text (heading) declarations emit all 13 bound core-design and typography
 	 * properties as one grouped, low-specificity rule on the block root, each pointing its css_prop at the
 	 * matching token var with the resolved default as the fallback — including the font-family fallback
 	 * stringified to a comma-joined list.
@@ -198,7 +198,8 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
-		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);}', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
 	}
 
 	/**
