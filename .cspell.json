@@ -108,6 +108,7 @@
         "phar",
         "phpcs",
         "phpstan",
+        "pickable",
         "postfields",
         "progressbar",
         "puprc",

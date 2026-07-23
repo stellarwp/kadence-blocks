@@ -65,4 +65,15 @@ final class Layers {
 	public static function get_semantic(): string {
 		return self::SEMANTIC;
 	}
+
+	/**
+	 * The "primitive" layer name — the raw, context-free layer a semantic token typically aliases into.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_primitive(): string {
+		return self::PRIMITIVE;
+	}
 }
