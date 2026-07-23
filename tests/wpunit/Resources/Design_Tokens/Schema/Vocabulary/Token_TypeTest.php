@@ -16,7 +16,7 @@ final class Token_TypeTest extends TestCase {
 	 */
 	public function testItListsTheV1Types(): void {
 		$this->assertSame(
-			[ 'color', 'dimension', 'fontFamily', 'fontWeight', 'lineHeight', 'fontStyle', 'textTransform', 'shadow' ],
+			[ 'color', 'dimension', 'fontFamily', 'fontWeight', 'lineHeight', 'fontStyle', 'textTransform', 'borderStyle', 'shadow' ],
 			Token_Type::all()
 		);
 	}
@@ -43,6 +43,7 @@ final class Token_TypeTest extends TestCase {
 		yield 'lineHeight' => [ 'type' => 'lineHeight' ];
 		yield 'fontStyle' => [ 'type' => 'fontStyle' ];
 		yield 'textTransform' => [ 'type' => 'textTransform' ];
+		yield 'borderStyle' => [ 'type' => 'borderStyle' ];
 		yield 'shadow' => [ 'type' => 'shadow' ];
 	}
 
@@ -80,6 +81,7 @@ final class Token_TypeTest extends TestCase {
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_font_family() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_font_weight() ) );
 		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_text_transform() ) );
+		$this->assertFalse( Token_Type::is_composite( Token_Type::get_type_border_style() ) );
 	}
 
 	/**
