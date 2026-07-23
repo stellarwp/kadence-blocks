@@ -824,27 +824,25 @@ class Kadence_Blocks_Settings {
 			[
 				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
 				'wpnonce'         => wp_create_nonce( 'kadence-blocks-manage' ),
-				'licensePageUrl'  => function_exists( 'lw_harbor_get_license_page_url' ) ? esc_url( lw_harbor_get_license_page_url() ) : '',
+				'licensePageUrl'  => esc_url( lw_harbor_get_license_page_url() ),
 				'licenseStatus'   => ( new License_Status() )->get_ui_status(),
 				'accountPageUrl'  => 'https://software.liquidweb.com/',
 				'proFeatureSlug'  => 'kadence-blocks-pro',
 				'proFeatureName'  => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
 				'isProInstalled'  => $this->is_pro_installed(),
 				'isProActive'     => $this->is_pro_active(),
-				'domain'          => function_exists( 'lw_harbor_get_licensed_domain' ) ? lw_harbor_get_licensed_domain() : '',
+				'domain'          => lw_harbor_get_licensed_domain(),
 				'productSlug'     => 'kadence',
-				'activationUrl'   => class_exists( HarborConfig::class )
-					? HarborConfig::get_portal_base_url() . '/subscriptions/?' . http_build_query(
-						[
-							'portal-referral' => 'plugin',
-							'redirect_url'    => admin_url( 'admin.php?page=lw-software-manager&refresh=auto' ),
-							'domain'          => function_exists( 'lw_harbor_get_licensed_domain' ) ? lw_harbor_get_licensed_domain() : '',
-						],
-						'',
-						'&',
-						PHP_QUERY_RFC3986
-					)
-					: '',
+				'activationUrl'   => HarborConfig::get_portal_base_url() . '/subscriptions/?' . http_build_query(
+					[
+						'portal-referral' => 'plugin',
+						'redirect_url'    => admin_url( 'admin.php?page=lw-software-manager&refresh=auto' ),
+						'domain'          => lw_harbor_get_licensed_domain(),
+					],
+					'',
+					'&',
+					PHP_QUERY_RFC3986
+				),
 				'harbor'          => [
 					'licensePath'  => '/liquidweb/harbor/v1/license',
 					'featuresPath' => '/liquidweb/harbor/v1/features',

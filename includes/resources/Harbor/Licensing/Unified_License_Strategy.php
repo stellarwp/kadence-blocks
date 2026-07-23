@@ -2,6 +2,9 @@
 
 namespace KadenceWP\KadenceBlocks\Harbor\Licensing;
 
+use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Licensing\Product_Collection;
+use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Licensing\Repositories\License_Repository;
+
 /**
  * Harbor unified (Liquid Web) license strategy.
  *
@@ -44,11 +47,9 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 			return $this->resolved_key;
 		}
 
-		if (
-			! function_exists( 'lw_harbor_get_unified_license_key' )
-			|| ! function_exists( 'lw_harbor_is_product_license_active' )
-			|| ! lw_harbor_is_product_license_active( 'kadence' )
-		) {
+		if ( ! lw_harbor_is_product_license_active( 'kadence' ) ) {
+			$this->resolved_key = '';
+
 			return '';
 		}
 
@@ -73,9 +74,7 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 		$status['maskedKey'] = $this->mask_key( $key );
 		$status['fullKey']   = $key;
 		$status['expires']   = $this->get_expires_label();
-		$status['manageUrl'] = function_exists( 'lw_harbor_get_license_page_url' )
-			? (string) lw_harbor_get_license_page_url()
-			: admin_url( 'options-general.php?page=lw-software-manager' );
+		$status['manageUrl'] = (string) lw_harbor_get_license_page_url();
 
 		return $status;
 	}
@@ -88,33 +87,25 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 	 * @return string Localized "Expires on …" label, or empty string when unknown.
 	 */
 	private function get_expires_label(): string {
-		$state = get_option( 'lw_harbor_licensing_products_state', [] );
-		if ( ! is_array( $state ) || empty( $state['collection'] ) || ! is_array( $state['collection'] ) ) {
+		$repository = new License_Repository();
+		$collection = $repository->get_products();
+
+		if ( ! $collection instanceof Product_Collection ) {
 			return '';
 		}
 
-		$expires = '';
-		foreach ( $state['collection'] as $entry ) {
-			if ( ! is_array( $entry ) || ( $entry['product_slug'] ?? '' ) !== 'kadence' ) {
-				continue;
-			}
-			if ( empty( $entry['expires'] ) || ! is_string( $entry['expires'] ) ) {
-				continue;
-			}
-			// Prefer the entry activated on this site when available.
-			if ( ! empty( $entry['activated_here'] ) || '' === $expires ) {
-				$expires = $entry['expires'];
-			}
-			if ( ! empty( $entry['activated_here'] ) ) {
-				break;
-			}
+		// Prefer the entry activated on this site when available.
+		$entry = $collection->get_activated_entry( 'kadence' );
+		if ( null === $entry ) {
+			$entries = $collection->get_all_by_slug( 'kadence' );
+			$entry   = reset( $entries ) ?: null;
 		}
 
-		if ( '' === $expires ) {
+		if ( null === $entry ) {
 			return '';
 		}
 
-		$timestamp = strtotime( $expires );
+		$timestamp = $entry->get_expires()->getTimestamp();
 		if ( ! $timestamp ) {
 			return '';
 		}
@@ -131,3 +122,4 @@ final class Unified_License_Strategy extends Abstract_License_Strategy {
 		);
 	}
 }
+

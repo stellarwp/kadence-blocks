@@ -363,8 +363,7 @@ function kadence_blocks_is_license_authorized(): bool {
 		return true;
 	}
 
-	return function_exists( 'lw_harbor_is_product_license_active' )
-		&& lw_harbor_is_product_license_active( 'kadence' );
+	return lw_harbor_is_product_license_active( 'kadence' );
 }
 
 /**
