@@ -150,8 +150,8 @@ final class VariantsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetItemReturns404ForABlockThatAcceptsNoVariants(): void {
-		// The baseline ships variant data for advancedheading, but no variant set is registered for it.
-		$result = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, 'kadence/advancedheading' ) );
+		// kadence/spacer has no baseline variant data and no variant set registered for it.
+		$result = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, 'kadence/spacer' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
