@@ -107,6 +107,38 @@ final class Css_Builder {
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
 	public function css( string $slug = 'default' ): string {
+		return $this->build( $slug, false );
+	}
+
+	/**
+	 * Build the EDITOR-scoped variant of the block-default CSS for a token set. Identical to {@see self::css()}
+	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
+	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
+	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
+	 * the element the editor actually renders the bindings against rather than the `useBlockProps()` wrapper.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set whose resolved values the `$default` aliases resolve against.
+	 *
+	 * @return string The CSS, or an empty string when there is nothing to project.
+	 */
+	public function editor_css( string $slug = 'default' ): string {
+		return $this->build( $slug, true );
+	}
+
+	/**
+	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector base differs
+	 * per block, per the presence of an `editor_selector` declaration.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug   The token set whose resolved values the `$default` aliases resolve against.
+	 * @param bool   $editor Whether to build the editor-scoped variant.
+	 *
+	 * @return string The CSS, or an empty string when there is nothing to project.
+	 */
+	private function build( string $slug, bool $editor ): string {
 		$css = '';
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
@@ -124,7 +156,9 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = '.wp-block-' . str_replace( '/', '-', $block );
+			$selector = $editor && $set->editor_selector !== null
+				? '.editor-styles-wrapper ' . $set->editor_selector
+				: '.wp-block-' . str_replace( '/', '-', $block );
 
 			// Group declarations by selector suffix so a block with several dimension props on the same
 			// element emits one rule, and props on a descendant (e.g. " img") get their own.
@@ -173,20 +207,55 @@ final class Css_Builder {
 	 * @return string
 	 */
 	public function css_for_version( string $version, string $slug ): string {
-		$memo_key = $version . ':' . $slug;
+		return $this->for_version( $version, $slug, false );
+	}
+
+	/**
+	 * Cached variant of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
+	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
+	 * front-end cache entry.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 *
+	 * @return string
+	 */
+	public function editor_css_for_version( string $version, string $slug ): string {
+		return $this->for_version( $version, $slug, true );
+	}
+
+	/**
+	 * Shared cache/memo plumbing for {@see self::css_for_version()} and {@see self::editor_css_for_version()}.
+	 * The context (front end vs editor) is folded into both the per-request memo key and the object-cache key
+	 * so the two builds never share a cache slot.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 * @param bool   $editor  Whether to build the editor-scoped variant.
+	 *
+	 * @return string
+	 */
+	private function for_version( string $version, string $slug, bool $editor ): string {
+		$context  = $editor ? 'editor' : 'front';
+		$memo_key = $context . ':' . $version . ':' . $slug;
 
 		if ( isset( $this->memo[ $memo_key ] ) ) {
 			return $this->memo[ $memo_key ];
 		}
 
-		$cache_key = 'block_default_css_' . KADENCE_BLOCKS_VERSION . '_' . $memo_key;
+		$cache_key = 'block_default_css_' . $context . '_' . KADENCE_BLOCKS_VERSION . '_' . $version . ':' . $slug;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
 			return $this->memo[ $memo_key ] = $cached;
 		}
 
-		$css = $this->css( $slug );
+		$css = $editor ? $this->editor_css( $slug ) : $this->css( $slug );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
