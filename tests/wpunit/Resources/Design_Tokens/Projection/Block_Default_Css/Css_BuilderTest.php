@@ -187,14 +187,14 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.control' ) . ',Inter, system-ui, sans-serif);',
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',Inter, system-ui, sans-serif);',
 			$css
 		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
 		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
 		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
-		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.control' ) . ',0);', $css );
-		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.control' ) . ',none);', $css );
+		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
@@ -225,14 +225,14 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.control' ) . ',Inter, system-ui, sans-serif);',
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',Inter, system-ui, sans-serif);',
 			$css
 		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
 		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
 		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
-		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.control' ) . ',0);', $css );
-		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.control' ) . ',none);', $css );
+		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
 		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
 		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
 		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
