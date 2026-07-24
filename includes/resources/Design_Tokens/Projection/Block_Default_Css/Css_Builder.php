@@ -246,13 +246,14 @@ final class Css_Builder {
 	 */
 	private function for_version( string $version, string $slug, bool $editor ): string {
 		$context  = $editor ? 'editor' : 'front';
-		$memo_key = $context . ':' . $version . ':' . $slug;
+		$suffix   = $version . ':' . $slug;
+		$memo_key = $context . ':' . $suffix;
 
 		if ( isset( $this->memo[ $memo_key ] ) ) {
 			return $this->memo[ $memo_key ];
 		}
 
-		$cache_key = 'block_default_css_' . $context . '_' . KADENCE_BLOCKS_VERSION . '_' . $version . ':' . $slug;
+		$cache_key = 'block_default_css_' . $context . '_' . KADENCE_BLOCKS_VERSION . '_' . $suffix;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
