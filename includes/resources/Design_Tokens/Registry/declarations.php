@@ -421,8 +421,17 @@ return [
 			// specificity 0,0,1), which is what lets the design-system defaults "re-skin" an unset
 			// heading. A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>`
 			// instance selector) and still wins.
-			'block'    => 'kadence/advancedheading',
-			'bindings' => [
+			//
+			// In the editor, useBlockProps() puts `.wp-block-kadence-advancedheading` on a wrapper <div>, not
+			// on the heading element the bindings above are meant to style — the real heading is a descendant
+			// carrying the stable `kadence-advancedheading-text` class. So the editor build of this CSS (see
+			// Css_Builder::editor_css()) targets that descendant instead, scoped under `.editor-styles-wrapper`
+			// so it still outranks the theme's element styles there too. Per-instance color/font-size render as
+			// INLINE styles on that same element (and font-weight inline on its child), so they keep winning
+			// regardless of this rule's specificity.
+			'block'           => 'kadence/advancedheading',
+			'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text',
+			'bindings'        => [
 				'color'         => [
 					'token'    => 'semantic.color.text',
 					'css_prop' => 'color',

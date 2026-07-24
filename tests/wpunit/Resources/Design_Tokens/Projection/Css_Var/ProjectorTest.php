@@ -144,6 +144,19 @@ final class ProjectorTest extends TestCase {
 		$this->assertStringContainsString( '--kb-token--', $css );
 	}
 
+	// ---- Editor CSS -----------------------------------------------------------------------------------
+
+	/**
+	 * The token-var projector is context-independent — it emits `:root { --kb-token--*: … }` custom
+	 * properties with no block-scoped selector — so its editor build is byte-for-byte identical to its
+	 * front-end build.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssEqualsCss(): void {
+		$this->assertSame( $this->projector->css(), $this->projector->editor_css() );
+	}
+
 	// ---- Filter routing -------------------------------------------------------------------------------
 
 	/**

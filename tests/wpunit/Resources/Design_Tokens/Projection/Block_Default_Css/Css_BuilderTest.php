@@ -203,6 +203,64 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * In the editor, useBlockProps() puts `.wp-block-kadence-advancedheading` on a wrapper <div>, not on the
+	 * heading element the bindings style — the real heading carries the stable `kadence-advancedheading-text`
+	 * class instead. The declared `editor_selector` re-targets the editor build of the rule at that
+	 * descendant, scoped under `.editor-styles-wrapper` so it still outranks the theme's own per-tag element
+	 * styles there, while still carrying every one of the block's 13 bound declarations.
+	 *
+	 * @return void
+	 */
+	public function testTheEditorBuildRetargetsTheAdvancedHeadingRuleAtTheRealHeadingElement(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->editor_css();
+
+		$this->assertStringContainsString(
+			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{color:var(' . Css_Var::from_id( 'semantic.color.text' ) . ',#1A202C);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
+			$css
+		);
+		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
+		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
+		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
+		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
+		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
+		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+
+		// The front-end rule for the SAME block must stay on the block root, with no editor-only prefix.
+		$this->assertStringNotContainsString( '.editor-styles-wrapper', $this->builder( $registry )->css() );
+	}
+
+	/**
+	 * A block whose Variant_Set declares no `editor_selector` (e.g. Image) must emit an editor build
+	 * byte-for-byte identical to its front-end build — no `.editor-styles-wrapper` prefix and no
+	 * re-targeting — so blocks without the wrapper-div problem see zero regression from this mechanism. Uses
+	 * an isolated registry (rather than the shipped one) so the assertion is not diluted by the shipped
+	 * Advanced Heading declaration, which DOES declare an `editor_selector` and legitimately diverges.
+	 *
+	 * @return void
+	 */
+	public function testABlockWithNoEditorSelectorEmitsIdenticalFrontEndAndEditorCss(): void {
+		$builder = $this->builder( $this->image_registry() );
+
+		$this->assertSame( $builder->css(), $builder->editor_css() );
+		$this->assertStringContainsString( '.wp-block-kadence-image img{border-radius:var(', $builder->editor_css() );
+		$this->assertStringNotContainsString( '.editor-styles-wrapper', $builder->editor_css() );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItContributesNothingForABindingWithoutACssProp(): void {
