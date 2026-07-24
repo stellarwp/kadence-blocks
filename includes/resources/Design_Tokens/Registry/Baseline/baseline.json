@@ -472,7 +472,8 @@
 			},
 			"heading": {
 				"$type": "fontFamily",
-				"$value": "{primitive.fontFamily.sans}"
+				"$value": ["inherit"],
+				"$description": "Inherits the theme's font by default; a site sets a real family here to impose a heading font."
 			}
 		},
 		"font-size": {

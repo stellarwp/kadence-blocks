@@ -169,7 +169,7 @@ final class Css_BuilderTest extends TestCase {
 	 * The shipped Advanced Text (heading) declarations emit all 13 bound core-design and typography
 	 * properties as one grouped, low-specificity rule on the block root, each pointing its css_prop at the
 	 * matching token var with the resolved default as the fallback — including the font-family fallback
-	 * stringified to a comma-joined list.
+	 * resolved to the theme's inherited font.
 	 *
 	 * @return void
 	 */
@@ -187,7 +187,7 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',Inter, system-ui, sans-serif);',
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
 			$css
 		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
@@ -225,7 +225,7 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',Inter, system-ui, sans-serif);',
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
 			$css
 		);
 		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
