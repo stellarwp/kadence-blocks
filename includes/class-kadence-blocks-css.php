@@ -1615,38 +1615,6 @@ class Kadence_Blocks_CSS {
 	}
 
 	/**
-	 * Fill any empty or missing shadow leg with the caller's legacy default so render_shadow()
-	 * can emit a complete declaration.
-	 *
-	 * Numeric and {alias} values pass through untouched so they still resolve to `<n>px` or
-	 * `var(--kb-token--...)`. Only a genuinely empty (`''`/missing) leg is replaced with the
-	 * supplied default, matching the historic per-site `is_numeric( $value ) ? $value : $default`
-	 * inline behavior.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, mixed>        $shadow   The stored shadow parts (may be partial).
-	 * @param array<string, string|float> $defaults Per-caller fallback literals for empty legs.
-	 *
-	 * @return array<string, mixed> The complete keyed array.
-	 */
-	private function normalize_shadow_defaults( array $shadow, array $defaults ): array {
-		$pick = static function ( $value, $fallback ) {
-			return ( isset( $value ) && '' !== $value ) ? $value : $fallback;
-		};
-
-		return [
-			'hOffset' => $pick( $shadow['hOffset'] ?? null, $defaults['hOffset'] ),
-			'vOffset' => $pick( $shadow['vOffset'] ?? null, $defaults['vOffset'] ),
-			'blur'    => $pick( $shadow['blur'] ?? null, $defaults['blur'] ),
-			'spread'  => $pick( $shadow['spread'] ?? null, $defaults['spread'] ),
-			'color'   => $pick( $shadow['color'] ?? null, $defaults['color'] ),
-			'opacity' => ( isset( $shadow['opacity'] ) && is_numeric( $shadow['opacity'] ) ) ? $shadow['opacity'] : $defaults['opacity'],
-			'inset'   => ! empty( $shadow['inset'] ),
-		];
-	}
-
-	/**
 	 * Render a legacy positional box-shadow array through the alias-aware render_shadow().
 	 *
 	 * Several blocks store a box-shadow as a positional array where index 0 is the enabled flag,
@@ -3132,6 +3100,38 @@ class Kadence_Blocks_CSS {
 		}
 
 		return $sized_array;
+	}
+
+	/**
+	 * Fill any empty or missing shadow leg with the caller's legacy default so render_shadow()
+	 * can emit a complete declaration.
+	 *
+	 * Numeric and {alias} values pass through untouched so they still resolve to `<n>px` or
+	 * `var(--kb-token--...)`. Only a genuinely empty (`''`/missing) leg is replaced with the
+	 * supplied default, matching the historic per-site `is_numeric( $value ) ? $value : $default`
+	 * inline behavior.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>        $shadow   The stored shadow parts (may be partial).
+	 * @param array<string, string|float> $defaults Per-caller fallback literals for empty legs.
+	 *
+	 * @return array<string, mixed> The complete keyed array.
+	 */
+	private function normalize_shadow_defaults( array $shadow, array $defaults ): array {
+		$pick = static function ( $value, $fallback ) {
+			return ( isset( $value ) && '' !== $value ) ? $value : $fallback;
+		};
+
+		return [
+			'hOffset' => $pick( $shadow['hOffset'] ?? null, $defaults['hOffset'] ),
+			'vOffset' => $pick( $shadow['vOffset'] ?? null, $defaults['vOffset'] ),
+			'blur'    => $pick( $shadow['blur'] ?? null, $defaults['blur'] ),
+			'spread'  => $pick( $shadow['spread'] ?? null, $defaults['spread'] ),
+			'color'   => $pick( $shadow['color'] ?? null, $defaults['color'] ),
+			'opacity' => ( isset( $shadow['opacity'] ) && is_numeric( $shadow['opacity'] ) ) ? $shadow['opacity'] : $defaults['opacity'],
+			'inset'   => ! empty( $shadow['inset'] ),
+		];
 	}
 }
 Kadence_Blocks_CSS::get_instance();
