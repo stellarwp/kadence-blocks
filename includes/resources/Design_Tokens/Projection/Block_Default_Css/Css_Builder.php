@@ -128,6 +128,39 @@ final class Css_Builder {
 	}
 
 	/**
+	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
+	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
+	 * both invalidate it automatically.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 *
+	 * @return string
+	 */
+	public function css_for_version( string $version, string $slug ): string {
+		return $this->for_version( $version, $slug, false );
+	}
+
+	/**
+	 * Cached variant of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
+	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
+	 * front-end cache entry.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 *
+	 * @return string
+	 */
+	public function editor_css_for_version( string $version, string $slug ): string {
+		return $this->for_version( $version, $slug, true );
+	}
+
+	/**
 	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector base differs
 	 * per block, per the presence of an `editor_selector` declaration.
 	 *
@@ -192,39 +225,6 @@ final class Css_Builder {
 		}
 
 		return $css;
-	}
-
-	/**
-	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
-	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
-	 * both invalidate it automatically.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $version The store version the resolved set was built from.
-	 * @param string $slug    The token set slug.
-	 *
-	 * @return string
-	 */
-	public function css_for_version( string $version, string $slug ): string {
-		return $this->for_version( $version, $slug, false );
-	}
-
-	/**
-	 * Cached variant of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
-	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
-	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
-	 * front-end cache entry.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $version The store version the resolved set was built from.
-	 * @param string $slug    The token set slug.
-	 *
-	 * @return string
-	 */
-	public function editor_css_for_version( string $version, string $slug ): string {
-		return $this->for_version( $version, $slug, true );
 	}
 
 	/**
