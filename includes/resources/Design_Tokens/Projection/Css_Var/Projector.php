@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
@@ -37,7 +37,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Projector implements Css_Projector {
+final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * @var Token_Registry

@@ -68,6 +68,7 @@
                         "lineHeight",
                         "fontStyle",
                         "textTransform",
+                        "borderStyle",
                         "shadow"
                     ]
                 },
@@ -187,6 +188,20 @@
                 {
                     "properties": {
                         "$type": {
+                            "const": "borderStyle"
+                        },
+                        "$value": {
+                            "$ref": "#/definitions/borderStyleValue"
+                        }
+                    },
+                    "required": [
+                        "$type",
+                        "$value"
+                    ]
+                },
+                {
+                    "properties": {
+                        "$type": {
                             "const": "shadow"
                         },
                         "$value": {
@@ -272,6 +287,16 @@
             ]
         },
         "textTransformValue": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/alias"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "borderStyleValue": {
             "anyOf": [
                 {
                     "$ref": "#/definitions/alias"

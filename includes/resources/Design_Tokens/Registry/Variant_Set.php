@@ -64,16 +64,33 @@ final class Variant_Set {
 	public ?string $label;
 
 	/**
+	 * The selector the {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}
+	 * targets IN PLACE OF the block's `.wp-block-*` root when it builds the editor-scoped variant of the
+	 * block-default CSS, or null when the block root is the right target in the editor too (the common
+	 * case). Needed only when the block's editor markup does not put `.wp-block-*` on the element the
+	 * bindings are meant to style — e.g. a wrapper `<div>` around the real rendered element — so the
+	 * front-end selector would land the rule on the wrong node in the editor canvas.
+	 *
 	 * @since TBD
 	 *
-	 * @param string                 $block    The block name.
-	 * @param array<string, Binding> $bindings The block's bindable surface, keyed by property.
-	 * @param string|null            $label    The picker control label, or null for a preset set.
+	 * @var string|null
 	 */
-	private function __construct( string $block, array $bindings, ?string $label ) {
-		$this->block    = $block;
-		$this->bindings = $bindings;
-		$this->label    = $label;
+	public ?string $editor_selector;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param string                 $block           The block name.
+	 * @param array<string, Binding> $bindings        The block's bindable surface, keyed by property.
+	 * @param string|null            $label           The picker control label, or null for a preset set.
+	 * @param string|null            $editor_selector The editor-only selector override, or null to reuse the
+	 *                                                 front-end selector in the editor too.
+	 */
+	private function __construct( string $block, array $bindings, ?string $label, ?string $editor_selector ) {
+		$this->block           = $block;
+		$this->bindings        = $bindings;
+		$this->label           = $label;
+		$this->editor_selector = $editor_selector;
 	}
 
 	/**
@@ -82,9 +99,10 @@ final class Variant_Set {
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
-	 *                                  {@see Binding::from_array()}) and optional "label" (the picker control
-	 *                                  label; omit for a preset set with no picker). Variant names, default
-	 *                                  and values are document data, not declared here.
+	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
+	 *                                  label; omit for a preset set with no picker), and optional
+	 *                                  "editor_selector" (see {@see self::$editor_selector}). Variant names,
+	 *                                  default and values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
 	 *
@@ -100,7 +118,8 @@ final class Variant_Set {
 		return new self(
 			$set['block'],
 			self::bindings( $set['block'], $set['bindings'] ?? [] ),
-			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null
+			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null,
+			isset( $set['editor_selector'] ) && is_string( $set['editor_selector'] ) ? $set['editor_selector'] : null
 		);
 	}
 

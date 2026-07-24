@@ -67,6 +67,19 @@ final class ProjectorTest extends TestCase {
 		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-singlebtn--primary--button-bg', $css );
 	}
 
+	/**
+	 * The variant projector is context-independent — its scoped rules retarget the `--global-*` slot vars,
+	 * which carry no dependency on the editor's markup shape — so its editor build is byte-for-byte
+	 * identical to its front-end build.
+	 *
+	 * @return void
+	 */
+	public function testEditorCssEqualsCss(): void {
+		$projector = $this->projector( $this->button_set() );
+
+		$this->assertSame( $projector->css(), $projector->editor_css() );
+	}
+
 	public function testItIsANoopWhenTheRegistryIsDeactivated(): void {
 		$registry = $this->button_set();
 		$registry->deactivate();

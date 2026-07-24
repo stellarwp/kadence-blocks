@@ -179,7 +179,7 @@ final class Responsive {
 	/**
 	 * Whether a $type may carry the responsive / clamp shape. Only the dimension and lineHeight scalar
 	 * types are responsive-capable; single-value types (fontFamily / fontWeight / fontStyle /
-	 * textTransform) and composites are not.
+	 * textTransform / borderStyle) and composites are not.
 	 *
 	 * @since TBD
 	 *

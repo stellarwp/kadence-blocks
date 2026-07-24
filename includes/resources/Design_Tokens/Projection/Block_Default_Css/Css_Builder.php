@@ -35,8 +35,11 @@ use RuntimeException;
  *   - attribute set to any value → the block's higher-specificity rule wins, including an explicit `0`.
  *
  * And because the Projector enqueues this onto KB's editor style handle as well as the front-end one,
- * the editor canvas gets the same default for free — the reason this CSS approach is preferred over an
- * attribute/slug/control approach for these families. Nothing here is `!important`.
+ * the editor canvas gets the same token default — for most blocks the identical rule, and for a block
+ * whose editor markup renders the binding on a different element (one declaring an `editor_selector`,
+ * currently Advanced Heading) a rule re-scoped to that element so the default still lands. This
+ * editor-canvas parity is the reason this CSS approach is preferred over an attribute/slug/control
+ * approach for these families. Nothing here is `!important`.
  *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
  * `$default` variant is read (named variants are the selectable-variant projector's job). Pure: no
@@ -76,8 +79,9 @@ final class Css_Builder {
 	private Variant_Resolver $variants;
 
 	/**
-	 * Per-request memo keyed on slug + store version, so repeated builds within a request are free and a
-	 * write (which bumps the version) invalidates it without an explicit purge.
+	 * Per-request memo keyed on context (front end / editor) + store version + slug, so repeated builds
+	 * within a request are free and a write (which bumps the version) invalidates it without an explicit
+	 * purge. The context is part of the key because the editor build can differ from the front-end one.
 	 *
 	 * @since TBD
 	 *
@@ -107,6 +111,71 @@ final class Css_Builder {
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
 	public function css( string $slug = 'default' ): string {
+		return $this->build( $slug, false );
+	}
+
+	/**
+	 * Build the EDITOR-scoped variant of the block-default CSS for a token set. Identical to {@see self::css()}
+	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
+	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
+	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
+	 * the element the editor actually renders the bindings against rather than the `useBlockProps()` wrapper.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set whose resolved values the `$default` aliases resolve against.
+	 *
+	 * @return string The CSS, or an empty string when there is nothing to project.
+	 */
+	public function editor_css( string $slug = 'default' ): string {
+		return $this->build( $slug, true );
+	}
+
+	/**
+	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
+	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
+	 * both invalidate it automatically.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 *
+	 * @return string
+	 */
+	public function css_for_version( string $version, string $slug ): string {
+		return $this->for_version( $version, $slug, false );
+	}
+
+	/**
+	 * Cached variant of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
+	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
+	 * front-end cache entry.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version The store version the resolved set was built from.
+	 * @param string $slug    The token set slug.
+	 *
+	 * @return string
+	 */
+	public function editor_css_for_version( string $version, string $slug ): string {
+		return $this->for_version( $version, $slug, true );
+	}
+
+	/**
+	 * Shared build for both {@see self::css()} and {@see self::editor_css()}; only the selector base differs
+	 * per block, per the presence of an `editor_selector` declaration.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug   The token set whose resolved values the `$default` aliases resolve against.
+	 * @param bool   $editor Whether to build the editor-scoped variant.
+	 *
+	 * @return string The CSS, or an empty string when there is nothing to project.
+	 */
+	private function build( string $slug, bool $editor ): string {
 		$css = '';
 
 		foreach ( $this->registry->variant_blocks() as $block ) {
@@ -124,7 +193,9 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = '.wp-block-' . str_replace( '/', '-', $block );
+			$selector = $editor && $set->editor_selector !== null
+				? '.editor-styles-wrapper ' . $set->editor_selector
+				: '.wp-block-' . str_replace( '/', '-', $block );
 
 			// Group declarations by selector suffix so a block with several dimension props on the same
 			// element emits one rule, and props on a descendant (e.g. " img") get their own.
@@ -161,32 +232,35 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
-	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
-	 * both invalidate it automatically.
+	 * Shared cache/memo plumbing for {@see self::css_for_version()} and {@see self::editor_css_for_version()}.
+	 * The context (front end vs editor) is folded into both the per-request memo key and the object-cache key
+	 * so the two builds never share a cache slot.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $version The store version the resolved set was built from.
 	 * @param string $slug    The token set slug.
+	 * @param bool   $editor  Whether to build the editor-scoped variant.
 	 *
 	 * @return string
 	 */
-	public function css_for_version( string $version, string $slug ): string {
-		$memo_key = $version . ':' . $slug;
+	private function for_version( string $version, string $slug, bool $editor ): string {
+		$context  = $editor ? 'editor' : 'front';
+		$suffix   = $version . ':' . $slug;
+		$memo_key = $context . ':' . $suffix;
 
 		if ( isset( $this->memo[ $memo_key ] ) ) {
 			return $this->memo[ $memo_key ];
 		}
 
-		$cache_key = 'block_default_css_' . KADENCE_BLOCKS_VERSION . '_' . $memo_key;
+		$cache_key = 'block_default_css_' . $context . '_' . KADENCE_BLOCKS_VERSION . '_' . $suffix;
 		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
 
 		if ( $found && is_string( $cached ) ) {
 			return $this->memo[ $memo_key ] = $cached;
 		}
 
-		$css = $this->css( $slug );
+		$css = $editor ? $this->editor_css( $slug ) : $this->css( $slug );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 

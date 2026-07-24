@@ -81,6 +81,44 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The aggregated CSS carries the EDITOR-scoped block-default rule for Advanced Heading — the shipped
+	 * declaration's `editor_selector` re-targets the rule at the block's real heading element, scoped under
+	 * `.editor-styles-wrapper` — not the bare front-end rule on the `useBlockProps()` wrapper div. Proves the
+	 * live re-injection path (this endpoint) matches the selector the editor's own page-load enqueue used,
+	 * rather than the front-end build.
+	 *
+	 * @return void
+	 */
+	public function testItServesTheEditorScopedBlockDefaultRuleForAdvancedHeadingNotTheFrontEndOne(): void {
+		$css = $this->css();
+
+		$this->assertStringContainsString(
+			'.editor-styles-wrapper .wp-block-kadence-advancedheading .kadence-advancedheading-text{',
+			$css,
+			'The editor-scoped, re-targeted Advanced Heading rule should be present.'
+		);
+		$this->assertStringNotContainsString(
+			'.wp-block-kadence-advancedheading{',
+			$css,
+			'The bare front-end Advanced Heading rule (on the wrapper div) should not be present.'
+		);
+	}
+
+	/**
+	 * The token-var layer's editor contribution is unchanged by the aggregation switch to `editor_css()`: the
+	 * Css_Var projector is context-independent, so its editor build equals its front-end build and the
+	 * `:root`/`--kb-token--` declarations still surface in the aggregated CSS.
+	 *
+	 * @return void
+	 */
+	public function testItStillContainsTheUnchangedTokenVarContributions(): void {
+		$css = $this->css();
+
+		$this->assertStringContainsString( ':root', $css, 'The token-var :root block should be present.' );
+		$this->assertStringContainsString( '--kb-token--', $css, 'The token-var declarations should be present.' );
+	}
+
+	/**
 	 * The read route is gated by the design-tokens capability: denied for a user without it, allowed for an
 	 * administrator.
 	 *

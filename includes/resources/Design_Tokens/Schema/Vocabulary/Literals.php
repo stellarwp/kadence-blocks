@@ -85,6 +85,26 @@ final class Literals {
 	];
 
 	/**
+	 * The CSS border-style keywords accepted as a borderStyle literal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const BORDER_STYLE_KEYWORDS = [
+		'none',
+		'hidden',
+		'solid',
+		'dashed',
+		'dotted',
+		'double',
+		'groove',
+		'ridge',
+		'inset',
+		'outset',
+	];
+
+	/**
 	 * The CSS named colors (CSS Color Module Level 4 extended set, lower-cased). A curated allowlist is
 	 * what lets "not-a-color" be rejected while "rebeccapurple" is accepted.
 	 *
@@ -437,6 +457,19 @@ final class Literals {
 	 */
 	public static function is_text_transform( $value ): bool {
 		return is_string( $value ) && in_array( strtolower( $value ), self::TEXT_TRANSFORM_KEYWORDS, true );
+	}
+
+	/**
+	 * Whether the value is a valid borderStyle literal: one of the CSS border-style keywords.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The candidate borderStyle.
+	 *
+	 * @return bool
+	 */
+	public static function is_border_style( $value ): bool {
+		return is_string( $value ) && in_array( strtolower( $value ), self::BORDER_STYLE_KEYWORDS, true );
 	}
 
 	/**

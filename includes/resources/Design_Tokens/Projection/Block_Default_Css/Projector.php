@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
@@ -20,7 +20,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Projector implements Css_Projector {
+final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * The token registry, used to gate projection on the registry being active.
@@ -112,7 +112,7 @@ final class Projector implements Css_Projector {
 			return;
 		}
 
-		$css = $this->css();
+		$css = $this->editor_css();
 
 		if ( $css !== '' ) {
 			wp_add_inline_style( 'kadence-blocks-global-editor-styles', $css );
@@ -120,7 +120,7 @@ final class Projector implements Css_Projector {
 	}
 
 	/**
-	 * Build the block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Build the FRONT-END block-default CSS for the current set, via the builder's version-keyed cache.
 	 *
 	 * Returns an empty string when the store version cannot be read or a block cannot be resolved (e.g. an
 	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
@@ -140,5 +140,29 @@ final class Projector implements Css_Projector {
 		}
 
 		return $this->css_builder->css_for_version( $version, $slug );
+	}
+
+	/**
+	 * Build the EDITOR-scoped block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Identical to {@see self::css()} for every block that declares no `editor_selector`; scoped under
+	 * `.editor-styles-wrapper` and re-targeted at the block's editor markup for the ones that do (see
+	 * {@see Css_Builder::editor_css()}).
+	 *
+	 * Returns an empty string under the same failure conditions as {@see self::css()}.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function editor_css(): string {
+		$slug = $this->active->get();
+
+		try {
+			$version = $this->store->get_version( $slug );
+		} catch ( Throwable $e ) {
+			return '';
+		}
+
+		return $this->css_builder->editor_css_for_version( $version, $slug );
 	}
 }
