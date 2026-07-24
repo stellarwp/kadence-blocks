@@ -18,6 +18,7 @@ const POOL = {
 			label: 'Blue 500',
 			type: 'color',
 			layer: 'primitive',
+			role: 'color',
 		},
 		{
 			id: 'semantic.color.button-primary-bg',
@@ -25,6 +26,7 @@ const POOL = {
 			label: 'Button Primary Background',
 			type: 'color',
 			layer: 'semantic',
+			role: 'color',
 		},
 		{
 			id: 'primitive.dimension.radius.sm',
@@ -32,6 +34,7 @@ const POOL = {
 			label: 'Radius SM',
 			type: 'dimension',
 			layer: 'primitive',
+			role: 'radius',
 		},
 		{
 			id: 'semantic.radius.button',
@@ -39,6 +42,23 @@ const POOL = {
 			label: 'Button Radius',
 			type: 'dimension',
 			layer: 'semantic',
+			role: 'radius',
+		},
+		{
+			id: 'primitive.dimension.spacing.md',
+			alias: '{primitive.dimension.spacing.md}',
+			label: 'Spacing MD',
+			type: 'dimension',
+			layer: 'primitive',
+			role: 'spacing',
+		},
+		{
+			id: 'semantic.spacing.block',
+			alias: '{semantic.spacing.block}',
+			label: 'Block Spacing',
+			type: 'dimension',
+			layer: 'semantic',
+			role: 'spacing',
 		},
 		{
 			id: 'primitive.font-weight.bold',
@@ -46,6 +66,7 @@ const POOL = {
 			label: 'Bold',
 			type: 'fontWeight',
 			layer: 'primitive',
+			role: 'font-weight',
 		},
 	],
 	values: {
@@ -54,6 +75,8 @@ const POOL = {
 			'semantic.color.button-primary-bg': '#2b6cb0',
 			'primitive.dimension.radius.sm': '4px',
 			'semantic.radius.button': '0.5rem',
+			'primitive.dimension.spacing.md': '16px',
+			'semantic.spacing.block': '1.5rem',
 			'primitive.font-weight.bold': '700',
 		},
 		brand: { 'semantic.color.button-primary-bg': '#000000' },
@@ -74,6 +97,21 @@ const VARIANTS = {
 		},
 	},
 };
+
+/**
+ * A variant catalog whose `kadence/singlebtn` borderRadius control binds a role token, so the picker
+ * narrows to that token's sub-kind and pins it. Mirrors VARIANTS but with a non-null `token`.
+ */
+const boundVariants = (token) => ({
+	active: 'default',
+	sets: {
+		default: {
+			'kadence/singlebtn': {
+				properties: [{ key: 'button-radius', kind: 'dimension', token, control_attr: 'borderRadius' }],
+			},
+		},
+	},
+});
 
 describe('pickableTokenPool', () => {
 	beforeEach(() => {
@@ -118,6 +156,7 @@ describe('pickableTokensFor', () => {
 				label: 'Button Primary Background',
 				value: '#2b6cb0',
 				type: 'color',
+				role: 'color',
 			},
 			{
 				id: 'primitive.color.blue-500',
@@ -125,15 +164,21 @@ describe('pickableTokensFor', () => {
 				label: 'Blue 500',
 				value: '#3182ce',
 				type: 'color',
+				role: 'color',
 			},
 		]);
 	});
 
-	it('returns only dimension tokens, semantic first, with resolved values', () => {
+	it('returns every dimension token, semantic first, with resolved values', () => {
 		const result = pickableTokensFor('dimension');
 
-		expect(result.map((token) => token.id)).toEqual(['semantic.radius.button', 'primitive.dimension.radius.sm']);
-		expect(result.map((token) => token.value)).toEqual(['0.5rem', '4px']);
+		expect(result.map((token) => token.id)).toEqual([
+			'semantic.radius.button',
+			'semantic.spacing.block',
+			'primitive.dimension.radius.sm',
+			'primitive.dimension.spacing.md',
+		]);
+		expect(result.map((token) => token.value)).toEqual(['0.5rem', '1.5rem', '4px', '16px']);
 	});
 
 	it('returns only the fontWeight token for the text kind', () => {
@@ -157,6 +202,7 @@ describe('pickableTokensFor', () => {
 				label: 'Button Primary Background',
 				value: '#000000',
 				type: 'color',
+				role: 'color',
 			},
 			{
 				id: 'primitive.color.blue-500',
@@ -164,6 +210,7 @@ describe('pickableTokensFor', () => {
 				label: 'Blue 500',
 				value: '',
 				type: 'color',
+				role: 'color',
 			},
 		]);
 	});
@@ -194,7 +241,7 @@ describe('pickableTokensForControl', () => {
 		delete window.kadenceDesignTokensVariants;
 	});
 
-	it('resolves the mapped control kind and delegates to pickableTokensFor', () => {
+	it('delegates to the coarse kind list when the control binds no role token', () => {
 		expect(pickableTokensForControl('kadence/singlebtn', 'borderRadius')).toEqual(pickableTokensFor('dimension'));
 	});
 
@@ -204,5 +251,24 @@ describe('pickableTokensForControl', () => {
 
 	it('returns an empty array for an unknown block', () => {
 		expect(pickableTokensForControl('kadence/does-not-exist', 'borderRadius')).toEqual([]);
+	});
+
+	it('narrows to the bound token sub-kind, dropping other dimension roles', () => {
+		window.kadenceDesignTokensVariants = boundVariants('semantic.radius.button');
+
+		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		// Only radius tokens survive — spacing dimensions are dropped even though they share the kind.
+		expect(result.map((token) => token.id)).toEqual(['semantic.radius.button', 'primitive.dimension.radius.sm']);
+		expect(result.every((token) => token.role === 'radius')).toBe(true);
+	});
+
+	it('pins the bound token first, keeping semantic-first order for the rest', () => {
+		window.kadenceDesignTokensVariants = boundVariants('primitive.dimension.radius.sm');
+
+		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		// The bound primitive is pinned ahead of the semantic radius token it would otherwise trail.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm', 'semantic.radius.button']);
 	});
 });
