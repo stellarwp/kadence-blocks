@@ -47,10 +47,68 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 		$this->assertNotEmpty( $tokens );
 
 		foreach ( $tokens as $token ) {
-			$this->assertSame( [ 'id', 'alias', 'label', 'type', 'layer' ], array_keys( $token ) );
+			$this->assertSame( [ 'id', 'alias', 'label', 'type', 'layer', 'role' ], array_keys( $token ) );
 			$this->assertSame( '{' . $token['id'] . '}', $token['alias'] );
 			$this->assertNotSame( '', $token['label'] );
 		}
+	}
+
+	/**
+	 * A semantic token reports the sub-kind segment right after the layer as its role (`semantic.<role>.…`),
+	 * so a control can narrow one `$type` to the tokens of its sub-kind. Pool-driven so it asserts against
+	 * whatever ids the loaded baseline registers rather than hardcoded ids.
+	 *
+	 * @return void
+	 */
+	public function testSemanticRoleIsTheSegmentAfterTheLayer(): void {
+		$semantic = array_filter(
+			$this->catalog->all()['tokens'],
+			static fn( array $token ): bool => strpos( $token['id'], 'semantic.' ) === 0
+		);
+
+		$this->assertNotEmpty( $semantic );
+
+		foreach ( $semantic as $token ) {
+			$this->assertSame( explode( '.', $token['id'] )[1], $token['role'] );
+		}
+	}
+
+	/**
+	 * A primitive dimension token reports the segment AFTER the `primitive.dimension.` wrapper as its
+	 * role, so the wrapper never leaks in as the role and a primitive lines up with the semantic token of
+	 * the same sub-kind.
+	 *
+	 * @return void
+	 */
+	public function testPrimitiveDimensionRoleStripsTheWrapper(): void {
+		$primitive_dimensions = array_filter(
+			$this->catalog->all()['tokens'],
+			static fn( array $token ): bool => strpos( $token['id'], 'primitive.dimension.' ) === 0
+		);
+
+		$this->assertNotEmpty( $primitive_dimensions );
+
+		foreach ( $primitive_dimensions as $token ) {
+			$this->assertSame( explode( '.', $token['id'] )[2], $token['role'] );
+			$this->assertNotSame( 'dimension', $token['role'] );
+		}
+	}
+
+	/**
+	 * A semantic dimension token and the primitive dimension tokens of the same sub-kind share a role,
+	 * so narrowing by role spans both layers rather than splitting on the `primitive.dimension.` wrapper.
+	 * Uses `spacing`, which every baseline registers in both layers.
+	 *
+	 * @return void
+	 */
+	public function testSemanticAndPrimitiveShareARoleForTheSameSubKind(): void {
+		$tokens = $this->catalog->all()['tokens'];
+
+		$semantic  = $this->first_with_prefix( $tokens, 'semantic.spacing.' );
+		$primitive = $this->first_with_prefix( $tokens, 'primitive.dimension.spacing.' );
+
+		$this->assertSame( 'spacing', $semantic['role'] );
+		$this->assertSame( $semantic['role'], $primitive['role'] );
 	}
 
 	/**
@@ -174,6 +232,26 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 		}
 
 		$this->fail( sprintf( 'No token of type "%s" in the pool.', $type ) );
+	}
+
+	/**
+	 * The first token entry whose id starts with a prefix, failing the test when the baseline registers
+	 * none (a broken fixture) so a renamed baseline prefix surfaces as a clear failure rather than a
+	 * silent skip.
+	 *
+	 * @param array<int, array<string, string>> $tokens The pool's token entries.
+	 * @param string                            $prefix The id prefix to find.
+	 *
+	 * @return array<string, string> The first matching token entry.
+	 */
+	private function first_with_prefix( array $tokens, string $prefix ): array {
+		foreach ( $tokens as $token ) {
+			if ( strpos( $token['id'], $prefix ) === 0 ) {
+				return $token;
+			}
+		}
+
+		$this->fail( sprintf( 'No token with id prefix "%s" in the pool.', $prefix ) );
 	}
 
 	/**
