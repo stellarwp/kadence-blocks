@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore Csvg NODEFDTD NOIMPLIED alignnone arrowstyle dotstyle figcap fluidcarousel glight kses outlinedark outlinelight relcustom tcolumns thumbslider .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -95,10 +97,10 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css class for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$updated_version = ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ? true : false;
@@ -108,7 +110,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector('.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id );
 
 		if ( isset( $attributes['margin'][0] ) ) {
-			// Fix for this margin unit being in a non-standard locaiton in array, should be updated.
+			// Fix for this margin unit being in a non-standard location in array, should be updated.
 			$margin_unit = ( ! empty( $attributes['marginUnit'] ) ? $attributes['marginUnit'] : 'px' );
 			$css->render_measure_output(
 				array_merge( $attributes['margin'][0], array( 'marginType' => $margin_unit ) ),
@@ -899,11 +901,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 	 * This function can be used by Kadence Blocks Pro for dynamic content.
 	 * It creates a mosaic pattern layout for gallery images with specific grid classes.
 	 *
-	 * @param array $images Array of image objects with image data.
-	 * @param array $attributes Gallery block attributes.
-	 * @param array $gallery_classes Array of CSS classes for the gallery container.
-	 * @param string $image_filter Image filter setting.
-	 * @param bool $lightbox_cap Whether lightbox captions are enabled.
+	 * @param array  $images          Array of image objects with image data.
+	 * @param array  $attributes      Gallery block attributes.
+	 * @param array  $gallery_classes Array of CSS classes for the gallery container.
+	 * @param string $image_filter    Image filter setting.
+	 * @param bool   $lightbox_cap    Whether lightbox captions are enabled.
 	 * @return string HTML markup for the mosaic gallery.
 	 */
 	public function render_mosaic_gallery( $images, $attributes, $gallery_classes = array(), $image_filter = 'none', $lightbox_cap = false ) {
@@ -1008,7 +1010,10 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		return $output;
 	}
 	/**
-	 * Output Gallery image markeup.
+	 * Output Gallery image markup.
+	 *
+	 * @param array<string, mixed> $image      Image data.
+	 * @param array<string, mixed> $attributes Gallery block attributes.
 	 */
 	public function render_gallery_images( $image, $attributes ) {
 		$type          = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );
@@ -1129,7 +1134,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? wp_kses_post( $caption ) : '' ) . '</' . $fig_tag . '>';
 
 		//links in the main gallery caption can mess with lightbox function, strip them out.
-		//they're okay in the lighbox though
+		// they're okay in the lightbox though.
 		if( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $figcap ) && is_string( $figcap ) ) {
 			$figcap = preg_replace('#<a.*?>(.*?)</a>#i', '\1', $figcap);
 		}
@@ -1196,7 +1201,10 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		return $output;
 	}
 	/**
-	 * Output Gallery image markeup.
+	 * Output Gallery image markup.
+	 *
+	 * @param array<string, mixed> $image      Image data.
+	 * @param array<string, mixed> $attributes Gallery block attributes.
 	 */
 	public function render_gallery_thumb_images( $image, $attributes ) {
 		$type          = ( ! empty( $attributes['type'] ) ? $attributes['type'] : 'masonry' );

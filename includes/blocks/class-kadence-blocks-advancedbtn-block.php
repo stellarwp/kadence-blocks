@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore bgtype btnkey btnvalue simplelightbox videolight .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -51,10 +53,10 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
-	 * @param string $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css object for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );

@@ -84,10 +84,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
-	 * @param string $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css object for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -239,7 +239,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Build up the dynamic styles for a size.
 	 *
-	 * @param string               $css        The CSS builder instance.
+	 * @param Kadence_Blocks_CSS   $css        The CSS builder instance.
 	 * @param array<string, mixed> $attributes The block attributes.
 	 * @param string               $unique_id  The block's unique id.
 	 * @param string               $size       The responsive size.
@@ -247,7 +247,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return void
 	 */
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
-		/** @var Kadence_Blocks_CSS $css */
 		$sized_attributes         = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 

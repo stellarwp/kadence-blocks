@@ -2603,8 +2603,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the opacity css output.
 	 *
-	 * @param array $attributes an array of attributes.
-	 * @param null|integer $name name of opacity attribute.
+	 * @param array       $attributes an array of attributes.
+	 * @param string|null $name name of opacity attribute.
 	 */
 	public function render_opacity_from_100( $attributes, $name = null ) {
 		if ( ! isset( $attributes[ $name ] ) || ! $this->is_number( $attributes[ $name ] ) ) {

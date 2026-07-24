@@ -5,6 +5,8 @@
  * @package Kadence Blocks
  */
 
+// cspell:ignore alignnone arrowstyle blackonlight colorsecond colum crvi crvl crvli crvr crvri ctdi disablekb dotstyle generatepress littri littrii locsecond modestbranding mtns outlineblack outlinewhite overbg sltl sltli sltr sltri threelevels threelevelsi wavei wavesi .
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -86,7 +88,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Return a grid tempate coulmns string for custom column widths.
+	 * Return a grid template columns string for custom column widths.
 	 *
 	 * @param object $css the css object.
 	 * @param int    $columns the amount of columns.
@@ -323,10 +325,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array  $attributes the blocks attributes.
-	 * @param string $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css object for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -572,7 +574,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 
 		//Tablet layout
 		if ( empty( $attributes['tabletLayout'] ) && ! empty( $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ) ) ) {
-			//no tablet layout, but we have a tablet guttter width, so render the inherited column layout from desktop, potentially with custom widths.
+			// no tablet layout, but we have a tablet gutter width, so render the inherited column layout from desktop, potentially with custom widths.
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
 
@@ -1599,7 +1601,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$src_base = 'youtube' == $background_video_type ? 'https://www.youtube.com/embed/' : 'https://player.vimeo.com/video/';
 			$video_id = 'youtube' == $background_video_type ? $video_attributes['youTube'] : $video_attributes['vimeo'];
 
-			// Vimeo and youtube share a bunch of params, that's convienent.
+			// Vimeo and youtube share a bunch of params, that's convenient.
 			$src_query_string = '?' . http_build_query(
 				array(
 					'autoplay' => 1,
