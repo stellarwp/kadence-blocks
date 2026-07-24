@@ -8,12 +8,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 /**
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
- * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches four
+ * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
  * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants (the
  * per-set variant catalog the variant picker and the "save as new variant" form read),
  * window.kadenceDesignTokensSets (the token-set catalog the per-block set-override picker reads),
  * window.kadenceDesignTokensPresetDefaults (the per-block attribute-default catalog the block-registration
- * filter reads), and window.kadenceDesignTokensRest (the REST descriptor the variant writes POST to).
+ * filter reads), window.kadenceDesignTokensRest (the REST descriptor the variant writes POST to), and
+ * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
  * Guarded on wp_script_is( …, 'enqueued' ) so it runs only where that bundle loads, and skipped entirely
  * when the registry is fail-closed (a deactivated registry projects nothing, so the pickers offer nothing).
  *
@@ -70,6 +71,15 @@ final class Localizer {
 	private const REST_OBJECT = 'kadenceDesignTokensRest';
 
 	/**
+	 * The JS global the editor token picker's accessor reads (the pickable-token pool).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const PICKABLE_OBJECT = 'kadenceDesignTokensPickable';
+
+	/**
 	 * The token registry, for the fail-closed gate.
 	 *
 	 * @since TBD
@@ -106,23 +116,35 @@ final class Localizer {
 	private Block_Preset_Catalog $preset_defaults;
 
 	/**
+	 * The pickable-token pool builder.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Registry       $registry        The token registry.
-	 * @param Variant_Catalog      $variant_catalog The variant catalog builder.
-	 * @param Set_Catalog          $set_catalog     The token-set catalog builder.
-	 * @param Block_Preset_Catalog $preset_defaults The per-block attribute-default catalog builder.
+	 * @var Pickable_Tokens_Catalog
+	 */
+	private Pickable_Tokens_Catalog $pickable;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Registry          $registry        The token registry.
+	 * @param Variant_Catalog         $variant_catalog The variant catalog builder.
+	 * @param Set_Catalog             $set_catalog     The token-set catalog builder.
+	 * @param Block_Preset_Catalog    $preset_defaults The per-block attribute-default catalog builder.
+	 * @param Pickable_Tokens_Catalog $pickable        The pickable-token pool builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Variant_Catalog $variant_catalog,
 		Set_Catalog $set_catalog,
-		Block_Preset_Catalog $preset_defaults
+		Block_Preset_Catalog $preset_defaults,
+		Pickable_Tokens_Catalog $pickable
 	) {
 		$this->registry        = $registry;
 		$this->variant_catalog = $variant_catalog;
 		$this->set_catalog     = $set_catalog;
 		$this->preset_defaults = $preset_defaults;
+		$this->pickable        = $pickable;
 	}
 
 	/**
@@ -145,6 +167,7 @@ final class Localizer {
 		$this->attach( self::SETS_OBJECT, $this->set_catalog->all() );
 		$this->attach( self::PRESET_DEFAULTS_OBJECT, $this->preset_defaults->all() );
 		$this->attach( self::REST_OBJECT, $this->rest() );
+		$this->attach( self::PICKABLE_OBJECT, $this->pickable->all() );
 	}
 
 	/**
