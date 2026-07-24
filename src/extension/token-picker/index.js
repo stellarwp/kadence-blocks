@@ -21,6 +21,8 @@ import { activeSet, blockProperties } from '../variant-picker';
  * kinds; values are DTCG $type lists. `shadow` is inert until a shadow control kind exists — it is
  * mapped now so a future shadow control lights up with no change here. An unknown kind yields no
  * types, so the filter fails closed.
+ *
+ * @since TBD
  */
 const KIND_TYPES = {
 	color: ['color'],
