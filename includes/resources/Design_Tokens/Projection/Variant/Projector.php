@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
@@ -19,7 +19,7 @@ use Throwable;
  *
  * @since TBD
  */
-final class Projector implements Css_Projector {
+final class Projector extends Abstract_Css_Projector {
 
 	/**
 	 * @var Token_Registry
@@ -138,19 +138,6 @@ final class Projector implements Css_Projector {
 		} catch ( Throwable $e ) {
 			return '';
 		}
-	}
-
-	/**
-	 * The editor build, identical to {@see self::css()}: this projector's scoped rules retarget the
-	 * `--global-*` slot vars, and slot names carry no dependency on the editor's markup shape (e.g. a
-	 * wrapper div), so nothing needs a different build.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function editor_css(): string {
-		return $this->css();
 	}
 
 	/**
