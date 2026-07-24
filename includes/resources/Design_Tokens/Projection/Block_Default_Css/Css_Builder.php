@@ -35,8 +35,11 @@ use RuntimeException;
  *   - attribute set to any value → the block's higher-specificity rule wins, including an explicit `0`.
  *
  * And because the Projector enqueues this onto KB's editor style handle as well as the front-end one,
- * the editor canvas gets the same default for free — the reason this CSS approach is preferred over an
- * attribute/slug/control approach for these families. Nothing here is `!important`.
+ * the editor canvas gets the same token default — for most blocks the identical rule, and for a block
+ * whose editor markup renders the binding on a different element (one declaring an `editor_selector`,
+ * currently Advanced Heading) a rule re-scoped to that element so the default still lands. This
+ * editor-canvas parity is the reason this CSS approach is preferred over an attribute/slug/control
+ * approach for these families. Nothing here is `!important`.
  *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
  * `$default` variant is read (named variants are the selectable-variant projector's job). Pure: no
@@ -76,8 +79,9 @@ final class Css_Builder {
 	private Variant_Resolver $variants;
 
 	/**
-	 * Per-request memo keyed on slug + store version, so repeated builds within a request are free and a
-	 * write (which bumps the version) invalidates it without an explicit purge.
+	 * Per-request memo keyed on context (front end / editor) + store version + slug, so repeated builds
+	 * within a request are free and a write (which bumps the version) invalidates it without an explicit
+	 * purge. The context is part of the key because the editor build can differ from the front-end one.
 	 *
 	 * @since TBD
 	 *
