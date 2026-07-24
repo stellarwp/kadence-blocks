@@ -409,5 +409,73 @@ return [
 				],
 			],
 		],
+		[
+			// Advanced Text (heading) core design properties + typography set: low-specificity
+			// block-default-CSS rules on the block root (`.wp-block-kadence-advancedheading`), where every
+			// bound attribute is empty by default in block.json — build_css() emits nothing for any of them
+			// until a value is set, so the whole 12-property set fits this mechanism directly with no
+			// per-block adapter and no build_css()/SCSS/editor-JS change. Typography (font-family,
+			// letter-spacing, text-transform) uses the heading's own tokens, kept separate from the
+			// form-control family the Button uses; font-size/line-height/font-weight are the heading's
+			// own re-skin seeds. The rule also overrides a theme's per-tag element styles (h1/h2/p,
+			// specificity 0,0,1), which is what lets the design-system defaults "re-skin" an unset
+			// heading. A per-instance value renders at higher specificity (the `.kt-adv-heading<uid>`
+			// instance selector) and still wins.
+			'block'    => 'kadence/advancedheading',
+			'bindings' => [
+				'color'         => [
+					'token'    => 'semantic.color.text',
+					'css_prop' => 'color',
+				],
+				'background'    => [
+					'token'    => 'semantic.color.heading-bg',
+					'css_prop' => 'background-color',
+				],
+				'typography'    => [
+					'token'    => 'semantic.font-family.heading',
+					'css_prop' => 'font-family',
+				],
+				'fontSize'      => [
+					'token'    => 'semantic.font-size.heading',
+					'css_prop' => 'font-size',
+				],
+				'fontHeight'    => [
+					'token'    => 'semantic.line-height.heading',
+					'css_prop' => 'line-height',
+				],
+				'fontWeight'    => [
+					'token'    => 'semantic.font-weight.heading',
+					'css_prop' => 'font-weight',
+				],
+				'letterSpacing' => [
+					'token'    => 'semantic.letter-spacing.heading',
+					'css_prop' => 'letter-spacing',
+				],
+				'textTransform' => [
+					'token'    => 'semantic.text-transform.heading',
+					'css_prop' => 'text-transform',
+				],
+				'padding'       => [
+					'token'    => 'semantic.spacing.heading-padding',
+					'css_prop' => 'padding',
+				],
+				'borderColor'   => [
+					'token'    => 'semantic.color.border',
+					'css_prop' => 'border-color',
+				],
+				'borderWidth'   => [
+					'token'    => 'semantic.border-width.default',
+					'css_prop' => 'border-width',
+				],
+				'borderRadius'  => [
+					'token'    => 'semantic.radius.heading',
+					'css_prop' => 'border-radius',
+				],
+				'borderStyle'   => [
+					'token'    => 'semantic.border-style.default',
+					'css_prop' => 'border-style',
+				],
+			],
+		],
 	],
 ];

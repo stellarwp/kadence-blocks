@@ -92,6 +92,8 @@ final class Kind {
 				return Literals::is_font_style( $value );
 			case Token_Type::get_type_text_transform():
 				return Literals::is_text_transform( $value );
+			case Token_Type::get_type_border_style():
+				return Literals::is_border_style( $value );
 			default:
 				return false;
 		}

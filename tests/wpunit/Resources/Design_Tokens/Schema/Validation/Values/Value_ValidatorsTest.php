@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Schema\Validation\Values;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Border_Style_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Dimension_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_Value;
@@ -205,6 +206,19 @@ final class Value_ValidatorsTest extends TestCase {
 		$this->assertSame( [], ( new Text_Transform_Value() )->validate( 'uppercase', 'p.$value' ) );
 
 		$errors = ( new Text_Transform_Value() )->validate( 'bogus', 'p.$value' );
+		$this->assertCount( 1, $errors );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+	}
+
+	/**
+	 * A borderStyle value accepts the CSS keywords and rejects anything else.
+	 *
+	 * @return void
+	 */
+	public function testBorderStyleAcceptsKeywords(): void {
+		$this->assertSame( [], ( new Border_Style_Value() )->validate( 'solid', 'p.$value' ) );
+
+		$errors = ( new Border_Style_Value() )->validate( 'bogus', 'p.$value' );
 		$this->assertCount( 1, $errors );
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
 	}

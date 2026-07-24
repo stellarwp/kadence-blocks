@@ -396,6 +396,47 @@ final class LiteralsTest extends TestCase {
 	}
 
 	/**
+	 * A borderStyle literal is one of the CSS border-style keywords (case-insensitive); anything else is
+	 * not.
+	 *
+	 * @dataProvider borderStyleProvider
+	 *
+	 * @param mixed $value    The candidate value.
+	 * @param bool  $expected Whether it is a valid borderStyle.
+	 *
+	 * @return void
+	 */
+	public function testBorderStyles( $value, bool $expected ): void {
+		$this->assertSame( $expected, Literals::is_border_style( $value ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function borderStyleProvider(): Generator {
+		yield 'none' => [
+			'value'    => 'none',
+			'expected' => true,
+		];
+		yield 'solid' => [
+			'value'    => 'solid',
+			'expected' => true,
+		];
+		yield 'mixed case' => [
+			'value'    => 'Dashed',
+			'expected' => true,
+		];
+		yield 'unknown word' => [
+			'value'    => 'bogus',
+			'expected' => false,
+		];
+		yield 'empty' => [
+			'value'    => '',
+			'expected' => false,
+		];
+	}
+
+	/**
 	 * A clamp preferred slot accepts a plain dimension, a CSS function form, or a bare calc-style
 	 * expression combining length / percentage / viewport terms; a lone unitless number, a bare word, or
 	 * an unbalanced expression is not.

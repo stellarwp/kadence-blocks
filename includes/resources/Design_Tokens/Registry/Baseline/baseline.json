@@ -397,6 +397,10 @@
 			"image-bg": {
 				"$type": "color",
 				"$value": "{primitive.color.transparent}"
+			},
+			"heading-bg": {
+				"$type": "color",
+				"$value": "{primitive.color.transparent}"
 			}
 		},
 		"spacing": {
@@ -413,6 +417,10 @@
 				"$value": "{primitive.dimension.spacing.xl}"
 			},
 			"media-padding": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.spacing.none}"
+			},
+			"heading-padding": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.spacing.none}"
 			}
@@ -433,12 +441,22 @@
 			"column": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.radius.none}"
+			},
+			"heading": {
+				"$type": "dimension",
+				"$value": "{primitive.dimension.radius.none}"
 			}
 		},
 		"border-width": {
 			"default": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.border-width.sm}"
+			}
+		},
+		"border-style": {
+			"default": {
+				"$type": "borderStyle",
+				"$value": "none"
 			}
 		},
 		"icon-size": {
@@ -451,6 +469,11 @@
 			"control": {
 				"$type": "fontFamily",
 				"$value": "{primitive.fontFamily.sans}"
+			},
+			"heading": {
+				"$type": "fontFamily",
+				"$value": ["inherit"],
+				"$description": "Inherits the theme's font by default; a site sets a real family here to impose a heading font."
 			}
 		},
 		"font-size": {
@@ -465,18 +488,30 @@
 						}
 					}
 				}
+			},
+			"heading": {
+				"$type": "dimension",
+				"$value": "2rem"
 			}
 		},
 		"font-weight": {
 			"control": {
 				"$type": "fontWeight",
 				"$value": "normal"
+			},
+			"heading": {
+				"$type": "fontWeight",
+				"$value": "400"
 			}
 		},
 		"line-height": {
 			"control": {
 				"$type": "lineHeight",
 				"$value": "normal"
+			},
+			"heading": {
+				"$type": "lineHeight",
+				"$value": "1.125"
 			}
 		},
 		"font-style": {
@@ -489,10 +524,18 @@
 			"control": {
 				"$type": "textTransform",
 				"$value": "none"
+			},
+			"heading": {
+				"$type": "textTransform",
+				"$value": "none"
 			}
 		},
 		"letter-spacing": {
 			"control": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"heading": {
 				"$type": "dimension",
 				"$value": "0"
 			}
@@ -671,6 +714,27 @@
 						"tokens": {
 							"color": "{semantic.color.icon}",
 							"size": "{semantic.icon-size.default}"
+						}
+					}
+				},
+				"kadence/advancedheading": {
+					"$default": "default",
+					"default": {
+						"label": "Default",
+						"tokens": {
+							"color": "{semantic.color.text}",
+							"background": "{semantic.color.heading-bg}",
+							"typography": "{semantic.font-family.heading}",
+							"fontSize": "{semantic.font-size.heading}",
+							"fontHeight": "{semantic.line-height.heading}",
+							"fontWeight": "{semantic.font-weight.heading}",
+							"letterSpacing": "{semantic.letter-spacing.heading}",
+							"textTransform": "{semantic.text-transform.heading}",
+							"padding": "{semantic.spacing.heading-padding}",
+							"borderColor": "{semantic.color.border}",
+							"borderWidth": "{semantic.border-width.default}",
+							"borderRadius": "{semantic.radius.heading}",
+							"borderStyle": "{semantic.border-style.default}"
 						}
 					}
 				}

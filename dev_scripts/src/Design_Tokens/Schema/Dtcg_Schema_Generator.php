@@ -222,7 +222,8 @@ final class Dtcg_Schema_Generator {
 			return [ 'type' => [ 'string', 'number' ] ];
 		}
 
-		// color, dimension, fontStyle, textTransform: a literal string. PHP Literals enforces grammar.
+		// color, dimension, fontStyle, textTransform, borderStyle: a literal string. PHP Literals
+		// enforces grammar.
 		return [ 'type' => 'string' ];
 	}
 
@@ -297,7 +298,7 @@ final class Dtcg_Schema_Generator {
 								],
 								'additionalProperties' => false,
 							],
-							Responsive::get_clamp_key()      => [
+							Responsive::get_clamp_key() => [
 								'type'                 => 'object',
 								'required'             => [
 									Responsive::get_clamp_min_key(),

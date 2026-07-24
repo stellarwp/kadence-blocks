@@ -166,6 +166,43 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * The shipped Advanced Text (heading) declarations emit all 13 bound core-design and typography
+	 * properties as one grouped, low-specificity rule on the block root, each pointing its css_prop at the
+	 * matching token var with the resolved default as the fallback — including the font-family fallback
+	 * resolved to the theme's inherited font.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitTheAdvancedHeadingSurfaceRule(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-advancedheading{color:var(' . Css_Var::from_id( 'semantic.color.text' ) . ',#1A202C);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'background-color:var(' . Css_Var::from_id( 'semantic.color.heading-bg' ) . ',transparent);',
+			$css
+		);
+		$this->assertStringContainsString(
+			'font-family:var(' . Css_Var::from_id( 'semantic.font-family.heading' ) . ',inherit);',
+			$css
+		);
+		$this->assertStringContainsString( 'font-size:var(' . Css_Var::from_id( 'semantic.font-size.heading' ) . ',2rem);', $css );
+		$this->assertStringContainsString( 'line-height:var(' . Css_Var::from_id( 'semantic.line-height.heading' ) . ',1.125);', $css );
+		$this->assertStringContainsString( 'font-weight:var(' . Css_Var::from_id( 'semantic.font-weight.heading' ) . ',400);', $css );
+		$this->assertStringContainsString( 'letter-spacing:var(' . Css_Var::from_id( 'semantic.letter-spacing.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'text-transform:var(' . Css_Var::from_id( 'semantic.text-transform.heading' ) . ',none);', $css );
+		$this->assertStringContainsString( 'padding:var(' . Css_Var::from_id( 'semantic.spacing.heading-padding' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);', $css );
+		$this->assertStringContainsString( 'border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);', $css );
+		$this->assertStringContainsString( 'border-radius:var(' . Css_Var::from_id( 'semantic.radius.heading' ) . ',0);', $css );
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);}', $css );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItContributesNothingForABindingWithoutACssProp(): void {

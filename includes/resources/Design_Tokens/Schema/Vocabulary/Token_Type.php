@@ -12,9 +12,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * The shadow composite type holds an object $value whose sub-fields each validate as another $type
  * (color, dimension); composite_fields() returns the field => $type map as DATA so a future shape
  * extends the map rather than rewriting the walker. Text-style properties (fontWeight, lineHeight,
- * fontStyle, textTransform) are plain scalar $types a block binds one discrete token per property —
- * there is no bundled typography composite, because a block that sets each property individually can
- * never consume a single `font` shorthand.
+ * fontStyle, textTransform) and borderStyle are plain scalar $types a block binds one discrete token
+ * per property — there is no bundled typography composite, because a block that sets each property
+ * individually can never consume a single `font` shorthand.
  *
  * @since TBD
  */
@@ -84,6 +84,15 @@ final class Token_Type {
 	private const TEXT_TRANSFORM = 'textTransform';
 
 	/**
+	 * The borderStyle $type (an enum literal: none/solid/dashed/…).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const BORDER_STYLE = 'borderStyle';
+
+	/**
 	 * The shadow $type (a composite object $value).
 	 *
 	 * @since TBD
@@ -117,6 +126,7 @@ final class Token_Type {
 		self::LINE_HEIGHT,
 		self::FONT_STYLE,
 		self::TEXT_TRANSFORM,
+		self::BORDER_STYLE,
 		self::SHADOW,
 	];
 
@@ -275,6 +285,17 @@ final class Token_Type {
 	 */
 	public static function get_type_text_transform(): string {
 		return self::TEXT_TRANSFORM;
+	}
+
+	/**
+	 * The borderStyle $type.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type_border_style(): string {
+		return self::BORDER_STYLE;
 	}
 
 	/**

@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation;
 
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Contracts\Value_Validator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Border_Style_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Dimension_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Font_Family_Value;
@@ -91,6 +92,7 @@ final class Dtcg_Validator {
 			Token_Type::get_type_line_height()    => new Line_Height_Value(),
 			Token_Type::get_type_font_style()     => new Font_Style_Value(),
 			Token_Type::get_type_text_transform() => new Text_Transform_Value(),
+			Token_Type::get_type_border_style()   => new Border_Style_Value(),
 			Token_Type::get_type_shadow()         => new Shadow_Value(),
 		];
 	}
