@@ -141,8 +141,21 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_border_styles( $border_style, 'fieldBorderStyle' );
 		$css->render_measure_output( $form_attributes, 'fieldBorderRadius', 'border-radius' );
 
-		if ( ! empty( $field_style['boxShadow'][0] ) && $field_style['boxShadow'][0] === true ) {
-			$css->add_property( 'box-shadow', ( isset( $field_style['boxShadow'][7] ) && true === $field_style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $field_style['boxShadow'][3] ) && is_numeric( $field_style['boxShadow'][3] ) ? $field_style['boxShadow'][3] : '2' ) . 'px ' . ( isset( $field_style['boxShadow'][4] ) && is_numeric( $field_style['boxShadow'][4] ) ? $field_style['boxShadow'][4] : '2' ) . 'px ' . ( isset( $field_style['boxShadow'][5] ) && is_numeric( $field_style['boxShadow'][5] ) ? $field_style['boxShadow'][5] : '3' ) . 'px ' . ( isset( $field_style['boxShadow'][6] ) && is_numeric( $field_style['boxShadow'][6] ) ? $field_style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $field_style['boxShadow'][1] ) && ! empty( $field_style['boxShadow'][1] ) ? $field_style['boxShadow'][1] : '#000000' ), ( isset( $field_style['boxShadow'][2] ) && is_numeric( $field_style['boxShadow'][2] ) ? $field_style['boxShadow'][2] : 0.4 ) ) );
+		if ( isset( $field_style['boxShadow'] ) && is_array( $field_style['boxShadow'] ) && ! empty( $field_style['boxShadow'][0] ) && $field_style['boxShadow'][0] === true ) {
+			$css->add_property(
+				'box-shadow',
+				$css->render_legacy_shadow(
+					$field_style['boxShadow'],
+					[
+						'hOffset' => '2',
+						'vOffset' => '2',
+						'blur'    => '3',
+						'spread'  => '0',
+						'color'   => '#000000',
+						'opacity' => 0.4,
+					]
+				)
+			);
 		}
 
 		$css->render_measure_output( $field_style, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
@@ -208,8 +221,21 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-color',  $css->sanitize_color( $field_style['borderActive'] ) );
 		}
 
-		if ( ! empty( $field_style['boxShadowActive'][0] ) && $field_style['boxShadowActive'][0] === true ) {
-			$css->add_property( 'box-shadow', ( isset( $field_style['boxShadowActive'][7] ) && true === $field_style['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $field_style['boxShadowActive'][3] ) && is_numeric( $field_style['boxShadowActive'][3] ) ? $field_style['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][4] ) && is_numeric( $field_style['boxShadowActive'][4] ) ? $field_style['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][5] ) && is_numeric( $field_style['boxShadowActive'][5] ) ? $field_style['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $field_style['boxShadowActive'][6] ) && is_numeric( $field_style['boxShadowActive'][6] ) ? $field_style['boxShadowActive'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $field_style['boxShadowActive'][1] ) && ! empty( $field_style['boxShadowActive'][1] ) ? $field_style['boxShadowActive'][1] : '#000000' ), ( isset( $field_style['boxShadowActive'][2] ) && is_numeric( $field_style['boxShadowActive'][2] ) ? $field_style['boxShadowActive'][2] : 0.4 ) ) );
+		if ( isset( $field_style['boxShadowActive'] ) && is_array( $field_style['boxShadowActive'] ) && ! empty( $field_style['boxShadowActive'][0] ) && $field_style['boxShadowActive'][0] === true ) {
+			$css->add_property(
+				'box-shadow',
+				$css->render_legacy_shadow(
+					$field_style['boxShadowActive'],
+					[
+						'hOffset' => '2',
+						'vOffset' => '2',
+						'blur'    => '3',
+						'spread'  => '0',
+						'color'   => '#000000',
+						'opacity' => 0.4,
+					]
+				)
+			);
 		}
 
 

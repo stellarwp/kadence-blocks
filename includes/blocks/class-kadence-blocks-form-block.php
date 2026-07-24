@@ -203,7 +203,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'border-color', $css->render_color( $style['border'], $alpha ) );
 				}
 				if ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) {
-					$css->add_property( 'box-shadow', ( isset( $style['boxShadow'][7] ) && true === $style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $style['boxShadow'][3] ) && is_numeric( $style['boxShadow'][3] ) ? $style['boxShadow'][3] : '1' ) . 'px ' . ( isset( $style['boxShadow'][4] ) && is_numeric( $style['boxShadow'][4] ) ? $style['boxShadow'][4] : '1' ) . 'px ' . ( isset( $style['boxShadow'][5] ) && is_numeric( $style['boxShadow'][5] ) ? $style['boxShadow'][5] : '2' ) . 'px ' . ( isset( $style['boxShadow'][6] ) && is_numeric( $style['boxShadow'][6] ) ? $style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $style['boxShadow'][1] ) && ! empty( $style['boxShadow'][1] ) ? $style['boxShadow'][1] : '#000000' ), ( isset( $style['boxShadow'][2] ) && is_numeric( $style['boxShadow'][2] ) ? $style['boxShadow'][2] : 0.2 ) ) );
+					$css->add_property(
+						'box-shadow',
+						$css->render_legacy_shadow(
+							$style['boxShadow'],
+							[
+								'hOffset' => '1',
+								'vOffset' => '1',
+								'blur'    => '2',
+								'spread'  => '0',
+								'color'   => '#000000',
+								'opacity' => 0.2,
+							]
+						)
+					);
 				}
 
 			}
@@ -217,7 +230,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'border-color', $css->render_color( $style['borderActive'], $alpha ) );
 				}
 				if ( isset( $style['boxShadowActive'] ) && is_array( $style['boxShadowActive'] ) && isset( $style['boxShadowActive'][0] ) && true === $style['boxShadowActive'][0] ) {
-					$css->add_property( 'box-shadow', ( isset( $style['boxShadowActive'][7] ) && true === $style['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $style['boxShadowActive'][3] ) && is_numeric( $style['boxShadowActive'][3] ) ? $style['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $style['boxShadowActive'][4] ) && is_numeric( $style['boxShadowActive'][4] ) ? $style['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $style['boxShadowActive'][5] ) && is_numeric( $style['boxShadowActive'][5] ) ? $style['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $style['boxShadowActive'][6] ) && is_numeric( $style['boxShadowActive'][6] ) ? $style['boxShadowActive'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $style['boxShadowActive'][1] ) && ! empty( $style['boxShadowActive'][1] ) ? $style['boxShadowActive'][1] : '#000000' ), ( isset( $style['boxShadowActive'][2] ) && is_numeric( $style['boxShadowActive'][2] ) ? $style['boxShadowActive'][2] : 0.4 ) ) );
+					$css->add_property(
+						'box-shadow',
+						$css->render_legacy_shadow(
+							$style['boxShadowActive'],
+							[
+								'hOffset' => '2',
+								'vOffset' => '2',
+								'blur'    => '3',
+								'spread'  => '0',
+								'color'   => '#000000',
+								'opacity' => 0.4,
+							]
+						)
+					);
 				}
 				if ( isset( $style['backgroundActiveType'] ) && 'gradient' === $style['backgroundActiveType'] ) {
 					$bg1 = ( ! isset( $style['backgroundActive'] ) ? $css->render_color( '#444444', ( isset( $style['backgroundActiveOpacity'] ) && is_numeric( $style['backgroundActiveOpacity'] ) ? $style['backgroundActiveOpacity'] : 1 ) ) : $css->render_color( $style['backgroundActive'], ( isset( $style['backgroundActiveOpacity'] ) && is_numeric( $style['backgroundActiveOpacity'] ) ? $style['backgroundActiveOpacity'] : 1 ) ) );
@@ -440,7 +466,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'border-color', $css->render_color( $submit['border'], $alpha ) );
 			}
 			if ( isset( $submit['boxShadow'] ) && is_array( $submit['boxShadow'] ) && isset( $submit['boxShadow'][0] ) && true === $submit['boxShadow'][0] ) {
-				$css->add_property( 'box-shadow', ( isset( $submit['boxShadow'][7] ) && true === $submit['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadow'][3] ) && is_numeric( $submit['boxShadow'][3] ) ? $submit['boxShadow'][3] : '1' ) . 'px ' . ( isset( $submit['boxShadow'][4] ) && is_numeric( $submit['boxShadow'][4] ) ? $submit['boxShadow'][4] : '1' ) . 'px ' . ( isset( $submit['boxShadow'][5] ) && is_numeric( $submit['boxShadow'][5] ) ? $submit['boxShadow'][5] : '2' ) . 'px ' . ( isset( $submit['boxShadow'][6] ) && is_numeric( $submit['boxShadow'][6] ) ? $submit['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadow'][1] ) && ! empty( $submit['boxShadow'][1] ) ? $submit['boxShadow'][1] : '#000000' ), ( isset( $submit['boxShadow'][2] ) && is_numeric( $submit['boxShadow'][2] ) ? $submit['boxShadow'][2] : 0.2 ) ) );
+				$css->add_property(
+					'box-shadow',
+					$css->render_legacy_shadow(
+						$submit['boxShadow'],
+						[
+							'hOffset' => '1',
+							'vOffset' => '1',
+							'blur'    => '2',
+							'spread'  => '0',
+							'color'   => '#000000',
+							'opacity' => 0.2,
+						]
+					)
+				);
 			}
 
 			$css->set_selector( '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:hover, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:focus ' );
@@ -452,7 +491,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'border-color', $css->render_color( $submit['borderHover'], $alpha ) );
 			}
 			if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true !== $submit['boxShadowHover'][7] ) {
-				$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
+				$css->add_property(
+					'box-shadow',
+					$css->render_legacy_shadow(
+						$submit['boxShadowHover'],
+						[
+							'hOffset' => '2',
+							'vOffset' => '2',
+							'blur'    => '3',
+							'spread'  => '0',
+							'color'   => '#000000',
+							'opacity' => 0.4,
+						]
+					)
+				);
 			}
 			if ( 'gradient' !== $bgtype ) {
 				if ( isset( $submit['backgroundHover'] ) && ! empty( $submit['backgroundHover'] ) ) {
@@ -460,7 +512,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background', $css->render_color( $submit['backgroundHover'], $alpha ) );
 				}
 				if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ) {
-					$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
+					$css->add_property(
+						'box-shadow',
+						$css->render_legacy_shadow(
+							$submit['boxShadowHover'],
+							[
+								'hOffset' => '2',
+								'vOffset' => '2',
+								'blur'    => '3',
+								'spread'  => '0',
+								'color'   => '#000000',
+								'opacity' => 0.4,
+							]
+						)
+					);
 				}
 			}
 
@@ -479,7 +544,20 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background', $css->render_color( $submit['backgroundHover'], $alpha ) );
 				}
 				if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ) {
-					$css->add_property( 'box-shadow', ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) );
+					$css->add_property(
+						'box-shadow',
+						$css->render_legacy_shadow(
+							$submit['boxShadowHover'],
+							[
+								'hOffset' => '2',
+								'vOffset' => '2',
+								'blur'    => '3',
+								'spread'  => '0',
+								'color'   => '#000000',
+								'opacity' => 0.4,
+							]
+						)
+					);
 					if ( isset( $submit['borderRadius'] ) && is_numeric( $submit['borderRadius'] ) ) {
 						$css->add_property( 'border-radius', $submit['borderRadius'] . 'px' );
 					}

@@ -664,7 +664,20 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			);
 			$shadow = isset( $attributes['shadow'][0] ) ? $attributes['shadow'][0] : $default_shadow;
 
-			$css->add_property( 'box-shadow', $shadow['hOffset'] .'px '. $shadow['vOffset'] .'px '. $shadow['blur'] . 'px '. $shadow['spread'] . 'px ' . $css->render_color( $shadow['color'], $shadow['opacity'] ) );
+			$css->add_property(
+				'box-shadow',
+				$css->render_shadow(
+					$shadow,
+					[
+						'hOffset' => '4',
+						'vOffset' => '2',
+						'blur'    => '14',
+						'spread'  => '0',
+						'color'   => '#000000',
+						'opacity' => 0.2,
+					]
+				)
+			);
 		}
 
 		if( !empty( $attributes['containerBorderWidth'][0] ) || !empty( $attributes['containerBorderWidth'][1] ) || !empty( $attributes['containerBorderWidth'][2] ) || !empty( $attributes['containerBorderWidth'][3] ) ) {

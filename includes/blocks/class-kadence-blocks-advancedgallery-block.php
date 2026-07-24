@@ -304,12 +304,38 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && is_array( $attributes['shadow'][ 0 ] ) ) {
 				$shadow = $attributes['shadow'][ 0 ];
 				$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-thumb-item .kb-gal-image-radius' );
-				$css->add_property('box-shadow', $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $css->render_color( $shadow['color'], $shadow['opacity'] ) );
+				$css->add_property(
+					'box-shadow',
+					$css->render_shadow(
+						$shadow,
+						[
+							'hOffset' => '4',
+							'vOffset' => '2',
+							'blur'    => '14',
+							'spread'  => '0',
+							'color'   => '#000000',
+							'opacity' => 0.2,
+						]
+					)
+				);
 			}
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'][ 0 ] ) ) {
 				$shadow_hover = $attributes['shadowHover'][ 0 ];
 				$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item:hover .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-thumb-item:hover .kb-gal-image-radius' );
-				$css->add_property('box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $shadow_hover['color'], $shadow_hover['opacity'] ) );
+				$css->add_property(
+					'box-shadow',
+					$css->render_shadow(
+						$shadow_hover,
+						[
+							'hOffset' => '4',
+							'vOffset' => '2',
+							'blur'    => '14',
+							'spread'  => '0',
+							'color'   => '#000000',
+							'opacity' => 0.2,
+						]
+					)
+				);
 
 			} else {
 				$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item:hover .kb-gal-image-radius' );

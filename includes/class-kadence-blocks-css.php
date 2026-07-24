@@ -1558,10 +1558,17 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the shadow output.
 	 *
-	 * @param array  $shadow an array of shadow settings.
+	 * @param array                     $shadow   an array of shadow settings.
+	 * @param array<string, string|float> $defaults optional per-caller fallback literals used to fill
+	 *                                            any empty/missing leg before rendering. When omitted
+	 *                                            the method behaves exactly as before. Numeric and
+	 *                                            {alias} values always pass through untouched.
 	 * @return string
 	 */
-	public function render_shadow( $shadow ) {
+	public function render_shadow( $shadow, array $defaults = [] ) {
+		if ( ! empty( $defaults ) && is_array( $shadow ) ) {
+			$shadow = $this->normalize_shadow_defaults( $shadow, $defaults );
+		}
 		if ( empty( $shadow ) ) {
 			return false;
 		}
@@ -1607,6 +1614,67 @@ class Kadence_Blocks_CSS {
 		return $shadow_string;
 	}
 
+	/**
+	 * Fill any empty or missing shadow leg with the caller's legacy default so render_shadow()
+	 * can emit a complete declaration.
+	 *
+	 * Numeric and {alias} values pass through untouched so they still resolve to `<n>px` or
+	 * `var(--kb-token--...)`. Only a genuinely empty (`''`/missing) leg is replaced with the
+	 * supplied default, matching the historic per-site `is_numeric( $value ) ? $value : $default`
+	 * inline behavior.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>        $shadow   The stored shadow parts (may be partial).
+	 * @param array<string, string|float> $defaults Per-caller fallback literals for empty legs.
+	 *
+	 * @return array<string, mixed> The complete keyed array.
+	 */
+	private function normalize_shadow_defaults( array $shadow, array $defaults ): array {
+		$pick = static function ( $value, $fallback ) {
+			return ( isset( $value ) && '' !== $value ) ? $value : $fallback;
+		};
+
+		return [
+			'hOffset' => $pick( $shadow['hOffset'] ?? null, $defaults['hOffset'] ),
+			'vOffset' => $pick( $shadow['vOffset'] ?? null, $defaults['vOffset'] ),
+			'blur'    => $pick( $shadow['blur'] ?? null, $defaults['blur'] ),
+			'spread'  => $pick( $shadow['spread'] ?? null, $defaults['spread'] ),
+			'color'   => $pick( $shadow['color'] ?? null, $defaults['color'] ),
+			'opacity' => ( isset( $shadow['opacity'] ) && is_numeric( $shadow['opacity'] ) ) ? $shadow['opacity'] : $defaults['opacity'],
+			'inset'   => ! empty( $shadow['inset'] ),
+		];
+	}
+
+	/**
+	 * Render a legacy positional box-shadow array through the alias-aware render_shadow().
+	 *
+	 * Several blocks store a box-shadow as a positional array where index 0 is the enabled flag,
+	 * 1 the color, 2 the opacity, 3-6 the offsets/blur/spread and 7 the inset flag. This maps that
+	 * shape onto the keyed array render_shadow() expects and applies the caller's per-state
+	 * defaults, so a {dot.alias} on any numeric leg resolves to its token var().
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed>           $box_shadow The positional shadow array (indexes 1-7 are read).
+	 * @param array<string, string|float> $defaults   Per-caller fallback literals for empty legs.
+	 *
+	 * @return string The rendered box-shadow declaration.
+	 */
+	public function render_legacy_shadow( array $box_shadow, array $defaults ): string {
+		return (string) $this->render_shadow(
+			[
+				'color'   => $box_shadow[1] ?? '',
+				'opacity' => $box_shadow[2] ?? '',
+				'hOffset' => $box_shadow[3] ?? '',
+				'vOffset' => $box_shadow[4] ?? '',
+				'blur'    => $box_shadow[5] ?? '',
+				'spread'  => $box_shadow[6] ?? '',
+				'inset'   => ! empty( $box_shadow[7] ),
+			],
+			$defaults
+		);
+	}
 
 	/**
 	 * Generates the border radius color output.

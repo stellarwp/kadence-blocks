@@ -233,7 +233,20 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		// Box shadow
 		if ( isset( $attributes['displayBoxShadow'] ) && true == $attributes['displayBoxShadow'] ) {
 			if ( isset( $attributes['boxShadow'] ) && is_array( $attributes['boxShadow'] ) && isset( $attributes['boxShadow'][0] ) && is_array( $attributes['boxShadow'][0] ) ) {
-				$css->add_property( 'box-shadow', ( isset( $attributes['boxShadow'][0]['inset'] ) && true === $attributes['boxShadow'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['boxShadow'][0]['hOffset'] ) && is_numeric( $attributes['boxShadow'][0]['hOffset'] ) ? $attributes['boxShadow'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['vOffset'] ) && is_numeric( $attributes['boxShadow'][0]['vOffset'] ) ? $attributes['boxShadow'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['blur'] ) && is_numeric( $attributes['boxShadow'][0]['blur'] ) ? $attributes['boxShadow'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['spread'] ) && is_numeric( $attributes['boxShadow'][0]['spread'] ) ? $attributes['boxShadow'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['boxShadow'][0]['color'] ) && ! empty( $attributes['boxShadow'][0]['color'] ) ? $attributes['boxShadow'][0]['color'] : '#000000' ), ( isset( $attributes['boxShadow'][0]['opacity'] ) && is_numeric( $attributes['boxShadow'][0]['opacity'] ) ? $attributes['boxShadow'][0]['opacity'] : 0.2 ) ) );
+				$css->add_property(
+					'box-shadow',
+					$css->render_shadow(
+						$attributes['boxShadow'][0],
+						[
+							'hOffset' => '0',
+							'vOffset' => '0',
+							'blur'    => '14',
+							'spread'  => '0',
+							'color'   => '#000000',
+							'opacity' => 0.2,
+						]
+					)
+				);
 			} else {
 				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
 			}
