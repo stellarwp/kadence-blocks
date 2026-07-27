@@ -50,18 +50,18 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The aggregated CSS contains both the token vars and a stored variant's scoped retarget rule, proving it
-	 * composes the token-var and variant projectors (not just one layer).
+	 * The aggregated CSS contains both the token vars and a stored preset's scoped retarget rule, proving it
+	 * composes the token-var and preset projectors (not just one layer).
 	 *
 	 * @return void
 	 */
-	public function testItAggregatesTokenVarsAndAVariantsScopedRule(): void {
-		$this->seedVariant( Token_Store::default_slug(), 'accent' );
+	public function testItAggregatesTokenVarsAndAPresetsScopedRule(): void {
+		$this->seedPreset( Token_Store::default_slug(), 'accent' );
 
 		$css = $this->css();
 
 		$this->assertStringContainsString( '--kb-token--', $css, 'The token vars layer should be present.' );
-		$this->assertStringContainsString( 'kb-variant--accent', $css, 'The stored variant scoped rule should be present.' );
+		$this->assertStringContainsString( 'kb-preset--accent', $css, 'The stored preset scoped rule should be present.' );
 	}
 
 	/**
@@ -71,8 +71,8 @@ final class Projected_Css_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItEmitsEveryTokenSetWithItsSwitchLayer(): void {
-		$this->seedVariant( Token_Store::default_slug(), 'accent' );
-		$this->seedVariant( 'dark', 'accent' );
+		$this->seedPreset( Token_Store::default_slug(), 'accent' );
+		$this->seedPreset( 'dark', 'accent' );
 
 		$css = $this->css();
 
@@ -160,20 +160,20 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Persist a full-surface button variant into a token set's overrides document.
+	 * Persist a full-surface button preset into a token set's overrides document.
 	 *
-	 * @param string $slug    The token set slug to write into.
-	 * @param string $variant The variant slug.
+	 * @param string $slug   The token set slug to write into.
+	 * @param string $preset The preset slug.
 	 *
 	 * @return void
 	 */
-	private function seedVariant( string $slug, string $variant ): void {
+	private function seedPreset( string $slug, string $preset ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'variants' => [
+					'presets' => [
 						self::BUTTON => [
-							$variant => [
+							$preset => [
 								'label'  => 'Accent',
 								'tokens' => [
 									'button-bg'         => '#ff0000',

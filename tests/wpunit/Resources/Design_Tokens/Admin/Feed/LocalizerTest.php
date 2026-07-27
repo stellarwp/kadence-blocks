@@ -5,7 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
@@ -183,7 +183,7 @@ final class LocalizerTest extends TestCase {
 			$cyclic,
 			$this->container->get( Token_Store::class ),
 			$this->container->get( Active_Set_Store::class ),
-			$this->container->get( Variants::class ),
+			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class )
 		);
@@ -195,7 +195,7 @@ final class LocalizerTest extends TestCase {
 		$this->assertTrue( $feed['active'], 'Structure still renders.' );
 		$this->assertFalse( $feed['resolved'], 'Values could not be resolved.' );
 		$this->assertSame( [], $feed['values'] );
-		$this->assertSame( [], $feed['variants'] );
+		$this->assertSame( [], $feed['presets'] );
 		$this->assertArrayHasKey( 'groups', $feed['schema'] );
 	}
 

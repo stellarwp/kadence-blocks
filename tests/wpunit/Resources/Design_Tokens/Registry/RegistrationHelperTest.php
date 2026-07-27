@@ -39,8 +39,8 @@ final class RegistrationHelperTest extends TestCase {
 			$registry->register( $token );
 		}
 
-		foreach ( $declarations['variant_sets'] as $variant_set ) {
-			$registry->register_variant_set( $variant_set );
+		foreach ( $declarations['preset_bindings'] as $preset_set ) {
+			$registry->register_preset_bindings( $preset_set );
 		}
 
 		return $registry;
@@ -55,7 +55,7 @@ final class RegistrationHelperTest extends TestCase {
 		$this->assertTrue( $this->registry->has( 'semantic.color.button-primary-text' ) );
 	}
 
-	public function testDeclarationsFileRegisteredTheButtonVariantSet(): void {
+	public function testDeclarationsFileRegisteredTheButtonPresetBindings(): void {
 		// The button registers a picker set (it declares a "Style" control label).
 		$set = $this->registry->for_block( 'kadence/singlebtn' );
 
@@ -81,8 +81,8 @@ final class RegistrationHelperTest extends TestCase {
 		);
 	}
 
-	public function testVariantSetHelperRegistersAgainstTheSharedRegistry(): void {
-		kadence_blocks_register_design_variant_set(
+	public function testPresetBindingsHelperRegistersAgainstTheSharedRegistry(): void {
+		kadence_blocks_register_design_preset_bindings(
 			[
 				'block'    => 'kadence/test-block',
 				'bindings' => [ 'thing' => [ 'kadence_slot' => 'palette1' ] ],
@@ -98,6 +98,6 @@ final class RegistrationHelperTest extends TestCase {
 
 	public function testHelperFunctionsExist(): void {
 		$this->assertTrue( function_exists( 'kadence_blocks_register_design_token' ) );
-		$this->assertTrue( function_exists( 'kadence_blocks_register_design_variant_set' ) );
+		$this->assertTrue( function_exists( 'kadence_blocks_register_design_preset_bindings' ) );
 	}
 }

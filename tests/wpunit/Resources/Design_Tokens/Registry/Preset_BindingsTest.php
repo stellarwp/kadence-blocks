@@ -5,10 +5,10 @@ namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use Tests\Support\Classes\TestCase;
 
-final class Variant_SetTest extends TestCase {
+final class Preset_BindingsTest extends TestCase {
 
 	/**
 	 * @return array<string, mixed>
@@ -24,14 +24,14 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testItRetainsTheBlock(): void {
-		$this->assertSame( 'kadence/advancedbtn', Variant_Set::from_array( $this->declaration() )->block );
+		$this->assertSame( 'kadence/advancedbtn', Preset_Bindings::from_array( $this->declaration() )->block );
 	}
 
 	/**
 	 * @return void
 	 */
 	public function testItRetainsTheControlLabelWhenDeclared(): void {
-		$set = Variant_Set::from_array( $this->declaration() + [ 'label' => 'Style' ] );
+		$set = Preset_Bindings::from_array( $this->declaration() + [ 'label' => 'Style' ] );
 
 		$this->assertSame( 'Style', $set->label );
 	}
@@ -40,7 +40,7 @@ final class Variant_SetTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheControlLabelIsNullWhenOmitted(): void {
-		$this->assertNull( Variant_Set::from_array( $this->declaration() )->label );
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->label );
 	}
 
 	/**
@@ -51,7 +51,7 @@ final class Variant_SetTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRetainsTheEditorSelectorWhenDeclared(): void {
-		$set = Variant_Set::from_array(
+		$set = Preset_Bindings::from_array(
 			$this->declaration() + [ 'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text' ]
 		);
 
@@ -65,11 +65,11 @@ final class Variant_SetTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheEditorSelectorIsNullWhenOmitted(): void {
-		$this->assertNull( Variant_Set::from_array( $this->declaration() )->editor_selector );
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->editor_selector );
 	}
 
 	public function testItParsesTokenReferenceAndInlineBindings(): void {
-		$set = Variant_Set::from_array( $this->declaration() );
+		$set = Preset_Bindings::from_array( $this->declaration() );
 
 		$bg = $set->binding( 'button-bg' );
 		$this->assertInstanceOf( Binding::class, $bg );
@@ -83,12 +83,12 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testBindingReturnsNullForAnUndeclaredProperty(): void {
-		$this->assertNull( Variant_Set::from_array( $this->declaration() )->binding( 'not-a-binding' ) );
+		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->binding( 'not-a-binding' ) );
 	}
 
-	public function testItAcceptsAVariantSetWithNoBindings(): void {
-		// A block can be variant-enabled before its bindings are wired.
-		$set = Variant_Set::from_array( [ 'block' => 'kadence/advancedbtn' ] );
+	public function testItAcceptsAPresetSetWithNoBindings(): void {
+		// A block can be preset-enabled before its bindings are wired.
+		$set = Preset_Bindings::from_array( [ 'block' => 'kadence/advancedbtn' ] );
 
 		$this->assertSame( [], $set->bindings );
 	}
@@ -96,13 +96,13 @@ final class Variant_SetTest extends TestCase {
 	public function testItThrowsWhenBlockIsMissing(): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Variant_Set::from_array( [ 'bindings' => [] ] );
+		Preset_Bindings::from_array( [ 'bindings' => [] ] );
 	}
 
 	public function testItThrowsOnAnEmptyBinding(): void {
 		$this->expectException( InvalidArgumentException::class );
 
-		Variant_Set::from_array(
+		Preset_Bindings::from_array(
 			[
 				'block'    => 'kadence/advancedbtn',
 				'bindings' => [ 'button-bg' => [] ], // neither a token nor an inline target.
@@ -111,7 +111,7 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testConsistencyReportsUnboundAndUnvaluedProperties(): void {
-		$set = Variant_Set::from_array( $this->declaration() ); // binds: button-bg, button-border.
+		$set = Preset_Bindings::from_array( $this->declaration() ); // binds: button-bg, button-border.
 
 		// Values set button-bg (bound) and button-text (unbound); button-border is bound but never set.
 		$report = $set->consistency( [ 'button-bg', 'button-text' ] );
@@ -121,7 +121,7 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testConsistencyIsCleanWhenBindingsAndValuesMatch(): void {
-		$set = Variant_Set::from_array( $this->declaration() );
+		$set = Preset_Bindings::from_array( $this->declaration() );
 
 		$report = $set->consistency( [ 'button-bg', 'button-border' ] );
 
@@ -130,7 +130,7 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testToUiSchemaEmitsTokenReferenceAndInlineTargetsPerProperty(): void {
-		$ui = Variant_Set::from_array( $this->declaration() )->to_ui_schema();
+		$ui = Preset_Bindings::from_array( $this->declaration() )->to_ui_schema();
 
 		$this->assertSame( [ 'bindings' ], array_keys( $ui ) );
 
@@ -154,7 +154,7 @@ final class Variant_SetTest extends TestCase {
 	}
 
 	public function testToUiSchemaIsEmptyWhenTheSetHasNoBindings(): void {
-		$ui = Variant_Set::from_array( [ 'block' => 'kadence/advancedbtn' ] )->to_ui_schema();
+		$ui = Preset_Bindings::from_array( [ 'block' => 'kadence/advancedbtn' ] )->to_ui_schema();
 
 		$this->assertSame( [ 'bindings' => [] ], $ui );
 	}

@@ -3,23 +3,23 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Value_Normalizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Value_Normalizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Covers the variant value normalizer against the real shipped baseline: matching a captured literal to a
+ * Covers the preset value normalizer against the real shipped baseline: matching a captured literal to a
  * semantic alias, leaving unmatched literals and existing aliases alone, and the deterministic role-affinity
  * pick when several semantics share a value.
  */
-final class Variant_Value_NormalizerTest extends TestCase {
+final class Preset_Value_NormalizerTest extends TestCase {
 
 	private const SET = 'default';
 
 	/**
-	 * @var Variant_Value_Normalizer
+	 * @var Preset_Value_Normalizer
 	 */
-	private Variant_Value_Normalizer $normalizer;
+	private Preset_Value_Normalizer $normalizer;
 
 	/**
 	 * @var Token_Resolver
@@ -32,7 +32,7 @@ final class Variant_Value_NormalizerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->normalizer = $this->container->get( Variant_Value_Normalizer::class );
+		$this->normalizer = $this->container->get( Preset_Value_Normalizer::class );
 		$this->resolver   = $this->container->get( Token_Resolver::class );
 	}
 

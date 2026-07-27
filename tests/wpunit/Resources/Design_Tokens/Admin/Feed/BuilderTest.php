@@ -37,10 +37,10 @@ final class BuilderTest extends TestCase {
 	}
 
 	public function testActiveRegistryPassesStructureAndInputsThrough(): void {
-		$values   = [ 'semantic.color.button-bg' => '#3182CE' ];
-		$variants = [ 'kadence/advancedbtn' => [ 'default' => 'primary' ] ];
+		$values  = [ 'semantic.color.button-bg' => '#3182CE' ];
+		$presets = [ 'kadence/advancedbtn' => [ 'default' => 'primary' ] ];
 
-		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $this->rest(), 'v7', 'default' );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $presets, $this->rest(), 'v7', 'default' );
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertTrue( $feed['resolved'] );
@@ -48,7 +48,7 @@ final class BuilderTest extends TestCase {
 		$this->assertSame( 'default', $feed['slug'] );
 		$this->assertSame( $this->registry->to_ui_schema(), $feed['schema'] );
 		$this->assertSame( $values, $feed['values'] );
-		$this->assertSame( $variants, $feed['variants'] );
+		$this->assertSame( $presets, $feed['presets'] );
 		$this->assertSame( $this->rest(), $feed['rest'] );
 	}
 
@@ -86,7 +86,7 @@ final class BuilderTest extends TestCase {
 		$this->assertFalse( $feed['resolved'] );
 		$this->assertSame( [ 'groups' => [] ], $feed['schema'] );
 		$this->assertSame( [], $feed['values'] );
-		$this->assertSame( [], $feed['variants'] );
+		$this->assertSame( [], $feed['presets'] );
 		// The REST descriptor, version and slug are still present so the React app can wire even when hidden.
 		$this->assertSame( $this->rest(), $feed['rest'] );
 		$this->assertSame( 'v7', $feed['version'] );

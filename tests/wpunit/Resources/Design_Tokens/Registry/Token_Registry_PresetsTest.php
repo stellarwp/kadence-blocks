@@ -4,14 +4,14 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Registry;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises variant-set registration and binding-projection resolution against a freshly constructed
+ * Exercises preset-set registration and binding-projection resolution against a freshly constructed
  * registry, so the assertions are independent of whatever the module declares at boot.
  */
-final class Token_Registry_VariantsTest extends TestCase {
+final class Token_Registry_PresetsTest extends TestCase {
 
 	private function registry(): Token_Registry {
 		$registry = new Token_Registry();
@@ -27,7 +27,7 @@ final class Token_Registry_VariantsTest extends TestCase {
 			]
 		);
 
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/advancedbtn',
 				'bindings' => [
@@ -51,7 +51,7 @@ final class Token_Registry_VariantsTest extends TestCase {
 	public function testForBlockReturnsTheRegisteredSet(): void {
 		$set = $this->registry()->for_block( 'kadence/advancedbtn' );
 
-		$this->assertInstanceOf( Variant_Set::class, $set );
+		$this->assertInstanceOf( Preset_Bindings::class, $set );
 		$this->assertSame( 'kadence/advancedbtn', $set->block );
 		$this->assertNotNull( $set->binding( 'button-bg' ) );
 	}
@@ -96,7 +96,7 @@ final class Token_Registry_VariantsTest extends TestCase {
 
 	public function testEffectiveProjectionsAreEmptyForAReferenceToAnUnregisteredToken(): void {
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/advancedbtn',
 				'bindings' => [ 'button-bg' => [ 'token' => 'semantic.color.not-registered' ] ],

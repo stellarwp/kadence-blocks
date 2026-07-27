@@ -3,7 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Block_Preset_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Attribute_Default_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -15,7 +15,7 @@ use Tests\Support\Classes\TestCase;
  * early-filters.js reads: a resolved token converts and appears in the catalog, an unresolved
  * token is omitted, and a resolved value this catalog cannot convert is omitted too.
  */
-final class Block_Preset_CatalogTest extends TestCase {
+final class Attribute_Default_CatalogTest extends TestCase {
 
 	/**
 	 * A resolved `rem` token converts to px and appears under its block/attribute path.
@@ -62,14 +62,14 @@ final class Block_Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * `Block_Preset_Catalog` is registered against the real Token Registry on boot, so the real
+	 * `Attribute_Default_Catalog` is registered against the real Token Registry on boot, so the real
 	 * container resolves it with the shipped baseline's `semantic.icon-size.default` (1.5rem, i.e.
 	 * 24px) — proving the wiring, not just the catalog class in isolation.
 	 *
 	 * @return void
 	 */
 	public function testTheRegisteredCatalogResolvesThroughTheRealContainer(): void {
-		$catalog = $this->container->get( Block_Preset_Catalog::class );
+		$catalog = $this->container->get( Attribute_Default_Catalog::class );
 
 		$this->assertSame( [ 'kadence/single-icon' => [ 'size' => 24.0 ] ], $catalog->all() );
 	}
@@ -79,9 +79,9 @@ final class Block_Preset_CatalogTest extends TestCase {
 	 *
 	 * @param string $value The `$value` the `semantic.icon-size.default` leaf resolves to.
 	 *
-	 * @return Block_Preset_Catalog
+	 * @return Attribute_Default_Catalog
 	 */
-	private function catalog_resolving_to( string $value ): Block_Preset_Catalog {
+	private function catalog_resolving_to( string $value ): Attribute_Default_Catalog {
 		return $this->catalog_for(
 			[
 				'semantic' => [
@@ -101,15 +101,15 @@ final class Block_Preset_CatalogTest extends TestCase {
 	 *
 	 * @param array<string, mixed> $baseline The baseline document contents.
 	 *
-	 * @return Block_Preset_Catalog
+	 * @return Attribute_Default_Catalog
 	 */
-	private function catalog_for( array $baseline ): Block_Preset_Catalog {
+	private function catalog_for( array $baseline ): Attribute_Default_Catalog {
 		$resolver = new Token_Resolver(
 			$this->container->get( Token_Store::class ),
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
 			new Css_Renderer()
 		);
 
-		return new Block_Preset_Catalog( $resolver );
+		return new Attribute_Default_Catalog( $resolver );
 	}
 }

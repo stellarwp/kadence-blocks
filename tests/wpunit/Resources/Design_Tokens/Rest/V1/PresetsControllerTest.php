@@ -4,7 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Variants_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Presets_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use ReflectionClass;
 use ReflectionProperty;
@@ -16,10 +16,10 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * Covers the read and write surface of the Design Tokens variants controller: the registered routes, the
- * baseline-merged reads, and the per-block / per-variant / default writes against the real shipped baseline.
+ * Covers the read and write surface of the Design Tokens presets controller: the registered routes, the
+ * baseline-merged reads, and the per-block / per-preset / default writes against the real shipped baseline.
  */
-final class VariantsControllerTest extends TestCase {
+final class PresetsControllerTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
@@ -29,9 +29,9 @@ final class VariantsControllerTest extends TestCase {
 	private Token_Store $store;
 
 	/**
-	 * @var Variants_Controller
+	 * @var Presets_Controller
 	 */
-	private Variants_Controller $controller;
+	private Presets_Controller $controller;
 
 	/**
 	 * @var WP_REST_Server
@@ -45,7 +45,7 @@ final class VariantsControllerTest extends TestCase {
 		parent::setUp();
 
 		$this->store      = $this->container->get( Token_Store::class );
-		$this->controller = $this->container->get( Variants_Controller::class );
+		$this->controller = $this->container->get( Presets_Controller::class );
 
 		global $wp_rest_server;
 		$this->rest_server = new WP_REST_Server();
@@ -73,14 +73,14 @@ final class VariantsControllerTest extends TestCase {
 		$base          = $this->controller_rest_base();
 		$block_route   = $this->controller_constant( 'BLOCK_ROUTE' );
 		$default_route = $this->controller_constant( 'DEFAULT_ROUTE' );
-		$variant_route = $this->controller_constant( 'VARIANT_ROUTE' );
+		$preset_route  = $this->controller_constant( 'PRESET_ROUTE' );
 
 		$collection = "/$namespace/$base";
 		$block      = "/$namespace/$base/$block_route";
 		$default    = "/$namespace/$base/$block_route/$default_route";
-		$variant    = "/$namespace/$base/$block_route/$variant_route";
+		$preset     = "/$namespace/$base/$block_route/$preset_route";
 
-		foreach ( [ $collection, $block, $default, $variant ] as $route ) {
+		foreach ( [ $collection, $block, $default, $preset ] as $route ) {
 			$this->assertArrayHasKey( $route, $this->rest_server->get_routes(), "Route $route should be registered." );
 
 			$options = $this->rest_server->get_route_options( $route );
@@ -96,14 +96,14 @@ final class VariantsControllerTest extends TestCase {
 			$this->assertContains( $method, $this->route_methods( $block ), "Block route should accept $method." );
 		}
 
-		$this->assertContains( 'DELETE', $this->route_methods( $variant ) );
+		$this->assertContains( 'DELETE', $this->route_methods( $preset ) );
 		$this->assertContains( 'PUT', $this->route_methods( $default ) );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testItListsTheRegisteredVariantBlocks(): void {
+	public function testItListsTheRegisteredPresetBlocks(): void {
 		$response = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -118,7 +118,7 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testGetItemReturnsTheBaselineMergedVariantSet(): void {
+	public function testGetItemReturnsTheBaselineMergedPresetSet(): void {
 		$response = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -127,8 +127,8 @@ final class VariantsControllerTest extends TestCase {
 
 		$this->assertSame( self::BUTTON, $data['block'] );
 		$this->assertSame( 'primary', $data['default'] );
-		$this->assertArrayHasKey( 'primary', $data['variants'] );
-		$this->assertArrayHasKey( 'secondary', $data['variants'] );
+		$this->assertArrayHasKey( 'primary', $data['presets'] );
+		$this->assertArrayHasKey( 'secondary', $data['presets'] );
 	}
 
 	/**
@@ -136,21 +136,21 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testGetItemReflectsAStoredOverride(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
 			. '"outline":{"label":"Outline","tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
 
-		$this->assertArrayHasKey( 'outline', $data['variants'] );
-		$this->assertSame( 'Outline', $data['variants']['outline']['label'] );
+		$this->assertArrayHasKey( 'outline', $data['presets'] );
+		$this->assertSame( 'Outline', $data['presets']['outline']['label'] );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testGetItemReturns404ForABlockThatAcceptsNoVariants(): void {
-		// kadence/spacer has no baseline variant data and no variant set registered for it.
+	public function testGetItemReturns404ForABlockThatAcceptsNoPresets(): void {
+		// kadence/spacer has no baseline preset data and no preset set registered for it.
 		$result = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, 'kadence/spacer' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -159,20 +159,20 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A create deep-merges a single variant into the set, leaving the baseline siblings and the default in
+	 * A create deep-merges a single preset into the set, leaving the baseline siblings and the default in
 	 * place.
 	 *
 	 * @return void
 	 */
-	public function testCreateMergesASingleVariantPreservingSiblingsAndDefault(): void {
+	public function testCreateMergesASinglePresetPreservingSiblingsAndDefault(): void {
 		$response = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'outline',
-					'label'   => 'Outline',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -183,16 +183,16 @@ final class VariantsControllerTest extends TestCase {
 
 		$data = $response->get_data();
 
-		// The new variant lands while the baseline siblings and the default survive.
-		$this->assertArrayHasKey( 'outline', $data['variants'] );
-		$this->assertArrayHasKey( 'primary', $data['variants'] );
-		$this->assertArrayHasKey( 'secondary', $data['variants'] );
+		// The new preset lands while the baseline siblings and the default survive.
+		$this->assertArrayHasKey( 'outline', $data['presets'] );
+		$this->assertArrayHasKey( 'primary', $data['presets'] );
+		$this->assertArrayHasKey( 'secondary', $data['presets'] );
 		$this->assertSame( 'primary', $data['default'] );
 	}
 
 	/**
 	 * A write carrying a known `set` slug lands in that set and reports it, while the default set is left
-	 * untouched — so a variant authored for a block on a non-default set does not leak into the default set.
+	 * untouched — so a preset authored for a block on a non-default set does not leak into the default set.
 	 *
 	 * @return void
 	 */
@@ -213,31 +213,31 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'accent',
-					'label'   => 'Accent',
-					'tokens'  => $tokens,
-					'set'     => 'dark',
+					'preset' => 'accent',
+					'label'  => 'Accent',
+					'tokens' => $tokens,
+					'set'    => 'dark',
 				]
 			)
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$this->assertSame( 'dark', $response->get_data()['slug'] );
-		$this->assertArrayHasKey( 'accent', $response->get_data()['variants'] );
+		$this->assertArrayHasKey( 'accent', $response->get_data()['presets'] );
 
-		// Reading the dark set sees the new variant.
+		// Reading the dark set sees the new preset.
 		$dark = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON, [ 'set' => 'dark' ] ) );
-		$this->assertArrayHasKey( 'accent', $dark->get_data()['variants'] );
+		$this->assertArrayHasKey( 'accent', $dark->get_data()['presets'] );
 
 		// The default set never saw the write.
 		$default = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
-		$this->assertArrayNotHasKey( 'accent', $default->get_data()['variants'] );
+		$this->assertArrayNotHasKey( 'accent', $default->get_data()['presets'] );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testCreateRequiresAVariantSlug(): void {
+	public function testCreateRequiresAPresetSlug(): void {
 		$result = $this->controller->create_item(
 			$this->block_request( WP_REST_Server::CREATABLE, self::BUTTON, [ 'tokens' => [ 'button-bg' => 'transparent' ] ] )
 		);
@@ -248,20 +248,20 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A replace (PUT) stores exactly the submitted variant set, dropping any override variant the body omits
-	 * while the baseline variants remain visible.
+	 * A replace (PUT) stores exactly the submitted preset set, dropping any override preset the body omits
+	 * while the baseline presets remain visible.
 	 *
 	 * @return void
 	 */
-	public function testUpdateReplacesTheStoredVariantSet(): void {
-		// Seed two override-only variants, then PUT a set that keeps only one of them.
+	public function testUpdateReplacesTheStoredPresetSet(): void {
+		// Seed two override-only presets, then PUT a set that keeps only one of them.
 		$this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'outline',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'outline',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -270,8 +270,8 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'dashed',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'dashed',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -280,20 +280,20 @@ final class VariantsControllerTest extends TestCase {
 			$this->block_request(
 				'PUT',
 				self::BUTTON,
-				[ 'variants' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ] ]
+				[ 'presets' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ] ]
 			)
 		);
 
 		$data = $response->get_data();
 
-		// The override "dashed" is dropped; "outline" survives. Baseline variants always remain visible.
-		$this->assertArrayNotHasKey( 'dashed', $data['variants'] );
-		$this->assertArrayHasKey( 'outline', $data['variants'] );
-		$this->assertArrayHasKey( 'primary', $data['variants'] );
+		// The override "dashed" is dropped; "outline" survives. Baseline presets always remain visible.
+		$this->assertArrayNotHasKey( 'dashed', $data['presets'] );
+		$this->assertArrayHasKey( 'outline', $data['presets'] );
+		$this->assertArrayHasKey( 'primary', $data['presets'] );
 	}
 
 	/**
-	 * Deleting the block resets it to baseline: the stored override variant is gone and the baseline variants
+	 * Deleting the block resets it to baseline: the stored override preset is gone and the baseline presets
 	 * render again.
 	 *
 	 * @return void
@@ -304,8 +304,8 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'outline',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'outline',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -316,46 +316,46 @@ final class VariantsControllerTest extends TestCase {
 
 		$data = $response->get_data();
 
-		// The override is gone; the block renders its baseline variants again.
-		$this->assertArrayNotHasKey( 'outline', $data['variants'] );
-		$this->assertArrayHasKey( 'primary', $data['variants'] );
+		// The override is gone; the block renders its baseline presets again.
+		$this->assertArrayNotHasKey( 'outline', $data['presets'] );
+		$this->assertArrayHasKey( 'primary', $data['presets'] );
 	}
 
 	/**
-	 * Deleting a single override variant drops just that variant from the stored set.
+	 * Deleting a single override preset drops just that preset from the stored set.
 	 *
 	 * @return void
 	 */
-	public function testDeleteVariantRemovesAnOverrideVariant(): void {
+	public function testDeletePresetRemovesAnOverridePreset(): void {
 		$this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'outline',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'outline',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
 
-		$response = $this->controller->delete_variant( $this->variant_request( self::BUTTON, 'outline' ) );
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'outline' ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertArrayNotHasKey( 'outline', $response->get_data()['variants'] );
+		$this->assertArrayNotHasKey( 'outline', $response->get_data()['presets'] );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testDeleteVariantIsAnIdempotentNoOpWhenAbsent(): void {
+	public function testDeletePresetIsAnIdempotentNoOpWhenAbsent(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
 			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
 		$version_before = $this->store->get_version( Token_Store::default_slug() );
 
-		$response = $this->controller->delete_variant( $this->variant_request( self::BUTTON, 'never-stored' ) );
+		$response = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'never-stored' ) );
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
 		// Nothing was removed, so no write happened and the version is unchanged.
@@ -363,25 +363,25 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Removing a variant the effective set still defaults to is rejected before commit, so the default is
+	 * Removing a preset the effective set still defaults to is rejected before commit, so the default is
 	 * never left dangling.
 	 *
 	 * @return void
 	 */
-	public function testDeletingTheDefaultVariantIsRejected(): void {
-		// Make an override-only variant the default, then try to delete it out from under the default.
+	public function testDeletingTheDefaultPresetIsRejected(): void {
+		// Make an override-only preset the default, then try to delete it out from under the default.
 		$this->controller->update_item(
 			$this->block_request(
 				'PUT',
 				self::BUTTON,
 				[
-					'variants' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ],
-					'default'  => 'outline',
+					'presets' => [ 'outline' => [ 'tokens' => $this->button_tokens() ] ],
+					'default' => 'outline',
 				]
 			)
 		);
 
-		$result = $this->controller->delete_variant( $this->variant_request( self::BUTTON, 'outline' ) );
+		$result = $this->controller->delete_preset( $this->preset_request( self::BUTTON, 'outline' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
@@ -391,7 +391,7 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testSetDefaultToAnExistingVariant(): void {
+	public function testSetDefaultToAnExistingPreset(): void {
 		$response = $this->controller->set_default( $this->default_request( self::BUTTON, 'secondary' ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -401,7 +401,7 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testSetDefaultToAMissingVariantIsRejected(): void {
+	public function testSetDefaultToAMissingPresetIsRejected(): void {
 		$result = $this->controller->set_default( $this->default_request( self::BUTTON, 'does-not-exist' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -425,15 +425,15 @@ final class VariantsControllerTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testAnInvalidVariantTokenValueReturns422(): void {
+	public function testAnInvalidPresetTokenValueReturns422(): void {
 		// An empty-string token value is neither an alias nor a non-empty literal; the DTCG validator rejects it.
 		$result = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'broken',
-					'tokens'  => $this->button_tokens( [ 'button-bg' => '' ] ),
+					'preset' => 'broken',
+					'tokens' => $this->button_tokens( [ 'button-bg' => '' ] ),
 				]
 			)
 		);
@@ -447,7 +447,7 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A variant that sets a property the block does not bind is rejected: an unbound property could never
+	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *
 	 * @return void
@@ -458,8 +458,8 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'accent',
-					'tokens'  => $this->button_tokens( [ 'not-a-bound-prop' => '#ff0000' ] ),
+					'preset' => 'accent',
+					'tokens' => $this->button_tokens( [ 'not-a-bound-prop' => '#ff0000' ] ),
 				]
 			)
 		);
@@ -471,7 +471,7 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A variant may define a SUBSET of the block's bound surface: a variant that leaves a bound property
+	 * A preset may define a SUBSET of the block's bound surface: a preset that leaves a bound property
 	 * unset is accepted and stored with exactly the properties it defines. The property it omits is inherited
 	 * from the block $default through the cascade rather than being required here.
 	 *
@@ -486,8 +486,8 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'accent',
-					'tokens'  => $tokens,
+					'preset' => 'accent',
+					'tokens' => $tokens,
 				]
 			)
 		);
@@ -495,14 +495,14 @@ final class VariantsControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$this->assertSame( WP_Http::CREATED, $response->get_status() );
 
-		// The variant is stored with only the properties it defined; button-radius is absent.
-		$stored = $response->get_data()['variants']['accent']['tokens'];
+		// The preset is stored with only the properties it defined; button-radius is absent.
+		$stored = $response->get_data()['presets']['accent']['tokens'];
 		$this->assertArrayHasKey( 'button-bg', $stored );
 		$this->assertArrayNotHasKey( 'button-radius', $stored );
 	}
 
 	/**
-	 * A captured literal that matches a semantic is stored as that semantic's alias, so the variant re-joins
+	 * A captured literal that matches a semantic is stored as that semantic's alias, so the preset re-joins
 	 * the theming cascade, while a literal with no match is stored as-is.
 	 *
 	 * @return void
@@ -513,9 +513,9 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'accent',
+					'preset' => 'accent',
 					// #3633e1 matches the primary button background semantic; the rgba value matches nothing.
-					'tokens'  => $this->button_tokens(
+					'tokens' => $this->button_tokens(
 						[
 							'button-bg'   => '#3633e1',
 							'button-text' => 'rgba(1,2,3,0.42)',
@@ -527,26 +527,26 @@ final class VariantsControllerTest extends TestCase {
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 
-		$tokens = $response->get_data()['variants']['accent']['tokens'];
+		$tokens = $response->get_data()['presets']['accent']['tokens'];
 
 		$this->assertTrue( Alias::is_alias( $tokens['button-bg'] ) );
 		$this->assertSame( 'rgba(1,2,3,0.42)', $tokens['button-text'] );
 	}
 
 	/**
-	 * A hand-supplied variant alias that does not resolve to a token is rejected before commit, since a
-	 * dangling variant alias lives under $extensions where the token dry-run never sees it.
+	 * A hand-supplied preset alias that does not resolve to a token is rejected before commit, since a
+	 * dangling preset alias lives under $extensions where the token dry-run never sees it.
 	 *
 	 * @return void
 	 */
-	public function testADanglingVariantAliasIsRejected(): void {
+	public function testADanglingPresetAliasIsRejected(): void {
 		$result = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'accent',
-					'tokens'  => $this->button_tokens( [ 'button-bg' => '{semantic.color.does-not-exist}' ] ),
+					'preset' => 'accent',
+					'tokens' => $this->button_tokens( [ 'button-bg' => '{semantic.color.does-not-exist}' ] ),
 				]
 			)
 		);
@@ -557,19 +557,19 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Creating a variant named "default" is rejected: the slug is reserved for the block's default sub-route
+	 * Creating a preset named "default" is rejected: the slug is reserved for the block's default sub-route
 	 * and could never be deleted or set through the dedicated route.
 	 *
 	 * @return void
 	 */
-	public function testCreatingAVariantNamedDefaultIsRejected(): void {
+	public function testCreatingAPresetNamedDefaultIsRejected(): void {
 		$result = $this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'default',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'default',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -582,9 +582,9 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testAMalformedVariantShapeReturns422(): void {
+	public function testAMalformedPresetShapeReturns422(): void {
 		$result = $this->controller->update_item(
-			$this->block_request( 'PUT', self::BUTTON, [ 'variants' => [ 'bad' => 'not-an-object' ] ] )
+			$this->block_request( 'PUT', self::BUTTON, [ 'presets' => [ 'bad' => 'not-an-object' ] ] )
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -595,11 +595,11 @@ final class VariantsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testAnEmptyVariantSlugIsRejected(): void {
-		// An empty key in the variants map would store a variant node keyed by "" — reject it, mirroring the
+	public function testAnEmptyPresetSlugIsRejected(): void {
+		// An empty key in the presets map would store a preset node keyed by "" — reject it, mirroring the
 		// documents controller's empty dot-path-segment guard.
 		$result = $this->controller->update_item(
-			$this->block_request( 'PUT', self::BUTTON, [ 'variants' => [ '' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ] ] )
+			$this->block_request( 'PUT', self::BUTTON, [ 'presets' => [ '' => [ 'tokens' => [ 'button-bg' => 'transparent' ] ] ] ] )
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -628,7 +628,7 @@ final class VariantsControllerTest extends TestCase {
 	 */
 	public function testAWriteBumpsTheVersion(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
 			. '"outline":{"tokens":{"button-bg":"transparent"}}}}}}}'
 		);
 
@@ -639,8 +639,8 @@ final class VariantsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'variant' => 'dashed',
-					'tokens'  => $this->button_tokens(),
+					'preset' => 'dashed',
+					'tokens' => $this->button_tokens(),
 				]
 			)
 		);
@@ -692,7 +692,7 @@ final class VariantsControllerTest extends TestCase {
 	 *
 	 * @param string               $method The HTTP method.
 	 * @param string               $block  The block name, e.g. "kadence/singlebtn".
-	 * @param array<string, mixed> $extra  Extra parameters (variant, label, tokens, variants, default).
+	 * @param array<string, mixed> $extra  Extra parameters (preset, label, tokens, presets, default).
 	 *
 	 * @return WP_REST_Request
 	 */
@@ -711,7 +711,7 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * The button's full bound surface as literal values, so a written variant satisfies the full-surface
+	 * The button's full bound surface as literal values, so a written preset satisfies the full-surface
 	 * guard. Individual properties can be overridden for a specific assertion.
 	 *
 	 * @param array<string, string> $overrides Property values to override on the base surface.
@@ -732,22 +732,22 @@ final class VariantsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Build a single-variant request: the block segments plus the variant slug.
+	 * Build a single-preset request: the block segments plus the preset slug.
 	 *
 	 * @param string $block   The block name.
-	 * @param string $variant The variant slug.
+	 * @param string $preset The preset slug.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function variant_request( string $block, string $variant ): WP_REST_Request {
-		return $this->block_request( WP_REST_Server::DELETABLE, $block, [ 'variant' => $variant ] );
+	private function preset_request( string $block, string $preset ): WP_REST_Request {
+		return $this->block_request( WP_REST_Server::DELETABLE, $block, [ 'preset' => $preset ] );
 	}
 
 	/**
-	 * Build a set-default request: the block segments plus the default variant slug.
+	 * Build a set-default request: the block segments plus the default preset slug.
 	 *
 	 * @param string $block        The block name.
-	 * @param string $default_slug The default variant slug.
+	 * @param string $default_slug The default preset slug.
 	 *
 	 * @return WP_REST_Request
 	 */

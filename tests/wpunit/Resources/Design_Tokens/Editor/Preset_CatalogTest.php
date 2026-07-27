@@ -5,24 +5,24 @@ namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Variant_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Preset_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the editor variant catalog against the real shipped baseline, so these assertions also
- * guard the Button variant set the picker offers.
+ * Exercises the editor preset catalog against the real shipped baseline, so these assertions also
+ * guard the Button preset set the picker offers.
  */
-final class Variant_CatalogTest extends TestCase {
+final class Preset_CatalogTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
 	/**
-	 * @var Variant_Catalog
+	 * @var Preset_Catalog
 	 */
-	private Variant_Catalog $catalog;
+	private Preset_Catalog $catalog;
 
 	/**
 	 * @var Token_Store
@@ -35,12 +35,12 @@ final class Variant_CatalogTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->catalog = $this->container->get( Variant_Catalog::class );
+		$this->catalog = $this->container->get( Preset_Catalog::class );
 		$this->store   = $this->container->get( Token_Store::class );
 	}
 
 	/**
-	 * The catalog reports the active set and, per set, the shipped Button's default and its named variants as
+	 * The catalog reports the active set and, per set, the shipped Button's default and its named presets as
 	 * { slug, label, userCreated }, plus the picker control label and the controllable surface.
 	 *
 	 * @return void
@@ -54,7 +54,7 @@ final class Variant_CatalogTest extends TestCase {
 		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
-		// The picker's control label, declared on the variant set in declarations.php.
+		// The picker's control label, declared on the preset set in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
@@ -69,7 +69,7 @@ final class Variant_CatalogTest extends TestCase {
 					'userCreated' => false,
 				],
 			],
-			$button['variants']
+			$button['presets']
 		);
 	}
 
@@ -89,18 +89,18 @@ final class Variant_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A variant authored into a set is flagged userCreated, while the baseline variants are not.
+	 * A preset authored into a set is flagged userCreated, while the baseline presets are not.
 	 *
 	 * @return void
 	 */
-	public function testItFlagsUserCreatedVariants(): void {
+	public function testItFlagsUserCreatedPresets(): void {
 		$this->store->save_document(
-			'{"$extensions":{"com.kadence.designTokens":{"variants":{"kadence/singlebtn":{'
+			'{"$extensions":{"com.kadence.designTokens":{"presets":{"kadence/singlebtn":{'
 			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
 		);
 
-		$variants = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['variants'];
-		$flags    = wp_list_pluck( $variants, 'userCreated', 'slug' );
+		$presets = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
+		$flags   = wp_list_pluck( $presets, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
 		$this->assertFalse( $flags['primary'] );
@@ -112,34 +112,34 @@ final class Variant_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSkipsABlockAbsentFromTheDocument(): void {
-		// A picker set (it declares a label) whose block has no variants in the baseline — the names() lookup
-		// throws Unknown_Variant_Exception and the block is skipped rather than emitted empty.
+		// A picker set (it declares a label) whose block has no presets in the baseline — the names() lookup
+		// throws Unknown_Preset_Exception and the block is skipped rather than emitted empty.
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block' => 'kadence/not-a-real-block',
 				'label' => 'Style',
 			]
 		);
 
-		$catalog = ( new Variant_Catalog(
+		$catalog = ( new Preset_Catalog(
 			$registry,
-			$this->container->get( Variant_Resolver::class ),
+			$this->container->get( Preset_Resolver::class ),
 			$this->store,
 			$this->container->get( Active_Set_Store::class ),
-			$this->container->get( Effective_Variants::class )
+			$this->container->get( Effective_Presets::class )
 		) )->all();
 
 		$this->assertSame( [], $catalog['sets'][ Token_Store::default_slug() ] );
 	}
 
 	/**
-	 * The Button catalog surfaces each bound property's control attribute and a per-variant resolved-value
-	 * map, so the editor can key an override indicator to a control and compare against the variant value.
+	 * The Button catalog surfaces each bound property's control attribute and a per-preset resolved-value
+	 * map, so the editor can key an override indicator to a control and compare against the preset value.
 	 *
 	 * @return void
 	 */
-	public function testItSurfacesControlAttrAndPerVariantValues(): void {
+	public function testItSurfacesControlAttrAndPerPresetValues(): void {
 		$button = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$by_key = [];
@@ -153,7 +153,7 @@ final class Variant_CatalogTest extends TestCase {
 		$this->assertSame( 'colorHover', $by_key['button-text-hover']['control_attr'] );
 		$this->assertSame( 'borderRadius', $by_key['button-radius']['control_attr'] );
 
-		// Per-variant resolved values, keyed by variant slug then property id.
+		// Per-preset resolved values, keyed by preset slug then property id.
 		$this->assertArrayHasKey( 'primary', $button['values'] );
 		$this->assertArrayHasKey( 'secondary', $button['values'] );
 		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );

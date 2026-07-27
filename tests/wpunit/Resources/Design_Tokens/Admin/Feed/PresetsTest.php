@@ -3,37 +3,37 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises Variants against the real shipped baseline, so these assertions also guard the
- * baseline's Button variant definitions.
+ * Exercises Presets against the real shipped baseline, so these assertions also guard the
+ * baseline's Button preset definitions.
  */
-final class VariantsTest extends TestCase {
+final class PresetsTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		$this->resolver = $this->container->get( Preset_Resolver::class );
 	}
 
 	public function testItBuildsStructureAndResolvedValuesForTheShippedButton(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
 
-		$variants = ( new Variants( $registry, $this->resolver ) )->all();
+		$presets = ( new Presets( $registry, $this->resolver ) )->all();
 
-		$this->assertArrayHasKey( self::BUTTON, $variants );
+		$this->assertArrayHasKey( self::BUTTON, $presets );
 
-		// The button's variants live directly under the block (one flat set per block).
-		$button = $variants[ self::BUTTON ];
+		// The button's presets live directly under the block (one flat set per block).
+		$button = $presets[ self::BUTTON ];
 
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame( 'primary', $button['default'] );
@@ -44,18 +44,18 @@ final class VariantsTest extends TestCase {
 		$this->assertArrayHasKey( 'bindings', $button );
 		$this->assertArrayHasKey( 'button-bg', $button['bindings'] );
 
-		// Resolved preview values per variant — aliases flattened to their primitive color.
+		// Resolved preview values per preset — aliases flattened to their primitive color.
 		$this->assertSame( '#3633e1', $button['values']['primary']['button-bg'] );
 		$this->assertSame( '#1A202C', $button['values']['secondary']['button-bg'] );
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {
-		// A fresh registry whose only variant set has no matching variants in the shipped baseline.
+		// A fresh registry whose only preset set has no matching presets in the shipped baseline.
 		$registry = new Token_Registry();
-		$registry->register_variant_set( [ 'block' => 'kadence/not-a-real-block' ] );
+		$registry->register_preset_bindings( [ 'block' => 'kadence/not-a-real-block' ] );
 
-		$variants = ( new Variants( $registry, $this->resolver ) )->all();
+		$presets = ( new Presets( $registry, $this->resolver ) )->all();
 
-		$this->assertSame( [], $variants );
+		$this->assertSame( [], $presets );
 	}
 }
