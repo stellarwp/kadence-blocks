@@ -13,8 +13,8 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
-import { VariantActions } from './extension/variant-picker/VariantActions';
+import { PresetPicker, blockPresets, activeSet } from './extension/preset-picker';
+import { PresetActions } from './extension/preset-picker/PresetActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 
@@ -79,11 +79,11 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
+ * Add the kbPreset and kbTokenSet attributes to any block that opts in via the `kbPreset` block support.
  *
- * kbVariant is the selected variant slug (e.g. "ghost"); an empty value means the block keeps its $default
+ * kbPreset is the selected preset slug (e.g. "ghost"); an empty value means the block keeps its $default
  * look (the block preset). kbTokenSet holds the slug of a per-block token-set override (e.g. "dark"); empty
- * means the block follows the active set. The scoped CSS that re-skins the block for a selected variant and
+ * means the block follows the active set. The scoped CSS that re-skins the block for a selected preset and
  * the switch selectors a set override re-points through are both emitted server-side by the Design Tokens
  * projector.
  *
@@ -91,12 +91,12 @@ addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttrib
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant and kbTokenSet attributes added.
+ * @return {Object} The block settings with the kbPreset and kbTokenSet attributes added.
  */
-export function blockVariantAttribute(settings) {
-	if (hasBlockSupport(settings, 'kbVariant')) {
+export function blockPresetAttribute(settings) {
+	if (hasBlockSupport(settings, 'kbPreset')) {
 		settings.attributes = assign(settings.attributes, {
-			kbVariant: {
+			kbPreset: {
 				type: 'string',
 				default: '',
 			},
@@ -109,11 +109,11 @@ export function blockVariantAttribute(settings) {
 
 	return settings;
 }
-addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVariantAttribute);
+addFilter('blocks.registerBlockType', 'kadence/kb-preset-attribute', blockPresetAttribute);
 
 /**
  * Override a block's registered attribute defaults with the resolved design-token value, read
- * from window.kadenceDesignTokensPresetDefaults (Editor\Localizer, Editor\Block_Preset_Catalog).
+ * from window.kadenceDesignTokensAttributeDefaults (Editor\Localizer, Editor\Attribute_Default_Catalog).
  * So a freshly inserted block starts at the brand's token-resolved value instead of the block's
  * own hardcoded static default — without touching the attribute's type or the block's save
  * output for existing content (which already has an explicit stored value).
@@ -126,7 +126,7 @@ addFilter('blocks.registerBlockType', 'kadence/kb-variant-attribute', blockVaria
  * @return {Object} The block settings, with any catalog-covered attribute defaults overridden.
  */
 export function blockPresetAttributeDefault(settings, name) {
-	const catalog = window.kadenceDesignTokensPresetDefaults;
+	const catalog = window.kadenceDesignTokensAttributeDefaults;
 	const entry = catalog && catalog[name];
 
 	if (!entry) {
@@ -163,24 +163,24 @@ function sanitizeTokenIdentifier(slug) {
 }
 
 /**
- * The class a block's selected variant outputs: `kb-variant--<slug>`. The slug is sanitized, mirroring the
- * projector's PHP Style::variant_class(). Empty when nothing is selected.
+ * The class a block's selected preset outputs: `kb-preset--<slug>`. The slug is sanitized, mirroring the
+ * projector's PHP Style::preset_class(). Empty when nothing is selected.
  *
- * @param {string} kbVariant The kbVariant attribute (the selected variant slug).
+ * @param {string} kbPreset The kbPreset attribute (the selected preset slug).
  *
  * @since TBD
  *
- * @return {string} The variant class, or an empty string.
+ * @return {string} The preset class, or an empty string.
  */
-function kbVariantClassName(kbVariant) {
-	const slug = sanitizeTokenIdentifier(typeof kbVariant === 'string' ? kbVariant : '');
+function kbPresetClassName(kbPreset) {
+	const slug = sanitizeTokenIdentifier(typeof kbPreset === 'string' ? kbPreset : '');
 
-	return slug ? `kb-variant--${slug}` : '';
+	return slug ? `kb-preset--${slug}` : '';
 }
 
 /**
- * Append the kb-variant--<name> class to a block's saved markup, so the projector's scoped overrides
- * apply on the front end. A no-op for blocks that do not opt in or have no variant selected.
+ * Append the kb-preset--<name> class to a block's saved markup, so the projector's scoped overrides
+ * apply on the front end. A no-op for blocks that do not opt in or have no preset selected.
  *
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
@@ -188,22 +188,22 @@ function kbVariantClassName(kbVariant) {
  *
  * @since TBD
  *
- * @return {Object} The props, with the variant class appended when one is selected.
+ * @return {Object} The props, with the preset class appended when one is selected.
  */
-export function blockVariantSaveClass(props, blockType, attributes) {
-	if (!hasBlockSupport(blockType, 'kbVariant')) {
+export function blockPresetSaveClass(props, blockType, attributes) {
+	if (!hasBlockSupport(blockType, 'kbPreset')) {
 		return props;
 	}
 
-	const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+	const presetClass = kbPresetClassName(get(attributes, 'kbPreset', ''));
 
-	if (variantClass) {
-		props.className = props.className ? `${props.className} ${variantClass}` : variantClass;
+	if (presetClass) {
+		props.className = props.className ? `${props.className} ${presetClass}` : presetClass;
 	}
 
 	return props;
 }
-addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
+addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-preset-save-class', blockPresetSaveClass);
 
 /**
  * Append the data-kb-token-set="<slug>" attribute to a block's saved markup when it is pinned to a token
@@ -219,7 +219,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', b
  * @return {Object} The props, with the data attribute appended when a set is pinned.
  */
 export function blockTokenSetSaveAttr(props, blockType, attributes) {
-	if (!hasBlockSupport(blockType, 'kbVariant')) {
+	if (!hasBlockSupport(blockType, 'kbPreset')) {
 		return props;
 	}
 
@@ -234,36 +234,36 @@ export function blockTokenSetSaveAttr(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-token-set-save-attr', blockTokenSetSaveAttr);
 
 /**
- * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
+ * Mirror the kb-preset--<name> class onto the block in the editor canvas, so a selected preset previews
  * live with the same scoped overrides the front end uses.
  *
  * @since TBD
  */
-const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
+const withBlockPresetClass = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
 		const { name, attributes } = props;
 
-		if (!hasBlockSupport(name, 'kbVariant')) {
+		if (!hasBlockSupport(name, 'kbPreset')) {
 			return <BlockListBlock {...props} />;
 		}
 
-		const variantClass = kbVariantClassName(get(attributes, 'kbVariant', ''));
+		const presetClass = kbPresetClassName(get(attributes, 'kbPreset', ''));
 
-		if (!variantClass) {
+		if (!presetClass) {
 			return <BlockListBlock {...props} />;
 		}
 
-		const className = props.className ? `${props.className} ${variantClass}` : variantClass;
+		const className = props.className ? `${props.className} ${presetClass}` : presetClass;
 
 		return <BlockListBlock {...props} className={className} />;
 	};
-}, 'withBlockVariantClass');
-addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
+}, 'withBlockPresetClass');
+addFilter('editor.BlockListBlock', 'kadence/kb-preset-class', withBlockPresetClass);
 
 /**
  * Mirror the data-kb-token-set="<slug>" attribute onto the block in the editor canvas, so a pinned set
  * previews live with the same switch-selector re-pointing the front end uses. Added via wrapperProps so it
- * lands on the same block wrapper the variant class and scoped rules target.
+ * lands on the same block wrapper the preset class and scoped rules target.
  *
  * @since TBD
  */
@@ -271,7 +271,7 @@ const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
 		const { name, attributes } = props;
 
-		if (!hasBlockSupport(name, 'kbVariant')) {
+		if (!hasBlockSupport(name, 'kbPreset')) {
 			return <BlockListBlock {...props} />;
 		}
 
@@ -289,44 +289,44 @@ const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-token-set-attr', withBlockTokenSetAttr);
 
 /**
- * Add the design-token pickers to the inspector of any block that opts into kbVariant support, under a
- * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Variants"
- * subsection (the variant picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
+ * Add the design-token pickers to the inspector of any block that opts into kbPreset support, under a
+ * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Presets"
+ * subsection (the preset picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
  * filters turn into the data-kb-token-set attribute the projector's switch selectors re-point through;
- * selecting a variant writes the kbVariant attribute, which the save/preview filters turn into the
- * kb-variant--<slug> class the projector's scoped CSS hooks. An empty set follows the
- * active set; an empty variant selects the block's $default preset look. Each subsection is shown only when
- * it has something to offer (two or more sets / any variants), and the panel is skipped when neither does.
+ * selecting a preset writes the kbPreset attribute, which the save/preview filters turn into the
+ * kb-preset--<slug> class the projector's scoped CSS hooks. An empty set follows the
+ * active set; an empty preset selects the block's $default preset look. Each subsection is shown only when
+ * it has something to offer (two or more sets / any presets), and the panel is skipped when neither does.
  *
- * A block whose `kbVariant` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
+ * A block whose `kbPreset` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
  * block placing them under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
  *
  * @since TBD
  */
-const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
+const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
 
-		if (!hasBlockSupport(name, 'kbVariant')) {
+		if (!hasBlockSupport(name, 'kbPreset')) {
 			return <BlockEdit {...props} />;
 		}
 
-		const support = getBlockSupport(name, 'kbVariant');
+		const support = getBlockSupport(name, 'kbPreset');
 
 		if (support && typeof support === 'object' && support.inlinePicker) {
 			return <BlockEdit {...props} />;
 		}
 
 		const set = get(attributes, 'kbTokenSet', '') || activeSet();
-		const hasVariants = blockVariants(name, set).length > 0;
+		const hasPresets = blockPresets(name, set).length > 0;
 		const hasSets = selectableSets().length >= 2;
 
-		if (!hasVariants && !hasSets) {
+		if (!hasPresets && !hasSets) {
 			return <BlockEdit {...props} />;
 		}
 
-		const selected = get(attributes, 'kbVariant', '');
-		const selectVariant = (value) => setAttributes({ kbVariant: value });
+		const selected = get(attributes, 'kbPreset', '');
+		const selectPreset = (value) => setAttributes({ kbPreset: value });
 
 		return (
 			<>
@@ -343,14 +343,14 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 									/>
 								</SubsectionWrap>
 							)}
-							{hasVariants && (
+							{hasPresets && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
-									<VariantActions
+									<PresetPicker name={name} set={set} value={selected} onChange={selectPreset} />
+									<PresetActions
 										blockName={name}
 										set={set}
 										selected={selected}
-										onSelect={selectVariant}
+										onSelect={selectPreset}
 										attributes={attributes}
 										setAttributes={setAttributes}
 									/>
@@ -362,8 +362,8 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			</>
 		);
 	};
-}, 'withVariantPicker');
-addFilter('editor.BlockEdit', 'kadence/kb-variant-picker', withVariantPicker);
+}, 'withPresetPicker');
+addFilter('editor.BlockEdit', 'kadence/kb-preset-picker', withPresetPicker);
 
 const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {

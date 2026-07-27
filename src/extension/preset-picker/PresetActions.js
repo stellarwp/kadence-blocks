@@ -1,10 +1,10 @@
 /**
- * Create / edit / delete controls for a block's design-token variants, plus the design-system actions:
+ * Create / edit / delete controls for a block's design-token presets, plus the design-system actions:
  * a highlight-edits toggle and a reset-all that clears every mapped override for the block.
  *
- * Renders a "Create new variant" button for every block, and, when the selected variant is a user-created
- * one, "Edit" and "Delete" buttons. Deleting the variant the set currently defaults to first reassigns the
- * default to another variant (so the default is never left dangling), then removes it. Shared by the generic
+ * Renders a "Create new preset" button for every block, and, when the selected preset is a user-created
+ * one, "Edit" and "Delete" buttons. Deleting the preset the set currently defaults to first reassigns the
+ * default to another preset (so the default is never left dangling), then removes it. Shared by the generic
  * inspector panel and a block's inline picker so the controls stay identical wherever they surface. Renders
  * nothing when the editor lacks the REST descriptor.
  */
@@ -12,30 +12,30 @@ import { Button, Notice, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-import { SaveVariantModal } from './SaveVariantModal';
-import { blockVariants, blockDefaultVariant, isUserVariant, removeVariant } from './index';
+import { SavePresetModal } from './SavePresetModal';
+import { blockPresets, blockDefaultPreset, isUserPreset, removePreset } from './index';
 import { capturedTokens } from './capture';
-import { deleteVariant, setVariantDefault } from '../variants/api/client';
+import { deletePreset, setPresetDefault } from '../presets/api/client';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { TOKEN_INDICATORS_STORE } from '../token-indicators/store';
 import { mappedAttrsFor, resetAttrPatch } from '../token-indicators';
 
 /**
- * The variant create/edit/delete controls, plus the design-system actions: a highlight-edits toggle and a
+ * The preset create/edit/delete controls, plus the design-system actions: a highlight-edits toggle and a
  * reset-all that clears every mapped override for the block.
  *
  * @param {Object}   props               The component props.
  * @param {string}   props.blockName     The block name.
  * @param {string}   props.set           The token set the block is on.
- * @param {string}   props.selected      The block's currently selected variant slug ('' for the default look).
- * @param {Function} props.onSelect      Called with a variant slug to select it on the block.
+ * @param {string}   props.selected      The block's currently selected preset slug ('' for the default look).
+ * @param {Function} props.onSelect      Called with a preset slug to select it on the block.
  * @param {Object}   props.attributes    The block's current attributes (for reset-all).
  * @param {Function} props.setAttributes The block's setAttributes (for reset-all).
  *
- * @return {Object|null} The controls, or null when the variants REST API is unavailable.
+ * @return {Object|null} The controls, or null when the presets REST API is unavailable.
  */
-export function VariantActions({ blockName, set, selected, onSelect, attributes, setAttributes }) {
+export function PresetActions({ blockName, set, selected, onSelect, attributes, setAttributes }) {
 	const [mode, setMode] = useState('none');
 	const [confirming, setConfirming] = useState(false);
 	const [busy, setBusy] = useState(false);
@@ -48,11 +48,11 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 		return null;
 	}
 
-	const canManage = selected !== '' && isUserVariant(blockName, set, selected);
+	const canManage = selected !== '' && isUserPreset(blockName, set, selected);
 
 	/**
 	 * Clear every mapped override for the block, so all mapped controls fall back to the selected
-	 * variant's values (served by the existing scoped CSS), then refresh the live preview.
+	 * preset's values (served by the existing scoped CSS), then refresh the live preview.
 	 *
 	 * @since TBD
 	 *
@@ -69,7 +69,7 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 	};
 
 	/**
-	 * Delete the selected user variant, first moving the default off it when it is the current default.
+	 * Delete the selected user preset, first moving the default off it when it is the current default.
 	 *
 	 * @return {void}
 	 */
@@ -77,17 +77,17 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 		setBusy(true);
 		setError('');
 
-		const isDefault = blockDefaultVariant(blockName, set) === selected;
-		const fallback = blockVariants(blockName, set)
-			.map((variant) => variant.slug)
+		const isDefault = blockDefaultPreset(blockName, set) === selected;
+		const fallback = blockPresets(blockName, set)
+			.map((preset) => preset.slug)
 			.find((slug) => slug !== selected);
 
-		const reassign = isDefault && fallback ? setVariantDefault(blockName, fallback, set) : Promise.resolve();
+		const reassign = isDefault && fallback ? setPresetDefault(blockName, fallback, set) : Promise.resolve();
 
 		reassign
-			.then(() => deleteVariant(blockName, selected, set))
+			.then(() => deletePreset(blockName, selected, set))
 			.then(() => {
-				removeVariant(blockName, set, selected);
+				removePreset(blockName, set, selected);
 				refreshProjectedCss();
 				onSelect('');
 				setConfirming(false);
@@ -147,11 +147,11 @@ export function VariantActions({ blockName, set, selected, onSelect, attributes,
 			</Button>
 
 			{mode !== 'none' && (
-				<SaveVariantModal
+				<SavePresetModal
 					blockName={blockName}
 					set={set}
 					tokens={capturedTokens(blockName, set, attributes)}
-					existingSlugs={blockVariants(blockName, set).map((variant) => variant.slug)}
+					existingSlugs={blockPresets(blockName, set).map((preset) => preset.slug)}
 					onClose={() => setMode('none')}
 					onSaved={(slug) => onSelect(slug)}
 				/>

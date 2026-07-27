@@ -16,10 +16,10 @@
  * That is cosmetic (the alias never goes stale) and live refresh is the picker UI's concern.
  */
 import { get } from 'lodash';
-import { activeSet, blockProperties } from '../variant-picker';
+import { activeSet, blockProperties } from '../preset-picker';
 
 /**
- * Token $types compatible with each control kind. Keys are the variant catalog's coarse control
+ * Token $types compatible with each control kind. Keys are the preset catalog's coarse control
  * kinds; values are DTCG $type lists. `shadow` is inert until a shadow control kind exists — it is
  * mapped now so a future shadow control lights up with no change here. An unknown kind yields no
  * types, so the filter fails closed.
@@ -117,7 +117,7 @@ function roleForId(id) {
 
 /**
  * The pickable tokens for one block control, keyed by the attribute the control writes: resolves
- * the control's kind from the variant catalog's { key, kind, token, control_attr } surface, then
+ * the control's kind from the preset catalog's { key, kind, token, control_attr } surface, then
  * filters and ranks the pool for that kind. When the control binds a role token, the list is further
  * narrowed to that token's sub-kind (a radius control's `dimension` to only radius tokens, never
  * spacing) and the bound token is pinned to the top; without a bound token it stays the coarse

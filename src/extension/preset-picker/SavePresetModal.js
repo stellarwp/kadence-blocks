@@ -9,11 +9,11 @@
 import { Modal, TextControl, Button, Notice } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { appendVariant } from './index';
-import { createVariant } from '../variants/api/client';
+import { appendPreset } from './index';
+import { createPreset } from '../presets/api/client';
 import { refreshProjectedCss } from '../design-tokens/live-css';
-import { deriveSlug, dedupeSlug } from '../variants/slug';
-import './save-variant-modal.scss';
+import { deriveSlug, dedupeSlug } from '../presets/slug';
+import './save-preset-modal.scss';
 
 /**
  * The "save as a new preset" modal.
@@ -30,7 +30,7 @@ import './save-variant-modal.scss';
  *
  * @return {Object} The modal element.
  */
-export function SaveVariantModal({ blockName, set, tokens, existingSlugs = [], onClose, onSaved }) {
+export function SavePresetModal({ blockName, set, tokens, existingSlugs = [], onClose, onSaved }) {
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');
 	const [label, setLabel] = useState('');
@@ -49,9 +49,9 @@ export function SaveVariantModal({ blockName, set, tokens, existingSlugs = [], o
 		setSaving(true);
 		setError('');
 
-		createVariant(blockName, { variant: slug, label: label.trim(), tokens }, set)
+		createPreset(blockName, { preset: slug, label: label.trim(), tokens }, set)
 			.then(() => {
-				appendVariant(blockName, set, { slug, label: label.trim(), userCreated: true });
+				appendPreset(blockName, set, { slug, label: label.trim(), userCreated: true });
 				refreshProjectedCss();
 				onSaved(slug);
 				onClose();
@@ -66,7 +66,7 @@ export function SaveVariantModal({ blockName, set, tokens, existingSlugs = [], o
 		<Modal
 			title={__('Save as a new preset', 'kadence-blocks')}
 			onRequestClose={onClose}
-			className="kb-save-variant-modal"
+			className="kb-save-preset-modal"
 		>
 			{error !== '' && (
 				<Notice status="error" onRemove={() => setError('')}>
@@ -76,7 +76,7 @@ export function SaveVariantModal({ blockName, set, tokens, existingSlugs = [], o
 
 			<TextControl label={__('Preset name', 'kadence-blocks')} value={label} onChange={setLabel} />
 
-			<div className="kb-save-variant-modal__actions">
+			<div className="kb-save-preset-modal__actions">
 				<Button variant="tertiary" onClick={onClose} disabled={saving}>
 					{__('Cancel', 'kadence-blocks')}
 				</Button>

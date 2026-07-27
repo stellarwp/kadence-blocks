@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
-// `../index` pulls in `../../variant-picker`, which imports `@kadence/components` (an untransformed
-// ESM module) for its `VariantPicker` component. This module never renders it, so stub it out.
+// `../index` pulls in `../../preset-picker`, which imports `@kadence/components` (an untransformed
+// ESM module) for its `PresetPicker` component. This module never renders it, so stub it out.
 jest.mock('@kadence/components', () => ({}));
 
 import { pickableTokenPool, pickableTokensFor, pickableTokensForControl } from '../index';
@@ -84,10 +84,10 @@ const POOL = {
 };
 
 /**
- * The fixture variant catalog: enough for `activeSet()` and `blockProperties()` to resolve a single
+ * The fixture preset catalog: enough for `activeSet()` and `blockProperties()` to resolve a single
  * mapped control (`borderRadius` -> `dimension`) for `kadence/singlebtn`.
  */
-const VARIANTS = {
+const PRESETS = {
 	active: 'default',
 	sets: {
 		default: {
@@ -99,10 +99,10 @@ const VARIANTS = {
 };
 
 /**
- * A variant catalog whose `kadence/singlebtn` borderRadius control binds a role token, so the picker
- * narrows to that token's sub-kind and pins it. Mirrors VARIANTS but with a non-null `token`.
+ * A preset catalog whose `kadence/singlebtn` borderRadius control binds a role token, so the picker
+ * narrows to that token's sub-kind and pins it. Mirrors PRESETS but with a non-null `token`.
  */
-const boundVariants = (token) => ({
+const boundPresets = (token) => ({
 	active: 'default',
 	sets: {
 		default: {
@@ -116,12 +116,12 @@ const boundVariants = (token) => ({
 describe('pickableTokenPool', () => {
 	beforeEach(() => {
 		window.kadenceDesignTokensPickable = POOL;
-		window.kadenceDesignTokensVariants = VARIANTS;
+		window.kadenceDesignTokensPresets = PRESETS;
 	});
 
 	afterEach(() => {
 		delete window.kadenceDesignTokensPickable;
-		delete window.kadenceDesignTokensVariants;
+		delete window.kadenceDesignTokensPresets;
 	});
 
 	it('returns the seeded pool', () => {
@@ -138,12 +138,12 @@ describe('pickableTokenPool', () => {
 describe('pickableTokensFor', () => {
 	beforeEach(() => {
 		window.kadenceDesignTokensPickable = POOL;
-		window.kadenceDesignTokensVariants = VARIANTS;
+		window.kadenceDesignTokensPresets = PRESETS;
 	});
 
 	afterEach(() => {
 		delete window.kadenceDesignTokensPickable;
-		delete window.kadenceDesignTokensVariants;
+		delete window.kadenceDesignTokensPresets;
 	});
 
 	it('returns only color tokens, semantic first, with no dimension or fontWeight leakage', () => {
@@ -233,12 +233,12 @@ describe('pickableTokensFor', () => {
 describe('pickableTokensForControl', () => {
 	beforeEach(() => {
 		window.kadenceDesignTokensPickable = POOL;
-		window.kadenceDesignTokensVariants = VARIANTS;
+		window.kadenceDesignTokensPresets = PRESETS;
 	});
 
 	afterEach(() => {
 		delete window.kadenceDesignTokensPickable;
-		delete window.kadenceDesignTokensVariants;
+		delete window.kadenceDesignTokensPresets;
 	});
 
 	it('delegates to the coarse kind list when the control binds no role token', () => {
@@ -254,7 +254,7 @@ describe('pickableTokensForControl', () => {
 	});
 
 	it('narrows to the bound token sub-kind, dropping other dimension roles', () => {
-		window.kadenceDesignTokensVariants = boundVariants('semantic.radius.button');
+		window.kadenceDesignTokensPresets = boundPresets('semantic.radius.button');
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
@@ -264,7 +264,7 @@ describe('pickableTokensForControl', () => {
 	});
 
 	it('pins the bound token first, keeping semantic-first order for the rest', () => {
-		window.kadenceDesignTokensVariants = boundVariants('primitive.dimension.radius.sm');
+		window.kadenceDesignTokensPresets = boundPresets('primitive.dimension.radius.sm');
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 

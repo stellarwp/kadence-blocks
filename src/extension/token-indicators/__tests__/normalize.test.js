@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { isEmptyValue, matchesVariant, normalizeColor, normalizeDimension } from '../normalize';
+import { isEmptyValue, matchesPreset, normalizeColor, normalizeDimension } from '../normalize';
 
 describe('normalizeColor', () => {
 	beforeEach(() => {
@@ -32,7 +32,7 @@ describe('normalizeColor', () => {
 	});
 });
 
-describe('matchesVariant color', () => {
+describe('matchesPreset color', () => {
 	beforeEach(() => {
 		window.kadence_blocks_params = {
 			global_colors: { '--global-palette3': '#3182CE' },
@@ -43,44 +43,44 @@ describe('matchesVariant color', () => {
 		delete window.kadence_blocks_params;
 	});
 
-	it('matches when a stored palette slug resolves to the variant literal', () => {
-		expect(matchesVariant('color', 'palette3', '', '#3182ce')).toBe(true);
+	it('matches when a stored palette slug resolves to the preset literal', () => {
+		expect(matchesPreset('color', 'palette3', '', '#3182ce')).toBe(true);
 	});
 
-	it('does not match when the stored literal differs from the variant literal', () => {
-		expect(matchesVariant('color', '#ffffff', '', '#3182ce')).toBe(false);
+	it('does not match when the stored literal differs from the preset literal', () => {
+		expect(matchesPreset('color', '#ffffff', '', '#3182ce')).toBe(false);
 	});
 });
 
-describe('matchesVariant dimension', () => {
-	it('matches a uniform 4-side array against the variant value + unit', () => {
-		expect(matchesVariant('dimension', ['8', '8', '8', '8'], 'px', '8px')).toBe(true);
+describe('matchesPreset dimension', () => {
+	it('matches a uniform 4-side array against the preset value + unit', () => {
+		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'px', '8px')).toBe(true);
 	});
 
-	it('matches a scalar value against the variant value + unit', () => {
-		expect(matchesVariant('dimension', '8', 'px', '8px')).toBe(true);
+	it('matches a scalar value against the preset value + unit', () => {
+		expect(matchesPreset('dimension', '8', 'px', '8px')).toBe(true);
 	});
 
 	it('does not match a per-corner override where one side differs', () => {
-		expect(matchesVariant('dimension', ['8', '8', '8', '4'], 'px', '8px')).toBe(false);
+		expect(matchesPreset('dimension', ['8', '8', '8', '4'], 'px', '8px')).toBe(false);
 	});
 
 	it('does not match when the value matches but the unit differs', () => {
-		expect(matchesVariant('dimension', ['8', '8', '8', '8'], 'rem', '8px')).toBe(false);
+		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'rem', '8px')).toBe(false);
 	});
 
 	it('does not match a different value with the same unit', () => {
-		expect(matchesVariant('dimension', ['8', '8', '8', '8'], 'px', '1.5rem')).toBe(false);
+		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'px', '1.5rem')).toBe(false);
 	});
 });
 
-describe('matchesVariant text', () => {
+describe('matchesPreset text', () => {
 	it('matches trimmed equal strings', () => {
-		expect(matchesVariant('text', ' bold ', '', 'bold')).toBe(true);
+		expect(matchesPreset('text', ' bold ', '', 'bold')).toBe(true);
 	});
 
 	it('does not match differing strings', () => {
-		expect(matchesVariant('text', 'bold', '', 'normal')).toBe(false);
+		expect(matchesPreset('text', 'bold', '', 'normal')).toBe(false);
 	});
 });
 

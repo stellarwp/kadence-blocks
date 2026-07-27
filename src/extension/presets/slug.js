@@ -1,5 +1,5 @@
 /**
- * Slug helpers for user-created variants: derive a kebab slug from a user's label, and de-duplicate it
+ * Slug helpers for user-created presets: derive a kebab slug from a user's label, and de-duplicate it
  * against the slugs a block already uses (baseline + user), mirroring the server's slug pattern.
  */
 
@@ -32,7 +32,7 @@ export function dedupeSlug(slug, taken) {
 		return slug;
 	}
 
-	const base = slug === '' ? 'variant' : slug;
+	const base = slug === '' ? 'preset' : slug;
 	let candidate = base;
 	let suffix = 2;
 

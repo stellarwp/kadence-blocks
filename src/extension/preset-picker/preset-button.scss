@@ -1,24 +1,24 @@
 /**
- * Design-token variant trigger button.
+ * Design-token preset trigger button.
  *
- * The single button that stands in for a block's variant selection, shown above the inspector tabs: a
- * bordered box holding the current variant label with the variant icon 4px to its right, and a dropdown
- * that lists the variants and the design-system actions.
+ * The single button that stands in for a block's preset selection, shown above the inspector tabs: a
+ * bordered box holding the current preset label with the preset icon 4px to its right, and a dropdown
+ * that lists the presets and the design-system actions.
  */
-.kb-variant-button__row {
+.kb-preset-button__row {
 	display: flex;
 	align-items: center;
 	gap: 4px;
 	padding: 0 16px 16px;
 }
 
-.kb-variant-button__dropdown {
+.kb-preset-button__dropdown {
 	display: block;
 	flex: 1 1 auto;
-	min-width: 0; // let the variant button shrink so the reset button keeps its place.
+	min-width: 0; // let the preset button shrink so the reset button keeps its place.
 }
 
-.kb-variant-button__reset.components-button {
+.kb-preset-button__reset.components-button {
 	flex: 0 0 auto;
 	color: #1e1e1e; // active — the block has edits to reset.
 	margin-right: -6px;
@@ -35,7 +35,7 @@
 	}
 }
 
-.kb-variant-button.components-button {
+.kb-preset-button.components-button {
 	display: flex;
 	align-items: center;
 	gap: 4px;
@@ -51,25 +51,25 @@
 	line-height: 1.25rem; // 20px
 	text-align: left;
 
-	.kb-variant-button__label {
+	.kb-preset-button__label {
 		flex: 1 1 auto;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	.kb-variant-button__edited {
+	.kb-preset-button__edited {
 		color: #949494;
 	}
 
-	.kb-variant-button__icon {
+	.kb-preset-button__icon {
 		position: relative;
 		display: inline-flex;
 		flex: 0 0 auto;
 	}
 
 	// The "has edits" badge: a 5x5 dot pinned to the top-right corner of the icon.
-	.kb-variant-button__dot {
+	.kb-preset-button__dot {
 		position: absolute;
 		top: -5px;
 		right: -2.5px;
@@ -87,7 +87,7 @@
 	}
 }
 
-.kb-variant-button__menu {
+.kb-preset-button__menu {
 	min-width: 220px;
 
 	.components-menu-group {
@@ -115,7 +115,7 @@
 
 	// The three design-system actions (highlight / reset / save) read as the admin accent, dimmed to
 	// 30% while deactivated (nothing to act on yet).
-	.components-menu-item__button.kb-variant-button__action {
+	.components-menu-item__button.kb-preset-button__action {
 		color: #3858e9;
 
 		&:disabled,
@@ -125,7 +125,7 @@
 		}
 	}
 
-	// The divider between the variants and the actions: inset 12px from the menu edges.
+	// The divider between the presets and the actions: inset 12px from the menu edges.
 	.components-menu-group + .components-menu-group {
 		border-top: none;
 		margin-top: 4px;
@@ -148,13 +148,13 @@
 		}
 	}
 
-	.kb-variant-button__check {
+	.kb-preset-button__check {
 		fill: var(--wp-admin-theme-color, #3858e9);
 	}
 
 	// The reset glyph shown at the far right of the Reset action (only while it is enabled); inherits
 	// the action's accent color via `currentColor`.
-	.kb-variant-button__reset-suffix {
+	.kb-preset-button__reset-suffix {
 		width: 14px;
 		height: 15px;
 	}
