@@ -14,7 +14,7 @@ use WP_REST_Server;
 
 /**
  * Covers the projected-CSS controller: it aggregates every design-token editor projector into one CSS string
- * for the editor to re-inject live, keeps multi-set (multi-palette) support intact, and is capability-gated.
+ * for the editor to re-inject live, emits only the single active set, and is capability-gated.
  */
 final class Projected_Css_ControllerTest extends TestCase {
 
@@ -65,19 +65,19 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A second, non-default token set is emitted with its own namespaced vars and a per-set switch selector,
-	 * proving multi-set (multi-palette) support survives the aggregation.
+	 * Only the active set is aggregated: a stored non-active set contributes no namespaced vars and no
+	 * switch selector, so the projected CSS carries a single active set's layer.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsEveryTokenSetWithItsSwitchLayer(): void {
+	public function testItEmitsOnlyTheActiveSet(): void {
 		$this->seedVariant( Token_Store::default_slug(), 'accent' );
 		$this->seedVariant( 'dark', 'accent' );
 
 		$css = $this->css();
 
-		$this->assertStringContainsString( '--kb-token--dark--', $css, 'The non-default set should emit namespaced vars.' );
-		$this->assertStringContainsString( 'data-kb-token-set', $css, 'The non-default set should emit a switch selector.' );
+		$this->assertStringNotContainsString( '--kb-token--dark--', $css, 'A non-active set must not emit namespaced vars.' );
+		$this->assertStringNotContainsString( 'data-kb-token-set', $css, 'A non-active set must not emit a switch selector.' );
 	}
 
 	/**
