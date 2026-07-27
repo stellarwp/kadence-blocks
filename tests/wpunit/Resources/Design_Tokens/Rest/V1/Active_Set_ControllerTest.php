@@ -2,7 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Active_Set_Controller;
 use ReflectionClass;
@@ -25,9 +25,9 @@ final class Active_Set_ControllerTest extends TestCase {
 	private Token_Store $store;
 
 	/**
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Active_Set_Controller
@@ -46,7 +46,7 @@ final class Active_Set_ControllerTest extends TestCase {
 		parent::setUp();
 
 		$this->store      = $this->container->get( Token_Store::class );
-		$this->active     = $this->container->get( Active_Set_Store::class );
+		$this->active     = $this->container->get( Active_Token_Library_Store::class );
 		$this->controller = $this->container->get( Active_Set_Controller::class );
 
 		global $wp_rest_server;

@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Preset_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -126,7 +126,7 @@ final class Preset_CatalogTest extends TestCase {
 			$registry,
 			$this->container->get( Preset_Resolver::class ),
 			$this->store,
-			$this->container->get( Active_Set_Store::class ),
+			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Effective_Presets::class )
 		) )->all();
 

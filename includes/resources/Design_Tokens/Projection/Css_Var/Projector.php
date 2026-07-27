@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -59,9 +59,9 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Css_Builder
@@ -79,7 +79,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
-	 * @param Active_Set_Store     $active
+	 * @param Active_Token_Library_Store     $active
 	 * @param Css_Builder          $css_builder
 	 * @param Legacy_Filter_Bridge $bridge
 	 */
@@ -87,7 +87,7 @@ final class Projector extends Abstract_Css_Projector {
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Css_Builder $css_builder,
 		Legacy_Filter_Bridge $bridge
 	) {

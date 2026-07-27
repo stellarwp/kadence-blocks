@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Throwable;
@@ -45,18 +45,18 @@ final class Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry The token registry.
-	 * @param Preset_Resolver  $resolver The preset resolver.
-	 * @param Active_Set_Store $active   Owns the active-set pointer.
+	 * @param Token_Registry             $registry The token registry.
+	 * @param Preset_Resolver            $resolver The preset resolver.
+	 * @param Active_Token_Library_Store $active   Owns the active-set pointer.
 	 */
-	public function __construct( Token_Registry $registry, Preset_Resolver $resolver, Active_Set_Store $active ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;

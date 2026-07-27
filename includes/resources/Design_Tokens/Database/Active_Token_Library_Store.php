@@ -5,42 +5,42 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Database;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
- * Owns the active-set pointer: which token set the module treats as canonical.
+ * Owns the active-library pointer: which token library the module treats as canonical.
  *
  * The pointer is a single slug, so it lives in a WordPress option rather than the
  * kb_design_tokens table — Token_Store remains the sole gateway to that table,
- * and this store is its analog for the active-set selection. It always resolves
- * to a valid set: a pointer at a never-set or since-deleted set falls back to the
- * default set, so reads can never surface a dangling selection.
+ * and this store is its analog for the active-library selection. It always resolves
+ * to a valid library: a pointer at a never-set or since-deleted library falls back to the
+ * default library, so reads can never surface a dangling selection.
  *
  * Setting the pointer is the REST layer's write surface; validating that a slug
- * names an existing set is done there (a 404), while this store guarantees the
+ * names an existing library is done there (a 404), while this store guarantees the
  * read invariant and signals a real change so caches and projectors can react.
  *
  * @since TBD
  */
-final class Active_Set_Store {
+final class Active_Token_Library_Store {
 
 	/**
-	 * @var string The option that holds the active token set slug.
+	 * @var string The option that holds the active token library slug.
 	 *
 	 * @since TBD
 	 */
-	private const OPTION = 'kadence_blocks_design_tokens_active_set';
+	private const OPTION = 'kadence_blocks_design_tokens_active_library';
 
 	/**
-	 * @var string Action fired after the active set changes, carrying the new and
+	 * @var string Action fired after the active library changes, carrying the new and
 	 *             now-previous slug, so caches and projectors can react. Distinct
 	 *             from Token_Store's document-change signal: this announces the
-	 *             selection moving, not a set's contents changing.
+	 *             selection moving, not a library's contents changing.
 	 *
 	 * @since TBD
 	 */
-	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_active_changed';
+	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_active_library_changed';
 
 	/**
 	 * The sole gateway to the kb_design_tokens table, used to validate that a stored
-	 * pointer still references an existing set.
+	 * pointer still references an existing library.
 	 *
 	 * @since TBD
 	 *
@@ -58,7 +58,7 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * The action hook that fires after the active set changes, for callers that need to react.
+	 * The action hook that fires after the active library changes, for callers that need to react.
 	 *
 	 * @since TBD
 	 *
@@ -69,15 +69,15 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * Read the active token set slug, always resolved to a valid set.
+	 * Read the active token library slug, always resolved to a valid library.
 	 *
-	 * Falls back to the default set when the pointer was never set or now references a set with no
-	 * row (a since-deleted set) — the default is the always-present canonical set, so the returned
-	 * slug always names a readable set.
+	 * Falls back to the default library when the pointer was never set or now references a library with no
+	 * row (a since-deleted library) — the default is the always-present canonical library, so the returned
+	 * slug always names a readable library.
 	 *
 	 * @since TBD
 	 *
-	 * @return string The active set slug, or the default set when the stored pointer is empty or dangling.
+	 * @return string The active library slug, or the default library when the stored pointer is empty or dangling.
 	 */
 	public function get(): string {
 		$slug = Cast::to_string( get_option( self::OPTION, '' ) );
@@ -90,16 +90,16 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * Point the active set at a slug, signalling the change.
+	 * Point the active library at a slug, signalling the change.
 	 *
-	 * A no-op when the slug already resolves to the current active set: nothing is written and no
+	 * A no-op when the slug already resolves to the current active library: nothing is written and no
 	 * change is signalled, so subscribers only see a real move. Validating that the slug names an
-	 * existing set is the REST layer's job (a 404); this store persists the pointer and announces
+	 * existing library is the REST layer's job (a 404); this store persists the pointer and announces
 	 * the change.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to make active.
+	 * @param string $slug The token library slug to make active.
 	 *
 	 * @return void
 	 */
@@ -116,17 +116,17 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * Drop the pointer when the set it references is deleted, resetting it to the default.
+	 * Drop the pointer when the library it references is deleted, resetting it to the default.
 	 *
 	 * Wired to Token_Store::deleted_action(), mirroring how Token_History_Store::forget() drops a
-	 * deleted set's trail: once the active set's row is gone, the now-dangling pointer is dropped and
+	 * deleted library's trail: once the active library's row is gone, the now-dangling pointer is dropped and
 	 * the change is signalled so caches can rebuild against the default. Reads already fall back on
 	 * their own, so this only keeps the stored option clean and emits the change signal at deletion
-	 * time. A delete of any other set leaves the pointer untouched.
+	 * time. A delete of any other library leaves the pointer untouched.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug that was deleted.
+	 * @param string $slug The token library slug that was deleted.
 	 *
 	 * @return void
 	 */
@@ -141,9 +141,9 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * Whether a slug names a readable token set.
+	 * Whether a slug names a readable token library.
 	 *
-	 * The default set is always known — it renders from baseline even before it has a row — and any
+	 * The default library is always known — it renders from baseline even before it has a row — and any
 	 * other slug is known once it has a stored row. Mirrors Documents_Controller's read gate.
 	 *
 	 * @since TBD
@@ -157,22 +157,22 @@ final class Active_Set_Store {
 	}
 
 	/**
-	 * Signal that the active set changed so caches and projectors can react.
+	 * Signal that the active library changed so caches and projectors can react.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $new The now-active set slug.
-	 * @param string $old The now-previous set slug.
+	 * @param string $new_slug The now-active library slug.
+	 * @param string $old_slug The now-previous library slug.
 	 *
 	 * @return void
 	 */
-	private function changed( string $new, string $old ): void {
+	private function changed( string $new_slug, string $old_slug ): void {
 		/**
-		 * Fires after the active design token set changes.
+		 * Fires after the active design token library changes.
 		 *
-		 * @param string $new The now-active set slug.
-		 * @param string $old The now-previous set slug.
+		 * @param string $new_slug The now-active library slug.
+		 * @param string $old_slug The now-previous library slug.
 		 */
-		do_action( self::CHANGED_ACTION, $new, $old );
+		do_action( self::CHANGED_ACTION, $new_slug, $old_slug );
 	}
 }

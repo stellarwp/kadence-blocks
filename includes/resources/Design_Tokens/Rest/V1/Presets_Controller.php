@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -43,7 +43,7 @@ use WP_REST_Server;
  * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
  *
  * Every route operates on a single token set: the one named by the optional `set` request parameter when
- * it is a known set, otherwise the active set ({@see Active_Set_Store::get()}, which resolves to
+ * it is a known set, otherwise the active set ({@see Active_Token_Library_Store::get()}, which resolves to
  * {@see Token_Store::default_slug()} when none is selected). So a read or write lands in whichever set the
  * editor has the block on, and the default set is used by default.
  *
@@ -228,9 +228,9 @@ final class Presets_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * Rewrites captured literal preset values into semantic aliases where one matches.
@@ -253,14 +253,14 @@ final class Presets_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store             $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator                 $mutator   Assembles the candidate overrides document.
-	 * @param Token_Resolver          $resolver  Dry-runs a candidate's token layers before commit.
-	 * @param Dtcg_Validator          $validator Validates the DTCG grammar of a candidate document.
-	 * @param Effective_Presets       $presets   Reads the baseline-merged presets section.
-	 * @param Token_Registry          $registry   Declares which blocks accept presets.
-	 * @param Active_Set_Store        $active     Resolves the active set when a request names none.
-	 * @param Preset_Value_Normalizer $normalizer Rewrites captured literals into semantic aliases.
+	 * @param Token_Store                $store     The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                    $mutator   Assembles the candidate overrides document.
+	 * @param Token_Resolver             $resolver  Dry-runs a candidate's token layers before commit.
+	 * @param Dtcg_Validator             $validator Validates the DTCG grammar of a candidate document.
+	 * @param Effective_Presets          $presets   Reads the baseline-merged presets section.
+	 * @param Token_Registry             $registry   Declares which blocks accept presets.
+	 * @param Active_Token_Library_Store $active     Resolves the active set when a request names none.
+	 * @param Preset_Value_Normalizer    $normalizer Rewrites captured literals into semantic aliases.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -269,7 +269,7 @@ final class Presets_Controller extends Controller {
 		Dtcg_Validator $validator,
 		Effective_Presets $presets,
 		Token_Registry $registry,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Preset_Value_Normalizer $normalizer
 	) {
 		$this->store      = $store;

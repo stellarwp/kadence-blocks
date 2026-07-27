@@ -2,7 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Set_Catalog;
 use Tests\Support\Classes\TestCase;
@@ -14,9 +14,9 @@ use Tests\Support\Classes\TestCase;
 final class Set_CatalogTest extends TestCase {
 
 	/**
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Token_Store
@@ -29,7 +29,7 @@ final class Set_CatalogTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->active = $this->container->get( Active_Set_Store::class );
+		$this->active = $this->container->get( Active_Token_Library_Store::class );
 		$this->store  = $this->container->get( Token_Store::class );
 	}
 

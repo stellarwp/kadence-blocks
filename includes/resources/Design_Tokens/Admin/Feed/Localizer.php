@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -88,9 +88,9 @@ final class Localizer {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The presets section builder.
@@ -122,17 +122,17 @@ final class Localizer {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Resolver   $resolver        The token resolver.
-	 * @param Token_Store      $store           The token store.
-	 * @param Active_Set_Store $active          The active-set pointer.
-	 * @param Presets          $preset_feed    The presets section builder.
-	 * @param Builder          $builder         The pure payload assembler.
-	 * @param Responsive_Feed  $responsive_feed The responsive / clamp shape extractor.
+	 * @param Token_Resolver             $resolver        The token resolver.
+	 * @param Token_Store                $store           The token store.
+	 * @param Active_Token_Library_Store $active          The active-set pointer.
+	 * @param Presets                    $preset_feed    The presets section builder.
+	 * @param Builder                    $builder         The pure payload assembler.
+	 * @param Responsive_Feed            $responsive_feed The responsive / clamp shape extractor.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Presets $preset_feed,
 		Builder $builder,
 		Responsive_Feed $responsive_feed

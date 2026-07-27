@@ -3,7 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -88,9 +88,9 @@ final class Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The palette builder.
@@ -111,17 +111,17 @@ final class Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry
-	 * @param Token_Resolver   $resolver
-	 * @param Token_Store      $store
-	 * @param Active_Set_Store $active
-	 * @param Palette_Builder  $builder
+	 * @param Token_Registry             $registry
+	 * @param Token_Resolver             $resolver
+	 * @param Token_Store                $store
+	 * @param Active_Token_Library_Store $active
+	 * @param Palette_Builder            $builder
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Palette_Builder $builder
 	) {
 		$this->registry = $registry;

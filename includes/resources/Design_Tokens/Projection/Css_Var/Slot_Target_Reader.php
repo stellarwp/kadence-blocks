@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -41,18 +41,18 @@ final class Slot_Target_Reader {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry
 	 * @param Token_Resolver   $resolver
-	 * @param Active_Set_Store $active
+	 * @param Active_Token_Library_Store $active
 	 */
-	public function __construct( Token_Registry $registry, Token_Resolver $resolver, Active_Set_Store $active ) {
+	public function __construct( Token_Registry $registry, Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;

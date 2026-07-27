@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
@@ -61,9 +61,9 @@ final class Preset_Catalog {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The effective-presets reader, source of each preset's user-created provenance per set.
@@ -77,17 +77,17 @@ final class Preset_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry    $registry  The token registry.
-	 * @param Preset_Resolver   $presets  The preset resolver.
-	 * @param Token_Store       $store     The persistence gateway.
-	 * @param Active_Set_Store  $active    The active-set pointer.
-	 * @param Effective_Presets $effective The effective-presets reader.
+	 * @param Token_Registry             $registry  The token registry.
+	 * @param Preset_Resolver            $presets  The preset resolver.
+	 * @param Token_Store                $store     The persistence gateway.
+	 * @param Active_Token_Library_Store $active    The active-set pointer.
+	 * @param Effective_Presets          $effective The effective-presets reader.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Preset_Resolver $presets,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Effective_Presets $effective
 	) {
 		$this->registry  = $registry;

@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -20,9 +20,9 @@ use WP_REST_Server;
  * addon's activePaletteId — a single selection, distinct from the per-set document surface that
  * Documents_Controller owns.
  *
- * The read always returns a valid set: Active_Set_Store falls back to the default set when the pointer
+ * The read always returns a valid set: Active_Token_Library_Store falls back to the default set when the pointer
  * was never set or now names a deleted set. A write to an unknown set is a 404; a write to a known set
- * persists the pointer and fires Active_Set_Store::changed_action() so caches and projectors can react.
+ * persists the pointer and fires Active_Token_Library_Store::changed_action() so caches and projectors can react.
  *
  * @since TBD
  */
@@ -52,9 +52,9 @@ final class Active_Set_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The sole gateway to the kb_design_tokens table, used to validate a write target exists.
@@ -77,10 +77,10 @@ final class Active_Set_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Active_Set_Store $active Owns the active-set pointer.
-	 * @param Token_Store      $store  The sole gateway to the kb_design_tokens table.
+	 * @param Active_Token_Library_Store $active Owns the active-set pointer.
+	 * @param Token_Store                $store  The sole gateway to the kb_design_tokens table.
 	 */
-	public function __construct( Active_Set_Store $active, Token_Store $store ) {
+	public function __construct( Active_Token_Library_Store $active, Token_Store $store ) {
 		$this->active    = $active;
 		$this->store     = $store;
 		$this->rest_base = 'active-set';

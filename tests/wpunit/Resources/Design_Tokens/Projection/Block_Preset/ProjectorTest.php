@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
@@ -136,7 +136,7 @@ final class ProjectorTest extends TestCase {
 	 * Build the projector with a given registry and the real (baseline-backed) preset resolver.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
-		return new Projector( $registry, $this->resolver, $this->container->get( Active_Set_Store::class ) );
+		return new Projector( $registry, $this->resolver, $this->container->get( Active_Token_Library_Store::class ) );
 	}
 
 	/**

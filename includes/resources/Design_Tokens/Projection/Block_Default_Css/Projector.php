@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -45,9 +45,9 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The block-default CSS builder.
@@ -63,10 +63,10 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @param Token_Registry   $registry    The token registry.
 	 * @param Token_Store      $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store $active      Owns the active-set pointer.
+	 * @param Active_Token_Library_Store $active      Owns the active-set pointer.
 	 * @param Css_Builder      $css_builder The block-default CSS builder.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
+	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
 		$this->store       = $store;
 		$this->active      = $active;

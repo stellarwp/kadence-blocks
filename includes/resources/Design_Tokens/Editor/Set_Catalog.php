@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 
 /**
@@ -32,17 +32,17 @@ final class Set_Catalog {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store      $store  The token store.
-	 * @param Active_Set_Store $active The active-set pointer.
+	 * @param Token_Store                $store  The token store.
+	 * @param Active_Token_Library_Store $active The active-set pointer.
 	 */
-	public function __construct( Token_Store $store, Active_Set_Store $active ) {
+	public function __construct( Token_Store $store, Active_Token_Library_Store $active ) {
 		$this->store  = $store;
 		$this->active = $active;
 	}
