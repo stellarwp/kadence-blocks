@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;

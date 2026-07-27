@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -81,12 +81,14 @@ final class LocalizerTest extends TestCase {
 	}
 
 	/**
+	 * The localizer attaches the design tokens feed as inline data on the Style Library screen's script.
+	 *
 	 * @return void
 	 */
-	public function testItAttachesTheFeedOnTheStyleBookScreen(): void {
+	public function testItAttachesTheFeedOnTheStyleLibraryScreen(): void {
 		wp_register_script(
 			Asset_Loader::get_script_handle(),
-			'https://example.test/admin-kadence-style-book.js',
+			'https://example.test/admin-kadence-style-library.js',
 			[],
 			'1',
 			true

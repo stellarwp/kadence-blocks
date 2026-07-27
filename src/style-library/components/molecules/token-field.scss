@@ -1,0 +1,35 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__token-field {
+	@include flex-column($spacing-md);
+	@include card-surface;
+
+	&-meta {
+		@include flex-row($spacing-md);
+	}
+
+	&-labels {
+		@include flex-column($spacing-xs);
+		flex: 1;
+		min-width: 0;
+	}
+
+	&-controls {
+		@include flex-row-wrap($spacing-md);
+	}
+}
+
+.kadence-blocks-style-library__token-label {
+	font-size: $font-size-body;
+}
+
+.kadence-blocks-style-library__token-id {
+	@include meta-text;
+	word-break: break-all;
+}
+
+.kadence-blocks-style-library__token-input {
+	flex: 1 1 $input-min-width;
+	margin-bottom: 0;
+}
