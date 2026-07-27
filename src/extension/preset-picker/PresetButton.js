@@ -17,7 +17,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { activeSet, blockPresets, blockDefaultPreset } from './index';
+import { activeLibrary, blockPresets, blockDefaultPreset } from './index';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
 import { SavePresetModal } from './SavePresetModal';
@@ -64,7 +64,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
+	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeLibrary();
 	const binding = usePresetBinding(blockName, attributes, tokenSet);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 

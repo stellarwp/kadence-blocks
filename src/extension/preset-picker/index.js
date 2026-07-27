@@ -4,7 +4,7 @@
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensPresets`,
  * keyed by token set then by block:
  * `{ active, sets: { <slug>: { <block>: { default, presets, properties, label } } } }`.
- * Reads take the token set a block is on (its `kbTokenSet`, or the active set). A picker-driven block
+ * Reads take the token set a block is on (its `kbTokenSet`, or the active library). A picker-driven block
  * declares one preset set; its selection lives in the block's `kbPreset` string attribute. Both the
  * generic inspector picker (src/early-filters.js) and a block that renders the picker inline in its own
  * Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it surfaces.
@@ -24,29 +24,29 @@ function presetCatalog() {
 }
 
 /**
- * The active token set slug, defaulting to "default".
+ * The active token library slug, defaulting to "default".
  *
- * @return {string} The active set slug.
+ * @return {string} The active library slug.
  */
-export function activeSet() {
+export function activeLibrary() {
 	return get(presetCatalog(), 'active', 'default') || 'default';
 }
 
 /**
- * The per-block catalog for a token set, defaulting to the active set.
+ * The per-block catalog for a token set, defaulting to the active library.
  *
  * @param {string} [set] The token set slug.
  * @return {Object} The per-block catalog for the set (block => entry).
  */
 function setBlocks(set) {
-	return get(presetCatalog(), ['sets', set || activeSet()], {}) || {};
+	return get(presetCatalog(), ['sets', set || activeLibrary()], {}) || {};
 }
 
 /**
  * The catalog entry for a block's preset set in a token set, or null when it offers none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  * @return {Object|null} The set entry ({ default, presets, properties, label }).
  */
 function blockEntry(name, set) {
@@ -57,7 +57,7 @@ function blockEntry(name, set) {
  * The presets defined for a block's set, or an empty array when it has none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  * @return {Array} The block's presets ([{ slug, label, userCreated }]).
  */
 export function blockPresets(name, set) {
@@ -69,7 +69,7 @@ export function blockPresets(name, set) {
  * or an empty string when it declares none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  * @return {string} The control label, or an empty string.
  */
 export function blockPresetLabel(name, set) {
@@ -81,7 +81,7 @@ export function blockPresetLabel(name, set) {
  * property.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  * @return {Array} The block's surface ([{ key, kind, token, control_attr }]).
  */
 export function blockProperties(name, set) {
@@ -94,7 +94,7 @@ export function blockProperties(name, set) {
  * current value against the selected preset's value.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  *
  * @since TBD
  *
@@ -108,7 +108,7 @@ export function blockPresetValues(name, set) {
  * The block set's default preset slug in a token set.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token set slug; defaults to the active library.
  * @return {string} The default preset slug, or an empty string.
  */
 export function blockDefaultPreset(name, set) {
@@ -177,7 +177,7 @@ export function removePreset(name, set, slug) {
  * @param {string}   props.name        The block name, used to read its presets from the catalog.
  * @param {string}   props.value       The currently selected preset slug.
  * @param {Function} props.onChange    Called with the selected slug.
- * @param {string}   [props.set]       The token set the block is on; defaults to the active set.
+ * @param {string}   [props.set]       The token set the block is on; defaults to the active library.
  * @param {string}   [props.label]     The control label; defaults to the block's declared label, then a generic fallback.
  * @param {string}   [props.className] The control class.
  *

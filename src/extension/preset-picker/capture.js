@@ -7,7 +7,7 @@
  * token stores.
  */
 import { get } from 'lodash';
-import { activeSet, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
+import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
 import { normalizeColor, normalizeDimension, normalizeText, isEmptyValue } from '../token-indicators/normalize';
 
 /**
@@ -52,7 +52,7 @@ function attrToLiteral(kind, value, unit) {
  * @return {Object} The captured token map keyed by property.
  */
 export function capturedTokens(blockName, set, attributes) {
-	const tokenSet = set || activeSet();
+	const tokenSet = set || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
 	const presetValues = get(blockPresetValues(blockName, tokenSet), currentSlug, {});

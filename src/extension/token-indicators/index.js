@@ -13,7 +13,7 @@
  */
 
 import { get } from 'lodash';
-import { activeSet, blockDefaultPreset, blockProperties, blockPresetValues } from '../preset-picker';
+import { activeLibrary, blockDefaultPreset, blockProperties, blockPresetValues } from '../preset-picker';
 import { isEmptyValue, matchesPreset } from './normalize';
 import './token-indicators.scss';
 
@@ -50,7 +50,7 @@ function unitAttrFor(kind, attr) {
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
 export function mappedAttrsFor(blockName, set) {
-	return blockProperties(blockName, set || activeSet())
+	return blockProperties(blockName, set || activeLibrary())
 		.filter((property) => !!property.control_attr)
 		.map((property) => ({ attr: property.control_attr, kind: property.kind }));
 }
@@ -68,7 +68,7 @@ export function mappedAttrsFor(blockName, set) {
  * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
  */
 export function usePresetBinding(blockName, attributes, set) {
-	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
+	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedSet);
 	const values = blockPresetValues(blockName, resolvedSet);

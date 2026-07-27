@@ -84,7 +84,7 @@ const POOL = {
 };
 
 /**
- * The fixture preset catalog: enough for `activeSet()` and `blockProperties()` to resolve a single
+ * The fixture preset catalog: enough for `activeLibrary()` and `blockProperties()` to resolve a single
  * mapped control (`borderRadius` -> `dimension`) for `kadence/singlebtn`.
  */
 const PRESETS = {

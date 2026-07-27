@@ -16,7 +16,7 @@
  * That is cosmetic (the alias never goes stale) and live refresh is the picker UI's concern.
  */
 import { get } from 'lodash';
-import { activeSet, blockProperties } from '../preset-picker';
+import { activeLibrary, blockProperties } from '../preset-picker';
 
 /**
  * Token $types compatible with each control kind. Keys are the preset catalog's coarse control
@@ -57,9 +57,9 @@ export function pickableTokenPool() {
  */
 function valuesFor(set) {
 	const values = get(pickableTokenPool(), 'values', {}) || {};
-	const slug = set || activeSet();
+	const slug = set || activeLibrary();
 
-	return get(values, [slug], null) || get(values, [activeSet()], {}) || {};
+	return get(values, [slug], null) || get(values, [activeLibrary()], {}) || {};
 }
 
 /**
