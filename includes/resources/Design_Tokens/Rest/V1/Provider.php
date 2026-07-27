@@ -16,7 +16,7 @@ final class Provider extends Provider_Contract {
 	 * Concrete v1 REST controllers registered on rest_api_init.
 	 *
 	 * Each entry is resolved from the container and has its routes registered.
-	 * Endpoint controllers are added here as the read, write, and variant
+	 * Endpoint controllers are added here as the read, write, and preset
 	 * surfaces land.
 	 *
 	 * @since TBD
@@ -26,7 +26,7 @@ final class Provider extends Provider_Contract {
 	private const CONTROLLERS = [
 		Documents_Controller::class,
 		Schema_Controller::class,
-		Variants_Controller::class,
+		Presets_Controller::class,
 		Active_Set_Controller::class,
 		Projected_Css_Controller::class,
 		User_Primitives_Controller::class,

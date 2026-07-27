@@ -6,11 +6,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Value_Normalizer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Value_Normalizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Dtcg_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -24,19 +24,19 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * REST controller for the Design Tokens variants resource.
+ * REST controller for the Design Tokens presets resource.
  *
- * Exposes the raw read and write surface for a block's variant set: the named variants and the `$default`
- * that live in the DTCG document under `$extensions.com.kadence.designTokens.variants.<block>`. Reads are
- * served from the baseline deep-merged with the stored overrides (via {@see Effective_Variants}), so a
- * variant authored through a write is visible on the next read. Resolved (CSS) variant values are out of
- * scope here — they are produced by the variant projectors, which own the resolver's override-merging.
+ * Exposes the raw read and write surface for a block's preset set: the named presets and the `$default`
+ * that live in the DTCG document under `$extensions.com.kadence.designTokens.presets.<block>`. Reads are
+ * served from the baseline deep-merged with the stored overrides (via {@see Effective_Presets}), so a
+ * preset authored through a write is visible on the next read. Resolved (CSS) preset values are out of
+ * scope here — they are produced by the preset projectors, which own the resolver's override-merging.
  *
- * A block is addressable only when it has a registered variant set ({@see Token_Registry::for_block()}); a
- * block with no set has no bindings, so a variant authored for it could never project. Reads and writes for
+ * A block is addressable only when it has a registered preset set ({@see Token_Registry::for_block()}); a
+ * block with no set has no bindings, so a preset authored for it could never project. Reads and writes for
  * such a block are a 404.
  *
- * Writes assemble a partial overrides document carrying only the addressed variants node and deep-merge it
+ * Writes assemble a partial overrides document carrying only the addressed presets node and deep-merge it
  * onto the stored set, then run the shared pipeline: DTCG grammar validation (HTTP 422), a dry-run Resolver
  * pass that rejects alias cycles / dangling aliases in the token layers (HTTP 422), then a single
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
@@ -49,7 +49,7 @@ use WP_REST_Server;
  *
  * @since TBD
  */
-final class Variants_Controller extends Controller {
+final class Presets_Controller extends Controller {
 
 	/**
 	 * The request parameter that carries the block's vendor segment, e.g. "kadence".
@@ -70,16 +70,16 @@ final class Variants_Controller extends Controller {
 	private const BLOCK_NAME_PARAM = 'block_name';
 
 	/**
-	 * The request parameter that carries a single variant slug.
+	 * The request parameter that carries a single preset slug.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const VARIANT_PARAM = 'variant';
+	private const PRESET_PARAM = 'preset';
 
 	/**
-	 * The request parameter that carries a variant's human-readable label on a create.
+	 * The request parameter that carries a preset's human-readable label on a create.
 	 *
 	 * @since TBD
 	 *
@@ -88,7 +88,7 @@ final class Variants_Controller extends Controller {
 	private const LABEL_PARAM = 'label';
 
 	/**
-	 * The request parameter that carries a variant's property => alias-or-literal token map.
+	 * The request parameter that carries a preset's property => alias-or-literal token map.
 	 *
 	 * @since TBD
 	 *
@@ -97,16 +97,16 @@ final class Variants_Controller extends Controller {
 	private const TOKENS_PARAM = 'tokens';
 
 	/**
-	 * The request parameter that carries the whole variant map on a replace (PUT).
+	 * The request parameter that carries the whole preset map on a replace (PUT).
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const VARIANTS_PARAM = 'variants';
+	private const PRESETS_PARAM = 'presets';
 
 	/**
-	 * The request parameter that carries the default variant slug.
+	 * The request parameter that carries the default preset slug.
 	 *
 	 * @since TBD
 	 *
@@ -152,13 +152,13 @@ final class Variants_Controller extends Controller {
 	private const BLOCK_ROUTE = self::VENDOR_ROUTE . '/' . self::BLOCK_NAME_ROUTE;
 
 	/**
-	 * The single-variant path segment.
+	 * The single-preset path segment.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const VARIANT_ROUTE = '(?P<' . self::VARIANT_PARAM . '>[\w-]+)';
+	private const PRESET_ROUTE = '(?P<' . self::PRESET_PARAM . '>[\w-]+)';
 
 	/**
 	 * The literal sub-route, relative to a block, that reads / sets the block's `$default`.
@@ -206,16 +206,16 @@ final class Variants_Controller extends Controller {
 	private Dtcg_Validator $validator;
 
 	/**
-	 * Reads the effective (baseline-merged) variants section, so reads reflect writes.
+	 * Reads the effective (baseline-merged) presets section, so reads reflect writes.
 	 *
 	 * @since TBD
 	 *
-	 * @var Effective_Variants
+	 * @var Effective_Presets
 	 */
-	private Effective_Variants $variants;
+	private Effective_Presets $presets;
 
 	/**
-	 * Declares which blocks accept variants. A block with no registered set is a 404.
+	 * Declares which blocks accept presets. A block with no registered set is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -233,13 +233,13 @@ final class Variants_Controller extends Controller {
 	private Active_Set_Store $active;
 
 	/**
-	 * Rewrites captured literal variant values into semantic aliases where one matches.
+	 * Rewrites captured literal preset values into semantic aliases where one matches.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variant_Value_Normalizer
+	 * @var Preset_Value_Normalizer
 	 */
-	private Variant_Value_Normalizer $normalizer;
+	private Preset_Value_Normalizer $normalizer;
 
 	/**
 	 * Memoised item schema for this request. Null until first built.
@@ -253,45 +253,45 @@ final class Variants_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store              $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator                  $mutator   Assembles the candidate overrides document.
-	 * @param Token_Resolver           $resolver  Dry-runs a candidate's token layers before commit.
-	 * @param Dtcg_Validator           $validator Validates the DTCG grammar of a candidate document.
-	 * @param Effective_Variants       $variants   Reads the baseline-merged variants section.
-	 * @param Token_Registry           $registry   Declares which blocks accept variants.
-	 * @param Active_Set_Store         $active     Resolves the active set when a request names none.
-	 * @param Variant_Value_Normalizer $normalizer Rewrites captured literals into semantic aliases.
+	 * @param Token_Store             $store     The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                 $mutator   Assembles the candidate overrides document.
+	 * @param Token_Resolver          $resolver  Dry-runs a candidate's token layers before commit.
+	 * @param Dtcg_Validator          $validator Validates the DTCG grammar of a candidate document.
+	 * @param Effective_Presets       $presets   Reads the baseline-merged presets section.
+	 * @param Token_Registry          $registry   Declares which blocks accept presets.
+	 * @param Active_Set_Store        $active     Resolves the active set when a request names none.
+	 * @param Preset_Value_Normalizer $normalizer Rewrites captured literals into semantic aliases.
 	 */
 	public function __construct(
 		Token_Store $store,
 		Mutator $mutator,
 		Token_Resolver $resolver,
 		Dtcg_Validator $validator,
-		Effective_Variants $variants,
+		Effective_Presets $presets,
 		Token_Registry $registry,
 		Active_Set_Store $active,
-		Variant_Value_Normalizer $normalizer
+		Preset_Value_Normalizer $normalizer
 	) {
 		$this->store      = $store;
 		$this->mutator    = $mutator;
 		$this->resolver   = $resolver;
 		$this->validator  = $validator;
-		$this->variants   = $variants;
+		$this->presets    = $presets;
 		$this->registry   = $registry;
 		$this->active     = $active;
 		$this->normalizer = $normalizer;
-		$this->rest_base  = 'variants';
+		$this->rest_base  = 'presets';
 	}
 
 	/**
-	 * Register the read and write routes for the variants resource.
+	 * Register the read and write routes for the presets resource.
 	 *
-	 * Verb semantics follow the WordPress REST convention: POST creates or merges a single variant, PUT
-	 * replaces the block's whole variant set, DELETE on a block resets it to baseline, and DELETE on a
-	 * variant removes that one variant. The `$default` is read and set through a dedicated sub-route.
+	 * Verb semantics follow the WordPress REST convention: POST creates or merges a single preset, PUT
+	 * replaces the block's whole preset set, DELETE on a block resets it to baseline, and DELETE on a
+	 * preset removes that one preset. The `$default` is read and set through a dedicated sub-route.
 	 *
-	 * The `default` sub-route is registered before the single-variant route so the literal segment is not
-	 * captured as a variant slug.
+	 * The `default` sub-route is registered before the single-preset route so the literal segment is not
+	 * captured as a preset slug.
 	 *
 	 * @since TBD
 	 *
@@ -323,14 +323,14 @@ final class Variants_Controller extends Controller {
 					'args'                => $this->get_block_params(),
 				],
 				[
-					// POST = create-or-merge a single variant, leaving siblings and $default intact.
+					// POST = create-or-merge a single preset, leaving siblings and $default intact.
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 					'args'                => $this->get_create_params(),
 				],
 				[
-					// PUT replaces the block's whole variant set, dropping any variant absent from the body.
+					// PUT replaces the block's whole preset set, dropping any preset absent from the body.
 					'methods'             => 'PUT',
 					'callback'            => [ $this, 'update_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
@@ -368,13 +368,13 @@ final class Variants_Controller extends Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/' . self::BLOCK_ROUTE . '/' . self::VARIANT_ROUTE,
+			'/' . $this->rest_base . '/' . self::BLOCK_ROUTE . '/' . self::PRESET_ROUTE,
 			[
 				[
 					'methods'             => WP_REST_Server::DELETABLE,
-					'callback'            => [ $this, 'delete_variant' ],
+					'callback'            => [ $this, 'delete_preset' ],
 					'permission_callback' => [ $this, 'delete_item_permissions_check' ],
-					'args'                => $this->get_variant_params(),
+					'args'                => $this->get_preset_params(),
 				],
 				'schema' => [ $this, 'get_item_schema' ],
 			]
@@ -382,7 +382,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * List the blocks that accept variants, each with its default and named variant slugs.
+	 * List the blocks that accept presets, each with its default and named preset slugs.
 	 *
 	 * @since TBD
 	 *
@@ -392,16 +392,16 @@ final class Variants_Controller extends Controller {
 	 */
 	public function get_items( $request ) {
 		$slug    = $this->slug( $request );
-		$section = $this->variants->section( $slug );
+		$section = $this->presets->section( $slug );
 		$blocks  = [];
 
-		foreach ( array_keys( $this->registry->variant_sets() ) as $block ) {
+		foreach ( array_keys( $this->registry->all_preset_bindings() ) as $block ) {
 			$node = $this->set_node( $section, $block );
 
 			$blocks[] = [
 				'block'   => $block,
 				'default' => $this->default_of( $node ),
-				'names'   => $this->variant_names( $node ),
+				'names'   => $this->preset_names( $node ),
 			];
 		}
 
@@ -409,7 +409,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Read a single block's effective variant set.
+	 * Read a single block's effective preset set.
 	 *
 	 * @since TBD
 	 *
@@ -429,10 +429,10 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Create or merge a single variant (POST /variants/{block}).
+	 * Create or merge a single preset (POST /presets/{block}).
 	 *
-	 * The body carries the variant slug, an optional label and its property => value token map. The variant
-	 * is deep-merged into the stored set, so sibling variants and the `$default` are left intact.
+	 * The body carries the preset slug, an optional label and its property => value token map. The preset
+	 * is deep-merged into the stored set, so sibling presets and the `$default` are left intact.
 	 *
 	 * @since TBD
 	 *
@@ -448,12 +448,12 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$variant = Cast::to_string( $request->get_param( self::VARIANT_PARAM ) );
+		$preset = Cast::to_string( $request->get_param( self::PRESET_PARAM ) );
 
-		if ( $variant === '' ) {
+		if ( $preset === '' ) {
 			return new WP_Error(
 				'rest_design_tokens_invalid',
-				__( 'A variant slug is required.', 'kadence-blocks' ),
+				__( 'A preset slug is required.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::BAD_REQUEST,
 					'block'  => $block,
@@ -461,9 +461,9 @@ final class Variants_Controller extends Controller {
 			);
 		}
 
-		$block_node = [ $variant => $this->variant_definition( $request ) ];
+		$block_node = [ $preset => $this->preset_definition( $request ) ];
 
-		$error = $this->guard_variant_shape( $block_node, $block );
+		$error = $this->guard_preset_shape( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -495,10 +495,10 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Replace a block's whole variant set (PUT /variants/{block}).
+	 * Replace a block's whole preset set (PUT /presets/{block}).
 	 *
-	 * The stored variants for the block are dropped first, then the body's variant map (and optional
-	 * default) is written, so a variant absent from the body no longer applies.
+	 * The stored presets for the block are dropped first, then the body's preset map (and optional
+	 * default) is written, so a preset absent from the body no longer applies.
 	 *
 	 * @since TBD
 	 *
@@ -514,8 +514,8 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$variants   = $request->get_param( self::VARIANTS_PARAM );
-		$block_node = is_array( $variants ) ? $variants : [];
+		$presets    = $request->get_param( self::PRESETS_PARAM );
+		$block_node = is_array( $presets ) ? $presets : [];
 
 		$default = Cast::to_string( $request->get_param( self::DEFAULT_PARAM ) );
 
@@ -523,7 +523,7 @@ final class Variants_Controller extends Controller {
 			$block_node[ Extensions::get_default_key() ] = $default;
 		}
 
-		$error = $this->guard_variant_shape( $block_node, $block );
+		$error = $this->guard_preset_shape( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -538,7 +538,7 @@ final class Variants_Controller extends Controller {
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 
-		// Replace, not merge: drop the stored block node first so a variant the body omits does not survive.
+		// Replace, not merge: drop the stored block node first so a preset the body omits does not survive.
 		$stored    = $this->unset_block( $this->stored_document( $slug ), $block );
 		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
 
@@ -564,9 +564,9 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reset a block's variant set to baseline (DELETE /variants/{block}).
+	 * Reset a block's preset set to baseline (DELETE /presets/{block}).
 	 *
-	 * Removes the whole stored `variants.<block>` node, so the block renders its baseline variants. A no-op
+	 * Removes the whole stored `presets.<block>` node, so the block renders its baseline presets. A no-op
 	 * when nothing is stored for the block.
 	 *
 	 * @since TBD
@@ -595,12 +595,12 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Remove a single variant from a block (DELETE /variants/{block}/{variant}).
+	 * Remove a single preset from a block (DELETE /presets/{block}/{preset}).
 	 *
-	 * Drops the stored override for that variant; a variant that also exists in the baseline reverts to its
-	 * baseline definition. Idempotent: a no-op when nothing is stored for the variant. The `$default` is
+	 * Drops the stored override for that preset; a preset that also exists in the baseline reverts to its
+	 * baseline definition. Idempotent: a no-op when nothing is stored for the preset. The `$default` is
 	 * managed through the dedicated sub-route, so deleting "default" here is rejected; and removing a
-	 * variant the effective set still defaults to is rejected (HTTP 422) before commit.
+	 * preset the effective set still defaults to is rejected (HTTP 422) before commit.
 	 *
 	 * @since TBD
 	 *
@@ -608,7 +608,7 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function delete_variant( $request ) {
+	public function delete_preset( $request ) {
 		$block = $this->block_from( $request );
 		$error = $this->guard_block( $block );
 
@@ -616,12 +616,12 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$variant = Cast::to_string( $request->get_param( self::VARIANT_PARAM ) );
+		$preset = Cast::to_string( $request->get_param( self::PRESET_PARAM ) );
 
-		if ( $variant === self::DEFAULT_ROUTE ) {
+		if ( $preset === self::DEFAULT_ROUTE ) {
 			return new WP_Error(
 				'rest_design_tokens_invalid',
-				__( 'The default variant is managed through the default sub-route.', 'kadence-blocks' ),
+				__( 'The default preset is managed through the default sub-route.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::BAD_REQUEST,
 					'block'  => $block,
@@ -631,7 +631,7 @@ final class Variants_Controller extends Controller {
 
 		$slug      = $this->slug( $request );
 		$stored    = $this->stored_document( $slug );
-		$candidate = $this->unset_variant( $stored, $block, $variant );
+		$candidate = $this->unset_preset( $stored, $block, $preset );
 
 		if ( $candidate === $stored ) {
 			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
@@ -647,7 +647,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Read a block's default variant slug (GET /variants/{block}/default).
+	 * Read a block's default preset slug (GET /presets/{block}/default).
 	 *
 	 * @since TBD
 	 *
@@ -663,7 +663,7 @@ final class Variants_Controller extends Controller {
 			return $error;
 		}
 
-		$node = $this->set_node( $this->variants->section( $this->slug( $request ) ), $block );
+		$node = $this->set_node( $this->presets->section( $this->slug( $request ) ), $block );
 
 		return new WP_REST_Response(
 			[
@@ -675,9 +675,9 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Set a block's default variant slug (PUT /variants/{block}/default).
+	 * Set a block's default preset slug (PUT /presets/{block}/default).
 	 *
-	 * The default must name a variant the effective set defines, otherwise the write is rejected (HTTP 422)
+	 * The default must name a preset the effective set defines, otherwise the write is rejected (HTTP 422)
 	 * before commit.
 	 *
 	 * @since TBD
@@ -712,7 +712,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The JSON Schema for a block's variant set.
+	 * The JSON Schema for a block's preset set.
 	 *
 	 * @since TBD
 	 *
@@ -723,15 +723,15 @@ final class Variants_Controller extends Controller {
 			return $this->add_additional_fields_schema( $this->item_schema );
 		}
 
-		$variant_schema = [
+		$preset_schema = [
 			'type'       => 'object',
 			'properties' => [
 				Extensions::get_label_key()  => [
-					'description' => __( 'The variant\'s human-readable label.', 'kadence-blocks' ),
+					'description' => __( 'The preset\'s human-readable label.', 'kadence-blocks' ),
 					'type'        => 'string',
 				],
 				Extensions::get_tokens_key() => [
-					'description'          => __( 'The variant\'s property => alias-or-literal token map.', 'kadence-blocks' ),
+					'description'          => __( 'The preset\'s property => alias-or-literal token map.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'additionalProperties' => [ 'type' => [ 'string', 'number' ] ],
 				],
@@ -740,37 +740,37 @@ final class Variants_Controller extends Controller {
 
 		$this->item_schema = [
 			'$schema'    => 'http://json-schema.org/draft-07/schema#',
-			'title'      => 'design-token-variant-set',
+			'title'      => 'design-token-preset-set',
 			'type'       => 'object',
 			'properties' => [
-				'block'    => [
-					'description' => __( 'The block name the variant set belongs to.', 'kadence-blocks' ),
+				'block'   => [
+					'description' => __( 'The block name the preset set belongs to.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'slug'     => [
+				'slug'    => [
 					'description' => __( 'The token set slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'version'  => [
+				'version' => [
 					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'default'  => [
-					'description' => __( 'The default variant slug.', 'kadence-blocks' ),
+				'default' => [
+					'description' => __( 'The default preset slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 				],
-				'variants' => [
-					'description'          => __( 'The named variants, keyed by slug.', 'kadence-blocks' ),
+				'presets' => [
+					'description'          => __( 'The named presets, keyed by slug.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'context'              => [ 'view' ],
-					'additionalProperties' => $variant_schema,
+					'additionalProperties' => $preset_schema,
 				],
 			],
 		];
@@ -890,13 +890,13 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a request for a block that has no registered variant set.
+	 * Reject a request for a block that has no registered preset set.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
 	 *
-	 * @return WP_Error|null A WP_Error when the block accepts no variants, null otherwise.
+	 * @return WP_Error|null A WP_Error when the block accepts no presets, null otherwise.
 	 */
 	private function guard_block( string $block ): ?WP_Error {
 		if ( $this->registry->for_block( $block ) !== null ) {
@@ -905,7 +905,7 @@ final class Variants_Controller extends Controller {
 
 		return new WP_Error(
 			'rest_design_tokens_not_found',
-			__( 'Sorry, that block does not accept variants.', 'kadence-blocks' ),
+			__( 'Sorry, that block does not accept presets.', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::NOT_FOUND,
 				'block'  => $block,
@@ -914,30 +914,30 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a variant map whose entries are not well-formed: each named variant must have a non-empty
+	 * Reject a preset map whose entries are not well-formed: each named preset must have a non-empty
 	 * slug and be an object, its label (when present) a string and its tokens (when present) an object. The
 	 * alias-or-literal grammar of the token values is left to the DTCG validator.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $block_node The block's variant node being written.
+	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
 	 *
-	 * @return WP_Error|null A WP_Error when a variant entry is malformed, null otherwise.
+	 * @return WP_Error|null A WP_Error when a preset entry is malformed, null otherwise.
 	 */
-	private function guard_variant_shape( array $block_node, string $block ): ?WP_Error {
-		foreach ( $block_node as $slug => $variant ) {
-			// $default and any other "$"-prefixed metadata key is not a named variant.
+	private function guard_preset_shape( array $block_node, string $block ): ?WP_Error {
+		foreach ( $block_node as $slug => $preset ) {
+			// $default and any other "$"-prefixed metadata key is not a named preset.
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			// An empty slug would create a variant keyed by "" — a malformed node, the variant analogue of
+			// An empty slug would create a preset keyed by "" — a malformed node, the preset analogue of
 			// the empty dot-path segment the documents controller rejects. Refuse it before it is stored.
 			if ( (string) $slug === '' ) {
 				return new WP_Error(
 					'rest_design_tokens_invalid',
-					__( 'A variant slug cannot be empty.', 'kadence-blocks' ),
+					__( 'A preset slug cannot be empty.', 'kadence-blocks' ),
 					[
 						'status' => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'  => $block,
@@ -949,17 +949,17 @@ final class Variants_Controller extends Controller {
 			$tokens_key = Extensions::get_tokens_key();
 
 			if (
-				! is_array( $variant )
-				|| ( isset( $variant[ $label_key ] ) && ! is_string( $variant[ $label_key ] ) )
-				|| ( isset( $variant[ $tokens_key ] ) && ! is_array( $variant[ $tokens_key ] ) )
+				! is_array( $preset )
+				|| ( isset( $preset[ $label_key ] ) && ! is_string( $preset[ $label_key ] ) )
+				|| ( isset( $preset[ $tokens_key ] ) && ! is_array( $preset[ $tokens_key ] ) )
 			) {
 				return new WP_Error(
 					'rest_design_tokens_invalid',
-					__( 'Each variant must be an object with an optional string label and a token map.', 'kadence-blocks' ),
+					__( 'Each preset must be an object with an optional string label and a token map.', 'kadence-blocks' ),
 					[
-						'status'  => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'   => $block,
-						'variant' => (string) $slug,
+						'status' => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'  => $block,
+						'preset' => (string) $slug,
 					]
 				);
 			}
@@ -969,20 +969,20 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a variant whose slug is reserved. "default" is the literal used by the block's `/default`
-	 * sub-route and by `delete_variant`, so a variant named "default" could never be deleted or set through
+	 * Reject a preset whose slug is reserved. "default" is the literal used by the block's `/default`
+	 * sub-route and by `delete_preset`, so a preset named "default" could never be deleted or set through
 	 * the dedicated route; refuse to create one.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $block_node The block's variant node being written.
+	 * @param array<string, mixed> $block_node The block's preset node being written.
 	 * @param string               $block      The block name, for error context.
 	 *
 	 * @return WP_Error|null A WP_Error when a reserved slug is used, null otherwise.
 	 */
 	private function guard_reserved_slugs( array $block_node, string $block ): ?WP_Error {
 		foreach ( array_keys( $block_node ) as $slug ) {
-			// $default and any other "$"-prefixed metadata key is not a named variant.
+			// $default and any other "$"-prefixed metadata key is not a named preset.
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
 			}
@@ -990,11 +990,11 @@ final class Variants_Controller extends Controller {
 			if ( (string) $slug === self::DEFAULT_ROUTE ) {
 				return new WP_Error(
 					'rest_design_tokens_reserved_slug',
-					__( 'The variant slug "default" is reserved.', 'kadence-blocks' ),
+					__( 'The preset slug "default" is reserved.', 'kadence-blocks' ),
 					[
-						'status'  => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'   => $block,
-						'variant' => (string) $slug,
+						'status' => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'  => $block,
+						'preset' => (string) $slug,
 					]
 				);
 			}
@@ -1004,10 +1004,10 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a candidate whose effective `$default` does not name a present variant.
+	 * Reject a candidate whose effective `$default` does not name a present preset.
 	 *
 	 * Evaluated against the post-merge effective set (baseline merged with the candidate), so a default that
-	 * resolves to a baseline variant is accepted and one left dangling by a removal is rejected.
+	 * resolves to a baseline preset is accepted and one left dangling by a removal is rejected.
 	 *
 	 * @since TBD
 	 *
@@ -1017,16 +1017,16 @@ final class Variants_Controller extends Controller {
 	 * @return WP_Error|null A WP_Error when the default is dangling, null otherwise.
 	 */
 	private function guard_default_present( array $candidate, string $block ): ?WP_Error {
-		$node    = $this->set_node( $this->variants->for_overrides( $candidate ), $block );
+		$node    = $this->set_node( $this->presets->for_overrides( $candidate ), $block );
 		$default = $this->default_of( $node );
 
-		if ( $default === '' || in_array( $default, $this->variant_names( $node ), true ) ) {
+		if ( $default === '' || in_array( $default, $this->preset_names( $node ), true ) ) {
 			return null;
 		}
 
 		return new WP_Error(
 			'rest_design_tokens_invalid',
-			__( 'The default variant must name an existing variant.', 'kadence-blocks' ),
+			__( 'The default preset must name an existing preset.', 'kadence-blocks' ),
 			[
 				'status'  => WP_Http::UNPROCESSABLE_ENTITY,
 				'block'   => $block,
@@ -1036,21 +1036,21 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a written variant that sets a property the block does not bind.
+	 * Reject a written preset that sets a property the block does not bind.
 	 *
-	 * A variant may define any subset of the block's bound surface — different variants may define
-	 * different subsets, and a property a variant omits is inherited from the block `$default` through the
+	 * A preset may define any subset of the block's bound surface — different presets may define
+	 * different subsets, and a property a preset omits is inherited from the block `$default` through the
 	 * cascade — so an incomplete surface is allowed. But a property with no binding (unbound) is still
-	 * rejected: it could never project. Only the variants carried by the request are checked, each against
-	 * its post-merge token set, so a partial edit is validated while the baseline variants are left alone.
+	 * rejected: it could never project. Only the presets carried by the request are checked, each against
+	 * its post-merge token set, so a partial edit is validated while the baseline presets are left alone.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
-	 * @param array<string, mixed> $block_node The set's variant node from the request.
+	 * @param array<string, mixed> $block_node The set's preset node from the request.
 	 * @param string               $block      The block name.
 	 *
-	 * @return WP_Error|null A WP_Error when a written variant sets an unbound property, null otherwise.
+	 * @return WP_Error|null A WP_Error when a written preset sets an unbound property, null otherwise.
 	 */
 	private function guard_surface( array $candidate, array $block_node, string $block ): ?WP_Error {
 		$set = $this->registry->for_block( $block );
@@ -1059,27 +1059,27 @@ final class Variants_Controller extends Controller {
 			return null;
 		}
 
-		$effective  = $this->set_node( $this->variants->for_overrides( $candidate ), $block );
+		$effective  = $this->set_node( $this->presets->for_overrides( $candidate ), $block );
 		$tokens_key = Extensions::get_tokens_key();
 
 		foreach ( array_keys( $block_node ) as $slug ) {
-			// $default and any other "$"-prefixed metadata key is not a named variant with a surface.
+			// $default and any other "$"-prefixed metadata key is not a named preset with a surface.
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			$variant = isset( $effective[ $slug ] ) && is_array( $effective[ $slug ] ) ? $effective[ $slug ] : [];
-			$tokens  = isset( $variant[ $tokens_key ] ) && is_array( $variant[ $tokens_key ] ) ? $variant[ $tokens_key ] : [];
-			$report  = $set->consistency( array_keys( $tokens ) );
+			$preset = isset( $effective[ $slug ] ) && is_array( $effective[ $slug ] ) ? $effective[ $slug ] : [];
+			$tokens = isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
+			$report = $set->consistency( array_keys( $tokens ) );
 
 			if ( $report['unbound'] !== [] ) {
 				return new WP_Error(
 					'rest_design_tokens_unbound_property',
-					__( 'A variant can only set properties the block binds.', 'kadence-blocks' ),
+					__( 'A preset can only set properties the block binds.', 'kadence-blocks' ),
 					[
 						'status'     => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'      => $block,
-						'variant'    => (string) $slug,
+						'preset'     => (string) $slug,
 						'properties' => $report['unbound'],
 					]
 				);
@@ -1090,47 +1090,47 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Rewrite each named variant's captured literal values into semantic aliases where one matches the set,
+	 * Rewrite each named preset's captured literal values into semantic aliases where one matches the set,
 	 * so a value captured off a block instance re-joins the theming cascade rather than freezing as a literal.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $slug       The token set the values are matched against.
 	 *
-	 * @return array<string, mixed> The variant node with literals aliased where a semantic matches.
+	 * @return array<string, mixed> The preset node with literals aliased where a semantic matches.
 	 */
 	private function normalize_block_node( array $block_node, string $slug ): array {
 		$tokens_key = Extensions::get_tokens_key();
 
-		foreach ( $block_node as $variant_slug => $variant ) {
+		foreach ( $block_node as $preset_slug => $preset ) {
 			// $default and any other "$"-prefixed metadata key carries no token map to normalize.
-			if ( is_string( $variant_slug ) && strpos( $variant_slug, '$' ) === 0 ) {
+			if ( is_string( $preset_slug ) && strpos( $preset_slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			if ( ! is_array( $variant ) || ! isset( $variant[ $tokens_key ] ) || ! is_array( $variant[ $tokens_key ] ) ) {
+			if ( ! is_array( $preset ) || ! isset( $preset[ $tokens_key ] ) || ! is_array( $preset[ $tokens_key ] ) ) {
 				continue;
 			}
 
-			$variant[ $tokens_key ]      = $this->normalizer->normalize( $variant[ $tokens_key ], $slug );
-			$block_node[ $variant_slug ] = $variant;
+			$preset[ $tokens_key ]      = $this->normalizer->normalize( $preset[ $tokens_key ], $slug );
+			$block_node[ $preset_slug ] = $preset;
 		}
 
 		return $block_node;
 	}
 
 	/**
-	 * Reject a written variant whose token map carries an alias that does not resolve in the target set.
+	 * Reject a written preset whose token map carries an alias that does not resolve in the target set.
 	 *
-	 * Variant token values live under `$extensions`, which the Resolver's dry-run (which walks only the token
-	 * layers) never sees, so a dangling variant alias would otherwise slip past validation and fail silently
+	 * Preset token values live under `$extensions`, which the Resolver's dry-run (which walks only the token
+	 * layers) never sees, so a dangling preset alias would otherwise slip past validation and fail silently
 	 * at projection. Normalizer-minted aliases resolve by construction; this only catches a hand-supplied or
 	 * stale alias. Only the aliases the request carries are checked.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $block_node The block's variant node from the request.
+	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $block      The block name, for error context.
 	 * @param string               $slug       The token set the aliases resolve against.
 	 *
@@ -1140,12 +1140,12 @@ final class Variants_Controller extends Controller {
 		$resolved   = $this->resolver->resolve( $slug );
 		$tokens_key = Extensions::get_tokens_key();
 
-		foreach ( $block_node as $variant_slug => $variant ) {
-			if ( is_string( $variant_slug ) && strpos( $variant_slug, '$' ) === 0 ) {
+		foreach ( $block_node as $preset_slug => $preset ) {
+			if ( is_string( $preset_slug ) && strpos( $preset_slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			$tokens = is_array( $variant ) && isset( $variant[ $tokens_key ] ) && is_array( $variant[ $tokens_key ] ) ? $variant[ $tokens_key ] : [];
+			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
 
 			foreach ( $tokens as $property => $value ) {
 				if ( ! Alias::is_alias( $value ) || $resolved->value( Alias::path_of( $value ) ) !== null ) {
@@ -1154,11 +1154,11 @@ final class Variants_Controller extends Controller {
 
 				return new WP_Error(
 					'rest_design_tokens_unresolvable',
-					__( 'A variant alias does not resolve to a token.', 'kadence-blocks' ),
+					__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
 					[
 						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'    => $block,
-						'variant'  => (string) $variant_slug,
+						'preset'   => (string) $preset_slug,
 						'property' => (string) $property,
 						'alias'    => $value,
 					]
@@ -1170,7 +1170,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Build the response payload for a block's variant set, read from the effective (baseline-merged) set.
+	 * Build the response payload for a block's preset set, read from the effective (baseline-merged) set.
 	 *
 	 * @since TBD
 	 *
@@ -1180,19 +1180,19 @@ final class Variants_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function prepare_item( string $block, string $slug ): array {
-		$node = $this->set_node( $this->variants->section( $slug ), $block );
+		$node = $this->set_node( $this->presets->section( $slug ), $block );
 
 		return [
-			'block'    => $block,
-			'slug'     => $slug,
-			'version'  => $this->store->get_version( $slug ),
-			'default'  => $this->default_of( $node ),
-			'variants' => $this->named_variants( $node ),
+			'block'   => $block,
+			'slug'    => $slug,
+			'version' => $this->store->get_version( $slug ),
+			'default' => $this->default_of( $node ),
+			'presets' => $this->named_presets( $node ),
 		];
 	}
 
 	/**
-	 * Assemble the variant definition for a create from the request: an optional label plus the token map.
+	 * Assemble the preset definition for a create from the request: an optional label plus the token map.
 	 *
 	 * @since TBD
 	 *
@@ -1200,7 +1200,7 @@ final class Variants_Controller extends Controller {
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function variant_definition( WP_REST_Request $request ): array {
+	private function preset_definition( WP_REST_Request $request ): array {
 		$definition = [];
 
 		$label = Cast::to_string( $request->get_param( self::LABEL_PARAM ) );
@@ -1217,12 +1217,12 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Build a partial overrides document carrying only the given variant node for one block's set.
+	 * Build a partial overrides document carrying only the given preset node for one block's set.
 	 *
 	 * @since TBD
 	 *
 	 * @param string               $block      The block name.
-	 * @param array<string, mixed> $block_node The block's variant node.
+	 * @param array<string, mixed> $block_node The block's preset node.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1230,7 +1230,7 @@ final class Variants_Controller extends Controller {
 		return [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
-					Extensions::get_section_variants() => [
+					Extensions::get_section_presets() => [
 						$block => $block_node,
 					],
 				],
@@ -1239,7 +1239,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Remove the stored variant-set node (`variants.<block>`), pruning any ancestor emptied by the removal.
+	 * Remove the stored preset-set node (`presets.<block>`), pruning any ancestor emptied by the removal.
 	 *
 	 * @since TBD
 	 *
@@ -1253,33 +1253,33 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * Remove one stored variant (`variants.<block>.<variant>`), pruning any ancestor emptied by the removal.
+	 * Remove one stored preset (`presets.<block>.<preset>`), pruning any ancestor emptied by the removal.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $document The stored overrides document.
 	 * @param string               $block    The block name.
-	 * @param string               $variant  The variant slug.
+	 * @param string               $preset  The preset slug.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function unset_variant( array $document, string $block, string $variant ): array {
-		return $this->mutator->remove_by_keys( $document, array_merge( $this->node_path( $block ), [ $variant ] ) );
+	private function unset_preset( array $document, string $block, string $preset ): array {
+		return $this->mutator->remove_by_keys( $document, array_merge( $this->node_path( $block ), [ $preset ] ) );
 	}
 
 	/**
-	 * The literal key path to the variants section.
+	 * The literal key path to the presets section.
 	 *
 	 * @since TBD
 	 *
 	 * @return string[]
 	 */
-	private function variants_path(): array {
-		return Extensions::get_variants_path();
+	private function presets_path(): array {
+		return Extensions::get_presets_path();
 	}
 
 	/**
-	 * The document key-path to a block's variant node: `variants.<block>`.
+	 * The document key-path to a block's preset node: `presets.<block>`.
 	 *
 	 * @since TBD
 	 *
@@ -1288,16 +1288,16 @@ final class Variants_Controller extends Controller {
 	 * @return string[]
 	 */
 	private function node_path( string $block ): array {
-		return array_merge( $this->variants_path(), [ $block ] );
+		return array_merge( $this->presets_path(), [ $block ] );
 	}
 
 	/**
-	 * The variant-bearing node for a block within a variants section — its `{ $default, <variant> }` map — or
+	 * The preset-bearing node for a block within a presets section — its `{ $default, <preset> }` map — or
 	 * an empty array when absent.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $section The variants section.
+	 * @param array<string, mixed> $section The presets section.
 	 * @param string               $block   The block name.
 	 *
 	 * @return array<string, mixed>
@@ -1307,11 +1307,11 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The `$default` slug of a variant node, or an empty string when none is set.
+	 * The `$default` slug of a preset node, or an empty string when none is set.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node The block's variant node.
+	 * @param array<string, mixed> $node The block's preset node.
 	 *
 	 * @return string
 	 */
@@ -1320,15 +1320,15 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The named variant slugs of a variant node, skipping "$"-prefixed metadata keys.
+	 * The named preset slugs of a preset node, skipping "$"-prefixed metadata keys.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node The block's variant node.
+	 * @param array<string, mixed> $node The block's preset node.
 	 *
 	 * @return string[]
 	 */
-	private function variant_names( array $node ): array {
+	private function preset_names( array $node ): array {
 		$names = [];
 
 		foreach ( array_keys( $node ) as $key ) {
@@ -1343,32 +1343,32 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The named variants of a variant node, keyed by slug, skipping "$"-prefixed metadata keys.
+	 * The named presets of a preset node, keyed by slug, skipping "$"-prefixed metadata keys.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node The block's variant node.
+	 * @param array<string, mixed> $node The block's preset node.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function named_variants( array $node ): array {
-		$variants = [];
+	private function named_presets( array $node ): array {
+		$presets = [];
 
-		foreach ( $node as $slug => $variant ) {
+		foreach ( $node as $slug => $preset ) {
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			$variants[ (string) $slug ] = $variant;
+			$presets[ (string) $slug ] = $preset;
 		}
 
-		return $variants;
+		return $presets;
 	}
 
 	/**
 	 * Decode the stored overrides-only document for a set.
 	 *
-	 * Reuses the reader's single decode seam ({@see Effective_Variants::raw()}) so the controller does not
+	 * Reuses the reader's single decode seam ({@see Effective_Presets::raw()}) so the controller does not
 	 * decode the store itself.
 	 *
 	 * @since TBD
@@ -1378,7 +1378,7 @@ final class Variants_Controller extends Controller {
 	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
 	 */
 	private function stored_document( string $slug ): array {
-		return $this->variants->raw( $slug );
+		return $this->presets->raw( $slug );
 	}
 
 	/**
@@ -1440,21 +1440,21 @@ final class Variants_Controller extends Controller {
 	 */
 	private function get_block_params(): array {
 		return [
-			self::VENDOR_PARAM      => [
+			self::VENDOR_PARAM     => [
 				'description'       => __( 'The block vendor segment, e.g. kadence.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[a-z][a-z0-9-]*$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::BLOCK_NAME_PARAM  => [
+			self::BLOCK_NAME_PARAM => [
 				'description'       => __( 'The block name segment, e.g. advancedbtn.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[a-z0-9][a-z0-9-]*$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::SET_PARAM         => $this->set_param(),
+			self::SET_PARAM        => $this->set_param(),
 		];
 	}
 
@@ -1477,18 +1477,18 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments accepted by the single-variant route: the block segments plus the variant slug.
+	 * The arguments accepted by the single-preset route: the block segments plus the preset slug.
 	 *
 	 * @since TBD
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function get_variant_params(): array {
+	private function get_preset_params(): array {
 		return array_merge(
 			$this->get_block_params(),
 			[
-				self::VARIANT_PARAM => [
-					'description'       => __( 'The variant slug.', 'kadence-blocks' ),
+				self::PRESET_PARAM => [
+					'description'       => __( 'The preset slug.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => true,
 					'pattern'           => '^[\w-]+$',
@@ -1499,7 +1499,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments accepted by the create route: the block segments plus a variant slug, optional label and
+	 * The arguments accepted by the create route: the block segments plus a preset slug, optional label and
 	 * its token map.
 	 *
 	 * @since TBD
@@ -1510,21 +1510,21 @@ final class Variants_Controller extends Controller {
 		return array_merge(
 			$this->get_block_params(),
 			[
-				self::VARIANT_PARAM => [
-					'description'       => __( 'The variant slug to create or merge.', 'kadence-blocks' ),
+				self::PRESET_PARAM => [
+					'description'       => __( 'The preset slug to create or merge.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => true,
 					'pattern'           => '^[\w-]+$',
 					'sanitize_callback' => 'sanitize_key',
 				],
-				self::LABEL_PARAM   => [
-					'description'       => __( 'Optional human-readable label for the variant.', 'kadence-blocks' ),
+				self::LABEL_PARAM  => [
+					'description'       => __( 'Optional human-readable label for the preset.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => false,
 					'sanitize_callback' => 'sanitize_text_field',
 				],
-				self::TOKENS_PARAM  => [
-					'description'          => __( 'The variant\'s property => alias-or-literal token map.', 'kadence-blocks' ),
+				self::TOKENS_PARAM => [
+					'description'          => __( 'The preset\'s property => alias-or-literal token map.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'required'             => false,
 					'additionalProperties' => true,
@@ -1534,7 +1534,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments accepted by the replace route: the block segments plus the whole variant map and an
+	 * The arguments accepted by the replace route: the block segments plus the whole preset map and an
 	 * optional default.
 	 *
 	 * @since TBD
@@ -1545,14 +1545,14 @@ final class Variants_Controller extends Controller {
 		return array_merge(
 			$this->get_block_params(),
 			[
-				self::VARIANTS_PARAM => [
-					'description'          => __( 'The variants to store, keyed by slug.', 'kadence-blocks' ),
+				self::PRESETS_PARAM => [
+					'description'          => __( 'The presets to store, keyed by slug.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'required'             => true,
 					'additionalProperties' => true,
 				],
-				self::DEFAULT_PARAM  => [
-					'description'       => __( 'Optional default variant slug.', 'kadence-blocks' ),
+				self::DEFAULT_PARAM => [
+					'description'       => __( 'Optional default preset slug.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => false,
 					'sanitize_callback' => 'sanitize_key',
@@ -1562,7 +1562,7 @@ final class Variants_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments accepted by the set-default route: the block segments plus the default variant slug.
+	 * The arguments accepted by the set-default route: the block segments plus the default preset slug.
 	 *
 	 * @since TBD
 	 *
@@ -1573,7 +1573,7 @@ final class Variants_Controller extends Controller {
 			$this->get_block_params(),
 			[
 				self::DEFAULT_PARAM => [
-					'description'       => __( 'The default variant slug.', 'kadence-blocks' ),
+					'description'       => __( 'The default preset slug.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => true,
 					'pattern'           => '^[\w-]+$',

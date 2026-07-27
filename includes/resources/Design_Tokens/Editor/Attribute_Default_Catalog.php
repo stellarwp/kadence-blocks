@@ -13,12 +13,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * Scoped to kadence/single-icon's `size` today — the only block/attribute pair this ticket needs.
  * Not a general "any block, any attribute" registry: extend the ENTRIES map (or promote to a
  * declarations-driven shape) only when a second real consumer needs it, matching this module's
- * existing preference for composable-but-not-speculative catalogs (see Variant_Catalog, which
- * itself started scoped to what the variant picker needed).
+ * existing preference for composable-but-not-speculative catalogs (see Preset_Catalog, which
+ * itself started scoped to what the preset picker needed).
  *
  * @since TBD
  */
-final class Block_Preset_Catalog {
+final class Attribute_Default_Catalog {
 
 	use Converts_Number_To_Px;
 

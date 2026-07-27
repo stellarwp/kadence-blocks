@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
@@ -10,12 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
 
 /**
- * Projects the selectable-variant CSS into the WordPress style pipeline.
+ * Projects the selectable-preset CSS into the WordPress style pipeline.
  *
- * Appends the per (block, variant) scoped overrides built by {@see Css_Builder} to KB's existing inline
+ * Appends the per (block, preset) scoped overrides built by {@see Css_Builder} to KB's existing inline
  * style handles, on the front end and in the editor, gated on Token_Registry::is_active() so a
  * deactivated registry leaves KB's behavior untouched. The class that activates a rule is added by the
- * editor-side kbVariant filter; this side only emits the CSS the class hooks.
+ * editor-side kbPreset filter; this side only emits the CSS the class hooks.
  *
  * @since TBD
  */
@@ -57,7 +57,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * @param Token_Registry   $registry    The token registry.
 	 * @param Token_Store      $store       The store, for the cache-busting version.
 	 * @param Active_Set_Store $active      Owns the active-set pointer.
-	 * @param Css_Builder      $css_builder The variant CSS builder.
+	 * @param Css_Builder      $css_builder The preset CSS builder.
 	 */
 	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
@@ -67,7 +67,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Append the variant CSS to the front-end global-variables handle.
+	 * Append the preset CSS to the front-end global-variables handle.
 	 *
 	 * @since TBD
 	 *
@@ -86,9 +86,9 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Append the variant CSS to the editor global-styles handle.
+	 * Append the preset CSS to the editor global-styles handle.
 	 *
-	 * Shares the Css_Var projector's editor gate (the same page check and filter), so the variant CSS and
+	 * Shares the Css_Var projector's editor gate (the same page check and filter), so the preset CSS and
 	 * the token vars load together in the editor or not at all.
 	 *
 	 * @since TBD
@@ -113,11 +113,11 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the variant CSS for every token set at once, via the builder's fragment cache.
+	 * Build the preset CSS for every token set at once, via the builder's fragment cache.
 	 *
-	 * Each set's variants are emitted as namespaced --kb-token--<set>--variant--* vars plus a switch
+	 * Each set's presets are emitted as namespaced --kb-token--<set>--variant--* vars plus a switch
 	 * selector; the active set additionally drives the canonical alias layer and the coercive scoped rules.
-	 * Returns an empty string when the store version cannot be read or a variant cannot be resolved (e.g. an
+	 * Returns an empty string when the store version cannot be read or a preset cannot be resolved (e.g. an
 	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
 	 * inline style is simply omitted and KB falls back to its $default look.
 	 *

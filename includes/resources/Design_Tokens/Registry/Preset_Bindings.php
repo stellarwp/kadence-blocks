@@ -5,34 +5,34 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 use InvalidArgumentException;
 
 /**
- * Immutable registration of the ONE variant set a block accepts — the block's full bindable surface: the
- * per-property bindings any of its variants may draw from. The *structure* half of the variant model, and
+ * Immutable registration of the ONE preset set a block accepts — the block's full bindable surface: the
+ * per-property bindings any of its presets may draw from. The *structure* half of the preset model, and
  * the only part that cannot live in the document.
  *
- * A block declares exactly one set. Its `bindings` are the union of every property any variant may control;
- * a given variant in the document may define any subset of them (and different variants may define
+ * A block declares exactly one set. Its `bindings` are the union of every property any preset may control;
+ * a given preset in the document may define any subset of them (and different presets may define
  * different subsets), inheriting the rest from the block `$default` through the cascade.
  *
- * A set with a `label` is picker-driven: the editor renders a Design Variants control for it and the
- * variant projector emits `kb-variant--<variant>` rules. A set with no `label` is a preset / default look
+ * A set with a `label` is picker-driven: the editor renders a Design Presets control for it and the
+ * preset projector emits `kb-preset--<preset>` rules. A set with no `label` is a preset / default look
  * with NO picker: it seeds block attributes / low-specificity CSS through
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector} and
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder} instead.
  *
- * It deliberately holds NO variant names, default or values, and no per-variant labels: those are document
- * data (`$extensions.com.kadence.designTokens.variants.<block>` — the `$default`, the variant keys, and
- * each variant's `tokens`), read through the Variant_Resolver. Keeping them out of the registry means a
- * single source of truth for the variant list (so a user-added variant in the store is honoured) and no
+ * It deliberately holds NO preset names, default or values, and no per-preset labels: those are document
+ * data (`$extensions.com.kadence.designTokens.presets.<block>` — the `$default`, the preset keys, and
+ * each preset's `tokens`), read through the Preset_Resolver. Keeping them out of the registry means a
+ * single source of truth for the preset list (so a user-added preset in the store is honoured) and no
  * drift between a declaration and the document. The `label` is the one exception — it names the editor
- * picker CONTROL, not a variant, so it is structural editor config declared here.
+ * picker CONTROL, not a preset, so it is structural editor config declared here.
  *
- * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); every variant shares them, since
- * "the button's background" maps to the same output slot whichever variant is active — only the value
+ * Bindings are keyed by property (e.g. "button-bg" => {@see Binding}); every preset shares them, since
+ * "the button's background" maps to the same output slot whichever preset is active — only the value
  * changes.
  *
  * @since TBD
  */
-final class Variant_Set {
+final class Preset_Bindings {
 
 	/**
 	 * The block name, e.g. "kadence/advancedbtn".
@@ -44,8 +44,8 @@ final class Variant_Set {
 	public string $block;
 
 	/**
-	 * The block's bindable surface, keyed by property name — the union of properties any variant may
-	 * control. Shared by every variant; a variant defines values for any subset of these.
+	 * The block's bindable surface, keyed by property name — the union of properties any preset may
+	 * control. Shared by every preset; a preset defines values for any subset of these.
 	 *
 	 * @since TBD
 	 *
@@ -55,7 +55,7 @@ final class Variant_Set {
 
 	/**
 	 * The editor picker's control label (e.g. "Style"), or null for a preset set that shows no picker.
-	 * Names the CONTROL, not a variant.
+	 * Names the CONTROL, not a preset.
 	 *
 	 * @since TBD
 	 *
@@ -65,7 +65,7 @@ final class Variant_Set {
 
 	/**
 	 * The selector the {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}
-	 * targets IN PLACE OF the block's `.wp-block-*` root when it builds the editor-scoped variant of the
+	 * targets IN PLACE OF the block's `.wp-block-*` root when it builds the editor-scoped preset of the
 	 * block-default CSS, or null when the block root is the right target in the editor too (the common
 	 * case). Needed only when the block's editor markup does not put `.wp-block-*` on the element the
 	 * bindings are meant to style — e.g. a wrapper `<div>` around the real rendered element — so the
@@ -94,14 +94,14 @@ final class Variant_Set {
 	}
 
 	/**
-	 * Build a variant set from its declaration array.
+	 * Build a preset set from its declaration array.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
 	 *                                  label; omit for a preset set with no picker), and optional
-	 *                                  "editor_selector" (see {@see self::$editor_selector}). Variant names,
+	 *                                  "editor_selector" (see {@see self::$editor_selector}). Preset names,
 	 *                                  default and values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
@@ -112,7 +112,7 @@ final class Variant_Set {
 		// Require a present, non-empty string. Avoid empty() so a legitimate "0" block name is not
 		// mistaken for a missing value, matching Token_Definition::from_array().
 		if ( ! isset( $set['block'] ) || ! is_string( $set['block'] ) || $set['block'] === '' ) {
-			throw new InvalidArgumentException( 'Variant-set declaration is missing required string "block".' );
+			throw new InvalidArgumentException( 'Preset-set declaration is missing required string "block".' );
 		}
 
 		return new self(
@@ -137,16 +137,16 @@ final class Variant_Set {
 	}
 
 	/**
-	 * Report binding ↔ value mismatches against the properties the document's variants actually set.
+	 * Report binding ↔ value mismatches against the properties the document's presets actually set.
 	 *
-	 * Pass the union of value properties across the set's variants (see
-	 * Variant_Resolver::value_properties()). "unbound" are valued properties with no binding — they
-	 * cannot reach output and are the harmful case; "unvalued" are bindings no variant ever sets — dead
+	 * Pass the union of value properties across the set's presets (see
+	 * Preset_Resolver::value_properties()). "unbound" are valued properties with no binding — they
+	 * cannot reach output and are the harmful case; "unvalued" are bindings no preset ever sets — dead
 	 * wiring. A well-formed set reports neither.
 	 *
 	 * @since TBD
 	 *
-	 * @param string[] $value_properties Properties set by the set's variants in the document.
+	 * @param string[] $value_properties Properties set by the set's presets in the document.
 	 *
 	 * @return array{unbound: string[], unvalued: string[]}
 	 */
@@ -161,8 +161,8 @@ final class Variant_Set {
 
 	/**
 	 * Structure-only serialization for the admin UI feed: the bound properties and, per
-	 * property, the token reference and inline projection targets. Values, variant names and the default
-	 * are NOT here — those are document data read through the Variant_Resolver. Mirrors
+	 * property, the token reference and inline projection targets. Values, preset names and the default
+	 * are NOT here — those are document data read through the Preset_Resolver. Mirrors
 	 * {@see Token_Registry::to_ui_schema()}.
 	 *
 	 * @since TBD
@@ -183,7 +183,7 @@ final class Variant_Set {
 	}
 
 	/**
-	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's variant
+	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's preset
 	 * form can render the right control per property. Read from the referenced token's group segment when the
 	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
 	 * property name (e.g. `button-bg` => "color", `button-radius` => "dimension"). Falls back to "text".
@@ -227,7 +227,7 @@ final class Variant_Set {
 	private static function bindings( string $block, $declared ): array {
 		if ( ! is_array( $declared ) ) {
 			throw new InvalidArgumentException(
-				sprintf( 'Variant-set "%s" declaration "bindings" must be a map of property => target.', $block )
+				sprintf( 'Preset-set "%s" declaration "bindings" must be a map of property => target.', $block )
 			);
 		}
 
@@ -236,7 +236,7 @@ final class Variant_Set {
 		foreach ( $declared as $property => $spec ) {
 			if ( ! is_string( $property ) || $property === '' || ! is_array( $spec ) ) {
 				throw new InvalidArgumentException(
-					sprintf( 'Variant-set "%s" has a malformed binding; each must be "property" => target array.', $block )
+					sprintf( 'Preset-set "%s" has a malformed binding; each must be "property" => target array.', $block )
 				);
 			}
 

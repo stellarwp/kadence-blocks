@@ -8,24 +8,24 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
 /**
- * Reads the effective variants section: the shipped baseline's variants deep-merged with a set's stored
- * overrides, so a variant authored through the store is visible alongside the baseline ones.
+ * Reads the effective presets section: the shipped baseline's presets deep-merged with a set's stored
+ * overrides, so a preset authored through the store is visible alongside the baseline ones.
  *
  * This is a thin reader, not a new merge: the deep-merge is {@see Mutator::merge()} (which preserves the
- * whole "$extensions" layer untouched, exactly what a variants view needs), so this class only decodes the
- * baseline and the stored overrides, walks each down to the `$extensions...variants` subtree, and delegates
+ * whole "$extensions" layer untouched, exactly what a presets view needs), so this class only decodes the
+ * baseline and the stored overrides, walks each down to the `$extensions...presets` subtree, and delegates
  * the merge. The sibling {@see Effective_Document} deliberately strips "$extensions", so it cannot be reused
- * here — variants are read through this seam instead.
+ * here — presets are read through this seam instead.
  *
- * The REST variants controller consumes this for its raw reads. It is also the seam a later projector that
- * needs override-aware resolved values (the native-block and kbVariant projectors) can build on.
+ * The REST presets controller consumes this for its raw reads. It is also the seam a later projector that
+ * needs override-aware resolved values (the native-block and kbPreset projectors) can build on.
  *
  * @since TBD
  */
-final class Effective_Variants {
+final class Effective_Presets {
 
 	/**
-	 * @var Baseline_Document The shipped baseline the variant definitions are merged onto.
+	 * @var Baseline_Document The shipped baseline the preset definitions are merged onto.
 	 *
 	 * @since TBD
 	 */
@@ -39,7 +39,7 @@ final class Effective_Variants {
 	private Token_Store $store;
 
 	/**
-	 * @var Mutator The pure deep-merge the baseline and overrides variants are combined through.
+	 * @var Mutator The pure deep-merge the baseline and overrides presets are combined through.
 	 *
 	 * @since TBD
 	 */
@@ -59,7 +59,7 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * The effective variants section for a stored set: baseline deep-merged with the set's overrides, keyed
+	 * The effective presets section for a stored set: baseline deep-merged with the set's overrides, keyed
 	 * by block name.
 	 *
 	 * @since TBD
@@ -73,8 +73,8 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * The effective variants node for one block in a stored set, or null when neither the baseline nor the
-	 * overrides define variants for it.
+	 * The effective presets node for one block in a stored set, or null when neither the baseline nor the
+	 * overrides define presets for it.
 	 *
 	 * @since TBD
 	 *
@@ -90,9 +90,9 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * The effective variants section for an arbitrary candidate overrides document: the baseline variants
-	 * deep-merged with the candidate's variants subtree. Used to validate a write against its post-merge
-	 * effective set before it is committed (e.g. that a `$default` still names a present variant).
+	 * The effective presets section for an arbitrary candidate overrides document: the baseline presets
+	 * deep-merged with the candidate's presets subtree. Used to validate a write against its post-merge
+	 * effective set before it is committed (e.g. that a `$default` still names a present preset).
 	 *
 	 * @since TBD
 	 *
@@ -101,12 +101,12 @@ final class Effective_Variants {
 	 * @return array<string, mixed>
 	 */
 	public function for_overrides( array $overrides ): array {
-		return $this->mutator->merge( $this->variants_of( $this->baseline->document() ), $this->variants_of( $overrides ) );
+		return $this->mutator->merge( $this->presets_of( $this->baseline->document() ), $this->presets_of( $overrides ) );
 	}
 
 	/**
-	 * The named variant slugs a set defines for a block that are NOT in the baseline — i.e. the user-created
-	 * ones. A slug that shadows a baseline variant is excluded, since deleting it reverts to baseline rather
+	 * The named preset slugs a set defines for a block that are NOT in the baseline — i.e. the user-created
+	 * ones. A slug that shadows a baseline preset is excluded, since deleting it reverts to baseline rather
 	 * than removing it.
 	 *
 	 * @since TBD
@@ -117,7 +117,7 @@ final class Effective_Variants {
 	 * @return string[]
 	 */
 	public function user_created( string $block, string $slug = 'default' ): array {
-		$baseline_block  = $this->block_node( $this->variants_of( $this->baseline->document() ), $block );
+		$baseline_block  = $this->block_node( $this->presets_of( $this->baseline->document() ), $block );
 		$effective_block = $this->block_node( $this->section( $slug ), $block );
 
 		$baseline_names  = $this->named_of( $baseline_block );
@@ -127,12 +127,12 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * The variant-bearing node for a block within a variants section — its `{ $default, <variant> }` map —
+	 * The preset-bearing node for a block within a presets section — its `{ $default, <preset> }` map —
 	 * or an empty array when absent, so the callers above fail soft.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $section The variants section (baseline or effective).
+	 * @param array<string, mixed> $section The presets section (baseline or effective).
 	 * @param string               $block   The block name.
 	 *
 	 * @return array<string, mixed>
@@ -142,11 +142,11 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * The named variant slugs of a block variant node, skipping "$"-prefixed metadata keys.
+	 * The named preset slugs of a block preset node, skipping "$"-prefixed metadata keys.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node The block's variant node.
+	 * @param array<string, mixed> $node The block's preset node.
 	 *
 	 * @return string[]
 	 */
@@ -168,7 +168,7 @@ final class Effective_Variants {
 	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 *
 	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than
-	 * its merged variants view, reuse this instead of decoding the store themselves.
+	 * its merged presets view, reuse this instead of decoding the store themselves.
 	 *
 	 * @since TBD
 	 *
@@ -189,7 +189,7 @@ final class Effective_Variants {
 	}
 
 	/**
-	 * Walk a decoded document down to its `$extensions...variants` subtree, or an empty array when absent.
+	 * Walk a decoded document down to its `$extensions...presets` subtree, or an empty array when absent.
 	 *
 	 * @since TBD
 	 *
@@ -197,10 +197,10 @@ final class Effective_Variants {
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function variants_of( array $document ): array {
+	private function presets_of( array $document ): array {
 		$node = $document;
 
-		$path = Extensions::get_variants_path();
+		$path = Extensions::get_presets_path();
 
 		foreach ( $path as $key ) {
 			if ( ! is_array( $node ) || ! isset( $node[ $key ] ) ) {

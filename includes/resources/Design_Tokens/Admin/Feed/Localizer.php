@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * Attaches the design-token schema feed to KB's admin dashboard bundle.
  *
  * On admin_head — after the dashboard's `admin_print_styles-{page}` enqueue has run, before the footer
- * where `admin-kadence-home` prints — it gathers the resolved values, the variants and the REST
+ * where `admin-kadence-home` prints — it gathers the resolved values, the presets and the REST
  * root/nonce, asks {@see Builder} to shape them, and attaches the result to the existing
  * 'admin-kadence-home' handle as `window.kadenceDesignTokens`. Guarded on
  * wp_script_is( …, 'enqueued' ) so it runs ONLY where that bundle loads (the Kadence dashboard, and any
@@ -83,7 +83,7 @@ final class Localizer {
 
 	/**
 	 * The active-set pointer — the same slug the registry's user primitives and every projector
-	 * (CSS vars, theme.json, presets, variants) resolve against, so the dashboard edits the set that
+	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the set that
 	 * is actually live rather than always the default one.
 	 *
 	 * @since TBD
@@ -93,13 +93,13 @@ final class Localizer {
 	private Active_Set_Store $active;
 
 	/**
-	 * The variants section builder.
+	 * The presets section builder.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variants
+	 * @var Presets
 	 */
-	private Variants $variant_feed;
+	private Presets $preset_feed;
 
 	/**
 	 * The pure payload assembler.
@@ -125,7 +125,7 @@ final class Localizer {
 	 * @param Token_Resolver   $resolver        The token resolver.
 	 * @param Token_Store      $store           The token store.
 	 * @param Active_Set_Store $active          The active-set pointer.
-	 * @param Variants         $variant_feed    The variants section builder.
+	 * @param Presets          $preset_feed    The presets section builder.
 	 * @param Builder          $builder         The pure payload assembler.
 	 * @param Responsive_Feed  $responsive_feed The responsive / clamp shape extractor.
 	 */
@@ -133,14 +133,14 @@ final class Localizer {
 		Token_Resolver $resolver,
 		Token_Store $store,
 		Active_Set_Store $active,
-		Variants $variant_feed,
+		Presets $preset_feed,
 		Builder $builder,
 		Responsive_Feed $responsive_feed
 	) {
 		$this->resolver        = $resolver;
 		$this->store           = $store;
 		$this->active          = $active;
-		$this->variant_feed    = $variant_feed;
+		$this->preset_feed     = $preset_feed;
 		$this->builder         = $builder;
 		$this->responsive_feed = $responsive_feed;
 	}
@@ -167,20 +167,20 @@ final class Localizer {
 		$version = $this->store->get_version( $slug );
 
 		$values     = [];
-		$variants   = [];
+		$presets    = [];
 		$responsive = [];
 		$resolved   = false;
 
 		try {
 			$values     = $this->resolver->resolve( $slug )->by_id();
-			$variants   = $this->variant_feed->all( $slug );
+			$presets    = $this->preset_feed->all( $slug );
 			$responsive = $this->responsive_feed->from_document( $this->resolver->effective_document( $slug ) );
 			$resolved   = true;
 		} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version, $slug, $responsive );
+		$feed = $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $responsive );
 		$json = wp_json_encode(
 			$feed,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT

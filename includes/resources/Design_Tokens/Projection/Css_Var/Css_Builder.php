@@ -43,12 +43,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  * reads --kb-token--* only at :root still follows the active-set pointer, not a subtree attribute.)
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
- * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or variant scoping. The
+ * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or preset scoping. The
  * `[data-kb-token-set]` switch selector declares `--kb-token--<id>` directly on the element that carries
  * the attribute, so that element and its subtree use the directly-declared value in preference to the one
  * inherited from the :root alias layer — a directly-cascaded value always beats an inherited one, so
  * source order does not matter (the two rules target different elements). Nothing here is !important —
- * per-instance variant overrides must be able to win by ordinary cascade.
+ * per-instance preset overrides must be able to win by ordinary cascade.
  *
  * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Projector.
  *

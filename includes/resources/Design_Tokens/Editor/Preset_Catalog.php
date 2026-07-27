@@ -5,32 +5,32 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Variant_Set;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Variant_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 
 /**
- * Builds the per-set variant catalog the block editor's variant picker and "save as new variant" form read.
+ * Builds the per-set preset catalog the block editor's preset picker and "save as new preset" form read.
  *
- * Keyed by token set so the picker can show the variants for whichever set a block is on (its `kbTokenSet`,
+ * Keyed by token set so the picker can show the presets for whichever set a block is on (its `kbTokenSet`,
  * or the active set), not just the active one, then by block:
  * `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
- * named variants as { slug, label, userCreated }, the picker control label, the controllable surface as
+ * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
- * a per-variant resolved-value map ({ variant slug => { property => literal } }) so a control can compare
- * its current value against the selected variant's value. Only PICKER sets appear (a set that declares a
- * `label`); a block's preset / default-variant set (no label) has no picker and is omitted. It carries no
- * resolved token values beyond those per-variant literals, so it cannot raise the alias-cycle errors the
- * admin feed must guard; a set registered but absent from a token set (Unknown_Variant_Exception) is
+ * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
+ * its current value against the selected preset's value. Only PICKER sets appear (a set that declares a
+ * `label`); a block's preset / default-preset set (no label) has no picker and is omitted. It carries no
+ * resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle errors the
+ * admin feed must guard; a set registered but absent from a token set (Unknown_Preset_Exception) is
  * skipped, so one undefined set never empties the catalog.
  *
  * @since TBD
  */
-final class Variant_Catalog {
+final class Preset_Catalog {
 
 	/**
-	 * The token registry, source of the registered variant-set blocks and their bindings.
+	 * The token registry, source of the registered preset-set blocks and their bindings.
 	 *
 	 * @since TBD
 	 *
@@ -39,13 +39,13 @@ final class Variant_Catalog {
 	private Token_Registry $registry;
 
 	/**
-	 * The variant resolver, source of each block's default, names and labels per set.
+	 * The preset resolver, source of each block's default, names and labels per set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variant_Resolver
+	 * @var Preset_Resolver
 	 */
-	private Variant_Resolver $variants;
+	private Preset_Resolver $presets;
 
 	/**
 	 * The persistence gateway, source of the stored set slugs.
@@ -66,32 +66,32 @@ final class Variant_Catalog {
 	private Active_Set_Store $active;
 
 	/**
-	 * The effective-variants reader, source of each variant's user-created provenance per set.
+	 * The effective-presets reader, source of each preset's user-created provenance per set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Effective_Variants
+	 * @var Effective_Presets
 	 */
-	private Effective_Variants $effective;
+	private Effective_Presets $effective;
 
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry     $registry  The token registry.
-	 * @param Variant_Resolver   $variants  The variant resolver.
-	 * @param Token_Store        $store     The persistence gateway.
-	 * @param Active_Set_Store   $active    The active-set pointer.
-	 * @param Effective_Variants $effective The effective-variants reader.
+	 * @param Token_Registry    $registry  The token registry.
+	 * @param Preset_Resolver   $presets  The preset resolver.
+	 * @param Token_Store       $store     The persistence gateway.
+	 * @param Active_Set_Store  $active    The active-set pointer.
+	 * @param Effective_Presets $effective The effective-presets reader.
 	 */
 	public function __construct(
 		Token_Registry $registry,
-		Variant_Resolver $variants,
+		Preset_Resolver $presets,
 		Token_Store $store,
 		Active_Set_Store $active,
-		Effective_Variants $effective
+		Effective_Presets $effective
 	) {
 		$this->registry  = $registry;
-		$this->variants  = $variants;
+		$this->presets   = $presets;
 		$this->store     = $store;
 		$this->active    = $active;
 		$this->effective = $effective;
@@ -119,47 +119,47 @@ final class Variant_Catalog {
 
 	/**
 	 * The per-block catalog for one token set. Only PICKER sets are surfaced; a block's preset /
-	 * default-variant set (one with no `label`) has no picker, so it is skipped.
+	 * default-preset set (one with no `label`) has no picker, so it is skipped.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The token set slug.
 	 *
-	 * @return array<string, array<string, mixed>> block => { default, variants, properties, values, label }.
+	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, label }.
 	 */
 	private function for_set( string $slug ): array {
 		$out = [];
 
-		foreach ( $this->registry->variant_blocks() as $block ) {
+		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			$set = $this->registry->for_block( $block );
 
-			// A preset / default-variant set (no label) shows no picker, so it is not offered here.
+			// A preset / default-preset set (no label) shows no picker, so it is not offered here.
 			if ( $set === null || $set->label === null ) {
 				continue;
 			}
 
 			try {
-				$names   = $this->variants->names( $block, $slug );
-				$default = $this->variants->default_variant( $block, $slug );
-			} catch ( Unknown_Variant_Exception $e ) {
+				$names   = $this->presets->names( $block, $slug );
+				$default = $this->presets->default_preset( $block, $slug );
+			} catch ( Unknown_Preset_Exception $e ) {
 				continue; // Set registered but not defined in this token set — skip, fail soft.
 			}
 
 			$user_created = $this->effective->user_created( $block, $slug );
 
-			$variants = [];
+			$presets = [];
 
 			foreach ( $names as $name ) {
-				$variants[] = [
+				$presets[] = [
 					'slug'        => $name,
-					'label'       => $this->variants->label( $block, $name, $slug ) ?? $name,
+					'label'       => $this->presets->label( $block, $name, $slug ) ?? $name,
 					'userCreated' => in_array( $name, $user_created, true ),
 				];
 			}
 
 			$out[ $block ] = [
 				'default'    => $default,
-				'variants'   => $variants,
+				'presets'    => $presets,
 				'properties' => $this->properties_for( $set ),
 				'values'     => $this->values_for( $block, $slug, $names ),
 				'label'      => $set->label,
@@ -170,17 +170,17 @@ final class Variant_Catalog {
 	}
 
 	/**
-	 * The controllable surface for a variant set: one { key, kind, token, control_attr } entry per bound
+	 * The controllable surface for a preset set: one { key, kind, token, control_attr } entry per bound
 	 * property, in binding order, so the editor form renders an input per property and the indicator layer
 	 * can key an override signal to the control attribute. Set-structure read from the set's bindings.
 	 *
 	 * @since TBD
 	 *
-	 * @param Variant_Set $set The variant set.
+	 * @param Preset_Bindings $set The preset set.
 	 *
 	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null}>
 	 */
-	private function properties_for( Variant_Set $set ): array {
+	private function properties_for( Preset_Bindings $set ): array {
 		$properties = [];
 
 		foreach ( $set->bindings as $property => $binding ) {
@@ -196,28 +196,28 @@ final class Variant_Catalog {
 	}
 
 	/**
-	 * The per-variant resolved values for a block's set: `variant slug => ( property => literal CSS value )`,
-	 * so the editor can compare a control's current value against the selected variant's value to decide
+	 * The per-preset resolved values for a block's set: `preset slug => ( property => literal CSS value )`,
+	 * so the editor can compare a control's current value against the selected preset's value to decide
 	 * bound-vs-overridden. Values are flattened literals (hex / length), matching the swatch feed — a control
-	 * cannot compare against a `var()` chain. A variant whose resolution fails (undefined in this set) is
-	 * skipped, so one bad variant never empties the map.
+	 * cannot compare against a `var()` chain. A preset whose resolution fails (undefined in this set) is
+	 * skipped, so one bad preset never empties the map.
 	 *
 	 * @since TBD
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token set slug.
-	 * @param string[] $names The variant slugs to resolve, in catalog order.
+	 * @param string[] $names The preset slugs to resolve, in catalog order.
 	 *
-	 * @return array<string, array<string, string>> variant slug => ( property => literal value ).
+	 * @return array<string, array<string, string>> preset slug => ( property => literal value ).
 	 */
 	private function values_for( string $block, string $slug, array $names ): array {
 		$values = [];
 
 		foreach ( $names as $name ) {
 			try {
-				$values[ $name ] = $this->variants->resolve_literal( $block, $name, $slug );
-			} catch ( Unknown_Variant_Exception $e ) {
-				continue; // Variant undefined in this set — skip, fail soft.
+				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug );
+			} catch ( Unknown_Preset_Exception $e ) {
+				continue; // Preset undefined in this set — skip, fail soft.
 			}
 		}
 
