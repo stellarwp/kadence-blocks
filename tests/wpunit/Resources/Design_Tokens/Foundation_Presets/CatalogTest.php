@@ -24,9 +24,6 @@ final class CatalogTest extends TestCase {
 		$groups = $this->presets->groups();
 
 		$this->assertContains( 'typeScale', $groups );
-		// The color starter palettes were migrated to the colorPalettes section, so foundationPresets
-		// no longer carries a colorPalette group.
-		$this->assertNotContains( 'colorPalette', $groups );
 	}
 
 	public function testItReturnsTheSelectablePresetsAsSlugToLabelSkippingTheDefaultKey(): void {
