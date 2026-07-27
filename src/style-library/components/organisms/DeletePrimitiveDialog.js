@@ -72,7 +72,7 @@ export function DeletePrimitiveDialog({ token, onFetchPreview, onDelete, onSucce
 		if (result.isConflict) {
 			setSaveStatus({
 				status: 'error',
-				error: __('The token set changed since this preview loaded. Refreshing…', 'kadence-blocks'),
+				error: __('The library changed since this preview loaded. Refreshing…', 'kadence-blocks'),
 			});
 			void fetchPreview();
 			return;
