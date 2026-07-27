@@ -63,6 +63,28 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * A palette's switch selector carries its EFFECTIVE colors: its own deltas (the sunset button color, so a
+	 * Primary Button pinned to sunset re-skins) plus the default palette's values for everything it omits (a
+	 * neutral), so a per-block override fully re-skins its subtree with default fallback.
+	 *
+	 * @return void
+	 */
+	public function testTheSwitchSelectorCarriesEffectiveColorsWithDefaultFallback(): void {
+		$css = $this->projector->css();
+
+		// Isolate just the sunset selector's declarations (up to its closing brace).
+		$start = strpos( $css, '[data-kb-palette="sunset"]{' );
+		$this->assertNotFalse( $start );
+		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
+
+		// Sunset's own button delta is present (the Primary Button re-skins to sunset).
+		$this->assertStringContainsString( Css_Var::from_id( 'primitive.color.brand.button' ) . ':#DD6B20;', $block );
+
+		// A token sunset omits falls back to the default palette's value (complete set), not left unset.
+		$this->assertStringContainsString( Css_Var::from_id( 'primitive.color.neutral.900' ) . ':#1A202C;', $block );
+	}
+
+	/**
 	 * A deactivated registry projects nothing, so a fail-closed registry leaves KB's behavior untouched.
 	 *
 	 * @return void

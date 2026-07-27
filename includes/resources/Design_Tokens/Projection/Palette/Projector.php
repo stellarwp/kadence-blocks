@@ -186,8 +186,10 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * The active set's palettes flattened to `id => ( token => swatch value )`, dropping any palette with no
-	 * swatches so it emits no empty selector.
+	 * The active set's palettes flattened to `id => ( token => swatch value )`, using each palette's EFFECTIVE
+	 * colors (the default palette overlaid with the palette's own deltas) so a per-block `[data-kb-palette]`
+	 * override fully re-skins its subtree with default fallback. A palette with no effective colors is dropped
+	 * so it emits no empty selector.
 	 *
 	 * @since TBD
 	 *
@@ -199,7 +201,7 @@ final class Projector extends Abstract_Css_Projector {
 		$palettes = [];
 
 		foreach ( $this->palettes->palette_ids( $active ) as $id ) {
-			$swatches = $this->palettes->swatch_values( $id, $active );
+			$swatches = $this->palettes->effective_swatch_values( $id, $active );
 
 			if ( $swatches !== [] ) {
 				$palettes[ $id ] = $swatches;

@@ -290,22 +290,82 @@ final class Palettes_Controller extends Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
-		$slug    = $this->slug( $request );
-		$id      = Cast::to_string( $request->get_param( self::ID_PARAM ) );
-		$palette = $this->palettes->palette( $id, $slug );
+		$slug = $this->slug( $request );
+		$id   = Cast::to_string( $request->get_param( self::ID_PARAM ) );
 
-		if ( $palette === null ) {
+		if ( $this->palettes->palette( $id, $slug ) === null ) {
 			return $this->not_found( $id );
 		}
 
-		return new WP_REST_Response(
-			[
-				self::ID_PARAM     => $id,
-				self::LABEL_PARAM  => $palette[ Extensions::get_label_key() ] ?? '',
-				self::GROUPS_PARAM => $palette[ Extensions::get_groups_key() ] ?? [],
-			],
-			WP_Http::OK
-		);
+		return new WP_REST_Response( $this->effective_view( $id, $slug ), WP_Http::OK );
+	}
+
+	/**
+	 * The effective, editable view of a palette: the DEFAULT palette's full group/swatch structure (the field
+	 * template) with each swatch's value taken from the palette's own delta when it defines one, otherwise the
+	 * inherited default value. Each swatch carries an `overridden` flag so the UI can show which are deltas
+	 * versus inherited. This is what the palette editor renders so every field is present even when the palette
+	 * stores only a few deltas.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function effective_view( string $id, string $slug ): array {
+		$template = $this->palettes->palette( $this->palettes->default_palette( $slug ), $slug ) ?? [];
+		$deltas   = $this->palettes->swatch_values( $id, $slug );
+		$own      = $this->palettes->palette( $id, $slug ) ?? [];
+
+		$token_key    = Extensions::get_swatch_token_key();
+		$label_key    = Extensions::get_label_key();
+		$value_key    = Sentinels::get_value_key();
+		$swatches_key = Extensions::get_swatches_key();
+
+		$template_groups = $template[ Extensions::get_groups_key() ] ?? [];
+		$groups          = [];
+
+		if ( ! is_array( $template_groups ) ) {
+			$template_groups = [];
+		}
+
+		foreach ( $template_groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			$swatches = [];
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( ! is_array( $swatch ) || ! isset( $swatch[ $token_key ] ) || ! is_string( $swatch[ $token_key ] ) ) {
+					continue;
+				}
+
+				$token      = $swatch[ $token_key ];
+				$overridden = array_key_exists( $token, $deltas );
+
+				$swatches[] = [
+					$token_key   => $token,
+					$label_key   => $swatch[ $label_key ] ?? $token,
+					$value_key   => $overridden ? $deltas[ $token ] : ( $swatch[ $value_key ] ?? '' ),
+					'overridden' => $overridden,
+				];
+			}
+
+			$groups[] = [
+				Extensions::get_group_id_key() => $group[ Extensions::get_group_id_key() ] ?? '',
+				$label_key                     => $group[ $label_key ] ?? '',
+				$swatches_key                  => $swatches,
+			];
+		}
+
+		return [
+			self::ID_PARAM     => $id,
+			self::LABEL_PARAM  => $own[ $label_key ] ?? $id,
+			self::GROUPS_PARAM => $groups,
+		];
 	}
 
 	/**
@@ -338,9 +398,76 @@ final class Palettes_Controller extends Controller {
 			return $swatches;
 		}
 
+		// The default palette stores every swatch (it is the base). A non-default palette stores only its
+		// DELTAS: a swatch equal to the default palette's value is inherited, not persisted, so the palette
+		// resolves against the default for everything it does not change.
+		$node = $this->prepare_for_storage( $node, $slug, $id === $this->palettes->default_palette( $slug ) );
+
 		$candidate = $this->mutator->merge( $this->stored_document( $slug ), $this->palette_partial( $id, $node ) );
 
 		return $this->validate_and_save( $candidate, $id, $slug );
+	}
+
+	/**
+	 * Prepare a palette node for storage: drop the presentational-only `overridden` flag the effective view
+	 * adds to every swatch, and — for a non-default palette — reduce it to its deltas by dropping every swatch
+	 * whose `$value` equals the set's default palette value for that token (and any group left empty). So a
+	 * palette persists only the colors it actually changes; the rest are inherited from the default.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node       The full palette node from the request.
+	 * @param string               $slug       The token set slug.
+	 * @param bool                 $is_default Whether this is the set's default palette (which keeps every swatch).
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function prepare_for_storage( array $node, string $slug, bool $is_default ): array {
+		$default      = $is_default ? [] : $this->palettes->swatch_values( $this->palettes->default_palette( $slug ), $slug );
+		$token_key    = Extensions::get_swatch_token_key();
+		$value_key    = Sentinels::get_value_key();
+		$swatches_key = Extensions::get_swatches_key();
+
+		$node_groups = $node[ Extensions::get_groups_key() ] ?? [];
+		$groups      = [];
+
+		if ( ! is_array( $node_groups ) ) {
+			$node_groups = [];
+		}
+
+		foreach ( $node_groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			$swatches = [];
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( ! is_array( $swatch ) || ! isset( $swatch[ $token_key ] ) || ! is_string( $swatch[ $token_key ] ) ) {
+					continue;
+				}
+
+				unset( $swatch['overridden'] );
+
+				$token = $swatch[ $token_key ];
+				$value = $swatch[ $value_key ] ?? null;
+
+				// The default palette keeps every swatch; a non-default palette keeps only swatches that differ
+				// from the default value (the deltas).
+				if ( $is_default || ! ( array_key_exists( $token, $default ) && $default[ $token ] === $value ) ) {
+					$swatches[] = $swatch;
+				}
+			}
+
+			if ( $swatches !== [] ) {
+				$group[ $swatches_key ] = $swatches;
+				$groups[]               = $group;
+			}
+		}
+
+		$node[ Extensions::get_groups_key() ] = $groups;
+
+		return $node;
 	}
 
 	/**

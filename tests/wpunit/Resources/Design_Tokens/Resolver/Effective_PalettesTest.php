@@ -99,6 +99,25 @@ final class Effective_PalettesTest extends TestCase {
 	}
 
 	/**
+	 * The effective colors for a partial palette are the default palette overlaid with its own deltas: a
+	 * sunset swatch (brand) wins, while a token sunset omits (a neutral) falls back to the default value. This
+	 * is the complete color set the per-block switch layer emits.
+	 *
+	 * @return void
+	 */
+	public function testEffectiveSwatchValuesOverlayThePaletteOverTheDefault(): void {
+		$effective = $this->palettes->effective_swatch_values( 'sunset' );
+
+		// Sunset's own delta wins for the brand + button colors it defines.
+		$this->assertSame( '#DD6B20', $effective['primitive.color.brand.primary'] );
+		$this->assertSame( '#DD6B20', $effective['primitive.color.brand.button'] );
+
+		// A token sunset omits falls back to the default palette's value (a complete set).
+		$this->assertSame( '#1A202C', $effective['primitive.color.neutral.900'] );
+		$this->assertSame( '#E2E8F0', $effective['primitive.color.neutral.200'] );
+	}
+
+	/**
 	 * A stored override can add a new palette alongside the baseline ones, and `$current` selects it.
 	 *
 	 * @return void

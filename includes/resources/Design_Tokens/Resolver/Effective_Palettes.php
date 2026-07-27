@@ -173,6 +173,26 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * The effective `{ token => $value }` colors for a palette: the set's default palette overlaid with the
+	 * palette's own swatches, so a palette that stores only deltas resolves to a COMPLETE color set (its
+	 * deltas plus the default for everything it omits). This is what the per-block switch layer emits, so an
+	 * override fully re-skins a subtree with default fallback regardless of the set's current palette.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string, string> token dot-path => literal-or-alias value.
+	 */
+	public function effective_swatch_values( string $id, string $slug = 'default' ): array {
+		$section = $this->section( $slug );
+		$default = $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+
+		return array_merge( $default, $this->swatch_values_of( $section, $id ) );
+	}
+
+	/**
 	 * The `{ token => $value }` overlay for the set's `$current` palette — the color re-tint the resolver
 	 * applies at `:root`.
 	 *
