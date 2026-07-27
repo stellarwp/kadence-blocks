@@ -15,7 +15,6 @@ import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
 import { VariantActions } from './extension/variant-picker/VariantActions';
-import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
@@ -79,28 +78,22 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariant attribute to any block that opts in via the `kbVariant` block support.
  *
  * kbVariant is the selected variant slug (e.g. "ghost"); an empty value means the block keeps its $default
- * look (the block preset). kbTokenSet holds the slug of a per-block token-set override (e.g. "dark"); empty
- * means the block follows the active set. The scoped CSS that re-skins the block for a selected variant and
- * the switch selectors a set override re-points through are both emitted server-side by the Design Tokens
- * projector.
+ * look (the block preset). The scoped CSS that re-skins the block for a selected variant is emitted
+ * server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant and kbTokenSet attributes added.
+ * @return {Object} The block settings with the kbVariant attribute added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
 		settings.attributes = assign(settings.attributes, {
 			kbVariant: {
-				type: 'string',
-				default: '',
-			},
-			kbTokenSet: {
 				type: 'string',
 				default: '',
 			},
@@ -206,34 +199,6 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
 
 /**
- * Append the data-kb-token-set="<slug>" attribute to a block's saved markup when it is pinned to a token
- * set, so the projector's `[data-kb-token-set]` switch selectors re-point the block's canonical token vars
- * at that set on the front end. A no-op for blocks that do not opt in or follow the active set.
- *
- * @param {Object} props      The save element props.
- * @param {Object} blockType  The block type.
- * @param {Object} attributes The block attributes.
- *
- * @since TBD
- *
- * @return {Object} The props, with the data attribute appended when a set is pinned.
- */
-export function blockTokenSetSaveAttr(props, blockType, attributes) {
-	if (!hasBlockSupport(blockType, 'kbVariant')) {
-		return props;
-	}
-
-	const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
-
-	if (slug) {
-		props['data-kb-token-set'] = slug;
-	}
-
-	return props;
-}
-addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-token-set-save-attr', blockTokenSetSaveAttr);
-
-/**
  * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
  * live with the same scoped overrides the front end uses.
  *
@@ -261,45 +226,14 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
 
 /**
- * Mirror the data-kb-token-set="<slug>" attribute onto the block in the editor canvas, so a pinned set
- * previews live with the same switch-selector re-pointing the front end uses. Added via wrapperProps so it
- * lands on the same block wrapper the variant class and scoped rules target.
+ * Add the design-token variant picker to the inspector of any block that opts into kbVariant support, under
+ * a "Design Tokens" panel with a "Design Presets" subsection. Selecting a variant writes the kbVariant
+ * attribute, which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped
+ * CSS hooks. An empty variant selects the block's $default preset look. The panel is skipped when the block
+ * has no variants for the active set.
  *
- * @since TBD
- */
-const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
-	return (props) => {
-		const { name, attributes } = props;
-
-		if (!hasBlockSupport(name, 'kbVariant')) {
-			return <BlockListBlock {...props} />;
-		}
-
-		const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
-
-		if (!slug) {
-			return <BlockListBlock {...props} />;
-		}
-
-		const wrapperProps = { ...(props.wrapperProps || {}), 'data-kb-token-set': slug };
-
-		return <BlockListBlock {...props} wrapperProps={wrapperProps} />;
-	};
-}, 'withBlockTokenSetAttr');
-addFilter('editor.BlockListBlock', 'kadence/kb-token-set-attr', withBlockTokenSetAttr);
-
-/**
- * Add the design-token pickers to the inspector of any block that opts into kbVariant support, under a
- * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Variants"
- * subsection (the variant picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
- * filters turn into the data-kb-token-set attribute the projector's switch selectors re-point through;
- * selecting a variant writes the kbVariant attribute, which the save/preview filters turn into the
- * kb-variant--<slug> class the projector's scoped CSS hooks. An empty set follows the
- * active set; an empty variant selects the block's $default preset look. Each subsection is shown only when
- * it has something to offer (two or more sets / any variants), and the panel is skipped when neither does.
- *
- * A block whose `kbVariant` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
- * block placing them under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
+ * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
+ * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
  *
  * @since TBD
  */
@@ -317,11 +251,10 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const set = get(attributes, 'kbTokenSet', '') || activeSet();
+		const set = activeSet();
 		const hasVariants = blockVariants(name, set).length > 0;
-		const hasSets = selectableSets().length >= 2;
 
-		if (!hasVariants && !hasSets) {
+		if (!hasVariants) {
 			return <BlockEdit {...props} />;
 		}
 
@@ -334,28 +267,17 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							{hasSets && (
-								<SubsectionWrap label={__('Token Set', 'kadence-blocks')}>
-									<TokenSetPicker
-										value={get(attributes, 'kbTokenSet', '')}
-										onChange={(value) => setAttributes({ kbTokenSet: value })}
-										label=""
-									/>
-								</SubsectionWrap>
-							)}
-							{hasVariants && (
-								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
-									<VariantActions
-										blockName={name}
-										set={set}
-										selected={selected}
-										onSelect={selectVariant}
-										attributes={attributes}
-										setAttributes={setAttributes}
-									/>
-								</SubsectionWrap>
-							)}
+							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
+								<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
+								<VariantActions
+									blockName={name}
+									set={set}
+									selected={selected}
+									onSelect={selectVariant}
+									attributes={attributes}
+									setAttributes={setAttributes}
+								/>
+							</SubsectionWrap>
 						</PanelBody>
 					</InspectorControls>
 				)}

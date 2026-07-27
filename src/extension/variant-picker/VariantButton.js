@@ -53,7 +53,7 @@ function currentVariantLabel(name, set, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.set]         The token set the block is on; defaults to kbTokenSet, then the active set.
+ * @param {string}   [props.set]         The token set the block is on; defaults to the active set.
  *
  * @since TBD
  *
@@ -64,7 +64,7 @@ export function VariantButton({ blockName, attributes, setAttributes, set }) {
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
+	const tokenSet = set || activeSet();
 	const binding = useVariantBinding(blockName, attributes, tokenSet);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 

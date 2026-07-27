@@ -4,8 +4,8 @@
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensVariants`,
  * keyed by token set then by block:
  * `{ active, sets: { <slug>: { <block>: { default, variants, properties, label } } } }`.
- * Reads take the token set a block is on (its `kbTokenSet`, or the active set). A picker-driven block
- * declares one variant set; its selection lives in the block's `kbVariant` string attribute. Both the
+ * Reads take the active token set. A picker-driven block declares one variant set; its selection lives in
+ * the block's `kbVariant` string attribute. Both the
  * generic inspector picker (src/early-filters.js) and a block that renders the picker inline in its own
  * Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it surfaces.
  */

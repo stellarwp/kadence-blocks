@@ -60,15 +60,15 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [set]      The token set slug; defaults to kbTokenSet, then the active set — pass the
- *                            caller's resolved set so the binding can't disagree with the rest of its UI.
+ * @param {string} [set]      The token set slug; defaults to the active set — pass the caller's resolved
+ *                            set so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, variantValue, bound, overridden }.
  */
 export function useVariantBinding(blockName, attributes, set) {
-	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
+	const resolvedSet = set || activeSet();
 	const selected = get(attributes, 'kbVariant', '');
 	const properties = blockProperties(blockName, resolvedSet);
 	const values = blockVariantValues(blockName, resolvedSet);

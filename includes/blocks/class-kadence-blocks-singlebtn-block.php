@@ -383,15 +383,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_args = [
 			'class' => implode( ' ', $classes ),
 		];
-		if ( ! empty( $attributes['kbTokenSet'] ) ) {
-			/**
-			 * A per-block token-set override outputs a data-kb-token-set="<slug>" attribute the Design Tokens
-			 * projector's [data-kb-token-set] switch selectors re-point the block's canonical token vars
-			 * through. This is a dynamic block, so the attribute is added here rather than by the editor save
-			 * filter; the shared Sanitizes_Css_Identifier sanitizer keeps the slug matching the switch selector.
-			 */
-			$wrapper_args['data-kb-token-set'] = self::sanitize_identifier( Cast::to_string( $attributes['kbTokenSet'] ) );
-		}
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}
