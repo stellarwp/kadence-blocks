@@ -431,7 +431,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	/**
 	 * Get remote file contents.
 	 *
-	 * @since TBD Only attach credentials for known library locations.
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
 	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
@@ -544,7 +544,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * 3). import content
 	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 */
 	public function prebuilt_connection_info_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -627,7 +627,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * 3). import content
 	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 */
 	public function prebuilt_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -934,7 +934,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * Ajax function for processing the import data.
 	 *
 	 * @since 3.7.8 Require the upload_files capability.
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 */
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -1270,7 +1270,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * 3). import content
 	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 */
 	public function prebuilt_data_reload_ajax_callback() {
 

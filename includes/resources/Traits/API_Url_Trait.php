@@ -101,7 +101,7 @@ trait API_Url_Trait {
 	 *
 	 * KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL constant, otherwise production default.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 */
 	protected function get_template_sites_base_url(): string {
 		$url = defined( 'KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL' ) && KADENCE_BLOCKS_TEMPLATE_SITES_BASE_URL
@@ -113,7 +113,7 @@ trait API_Url_Trait {
 	/**
 	 * Whether a URL points at one of the Kadence library hosts.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 *
 	 * @param string $url The URL to check.
 	 */
@@ -138,7 +138,7 @@ trait API_Url_Trait {
 	/**
 	 * The library URLs saved in the cloud connection settings.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 *
 	 * @return string[]
 	 */
@@ -163,7 +163,7 @@ trait API_Url_Trait {
 	 * Only the Kadence library hosts and the saved cloud connections are
 	 * allowed as request targets.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 *
 	 * @param string $requested The requested library URL.
 	 * @param string $endpoint  The endpoint path to append.
@@ -191,7 +191,7 @@ trait API_Url_Trait {
 	 * Adding a connection to a new library is limited to users who can manage
 	 * the connection settings.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 *
 	 * @param string $requested The requested library URL.
 	 * @param string $endpoint  The endpoint path to append.

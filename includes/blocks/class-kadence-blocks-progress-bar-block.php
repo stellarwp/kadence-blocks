@@ -66,7 +66,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @since TBD Escape the mask url output.
+	 * @since 3.7.8.1 Escape the mask url output.
 	 *
 	 * @param array              $attributes the blocks attributes.
 	 * @param Kadence_Blocks_CSS $css        the css class for blocks.
@@ -237,7 +237,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds HTML for block.
 	 *
-	 * @since TBD Escape the container class output.
+	 * @since 3.7.8.1 Escape the container class output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
@@ -404,7 +404,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get HTML for displaying the percent complete.
 	 *
-	 * @since TBD Escape the rendered output.
+	 * @since 3.7.8.1 Escape the rendered output.
 	 *
 	 * @param $attributes
 	 *

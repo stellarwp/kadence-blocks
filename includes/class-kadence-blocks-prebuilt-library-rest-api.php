@@ -1388,7 +1388,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -1490,7 +1490,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
@@ -1551,7 +1551,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
@@ -1662,7 +1662,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
-	 * @since TBD Restrict requests to known library locations.
+	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
@@ -2365,7 +2365,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
-	 * @since TBD Only attach credentials for known library locations.
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
 	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
@@ -2424,7 +2424,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
-	 * @since TBD Only attach credentials for known library locations.
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
 	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.

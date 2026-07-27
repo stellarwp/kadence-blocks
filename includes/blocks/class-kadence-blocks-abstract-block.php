@@ -197,7 +197,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS in Page Head.
 	 *
-	 * @since TBD Normalize the unique id before use.
+	 * @since 3.7.8.1 Normalize the unique id before use.
 	 *
 	 * @param array $block the block data.
 	 */
@@ -256,7 +256,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS
 	 *
-	 * @since TBD Normalize the unique id before use.
+	 * @since 3.7.8.1 Normalize the unique id before use.
 	 *
 	 * @param array    $attributes the blocks attribtues.
 	 * @param string   $content the blocks content.
@@ -560,7 +560,7 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Normalize a blocks unique id so it is safe to use in markup and style rules.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.1
 	 *
 	 * @param string $unique_id The blocks unique id.
 	 *
