@@ -383,6 +383,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_args = [
 			'class' => implode( ' ', $classes ),
 		];
+		if ( ! empty( $attributes['kbPalette'] ) ) {
+			/**
+			 * A per-block color-palette override outputs a data-kb-palette="<id>" attribute the Design Tokens
+			 * projector's [data-kb-palette] switch layer re-points the block's canonical color vars through.
+			 * This is a dynamic block, so the attribute is added here rather than by the editor save filter;
+			 * the shared Sanitizes_Css_Identifier sanitizer keeps the id matching the switch selector.
+			 */
+			$wrapper_args['data-kb-palette'] = self::sanitize_identifier( Cast::to_string( $attributes['kbPalette'] ) );
+		}
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}

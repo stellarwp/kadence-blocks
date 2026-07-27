@@ -23,5 +23,6 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Variant_Resolver::class );
 		$this->container->singleton( Variant_Value_Normalizer::class );
 		$this->container->singleton( Effective_Variants::class );
+		$this->container->singleton( Effective_Palettes::class );
 	}
 }

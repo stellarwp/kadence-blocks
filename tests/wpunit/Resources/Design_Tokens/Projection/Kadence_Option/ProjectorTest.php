@@ -9,6 +9,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option\Palette_Buil
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -208,7 +210,9 @@ final class ProjectorTest extends TestCase {
 					]
 				)
 			),
-			new Css_Renderer()
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$projector = new Projector(

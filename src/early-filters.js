@@ -78,22 +78,27 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Add the kbVariant attribute to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariant and kbPalette attributes to any block that opts in via the `kbVariant` block support.
  *
  * kbVariant is the selected variant slug (e.g. "ghost"); an empty value means the block keeps its $default
- * look (the block preset). The scoped CSS that re-skins the block for a selected variant is emitted
- * server-side by the Design Tokens projector.
+ * look (the block preset). kbPalette holds the id of a per-block color-palette override (e.g. "dark"); empty
+ * means the block follows the set's `$current` palette. Both the scoped variant CSS and the palette switch
+ * layer are emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant attribute added.
+ * @return {Object} The block settings with the kbVariant and kbPalette attributes added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
 		settings.attributes = assign(settings.attributes, {
 			kbVariant: {
+				type: 'string',
+				default: '',
+			},
+			kbPalette: {
 				type: 'string',
 				default: '',
 			},
@@ -199,6 +204,34 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
 
 /**
+ * Append the data-kb-palette="<id>" attribute to a block's saved markup when it carries a per-block palette
+ * override, so the projector's `[data-kb-palette]` switch layer re-points the block's canonical color vars
+ * to that palette on the front end. A no-op for blocks that do not opt in or follow the set `$current`.
+ *
+ * @param {Object} props      The save element props.
+ * @param {Object} blockType  The block type.
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {Object} The props, with the data attribute appended when a palette is pinned.
+ */
+export function blockPaletteSaveAttr(props, blockType, attributes) {
+	if (!hasBlockSupport(blockType, 'kbVariant')) {
+		return props;
+	}
+
+	const id = sanitizeTokenIdentifier(get(attributes, 'kbPalette', ''));
+
+	if (id) {
+		props['data-kb-palette'] = id;
+	}
+
+	return props;
+}
+addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-palette-save-attr', blockPaletteSaveAttr);
+
+/**
  * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
  * live with the same scoped overrides the front end uses.
  *
@@ -224,6 +257,34 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 	};
 }, 'withBlockVariantClass');
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
+
+/**
+ * Mirror the data-kb-palette="<id>" attribute onto the block in the editor canvas, so a per-block palette
+ * override previews live with the same switch-layer re-pointing the front end uses. Added via wrapperProps
+ * so it lands on the same block wrapper the projector's `[data-kb-palette]` selector targets.
+ *
+ * @since TBD
+ */
+const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
+	return (props) => {
+		const { name, attributes } = props;
+
+		if (!hasBlockSupport(name, 'kbVariant')) {
+			return <BlockListBlock {...props} />;
+		}
+
+		const id = sanitizeTokenIdentifier(get(attributes, 'kbPalette', ''));
+
+		if (!id) {
+			return <BlockListBlock {...props} />;
+		}
+
+		const wrapperProps = { ...(props.wrapperProps || {}), 'data-kb-palette': id };
+
+		return <BlockListBlock {...props} wrapperProps={wrapperProps} />;
+	};
+}, 'withBlockPaletteAttr');
+addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAttr);
 
 /**
  * Add the design-token variant picker to the inspector of any block that opts into kbVariant support, under

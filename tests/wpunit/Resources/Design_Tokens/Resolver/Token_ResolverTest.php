@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -25,7 +27,9 @@ final class Token_ResolverTest extends TestCase {
 		return new Token_Resolver(
 			$this->container->get( Token_Store::class ),
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
-			new Css_Renderer()
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 	}
 
@@ -593,7 +597,9 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = new Token_Resolver(
 			$store,
 			$this->container->get( Effective_Document::class ),
-			$this->container->get( Css_Renderer::class )
+			$this->container->get( Css_Renderer::class ),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$version   = $store->get_version();
@@ -619,7 +625,9 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = new Token_Resolver(
 			$store,
 			$this->container->get( Effective_Document::class ),
-			$this->container->get( Css_Renderer::class )
+			$this->container->get( Css_Renderer::class ),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$version   = $store->get_version();
@@ -700,6 +708,69 @@ final class Token_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame( '#000000', $resolver->resolve()->value( 'semantic.color.button-primary-bg' ) );
+	}
+
+	/**
+	 * The set's `$current` color palette re-tints the color tokens at resolve time, and every semantic color
+	 * that aliases a re-tinted primitive follows for free — while a non-color token is byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testTheCurrentPaletteReTintsColorsAndCascadesToSemantics(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		// Baseline: the default palette equals the baseline, so brand.primary and the link that aliases it
+		// resolve to the shipped brand color; a spacing token to its shipped length.
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'semantic.color.link' ) );
+		$spacing = $resolver->resolve()->value( 'semantic.spacing.block' );
+
+		// Switch the set to the shipped "sunset" palette by writing $current; the write bumps the version.
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
+			)
+		);
+
+		$resolved = $resolver->resolve();
+
+		// The brand primitive and the semantic link that aliases it both re-tint to sunset's color.
+		$this->assertSame( '#DD6B20', $resolved->value( 'primitive.color.brand.primary' ) );
+		$this->assertSame( '#DD6B20', $resolved->value( 'semantic.color.link' ) );
+
+		// A non-color token is byte-identical across the palette switch.
+		$this->assertSame( $spacing, $resolved->value( 'semantic.spacing.block' ) );
+	}
+
+	/**
+	 * Switching the set's `$current` palette back to "default" restores the baseline colors, proving the
+	 * overlay is non-destructive and reversible.
+	 *
+	 * @return void
+	 */
+	public function testSwitchingBackToTheDefaultPaletteRestoresBaselineColors(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
+			)
+		);
+		$this->assertSame( '#DD6B20', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
+
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'default' ] ] ] ]
+			)
+		);
+
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
 	}
 
 	/**

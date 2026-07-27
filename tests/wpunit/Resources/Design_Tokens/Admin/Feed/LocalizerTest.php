@@ -12,6 +12,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use ReflectionProperty;
@@ -174,7 +176,9 @@ final class LocalizerTest extends TestCase {
 					]
 				)
 			),
-			new Css_Renderer()
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$localizer = new Localizer(
