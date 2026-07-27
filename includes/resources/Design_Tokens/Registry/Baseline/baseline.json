@@ -62,6 +62,24 @@
 					"$value": "#1A202C"
 				}
 			},
+			"notice": {
+				"success": {
+					"$type": "color",
+					"$value": "#38A169"
+				},
+				"warning": {
+					"$type": "color",
+					"$value": "#DD6B20"
+				},
+				"error": {
+					"$type": "color",
+					"$value": "#E53E3E"
+				},
+				"info": {
+					"$type": "color",
+					"$value": "#3182CE"
+				}
+			},
 			"transparent": {
 				"$type": "color",
 				"$value": "transparent"
@@ -616,33 +634,81 @@
 							"primitive.fontSize.3xl": "6.854rem"
 						}
 					}
+				}
+			},
+			"colorPalettes": {
+				"$default": "default",
+				"$current": "default",
+				"default": {
+					"label": "Default",
+					"groups": [
+						{
+							"id": "accent",
+							"label": "Accent",
+							"swatches": [
+								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#3182CE" },
+								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#2B6CB0" },
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#ED8936" }
+							]
+						},
+						{
+							"id": "contrast",
+							"label": "Contrast",
+							"swatches": [
+								{ "token": "primitive.color.neutral.900", "label": "Strongest", "$value": "#1A202C" },
+								{ "token": "primitive.color.neutral.700", "label": "Strong", "$value": "#2D3748" },
+								{ "token": "primitive.color.neutral.500", "label": "Medium", "$value": "#718096" },
+								{ "token": "primitive.color.neutral.300", "label": "Subtle", "$value": "#CBD5E0" }
+							]
+						},
+						{
+							"id": "background",
+							"label": "Background",
+							"swatches": [
+								{ "token": "primitive.color.neutral.100", "label": "Strongest", "$value": "#EDF2F7" },
+								{ "token": "primitive.color.neutral.50", "label": "Strong", "$value": "#F7FAFC" },
+								{ "token": "primitive.color.neutral.0", "label": "Medium", "$value": "#ffffff" }
+							]
+						},
+						{
+							"id": "notices",
+							"label": "Notices and Feedback",
+							"swatches": [
+								{ "token": "primitive.color.notice.success", "label": "Success", "$value": "#38A169" },
+								{ "token": "primitive.color.notice.warning", "label": "Warning", "$value": "#DD6B20" },
+								{ "token": "primitive.color.notice.error", "label": "Error", "$value": "#E53E3E" },
+								{ "token": "primitive.color.notice.info", "label": "Info", "$value": "#3182CE" }
+							]
+						}
+					]
 				},
-				"colorPalette": {
-					"$default": "kadence",
-					"kadence": {
-						"label": "Kadence",
-						"tokens": {
-							"primitive.color.brand.primary": "#3182CE",
-							"primitive.color.brand.secondary": "#2B6CB0",
-							"primitive.color.brand.accent": "#ED8936"
+				"sunset": {
+					"label": "Sunset",
+					"groups": [
+						{
+							"id": "accent",
+							"label": "Accent",
+							"swatches": [
+								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#DD6B20" },
+								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#C05621" },
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#F6AD55" }
+							]
 						}
-					},
-					"sunset": {
-						"label": "Sunset",
-						"tokens": {
-							"primitive.color.brand.primary": "#DD6B20",
-							"primitive.color.brand.secondary": "#C05621",
-							"primitive.color.brand.accent": "#F6AD55"
+					]
+				},
+				"forest": {
+					"label": "Forest",
+					"groups": [
+						{
+							"id": "accent",
+							"label": "Accent",
+							"swatches": [
+								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#2F855A" },
+								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#276749" },
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#68D391" }
+							]
 						}
-					},
-					"forest": {
-						"label": "Forest",
-						"tokens": {
-							"primitive.color.brand.primary": "#2F855A",
-							"primitive.color.brand.secondary": "#276749",
-							"primitive.color.brand.accent": "#68D391"
-						}
-					}
+					]
 				}
 			},
 			"variants": {

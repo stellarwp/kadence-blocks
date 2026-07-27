@@ -38,7 +38,7 @@ final class Catalog {
 	}
 
 	/**
-	 * The available preset group keys, e.g. ["typeScale", "colorPalette"].
+	 * The available preset group keys, e.g. ["typeScale"].
 	 *
 	 * @since TBD
 	 *

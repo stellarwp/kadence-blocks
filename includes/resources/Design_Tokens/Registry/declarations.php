@@ -124,6 +124,29 @@ foreach ( $button_color_labels as $suffix => $label ) {
 	];
 }
 
+/**
+ * Notice / feedback color primitives (success/warning/error/info). Registered so Css_Var emits each
+ * --kb-token--primitive--color--notice--* variable and the color palette's "Notices and Feedback" group
+ * can name them. Like the semantic colors, they claim NO Kadence palette slot — they deliver at the block
+ * level and never re-skin the global palette.
+ */
+$notice_color_labels = [
+	'success' => __( 'Success', 'kadence-blocks' ),
+	'warning' => __( 'Warning', 'kadence-blocks' ),
+	'error'   => __( 'Error', 'kadence-blocks' ),
+	'info'    => __( 'Info', 'kadence-blocks' ),
+];
+
+$notice_color_tokens = [];
+foreach ( $notice_color_labels as $suffix => $label ) {
+	$notice_color_tokens[] = [
+		'id'    => 'primitive.color.notice.' . $suffix,
+		'type'  => 'color',
+		'label' => $label,
+		'group' => __( 'Notices', 'kadence-blocks' ),
+	];
+}
+
 return [
 	'tokens'       => array_merge(
 		[
@@ -237,6 +260,7 @@ return [
 			],
 		],
 		$button_color_tokens,
+		$notice_color_tokens,
 		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens,
