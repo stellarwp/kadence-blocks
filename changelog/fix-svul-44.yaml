@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved output escaping for block attributes.
+timestamp: 2026-07-22T18:39:04.346Z

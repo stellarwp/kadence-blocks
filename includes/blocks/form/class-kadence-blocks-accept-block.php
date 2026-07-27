@@ -80,15 +80,15 @@ class Kadence_Blocks_Accept_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$check_label              = $attributes;
 		$check_label['inputName'] = 'cb' . $class_id;
 
-		$inner_content         .= '<fieldset class="kb-radio-check-item-wrap" id="' . $this->field_name( $check_label ) . '" data-type="accept" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
+		$inner_content         .= '<fieldset class="kb-radio-check-item-wrap" id="' . esc_attr( $this->field_name( $check_label ) ) . '" data-type="accept" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
 		$inner_content         .= $this->field_legend( $check_label );
 		$inner_content         .= $this->field_aria_label( $attributes );
 		$is_checked_from_param  = ! empty( $this->get_default( $attributes ) );
 		$is_checked_from_editor = isset( $attributes['isChecked'] ) && true === $attributes['isChecked'] ? true : false;
 		$is_checked             = $is_checked_from_editor || $is_checked_from_param;
 		$inner_content         .= '<div class="kb-radio-check-item">';
-		$inner_content         .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '_0"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" value="' . esc_attr( $this->get_accept_default( $attributes ) ) . '"' . ( $is_checked ? ' checked' : '' ) . ' data-type="accept" class="kb-field kb-accept-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
-		$inner_content         .= '<label for="' . $this->field_id( $attributes ) . '_0">' . $attributes['description'];
+		$inner_content         .= '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '_0"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" value="' . esc_attr( $this->get_accept_default( $attributes ) ) . '"' . ( $is_checked ? ' checked' : '' ) . ' data-type="accept" class="kb-field kb-accept-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
+		$inner_content         .= '<label for="' . esc_attr( $this->field_id( $attributes ) ) . '_0">' . $attributes['description'];
 		if ( ! empty( $attributes['required'] ) && $attributes['required'] && ( empty( $attributes['label'] ) || ( isset( $attributes['showLabel'] ) && ! $attributes['showLabel'] ) ) ) {
 			$inner_content .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
 		}
