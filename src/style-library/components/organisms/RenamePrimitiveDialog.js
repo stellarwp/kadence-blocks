@@ -81,7 +81,7 @@ export function RenamePrimitiveDialog({ token, onRename, onSuccess, onClose }) {
 			setSaveStatus({
 				status: 'error',
 				error: __(
-					'The token set changed since this page loaded. Reload the page and try again.',
+					'The library changed since this page loaded. Reload the page and try again.',
 					'kadence-blocks'
 				),
 			});
