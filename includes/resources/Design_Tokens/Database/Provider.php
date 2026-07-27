@@ -22,7 +22,7 @@ final class Provider extends Provider_Contract {
 	public function register(): void {
 		$this->register_token_store();
 		$this->register_history_store();
-		$this->register_active_set_store();
+		$this->register_active_token_library_store();
 	}
 
 	/**
@@ -76,7 +76,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Bind Active_Token_Library_Store and reset its pointer when the active set is deleted.
+	 * Bind Active_Token_Library_Store and reset its pointer when the active library is deleted.
 	 *
 	 * The store owns the active-library pointer (an option), separate from the table Token_Store guards.
 	 * Subscribing it to the delete signal here keeps Token_Store the sole writer of its own table — it
@@ -87,7 +87,7 @@ final class Provider extends Provider_Contract {
 	 *
 	 * @return void
 	 */
-	private function register_active_set_store(): void {
+	private function register_active_token_library_store(): void {
 		$this->container->singleton( Active_Token_Library_Store::class, Active_Token_Library_Store::class );
 
 		add_action(
