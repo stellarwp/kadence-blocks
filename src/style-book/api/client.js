@@ -13,6 +13,9 @@ import {
 	userPrimitivesPath,
 	userPrimitivePath,
 	userPrimitiveRenamePath,
+	palettesPath,
+	palettePath,
+	paletteCurrentPath,
 } from './paths';
 
 /**
@@ -61,6 +64,70 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
+	});
+}
+
+/**
+ * Fetch the set's color palettes and its `$default` / `$current` pointers.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ '$default': string, '$current': string, palettes: object[] }>} Palette listing.
+ */
+export function fetchPalettes(namespace, slug) {
+	return apiFetch({ path: palettesPath(namespace, slug) });
+}
+
+/**
+ * Fetch a single palette node (its label and ordered groups of swatches).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ id: string, label: string, groups: object[] }>} The palette node.
+ */
+export function fetchPalette(namespace, id, slug) {
+	return apiFetch({ path: palettePath(namespace, id, slug) });
+}
+
+/**
+ * Set the set's current palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id to make current.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ current: string }>} The resolved current palette.
+ */
+export function setCurrentPalette(namespace, id, slug) {
+	return apiFetch({
+		path: paletteCurrentPath(namespace, slug),
+		method: 'PUT',
+		data: { current: id },
+	});
+}
+
+/**
+ * Create or replace a palette (label + ordered groups of swatches).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {{ label: string, groups: object[] }} payload The palette payload.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function savePalette(namespace, id, payload, slug) {
+	return apiFetch({
+		path: palettePath(namespace, id, slug),
+		method: 'PUT',
+		data: payload,
 	});
 }
 

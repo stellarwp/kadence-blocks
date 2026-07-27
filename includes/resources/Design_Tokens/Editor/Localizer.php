@@ -8,9 +8,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 /**
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
- * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches four
+ * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
  * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants (the
  * per-set variant catalog the variant picker and the "save as new variant" form read),
+ * window.kadenceDesignTokensPalettes (the active set's color palettes the per-block palette selector reads),
  * window.kadenceDesignTokensPresetDefaults (the per-block attribute-default catalog the block-registration
  * filter reads), window.kadenceDesignTokensRest (the REST descriptor the variant writes POST to), and
  * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
@@ -41,6 +42,15 @@ final class Localizer {
 	 * @var string
 	 */
 	private const VARIANTS_OBJECT = 'kadenceDesignTokensVariants';
+
+	/**
+	 * The JS global the per-block palette selector and set-level palette switch read.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const PALETTES_OBJECT = 'kadenceDesignTokensPalettes';
 
 	/**
 	 * The JS global the block-registration preset-default filter reads.
@@ -106,23 +116,35 @@ final class Localizer {
 	private Pickable_Tokens_Catalog $pickable;
 
 	/**
+	 * The color-palette catalog builder.
+	 *
+	 * @since TBD
+	 *
+	 * @var Palette_Catalog
+	 */
+	private Palette_Catalog $palette_catalog;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry          $registry        The token registry.
 	 * @param Variant_Catalog         $variant_catalog The variant catalog builder.
 	 * @param Block_Preset_Catalog    $preset_defaults The per-block attribute-default catalog builder.
 	 * @param Pickable_Tokens_Catalog $pickable        The pickable-token pool builder.
+	 * @param Palette_Catalog         $palette_catalog The color-palette catalog builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Variant_Catalog $variant_catalog,
 		Block_Preset_Catalog $preset_defaults,
-		Pickable_Tokens_Catalog $pickable
+		Pickable_Tokens_Catalog $pickable,
+		Palette_Catalog $palette_catalog
 	) {
 		$this->registry        = $registry;
 		$this->variant_catalog = $variant_catalog;
 		$this->preset_defaults = $preset_defaults;
 		$this->pickable        = $pickable;
+		$this->palette_catalog = $palette_catalog;
 	}
 
 	/**
@@ -142,6 +164,7 @@ final class Localizer {
 		}
 
 		$this->attach( self::VARIANTS_OBJECT, $this->variant_catalog->all() );
+		$this->attach( self::PALETTES_OBJECT, $this->palette_catalog->all() );
 		$this->attach( self::PRESET_DEFAULTS_OBJECT, $this->preset_defaults->all() );
 		$this->attach( self::REST_OBJECT, $this->rest() );
 		$this->attach( self::PICKABLE_OBJECT, $this->pickable->all() );

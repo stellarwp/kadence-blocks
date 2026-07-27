@@ -11,6 +11,7 @@ import {
 	GROUP_ORDER,
 	GROUP_SECTIONS,
 	SECTION_OVERVIEW,
+	SECTION_PALETTES,
 	groupSectionId,
 } from '../constants/navigation';
 
@@ -94,6 +95,11 @@ export function buildNavigationSections(tokens) {
 			id: SECTION_OVERVIEW,
 			kind: 'overview',
 			label: __('Overview', 'kadence-blocks'),
+		},
+		{
+			id: SECTION_PALETTES,
+			kind: 'palettes',
+			label: __('Palettes', 'kadence-blocks'),
 		},
 		...foundations,
 	];

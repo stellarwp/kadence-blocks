@@ -15,6 +15,7 @@ import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
 import { VariantActions } from './extension/variant-picker/VariantActions';
+import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
@@ -315,12 +316,15 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 		const set = activeSet();
 		const hasVariants = blockVariants(name, set).length > 0;
 
-		if (!hasVariants) {
+		const hasPalettes = selectablePalettes().length >= 2;
+
+		if (!hasVariants && !hasPalettes) {
 			return <BlockEdit {...props} />;
 		}
 
 		const selected = get(attributes, 'kbVariant', '');
 		const selectVariant = (value) => setAttributes({ kbVariant: value });
+		const selectPalette = (value) => setAttributes({ kbPalette: value });
 
 		return (
 			<>
@@ -328,17 +332,24 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-								<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
-								<VariantActions
-									blockName={name}
-									set={set}
-									selected={selected}
-									onSelect={selectVariant}
-									attributes={attributes}
-									setAttributes={setAttributes}
-								/>
-							</SubsectionWrap>
+							{hasVariants && (
+								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
+									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
+									<VariantActions
+										blockName={name}
+										set={set}
+										selected={selected}
+										onSelect={selectVariant}
+										attributes={attributes}
+										setAttributes={setAttributes}
+									/>
+								</SubsectionWrap>
+							)}
+							{hasPalettes && (
+								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
+									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
+								</SubsectionWrap>
+							)}
 						</PanelBody>
 					</InspectorControls>
 				)}
