@@ -3,7 +3,6 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use Tests\Support\Classes\TestCase;
@@ -18,11 +17,6 @@ use WP_REST_Server;
  * setting the set's $current palette, and the write guards.
  */
 final class Palettes_ControllerTest extends TestCase {
-
-	/**
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
 
 	/**
 	 * @var Effective_Palettes
@@ -40,7 +34,6 @@ final class Palettes_ControllerTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->store      = $this->container->get( Token_Store::class );
 		$this->palettes   = $this->container->get( Effective_Palettes::class );
 		$this->controller = $this->container->get( Palettes_Controller::class );
 
@@ -122,6 +115,31 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->assertContains( 'ocean', $this->palettes->palette_ids() );
 		$this->assertSame( '#0000ff', $this->palettes->swatch_values( 'ocean' )['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * Both POST and PUT are registered for the palette write route, sharing the create-or-replace handler.
+	 *
+	 * @return void
+	 */
+	public function testTheWriteRouteAcceptsPostAndPut(): void {
+		global $wp_rest_server;
+		$wp_rest_server = new WP_REST_Server();
+		do_action( 'rest_api_init' );
+
+		$endpoints = $wp_rest_server->get_routes()['/kb-design-tokens/v1/palettes/(?P<id>[\w-]+)'] ?? [];
+
+		$methods = [];
+		foreach ( $endpoints as $endpoint ) {
+			foreach ( array_keys( array_filter( $endpoint['methods'] ?? [] ) ) as $method ) {
+				$methods[ $method ] = true;
+			}
+		}
+
+		$wp_rest_server = null;
+
+		$this->assertArrayHasKey( 'POST', $methods, 'POST should be registered on the palette write route.' );
+		$this->assertArrayHasKey( 'PUT', $methods, 'PUT should be registered on the palette write route.' );
 	}
 
 	/**

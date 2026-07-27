@@ -228,7 +228,8 @@ final class Palettes_Controller extends Controller {
 					'args'                => [ self::SET_PARAM => $this->set_param() ],
 				],
 				[
-					'methods'             => 'PUT',
+					// POST and PUT both set the pointer; it is an idempotent write, so they share one handler.
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'set_current' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_current_params(),
@@ -248,13 +249,15 @@ final class Palettes_Controller extends Controller {
 					'args'                => $this->get_id_params(),
 				],
 				[
-					'methods'             => 'PUT',
+					// POST creates and PUT replaces the palette at this id; a single palette node write is
+					// create-or-replace either way, so both verbs share one handler.
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
 					'callback'            => [ $this, 'update_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_write_params(),
 				],
 				[
-					'methods'             => 'DELETE',
+					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => [ $this, 'delete_item' ],
 					'permission_callback' => [ $this, 'delete_item_permissions_check' ],
 					'args'                => $this->get_id_params(),
@@ -306,7 +309,9 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Create or replace a palette (PUT /palettes/{id}): its label and ordered groups of swatches.
+	 * Create or replace a palette (POST or PUT /palettes/{id}): read its label + groups from the request, run
+	 * the shape and swatch guards, deep-merge the node into the set's stored overrides, and validate-and-save.
+	 * A single palette node write is create-or-replace either way, so POST and PUT share this handler.
 	 *
 	 * @since TBD
 	 *
