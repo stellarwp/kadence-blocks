@@ -6,20 +6,20 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 
 /**
- * Builds the compact token-set catalog the block editor's per-block set-override picker reads.
+ * Builds the compact token-library catalog the block editor's per-block library-override picker reads.
  *
- * Only the data the picker needs — which set is active and the selectable sets as { slug, label } —
+ * Only the data the picker needs — which library is active and the selectable libraries as { slug, label } —
  * so it carries no resolved token values and cannot raise the alias-cycle errors the projection must
- * guard. The listing is default-inclusive: the always-addressable default set appears even when it has
- * no stored row, mirroring the projection's set listing so the picker never offers a set the projection
- * cannot resolve, and never omits one it can.
+ * guard. The listing is default-inclusive: the always-addressable default library appears even when it has
+ * no stored row, mirroring the projection's library listing so the picker never offers a library the
+ * projection cannot resolve, and never omits one it can.
  *
  * @since TBD
  */
-final class Set_Catalog {
+final class Token_Library_Catalog {
 
 	/**
-	 * The token store, source of the stored sets and their titles.
+	 * The token store, source of the stored libraries and their titles.
 	 *
 	 * @since TBD
 	 *
@@ -28,7 +28,7 @@ final class Set_Catalog {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer, source of the active slug.
+	 * The active-library pointer, source of the active slug.
 	 *
 	 * @since TBD
 	 *
@@ -40,7 +40,7 @@ final class Set_Catalog {
 	 * @since TBD
 	 *
 	 * @param Token_Store                $store  The token store.
-	 * @param Active_Token_Library_Store $active The active-set pointer.
+	 * @param Active_Token_Library_Store $active The active-library pointer.
 	 */
 	public function __construct( Token_Store $store, Active_Token_Library_Store $active ) {
 		$this->store  = $store;
@@ -48,11 +48,11 @@ final class Set_Catalog {
 	}
 
 	/**
-	 * The catalog: the active slug plus every selectable set as { slug, label }.
+	 * The catalog: the active slug plus every selectable library as { slug, label }.
 	 *
-	 * The always-addressable default set is listed first, ahead of the stored sets (which follow the store's
-	 * slug order), and is synthesized from baseline when it has no row — so the picker can offer default as
-	 * the first concrete option regardless of where its slug would otherwise sort.
+	 * The always-addressable default library is listed first, ahead of the stored libraries (which follow
+	 * the store's slug order), and is synthesized from baseline when it has no row — so the picker can
+	 * offer default as the first concrete option regardless of where its slug would otherwise sort.
 	 *
 	 * @since TBD
 	 *
@@ -83,13 +83,13 @@ final class Set_Catalog {
 	}
 
 	/**
-	 * The display label for a set: its stored title when it has one, otherwise a friendly name for the
-	 * default set and the bare slug for any other set with no title. Display-only — the slug is the value
-	 * the picker writes to the block attribute.
+	 * The display label for a library: its stored title when it has one, otherwise a friendly name for the
+	 * default library and the bare slug for any other library with no title. Display-only — the slug is the
+	 * value the picker writes to the block attribute.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug  The set slug.
+	 * @param string $slug  The library slug.
 	 * @param string $title The stored title, possibly empty.
 	 *
 	 * @return string
