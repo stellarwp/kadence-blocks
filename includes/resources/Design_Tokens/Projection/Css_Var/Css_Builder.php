@@ -52,17 +52,6 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The HTML attribute a container sets to scope token vars for its subtree. Retained as the shared source
-	 * of the attribute name for the variant projector's scoped rules; the Css_Var backbone no longer emits a
-	 * switch selector of its own now that a single active set is projected.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const SWITCH_ATTR = 'data-kb-token-set';
-
-	/**
 	 * The registry the active token set is resolved and projected from.
 	 *
 	 * @since TBD
@@ -80,17 +69,6 @@ final class Css_Builder {
 	 * @var array<string,string>
 	 */
 	private array $memo = [];
-
-	/**
-	 * The shared attribute name the variant projector scopes its rules with ("data-kb-token-set").
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_switch_attribute(): string {
-		return self::SWITCH_ATTR;
-	}
 
 	/**
 	 * @param Token_Registry $registry

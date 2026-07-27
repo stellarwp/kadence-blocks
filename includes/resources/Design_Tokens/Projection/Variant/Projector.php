@@ -113,13 +113,12 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the variant CSS for every token set at once, via the builder's fragment cache.
+	 * Build the variant CSS for the single active token set, via the builder's fragment cache.
 	 *
-	 * Each set's variants are emitted as namespaced --kb-token--<set>--variant--* vars plus a switch
-	 * selector; the active set additionally drives the canonical alias layer and the coercive scoped rules.
-	 * Returns an empty string when the store version cannot be read or a variant cannot be resolved (e.g. an
-	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
-	 * inline style is simply omitted and KB falls back to its $default look.
+	 * The active set's variants are emitted as canonical --kb-token--variant--* vars plus the coercive scoped
+	 * rules. Returns an empty string when the store version cannot be read or a variant cannot be resolved
+	 * (e.g. an alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes —
+	 * the inline style is simply omitted and KB falls back to its $default look.
 	 *
 	 * @since TBD
 	 *
@@ -127,35 +126,12 @@ final class Projector extends Abstract_Css_Projector {
 	 */
 	public function css(): string {
 		try {
-			$active   = $this->active->get();
-			$versions = [];
+			$active  = $this->active->get();
+			$version = $this->store->get_version( $active );
 
-			foreach ( $this->set_slugs() as $slug ) {
-				$versions[ $slug ] = $this->store->get_version( $slug );
-			}
-
-			return $this->css_builder->css_for_version( $versions, $active );
+			return $this->css_builder->css_for_version( $active, $version );
 		} catch ( Throwable $e ) {
 			return '';
 		}
-	}
-
-	/**
-	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders from
-	 * baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
-	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
-	 *
-	 * @since TBD
-	 *
-	 * @return string[]
-	 */
-	private function set_slugs(): array {
-		$slugs = array_column( $this->store->list_stores(), 'slug' );
-
-		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {
-			array_unshift( $slugs, Token_Store::default_slug() );
-		}
-
-		return $slugs;
 	}
 }

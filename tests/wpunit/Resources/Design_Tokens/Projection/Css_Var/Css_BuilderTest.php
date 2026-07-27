@@ -131,16 +131,6 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '[data-kb-token-set', $css );
 	}
 
-	/**
-	 * The switch-attribute accessor is retained as the shared attribute name the variant projector scopes
-	 * its rules with, even though the Css_Var backbone no longer emits a switch selector.
-	 *
-	 * @return void
-	 */
-	public function testTheSwitchAttributeAccessorIsRetained(): void {
-		$this->assertSame( 'data-kb-token-set', Css_Builder::get_switch_attribute() );
-	}
-
 	// ---- Scope / structure --------------------------------------------------------------------------
 
 	/**
