@@ -308,17 +308,16 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 		}
 
 		const support = getBlockSupport(name, 'kbVariant');
-
-		if (support && typeof support === 'object' && support.inlinePicker) {
-			return <BlockEdit {...props} />;
-		}
+		// A block whose kbVariant support requests `inlinePicker` renders the VARIANT picker itself (e.g. a
+		// Kadence block under its own Style tab), so this generic panel skips only the variant subsection for
+		// it — the per-block Color Palette override still surfaces here for every kbVariant block.
+		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
 
 		const set = activeSet();
-		const hasVariants = blockVariants(name, set).length > 0;
+		const showVariants = !inlinePicker && blockVariants(name, set).length > 0;
+		const showPalettes = selectablePalettes().length >= 2;
 
-		const hasPalettes = selectablePalettes().length >= 2;
-
-		if (!hasVariants && !hasPalettes) {
+		if (!showVariants && !showPalettes) {
 			return <BlockEdit {...props} />;
 		}
 
@@ -332,7 +331,7 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							{hasVariants && (
+							{showVariants && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
 									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
 									<VariantActions
@@ -345,8 +344,16 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 									/>
 								</SubsectionWrap>
 							)}
-							{hasPalettes && (
+							{showPalettes && (
 								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
+									{/*
+									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
+									 * control. The design (see the B4 Figma) integrates the palette token picker
+									 * into the block's color controls — a "Stylebook | Custom" popover with a
+									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
+									 * Color row — which requires @kadence/components changes to the color-control
+									 * popover and is deferred.
+									 */}
 									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
 								</SubsectionWrap>
 							)}

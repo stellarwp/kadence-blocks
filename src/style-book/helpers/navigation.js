@@ -49,6 +49,10 @@ export function countTokensByGroup(tokens) {
 export function buildNavigationSections(tokens) {
 	const counts = countTokensByGroup(tokens);
 
+	// The legacy "Palette" foundation group (the palette-slot primitives) is superseded by the Color Palette
+	// feature above; drop it so the two are not confused. (This Style Book page is being replaced later.)
+	delete counts[__('Palette', 'kadence-blocks')];
+
 	// The Custom Colors section is always reachable, even with zero user-created
 	// primitives yet, so there is a way to create the first one.
 	if (!(CUSTOM_COLORS_GROUP_LABEL in counts)) {
@@ -99,7 +103,7 @@ export function buildNavigationSections(tokens) {
 		{
 			id: SECTION_PALETTES,
 			kind: 'palettes',
-			label: __('Palettes', 'kadence-blocks'),
+			label: __('Color Palette', 'kadence-blocks'),
 		},
 		...foundations,
 	];

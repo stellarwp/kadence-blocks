@@ -43,6 +43,15 @@ export function PalettesPage({ namespace, slug }) {
 
 	return (
 		<div className="kadence-blocks-style-book__palettes">
+			<header className="kadence-blocks-style-book__page-header">
+				<h2>{__('Color Palette', 'kadence-blocks')}</h2>
+				<p>
+					{__(
+						'Switch the active palette or edit a palette’s colors. Only colors change — type, spacing, radius and shadow stay the same.',
+						'kadence-blocks'
+					)}
+				</p>
+			</header>
 			<div className="kadence-blocks-style-book__palettes-toolbar">
 				<SelectControl
 					label={__('Color Palette', 'kadence-blocks')}
@@ -123,7 +132,13 @@ function SwatchRow({ swatch, busy, onSave }) {
 						<TokenSwatch type="color" value={value} />
 					</Button>
 				)}
-				renderContent={() => <ColorPicker color={value} enableAlpha={false} onChange={onSave} />}
+				renderContent={() => (
+					<ColorPicker
+						color={value}
+						enableAlpha={false}
+						onChange={(color) => onSave(typeof color === 'string' ? color : (color?.hex ?? ''))}
+					/>
+				)}
 			/>
 			<span className="kadence-blocks-style-book__palette-swatch-meta">
 				<strong>{swatch.label}</strong>

@@ -20,16 +20,16 @@ import './sidebar.scss';
  * @return {JSX.Element} Sidebar navigation.
  */
 export function Sidebar({ section, sections, onNavigate }) {
-	const overview = sections.filter((item) => item.kind === 'overview');
+	const primary = sections.filter((item) => item.kind === 'overview' || item.kind === 'palettes');
 	const foundations = sections.filter((item) => item.kind === 'foundation');
 
 	return (
 		<aside className="kadence-blocks-style-book__sidebar">
-			{overview.length > 0 && (
+			{primary.length > 0 && (
 				<div className="kadence-blocks-style-book__nav-section">
 					<NavSectionLabel>{__('Style Book', 'kadence-blocks')}</NavSectionLabel>
 					<ul className="kadence-blocks-style-book__nav-list">
-						{overview.map((item) => (
+						{primary.map((item) => (
 							<NavItem key={item.id} active={section === item.id} onClick={() => onNavigate(item.id)}>
 								{item.label}
 							</NavItem>
