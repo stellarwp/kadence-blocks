@@ -65,7 +65,7 @@ final class Token_Table extends Table {
 		return "
 			CREATE TABLE `$table_name` (
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-				slug VARCHAR(191) NOT NULL COMMENT 'Token library identifier, e.g. \"default\". Unique per set to allow future multi-brand support',
+				slug VARCHAR(191) NOT NULL COMMENT 'Token library identifier, e.g. \"default\". Unique per library to allow future multi-brand support',
 				title VARCHAR(191) NOT NULL DEFAULT '' COMMENT 'Human-readable label for the token library',
 				document LONGTEXT NOT NULL COMMENT 'The overrides-only DTCG JSON document. Empty means render entirely from baseline',
 				version VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Per-write cache-busting hash, regenerated on every write',
