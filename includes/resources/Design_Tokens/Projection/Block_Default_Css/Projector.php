@@ -41,7 +41,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
@@ -63,7 +63,7 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @param Token_Registry   $registry    The token registry.
 	 * @param Token_Store      $store       The store, for the cache-busting version.
-	 * @param Active_Token_Library_Store $active      Owns the active-set pointer.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
 	 * @param Css_Builder      $css_builder The block-default CSS builder.
 	 */
 	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {

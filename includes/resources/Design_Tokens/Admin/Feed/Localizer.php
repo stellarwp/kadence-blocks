@@ -82,7 +82,7 @@ final class Localizer {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer — the same slug the registry's user primitives and every projector
+	 * The active-library pointer — the same slug the registry's user primitives and every projector
 	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the set that
 	 * is actually live rather than always the default one.
 	 *
@@ -124,7 +124,7 @@ final class Localizer {
 	 *
 	 * @param Token_Resolver             $resolver        The token resolver.
 	 * @param Token_Store                $store           The token store.
-	 * @param Active_Token_Library_Store $active          The active-set pointer.
+	 * @param Active_Token_Library_Store $active          The active-library pointer.
 	 * @param Presets                    $preset_feed    The presets section builder.
 	 * @param Builder                    $builder         The pure payload assembler.
 	 * @param Responsive_Feed            $responsive_feed The responsive / clamp shape extractor.

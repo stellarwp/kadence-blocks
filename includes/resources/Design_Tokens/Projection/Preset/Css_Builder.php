@@ -34,7 +34,7 @@ use RuntimeException;
  *      --kb-token--<set>--variant--<block>--<variant>--<property>: <value-or-var> — where an aliased
  *      binding reads var(--kb-token--<set>--<target>), so the variant chains to that set's namespaced token
  *      and a set's chain stays inside the set; a literal binding emits the literal.
- *   2. An active-set alias layer pointing each canonical variant var at the active set's namespaced one
+ *   2. An active-library alias layer pointing each canonical variant var at the active set's namespaced one
  *      (--kb-token--variant--…: var(--kb-token--<active>--variant--…)).
  *   3. One [data-kb-token-set="<set>"] switch selector per set re-pointing the canonical variant vars at
  *      that set, so a body class / container attribute swaps the variant palette client-side — the scoped
@@ -145,7 +145,7 @@ final class Css_Builder {
 
 	/**
 	 * Build the full multi-set variant CSS: a namespaced variant-var block plus switch selector per set, the
-	 * active-set alias layer, and the active set's scoped rules. The pure, uncached assembler (its cached
+	 * active-library alias layer, and the active set's scoped rules. The pure, uncached assembler (its cached
 	 * counterpart is css_for_version()).
 	 *
 	 * @since TBD
@@ -412,7 +412,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the active-set alias layer: each canonical variant var pointed at the active set's namespaced
+	 * Emit the active-library alias layer: each canonical variant var pointed at the active set's namespaced
 	 * variant var, so the scoped rules (which read the canonical var) follow the active set.
 	 *
 	 * @since TBD

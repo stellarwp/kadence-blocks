@@ -57,7 +57,7 @@ final class Preset_Catalog {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer, so the catalog can report which set the editor renders by default.
+	 * The active-library pointer, so the catalog can report which set the editor renders by default.
 	 *
 	 * @since TBD
 	 *
@@ -80,7 +80,7 @@ final class Preset_Catalog {
 	 * @param Token_Registry             $registry  The token registry.
 	 * @param Preset_Resolver            $presets  The preset resolver.
 	 * @param Token_Store                $store     The persistence gateway.
-	 * @param Active_Token_Library_Store $active    The active-set pointer.
+	 * @param Active_Token_Library_Store $active    The active-library pointer.
 	 * @param Effective_Presets          $effective The effective-presets reader.
 	 */
 	public function __construct(

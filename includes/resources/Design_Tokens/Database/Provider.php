@@ -78,7 +78,7 @@ final class Provider extends Provider_Contract {
 	/**
 	 * Bind Active_Token_Library_Store and reset its pointer when the active set is deleted.
 	 *
-	 * The store owns the active-set pointer (an option), separate from the table Token_Store guards.
+	 * The store owns the active-library pointer (an option), separate from the table Token_Store guards.
 	 * Subscribing it to the delete signal here keeps Token_Store the sole writer of its own table — it
 	 * only announces the deletion, and the pointer drops back to the default as a separable consumer of
 	 * that signal, mirroring how history reacts.

@@ -10,7 +10,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
  *
  * The context gates and the actual builders stay with each concrete projector: enqueue_front_end(),
  * enqueue_editor(), and css() are left for the subclass because they differ per projector (different
- * style handles, builders, and active-set plumbing).
+ * style handles, builders, and active-library plumbing).
  *
  * @since TBD
  */

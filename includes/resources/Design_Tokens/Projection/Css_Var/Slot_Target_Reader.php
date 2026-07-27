@@ -36,7 +36,7 @@ final class Slot_Target_Reader {
 	private Token_Resolver $resolver;
 
 	/**
-	 * Owns the active-set pointer, so the scale follows the active set (e.g. a switched palette) the same
+	 * Owns the active-library pointer, so the scale follows the active set (e.g. a switched palette) the same
 	 * way the projected CSS does.
 	 *
 	 * @since TBD

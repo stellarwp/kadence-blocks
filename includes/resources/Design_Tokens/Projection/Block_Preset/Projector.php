@@ -41,7 +41,7 @@ final class Projector {
 	private Preset_Resolver $resolver;
 
 	/**
-	 * Owns the active-set pointer, read at render time so preset defaults follow the active set.
+	 * Owns the active-library pointer, read at render time so preset defaults follow the active set.
 	 *
 	 * @since TBD
 	 *
@@ -54,7 +54,7 @@ final class Projector {
 	 *
 	 * @param Token_Registry             $registry The token registry.
 	 * @param Preset_Resolver            $resolver The preset resolver.
-	 * @param Active_Token_Library_Store $active   Owns the active-set pointer.
+	 * @param Active_Token_Library_Store $active   Owns the active-library pointer.
 	 */
 	public function __construct( Token_Registry $registry, Preset_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->registry = $registry;

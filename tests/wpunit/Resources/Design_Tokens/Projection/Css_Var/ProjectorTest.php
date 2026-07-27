@@ -17,7 +17,7 @@ use Tests\Support\Classes\TestCase;
  * Covers the CSS-variable projector: it appends the resolved --kb-token--* declarations to KB's front-end
  * and editor style handles, routes the legacy color filter through the bridge, feeds KB's font-size scale
  * from the tokens, is a no-op when the registry is deactivated, and honors the active set — the declarations
- * carry the active set's resolved values, so pointing the active-set pointer at another set changes what is
+ * carry the active set's resolved values, so pointing the active-library pointer at another set changes what is
  * projected to the front end.
  */
 final class ProjectorTest extends TestCase {

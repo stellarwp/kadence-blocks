@@ -20,9 +20,9 @@ use Throwable;
  *
  * This is the non-coercive surface: a custom property placed in :root styles nothing until something
  * references it. Every token set is emitted simultaneously — each as namespaced --kb-token--<set>--*
- * custom properties — plus an active-set alias layer (canonical --kb-token--<id> pointed at the active
+ * custom properties — plus an active-library alias layer (canonical --kb-token--<id> pointed at the active
  * set) and a per-set [data-kb-token-set="<set>"] switch selector. The complete palette switch is the
- * active-set pointer: it re-points the :root alias layer, so the whole cascade (including the preset/slot
+ * active-library pointer: it re-points the :root alias layer, so the whole cascade (including the preset/slot
  * bridges and host surfaces, which read the canonical names at :root) re-resolves with no re-render. The
  * client-side [data-kb-token-set] attribute re-points the canonical token layer for a subtree, so it
  * live-swaps content that reads --kb-token--* directly, but not the :root-resolved bridges (a fuller
@@ -55,7 +55,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
@@ -168,7 +168,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * so repeated calls within the same request are free.
 	 *
 	 * Each set is resolved with its css-var names namespaced to its own slug, then the builder emits the
-	 * namespaced blocks, the active-set alias layer, and the per-set switch selectors. A set whose stored
+	 * namespaced blocks, the active-library alias layer, and the per-set switch selectors. A set whose stored
 	 * document cannot be resolved (e.g. an alias cycle introduced by a direct DB write that bypassed the
 	 * REST validation gate) is skipped rather than fatal, so one broken set never suppresses the others.
 	 * Returns an empty string only when the active set is the one that cannot be resolved — the builder's
@@ -226,7 +226,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders
 	 * from baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
-	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
+	 * includes the active set (the active-library pointer only ever resolves to default or a stored set).
 	 *
 	 * @since TBD
 	 *

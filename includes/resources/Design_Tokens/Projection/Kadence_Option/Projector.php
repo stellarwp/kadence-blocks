@@ -84,7 +84,7 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at sync time so the synced options follow the active set.
+	 * Owns the active-library pointer, read at sync time so the synced options follow the active set.
 	 *
 	 * @since TBD
 	 *
