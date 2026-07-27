@@ -1,4 +1,4 @@
-import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
+import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
 /**
  * Build a REST path for a token set document.
@@ -9,7 +9,7 @@ import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function documentPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/documents/${slug}`;
 }
 
@@ -73,7 +73,7 @@ export function userPrimitiveRenamePath(slug, id) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function resolvedPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function resolvedPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 	return `${documentPath(namespace, slug)}/resolved`;
 }
 
@@ -87,6 +87,6 @@ export function resolvedPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function tokenPath(namespace, tokenId, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
 	return `${documentPath(namespace, slug)}/tokens/${tokenId}`;
 }

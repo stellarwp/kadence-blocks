@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from '@wordpress/element';
  */
 import { configureRestClient } from '../api/client';
 import { flattenSchemaTokens, getDesignTokensFeed } from '../helpers/tokens';
-import { DEFAULT_TOKEN_SET_SLUG } from '../constants';
+import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
 /**
  * Read and normalize the localized design-token feed.
@@ -39,6 +39,6 @@ export function useDesignTokensFeed() {
 		responsive: feed?.responsive ?? {},
 		rest: feed?.rest ?? null,
 		version: feed?.version ?? '',
-		slug: feed?.slug ?? DEFAULT_TOKEN_SET_SLUG,
+		slug: feed?.slug ?? DEFAULT_LIBRARY_SLUG,
 	};
 }
