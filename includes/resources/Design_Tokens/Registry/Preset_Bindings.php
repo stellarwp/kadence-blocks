@@ -22,7 +22,7 @@ use InvalidArgumentException;
  * It deliberately holds NO preset names, default or values, and no per-preset labels: those are document
  * data (`$extensions.com.kadence.designTokens.presets.<block>` — the `$default`, the preset keys, and
  * each preset's `tokens`), read through the Preset_Resolver. Keeping them out of the registry means a
- * single source of truth for the preset list (so a user-added preset in the store is honoured) and no
+ * single source of truth for the preset list (so a user-added preset in the store is honored) and no
  * drift between a declaration and the document. The `label` is the one exception — it names the editor
  * picker CONTROL, not a preset, so it is structural editor config declared here.
  *
