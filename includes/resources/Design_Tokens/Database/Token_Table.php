@@ -7,7 +7,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
 /**
  * The Design Tokens database table.
  *
- * Stores the overrides-only DTCG document per token set. An empty (or absent)
+ * Stores the overrides-only DTCG document per token library. An empty (or absent)
  * document means the site renders entirely from the baseline tokens.
  *
  * Unlike the Optimizer tables, this holds authored user data, so it must NOT
@@ -65,8 +65,8 @@ final class Token_Table extends Table {
 		return "
 			CREATE TABLE `$table_name` (
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-				slug VARCHAR(191) NOT NULL COMMENT 'Token set identifier, e.g. \"default\". Unique per set to allow future multi-brand support',
-				title VARCHAR(191) NOT NULL DEFAULT '' COMMENT 'Human-readable label for the token set',
+				slug VARCHAR(191) NOT NULL COMMENT 'Token library identifier, e.g. \"default\". Unique per set to allow future multi-brand support',
+				title VARCHAR(191) NOT NULL DEFAULT '' COMMENT 'Human-readable label for the token library',
 				document LONGTEXT NOT NULL COMMENT 'The overrides-only DTCG JSON document. Empty means render entirely from baseline',
 				version VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Per-write cache-busting hash, regenerated on every write',
 				updated_at DATETIME NOT NULL COMMENT 'UTC timestamp of the last write',
