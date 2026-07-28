@@ -10,8 +10,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  *
  * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
  * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensPresets (the
- * per-set preset catalog the preset picker and the "save as new preset" form read),
- * window.kadenceDesignTokensPalettes (the active set's color palettes the per-block palette selector reads),
+ * per-library preset catalog the preset picker and the "save as new preset" form read),
+ * window.kadenceDesignTokensPalettes (the active library's color palettes the per-block palette selector reads),
  * window.kadenceDesignTokensAttributeDefaults (the per-block attribute-default catalog the block-registration
  * filter reads), window.kadenceDesignTokensRest (the REST descriptor the preset writes POST to), and
  * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
@@ -44,7 +44,7 @@ final class Localizer {
 	private const PRESETS_OBJECT = 'kadenceDesignTokensPresets';
 
 	/**
-	 * The JS global the per-block palette selector and set-level palette switch read.
+	 * The JS global the per-block palette selector and library-level palette switch read.
 	 *
 	 * @since TBD
 	 *

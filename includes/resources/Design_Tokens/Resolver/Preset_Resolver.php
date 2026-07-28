@@ -35,7 +35,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * through the store) is a preset in the same list, so it sits underneath the override merge unchanged.
  *
  * Preset definitions are read per token library through {@see Effective_Presets}: the shipped baseline's
- * presets deep-merged with that set's stored overrides, so a preset a user authored through the store
+ * presets deep-merged with that library's stored overrides, so a preset a user authored through the store
  * is resolved alongside the baseline ones. The core Resolver's Effective_Document deliberately strips
  * `$extensions`, so presets are resolved here rather than through that deep-merge.
  *
@@ -44,7 +44,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
 final class Preset_Resolver {
 
 	/**
-	 * @var Effective_Presets The per-set effective preset definitions (the baseline deep-merged with the set's stored overrides) are read from.
+	 * @var Effective_Presets The per-library effective preset definitions (the baseline deep-merged with the library's stored overrides) are read from.
 	 *
 	 * @since TBD
 	 */
@@ -60,7 +60,7 @@ final class Preset_Resolver {
 	/**
 	 * @since TBD
 	 *
-	 * @param Effective_Presets $presets The per-set effective preset definitions.
+	 * @param Effective_Presets $presets The per-library effective preset definitions.
 	 * @param Token_Resolver     $resolver The token resolver.
 	 */
 	public function __construct( Effective_Presets $presets, Token_Resolver $resolver ) {
@@ -179,8 +179,8 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The preset slugs a block declares for a set, in document order — the effective set (the baseline
-	 * deep-merged with the set's stored overrides) being the source of truth, so a user-added preset in the
+	 * The preset slugs a block declares for a library, in document order — the effective library (the baseline
+	 * deep-merged with the library's stored overrides) being the source of truth, so a user-added preset in the
 	 * store appears here alongside the baseline ones.
 	 *
 	 * @since TBD
@@ -208,7 +208,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * Whether a block declares the given preset in a set. False for an unknown block (no throw), so callers
+	 * Whether a block declares the given preset in a library. False for an unknown block (no throw), so callers
 	 * can validate a selection without first checking the block exists.
 	 *
 	 * @since TBD
@@ -228,7 +228,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The human-readable label a block's preset declares in a set, or null when the block, the preset, or
+	 * The human-readable label a block's preset declares in a library, or null when the block, the preset, or
 	 * its label is absent. A lookup convenience that never throws, mirroring has_preset().
 	 *
 	 * @since TBD
@@ -258,7 +258,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The union of every property the block's presets set a value for in a set — what a
+	 * The union of every property the block's presets set a value for in a library — what a
 	 * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings::consistency()} check compares the
 	 * block's bindings against, and what a block preset iterates.
 	 *
@@ -284,7 +284,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * A block's default preset slug for a set, read from the effective set's `$default` — the single
+	 * A block's default preset slug for a library, read from the effective library's `$default` — the single
 	 * source of truth for the default (no registry mirror to drift from).
 	 *
 	 * @since TBD
@@ -350,7 +350,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The property => value map for a preset in a set, or throw when the block/preset is undefined.
+	 * The property => value map for a preset in a library, or throw when the block/preset is undefined.
 	 *
 	 * A preset that exists but carries no `tokens` map — or a non-array one — resolves to an empty map,
 	 * not an error: a preset may legitimately set no values (it then contributes nothing downstream).
@@ -380,7 +380,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The preset-bearing node for a block in a set: the `$default` plus named presets the rest of the
+	 * The preset-bearing node for a block in a library: the `$default` plus named presets the rest of the
 	 * resolver reads — or throw when the block is undefined.
 	 *
 	 * @since TBD
@@ -403,7 +403,7 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The whole effective presets section for a set (the baseline deep-merged with the set's stored
+	 * The whole effective presets section for a library (the baseline deep-merged with the library's stored
 	 * overrides), or an empty array when absent.
 	 *
 	 * @since TBD

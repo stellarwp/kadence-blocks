@@ -23,7 +23,7 @@ use RuntimeException;
  * never leaves an earlier preset's exclusive paths applied — and a manual override within the footprint
  * is discarded by a later preset selection. Re-selecting the current preset is a no-op (no write).
  *
- * Persisting through {@see Token_Store::save_document()} bumps the set version and fires
+ * Persisting through {@see Token_Store::save_document()} bumps the library version and fires
  * `kadence_blocks_design_tokens_changed`, so every projector and cache reacts automatically.
  *
  * @since TBD
@@ -71,7 +71,7 @@ final class Selector {
 	 *
 	 * @param string      $group  The preset group key, e.g. "typeScale".
 	 * @param string      $choice The preset slug within the group, e.g. "goldenRatio".
-	 * @param string|null $slug   The token library to write to. Defaults to the single v1 "default" set.
+	 * @param string|null $slug   The token library to write to. Defaults to the single v1 "default" library.
 	 *
 	 * @throws Unknown_Preset_Exception|RuntimeException When the group/choice does not exist, a preset
 	 *         token targets a dot-path the baseline has no $type for, or the overrides cannot be encoded.
@@ -123,7 +123,7 @@ final class Selector {
 	}
 
 	/**
-	 * Decode the set's current overrides document, tolerating an absent/empty/malformed row as "no
+	 * Decode the library's current overrides document, tolerating an absent/empty/malformed row as "no
 	 * overrides yet" so a fresh site seeds onto a clean slate.
 	 *
 	 * @since TBD

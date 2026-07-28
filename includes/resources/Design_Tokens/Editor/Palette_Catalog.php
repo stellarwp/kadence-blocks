@@ -8,10 +8,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
 /**
  * Builds the color-palette catalog the block editor reads to render the per-block palette selector and the
- * set-level palette switch: the active set's palettes as `{ id, label }`, plus which one is `current`.
+ * library-level palette switch: the active library's palettes as `{ id, label }`, plus which one is `current`.
  *
  * Shape: `{ active: <slug>, current: <palette-id>, palettes: [ { id, label } ] }`. Localized to
- * `window.kadenceDesignTokensPalettes` by {@see Localizer}, so a control can offer the set's palettes without
+ * `window.kadenceDesignTokensPalettes` by {@see Localizer}, so a control can offer the library's palettes without
  * a REST round-trip; edits still write through the palette REST surface.
  *
  * @since TBD
@@ -19,7 +19,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 final class Palette_Catalog {
 
 	/**
-	 * The active-set pointer, so the catalog reports the set the editor renders by default.
+	 * The active-library pointer, so the catalog reports the library the editor renders by default.
 	 *
 	 * @since TBD
 	 *
@@ -28,7 +28,7 @@ final class Palette_Catalog {
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * The effective-palettes reader, source of the active set's palettes and its `$current` pointer.
+	 * The effective-palettes reader, source of the active library's palettes and its `$current` pointer.
 	 *
 	 * @since TBD
 	 *
@@ -39,7 +39,7 @@ final class Palette_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Active_Token_Library_Store $active   The active-set pointer.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
 	 * @param Effective_Palettes         $palettes The effective-palettes reader.
 	 */
 	public function __construct( Active_Token_Library_Store $active, Effective_Palettes $palettes ) {
@@ -48,8 +48,8 @@ final class Palette_Catalog {
 	}
 
 	/**
-	 * The palette catalog for the active set: its palettes as `{ id, label }`, the `current` palette id, and
-	 * the active set slug.
+	 * The palette catalog for the active library: its palettes as `{ id, label }`, the `current` palette id, and
+	 * the active library slug.
 	 *
 	 * @since TBD
 	 *
