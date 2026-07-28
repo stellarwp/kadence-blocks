@@ -107,8 +107,8 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Register a block's preset set — its bindable surface and picker label. One set per block; a later
-	 * registration for the same block replaces the earlier one.
+	 * Register a block's preset bindings — its bindable surface and picker label. One binding set per
+	 * block; a later registration for the same block replaces the earlier one.
 	 *
 	 * @since TBD
 	 *
@@ -117,9 +117,9 @@ final class Token_Registry {
 	 * @return void
 	 */
 	public function register_preset_bindings( array $set ): void {
-		$preset_set = Preset_Bindings::from_array( $set );
+		$preset_bindings = Preset_Bindings::from_array( $set );
 
-		$this->preset_bindings[ $preset_set->block ] = $preset_set;
+		$this->preset_bindings[ $preset_bindings->block ] = $preset_bindings;
 	}
 
 	/**
@@ -222,9 +222,9 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The one preset set a block registers, or null when it registers none. Both the picker-driven and the
-	 * preset (no-picker) projectors read this; distinguish the two by the set's `label` (a picker set
-	 * declares one, a preset set does not).
+	 * The one preset bindings set a block registers, or null when it registers none. Both the
+	 * picker-driven and the preset (no-picker) projectors read this; distinguish the two by the set's
+	 * `label` (a picker set declares one, a no-picker set does not).
 	 *
 	 * @since TBD
 	 *
@@ -237,8 +237,8 @@ final class Token_Registry {
 	}
 
 	/**
-	 * All registered preset sets, keyed by block name, in registration order. The admin UI feed iterates
-	 * this to render per-block preset editors; mirrors all() for tokens.
+	 * All registered preset bindings sets, keyed by block name, in registration order. The admin UI feed
+	 * iterates this to render per-block preset editors; mirrors all() for tokens.
 	 *
 	 * @since TBD
 	 *
@@ -274,9 +274,9 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The block names that have a registered preset set, in registration order. Projectors walk these to
-	 * emit each block's preset output; the preset values themselves come from the document via the
-	 * Preset_Resolver.
+	 * The block names that have a registered preset bindings set, in registration order. Projectors walk
+	 * these to emit each block's preset output; the preset values themselves come from the document via
+	 * the Preset_Resolver.
 	 *
 	 * @since TBD
 	 *
