@@ -7,23 +7,24 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exce
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 
 /**
- * Builds the admin UI feed's "presets" section: for every preset set a block registers — keyed by block —
- * its default, preset names, per-property bindings (structure) and resolved preview values.
+ * Builds the admin UI feed's "presets" section: for every preset bindings set a block registers — keyed
+ * by block — its default, preset names, per-property bindings (structure) and resolved preview values.
  *
  * Structure comes from the registry ({@see \KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings::to_ui_schema()});
- * the preset list and resolved values come from the {@see Preset_Resolver} against the live store. A set
- * registered but absent from the document (Unknown_Preset_Exception) is skipped, and a single preset that
- * fails to resolve is omitted, so one malformed set never breaks the whole feed. The corrupt-store case (the
- * Token_Resolver throwing an alias-cycle / dangling-alias RuntimeException from inside resolve()) is NOT
- * swallowed here — it is the Localizer's fail-open boundary. A preset / default-preset set (one with no
- * picker) surfaces the same way, without a `label`.
+ * the preset list and resolved values come from the {@see Preset_Resolver} against the live store. A
+ * binding set registered but absent from the document (Unknown_Preset_Exception) is skipped, and a
+ * single preset that fails to resolve is omitted, so one malformed binding set never breaks the whole
+ * feed. The corrupt-store case (the Token_Resolver throwing an alias-cycle / dangling-alias
+ * RuntimeException from inside resolve()) is NOT swallowed here — it is the Localizer's fail-open
+ * boundary. A preset / default-preset binding set (one with no picker) surfaces the same way, without a
+ * `label`.
  *
  * @since TBD
  */
 final class Presets {
 
 	/**
-	 * The token registry, source of the registered preset sets.
+	 * The token registry, source of the registered preset bindings sets.
 	 *
 	 * @since TBD
 	 *
