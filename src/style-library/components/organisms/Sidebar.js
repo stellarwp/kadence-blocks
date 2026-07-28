@@ -11,7 +11,7 @@ import { NavSectionLabel } from '../atoms/NavSectionLabel';
 import './sidebar.scss';
 
 /**
- * Style Book sidebar with overview and foundation groups.
+ * Style Library sidebar with overview and foundation groups.
  *
  * @param {object}   props            Component props.
  * @param {string}   props.section    Active section id.
@@ -24,11 +24,11 @@ export function Sidebar({ section, sections, onNavigate }) {
 	const foundations = sections.filter((item) => item.kind === 'foundation');
 
 	return (
-		<aside className="kadence-blocks-style-book__sidebar">
+		<aside className="kadence-blocks-style-library__sidebar">
 			{primary.length > 0 && (
-				<div className="kadence-blocks-style-book__nav-section">
-					<NavSectionLabel>{__('Style Book', 'kadence-blocks')}</NavSectionLabel>
-					<ul className="kadence-blocks-style-book__nav-list">
+				<div className="kadence-blocks-style-library__nav-section">
+					<NavSectionLabel>{__('Style Library', 'kadence-blocks')}</NavSectionLabel>
+					<ul className="kadence-blocks-style-library__nav-list">
 						{primary.map((item) => (
 							<NavItem key={item.id} active={section === item.id} onClick={() => onNavigate(item.id)}>
 								{item.label}
@@ -39,9 +39,9 @@ export function Sidebar({ section, sections, onNavigate }) {
 			)}
 
 			{foundations.length > 0 && (
-				<div className="kadence-blocks-style-book__nav-section">
+				<div className="kadence-blocks-style-library__nav-section">
 					<NavSectionLabel>{__('Foundations', 'kadence-blocks')}</NavSectionLabel>
-					<ul className="kadence-blocks-style-book__nav-list">
+					<ul className="kadence-blocks-style-library__nav-list">
 						{foundations.map((item) => (
 							<NavItem
 								key={item.id}
