@@ -356,4 +356,77 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		$this->assertStringNotContainsString( '{semantic.color.brand}', $output,
 			'A brace-containing non-alias mobile breakpoint is not numeric and adds nothing' );
 	}
+
+	/**
+	 * render_shadow returns byte-identical output for a fully numeric box-shadow
+	 * (including a zero offset), respects the inset flag, and a brace-containing
+	 * non-alias offset passes through as a literal with its unit suffix.
+	 *
+	 * @dataProvider renderShadowProvider
+	 *
+	 * @param array  $shadow   The shadow attributes array.
+	 * @param string $expected The expected byte-identical box-shadow string.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowBcCases( array $shadow, string $expected ): void {
+		$this->assertSame( $expected, $this->css->render_shadow( $shadow ),
+			'render_shadow must be byte-identical to its pre-recognizer output for numeric/literal input' );
+	}
+
+	/**
+	 * Provides numeric, boundary, and inset box-shadow inputs for render_shadow.
+	 *
+	 * @return Generator
+	 */
+	public static function renderShadowProvider(): Generator {
+		yield 'fully numeric non-inset shadow' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'inset'   => false,
+			],
+			'expected' => '1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
+		];
+		yield 'zero offsets fall back to the same "0" literal' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => 0,
+				'vOffset' => 0,
+				'inset'   => false,
+			],
+			'expected' => '0px 0px 4px 2px rgba(0, 0, 0, 0.5)',
+		];
+		yield 'inset shadow keeps the "inset " prefix' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'inset'   => true,
+			],
+			'expected' => 'inset 1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
+		];
+		yield 'brace-containing non-alias hOffset passes through with its unit suffix' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 0.5,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => '1px solid {semantic.color.brand}',
+				'vOffset' => 1,
+				'inset'   => false,
+			],
+			'expected' => '1px solid {semantic.color.brand}px 1px 4px 2px rgba(0, 0, 0, 0.5)',
+		];
+	}
 }
