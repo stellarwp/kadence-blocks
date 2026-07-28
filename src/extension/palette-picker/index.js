@@ -1,11 +1,11 @@
 /**
  * Per-block color-palette selector.
  *
- * Reads the active set's palettes from the server-localized `window.kadenceDesignTokensPalettes`
+ * Reads the active library's palettes from the server-localized `window.kadenceDesignTokensPalettes`
  * (`{ active, current, palettes: [ { id, label } ] }`) and lets a block override which palette its subtree
- * renders against, independent of the set's `$current`. The selection lives in the block's `kbPalette`
+ * renders against, independent of the library's `$current`. The selection lives in the block's `kbPalette`
  * string attribute; the Design Tokens projector emits a `[data-kb-palette="<id>"]` switch layer the block's
- * `data-kb-palette` wrapper hooks. An empty selection inherits the set `$current`.
+ * `data-kb-palette` wrapper hooks. An empty selection inherits the library `$current`.
  */
 import { get } from 'lodash';
 import { SelectControl } from '@wordpress/components';
@@ -24,7 +24,7 @@ function paletteCatalog() {
 }
 
 /**
- * The active set's palettes as `[ { id, label } ]`, or an empty array when none are offered.
+ * The active library's palettes as `[ { id, label } ]`, or an empty array when none are offered.
  *
  * @since TBD
  *
@@ -37,7 +37,7 @@ export function selectablePalettes() {
 }
 
 /**
- * The set's `$current` palette id, defaulting to "default".
+ * The library's `$current` palette id, defaulting to "default".
  *
  * @since TBD
  *
@@ -48,12 +48,12 @@ export function currentPalette() {
 }
 
 /**
- * The per-block palette selector. Renders nothing when the set offers fewer than two palettes (there is
+ * The per-block palette selector. Renders nothing when the library offers fewer than two palettes (there is
  * nothing to switch between). Selecting an option calls onChange with the chosen palette id (the caller
- * writes it into the block's kbPalette attribute); the empty option inherits the set `$current`.
+ * writes it into the block's kbPalette attribute); the empty option inherits the library `$current`.
  *
  * @param {Object}   props          The component props.
- * @param {string}   props.value    The currently selected palette id ('' inherits the set current).
+ * @param {string}   props.value    The currently selected palette id ('' inherits the library current).
  * @param {Function} props.onChange Called with the selected palette id.
  * @param {string}   [props.label]  The control label.
  *
@@ -89,9 +89,9 @@ export function PalettePicker({ value, onChange, label }) {
 }
 
 /**
- * The label for the "inherit the set current" option, naming the current palette so the default is legible.
+ * The label for the "inherit the library current" option, naming the current palette so the default is legible.
  *
- * @param {string} current The set's current palette id.
+ * @param {string} current The library's current palette id.
  *
  * @since TBD
  *
