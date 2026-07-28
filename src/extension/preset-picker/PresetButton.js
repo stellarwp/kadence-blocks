@@ -18,30 +18,30 @@ import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { activeLibrary, blockPresets, blockDefaultPreset } from './index';
-import { variantIcon, resetIcon } from '../variant-picker/icons';
-import { capturedTokens } from '../variant-picker/capture';
-import { SaveVariantModal } from '../variant-picker/SaveVariantModal';
+import { presetIcon, resetIcon } from './icons';
+import { capturedTokens } from './capture';
+import { SavePresetModal } from './SavePresetModal';
 import { hasDesignTokensRest } from '../design-tokens/rest';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { TOKEN_INDICATORS_STORE } from '../token-indicators/store';
 import { mappedAttrsFor, resetAttrPatch, usePresetBinding } from '../token-indicators';
-import '../variant-picker/variant-button.scss';
+import './preset-button.scss';
 
 /**
  * The label for the block's current preset: the selected preset's label, the library's default preset
  * label when none is selected, or a generic "Default" fallback.
  *
  * @param {string} name     The block name.
- * @param {string} set      The token library slug.
+ * @param {string} library  The token library slug.
  * @param {string} selected The selected preset slug ('' for the default look).
  *
  * @since TBD
  *
  * @return {string} The preset label.
  */
-function currentPresetLabel(name, set, selected) {
-	const slug = selected || blockDefaultPreset(name, set);
-	const preset = blockPresets(name, set).find((candidate) => candidate.slug === slug);
+function currentPresetLabel(name, library, selected) {
+	const slug = selected || blockDefaultPreset(name, library);
+	const preset = blockPresets(name, library).find((candidate) => candidate.slug === slug);
 
 	return preset?.label || __('Default', 'kadence-blocks');
 }
@@ -53,19 +53,19 @@ function currentPresetLabel(name, set, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.set]         The token library the block is on; defaults to the active library.
+ * @param {string}   [props.library]     The token library the block is on; defaults to kbTokenSet, then the active library.
  *
  * @since TBD
  *
  * @return {Object|null} The button, or null when the block has no presets.
  */
-export function PresetButton({ blockName, attributes, setAttributes, set }) {
+export function PresetButton({ blockName, attributes, setAttributes, library }) {
 	const [saving, setSaving] = useState(false);
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = set || activeLibrary();
-	const binding = usePresetBinding(blockName, attributes, tokenSet);
+	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const binding = usePresetBinding(blockName, attributes, resolvedLibrary);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 
 	// With no overrides there is nothing to highlight, so drop the global flag instead of leaving the
@@ -76,15 +76,15 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 		}
 	}, [edited, highlighting, setHighlightEdits]);
 
-	const presets = blockPresets(blockName, tokenSet);
+	const presets = blockPresets(blockName, resolvedLibrary);
 
 	if (!presets.length) {
 		return null;
 	}
 
 	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
-	const label = currentPresetLabel(blockName, tokenSet, selected);
+	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	const label = currentPresetLabel(blockName, resolvedLibrary, selected);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
@@ -95,7 +95,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 	 * @return {Object} The reset patch.
 	 */
 	const resetPatch = () =>
-		mappedAttrsFor(blockName, tokenSet).reduce(
+		mappedAttrsFor(blockName, resolvedLibrary).reduce(
 			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
 			{}
 		);
@@ -130,25 +130,25 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 
 	return (
 		<>
-			<div className="kb-variant-button__row">
+			<div className="kb-preset-button__row">
 				<Dropdown
-					className="kb-variant-button__dropdown"
-					contentClassName="kb-variant-button__menu"
+					className="kb-preset-button__dropdown"
+					contentClassName="kb-preset-button__menu"
 					popoverProps={{ placement: 'left-start' }}
 					renderToggle={({ isOpen, onToggle }) => (
-						<Button className="kb-variant-button" aria-expanded={isOpen} onClick={onToggle}>
-							<span className="kb-variant-button__label">
+						<Button className="kb-preset-button" aria-expanded={isOpen} onClick={onToggle}>
+							<span className="kb-preset-button__label">
 								{label}
 								{edited && (
-									<span className="kb-variant-button__edited">
+									<span className="kb-preset-button__edited">
 										{' '}
 										{__('(Edited)', 'kadence-blocks')}
 									</span>
 								)}
 							</span>
-							<span className="kb-variant-button__icon">
-								<Icon icon={variantIcon} />
-								{edited && <span className="kb-variant-button__dot" aria-hidden="true" />}
+							<span className="kb-preset-button__icon">
+								<Icon icon={presetIcon} />
+								{edited && <span className="kb-preset-button__dot" aria-hidden="true" />}
 							</span>
 						</Button>
 					)}
@@ -163,10 +163,10 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 											key={preset.slug}
 											role="menuitemradio"
 											aria-checked={isCurrent}
-											className="kb-variant-button__variant"
+											className="kb-preset-button__preset"
 											suffix={
 												isCurrent ? (
-													<Icon className="kb-variant-button__check" icon={check} />
+													<Icon className="kb-preset-button__check" icon={check} />
 												) : null
 											}
 											onClick={() => {
@@ -181,23 +181,23 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 							</MenuGroup>
 							<MenuGroup>
 								<MenuItem
-									className="kb-variant-button__action"
+									className="kb-preset-button__action"
 									role="menuitemcheckbox"
 									aria-checked={highlighting}
 									disabled={!edited}
 									suffix={
-										highlighting ? <Icon className="kb-variant-button__check" icon={check} /> : null
+										highlighting ? <Icon className="kb-preset-button__check" icon={check} /> : null
 									}
 									onClick={() => setHighlightEdits(!highlighting)}
 								>
 									{__('Highlight Edits', 'kadence-blocks')}
 								</MenuItem>
 								<MenuItem
-									className="kb-variant-button__action"
+									className="kb-preset-button__action"
 									disabled={!edited}
 									suffix={
 										edited ? (
-											<Icon className="kb-variant-button__reset-suffix" icon={resetIcon} />
+											<Icon className="kb-preset-button__reset-suffix" icon={resetIcon} />
 										) : null
 									}
 									onClick={() => {
@@ -208,7 +208,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 									{__('Reset', 'kadence-blocks')}
 								</MenuItem>
 								<MenuItem
-									className="kb-variant-button__action"
+									className="kb-preset-button__action"
 									disabled={!edited || !hasDesignTokensRest()}
 									onClick={() => {
 										setSaving(true);
@@ -222,7 +222,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 					)}
 				/>
 				<Button
-					className="kb-variant-button__reset"
+					className="kb-preset-button__reset"
 					icon={resetIcon}
 					label={__('Reset to preset', 'kadence-blocks')}
 					showTooltip
@@ -231,10 +231,10 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 				/>
 			</div>
 			{saving && (
-				<SaveVariantModal
+				<SavePresetModal
 					blockName={blockName}
-					set={tokenSet}
-					tokens={capturedTokens(blockName, tokenSet, attributes)}
+					library={resolvedLibrary}
+					tokens={capturedTokens(blockName, resolvedLibrary, attributes)}
 					existingSlugs={presets.map((preset) => preset.slug)}
 					onClose={() => setSaving(false)}
 					onSaved={(slug) => selectPreset(slug)}

@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { PresetPicker, blockPresets, activeLibrary } from './extension/preset-picker';
-import { VariantActions } from './extension/variant-picker/VariantActions';
+import { PresetActions } from './extension/preset-picker/PresetActions';
 import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 
@@ -313,8 +313,8 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 		// it — the per-block Color Palette override still surfaces here for every kbPreset block.
 		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
 
-		const set = activeLibrary();
-		const showPresets = !inlinePicker && blockPresets(name, set).length > 0;
+		const library = activeLibrary();
+		const showPresets = !inlinePicker && blockPresets(name, library).length > 0;
 		const showPalettes = selectablePalettes().length >= 2;
 
 		if (!showPresets && !showPalettes) {
@@ -333,10 +333,10 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
 							{showPresets && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker name={name} set={set} value={selected} onChange={selectPreset} />
-									<VariantActions
+									<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
+									<PresetActions
 										blockName={name}
-										set={set}
+										library={library}
 										selected={selected}
 										onSelect={selectPreset}
 										attributes={attributes}
