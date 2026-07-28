@@ -92,7 +92,7 @@ export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
 }
 
 /**
- * Build a REST path for the color-palettes collection of a set.
+ * Build a REST path for the color-palettes collection of a library.
  *
  * @since TBD
  *
@@ -135,7 +135,7 @@ export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_LIBRARY_S
 }
 
 /**
- * Build a REST path for the set's current-palette pointer.
+ * Build a REST path for the library's current-palette pointer.
  *
  * @since TBD
  *

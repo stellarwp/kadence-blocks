@@ -38,7 +38,7 @@ function unitAttrFor(kind, attr) {
 }
 
 /**
- * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
+ * The mapped control attributes for a block's library, as `[{ attr, kind }]` — the surface reset-all clears.
  * Skips properties with no control attribute. Independent of the selected preset (reset-all clears every
  * mapped override regardless of which preset is active).
  *
@@ -61,7 +61,7 @@ export function mappedAttrsFor(blockName, set) {
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
  * @param {string} [set]      The token library slug; defaults to the active library — pass the caller's resolved
- *                            set so the binding can't disagree with the rest of its UI.
+ *                            library so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
@@ -73,7 +73,7 @@ export function usePresetBinding(blockName, attributes, set) {
 	const properties = blockProperties(blockName, resolvedSet);
 	const values = blockPresetValues(blockName, resolvedSet);
 
-	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
+	// The preset whose surface drives the indicators: the explicit selection, or the library's authoritative
 	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
 	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
 	// neither resolves, no control is bound.

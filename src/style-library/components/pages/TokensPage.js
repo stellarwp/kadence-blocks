@@ -60,7 +60,7 @@ export function TokensPage() {
 	} = useDesignTokensFeed();
 
 	// Shared across every write surface on this page: the document version changes on any
-	// write to the set (a semantic-token edit, a primitive create/rename/delete), so tracking it
+	// write to the library (a semantic-token edit, a primitive create/rename/delete), so tracking it
 	// once here — rather than letting each hook keep its own copy — keeps the write guard from
 	// tripping a false-positive conflict when one surface's write is followed by another's.
 	const [version, setVersion] = useState(initialVersion);
