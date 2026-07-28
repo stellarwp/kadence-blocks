@@ -203,7 +203,7 @@ final class Preset_ResolverTest extends TestCase {
 	/**
 	 * A preset authored into the store (not the baseline) is resolved alongside the baseline presets: it
 	 * appears in the name list, and its values resolve, because definitions are now read through the
-	 * effective (baseline deep-merged with stored overrides) set.
+	 * effective (baseline deep-merged with stored overrides) library.
 	 *
 	 * @return void
 	 */
@@ -276,8 +276,8 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * Preset definitions are per token set: a preset authored into one set is visible only for that set,
-	 * and the default set is left untouched.
+	 * Preset definitions are per token library: a preset authored into one library is visible only for that
+	 * library, and the default library is left untouched.
 	 *
 	 * @return void
 	 */
@@ -298,15 +298,15 @@ final class Preset_ResolverTest extends TestCase {
 		$this->assertTrue( $this->resolver->has_preset( self::BUTTON, 'accent', 'dark' ) );
 		$this->assertContains( 'accent', $this->resolver->names( self::BUTTON, 'dark' ) );
 
-		// The default set never saw the write.
+		// The default library never saw the write.
 		$this->assertFalse( $this->resolver->has_preset( self::BUTTON, 'accent', 'default' ) );
 		$this->assertSame( [ 'primary', 'secondary' ], $this->resolver->names( self::BUTTON, 'default' ) );
 	}
 
 	/**
-	 * Persist a single button preset into a token set's overrides document.
+	 * Persist a single button preset into a token library's overrides document.
 	 *
-	 * @param string                $slug   The token set slug to write into.
+	 * @param string                $slug   The token library slug to write into.
 	 * @param string                $preset The preset slug.
 	 * @param string                $label  The preset label.
 	 * @param array<string, string> $tokens The property => value map for the preset.

@@ -10,7 +10,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Covers the palette switch-layer projector: it emits a `[data-kb-palette="<id>"]` selector for each of the
- * active set's shipped palettes, and is a no-op when the registry is deactivated.
+ * active library's shipped palettes, and is a no-op when the registry is deactivated.
  */
 final class ProjectorTest extends TestCase {
 

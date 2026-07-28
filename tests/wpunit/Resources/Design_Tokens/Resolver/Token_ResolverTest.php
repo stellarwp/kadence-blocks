@@ -711,7 +711,7 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * The set's `$current` color palette re-tints the color tokens at resolve time, and every semantic color
+	 * The library's `$current` color palette re-tints the color tokens at resolve time, and every semantic color
 	 * that aliases a re-tinted primitive follows for free — while a non-color token is byte-identical.
 	 *
 	 * @return void
@@ -728,7 +728,7 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'semantic.color.link' ) );
 		$spacing = $resolver->resolve()->value( 'semantic.spacing.block' );
 
-		// Switch the set to the shipped "sunset" palette by writing $current; the write bumps the version.
+		// Switch the library to the shipped "sunset" palette by writing $current; the write bumps the version.
 		$store->save_document(
 			(string) wp_json_encode(
 				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
@@ -746,7 +746,7 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * Switching the set's `$current` palette back to "default" restores the baseline colors, proving the
+	 * Switching the library's `$current` palette back to "default" restores the baseline colors, proving the
 	 * overlay is non-destructive and reversible.
 	 *
 	 * @return void

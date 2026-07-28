@@ -26,7 +26,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The active set's canonical resolved maps, exactly as Token_Resolver::resolve() yields them: canonical
+	 * The active library's canonical resolved maps, exactly as Token_Resolver::resolve() yields them: canonical
 	 * token-id => literal in by_id (the slot-bridge source), and the canonical css-var => value in the
 	 * projected map (the `:root` definition source).
 	 *
@@ -40,9 +40,9 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Render the active set — the single-set shape the collapsed builder emits.
+	 * Render the active library — the single-library shape the collapsed builder emits.
 	 *
-	 * @param Resolved_Tokens $resolved The active set's canonical resolved maps.
+	 * @param Resolved_Tokens $resolved The active library's canonical resolved maps.
 	 *
 	 * @return string
 	 */
@@ -114,11 +114,11 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringContainsString( $var . ':' . $projected . ';', $css );
 	}
 
-	// ---- Single-set collapse (no namespaced / alias / switch layers) --------------------------------
+	// ---- Single-library collapse (no namespaced / alias / switch layers) ----------------------------
 
 	/**
-	 * The collapsed builder emits no per-set namespaced `--kb-token--<set>--*` vars and no
-	 * `[data-kb-token-set]` switch selectors — only the active set's canonical layer at `:root`.
+	 * The collapsed builder emits no per-library namespaced `--kb-token--<library>--*` vars and no
+	 * `[data-kb-token-set]` switch selectors — only the active library's canonical layer at `:root`.
 	 *
 	 * @return void
 	 */
@@ -171,7 +171,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A set with no tokens produces no CSS.
+	 * A library with no tokens produces no CSS.
 	 *
 	 * @return void
 	 */
@@ -471,7 +471,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A responsive set redeclares each affected `--kb-token--*` var inside the tablet and mobile media
+	 * A responsive library redeclares each affected `--kb-token--*` var inside the tablet and mobile media
 	 * queries (at :root, tablet before mobile), on top of the base :root declaration, so a consuming block
 	 * inherits the per-breakpoint value with no block change.
 	 *
@@ -507,7 +507,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A flat set (no responsive overrides) emits no media queries, so responsive support never perturbs the
+	 * A flat library (no responsive overrides) emits no media queries, so responsive support never perturbs the
 	 * projected CSS of a flat document.
 	 *
 	 * @return void
