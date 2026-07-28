@@ -349,6 +349,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderMeasureRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$baseline = $this->css->css_output();
 		$this->css->render_measure_range(
 			[ 'borderWidth' => [ $malformed, $malformed, $malformed, $malformed ] ],
 			'borderWidth',
@@ -356,7 +357,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertSame( '', $output,
+		$this->assertSame( $baseline, $output,
 			'render_measure_range must add no declaration for any side when nothing is numeric or a strict alias' );
 	}
 
@@ -371,10 +372,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderBorderRadiusFailsOpenForMalformedAlias( string $malformed ): void {
+		$baseline = $this->css->css_output();
 		$this->css->render_border_radius( [ 'borderRadius' => [ $malformed, $malformed, $malformed, $malformed ] ] );
 		$output = $this->css->css_output();
 
-		$this->assertSame( '', $output,
+		$this->assertSame( $baseline, $output,
 			'render_border_radius must add no declaration for any corner when nothing is numeric or a strict alias' );
 	}
 
@@ -389,6 +391,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderResponsiveRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$baseline = $this->css->css_output();
 		$this->css->render_responsive_range(
 			[
 				'spacing'     => [ $malformed, $malformed, $malformed ],
@@ -399,7 +402,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertSame( '', $output,
+		$this->assertSame( $baseline, $output,
 			'render_responsive_range must add no declaration for any breakpoint when nothing is numeric or a strict alias' );
 	}
 
