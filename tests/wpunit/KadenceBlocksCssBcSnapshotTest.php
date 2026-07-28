@@ -174,4 +174,73 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 			'expectedFragment' => null,
 		];
 	}
+
+	/**
+	 * render_color returns byte-identical output for literal colors, palette slugs,
+	 * and brace-containing non-alias strings, which must pass through untouched.
+	 *
+	 * @dataProvider renderColorProvider
+	 *
+	 * @param mixed        $color    The raw color value.
+	 * @param string|false $expected The expected byte-identical output.
+	 *
+	 * @return void
+	 */
+	public function testRenderColorBcCases( $color, $expected ): void {
+		$this->assertSame( $expected, $this->css->render_color( $color ),
+			'render_color must be byte-identical to its pre-recognizer output for literal input' );
+	}
+
+	/**
+	 * sanitize_color returns byte-identical output for literal colors, palette slugs,
+	 * and brace-containing non-alias strings, which must pass through untouched.
+	 *
+	 * @dataProvider renderColorProvider
+	 *
+	 * @param mixed        $color    The raw color value.
+	 * @param string|false $expected The expected byte-identical output.
+	 *
+	 * @return void
+	 */
+	public function testSanitizeColorBcCases( $color, $expected ): void {
+		$this->assertSame( $expected, $this->css->sanitize_color( $color ),
+			'sanitize_color must be byte-identical to its pre-recognizer output for literal input' );
+	}
+
+	/**
+	 * Provides literal, palette, and boundary color inputs shared by render_color and
+	 * sanitize_color.
+	 *
+	 * @return Generator
+	 */
+	public static function renderColorProvider(): Generator {
+		yield 'hex color is unchanged' => [
+			'color'    => '#3182CE',
+			'expected' => '#3182CE',
+		];
+		yield 'rgba string is unchanged' => [
+			'color'    => 'rgba(0, 0, 0, 0.5)',
+			'expected' => 'rgba(0, 0, 0, 0.5)',
+		];
+		yield 'palette slug resolves to the global palette var' => [
+			'color'    => 'palette1',
+			'expected' => 'var(--global-palette1, #3182CE)',
+		];
+		yield 'zero is falsy so empty() short-circuits to false' => [
+			'color'    => 0,
+			'expected' => false,
+		];
+		yield 'brace-containing non-alias string passes through unchanged' => [
+			'color'    => '1px solid {semantic.color.brand}',
+			'expected' => '1px solid {semantic.color.brand}',
+		];
+		yield 'empty string returns false' => [
+			'color'    => '',
+			'expected' => false,
+		];
+		yield 'null returns false' => [
+			'color'    => null,
+			'expected' => false,
+		];
+	}
 }
