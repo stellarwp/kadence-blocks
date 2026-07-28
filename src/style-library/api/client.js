@@ -42,7 +42,7 @@ export function configureRestClient(rest) {
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<{ by_id: Record<string, string>, responsive: Record<string, object>, version: string }>} Resolved payload.
  */
 export function fetchResolvedTokens(namespace, slug) {
@@ -57,7 +57,7 @@ export function fetchResolvedTokens(namespace, slug) {
  * @param {string}               namespace REST namespace.
  * @param {string}               tokenId   Dot-path token id.
  * @param {{ $type?: string, $value: string }} leaf DTCG leaf payload.
- * @param {string}               slug      Token set slug.
+ * @param {string}               slug      Token library slug.
  * @return {Promise<object>} Updated document item.
  */
 export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
@@ -69,12 +69,12 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 }
 
 /**
- * Fetch the set's color palettes and its `$default` / `$current` pointers.
+ * Fetch the library's color palettes and its `$default` / `$current` pointers.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<{ '$default': string, '$current': string, palettes: object[] }>} Palette listing.
  */
 export function fetchPalettes(namespace, slug) {
@@ -88,7 +88,7 @@ export function fetchPalettes(namespace, slug) {
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<{ id: string, label: string, groups: object[] }>} The palette node.
  */
 export function fetchPalette(namespace, id, slug) {
@@ -96,13 +96,13 @@ export function fetchPalette(namespace, id, slug) {
 }
 
 /**
- * Set the set's current palette.
+ * Set the library's current palette.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id to make current.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<{ current: string }>} The resolved current palette.
  */
 export function setCurrentPalette(namespace, id, slug) {
@@ -121,7 +121,7 @@ export function setCurrentPalette(namespace, id, slug) {
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
  * @param {{ label: string, groups: object[] }} payload The palette payload.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<object>} The updated palette listing.
  */
 export function savePalette(namespace, id, payload, slug) {
@@ -142,7 +142,7 @@ export function savePalette(namespace, id, payload, slug) {
  * @param {string} id        The palette id.
  * @param {string} token     The swatch token dot-path.
  * @param {string} value     The color value (a literal color or a {dot.path} alias).
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<object>} The updated palette listing.
  */
 export function saveSwatch(namespace, id, token, value, slug) {
@@ -162,7 +162,7 @@ export function saveSwatch(namespace, id, token, value, slug) {
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
  * @param {string} token     The swatch token dot-path.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<object>} The updated palette listing.
  */
 export function deleteSwatch(namespace, id, token, slug) {
@@ -177,7 +177,7 @@ export function deleteSwatch(namespace, id, token, slug) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
  * @return {Promise<{ id: string, label: string, version: string, deletable: boolean, references: object[] }>} Preview payload.
  */
@@ -190,7 +190,7 @@ export function fetchUserPrimitiveReferences(slug, id) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {object} payload Request body including id, $type, $value, label, version.
  * @return {Promise<object>} Created document item with version.
  */
@@ -207,7 +207,7 @@ export function createUserPrimitive(slug, payload) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {string} id      Canonical dot-path id of the user primitive.
  * @param {string} version Version token the client last read.
  * @return {Promise<object>} Delete result with version.
@@ -225,7 +225,7 @@ export function deleteUserPrimitive(slug, id, version) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {string} id      Current canonical dot-path id.
  * @param {object} payload Request body including new_id, label, version.
  * @return {Promise<object>} Rename result with version and rewrittenPaths.
