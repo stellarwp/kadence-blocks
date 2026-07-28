@@ -14,7 +14,7 @@
 
 import { get } from 'lodash';
 import { activeLibrary, blockDefaultPreset, blockProperties, blockPresetValues } from '../preset-picker';
-import { isEmptyValue, matchesVariant } from './normalize';
+import { isEmptyValue, matchesPreset } from './normalize';
 import './token-indicators.scss';
 
 export { TOKEN_INDICATORS_STORE } from './store';
@@ -38,7 +38,7 @@ function unitAttrFor(kind, attr) {
 }
 
 /**
- * The mapped control attributes for a block's library, as `[{ attr, kind }]` — the surface reset-all clears.
+ * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
  * Skips properties with no control attribute. Independent of the selected preset (reset-all clears every
  * mapped override regardless of which preset is active).
  *
@@ -60,20 +60,20 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [set]      The token library slug; defaults to the active library — pass the caller's resolved
- *                            library so the binding can't disagree with the rest of its UI.
+ * @param {string} [set]      The token set slug; defaults to kbTokenSet, then the active set — pass the
+ *                            caller's resolved set so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
  */
 export function usePresetBinding(blockName, attributes, set) {
-	const resolvedSet = set || activeLibrary();
+	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedSet);
 	const values = blockPresetValues(blockName, resolvedSet);
 
-	// The preset whose surface drives the indicators: the explicit selection, or the library's authoritative
+	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
 	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
 	// neither resolves, no control is bound.
@@ -98,7 +98,7 @@ export function usePresetBinding(blockName, attributes, set) {
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
 		const empty = isEmptyValue(kind, value);
-		const overridden = !empty && !matchesVariant(kind, value, unit, presetValue);
+		const overridden = !empty && !matchesPreset(kind, value, unit, presetValue);
 
 		state[attr] = {
 			property: property.key,
