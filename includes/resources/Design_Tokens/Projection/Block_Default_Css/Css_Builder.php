@@ -61,7 +61,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The registry the preset sets (and their bindings) are read from.
+	 * The registry the binding sets (and their bindings) are read from.
 	 *
 	 * @since TBD
 	 *
