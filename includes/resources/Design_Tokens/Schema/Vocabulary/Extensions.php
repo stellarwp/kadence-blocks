@@ -5,16 +5,16 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
 /**
  * The DTCG `$extensions` vocabulary this module owns, single-sourced so every reader and the validator
  * agree on the exact spelling of the vendor namespace, its sections, and the structural keys inside a
- * preset / variant set.
+ * preset / preset-bindings set.
  *
  * The baseline document carries these sections under the Kadence namespace:
  *
  *   - "foundationPresets" → the beginner on-ramp: type scales that seed primitives.
- *   - "variants"          → block presets / variants (the variant data model's concern).
+ *   - "presets"           → block presets (the preset data model's concern).
  *   - "colorPalettes"     → named color palettes within the set (the palette feature): each an ordered list
  *                           of groups, each an ordered list of self-describing swatches.
  *
- * The preset / variant sections hold named groups; each group is a map of preset-slug =>
+ * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
  * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — so it is NOT
  * returned by get_sections() (that drives the tokens-map walk).
@@ -51,13 +51,13 @@ final class Extensions {
 	private const SECTION_FOUNDATION_PRESETS = 'foundationPresets';
 
 	/**
-	 * The variants section: block presets / variants.
+	 * The presets section: block presets.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const SECTION_VARIANTS = 'variants';
+	private const SECTION_PRESETS = 'presets';
 
 	/**
 	 * The color-palettes section: named palettes within the set, each an ordered list of groups of swatches.
@@ -71,7 +71,7 @@ final class Extensions {
 
 	/**
 	 * The user-created primitives section in the $extensions namespace.
-	 * NOT returned by get_sections() — it is not preset/variant-shaped.
+	 * NOT returned by get_sections() — it is not preset-shaped.
 	 *
 	 * @since TBD
 	 *
@@ -185,14 +185,14 @@ final class Extensions {
 	}
 
 	/**
-	 * The variants section name: block presets / variants.
+	 * The presets section name: block presets.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public static function get_section_variants(): string {
-		return self::SECTION_VARIANTS;
+	public static function get_section_presets(): string {
+		return self::SECTION_PRESETS;
 	}
 
 	/**
@@ -208,7 +208,7 @@ final class Extensions {
 
 	/**
 	 * The user-created primitives section name in the $extensions namespace.
-	 * NOT returned by get_sections() — it is not preset/variant-shaped.
+	 * NOT returned by get_sections() — it is not preset-shaped.
 	 *
 	 * @since TBD
 	 *
@@ -226,21 +226,21 @@ final class Extensions {
 	 * @return string[]
 	 */
 	public static function get_sections(): array {
-		return [ self::SECTION_FOUNDATION_PRESETS, self::SECTION_VARIANTS ];
+		return [ self::SECTION_FOUNDATION_PRESETS, self::SECTION_PRESETS ];
 	}
 
 	/**
-	 * The literal key path to the variants section, from the document root.
+	 * The literal key path to the presets section, from the document root.
 	 *
 	 * @since TBD
 	 *
 	 * @return string[]
 	 */
-	public static function get_variants_path(): array {
+	public static function get_presets_path(): array {
 		return [
 			self::get_extensions_key(),
 			self::get_namespace(),
-			self::get_section_variants(),
+			self::get_section_presets(),
 		];
 	}
 
