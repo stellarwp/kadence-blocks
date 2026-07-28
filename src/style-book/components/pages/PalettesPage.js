@@ -3,6 +3,8 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button, ColorPicker, Dropdown, Notice, SelectControl, Spinner } from '@wordpress/components';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
+import { useDebounce } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -114,6 +116,33 @@ function SwatchRow({ swatch, busy, onSave }) {
 	const value = swatch.$value ?? '';
 	const isAlias = typeof value === 'string' && value.startsWith('{') && value.endsWith('}');
 
+	// Preview the picked color locally while dragging, and commit the write on a debounce, so dragging across
+	// the picker updates the swatch live but sends at most one request once the pointer settles (the picker's
+	// onChange fires on every pointer move). A ref holds the latest onSave so the debounced committer stays
+	// stable across renders rather than resetting — which would defeat the debounce — each time onSave changes.
+	const [draft, setDraft] = useState(value);
+	const latestSave = useRef(onSave);
+
+	useEffect(() => {
+		latestSave.current = onSave;
+	}, [onSave]);
+
+	// Re-sync the draft when the saved value changes from outside (a palette switch or a reload).
+	useEffect(() => {
+		setDraft(value);
+	}, [value]);
+
+	const commit = useDebounce(
+		useCallback((next) => latestSave.current(next), []),
+		300
+	);
+
+	const onPick = (color) => {
+		const next = typeof color === 'string' ? color : (color?.hex ?? '');
+		setDraft(next);
+		commit(next);
+	};
+
 	return (
 		<li className="kadence-blocks-style-book__palette-swatch">
 			<Dropdown
@@ -129,16 +158,10 @@ function SwatchRow({ swatch, busy, onSave }) {
 							swatch.label
 						)}
 					>
-						<TokenSwatch type="color" value={value} />
+						<TokenSwatch type="color" value={draft} />
 					</Button>
 				)}
-				renderContent={() => (
-					<ColorPicker
-						color={value}
-						enableAlpha={false}
-						onChange={(color) => onSave(typeof color === 'string' ? color : (color?.hex ?? ''))}
-					/>
-				)}
+				renderContent={() => <ColorPicker color={draft} enableAlpha={false} onChange={onPick} />}
 			/>
 			<span className="kadence-blocks-style-book__palette-swatch-meta">
 				<strong>{swatch.label}</strong>

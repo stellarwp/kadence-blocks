@@ -104,12 +104,12 @@ export function usePalettes(namespace, slug) {
 				}
 
 				// Send only the changed swatch: the palette's other colors are untouched, and any token this
-				// palette does not set falls back to the default palette.
+				// palette does not set falls back to the default palette. The listing (ids, labels, pointers) is
+				// unaffected by a swatch value, so only the palette node is reloaded — not the whole listing.
 				await saveSwatch(namespace, selected.id, token, nextValue, slug);
 				await loadPalette(selected.id);
-				await loadListing();
 			}),
-		[namespace, slug, selected, loadPalette, loadListing, run]
+		[namespace, slug, selected, loadPalette, run]
 	);
 
 	return { listing, selected, selectedId, busy, error, selectPalette, switchCurrent, saveSwatchValue };
