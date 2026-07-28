@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises preset-set registration and binding-projection resolution against a freshly constructed
+ * Exercises preset-bindings registration and binding-projection resolution against a freshly constructed
  * registry, so the assertions are independent of whatever the module declares at boot.
  */
 final class Token_Registry_PresetsTest extends TestCase {
