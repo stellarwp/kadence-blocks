@@ -71,7 +71,7 @@ final class Selector {
 	 *
 	 * @param string      $group  The preset group key, e.g. "typeScale".
 	 * @param string      $choice The preset slug within the group, e.g. "goldenRatio".
-	 * @param string|null $slug   The token set to write to. Defaults to the single v1 "default" set.
+	 * @param string|null $slug   The token library to write to. Defaults to the single v1 "default" set.
 	 *
 	 * @throws Unknown_Preset_Exception|RuntimeException When the group/choice does not exist, a preset
 	 *         token targets a dot-path the baseline has no $type for, or the overrides cannot be encoded.
@@ -128,7 +128,7 @@ final class Selector {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
