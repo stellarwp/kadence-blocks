@@ -50,7 +50,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
-		// The baseline guard deactivates projection on a broken token set; the projector must then leave the
+		// The baseline guard deactivates projection on a broken token library; the projector must then leave the
 		// attributes as KB stored them even for a block that does have an adapter.
 		$adapter  = $this->image_radius_adapter();
 		$registry = new Token_Registry();

@@ -89,7 +89,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
-		// The baseline guard deactivates projection on a broken token set; the projector must then fall
+		// The baseline guard deactivates projection on a broken token library; the projector must then fall
 		// back to KB's own defaults even for a block that does have a binding set.
 		$registry = $this->button_set();
 		$registry->deactivate();
