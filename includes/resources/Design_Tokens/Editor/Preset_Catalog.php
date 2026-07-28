@@ -19,8 +19,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
  * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
- * its current value against the selected preset's value. Only PICKER sets appear (a set that declares a
- * `label`); a block's preset / default-preset set (no label) has no picker and is omitted. It carries no
+ * its current value against the selected preset's value. Only PICKER binding sets appear (a binding set
+ * that declares a `label`); a block's preset / default-preset binding set (no label) has no picker and is
+ * omitted. It carries no
  * resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle errors the
  * admin feed must guard; a set registered but absent from a token set (Unknown_Preset_Exception) is
  * skipped, so one undefined set never empties the catalog.
@@ -30,7 +31,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 final class Preset_Catalog {
 
 	/**
-	 * The token registry, source of the registered preset-set blocks and their bindings.
+	 * The token registry, source of the registered preset-bindings blocks and their bindings.
 	 *
 	 * @since TBD
 	 *
@@ -118,8 +119,8 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The per-block catalog for one token set. Only PICKER sets are surfaced; a block's preset /
-	 * default-preset set (one with no `label`) has no picker, so it is skipped.
+	 * The per-block catalog for one token set. Only PICKER binding sets are surfaced; a block's preset /
+	 * default-preset binding set (one with no `label`) has no picker, so it is skipped.
 	 *
 	 * @since TBD
 	 *
@@ -133,7 +134,7 @@ final class Preset_Catalog {
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			$set = $this->registry->for_block( $block );
 
-			// A preset / default-preset set (no label) shows no picker, so it is not offered here.
+			// A preset / default-preset binding set (no label) shows no picker, so it is not offered here.
 			if ( $set === null || $set->label === null ) {
 				continue;
 			}
@@ -170,13 +171,13 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The controllable surface for a preset set: one { key, kind, token, control_attr } entry per bound
+	 * The controllable surface for a binding set: one { key, kind, token, control_attr } entry per bound
 	 * property, in binding order, so the editor form renders an input per property and the indicator layer
 	 * can key an override signal to the control attribute. Set-structure read from the set's bindings.
 	 *
 	 * @since TBD
 	 *
-	 * @param Preset_Bindings $set The preset set.
+	 * @param Preset_Bindings $set The binding set.
 	 *
 	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null}>
 	 */
