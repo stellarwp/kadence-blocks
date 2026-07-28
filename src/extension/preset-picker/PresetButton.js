@@ -28,11 +28,11 @@ import { mappedAttrsFor, resetAttrPatch, usePresetBinding } from '../token-indic
 import '../variant-picker/variant-button.scss';
 
 /**
- * The label for the block's current preset: the selected preset's label, the set's default preset
+ * The label for the block's current preset: the selected preset's label, the library's default preset
  * label when none is selected, or a generic "Default" fallback.
  *
  * @param {string} name     The block name.
- * @param {string} set      The token set slug.
+ * @param {string} set      The token library slug.
  * @param {string} selected The selected preset slug ('' for the default look).
  *
  * @since TBD
@@ -53,7 +53,7 @@ function currentPresetLabel(name, set, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.set]         The token set the block is on; defaults to the active set.
+ * @param {string}   [props.set]         The token library the block is on; defaults to the active library.
  *
  * @since TBD
  *

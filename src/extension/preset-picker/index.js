@@ -2,7 +2,7 @@
  * Shared design-token preset picker.
  *
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensPresets`,
- * keyed by token set then by block:
+ * keyed by token library then by block:
  * `{ active, sets: { <slug>: { <block>: { default, presets, properties, label } } } }`.
  * Reads take the active library. A picker-driven block declares one binding set; its selection lives in
  * the block's `kbPreset` string attribute. Both the
@@ -33,20 +33,20 @@ export function activeLibrary() {
 }
 
 /**
- * The per-block catalog for a token set, defaulting to the active library.
+ * The per-block catalog for a token library, defaulting to the active library.
  *
- * @param {string} [set] The token set slug.
- * @return {Object} The per-block catalog for the set (block => entry).
+ * @param {string} [set] The token library slug.
+ * @return {Object} The per-block catalog for the library (block => entry).
  */
 function setBlocks(set) {
 	return get(presetCatalog(), ['sets', set || activeLibrary()], {}) || {};
 }
 
 /**
- * The catalog entry for a block's binding set in a token set, or null when it offers none.
+ * The catalog entry for a block's binding set in a token library, or null when it offers none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  * @return {Object|null} The set entry ({ default, presets, properties, label }).
  */
 function blockEntry(name, set) {
@@ -57,7 +57,7 @@ function blockEntry(name, set) {
  * The presets defined for a block's set, or an empty array when it has none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  * @return {Array} The block's presets ([{ slug, label, userCreated }]).
  */
 export function blockPresets(name, set) {
@@ -69,7 +69,7 @@ export function blockPresets(name, set) {
  * or an empty string when it declares none.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  * @return {string} The control label, or an empty string.
  */
 export function blockPresetLabel(name, set) {
@@ -81,7 +81,7 @@ export function blockPresetLabel(name, set) {
  * property.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  * @return {Array} The block's surface ([{ key, kind, token, control_attr }]).
  */
 export function blockProperties(name, set) {
@@ -94,7 +94,7 @@ export function blockProperties(name, set) {
  * current value against the selected preset's value.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  *
  * @since TBD
  *
@@ -105,10 +105,10 @@ export function blockPresetValues(name, set) {
 }
 
 /**
- * The block set's default preset slug in a token set.
+ * The block set's default preset slug in a token library.
  *
  * @param {string} name  The block name.
- * @param {string} [set] The token set slug; defaults to the active library.
+ * @param {string} [set] The token library slug; defaults to the active library.
  * @return {string} The default preset slug, or an empty string.
  */
 export function blockDefaultPreset(name, set) {
@@ -120,7 +120,7 @@ export function blockDefaultPreset(name, set) {
  * preset, or one that only shadows a baseline preset, is not.
  *
  * @param {string} name The block name.
- * @param {string} set  The token set slug.
+ * @param {string} set  The token library slug.
  * @param {string} slug The preset slug.
  * @return {boolean} True when the preset is user-created.
  */
@@ -130,10 +130,10 @@ export function isUserPreset(name, set, slug) {
 
 /**
  * Append a user-created preset to the in-memory catalog for a block's set, so the picker offers it without
- * a page reload. A no-op when the block has no set for the token set.
+ * a page reload. A no-op when the block has no set for the token library.
  *
  * @param {string} name   The block name.
- * @param {string} set    The token set slug.
+ * @param {string} set    The token library slug.
  * @param {Object} preset The preset to append ({ slug, label, userCreated }).
  * @return {void}
  */
@@ -154,7 +154,7 @@ export function appendPreset(name, set, preset) {
  * reload.
  *
  * @param {string} name The block name.
- * @param {string} set  The token set slug.
+ * @param {string} set  The token library slug.
  * @param {string} slug The preset slug to remove.
  * @return {void}
  */
@@ -169,7 +169,7 @@ export function removePreset(name, set, slug) {
 }
 
 /**
- * The preset picker for a block. Renders nothing when the block has no presets in the set.
+ * The preset picker for a block. Renders nothing when the block has no presets in the library.
  * Selecting an option calls onChange with the chosen preset slug (the caller writes it into the block's
  * kbPreset attribute); an empty value selects the block's $default look.
  *
@@ -177,7 +177,7 @@ export function removePreset(name, set, slug) {
  * @param {string}   props.name        The block name, used to read its presets from the catalog.
  * @param {string}   props.value       The currently selected preset slug.
  * @param {Function} props.onChange    Called with the selected slug.
- * @param {string}   [props.set]       The token set the block is on; defaults to the active library.
+ * @param {string}   [props.set]       The token library the block is on; defaults to the active library.
  * @param {string}   [props.label]     The control label; defaults to the block's declared label, then a generic fallback.
  * @param {string}   [props.className] The control class.
  *
