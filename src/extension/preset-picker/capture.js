@@ -44,15 +44,15 @@ function attrToLiteral(kind, value, unit) {
  * new preset" write so the new preset matches what the editor currently shows.
  *
  * @param {string} blockName  The block name.
- * @param {string} set        The token set the block is on.
+ * @param {string} library    The token library the block is on.
  * @param {Object} attributes The block's current attributes.
  *
  * @since TBD
  *
  * @return {Object} The captured token map keyed by property.
  */
-export function capturedTokens(blockName, set, attributes) {
-	const tokenSet = set || activeLibrary();
+export function capturedTokens(blockName, library, attributes) {
+	const tokenSet = library || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
 	const presetValues = get(blockPresetValues(blockName, tokenSet), currentSlug, {});

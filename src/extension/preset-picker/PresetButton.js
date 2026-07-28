@@ -28,20 +28,20 @@ import { mappedAttrsFor, resetAttrPatch, usePresetBinding } from '../token-indic
 import './preset-button.scss';
 
 /**
- * The label for the block's current preset: the selected preset's label, the set's default preset
+ * The label for the block's current preset: the selected preset's label, the library's default preset
  * label when none is selected, or a generic "Default" fallback.
  *
  * @param {string} name     The block name.
- * @param {string} set      The token set slug.
+ * @param {string} library  The token library slug.
  * @param {string} selected The selected preset slug ('' for the default look).
  *
  * @since TBD
  *
  * @return {string} The preset label.
  */
-function currentPresetLabel(name, set, selected) {
-	const slug = selected || blockDefaultPreset(name, set);
-	const preset = blockPresets(name, set).find((candidate) => candidate.slug === slug);
+function currentPresetLabel(name, library, selected) {
+	const slug = selected || blockDefaultPreset(name, library);
+	const preset = blockPresets(name, library).find((candidate) => candidate.slug === slug);
 
 	return preset?.label || __('Default', 'kadence-blocks');
 }
@@ -53,18 +53,18 @@ function currentPresetLabel(name, set, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.set]         The token set the block is on; defaults to kbTokenSet, then the active set.
+ * @param {string}   [props.library]     The token library the block is on; defaults to kbTokenSet, then the active library.
  *
  * @since TBD
  *
  * @return {Object|null} The button, or null when the block has no presets.
  */
-export function PresetButton({ blockName, attributes, setAttributes, set }) {
+export function PresetButton({ blockName, attributes, setAttributes, library }) {
 	const [saving, setSaving] = useState(false);
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const tokenSet = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
 	const binding = usePresetBinding(blockName, attributes, tokenSet);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 
@@ -233,7 +233,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 			{saving && (
 				<SavePresetModal
 					blockName={blockName}
-					set={tokenSet}
+					library={tokenSet}
 					tokens={capturedTokens(blockName, tokenSet, attributes)}
 					existingSlugs={presets.map((preset) => preset.slug)}
 					onClose={() => setSaving(false)}
