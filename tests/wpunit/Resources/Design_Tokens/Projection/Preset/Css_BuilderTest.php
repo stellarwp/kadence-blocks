@@ -1,12 +1,12 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn palette .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection\Variant;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
@@ -20,7 +20,7 @@ final class Css_BuilderTest extends TestCase {
 
 	private Token_Registry $registry;
 
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	private Token_Store $store;
 
@@ -31,7 +31,7 @@ final class Css_BuilderTest extends TestCase {
 		parent::setUp();
 
 		$this->registry = $this->container->get( Token_Registry::class );
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		$this->resolver = $this->container->get( Preset_Resolver::class );
 		$this->store    = $this->container->get( Token_Store::class );
 	}
 
@@ -39,7 +39,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	protected function tearDown(): void {
-		// The Variant_Resolver leans on the shared Token_Resolver singleton, whose per-slug memo is not
+		// The Preset_Resolver leans on the shared Token_Resolver singleton, whose per-slug memo is not
 		// rolled back between tests; clear it so a sibling test's stored overrides cannot leak in.
 		$memo = new ReflectionProperty( $this->resolver, 'resolver' );
 		$memo->setAccessible( true );
@@ -174,7 +174,7 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testItSkipsABlockWhoseDocumentDefinesNoVariants(): void {
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/not-in-baseline',
 				'bindings' => [ 'button-bg' => [ 'kadence_slot' => 'palette1' ] ],
@@ -208,7 +208,7 @@ final class Css_BuilderTest extends TestCase {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'variants' => [
+					'presets' => [
 						'kadence/singlebtn' => [
 							'midnight' => [
 								'label'  => 'Midnight',

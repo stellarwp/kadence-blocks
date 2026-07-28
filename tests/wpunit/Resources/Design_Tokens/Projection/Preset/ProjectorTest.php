@@ -1,14 +1,14 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn palette .
 
-namespace Tests\wpunit\Resources\Design_Tokens\Projection\Variant;
+namespace Tests\wpunit\Resources\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
@@ -20,18 +20,18 @@ final class ProjectorTest extends TestCase {
 
 	private const BUTTON = 'kadence/singlebtn';
 
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	private Token_Store $store;
 
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		$this->resolver = $this->container->get( Preset_Resolver::class );
 		$this->store    = $this->container->get( Token_Store::class );
-		$this->active   = $this->container->get( Active_Set_Store::class );
+		$this->active   = $this->container->get( Active_Token_Library_Store::class );
 
 		// Register the KB style handles the projector appends to.
 		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {
@@ -90,7 +90,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testTheProviderBindsTheProjectorAsASingleton(): void {
-		// Proves Projection\Variant\Provider ran during module boot and bound the projector graph.
+		// Proves Projection\Preset\Provider ran during module boot and bound the projector graph.
 		$this->assertSame(
 			$this->container->get( Projector::class ),
 			$this->container->get( Projector::class )
@@ -109,7 +109,7 @@ final class ProjectorTest extends TestCase {
 	 */
 	private function button_set(): Token_Registry {
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => self::BUTTON,
 				'group'    => 'style',
