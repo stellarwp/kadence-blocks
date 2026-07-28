@@ -13,8 +13,8 @@ import { DEFAULT_LIBRARY_SLUG } from '../constants';
 /**
  * Read and normalize the localized design-token feed.
  *
- * `slug` is the token set the feed's schema/values/version were actually resolved against — the
- * active set, not necessarily the default one (see `Admin\Feed\Localizer`). Every write this page
+ * `slug` is the token library the feed's schema/values/version were actually resolved against — the
+ * active library, not necessarily the default one (see `Admin\Feed\Localizer`). Every write this page
  * makes must target that same slug, or an edit lands in a document other than the one being shown.
  *
  * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, responsive: Record<string, object>, rest: object|null, version: string, slug: string }}

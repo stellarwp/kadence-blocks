@@ -46,10 +46,10 @@ export function pickableTokenPool() {
 }
 
 /**
- * The resolved literal values for a token set, falling back to the active set when the requested
+ * The resolved literal values for a token library, falling back to the active library when the requested
  * set is omitted or absent from the pool.
  *
- * @param {string} [set] The token set slug.
+ * @param {string} [set] The token library slug.
  *
  * @since TBD
  *
@@ -68,7 +68,7 @@ function valuesFor(set) {
  * with its resolved literal `value` from the requested set for the preview swatch/number.
  *
  * @param {string} kind  The control kind ('color' | 'dimension' | 'text' | 'shadow').
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} [set] The token library slug; defaults to the active library.
  *
  * @since TBD
  *
@@ -121,13 +121,13 @@ function roleForId(id) {
  * filters and ranks the pool for that kind. When the control binds a role token, the list is further
  * narrowed to that token's sub-kind (a radius control's `dimension` to only radius tokens, never
  * spacing) and the bound token is pinned to the top; without a bound token it stays the coarse
- * kind list (type filter + semantic-first). Empty when the block maps no such control in the set —
+ * kind list (type filter + semantic-first). Empty when the block maps no such control in the library —
  * an unmapped control offers no tokens, which is the "selectable only where it makes sense"
  * guarantee at the per-control call site.
  *
  * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
- * @param {string} [set]       The token set slug; defaults to the active set.
+ * @param {string} [set]       The token library slug; defaults to the active library.
  *
  * @since TBD
  *
