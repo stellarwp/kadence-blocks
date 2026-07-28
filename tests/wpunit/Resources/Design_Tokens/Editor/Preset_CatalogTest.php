@@ -107,7 +107,7 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A block registered but absent from a set is skipped rather than emitted empty.
+	 * A block registered but absent from a library is skipped rather than emitted empty.
 	 *
 	 * @return void
 	 */
