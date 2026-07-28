@@ -14,7 +14,7 @@ use WP_REST_Server;
 
 /**
  * Covers the projected-CSS controller: it aggregates every design-token editor projector into one CSS string
- * for the editor to re-inject live, keeps multi-set (multi-palette) support intact, and is capability-gated.
+ * for the editor to re-inject live, keeps multi-library (multi-palette) support intact, and is capability-gated.
  */
 final class Projected_Css_ControllerTest extends TestCase {
 
@@ -65,19 +65,19 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A second, non-default token set is emitted with its own namespaced vars and a per-set switch selector,
-	 * proving multi-set (multi-palette) support survives the aggregation.
+	 * A second, non-default token library is emitted with its own namespaced vars and a per-set switch
+	 * selector, proving multi-library (multi-palette) support survives the aggregation.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsEveryTokenSetWithItsSwitchLayer(): void {
+	public function testItEmitsEveryTokenLibraryWithItsSwitchLayer(): void {
 		$this->seedPreset( Token_Store::default_slug(), 'accent' );
 		$this->seedPreset( 'dark', 'accent' );
 
 		$css = $this->css();
 
-		$this->assertStringContainsString( '--kb-token--dark--', $css, 'The non-default set should emit namespaced vars.' );
-		$this->assertStringContainsString( 'data-kb-token-set', $css, 'The non-default set should emit a switch selector.' );
+		$this->assertStringContainsString( '--kb-token--dark--', $css, 'The non-default library should emit namespaced vars.' );
+		$this->assertStringContainsString( 'data-kb-token-set', $css, 'The non-default library should emit a switch selector.' );
 	}
 
 	/**
@@ -160,9 +160,9 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Persist a full-surface button preset into a token set's overrides document.
+	 * Persist a full-surface button preset into a token library's overrides document.
 	 *
-	 * @param string $slug   The token set slug to write into.
+	 * @param string $slug   The token library slug to write into.
 	 * @param string $preset The preset slug.
 	 *
 	 * @return void

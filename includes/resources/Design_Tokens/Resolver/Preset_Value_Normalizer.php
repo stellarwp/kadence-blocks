@@ -43,12 +43,12 @@ final class Preset_Value_Normalizer {
 
 	/**
 	 * Rewrite a property => value token map, replacing each literal with a matching semantic alias where one
-	 * exists in the given set.
+	 * exists in the given library.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $tokens The preset's property => alias-or-literal token map.
-	 * @param string               $slug   The token set the values are matched against.
+	 * @param string               $slug   The token library the values are matched against.
 	 *
 	 * @return array<string, mixed> The token map with literals aliased where a semantic matches.
 	 */
@@ -91,12 +91,12 @@ final class Preset_Value_Normalizer {
 	}
 
 	/**
-	 * Build the normalized-value => semantic-ids index for a set: every semantic-layer entry of the resolved
-	 * token map, keyed by its normalized value, preserving document order within each bucket.
+	 * Build the normalized-value => semantic-ids index for a library: every semantic-layer entry of the
+	 * resolved token map, keyed by its normalized value, preserving document order within each bucket.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set to resolve.
+	 * @param string $slug The token library to resolve.
 	 *
 	 * @return array<string, string[]>
 	 */
