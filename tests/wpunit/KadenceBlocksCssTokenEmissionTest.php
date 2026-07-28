@@ -473,4 +473,200 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		yield 'unopened brace' => [ 'malformed' => 'unopened}' ];
 		yield 'empty braces' => [ 'malformed' => '{}' ];
 	}
+
+	/**
+	 * Per-side dimension mixing for render_measure: a 4-side value with exactly one side an
+	 * alias and the other three numeric produces the correct mixed CSS, with the alias
+	 * rotated through all four positions so a per-side loop ordering bug cannot hide.
+	 *
+	 * @dataProvider measureMixedSidesProvider
+	 *
+	 * @param array  $measure  The 4-side measure array with one aliased side.
+	 * @param string $expected The expected byte-identical mixed measure string.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureMixesAliasedAndNumericSides( array $measure, string $expected ): void {
+		$this->assertSame( $expected, $this->css->render_measure( $measure ),
+			'render_measure must mix the aliased side with the sibling numeric sides correctly' );
+	}
+
+	/**
+	 * Provides a 4-side measure array with the alias rotated through each position.
+	 *
+	 * @return Generator
+	 */
+	public static function measureMixedSidesProvider(): Generator {
+		yield 'alias in first side' => [
+			'measure'  => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expected' => 'var(--kb-token--semantic--radius--media) 20px 30px 40px',
+		];
+		yield 'alias in second side' => [
+			'measure'  => [ 10, '{semantic.radius.media}', 30, 40 ],
+			'expected' => '10px var(--kb-token--semantic--radius--media) 30px 40px',
+		];
+		yield 'alias in third side' => [
+			'measure'  => [ 10, 20, '{semantic.radius.media}', 40 ],
+			'expected' => '10px 20px var(--kb-token--semantic--radius--media) 40px',
+		];
+		yield 'alias in fourth (last) side' => [
+			'measure'  => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expected' => '10px 20px 30px var(--kb-token--semantic--radius--media)',
+		];
+	}
+
+	/**
+	 * Per-side dimension mixing for render_measure_range: a 4-side value with exactly one
+	 * side an alias and the other three numeric emits the correct mixed declarations, with
+	 * the alias rotated through all four positions.
+	 *
+	 * @dataProvider measureRangeMixedSidesProvider
+	 *
+	 * @param array  $measure          The 4-side border-width array with one aliased side.
+	 * @param string $expectedProperty The css property expected to carry the var().
+	 * @param string $expectedValue    The expected var() value on that property.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureRangeMixesAliasedAndNumericSides( array $measure, string $expectedProperty, string $expectedValue ): void {
+		$this->css->render_measure_range( [ 'borderWidth' => $measure ], 'borderWidth', 'border-width' );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( $expectedProperty . ':' . $expectedValue, $output,
+			'render_measure_range must emit the var() on the aliased side' );
+		$this->assertStringContainsString( 'border-top-width:', $output,
+			'render_measure_range must still render the other numeric sides' );
+	}
+
+	/**
+	 * Provides a 4-side border-width array with the alias rotated through each position.
+	 *
+	 * @return Generator
+	 */
+	public static function measureRangeMixedSidesProvider(): Generator {
+		yield 'alias in first (top) side' => [
+			'measure'          => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expectedProperty' => 'border-top-width',
+			'expectedValue'    => 'var(--kb-token--semantic--radius--media)',
+		];
+		yield 'alias in last (left) side' => [
+			'measure'          => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expectedProperty' => 'border-left-width',
+			'expectedValue'    => 'var(--kb-token--semantic--radius--media)',
+		];
+	}
+
+	/**
+	 * Confirms render_measure_range still renders the sibling numeric sides byte-identically
+	 * when one side is aliased, for both the first- and last-position rotations.
+	 *
+	 * @dataProvider measureRangeMixedSidesFullOutputProvider
+	 *
+	 * @param array  $measure  The 4-side border-width array with one aliased side.
+	 * @param string $expected The expected declarations, order-independent, all of which must
+	 *                         be present in the built CSS.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureRangeMixedSidesRenderSiblingNumerics( array $measure, array $expected ): void {
+		$this->css->render_measure_range( [ 'borderWidth' => $measure ], 'borderWidth', 'border-width' );
+		$output = $this->css->css_output();
+
+		foreach ( $expected as $fragment ) {
+			$this->assertStringContainsString( $fragment, $output,
+				'render_measure_range must emit every expected fragment for the mixed sides' );
+		}
+	}
+
+	/**
+	 * Provides the full expected fragment set for the first- and last-position alias rotations.
+	 *
+	 * @return Generator
+	 */
+	public static function measureRangeMixedSidesFullOutputProvider(): Generator {
+		yield 'alias in first (top) side' => [
+			'measure'  => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expected' => [
+				'border-top-width:var(--kb-token--semantic--radius--media)',
+				'border-right-width:20px',
+				'border-bottom-width:30px',
+				'border-left-width:40px',
+			],
+		];
+		yield 'alias in last (left) side' => [
+			'measure'  => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expected' => [
+				'border-top-width:10px',
+				'border-right-width:20px',
+				'border-bottom-width:30px',
+				'border-left-width:var(--kb-token--semantic--radius--media)',
+			],
+		];
+	}
+
+	/**
+	 * Per-corner dimension mixing for render_border_radius: a 4-corner value with exactly one
+	 * corner an alias and the other three numeric emits the correct mixed declarations, with
+	 * the alias rotated through all four positions.
+	 *
+	 * @dataProvider borderRadiusMixedCornersProvider
+	 *
+	 * @param array $corners  The 4-corner border-radius array with one aliased corner.
+	 * @param array $expected The full set of expected declarations that must all be present.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderRadiusMixesAliasedAndNumericCorners( array $corners, array $expected ): void {
+		$this->css->render_border_radius( [ 'borderRadius' => $corners ] );
+		$output = $this->css->css_output();
+
+		foreach ( $expected as $fragment ) {
+			$this->assertStringContainsString( $fragment, $output,
+				'render_border_radius must emit every expected fragment for the mixed corners' );
+		}
+	}
+
+	/**
+	 * Provides a 4-corner border-radius array with the alias rotated through each position.
+	 *
+	 * @return Generator
+	 */
+	public static function borderRadiusMixedCornersProvider(): Generator {
+		yield 'alias in first (top-left) corner' => [
+			'corners'  => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expected' => [
+				'border-top-left-radius:var(--kb-token--semantic--radius--media)',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in second (top-right) corner' => [
+			'corners'  => [ 10, '{semantic.radius.media}', 30, 40 ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:var(--kb-token--semantic--radius--media)',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in third (bottom-right) corner' => [
+			'corners'  => [ 10, 20, '{semantic.radius.media}', 40 ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:var(--kb-token--semantic--radius--media)',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in fourth (last, bottom-left) corner' => [
+			'corners'  => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:var(--kb-token--semantic--radius--media)',
+			],
+		];
+	}
 }
