@@ -243,4 +243,117 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 			'expected' => false,
 		];
 	}
+
+	/**
+	 * render_measure_range (border-width) emits a byte-identical `border-*-width`
+	 * declaration for a numeric side (including a zero side), and adds nothing for an
+	 * empty or brace-containing non-alias side.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureRangeBorderWidthBcCase(): void {
+		$this->css->render_measure_range(
+			[ 'borderWidth' => [ 2, 0, '', '1px solid {semantic.color.brand}' ] ],
+			'borderWidth',
+			'border-width'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-width:2px', $output,
+			'A numeric side is rendered with its unit' );
+		$this->assertStringContainsString( 'border-right-width:0px', $output,
+			'A zero side still renders since is_numeric(0) is true' );
+		$this->assertStringNotContainsString( 'border-bottom-width', $output,
+			'An empty side is not numeric and adds nothing' );
+		$this->assertStringNotContainsString( 'border-left-width', $output,
+			'A brace-containing non-alias side is not numeric and adds nothing' );
+	}
+
+	/**
+	 * render_measure returns byte-identical output for a fully numeric 4-side array
+	 * (including a zero side), and falls back to "0" + unit for a non-numeric,
+	 * non-alias side (empty string or a brace-containing literal).
+	 *
+	 * @dataProvider renderMeasureProvider
+	 *
+	 * @param array  $measure  The 4-side measure array.
+	 * @param string $expected The expected byte-identical output string.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureBcCases( array $measure, string $expected ): void {
+		$this->assertSame( $expected, $this->css->render_measure( $measure ),
+			'render_measure must be byte-identical to its pre-recognizer output for numeric/literal input' );
+	}
+
+	/**
+	 * Provides numeric and boundary 4-side arrays for render_measure.
+	 *
+	 * @return Generator
+	 */
+	public static function renderMeasureProvider(): Generator {
+		yield 'fully numeric measure' => [
+			'measure'  => [ 10, 20, 30, 40 ],
+			'expected' => '10px 20px 30px 40px',
+		];
+		yield 'zero side renders its actual value, not the string fallback' => [
+			'measure'  => [ 0, 20, 30, 40 ],
+			'expected' => '0px 20px 30px 40px',
+		];
+		yield 'empty string side falls back to zero' => [
+			'measure'  => [ 10, '', 30, 40 ],
+			'expected' => '10px 0px 30px 40px',
+		];
+		yield 'brace-containing non-alias side falls back to zero' => [
+			'measure'  => [ 10, '1px solid {semantic.color.brand}', 30, 40 ],
+			'expected' => '10px 0px 30px 40px',
+		];
+	}
+
+	/**
+	 * render_border_radius emits a byte-identical `border-*-radius` declaration for a
+	 * numeric corner (including a zero corner), and adds nothing for an empty or
+	 * brace-containing non-alias corner.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderRadiusBcCase(): void {
+		$this->css->render_border_radius( [ 'borderRadius' => [ 1, 0, '', '1px solid {semantic.color.brand}' ] ] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'border-top-left-radius:1px', $output,
+			'A numeric corner is rendered with its unit' );
+		$this->assertStringContainsString( 'border-top-right-radius:0px', $output,
+			'A zero corner still renders since is_numeric(0) is true' );
+		$this->assertStringNotContainsString( 'border-bottom-right-radius', $output,
+			'An empty corner is not numeric and adds nothing' );
+		$this->assertStringNotContainsString( 'border-bottom-left-radius', $output,
+			'A brace-containing non-alias corner is not numeric and adds nothing' );
+	}
+
+	/**
+	 * render_responsive_range emits a byte-identical declaration per breakpoint for
+	 * numeric values (including a zero breakpoint), and adds nothing for a
+	 * brace-containing non-alias breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testRenderResponsiveRangeBcCase(): void {
+		$this->css->render_responsive_range(
+			[
+				'spacing'     => [ 10, 0, '1px solid {semantic.color.brand}' ],
+				'spacingType' => 'px',
+			],
+			'spacing',
+			'margin'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'margin:10px', $output,
+			'The desktop breakpoint is rendered with its unit' );
+		$this->assertStringContainsString( 'margin:0px', $output,
+			'The zero tablet breakpoint still renders since is_numeric(0) is true' );
+		$this->assertStringNotContainsString( '{semantic.color.brand}', $output,
+			'A brace-containing non-alias mobile breakpoint is not numeric and adds nothing' );
+	}
 }
