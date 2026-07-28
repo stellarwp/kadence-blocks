@@ -12,9 +12,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 
 /**
- * Builds the CSS custom-property output for the single active token set — the CSS-variable backbone.
+ * Builds the CSS custom-property output for the single active token library — the CSS-variable backbone.
  *
- * Only one library (token set) is emitted at a time: the active-set pointer selects it, and the resolver
+ * Only one library is emitted at a time: the active-set pointer selects it, and the resolver
  * hands the builder that set's canonical resolved maps. The builder emits a single `:root` block:
  *
  *   1. The canonical token layer — `--kb-token--<id>: <value-or-var>` straight from the active set's
@@ -52,7 +52,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The registry the active token set is resolved and projected from.
+	 * The registry the active token library is resolved and projected from.
 	 *
 	 * @since TBD
 	 *

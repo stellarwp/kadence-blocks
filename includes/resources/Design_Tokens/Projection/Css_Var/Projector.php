@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
 
 /**
- * Projects the resolved token set into the WordPress style pipeline.
+ * Projects the resolved token library into the WordPress style pipeline.
  *
  * Reacts to WordPress hooks to inject the --kb-token--* custom properties into KB's existing inline
  * styles and feeds the legacy color/font-size filters — all gated on Token_Registry::is_active()
@@ -49,9 +49,9 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Css_Builder
@@ -69,7 +69,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
-	 * @param Active_Set_Store     $active
+	 * @param Active_Token_Library_Store     $active
 	 * @param Css_Builder          $css_builder
 	 * @param Legacy_Filter_Bridge $bridge
 	 */
@@ -77,7 +77,7 @@ final class Projector extends Abstract_Css_Projector {
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Css_Builder $css_builder,
 		Legacy_Filter_Bridge $bridge
 	) {
@@ -154,7 +154,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the projected CSS for the single active token set, using the per-request memo and object cache
+	 * Build the projected CSS for the single active token library, using the per-request memo and object cache
 	 * so repeated calls within the same request are free.
 	 *
 	 * The active set is resolved to its canonical `--kb-token--*` maps, then the builder emits the one `:root`
