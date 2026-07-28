@@ -118,7 +118,7 @@ final class PresetsControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testGetItemReturnsTheBaselineMergedPresetSet(): void {
+	public function testGetItemReturnsTheBaselineMergedPresetCollection(): void {
 		$response = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
@@ -150,7 +150,7 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetItemReturns404ForABlockThatAcceptsNoPresets(): void {
-		// kadence/spacer has no baseline preset data and no preset set registered for it.
+		// kadence/spacer has no baseline preset data and no binding set registered for it.
 		$result = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, 'kadence/spacer' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -248,12 +248,12 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A replace (PUT) stores exactly the submitted preset set, dropping any override preset the body omits
-	 * while the baseline presets remain visible.
+	 * A replace (PUT) stores exactly the submitted preset collection, dropping any override preset the body
+	 * omits while the baseline presets remain visible.
 	 *
 	 * @return void
 	 */
-	public function testUpdateReplacesTheStoredPresetSet(): void {
+	public function testUpdateReplacesTheStoredPresetCollection(): void {
 		// Seed two override-only presets, then PUT a set that keeps only one of them.
 		$this->controller->create_item(
 			$this->block_request(
