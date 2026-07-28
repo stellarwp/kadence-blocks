@@ -192,7 +192,7 @@ describe('pickableTokensFor', () => {
 		expect(pickableTokensFor('nope')).toEqual([]);
 	});
 
-	it('reads the requested set, leaving a missing entry blank', () => {
+	it('reads the requested library, leaving a missing entry blank', () => {
 		const result = pickableTokensFor('color', 'brand');
 
 		expect(result).toEqual([

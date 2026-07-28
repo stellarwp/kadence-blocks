@@ -43,14 +43,14 @@ function unitAttrFor(kind, attr) {
  * mapped override regardless of which preset is active).
  *
  * @param {string} blockName The block name.
- * @param {string} [set]     The token library slug; defaults to the active library.
+ * @param {string} [library] The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
-export function mappedAttrsFor(blockName, set) {
-	return blockProperties(blockName, set || activeLibrary())
+export function mappedAttrsFor(blockName, library) {
+	return blockProperties(blockName, library || activeLibrary())
 		.filter((property) => !!property.control_attr)
 		.map((property) => ({ attr: property.control_attr, kind: property.kind }));
 }
@@ -60,24 +60,24 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [set]      The token library slug; defaults to kbTokenSet, then the active library — pass
+ * @param {string} [library]  The token library slug; defaults to kbTokenSet, then the active library — pass
  *                            the caller's resolved library so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
  */
-export function usePresetBinding(blockName, attributes, set) {
-	const resolvedSet = set || get(attributes, 'kbTokenSet', '') || activeLibrary();
+export function usePresetBinding(blockName, attributes, library) {
+	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
-	const properties = blockProperties(blockName, resolvedSet);
-	const values = blockPresetValues(blockName, resolvedSet);
+	const properties = blockProperties(blockName, resolvedLibrary);
+	const values = blockPresetValues(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
 	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
 	// neither resolves, no control is bound.
-	const activePreset = selected || blockDefaultPreset(blockName, resolvedSet);
+	const activePreset = selected || blockDefaultPreset(blockName, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
 
 	const state = {};

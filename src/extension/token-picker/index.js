@@ -47,17 +47,17 @@ export function pickableTokenPool() {
 
 /**
  * The resolved literal values for a token library, falling back to the active library when the requested
- * set is omitted or absent from the pool.
+ * library is omitted or absent from the pool.
  *
- * @param {string} [set] The token library slug.
+ * @param {string} [library] The token library slug.
  *
  * @since TBD
  *
  * @return {Object} id => literal value.
  */
-function valuesFor(set) {
+function valuesFor(library) {
 	const values = get(pickableTokenPool(), 'values', {}) || {};
-	const slug = set || activeLibrary();
+	const slug = library || activeLibrary();
 
 	return get(values, [slug], null) || get(values, [activeLibrary()], {}) || {};
 }
@@ -65,19 +65,19 @@ function valuesFor(set) {
 /**
  * The pickable tokens for a control kind: only type-compatible tokens (the hard filter), semantic-
  * layer tokens ranked before primitives (stable order within each layer, i.e. registry order), each
- * with its resolved literal `value` from the requested set for the preview swatch/number.
+ * with its resolved literal `value` from the requested library for the preview swatch/number.
  *
- * @param {string} kind  The control kind ('color' | 'dimension' | 'text' | 'shadow').
- * @param {string} [set] The token library slug; defaults to the active library.
+ * @param {string} kind      The control kind ('color' | 'dimension' | 'text' | 'shadow').
+ * @param {string} [library] The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]).
  */
-export function pickableTokensFor(kind, set) {
+export function pickableTokensFor(kind, library) {
 	const types = KIND_TYPES[kind] || [];
 	const tokens = get(pickableTokenPool(), 'tokens', []) || [];
-	const values = valuesFor(set);
+	const values = valuesFor(library);
 
 	const compatible = tokens.filter((token) => types.includes(token.type));
 
@@ -127,20 +127,20 @@ function roleForId(id) {
  *
  * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
- * @param {string} [set]       The token library slug; defaults to the active library.
+ * @param {string} [library]   The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */
-export function pickableTokensForControl(blockName, controlAttr, set) {
-	const property = blockProperties(blockName, set).find((entry) => entry.control_attr === controlAttr);
+export function pickableTokensForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
 
 	if (!property || !property.kind) {
 		return [];
 	}
 
-	const tokens = pickableTokensFor(property.kind, set);
+	const tokens = pickableTokensFor(property.kind, library);
 	const role = property.token ? roleForId(property.token) : '';
 
 	// No bound role token -> the coarse kind list (type filter + semantic-first), unchanged.
