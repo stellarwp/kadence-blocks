@@ -276,13 +276,13 @@ final class LocalizerTest extends TestCase {
 	}
 
 	/**
-	 * The dashboard must read (and, via the REST descriptor's slug, write) whichever set is active —
+	 * The dashboard must read (and, via the REST descriptor's slug, write) whichever library is active —
 	 * not always the default one — so it stays consistent with the registry's user primitives and every
 	 * projector, all of which already resolve against Active_Token_Library_Store::get().
 	 *
 	 * @return void
 	 */
-	public function testFeedFollowsTheActiveSetRatherThanAlwaysTheDefaultSet(): void {
+	public function testFeedFollowsTheActiveLibraryRatherThanAlwaysTheDefaultLibrary(): void {
 		$store  = $this->container->get( Token_Store::class );
 		$active = $this->container->get( Active_Token_Library_Store::class );
 
@@ -334,6 +334,6 @@ final class LocalizerTest extends TestCase {
 			}
 		}
 
-		$this->assertNotNull( $found, 'The active set\'s user primitive must appear in the localized schema.' );
+		$this->assertNotNull( $found, 'The active library\'s user primitive must appear in the localized schema.' );
 	}
 }
