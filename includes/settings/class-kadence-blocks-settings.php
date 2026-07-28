@@ -12,9 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_field;
-use KadenceWP\KadenceBlocks\Harbor\License_Status;
-use KadenceWP\KadenceBlocks\LiquidWeb\Harbor\Config as HarborConfig;
 use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
 
 /**
@@ -23,13 +20,6 @@ use KadenceWP\KadenceBlocks\Home\Home_Content_View_Model;
  * @category class
  */
 class Kadence_Blocks_Settings {
-
-	/**
-	 * Plugin basename for Kadence Blocks Pro, relative to the plugins directory.
-	 *
-	 * @var string
-	 */
-	const PRO_PLUGIN_FILE = 'kadence-blocks-pro/kadence-blocks-pro.php';
 
 	/**
 	 * Settings of this class
@@ -814,43 +804,6 @@ class Kadence_Blocks_Settings {
 				'texts'               => $texts,
 			]
 		);
-
-		$license_modal_meta = kadence_blocks_get_asset_file( 'dist/admin-license-modal' );
-		wp_enqueue_script( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.js', $license_modal_meta['dependencies'], $license_modal_meta['version'], true );
-		wp_enqueue_style( 'admin-kadence-license-modal', KADENCE_BLOCKS_URL . 'dist/admin-license-modal.css', [ 'wp-components' ], $license_modal_meta['version'] );
-		wp_localize_script(
-			'admin-kadence-license-modal',
-			'kadenceLicenseModalParams',
-			[
-				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-				'wpnonce'         => wp_create_nonce( 'kadence-blocks-manage' ),
-				'licensePageUrl'  => esc_url( lw_harbor_get_license_page_url() ),
-				'licenseStatus'   => ( new License_Status() )->get_ui_status(),
-				'accountPageUrl'  => 'https://software.liquidweb.com/',
-				'proFeatureSlug'  => 'kadence-blocks-pro',
-				'proFeatureName'  => __( 'Kadence Blocks Pro', 'kadence-blocks' ),
-				'isProInstalled'  => $this->is_pro_installed(),
-				'isProActive'     => $this->is_pro_active(),
-				'domain'          => lw_harbor_get_licensed_domain(),
-				'productSlug'     => 'kadence',
-				'activationUrl'   => HarborConfig::get_portal_base_url() . '/subscriptions/?' . http_build_query(
-					[
-						'portal-referral' => 'plugin',
-						'redirect_url'    => admin_url( 'admin.php?page=lw-software-manager&refresh=auto' ),
-						'domain'          => lw_harbor_get_licensed_domain(),
-					],
-					'',
-					'&',
-					PHP_QUERY_RFC3986
-				),
-				'harbor'          => [
-					'licensePath'  => '/liquidweb/harbor/v1/license',
-					'featuresPath' => '/liquidweb/harbor/v1/features',
-					'keyPrefix'    => 'LWSW-',
-				],
-			]
-		);
-		wp_set_script_translations( 'admin-kadence-license-modal', 'kadence-blocks' );
 	}
 	/**
 	 * Loads admin style sheets and scripts
@@ -1504,14 +1457,6 @@ class Kadence_Blocks_Settings {
 	}
 
 	/**
-	 * Whether the Kadence Blocks Pro plugin is present on disk.
-	 *
-	 * @return bool
-	 */
-	private function is_pro_installed() {
-		return file_exists( WP_PLUGIN_DIR . '/' . self::PRO_PLUGIN_FILE );
-	}
-	/**
 	 * Whether the Kadence Blocks Pro plugin is currently active.
 	 *
 	 * @return bool
@@ -1546,33 +1491,24 @@ class Kadence_Blocks_Settings {
 	/**
 	 * License key sidebar notice.
 	 *
-	 * Mounts the React license UI: inactive sites get the enter-key modal;
-	 * authorized sites get the Active status card (unified or Kadence).
+	 * The full license modal UI (Harbor unified license + legacy Kadence key
+	 * entry) is rendered by kadence-blocks-pro on this same
+	 * `kadence_blocks_dash_side_panel_license` hook, since license validation
+	 * and plugin install/activation flows cannot ship in kadence-blocks (it is
+	 * distributed via WordPress.org). Without Pro active, show a simple
+	 * purchase link instead.
 	 */
 	public function admin_license_key_notice(): void {
+		if ( $this->is_pro_active() ) {
+			return;
+		}
 		?>
 		<div class="license-section sidebar-section components-panel">
 			<div class="components-panel__body is-opened">
-				<div id="kt-license-modal-root" class="kt-license-modal-root" aria-busy="true">
-					<div class="kt-skeleton kt-license-skeleton" role="status" aria-label="<?php esc_attr_e( 'Loading license…', 'kadence-blocks' ); ?>">
-						<div class="kt-skeleton__row kt-license-skeleton__header">
-							<span class="kt-skeleton__bone kt-license-skeleton__title"></span>
-						</div>
-						<span class="kt-skeleton__bone kt-license-skeleton__badge"></span>
-						<span class="kt-skeleton__bone kt-license-skeleton__type"></span>
-						<span class="kt-skeleton__bone kt-license-skeleton__key"></span>
-						<span class="kt-skeleton__bone kt-license-skeleton__meta"></span>
-						<span class="kt-skeleton__bone kt-license-skeleton__button"></span>
-					</div>
-				</div>
+				<h2><?php esc_html_e( 'License', 'kadence-blocks' ); ?></h2>
+				<p><?php esc_html_e( 'Get Kadence Blocks Pro to manage your license and unlock updates and support.', 'kadence-blocks' ); ?></p>
+				<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=license" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Get Kadence Blocks Pro', 'kadence-blocks' ); ?></a>
 			</div>
-		</div>
-		<div id="kt-legacy-license-field" hidden>
-			<?php
-			// Prefer the slug that currently holds a legacy key (Pro when set, else free).
-			// Pro overrides the Uplink field template for the shared `kadence-blocks` hook prefix.
-			get_license_field()->render_single( kadence_blocks_get_current_product_slug(), false, true );
-			?>
 		</div>
 		<?php
 	}

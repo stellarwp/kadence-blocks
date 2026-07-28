@@ -17,7 +17,6 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_resource;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\validate_license;
-use KadenceWP\KadenceBlocks\Harbor\License_Status;
 
 /**
  * Check if we are in AMP Mode.
@@ -170,7 +169,13 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $legacy_key ) ) {
 		return $legacy_key;
 	}
-	return ( new License_Status() )->get_unified_key();
+	if ( function_exists( 'lw_harbor_get_unified_license_key' ) ) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+	return '';
 }
 
 /**
@@ -223,7 +228,18 @@ function kadence_blocks_get_authorized_license_key(): string {
 		}
 	}
 
-	return ( new License_Status() )->get_unified_key();
+	if (
+		function_exists( 'lw_harbor_get_unified_license_key' )
+		&& function_exists( 'lw_harbor_is_product_license_active' )
+		&& lw_harbor_is_product_license_active( 'kadence' )
+	) {
+		$unified_key = lw_harbor_get_unified_license_key();
+		if ( ! empty( $unified_key ) ) {
+			return $unified_key;
+		}
+	}
+
+	return '';
 }
 
 /**
