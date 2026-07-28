@@ -43,7 +43,7 @@ function unitAttrFor(kind, attr) {
  * mapped override regardless of which preset is active).
  *
  * @param {string} blockName The block name.
- * @param {string} [set]     The token set slug; defaults to the active set.
+ * @param {string} [set]     The token library slug; defaults to the active library.
  *
  * @since TBD
  *

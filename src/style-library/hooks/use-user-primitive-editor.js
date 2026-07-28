@@ -27,7 +27,7 @@ const HTTP_CONFLICT = 409;
  * @since TBD
  *
  * @param {string}   version          Current document version, from the shared version state.
- * @param {string}   slug             Token set slug.
+ * @param {string}   slug             Token library slug.
  * @param {Function} onVersionChange  Called with the latest document version after a successful write.
  * @return {{ isPending: boolean, fetchPreview: Function, createPrimitive: Function, deletePrimitive: Function, renamePrimitive: Function }}
  */

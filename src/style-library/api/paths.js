@@ -1,12 +1,12 @@
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
 /**
- * Build a REST path for a token set document.
+ * Build a REST path for a token library document.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
@@ -18,7 +18,7 @@ export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function userPrimitivesPath(slug) {
@@ -30,7 +30,7 @@ export function userPrimitivesPath(slug) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
  * @return {string} REST path relative to wp-json root.
  */
@@ -43,7 +43,7 @@ export function userPrimitiveReferencesPath(slug, id) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
  * @return {string} REST path relative to wp-json root.
  */
@@ -56,7 +56,7 @@ export function userPrimitivePath(slug, id) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
  * @return {string} REST path relative to wp-json root.
  */
@@ -70,7 +70,7 @@ export function userPrimitiveRenamePath(slug, id) {
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function resolvedPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
@@ -84,7 +84,7 @@ export function resolvedPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  *
  * @param {string} namespace REST namespace.
  * @param {string} tokenId   Dot-path token id.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {

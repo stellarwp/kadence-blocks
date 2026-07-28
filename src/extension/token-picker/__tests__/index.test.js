@@ -215,7 +215,7 @@ describe('pickableTokensFor', () => {
 		]);
 	});
 
-	it('falls back to the active set values for an unknown set slug', () => {
+	it('falls back to the active library values for an unknown library slug', () => {
 		const result = pickableTokensFor('color', 'nonexistent-set');
 
 		expect(result.find((token) => token.id === 'semantic.color.button-primary-bg').value).toBe('#2b6cb0');
