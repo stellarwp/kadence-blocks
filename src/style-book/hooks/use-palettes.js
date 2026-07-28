@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { fetchPalettes, fetchPalette, setCurrentPalette, savePalette } from '../api/client';
+import { fetchPalettes, fetchPalette, setCurrentPalette, saveSwatch } from '../api/client';
 
 /**
  * State + actions for the Style Book palettes page: the set's palette listing, the selected palette's full
@@ -103,14 +103,9 @@ export function usePalettes(namespace, slug) {
 					return;
 				}
 
-				const groups = (selected.groups || []).map((group) => ({
-					...group,
-					swatches: (group.swatches || []).map((swatch) =>
-						swatch.token === token ? { ...swatch, $value: nextValue } : swatch
-					),
-				}));
-
-				await savePalette(namespace, selected.id, { label: selected.label, groups }, slug);
+				// Send only the changed swatch: the palette's other colors are untouched, and any token this
+				// palette does not set falls back to the default palette.
+				await saveSwatch(namespace, selected.id, token, nextValue, slug);
 				await loadPalette(selected.id);
 				await loadListing();
 			}),

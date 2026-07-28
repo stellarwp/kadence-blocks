@@ -15,6 +15,7 @@ import {
 	userPrimitiveRenamePath,
 	palettesPath,
 	palettePath,
+	paletteSwatchPath,
 	paletteCurrentPath,
 } from './paths';
 
@@ -128,6 +129,46 @@ export function savePalette(namespace, id, payload, slug) {
 		path: palettePath(namespace, id, slug),
 		method: 'PUT',
 		data: payload,
+	});
+}
+
+/**
+ * Set a single palette swatch (the granular per-token write): only this token is sent, and the palette's
+ * other swatches are untouched. A token the palette does not set falls back to the default palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} value     The color value (a literal color or a {dot.path} alias).
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function saveSwatch(namespace, id, token, value, slug) {
+	return apiFetch({
+		path: paletteSwatchPath(namespace, id, token, slug),
+		method: 'PUT',
+		data: { $value: value },
+	});
+}
+
+/**
+ * Revert a single palette swatch to inherited (the granular per-token delete): drop the palette's own value
+ * for this token so it falls back to the default palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function deleteSwatch(namespace, id, token, slug) {
+	return apiFetch({
+		path: paletteSwatchPath(namespace, id, token, slug),
+		method: 'DELETE',
 	});
 }
 

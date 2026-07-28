@@ -318,6 +318,158 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Setting one swatch through the sub-route stores just that token and leaves the palette's other swatches
+	 * intact — the caller never sends the full palette, and an untouched token is unaffected.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchSetsOneTokenWithoutTheFullPalette(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$response = $this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'ocean', 'primitive.color.brand.secondary', '#00ff00' )
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = $this->palettes->swatch_values( 'ocean' );
+		$this->assertSame( '#00ff00', $stored['primitive.color.brand.secondary'], 'The set swatch is stored.' );
+		$this->assertSame( '#0000ff', $stored['primitive.color.brand.primary'], 'The untouched swatch is intact.' );
+	}
+
+	/**
+	 * Setting an existing swatch through the sub-route updates its value in place.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchUpdatesAnExistingToken(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'ocean', 'primitive.color.brand.primary', '#123456' )
+		);
+
+		$this->assertSame( '#123456', $this->palettes->swatch_values( 'ocean' )['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * A swatch write whose token targets a non-color token is rejected with a 422, without needing the rest of
+	 * the palette in the request.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsANonColorToken(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'ocean', 'primitive.dimension.spacing.md', '#0000ff' )
+				) 
+			)
+		);
+	}
+
+	/**
+	 * A swatch write to a palette the set does not define is a 404.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchOnAnUnknownPaletteIsNotFound(): void {
+		$this->assertSame(
+			WP_Http::NOT_FOUND,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'nope', 'primitive.color.brand.primary', '#0000ff' )
+				) 
+			)
+		);
+	}
+
+	/**
+	 * Deleting a swatch through the sub-route drops the palette's own value for that token, reverting it to
+	 * inherited-from-default.
+	 *
+	 * @return void
+	 */
+	public function testDeleteSwatchRevertsATokenToInherited(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+		$this->assertArrayHasKey( 'primitive.color.brand.primary', $this->palettes->swatch_values( 'ocean' ) );
+
+		$this->controller->delete_swatch(
+			$this->swatch_request( 'DELETE', 'ocean', 'primitive.color.brand.primary' )
+		);
+
+		$this->assertArrayNotHasKey( 'primitive.color.brand.primary', $this->palettes->swatch_values( 'ocean' ) );
+	}
+
+	/**
+	 * A swatch of the default palette cannot be reverted (there is nothing to inherit from), so a delete is a
+	 * 400.
+	 *
+	 * @return void
+	 */
+	public function testDeleteSwatchOnTheDefaultPaletteIsForbidden(): void {
+		$this->assertSame(
+			WP_Http::BAD_REQUEST,
+			$this->status_of(
+				$this->controller->delete_swatch(
+					$this->swatch_request( 'DELETE', 'default', 'primitive.color.brand.primary' )
+				) 
+			)
+		);
+	}
+
+	/**
+	 * POST, PUT, and DELETE are all registered for the single-swatch sub-route.
+	 *
+	 * @return void
+	 */
+	public function testTheSwatchRouteAcceptsPostPutAndDelete(): void {
+		global $wp_rest_server;
+		$wp_rest_server = new WP_REST_Server();
+		do_action( 'rest_api_init' );
+
+		$endpoints = $wp_rest_server->get_routes()['/kb-design-tokens/v1/palettes/(?P<id>[\w-]+)/swatches/(?P<token>[\w.-]+)'] ?? [];
+
+		$methods = [];
+		foreach ( $endpoints as $endpoint ) {
+			foreach ( array_keys( array_filter( $endpoint['methods'] ?? [] ) ) as $method ) {
+				$methods[ $method ] = true;
+			}
+		}
+
+		$wp_rest_server = null;
+
+		$this->assertArrayHasKey( 'POST', $methods );
+		$this->assertArrayHasKey( 'PUT', $methods );
+		$this->assertArrayHasKey( 'DELETE', $methods );
+	}
+
+	/**
+	 * A single-swatch request for the sub-route: the palette id, the token dot-path, and (for a write) the value.
+	 *
+	 * @param string      $method The HTTP method.
+	 * @param string      $id     The palette id.
+	 * @param string      $token  The swatch token dot-path.
+	 * @param string|null $value  The swatch value, for a write.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function swatch_request( string $method, string $id, string $token, ?string $value = null ): WP_REST_Request {
+		$request = new WP_REST_Request( $method );
+		$request->set_param( 'id', $id );
+		$request->set_param( 'token', $token );
+
+		if ( $value !== null ) {
+			$request->set_param( '$value', $value );
+		}
+
+		return $request;
+	}
+
+	/**
 	 * A palette write request with a single one-swatch Accent group.
 	 *
 	 * @param string $id    The palette id.
