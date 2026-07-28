@@ -13,10 +13,6 @@ use Tests\Support\Classes\TestCase;
  */
 final class Css_BuilderTest extends TestCase {
 
-	private function builder(): Css_Builder {
-		return new Css_Builder();
-	}
-
 	/**
 	 * A palette emits a `[data-kb-palette="<id>"]` selector that re-points each swatch's canonical color var
 	 * to the swatch's literal value.
@@ -78,5 +74,14 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testTheSwitchAttributeAccessorMatchesTheEmittedSelector(): void {
 		$this->assertSame( 'data-kb-palette', Css_Builder::get_switch_attribute() );
+	}
+
+	/**
+	 * Builds a fresh palette CSS builder for the tests to exercise.
+	 *
+	 * @return Css_Builder
+	 */
+	private function builder(): Css_Builder {
+		return new Css_Builder();
 	}
 }
