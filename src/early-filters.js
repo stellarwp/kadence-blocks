@@ -333,7 +333,12 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
 							{showPresets && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
+									<PresetPicker
+										name={name}
+										library={library}
+										value={selected}
+										onChange={selectPreset}
+									/>
 									<PresetActions
 										blockName={name}
 										library={library}
