@@ -234,16 +234,13 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$baseline = $this->css->css_output();
 		$actual = $this->css->render_range( [ 'width' => $malformed ], 'width', 'width', 'px' );
 		$output = $this->css->css_output();
 
 		$this->assertSame( false, $actual,
 			'render_range must return its own normal false result for an unusable value' );
-		$this->assertStringNotContainsString( 'var(', $output,
-			'render_range must not mint a var() from a malformed brace string' );
-		$this->assertStringNotContainsString( '--kb-token--', $output,
-			'render_range must not mint a var() from a malformed brace string' );
-		$this->assertStringNotContainsString( 'width:', $output,
+		$this->assertSame( $baseline, $output,
 			'render_range must add no declaration for an unusable value' );
 	}
 
