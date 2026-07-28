@@ -443,6 +443,7 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderTypographyFailsOpenForMalformedAlias( string $malformed ): void {
+		$baseline = $this->css->css_output();
 		$this->css->render_typography( [
 			'typography' => [
 				'lineType'      => 'px',
@@ -451,12 +452,13 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			],
 		] );
 		$output = $this->css->css_output();
+		$added = substr( $output, 0, strlen( $output ) - strlen( $baseline ) );
 
-		$this->assertStringContainsString( 'line-height:' . $malformed . 'px', $output,
+		$this->assertStringContainsString( 'line-height:' . $malformed . 'px', $added,
 			'render_typography must pass a malformed brace line-height through literally under its !empty() gate' );
-		$this->assertStringNotContainsString( 'letter-spacing:', $output,
+		$this->assertStringNotContainsString( 'letter-spacing:', $added,
 			'render_typography must reject a malformed brace letter-spacing outright under its is_numeric() gate' );
-		$this->assertStringNotContainsString( '--kb-token--', $output,
+		$this->assertStringNotContainsString( '--kb-token--', $added,
 			'render_typography must not mint a var() from a malformed brace string' );
 	}
 
