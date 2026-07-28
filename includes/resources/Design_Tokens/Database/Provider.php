@@ -43,8 +43,8 @@ final class Provider extends Provider_Contract {
 	/**
 	 * Bind Token_History_Store and subscribe it to the Token_Store change signals.
 	 *
-	 * The store archives the previous document each time a set is overwritten, and
-	 * drops a set's whole trail when its row is deleted. Subscribing here (rather
+	 * The store archives the previous document each time a library is overwritten, and
+	 * drops a library's whole trail when its row is deleted. Subscribing here (rather
 	 * than calling the store from Token_Store) keeps Token_Store the sole writer of
 	 * its own table — it only announces the prior state and the deletion, and
 	 * history is a separable consumer of those signals.

@@ -1007,7 +1007,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Reject a candidate whose effective `$default` does not name a present preset.
 	 *
-	 * Evaluated against the post-merge effective set (baseline merged with the candidate), so a default that
+	 * Evaluated against the post-merge effective library (baseline merged with the candidate), so a default that
 	 * resolves to a baseline preset is accepted and one left dangling by a removal is rejected.
 	 *
 	 * @since TBD
@@ -1048,7 +1048,7 @@ final class Presets_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate  The post-merge candidate overrides document.
-	 * @param array<string, mixed> $block_node The set's preset node from the request.
+	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $block      The block name.
 	 *
 	 * @return WP_Error|null A WP_Error when a written preset sets an unbound property, null otherwise.

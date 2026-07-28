@@ -36,8 +36,8 @@ final class Slot_Target_Reader {
 	private Token_Resolver $resolver;
 
 	/**
-	 * Owns the active-library pointer, so the scale follows the active set (e.g. a switched palette) the same
-	 * way the projected CSS does.
+	 * Owns the active-library pointer, so the scale follows the active library (e.g. a switched palette) the
+	 * same way the projected CSS does.
 	 *
 	 * @since TBD
 	 *
@@ -75,7 +75,7 @@ final class Slot_Target_Reader {
 		}
 
 		try {
-			// Resolve the active set (not just the default) so the scale follows a switched set, matching
+			// Resolve the active library (not just the default) so the scale follows a switched library, matching
 			// how the projected slot overrides resolve.
 			$resolved = $this->resolver->resolve( $this->active->get() );
 		} catch ( Throwable $e ) {

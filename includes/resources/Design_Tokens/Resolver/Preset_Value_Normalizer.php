@@ -10,12 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * instance re-joins the theming cascade instead of freezing as a literal.
  *
  * The editor captures concrete values (a hex, a length) from a block and sends them as literals. For each
- * value this normalizer looks for a semantic token whose resolved value matches it in the target set; when
- * one is found the literal is replaced with that token's alias (`{semantic.color.button-primary-bg}`), so a
- * later edit to the semantic (or the primitive it points at) still cascades into the preset. A value that
- * is already an alias is left untouched, and a value with no matching semantic stays a literal.
+ * value this normalizer looks for a semantic token whose resolved value matches it in the target library;
+ * when one is found the literal is replaced with that token's alias (`{semantic.color.button-primary-bg}`),
+ * so a later edit to the semantic (or the primitive it points at) still cascades into the preset. A value
+ * that is already an alias is left untouched, and a value with no matching semantic stays a literal.
  *
- * The match is deterministic: candidates are the semantic-layer entries of the set's resolved token map, in
+ * The match is deterministic: candidates are the semantic-layer entries of the library's resolved token map, in
  * document order; when several share a value the one whose id best matches the property's role wins (e.g.
  * `button-bg` prefers a semantic id containing "button" and "bg"), tie-broken by document order. Matching is
  * done PHP-side on write because the Resolver is the only authority that can guarantee the chosen alias

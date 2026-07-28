@@ -84,7 +84,7 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-library pointer, read at sync time so the synced options follow the active set.
+	 * Owns the active-library pointer, read at sync time so the synced options follow the active library.
 	 *
 	 * @since TBD
 	 *
@@ -177,8 +177,8 @@ final class Projector {
 		$theme_present = $this->theme_palette_exists();
 		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version( $slug ) . ':' . ( $theme_present ? '1' : '0' );
 
-		// Skip the resolve + writes when neither the active set's version nor the theme-option presence
-		// changed since the last successful sync. Switching the active set changes its version, so the
+		// Skip the resolve + writes when neither the active library's version nor the theme-option presence
+		// changed since the last successful sync. Switching the active library changes its version, so the
 		// signature flips and the next reconcile re-syncs; the theme-present bit catches a theme switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;

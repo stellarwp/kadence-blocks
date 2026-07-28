@@ -73,7 +73,7 @@ final class Localizer {
 	private Token_Resolver $resolver;
 
 	/**
-	 * The store, for the current set's version hash.
+	 * The store, for the current library's version hash.
 	 *
 	 * @since TBD
 	 *
@@ -159,9 +159,9 @@ final class Localizer {
 			return; // No supported admin bundle on this screen.
 		}
 
-		// The active set, not always Token_Store::default_slug() — the registry's user primitives and
-		// every projector already resolve against whichever set is active, so the dashboard must read
-		// (and, via the REST descriptor's slug, write) the same set or edits land in a document that
+		// The active library, not always Token_Store::default_slug() — the registry's user primitives and
+		// every projector already resolve against whichever library is active, so the dashboard must read
+		// (and, via the REST descriptor's slug, write) the same library or edits land in a document that
 		// is not the one being displayed.
 		$slug    = $this->active->get();
 		$version = $this->store->get_version( $slug );

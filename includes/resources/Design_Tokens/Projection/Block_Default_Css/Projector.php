@@ -41,7 +41,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-library pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
 	 * @since TBD
 	 *
@@ -120,7 +120,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the FRONT-END block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Build the FRONT-END block-default CSS for the current library, via the builder's version-keyed cache.
 	 *
 	 * Returns an empty string when the store version cannot be read or a block cannot be resolved (e.g. an
 	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
@@ -143,7 +143,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the EDITOR-scoped block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Build the EDITOR-scoped block-default CSS for the current library, via the builder's version-keyed cache.
 	 * Identical to {@see self::css()} for every block that declares no `editor_selector`; scoped under
 	 * `.editor-styles-wrapper` and re-targeted at the block's editor markup for the ones that do (see
 	 * {@see Css_Builder::editor_css()}).
