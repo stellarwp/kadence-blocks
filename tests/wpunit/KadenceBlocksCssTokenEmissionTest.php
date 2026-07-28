@@ -669,4 +669,78 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			],
 		];
 	}
+
+	/**
+	 * Inline box-shadow: render_shadow with an alias in each individual part (hOffset,
+	 * vOffset, blur, spread) carries the var() in the correct shorthand position with the
+	 * remaining parts numeric.
+	 *
+	 * @dataProvider shadowAliasedPartProvider
+	 *
+	 * @param array  $shadow   The shadow attributes array with one aliased part.
+	 * @param string $expected The expected byte-identical box-shadow shorthand.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowMixesAliasedAndNumericParts( array $shadow, string $expected ): void {
+		$this->assertSame( $expected, $this->css->render_shadow( $shadow ),
+			'render_shadow must emit the var() in the correct shorthand position for the aliased part' );
+	}
+
+	/**
+	 * Provides a box-shadow attributes array with the alias rotated through each of hOffset,
+	 * vOffset, blur, and spread, one part per case, with the other numeric parts held fixed.
+	 *
+	 * @return Generator
+	 */
+	public static function shadowAliasedPartProvider(): Generator {
+		yield 'alias in hOffset' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => '{semantic.radius.media}',
+				'vOffset' => 1,
+				'inset'   => false,
+			],
+			'expected' => 'var(--kb-token--semantic--radius--media) 1px 4px 2px #000000',
+		];
+		yield 'alias in vOffset' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => 2,
+				'blur'    => 4,
+				'hOffset' => 1,
+				'vOffset' => '{semantic.radius.media}',
+				'inset'   => false,
+			],
+			'expected' => '1px var(--kb-token--semantic--radius--media) 4px 2px #000000',
+		];
+		yield 'alias in blur' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => 2,
+				'blur'    => '{semantic.radius.media}',
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'inset'   => false,
+			],
+			'expected' => '1px 1px var(--kb-token--semantic--radius--media) 2px #000000',
+		];
+		yield 'alias in spread' => [
+			'shadow'   => [
+				'color'   => '#000000',
+				'opacity' => 1,
+				'spread'  => '{semantic.radius.media}',
+				'blur'    => 4,
+				'hOffset' => 1,
+				'vOffset' => 1,
+				'inset'   => false,
+			],
+			'expected' => '1px 1px 4px var(--kb-token--semantic--radius--media) #000000',
+		];
+	}
 }
