@@ -200,4 +200,277 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			$this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false ),
 			'get_border_value must emit the bare var() for a strict alias width' );
 	}
+
+	/**
+	 * The fail-open matrix: a malformed brace string must never mint a var() and never reach
+	 * numeric handling as if it were an alias, for every representative method's own value site.
+	 *
+	 * A looks-like-but-not-strict string must fall through the strict `Alias::is_alias()` gate
+	 * and land in the method's ordinary invalid-value handling. The call completing and this
+	 * method's assertions running is itself proof there is no fatal or TypeError along the way
+	 * (a regression here would be `is_numeric()`-adjacent code choking on a brace string).
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderNumberFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->render_number( $malformed, 'px' );
+
+		$this->assertSame( false, $actual,
+			'render_number must return its own normal false result for an unusable value' );
+	}
+
+	/**
+	 * The fail-open matrix for render_range: a malformed brace string short-circuits to false
+	 * and adds no declaration.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->render_range( [ 'width' => $malformed ], 'width', 'width', 'px' );
+		$output = $this->css->css_output();
+
+		$this->assertSame( false, $actual,
+			'render_range must return its own normal false result for an unusable value' );
+		$this->assertStringNotContainsString( 'var(', $output,
+			'render_range must not mint a var() from a malformed brace string' );
+		$this->assertStringNotContainsString( '--kb-token--', $output,
+			'render_range must not mint a var() from a malformed brace string' );
+		$this->assertStringNotContainsString( 'width:', $output,
+			'render_range must add no declaration for an unusable value' );
+	}
+
+	/**
+	 * The fail-open matrix for render_color: a malformed brace string is not empty(), so it
+	 * passes through unchanged as the method's normal literal-passthrough result.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderColorFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->render_color( $malformed );
+
+		$this->assertSame( $malformed, $actual,
+			'render_color must pass a malformed brace string through unchanged, its normal literal result' );
+		$this->assertStringNotContainsString( 'var(', (string) $actual,
+			'render_color must not mint a var() from a malformed brace string' );
+	}
+
+	/**
+	 * The fail-open matrix for sanitize_color: a malformed brace string is not empty(), so it
+	 * passes through unchanged as the method's normal literal-passthrough result.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testSanitizeColorFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->sanitize_color( $malformed );
+
+		$this->assertSame( $malformed, $actual,
+			'sanitize_color must pass a malformed brace string through unchanged, its normal literal result' );
+		$this->assertStringNotContainsString( 'var(', (string) $actual,
+			'sanitize_color must not mint a var() from a malformed brace string' );
+	}
+
+	/**
+	 * The fail-open matrix for get_border_value (width): a malformed brace string is not
+	 * numeric, so the method falls back to its normal blank-string result.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testGetBorderValueFailsOpenForMalformedAlias( string $malformed ): void {
+		$attributes = [
+			'borderStyle' => [
+				[
+					'top'    => [ '#000000', 'solid', $malformed ],
+					'right'  => [ '#000000', 'solid', $malformed ],
+					'bottom' => [ '#000000', 'solid', $malformed ],
+					'left'   => [ '#000000', 'solid', $malformed ],
+					'unit'   => 'px',
+				],
+			],
+		];
+		$args = [
+			'desktop_key' => 'borderStyle',
+			'tablet_key'  => 'tabletBorderStyle',
+			'mobile_key'  => 'mobileBorderStyle',
+			'unit_key'    => 'unit',
+		];
+
+		$actual = $this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false );
+
+		$this->assertSame( '', $actual,
+			'get_border_value must return its own normal blank-string result for an unusable width' );
+	}
+
+	/**
+	 * The fail-open matrix for render_measure: a malformed brace string on every side is
+	 * neither numeric nor a strict alias on any side, so the method returns its own normal
+	 * false result.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->render_measure( [ $malformed, $malformed, $malformed, $malformed ] );
+
+		$this->assertSame( false, $actual,
+			'render_measure must return its own normal false result when no side is numeric or a strict alias' );
+	}
+
+	/**
+	 * The fail-open matrix for render_measure_range: a malformed brace string on every side
+	 * adds no declaration, since it is neither numeric nor a strict alias.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$this->css->render_measure_range(
+			[ 'borderWidth' => [ $malformed, $malformed, $malformed, $malformed ] ],
+			'borderWidth',
+			'border-width'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertSame( '', $output,
+			'render_measure_range must add no declaration for any side when nothing is numeric or a strict alias' );
+	}
+
+	/**
+	 * The fail-open matrix for render_border_radius: a malformed brace string on every corner
+	 * adds no declaration, since it is neither numeric nor a strict alias.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderRadiusFailsOpenForMalformedAlias( string $malformed ): void {
+		$this->css->render_border_radius( [ 'borderRadius' => [ $malformed, $malformed, $malformed, $malformed ] ] );
+		$output = $this->css->css_output();
+
+		$this->assertSame( '', $output,
+			'render_border_radius must add no declaration for any corner when nothing is numeric or a strict alias' );
+	}
+
+	/**
+	 * The fail-open matrix for render_responsive_range: a malformed brace string on every
+	 * breakpoint adds no declaration, since it is neither numeric nor a strict alias.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderResponsiveRangeFailsOpenForMalformedAlias( string $malformed ): void {
+		$this->css->render_responsive_range(
+			[
+				'spacing'     => [ $malformed, $malformed, $malformed ],
+				'spacingType' => 'px',
+			],
+			'spacing',
+			'margin'
+		);
+		$output = $this->css->css_output();
+
+		$this->assertSame( '', $output,
+			'render_responsive_range must add no declaration for any breakpoint when nothing is numeric or a strict alias' );
+	}
+
+	/**
+	 * The fail-open matrix for render_shadow: a malformed, non-empty brace string in hOffset is
+	 * not a strict alias, so the `!empty()` gate passes it through literally with its unit
+	 * suffix, the method's normal literal-passthrough result.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowFailsOpenForMalformedAlias( string $malformed ): void {
+		$actual = $this->css->render_shadow( [
+			'color'   => '#000000',
+			'opacity' => 1,
+			'spread'  => 2,
+			'blur'    => 4,
+			'hOffset' => $malformed,
+			'vOffset' => 1,
+			'inset'   => false,
+		] );
+
+		$this->assertSame( $malformed . 'px 1px 4px 2px #000000', $actual,
+			'render_shadow must pass a malformed brace hOffset through literally with its unit suffix' );
+		$this->assertStringNotContainsString( '--kb-token--', $actual,
+			'render_shadow must not mint a var() from a malformed brace string' );
+	}
+
+	/**
+	 * The fail-open matrix for render_typography: a malformed, non-empty brace string in
+	 * line-height passes through literally under its `!empty()` gate, while the same string in
+	 * letter-spacing is rejected outright by its `is_numeric()` gate and adds no declaration.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyFailsOpenForMalformedAlias( string $malformed ): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'lineType'      => 'px',
+				'lineHeight'    => [ $malformed, '', '' ],
+				'letterSpacing' => [ $malformed, '', '' ],
+			],
+		] );
+		$output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'line-height:' . $malformed . 'px', $output,
+			'render_typography must pass a malformed brace line-height through literally under its !empty() gate' );
+		$this->assertStringNotContainsString( 'letter-spacing:', $output,
+			'render_typography must reject a malformed brace letter-spacing outright under its is_numeric() gate' );
+		$this->assertStringNotContainsString( '--kb-token--', $output,
+			'render_typography must not mint a var() from a malformed brace string' );
+	}
+
+	/**
+	 * Provides the malformed brace strings crossed against the representative methods: a
+	 * space inside the braces (loose-looks-like but strict-rejected), an unclosed brace, an
+	 * unopened brace, and empty braces.
+	 *
+	 * @return Generator
+	 */
+	public static function malformedAliasProvider(): Generator {
+		yield 'space inside braces' => [ 'malformed' => '{bad path}' ];
+		yield 'unclosed brace' => [ 'malformed' => '{unclosed' ];
+		yield 'unopened brace' => [ 'malformed' => 'unopened}' ];
+		yield 'empty braces' => [ 'malformed' => '{}' ];
+	}
 }
