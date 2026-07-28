@@ -9,13 +9,13 @@ import { useCallback, useState } from '@wordpress/element';
 import { CUSTOM_COLORS_GROUP_LABEL, SECTION_OVERVIEW } from '../../constants/navigation';
 import { findSection } from '../../helpers/navigation';
 import { useDesignTokensFeed } from '../../hooks/use-design-tokens-feed';
-import { useStyleBookNavigation } from '../../hooks/use-style-book-navigation';
+import { useStyleLibraryNavigation } from '../../hooks/use-style-library-navigation';
 import { useTokenEditor } from '../../hooks/use-token-editor';
 import { useUserPrimitiveEditor } from '../../hooks/use-user-primitive-editor';
 import { FoundationPage } from '../pages/FoundationPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { PalettesPage } from '../pages/PalettesPage';
-import { StyleBookShell } from '../templates/StyleBookShell';
+import { StyleLibraryShell } from '../templates/StyleLibraryShell';
 
 /**
  * Build an optimistic token definition from a create payload.
@@ -42,9 +42,9 @@ function tokenFromCreatePayload(payload) {
 }
 
 /**
- * Style Book application page — sidebar shell and section routing.
+ * Style Library application page — sidebar shell and section routing.
  *
- * @return {JSX.Element} Style Book page.
+ * @return {JSX.Element} Style Library page.
  */
 export function TokensPage() {
 	const {
@@ -76,7 +76,7 @@ export function TokensPage() {
 	const [localTokens, setLocalTokens] = useState(null);
 	const tokens = localTokens ?? feedTokens;
 
-	const { section, setSection, sections } = useStyleBookNavigation(tokens);
+	const { section, setSection, sections } = useStyleLibraryNavigation(tokens);
 
 	const { createPrimitive, deletePrimitive, renamePrimitive, fetchPreview } = useUserPrimitiveEditor(
 		version,
@@ -136,8 +136,8 @@ export function TokensPage() {
 	}
 
 	return (
-		<StyleBookShell section={section} sections={sections} onNavigate={setSection} version={version}>
+		<StyleLibraryShell section={section} sections={sections} onNavigate={setSection} version={version}>
 			{content}
-		</StyleBookShell>
+		</StyleLibraryShell>
 	);
 }
