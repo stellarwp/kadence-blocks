@@ -5,9 +5,9 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
@@ -184,8 +184,8 @@ final class LocalizerTest extends TestCase {
 		$localizer = new Localizer(
 			$cyclic,
 			$this->container->get( Token_Store::class ),
-			$this->container->get( Active_Set_Store::class ),
-			$this->container->get( Variants::class ),
+			$this->container->get( Active_Token_Library_Store::class ),
+			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class )
 		);
@@ -197,7 +197,7 @@ final class LocalizerTest extends TestCase {
 		$this->assertTrue( $feed['active'], 'Structure still renders.' );
 		$this->assertFalse( $feed['resolved'], 'Values could not be resolved.' );
 		$this->assertSame( [], $feed['values'] );
-		$this->assertSame( [], $feed['variants'] );
+		$this->assertSame( [], $feed['presets'] );
 		$this->assertArrayHasKey( 'groups', $feed['schema'] );
 	}
 
@@ -280,13 +280,13 @@ final class LocalizerTest extends TestCase {
 	/**
 	 * The dashboard must read (and, via the REST descriptor's slug, write) whichever set is active —
 	 * not always the default one — so it stays consistent with the registry's user primitives and every
-	 * projector, all of which already resolve against Active_Set_Store::get().
+	 * projector, all of which already resolve against Active_Token_Library_Store::get().
 	 *
 	 * @return void
 	 */
 	public function testFeedFollowsTheActiveSetRatherThanAlwaysTheDefaultSet(): void {
 		$store  = $this->container->get( Token_Store::class );
-		$active = $this->container->get( Active_Set_Store::class );
+		$active = $this->container->get( Active_Token_Library_Store::class );
 
 		$doc = (string) wp_json_encode(
 			[
