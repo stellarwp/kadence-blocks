@@ -9,13 +9,13 @@ import { useCallback, useEffect, useState } from '@wordpress/element';
 import { fetchPalettes, fetchPalette, setCurrentPalette, saveSwatch } from '../api/client';
 
 /**
- * State + actions for the Style Library palettes page: the set's palette listing, the selected palette's full
- * node (groups of swatches), switching the set's `$current` palette, and saving a single swatch's value back
+ * State + actions for the Style Library palettes page: the library's palette listing, the selected palette's full
+ * node (groups of swatches), switching the library's `$current` palette, and saving a single swatch's value back
  * to the current palette. All writes go through the palette REST surface (B3); a write reloads so the view
  * reflects the persisted state.
  *
  * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
- * @param {string} slug      Token set slug the feed resolved against.
+ * @param {string} slug      Token library slug the feed resolved against.
  *
  * @since TBD
  *
@@ -52,7 +52,7 @@ export function usePalettes(namespace, slug) {
 		[namespace, slug]
 	);
 
-	// Initial load: fetch the listing and select the set's current palette.
+	// Initial load: fetch the listing and select the library's current palette.
 	useEffect(() => {
 		let cancelled = false;
 

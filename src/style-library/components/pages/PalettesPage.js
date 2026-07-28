@@ -14,13 +14,13 @@ import { usePalettes } from '../../hooks/use-palettes';
 
 /**
  * The Style Library color-palettes page: a palette dropdown that selects which palette to view / edit, a
- * "Set as current" action that switches the set's `$current` palette, and the selected palette's color
+ * "Set as current" action that switches the library's `$current` palette, and the selected palette's color
  * groups with per-swatch editing. Swatch edits and the current-palette switch write through the palette
  * REST surface.
  *
  * @param {object} props           Component props.
  * @param {string} props.namespace REST namespace the palette client targets.
- * @param {string} props.slug      Token set slug the feed resolved against.
+ * @param {string} props.slug      Token library slug the feed resolved against.
  *
  * @since TBD
  *
