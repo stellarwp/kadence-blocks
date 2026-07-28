@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * Reads the effective colorPalettes section: the shipped baseline's palettes deep-merged with a set's stored
  * overrides, so a palette authored through the store is visible alongside the baseline ones.
  *
- * A thin reader mirroring {@see Effective_Variants}: the deep-merge is {@see Mutator::merge()} (which
+ * A thin reader mirroring {@see Effective_Presets}: the deep-merge is {@see Mutator::merge()} (which
  * preserves the whole "$extensions" layer untouched, exactly what a palettes view needs), so this class only
  * decodes the baseline and the stored overrides, walks each down to the `$extensions...colorPalettes`
  * subtree, and delegates the merge. The sibling {@see Effective_Document} deliberately strips "$extensions",
@@ -385,7 +385,7 @@ final class Effective_Palettes {
 
 	/**
 	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
-	 * The single decode seam for the stored overrides, mirroring {@see Effective_Variants::raw()}.
+	 * The single decode seam for the stored overrides, mirroring {@see Effective_Presets::raw()}.
 	 *
 	 * @since TBD
 	 *
