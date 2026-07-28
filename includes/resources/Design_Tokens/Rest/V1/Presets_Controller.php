@@ -42,10 +42,10 @@ use WP_REST_Server;
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
  * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
  *
- * Every route operates on a single token set: the one named by the optional `set` request parameter when
- * it is a known set, otherwise the active set ({@see Active_Token_Library_Store::get()}, which resolves to
- * {@see Token_Store::default_slug()} when none is selected). So a read or write lands in whichever set the
- * editor has the block on, and the default set is used by default.
+ * Every route operates on a single token library: the one named by the optional `library` request parameter
+ * when it is a known library, otherwise the active library ({@see Active_Token_Library_Store::get()}, which
+ * resolves to {@see Token_Store::default_slug()} when none is selected). So a read or write lands in
+ * whichever library the editor has the block on, and the default library is used by default.
  *
  * @since TBD
  */
@@ -115,13 +115,13 @@ final class Presets_Controller extends Controller {
 	private const DEFAULT_PARAM = 'default';
 
 	/**
-	 * The request parameter that carries the token set slug a read/write targets.
+	 * The request parameter that carries the token library slug a read/write targets.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const SET_PARAM = 'set';
+	private const LIBRARY_PARAM = 'library';
 
 	/**
 	 * The block vendor path segment. A slug-safe class with no slash; the block name is the second segment.
@@ -224,7 +224,7 @@ final class Presets_Controller extends Controller {
 	private Token_Registry $registry;
 
 	/**
-	 * Resolves the active token set when a request names none.
+	 * Resolves the active token library when a request names none.
 	 *
 	 * @since TBD
 	 *
@@ -259,7 +259,7 @@ final class Presets_Controller extends Controller {
 	 * @param Dtcg_Validator             $validator Validates the DTCG grammar of a candidate document.
 	 * @param Effective_Presets          $presets   Reads the baseline-merged presets section.
 	 * @param Token_Registry             $registry   Declares which blocks accept presets.
-	 * @param Active_Token_Library_Store $active     Resolves the active set when a request names none.
+	 * @param Active_Token_Library_Store $active     Resolves the active library when a request names none.
 	 * @param Preset_Value_Normalizer    $normalizer Rewrites captured literals into semantic aliases.
 	 */
 	public function __construct(
@@ -432,7 +432,7 @@ final class Presets_Controller extends Controller {
 	 * Create or merge a single preset (POST /presets/{block}).
 	 *
 	 * The body carries the preset slug, an optional label and its property => value token map. The preset
-	 * is deep-merged into the stored set, so sibling presets and the `$default` are left intact.
+	 * is deep-merged into the stored library, so sibling presets and the `$default` are left intact.
 	 *
 	 * @since TBD
 	 *
@@ -600,7 +600,7 @@ final class Presets_Controller extends Controller {
 	 * Drops the stored override for that preset; a preset that also exists in the baseline reverts to its
 	 * baseline definition. Idempotent: a no-op when nothing is stored for the preset. The `$default` is
 	 * managed through the dedicated sub-route, so deleting "default" here is rejected; and removing a
-	 * preset the effective set still defaults to is rejected (HTTP 422) before commit.
+	 * preset the effective library still defaults to is rejected (HTTP 422) before commit.
 	 *
 	 * @since TBD
 	 *
@@ -677,7 +677,7 @@ final class Presets_Controller extends Controller {
 	/**
 	 * Set a block's default preset slug (PUT /presets/{block}/default).
 	 *
-	 * The default must name a preset the effective set defines, otherwise the write is rejected (HTTP 422)
+	 * The default must name a preset the effective library defines, otherwise the write is rejected (HTTP 422)
 	 * before commit.
 	 *
 	 * @since TBD
@@ -750,13 +750,13 @@ final class Presets_Controller extends Controller {
 					'readonly'    => true,
 				],
 				'slug'    => [
-					'description' => __( 'The token set slug.', 'kadence-blocks' ),
+					'description' => __( 'The token library slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
 				'version' => [
-					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
+					'description' => __( 'The cache-busting version hash for the library, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -781,7 +781,8 @@ final class Presets_Controller extends Controller {
 	/**
 	 * The query parameters accepted by the collection route.
 	 *
-	 * The list is scoped to a single token set via the optional `set` parameter, defaulting to the active set.
+	 * The list is scoped to a single token library via the optional `library` parameter, defaulting to the
+	 * active library.
 	 *
 	 * @since TBD
 	 *
@@ -789,7 +790,7 @@ final class Presets_Controller extends Controller {
 	 */
 	public function get_collection_params(): array {
 		return [
-			self::SET_PARAM => $this->set_param(),
+			self::LIBRARY_PARAM => $this->library_param(),
 		];
 	}
 
@@ -798,18 +799,18 @@ final class Presets_Controller extends Controller {
 	 *
 	 * Validates the DTCG grammar (HTTP 422 on failure), dry-runs the Resolver to reject alias cycles /
 	 * dangling aliases in the token layers before commit (HTTP 422), then persists. An empty candidate
-	 * clears the overrides, so the set renders from baseline, and needs no validation.
+	 * clears the overrides, so the library renders from baseline, and needs no validation.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
 	 * @param string               $block     The block being written, for error context.
-	 * @param string               $slug      The token set slug being written.
+	 * @param string               $slug      The token library slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
 	private function validate_and_save( array $candidate, string $block, string $slug ) {
-		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
+		// A brand-new library has no version yet; report 201 Created rather than 200 OK on first write.
 		$status = $this->store->get_version( $slug ) !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
@@ -845,11 +846,11 @@ final class Presets_Controller extends Controller {
 
 		$encoded = wp_json_encode( $candidate );
 
-		// Guard the encode: a false return cast to "" would clear the whole set on persist instead of storing it.
+		// Guard the encode: a false return cast to "" would clear the whole library on persist instead of storing it.
 		if ( $encoded === false ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
-				__( 'The design token set could not be encoded.', 'kadence-blocks' ),
+				__( 'The design token library could not be encoded.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
 					'block'  => $block,
@@ -861,14 +862,14 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Commit a raw document string to a set and build the response, mapping a write failure to 500.
+	 * Commit a raw document string to a library and build the response, mapping a write failure to 500.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the set).
+	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the library).
 	 * @param string $block    The block being written.
 	 * @param int    $status   The success status code.
-	 * @param string $slug     The token set slug being written.
+	 * @param string $slug     The token library slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -878,7 +879,7 @@ final class Presets_Controller extends Controller {
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
-				__( 'The design token set could not be saved.', 'kadence-blocks' ),
+				__( 'The design token library could not be saved.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
 					'block'  => $block,
@@ -1042,7 +1043,7 @@ final class Presets_Controller extends Controller {
 	 * different subsets, and a property a preset omits is inherited from the block `$default` through the
 	 * cascade — so an incomplete surface is allowed. But a property with no binding (unbound) is still
 	 * rejected: it could never project. Only the presets carried by the request are checked, each against
-	 * its post-merge token set, so a partial edit is validated while the baseline presets are left alone.
+	 * its post-merge token library, so a partial edit is validated while the baseline presets are left alone.
 	 *
 	 * @since TBD
 	 *
@@ -1090,13 +1091,14 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Rewrite each named preset's captured literal values into semantic aliases where one matches the set,
-	 * so a value captured off a block instance re-joins the theming cascade rather than freezing as a literal.
+	 * Rewrite each named preset's captured literal values into semantic aliases where one matches the
+	 * library, so a value captured off a block instance re-joins the theming cascade rather than freezing
+	 * as a literal.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
-	 * @param string               $slug       The token set the values are matched against.
+	 * @param string               $slug       The token library the values are matched against.
 	 *
 	 * @return array<string, mixed> The preset node with literals aliased where a semantic matches.
 	 */
@@ -1121,7 +1123,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a written preset whose token map carries an alias that does not resolve in the target set.
+	 * Reject a written preset whose token map carries an alias that does not resolve in the target library.
 	 *
 	 * Preset token values live under `$extensions`, which the Resolver's dry-run (which walks only the token
 	 * layers) never sees, so a dangling preset alias would otherwise slip past validation and fail silently
@@ -1132,7 +1134,7 @@ final class Presets_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $block_node The block's preset node from the request.
 	 * @param string               $block      The block name, for error context.
-	 * @param string               $slug       The token set the aliases resolve against.
+	 * @param string               $slug       The token library the aliases resolve against.
 	 *
 	 * @return WP_Error|null A WP_Error when an alias does not resolve, null otherwise.
 	 */
@@ -1175,7 +1177,7 @@ final class Presets_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param string $block The block name.
-	 * @param string $slug  The token set slug being read.
+	 * @param string $slug  The token library slug being read.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1366,14 +1368,14 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Decode the stored overrides-only document for a set.
+	 * Decode the stored overrides-only document for a library.
 	 *
 	 * Reuses the reader's single decode seam ({@see Effective_Presets::raw()}) so the controller does not
 	 * decode the store itself.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
 	 */
@@ -1397,9 +1399,9 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * The token set a request targets: the `set` parameter when it names a known set, otherwise the active
-	 * set. An unknown or absent `set` falls back rather than 404ing, so a stale editor pointer degrades to the
-	 * active set instead of failing the write.
+	 * The token library a request targets: the `library` parameter when it names a known library, otherwise
+	 * the active library. An unknown or absent `library` falls back rather than 404ing, so a stale editor
+	 * pointer degrades to the active library instead of failing the write.
 	 *
 	 * @since TBD
 	 *
@@ -1408,22 +1410,22 @@ final class Presets_Controller extends Controller {
 	 * @return string
 	 */
 	private function slug( WP_REST_Request $request ): string {
-		$set = Cast::to_string( $request->get_param( self::SET_PARAM ) );
+		$library = Cast::to_string( $request->get_param( self::LIBRARY_PARAM ) );
 
-		if ( $set !== '' && $this->is_known_set( $set ) ) {
-			return $set;
+		if ( $library !== '' && $this->is_known_set( $library ) ) {
+			return $library;
 		}
 
 		return $this->active->get();
 	}
 
 	/**
-	 * Whether a set slug names a set that exists. The default set is always known even before it has a stored
-	 * row, mirroring the documents controller.
+	 * Whether a slug names a library that exists. The default library is always known even before it has a
+	 * stored row, mirroring the documents controller.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return bool
 	 */
@@ -1454,21 +1456,21 @@ final class Presets_Controller extends Controller {
 				'pattern'           => '^[a-z0-9][a-z0-9-]*$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::SET_PARAM        => $this->set_param(),
+			self::LIBRARY_PARAM    => $this->library_param(),
 		];
 	}
 
 	/**
-	 * The optional token-set argument shared by every route: names the set a read/write targets, defaulting
-	 * to the active set when absent or unknown.
+	 * The optional token-library argument shared by every route: names the library a read/write targets,
+	 * defaulting to the active library when absent or unknown.
 	 *
 	 * @since TBD
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function set_param(): array {
+	private function library_param(): array {
 		return [
-			'description'       => __( 'Optional token set slug to target; defaults to the active set.', 'kadence-blocks' ),
+			'description'       => __( 'Optional token library slug to target; defaults to the active library.', 'kadence-blocks' ),
 			'type'              => 'string',
 			'required'          => false,
 			'pattern'           => '^[\w-]+$',
