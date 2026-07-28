@@ -105,6 +105,25 @@ final class Palettes_Controller extends Controller {
 	private const ID_ROUTE = '(?P<' . self::ID_PARAM . '>[\w-]+)';
 
 	/**
+	 * The swatch-token path/request parameter.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const TOKEN_PARAM = 'token';
+
+	/**
+	 * The single-swatch sub-route under a palette: `{id}/swatches/{token}`. The token capture allows the dots
+	 * and hyphens a token dot-path carries (e.g. `primitive.color.brand.button-hover`).
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SWATCH_ROUTE = self::ID_ROUTE . '/swatches/(?P<' . self::TOKEN_PARAM . '>[\w.-]+)';
+
+	/**
 	 * @var Token_Store
 	 *
 	 * @since TBD
@@ -265,6 +284,27 @@ final class Palettes_Controller extends Controller {
 				'schema' => [ $this, 'get_item_schema' ],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SWATCH_ROUTE,
+			[
+				[
+					// POST and PUT both set one swatch's value; it is an idempotent upsert, so they share a handler.
+					'methods'             => [ WP_REST_Server::CREATABLE, 'PUT' ],
+					'callback'            => [ $this, 'update_swatch' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_swatch_write_params(),
+				],
+				[
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_swatch' ],
+					'permission_callback' => [ $this, 'delete_item_permissions_check' ],
+					'args'                => $this->get_swatch_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
 	}
 
 	/**
@@ -375,6 +415,91 @@ final class Palettes_Controller extends Controller {
 		$document = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
 
 		return $this->validate_and_save( $document, $id, $slug );
+	}
+
+	/**
+	 * Set a single palette swatch (POST or PUT /palettes/{id}/swatches/{token}): validate just this one token
+	 * and value, upsert it into the palette, and save. Only the sent swatch is guarded, so editing one color
+	 * never depends on the palette's other swatches being valid, and every token the palette does not set falls
+	 * back to the default palette. Setting a non-default palette's swatch to the default value reverts it to
+	 * inherited, the same as a DELETE. A request for a palette the set does not define is a 404.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function update_swatch( $request ) {
+		$slug  = $this->slug( $request );
+		$id    = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+		$token = Cast::to_string( $request->get_param( self::TOKEN_PARAM ) );
+
+		$node = $this->palettes->palette( $id, $slug );
+
+		if ( $node === null ) {
+			return $this->not_found( $id );
+		}
+
+		$value = $request->get_param( Sentinels::get_value_key() );
+
+		if ( ! is_string( $value ) || $value === '' ) {
+			return $this->invalid( $id, __( 'A swatch value is required.', 'kadence-blocks' ) );
+		}
+
+		$guard = $this->guard_swatch_target( $id, $token, $value );
+
+		if ( $guard !== null ) {
+			return $guard;
+		}
+
+		$default_id = $this->palettes->default_palette( $slug );
+		$default    = $this->palettes->swatch_values( $default_id, $slug );
+
+		// A non-default swatch equal to the default value is inherited, not stored, so setting it back to the
+		// default reverts it — identical to a DELETE.
+		$node = ( $id !== $default_id && ( $default[ $token ] ?? null ) === $value )
+			? $this->remove_swatch_from_node( $node, $token )
+			: $this->set_swatch_in_node( $node, $token, $value, $slug );
+
+		return $this->write_palette_node( $slug, $id, $node );
+	}
+
+	/**
+	 * Revert a single palette swatch to inherited (DELETE /palettes/{id}/swatches/{token}): drop the palette's
+	 * own value for this token so it falls back to the default palette. A token the palette never set is already
+	 * inherited, so the delete is idempotent. The default palette is the base and has nothing to inherit from,
+	 * so reverting one of its swatches is a 400; an unknown palette is a 404.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_swatch( $request ) {
+		$slug  = $this->slug( $request );
+		$id    = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+		$token = Cast::to_string( $request->get_param( self::TOKEN_PARAM ) );
+
+		$node = $this->palettes->palette( $id, $slug );
+
+		if ( $node === null ) {
+			return $this->not_found( $id );
+		}
+
+		if ( $id === $this->palettes->default_palette( $slug ) ) {
+			return new WP_Error(
+				'rest_design_tokens_forbidden',
+				__( 'A swatch of the default palette cannot be reverted.', 'kadence-blocks' ),
+				[
+					'status'       => WP_Http::BAD_REQUEST,
+					self::ID_PARAM => $id,
+				]
+			);
+		}
+
+		return $this->write_palette_node( $slug, $id, $this->remove_swatch_from_node( $node, $token ) );
 	}
 
 	/**
@@ -682,6 +807,216 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
+	 * Guard a single swatch (a token + value), reusing the palette-write swatch guards: the token must target
+	 * a registered color, and an aliased value must name a token that exists.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id    The palette id, for error context.
+	 * @param string $token The swatch token dot-path.
+	 * @param string $value The swatch value (literal color or alias).
+	 *
+	 * @return WP_Error|null A WP_Error when the swatch is invalid, null otherwise.
+	 */
+	private function guard_swatch_target( string $id, string $token, string $value ): ?WP_Error {
+		return $this->guard_swatches(
+			[
+				Extensions::get_groups_key() => [
+					[
+						Extensions::get_group_id_key() => 'swatch',
+						Extensions::get_label_key()    => 'swatch',
+						Extensions::get_swatches_key() => [
+							[
+								Extensions::get_swatch_token_key() => $token,
+								Extensions::get_label_key() => '',
+								Sentinels::get_value_key() => $value,
+							],
+						],
+					],
+				],
+			],
+			$id
+		);
+	}
+
+	/**
+	 * Upsert a swatch into a palette node: update its value in place if the palette already carries the token,
+	 * otherwise add it to the group the default template places it in (creating that group if the palette does
+	 * not have it yet). Returns the updated node.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node  The palette node.
+	 * @param string               $token The swatch token dot-path.
+	 * @param string               $value The swatch value.
+	 * @param string               $slug  The token set slug.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function set_swatch_in_node( array $node, string $token, string $value, string $slug ): array {
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$value_key    = Sentinels::get_value_key();
+		$group_id_key = Extensions::get_group_id_key();
+
+		$groups = isset( $node[ $groups_key ] ) && is_array( $node[ $groups_key ] ) ? array_values( $node[ $groups_key ] ) : [];
+
+		foreach ( $groups as $gi => $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			foreach ( array_values( $group[ $swatches_key ] ) as $si => $swatch ) {
+				if ( is_array( $swatch ) && ( $swatch[ $token_key ] ?? null ) === $token ) {
+					$groups[ $gi ][ $swatches_key ]                      = array_values( $group[ $swatches_key ] );
+					$groups[ $gi ][ $swatches_key ][ $si ][ $value_key ] = $value;
+					$node[ $groups_key ]                                 = $groups;
+
+					return $node;
+				}
+			}
+		}
+
+		[ $group_id, $group_label, $swatch_label ] = $this->template_slot_for( $token, $slug );
+
+		$swatch = [
+			$token_key                  => $token,
+			Extensions::get_label_key() => $swatch_label,
+			$value_key                  => $value,
+		];
+
+		foreach ( $groups as $gi => $group ) {
+			if ( is_array( $group ) && ( $group[ $group_id_key ] ?? null ) === $group_id ) {
+				$swatches   = isset( $group[ $swatches_key ] ) && is_array( $group[ $swatches_key ] ) ? array_values( $group[ $swatches_key ] ) : [];
+				$swatches[] = $swatch;
+
+				$groups[ $gi ][ $swatches_key ] = $swatches;
+				$node[ $groups_key ]            = $groups;
+
+				return $node;
+			}
+		}
+
+		$groups[] = [
+			$group_id_key               => $group_id,
+			Extensions::get_label_key() => $group_label,
+			$swatches_key               => [ $swatch ],
+		];
+
+		$node[ $groups_key ] = $groups;
+
+		return $node;
+	}
+
+	/**
+	 * Remove a swatch from a palette node by token, dropping a group left empty. Returns the updated node.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node  The palette node.
+	 * @param string               $token The swatch token dot-path.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function remove_swatch_from_node( array $node, string $token ): array {
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+
+		$groups = isset( $node[ $groups_key ] ) && is_array( $node[ $groups_key ] ) ? array_values( $node[ $groups_key ] ) : [];
+		$out    = [];
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				$out[] = $group;
+
+				continue;
+			}
+
+			$swatches = [];
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && ( $swatch[ $token_key ] ?? null ) === $token ) {
+					continue;
+				}
+
+				$swatches[] = $swatch;
+			}
+
+			if ( $swatches !== [] ) {
+				$group[ $swatches_key ] = $swatches;
+				$out[]                  = $group;
+			}
+		}
+
+		$node[ $groups_key ] = $out;
+
+		return $node;
+	}
+
+	/**
+	 * The default palette's group id, group label, and swatch label for a token — the template a new swatch is
+	 * placed under when the edited palette does not carry the token yet. Falls back to a generic Accent group
+	 * when the template does not group the token (it is still a valid color, since the guard passed).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The swatch token dot-path.
+	 * @param string $slug  The token set slug.
+	 *
+	 * @return array{0:string,1:string,2:string} The group id, group label, and swatch label.
+	 */
+	private function template_slot_for( string $token, string $slug ): array {
+		$template     = $this->palettes->palette( $this->palettes->default_palette( $slug ), $slug ) ?? [];
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$label_key    = Extensions::get_label_key();
+		$group_id_key = Extensions::get_group_id_key();
+
+		$groups = isset( $template[ $groups_key ] ) && is_array( $template[ $groups_key ] ) ? $template[ $groups_key ] : [];
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && ( $swatch[ $token_key ] ?? null ) === $token ) {
+					return [
+						Cast::to_string( $group[ $group_id_key ] ?? 'accent' ),
+						Cast::to_string( $group[ $label_key ] ?? '' ),
+						Cast::to_string( $swatch[ $label_key ] ?? $token ),
+					];
+				}
+			}
+		}
+
+		return [ 'accent', __( 'Accent', 'kadence-blocks' ), $token ];
+	}
+
+	/**
+	 * Replace a palette's stored node wholesale: remove the old node from the overrides, then merge the new one
+	 * in. The remove-then-merge avoids index-merging the rebuilt groups list into the previous stored node, and
+	 * runs the same validate-and-save path as the full palette write.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $slug The token set slug.
+	 * @param string               $id   The palette id.
+	 * @param array<string, mixed> $node The rebuilt palette node.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	private function write_palette_node( string $slug, string $id, array $node ) {
+		$document  = $this->mutator->remove_by_keys( $this->stored_document( $slug ), $this->palette_keys( $id ) );
+		$candidate = $this->mutator->merge( $document, $this->palette_partial( $id, $node ) );
+
+		return $this->validate_and_save( $candidate, $id, $slug );
+	}
+
+	/**
 	 * The palette listing for a set: the `$default` / `$current` pointers and each palette's id + label.
 	 *
 	 * @since TBD
@@ -922,6 +1257,50 @@ final class Palettes_Controller extends Controller {
 				self::GROUPS_PARAM => [
 					'description' => __( 'The ordered color groups, each an ordered list of swatches.', 'kadence-blocks' ),
 					'type'        => 'array',
+					'required'    => true,
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments for the single-swatch routes: the palette id, the token dot-path, and the optional set.
+	 * The token keeps its dots (a dot-path), so it is sanitized with sanitize_text_field rather than the id's
+	 * sanitize_key, which would strip them.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_swatch_params(): array {
+		return array_merge(
+			$this->get_id_params(),
+			[
+				self::TOKEN_PARAM => [
+					'description'       => __( 'The swatch token dot-path.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'pattern'           => '^[\w.-]+$',
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments for the single-swatch write route: the swatch params plus the required `$value`.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_swatch_write_params(): array {
+		return array_merge(
+			$this->get_swatch_params(),
+			[
+				Sentinels::get_value_key() => [
+					'description' => __( 'The swatch value: a literal color or a {dot.path} alias.', 'kadence-blocks' ),
+					'type'        => 'string',
 					'required'    => true,
 				],
 			]
