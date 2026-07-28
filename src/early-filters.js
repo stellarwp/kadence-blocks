@@ -83,7 +83,7 @@ addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttrib
  *
  * kbPreset is the selected preset slug (e.g. "ghost"); an empty value means the block keeps its $default
  * look (the block preset). kbPalette holds the id of a per-block color-palette override (e.g. "dark"); empty
- * means the block follows the set's `$current` palette. Both the scoped preset CSS and the palette switch
+ * means the block follows the library's `$current` palette. Both the scoped preset CSS and the palette switch
  * layer are emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
@@ -207,7 +207,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-preset-save-class', bl
 /**
  * Append the data-kb-palette="<id>" attribute to a block's saved markup when it carries a per-block palette
  * override, so the projector's `[data-kb-palette]` switch layer re-points the block's canonical color vars
- * to that palette on the front end. A no-op for blocks that do not opt in or follow the set `$current`.
+ * to that palette on the front end. A no-op for blocks that do not opt in or follow the library `$current`.
  *
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
@@ -292,7 +292,7 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * a "Design Tokens" panel with a "Design Presets" subsection. Selecting a preset writes the kbPreset
  * attribute, which the save/preview filters turn into the kb-preset--<slug> class the projector's scoped
  * CSS hooks. An empty preset selects the block's $default preset look. The panel is skipped when the block
- * has no presets for the active set.
+ * has no presets for the active library.
  *
  * A block whose `kbPreset` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
  * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
