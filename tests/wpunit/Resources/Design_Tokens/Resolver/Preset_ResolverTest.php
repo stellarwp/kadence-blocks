@@ -146,7 +146,7 @@ final class Preset_ResolverTest extends TestCase {
 		$registry = $this->container->get( Token_Registry::class );
 		$set      = $registry->for_block( self::BUTTON );
 
-		$this->assertNotNull( $set, 'The Button preset set should be registered at boot.' );
+		$this->assertNotNull( $set, 'The Button binding set should be registered at boot.' );
 
 		// Every property the presets value has a binding.
 		$report = $set->consistency( $this->resolver->value_properties( self::BUTTON ) );
@@ -168,7 +168,7 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * The Advanced Text (heading) preset set is registered at boot and its $default resolves the full
+	 * The Advanced Text (heading) binding set is registered at boot and its $default resolves the full
 	 * 13-property core-design and typography surface to the shipped baseline's literal values.
 	 *
 	 * @return void
@@ -179,7 +179,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		$this->assertNotNull(
 			$registry->for_block( 'kadence/advancedheading' ),
-			'The Advanced Text preset set should be registered at boot.'
+			'The Advanced Text binding set should be registered at boot.'
 		);
 
 		$this->assertSame(
