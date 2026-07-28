@@ -60,8 +60,8 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [set]      The token set slug; defaults to kbTokenSet, then the active set — pass the
- *                            caller's resolved set so the binding can't disagree with the rest of its UI.
+ * @param {string} [set]      The token library slug; defaults to kbTokenSet, then the active library — pass
+ *                            the caller's resolved library so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
