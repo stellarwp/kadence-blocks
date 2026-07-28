@@ -31,21 +31,21 @@ if ( ! function_exists( 'kadence_blocks_register_design_token' ) ) {
 	}
 }
 
-if ( ! function_exists( 'kadence_blocks_register_design_variant_set' ) ) {
+if ( ! function_exists( 'kadence_blocks_register_design_preset_bindings' ) ) {
 	/**
-	 * Declare that a block accepts variants, plus its per-property bindings. Variant names, default and
+	 * Declare that a block accepts presets, plus its per-property bindings. Preset names, default and
 	 * values are document data, not declared here.
 	 *
 	 * @since TBD
 	 *
-	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Variant_Set::from_array().
+	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Preset_Bindings::from_array().
 	 *
 	 * @return void
 	 */
-	function kadence_blocks_register_design_variant_set( array $set ): void {
+	function kadence_blocks_register_design_preset_bindings( array $set ): void {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
-		$registry->register_variant_set( $set );
+		$registry->register_preset_bindings( $set );
 	}
 }
 
