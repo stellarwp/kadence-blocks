@@ -15,10 +15,10 @@ use Throwable;
 /**
  * Projects the per-block palette switch layer into the WordPress style pipeline.
  *
- * Emits, for the active set, one `[data-kb-palette="<id>"]` selector per palette (built by {@see Css_Builder}),
+ * Emits, for the active library, one `[data-kb-palette="<id>"]` selector per palette (built by {@see Css_Builder}),
  * appended to KB's inline style handles on the front end and in the editor, gated on
  * Token_Registry::is_active(). A block that carries a `data-kb-palette` override renders its subtree against
- * the chosen palette; a block with no override follows the set `$current` at `:root` (applied by the resolver).
+ * the chosen palette; a block with no override follows the library's `$current` at `:root` (applied by the resolver).
  *
  * @since TBD
  */
@@ -48,7 +48,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
 	 * @since TBD
 	 *
@@ -57,7 +57,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * @var Effective_Palettes Reads the active set's effective palettes and their flattened swatches.
+	 * @var Effective_Palettes Reads the active library's effective palettes and their flattened swatches.
 	 *
 	 * @since TBD
 	 */
@@ -98,8 +98,8 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @param Token_Registry             $registry    The token registry.
 	 * @param Token_Store                $store       The store, for the cache-busting version.
-	 * @param Active_Token_Library_Store $active      Owns the active-set pointer.
-	 * @param Effective_Palettes         $palettes    Reads the active set's effective palettes.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Effective_Palettes         $palettes    Reads the active library's effective palettes.
 	 * @param Token_Resolver             $resolver    Resolves each palette's full color graph.
 	 * @param Preset_Css_Builder         $presets     Supplies the canonical variant-var declarations.
 	 * @param Css_Builder                $css_builder The palette switch-layer builder.
@@ -169,8 +169,8 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the palette switch layer for the active set, memoised per request and cached on the store
-	 * version. Returns an empty string when the active set cannot be read, so the page never crashes.
+	 * Build the palette switch layer for the active library, memoised per request and cached on the store
+	 * version. Returns an empty string when the active library cannot be read, so the page never crashes.
 	 *
 	 * @since TBD
 	 *
@@ -215,12 +215,12 @@ final class Projector extends Abstract_Css_Projector {
 	 * `id => ( css-var => resolved literal )`. Every palette emits the SAME var set (the union of what each
 	 * palette changes against the baseline default), each carrying that palette's own value, so a per-block
 	 * `[data-kb-palette]` override completely replaces the subtree's colors — semantics and shadow composites
-	 * included — no matter which palette the set `$current` points at. A var no palette changes is identical
+	 * included — no matter which palette the library's `$current` points at. A var no palette changes is identical
 	 * everywhere, so it is left to inherit and never re-declared.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active The active set slug.
+	 * @param string $active The active library slug.
 	 *
 	 * @return array<string, array<string, string>>
 	 */

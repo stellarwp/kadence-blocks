@@ -6,14 +6,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identi
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 
 /**
- * Builds the color-only, single-set palette switch layer: one `[data-kb-palette="<id>"]` selector per
+ * Builds the color-only, single-library palette switch layer: one `[data-kb-palette="<id>"]` selector per
  * palette that re-declares the matched element's subtree with that palette's fully-resolved colors.
  *
- * The set's `$current` palette is applied at `:root` by the resolver (see Effective_Palettes / Token_Resolver),
+ * The library's `$current` palette is applied at `:root` by the resolver (see Effective_Palettes / Token_Resolver),
  * so every block follows it by default. A block that carries a per-instance palette override renders a
  * `data-kb-palette="<id>"` attribute; the matching selector here re-declares that palette's resolved color
  * vars — primitives, the semantics that alias them, and shadow composites — as literals on the element, so
- * its subtree resolves against the chosen palette instead of the set `$current`.
+ * its subtree resolves against the chosen palette instead of the library's `$current`.
  *
  * A single attribute-presence `[data-kb-palette]` rule re-emits the canonical `--kb-token--variant--*`
  * declarations (var()-preserving) so a variant var re-resolves against the subtree's re-declared semantics —
@@ -21,7 +21,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
  * palette, respecting variant selection (a selected variant keeps its own binding, re-tinted).
  *
  * This is the narrow color-only replacement for the cross-set `[data-kb-token-set]` switch removed in the
- * Phase A collapse: it stays within the single active set and swaps only colors. Accepted v1 limitation: the
+ * Phase A collapse: it stays within the single active library and swaps only colors. Accepted v1 limitation: the
  * numbered `--global-palette*` bridges resolve at `:root`, so a `[data-kb-palette]` subtree live-swaps content
  * that reads `--kb-token--*` color vars (directly or through a variant), but not blocks that read a numbered
  * `--global-paletteN` bridge directly.

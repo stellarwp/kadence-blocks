@@ -19,11 +19,11 @@ use Throwable;
  * so a deactivated registry leaves KB's behavior untouched.
  *
  * This is the non-coercive surface: a custom property placed in :root styles nothing until something
- * references it. Only the single active set is emitted — its canonical --kb-token--<id> custom properties
+ * references it. Only the single active library is emitted — its canonical --kb-token--<id> custom properties
  * at :root — so block content and the preset/slot bridges (which read the canonical names) resolve against
- * it. Multiple sets may still be stored; the active-set pointer selects the one set that is emitted, and
- * switching the pointer re-emits with the new set's values. Only the active set's tokens reach the coercive
- * native-block and theme.json styling paths.
+ * it. Multiple libraries may still be stored; the active-library pointer selects the one library that is
+ * emitted, and switching the pointer re-emits with the new library's values. Only the active library's
+ * tokens reach the coercive native-block and theme.json styling paths.
  *
  * @since TBD
  */
@@ -45,7 +45,7 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
 	 * @since TBD
 	 *
@@ -157,8 +157,8 @@ final class Projector extends Abstract_Css_Projector {
 	 * Build the projected CSS for the single active token library, using the per-request memo and object cache
 	 * so repeated calls within the same request are free.
 	 *
-	 * The active set is resolved to its canonical `--kb-token--*` maps, then the builder emits the one `:root`
-	 * block (canonical token layer, slot bridges, and responsive redeclarations). An active set whose stored
+	 * The active library is resolved to its canonical `--kb-token--*` maps, then the builder emits the one `:root`
+	 * block (canonical token layer, slot bridges, and responsive redeclarations). An active library whose stored
 	 * document cannot be resolved (e.g. an alias cycle introduced by a direct DB write that bypassed the REST
 	 * validation gate) yields an empty string rather than a fatal, so the page falls back to KB's existing
 	 * variables without crashing.

@@ -14,10 +14,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 /**
  * Builds the CSS custom-property output for the single active token library — the CSS-variable backbone.
  *
- * Only one library is emitted at a time: the active-set pointer selects it, and the resolver
- * hands the builder that set's canonical resolved maps. The builder emits a single `:root` block:
+ * Only one library is emitted at a time: the active-library pointer selects it, and the resolver
+ * hands the builder that library's canonical resolved maps. The builder emits a single `:root` block:
  *
- *   1. The canonical token layer — `--kb-token--<id>: <value-or-var>` straight from the active set's
+ *   1. The canonical token layer — `--kb-token--<id>: <value-or-var>` straight from the active library's
  *      canonical projected map. The literal value of a token lives here, once; an alias chain reads the
  *      canonical name (`--kb-token--<semantic>: var(--kb-token--<primitive>)`), so editing a referenced
  *      token updates every dependent token live, with no server re-resolve.
@@ -62,7 +62,7 @@ final class Css_Builder {
 
 	/**
 	 * Per-request memo of built CSS, keyed on the object-cache key of the `:root` block, so a write (which
-	 * bumps the set's version) invalidates the affected entry without an explicit purge hook.
+	 * bumps the library's version) invalidates the affected entry without an explicit purge hook.
 	 *
 	 * @since TBD
 	 *
@@ -78,12 +78,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the active set's CSS string. Front end and editor share it verbatim. The pure, uncached
+	 * Build the active library's CSS string. Front end and editor share it verbatim. The pure, uncached
 	 * assembler (its cached counterpart is css_for_version()).
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens      $resolved    The active set's canonical resolved maps (from
+	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps (from
 	 *                                           Token_Resolver::resolve()).
 	 * @param array<string,string> $breakpoints Breakpoint => media-query string (e.g.
 	 *                                           "tablet" => "(max-width: 1024px)"), for the per-breakpoint
@@ -97,7 +97,7 @@ final class Css_Builder {
 
 	/**
 	 * Cached variant of css(): assembles the `:root` block from the object cache with a per-request memo. A
-	 * write bumps the set's store version, which changes the cache key, so a fresh block is built on the next
+	 * write bumps the library's store version, which changes the cache key, so a fresh block is built on the next
 	 * request.
 	 *
 	 * The plugin version is folded into the cache key alongside the store version: the store version tracks
@@ -106,9 +106,9 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens      $resolved    The active set's canonical resolved maps.
-	 * @param string               $slug        The active set's slug, folded into the cache key.
-	 * @param string               $version     The store version the set was built from.
+	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps.
+	 * @param string               $slug        The active library's slug, folded into the cache key.
+	 * @param string               $version     The store version the library was built from.
 	 * @param array<string,string> $breakpoints Breakpoint => media-query string, for the per-breakpoint
 	 *                                           responsive var redeclaration.
 	 *
@@ -135,7 +135,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) the active set's `:root` block: the canonical token declarations plus the slot
+	 * Build (uncached) the active library's `:root` block: the canonical token declarations plus the slot
 	 * bridges, followed by the per-breakpoint responsive redeclarations. The single assembly definition
 	 * shared by css() and the cached css_for_version().
 	 *
@@ -148,7 +148,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Resolved_Tokens      $resolved    The active set's canonical resolved maps.
+	 * @param Resolved_Tokens      $resolved    The active library's canonical resolved maps.
 	 * @param array<string,string> $breakpoints Breakpoint => media-query string, for the responsive
 	 *                                           redeclaration blocks appended after the base declarations.
 	 *
@@ -234,7 +234,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The slot-family bridge declarations for the resolved active set: `--global-kb-<family>-<slug>:
+	 * The slot-family bridge declarations for the resolved active library: `--global-kb-<family>-<slug>:
 	 * var(--kb-token--<id>, <literal>);` for every spacing, gap and font-size token claiming a slot.
 	 *
 	 * @since TBD

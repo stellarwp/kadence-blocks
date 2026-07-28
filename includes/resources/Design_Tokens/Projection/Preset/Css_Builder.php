@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable Kadence block variants for the single active token set.
+ * Builds the scoped CSS for selectable Kadence block variants for the single active token library.
  *
  * A selected variant reaches output purely through the cascade: the editor adds a "kb-variant--<name>"
  * class to the block, and this builder emits, per (block, variant), a rule that retargets the --global-*
@@ -26,11 +26,11 @@ use RuntimeException;
  * that both retarget the same --global-<slot> carry equal specificity, so the selected-variant rule wins
  * over the class-less $default rule by higher specificity, and a per-instance edit wins over both.
  *
- * Only the active set is emitted (the active-set pointer selects it). The build has two layers:
+ * Only the active library is emitted (the active-library pointer selects it). The build has two layers:
  *
  *   1. The canonical variant-var definitions at `:root` —
  *      --kb-token--variant--<block>--<variant>--<property>: <value-or-var> — where an aliased binding reads
- *      var(--kb-token--<target>) so the variant chains to the active set's canonical token, and a literal
+ *      var(--kb-token--<target>) so the variant chains to the active library's canonical token, and a literal
  *      binding emits the literal.
  *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
  *      --global-<slot> at the canonical variant var, plus a class-less ".wp-block-<block>" rule for the
@@ -109,8 +109,8 @@ final class Css_Builder {
 	private Token_Store $store;
 
 	/**
-	 * Per-request memo of built CSS, keyed on the active set's object-cache key, so a write (which bumps the
-	 * set's version) invalidates the affected entry on its own.
+	 * Per-request memo of built CSS, keyed on the active library's object-cache key, so a write (which bumps the
+	 * library's version) invalidates the affected entry on its own.
 	 *
 	 * @since TBD
 	 *
@@ -119,8 +119,8 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of the collected variant structure, keyed on the set slug AND its store version, so the
-	 * registry/resolver walk runs once per set even when several layers read it, yet a write (which bumps the
+	 * Per-request memo of the collected variant structure, keyed on the library slug AND its store version, so the
+	 * registry/resolver walk runs once per library even when several layers read it, yet a write (which bumps the
 	 * version) produces a fresh collection rather than serving the pre-write structure.
 	 *
 	 * @since TBD
@@ -143,12 +143,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the active set's variant CSS: the canonical variant-var definitions plus the scoped retarget
+	 * Build the active library's variant CSS: the canonical variant-var definitions plus the scoped retarget
 	 * rules. The pure, uncached assembler (its cached counterpart is css_for_version()).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
+	 * @param string $active_slug The active library's slug.
 	 *
 	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
 	 */
@@ -157,8 +157,8 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of css(): assembles the active set's variant CSS from the object cache with a per-request
-	 * memo. A write bumps the set's store version, which changes the cache key, so a fresh build is produced on
+	 * Cached variant of css(): assembles the active library's variant CSS from the object cache with a per-request
+	 * memo. A write bumps the library's store version, which changes the cache key, so a fresh build is produced on
 	 * the next request.
 	 *
 	 * The plugin version is folded into the cache key alongside the store version, so the cache also busts on a
@@ -166,8 +166,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
-	 * @param string $version     The store version the active set was built from.
+	 * @param string $active_slug The active library's slug.
+	 * @param string $version     The store version the active library was built from.
 	 *
 	 * @return string
 	 */
@@ -192,13 +192,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) the active set's variant CSS: the canonical variant-var definitions followed by the
+	 * Build (uncached) the active library's variant CSS: the canonical variant-var definitions followed by the
 	 * per-variant scoped rules and the class-less $default rules. The single assembly definition shared by
 	 * css() and the cached css_for_version().
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set slug.
+	 * @param string $active_slug The active library slug.
 	 *
 	 * @return string
 	 */
@@ -211,13 +211,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Walk every (block, variant, property) that resolves to a slot-targeted value for a set, into a
+	 * Walk every (block, variant, property) that resolves to a slot-targeted value for a library, into a
 	 * structure the layers below build from. The projected value keeps its var() target canonical, so an
-	 * aliased variant chains to the set's canonical token. Memoized per slug for the request.
+	 * aliased variant chains to the library's canonical token. Memoized per slug for the request.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The set slug to resolve against.
+	 * @param string $slug The token library slug to resolve against.
 	 *
 	 * @return array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>
 	 */
@@ -301,7 +301,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The active set's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
+	 * The active library's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
 	 * `--kb-token--variant--<block>--<variant>--<property>:<value>;` list. The palette switch layer re-emits
 	 * these under `[data-kb-palette]` so a per-block palette override forces each variant var to re-resolve
 	 * against the subtree's re-tinted semantics (a variant that aliases a palette-changed color follows the
@@ -309,7 +309,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
+	 * @param string $active_slug The active library's slug.
 	 *
 	 * @return string
 	 */
@@ -318,12 +318,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the canonical `--kb-token--variant--*` definitions from the active set's collected variants. The
-	 * value preserves alias indirection canonically, so the variant chains to the active set's token.
+	 * Emit the canonical `--kb-token--variant--*` definitions from the active library's collected variants. The
+	 * value preserves alias indirection canonically, so the variant chains to the active library's token.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected variants.
 	 *
 	 * @return string
 	 */
@@ -339,7 +339,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected variants.
 	 *
 	 * @return string
 	 */
@@ -358,13 +358,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the per-variant scoped rules from the active set's collected variants: per (block, variant) a
+	 * Emit the per-variant scoped rules from the active library's collected variants: per (block, variant) a
 	 * ".wp-block-<block>.kb-variant--<variant>" rule pointing each --global-<slot> at the canonical variant
 	 * var.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected variants.
 	 *
 	 * @return string
 	 */
@@ -385,14 +385,14 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the class-less $default rules from the active set's collected variants: per block a
+	 * Emit the class-less $default rules from the active library's collected variants: per block a
 	 * ".wp-block-<block>" rule re-emitting the $default variant's declarations so a block with no variant
 	 * selected still shows its preset. Its lower specificity yields to the kb-variant-- rules (a selected
 	 * variant) and to a per-instance edit, so it only fills the gap.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected variants.
 	 *
 	 * @return string
 	 */
