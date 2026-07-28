@@ -485,4 +485,64 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 		$this->assertStringNotContainsString( 'letter-spacing:1px solid', $brace_output,
 			'A brace-containing non-alias letter-spacing is rejected by the is_numeric() gate' );
 	}
+
+	/**
+	 * get_border_value (width) returns byte-identical output for a numeric width
+	 * (including a zero width), and returns an empty string for an empty or
+	 * brace-containing non-alias width.
+	 *
+	 * @dataProvider getBorderValueWidthProvider
+	 *
+	 * @param mixed  $width    The raw width value for the "top" side.
+	 * @param string $expected The expected byte-identical resolved width.
+	 *
+	 * @return void
+	 */
+	public function testGetBorderValueWidthBcCases( $width, string $expected ): void {
+		$attributes = [
+			'borderStyle' => [
+				[
+					'top'    => [ '#000000', 'solid', $width ],
+					'right'  => [ '#000000', 'solid', $width ],
+					'bottom' => [ '#000000', 'solid', $width ],
+					'left'   => [ '#000000', 'solid', $width ],
+					'unit'   => 'px',
+				],
+			],
+		];
+		$args = [
+			'desktop_key' => 'borderStyle',
+			'tablet_key'  => 'tabletBorderStyle',
+			'mobile_key'  => 'mobileBorderStyle',
+			'unit_key'    => 'unit',
+		];
+
+		$this->assertSame( $expected,
+			$this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false ),
+			'get_border_value must be byte-identical to its pre-recognizer output for numeric/literal width' );
+	}
+
+	/**
+	 * Provides numeric and boundary widths for get_border_value.
+	 *
+	 * @return Generator
+	 */
+	public static function getBorderValueWidthProvider(): Generator {
+		yield 'numeric width renders with its unit' => [
+			'width'    => 2,
+			'expected' => '2px',
+		];
+		yield 'zero width renders since is_number(0) is true' => [
+			'width'    => 0,
+			'expected' => '0px',
+		];
+		yield 'empty width falls back to the blank default' => [
+			'width'    => '',
+			'expected' => '',
+		];
+		yield 'brace-containing non-alias width is not numeric and returns blank' => [
+			'width'    => '1px solid {semantic.color.brand}',
+			'expected' => '',
+		];
+	}
 }
