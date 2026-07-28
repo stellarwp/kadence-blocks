@@ -86,7 +86,7 @@ final class Preset_BindingsTest extends TestCase {
 		$this->assertNull( Preset_Bindings::from_array( $this->declaration() )->binding( 'not-a-binding' ) );
 	}
 
-	public function testItAcceptsAPresetSetWithNoBindings(): void {
+	public function testItAcceptsABindingSetWithNoBindings(): void {
 		// A block can be preset-enabled before its bindings are wired.
 		$set = Preset_Bindings::from_array( [ 'block' => 'kadence/advancedbtn' ] );
 
