@@ -57,7 +57,7 @@ final class Presets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set whose values preset aliases resolve against.
+	 * @param string $slug The token library whose values preset aliases resolve against.
 	 *
 	 * @return array<string, array<string, mixed>> block => { bindings, default, names, properties, values,
 	 *                                             label? }.

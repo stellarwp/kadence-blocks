@@ -47,7 +47,7 @@ final class Builder {
 	 * @param array<string, mixed>                                  $presets   Per-block preset structure + values.
 	 * @param array{root: string, namespace: string, nonce: string} $rest       REST root, namespace and nonce.
 	 * @param string                                                $version    Store version hash ('' from baseline).
-	 * @param string                                                $slug       The token set slug the values/version/schema were resolved against.
+	 * @param string                                                $slug       The token library slug the values/version/schema were resolved against.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 *
