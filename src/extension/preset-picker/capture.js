@@ -52,12 +52,12 @@ function attrToLiteral(kind, value, unit) {
  * @return {Object} The captured token map keyed by property.
  */
 export function capturedTokens(blockName, library, attributes) {
-	const tokenSet = library || activeLibrary();
+	const resolvedLibrary = library || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
-	const presetValues = get(blockPresetValues(blockName, tokenSet), currentSlug, {});
+	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	const presetValues = get(blockPresetValues(blockName, resolvedLibrary), currentSlug, {});
 
-	return blockProperties(blockName, tokenSet).reduce((tokens, property) => {
+	return blockProperties(blockName, resolvedLibrary).reduce((tokens, property) => {
 		const attr = property.control_attr;
 		const raw = attr ? get(attributes, attr, '') : '';
 		const unit = property.kind === 'dimension' && attr ? get(attributes, `${attr}Unit`, '') : '';

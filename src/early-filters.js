@@ -317,8 +317,8 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const set = get(attributes, 'kbTokenSet', '') || activeLibrary();
-		const hasPresets = blockPresets(name, set).length > 0;
+		const library = get(attributes, 'kbTokenSet', '') || activeLibrary();
+		const hasPresets = blockPresets(name, library).length > 0;
 		const hasSets = selectableSets().length >= 2;
 
 		if (!hasPresets && !hasSets) {
@@ -345,10 +345,15 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 							)}
 							{hasPresets && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker name={name} library={set} value={selected} onChange={selectPreset} />
+									<PresetPicker
+										name={name}
+										library={library}
+										value={selected}
+										onChange={selectPreset}
+									/>
 									<PresetActions
 										blockName={name}
-										library={set}
+										library={library}
 										selected={selected}
 										onSelect={selectPreset}
 										attributes={attributes}

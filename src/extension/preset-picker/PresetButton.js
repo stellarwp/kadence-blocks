@@ -64,8 +64,8 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
-	const binding = usePresetBinding(blockName, attributes, tokenSet);
+	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const binding = usePresetBinding(blockName, attributes, resolvedLibrary);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 
 	// With no overrides there is nothing to highlight, so drop the global flag instead of leaving the
@@ -76,15 +76,15 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 		}
 	}, [edited, highlighting, setHighlightEdits]);
 
-	const presets = blockPresets(blockName, tokenSet);
+	const presets = blockPresets(blockName, resolvedLibrary);
 
 	if (!presets.length) {
 		return null;
 	}
 
 	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
-	const label = currentPresetLabel(blockName, tokenSet, selected);
+	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	const label = currentPresetLabel(blockName, resolvedLibrary, selected);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
@@ -95,7 +95,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	 * @return {Object} The reset patch.
 	 */
 	const resetPatch = () =>
-		mappedAttrsFor(blockName, tokenSet).reduce(
+		mappedAttrsFor(blockName, resolvedLibrary).reduce(
 			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
 			{}
 		);
@@ -233,8 +233,8 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 			{saving && (
 				<SavePresetModal
 					blockName={blockName}
-					library={tokenSet}
-					tokens={capturedTokens(blockName, tokenSet, attributes)}
+					library={resolvedLibrary}
+					tokens={capturedTokens(blockName, resolvedLibrary, attributes)}
 					existingSlugs={presets.map((preset) => preset.slug)}
 					onClose={() => setSaving(false)}
 					onSaved={(slug) => selectPreset(slug)}
