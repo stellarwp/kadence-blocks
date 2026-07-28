@@ -1,7 +1,7 @@
 <?php declare( strict_types=1 );
 // cspell:ignore advancedbtn palette .
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
@@ -10,7 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Binding;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
 
 /**
@@ -88,18 +88,18 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * @var Token_Registry The registry the variant sets (and their bindings) are read from.
+	 * @var Token_Registry The registry the preset sets (and their bindings) are read from.
 	 *
 	 * @since TBD
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @var Variant_Resolver Flattens each variant's bindings to resolved CSS values.
+	 * @var Preset_Resolver Flattens each variant's bindings to resolved CSS values.
 	 *
 	 * @since TBD
 	 */
-	private Variant_Resolver $variants;
+	private Preset_Resolver $presets;
 
 	/**
 	 * @var Token_Store The store, read for the cache-busting version the collect memo keys on.
@@ -133,12 +133,12 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry The token registry.
-	 * @param Variant_Resolver $variants The variant resolver.
+	 * @param Preset_Resolver  $presets  The preset resolver.
 	 * @param Token_Store      $store    The store, for the cache-busting version.
 	 */
-	public function __construct( Token_Registry $registry, Variant_Resolver $variants, Token_Store $store ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $presets, Token_Store $store ) {
 		$this->registry = $registry;
-		$this->variants = $variants;
+		$this->presets  = $presets;
 		$this->store    = $store;
 	}
 
@@ -230,7 +230,7 @@ final class Css_Builder {
 
 		$out = [];
 
-		foreach ( $this->registry->variant_blocks() as $block ) {
+		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			// A block may carry registered bindings before the document defines its variants; that is not an
 			// error, it simply contributes nothing yet, so skip a block whose set the registry never declared.
 			$set = $this->registry->for_block( $block );
@@ -240,7 +240,7 @@ final class Css_Builder {
 			}
 
 			try {
-				$names = $this->variants->names( $block, $slug );
+				$names = $this->presets->names( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				continue;
 			}
@@ -249,7 +249,7 @@ final class Css_Builder {
 
 			foreach ( $names as $variant ) {
 				try {
-					$values = $this->variants->resolve( $block, $variant, $slug );
+					$values = $this->presets->resolve( $block, $variant, $slug );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
@@ -285,7 +285,7 @@ final class Css_Builder {
 			}
 
 			try {
-				$default = $this->variants->default_variant( $block, $slug );
+				$default = $this->presets->default_preset( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				$default = '';
 			}
@@ -376,7 +376,7 @@ final class Css_Builder {
 				$declarations = $this->slot_declarations( $block, $variant, $properties );
 
 				if ( $declarations !== '' ) {
-					$css .= $data['selector'] . '.' . Style::variant_class( $variant ) . '{' . $declarations . '}';
+					$css .= $data['selector'] . '.' . Style::preset_class( $variant ) . '{' . $declarations . '}';
 				}
 			}
 		}

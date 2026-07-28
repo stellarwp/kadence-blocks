@@ -1,8 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant;
+namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -15,7 +15,7 @@ use Throwable;
  * Appends the per (block, variant) scoped overrides built by {@see Css_Builder} to KB's existing inline
  * style handles, on the front end and in the editor, gated on Token_Registry::is_active() so a
  * deactivated registry leaves KB's behavior untouched. The class that activates a rule is added by the
- * editor-side kbVariant filter; this side only emits the CSS the class hooks.
+ * editor-side kbPreset filter; this side only emits the CSS the class hooks.
  *
  * @since TBD
  */
@@ -40,9 +40,9 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Css_Builder
@@ -54,12 +54,12 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry    The token registry.
-	 * @param Token_Store      $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store $active      Owns the active-set pointer.
-	 * @param Css_Builder      $css_builder The variant CSS builder.
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Store                $store       The store, for the cache-busting version.
+	 * @param Active_Token_Library_Store $active      Owns the active-set pointer.
+	 * @param Css_Builder                $css_builder The variant CSS builder.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
+	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
 		$this->store       = $store;
 		$this->active      = $active;
