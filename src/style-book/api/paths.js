@@ -119,6 +119,22 @@ export function palettePath(namespace, id, slug = DEFAULT_TOKEN_SET_SLUG) {
 }
 
 /**
+ * Build a REST path for a single palette swatch (the granular per-token write). encodeURIComponent leaves the
+ * dots of a token dot-path intact, so the token stays a readable path segment.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} slug      Token set slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/palettes/${encodeURIComponent(id)}/swatches/${encodeURIComponent(token)}?set=${encodeURIComponent(slug)}`;
+}
+
+/**
  * Build a REST path for the set's current-palette pointer.
  *
  * @since TBD
