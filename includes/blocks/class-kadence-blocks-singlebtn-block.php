@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Renders_Variant_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -23,7 +23,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  */
 class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	use Sanitizes_Css_Identifier;
-	use Renders_Variant_Classes;
+	use Renders_Preset_Classes;
 
 	/**
 	 * Instance of this class
@@ -369,10 +369,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
-		// A selected design-token variant outputs a kb-variant--<slug> class the Design Tokens variant
+		// A selected design-token preset outputs a kb-preset--<slug> class the Design Tokens preset
 		// projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
 		// the editor save filter.
-		$classes = array_merge( $classes, $this->variant_classes( $attributes['kbVariant'] ?? '' ) );
+		$classes = array_merge( $classes, $this->preset_classes( $attributes['kbPreset'] ?? '' ) );
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
