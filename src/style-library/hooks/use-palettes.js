@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from '@wordpress/element';
 import { fetchPalettes, fetchPalette, setCurrentPalette, saveSwatch } from '../api/client';
 
 /**
- * State + actions for the Style Book palettes page: the set's palette listing, the selected palette's full
+ * State + actions for the Style Library palettes page: the set's palette listing, the selected palette's full
  * node (groups of swatches), switching the set's `$current` palette, and saving a single swatch's value back
  * to the current palette. All writes go through the palette REST surface (B3); a write reloads so the view
  * reflects the persisted state.
