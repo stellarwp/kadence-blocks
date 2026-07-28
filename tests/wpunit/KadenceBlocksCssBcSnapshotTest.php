@@ -429,4 +429,60 @@ final class KadenceBlocksCssBcSnapshotTest extends TestCase {
 			'expected' => '1px solid {semantic.color.brand}px 1px 4px 2px rgba(0, 0, 0, 0.5)',
 		];
 	}
+
+	/**
+	 * render_typography resolves line-height and letter-spacing byte-identically for
+	 * numeric input, and shows the two boundary asymmetries the recognizer must not
+	 * disturb: a falsy zero line-height is skipped by its `!empty()` gate while a zero
+	 * letter-spacing still renders under `is_numeric()`, and a brace-containing
+	 * non-alias line-height passes through unconditionally while the equivalent
+	 * letter-spacing is rejected by its `is_numeric()` gate.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyLineHeightAndLetterSpacingBcCase(): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'lineType'      => 'px',
+				'lineHeight'    => [ 1.5, '', '' ],
+				'letterSpacing' => [ 2, '', '' ],
+			],
+		] );
+		$numeric_output = $this->css->css_output();
+
+		$this->assertStringContainsString( 'line-height:1.5px', $numeric_output,
+			'A numeric line-height is rendered with its unit' );
+		$this->assertStringContainsString( 'letter-spacing:2px', $numeric_output,
+			'A numeric letter-spacing is rendered with its unit' );
+
+		$zero_css = new Kadence_Blocks_CSS();
+		$zero_css->render_typography( [
+			'typography' => [
+				'lineType'      => 'px',
+				'lineHeight'    => [ 0, '', '' ],
+				'letterSpacing' => [ 0, '', '' ],
+			],
+		] );
+		$zero_output = $zero_css->css_output();
+
+		$this->assertStringNotContainsString( 'line-height:', $zero_output,
+			'A falsy zero line-height is skipped by the !empty() gate' );
+		$this->assertStringContainsString( 'letter-spacing:0px', $zero_output,
+			'A zero letter-spacing still renders since its gate is is_numeric()' );
+
+		$brace_css = new Kadence_Blocks_CSS();
+		$brace_css->render_typography( [
+			'typography' => [
+				'lineType'      => 'px',
+				'lineHeight'    => [ '1px solid {semantic.color.brand}', '', '' ],
+				'letterSpacing' => [ '1px solid {semantic.color.brand}', '', '' ],
+			],
+		] );
+		$brace_output = $brace_css->css_output();
+
+		$this->assertStringContainsString( 'line-height:1px solid {semantic.color.brand}px', $brace_output,
+			'A brace-containing non-alias line-height passes through unconditionally with its unit suffix' );
+		$this->assertStringNotContainsString( 'letter-spacing:1px solid', $brace_output,
+			'A brace-containing non-alias letter-spacing is rejected by the is_numeric() gate' );
+	}
 }
