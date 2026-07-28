@@ -5,8 +5,10 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder as Variant_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Utils\Location;
 use Throwable;
 
@@ -62,6 +64,20 @@ final class Projector extends Abstract_Css_Projector {
 	private Effective_Palettes $palettes;
 
 	/**
+	 * @var Token_Resolver Resolves each palette's full color graph (primitives, semantics, composites).
+	 *
+	 * @since TBD
+	 */
+	private Token_Resolver $resolver;
+
+	/**
+	 * @var Variant_Css_Builder Supplies the canonical variant-var declarations the switch layer re-emits.
+	 *
+	 * @since TBD
+	 */
+	private Variant_Css_Builder $variants;
+
+	/**
 	 * @var Css_Builder
 	 *
 	 * @since TBD
@@ -80,23 +96,29 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry     $registry    The token registry.
-	 * @param Token_Store        $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store   $active      Owns the active-set pointer.
-	 * @param Effective_Palettes $palettes    Reads the active set's effective palettes.
-	 * @param Css_Builder        $css_builder The palette switch-layer builder.
+	 * @param Token_Registry      $registry    The token registry.
+	 * @param Token_Store         $store       The store, for the cache-busting version.
+	 * @param Active_Set_Store    $active      Owns the active-set pointer.
+	 * @param Effective_Palettes  $palettes    Reads the active set's effective palettes.
+	 * @param Token_Resolver      $resolver    Resolves each palette's full color graph.
+	 * @param Variant_Css_Builder $variants   Supplies the canonical variant-var declarations.
+	 * @param Css_Builder         $css_builder The palette switch-layer builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Store $store,
 		Active_Set_Store $active,
 		Effective_Palettes $palettes,
+		Token_Resolver $resolver,
+		Variant_Css_Builder $variants,
 		Css_Builder $css_builder
 	) {
 		$this->registry    = $registry;
 		$this->store       = $store;
 		$this->active      = $active;
 		$this->palettes    = $palettes;
+		$this->resolver    = $resolver;
+		$this->variants    = $variants;
 		$this->css_builder = $css_builder;
 	}
 
@@ -176,7 +198,10 @@ final class Projector extends Abstract_Css_Projector {
 			return $cached;
 		}
 
-		$css = $this->css_builder->css( $this->palettes_for( $active ) );
+		$css = $this->css_builder->css(
+			$this->palettes_for( $active ),
+			$this->variants->canonical_declarations( $active )
+		);
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
@@ -186,10 +211,12 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * The active set's palettes flattened to `id => ( token => swatch value )`, using each palette's EFFECTIVE
-	 * colors (the default palette overlaid with the palette's own deltas) so a per-block `[data-kb-palette]`
-	 * override fully re-skins its subtree with default fallback. A palette with no effective colors is dropped
-	 * so it emits no empty selector.
+	 * Each palette's fully-resolved color graph, limited to the vars any palette re-tints, keyed
+	 * `id => ( css-var => resolved literal )`. Every palette emits the SAME var set (the union of what each
+	 * palette changes against the baseline default), each carrying that palette's own value, so a per-block
+	 * `[data-kb-palette]` override completely replaces the subtree's colors — semantics and shadow composites
+	 * included — no matter which palette the set `$current` points at. A var no palette changes is identical
+	 * everywhere, so it is left to inherit and never re-declared.
 	 *
 	 * @since TBD
 	 *
@@ -198,13 +225,36 @@ final class Projector extends Abstract_Css_Projector {
 	 * @return array<string, array<string, string>>
 	 */
 	private function palettes_for( string $active ): array {
+		$ids      = $this->palettes->palette_ids( $active );
+		$baseline = $this->resolver->resolve_palette( $active, $this->palettes->default_palette( $active ) )->by_var();
+
+		$resolved = [];
+		$changed  = [];
+
+		foreach ( $ids as $id ) {
+			$by_var          = $this->resolver->resolve_palette( $active, $id )->by_var();
+			$resolved[ $id ] = $by_var;
+
+			foreach ( $by_var as $var => $value ) {
+				if ( ( $baseline[ $var ] ?? null ) !== $value ) {
+					$changed[ $var ] = true;
+				}
+			}
+		}
+
 		$palettes = [];
 
-		foreach ( $this->palettes->palette_ids( $active ) as $id ) {
-			$swatches = $this->palettes->effective_swatch_values( $id, $active );
+		foreach ( $ids as $id ) {
+			$declarations = [];
 
-			if ( $swatches !== [] ) {
-				$palettes[ $id ] = $swatches;
+			foreach ( array_keys( $changed ) as $var ) {
+				if ( array_key_exists( $var, $resolved[ $id ] ) ) {
+					$declarations[ $var ] = $resolved[ $id ][ $var ];
+				}
+			}
+
+			if ( $declarations !== [] ) {
+				$palettes[ $id ] = $declarations;
 			}
 		}
 

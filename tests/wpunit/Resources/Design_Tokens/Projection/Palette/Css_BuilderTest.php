@@ -4,12 +4,12 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Palette;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Css_Builder;
-use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Covers the per-block palette switch-layer builder: one `[data-kb-palette="<id>"]` selector per palette
- * re-pointing the canonical color vars, with literal and alias swatch values rendered correctly.
+ * Covers the per-block palette switch-layer builder: a shared `[data-kb-palette]` rule re-emitting the
+ * variant declarations, plus one `[data-kb-palette="<id>"]` selector per palette re-declaring that palette's
+ * resolved color vars as literals.
  */
 final class Css_BuilderTest extends TestCase {
 
@@ -18,8 +18,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A palette emits a `[data-kb-palette="<id>"]` selector that re-points each swatch's canonical color var
-	 * to the swatch's literal value.
+	 * A palette emits a `[data-kb-palette="<id>"]` selector that re-declares each resolved color var (already
+	 * keyed by its canonical `--kb-token--*` name) to its literal value, sanitized.
 	 *
 	 * @return void
 	 */
@@ -27,43 +27,51 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder()->css(
 			[
 				'dark' => [
-					'primitive.color.brand.primary' => '#0b1020',
-					'primitive.color.neutral.900'   => '#ffffff',
+					'--kb-token--primitive--color--brand--primary' => '#0b1020',
+					'--kb-token--primitive--color--neutral--900'   => '#ffffff',
 				],
 			]
 		);
 
 		$this->assertStringContainsString(
 			'[data-kb-palette="dark"]{'
-				. Css_Var::from_id( 'primitive.color.brand.primary' ) . ':#0b1020;'
-				. Css_Var::from_id( 'primitive.color.neutral.900' ) . ':#ffffff;}',
+				. '--kb-token--primitive--color--brand--primary:#0b1020;'
+				. '--kb-token--primitive--color--neutral--900:#ffffff;}',
 			$css
 		);
 	}
 
 	/**
-	 * An alias swatch value renders as a var() reference to the canonical target token, so it chains through
-	 * the cascade rather than freezing a literal.
+	 * The variant declarations are re-emitted under a shared attribute-presence `[data-kb-palette]` rule, so a
+	 * variant var re-resolves against the subtree's re-declared semantics inside any palette.
 	 *
 	 * @return void
 	 */
-	public function testItRendersAnAliasSwatchAsAVarReference(): void {
+	public function testItEmitsTheVariantDeclarationsUnderTheSharedPresenceSelector(): void {
 		$css = $this->builder()->css(
-			[
-				'dark' => [
-					'semantic.color.link' => '{primitive.color.brand.primary}',
-				],
-			]
+			[ 'dark' => [ '--kb-token--primitive--color--brand--primary' => '#0b1020' ] ],
+			'--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);'
 		);
 
 		$this->assertStringContainsString(
-			Css_Var::from_id( 'semantic.color.link' ) . ':var(' . Css_Var::from_id( 'primitive.color.brand.primary' ) . ');',
+			'[data-kb-palette]{--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);}',
 			$css
 		);
 	}
 
 	/**
-	 * A palette with no swatches emits no selector, so no empty rule is produced.
+	 * With no variant declarations, no shared presence rule is emitted (only the per-palette selectors).
+	 *
+	 * @return void
+	 */
+	public function testItOmitsTheSharedRuleWhenThereAreNoVariantDeclarations(): void {
+		$css = $this->builder()->css( [ 'dark' => [ '--kb-token--primitive--color--brand--primary' => '#0b1020' ] ] );
+
+		$this->assertStringNotContainsString( '[data-kb-palette]{', $css );
+	}
+
+	/**
+	 * A palette with no resolved color vars emits no selector, so no empty rule is produced.
 	 *
 	 * @return void
 	 */
