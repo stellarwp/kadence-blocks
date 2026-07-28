@@ -160,9 +160,9 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Persist a full-surface button preset into a token set's overrides document.
+	 * Persist a full-surface button preset into a token library's overrides document.
 	 *
-	 * @param string $slug    The token set slug to write into.
+	 * @param string $slug    The token library slug to write into.
 	 * @param string $preset The preset slug.
 	 *
 	 * @return void

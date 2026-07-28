@@ -90,7 +90,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The token set store.
+	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
 	 * @param Effective_Palettes $palettes  Reads the set's effective color palettes for the `:root` overlay.
@@ -111,12 +111,12 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
+	 * Resolve a stored token library into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to resolve.
+	 * @param string $slug The token library slug to resolve.
 	 *
 	 * @return Resolved_Tokens
 	 *
@@ -134,7 +134,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug         The token set slug to resolve.
+	 * @param string $slug         The token library slug to resolve.
 	 * @param string $cache_prefix Cache-key prefix for the resolved-tokens entry.
 	 *
 	 * @return Resolved_Tokens
@@ -198,7 +198,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string,mixed> The effective document.
 	 */
@@ -230,7 +230,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug       The token set slug to resolve.
+	 * @param string $slug       The token library slug to resolve.
 	 * @param string $palette_id The palette whose colors the graph resolves against.
 	 *
 	 * @return Resolved_Tokens

@@ -66,7 +66,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -81,7 +81,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id, e.g. "default", "dark".
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -111,7 +111,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string[]
 	 */
@@ -134,7 +134,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string
 	 */
@@ -148,7 +148,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string
 	 */
@@ -164,7 +164,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => literal-or-alias value.
 	 */
@@ -181,7 +181,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => literal-or-alias value.
 	 */
@@ -198,7 +198,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string>
 	 */
@@ -247,7 +247,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => re-tint value.
 	 */
@@ -389,7 +389,7 @@ final class Effective_Palettes {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */

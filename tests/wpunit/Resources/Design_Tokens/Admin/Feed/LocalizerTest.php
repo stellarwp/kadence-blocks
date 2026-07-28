@@ -85,10 +85,10 @@ final class LocalizerTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testItAttachesTheFeedOnTheStyleBookScreen(): void {
+	public function testItAttachesTheFeedOnTheStyleLibraryScreen(): void {
 		wp_register_script(
 			Asset_Loader::get_script_handle(),
-			'https://example.test/admin-kadence-style-book.js',
+			'https://example.test/admin-kadence-style-library.js',
 			[],
 			'1',
 			true

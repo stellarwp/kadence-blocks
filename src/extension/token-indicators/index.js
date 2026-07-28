@@ -43,7 +43,7 @@ function unitAttrFor(kind, attr) {
  * mapped override regardless of which preset is active).
  *
  * @param {string} blockName The block name.
- * @param {string} [set]     The token set slug; defaults to the active set.
+ * @param {string} [set]     The token library slug; defaults to the active library.
  *
  * @since TBD
  *
@@ -60,7 +60,7 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [set]      The token set slug; defaults to the active set — pass the caller's resolved
+ * @param {string} [set]      The token library slug; defaults to the active library — pass the caller's resolved
  *                            set so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
