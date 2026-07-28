@@ -26,18 +26,18 @@ use WP_REST_Server;
 /**
  * REST controller for the Design Tokens presets resource.
  *
- * Exposes the raw read and write surface for a block's preset set: the named presets and the `$default`
- * that live in the DTCG document under `$extensions.com.kadence.designTokens.presets.<block>`. Reads are
- * served from the baseline deep-merged with the stored overrides (via {@see Effective_Presets}), so a
- * preset authored through a write is visible on the next read. Resolved (CSS) preset values are out of
- * scope here — they are produced by the preset projectors, which own the resolver's override-merging.
+ * Exposes the raw read and write surface for a block's preset collection: the named presets and the
+ * `$default` that live in the DTCG document under `$extensions.com.kadence.designTokens.presets.<block>`.
+ * Reads are served from the baseline deep-merged with the stored overrides (via {@see Effective_Presets}),
+ * so a preset authored through a write is visible on the next read. Resolved (CSS) preset values are out
+ * of scope here — they are produced by the preset projectors, which own the resolver's override-merging.
  *
- * A block is addressable only when it has a registered preset set ({@see Token_Registry::for_block()}); a
- * block with no set has no bindings, so a preset authored for it could never project. Reads and writes for
- * such a block are a 404.
+ * A block is addressable only when it has a registered binding set ({@see Token_Registry::for_block()});
+ * a block with no binding set has no bindings, so a preset authored for it could never project. Reads and
+ * writes for such a block are a 404.
  *
  * Writes assemble a partial overrides document carrying only the addressed presets node and deep-merge it
- * onto the stored set, then run the shared pipeline: DTCG grammar validation (HTTP 422), a dry-run Resolver
+ * onto the stored presets, then run the shared pipeline: DTCG grammar validation (HTTP 422), a dry-run Resolver
  * pass that rejects alias cycles / dangling aliases in the token layers (HTTP 422), then a single
  * Token_Store::save_document() that bumps the version and fires the change action. The block name carries a
  * slash ("kadence/advancedbtn"), so it is routed as two path segments and reassembled.
@@ -287,7 +287,7 @@ final class Presets_Controller extends Controller {
 	 * Register the read and write routes for the presets resource.
 	 *
 	 * Verb semantics follow the WordPress REST convention: POST creates or merges a single preset, PUT
-	 * replaces the block's whole preset set, DELETE on a block resets it to baseline, and DELETE on a
+	 * replaces the block's whole preset collection, DELETE on a block resets it to baseline, and DELETE on a
 	 * preset removes that one preset. The `$default` is read and set through a dedicated sub-route.
 	 *
 	 * The `default` sub-route is registered before the single-preset route so the literal segment is not
@@ -330,7 +330,7 @@ final class Presets_Controller extends Controller {
 					'args'                => $this->get_create_params(),
 				],
 				[
-					// PUT replaces the block's whole preset set, dropping any preset absent from the body.
+					// PUT replaces the block's whole preset collection, dropping any preset absent from the body.
 					'methods'             => 'PUT',
 					'callback'            => [ $this, 'update_item' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
@@ -409,7 +409,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Read a single block's effective preset set.
+	 * Read a single block's effective preset collection.
 	 *
 	 * @since TBD
 	 *
@@ -495,7 +495,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Replace a block's whole preset set (PUT /presets/{block}).
+	 * Replace a block's whole preset collection (PUT /presets/{block}).
 	 *
 	 * The stored presets for the block are dropped first, then the body's preset map (and optional
 	 * default) is written, so a preset absent from the body no longer applies.
@@ -564,7 +564,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Reset a block's preset set to baseline (DELETE /presets/{block}).
+	 * Reset a block's preset collection to baseline (DELETE /presets/{block}).
 	 *
 	 * Removes the whole stored `presets.<block>` node, so the block renders its baseline presets. A no-op
 	 * when nothing is stored for the block.
@@ -712,7 +712,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * The JSON Schema for a block's preset set.
+	 * The JSON Schema for a block's preset collection.
 	 *
 	 * @since TBD
 	 *
@@ -740,11 +740,11 @@ final class Presets_Controller extends Controller {
 
 		$this->item_schema = [
 			'$schema'    => 'http://json-schema.org/draft-07/schema#',
-			'title'      => 'design-token-preset-set',
+			'title'      => 'design-token-presets',
 			'type'       => 'object',
 			'properties' => [
 				'block'   => [
-					'description' => __( 'The block name the preset set belongs to.', 'kadence-blocks' ),
+					'description' => __( 'The block name the preset collection belongs to.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -890,7 +890,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a request for a block that has no registered preset set.
+	 * Reject a request for a block that has no registered binding set.
 	 *
 	 * @since TBD
 	 *
@@ -1170,7 +1170,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Build the response payload for a block's preset set, read from the effective (baseline-merged) set.
+	 * Build the response payload for a block's preset collection, read from the effective (baseline-merged) presets.
 	 *
 	 * @since TBD
 	 *
@@ -1239,7 +1239,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Remove the stored preset-set node (`presets.<block>`), pruning any ancestor emptied by the removal.
+	 * Remove the stored preset-collection node (`presets.<block>`), pruning any ancestor emptied by the removal.
 	 *
 	 * @since TBD
 	 *
