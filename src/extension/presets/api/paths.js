@@ -6,7 +6,7 @@
  */
 
 /**
- * The path for a block's preset set (GET list / POST create-or-merge / PUT replace / DELETE reset).
+ * The path for a block's preset collection (GET list / POST create-or-merge / PUT replace / DELETE reset).
  *
  * @param {string} namespace The REST namespace, e.g. "kb-design-tokens/v1".
  * @param {string} block     The block name, e.g. "kadence/advancedbtn".

@@ -86,7 +86,7 @@ export function usePresetBinding(blockName, attributes, set) {
 		const attr = property.control_attr;
 
 		// A property with no mapped control attribute, or one the active preset does not define, is not
-		// surfaced — only a property the selected preset sets is "bound" (the preset-set collapse
+		// surfaced — only a property the selected preset sets is "bound" (the binding-set collapse
 		// interlock: the per-preset surface, not just the block's full property list, gates binding).
 		if (!attr || !(property.key in presetValues)) {
 			return;
