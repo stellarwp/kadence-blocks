@@ -15,9 +15,9 @@ use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the block-preset projector against a flat preset preset set — the no-picker "default preset"
+ * Exercises the block-preset projector against a flat preset collection — the no-picker "default preset"
  * case the projector serves. A controllable fixture baseline supplies a single `$default` preset of literal
- * values, and a synthetic preset set supplies the `block_attr` bindings; together they prove the
+ * values, and a synthetic binding set supplies the `block_attr` bindings; together they prove the
  * property -> attribute mapping and the overlay semantics.
  */
 final class ProjectorTest extends TestCase {
@@ -90,7 +90,7 @@ final class ProjectorTest extends TestCase {
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
 		// The baseline guard deactivates projection on a broken token set; the projector must then fall
-		// back to KB's own defaults even for a block that does have a preset set.
+		// back to KB's own defaults even for a block that does have a binding set.
 		$registry = $this->button_set();
 		$registry->deactivate();
 
@@ -99,8 +99,8 @@ final class ProjectorTest extends TestCase {
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
 	}
 
-	public function testItIsANoopForABlockWithNoPresetSet(): void {
-		// An empty registry knows no preset set for the block.
+	public function testItIsANoopForABlockWithNoBindingSet(): void {
+		// An empty registry knows no binding set for the block.
 		$defaults = $this->projector( new Token_Registry() )->add_preset_defaults( [ 'padding' => '10px' ], self::BUTTON );
 
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
@@ -140,7 +140,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * A registry holding a Button preset set whose bindings declare the `block_attr` targets the shipped
+	 * A registry holding a Button binding set whose bindings declare the `block_attr` targets the shipped
 	 * declarations omit until SOFT-3406.
 	 */
 	private function button_set(): Token_Registry {
