@@ -1,19 +1,19 @@
 /**
  * Editor binding/override state for design-token-mapped controls.
  *
- * `useVariantBinding` computes, for the block's currently selected variant, a per-attribute map the
- * indicator layer reads: whether each mapped control is bound to the active variant and whether it has
- * been overridden away from it, plus the variant's resolved value so a reset knows what to restore to.
+ * `usePresetBinding` computes, for the block's currently selected preset, a per-attribute map the
+ * indicator layer reads: whether each mapped control is bound to the active preset and whether it has
+ * been overridden away from it, plus the preset's resolved value so a reset knows what to restore to.
  *
  * Detection matches how a block is bound. Buttons bind via CSS retarget, so a bound-but-untouched
- * attribute stays EMPTY — there `empty => bound`, `non-empty && value != variantValue => overridden`.
+ * attribute stays EMPTY — there `empty => bound`, `non-empty && value != presetValue => overridden`.
  * (A block that binds by seeding a block attribute — image's borderRadius — is never empty; there the
- * test is a pure value-compare. This module keeps `variantValue` as the primary signal so that path is a
+ * test is a pure value-compare. This module keeps `presetValue` as the primary signal so that path is a
  * one-line change when a seeded block is wired later. See the Phase 3 recipe caveat.)
  */
 
 import { get } from 'lodash';
-import { activeSet, blockDefaultVariant, blockProperties, blockVariantValues } from '../variant-picker';
+import { activeLibrary, blockDefaultPreset, blockProperties, blockPresetValues } from '../preset-picker';
 import { isEmptyValue, matchesVariant } from './normalize';
 import './token-indicators.scss';
 
@@ -39,8 +39,8 @@ function unitAttrFor(kind, attr) {
 
 /**
  * The mapped control attributes for a block's set, as `[{ attr, kind }]` — the surface reset-all clears.
- * Skips properties with no control attribute. Independent of the selected variant (reset-all clears every
- * mapped override regardless of which variant is active).
+ * Skips properties with no control attribute. Independent of the selected preset (reset-all clears every
+ * mapped override regardless of which preset is active).
  *
  * @param {string} blockName The block name.
  * @param {string} [set]     The token set slug; defaults to the active set.
@@ -50,7 +50,7 @@ function unitAttrFor(kind, attr) {
  * @return {Array} The mapped attributes ([{ attr, kind }]).
  */
 export function mappedAttrsFor(blockName, set) {
-	return blockProperties(blockName, set || activeSet())
+	return blockProperties(blockName, set || activeLibrary())
 		.filter((property) => !!property.control_attr)
 		.map((property) => ({ attr: property.control_attr, kind: property.kind }));
 }
@@ -65,46 +65,46 @@ export function mappedAttrsFor(blockName, set) {
  *
  * @since TBD
  *
- * @return {Object} attrName => { property, token, kind, variantValue, bound, overridden }.
+ * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
  */
-export function useVariantBinding(blockName, attributes, set) {
-	const resolvedSet = set || activeSet();
-	const selected = get(attributes, 'kbVariant', '');
+export function usePresetBinding(blockName, attributes, set) {
+	const resolvedSet = set || activeLibrary();
+	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedSet);
-	const values = blockVariantValues(blockName, resolvedSet);
+	const values = blockPresetValues(blockName, resolvedSet);
 
-	// The variant whose surface drives the indicators: the explicit selection, or the set's authoritative
-	// default variant when none is chosen (kbVariant is '' on every freshly inserted block, so this
+	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
+	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
 	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
 	// neither resolves, no control is bound.
-	const activeVariant = selected || blockDefaultVariant(blockName, resolvedSet);
-	const variantValues = get(values, activeVariant, {});
+	const activePreset = selected || blockDefaultPreset(blockName, resolvedSet);
+	const presetValues = get(values, activePreset, {});
 
 	const state = {};
 
 	properties.forEach((property) => {
 		const attr = property.control_attr;
 
-		// A property with no mapped control attribute, or one the active variant does not define, is not
-		// surfaced — only a property the selected variant sets is "bound" (the variant-set collapse
-		// interlock: the per-variant surface, not just the block's full property list, gates binding).
-		if (!attr || !(property.key in variantValues)) {
+		// A property with no mapped control attribute, or one the active preset does not define, is not
+		// surfaced — only a property the selected preset sets is "bound" (the binding-set collapse
+		// interlock: the per-preset surface, not just the block's full property list, gates binding).
+		if (!attr || !(property.key in presetValues)) {
 			return;
 		}
 
 		const kind = property.kind;
-		const variantValue = variantValues[property.key];
+		const presetValue = presetValues[property.key];
 		const value = get(attributes, attr, '');
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
 		const empty = isEmptyValue(kind, value);
-		const overridden = !empty && !matchesVariant(kind, value, unit, variantValue);
+		const overridden = !empty && !matchesVariant(kind, value, unit, presetValue);
 
 		state[attr] = {
 			property: property.key,
 			token: property.token,
 			kind,
-			variantValue,
+			presetValue,
 			bound: true,
 			overridden,
 		};
@@ -115,7 +115,7 @@ export function useVariantBinding(blockName, attributes, set) {
 
 /**
  * The `setAttributes` patch that clears a mapped control's attribute(s) back to their block.json default
- * shape, so the block falls back to the existing variant-scoped CSS (the `.wp-block-*.kb-variant--<variant>`
+ * shape, so the block falls back to the existing preset-scoped CSS (the `.wp-block-*.kb-preset--<preset>`
  * retarget) or the preset default — no new render path. A `color`/`text` control clears its single
  * attribute to `''`. A `dimension` control (e.g. `borderRadius`) also clears its unit companion and its
  * `tablet*`/`mobile*` companions by convention; the primary and companion array attributes reset to the
