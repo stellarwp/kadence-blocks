@@ -81,8 +81,8 @@ final class Provider extends Provider_Contract {
 			$registry->register( $token );
 		}
 
-		foreach ( $declarations['preset_bindings'] as $preset_set ) {
-			$registry->register_preset_bindings( $preset_set );
+		foreach ( $declarations['preset_bindings'] as $declaration ) {
+			$registry->register_preset_bindings( $declaration );
 		}
 	}
 

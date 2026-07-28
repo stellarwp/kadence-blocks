@@ -6,7 +6,7 @@ use RuntimeException;
 
 /**
  * Thrown when the Preset_Resolver is asked for a block or preset the document does not define, or for
- * a block whose preset set declares no `$default`.
+ * a block whose preset collection declares no `$default`.
  *
  * @since TBD
  */
@@ -40,7 +40,7 @@ final class Unknown_Preset_Exception extends RuntimeException {
 	}
 
 	/**
-	 * The block's preset set declares no `$default`.
+	 * The block's preset collection declares no `$default`.
 	 *
 	 * @since TBD
 	 *

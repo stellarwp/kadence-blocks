@@ -5,7 +5,7 @@
  * keyed by token set then by block:
  * `{ active, sets: { <slug>: { <block>: { default, presets, properties, label } } } }`.
  * Reads take the token set a block is on (its `kbTokenSet`, or the active library). A picker-driven block
- * declares one preset set; its selection lives in the block's `kbPreset` string attribute. Both the
+ * declares one binding set; its selection lives in the block's `kbPreset` string attribute. Both the
  * generic inspector picker (src/early-filters.js) and a block that renders the picker inline in its own
  * Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it surfaces.
  */
@@ -43,7 +43,7 @@ function setBlocks(set) {
 }
 
 /**
- * The catalog entry for a block's preset set in a token set, or null when it offers none.
+ * The catalog entry for a block's binding set in a token set, or null when it offers none.
  *
  * @param {string} name  The block name.
  * @param {string} [set] The token set slug; defaults to the active library.
@@ -65,7 +65,7 @@ export function blockPresets(name, set) {
 }
 
 /**
- * The picker control label a block declares for its preset set (the set's `label` in declarations.php),
+ * The picker control label a block declares for its binding set (the set's `label` in declarations.php),
  * or an empty string when it declares none.
  *
  * @param {string} name  The block name.

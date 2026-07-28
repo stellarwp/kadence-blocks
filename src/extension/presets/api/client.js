@@ -23,11 +23,11 @@ function targetParams(set) {
 }
 
 /**
- * Read a block's effective preset set for a token set.
+ * Read a block's effective preset collection for a token set.
  *
  * @param {string} block The block name.
  * @param {string} [set] The token set slug; omitted targets the active set.
- * @return {Promise<Object>} The preset set payload ({ block, slug, version, default, presets }).
+ * @return {Promise<Object>} The preset collection payload ({ block, slug, version, default, presets }).
  */
 export function getBlockPresets(block, set) {
 	return apiFetch({
@@ -44,7 +44,7 @@ export function getBlockPresets(block, set) {
  * @param {string} [preset.label]  The preset label.
  * @param {Object} [preset.tokens] The property => value token map.
  * @param {string} [set]           The token set slug; omitted targets the active set.
- * @return {Promise<Object>} The updated preset set payload.
+ * @return {Promise<Object>} The updated preset collection payload.
  */
 export function createPreset(block, { preset, label, tokens }, set) {
 	return apiFetch({
@@ -60,7 +60,7 @@ export function createPreset(block, { preset, label, tokens }, set) {
  * @param {string} block         The block name.
  * @param {string} defaultPreset The preset slug to make default.
  * @param {string} [set]         The token set slug; omitted targets the active set.
- * @return {Promise<Object>} The updated preset set payload.
+ * @return {Promise<Object>} The updated preset collection payload.
  */
 export function setPresetDefault(block, defaultPreset, set) {
 	return apiFetch({
@@ -76,7 +76,7 @@ export function setPresetDefault(block, defaultPreset, set) {
  * @param {string} block  The block name.
  * @param {string} preset The preset slug.
  * @param {string} [set]  The token set slug; omitted targets the active set.
- * @return {Promise<Object>} The updated preset set payload.
+ * @return {Promise<Object>} The updated preset collection payload.
  */
 export function deletePreset(block, preset, set) {
 	return apiFetch({

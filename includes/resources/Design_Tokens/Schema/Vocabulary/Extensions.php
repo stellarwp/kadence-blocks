@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
 /**
  * The DTCG `$extensions` vocabulary this module owns, single-sourced so every reader and the validator
  * agree on the exact spelling of the vendor namespace, its sections, and the structural keys inside a
- * preset set.
+ * preset collection.
  *
  * The baseline document carries two sections under the Kadence namespace:
  *

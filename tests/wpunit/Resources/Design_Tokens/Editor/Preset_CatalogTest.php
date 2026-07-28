@@ -13,7 +13,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Exercises the editor preset catalog against the real shipped baseline, so these assertions also
- * guard the Button preset set the picker offers.
+ * guard the Button binding set the picker offers.
  */
 final class Preset_CatalogTest extends TestCase {
 
@@ -54,7 +54,7 @@ final class Preset_CatalogTest extends TestCase {
 		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
-		// The picker's control label, declared on the preset set in declarations.php.
+		// The picker's control label, declared on the binding set in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[

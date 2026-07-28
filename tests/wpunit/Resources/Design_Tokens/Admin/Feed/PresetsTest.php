@@ -50,7 +50,7 @@ final class PresetsTest extends TestCase {
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {
-		// A fresh registry whose only preset set has no matching presets in the shipped baseline.
+		// A fresh registry whose only binding set has no matching presets in the shipped baseline.
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings( [ 'block' => 'kadence/not-a-real-block' ] );
 

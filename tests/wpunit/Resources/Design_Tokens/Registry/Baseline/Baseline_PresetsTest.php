@@ -33,8 +33,8 @@ final class Baseline_PresetsTest extends TestCase {
 		foreach ( $section as $block => $node ) {
 			$this->assertIsArray( $node, sprintf( 'Preset node for "%s" must be an object.', $block ) );
 
-			// A block is either a flat preset set, or a container of named sets (a named child that is an
-			// array without a "tokens" key is itself a set). Assert each set's shape either way.
+			// A block is either a flat preset collection, or a container of named collections (a named child
+			// that is an array without a "tokens" key is itself a collection). Assert each collection's shape either way.
 			if ( $this->is_grouped( $node ) ) {
 				foreach ( $this->named_presets( $node ) as $group ) {
 					$this->assertIsArray( $node[ $group ], sprintf( '"%s" set "%s" must be an object.', $block, $group ) );
@@ -49,7 +49,7 @@ final class Baseline_PresetsTest extends TestCase {
 	}
 
 	/**
-	 * Assert one preset set node is well-formed: a `$default` naming one of its own presets, and every
+	 * Assert one preset collection node is well-formed: a `$default` naming one of its own presets, and every
 	 * named preset carrying a label and a non-empty tokens map.
 	 *
 	 * @param string               $where The block[.set] label, for failure messages.
