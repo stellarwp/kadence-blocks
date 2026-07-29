@@ -192,6 +192,23 @@ final class Css_Builder {
 	}
 
 	/**
+	 * The active set's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
+	 * `--kb-token--variant--<block>--<variant>--<property>:<value>;` list. The palette switch layer re-emits
+	 * these under `[data-kb-palette]` so a per-block palette override forces each variant var to re-resolve
+	 * against the subtree's re-tinted semantics (a variant that aliases a palette-changed color follows the
+	 * chosen palette, so a variant Button re-skins with the rest of its subtree).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $active_slug The active set's slug.
+	 *
+	 * @return string
+	 */
+	public function canonical_declarations( string $active_slug ): string {
+		return $this->declarations_of( $this->collect( $active_slug ) );
+	}
+
+	/**
 	 * Build (uncached) the active set's variant CSS: the canonical variant-var definitions followed by the
 	 * per-variant scoped rules and the class-less $default rules. The single assembly definition shared by
 	 * css() and the cached css_for_version().
@@ -298,23 +315,6 @@ final class Css_Builder {
 		}
 
 		return $this->collected[ $key ] = $out;
-	}
-
-	/**
-	 * The active set's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
-	 * `--kb-token--variant--<block>--<variant>--<property>:<value>;` list. The palette switch layer re-emits
-	 * these under `[data-kb-palette]` so a per-block palette override forces each variant var to re-resolve
-	 * against the subtree's re-tinted semantics (a variant that aliases a palette-changed color follows the
-	 * chosen palette, so a variant Button re-skins with the rest of its subtree).
-	 *
-	 * @since TBD
-	 *
-	 * @param string $active_slug The active set's slug.
-	 *
-	 * @return string
-	 */
-	public function canonical_declarations( string $active_slug ): string {
-		return $this->declarations_of( $this->collect( $active_slug ) );
 	}
 
 	/**

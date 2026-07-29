@@ -256,6 +256,28 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
+	 * The single decode seam for the stored overrides, mirroring {@see Effective_Variants::raw()}.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function raw( string $slug = 'default' ): array {
+		$raw = $this->store->get_document( $slug );
+
+		if ( $raw === '' ) {
+			return [];
+		}
+
+		$decoded = json_decode( $raw, true );
+
+		return is_array( $decoded ) ? $decoded : [];
+	}
+
+	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
 	 *
 	 * @since TBD
@@ -277,28 +299,6 @@ final class Effective_Palettes {
 		}
 
 		return $overlay;
-	}
-
-	/**
-	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
-	 * The single decode seam for the stored overrides, mirroring {@see Effective_Variants::raw()}.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The token set slug.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function raw( string $slug = 'default' ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
 	}
 
 	/**
