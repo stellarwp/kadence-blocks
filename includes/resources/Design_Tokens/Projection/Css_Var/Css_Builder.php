@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 /**
  * Builds the CSS custom-property output for the single active token set — the CSS-variable backbone.
  *
- * Only one library (token set) is emitted at a time: the active-set pointer selects it, and the resolver
+ * Only one library (token set) is emitted at a time: the active-library pointer selects it, and the resolver
  * hands the builder that set's canonical resolved maps. The builder emits a single `:root` block:
  *
  *   1. The canonical token layer — `--kb-token--<id>: <value-or-var>` straight from the active set's
@@ -30,8 +30,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *      within the query and every consuming token / block follows for free.
  *
  * Bare `:root` makes the variables live everywhere KB prints them (front end and editor iframe alike).
- * `:where(.kb-tokens)` is an additional zero-specificity hook for future opt-in or variant scoping. Nothing
- * here is `!important` — per-instance variant overrides must be able to win by ordinary cascade.
+ * `:where(.kb-tokens)` is an additional zero-specificity hook for future opt-in or preset scoping. Nothing
+ * here is `!important` — per-instance preset overrides must be able to win by ordinary cascade.
  *
  * Pure: no WordPress calls beyond the object cache in css_for_version(), no globals, no side effects. The
  * WordPress wiring lives in Projector.
@@ -53,7 +53,7 @@ final class Css_Builder {
 
 	/**
 	 * The HTML attribute a container sets to scope token vars for its subtree. Retained as the shared source
-	 * of the attribute name for the variant projector's scoped rules; the Css_Var backbone no longer emits a
+	 * of the attribute name for the preset projector's scoped rules; the Css_Var backbone no longer emits a
 	 * switch selector of its own now that a single active set is projected.
 	 *
 	 * @since TBD
@@ -82,7 +82,7 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * The shared attribute name the variant projector scopes its rules with ("data-kb-token-set").
+	 * The shared attribute name the preset projector scopes its rules with ("data-kb-token-set").
 	 *
 	 * @since TBD
 	 *

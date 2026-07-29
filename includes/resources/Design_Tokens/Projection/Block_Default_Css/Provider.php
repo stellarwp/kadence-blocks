@@ -30,12 +30,12 @@ final class Provider extends Provider_Contract {
 		$projector = $this->container->get( Projector::class );
 		$projectors->add( $projector );
 
-		// Front end: append after the token vars (100) and variant overrides (110). These are low-specificity
+		// Front end: append after the token vars (100) and preset overrides (110). These are low-specificity
 		// defaults, so a per-instance value KB renders later still wins regardless of order.
 		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 120 );
 
 		// Editor: append at admin_init priority 20, after the editor-styles handle is registered (1) and the
-		// Css_Var (5) and variant (10) projectors, so the default CSS follows the token vars on the same handle.
+		// Css_Var (5) and preset (10) projectors, so the default CSS follows the token vars on the same handle.
 		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 20 );
 	}
 }

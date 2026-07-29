@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -61,9 +61,9 @@ final class ProjectorTest extends TestCase {
 	private Token_Store $store;
 
 	/**
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @return void
@@ -75,7 +75,7 @@ final class ProjectorTest extends TestCase {
 		$this->projector = $this->container->get( Projector::class );
 		$this->registry  = $this->container->get( Token_Registry::class );
 		$this->store     = $this->container->get( Token_Store::class );
-		$this->active    = $this->container->get( Active_Set_Store::class );
+		$this->active    = $this->container->get( Active_Token_Library_Store::class );
 
 		// Register the KB style handles the hooks append to.
 		$this->register_front_handle();

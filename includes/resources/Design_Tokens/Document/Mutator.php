@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  *
  * This deliberately does NOT reuse Effective_Document::merge_node(): that merges overrides onto the
  * baseline and strips the "$extensions" layer, whereas these transforms operate on the stored overrides
- * themselves and MUST preserve "$extensions" (foundation presets, block presets, variants) untouched.
+ * themselves and MUST preserve "$extensions" (foundation presets, block presets, presets) untouched.
  *
  * Sentinels are stored verbatim here, never applied: a "$value": null reset or a "$disabled": true
  * leaf replaces wholesale, exactly like a concrete leaf, so the Resolver can interpret them at read

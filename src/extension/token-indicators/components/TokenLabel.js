@@ -17,7 +17,7 @@ import { TokenIndicator } from './TokenIndicator';
  * @param {Object}   props             The component props.
  * @param {string}   props.text        The label text.
  * @param {string}   props.attr        The attribute the control writes (the indicator's key).
- * @param {Object}   props.binding     The block's binding map from useVariantBinding.
+ * @param {Object}   props.binding     The block's binding map from usePresetBinding.
  * @param {Function} [props.onReset]   Called with `attr` to reset that control's override (with `showReset`).
  * @param {boolean}  [props.showReset] Whether to render the reset icon / matching mark inline (default false).
  *

@@ -101,12 +101,13 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testUserPrimitivesInEveryStoredSetAreRegistered(): void {
+	public function testUserPrimitivesInEveryStoredLibraryAreRegistered(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 
-		// Save primitives to a set other than the default. Every stored set is synced, not only the
-		// active one — the multi-set projection renders every set, so it needs every set's primitives.
+		// Save primitives to a library other than the default. Every stored library is synced, not only
+		// the active one — the multi-library projection renders every library, so it needs every
+		// library's primitives.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
 
 		$this->make_registrar( $registry, new TestLogger() )->sync();
@@ -117,40 +118,40 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testSyncAccumulatesPrimitivesAcrossAllStoredSets(): void {
+	public function testSyncAccumulatesPrimitivesAcrossAllStoredLibraries(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 		$logger   = new TestLogger();
 		$reg      = $this->make_registrar( $registry, $logger );
 
-		// Populate the default set.
+		// Populate the default library.
 		$store->save_document( $this->encode_document( 'primitive.default-color', 'color', 'Default Color' ) );
 		$reg->sync();
 		$this->assertSame( [ 'primitive.default-color' ], $registry->user_created_ids() );
 
-		// Populate a second set.
+		// Populate a second library.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
 		$reg->sync();
 
-		// Both sets' primitives are registered; a set no longer has to be active to appear.
+		// Both libraries' primitives are registered; a library no longer has to be active to appear.
 		$this->assertSame( [ 'primitive.default-color', 'primitive.brand-color' ], $registry->user_created_ids() );
 	}
 
 	/**
 	 * @return void
 	 */
-	public function testCollidingIdAcrossSetsKeepsDefaultAndLogsWarning(): void {
+	public function testCollidingIdAcrossLibrariesKeepsDefaultAndLogsWarning(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 		$logger   = new TestLogger();
 
-		// Two different sets independently define the same canonical id.
+		// Two different libraries independently define the same canonical id.
 		$store->save_document( $this->encode_document( 'primitive.color.custom.blue', 'color', 'Default Blue' ) );
 		$store->save_document( $this->encode_document( 'primitive.color.custom.blue', 'color', 'Brand Blue' ), 'brand-b' );
 
 		$this->make_registrar( $registry, $logger )->sync();
 
-		// The default set's definition wins; the registry has no per-set namespacing to keep both.
+		// The default library's definition wins; the registry has no per-library namespacing to keep both.
 		$this->assertSame( [ 'primitive.color.custom.blue' ], $registry->user_created_ids() );
 
 		$token = $registry->get( 'primitive.color.custom.blue' );
@@ -171,7 +172,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$reg->sync();
 		$this->assertSame( [ 'primitive.my-color' ], $registry->user_created_ids() );
 
-		// Overwrite the default set's document with a different primitive.
+		// Overwrite the default library's document with a different primitive.
 		$store->save_document( $this->encode_document( 'primitive.other-color', 'color', 'Other Color' ) );
 		$reg->sync();
 
@@ -181,7 +182,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testWriteToAnySetAddsToTheRegistry(): void {
+	public function testWriteToAnyLibraryAddsToTheRegistry(): void {
 		$store    = $this->container->get( Token_Store::class );
 		$registry = new Token_Registry();
 		$reg      = $this->make_registrar( $registry, new TestLogger() );
@@ -190,7 +191,7 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$reg->sync();
 		$this->assertSame( [ 'primitive.my-color' ], $registry->user_created_ids() );
 
-		// Writing to a different set adds to the registry rather than replacing it.
+		// Writing to a different library adds to the registry rather than replacing it.
 		$store->save_document( $this->encode_document( 'primitive.brand-color', 'color', 'Brand Color' ), 'brand-b' );
 		$reg->sync();
 

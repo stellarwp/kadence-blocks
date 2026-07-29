@@ -9,11 +9,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
  * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
- * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensVariants (the
- * per-set variant catalog the variant picker and the "save as new variant" form read),
- * window.kadenceDesignTokensSets (the token-set catalog the per-block set-override picker reads),
- * window.kadenceDesignTokensPresetDefaults (the per-block attribute-default catalog the block-registration
- * filter reads), window.kadenceDesignTokensRest (the REST descriptor the variant writes POST to), and
+ * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensPresets (the
+ * per-library preset catalog the preset picker and the "save as new preset" form read),
+ * window.kadenceDesignTokensLibraries (the token-library catalog the per-block library-override picker reads),
+ * window.kadenceDesignTokensAttributeDefaults (the per-block attribute-default catalog the block-registration
+ * filter reads), window.kadenceDesignTokensRest (the REST descriptor the preset writes POST to), and
  * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
  * Guarded on wp_script_is( …, 'enqueued' ) so it runs only where that bundle loads, and skipped entirely
  * when the registry is fail-closed (a deactivated registry projects nothing, so the pickers offer nothing).
@@ -35,22 +35,22 @@ final class Localizer {
 	private const HANDLE = 'kadence-blocks-early-filters-js';
 
 	/**
-	 * The JS global the variant picker reads.
+	 * The JS global the preset picker reads.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const VARIANTS_OBJECT = 'kadenceDesignTokensVariants';
+	private const PRESETS_OBJECT = 'kadenceDesignTokensPresets';
 
 	/**
-	 * The JS global the per-block set-override picker reads.
+	 * The JS global the per-block library-override picker reads.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const SETS_OBJECT = 'kadenceDesignTokensSets';
+	private const LIBRARIES_OBJECT = 'kadenceDesignTokensLibraries';
 
 	/**
 	 * The JS global the block-registration preset-default filter reads.
@@ -59,10 +59,10 @@ final class Localizer {
 	 *
 	 * @var string
 	 */
-	private const PRESET_DEFAULTS_OBJECT = 'kadenceDesignTokensPresetDefaults';
+	private const ATTRIBUTE_DEFAULTS_OBJECT = 'kadenceDesignTokensAttributeDefaults';
 
 	/**
-	 * The JS global the variant writes read for the REST root, namespace and nonce.
+	 * The JS global the preset writes read for the REST root, namespace and nonce.
 	 *
 	 * @since TBD
 	 *
@@ -89,31 +89,31 @@ final class Localizer {
 	private Token_Registry $registry;
 
 	/**
-	 * The variant catalog builder.
+	 * The preset catalog builder.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variant_Catalog
+	 * @var Preset_Catalog
 	 */
-	private Variant_Catalog $variant_catalog;
+	private Preset_Catalog $preset_catalog;
 
 	/**
-	 * The token-set catalog builder.
+	 * The token-library catalog builder.
 	 *
 	 * @since TBD
 	 *
-	 * @var Set_Catalog
+	 * @var Token_Library_Catalog
 	 */
-	private Set_Catalog $set_catalog;
+	private Token_Library_Catalog $library_catalog;
 
 	/**
 	 * The per-block attribute-default catalog builder.
 	 *
 	 * @since TBD
 	 *
-	 * @var Block_Preset_Catalog
+	 * @var Attribute_Default_Catalog
 	 */
-	private Block_Preset_Catalog $preset_defaults;
+	private Attribute_Default_Catalog $attribute_defaults;
 
 	/**
 	 * The pickable-token pool builder.
@@ -127,24 +127,24 @@ final class Localizer {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry          $registry        The token registry.
-	 * @param Variant_Catalog         $variant_catalog The variant catalog builder.
-	 * @param Set_Catalog             $set_catalog     The token-set catalog builder.
-	 * @param Block_Preset_Catalog    $preset_defaults The per-block attribute-default catalog builder.
-	 * @param Pickable_Tokens_Catalog $pickable        The pickable-token pool builder.
+	 * @param Token_Registry            $registry           The token registry.
+	 * @param Preset_Catalog            $preset_catalog     The preset catalog builder.
+	 * @param Token_Library_Catalog     $library_catalog    The token-library catalog builder.
+	 * @param Attribute_Default_Catalog $attribute_defaults The per-block attribute-default catalog builder.
+	 * @param Pickable_Tokens_Catalog   $pickable           The pickable-token pool builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
-		Variant_Catalog $variant_catalog,
-		Set_Catalog $set_catalog,
-		Block_Preset_Catalog $preset_defaults,
+		Preset_Catalog $preset_catalog,
+		Token_Library_Catalog $library_catalog,
+		Attribute_Default_Catalog $attribute_defaults,
 		Pickable_Tokens_Catalog $pickable
 	) {
-		$this->registry        = $registry;
-		$this->variant_catalog = $variant_catalog;
-		$this->set_catalog     = $set_catalog;
-		$this->preset_defaults = $preset_defaults;
-		$this->pickable        = $pickable;
+		$this->registry           = $registry;
+		$this->preset_catalog     = $preset_catalog;
+		$this->library_catalog    = $library_catalog;
+		$this->attribute_defaults = $attribute_defaults;
+		$this->pickable           = $pickable;
 	}
 
 	/**
@@ -163,16 +163,16 @@ final class Localizer {
 			return; // Fail-closed: no projection, so offer nothing.
 		}
 
-		$this->attach( self::VARIANTS_OBJECT, $this->variant_catalog->all() );
-		$this->attach( self::SETS_OBJECT, $this->set_catalog->all() );
-		$this->attach( self::PRESET_DEFAULTS_OBJECT, $this->preset_defaults->all() );
+		$this->attach( self::PRESETS_OBJECT, $this->preset_catalog->all() );
+		$this->attach( self::LIBRARIES_OBJECT, $this->library_catalog->all() );
+		$this->attach( self::ATTRIBUTE_DEFAULTS_OBJECT, $this->attribute_defaults->all() );
 		$this->attach( self::REST_OBJECT, $this->rest() );
 		$this->attach( self::PICKABLE_OBJECT, $this->pickable->all() );
 	}
 
 	/**
-	 * The REST descriptor the editor's variant writes POST to: the wp-json root, the v1 namespace, and a
-	 * nonce. Mirrors the admin feed's descriptor so the editor's variants client reuses the same middleware.
+	 * The REST descriptor the editor's preset writes POST to: the wp-json root, the v1 namespace, and a
+	 * nonce. Mirrors the admin feed's descriptor so the editor's presets client reuses the same middleware.
 	 *
 	 * @since TBD
 	 *

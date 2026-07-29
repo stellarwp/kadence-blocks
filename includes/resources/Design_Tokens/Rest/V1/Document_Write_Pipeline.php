@@ -93,7 +93,7 @@ final class Document_Write_Pipeline {
 	}
 
 	/**
-	 * Load and decode the stored overrides document for a set.
+	 * Load and decode the stored overrides document for a library.
 	 *
 	 * @since TBD
 	 *
@@ -114,11 +114,11 @@ final class Document_Write_Pipeline {
 	}
 
 	/**
-	 * Read the current cache/concurrency version for a set.
+	 * Read the current cache/concurrency version for a library.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token-set slug.
+	 * @param string $slug The token-library slug.
 	 *
 	 * @return string
 	 */
@@ -141,7 +141,7 @@ final class Document_Write_Pipeline {
 	}
 
 	/**
-	 * Apply the multi-set document API slug policy.
+	 * Apply the multi-library document API slug policy.
 	 *
 	 * @since TBD
 	 *
@@ -156,7 +156,7 @@ final class Document_Write_Pipeline {
 
 		return new WP_Error(
 			'rest_design_tokens_not_found',
-			__( 'The requested design token set does not exist.', 'kadence-blocks' ),
+			__( 'The requested design token library does not exist.', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::NOT_FOUND,
 				'slug'   => $slug,
@@ -169,7 +169,7 @@ final class Document_Write_Pipeline {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug           The token set slug.
+	 * @param string $slug           The token library slug.
 	 * @param string $client_version The version the client last read. Empty only for first write.
 	 *
 	 * @return WP_Error|null
@@ -187,7 +187,7 @@ final class Document_Write_Pipeline {
 
 		return new WP_Error(
 			'rest_design_tokens_conflict',
-			__( 'The token set was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+			__( 'The token library was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::CONFLICT,
 				'slug'   => $slug,
@@ -201,7 +201,7 @@ final class Document_Write_Pipeline {
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate                            Full candidate overrides document.
-	 * @param string               $slug                                 Token set slug.
+	 * @param string               $slug                                 Token library slug.
 	 * @param string               $title                                Optional label.
 	 * @param string               $expected_version                    The version the caller last read.
 	 * @param int                  $success_status                      HTTP status on success (200 or 201).
@@ -330,7 +330,7 @@ final class Document_Write_Pipeline {
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
-				__( 'The design token set could not be saved.', 'kadence-blocks' ),
+				__( 'The design token library could not be saved.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
 					'slug'   => $slug,
@@ -341,7 +341,7 @@ final class Document_Write_Pipeline {
 		if ( ! $saved ) {
 			return new WP_Error(
 				'rest_design_tokens_conflict',
-				__( 'The token set was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+				__( 'The token library was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::CONFLICT,
 					'slug'   => $slug,

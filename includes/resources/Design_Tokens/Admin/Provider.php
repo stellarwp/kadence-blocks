@@ -4,14 +4,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Menu;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Screen;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Menu;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Screen;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
- * Registers the admin UI schema feed (SOFT-3385): binds the builder, variant feed and localizer as
+ * Registers the admin UI schema feed (SOFT-3385): binds the builder, preset feed and localizer as
  * singletons, then hooks the localizer onto admin_head so the dashboard bundle receives
  * window.kadenceDesignTokens.
  *
@@ -26,7 +26,7 @@ final class Provider extends Provider_Contract {
 	 */
 	public function register(): void {
 		$this->container->singleton( Builder::class );
-		$this->container->singleton( Variants::class );
+		$this->container->singleton( Presets::class );
 		$this->container->singleton( Localizer::class );
 		$this->container->singleton( Screen::class );
 		$this->container->singleton( Asset_Loader::class );
