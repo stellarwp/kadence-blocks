@@ -238,12 +238,12 @@ final class Token_Reference_Policy {
 	 * @return void
 	 */
 	private function scan_extension_section( array $section, string $prefix, string $alias, array &$references ): void {
-		foreach ( $section as $group => $preset_set ) {
-			if ( ! is_array( $preset_set ) ) {
+		foreach ( $section as $group => $presets ) {
+			if ( ! is_array( $presets ) ) {
 				continue;
 			}
 
-			foreach ( $preset_set as $preset_name => $preset ) {
+			foreach ( $presets as $preset_name => $preset ) {
 				if ( $preset_name === Extensions::get_default_key() || ! is_array( $preset ) ) {
 					continue;
 				}

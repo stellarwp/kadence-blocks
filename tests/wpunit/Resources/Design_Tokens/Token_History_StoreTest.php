@@ -150,7 +150,7 @@ final class Token_History_StoreTest extends TestCase {
 
 		remove_filter( 'kadence_blocks_design_tokens_history_enabled', $disable );
 
-		// Disabled: nothing is archived for the set.
+		// Disabled: nothing is archived for the library.
 		$this->assertSame( 0, $this->history->count() );
 	}
 

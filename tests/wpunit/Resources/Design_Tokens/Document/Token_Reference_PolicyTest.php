@@ -193,7 +193,7 @@ final class Token_Reference_PolicyTest extends TestCase {
 	 */
 	public function testExtensionPresetTokensMapAliasReturnsUnsupportedExtensionReference(): void {
 		$id      = 'primitive.color.custom.brand';
-		$section = Extensions::get_section_variants();
+		$section = Extensions::get_section_presets();
 		$doc     = [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
@@ -355,7 +355,7 @@ final class Token_Reference_PolicyTest extends TestCase {
 	 */
 	public function testDollarDefaultSentinelKeyDoesNotProduceReferences(): void {
 		$id      = 'primitive.color.custom.brand';
-		$section = Extensions::get_section_variants();
+		$section = Extensions::get_section_presets();
 		$doc     = [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [

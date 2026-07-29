@@ -3,7 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -84,13 +84,13 @@ final class Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at sync time so the synced options follow the active set.
+	 * Owns the active-library pointer, read at sync time so the synced options follow the active library.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The palette builder.
@@ -111,17 +111,17 @@ final class Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry
-	 * @param Token_Resolver   $resolver
-	 * @param Token_Store      $store
-	 * @param Active_Set_Store $active
-	 * @param Palette_Builder  $builder
+	 * @param Token_Registry             $registry
+	 * @param Token_Resolver             $resolver
+	 * @param Token_Store                $store
+	 * @param Active_Token_Library_Store $active
+	 * @param Palette_Builder            $builder
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Palette_Builder $builder
 	) {
 		$this->registry = $registry;
@@ -177,8 +177,8 @@ final class Projector {
 		$theme_present = $this->theme_palette_exists();
 		$signature     = KADENCE_BLOCKS_VERSION . ':' . $this->store->get_version( $slug ) . ':' . ( $theme_present ? '1' : '0' );
 
-		// Skip the resolve + writes when neither the active set's version nor the theme-option presence
-		// changed since the last successful sync. Switching the active set changes its version, so the
+		// Skip the resolve + writes when neither the active library's version nor the theme-option presence
+		// changed since the last successful sync. Switching the active library changes its version, so the
 		// signature flips and the next reconcile re-syncs; the theme-present bit catches a theme switch.
 		if ( get_option( self::SYNC_MARKER_OPTION ) === $signature ) {
 			return;
