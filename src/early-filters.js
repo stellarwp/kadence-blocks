@@ -17,10 +17,15 @@ import { VariantPicker, blockVariants, activeSet } from './extension/variant-pic
 import { VariantActions } from './extension/variant-picker/VariantActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
+import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
 // their `var(--kb-token--<id>)` reference through the library's filter seam.
 registerTokenAliasFilters();
+
+// Keep token-backed global-palette colors visible in the shared Kadence color controls when the
+// "Use only Custom Colors" override is on, through the color control's swatch filter seam.
+registerColorControlFilters();
 
 /**
  * Add animation attributes
