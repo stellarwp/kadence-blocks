@@ -6,7 +6,7 @@
  * that renders the picker inline in its own Style tab (e.g. kadence/singlebtn) use this so the control
  * stays identical wherever it surfaces.
  *
- * Selecting a set writes its slug to the kbVariant-companion `kbTokenSet` attribute, which the save/preview
+ * Selecting a set writes its slug to the kbPreset-companion `kbTokenSet` attribute, which the save/preview
  * filters turn into a `data-kb-token-set` attribute on the block. That re-points the block's canonical
  * `--kb-token--*` vars at the chosen set's namespaced vars via the projector's switch selectors. An empty
  * value (the default) leaves the attribute unset, so the block follows the active set.

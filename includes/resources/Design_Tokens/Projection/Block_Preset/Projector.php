@@ -4,11 +4,11 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Throwable;
 
 /**
- * Projects a block's preset — its `$default` variant — onto Kadence Blocks' per-block attribute defaults.
+ * Projects a block's preset — its `$default` preset — onto Kadence Blocks' per-block attribute defaults.
  *
  * A block dropped on a page should look on-brand out of the box. KB already merges its registration
  * defaults (block.json) with a block's instance attributes; this projector slots a layer in between via
@@ -19,7 +19,7 @@ use Throwable;
  * Only a property whose binding declares a `block_attr` can seed an attribute default; a property bound
  * solely to a CSS var or palette slot has no attribute to land in and is left to the CSS-variable
  * projectors. It is a no-op — returning KB's own defaults untouched — when projection is fail-closed,
- * when the block has no registered variant set, or when the token graph cannot resolve, so the filter
+ * when the block has no registered binding set, or when the token graph cannot resolve, so the filter
  * is safe to run for every block on every render.
  *
  * @since TBD
@@ -27,18 +27,18 @@ use Throwable;
 final class Projector {
 
 	/**
-	 * @var Token_Registry The registry the block's variant set (and its bindings) is read from.
+	 * @var Token_Registry The registry the block's binding set (and its bindings) is read from.
 	 *
 	 * @since TBD
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @var Variant_Resolver Resolves the block's `$default` variant to its `property => value` map.
+	 * @var Preset_Resolver Resolves the block's `$default` preset to its `property => value` map.
 	 *
 	 * @since TBD
 	 */
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	/**
 	 * Owns the active-set pointer, read at render time so preset defaults follow the active set.
@@ -53,17 +53,17 @@ final class Projector {
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry The token registry.
-	 * @param Variant_Resolver $resolver The variant resolver.
+	 * @param Preset_Resolver  $resolver The preset resolver.
 	 * @param Active_Set_Store $active   Owns the active-set pointer.
 	 */
-	public function __construct( Token_Registry $registry, Variant_Resolver $resolver, Active_Set_Store $active ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $resolver, Active_Set_Store $active ) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;
 	}
 
 	/**
-	 * Overlay a block's preset (its `$default` variant) onto the given attribute defaults.
+	 * Overlay a block's preset (its `$default` preset) onto the given attribute defaults.
 	 *
 	 * @since TBD
 	 *

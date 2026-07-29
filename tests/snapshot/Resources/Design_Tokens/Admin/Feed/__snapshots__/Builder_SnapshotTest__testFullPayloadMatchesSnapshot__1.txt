@@ -42,7 +42,7 @@
         "semantic.color.button-text": "#000000",
         "semantic.spacing.md": "#000000"
     },
-    "variants": {
+    "presets": {
         "kadence\/advancedbtn": {
             "bindings": {
                 "button-bg": {

@@ -384,7 +384,7 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A write-through patch preserves the stored `$extensions` layer verbatim. The `variants` entry uses a
+	 * A write-through patch preserves the stored `$extensions` layer verbatim. The `presets` entry uses a
 	 * block the registry does not recognize, so the endpoint must round-trip the opaque extension data
 	 * untouched rather than validate or strip it.
 	 *
@@ -393,7 +393,7 @@ final class DocumentsControllerTest extends TestCase {
 	public function testMergePreservesTheExtensionsLayer(): void {
 		$this->store->save_document(
 			'{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}},'
-			. '"$extensions":{"com.kadence.designTokens":{"variants":{"core/button":{"$default":"solid"}}}}}'
+			. '"$extensions":{"com.kadence.designTokens":{"presets":{"core/button":{"$default":"solid"}}}}}'
 		);
 
 		$response = $this->controller->patch_item(
@@ -416,7 +416,7 @@ final class DocumentsControllerTest extends TestCase {
 		$document = $response->get_data()['document'];
 
 		$this->assertArrayHasKey( '$extensions', $document );
-		$this->assertSame( 'solid', $document['$extensions']['com.kadence.designTokens']['variants']['core/button']['$default'] );
+		$this->assertSame( 'solid', $document['$extensions']['com.kadence.designTokens']['presets']['core/button']['$default'] );
 	}
 
 	/**

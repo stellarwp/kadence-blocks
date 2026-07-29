@@ -8,32 +8,32 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Variants;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the block-preset projector against a flat preset variant set — the no-picker "default variant"
- * case the projector serves. A controllable fixture baseline supplies a single `$default` variant of literal
- * values, and a synthetic variant set supplies the `block_attr` bindings; together they prove the
+ * Exercises the block-preset projector against a flat preset collection — the no-picker "default preset"
+ * case the projector serves. A controllable fixture baseline supplies a single `$default` preset of literal
+ * values, and a synthetic binding set supplies the `block_attr` bindings; together they prove the
  * property -> attribute mapping and the overlay semantics.
  */
 final class ProjectorTest extends TestCase {
 
 	private const BUTTON = 'kadence/preset-btn';
 
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	protected function setUp(): void {
 		parent::setUp();
 
-		// A flat preset block: one $default variant of literal values, so resolve_default() is deterministic.
+		// A flat preset block: one $default preset of literal values, so resolve_default() is deterministic.
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'variants' => [
+					'presets' => [
 						self::BUTTON => [
 							'$default' => 'primary',
 							'primary'  => [
@@ -50,13 +50,13 @@ final class ProjectorTest extends TestCase {
 			],
 		];
 
-		$variants = new Effective_Variants(
+		$presets = new Effective_Presets(
 			new Fake_Baseline_Document( $document ),
 			$this->container->get( Token_Store::class ),
 			$this->container->get( Mutator::class )
 		);
 
-		$this->resolver = new Variant_Resolver( $variants, $this->container->get( Token_Resolver::class ) );
+		$this->resolver = new Preset_Resolver( $presets, $this->container->get( Token_Resolver::class ) );
 	}
 
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {
@@ -90,7 +90,7 @@ final class ProjectorTest extends TestCase {
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
 		// The baseline guard deactivates projection on a broken token set; the projector must then fall
-		// back to KB's own defaults even for a block that does have a variant set.
+		// back to KB's own defaults even for a block that does have a binding set.
 		$registry = $this->button_set();
 		$registry->deactivate();
 
@@ -99,18 +99,18 @@ final class ProjectorTest extends TestCase {
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
 	}
 
-	public function testItIsANoopForABlockWithNoVariantSet(): void {
-		// An empty registry knows no variant set for the block.
+	public function testItIsANoopForABlockWithNoBindingSet(): void {
+		// An empty registry knows no binding set for the block.
 		$defaults = $this->projector( new Token_Registry() )->add_preset_defaults( [ 'padding' => '10px' ], self::BUTTON );
 
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
 	}
 
 	public function testItIsANoopWhenTheDocumentDefinesNoDefault(): void {
-		// Registered structure for a block the baseline has no variants for: resolving the default throws,
+		// Registered structure for a block the baseline has no presets for: resolving the default throws,
 		// and the projector swallows it and returns the defaults untouched.
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/not-in-baseline',
 				'bindings' => [
@@ -133,19 +133,19 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * Build the projector with a given registry and the real (baseline-backed) variant resolver.
+	 * Build the projector with a given registry and the real (baseline-backed) preset resolver.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
 		return new Projector( $registry, $this->resolver, $this->container->get( Active_Set_Store::class ) );
 	}
 
 	/**
-	 * A registry holding a Button variant set whose bindings declare the `block_attr` targets the shipped
+	 * A registry holding a Button binding set whose bindings declare the `block_attr` targets the shipped
 	 * declarations omit until SOFT-3406.
 	 */
 	private function button_set(): Token_Registry {
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => self::BUTTON,
 				'bindings' => [

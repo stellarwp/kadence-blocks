@@ -13,9 +13,9 @@ use WP_REST_Server;
  * REST controller that serves the combined design-token editor CSS.
  *
  * A single read-only resource returning the exact CSS the projectors enqueue into the block editor at page
- * load — every projector's output aggregated ({@see Editor_Css}): the `--kb-token--*` token vars, the variant
+ * load — every projector's output aggregated ({@see Editor_Css}): the `--kb-token--*` token vars, the preset
  * vars + scoped retarget rules, the native-block companion CSS, and the block-default dimension CSS, for every
- * token set including the per-set switch layer. The editor fetches this after a variant (or, later, a token
+ * token set including the per-set switch layer. The editor fetches this after a preset (or, later, a token
  * value) change and re-injects it into the canvas, so the change applies live without a page reload.
  *
  * Read-only and gated by the shared design-tokens capability; a deactivated registry yields an empty string.

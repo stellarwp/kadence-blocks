@@ -4,7 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
 
 /**
@@ -42,7 +42,7 @@ use RuntimeException;
  * approach for these families. Nothing here is `!important`.
  *
  * Only a binding that declares a `css_prop` and references a token contributes, and only the block's
- * `$default` variant is read (named variants are the selectable-variant projector's job). Pure: no
+ * `$default` preset is read (named presets are the selectable-preset projector's job). Pure: no
  * WordPress calls; the wiring lives in {@see Projector}.
  *
  * @since TBD
@@ -61,7 +61,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The registry the variant sets (and their bindings) are read from.
+	 * The registry the binding sets (and their bindings) are read from.
 	 *
 	 * @since TBD
 	 *
@@ -70,13 +70,13 @@ final class Css_Builder {
 	private Token_Registry $registry;
 
 	/**
-	 * Resolves each block's `$default` variant to its `property => value` map.
+	 * Resolves each block's `$default` preset to its `property => value` map.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variant_Resolver
+	 * @var Preset_Resolver
 	 */
-	private Variant_Resolver $variants;
+	private Preset_Resolver $presets;
 
 	/**
 	 * Per-request memo keyed on context (front end / editor) + store version + slug, so repeated builds
@@ -93,11 +93,11 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry The token registry.
-	 * @param Variant_Resolver $variants The variant resolver.
+	 * @param Preset_Resolver $presets The preset resolver.
 	 */
-	public function __construct( Token_Registry $registry, Variant_Resolver $variants ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $presets ) {
 		$this->registry = $registry;
-		$this->variants = $variants;
+		$this->presets = $presets;
 	}
 
 	/**
@@ -115,7 +115,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the EDITOR-scoped variant of the block-default CSS for a token set. Identical to {@see self::css()}
+	 * Build the EDITOR-scoped preset of the block-default CSS for a token set. Identical to {@see self::css()}
 	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
 	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
 	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
@@ -132,7 +132,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of css(): memoized per request and persisted in the object cache keyed on the store
+	 * Cached preset of css(): memoized per request and persisted in the object cache keyed on the store
 	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
 	 * both invalidate it automatically.
 	 *
@@ -148,7 +148,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * Cached preset of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
 	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
 	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
 	 * front-end cache entry.
@@ -171,14 +171,14 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string $slug   The token set whose resolved values the `$default` aliases resolve against.
-	 * @param bool   $editor Whether to build the editor-scoped variant.
+	 * @param bool   $editor Whether to build the editor-scoped preset.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
 	private function build( string $slug, bool $editor ): string {
 		$css = '';
 
-		foreach ( $this->registry->variant_blocks() as $block ) {
+		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			$set = $this->registry->for_block( $block );
 
 			if ( $set === null ) {
@@ -188,7 +188,7 @@ final class Css_Builder {
 			try {
 				// A block may carry bindings before the document defines its `$default`; that is not an error,
 				// it simply contributes nothing yet, so skip it rather than fail the whole build.
-				$values = $this->variants->resolve_default( $block, $slug );
+				$values = $this->presets->resolve_default( $block, $slug );
 			} catch ( RuntimeException $e ) {
 				continue;
 			}
@@ -240,7 +240,7 @@ final class Css_Builder {
 	 *
 	 * @param string $version The store version the resolved set was built from.
 	 * @param string $slug    The token set slug.
-	 * @param bool   $editor  Whether to build the editor-scoped variant.
+	 * @param bool   $editor  Whether to build the editor-scoped preset.
 	 *
 	 * @return string
 	 */
