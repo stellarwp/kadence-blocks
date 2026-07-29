@@ -1,0 +1,4 @@
+significance: patch
+type: security
+entry: Improved markup handling in block output.
+timestamp: 2026-07-29T14:39:05.006Z
