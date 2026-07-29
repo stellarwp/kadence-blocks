@@ -90,3 +90,59 @@ export function resolvedPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
 export function tokenPath(namespace, tokenId, slug = DEFAULT_TOKEN_SET_SLUG) {
 	return `${documentPath(namespace, slug)}/tokens/${tokenId}`;
 }
+
+/**
+ * Build a REST path for the color-palettes collection of a set.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token set slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function palettesPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/palettes?set=${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for a single palette resource.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} slug      Token set slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function palettePath(namespace, id, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/palettes/${encodeURIComponent(id)}?set=${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for a single palette swatch (the granular per-token write). encodeURIComponent leaves the
+ * dots of a token dot-path intact, so the token stays a readable path segment.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} slug      Token set slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/palettes/${encodeURIComponent(id)}/swatches/${encodeURIComponent(token)}?set=${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for the set's current-palette pointer.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token set slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function paletteCurrentPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+	return `/${namespace}/palettes/current?set=${encodeURIComponent(slug)}`;
+}

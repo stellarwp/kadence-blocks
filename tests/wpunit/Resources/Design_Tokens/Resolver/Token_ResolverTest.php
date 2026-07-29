@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -25,7 +27,9 @@ final class Token_ResolverTest extends TestCase {
 		return new Token_Resolver(
 			$this->container->get( Token_Store::class ),
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
-			new Css_Renderer()
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 	}
 
@@ -593,7 +597,9 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = new Token_Resolver(
 			$store,
 			$this->container->get( Effective_Document::class ),
-			$this->container->get( Css_Renderer::class )
+			$this->container->get( Css_Renderer::class ),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$version   = $store->get_version();
@@ -619,7 +625,9 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = new Token_Resolver(
 			$store,
 			$this->container->get( Effective_Document::class ),
-			$this->container->get( Css_Renderer::class )
+			$this->container->get( Css_Renderer::class ),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		$version   = $store->get_version();
@@ -668,163 +676,10 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * resolve_namespaced() namespaces every projected css-var name under the set slug, and keeps a set's
-	 * alias chain inside the set: a reference reads var(--kb-token--<slug>--<target>), not the canonical
-	 * target, so switching the active set never leaks one set's primitive into another.
+	 * resolve() reads stored overrides and invalidates the per-request memo on a version bump.
 	 *
 	 * @return void
 	 */
-	public function testResolveNamespacedNamespacesTheProjectedNamesAndKeepsTheChainInSet(): void {
-		$resolver = $this->resolver_for(
-			[
-				'primitive' => [
-					'color' => [
-						'brand' => [
-							'primary' => [
-								'$type'  => 'color',
-								'$value' => '#3182CE',
-							],
-						],
-					],
-				],
-				'semantic'  => [
-					'color' => [
-						'button-bg' => [
-							'$type'  => 'color',
-							'$value' => '{primitive.color.brand.primary}',
-						],
-					],
-				],
-			]
-		);
-
-		// A slug with no stored row resolves the baseline directly, namespaced under that slug.
-		$projected = $resolver->resolve_namespaced( 'dark' )->projected_vars();
-
-		// The leaf primitive carries the literal under its namespaced name.
-		$this->assertSame( '#3182CE', $projected[ Css_Var::from_id( 'primitive.color.brand.primary', 'dark' ) ] );
-
-		// The semantic alias points at the namespaced primitive, so the chain stays inside the set.
-		$this->assertSame(
-			'var(' . Css_Var::from_id( 'primitive.color.brand.primary', 'dark' ) . ')',
-			$projected[ Css_Var::from_id( 'semantic.color.button-bg', 'dark' ) ]
-		);
-
-		// The canonical (un-namespaced) names are absent from a namespaced projection.
-		$this->assertArrayNotHasKey( Css_Var::from_id( 'semantic.color.button-bg' ), $projected );
-	}
-
-	/**
-	 * A composite's embedded var() reference is namespaced too, field by field, so a namespaced shadow's
-	 * aliased color follows that set's primitive.
-	 *
-	 * @return void
-	 */
-	public function testResolveNamespacedNamespacesACompositeEmbeddedVar(): void {
-		$resolver = $this->resolver_for(
-			[
-				'primitive' => [
-					'color' => [
-						'ink' => [
-							'$type'  => 'color',
-							'$value' => '#1A202C',
-						],
-					],
-				],
-				'semantic'  => [
-					'shadow' => [
-						'card' => [
-							'$type'  => 'shadow',
-							'$value' => [
-								'color'   => '{primitive.color.ink}',
-								'offsetX' => '0px',
-								'offsetY' => '2px',
-								'blur'    => '8px',
-								'spread'  => '0px',
-							],
-						],
-					],
-				],
-			]
-		);
-
-		$projected = $resolver->resolve_namespaced( 'dark' )->projected_vars();
-
-		$this->assertSame(
-			'0px 2px 8px 0px var(' . Css_Var::from_id( 'primitive.color.ink', 'dark' ) . ')',
-			$projected[ Css_Var::from_id( 'semantic.shadow.card', 'dark' ) ]
-		);
-	}
-
-	/**
-	 * The id-keyed literal map is namespace-invariant: by_id() keys stay canonical dot-paths and its
-	 * values stay the flattened literals, so host surfaces and the canonical token-id list read it
-	 * unchanged whether resolved canonically or namespaced.
-	 *
-	 * @return void
-	 */
-	public function testResolveNamespacedLeavesByIdCanonicalAndLiteral(): void {
-		$resolver = $this->resolver_for(
-			[
-				'primitive' => [
-					'color' => [
-						'brand' => [
-							'primary' => [
-								'$type'  => 'color',
-								'$value' => '#3182CE',
-							],
-						],
-					],
-				],
-				'semantic'  => [
-					'color' => [
-						'button-bg' => [
-							'$type'  => 'color',
-							'$value' => '{primitive.color.brand.primary}',
-						],
-					],
-				],
-			]
-		);
-
-		$by_id = $resolver->resolve_namespaced( 'dark' )->by_id();
-
-		// Keyed on the canonical dot-path, with the flattened literal — identical to a canonical resolve.
-		$this->assertArrayHasKey( 'semantic.color.button-bg', $by_id );
-		$this->assertSame( '#3182CE', $by_id['semantic.color.button-bg'] );
-	}
-
-	/**
-	 * The namespaced form caches under its own key (resolved_tokens_namespaced_<slug>_<version>), distinct from the
-	 * canonical resolve() key, so the two never collide.
-	 *
-	 * @return void
-	 */
-	public function testResolveNamespacedPopulatesItsOwnObjectCacheKey(): void {
-		/** @var Token_Store $store */
-		$store = $this->container->get( Token_Store::class );
-		// Fresh instance so the L1 memo is empty — the container singleton may already be warm.
-		$resolver = new Token_Resolver(
-			$store,
-			$this->container->get( Effective_Document::class ),
-			$this->container->get( Css_Renderer::class )
-		);
-
-		$version   = $store->get_version();
-		$cache_key = 'resolved_tokens_namespaced_default_' . $version;
-
-		wp_cache_delete( $cache_key, 'kb_design_tokens' );
-
-		$result = $resolver->resolve_namespaced( 'default' );
-
-		$this->assertInstanceOf( Resolved_Tokens::class, $result );
-
-		$cached = wp_cache_get( $cache_key, 'kb_design_tokens', false, $found );
-
-		$this->assertTrue( $found );
-		$this->assertInstanceOf( Resolved_Tokens::class, $cached );
-	}
-
 	public function testResolveReadsTheStoredOverridesAndInvalidatesOnVersionBump(): void {
 		/** @var Token_Resolver $resolver */
 		$resolver = $this->container->get( Token_Resolver::class );
@@ -853,6 +708,69 @@ final class Token_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame( '#000000', $resolver->resolve()->value( 'semantic.color.button-primary-bg' ) );
+	}
+
+	/**
+	 * The set's `$current` color palette re-tints the color tokens at resolve time, and every semantic color
+	 * that aliases a re-tinted primitive follows for free — while a non-color token is byte-identical.
+	 *
+	 * @return void
+	 */
+	public function testTheCurrentPaletteReTintsColorsAndCascadesToSemantics(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		// Baseline: the default palette equals the baseline, so brand.primary and the link that aliases it
+		// resolve to the shipped brand color; a spacing token to its shipped length.
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'semantic.color.link' ) );
+		$spacing = $resolver->resolve()->value( 'semantic.spacing.block' );
+
+		// Switch the set to the shipped "sunset" palette by writing $current; the write bumps the version.
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
+			)
+		);
+
+		$resolved = $resolver->resolve();
+
+		// The brand primitive and the semantic link that aliases it both re-tint to sunset's color.
+		$this->assertSame( '#DD6B20', $resolved->value( 'primitive.color.brand.primary' ) );
+		$this->assertSame( '#DD6B20', $resolved->value( 'semantic.color.link' ) );
+
+		// A non-color token is byte-identical across the palette switch.
+		$this->assertSame( $spacing, $resolved->value( 'semantic.spacing.block' ) );
+	}
+
+	/**
+	 * Switching the set's `$current` palette back to "default" restores the baseline colors, proving the
+	 * overlay is non-destructive and reversible.
+	 *
+	 * @return void
+	 */
+	public function testSwitchingBackToTheDefaultPaletteRestoresBaselineColors(): void {
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
+			)
+		);
+		$this->assertSame( '#DD6B20', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
+
+		$store->save_document(
+			(string) wp_json_encode(
+				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'default' ] ] ] ]
+			)
+		);
+
+		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
 	}
 
 	/**

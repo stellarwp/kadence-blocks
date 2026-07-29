@@ -15,7 +15,7 @@ import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { VariantPicker, blockVariants, activeSet } from './extension/variant-picker';
 import { VariantActions } from './extension/variant-picker/VariantActions';
-import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
+import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
 
@@ -84,19 +84,18 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Add the kbVariant and kbTokenSet attributes to any block that opts in via the `kbVariant` block support.
+ * Add the kbVariant and kbPalette attributes to any block that opts in via the `kbVariant` block support.
  *
  * kbVariant is the selected variant slug (e.g. "ghost"); an empty value means the block keeps its $default
- * look (the block preset). kbTokenSet holds the slug of a per-block token-set override (e.g. "dark"); empty
- * means the block follows the active set. The scoped CSS that re-skins the block for a selected variant and
- * the switch selectors a set override re-points through are both emitted server-side by the Design Tokens
- * projector.
+ * look (the block preset). kbPalette holds the id of a per-block color-palette override (e.g. "dark"); empty
+ * means the block follows the set's `$current` palette. Both the scoped variant CSS and the palette switch
+ * layer are emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbVariant and kbTokenSet attributes added.
+ * @return {Object} The block settings with the kbVariant and kbPalette attributes added.
  */
 export function blockVariantAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbVariant')) {
@@ -105,7 +104,7 @@ export function blockVariantAttribute(settings) {
 				type: 'string',
 				default: '',
 			},
-			kbTokenSet: {
+			kbPalette: {
 				type: 'string',
 				default: '',
 			},
@@ -211,9 +210,9 @@ export function blockVariantSaveClass(props, blockType, attributes) {
 addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', blockVariantSaveClass);
 
 /**
- * Append the data-kb-token-set="<slug>" attribute to a block's saved markup when it is pinned to a token
- * set, so the projector's `[data-kb-token-set]` switch selectors re-point the block's canonical token vars
- * at that set on the front end. A no-op for blocks that do not opt in or follow the active set.
+ * Append the data-kb-palette="<id>" attribute to a block's saved markup when it carries a per-block palette
+ * override, so the projector's `[data-kb-palette]` switch layer re-points the block's canonical color vars
+ * to that palette on the front end. A no-op for blocks that do not opt in or follow the set `$current`.
  *
  * @param {Object} props      The save element props.
  * @param {Object} blockType  The block type.
@@ -221,22 +220,22 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-variant-save-class', b
  *
  * @since TBD
  *
- * @return {Object} The props, with the data attribute appended when a set is pinned.
+ * @return {Object} The props, with the data attribute appended when a palette is pinned.
  */
-export function blockTokenSetSaveAttr(props, blockType, attributes) {
+export function blockPaletteSaveAttr(props, blockType, attributes) {
 	if (!hasBlockSupport(blockType, 'kbVariant')) {
 		return props;
 	}
 
-	const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
+	const id = sanitizeTokenIdentifier(get(attributes, 'kbPalette', ''));
 
-	if (slug) {
-		props['data-kb-token-set'] = slug;
+	if (id) {
+		props['data-kb-palette'] = id;
 	}
 
 	return props;
 }
-addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-token-set-save-attr', blockTokenSetSaveAttr);
+addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-palette-save-attr', blockPaletteSaveAttr);
 
 /**
  * Mirror the kb-variant--<name> class onto the block in the editor canvas, so a selected variant previews
@@ -266,13 +265,13 @@ const withBlockVariantClass = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-variant-class', withBlockVariantClass);
 
 /**
- * Mirror the data-kb-token-set="<slug>" attribute onto the block in the editor canvas, so a pinned set
- * previews live with the same switch-selector re-pointing the front end uses. Added via wrapperProps so it
- * lands on the same block wrapper the variant class and scoped rules target.
+ * Mirror the data-kb-palette="<id>" attribute onto the block in the editor canvas, so a per-block palette
+ * override previews live with the same switch-layer re-pointing the front end uses. Added via wrapperProps
+ * so it lands on the same block wrapper the projector's `[data-kb-palette]` selector targets.
  *
  * @since TBD
  */
-const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
+const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
 		const { name, attributes } = props;
 
@@ -280,31 +279,28 @@ const withBlockTokenSetAttr = createHigherOrderComponent((BlockListBlock) => {
 			return <BlockListBlock {...props} />;
 		}
 
-		const slug = sanitizeTokenIdentifier(get(attributes, 'kbTokenSet', ''));
+		const id = sanitizeTokenIdentifier(get(attributes, 'kbPalette', ''));
 
-		if (!slug) {
+		if (!id) {
 			return <BlockListBlock {...props} />;
 		}
 
-		const wrapperProps = { ...(props.wrapperProps || {}), 'data-kb-token-set': slug };
+		const wrapperProps = { ...(props.wrapperProps || {}), 'data-kb-palette': id };
 
 		return <BlockListBlock {...props} wrapperProps={wrapperProps} />;
 	};
-}, 'withBlockTokenSetAttr');
-addFilter('editor.BlockListBlock', 'kadence/kb-token-set-attr', withBlockTokenSetAttr);
+}, 'withBlockPaletteAttr');
+addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAttr);
 
 /**
- * Add the design-token pickers to the inspector of any block that opts into kbVariant support, under a
- * "Design Tokens" panel: a "Token Set" subsection (the per-block set override) above a "Design Variants"
- * subsection (the variant picker). Selecting a set writes the kbTokenSet attribute, which the save/preview
- * filters turn into the data-kb-token-set attribute the projector's switch selectors re-point through;
- * selecting a variant writes the kbVariant attribute, which the save/preview filters turn into the
- * kb-variant--<slug> class the projector's scoped CSS hooks. An empty set follows the
- * active set; an empty variant selects the block's $default preset look. Each subsection is shown only when
- * it has something to offer (two or more sets / any variants), and the panel is skipped when neither does.
+ * Add the design-token variant picker to the inspector of any block that opts into kbVariant support, under
+ * a "Design Tokens" panel with a "Design Presets" subsection. Selecting a variant writes the kbVariant
+ * attribute, which the save/preview filters turn into the kb-variant--<slug> class the projector's scoped
+ * CSS hooks. An empty variant selects the block's $default preset look. The panel is skipped when the block
+ * has no variants for the active set.
  *
- * A block whose `kbVariant` support requests `inlinePicker` renders the pickers itself (e.g. a Kadence
- * block placing them under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
+ * A block whose `kbVariant` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
+ * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
  *
  * @since TBD
  */
@@ -317,21 +313,22 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 		}
 
 		const support = getBlockSupport(name, 'kbVariant');
+		// A block whose kbVariant support requests `inlinePicker` renders the VARIANT picker itself (e.g. a
+		// Kadence block under its own Style tab), so this generic panel skips only the variant subsection for
+		// it — the per-block Color Palette override still surfaces here for every kbVariant block.
+		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
 
-		if (support && typeof support === 'object' && support.inlinePicker) {
-			return <BlockEdit {...props} />;
-		}
+		const set = activeSet();
+		const showVariants = !inlinePicker && blockVariants(name, set).length > 0;
+		const showPalettes = selectablePalettes().length >= 2;
 
-		const set = get(attributes, 'kbTokenSet', '') || activeSet();
-		const hasVariants = blockVariants(name, set).length > 0;
-		const hasSets = selectableSets().length >= 2;
-
-		if (!hasVariants && !hasSets) {
+		if (!showVariants && !showPalettes) {
 			return <BlockEdit {...props} />;
 		}
 
 		const selected = get(attributes, 'kbVariant', '');
 		const selectVariant = (value) => setAttributes({ kbVariant: value });
+		const selectPalette = (value) => setAttributes({ kbPalette: value });
 
 		return (
 			<>
@@ -339,16 +336,7 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							{hasSets && (
-								<SubsectionWrap label={__('Token Set', 'kadence-blocks')}>
-									<TokenSetPicker
-										value={get(attributes, 'kbTokenSet', '')}
-										onChange={(value) => setAttributes({ kbTokenSet: value })}
-										label=""
-									/>
-								</SubsectionWrap>
-							)}
-							{hasVariants && (
+							{showVariants && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
 									<VariantPicker name={name} set={set} value={selected} onChange={selectVariant} />
 									<VariantActions
@@ -359,6 +347,19 @@ const withVariantPicker = createHigherOrderComponent((BlockEdit) => {
 										attributes={attributes}
 										setAttributes={setAttributes}
 									/>
+								</SubsectionWrap>
+							)}
+							{showPalettes && (
+								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
+									{/*
+									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
+									 * control. The design (see the B4 Figma) integrates the palette token picker
+									 * into the block's color controls — a "Stylebook | Custom" popover with a
+									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
+									 * Color row — which requires @kadence/components changes to the color-control
+									 * popover and is deferred.
+									 */}
+									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
 								</SubsectionWrap>
 							)}
 						</PanelBody>

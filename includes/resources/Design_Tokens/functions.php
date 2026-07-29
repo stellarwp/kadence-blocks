@@ -98,7 +98,7 @@ if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $group  The preset group key, e.g. "typeScale" or "colorPalette".
+	 * @param string $group  The preset group key, e.g. "typeScale".
 	 * @param string $choice The preset slug within the group, e.g. "goldenRatio".
 	 *
 	 * @return void

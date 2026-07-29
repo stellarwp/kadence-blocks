@@ -13,8 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
 /**
  * Builds the per-set variant catalog the block editor's variant picker and "save as new variant" form read.
  *
- * Keyed by token set so the picker can show the variants for whichever set a block is on (its `kbTokenSet`,
- * or the active set), not just the active one, then by block:
+ * Keyed by token set so the picker can show the variants for the active set, then by block:
  * `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named variants as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and

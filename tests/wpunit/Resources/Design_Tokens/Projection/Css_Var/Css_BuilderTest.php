@@ -26,12 +26,12 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A namespaced set, exactly as Token_Resolver::resolve_namespaced() yields it: canonical token-id =>
-	 * literal in by_id (drives the canonical alias / switch name layers), and the slug-namespaced css-var
-	 * => value in the projected map (drives the namespaced definition block).
+	 * The active set's canonical resolved maps, exactly as Token_Resolver::resolve() yields them: canonical
+	 * token-id => literal in by_id (the slot-bridge source), and the canonical css-var => value in the
+	 * projected map (the `:root` definition source).
 	 *
 	 * @param array<string,string> $by_id     Canonical token-id => literal value.
-	 * @param array<string,string> $projected Slug-namespaced css-var => projected value.
+	 * @param array<string,string> $projected Canonical css-var => projected value.
 	 *
 	 * @return Resolved_Tokens
 	 */
@@ -40,238 +40,108 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Render a single default set as the active set — the common single-palette shape.
+	 * Render the active set — the single-set shape the collapsed builder emits.
 	 *
-	 * @param Resolved_Tokens $resolved The default set's namespaced resolved maps.
+	 * @param Resolved_Tokens $resolved The active set's canonical resolved maps.
 	 *
 	 * @return string
 	 */
-	private function css_default( Resolved_Tokens $resolved ): string {
-		return $this->builder()->css( [ 'default' => $resolved ], 'default' );
+	private function css_active( Resolved_Tokens $resolved ): string {
+		return $this->builder()->css( $resolved );
 	}
 
-	// ---- Namespaced definition block ----------------------------------------------------------------
+	// ---- Canonical token layer ----------------------------------------------------------------------
 
 	/**
-	 * A token's literal value lives once, under its slug-namespaced css-var in the definition block.
+	 * A token's literal value is emitted once, under its canonical css-var, at `:root`.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsTheLiteralUnderTheNamespacedVar(): void {
+	public function testItEmitsTheLiteralUnderTheCanonicalVar(): void {
 		$id  = 'semantic.color.button-bg';
-		$ns  = Css_Var::from_id( $id, 'default' );
+		$var = Css_Var::from_id( $id );
 
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ $ns => '#3182CE' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
 
-		$this->assertStringContainsString( $ns . ':#3182CE;', $css );
+		$this->assertStringContainsString( $var . ':#3182CE;', $css );
 	}
 
 	/**
-	 * A reference-valued token chains to its target's namespaced var, keeping the alias chain inside the
-	 * set; the leaf literal lives once.
+	 * A reference-valued token reads its target's canonical var, so editing the referenced token updates
+	 * every dependent token live; the leaf literal lives once.
 	 *
 	 * @return void
 	 */
-	public function testItChainsAReferenceInsideTheSetAndKeepsTheLiteralOnce(): void {
+	public function testItChainsAReferenceToTheCanonicalTargetAndKeepsTheLiteralOnce(): void {
 		$ref      = 'semantic.color.button-bg';
 		$leaf     = 'primitive.color.brand.primary';
-		$ref_ns   = Css_Var::from_id( $ref, 'default' );
-		$leaf_ns  = Css_Var::from_id( $leaf, 'default' );
+		$ref_var  = Css_Var::from_id( $ref );
+		$leaf_var = Css_Var::from_id( $leaf );
 
-		$css = $this->css_default(
+		$css = $this->css_active(
 			$this->set(
 				[
 					$ref  => '#3182CE',
 					$leaf => '#3182CE',
 				],
 				[
-					$ref_ns  => 'var(' . $leaf_ns . ')',
-					$leaf_ns => '#3182CE',
+					$ref_var  => 'var(' . $leaf_var . ')',
+					$leaf_var => '#3182CE',
 				]
 			)
 		);
 
-		// The semantic points at the namespaced primitive, not the canonical one.
-		$this->assertStringContainsString( $ref_ns . ':var(' . $leaf_ns . ');', $css );
+		// The semantic points at the canonical primitive.
+		$this->assertStringContainsString( $ref_var . ':var(' . $leaf_var . ');', $css );
 		// The literal is emitted exactly once, at the leaf.
 		$this->assertSame( 1, substr_count( $css, ':#3182CE;' ) );
 	}
 
 	/**
-	 * A composite whose projected value embeds a namespaced var() reference emits that var() inside the
+	 * A composite whose projected value embeds a canonical var() reference emits that var() inside the
 	 * shorthand.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsACompositeWithAnEmbeddedNamespacedVar(): void {
+	public function testItEmitsACompositeWithAnEmbeddedCanonicalVar(): void {
 		$id        = 'semantic.shadow.card';
-		$var       = Css_Var::from_id( $id, 'default' );
-		$color_var = Css_Var::from_id( 'primitive.color.ink', 'default' );
+		$var       = Css_Var::from_id( $id );
+		$color_var = Css_Var::from_id( 'primitive.color.ink' );
 		$projected = '0px 2px 8px 0px var(' . $color_var . ')';
 
-		$css = $this->css_default( $this->set( [ $id => '0px 2px 8px 0px #1A202C' ], [ $var => $projected ] ) );
+		$css = $this->css_active( $this->set( [ $id => '0px 2px 8px 0px #1A202C' ], [ $var => $projected ] ) );
 
 		$this->assertStringContainsString( $var . ':' . $projected . ';', $css );
 	}
 
-	// ---- Active-set alias layer ---------------------------------------------------------------------
+	// ---- Single-set collapse (no namespaced / alias / switch layers) --------------------------------
 
 	/**
-	 * The canonical token var is pointed at the active set's namespaced var, and never carries the literal
-	 * itself — block content references the canonical name and follows the active set.
+	 * The collapsed builder emits no per-set namespaced `--kb-token--<set>--*` vars and no
+	 * `[data-kb-token-set]` switch selectors — only the active set's canonical layer at `:root`.
 	 *
 	 * @return void
 	 */
-	public function testItPointsTheCanonicalVarAtTheActiveNamespacedVar(): void {
-		$id        = 'semantic.color.button-bg';
-		$canonical = Css_Var::from_id( $id );
-		$ns        = Css_Var::from_id( $id, 'default' );
-
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ $ns => '#3182CE' ] ) );
-
-		$this->assertStringContainsString( $canonical . ':var(' . $ns . ');', $css );
-		$this->assertStringNotContainsString( $canonical . ':#3182CE;', $css );
-	}
-
-	// ---- Switch selectors ---------------------------------------------------------------------------
-
-	/**
-	 * Each set emits a `[data-kb-token-set="<set>"]` switch selector that re-points the canonical var at
-	 * that set's namespaced var.
-	 *
-	 * @return void
-	 */
-	public function testItEmitsASwitchSelectorForTheSet(): void {
+	public function testItEmitsNoNamespacedVarsOrSwitchSelectors(): void {
 		$id = 'semantic.color.button-bg';
 
-		$css = $this->css_default(
-			$this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] )
-		);
+		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
-		$this->assertStringContainsString(
-			'[data-kb-token-set="default"]{' . Css_Var::from_id( $id ) . ':var(' . Css_Var::from_id( $id, 'default' ) . ');}',
-			$css
-		);
-	}
-
-	/**
-	 * The public switch-attribute accessor returns the same attribute name used in the emitted selector.
-	 *
-	 * @return void
-	 */
-	public function testTheSwitchAttributeAccessorMatchesTheEmittedSelector(): void {
-		$this->assertSame( 'data-kb-token-set', Css_Builder::get_switch_attribute() );
-	}
-
-	// ---- Multiple sets ------------------------------------------------------------------------------
-
-	/**
-	 * With two sets emitted simultaneously, both namespaces are present, the canonical alias layer targets
-	 * the active set, and each set has its own switch selector.
-	 *
-	 * @return void
-	 */
-	public function testItEmitsEverySetNamespacedWithTheAliasLayerOnTheActiveSet(): void {
-		$id      = 'semantic.color.text';
-		$default = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id, 'default' ) => '#111' ] );
-		$dark    = $this->set( [ $id => '#eee' ], [ Css_Var::from_id( $id, 'dark' ) => '#eee' ] );
-
-		$css = $this->builder()->css( [ 'default' => $default, 'dark' => $dark ], 'dark' );
-
-		// Both sets emit their namespaced literals.
-		$this->assertStringContainsString( Css_Var::from_id( $id, 'default' ) . ':#111;', $css );
-		$this->assertStringContainsString( Css_Var::from_id( $id, 'dark' ) . ':#eee;', $css );
-
-		// The canonical alias layer points at the ACTIVE set (dark), not the default.
-		$this->assertStringContainsString( Css_Var::from_id( $id ) . ':var(' . Css_Var::from_id( $id, 'dark' ) . ');', $css );
-
-		// Each set carries its own switch selector.
-		$this->assertStringContainsString( '[data-kb-token-set="default"]{', $css );
-		$this->assertStringContainsString( '[data-kb-token-set="dark"]{', $css );
-	}
-
-	/**
-	 * A set's switch selector re-declares the legacy global-var bridges (the slot families and the palette)
-	 * at that set's resolved literals, so a block pinned to a non-active set via [data-kb-token-set] resolves
-	 * its spacing and palette to that set — not just content that reads --kb-token--* directly. The active
-	 * :root still carries the slot bridges (unchanged) and never the palette (that stays with the color filter).
-	 *
-	 * @return void
-	 */
-	public function testEachSetSwitchSelectorReDeclaresTheLegacyBridges(): void {
-		$spacing = 'primitive.dimension.spacing.lg';
-		$palette = 'primitive.color.brand.primary';
-
-		$this->registry->register(
-			[
-				'id'          => $spacing,
-				'type'        => 'dimension',
-				'label'       => 'LG',
-				'projections' => [ 'kb_spacing_slot' => 'lg' ],
-			]
-		);
-		$this->registry->register(
-			[
-				'id'          => $palette,
-				'type'        => 'color',
-				'label'       => 'Brand Primary',
-				'projections' => [ 'kadence_slot' => 'palette1' ],
-			]
-		);
-
-		$default = $this->set(
-			[
-				$spacing => '3rem',
-				$palette => '#3182CE',
-			],
-			[
-				Css_Var::from_id( $spacing, 'default' ) => '3rem',
-				Css_Var::from_id( $palette, 'default' ) => '#3182CE',
-			]
-		);
-		$brand_b = $this->set(
-			[
-				$spacing => '5rem',
-				$palette => '#123456',
-			],
-			[
-				Css_Var::from_id( $spacing, 'brand-b' ) => '5rem',
-				Css_Var::from_id( $palette, 'brand-b' ) => '#123456',
-			]
-		);
-
-		$css = $this->builder()->css( [ 'default' => $default, 'brand-b' => $brand_b ], 'default' );
-
-		$spacing_canonical = Css_Var::from_id( $spacing );
-		$palette_canonical = Css_Var::from_id( $palette );
-
-		// The brand-b switch selector re-points the canonical layer at brand-b...
-		$this->assertStringContainsString(
-			$spacing_canonical . ':var(' . Css_Var::from_id( $spacing, 'brand-b' ) . ');',
-			$css
-		);
-		// ...and re-declares the slot + palette bridges with brand-b's own literals.
-		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . $spacing_canonical . ',5rem);', $css );
-		$this->assertStringContainsString( '--global-palette1:var(' . $palette_canonical . ',#123456);', $css );
-
-		// The active (default) :root still carries the slot bridge at the default literal.
-		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . $spacing_canonical . ',3rem);', $css );
-
-		// The palette bridge lives only in the two switch selectors, never at :root (that stays with the filter).
-		$this->assertSame( 2, substr_count( $css, '--global-palette1:var(' ) );
+		$this->assertStringNotContainsString( '--kb-token--default--', $css );
+		$this->assertStringNotContainsString( '[data-kb-token-set', $css );
 	}
 
 	// ---- Scope / structure --------------------------------------------------------------------------
 
 	/**
-	 * The namespaced and alias blocks are scoped to both the bare `:root` and the `:where(.kb-tokens)`
-	 * selectors, with bare `:root` leading for editor-iframe coverage.
+	 * The `:root` block is scoped to both the bare `:root` and the `:where(.kb-tokens)` selectors, with
+	 * bare `:root` leading for editor-iframe coverage.
 	 *
 	 * @return void
 	 */
-	public function testItScopesNamespacedAndAliasBlocksToBothSelectors(): void {
+	public function testItScopesTheRootBlockToBothSelectors(): void {
 		$id  = 'semantic.color.button-bg';
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( ':root,', $css );
 		$this->assertStringContainsString( ':root:where(.kb-tokens)', $css );
@@ -279,13 +149,23 @@ final class Css_BuilderTest extends TestCase {
 		$this->assertStringStartsWith( ':root,', $css );
 	}
 
+	/**
+	 * The scope selector matches the shared Scope::root() spec.
+	 *
+	 * @return void
+	 */
 	public function testScopeMatchesSpec(): void {
 		$this->assertSame( ':root,:root:where(.kb-tokens)', Scope::root() );
 	}
 
+	/**
+	 * The projected CSS never uses !important, so per-instance variant overrides win by ordinary cascade.
+	 *
+	 * @return void
+	 */
 	public function testItNeverEmitsImportant(): void {
 		$id  = 'semantic.color.button-bg';
-		$css = $this->css_default( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '!important', $css );
 	}
@@ -296,24 +176,19 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testEmptySetProducesNoCss(): void {
-		$css = $this->css_default( $this->set( [], [] ) );
+		$css = $this->css_active( $this->set( [], [] ) );
 
 		$this->assertSame( '', $css );
 	}
 
+	// ---- Slot bridges -------------------------------------------------------------------------------
+
 	/**
-	 * When the active slug is absent from the resolved sets, no CSS is produced.
+	 * A spacing token claiming a shipped slot redefines --global-kb-spacing-<slug> as the canonical token
+	 * var, with the resolved length as a literal fallback.
 	 *
 	 * @return void
 	 */
-	public function testMissingActiveSetProducesNoCss(): void {
-		$css = $this->builder()->css( [ 'dark' => $this->set( [], [] ) ], 'default' );
-
-		$this->assertSame( '', $css );
-	}
-
-	// ---- Spacing override block ---------------------------------------------------------------------
-
 	public function testItEmitsSpacingOverrideForAClaimedSlot(): void {
 		$id = 'semantic.spacing.block';
 
@@ -326,12 +201,16 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		// The slug variable is redefined as the CANONICAL token var, with the resolved length as a literal fallback.
-		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
 
+	/**
+	 * A spacing token claiming a slug KB does not ship emits no slot bridge.
+	 *
+	 * @return void
+	 */
 	public function testItSkipsSpacingOverrideForAnUnknownSlot(): void {
 		$id = 'semantic.spacing.block';
 
@@ -344,11 +223,16 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
 	}
 
+	/**
+	 * A spacing token with no resolved literal emits no slot bridge (it would resolve to nothing).
+	 *
+	 * @return void
+	 */
 	public function testItSkipsSpacingOverrideWhenTokenHasNoResolvedValue(): void {
 		$id = 'semantic.spacing.block';
 
@@ -362,11 +246,16 @@ final class Css_BuilderTest extends TestCase {
 		);
 
 		// by_id is empty — no resolved value, so no override (it would resolve to nothing in the browser).
-		$css = $this->css_default( $this->set( [], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
 	}
 
+	/**
+	 * A gap token claiming a shipped slot redefines --global-kb-gap-<slug> as the canonical token var.
+	 *
+	 * @return void
+	 */
 	public function testItEmitsGapOverrideForAClaimedSlot(): void {
 		$id = 'semantic.gap.layout';
 
@@ -379,12 +268,16 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		// The gap variable is defined as the canonical token var, with the resolved length as a literal fallback.
-		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-gap-md:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
 
+	/**
+	 * A gap token claiming an alias slug (not its own var) emits no slot bridge.
+	 *
+	 * @return void
+	 */
 	public function testItSkipsGapOverrideForAnAliasSlot(): void {
 		$id = 'semantic.gap.layout';
 
@@ -397,7 +290,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-gap-', $css );
 	}
@@ -420,24 +313,46 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_default( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id, 'default' ) => '2rem' ] ) );
+		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-font-size-lg:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
 
 	/**
+	 * The Kadence palette bridges (--global-palette*) are never emitted by the token backbone — the active
+	 * :root palette stays owned by the legacy color filter (Legacy_Filter_Bridge).
+	 *
+	 * @return void
+	 */
+	public function testItNeverEmitsThePaletteBridges(): void {
+		$id = 'primitive.color.brand.primary';
+
+		$this->registry->register(
+			[
+				'id'          => $id,
+				'type'        => 'color',
+				'label'       => 'Brand Primary',
+				'projections' => [ 'kadence_slot' => 'palette1' ],
+			]
+		);
+
+		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
+
+		$this->assertStringNotContainsString( '--global-palette', $css );
+	}
+
+	/**
 	 * Built from the real registry and resolver, the shipped declarations emit a slot override for every
 	 * spacing, gap and font-size step Kadence Blocks ships, so each --global-kb-spacing-* / --global-kb-gap-* /
-	 * --global-kb-font-size-* slug follows its token. The default resolves from baseline (no overrides), so
-	 * each override carries the canonical token var with KB's own length as the literal fallback.
+	 * --global-kb-font-size-* slug follows its token.
 	 *
 	 * @return void
 	 */
 	public function testTheShippedDeclarationsEmitEverySpacingGapAndFontSizeSlot(): void {
 		$registry = $this->container->get( Token_Registry::class );
-		$resolved = $this->container->get( Token_Resolver::class )->resolve_namespaced( 'default' );
+		$resolved = $this->container->get( Token_Resolver::class )->resolve( 'default' );
 
-		$css = ( new Css_Builder( $registry ) )->css( [ 'default' => $resolved ], 'default' );
+		$css = ( new Css_Builder( $registry ) )->css( $resolved );
 
 		foreach ( [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ] as $slug ) {
 			$this->assertStringContainsString( '--global-kb-spacing-' . $slug . ':var(', $css );
@@ -452,46 +367,66 @@ final class Css_BuilderTest extends TestCase {
 		}
 	}
 
-	// ---- sanitize_value -------------------------------------------------------------------------------
+	// ---- sanitize_value -----------------------------------------------------------------------------
 
+	/**
+	 * The sanitizer strips characters that could break out of a declaration from the value portion.
+	 *
+	 * @return void
+	 */
 	public function testSanitizerStripsBreakoutCharacters(): void {
-		$id = 'semantic.color.bad';
-		$ns = Css_Var::from_id( $id, 'default' );
+		$id  = 'semantic.color.bad';
+		$var = Css_Var::from_id( $id );
 
 		// Value containing characters that could break out of a declaration.
-		$css = $this->css_default( $this->set( [ $id => 'red}body{color:blue' ], [ $ns => 'red}body{color:blue' ] ) );
+		$css = $this->css_active( $this->set( [ $id => 'red}body{color:blue' ], [ $var => 'red}body{color:blue' ] ) );
 
 		// The structural braces of the blocks are fine; the injected chars inside the VALUE must be stripped.
 		$this->assertStringNotContainsString( 'red}', $css );
 		$this->assertStringNotContainsString( 'body{', $css );
-		$this->assertStringContainsString( $ns . ':redbodycolor:blue;', $css );
+		$this->assertStringContainsString( $var . ':redbodycolor:blue;', $css );
 	}
 
+	/**
+	 * The sanitizer preserves a legitimate clamp() value.
+	 *
+	 * @return void
+	 */
 	public function testSanitizerPreservesLegitimateClampValue(): void {
-		$id = 'semantic.dimension.spacing-md';
-		$ns = Css_Var::from_id( $id, 'default' );
+		$id  = 'semantic.dimension.spacing-md';
+		$var = Css_Var::from_id( $id );
 
 		$clamp = 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)';
-		$css   = $this->css_default( $this->set( [ $id => $clamp ], [ $ns => $clamp ] ) );
+		$css   = $this->css_active( $this->set( [ $id => $clamp ], [ $var => $clamp ] ) );
 
 		$this->assertStringContainsString( $clamp, $css );
 	}
 
+	/**
+	 * The sanitizer preserves a legitimate font-family stack.
+	 *
+	 * @return void
+	 */
 	public function testSanitizerPreservesFontFamilyStack(): void {
-		$id = 'semantic.font-family.base';
-		$ns = Css_Var::from_id( $id, 'default' );
+		$id  = 'semantic.font-family.base';
+		$var = Css_Var::from_id( $id );
 
 		$stack = '"Inter", "Helvetica Neue", Arial, sans-serif';
-		$css   = $this->css_default( $this->set( [ $id => $stack ], [ $ns => $stack ] ) );
+		$css   = $this->css_active( $this->set( [ $id => $stack ], [ $var => $stack ] ) );
 
 		$this->assertStringContainsString( $stack, $css );
 	}
 
+	/**
+	 * The sanitizer strips control characters from the value portion.
+	 *
+	 * @return void
+	 */
 	public function testSanitizerStripsControlCharacters(): void {
-		$id = 'semantic.color.ctrl';
-		$ns = Css_Var::from_id( $id, 'default' );
+		$id  = 'semantic.color.ctrl';
+		$var = Css_Var::from_id( $id );
 
-		$css = $this->css_default( $this->set( [ $id => "#abc\x00def\x1Fghi" ], [ $ns => "#abc\x00def\x1Fghi" ] ) );
+		$css = $this->css_active( $this->set( [ $id => "#abc\x00def\x1Fghi" ], [ $var => "#abc\x00def\x1Fghi" ] ) );
 
 		$this->assertStringContainsString( '#abcdefghi', $css );
 		$this->assertStringNotContainsString( "\x00", $css );
@@ -500,75 +435,51 @@ final class Css_BuilderTest extends TestCase {
 
 	// ---- Caching (css_for_version) ------------------------------------------------------------------
 
+	/**
+	 * The cached css_for_version() returns the same result as the uncached css().
+	 *
+	 * @return void
+	 */
 	public function testCssForVersionReturnsSameResultAsCss(): void {
 		$id       = 'semantic.color.button-bg';
-		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] );
+		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
 		$builder  = $this->builder();
 
 		$this->assertSame(
-			$builder->css( [ 'default' => $resolved ], 'default' ),
-			$builder->css_for_version( [ 'default' => $resolved ], [ 'default' => 'v1' ], 'default' )
+			$builder->css( $resolved ),
+			$builder->css_for_version( $resolved, 'default', 'v1' )
 		);
 	}
 
 	/**
-	 * The active fragment is served verbatim from the object cache when a cached entry is present.
+	 * The `:root` block is served verbatim from the object cache when a cached entry is present.
 	 *
 	 * @return void
 	 */
-	public function testActiveFragmentIsServedFromObjectCache(): void {
+	public function testTheRootBlockIsServedFromObjectCache(): void {
 		$id       = 'semantic.color.button-bg';
-		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id, 'default' ) => '#3182CE' ] );
+		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
 
-		// Seed the active fragment cache with a sentinel so we can confirm it is served verbatim.
-		$cache_key = 'projected_css_active_' . KADENCE_BLOCKS_VERSION . '_default_v1';
-		wp_cache_set( $cache_key, '--active-fragment-sentinel:1;', 'kb_design_tokens', DAY_IN_SECONDS );
+		// Seed the root block cache with a sentinel so we can confirm it is served verbatim. The cache key
+		// carries the breakpoint signature, "none" here because css_for_version() is called with no breakpoints.
+		$cache_key = 'projected_css_root_' . KADENCE_BLOCKS_VERSION . '_default_v1_none';
+		wp_cache_set( $cache_key, '--root-block-sentinel:1;', 'kb_design_tokens', DAY_IN_SECONDS );
 
-		$css = $this->builder()->css_for_version( [ 'default' => $resolved ], [ 'default' => 'v1' ], 'default' );
+		$css = $this->builder()->css_for_version( $resolved, 'default', 'v1' );
 
-		$this->assertStringContainsString( '--active-fragment-sentinel:1;', $css );
+		$this->assertStringContainsString( '--root-block-sentinel:1;', $css );
 	}
 
 	/**
-	 * A per-set fragment is active-independent: its cache entry is reused unchanged whether or not that set
-	 * is the active one, so switching the active set never rebuilds the other sets' definition blocks.
-	 *
-	 * @return void
-	 */
-	public function testPerSetFragmentIsReusedAcrossAChangeOfActiveSet(): void {
-		$id      = 'semantic.color.text';
-		$default = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id, 'default' ) => '#111' ] );
-		$dark    = $this->set( [ $id => '#eee' ], [ Css_Var::from_id( $id, 'dark' ) => '#eee' ] );
-
-		// Seed the dark per-set fragment with a sentinel. The cache key carries the breakpoint signature,
-		// "none" here because css_for_version() is called with no breakpoints.
-		$dark_key = 'projected_css_set_' . KADENCE_BLOCKS_VERSION . '_dark_v1_none';
-		wp_cache_set( $dark_key, '--dark-fragment-sentinel:1;', 'kb_design_tokens', DAY_IN_SECONDS );
-
-		$builder  = $this->builder();
-		$versions = [
-			'default' => 'v0',
-			'dark'    => 'v1',
-		];
-
-		// dark active, then default active — the dark per-set fragment is served from cache both times.
-		$with_dark_active    = $builder->css_for_version( [ 'default' => $default, 'dark' => $dark ], $versions, 'dark' );
-		$with_default_active = $builder->css_for_version( [ 'default' => $default, 'dark' => $dark ], $versions, 'default' );
-
-		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_dark_active );
-		$this->assertStringContainsString( '--dark-fragment-sentinel:1;', $with_default_active );
-	}
-
-	/**
-	 * A responsive set redeclares each affected `--kb-token--<set>--*` var inside the tablet and mobile
-	 * media queries (at :root, tablet before mobile), on top of the base :root declaration, so a consuming
-	 * block inherits the per-breakpoint value with no block change.
+	 * A responsive set redeclares each affected `--kb-token--*` var inside the tablet and mobile media
+	 * queries (at :root, tablet before mobile), on top of the base :root declaration, so a consuming block
+	 * inherits the per-breakpoint value with no block change.
 	 *
 	 * @return void
 	 */
 	public function testItRedeclaresResponsiveVarsInsideMediaQueries(): void {
 		$id  = 'semantic.font-size.control';
-		$var = Css_Var::from_id( $id, 'default' );
+		$var = Css_Var::from_id( $id );
 
 		$resolved = new Resolved_Tokens(
 			[ $id => '1.125rem' ],
@@ -583,7 +494,7 @@ final class Css_BuilderTest extends TestCase {
 			'mobile' => '(max-width: 767px)',
 		];
 
-		$css = $this->builder()->css_for_version( [ 'default' => $resolved ], [ 'default' => 'v1' ], 'default', $breakpoints );
+		$css = $this->builder()->css_for_version( $resolved, 'default', 'v1', $breakpoints );
 
 		$this->assertStringContainsString( $var . ':1.125rem;', $css );
 		$this->assertStringContainsString( '@media all and (max-width: 1024px){' . Scope::root() . '{' . $var . ':1rem;}}', $css );
@@ -603,12 +514,12 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testAFlatSetEmitsNoMediaQueries(): void {
 		$id       = 'semantic.color.text';
-		$resolved = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id, 'default' ) => '#111' ] );
+		$resolved = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id ) => '#111' ] );
 
 		$css = $this->builder()->css_for_version(
-			[ 'default' => $resolved ],
-			[ 'default' => 'v1' ],
+			$resolved,
 			'default',
+			'v1',
 			[ 'tablet' => '(max-width: 1024px)', 'mobile' => '(max-width: 767px)' ]
 		);
 

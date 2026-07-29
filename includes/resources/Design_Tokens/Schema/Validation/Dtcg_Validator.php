@@ -595,6 +595,75 @@ final class Dtcg_Validator {
 			);
 		}
 
+		// colorPalettes carries its values under each swatch's `$value`, not a `tokens` map, so the
+		// tokens-map walk above (driven by get_sections(), which excludes it) never covers them. Validate
+		// each swatch `$value` with the same alias-or-literal grammar here.
+		$palettes_section = Extensions::get_section_color_palettes();
+
+		if ( isset( $namespace[ $palettes_section ] ) && is_array( $namespace[ $palettes_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_color_palettes( $namespace[ $palettes_section ], $base . '.' . $palettes_section )
+			);
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate each swatch `$value` in a colorPalettes section with the alias-or-literal grammar. Walks each
+	 * palette's `groups[].swatches[]`, skipping the `$default` / `$current` pointer keys and any node that is
+	 * not shaped as a palette / group / swatch. Referential integrity (a `token` that targets a real color
+	 * leaf, no duplicate `token` within a palette, `$default` / `$current` naming a real palette) is enforced
+	 * by the palette controller's write guards, not here — this branch is the value-grammar gate only.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $palettes The decoded colorPalettes section.
+	 * @param string                   $prefix   Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_color_palettes( array $palettes, string $prefix ): array {
+		$groups_key   = Extensions::get_groups_key();
+		$swatches_key = Extensions::get_swatches_key();
+		$value_key    = Sentinels::get_value_key();
+		$errors       = [];
+
+		foreach ( $palettes as $palette_id => $palette ) {
+			// Skip the $default / $current pointer keys (scalars) and any non-array palette.
+			if ( ! is_array( $palette ) || ( is_string( $palette_id ) && strpos( $palette_id, '$' ) === 0 ) ) {
+				continue;
+			}
+
+			$groups = $palette[ $groups_key ] ?? null;
+
+			if ( ! is_array( $groups ) ) {
+				continue;
+			}
+
+			foreach ( $groups as $group_index => $group ) {
+				if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+					continue;
+				}
+
+				foreach ( $group[ $swatches_key ] as $swatch_index => $swatch ) {
+					if ( ! is_array( $swatch ) || ! array_key_exists( $value_key, $swatch ) ) {
+						continue;
+					}
+
+					$path = $prefix . '.' . $palette_id . '.' . $groups_key . '.' . $group_index
+						. '.' . $swatches_key . '.' . $swatch_index . '.' . $value_key;
+
+					$error = $this->validate_extension_value( $swatch[ $value_key ], $path );
+
+					if ( $error !== null ) {
+						$errors[] = $error;
+					}
+				}
+			}
+		}
+
 		return $errors;
 	}
 

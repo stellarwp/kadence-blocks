@@ -24,7 +24,6 @@ final class CatalogTest extends TestCase {
 		$groups = $this->presets->groups();
 
 		$this->assertContains( 'typeScale', $groups );
-		$this->assertContains( 'colorPalette', $groups );
 	}
 
 	public function testItReturnsTheSelectablePresetsAsSlugToLabelSkippingTheDefaultKey(): void {
@@ -46,7 +45,6 @@ final class CatalogTest extends TestCase {
 
 	public function testItReturnsAGroupDefault(): void {
 		$this->assertSame( 'majorThird', $this->presets->default_for( 'typeScale' ) );
-		$this->assertSame( 'kadence', $this->presets->default_for( 'colorPalette' ) );
 	}
 
 	public function testItReturnsAPresetsFlatTokenMap(): void {

@@ -14,7 +14,7 @@ use RuntimeException;
 final class Unknown_Preset_Exception extends RuntimeException {
 
 	/**
-	 * No such preset group (e.g. "typeScale", "colorPalette").
+	 * No such preset group (e.g. "typeScale").
 	 *
 	 * @since TBD
 	 *
