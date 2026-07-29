@@ -93,7 +93,7 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @since TBD Build the transparent and sticky images from escaped attributes.
+	 * @since 3.7.8.2 Build the transparent and sticky images from escaped attributes.
 	 *
 	 * @param array    $attributes    The block attributes.
 	 * @param string   $unique_id     The unique ID for the block.
@@ -139,7 +139,7 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Adds a copy of the logo image that points at an alternate source.
 	 *
-	 * @since TBD
+	 * @since 3.7.8.2
 	 *
 	 * @param string $content    The block inner content.
 	 * @param string $url        The alternate image source.

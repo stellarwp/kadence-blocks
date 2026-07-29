@@ -212,7 +212,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @since TBD Insert the excerpt element without reprocessing the inner content.
+	 * @since 3.7.8.2 Insert the excerpt element without reprocessing the inner content.
 	 *
 	 * @param array $attributes the blocks attributes.
 	 * @param string $unique_id the blocks attr ID.
