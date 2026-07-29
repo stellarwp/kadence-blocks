@@ -19,6 +19,7 @@ import { registerTokenAliasFilters } from '../register-filters';
 
 const helpersRoot = path.dirname(require.resolve('@kadence/helpers/package.json'));
 const KadenceBlocksCSS = require(path.join(helpersRoot, 'dist/cjs/css/index.js')).default;
+const KadenceColorOutput = require(path.join(helpersRoot, 'dist/cjs/kadence-color-output/index.js')).default;
 
 const ALIAS = '{semantic.radius.media}';
 const ALIAS_VAR = 'var(--kb-token--semantic--radius--media)';
@@ -122,5 +123,22 @@ describe('the seam is what resolves the alias', () => {
 		// With no listener, the agnostic helper cannot recognize the alias: render_size falls through
 		// its numeric/variable branches and does not emit the token var.
 		expect(new KadenceBlocksCSS().render_size(ALIAS, 'px')).not.toBe(ALIAS_VAR);
+	});
+});
+
+describe('KadenceColorOutput (colorValue filter seam)', () => {
+	it('resolves an alias to a bare var through the colorValue filter', () => {
+		expect(KadenceColorOutput('{semantic.color.shadow}')).toBe('var(--kb-token--semantic--color--shadow)');
+	});
+
+	it('passes a non-alias color through unchanged', () => {
+		expect(KadenceColorOutput('#3182CE')).toBe('#3182CE');
+	});
+
+	it('leaves an alias unresolved when the plugin filter is not registered', () => {
+		removeFilter('kadence.helpers.colorValue', 'kadence-blocks/token-alias');
+		removeFilter('kadence.helpers.dimensionValue', 'kadence-blocks/token-alias');
+
+		expect(KadenceColorOutput('{semantic.color.shadow}')).not.toBe('var(--kb-token--semantic--color--shadow)');
 	});
 });
