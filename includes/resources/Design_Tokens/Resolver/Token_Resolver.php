@@ -70,7 +70,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The token set store.
+	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
 	 */
@@ -85,12 +85,12 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
+	 * Resolve a stored token library into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to resolve.
+	 * @param string $slug The token library slug to resolve.
 	 *
 	 * @return Resolved_Tokens
 	 *
@@ -103,18 +103,18 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve a stored token set with its css-var names namespaced to the set's own slug
-	 * (`--kb-token--<slug>--*`), for simultaneous multi-set emission. Same cache shape as resolve(),
+	 * Resolve a stored token library with its css-var names namespaced to the library's own slug
+	 * (`--kb-token--<slug>--*`), for simultaneous multi-library emission. Same cache shape as resolve(),
 	 * under its own key, so the canonical and namespaced forms never collide.
 	 *
 	 * The returned object's projected map carries the namespaced var names and namespaced alias/composite
-	 * targets, so a set's alias chain stays inside the set. The literal id map (by_id) is keyed on the
-	 * canonical dot-path and its values are literals, so it is identical to the canonical resolve — host
-	 * surfaces and the canonical token-id list read it unchanged.
+	 * targets, so a library's alias chain stays inside the library. The literal id map (by_id) is keyed on
+	 * the canonical dot-path and its values are literals, so it is identical to the canonical resolve —
+	 * host surfaces and the canonical token-id list read it unchanged.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to resolve and namespace under.
+	 * @param string $slug The token library slug to resolve and namespace under.
 	 *
 	 * @return Resolved_Tokens
 	 *
@@ -131,7 +131,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug         The token set slug to resolve.
+	 * @param string $slug         The token library slug to resolve.
 	 * @param string $css_namespace    Css-var namespace to apply ('' for the canonical names).
 	 * @param string $cache_prefix Cache-key prefix that distinguishes the canonical and namespaced forms.
 	 *
@@ -184,7 +184,7 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * The baseline-merged effective document for a stored set, with $extensions intact — the authored view
+	 * The baseline-merged effective document for a stored library, with $extensions intact — the authored view
 	 * the resolved maps flatten away. This is the source the responsive feed and the REST resolved read need
 	 * to recover a token's authored responsive / clamp shape (aliases preserved, unrendered), which the flat
 	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
@@ -192,7 +192,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string,mixed> The effective document.
 	 */
@@ -299,7 +299,7 @@ final class Token_Resolver {
 					// indirection survives into CSS and dependents follow live. resolve_value() has
 					// already validated the alias (no cycle, not dangling), so the target is a real leaf
 					// this same walk emits a --kb-token--* var for. The literal above still feeds host
-					// surfaces. Under a namespace the target name is namespaced too, so the chain stays in-set.
+					// surfaces. Under a namespace the target name is namespaced too, so the chain stays in-library.
 					$target_id                = Alias::path_of( $raw );
 					$by_id_target[ $path ]    = $target_id;
 					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id, $css_namespace ) . ')';

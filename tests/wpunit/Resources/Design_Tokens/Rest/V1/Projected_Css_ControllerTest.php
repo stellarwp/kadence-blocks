@@ -14,7 +14,7 @@ use WP_REST_Server;
 
 /**
  * Covers the projected-CSS controller: it aggregates every design-token editor projector into one CSS string
- * for the editor to re-inject live, keeps multi-set (multi-palette) support intact, and is capability-gated.
+ * for the editor to re-inject live, keeps multi-library (multi-palette) support intact, and is capability-gated.
  */
 final class Projected_Css_ControllerTest extends TestCase {
 
@@ -50,34 +50,34 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The aggregated CSS contains both the token vars and a stored variant's scoped retarget rule, proving it
-	 * composes the token-var and variant projectors (not just one layer).
+	 * The aggregated CSS contains both the token vars and a stored preset's scoped retarget rule, proving it
+	 * composes the token-var and preset projectors (not just one layer).
 	 *
 	 * @return void
 	 */
-	public function testItAggregatesTokenVarsAndAVariantsScopedRule(): void {
-		$this->seedVariant( Token_Store::default_slug(), 'accent' );
+	public function testItAggregatesTokenVarsAndAPresetsScopedRule(): void {
+		$this->seedPreset( Token_Store::default_slug(), 'accent' );
 
 		$css = $this->css();
 
 		$this->assertStringContainsString( '--kb-token--', $css, 'The token vars layer should be present.' );
-		$this->assertStringContainsString( 'kb-variant--accent', $css, 'The stored variant scoped rule should be present.' );
+		$this->assertStringContainsString( 'kb-preset--accent', $css, 'The stored preset scoped rule should be present.' );
 	}
 
 	/**
-	 * A second, non-default token set is emitted with its own namespaced vars and a per-set switch selector,
-	 * proving multi-set (multi-palette) support survives the aggregation.
+	 * A second, non-default token library is emitted with its own namespaced vars and a per-set switch
+	 * selector, proving multi-library (multi-palette) support survives the aggregation.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsEveryTokenSetWithItsSwitchLayer(): void {
-		$this->seedVariant( Token_Store::default_slug(), 'accent' );
-		$this->seedVariant( 'dark', 'accent' );
+	public function testItEmitsEveryTokenLibraryWithItsSwitchLayer(): void {
+		$this->seedPreset( Token_Store::default_slug(), 'accent' );
+		$this->seedPreset( 'dark', 'accent' );
 
 		$css = $this->css();
 
-		$this->assertStringContainsString( '--kb-token--dark--', $css, 'The non-default set should emit namespaced vars.' );
-		$this->assertStringContainsString( 'data-kb-token-set', $css, 'The non-default set should emit a switch selector.' );
+		$this->assertStringContainsString( '--kb-token--dark--', $css, 'The non-default library should emit namespaced vars.' );
+		$this->assertStringContainsString( 'data-kb-token-set', $css, 'The non-default library should emit a switch selector.' );
 	}
 
 	/**
@@ -160,20 +160,20 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Persist a full-surface button variant into a token set's overrides document.
+	 * Persist a full-surface button preset into a token library's overrides document.
 	 *
-	 * @param string $slug    The token set slug to write into.
-	 * @param string $variant The variant slug.
+	 * @param string $slug   The token library slug to write into.
+	 * @param string $preset The preset slug.
 	 *
 	 * @return void
 	 */
-	private function seedVariant( string $slug, string $variant ): void {
+	private function seedPreset( string $slug, string $preset ): void {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'variants' => [
+					'presets' => [
 						self::BUTTON => [
-							$variant => [
+							$preset => [
 								'label'  => 'Accent',
 								'tokens' => [
 									'button-bg'         => '#ff0000',

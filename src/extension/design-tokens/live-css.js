@@ -1,8 +1,8 @@
 /**
  * Live re-injection of the design-token editor CSS into the block-editor canvas.
  *
- * The projectors emit the token/variant CSS server-side only at page load, so a change made in the editor
- * (creating/editing/deleting a variant, or a future token-value edit) is not reflected until a reload. These
+ * The projectors emit the token/preset CSS server-side only at page load, so a change made in the editor
+ * (creating/editing/deleting a preset, or a future token-value edit) is not reflected until a reload. These
  * helpers fetch the combined projected CSS and write it into a dedicated `<style>` in the canvas document, so
  * the change applies immediately. Generic on purpose — any design-token change can call `refreshProjectedCss`.
  */

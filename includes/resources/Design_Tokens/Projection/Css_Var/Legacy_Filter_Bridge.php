@@ -14,7 +14,7 @@ use RuntimeException;
  *
  * kadence_blocks_pattern_global_colors — tokens declaring a kadence_slot of palette[1-9] override that
  * --global-paletteN entry. The callback is a transform of the incoming array: a token-claimed slot is
- * rewritten to "var(--kb-token--…, <resolved literal>)" so legacy blocks react to variant overrides of
+ * rewritten to "var(--kb-token--…, <resolved literal>)" so legacy blocks react to preset overrides of
  * --kb-token--* with the resolved literal as a fallback for contexts that lack the token definitions
  * (e.g. prebuilt-library preview iframes). Everything else passes through untouched.
  *
@@ -86,7 +86,7 @@ final class Legacy_Filter_Bridge {
 				continue;
 			}
 
-			// Point the slot at the token var so blocks react to variant overrides, with the resolved
+			// Point the slot at the token var so blocks react to preset overrides, with the resolved
 			// literal as a fallback for preview iframes that build their own palette CSS.
 			$colors[ '--global-' . $slot->slug ] = sprintf( 'var(%s, %s)', $token->css_var, $value );
 		}
