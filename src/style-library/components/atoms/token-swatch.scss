@@ -1,0 +1,20 @@
+@use '../../styles/tokens' as *;
+
+@mixin color-preview {
+	display: inline-block;
+	width: $swatch-size;
+	height: $swatch-size;
+	border: 1px solid $color-border-strong;
+	border-radius: $radius-sm;
+	flex-shrink: 0;
+}
+
+.kadence-blocks-style-library__swatch {
+	@include color-preview;
+}
+
+.kadence-blocks-style-library__color-picker-toggle {
+	@include color-preview;
+	padding: 0;
+	cursor: pointer;
+}

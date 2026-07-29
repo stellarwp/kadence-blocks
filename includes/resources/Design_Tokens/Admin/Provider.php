@@ -5,9 +5,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Variants;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Menu;
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Screen;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Menu;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Screen;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**

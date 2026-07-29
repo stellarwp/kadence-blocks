@@ -436,7 +436,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * Alongside the flat by_id / by_var maps, the response carries the authored responsive / clamp shape per
 	 * token (empty for a set with no responsive tokens). The flat maps lose the per-breakpoint steps, so a
-	 * client that re-reads this endpoint after a write — the Style Book token editor does, to keep its
+	 * client that re-reads this endpoint after a write — the Style Library token editor does, to keep its
 	 * per-breakpoint inputs fresh — would otherwise fall back to a stale bootstrap of the responsive shape.
 	 *
 	 * @since TBD
