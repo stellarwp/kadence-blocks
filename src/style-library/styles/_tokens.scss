@@ -1,0 +1,47 @@
+// Style Library design tokens (admin palette — mirrors WordPress core grays).
+
+$color-text-primary: #1d2327;
+$color-text-secondary: #50575e;
+$color-text-muted: #646970;
+$color-border: #dcdcde;
+$color-border-strong: #c3c4c7;
+$color-border-subtle: #f0f0f1;
+$color-surface: #fff;
+$color-surface-muted: #f0f0f1;
+$color-surface-sidebar: #f6f7f7;
+$color-accent: #2271b1;
+$color-success: #008a20;
+$color-error: #d63638;
+$color-count-badge: #e0e0e0;
+
+$radius-sm: 4px;
+$radius-pill: 999px;
+
+$font-size-shell-title: 1.125rem;
+$font-size-page-title: 1.25rem;
+$font-size-group-title: 1rem;
+$font-size-body: 0.9375rem;
+$font-size-small: 0.8125rem;
+$font-size-meta: 0.75rem;
+$font-size-nav-label: 0.6875rem;
+$font-size-badge: 0.6875rem;
+$font-size-overview: 0.875rem;
+
+$spacing-xs: 0.125rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 0.75rem;
+$spacing-lg: 1rem;
+$spacing-xl: 1.5rem;
+$spacing-2xl: 2rem;
+
+$shell-min-height: 32rem;
+$layout-min-height: 28rem;
+$sidebar-width: 240px;
+$content-max-width: 42rem;
+$overview-card-min: 280px;
+$variant-card-min: 240px;
+$variant-prop-label: 7rem;
+$swatch-size: 2rem;
+$overview-swatch-size: 1.5rem;
+$input-min-width: 16rem;
+$nav-active-border: 3px;

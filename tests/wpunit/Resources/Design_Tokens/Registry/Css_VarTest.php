@@ -54,12 +54,12 @@ final class Css_VarTest extends TestCase {
 	}
 
 	/**
-	 * A non-empty namespace is inserted as a leading segment after the prefix, so each set's tokens get
-	 * their own --kb-token--<set>--* namespace.
+	 * A non-empty namespace is inserted as a leading segment after the prefix, so each library's tokens get
+	 * their own --kb-token--<library>--* namespace.
 	 *
 	 * @return void
 	 */
-	public function testItNamespacesUnderASet(): void {
+	public function testItNamespacesUnderALibrary(): void {
 		$this->assertSame(
 			'--kb-token--dark--semantic--color--button-bg',
 			Css_Var::from_id( 'semantic.color.button-bg', 'dark' )

@@ -1299,7 +1299,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 	/**
 	 * Build a GET request for the references endpoint.
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 * @param string $id   The user-primitive canonical id.
 	 *
 	 * @return WP_REST_Request
@@ -1315,7 +1315,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 	/**
 	 * Build a POST request for the create endpoint.
 	 *
-	 * @param string $slug    The token set slug.
+	 * @param string $slug    The token library slug.
 	 * @param string $id      The terminal slug for the new primitive.
 	 * @param string $type    The DTCG `$type`.
 	 * @param mixed  $value   The DTCG `$value`.
@@ -1339,7 +1339,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 	/**
 	 * Build a DELETE request for the delete endpoint.
 	 *
-	 * @param string $slug    The token set slug.
+	 * @param string $slug    The token library slug.
 	 * @param string $id      The canonical dot-path id to delete.
 	 * @param string $version The version token.
 	 *
@@ -1357,7 +1357,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 	/**
 	 * Build a POST request for the rename endpoint.
 	 *
-	 * @param string $slug     The token set slug.
+	 * @param string $slug     The token library slug.
 	 * @param string $old_id   The canonical dot-path id to rename.
 	 * @param string $new_slug The new terminal slug.
 	 * @param string $version  The version token.
