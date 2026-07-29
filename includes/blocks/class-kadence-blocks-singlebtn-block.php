@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Renders_Variant_Classes;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
@@ -22,7 +22,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * @category class
  */
 class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
-	use Sanitizes_Css_Identifier;
+	use Renders_Palette_Attribute;
 	use Renders_Variant_Classes;
 
 	/**
@@ -380,18 +380,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['inheritStyles'] ) && ( 'inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles'] ) ) {
 			$classes[] = 'wp-block-button__link';
 		}
-		$wrapper_args = [
-			'class' => implode( ' ', $classes ),
-		];
-		if ( ! empty( $attributes['kbPalette'] ) ) {
-			/**
-			 * A per-block color-palette override outputs a data-kb-palette="<id>" attribute the Design Tokens
-			 * projector's [data-kb-palette] switch layer re-points the block's canonical color vars through.
-			 * This is a dynamic block, so the attribute is added here rather than by the editor save filter;
-			 * the shared Sanitizes_Css_Identifier sanitizer keeps the id matching the switch selector.
-			 */
-			$wrapper_args['data-kb-palette'] = self::sanitize_identifier( Cast::to_string( $attributes['kbPalette'] ) );
-		}
+		// A per-block color-palette override outputs a data-kb-palette="<id>" attribute the Design Tokens
+		// projector's [data-kb-palette] switch layer re-points the block's canonical color vars through. This is
+		// a dynamic block, so the attribute is added here rather than by the editor save filter.
+		$wrapper_args = array_merge(
+			[ 'class' => implode( ' ', $classes ) ],
+			$this->palette_attributes( $attributes['kbPalette'] ?? '' )
+		);
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}
