@@ -257,7 +257,7 @@ final class SelectorTest extends TestCase {
 	}
 
 	/**
-	 * Decode the single default set's stored overrides document.
+	 * Decode the single default library's stored overrides document.
 	 *
 	 * @return array<string, mixed>
 	 */

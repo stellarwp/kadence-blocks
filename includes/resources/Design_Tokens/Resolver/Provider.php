@@ -20,8 +20,8 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Effective_Document::class );
 		$this->container->singleton( Css_Renderer::class );
 		$this->container->singleton( Token_Resolver::class );
-		$this->container->singleton( Variant_Resolver::class );
-		$this->container->singleton( Variant_Value_Normalizer::class );
-		$this->container->singleton( Effective_Variants::class );
+		$this->container->singleton( Preset_Resolver::class );
+		$this->container->singleton( Preset_Value_Normalizer::class );
+		$this->container->singleton( Effective_Presets::class );
 	}
 }

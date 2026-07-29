@@ -129,10 +129,10 @@ final class Token_RegistryTest extends TestCase {
 	public function testForBlockReturnsNullUntilRegistered(): void {
 		$this->assertNull( $this->registry->for_block( 'kadence/advancedbtn' ) );
 
-		$this->registry->register_variant_set(
+		$this->registry->register_preset_bindings(
 			[
-				'block'    => 'kadence/advancedbtn',
-				'variants' => [ 'primary' ],
+				'block'   => 'kadence/advancedbtn',
+				'presets' => [ 'primary' ],
 			]
 		);
 
@@ -141,15 +141,15 @@ final class Token_RegistryTest extends TestCase {
 		$this->assertSame( 'kadence/advancedbtn', $set->block );
 	}
 
-	public function testVariantSetsIsEmptyUntilRegistered(): void {
-		$this->assertSame( [], $this->registry->variant_sets() );
+	public function testAllPresetBindingsIsEmptyUntilRegistered(): void {
+		$this->assertSame( [], $this->registry->all_preset_bindings() );
 	}
 
-	public function testVariantSetsReturnsRegisteredSetsKeyedByBlockInOrder(): void {
-		$this->registry->register_variant_set( [ 'block' => 'kadence/advancedbtn' ] );
-		$this->registry->register_variant_set( [ 'block' => 'kadence/advancedheading' ] );
+	public function testAllPresetBindingsReturnsRegisteredSetsKeyedByBlockInOrder(): void {
+		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedbtn' ] );
+		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedheading' ] );
 
-		$sets = $this->registry->variant_sets();
+		$sets = $this->registry->all_preset_bindings();
 
 		$this->assertSame(
 			[ 'kadence/advancedbtn', 'kadence/advancedheading' ],

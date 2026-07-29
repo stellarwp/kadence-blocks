@@ -7,18 +7,18 @@
 
 import { Button, Tooltip } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { resetIcon, variantIcon } from '../../variant-picker/icons';
+import { resetIcon, presetIcon } from '../../preset-picker/icons';
 
 /**
  * The design-system indicator for one mapped control. Three states: overridden shows a red edit dot
- * (matching the variant button's dot) and, when `showReset` is set, a reset icon that clears the override;
+ * (matching the preset button's dot) and, when `showReset` is set, a reset icon that clears the override;
  * matching the preset shows the design-token glyph in the accent color, occupying the same reset slot as a
  * non-interactive "linked to the design system" mark; unmapped renders nothing. The matching mark only
  * renders where a reset would (`showReset`), so the dot-only label path is left unchanged. A control whose
  * own header already carries the reset passes `showReset={false}` so the dot alone marks the edit.
  *
  * @param {Object}   props             The component props.
- * @param {Object}   [props.state]     The attribute's binding state from useVariantBinding, or undefined when
+ * @param {Object}   [props.state]     The attribute's binding state from usePresetBinding, or undefined when
  *                                     the control is not mapped for the selected preset.
  * @param {Function} props.onReset     Called to clear the control's override back to the preset value.
  * @param {boolean}  [props.showReset] Whether to render the reset icon / matching mark (default true).
@@ -47,7 +47,7 @@ export function TokenIndicator({ state, onReset, showReset = true }) {
 						role="img"
 						aria-label={__('Matches the preset value', 'kadence-blocks')}
 					>
-						{variantIcon}
+						{presetIcon}
 					</span>
 				</Tooltip>
 			</span>

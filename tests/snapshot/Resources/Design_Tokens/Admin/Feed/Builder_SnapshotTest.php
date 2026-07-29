@@ -49,7 +49,7 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 			$values[ $id ] = '#000000';
 		}
 
-		$variants = [
+		$presets = [
 			'kadence/advancedbtn' => [
 				'bindings'   => [
 					'button-bg' => [
@@ -73,12 +73,12 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 			'nonce'     => 'test-nonce',
 		];
 
-		$feed = ( new Builder( $this->registry ) )->build( $values, true, $variants, $rest, 'v7', 'default' );
+		$feed = ( new Builder( $this->registry ) )->build( $values, true, $presets, $rest, 'v7', 'default' );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertTrue( $feed['active'] );
 		$this->assertArrayHasKey( 'groups', $feed['schema'] );
-		$this->assertArrayHasKey( 'variants', $feed );
+		$this->assertArrayHasKey( 'presets', $feed );
 		$this->assertArrayHasKey( 'rest', $feed );
 
 		$this->assertMatchesSnapshot( wp_json_encode( $feed, JSON_PRETTY_PRINT ) );

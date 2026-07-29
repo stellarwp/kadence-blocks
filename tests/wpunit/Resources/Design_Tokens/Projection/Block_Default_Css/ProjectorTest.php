@@ -6,7 +6,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Confirms the block-default CSS projector is wired into KB's style pipeline on boot — front end and
- * editor — at the priorities that keep its rules after the token vars and variant overrides.
+ * editor — at the priorities that keep its rules after the token vars and preset overrides.
  */
 final class ProjectorTest extends TestCase {
 

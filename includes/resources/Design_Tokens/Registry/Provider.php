@@ -63,7 +63,7 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * The single declaration point — registers each declared token / variant set against the registry.
+	 * The single declaration point — registers each declared token / preset bindings against the registry.
 	 *
 	 * Reads declarations.php as data and registers via the container. Hooked on init (priority 0) because
 	 * declarations carry __() strings that must not resolve before the textdomain is available.
@@ -81,8 +81,8 @@ final class Provider extends Provider_Contract {
 			$registry->register( $token );
 		}
 
-		foreach ( $declarations['variant_sets'] as $variant_set ) {
-			$registry->register_variant_set( $variant_set );
+		foreach ( $declarations['preset_bindings'] as $declaration ) {
+			$registry->register_preset_bindings( $declaration );
 		}
 	}
 
@@ -98,8 +98,9 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Every stored set is synced regardless of which one changed or which one is active — the
-	 * multi-set projection renders every set, so every set's user primitives must stay registered.
+	 * Every stored library is synced regardless of which one changed or which one is active — the
+	 * multi-library projection renders every library, so every library's user primitives must stay
+	 * registered.
 	 *
 	 * @since TBD
 	 *

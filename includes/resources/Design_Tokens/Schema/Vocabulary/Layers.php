@@ -6,7 +6,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  * Single source of truth for the top-level DTCG document layers that carry resolvable tokens.
  *
  * A v1 document has three top-level keys: "primitive" and "semantic" hold registrable token trees,
- * while "$extensions" (foundation presets, block presets, variants) is NOT a token tree and must
+ * while "$extensions" (foundation presets, block presets, presets) is NOT a token tree and must
  * never be walked, merged, or indexed as one.
  *
  * @since TBD
@@ -33,7 +33,7 @@ final class Layers {
 
 	/**
 	 * The DTCG layers that carry resolvable tokens, in walk order. The "$extensions" layer is
-	 * excluded by design — its entries are presets/variants, not registrable tokens.
+	 * excluded by design — its entries are presets/presets, not registrable tokens.
 	 *
 	 * @var string[]
 	 *
@@ -56,7 +56,7 @@ final class Layers {
 	}
 
 	/**
-	 * The "semantic" layer name — the role-based layer a variant value aliases into.
+	 * The "semantic" layer name — the role-based layer a preset value aliases into.
 	 *
 	 * @since TBD
 	 *
