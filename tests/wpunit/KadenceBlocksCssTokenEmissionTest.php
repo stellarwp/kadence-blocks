@@ -27,19 +27,17 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$this->css = new Kadence_Blocks_CSS();
 	}
 
-	protected function tearDown(): void {
-		parent::tearDown();
-	}
-
 	/**
 	 * render_number returns the bare var() reference for a strict alias, ignoring the unit.
 	 *
 	 * @return void
 	 */
 	public function testRenderNumberEmitsBareVarForAlias(): void {
-		$this->assertSame( 'var(--kb-token--semantic--radius--media)',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media)',
 			$this->css->render_number( '{semantic.radius.media}', 'px' ),
-			'render_number must emit the bare var() for a strict alias' );
+			'render_number must emit the bare var() for a strict alias'
+		);
 	}
 
 	/**
@@ -48,9 +46,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderColorEmitsBareVarForAlias(): void {
-		$this->assertSame( 'var(--kb-token--semantic--radius--media)',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media)',
 			$this->css->render_color( '{semantic.radius.media}' ),
-			'render_color must emit the bare var() for a strict alias' );
+			'render_color must emit the bare var() for a strict alias'
+		);
 	}
 
 	/**
@@ -59,9 +59,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testSanitizeColorEmitsBareVarForAlias(): void {
-		$this->assertSame( 'var(--kb-token--semantic--radius--media)',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media)',
 			$this->css->sanitize_color( '{semantic.radius.media}' ),
-			'sanitize_color must emit the bare var() for a strict alias' );
+			'sanitize_color must emit the bare var() for a strict alias'
+		);
 	}
 
 	/**
@@ -72,8 +74,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderRangeEmitsBareVarForAlias(): void {
 		$this->css->render_range( [ 'width' => '{semantic.radius.media}' ], 'width', 'width', 'px' );
 
-		$this->assertStringContainsString( 'width:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
-			'render_range must emit the bare var() as the declaration value for a strict alias' );
+		$this->assertStringContainsString(
+			'width:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'render_range must emit the bare var() as the declaration value for a strict alias'
+		);
 	}
 
 	/**
@@ -88,8 +93,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'border-width'
 		);
 
-		$this->assertStringContainsString( 'border-top-width:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
-			'render_measure_range must emit the bare var() on the aliased side' );
+		$this->assertStringContainsString(
+			'border-top-width:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'render_measure_range must emit the bare var() on the aliased side'
+		);
 	}
 
 	/**
@@ -98,9 +106,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderMeasureEmitsBareVarForAlias(): void {
-		$this->assertSame( 'var(--kb-token--semantic--radius--media) 20px 30px 40px',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media) 20px 30px 40px',
 			$this->css->render_measure( [ '{semantic.radius.media}', 20, 30, 40 ] ),
-			'render_measure must emit the bare var() on the aliased side' );
+			'render_measure must emit the bare var() on the aliased side'
+		);
 	}
 
 	/**
@@ -111,8 +121,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderBorderRadiusEmitsBareVarForAlias(): void {
 		$this->css->render_border_radius( [ 'borderRadius' => [ '{semantic.radius.media}', 10, 20, 30 ] ] );
 
-		$this->assertStringContainsString( 'border-top-left-radius:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
-			'render_border_radius must emit the bare var() on the aliased corner' );
+		$this->assertStringContainsString(
+			'border-top-left-radius:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'render_border_radius must emit the bare var() on the aliased corner'
+		);
 	}
 
 	/**
@@ -127,8 +140,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'margin'
 		);
 
-		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
-			'render_responsive_range must emit the bare var() for the aliased desktop breakpoint' );
+		$this->assertStringContainsString(
+			'margin:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'render_responsive_range must emit the bare var() for the aliased desktop breakpoint'
+		);
 	}
 
 	/**
@@ -137,7 +153,8 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderShadowEmitsBareVarForAlias(): void {
-		$this->assertSame( 'var(--kb-token--semantic--radius--media) 1px 4px 2px #000000',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media) 1px 4px 2px #000000',
 			$this->css->render_shadow( [
 				'color'   => '#000000',
 				'opacity' => 1,
@@ -147,7 +164,8 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 				'vOffset' => 1,
 				'inset'   => false,
 			] ),
-			'render_shadow must emit the bare var() in the hOffset position for a strict alias' );
+			'render_shadow must emit the bare var() in the hOffset position for a strict alias'
+		);
 	}
 
 	/**
@@ -166,10 +184,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		] );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'line-height:var(--kb-token--semantic--radius--media)', $output,
-			'render_typography must emit the bare var() for an aliased desktop line-height' );
-		$this->assertStringContainsString( 'letter-spacing:var(--kb-token--primitive--spacing--md)', $output,
-			'render_typography must emit the bare var() for an aliased desktop letter-spacing' );
+		$this->assertStringContainsString(
+			'line-height:var(--kb-token--semantic--radius--media)',
+			$output,
+			'render_typography must emit the bare var() for an aliased desktop line-height'
+		);
+		$this->assertStringContainsString(
+			'letter-spacing:var(--kb-token--primitive--spacing--md)',
+			$output,
+			'render_typography must emit the bare var() for an aliased desktop letter-spacing'
+		);
 	}
 
 	/**
@@ -196,9 +220,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'unit_key'    => 'unit',
 		];
 
-		$this->assertSame( 'var(--kb-token--semantic--radius--media)',
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media)',
 			$this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false ),
-			'get_border_value must emit the bare var() for a strict alias width' );
+			'get_border_value must emit the bare var() for a strict alias width'
+		);
 	}
 
 	/**
@@ -219,8 +245,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderNumberFailsOpenForMalformedAlias( string $malformed ): void {
 		$actual = $this->css->render_number( $malformed, 'px' );
 
-		$this->assertSame( false, $actual,
-			'render_number must return its own normal false result for an unusable value' );
+		$this->assertSame(
+			false,
+			$actual,
+			'render_number must return its own normal false result for an unusable value'
+		);
 	}
 
 	/**
@@ -238,10 +267,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$actual = $this->css->render_range( [ 'width' => $malformed ], 'width', 'width', 'px' );
 		$output = $this->css->css_output();
 
-		$this->assertSame( false, $actual,
-			'render_range must return its own normal false result for an unusable value' );
-		$this->assertSame( $baseline, $output,
-			'render_range must add no declaration for an unusable value' );
+		$this->assertSame(
+			false,
+			$actual,
+			'render_range must return its own normal false result for an unusable value'
+		);
+		$this->assertSame(
+			$baseline,
+			$output,
+			'render_range must add no declaration for an unusable value'
+		);
 	}
 
 	/**
@@ -257,10 +292,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderColorFailsOpenForMalformedAlias( string $malformed ): void {
 		$actual = $this->css->render_color( $malformed );
 
-		$this->assertSame( $malformed, $actual,
-			'render_color must pass a malformed brace string through unchanged, its normal literal result' );
-		$this->assertStringNotContainsString( 'var(', (string) $actual,
-			'render_color must not mint a var() from a malformed brace string' );
+		$this->assertSame(
+			$malformed,
+			$actual,
+			'render_color must pass a malformed brace string through unchanged, its normal literal result'
+		);
+		$this->assertStringNotContainsString(
+			'var(',
+			(string) $actual,
+			'render_color must not mint a var() from a malformed brace string'
+		);
 	}
 
 	/**
@@ -276,10 +317,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testSanitizeColorFailsOpenForMalformedAlias( string $malformed ): void {
 		$actual = $this->css->sanitize_color( $malformed );
 
-		$this->assertSame( $malformed, $actual,
-			'sanitize_color must pass a malformed brace string through unchanged, its normal literal result' );
-		$this->assertStringNotContainsString( 'var(', (string) $actual,
-			'sanitize_color must not mint a var() from a malformed brace string' );
+		$this->assertSame(
+			$malformed,
+			$actual,
+			'sanitize_color must pass a malformed brace string through unchanged, its normal literal result'
+		);
+		$this->assertStringNotContainsString(
+			'var(',
+			(string) $actual,
+			'sanitize_color must not mint a var() from a malformed brace string'
+		);
 	}
 
 	/**
@@ -313,8 +360,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 
 		$actual = $this->css->get_border_value( $attributes, $args, 'top', 'desktop', 'width', false );
 
-		$this->assertSame( '', $actual,
-			'get_border_value must return its own normal blank-string result for an unusable width' );
+		$this->assertSame(
+			'',
+			$actual,
+			'get_border_value must return its own normal blank-string result for an unusable width'
+		);
 	}
 
 	/**
@@ -331,8 +381,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	public function testRenderMeasureFailsOpenForMalformedAlias( string $malformed ): void {
 		$actual = $this->css->render_measure( [ $malformed, $malformed, $malformed, $malformed ] );
 
-		$this->assertSame( false, $actual,
-			'render_measure must return its own normal false result when no side is numeric or a strict alias' );
+		$this->assertSame(
+			false,
+			$actual,
+			'render_measure must return its own normal false result when no side is numeric or a strict alias'
+		);
 	}
 
 	/**
@@ -354,8 +407,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertSame( $baseline, $output,
-			'render_measure_range must add no declaration for any side when nothing is numeric or a strict alias' );
+		$this->assertSame(
+			$baseline,
+			$output,
+			'render_measure_range must add no declaration for any side when nothing is numeric or a strict alias'
+		);
 	}
 
 	/**
@@ -373,8 +429,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$this->css->render_border_radius( [ 'borderRadius' => [ $malformed, $malformed, $malformed, $malformed ] ] );
 		$output = $this->css->css_output();
 
-		$this->assertSame( $baseline, $output,
-			'render_border_radius must add no declaration for any corner when nothing is numeric or a strict alias' );
+		$this->assertSame(
+			$baseline,
+			$output,
+			'render_border_radius must add no declaration for any corner when nothing is numeric or a strict alias'
+		);
 	}
 
 	/**
@@ -399,8 +458,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		);
 		$output = $this->css->css_output();
 
-		$this->assertSame( $baseline, $output,
-			'render_responsive_range must add no declaration for any breakpoint when nothing is numeric or a strict alias' );
+		$this->assertSame(
+			$baseline,
+			$output,
+			'render_responsive_range must add no declaration for any breakpoint when nothing is numeric or a strict alias'
+		);
 	}
 
 	/**
@@ -425,10 +487,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'inset'   => false,
 		] );
 
-		$this->assertSame( $malformed . 'px 1px 4px 2px #000000', $actual,
-			'render_shadow must pass a malformed brace hOffset through literally with its unit suffix' );
-		$this->assertStringNotContainsString( '--kb-token--', $actual,
-			'render_shadow must not mint a var() from a malformed brace string' );
+		$this->assertSame(
+			$malformed . 'px 1px 4px 2px #000000',
+			$actual,
+			'render_shadow must pass a malformed brace hOffset through literally with its unit suffix'
+		);
+		$this->assertStringNotContainsString(
+			'--kb-token--',
+			$actual,
+			'render_shadow must not mint a var() from a malformed brace string'
+		);
 	}
 
 	/**
@@ -454,12 +522,21 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$output = $this->css->css_output();
 		$added = substr( $output, 0, strlen( $output ) - strlen( $baseline ) );
 
-		$this->assertStringContainsString( 'line-height:' . $malformed . 'px', $added,
-			'render_typography must pass a malformed brace line-height through literally under its !empty() gate' );
-		$this->assertStringNotContainsString( 'letter-spacing:', $added,
-			'render_typography must reject a malformed brace letter-spacing outright under its is_numeric() gate' );
-		$this->assertStringNotContainsString( '--kb-token--', $added,
-			'render_typography must not mint a var() from a malformed brace string' );
+		$this->assertStringContainsString(
+			'line-height:' . $malformed . 'px',
+			$added,
+			'render_typography must pass a malformed brace line-height through literally under its !empty() gate'
+		);
+		$this->assertStringNotContainsString(
+			'letter-spacing:',
+			$added,
+			'render_typography must reject a malformed brace letter-spacing outright under its is_numeric() gate'
+		);
+		$this->assertStringNotContainsString(
+			'--kb-token--',
+			$added,
+			'render_typography must not mint a var() from a malformed brace string'
+		);
 	}
 
 	/**
@@ -489,8 +566,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderMeasureMixesAliasedAndNumericSides( array $measure, string $expected ): void {
-		$this->assertSame( $expected, $this->css->render_measure( $measure ),
-			'render_measure must mix the aliased side with the sibling numeric sides correctly' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_measure( $measure ),
+			'render_measure must mix the aliased side with the sibling numeric sides correctly'
+		);
 	}
 
 	/**
@@ -534,10 +614,16 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$this->css->render_measure_range( [ 'borderWidth' => $measure ], 'borderWidth', 'border-width' );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( $expectedProperty . ':' . $expectedValue, $output,
-			'render_measure_range must emit the var() on the aliased side' );
-		$this->assertStringContainsString( 'border-top-width:', $output,
-			'render_measure_range must still render the other numeric sides' );
+		$this->assertStringContainsString(
+			$expectedProperty . ':' . $expectedValue,
+			$output,
+			'render_measure_range must emit the var() on the aliased side'
+		);
+		$this->assertStringContainsString(
+			'border-top-width:',
+			$output,
+			'render_measure_range must still render the other numeric sides'
+		);
 	}
 
 	/**
@@ -575,8 +661,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$output = $this->css->css_output();
 
 		foreach ( $expected as $fragment ) {
-			$this->assertStringContainsString( $fragment, $output,
-				'render_measure_range must emit every expected fragment for the mixed sides' );
+			$this->assertStringContainsString(
+				$fragment,
+				$output,
+				'render_measure_range must emit every expected fragment for the mixed sides'
+			);
 		}
 	}
 
@@ -623,8 +712,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 		$output = $this->css->css_output();
 
 		foreach ( $expected as $fragment ) {
-			$this->assertStringContainsString( $fragment, $output,
-				'render_border_radius must emit every expected fragment for the mixed corners' );
+			$this->assertStringContainsString(
+				$fragment,
+				$output,
+				'render_border_radius must emit every expected fragment for the mixed corners'
+			);
 		}
 	}
 
@@ -685,8 +777,11 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	 * @return void
 	 */
 	public function testRenderShadowMixesAliasedAndNumericParts( array $shadow, string $expected ): void {
-		$this->assertSame( $expected, $this->css->render_shadow( $shadow ),
-			'render_shadow must emit the var() in the correct shorthand position for the aliased part' );
+		$this->assertSame(
+			$expected,
+			$this->css->render_shadow( $shadow ),
+			'render_shadow must emit the var() in the correct shorthand position for the aliased part'
+		);
 	}
 
 	/**
