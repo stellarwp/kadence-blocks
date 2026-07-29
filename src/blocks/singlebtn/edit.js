@@ -58,7 +58,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -87,8 +87,6 @@ import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
-import { pickableTokensForControl } from '../../extension/token-picker';
-import { parseCssLength } from '../../extension/token-picker/parse-css-length';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -270,72 +268,6 @@ export default function KadenceButtonEdit(props) {
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
-
-	// The Border Radius token picker: dimension-only, semantic-first, empty when the pool/global is
-	// absent (the picker fails soft) — the control degrades to today's numeric-only behavior.
-	const radiusTokens = useMemo(() => pickableTokensForControl('kadence/singlebtn', 'borderRadius'), []);
-
-	/**
-	 * Write the picked token alias into the `borderRadius` attribute. A header pick (no side) fills
-	 * all four corners of the current value; a per-side pick (side 0-3) replaces only that corner.
-	 *
-	 * @param {string}      alias The `{id}` alias string from the picker entry.
-	 * @param {number|null} side  The corner index, or `null`/`undefined` for all corners.
-	 *
-	 * @since TBD
-	 *
-	 * @return {void}
-	 */
-	const selectRadiusToken = (alias, side) => {
-		const current = borderRadius && borderRadius.length === 4 ? borderRadius : ['', '', '', ''];
-		const next =
-			null === side || undefined === side
-				? [alias, alias, alias, alias]
-				: current.map((corner, index) => (index === side ? alias : corner));
-
-		setAttributes({ borderRadius: next });
-	};
-
-	/**
-	 * Unlink a corner (or all corners) of `borderRadius` back to an editable literal: the token's
-	 * resolved value split into its number and unit. A dangling alias (no matching pickable entry,
-	 * e.g. a deleted token) unlinks to `''` — the control's native "unset". When the parsed unit
-	 * differs from the current `borderRadiusUnit`, the shared unit is only switched when every corner
-	 * held the same alias (the header-pick case) — a mixed-unit tuple is unrepresentable, so a
-	 * per-side unlink keeps the number and leaves the shared unit alone.
-	 *
-	 * @param {number|null} side The corner index, or `null`/`undefined` for all corners.
-	 *
-	 * @since TBD
-	 *
-	 * @return {void}
-	 */
-	const unlinkRadiusToken = (side) => {
-		const current = borderRadius && borderRadius.length === 4 ? borderRadius : ['', '', '', ''];
-		const sides = null === side || undefined === side ? [0, 1, 2, 3] : [side];
-		const allSameAlias = sides.length === 4 && new Set(current).size === 1;
-		const next = [...current];
-		let resolvedUnit;
-
-		sides.forEach((index) => {
-			const entry = radiusTokens.find((candidate) => candidate.alias === current[index]);
-			const parsed = entry ? parseCssLength(entry.value) : null;
-
-			next[index] = parsed ? parsed.size : '';
-
-			if (parsed) {
-				resolvedUnit = parsed.unit;
-			}
-		});
-
-		const nextAttributes = { borderRadius: next };
-
-		if (allSameAlias && undefined !== resolvedUnit) {
-			nextAttributes.borderRadiusUnit = resolvedUnit;
-		}
-
-		setAttributes(nextAttributes);
-	};
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -1259,9 +1191,10 @@ export default function KadenceButtonEdit(props) {
 																		showReset
 																	/>
 																}
-																tokens={radiusTokens}
-																onSelectToken={selectRadiusToken}
-																onUnlinkToken={unlinkRadiusToken}
+																context={{
+																	blockName: 'kadence/singlebtn',
+																	attribute: 'borderRadius',
+																}}
 																reset={false}
 																value={borderRadius}
 																tabletValue={tabletBorderRadius}
