@@ -178,7 +178,7 @@ final class PresetsControllerTest extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		// First write to the set reports 201 Created.
+		// First write to the library reports 201 Created.
 		$this->assertSame( WP_Http::CREATED, $response->get_status() );
 
 		$data = $response->get_data();
@@ -191,13 +191,14 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A write carrying a known `set` slug lands in that set and reports it, while the default set is left
-	 * untouched — so a preset authored for a block on a non-default set does not leak into the default set.
+	 * A write carrying a known `library` slug lands in that library and reports it, while the default
+	 * library is left untouched — so a preset authored for a block on a non-default library does not leak
+	 * into the default library.
 	 *
 	 * @return void
 	 */
-	public function testWritesTargetTheNamedSetLeavingDefaultUntouched(): void {
-		// The target set must already exist for the `set` parameter to be honored.
+	public function testWritesTargetTheNamedLibraryLeavingDefaultUntouched(): void {
+		// The target library must already exist for the `library` parameter to be honored.
 		$this->store->save_document( '', 'dark' );
 
 		$tokens = [
@@ -213,10 +214,10 @@ final class PresetsControllerTest extends TestCase {
 				WP_REST_Server::CREATABLE,
 				self::BUTTON,
 				[
-					'preset' => 'accent',
-					'label'  => 'Accent',
-					'tokens' => $tokens,
-					'set'    => 'dark',
+					'preset'  => 'accent',
+					'label'   => 'Accent',
+					'tokens'  => $tokens,
+					'library' => 'dark',
 				]
 			)
 		);
@@ -225,11 +226,11 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertSame( 'dark', $response->get_data()['slug'] );
 		$this->assertArrayHasKey( 'accent', $response->get_data()['presets'] );
 
-		// Reading the dark set sees the new preset.
-		$dark = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON, [ 'set' => 'dark' ] ) );
+		// Reading the dark library sees the new preset.
+		$dark = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON, [ 'library' => 'dark' ] ) );
 		$this->assertArrayHasKey( 'accent', $dark->get_data()['presets'] );
 
-		// The default set never saw the write.
+		// The default library never saw the write.
 		$default = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) );
 		$this->assertArrayNotHasKey( 'accent', $default->get_data()['presets'] );
 	}
@@ -622,7 +623,7 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A committed write re-hashes the set version so downstream caches invalidate.
+	 * A committed write re-hashes the library version so downstream caches invalidate.
 	 *
 	 * @return void
 	 */

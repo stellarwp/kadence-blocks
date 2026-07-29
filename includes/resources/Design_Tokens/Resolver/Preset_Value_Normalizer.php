@@ -10,12 +10,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * instance re-joins the theming cascade instead of freezing as a literal.
  *
  * The editor captures concrete values (a hex, a length) from a block and sends them as literals. For each
- * value this normalizer looks for a semantic token whose resolved value matches it in the target set; when
- * one is found the literal is replaced with that token's alias (`{semantic.color.button-primary-bg}`), so a
- * later edit to the semantic (or the primitive it points at) still cascades into the preset. A value that
- * is already an alias is left untouched, and a value with no matching semantic stays a literal.
+ * value this normalizer looks for a semantic token whose resolved value matches it in the target library;
+ * when one is found the literal is replaced with that token's alias (`{semantic.color.button-primary-bg}`),
+ * so a later edit to the semantic (or the primitive it points at) still cascades into the preset. A value
+ * that is already an alias is left untouched, and a value with no matching semantic stays a literal.
  *
- * The match is deterministic: candidates are the semantic-layer entries of the set's resolved token map, in
+ * The match is deterministic: candidates are the semantic-layer entries of the library's resolved token map, in
  * document order; when several share a value the one whose id best matches the property's role wins (e.g.
  * `button-bg` prefers a semantic id containing "button" and "bg"), tie-broken by document order. Matching is
  * done PHP-side on write because the Resolver is the only authority that can guarantee the chosen alias
@@ -43,12 +43,12 @@ final class Preset_Value_Normalizer {
 
 	/**
 	 * Rewrite a property => value token map, replacing each literal with a matching semantic alias where one
-	 * exists in the given set.
+	 * exists in the given library.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $tokens The preset's property => alias-or-literal token map.
-	 * @param string               $slug   The token set the values are matched against.
+	 * @param string               $slug   The token library the values are matched against.
 	 *
 	 * @return array<string, mixed> The token map with literals aliased where a semantic matches.
 	 */
@@ -91,12 +91,12 @@ final class Preset_Value_Normalizer {
 	}
 
 	/**
-	 * Build the normalized-value => semantic-ids index for a set: every semantic-layer entry of the resolved
-	 * token map, keyed by its normalized value, preserving document order within each bucket.
+	 * Build the normalized-value => semantic-ids index for a library: every semantic-layer entry of the
+	 * resolved token map, keyed by its normalized value, preserving document order within each bucket.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set to resolve.
+	 * @param string $slug The token library to resolve.
 	 *
 	 * @return array<string, string[]>
 	 */

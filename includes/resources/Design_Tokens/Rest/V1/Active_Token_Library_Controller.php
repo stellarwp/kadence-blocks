@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Utils\Cast;
@@ -13,23 +13,24 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * REST controller for the active token set pointer.
+ * REST controller for the active token library pointer.
  *
- * Exposes which set the module treats as canonical: a read of the resolved pointer (get_item) and a
- * write that points it at a named set (update_item). The pointer is the analog of the design-system
- * addon's activePaletteId — a single selection, distinct from the per-set document surface that
+ * Exposes which library the module treats as canonical: a read of the resolved pointer (get_item) and a
+ * write that points it at a named library (update_item). The pointer is the analog of the design-system
+ * addon's activePaletteId — a single selection, distinct from the per-library document surface that
  * Documents_Controller owns.
  *
- * The read always returns a valid set: Active_Set_Store falls back to the default set when the pointer
- * was never set or now names a deleted set. A write to an unknown set is a 404; a write to a known set
- * persists the pointer and fires Active_Set_Store::changed_action() so caches and projectors can react.
+ * The read always returns a valid library: Active_Token_Library_Store falls back to the default library
+ * when the pointer was never set or now names a deleted library. A write to an unknown library is a 404;
+ * a write to a known library persists the pointer and fires Active_Token_Library_Store::changed_action()
+ * so caches and projectors can react.
  *
  * @since TBD
  */
-final class Active_Set_Controller extends Controller {
+final class Active_Token_Library_Controller extends Controller {
 
 	/**
-	 * The request parameter that carries the token set slug.
+	 * The request parameter that carries the token library slug.
 	 *
 	 * @since TBD
 	 *
@@ -48,13 +49,13 @@ final class Active_Set_Controller extends Controller {
 	private const SLUG_ROUTE = '(?P<' . self::SLUG_PARAM . '>[\w-]+)';
 
 	/**
-	 * Owns the active-set pointer.
+	 * Owns the active-library pointer.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The sole gateway to the kb_design_tokens table, used to validate a write target exists.
@@ -77,17 +78,17 @@ final class Active_Set_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Active_Set_Store $active Owns the active-set pointer.
-	 * @param Token_Store      $store  The sole gateway to the kb_design_tokens table.
+	 * @param Active_Token_Library_Store $active Owns the active-library pointer.
+	 * @param Token_Store                $store  The sole gateway to the kb_design_tokens table.
 	 */
-	public function __construct( Active_Set_Store $active, Token_Store $store ) {
+	public function __construct( Active_Token_Library_Store $active, Token_Store $store ) {
 		$this->active    = $active;
 		$this->store     = $store;
-		$this->rest_base = 'active-set';
+		$this->rest_base = 'active-library';
 	}
 
 	/**
-	 * Register the read and write routes for the active-set pointer.
+	 * Register the read and write routes for the active-library pointer.
 	 *
 	 * The read is a singleton resource at the base; the write carries the target slug in the path,
 	 * mirroring the {slug} routing on the documents resource. Both carry their args and schema so the
@@ -128,10 +129,10 @@ final class Active_Set_Controller extends Controller {
 	}
 
 	/**
-	 * Read the active token set pointer.
+	 * Read the active token library pointer.
 	 *
-	 * Returns the resolved slug, which always names a readable set: the store falls back to the default
-	 * set when the stored pointer is empty or dangling.
+	 * Returns the resolved slug, which always names a readable library: the store falls back to the
+	 * default library when the stored pointer is empty or dangling.
 	 *
 	 * @since TBD
 	 *
@@ -144,11 +145,11 @@ final class Active_Set_Controller extends Controller {
 	}
 
 	/**
-	 * Point the active set at a named set (PUT /active-set/{slug}).
+	 * Point the active library at a named library (PUT /active-library/{slug}).
 	 *
-	 * The target must name a known set — the default set is always known, any other slug once it has a
-	 * stored row — otherwise it is a 404. On success the pointer is persisted and the resolved active
-	 * slug is returned.
+	 * The target must name a known library — the default library is always known, any other slug once it
+	 * has a stored row — otherwise it is a 404. On success the pointer is persisted and the resolved
+	 * active slug is returned.
 	 *
 	 * @since TBD
 	 *
@@ -162,7 +163,7 @@ final class Active_Set_Controller extends Controller {
 		if ( $slug !== Token_Store::default_slug() && ! $this->store->exists( $slug ) ) {
 			return new WP_Error(
 				'rest_design_tokens_not_found',
-				__( 'Sorry, that design token set does not exist.', 'kadence-blocks' ),
+				__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
 				[
 					'status'         => WP_Http::NOT_FOUND,
 					self::SLUG_PARAM => $slug,
@@ -176,7 +177,7 @@ final class Active_Set_Controller extends Controller {
 	}
 
 	/**
-	 * The JSON Schema for the active-set pointer.
+	 * The JSON Schema for the active-library pointer.
 	 *
 	 * @since TBD
 	 *
@@ -189,11 +190,11 @@ final class Active_Set_Controller extends Controller {
 
 		$this->item_schema = [
 			'$schema'    => 'http://json-schema.org/draft-07/schema#',
-			'title'      => 'design-token-active-set',
+			'title'      => 'design-token-active-library',
 			'type'       => 'object',
 			'properties' => [
 				self::SLUG_PARAM => [
-					'description' => __( 'The active token set slug, always resolved to an existing set.', 'kadence-blocks' ),
+					'description' => __( 'The active token library slug, always resolved to an existing library.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -214,7 +215,7 @@ final class Active_Set_Controller extends Controller {
 	private function get_slug_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug to make active.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug to make active.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',

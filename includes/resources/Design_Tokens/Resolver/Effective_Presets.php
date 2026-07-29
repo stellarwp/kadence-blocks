@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
 /**
- * Reads the effective presets section: the shipped baseline's presets deep-merged with a set's stored
+ * Reads the effective presets section: the shipped baseline's presets deep-merged with a library's stored
  * overrides, so a preset authored through the store is visible alongside the baseline ones.
  *
  * This is a thin reader, not a new merge: the deep-merge is {@see Mutator::merge()} (which preserves the
@@ -59,12 +59,12 @@ final class Effective_Presets {
 	}
 
 	/**
-	 * The effective presets section for a stored set: baseline deep-merged with the set's overrides, keyed
-	 * by block name.
+	 * The effective presets section for a stored library: baseline deep-merged with the library's overrides,
+	 * keyed by block name.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -73,13 +73,13 @@ final class Effective_Presets {
 	}
 
 	/**
-	 * The effective presets node for one block in a stored set, or null when neither the baseline nor the
-	 * overrides define presets for it.
+	 * The effective presets node for one block in a stored library, or null when neither the baseline nor
+	 * the overrides define presets for it.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name, e.g. "kadence/advancedbtn".
-	 * @param string $slug  The token set slug.
+	 * @param string $slug  The token library slug.
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -92,7 +92,7 @@ final class Effective_Presets {
 	/**
 	 * The effective presets section for an arbitrary candidate overrides document: the baseline presets
 	 * deep-merged with the candidate's presets subtree. Used to validate a write against its post-merge
-	 * effective set before it is committed (e.g. that a `$default` still names a present preset).
+	 * effective library before it is committed (e.g. that a `$default` still names a present preset).
 	 *
 	 * @since TBD
 	 *
@@ -105,14 +105,14 @@ final class Effective_Presets {
 	}
 
 	/**
-	 * The named preset slugs a set defines for a block that are NOT in the baseline — i.e. the user-created
-	 * ones. A slug that shadows a baseline preset is excluded, since deleting it reverts to baseline rather
-	 * than removing it.
+	 * The named preset slugs a library defines for a block that are NOT in the baseline — i.e. the
+	 * user-created ones. A slug that shadows a baseline preset is excluded, since deleting it reverts to
+	 * baseline rather than removing it.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name, e.g. "kadence/advancedbtn".
-	 * @param string $slug  The token set slug.
+	 * @param string $slug  The token library slug.
 	 *
 	 * @return string[]
 	 */
@@ -165,14 +165,14 @@ final class Effective_Presets {
 	}
 
 	/**
-	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
+	 * Decode a library's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 *
 	 * The single decode seam for the stored overrides: callers that need the raw decoded document, rather than
 	 * its merged presets view, reuse this instead of decoding the store themselves.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */

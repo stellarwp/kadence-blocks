@@ -13,7 +13,7 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
-import { PresetPicker, blockPresets, activeSet } from './extension/preset-picker';
+import { PresetPicker, blockPresets, activeLibrary } from './extension/preset-picker';
 import { PresetActions } from './extension/preset-picker/PresetActions';
 import { TokenSetPicker, selectableSets } from './extension/token-set-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
@@ -317,8 +317,8 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const set = get(attributes, 'kbTokenSet', '') || activeSet();
-		const hasPresets = blockPresets(name, set).length > 0;
+		const library = get(attributes, 'kbTokenSet', '') || activeLibrary();
+		const hasPresets = blockPresets(name, library).length > 0;
 		const hasSets = selectableSets().length >= 2;
 
 		if (!hasPresets && !hasSets) {
@@ -345,10 +345,15 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 							)}
 							{hasPresets && (
 								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker name={name} set={set} value={selected} onChange={selectPreset} />
+									<PresetPicker
+										name={name}
+										library={library}
+										value={selected}
+										onChange={selectPreset}
+									/>
 									<PresetActions
 										blockName={name}
-										set={set}
+										library={library}
 										selected={selected}
 										onSelect={selectPreset}
 										attributes={attributes}

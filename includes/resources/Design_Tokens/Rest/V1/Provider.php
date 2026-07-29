@@ -27,7 +27,7 @@ final class Provider extends Provider_Contract {
 		Documents_Controller::class,
 		Schema_Controller::class,
 		Presets_Controller::class,
-		Active_Set_Controller::class,
+		Active_Token_Library_Controller::class,
 		Projected_Css_Controller::class,
 		User_Primitives_Controller::class,
 	];

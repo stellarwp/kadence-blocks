@@ -75,7 +75,7 @@ export function AddPrimitiveDialog({ onCreate, onClose }) {
 			setSaveStatus({
 				status: 'error',
 				error: __(
-					'The token set changed since this page loaded. Reload the page and try again.',
+					'The library changed since this page loaded. Reload the page and try again.',
 					'kadence-blocks'
 				),
 			});

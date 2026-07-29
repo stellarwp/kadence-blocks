@@ -16,7 +16,7 @@
  * That is cosmetic (the alias never goes stale) and live refresh is the picker UI's concern.
  */
 import { get } from 'lodash';
-import { activeSet, blockProperties } from '../preset-picker';
+import { activeLibrary, blockProperties } from '../preset-picker';
 
 /**
  * Token $types compatible with each control kind. Keys are the preset catalog's coarse control
@@ -46,38 +46,38 @@ export function pickableTokenPool() {
 }
 
 /**
- * The resolved literal values for a token set, falling back to the active set when the requested
- * set is omitted or absent from the pool.
+ * The resolved literal values for a token library, falling back to the active library when the requested
+ * library is omitted or absent from the pool.
  *
- * @param {string} [set] The token set slug.
+ * @param {string} [library] The token library slug.
  *
  * @since TBD
  *
  * @return {Object} id => literal value.
  */
-function valuesFor(set) {
+function valuesFor(library) {
 	const values = get(pickableTokenPool(), 'values', {}) || {};
-	const slug = set || activeSet();
+	const slug = library || activeLibrary();
 
-	return get(values, [slug], null) || get(values, [activeSet()], {}) || {};
+	return get(values, [slug], null) || get(values, [activeLibrary()], {}) || {};
 }
 
 /**
  * The pickable tokens for a control kind: only type-compatible tokens (the hard filter), semantic-
  * layer tokens ranked before primitives (stable order within each layer, i.e. registry order), each
- * with its resolved literal `value` from the requested set for the preview swatch/number.
+ * with its resolved literal `value` from the requested library for the preview swatch/number.
  *
- * @param {string} kind  The control kind ('color' | 'dimension' | 'text' | 'shadow').
- * @param {string} [set] The token set slug; defaults to the active set.
+ * @param {string} kind      The control kind ('color' | 'dimension' | 'text' | 'shadow').
+ * @param {string} [library] The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]).
  */
-export function pickableTokensFor(kind, set) {
+export function pickableTokensFor(kind, library) {
 	const types = KIND_TYPES[kind] || [];
 	const tokens = get(pickableTokenPool(), 'tokens', []) || [];
-	const values = valuesFor(set);
+	const values = valuesFor(library);
 
 	const compatible = tokens.filter((token) => types.includes(token.type));
 
@@ -121,26 +121,26 @@ function roleForId(id) {
  * filters and ranks the pool for that kind. When the control binds a role token, the list is further
  * narrowed to that token's sub-kind (a radius control's `dimension` to only radius tokens, never
  * spacing) and the bound token is pinned to the top; without a bound token it stays the coarse
- * kind list (type filter + semantic-first). Empty when the block maps no such control in the set —
+ * kind list (type filter + semantic-first). Empty when the block maps no such control in the library —
  * an unmapped control offers no tokens, which is the "selectable only where it makes sense"
  * guarantee at the per-control call site.
  *
  * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
- * @param {string} [set]       The token set slug; defaults to the active set.
+ * @param {string} [library]   The token library slug; defaults to the active library.
  *
  * @since TBD
  *
  * @return {Array} The pickable list ([{ id, alias, label, value, type, role }]), empty when unmapped.
  */
-export function pickableTokensForControl(blockName, controlAttr, set) {
-	const property = blockProperties(blockName, set).find((entry) => entry.control_attr === controlAttr);
+export function pickableTokensForControl(blockName, controlAttr, library) {
+	const property = blockProperties(blockName, library).find((entry) => entry.control_attr === controlAttr);
 
 	if (!property || !property.kind) {
 		return [];
 	}
 
-	const tokens = pickableTokensFor(property.kind, set);
+	const tokens = pickableTokensFor(property.kind, library);
 	const role = property.token ? roleForId(property.token) : '';
 
 	// No bound role token -> the coarse kind list (type filter + semantic-first), unchanged.

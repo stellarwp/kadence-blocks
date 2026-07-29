@@ -20,7 +20,7 @@ import './save-preset-modal.scss';
  *
  * @param {Object}   props               The component props.
  * @param {string}   props.blockName     The block name, e.g. "kadence/singlebtn".
- * @param {string}   props.set           The token set the block is on.
+ * @param {string}   props.library       The token library the block is on.
  * @param {Object}   props.tokens        The `{ propertyKey: literal }` token map to save (the captured state).
  * @param {string[]} [props.existingSlugs] The block's existing preset slugs, so the generated slug is deduped.
  * @param {Function} props.onClose       Called to dismiss the modal.
@@ -30,7 +30,7 @@ import './save-preset-modal.scss';
  *
  * @return {Object} The modal element.
  */
-export function SavePresetModal({ blockName, set, tokens, existingSlugs = [], onClose, onSaved }) {
+export function SavePresetModal({ blockName, library, tokens, existingSlugs = [], onClose, onSaved }) {
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');
 	const [label, setLabel] = useState('');
@@ -49,9 +49,9 @@ export function SavePresetModal({ blockName, set, tokens, existingSlugs = [], on
 		setSaving(true);
 		setError('');
 
-		createPreset(blockName, { preset: slug, label: label.trim(), tokens }, set)
+		createPreset(blockName, { preset: slug, label: label.trim(), tokens }, library)
 			.then(() => {
-				appendPreset(blockName, set, { slug, label: label.trim(), userCreated: true });
+				appendPreset(blockName, library, { slug, label: label.trim(), userCreated: true });
 				refreshProjectedCss();
 				onSaved(slug);
 				onClose();

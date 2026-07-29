@@ -2,7 +2,7 @@
  * Shared per-block token-set override picker.
  *
  * The catalog ({ active, sets: [{ slug, label }] }) is printed by the server-side editor localizer to
- * `window.kadenceDesignTokensSets`. Both the generic inspector picker (src/early-filters.js) and a block
+ * `window.kadenceDesignTokensLibraries`. Both the generic inspector picker (src/early-filters.js) and a block
  * that renders the picker inline in its own Style tab (e.g. kadence/singlebtn) use this so the control
  * stays identical wherever it surfaces.
  *
@@ -22,7 +22,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * @return {Object} The catalog ({ active, sets }).
  */
 function tokenSetCatalog() {
-	return get(window, 'kadenceDesignTokensSets', {}) || {};
+	return get(window, 'kadenceDesignTokensLibraries', {}) || {};
 }
 
 /**

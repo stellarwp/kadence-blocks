@@ -12,12 +12,12 @@ import { buildTokenLeaf } from '../helpers/tokens';
 /**
  * Manage token save state and refresh resolved values after writes.
  *
- * The document version changes on every write to the set, including ones made outside this
+ * The document version changes on every write to the library, including ones made outside this
  * hook (e.g. a user-primitive create/rename/delete), so `onVersionChange` is called whenever a
  * fresh version is read here — this keeps a version shared across the app instead of each write
  * surface tracking a copy that can drift stale relative to the others.
  *
- * `slug` must be the same token set the feed's schema/values were read from (the active set, from
+ * `slug` must be the same token library the feed's schema/values were read from (the active library, from
  * `useDesignTokensFeed`) — writing to a different slug than the one being displayed would silently
  * save into a document the page never reads back.
  *
@@ -30,7 +30,7 @@ import { buildTokenLeaf } from '../helpers/tokens';
  * @param {Record<string, string>}     initialValues     Resolved values keyed by token id.
  * @param {Record<string, object>}     initialResponsive Authored responsive / clamp shape keyed by token id.
  * @param {Function}                   [onVersionChange] Called with the latest document version.
- * @param {string}                     slug              Token set slug.
+ * @param {string}                     slug              Token library slug.
  * @return {{ values: Record<string, string>, responsive: Record<string, object>, saveToken: Function, getFieldState: Function, refreshValues: Function }}
  */
 export function useTokenEditor(rest, initialValues, initialResponsive, onVersionChange, slug) {

@@ -84,7 +84,7 @@ const POOL = {
 };
 
 /**
- * The fixture preset catalog: enough for `activeSet()` and `blockProperties()` to resolve a single
+ * The fixture preset catalog: enough for `activeLibrary()` and `blockProperties()` to resolve a single
  * mapped control (`borderRadius` -> `dimension`) for `kadence/singlebtn`.
  */
 const PRESETS = {
@@ -192,7 +192,7 @@ describe('pickableTokensFor', () => {
 		expect(pickableTokensFor('nope')).toEqual([]);
 	});
 
-	it('reads the requested set, leaving a missing entry blank', () => {
+	it('reads the requested library, leaving a missing entry blank', () => {
 		const result = pickableTokensFor('color', 'brand');
 
 		expect(result).toEqual([
@@ -215,7 +215,7 @@ describe('pickableTokensFor', () => {
 		]);
 	});
 
-	it('falls back to the active set values for an unknown set slug', () => {
+	it('falls back to the active library values for an unknown library slug', () => {
 		const result = pickableTokensFor('color', 'nonexistent-set');
 
 		expect(result.find((token) => token.id === 'semantic.color.button-primary-bg').value).toBe('#2b6cb0');

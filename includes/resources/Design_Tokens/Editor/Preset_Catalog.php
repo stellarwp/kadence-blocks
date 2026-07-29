@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
@@ -11,10 +11,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exce
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 
 /**
- * Builds the per-set preset catalog the block editor's preset picker and "save as new preset" form read.
+ * Builds the per-library preset catalog the block editor's preset picker and "save as new preset" form read.
  *
- * Keyed by token set so the picker can show the presets for whichever set a block is on (its `kbTokenSet`,
- * or the active set), not just the active one, then by block:
+ * Keyed by token library so the picker can show the presets for whichever library a block is on (its
+ * `kbTokenSet`, or the active library), not just the active one, then by block:
  * `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
@@ -23,7 +23,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * that declares a `label`); a block's preset / default-preset binding set (no label) has no picker and is
  * omitted. It carries no
  * resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle errors the
- * admin feed must guard; a set registered but absent from a token set (Unknown_Preset_Exception) is
+ * admin feed must guard; a set registered but absent from a token library (Unknown_Preset_Exception) is
  * skipped, so one undefined set never empties the catalog.
  *
  * @since TBD
@@ -40,7 +40,7 @@ final class Preset_Catalog {
 	private Token_Registry $registry;
 
 	/**
-	 * The preset resolver, source of each block's default, names and labels per set.
+	 * The preset resolver, source of each block's default, names and labels per library.
 	 *
 	 * @since TBD
 	 *
@@ -49,7 +49,7 @@ final class Preset_Catalog {
 	private Preset_Resolver $presets;
 
 	/**
-	 * The persistence gateway, source of the stored set slugs.
+	 * The persistence gateway, source of the stored library slugs.
 	 *
 	 * @since TBD
 	 *
@@ -58,16 +58,16 @@ final class Preset_Catalog {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer, so the catalog can report which set the editor renders by default.
+	 * The active-library pointer, so the catalog can report which library the editor renders by default.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
-	 * The effective-presets reader, source of each preset's user-created provenance per set.
+	 * The effective-presets reader, source of each preset's user-created provenance per library.
 	 *
 	 * @since TBD
 	 *
@@ -78,17 +78,17 @@ final class Preset_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry    $registry  The token registry.
-	 * @param Preset_Resolver   $presets  The preset resolver.
-	 * @param Token_Store       $store     The persistence gateway.
-	 * @param Active_Set_Store  $active    The active-set pointer.
-	 * @param Effective_Presets $effective The effective-presets reader.
+	 * @param Token_Registry             $registry  The token registry.
+	 * @param Preset_Resolver            $presets  The preset resolver.
+	 * @param Token_Store                $store     The persistence gateway.
+	 * @param Active_Token_Library_Store $active    The active-library pointer.
+	 * @param Effective_Presets          $effective The effective-presets reader.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Preset_Resolver $presets,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Effective_Presets $effective
 	) {
 		$this->registry  = $registry;
@@ -99,7 +99,7 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The catalog: the active set slug plus the per-block catalog for every set.
+	 * The catalog: the active library slug plus the per-block catalog for every library.
 	 *
 	 * @since TBD
 	 *
@@ -119,12 +119,12 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The per-block catalog for one token set. Only PICKER binding sets are surfaced; a block's preset /
+	 * The per-block catalog for one token library. Only PICKER binding sets are surfaced; a block's preset /
 	 * default-preset binding set (one with no `label`) has no picker, so it is skipped.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, label }.
 	 */
@@ -143,7 +143,7 @@ final class Preset_Catalog {
 				$names   = $this->presets->names( $block, $slug );
 				$default = $this->presets->default_preset( $block, $slug );
 			} catch ( Unknown_Preset_Exception $e ) {
-				continue; // Set registered but not defined in this token set — skip, fail soft.
+				continue; // Set registered but not defined in this token library — skip, fail soft.
 			}
 
 			$user_created = $this->effective->user_created( $block, $slug );
@@ -197,16 +197,16 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The per-preset resolved values for a block's set: `preset slug => ( property => literal CSS value )`,
+	 * The per-preset resolved values for a block's library: `preset slug => ( property => literal CSS value )`,
 	 * so the editor can compare a control's current value against the selected preset's value to decide
 	 * bound-vs-overridden. Values are flattened literals (hex / length), matching the swatch feed — a control
-	 * cannot compare against a `var()` chain. A preset whose resolution fails (undefined in this set) is
+	 * cannot compare against a `var()` chain. A preset whose resolution fails (undefined in this library) is
 	 * skipped, so one bad preset never empties the map.
 	 *
 	 * @since TBD
 	 *
 	 * @param string   $block The block name.
-	 * @param string   $slug  The token set slug.
+	 * @param string   $slug  The token library slug.
 	 * @param string[] $names The preset slugs to resolve, in catalog order.
 	 *
 	 * @return array<string, array<string, string>> preset slug => ( property => literal value ).
@@ -218,7 +218,7 @@ final class Preset_Catalog {
 			try {
 				$values[ $name ] = $this->presets->resolve_literal( $block, $name, $slug );
 			} catch ( Unknown_Preset_Exception $e ) {
-				continue; // Preset undefined in this set — skip, fail soft.
+				continue; // Preset undefined in this library — skip, fail soft.
 			}
 		}
 
@@ -226,7 +226,7 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The set slugs to build the catalog for: every stored set plus the always-present default.
+	 * The library slugs to build the catalog for: every stored library plus the always-present default.
 	 *
 	 * @since TBD
 	 *

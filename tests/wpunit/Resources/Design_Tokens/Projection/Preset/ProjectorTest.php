@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Projector;
@@ -24,14 +24,14 @@ final class ProjectorTest extends TestCase {
 
 	private Token_Store $store;
 
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->resolver = $this->container->get( Preset_Resolver::class );
 		$this->store    = $this->container->get( Token_Store::class );
-		$this->active   = $this->container->get( Active_Set_Store::class );
+		$this->active   = $this->container->get( Active_Token_Library_Store::class );
 
 		// Register the KB style handles the projector appends to.
 		if ( ! wp_style_is( 'kadence-blocks-global-variables', 'registered' ) ) {

@@ -101,12 +101,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the block-default dimension CSS for a token set. Empty when no registered block binds a
+	 * Build the block-default dimension CSS for a token library. Empty when no registered block binds a
 	 * `css_prop`.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set whose resolved values the `$default` aliases resolve against.
+	 * @param string $slug The token library whose resolved values the `$default` aliases resolve against.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
@@ -115,7 +115,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the EDITOR-scoped preset of the block-default CSS for a token set. Identical to {@see self::css()}
+	 * Build the EDITOR-scoped preset of the block-default CSS for a token library. Identical to {@see self::css()}
 	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
 	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
 	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
@@ -123,7 +123,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set whose resolved values the `$default` aliases resolve against.
+	 * @param string $slug The token library whose resolved values the `$default` aliases resolve against.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
 	 */
@@ -138,8 +138,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved set was built from.
-	 * @param string $slug    The token set slug.
+	 * @param string $version The store version the resolved library was built from.
+	 * @param string $slug    The token library slug.
 	 *
 	 * @return string
 	 */
@@ -155,8 +155,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved set was built from.
-	 * @param string $slug    The token set slug.
+	 * @param string $version The store version the resolved library was built from.
+	 * @param string $slug    The token library slug.
 	 *
 	 * @return string
 	 */
@@ -170,7 +170,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug   The token set whose resolved values the `$default` aliases resolve against.
+	 * @param string $slug   The token library whose resolved values the `$default` aliases resolve against.
 	 * @param bool   $editor Whether to build the editor-scoped preset.
 	 *
 	 * @return string The CSS, or an empty string when there is nothing to project.
@@ -238,8 +238,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $version The store version the resolved set was built from.
-	 * @param string $slug    The token set slug.
+	 * @param string $version The store version the resolved library was built from.
+	 * @param string $slug    The token library slug.
 	 * @param bool   $editor  Whether to build the editor-scoped preset.
 	 *
 	 * @return string

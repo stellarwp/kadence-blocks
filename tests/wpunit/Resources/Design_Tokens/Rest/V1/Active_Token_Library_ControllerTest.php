@@ -2,9 +2,9 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Active_Set_Controller;
+use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Active_Token_Library_Controller;
 use ReflectionClass;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
@@ -15,9 +15,10 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * Covers the active-set pointer controller: reading the resolved pointer and pointing it at a set.
+ * Covers the active-library pointer controller: reading the resolved pointer and pointing it at a
+ * library.
  */
-final class Active_Set_ControllerTest extends TestCase {
+final class Active_Token_Library_ControllerTest extends TestCase {
 
 	/**
 	 * @var Token_Store
@@ -25,14 +26,14 @@ final class Active_Set_ControllerTest extends TestCase {
 	private Token_Store $store;
 
 	/**
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
-	 * @var Active_Set_Controller
+	 * @var Active_Token_Library_Controller
 	 */
-	private Active_Set_Controller $controller;
+	private Active_Token_Library_Controller $controller;
 
 	/**
 	 * @var WP_REST_Server
@@ -40,14 +41,16 @@ final class Active_Set_ControllerTest extends TestCase {
 	private WP_REST_Server $rest_server;
 
 	/**
+	 * Boots the container-resolved stores and controller, and a fresh REST server, before each test.
+	 *
 	 * @return void
 	 */
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->store      = $this->container->get( Token_Store::class );
-		$this->active     = $this->container->get( Active_Set_Store::class );
-		$this->controller = $this->container->get( Active_Set_Controller::class );
+		$this->active     = $this->container->get( Active_Token_Library_Store::class );
+		$this->controller = $this->container->get( Active_Token_Library_Controller::class );
 
 		global $wp_rest_server;
 		$this->rest_server = new WP_REST_Server();
@@ -56,6 +59,8 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Resets the current user and the global REST server after each test.
+	 *
 	 * @return void
 	 */
 	protected function tearDown(): void {
@@ -68,6 +73,9 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The controller registers a readable route at its base and a writable route with the slug segment,
+	 * both exposing a callable schema.
+	 *
 	 * @return void
 	 */
 	public function testItRegistersTheReadAndWriteRoutesWithArgsAndSchema(): void {
@@ -90,9 +98,11 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Reading the pointer before anything is stored resolves to the default library.
+	 *
 	 * @return void
 	 */
-	public function testGetItemReturnsTheDefaultSetInitially(): void {
+	public function testGetItemReturnsTheDefaultLibraryInitially(): void {
 		$request = new WP_REST_Request( WP_REST_Server::READABLE );
 
 		$response = $this->controller->get_item( $request );
@@ -103,9 +113,11 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Writing a known library's slug points the pointer at it and persists the change.
+	 *
 	 * @return void
 	 */
-	public function testUpdateItemPointsTheActiveSetAtAKnownSet(): void {
+	public function testUpdateItemPointsTheActiveLibraryAtAKnownLibrary(): void {
 		$this->store->save_document( '{}', 'brand-b' );
 
 		$request = new WP_REST_Request( 'PUT' );
@@ -122,9 +134,11 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Writing the default library's slug succeeds even when it has no stored row.
+	 *
 	 * @return void
 	 */
-	public function testUpdateItemAcceptsTheDefaultSetEvenWithNoRow(): void {
+	public function testUpdateItemAcceptsTheDefaultLibraryEvenWithNoRow(): void {
 		$request = new WP_REST_Request( 'PUT' );
 		$request->set_param( 'slug', Token_Store::default_slug() );
 
@@ -136,9 +150,11 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Writing an unknown library's slug is rejected with a 404 and leaves the pointer untouched.
+	 *
 	 * @return void
 	 */
-	public function testUpdateItemReturnsNotFoundForAnUnknownSet(): void {
+	public function testUpdateItemReturnsNotFoundForAnUnknownLibrary(): void {
 		$request = new WP_REST_Request( 'PUT' );
 		$request->set_param( 'slug', 'ghost' );
 
@@ -153,6 +169,8 @@ final class Active_Set_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A user without the capability is denied both the read and write permission checks.
+	 *
 	 * @return void
 	 */
 	public function testItDeniesAccessToUsersWithoutTheCapability(): void {

@@ -38,7 +38,7 @@ export function configureRestClient(rest) {
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {Promise<{ by_id: Record<string, string>, responsive: Record<string, object>, version: string }>} Resolved payload.
  */
 export function fetchResolvedTokens(namespace, slug) {
@@ -53,7 +53,7 @@ export function fetchResolvedTokens(namespace, slug) {
  * @param {string}               namespace REST namespace.
  * @param {string}               tokenId   Dot-path token id.
  * @param {{ $type?: string, $value: string }} leaf DTCG leaf payload.
- * @param {string}               slug      Token set slug.
+ * @param {string}               slug      Token library slug.
  * @return {Promise<object>} Updated document item.
  */
 export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
@@ -69,7 +69,7 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
  *
  * @since TBD
  *
- * @param {string} slug Token set slug.
+ * @param {string} slug Token library slug.
  * @param {string} id   Canonical dot-path id of the user primitive.
  * @return {Promise<{ id: string, label: string, version: string, deletable: boolean, references: object[] }>} Preview payload.
  */
@@ -82,7 +82,7 @@ export function fetchUserPrimitiveReferences(slug, id) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {object} payload Request body including id, $type, $value, label, version.
  * @return {Promise<object>} Created document item with version.
  */
@@ -99,7 +99,7 @@ export function createUserPrimitive(slug, payload) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {string} id      Canonical dot-path id of the user primitive.
  * @param {string} version Version token the client last read.
  * @return {Promise<object>} Delete result with version.
@@ -117,7 +117,7 @@ export function deleteUserPrimitive(slug, id, version) {
  *
  * @since TBD
  *
- * @param {string} slug    Token set slug.
+ * @param {string} slug    Token library slug.
  * @param {string} id      Current canonical dot-path id.
  * @param {object} payload Request body including new_id, label, version.
  * @return {Promise<object>} Rename result with version and rewrittenPaths.

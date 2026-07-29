@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -36,13 +36,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Css_Builder
@@ -54,12 +54,12 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry   $registry    The token registry.
-	 * @param Token_Store      $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store $active      Owns the active-set pointer.
-	 * @param Css_Builder      $css_builder The preset CSS builder.
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Store                $store       The store, for the cache-busting version.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Css_Builder                $css_builder The preset CSS builder.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
+	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
 		$this->store       = $store;
 		$this->active      = $active;
@@ -143,7 +143,7 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * Every token set slug to emit: the stored sets plus the always-addressable default, which renders from
 	 * baseline even with no row. Mirrors the REST collection's default-inclusive listing, and always
-	 * includes the active set (the active-set pointer only ever resolves to default or a stored set).
+	 * includes the active set (the active-library pointer only ever resolves to default or a stored set).
 	 *
 	 * @since TBD
 	 *

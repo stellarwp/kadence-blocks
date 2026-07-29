@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Slot\Contracts\Target;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -36,23 +36,23 @@ final class Slot_Target_Reader {
 	private Token_Resolver $resolver;
 
 	/**
-	 * Owns the active-set pointer, so the scale follows the active set (e.g. a switched palette) the same
-	 * way the projected CSS does.
+	 * Owns the active-library pointer, so the scale follows the active library (e.g. a switched palette) the
+	 * same way the projected CSS does.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry   $registry
 	 * @param Token_Resolver   $resolver
-	 * @param Active_Set_Store $active
+	 * @param Active_Token_Library_Store $active
 	 */
-	public function __construct( Token_Registry $registry, Token_Resolver $resolver, Active_Set_Store $active ) {
+	public function __construct( Token_Registry $registry, Token_Resolver $resolver, Active_Token_Library_Store $active ) {
 		$this->registry = $registry;
 		$this->resolver = $resolver;
 		$this->active   = $active;
@@ -75,7 +75,7 @@ final class Slot_Target_Reader {
 		}
 
 		try {
-			// Resolve the active set (not just the default) so the scale follows a switched set, matching
+			// Resolve the active library (not just the default) so the scale follows a switched library, matching
 			// how the projected slot overrides resolve.
 			$resolved = $this->resolver->resolve( $this->active->get() );
 		} catch ( Throwable $e ) {

@@ -23,7 +23,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  *   1. One namespaced block per set — `--kb-token--<set>--<id>: <value-or-var>` straight from each set's
  *      namespaced projected map. The literal value of a token lives here, once; a set's alias chain stays
  *      inside the set (`--kb-token--<set>--<semantic>: var(--kb-token--<set>--<primitive>)`).
- *   2. The active-set alias layer — `--kb-token--<id>: var(--kb-token--<active>--<id>)` for every active
+ *   2. The active-library alias layer — `--kb-token--<id>: var(--kb-token--<active>--<id>)` for every active
  *      token, so block content and the bridges below reference the canonical name without knowing which
  *      set is active (the server-side switch: re-point this layer).
  *   3. One switch selector per set — `[data-kb-token-set="<set>"] { --kb-token--<id>: var(--kb-token--<set>--<id>); <bridges> }`
@@ -40,7 +40,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
  * property is *declared*. The switch selector therefore re-declares both the canonical layer AND the bridges
  * in (4) on the attribute-carrying element, so a `[data-kb-token-set]` subtree resolves every token — the
  * canonical --kb-token--* and the --global-* bridges alike — to that set. (A host/theme custom property that
- * reads --kb-token--* only at :root still follows the active-set pointer, not a subtree attribute.)
+ * reads --kb-token--* only at :root still follows the active-library pointer, not a subtree attribute.)
  *
  * Bare :root makes the variables live everywhere KB prints them (front end and editor iframe alike).
  * :where(.kb-tokens) is an additional zero-specificity hook for future opt-in or preset scoping. The
@@ -395,7 +395,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the active-set alias layer: each canonical `--kb-token--<id>` pointed at the active set's
+	 * Emit the active-library alias layer: each canonical `--kb-token--<id>` pointed at the active set's
 	 * namespaced var. Block content and the slot bridges reference the canonical name, so they
 	 * follow the active set with no re-resolve. Re-pointing this layer is the server-side switch.
 	 *
@@ -422,7 +422,7 @@ final class Css_Builder {
 	 * Because the bridge and the canonical re-point are declared on the same attribute-carrying element, a
 	 * block pinned to this set resolves every token to it — both content reading `--kb-token--*` directly and
 	 * the `--global-*` bridges. (A host/theme property that reads a token only at :root still follows the
-	 * active-set pointer, not a subtree attribute.)
+	 * active-library pointer, not a subtree attribute.)
 	 *
 	 * @since TBD
 	 *
@@ -531,7 +531,7 @@ final class Css_Builder {
 	 * The palette bridge declarations for a resolved set: `--global-<slug>: var(--kb-token--<id>,
 	 * <literal>);` for every token claiming a Kadence palette slot (palette1..9).
 	 *
-	 * The active-set `:root` palette stays owned by the legacy color filter (Legacy_Filter_Bridge, which
+	 * The active-library `:root` palette stays owned by the legacy color filter (Legacy_Filter_Bridge, which
 	 * carries the Kadence-theme guard); these declarations are emitted only inside a `[data-kb-token-set]`
 	 * selector, so a block pinned to a set reflects that set's palette without changing the default `:root`
 	 * palette. Same var()-with-literal-fallback shape as the slot families.

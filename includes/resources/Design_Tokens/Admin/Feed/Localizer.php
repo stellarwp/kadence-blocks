@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -73,7 +73,7 @@ final class Localizer {
 	private Token_Resolver $resolver;
 
 	/**
-	 * The store, for the current set's version hash.
+	 * The store, for the current library's version hash.
 	 *
 	 * @since TBD
 	 *
@@ -82,15 +82,15 @@ final class Localizer {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer — the same slug the registry's user primitives and every projector
+	 * The active-library pointer — the same slug the registry's user primitives and every projector
 	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the set that
 	 * is actually live rather than always the default one.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The presets section builder.
@@ -122,17 +122,17 @@ final class Localizer {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Resolver   $resolver        The token resolver.
-	 * @param Token_Store      $store           The token store.
-	 * @param Active_Set_Store $active          The active-set pointer.
-	 * @param Presets          $preset_feed    The presets section builder.
-	 * @param Builder          $builder         The pure payload assembler.
-	 * @param Responsive_Feed  $responsive_feed The responsive / clamp shape extractor.
+	 * @param Token_Resolver             $resolver        The token resolver.
+	 * @param Token_Store                $store           The token store.
+	 * @param Active_Token_Library_Store $active          The active-library pointer.
+	 * @param Presets                    $preset_feed    The presets section builder.
+	 * @param Builder                    $builder         The pure payload assembler.
+	 * @param Responsive_Feed            $responsive_feed The responsive / clamp shape extractor.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Presets $preset_feed,
 		Builder $builder,
 		Responsive_Feed $responsive_feed
@@ -159,9 +159,9 @@ final class Localizer {
 			return; // No supported admin bundle on this screen.
 		}
 
-		// The active set, not always Token_Store::default_slug() — the registry's user primitives and
-		// every projector already resolve against whichever set is active, so the dashboard must read
-		// (and, via the REST descriptor's slug, write) the same set or edits land in a document that
+		// The active library, not always Token_Store::default_slug() — the registry's user primitives and
+		// every projector already resolve against whichever library is active, so the dashboard must read
+		// (and, via the REST descriptor's slug, write) the same library or edits land in a document that
 		// is not the one being displayed.
 		$slug    = $this->active->get();
 		$version = $this->store->get_version( $slug );

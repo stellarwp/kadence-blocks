@@ -3,10 +3,10 @@
  * a highlight-edits toggle and a reset-all that clears every mapped override for the block.
  *
  * Renders a "Create new preset" button for every block, and, when the selected preset is a user-created
- * one, "Edit" and "Delete" buttons. Deleting the preset the set currently defaults to first reassigns the
- * default to another preset (so the default is never left dangling), then removes it. Shared by the generic
- * inspector panel and a block's inline picker so the controls stay identical wherever they surface. Renders
- * nothing when the editor lacks the REST descriptor.
+ * one, "Edit" and "Delete" buttons. Deleting the preset the library currently defaults to first reassigns
+ * the default to another preset (so the default is never left dangling), then removes it. Shared by the
+ * generic inspector panel and a block's inline picker so the controls stay identical wherever they surface.
+ * Renders nothing when the editor lacks the REST descriptor.
  */
 import { Button, Notice, ToggleControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
@@ -27,7 +27,7 @@ import { mappedAttrsFor, resetAttrPatch } from '../token-indicators';
  *
  * @param {Object}   props               The component props.
  * @param {string}   props.blockName     The block name.
- * @param {string}   props.set           The token set the block is on.
+ * @param {string}   props.library       The token library the block is on.
  * @param {string}   props.selected      The block's currently selected preset slug ('' for the default look).
  * @param {Function} props.onSelect      Called with a preset slug to select it on the block.
  * @param {Object}   props.attributes    The block's current attributes (for reset-all).
@@ -35,7 +35,7 @@ import { mappedAttrsFor, resetAttrPatch } from '../token-indicators';
  *
  * @return {Object|null} The controls, or null when the presets REST API is unavailable.
  */
-export function PresetActions({ blockName, set, selected, onSelect, attributes, setAttributes }) {
+export function PresetActions({ blockName, library, selected, onSelect, attributes, setAttributes }) {
 	const [mode, setMode] = useState('none');
 	const [confirming, setConfirming] = useState(false);
 	const [busy, setBusy] = useState(false);
@@ -48,7 +48,7 @@ export function PresetActions({ blockName, set, selected, onSelect, attributes, 
 		return null;
 	}
 
-	const canManage = selected !== '' && isUserPreset(blockName, set, selected);
+	const canManage = selected !== '' && isUserPreset(blockName, library, selected);
 
 	/**
 	 * Clear every mapped override for the block, so all mapped controls fall back to the selected
@@ -59,7 +59,7 @@ export function PresetActions({ blockName, set, selected, onSelect, attributes, 
 	 * @return {void}
 	 */
 	const onResetAll = () => {
-		const patch = mappedAttrsFor(blockName, set).reduce(
+		const patch = mappedAttrsFor(blockName, library).reduce(
 			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
 			{}
 		);
@@ -77,17 +77,17 @@ export function PresetActions({ blockName, set, selected, onSelect, attributes, 
 		setBusy(true);
 		setError('');
 
-		const isDefault = blockDefaultPreset(blockName, set) === selected;
-		const fallback = blockPresets(blockName, set)
+		const isDefault = blockDefaultPreset(blockName, library) === selected;
+		const fallback = blockPresets(blockName, library)
 			.map((preset) => preset.slug)
 			.find((slug) => slug !== selected);
 
-		const reassign = isDefault && fallback ? setPresetDefault(blockName, fallback, set) : Promise.resolve();
+		const reassign = isDefault && fallback ? setPresetDefault(blockName, fallback, library) : Promise.resolve();
 
 		reassign
-			.then(() => deletePreset(blockName, selected, set))
+			.then(() => deletePreset(blockName, selected, library))
 			.then(() => {
-				removePreset(blockName, set, selected);
+				removePreset(blockName, library, selected);
 				refreshProjectedCss();
 				onSelect('');
 				setConfirming(false);
@@ -149,9 +149,9 @@ export function PresetActions({ blockName, set, selected, onSelect, attributes, 
 			{mode !== 'none' && (
 				<SavePresetModal
 					blockName={blockName}
-					set={set}
-					tokens={capturedTokens(blockName, set, attributes)}
-					existingSlugs={blockPresets(blockName, set).map((preset) => preset.slug)}
+					library={library}
+					tokens={capturedTokens(blockName, library, attributes)}
+					existingSlugs={blockPresets(blockName, library).map((preset) => preset.slug)}
 					onClose={() => setMode('none')}
 					onSaved={(slug) => onSelect(slug)}
 				/>

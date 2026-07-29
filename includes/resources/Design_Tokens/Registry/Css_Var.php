@@ -36,18 +36,18 @@ final class Css_Var {
 	}
 
 	/**
-	 * Derive the CSS custom-property name from a token id, optionally namespaced to a token set.
+	 * Derive the CSS custom-property name from a token id, optionally namespaced to a token library.
 	 *
 	 * With no namespace the canonical name is produced (`semantic.color.text` →
-	 * `--kb-token--semantic--color--text`). With a namespace the set slug is inserted as a leading
+	 * `--kb-token--semantic--color--text`). With a namespace the library slug is inserted as a leading
 	 * segment after the prefix (`semantic.color.text`, `dark` →
-	 * `--kb-token--dark--semantic--color--text`), so every set's tokens occupy their own namespace while
-	 * sharing the one derivation rule — names and ids cannot drift, namespaced or not.
+	 * `--kb-token--dark--semantic--color--text`), so every library's tokens occupy their own namespace
+	 * while sharing the one derivation rule — names and ids cannot drift, namespaced or not.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $id        The DTCG dot-path id.
-	 * @param string $namespace Optional token-set slug to namespace the variable under. Empty yields the
+	 * @param string $namespace Optional token-library slug to namespace the variable under. Empty yields the
 	 *                          canonical (un-namespaced) name.
 	 *
 	 * @return string The derived CSS custom-property name.

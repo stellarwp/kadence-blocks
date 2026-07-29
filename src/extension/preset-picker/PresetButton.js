@@ -17,7 +17,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { activeSet, blockPresets, blockDefaultPreset } from './index';
+import { activeLibrary, blockPresets, blockDefaultPreset } from './index';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
 import { SavePresetModal } from './SavePresetModal';
@@ -28,20 +28,20 @@ import { mappedAttrsFor, resetAttrPatch, usePresetBinding } from '../token-indic
 import './preset-button.scss';
 
 /**
- * The label for the block's current preset: the selected preset's label, the set's default preset
+ * The label for the block's current preset: the selected preset's label, the library's default preset
  * label when none is selected, or a generic "Default" fallback.
  *
  * @param {string} name     The block name.
- * @param {string} set      The token set slug.
+ * @param {string} library  The token library slug.
  * @param {string} selected The selected preset slug ('' for the default look).
  *
  * @since TBD
  *
  * @return {string} The preset label.
  */
-function currentPresetLabel(name, set, selected) {
-	const slug = selected || blockDefaultPreset(name, set);
-	const preset = blockPresets(name, set).find((candidate) => candidate.slug === slug);
+function currentPresetLabel(name, library, selected) {
+	const slug = selected || blockDefaultPreset(name, library);
+	const preset = blockPresets(name, library).find((candidate) => candidate.slug === slug);
 
 	return preset?.label || __('Default', 'kadence-blocks');
 }
@@ -53,19 +53,19 @@ function currentPresetLabel(name, set, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.set]         The token set the block is on; defaults to kbTokenSet, then the active set.
+ * @param {string}   [props.library]     The token library the block is on; defaults to kbTokenSet, then the active library.
  *
  * @since TBD
  *
  * @return {Object|null} The button, or null when the block has no presets.
  */
-export function PresetButton({ blockName, attributes, setAttributes, set }) {
+export function PresetButton({ blockName, attributes, setAttributes, library }) {
 	const [saving, setSaving] = useState(false);
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const tokenSet = set || get(attributes, 'kbTokenSet', '') || activeSet();
-	const binding = usePresetBinding(blockName, attributes, tokenSet);
+	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const binding = usePresetBinding(blockName, attributes, resolvedLibrary);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 
 	// With no overrides there is nothing to highlight, so drop the global flag instead of leaving the
@@ -76,15 +76,15 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 		}
 	}, [edited, highlighting, setHighlightEdits]);
 
-	const presets = blockPresets(blockName, tokenSet);
+	const presets = blockPresets(blockName, resolvedLibrary);
 
 	if (!presets.length) {
 		return null;
 	}
 
 	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, tokenSet);
-	const label = currentPresetLabel(blockName, tokenSet, selected);
+	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	const label = currentPresetLabel(blockName, resolvedLibrary, selected);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control
@@ -95,7 +95,7 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 	 * @return {Object} The reset patch.
 	 */
 	const resetPatch = () =>
-		mappedAttrsFor(blockName, tokenSet).reduce(
+		mappedAttrsFor(blockName, resolvedLibrary).reduce(
 			(acc, { attr, kind }) => Object.assign(acc, resetAttrPatch(attr, kind)),
 			{}
 		);
@@ -233,8 +233,8 @@ export function PresetButton({ blockName, attributes, setAttributes, set }) {
 			{saving && (
 				<SavePresetModal
 					blockName={blockName}
-					set={tokenSet}
-					tokens={capturedTokens(blockName, tokenSet, attributes)}
+					library={resolvedLibrary}
+					tokens={capturedTokens(blockName, resolvedLibrary, attributes)}
 					existingSlugs={presets.map((preset) => preset.slug)}
 					onClose={() => setSaving(false)}
 					onSaved={(slug) => selectPreset(slug)}

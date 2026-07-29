@@ -91,7 +91,7 @@ final class DocumentsControllerTest extends TestCase {
 			$this->assertIsCallable( $options['schema'] );
 		}
 
-		// The single-set routes declare the slug argument.
+		// The single-library routes declare the slug argument.
 		$this->assertArrayHasKey( $slug_param, $routes[ $item ][0]['args'] );
 		$this->assertArrayHasKey( $slug_param, $routes[ $resolved ][0]['args'] );
 	}
@@ -568,7 +568,7 @@ final class DocumentsControllerTest extends TestCase {
 		);
 
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		// The now-empty chain is pruned, so the set reverts entirely to baseline.
+		// The now-empty chain is pruned, so the library reverts entirely to baseline.
 		$this->assertSame( [], $response->get_data()['document'] );
 	}
 
@@ -613,12 +613,12 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * DELETE on the default set responds 200, reports deleted, and clears the row to baseline
+	 * DELETE on the default library responds 200, reports deleted, and clears the row to baseline
 	 * while keeping it present rather than removing it.
 	 *
 	 * @return void
 	 */
-	public function testDeleteItemResetsTheDefaultSetToBaselineInsteadOfRemovingIt(): void {
+	public function testDeleteItemResetsTheDefaultLibraryToBaselineInsteadOfRemovingIt(): void {
 		$this->store->save_document( '{"primitive":{"color":{"brand":{"primary":{"$type":"color","$value":"#3182CE"}}}}}' );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
@@ -629,7 +629,7 @@ final class DocumentsControllerTest extends TestCase {
 		$this->assertSame( WP_Http::OK, $response->get_status() );
 		$this->assertTrue( $response->get_data()['deleted'] );
 
-		// The canonical set is never removed: its row survives and now renders from baseline.
+		// The canonical library is never removed: its row survives and now renders from baseline.
 		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
 	}
@@ -720,11 +720,11 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * POST to the collection with a non-default slug creates that set and responds 201.
+	 * POST to the collection with a non-default slug creates that library and responds 201.
 	 *
 	 * @return void
 	 */
-	public function testCollectionPostCreatesANonDefaultSet(): void {
+	public function testCollectionPostCreatesANonDefaultLibrary(): void {
 		$response = $this->controller->create_item(
 			$this->write_request(
 				'POST',
@@ -751,19 +751,19 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * The collection lists every stored set plus the always-present default, even when the
+	 * The collection lists every stored library plus the always-present default, even when the
 	 * default has no row of its own.
 	 *
 	 * @return void
 	 */
-	public function testCollectionListsEveryStoredSetAndAlwaysIncludesTheDefault(): void {
+	public function testCollectionListsEveryStoredLibraryAndAlwaysIncludesTheDefault(): void {
 		$this->store->save_document( '{"set":"a"}', 'brand-a' );
 		$this->store->save_document( '{"set":"b"}', 'brand-b' );
 
 		$data  = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
 		$slugs = array_column( $data, 'slug' );
 
-		// The two stored sets plus the always-present default, which has no row of its own here.
+		// The two stored libraries plus the always-present default, which has no row of its own here.
 		$this->assertContains( Token_Store::default_slug(), $slugs );
 		$this->assertContains( 'brand-a', $slugs );
 		$this->assertContains( 'brand-b', $slugs );
@@ -771,11 +771,11 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * GET on a non-default slug returns that set's slug and decoded document.
+	 * GET on a non-default slug returns that library's slug and decoded document.
 	 *
 	 * @return void
 	 */
-	public function testItReadsANonDefaultSet(): void {
+	public function testItReadsANonDefaultLibrary(): void {
 		$document = '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}';
 		$this->store->save_document( $document, 'brand-b' );
 
@@ -789,11 +789,11 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * DELETE on a non-default set responds 200, reports the removed set, and drops its row.
+	 * DELETE on a non-default library responds 200, reports the removed library, and drops its row.
 	 *
 	 * @return void
 	 */
-	public function testDeleteItemRemovesANonDefaultSet(): void {
+	public function testDeleteItemRemovesANonDefaultLibrary(): void {
 		$this->store->save_document( '{"primitive":{"color":{"brand":{"$type":"color","$value":"#112233"}}}}', 'brand-b' );
 
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
@@ -813,7 +813,7 @@ final class DocumentsControllerTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testDeleteItemReturnsNotFoundForAnUnknownNonDefaultSet(): void {
+	public function testDeleteItemReturnsNotFoundForAnUnknownNonDefaultLibrary(): void {
 		$request = new WP_REST_Request( WP_REST_Server::DELETABLE );
 		$request->set_param( 'slug', 'never-existed' );
 
@@ -825,14 +825,14 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a non-default set also purges its history, leaving no orphaned snapshots.
+	 * Deleting a non-default library also purges its history, leaving no orphaned snapshots.
 	 *
 	 * @return void
 	 */
-	public function testDeleteItemPurgesTheSetsHistory(): void {
+	public function testDeleteItemPurgesTheLibraryHistory(): void {
 		$history = $this->container->get( Token_History_Store::class );
 
-		// Two saves leave one archived snapshot for the set.
+		// Two saves leave one archived snapshot for the library.
 		$this->store->save_document( '{"v":1}', 'brand-b' );
 		$this->store->save_document( '{"v":2}', 'brand-b' );
 		$this->assertSame( 1, $history->count( 'brand-b' ) );
@@ -842,7 +842,7 @@ final class DocumentsControllerTest extends TestCase {
 
 		$this->controller->delete_item( $request );
 
-		// Deleting the set drops its trail too, leaving no orphaned history.
+		// Deleting the library drops its trail too, leaving no orphaned history.
 		$this->assertSame( 0, $history->count( 'brand-b' ) );
 	}
 
@@ -1296,7 +1296,7 @@ final class DocumentsControllerTest extends TestCase {
 	 * Build a bulk-write request carrying the slug, document and optional title as parameters.
 	 *
 	 * @param string               $method   The HTTP method.
-	 * @param string               $slug     The token set slug.
+	 * @param string               $slug     The token library slug.
 	 * @param array<string, mixed> $document The DTCG document body.
 	 * @param string               $title    Optional label.
 	 *
@@ -1318,7 +1318,7 @@ final class DocumentsControllerTest extends TestCase {
 	 * Build a single-token write request: slug and path as params, the bare leaf as the JSON body.
 	 *
 	 * @param string               $method The HTTP method.
-	 * @param string               $slug   The token set slug.
+	 * @param string               $slug   The token library slug.
 	 * @param string               $path   The token dot-path.
 	 * @param array<string, mixed> $leaf   The DTCG leaf body.
 	 *
@@ -1336,7 +1336,7 @@ final class DocumentsControllerTest extends TestCase {
 	 * Build a single-token request carrying just the slug and path (no body), for deletes.
 	 *
 	 * @param string $method The HTTP method.
-	 * @param string $slug   The token set slug.
+	 * @param string $slug   The token library slug.
 	 * @param string $path   The token dot-path.
 	 *
 	 * @return WP_REST_Request

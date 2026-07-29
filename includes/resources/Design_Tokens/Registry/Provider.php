@@ -98,8 +98,9 @@ final class Provider extends Provider_Contract {
 	}
 
 	/**
-	 * Every stored set is synced regardless of which one changed or which one is active — the
-	 * multi-set projection renders every set, so every set's user primitives must stay registered.
+	 * Every stored library is synced regardless of which one changed or which one is active — the
+	 * multi-library projection renders every library, so every library's user primitives must stay
+	 * registered.
 	 *
 	 * @since TBD
 	 *

@@ -30,7 +30,7 @@ final class Effective_Document {
 	/**
 	 * Build the merged document from the baseline and a decoded overrides array.
 	 *
-	 * @param array<string,mixed> $overrides      Decoded overrides-only DTCG (token-set document).
+	 * @param array<string,mixed> $overrides      Decoded overrides-only DTCG (token-library document).
 	 * @param bool                $apply_disabled Whether a DISABLE override removes the baseline entry.
 	 *                                            True (the Resolver's rendering view) drops disabled tokens
 	 *                                            entirely; false (the write layer's inspection view) keeps the
