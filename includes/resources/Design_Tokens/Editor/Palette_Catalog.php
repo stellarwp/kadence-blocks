@@ -39,8 +39,8 @@ final class Palette_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Active_Token_Library_Store   $active   The active-library pointer.
-	 * @param Effective_Palettes $palettes The effective-palettes reader.
+	 * @param Active_Token_Library_Store $active   The active-library pointer.
+	 * @param Effective_Palettes         $palettes The effective-palettes reader.
 	 */
 	public function __construct( Active_Token_Library_Store $active, Effective_Palettes $palettes ) {
 		$this->active   = $active;

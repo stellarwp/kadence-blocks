@@ -184,13 +184,13 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator            $mutator   The pure structural document transforms.
-	 * @param Token_Resolver     $resolver  The resolver, for the write dry-run.
-	 * @param Dtcg_Validator     $validator The DTCG grammar validator.
-	 * @param Effective_Palettes $palettes  The effective palettes reader.
-	 * @param Token_Registry     $registry  The token registry, for the swatch-target guard.
-	 * @param Active_Token_Library_Store   $active    Owns the active-library pointer.
+	 * @param Token_Store                $store     The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                    $mutator   The pure structural document transforms.
+	 * @param Token_Resolver             $resolver  The resolver, for the write dry-run.
+	 * @param Dtcg_Validator             $validator The DTCG grammar validator.
+	 * @param Effective_Palettes         $palettes  The effective palettes reader.
+	 * @param Token_Registry             $registry  The token registry, for the swatch-target guard.
+	 * @param Active_Token_Library_Store $active    Owns the active-library pointer.
 	 */
 	public function __construct(
 		Token_Store $store,
