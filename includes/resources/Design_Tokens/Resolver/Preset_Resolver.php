@@ -84,18 +84,15 @@ final class Preset_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block         The block name, e.g. "kadence/advancedbtn".
-	 * @param string $preset       The preset slug, e.g. "ghost".
-	 * @param string $slug          The token library whose effective presets and resolved values are read.
-	 * @param string $css_namespace Css-var namespace for the var() target ('' for the canonical name). When set,
-	 *                              an alias becomes var(--kb-token--<namespace>--<target>), so a namespaced
-	 *                              preset var chains to that library's namespaced token and stays inside the library.
+	 * @param string $block  The block name, e.g. "kadence/advancedbtn".
+	 * @param string $preset The preset slug, e.g. "ghost".
+	 * @param string $slug   The token library whose effective presets and resolved values are read.
 	 *
 	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
 	 *
 	 * @return array<string, string> property => var()-preserving CSS value.
 	 */
-	public function resolve( string $block, string $preset, string $slug = 'default', string $css_namespace = '' ): array {
+	public function resolve( string $block, string $preset, string $slug = 'default' ): array {
 		$tokens   = $this->preset_tokens( $block, $preset, $slug );
 		$resolved = $this->resolver->resolve( $slug );
 
@@ -106,7 +103,7 @@ final class Preset_Resolver {
 				continue;
 			}
 
-			$values[ $property ] = $this->project( $value, $css_namespace );
+			$values[ $property ] = $this->project( $value );
 		}
 
 		return $values;
@@ -340,14 +337,13 @@ final class Preset_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value         The raw binding value (alias string or literal).
-	 * @param string $css_namespace Css-var namespace for the var() target ('' for the canonical name).
+	 * @param mixed $value The raw binding value (alias string or literal).
 	 *
 	 * @return string
 	 */
-	private function project( $value, string $css_namespace = '' ): string {
+	private function project( $value ): string {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
-			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $css_namespace ) . ')';
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
 		}
 
 		return Cast::to_string( $value );

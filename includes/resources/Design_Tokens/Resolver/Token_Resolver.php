@@ -46,8 +46,7 @@ final class Token_Resolver {
 
 	/**
 	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
-	 * the cache prefix (which distinguishes the canonical "resolved_tokens_{slug}" and namespaced
-	 * "resolved_tokens_namespaced_{slug}" forms) followed by the store version, e.g.
+	 * the cache prefix "resolved_tokens_{slug}" followed by the store version, e.g.
 	 * "resolved_tokens_default_v3".
 	 *
 	 * @var array<string,Resolved_Tokens>
@@ -99,48 +98,24 @@ final class Token_Resolver {
 	 *                                  Writes are gated by resolve_overrides(), so a clean store never hits this.
 	 */
 	public function resolve( string $slug = 'default' ): Resolved_Tokens {
-		return $this->load( $slug, '', 'resolved_tokens_' . $slug );
+		return $this->load( $slug, 'resolved_tokens_' . $slug );
 	}
 
 	/**
-	 * Resolve a stored token library with its css-var names namespaced to the library's own slug
-	 * (`--kb-token--<slug>--*`), for simultaneous multi-library emission. Same cache shape as resolve(),
-	 * under its own key, so the canonical and namespaced forms never collide.
-	 *
-	 * The returned object's projected map carries the namespaced var names and namespaced alias/composite
-	 * targets, so a library's alias chain stays inside the library. The literal id map (by_id) is keyed on
-	 * the canonical dot-path and its values are literals, so it is identical to the canonical resolve —
-	 * host surfaces and the canonical token-id list read it unchanged.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The token library slug to resolve and namespace under.
-	 *
-	 * @return Resolved_Tokens
-	 *
-	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
-	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
-	 */
-	public function resolve_namespaced( string $slug ): Resolved_Tokens {
-		return $this->load( $slug, $slug, 'resolved_tokens_namespaced_' . $slug );
-	}
-
-	/**
-	 * Shared resolve path for the canonical and namespaced forms: per-request memo over a persistent
-	 * object-cache entry, both keyed on the store version (bumped on every write, so they self-invalidate).
+	 * Shared resolve path: per-request memo over a persistent object-cache entry, both keyed on the store
+	 * version (bumped on every write, so they self-invalidate).
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug         The token library slug to resolve.
-	 * @param string $css_namespace    Css-var namespace to apply ('' for the canonical names).
-	 * @param string $cache_prefix Cache-key prefix that distinguishes the canonical and namespaced forms.
+	 * @param string $cache_prefix Cache-key prefix for the resolved-tokens entry.
 	 *
 	 * @return Resolved_Tokens
 	 *
 	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
 	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
 	 */
-	private function load( string $slug, string $css_namespace, string $cache_prefix ): Resolved_Tokens {
+	private function load( string $slug, string $cache_prefix ): Resolved_Tokens {
 		$version   = $this->store->get_version( $slug );
 		$cache_key = $cache_prefix . '_' . $version;
 
@@ -159,7 +134,7 @@ final class Token_Resolver {
 
 		$document = $this->effective_document( $slug );
 
-		$result = $this->resolve_document( $document, $css_namespace );
+		$result = $this->resolve_document( $document );
 
 		wp_cache_set( $cache_key, $result, self::CACHE_GROUP, DAY_IN_SECONDS );
 		$this->memo[ $cache_key ] = $result;
@@ -218,9 +193,8 @@ final class Token_Resolver {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $document
-	 * @param string              $css_namespace Css-var namespace to apply to projected names ('' for canonical).
 	 */
-	private function resolve_document( array $document, string $css_namespace = '' ): Resolved_Tokens {
+	private function resolve_document( array $document ): Resolved_Tokens {
 		$by_id             = [];
 		$by_var            = [];
 		$by_var_projected  = [];
@@ -230,7 +204,7 @@ final class Token_Resolver {
 
 		foreach ( Layers::token_layers() as $layer ) {
 			if ( isset( $document[ $layer ] ) && is_array( $document[ $layer ] ) ) {
-				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive, $css_namespace );
+				$this->walk( $document[ $layer ], $layer, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive );
 			}
 		}
 
@@ -251,11 +225,10 @@ final class Token_Resolver {
 	 * @param array<string,string>               $by_id_target      By-reference id => target id map (whole-$value aliases only).
 	 * @param array<string,array<string,string>> $by_var_responsive By-reference css-var => [ breakpoint => projected value ].
 	 * @param array<string,array<string,string>> $by_id_responsive  By-reference id => [ breakpoint => literal value ].
-	 * @param string                             $css_namespace     Css-var namespace to apply to projected names ('' for canonical).
 	 *
 	 * @return void
 	 */
-	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, array &$by_var_responsive, array &$by_id_responsive, string $css_namespace = '' ): void {
+	private function walk( array $node, string $prefix, array $document, array &$by_id, array &$by_var, array &$by_var_projected, array &$by_id_target, array &$by_var_responsive, array &$by_id_responsive ): void {
 		foreach ( $node as $key => $child ) {
 			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
 				continue; // DTCG metadata key.
@@ -269,7 +242,7 @@ final class Token_Resolver {
 			if ( array_key_exists( '$value', $child ) ) {
 				$raw  = $child['$value'];
 				$type = (string) ( $child[ Token_Type::get_type_key() ] ?? '' );
-				$var  = Css_Var::from_id( $path, $css_namespace );
+				$var  = Css_Var::from_id( $path );
 
 				// A structured clamp is authoritative: it renders to clamp(min, preferred, max) for both the
 				// literal (host) and var()-preserving (projection) forms, overriding whatever the flat base
@@ -278,10 +251,10 @@ final class Token_Resolver {
 					$clamp = Responsive::clamp_of( $child );
 
 					if ( is_array( $clamp ) ) {
-						$literal                  = $this->render_clamp( $clamp, $type, $document, $css_namespace, false );
+						$literal                  = $this->render_clamp( $clamp, $type, $document, false );
 						$by_id[ $path ]           = $literal;
 						$by_var[ $var ]           = $literal;
-						$by_var_projected[ $var ] = $this->render_clamp( $clamp, $type, $document, $css_namespace, true );
+						$by_var_projected[ $var ] = $this->render_clamp( $clamp, $type, $document, true );
 
 						continue;
 					}
@@ -299,25 +272,25 @@ final class Token_Resolver {
 					// indirection survives into CSS and dependents follow live. resolve_value() has
 					// already validated the alias (no cycle, not dangling), so the target is a real leaf
 					// this same walk emits a --kb-token--* var for. The literal above still feeds host
-					// surfaces. Under a namespace the target name is namespaced too, so the chain stays in-library.
+					// surfaces.
 					$target_id                = Alias::path_of( $raw );
 					$by_id_target[ $path ]    = $target_id;
-					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id, $css_namespace ) . ')';
+					$by_var_projected[ $var ] = 'var(' . Css_Var::from_id( $target_id ) . ')';
 				} else {
 					// A composite (shadow/typography) may alias individual fields; project those to
 					// var() references and render the shorthand around them. Scalars and lists carry no
 					// alias and render identically to the literal.
-					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw, $css_namespace ) );
+					$by_var_projected[ $var ] = $this->renderer->render( $type, $this->project_value( $raw ) );
 				}
 
 				// A stepped responsive shape keeps the flat base above and adds a per-breakpoint override the
 				// css-var projection redeclares inside the matching media query; each slot may itself alias.
-				$this->collect_responsive_overrides( $child, $type, $path, $var, $document, $css_namespace, $by_id_responsive, $by_var_responsive );
+				$this->collect_responsive_overrides( $child, $type, $path, $var, $document, $by_id_responsive, $by_var_responsive );
 
 				continue;
 			}
 
-			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive, $css_namespace );
+			$this->walk( $child, $path, $document, $by_id, $by_var, $by_var_projected, $by_id_target, $by_var_responsive, $by_id_responsive );
 		}
 	}
 
@@ -333,13 +306,12 @@ final class Token_Resolver {
 	 * @param string                             $path              The token dot-path.
 	 * @param string                             $css_var           The token's css-var name.
 	 * @param array<string,mixed>                $document          Full effective doc, for alias lookups.
-	 * @param string                             $css_namespace     Css-var namespace to apply ('' for canonical).
 	 * @param array<string,array<string,string>> $by_id_responsive  By-reference id => [ breakpoint => literal value ].
 	 * @param array<string,array<string,string>> $by_var_responsive By-reference css-var => [ breakpoint => projected value ].
 	 *
 	 * @return void
 	 */
-	private function collect_responsive_overrides( array $child, string $type, string $path, string $css_var, array $document, string $css_namespace, array &$by_id_responsive, array &$by_var_responsive ): void {
+	private function collect_responsive_overrides( array $child, string $type, string $path, string $css_var, array $document, array &$by_id_responsive, array &$by_var_responsive ): void {
 		if ( ! Responsive::has_responsive( $child ) ) {
 			return;
 		}
@@ -358,7 +330,7 @@ final class Token_Resolver {
 			$slot = $responsive[ $breakpoint ];
 
 			$by_id_responsive[ $path ][ $breakpoint ]     = $this->renderer->render( $type, $this->resolve_value( $slot, $document, [] ) );
-			$by_var_responsive[ $css_var ][ $breakpoint ] = $this->renderer->render( $type, $this->project_value( $slot, $css_namespace ) );
+			$by_var_responsive[ $css_var ][ $breakpoint ] = $this->renderer->render( $type, $this->project_value( $slot ) );
 		}
 	}
 
@@ -374,15 +346,14 @@ final class Token_Resolver {
 	 * @param array<string,mixed> $clamp         The decoded clamp map.
 	 * @param string              $type          The leaf's $type.
 	 * @param array<string,mixed> $document      Full effective doc, for alias lookups.
-	 * @param string              $css_namespace Css-var namespace to apply to var() targets ('' for canonical).
 	 * @param bool                $projected     Whether to preserve aliases as var() references.
 	 *
 	 * @return string
 	 */
-	private function render_clamp( array $clamp, string $type, array $document, string $css_namespace, bool $projected ): string {
-		$slot = function ( $value ) use ( $type, $document, $css_namespace, $projected ): string {
+	private function render_clamp( array $clamp, string $type, array $document, bool $projected ): string {
+		$slot = function ( $value ) use ( $type, $document, $projected ): string {
 			$flattened = $projected
-				? $this->project_value( $value, $css_namespace )
+				? $this->project_value( $value )
 				: $this->resolve_value( $value, $document, [] );
 
 			return $this->renderer->render( $type, $flattened );
@@ -406,20 +377,19 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value
-	 * @param string $css_namespace Css-var namespace to apply to the var() targets ('' for canonical).
+	 * @param mixed $value
 	 *
 	 * @return mixed The value with aliases replaced by var() references.
 	 */
-	private function project_value( $value, string $css_namespace = '' ) {
+	private function project_value( $value ) {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
-			return 'var(' . Css_Var::from_id( Alias::path_of( $value ), $css_namespace ) . ')';
+			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
 		}
 
 		if ( is_array( $value ) && ! $this->is_list( $value ) ) {
 			$projected = [];
 			foreach ( $value as $field => $sub ) {
-				$projected[ $field ] = $this->project_value( $sub, $css_namespace );
+				$projected[ $field ] = $this->project_value( $sub );
 			}
 
 			return $projected;
