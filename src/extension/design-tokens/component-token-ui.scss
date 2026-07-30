@@ -213,6 +213,20 @@
 	display: none;
 }
 
+// The measure control's linked/individual toggle ships without a pressed fill, so it reads differently
+// from the Border control's toggle (which fills with the theme color when active). Match that pressed
+// treatment for token-mapped measure controls so the Border Radius header is consistent with Border.
+.kb-responsive-measure-control:has(.kadence-token-field) {
+	.components-button.kadence-control-toggle.is-pressed {
+		background: var(--wp-admin-theme-color, #3858e9);
+		color: #fff;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+}
+
 // The whole-value box-shadow chip: label plus optional unlink button, laid out inline with a small gap.
 .kadence-token-chip {
 	display: inline-flex;
