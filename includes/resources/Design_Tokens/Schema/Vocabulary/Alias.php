@@ -96,7 +96,7 @@ final class Alias {
 
 	/**
 	 * Wrap a dot-path into an alias string. The inverse of path_of(), so callers that mint an alias (e.g.
-	 * the variant value normalizer) do not hard-code the brace delimiters.
+	 * the preset value normalizer) do not hard-code the brace delimiters.
 	 *
 	 * @since TBD
 	 *

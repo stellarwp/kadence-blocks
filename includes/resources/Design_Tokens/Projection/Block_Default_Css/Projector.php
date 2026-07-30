@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -41,13 +41,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active library.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The block-default CSS builder.
@@ -63,10 +63,10 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @param Token_Registry   $registry    The token registry.
 	 * @param Token_Store      $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store $active      Owns the active-set pointer.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
 	 * @param Css_Builder      $css_builder The block-default CSS builder.
 	 */
-	public function __construct( Token_Registry $registry, Token_Store $store, Active_Set_Store $active, Css_Builder $css_builder ) {
+	public function __construct( Token_Registry $registry, Token_Store $store, Active_Token_Library_Store $active, Css_Builder $css_builder ) {
 		$this->registry    = $registry;
 		$this->store       = $store;
 		$this->active      = $active;
@@ -120,7 +120,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the FRONT-END block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Build the FRONT-END block-default CSS for the current library, via the builder's version-keyed cache.
 	 *
 	 * Returns an empty string when the store version cannot be read or a block cannot be resolved (e.g. an
 	 * alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes — the
@@ -143,7 +143,7 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the EDITOR-scoped block-default CSS for the current set, via the builder's version-keyed cache.
+	 * Build the EDITOR-scoped block-default CSS for the current library, via the builder's version-keyed cache.
 	 * Identical to {@see self::css()} for every block that declares no `editor_selector`; scoped under
 	 * `.editor-styles-wrapper` and re-targeted at the block's editor markup for the ones that do (see
 	 * {@see Css_Builder::editor_css()}).

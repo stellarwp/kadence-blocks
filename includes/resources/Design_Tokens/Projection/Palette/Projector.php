@@ -2,10 +2,10 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Variant\Css_Builder as Variant_Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Variant_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -48,13 +48,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Effective_Palettes Reads the active set's effective palettes and their flattened swatches.
@@ -96,18 +96,18 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry      $registry    The token registry.
-	 * @param Token_Store         $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store    $active      Owns the active-set pointer.
-	 * @param Effective_Palettes  $palettes    Reads the active set's effective palettes.
-	 * @param Token_Resolver      $resolver    Resolves each palette's full color graph.
-	 * @param Variant_Css_Builder $variants   Supplies the canonical variant-var declarations.
-	 * @param Css_Builder         $css_builder The palette switch-layer builder.
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Store                $store       The store, for the cache-busting version.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Effective_Palettes         $palettes    Reads the active set's effective palettes.
+	 * @param Token_Resolver             $resolver    Resolves each palette's full color graph.
+	 * @param Variant_Css_Builder        $variants    Supplies the canonical variant-var declarations.
+	 * @param Css_Builder                $css_builder The palette switch-layer builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Effective_Palettes $palettes,
 		Token_Resolver $resolver,
 		Variant_Css_Builder $variants,

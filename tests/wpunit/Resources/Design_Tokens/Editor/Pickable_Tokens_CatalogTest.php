@@ -137,12 +137,12 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The values map is keyed by set slug and resolves each token to a literal: a color token to a
+	 * The values map is keyed by library slug and resolves each token to a literal: a color token to a
 	 * color literal (hex / rgb) and a dimension token to a CSS length, never an alias or a var() chain.
 	 *
 	 * @return void
 	 */
-	public function testValuesResolveToLiteralsPerSet(): void {
+	public function testValuesResolveToLiteralsPerLibrary(): void {
 		$pool   = $this->catalog->all();
 		$values = $pool['values'];
 
@@ -171,12 +171,12 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A set whose stored document cannot be resolved is skipped from the values map while its siblings
-	 * (the default set) survive, so one corrupt set never empties the pool.
+	 * A library whose stored document cannot be resolved is skipped from the values map while its siblings
+	 * (the default library) survive, so one corrupt library never empties the pool.
 	 *
 	 * @return void
 	 */
-	public function testACorruptSetIsSkippedFromValues(): void {
+	public function testACorruptLibraryIsSkippedFromValues(): void {
 		// Raw store write (bypasses the REST validation gate that would reject a dangling alias),
 		// mirroring the raw-DB-write scenario the resolver's fail-soft guards exist for.
 		$this->store->save_document(
@@ -255,14 +255,14 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The first token entry of a given type whose resolved default-set value satisfies a predicate,
+	 * The first token entry of a given type whose resolved default-library value satisfies a predicate,
 	 * failing the test when the baseline has no such token (e.g. every entry of that type resolves to a
 	 * keyword literal instead of a hex/rgb/hsl one).
 	 *
 	 * @param array<int, array<string, string>> $tokens    The pool's token entries.
 	 * @param string                            $type      The DTCG type to find.
 	 * @param callable                          $predicate Receives the resolved literal, returns whether it matches.
-	 * @param array<string, string>             $defaults  The default set's resolved values, keyed by id.
+	 * @param array<string, string>             $defaults  The default library's resolved values, keyed by id.
 	 *
 	 * @return array<string, string> The first matching token entry.
 	 */

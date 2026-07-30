@@ -1,0 +1,21 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__rename-primitive {
+	&-dialog {
+		min-width: 28rem;
+	}
+
+	&-form {
+		@include flex-column($spacing-lg);
+
+		.has-error input {
+			border-color: $color-error;
+		}
+	}
+
+	&-actions {
+		@include flex-row($spacing-md);
+		padding-top: $spacing-sm;
+	}
+}

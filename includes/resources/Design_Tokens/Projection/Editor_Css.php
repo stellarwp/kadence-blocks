@@ -7,18 +7,18 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 /**
  * Aggregates the design-token EDITOR CSS from every projector into one string, so the projected-CSS REST
  * endpoint can serve exactly the CSS the projectors enqueue at page load — for live re-injection into the
- * block-editor canvas when a variant (or, later, a token value) changes without a reload.
+ * block-editor canvas when a preset (or, later, a token value) changes without a reload.
  *
  * Each source's `editor_css()` is the unguarded builder; the enqueue-context gate (the block-editor page
  * check) stays in each `enqueue_editor()` and does not apply off a block-editor page request, so it is
  * deliberately not repeated here. This aggregator applies the one gate that still matters: a deactivated
  * registry projects nothing, so it returns ''. The sources are concatenated in the order the Projection
  * provider supplies them, which mirrors the load-time enqueue — the token vars first (the foundation the
- * other layers reference), then variants, native retarget, and block defaults. Each source already fails
+ * other layers reference), then presets, native retarget, and block defaults. Each source already fails
  * open to '' on its own, so one broken layer never suppresses the others. Only the single active set is
- * emitted: the token-var and variant builders each project the active set's canonical vars, unchanged.
+ * emitted: the token-var and preset builders each project the active set's canonical vars, unchanged.
  *
- * `editor_css()` equals `css()` for the context-independent projectors (token vars, variant) — their output
+ * `editor_css()` equals `css()` for the context-independent projectors (token vars, preset) — their output
  * carries no dependency on the editor's markup shape. It differs only for the block-default projector, whose
  * editor build re-targets a block's rule at its editor-rendered element (e.g. `.editor-styles-wrapper
  * .wp-block-kadence-advancedheading .kadence-advancedheading-text` instead of the front-end

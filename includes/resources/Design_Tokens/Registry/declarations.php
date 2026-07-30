@@ -98,9 +98,9 @@ foreach ( $palette_slots as $token_id => $slot_label ) {
 }
 
 /**
- * Per-variant button color semantics (primary/secondary, resting + hover). The Button variant maps
+ * Per-preset button color semantics (primary/secondary, resting + hover). The Button preset maps
  * reference these by value and they carry no projections of their own — the Kadence button reads them
- * through the variant's retarget bindings below, so overriding a primary semantic recolors that variant
+ * through the preset's retarget bindings below, so overriding a primary semantic recolors that preset
  * without touching the global palette.
  */
 $button_color_labels = [
@@ -189,7 +189,7 @@ $palette_delivery_color_tokens = [
 ];
 
 return [
-	'tokens'       => array_merge(
+	'tokens'          => array_merge(
 		[
 			[
 				// Registered so Css_Var emits its --kb-token--semantic--radius--media variable; the block-default
@@ -309,24 +309,24 @@ return [
 		$font_size_primitive_tokens
 	),
 	/**
-	 * Variant set for the Button block: that it accepts variants, plus the per-property bindings (a
+	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
 	 * token reference where the property is already a registered token, an inline target otherwise).
-	 * The variant NAMES, the default ($default) and the values all live in the baseline document under
-	 * $extensions…variants.<block>; this declares only the structural wiring.
+	 * The preset NAMES, the default ($default) and the values all live in the baseline document under
+	 * $extensions…presets.<block>; this declares only the structural wiring.
 	 */
-	'variant_sets' => [
+	'preset_bindings' => [
 		[
 			/**
-			 * The variant lives on the child Single Button (each button in a group is skinned individually),
-			 * not the advancedbtn container. Variants are a pure COLOR axis: they retarget the Kadence theme's
+			 * The preset lives on the child Single Button (each button in a group is skinned individually),
+			 * not the advancedbtn container. Presets are a pure COLOR axis: they retarget the Kadence theme's
 			 * button-specific palette vars (the exact custom properties the button's render path already
-			 * consumes), so a variant composes with the block's existing "Button Inherit Styles" shape (Fill /
+			 * consumes), so a preset composes with the block's existing "Button Inherit Styles" shape (Fill /
 			 * Outline / Theme Base) instead of fighting it — Fill reads --global-palette-btn-bg / -btn for its
 			 * background + text, Outline reads --global-palette-btn-bg for border + text, and both read the
-			 * matching -hover slots on :hover/:focus, so one color variant skins every shape and state. Each
-			 * binding names only the slot it retargets; the per-variant VALUE comes from the variant's token
-			 * map (which references the per-variant button-color semantics), so primary and secondary are
-			 * symmetric and each is overridable on its own semantic. Picking a variant re-skins a button with
+			 * matching -hover slots on :hover/:focus, so one color preset skins every shape and state. Each
+			 * binding names only the slot it retargets; the per-preset VALUE comes from the preset's token
+			 * map (which references the per-preset button-color semantics), so primary and secondary are
+			 * symmetric and each is overridable on its own semantic. Picking a preset re-skins a button with
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
 			'block'    => 'kadence/singlebtn',
@@ -349,7 +349,7 @@ return [
 					'control_attr' => 'colorHover',
 				],
 				'button-radius'     => [
-					'css_var'      => 'kb-btn-radius', // drives --kb-btn-radius so a variant can vary the radius.
+					'css_var'      => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
 					'control_attr' => 'borderRadius',
 				],
 			],
