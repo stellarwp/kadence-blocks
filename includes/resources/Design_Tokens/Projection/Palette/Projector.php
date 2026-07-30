@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -46,13 +46,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Effective_Palettes Reads the active set's effective palettes and their flattened swatches.
@@ -82,14 +82,14 @@ final class Projector extends Abstract_Css_Projector {
 	 *
 	 * @param Token_Registry     $registry    The token registry.
 	 * @param Token_Store        $store       The store, for the cache-busting version.
-	 * @param Active_Set_Store   $active      Owns the active-set pointer.
+	 * @param Active_Token_Library_Store   $active      Owns the active-library pointer.
 	 * @param Effective_Palettes $palettes    Reads the active set's effective palettes.
 	 * @param Css_Builder        $css_builder The palette switch-layer builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Effective_Palettes $palettes,
 		Css_Builder $css_builder
 	) {
