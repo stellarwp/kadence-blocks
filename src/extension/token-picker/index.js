@@ -116,14 +116,42 @@ function roleForId(id) {
 }
 
 /**
+ * The role sub-kind a control attribute implies, inferred by matching the attribute against the roles
+ * present in a token list — the fallback narrower for a control that binds no role token (a radius
+ * control still shows only radius tokens, not the whole `dimension` bucket). A role matches when its
+ * kebab segments, de-hyphenated, appear as a substring of the lowercased attribute (`borderRadius`
+ * matches `radius`; `iconSize` matches `icon-size`). Empty unless exactly one role matches, so an
+ * ambiguous or unrecognized attribute falls back to the coarse list rather than guessing.
+ *
+ * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
+ * @param {Array}  tokens      The type-filtered token list whose roles are the candidates.
+ *
+ * @since TBD
+ *
+ * @return {string} The single matching role, or '' when none or several match.
+ */
+function inferRoleFromControl(controlAttr, tokens) {
+	const attr = String(controlAttr || '').toLowerCase();
+	if (!attr) {
+		return '';
+	}
+
+	const roles = [...new Set(tokens.map((token) => token.role).filter(Boolean))];
+	const matches = roles.filter((role) => attr.includes(role.replace(/-/g, '')));
+
+	return matches.length === 1 ? matches[0] : '';
+}
+
+/**
  * The pickable tokens for one block control, keyed by the attribute the control writes: resolves
  * the control's kind from the preset catalog's { key, kind, token, control_attr } surface, then
  * filters and ranks the pool for that kind. When the control binds a role token, the list is further
  * narrowed to that token's sub-kind (a radius control's `dimension` to only radius tokens, never
- * spacing) and the bound token is pinned to the top; without a bound token it stays the coarse
- * kind list (type filter + semantic-first). Empty when the block maps no such control in the library —
- * an unmapped control offers no tokens, which is the "selectable only where it makes sense"
- * guarantee at the per-control call site.
+ * spacing) and the bound token is pinned to the top. Without a bound token the sub-kind is inferred
+ * from the control attribute (`borderRadius` -> radius), narrowing all the same; only when no single
+ * role can be inferred does it stay the coarse kind list (type filter + semantic-first). Empty when the
+ * block maps no such control in the library — an unmapped control offers no tokens, which is the
+ * "selectable only where it makes sense" guarantee at the per-control call site.
  *
  * @param {string} blockName   The block name (e.g. 'kadence/singlebtn').
  * @param {string} controlAttr The attribute the control writes (e.g. 'borderRadius').
@@ -141,9 +169,9 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
 	}
 
 	const tokens = pickableTokensFor(property.kind, library);
-	const role = property.token ? roleForId(property.token) : '';
+	const role = property.token ? roleForId(property.token) : inferRoleFromControl(controlAttr, tokens);
 
-	// No bound role token -> the coarse kind list (type filter + semantic-first), unchanged.
+	// No bound token and no inferable role -> the coarse kind list (type filter + semantic-first).
 	if (!role) {
 		return tokens;
 	}

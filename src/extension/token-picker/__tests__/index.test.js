@@ -92,7 +92,10 @@ const PRESETS = {
 	sets: {
 		default: {
 			'kadence/singlebtn': {
-				properties: [{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' }],
+				properties: [
+					{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
+				],
 			},
 		},
 	},
@@ -241,8 +244,16 @@ describe('pickableTokensForControl', () => {
 		delete window.kadenceDesignTokensPresets;
 	});
 
-	it('delegates to the coarse kind list when the control binds no role token', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'borderRadius')).toEqual(pickableTokensFor('dimension'));
+	it('infers the sub-kind from the control attribute when no token is bound, narrowing to radius', () => {
+		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		// `borderRadius` implies the radius role, so spacing dimensions drop out even with no bound token.
+		expect(result.map((token) => token.id)).toEqual(['semantic.radius.button', 'primitive.dimension.radius.sm']);
+		expect(result.every((token) => token.role === 'radius')).toBe(true);
+	});
+
+	it('falls back to the coarse kind list when the attribute implies no single role', () => {
+		expect(pickableTokensForControl('kadence/singlebtn', 'gap')).toEqual(pickableTokensFor('dimension'));
 	});
 
 	it('returns an empty array for an unmapped attribute', () => {
