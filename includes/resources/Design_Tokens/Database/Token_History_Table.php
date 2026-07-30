@@ -7,7 +7,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Schema\Tables\Contracts\Table;
 /**
  * The Design Tokens history database table.
  *
- * Records the previous DTCG document for a token set each time it is saved, so
+ * Records the previous DTCG document for a token library each time it is saved, so
  * the module owns its own undo/audit trail of UI- and MCP-authored changes
  * rather than relying on WordPress revisions (which several managed hosts
  * disable). Each row is a point-in-time snapshot of the document that was about
@@ -76,7 +76,7 @@ final class Token_History_Table extends Table {
 		return "
 			CREATE TABLE `$table_name` (
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
-				slug VARCHAR(191) NOT NULL COMMENT 'Token set this snapshot belongs to, matching kb_design_tokens.slug',
+				slug VARCHAR(191) NOT NULL COMMENT 'Token library this snapshot belongs to, matching kb_design_tokens.slug',
 				document LONGTEXT NOT NULL COMMENT 'The previous overrides-only DTCG JSON document, captured before it was overwritten',
 				version VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'The cache-busting version hash the snapshot had when it was current',
 				created_at DATETIME NOT NULL COMMENT 'UTC timestamp the snapshot was archived (i.e. when the superseding save happened)',

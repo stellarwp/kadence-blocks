@@ -26,7 +26,7 @@ use WP_REST_Server;
 final class User_Primitives_Controller extends Controller {
 
 	/**
-	 * The request parameter that carries the token set slug.
+	 * The request parameter that carries the token library slug.
 	 *
 	 * @since TBD
 	 *
@@ -640,7 +640,7 @@ final class User_Primitives_Controller extends Controller {
 						'readonly'    => true,
 					],
 					'version'    => [
-						'description' => __( 'The cache-busting version hash for the token set.', 'kadence-blocks' ),
+						'description' => __( 'The cache-busting version hash for the token library.', 'kadence-blocks' ),
 						'type'        => 'string',
 						'context'     => [ 'view' ],
 						'readonly'    => true,
@@ -786,7 +786,7 @@ final class User_Primitives_Controller extends Controller {
 	private function get_references_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',
@@ -811,7 +811,7 @@ final class User_Primitives_Controller extends Controller {
 	private function get_create_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',
@@ -856,7 +856,7 @@ final class User_Primitives_Controller extends Controller {
 	private function get_delete_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',
@@ -886,7 +886,7 @@ final class User_Primitives_Controller extends Controller {
 	private function get_rename_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',

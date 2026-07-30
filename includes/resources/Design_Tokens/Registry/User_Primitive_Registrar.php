@@ -8,13 +8,14 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 
 /**
- * Reads user-created primitive definitions from every stored token set and registers them into
+ * Reads user-created primitive definitions from every stored token library and registers them into
  * Token_Registry. Also the authoritative re-sync point after each store write (see Registry\Provider).
  *
- * Every stored set is synced, not only the active one: the multi-set CSS-var projection emits every
- * set on the page so visitors can switch between them, so every set's user primitives must be known
- * to the registry up front. The registry's id space is flat (not namespaced per set), so the default
- * set's definition wins any id collision; every other set's colliding entry is skipped and logged.
+ * Every stored library is synced, not only the active one: the multi-library CSS-var projection emits
+ * every library on the page so visitors can switch between them, so every library's user primitives must
+ * be known to the registry up front. The registry's id space is flat (not namespaced per library), so the
+ * default library's definition wins any id collision; every other library's colliding entry is skipped
+ * and logged.
  *
  * @since TBD
  */
@@ -69,7 +70,7 @@ final class User_Primitive_Registrar {
 	}
 
 	/**
-	 * Deregister all current user primitives, then re-register from every stored set's committed
+	 * Deregister all current user primitives, then re-register from every stored library's committed
 	 * document. Safe to call both at boot and from the change-action subscriber.
 	 *
 	 * @since TBD
@@ -95,7 +96,7 @@ final class User_Primitive_Registrar {
 	}
 
 	/**
-	 * Every stored set's slug, the default set first so it wins any cross-set id collision.
+	 * Every stored library's slug, the default library first so it wins any cross-library id collision.
 	 *
 	 * @since TBD
 	 *
@@ -113,7 +114,7 @@ final class User_Primitive_Registrar {
 	/**
 	 * @since TBD
 	 *
-	 * @param string                      $slug     The token set slug the entry was read from.
+	 * @param string                      $slug     The token library slug the entry was read from.
 	 * @param array<string, mixed>        $document
 	 * @param string                      $id
 	 * @param array{label?: string}|mixed $entry
@@ -122,7 +123,7 @@ final class User_Primitive_Registrar {
 	 */
 	private function register_entry( string $slug, array $document, string $id, $entry ): void {
 		if ( ! is_array( $entry ) ) {
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": malformed envelope entry — skipped.', $id, $slug ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": malformed envelope entry — skipped.', $id, $slug ) );
 
 			return;
 		}
@@ -130,7 +131,7 @@ final class User_Primitive_Registrar {
 		$existing = $this->registry->get( $id );
 
 		if ( $existing !== null && $existing->is_user_created() ) {
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": already registered by another token set — skipped.', $id, $slug ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": already registered by another token library — skipped.', $id, $slug ) );
 
 			return;
 		}
@@ -138,13 +139,13 @@ final class User_Primitive_Registrar {
 		$type = $this->type_from_tree( $document, $id );
 
 		if ( $type === null ) {
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": no matching tree leaf — half-present record, skipped.', $id, $slug ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": no matching tree leaf — half-present record, skipped.', $id, $slug ) );
 
 			return;
 		}
 
 		if ( ! Token_Type::is_valid( $type ) ) {
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": unknown $type "%s" — skipped.', $id, $slug, $type ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": unknown $type "%s" — skipped.', $id, $slug, $type ) );
 
 			return;
 		}
@@ -154,9 +155,9 @@ final class User_Primitive_Registrar {
 		try {
 			$this->registry->register_user_primitive( $id, $type, $label );
 		} catch ( \RuntimeException $e ) {
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": %s', $id, $slug, $e->getMessage() ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": %s', $id, $slug, $e->getMessage() ) );
 		} catch ( \InvalidArgumentException $e ) { // @phpstan-ignore-line -- Token_Definition::from_user_primitive() throws this; Token_Registry::register_user_primitive() does not re-declare it.
-			$this->logger->warning( sprintf( 'User primitive "%s" in set "%s": invalid id — %s', $id, $slug, $e->getMessage() ) );
+			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": invalid id — %s', $id, $slug, $e->getMessage() ) );
 		}
 	}
 
@@ -189,7 +190,7 @@ final class User_Primitive_Registrar {
 	/**
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to load.
+	 * @param string $slug The token library slug to load.
 	 *
 	 * @return array<string, mixed>
 	 */
