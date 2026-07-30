@@ -24,12 +24,12 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * REST controller for the per-set color palettes.
+ * REST controller for the per-library color palettes.
  *
- * Owns the `$extensions.com.kadence.designTokens.colorPalettes` surface: list the set's palettes, read /
- * create / replace / delete a palette (label + ordered groups of swatches), and get / set the set's
- * `$current` (active) palette. Modeled on {@see Presets_Controller} — the closest per-set `$extensions`
- * write precedent — plus {@see Active_Set_Controller} for the pointer.
+ * Owns the `$extensions.com.kadence.designTokens.colorPalettes` surface: list the library's palettes, read /
+ * create / replace / delete a palette (label + ordered groups of swatches), and get / set the library's
+ * `$current` (active) palette. Modeled on {@see Presets_Controller} — the closest per-library `$extensions`
+ * write precedent — plus {@see Active_Token_Library_Controller} for the pointer.
  *
  * Writes go through the same gate: capability check (via {@see Controller}), the DTCG validator (swatch
  * `$value` grammar), a resolver dry-run, and palette-specific guards — `$current` / `$default` must name a
@@ -42,13 +42,13 @@ use WP_REST_Server;
 final class Palettes_Controller extends Controller {
 
 	/**
-	 * The optional token-set request parameter.
+	 * The request parameter that carries the token library slug a read/write targets.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const SET_PARAM = 'set';
+	private const LIBRARY_PARAM = 'library';
 
 	/**
 	 * The palette id path/request parameter.
@@ -230,7 +230,7 @@ final class Palettes_Controller extends Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'get_items' ],
 					'permission_callback' => [ $this, 'get_items_permissions_check' ],
-					'args'                => [ self::SET_PARAM => $this->set_param() ],
+					'args'                => [ self::LIBRARY_PARAM => $this->library_param() ],
 				],
 				'schema' => [ $this, 'get_item_schema' ],
 			]
@@ -244,7 +244,7 @@ final class Palettes_Controller extends Controller {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'get_current' ],
 					'permission_callback' => [ $this, 'get_item_permissions_check' ],
-					'args'                => [ self::SET_PARAM => $this->set_param() ],
+					'args'                => [ self::LIBRARY_PARAM => $this->library_param() ],
 				],
 				[
 					// POST and PUT both set the pointer; it is an idempotent write, so they share one handler.
@@ -308,7 +308,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * List a set's palettes: the `$default` / `$current` pointers and each palette's id + label.
+	 * List a library's palettes: the `$default` / `$current` pointers and each palette's id + label.
 	 *
 	 * @since TBD
 	 *
@@ -321,7 +321,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Read a single palette node, or 404 when the set defines no palette with that id.
+	 * Read a single palette node, or 404 when the library defines no palette with that id.
 	 *
 	 * @since TBD
 	 *
@@ -350,7 +350,7 @@ final class Palettes_Controller extends Controller {
 
 	/**
 	 * Create or replace a palette (POST or PUT /palettes/{id}): read its label + groups from the request, run
-	 * the shape and swatch guards, deep-merge the node into the set's stored overrides, and validate-and-save.
+	 * the shape and swatch guards, deep-merge the node into the library's stored overrides, and validate-and-save.
 	 * A single palette node write is create-or-replace either way, so POST and PUT share this handler.
 	 *
 	 * @since TBD
@@ -384,8 +384,8 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a palette (DELETE /palettes/{id}). The set's `$default` palette cannot be deleted, and a
-	 * request for a palette the set does not define is a 404.
+	 * Delete a palette (DELETE /palettes/{id}). The library's `$default` palette cannot be deleted, and a
+	 * request for a palette the library does not define is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -422,7 +422,7 @@ final class Palettes_Controller extends Controller {
 	 * and value, upsert it into the palette, and save. Only the sent swatch is guarded, so editing one color
 	 * never depends on the palette's other swatches being valid, and every token the palette does not set falls
 	 * back to the default palette. Setting a non-default palette's swatch to the default value reverts it to
-	 * inherited, the same as a DELETE. A request for a palette the set does not define is a 404.
+	 * inherited, the same as a DELETE. A request for a palette the library does not define is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -503,7 +503,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Read the set's `$current` palette id.
+	 * Read the library's `$current` palette id.
 	 *
 	 * @since TBD
 	 *
@@ -516,7 +516,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Set the set's `$current` palette (PUT /palettes/current). The target must name a palette the set
+	 * Set the library's `$current` palette (PUT /palettes/current). The target must name a palette the library
 	 * defines, otherwise it is a 422.
 	 *
 	 * @since TBD
@@ -532,7 +532,7 @@ final class Palettes_Controller extends Controller {
 		if ( $this->palettes->palette( $id, $slug ) === null ) {
 			return new WP_Error(
 				'rest_design_tokens_invalid',
-				__( 'The current palette must name a palette the set defines.', 'kadence-blocks' ),
+				__( 'The current palette must name a palette the library defines.', 'kadence-blocks' ),
 				[
 					'status'            => WP_Http::UNPROCESSABLE_ENTITY,
 					self::CURRENT_PARAM => $id,
@@ -591,17 +591,17 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Validate and persist a candidate overrides document, then respond with the set's palette listing.
+	 * Validate and persist a candidate overrides document, then respond with the library's palette listing.
 	 *
-	 * Mirrors {@see Presets_Controller::validate_and_save()}: an empty candidate clears the set; otherwise
+	 * Mirrors {@see Presets_Controller::validate_and_save()}: an empty candidate clears the library; otherwise
 	 * the DTCG validator (422) and a resolver dry-run (422) gate the write, the encode is guarded (500), and
-	 * the store persists it. First write to a set reports 201.
+	 * the store persists it. First write to a library reports 201.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document.
 	 * @param string               $id        The palette id being written, for error context.
-	 * @param string               $slug      The token set slug being written.
+	 * @param string               $slug      The token library slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -656,14 +656,14 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Commit a raw document to a set and respond with the palette listing, mapping a write failure to 500.
+	 * Commit a raw document to a library and respond with the palette listing, mapping a write failure to 500.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the set).
+	 * @param string $document The raw overrides-only DTCG JSON (empty string clears the library).
 	 * @param string $id       The palette id being written, for error context.
 	 * @param int    $status   The success status code.
-	 * @param string $slug     The token set slug being written.
+	 * @param string $slug     The token library slug being written.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -849,7 +849,7 @@ final class Palettes_Controller extends Controller {
 	 * @param array<string, mixed> $node  The palette node.
 	 * @param string               $token The swatch token dot-path.
 	 * @param string               $value The swatch value.
-	 * @param string               $slug  The token set slug.
+	 * @param string               $slug  The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -963,7 +963,7 @@ final class Palettes_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param string $token The swatch token dot-path.
-	 * @param string $slug  The token set slug.
+	 * @param string $slug  The token library slug.
 	 *
 	 * @return array{0:string,1:string,2:string} The group id, group label, and swatch label.
 	 */
@@ -1003,7 +1003,7 @@ final class Palettes_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string               $slug The token set slug.
+	 * @param string               $slug The token library slug.
 	 * @param string               $id   The palette id.
 	 * @param array<string, mixed> $node The rebuilt palette node.
 	 *
@@ -1017,11 +1017,11 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The palette listing for a set: the `$default` / `$current` pointers and each palette's id + label.
+	 * The palette listing for a library: the `$default` / `$current` pointers and each palette's id + label.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1046,11 +1046,11 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The decoded stored overrides document for a set (the raw palettes source), or an empty array.
+	 * The decoded stored overrides document for a library (the raw palettes source), or an empty array.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1141,8 +1141,8 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The token set a request targets: the `set` parameter when it names a known set, otherwise the active
-	 * set. An unknown or absent `set` falls back rather than 404ing.
+	 * The token library a request targets: the `library` parameter when it names a known library, otherwise the
+	 * active library. An unknown or absent `library` falls back rather than 404ing.
 	 *
 	 * @since TBD
 	 *
@@ -1151,17 +1151,17 @@ final class Palettes_Controller extends Controller {
 	 * @return string
 	 */
 	private function slug( WP_REST_Request $request ): string {
-		$set = Cast::to_string( $request->get_param( self::SET_PARAM ) );
+		$library = Cast::to_string( $request->get_param( self::LIBRARY_PARAM ) );
 
-		if ( $set !== '' && ( $set === Token_Store::default_slug() || $this->store->exists( $set ) ) ) {
-			return $set;
+		if ( $library !== '' && ( $library === Token_Store::default_slug() || $this->store->exists( $library ) ) ) {
+			return $library;
 		}
 
 		return $this->active->get();
 	}
 
 	/**
-	 * A 404 for a palette a set does not define.
+	 * A 404 for a palette a library does not define.
 	 *
 	 * @since TBD
 	 *
@@ -1202,15 +1202,15 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The optional token-set argument shared by every route.
+	 * The optional token-library argument shared by every route.
 	 *
 	 * @since TBD
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function set_param(): array {
+	private function library_param(): array {
 		return [
-			'description'       => __( 'Optional token set slug to target; defaults to the active set.', 'kadence-blocks' ),
+			'description'       => __( 'Optional token library slug to target; defaults to the active library.', 'kadence-blocks' ),
 			'type'              => 'string',
 			'required'          => false,
 			'pattern'           => '^[\w-]+$',
@@ -1219,7 +1219,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments for the single-palette read / delete routes: the palette id plus the optional set.
+	 * The arguments for the single-palette read / delete routes: the palette id plus the optional library.
 	 *
 	 * @since TBD
 	 *
@@ -1227,19 +1227,19 @@ final class Palettes_Controller extends Controller {
 	 */
 	private function get_id_params(): array {
 		return [
-			self::ID_PARAM  => [
+			self::ID_PARAM      => [
 				'description'       => __( 'The palette id.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::SET_PARAM => $this->set_param(),
+			self::LIBRARY_PARAM => $this->library_param(),
 		];
 	}
 
 	/**
-	 * The arguments for the palette write route: id, label, groups, and the optional set.
+	 * The arguments for the palette write route: id, label, groups, and the optional library.
 	 *
 	 * @since TBD
 	 *
@@ -1264,7 +1264,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments for the single-swatch routes: the palette id, the token dot-path, and the optional set.
+	 * The arguments for the single-swatch routes: the palette id, the token dot-path, and the optional library.
 	 * The token keeps its dots (a dot-path), so it is sanitized with sanitize_text_field rather than the id's
 	 * sanitize_key, which would strip them.
 	 *
@@ -1308,7 +1308,7 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments for the `$current` write route: the target palette id plus the optional set.
+	 * The arguments for the `$current` write route: the target palette id plus the optional library.
 	 *
 	 * @since TBD
 	 *
@@ -1323,7 +1323,7 @@ final class Palettes_Controller extends Controller {
 				'pattern'           => '^[\w-]+$',
 				'sanitize_callback' => 'sanitize_key',
 			],
-			self::SET_PARAM     => $this->set_param(),
+			self::LIBRARY_PARAM => $this->library_param(),
 		];
 	}
 }

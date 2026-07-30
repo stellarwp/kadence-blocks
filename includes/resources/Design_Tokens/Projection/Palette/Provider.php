@@ -30,11 +30,11 @@ final class Provider extends Provider_Contract {
 		$projector = $this->container->get( Projector::class );
 		$projectors->add( $projector );
 
-		// Front end: append after the token vars (100) and variants (110), so a subtree's palette override
+		// Front end: append after the token vars (100) and presets (110), so a subtree's palette override
 		// follows the base token vars in source order and wins by cascade.
 		add_action( 'wp_enqueue_scripts', $this->container->callback( Projector::class, 'enqueue_front_end' ), 115 );
 
-		// Editor: append after the Css_Var (5) and variant (10) editor enqueues on the same handle.
+		// Editor: append after the Css_Var (5) and preset (10) editor enqueues on the same handle.
 		add_action( 'admin_init', $this->container->callback( Projector::class, 'enqueue_editor' ), 15 );
 	}
 }
