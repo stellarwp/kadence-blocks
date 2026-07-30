@@ -758,7 +758,7 @@
 			"type": "string",
 			"default": ""
 		},
-		"kbTokenSet": {
+		"kbPalette": {
 			"type": "string",
 			"default": ""
 		}

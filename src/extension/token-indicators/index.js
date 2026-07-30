@@ -60,15 +60,15 @@ export function mappedAttrsFor(blockName, library) {
  *
  * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
  * @param {Object} attributes The block's current attributes.
- * @param {string} [library]  The token library slug; defaults to kbTokenSet, then the active library — pass
- *                            the caller's resolved library so the binding can't disagree with the rest of its UI.
+ * @param {string} [library]  The token library slug; defaults to the active library — pass the caller's
+ *                            resolved library so the binding can't disagree with the rest of its UI.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
  */
 export function usePresetBinding(blockName, attributes, library) {
-	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const resolvedLibrary = library || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);

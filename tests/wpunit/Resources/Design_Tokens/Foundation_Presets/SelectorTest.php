@@ -51,20 +51,6 @@ final class SelectorTest extends TestCase {
 		);
 	}
 
-	public function testApplyingAColorPaletteWritesTypedColorLeaves(): void {
-		$this->selector->apply( 'colorPalette', 'sunset' );
-
-		$overrides = $this->stored_overrides();
-
-		$this->assertSame(
-			[
-				'$type'  => 'color',
-				'$value' => '#DD6B20',
-			],
-			$overrides['primitive']['color']['brand']['primary']
-		);
-	}
-
 	public function testTheSeededOverridesResolveToThePresetValues(): void {
 		$this->selector->apply( 'typeScale', 'goldenRatio' );
 
@@ -73,23 +59,6 @@ final class SelectorTest extends TestCase {
 		$by_id    = $resolver->resolve_overrides( $this->stored_overrides() )->by_id();
 
 		$this->assertSame( '6.854rem', $by_id['primitive.fontSize.3xl'] );
-	}
-
-	public function testSeedingAPaletteCascadesThroughSemanticAliases(): void {
-		// The point of seeding primitives: every semantic token aliasing a brand color follows it. The
-		// baseline aliases semantic.color.link -> {primitive.color.brand.primary}, so picking "sunset"
-		// must rebrand the link color without that path ever being written.
-		$this->selector->apply( 'colorPalette', 'sunset' );
-
-		$overrides = $this->stored_overrides();
-		$this->assertArrayNotHasKey( 'semantic', $overrides, 'Only primitives are seeded; semantics cascade.' );
-
-		/** @var Token_Resolver $resolver */
-		$resolver = $this->container->get( Token_Resolver::class );
-		$by_id    = $resolver->resolve_overrides( $overrides )->by_id();
-
-		$this->assertSame( '#DD6B20', $by_id['primitive.color.brand.primary'] );
-		$this->assertSame( '#DD6B20', $by_id['semantic.color.link'] );
 	}
 
 	public function testApplyingLeavesPathsOutsideTheGroupFootprintIntact(): void {
