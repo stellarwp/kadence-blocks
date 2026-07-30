@@ -80,11 +80,11 @@ final class Projector extends Abstract_Css_Projector {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Registry     $registry    The token registry.
-	 * @param Token_Store        $store       The store, for the cache-busting version.
-	 * @param Active_Token_Library_Store   $active      Owns the active-library pointer.
-	 * @param Effective_Palettes $palettes    Reads the active set's effective palettes.
-	 * @param Css_Builder        $css_builder The palette switch-layer builder.
+	 * @param Token_Registry             $registry    The token registry.
+	 * @param Token_Store                $store       The store, for the cache-busting version.
+	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
+	 * @param Effective_Palettes         $palettes    Reads the active set's effective palettes.
+	 * @param Css_Builder                $css_builder The palette switch-layer builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
