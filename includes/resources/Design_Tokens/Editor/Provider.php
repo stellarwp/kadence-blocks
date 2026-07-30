@@ -22,6 +22,7 @@ final class Provider extends Provider_Contract {
 	 */
 	public function register(): void {
 		$this->container->singleton( Preset_Catalog::class );
+		$this->container->singleton( Palette_Catalog::class );
 		$this->container->singleton( Attribute_Default_Catalog::class );
 		$this->container->singleton( Pickable_Tokens_Catalog::class );
 		$this->container->singleton( Localizer::class );

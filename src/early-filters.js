@@ -15,6 +15,7 @@ import { useState } from '@wordpress/element';
 import { useDispatch, select } from '@wordpress/data';
 import { PresetPicker, blockPresets, activeLibrary } from './extension/preset-picker';
 import { PresetActions } from './extension/preset-picker/PresetActions';
+import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
@@ -307,20 +308,22 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 		}
 
 		const support = getBlockSupport(name, 'kbPreset');
-
-		if (support && typeof support === 'object' && support.inlinePicker) {
-			return <BlockEdit {...props} />;
-		}
+		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker itself (e.g. a
+		// Kadence block under its own Style tab), so this generic panel skips only the preset subsection for
+		// it — the per-block Color Palette override still surfaces here for every kbPreset block.
+		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
 
 		const library = activeLibrary();
-		const hasPresets = blockPresets(name, library).length > 0;
+		const showPresets = !inlinePicker && blockPresets(name, library).length > 0;
+		const showPalettes = selectablePalettes().length >= 2;
 
-		if (!hasPresets) {
+		if (!showPresets && !showPalettes) {
 			return <BlockEdit {...props} />;
 		}
 
 		const selected = get(attributes, 'kbPreset', '');
 		const selectPreset = (value) => setAttributes({ kbPreset: value });
+		const selectPalette = (value) => setAttributes({ kbPalette: value });
 
 		return (
 			<>
@@ -328,17 +331,37 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 				{isSelected && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-								<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
-								<PresetActions
-									blockName={name}
-									library={library}
-									selected={selected}
-									onSelect={selectPreset}
-									attributes={attributes}
-									setAttributes={setAttributes}
-								/>
-							</SubsectionWrap>
+							{showPresets && (
+								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
+									<PresetPicker
+										name={name}
+										library={library}
+										value={selected}
+										onChange={selectPreset}
+									/>
+									<PresetActions
+										blockName={name}
+										library={library}
+										selected={selected}
+										onSelect={selectPreset}
+										attributes={attributes}
+										setAttributes={setAttributes}
+									/>
+								</SubsectionWrap>
+							)}
+							{showPalettes && (
+								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
+									{/*
+									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
+									 * control. The design (see the B4 Figma) integrates the palette token picker
+									 * into the block's color controls — a "Style Library | Custom" popover with a
+									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
+									 * Color row — which requires @kadence/components changes to the color-control
+									 * popover and is deferred.
+									 */}
+									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
+								</SubsectionWrap>
+							)}
 						</PanelBody>
 					</InspectorControls>
 				)}
