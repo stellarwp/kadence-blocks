@@ -4,12 +4,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
@@ -45,6 +47,25 @@ final class Token_Resolver {
 	private Css_Renderer $renderer;
 
 	/**
+	 * Reads the set's effective color palettes, so the resolver can re-tint the color tokens with the set's
+	 * `$current` palette before alias flattening.
+	 *
+	 * @since TBD
+	 *
+	 * @var Effective_Palettes
+	 */
+	private Effective_Palettes $palettes;
+
+	/**
+	 * The pure structural setter used to write the palette overlay onto a color leaf's `$value`.
+	 *
+	 * @since TBD
+	 *
+	 * @var Mutator
+	 */
+	private Mutator $mutator;
+
+	/**
 	 * Per-request memo of resolved results, keyed on the same cache key load() uses for the object cache:
 	 * the cache prefix "resolved_tokens_{slug}" followed by the store version, e.g.
 	 * "resolved_tokens_default_v3".
@@ -72,15 +93,21 @@ final class Token_Resolver {
 	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
+	 * @param Effective_Palettes $palettes  Reads the set's effective color palettes for the `:root` overlay.
+	 * @param Mutator            $mutator   The pure structural setter for the palette overlay.
 	 */
 	public function __construct(
 		Token_Store $store,
 		Effective_Document $effective,
-		Css_Renderer $renderer
+		Css_Renderer $renderer,
+		Effective_Palettes $palettes,
+		Mutator $mutator
 	) {
 		$this->store     = $store;
 		$this->effective = $effective;
 		$this->renderer  = $renderer;
+		$this->palettes  = $palettes;
+		$this->mutator   = $mutator;
 	}
 
 	/**
@@ -165,6 +192,10 @@ final class Token_Resolver {
 	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
 	 * the stored document is decoded and merged once rather than rebuilt by every caller.
 	 *
+	 * The set's `$current` color palette is overlaid onto the color token leaves here, before the resolved
+	 * maps flatten aliases — so every semantic color that aliases a re-tinted primitive follows the palette
+	 * for free, and switching the palette (writing `$current`) re-tints without touching the primitives.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The token library slug.
@@ -182,9 +213,42 @@ final class Token_Resolver {
 		$decoded = $raw === '' ? [] : json_decode( $raw, true );
 		$over    = is_array( $decoded ) ? $decoded : [];
 
-		$this->effective_memo[ $cache_key ] = $this->effective->build( $over );
+		$this->effective_memo[ $cache_key ] = $this->apply_palette_overlay( $this->effective->build( $over ), $over );
 
 		return $this->effective_memo[ $cache_key ];
+	}
+
+	/**
+	 * Overlay the set's `$current` palette onto the effective document's color leaves: for each swatch
+	 * `token => $value`, replace only that color leaf's `$value` (keeping its `$type`) so the resolver
+	 * flattens the palette's color, and every semantic that aliases the primitive re-tints with it. A swatch
+	 * naming a token that is not a value leaf in the document is ignored — the palette controller's write
+	 * guards reject those at write time, so this stays a fail-soft render step. The default palette carries
+	 * the baseline color values, so overlaying it is a no-op.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $document  The baseline-merged effective document.
+	 * @param array<string,mixed> $overrides The set's decoded stored overrides (the palette source, deep-merged
+	 *                                        with the baseline palettes so the overlay reads the same document).
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function apply_palette_overlay( array $document, array $overrides ): array {
+		$overlay = $this->palettes->overlay_for_overrides( $overrides );
+
+		foreach ( $overlay as $token => $value ) {
+			$leaf = Document_Path::node_at( $document, $token );
+
+			if ( ! is_array( $leaf ) || ! array_key_exists( Sentinels::get_value_key(), $leaf ) ) {
+				continue;
+			}
+
+			$leaf[ Sentinels::get_value_key() ] = $value;
+			$document                           = $this->mutator->set( $document, $token, $leaf );
+		}
+
+		return $document;
 	}
 
 	/**

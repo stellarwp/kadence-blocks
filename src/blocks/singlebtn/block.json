@@ -757,6 +757,10 @@
 		"kbPreset": {
 			"type": "string",
 			"default": ""
+		},
+		"kbPalette": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
