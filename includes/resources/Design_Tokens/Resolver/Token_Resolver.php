@@ -213,13 +213,66 @@ final class Token_Resolver {
 		$decoded = $raw === '' ? [] : json_decode( $raw, true );
 		$over    = is_array( $decoded ) ? $decoded : [];
 
-		$this->effective_memo[ $cache_key ] = $this->apply_palette_overlay( $this->effective->build( $over ), $over );
+		$this->effective_memo[ $cache_key ] = $this->apply_palette_overlay(
+			$this->effective->build( $over ),
+			$this->palettes->overlay_for_overrides( $over )
+		);
 
 		return $this->effective_memo[ $cache_key ];
 	}
 
 	/**
-	 * Overlay the set's `$current` palette onto the effective document's color leaves: for each swatch
+	 * Resolve the active set's tokens as if a SPECIFIC palette were current, rather than the set's stored
+	 * `$current`. The per-block palette switch layer emits each palette's fully-resolved color graph so a
+	 * `[data-kb-palette="<id>"]` override re-skins its subtree — semantic colors and shadow composites
+	 * included, not just the primitives it re-tints. Memoized per request and cached on the store version
+	 * (bumped on every write) keyed additionally on the palette id.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug       The token set slug to resolve.
+	 * @param string $palette_id The palette whose colors the graph resolves against.
+	 *
+	 * @return Resolved_Tokens
+	 *
+	 * @throws Alias_Cycle_Exception    When a stored alias forms an unresolvable cycle.
+	 * @throws Dangling_Alias_Exception When a stored alias references a path with no token leaf.
+	 */
+	public function resolve_palette( string $slug, string $palette_id ): Resolved_Tokens {
+		$version   = $this->store->get_version( $slug );
+		$cache_key = 'resolved_tokens_palette_' . $palette_id . '_' . $slug . '_' . $version;
+
+		if ( isset( $this->memo[ $cache_key ] ) ) {
+			return $this->memo[ $cache_key ];
+		}
+
+		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
+
+		if ( $found && $cached instanceof Resolved_Tokens ) {
+			$this->memo[ $cache_key ] = $cached;
+
+			return $cached;
+		}
+
+		$raw     = $this->store->get_document( $slug );
+		$decoded = $raw === '' ? [] : json_decode( $raw, true );
+		$over    = is_array( $decoded ) ? $decoded : [];
+
+		$document = $this->apply_palette_overlay(
+			$this->effective->build( $over ),
+			$this->palettes->overlay_for_palette( $palette_id, $slug )
+		);
+
+		$result = $this->resolve_document( $document );
+
+		wp_cache_set( $cache_key, $result, self::CACHE_GROUP, DAY_IN_SECONDS );
+		$this->memo[ $cache_key ] = $result;
+
+		return $result;
+	}
+
+	/**
+	 * Overlay a palette's colors onto the effective document's color leaves: for each swatch
 	 * `token => $value`, replace only that color leaf's `$value` (keeping its `$type`) so the resolver
 	 * flattens the palette's color, and every semantic that aliases the primitive re-tints with it. A swatch
 	 * naming a token that is not a value leaf in the document is ignored — the palette controller's write
@@ -228,15 +281,14 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $document  The baseline-merged effective document.
-	 * @param array<string,mixed> $overrides The set's decoded stored overrides (the palette source, deep-merged
-	 *                                        with the baseline palettes so the overlay reads the same document).
+	 * @param array<string,mixed>   $document The baseline-merged effective document.
+	 * @param array<string, string> $overlay  The color overlay to apply (token dot-path => re-tint value), from
+	 *                                         Effective_Palettes::overlay_for_overrides() ($current) or
+	 *                                         overlay_for_palette() (a specific palette).
 	 *
 	 * @return array<string,mixed>
 	 */
-	private function apply_palette_overlay( array $document, array $overrides ): array {
-		$overlay = $this->palettes->overlay_for_overrides( $overrides );
-
+	private function apply_palette_overlay( array $document, array $overlay ): array {
 		foreach ( $overlay as $token => $value ) {
 			$leaf = Document_Path::node_at( $document, $token );
 

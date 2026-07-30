@@ -63,6 +63,53 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * A palette's switch selector carries its fully-resolved color graph, not just the primitives it re-tints:
+	 * the primitive delta AND every semantic that aliases it resolve to the palette's color, so a per-block
+	 * override re-skins direct-token consumers (a heading reading a semantic) across its subtree.
+	 *
+	 * @return void
+	 */
+	public function testTheSwitchSelectorCarriesTheResolvedColorGraph(): void {
+		$css = $this->projector->css();
+
+		// Isolate just the sunset selector's declarations (up to its closing brace).
+		$start = strpos( $css, '[data-kb-palette="sunset"]{' );
+		$this->assertNotFalse( $start );
+		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
+
+		// Sunset's own button primitive delta is present.
+		$this->assertStringContainsString( Css_Var::from_id( 'primitive.color.brand.button' ) . ':#DD6B20;', $block );
+
+		// The semantic that aliases the re-tinted button primitive is resolved to sunset's color (not just the
+		// primitive) — this is what makes a block reading the semantic re-skin, and what the button's variant
+		// var chains to.
+		$this->assertStringContainsString( Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ':#DD6B20;', $block );
+	}
+
+	/**
+	 * A shared attribute-presence `[data-kb-palette]` rule re-emits the canonical variant-var declarations, so a
+	 * variant Button whose color aliases a palette-changed token re-resolves against the subtree's re-tinted
+	 * semantics and follows the chosen palette.
+	 *
+	 * @return void
+	 */
+	public function testItReEmitsTheVariantVarsUnderTheSharedPresenceRule(): void {
+		$css = $this->projector->css();
+
+		$start = strpos( $css, '[data-kb-palette]{' );
+		$this->assertNotFalse( $start );
+		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
+
+		// The Single Button's primary button-bg variant var chains to the button semantic, which the per-palette
+		// selector re-declares — so on a palette subtree the variant follows the palette.
+		$this->assertStringContainsString( 'kadence-singlebtn--primary--button-bg', $block );
+		$this->assertStringContainsString(
+			'var(' . Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ')',
+			$block
+		);
+	}
+
+	/**
 	 * A deactivated registry projects nothing, so a fail-closed registry leaves KB's behavior untouched.
 	 *
 	 * @return void

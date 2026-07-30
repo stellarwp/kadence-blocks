@@ -166,6 +166,11 @@ function SwatchRow({ swatch, busy, onSave }) {
 			<span className="kadence-blocks-style-library__palette-swatch-meta">
 				<strong>{swatch.label}</strong>
 				<code>{swatch.token}</code>
+				{swatch.overridden === false && (
+					<em className="kadence-blocks-style-library__palette-swatch-inherited">
+						{__('Inherited from default', 'kadence-blocks')}
+					</em>
+				)}
 			</span>
 		</li>
 	);

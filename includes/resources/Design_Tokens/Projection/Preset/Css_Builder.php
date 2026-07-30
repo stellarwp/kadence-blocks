@@ -3,6 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -101,6 +102,13 @@ final class Css_Builder {
 	private Preset_Resolver $presets;
 
 	/**
+	 * @var Token_Store The store, read for the cache-busting version the collect memo keys on.
+	 *
+	 * @since TBD
+	 */
+	private Token_Store $store;
+
+	/**
 	 * Per-request memo of built CSS, keyed on the active set's object-cache key, so a write (which bumps the
 	 * set's version) invalidates the affected entry on its own.
 	 *
@@ -111,8 +119,9 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of the collected variant structure, keyed on the set slug, so the registry/resolver
-	 * walk runs once per set even when several layers read it.
+	 * Per-request memo of the collected variant structure, keyed on the set slug AND its store version, so the
+	 * registry/resolver walk runs once per set even when several layers read it, yet a write (which bumps the
+	 * version) produces a fresh collection rather than serving the pre-write structure.
 	 *
 	 * @since TBD
 	 *
@@ -125,10 +134,12 @@ final class Css_Builder {
 	 *
 	 * @param Token_Registry  $registry The token registry.
 	 * @param Preset_Resolver $presets  The preset resolver.
+	 * @param Token_Store     $store    The store, for the cache-busting version.
 	 */
-	public function __construct( Token_Registry $registry, Preset_Resolver $presets ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $presets, Token_Store $store ) {
 		$this->registry = $registry;
 		$this->presets  = $presets;
+		$this->store    = $store;
 	}
 
 	/**
@@ -181,6 +192,23 @@ final class Css_Builder {
 	}
 
 	/**
+	 * The active set's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
+	 * `--kb-token--variant--<block>--<variant>--<property>:<value>;` list. The palette switch layer re-emits
+	 * these under `[data-kb-palette]` so a per-block palette override forces each variant var to re-resolve
+	 * against the subtree's re-tinted semantics (a variant that aliases a palette-changed color follows the
+	 * chosen palette, so a variant Button re-skins with the rest of its subtree).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $active_slug The active set's slug.
+	 *
+	 * @return string
+	 */
+	public function canonical_declarations( string $active_slug ): string {
+		return $this->declarations_of( $this->collect( $active_slug ) );
+	}
+
+	/**
 	 * Build (uncached) the active set's variant CSS: the canonical variant-var definitions followed by the
 	 * per-variant scoped rules and the class-less $default rules. The single assembly definition shared by
 	 * css() and the cached css_for_version().
@@ -211,8 +239,10 @@ final class Css_Builder {
 	 * @return array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>
 	 */
 	private function collect( string $slug ): array {
-		if ( isset( $this->collected[ $slug ] ) ) {
-			return $this->collected[ $slug ];
+		$key = $slug . '_' . $this->store->get_version( $slug );
+
+		if ( isset( $this->collected[ $key ] ) ) {
+			return $this->collected[ $key ];
 		}
 
 		$out = [];
@@ -284,7 +314,7 @@ final class Css_Builder {
 			];
 		}
 
-		return $this->collected[ $slug ] = $out;
+		return $this->collected[ $key ] = $out;
 	}
 
 	/**
@@ -298,6 +328,22 @@ final class Css_Builder {
 	 * @return string
 	 */
 	private function canonical_block( array $collected ): string {
+		$declarations = $this->declarations_of( $collected );
+
+		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
+	}
+
+	/**
+	 * The raw `--kb-token--variant--*:<value>;` declaration list for the collected variants, shared by the
+	 * `:root` canonical block and the palette switch layer's re-emission.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 *
+	 * @return string
+	 */
+	private function declarations_of( array $collected ): string {
 		$declarations = '';
 
 		foreach ( $collected as $block => $data ) {
@@ -308,7 +354,7 @@ final class Css_Builder {
 			}
 		}
 
-		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
+		return $declarations;
 	}
 
 	/**

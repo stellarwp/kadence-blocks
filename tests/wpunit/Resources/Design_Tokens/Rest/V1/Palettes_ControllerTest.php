@@ -118,6 +118,154 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Reading a partial palette returns the effective view: the full default field set, with the palette's
+	 * own deltas flagged overridden and everything else inherited from the default.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheEffectiveViewWithInheritedValues(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'id', 'sunset' );
+
+		$data     = $this->controller->get_item( $request )->get_data();
+		$swatches = [];
+
+		foreach ( $data['groups'] as $group ) {
+			foreach ( $group['swatches'] as $swatch ) {
+				$swatches[ $swatch['token'] ] = $swatch;
+			}
+		}
+
+		// A sunset delta is overridden and carries sunset's value.
+		$this->assertTrue( $swatches['primitive.color.brand.primary']['overridden'] );
+		$this->assertSame( '#DD6B20', $swatches['primitive.color.brand.primary']['$value'] );
+
+		// A token sunset omits is present but inherited from the default palette's value.
+		$this->assertFalse( $swatches['primitive.color.neutral.900']['overridden'] );
+		$this->assertSame( '#1A202C', $swatches['primitive.color.neutral.900']['$value'] );
+	}
+
+	/**
+	 * Writing a non-default palette persists only the swatches that differ from the default; a swatch equal
+	 * to the default is inherited, not stored.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemStoresOnlyDeltas(): void {
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'id', 'ocean' );
+		$request->set_param( 'label', 'Ocean' );
+		$request->set_param(
+			'groups',
+			[
+				[
+					'id'       => 'accent',
+					'label'    => 'Accent',
+					'swatches' => [
+						// A real delta.
+						[
+							'token'  => 'primitive.color.brand.primary',
+							'label'  => 'Main 1',
+							'$value' => '#0000ff',
+						],
+						// Equal to the default palette value — should NOT be stored.
+						[
+							'token'  => 'primitive.color.brand.secondary',
+							'label'  => 'Main 2',
+							'$value' => '#2B6CB0',
+						],
+					],
+				],
+			]
+		);
+
+		$this->controller->update_item( $request );
+
+		$stored = $this->palettes->swatch_values( 'ocean' );
+
+		$this->assertArrayHasKey( 'primitive.color.brand.primary', $stored );
+		$this->assertSame( '#0000ff', $stored['primitive.color.brand.primary'] );
+		$this->assertArrayNotHasKey( 'primitive.color.brand.secondary', $stored );
+	}
+
+	/**
+	 * Re-saving an existing non-default palette replaces its stored node wholesale: a swatch reverted to the
+	 * default value in a follow-up write drops out of the deltas instead of lingering because the shorter delta
+	 * list was positionally merged over the previously stored, longer one.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemReplacesTheStoredNodeWhenAPaletteShrinks(): void {
+		$first = new WP_REST_Request( 'PUT' );
+		$first->set_param( 'id', 'ocean' );
+		$first->set_param( 'label', 'Ocean' );
+		$first->set_param(
+			'groups',
+			[
+				[
+					'id'       => 'accent',
+					'label'    => 'Accent',
+					'swatches' => [
+						[
+							'token'  => 'primitive.color.brand.secondary',
+							'label'  => 'Main 2',
+							'$value' => '#111111',
+						],
+						[
+							'token'  => 'primitive.color.neutral.900',
+							'label'  => 'Neutral 900',
+							'$value' => '#222222',
+						],
+					],
+				],
+			]
+		);
+
+		$this->controller->update_item( $first );
+
+		$stored = $this->palettes->swatch_values( 'ocean' );
+		$this->assertSame( '#111111', $stored['primitive.color.brand.secondary'] );
+		$this->assertSame( '#222222', $stored['primitive.color.neutral.900'] );
+
+		// Re-save with the neutral swatch reverted to the default value, so it drops out of the deltas and the
+		// stored groups list is shorter than the one already persisted.
+		$second = new WP_REST_Request( 'PUT' );
+		$second->set_param( 'id', 'ocean' );
+		$second->set_param( 'label', 'Ocean' );
+		$second->set_param(
+			'groups',
+			[
+				[
+					'id'       => 'accent',
+					'label'    => 'Accent',
+					'swatches' => [
+						[
+							'token'  => 'primitive.color.brand.secondary',
+							'label'  => 'Main 2',
+							'$value' => '#111111',
+						],
+						[
+							'token'  => 'primitive.color.neutral.900',
+							'label'  => 'Neutral 900',
+							'$value' => '#1A202C',
+						],
+					],
+				],
+			]
+		);
+
+		$this->controller->update_item( $second );
+
+		$stored = $this->palettes->swatch_values( 'ocean' );
+		$this->assertSame( '#111111', $stored['primitive.color.brand.secondary'] );
+		$this->assertArrayNotHasKey(
+			'primitive.color.neutral.900',
+			$stored,
+			'A swatch reverted to the default must not linger in the stored deltas.'
+		);
+	}
+
+	/**
 	 * Both POST and PUT are registered for the palette write route, sharing the create-or-replace handler.
 	 *
 	 * @return void

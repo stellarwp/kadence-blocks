@@ -648,7 +648,9 @@
 							"swatches": [
 								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#3182CE" },
 								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#2B6CB0" },
-								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#ED8936" }
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#ED8936" },
+								{ "token": "primitive.color.brand.button", "label": "Button", "$value": "#3633e1" },
+								{ "token": "primitive.color.brand.button-hover", "label": "Button Hover", "$value": "#2f2ffc" }
 							]
 						},
 						{
@@ -658,7 +660,8 @@
 								{ "token": "primitive.color.neutral.900", "label": "Strongest", "$value": "#1A202C" },
 								{ "token": "primitive.color.neutral.700", "label": "Strong", "$value": "#2D3748" },
 								{ "token": "primitive.color.neutral.500", "label": "Medium", "$value": "#718096" },
-								{ "token": "primitive.color.neutral.300", "label": "Subtle", "$value": "#CBD5E0" }
+								{ "token": "primitive.color.neutral.300", "label": "Subtle", "$value": "#CBD5E0" },
+								{ "token": "primitive.color.neutral.200", "label": "Border", "$value": "#E2E8F0" }
 							]
 						},
 						{
@@ -691,7 +694,9 @@
 							"swatches": [
 								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#DD6B20" },
 								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#C05621" },
-								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#F6AD55" }
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#F6AD55" },
+								{ "token": "primitive.color.brand.button", "label": "Button", "$value": "#DD6B20" },
+								{ "token": "primitive.color.brand.button-hover", "label": "Button Hover", "$value": "#C05621" }
 							]
 						}
 					]
@@ -705,7 +710,9 @@
 							"swatches": [
 								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#2F855A" },
 								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#276749" },
-								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#68D391" }
+								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#68D391" },
+								{ "token": "primitive.color.brand.button", "label": "Button", "$value": "#2F855A" },
+								{ "token": "primitive.color.brand.button-hover", "label": "Button Hover", "$value": "#276749" }
 							]
 						}
 					]

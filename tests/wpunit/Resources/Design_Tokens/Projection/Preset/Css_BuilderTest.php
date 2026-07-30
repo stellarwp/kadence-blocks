@@ -22,6 +22,8 @@ final class Css_BuilderTest extends TestCase {
 
 	private Preset_Resolver $resolver;
 
+	private Token_Store $store;
+
 	/**
 	 * @return void
 	 */
@@ -30,6 +32,7 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->registry = $this->container->get( Token_Registry::class );
 		$this->resolver = $this->container->get( Preset_Resolver::class );
+		$this->store    = $this->container->get( Token_Store::class );
 	}
 
 	/**
@@ -189,7 +192,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return Css_Builder
 	 */
 	private function builder( Token_Registry $registry ): Css_Builder {
-		return new Css_Builder( $registry, $this->resolver );
+		return new Css_Builder( $registry, $this->resolver, $this->store );
 	}
 
 	/**

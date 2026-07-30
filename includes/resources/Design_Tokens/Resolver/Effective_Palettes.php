@@ -173,6 +173,26 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * The effective `{ token => $value }` colors for a palette: the set's default palette overlaid with the
+	 * palette's own swatches, so a palette that stores only deltas resolves to a COMPLETE color set (its
+	 * deltas plus the default for everything it omits). This is what the per-block switch layer emits, so an
+	 * override fully re-skins a subtree with default fallback regardless of the set's current palette.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string, string> token dot-path => literal-or-alias value.
+	 */
+	public function effective_swatch_values( string $id, string $slug = 'default' ): array {
+		$section = $this->section( $slug );
+		$default = $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+
+		return array_merge( $default, $this->swatch_values_of( $section, $id ) );
+	}
+
+	/**
 	 * The `{ token => $value }` overlay for the set's `$current` palette — the color re-tint the resolver
 	 * applies at `:root`.
 	 *
@@ -215,20 +235,24 @@ final class Effective_Palettes {
 	 * @return array<string, string> token dot-path => re-tint value.
 	 */
 	public function overlay_for_overrides( array $overrides ): array {
-		$effective = $this->current_swatch_values_for_overrides( $overrides );
-		$baseline  = $this->baseline_default_swatch_values();
+		return $this->diff_against_baseline( $this->current_swatch_values_for_overrides( $overrides ) );
+	}
 
-		$overlay = [];
-
-		foreach ( $effective as $token => $value ) {
-			if ( array_key_exists( $token, $baseline ) && $baseline[ $token ] === $value ) {
-				continue;
-			}
-
-			$overlay[ $token ] = $value;
-		}
-
-		return $overlay;
+	/**
+	 * The resolve-time color overlay for a SPECIFIC palette (not the set's current): the palette's effective
+	 * colors (default overlaid with its deltas) that differ from the baseline default. Used to resolve the
+	 * whole token graph "as if this palette were active", which the per-block switch layer emits so an
+	 * override fully re-skins its subtree.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id   The palette id.
+	 * @param string $slug The token set slug.
+	 *
+	 * @return array<string, string> token dot-path => re-tint value.
+	 */
+	public function overlay_for_palette( string $id, string $slug = 'default' ): array {
+		return $this->diff_against_baseline( $this->effective_swatch_values( $id, $slug ) );
 	}
 
 	/**
@@ -251,6 +275,30 @@ final class Effective_Palettes {
 		$decoded = json_decode( $raw, true );
 
 		return is_array( $decoded ) ? $decoded : [];
+	}
+
+	/**
+	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $values token => value.
+	 *
+	 * @return array<string, string>
+	 */
+	private function diff_against_baseline( array $values ): array {
+		$baseline = $this->baseline_default_swatch_values();
+		$overlay  = [];
+
+		foreach ( $values as $token => $value ) {
+			if ( array_key_exists( $token, $baseline ) && $baseline[ $token ] === $value ) {
+				continue;
+			}
+
+			$overlay[ $token ] = $value;
+		}
+
+		return $overlay;
 	}
 
 	/**
