@@ -6,7 +6,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Default_Css;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Variant_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -18,9 +18,9 @@ use Tests\Support\Classes\TestCase;
 final class Css_BuilderTest extends TestCase {
 
 	/**
-	 * @var Variant_Resolver
+	 * @var Preset_Resolver
 	 */
-	private Variant_Resolver $resolver;
+	private Preset_Resolver $resolver;
 
 	/**
 	 * @return void
@@ -28,7 +28,7 @@ final class Css_BuilderTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Variant_Resolver::class );
+		$this->resolver = $this->container->get( Preset_Resolver::class );
 	}
 
 	/**
@@ -106,7 +106,7 @@ final class Css_BuilderTest extends TestCase {
 	/**
 	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
 	 * `color`/`size` attribute to bind, so none of Phases 1-3's wiring — all of which keys off the
-	 * `kadence/single-icon` child block — ever registers a variant set for `kadence/icon` and the builder
+	 * `kadence/single-icon` child block — ever registers a binding set for `kadence/icon` and the builder
 	 * emits no rule scoped to it, confirming the legacy shape stays unaffected after this ticket's changes.
 	 *
 	 * @return void
@@ -244,7 +244,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A block whose Variant_Set declares no `editor_selector` (e.g. Image) must emit an editor build
+	 * A block whose Preset_Bindings declares no `editor_selector` (e.g. Image) must emit an editor build
 	 * byte-for-byte identical to its front-end build — no `.editor-styles-wrapper` prefix and no
 	 * re-targeting — so blocks without the wrapper-div problem see zero regression from this mechanism. Uses
 	 * an isolated registry (rather than the shipped one) so the assertion is not diluted by the shipped
@@ -266,7 +266,7 @@ final class Css_BuilderTest extends TestCase {
 	public function testItContributesNothingForABindingWithoutACssProp(): void {
 		// A block_attr-only binding (the block-preset path) declares no css_prop, so it feeds no rule here.
 		$registry = new Token_Registry();
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/advancedbtn',
 				'bindings' => [
@@ -296,9 +296,9 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Build the builder with a given registry and the real (baseline-backed) variant resolver.
+	 * Build the builder with a given registry and the real (baseline-backed) preset resolver.
 	 *
-	 * @param Token_Registry $registry The registry whose variant sets the builder reads.
+	 * @param Token_Registry $registry The registry whose binding sets the builder reads.
 	 *
 	 * @return Css_Builder
 	 */
@@ -307,7 +307,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A registry holding the media-radius token and the Image variant set binding borderRadius to it via a
+	 * A registry holding the media-radius token and the Image binding set binding borderRadius to it via a
 	 * css_prop target, so the builder emits the block-default radius rule.
 	 *
 	 * @return Token_Registry
@@ -321,7 +321,7 @@ final class Css_BuilderTest extends TestCase {
 				'label' => 'Media Radius',
 			]
 		);
-		$registry->register_variant_set(
+		$registry->register_preset_bindings(
 			[
 				'block'    => 'kadence/image',
 				'bindings' => [

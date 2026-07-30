@@ -69,7 +69,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param Token_Store        $store     The token set store.
+	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
 	 */
@@ -84,12 +84,12 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve a stored token set into flat maps. Memoized per request on the store version,
+	 * Resolve a stored token library into flat maps. Memoized per request on the store version,
 	 * which is bumped on every write, so the memo invalidates automatically.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug to resolve.
+	 * @param string $slug The token library slug to resolve.
 	 *
 	 * @return Resolved_Tokens
 	 *
@@ -107,7 +107,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug         The token set slug to resolve.
+	 * @param string $slug         The token library slug to resolve.
 	 * @param string $cache_prefix Cache-key prefix for the resolved-tokens entry.
 	 *
 	 * @return Resolved_Tokens
@@ -159,7 +159,7 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * The baseline-merged effective document for a stored set, with $extensions intact — the authored view
+	 * The baseline-merged effective document for a stored library, with $extensions intact — the authored view
 	 * the resolved maps flatten away. This is the source the responsive feed and the REST resolved read need
 	 * to recover a token's authored responsive / clamp shape (aliases preserved, unrendered), which the flat
 	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
@@ -167,7 +167,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string,mixed> The effective document.
 	 */

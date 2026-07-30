@@ -1,7 +1,7 @@
 /**
  * Kind-aware value normalization for the design-token indicator's bound-vs-overridden compare.
  *
- * A control's stored attribute value and the selected variant's resolved value are compared after being
+ * A control's stored attribute value and the selected preset's resolved value are compared after being
  * reduced to a canonical form per `kind`:
  *   - `color`      — a Kadence palette slug (`palette3`) is resolved to its literal via the global
  *                    palette map, then lower-cased; a literal (`#3182CE`, `rgb(...)`) is lower-cased.
@@ -80,7 +80,7 @@ function dimensionSides(value) {
  * Normalize a dimension attribute to `{ value, unit }`. A measurement control writes a 4-side array
  * (`[top, right, bottom, left]`); the representative value is the first populated side. An empty value
  * yields an empty marker so "no override" is detectable. This is the scalar view used for empty
- * detection and the single-value path; the bound-vs-overridden compare uses the side-aware `matchesVariant`
+ * detection and the single-value path; the bound-vs-overridden compare uses the side-aware `matchesPreset`
  * so a per-corner override is not masked by a matching first side.
  *
  * @param {*}      value The stored dimension value (number, string, or 4-side array).
@@ -159,38 +159,38 @@ function parseDimensionLiteral(literal) {
 }
 
 /**
- * Whether a stored value equals the selected variant's resolved value, normalized per kind.
+ * Whether a stored value equals the selected preset's resolved value, normalized per kind.
  *
- * @param {string} kind         The property kind.
- * @param {*}      value        The stored primary attribute value.
- * @param {string} unit         The companion unit (dimension only; '' otherwise).
- * @param {string} variantValue The variant's resolved literal for this property.
+ * @param {string} kind        The property kind.
+ * @param {*}      value       The stored primary attribute value.
+ * @param {string} unit        The companion unit (dimension only; '' otherwise).
+ * @param {string} presetValue The preset's resolved literal for this property.
  *
  * @since TBD
  *
- * @return {boolean} True when the stored value matches the variant value.
+ * @return {boolean} True when the stored value matches the preset value.
  */
-export function matchesVariant(kind, value, unit, variantValue) {
+export function matchesPreset(kind, value, unit, presetValue) {
 	if (kind === 'dimension') {
 		const sides = dimensionSides(value);
 		const storedUnit = String(unit || '').trim();
-		const variant = parseDimensionLiteral(variantValue);
+		const preset = parseDimensionLiteral(presetValue);
 
 		if (!sides.length) {
 			return false;
 		}
 
-		const unitMatches = variant.unit === '' || storedUnit === variant.unit;
+		const unitMatches = preset.unit === '' || storedUnit === preset.unit;
 
-		// Side-aware: a stored dimension matches only when EVERY populated side equals the variant value.
+		// Side-aware: a stored dimension matches only when EVERY populated side equals the preset value.
 		// A per-corner override (e.g. `['8','8','8','4']` vs `8px`) leaves one side differing and so reads
 		// as overridden, not still-bound.
-		return unitMatches && sides.every((side) => side === variant.value);
+		return unitMatches && sides.every((side) => side === preset.value);
 	}
 
 	if (kind === 'color') {
-		return normalizeColor(value) === normalizeColor(variantValue);
+		return normalizeColor(value) === normalizeColor(presetValue);
 	}
 
-	return normalizeText(value) === normalizeText(variantValue);
+	return normalizeText(value) === normalizeText(presetValue);
 }
