@@ -462,6 +462,9 @@ class Editor_Assets {
 
 		$asset_meta = kadence_blocks_get_asset_file( 'dist/early-filters' );
 		wp_enqueue_script( 'kadence-blocks-early-filters-js', KADENCE_BLOCKS_URL . 'dist/early-filters.js', array_merge( $asset_meta['dependencies'], [ 'wp-blocks', 'wp-i18n', 'wp-element' ] ), $asset_meta['version'], true );
+		// Styles bundled into the early-filters entry (e.g. the design-token control UI injected through
+		// the shared control seams). Loaded after the components styles so it can match/override them.
+		wp_enqueue_style( 'kadence-blocks-early-filters-css', KADENCE_BLOCKS_URL . 'dist/early-filters.css', [ 'wp-edit-blocks', 'kadence-components' ], $asset_meta['version'] );
 	}
 	/**
 	 * Get an array font weight options.
