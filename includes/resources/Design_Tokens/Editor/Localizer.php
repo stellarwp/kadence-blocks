@@ -8,10 +8,9 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 /**
  * Attaches the editor catalogs to the block editor's early-filters bundle.
  *
- * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
+ * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches four
  * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensPresets (the
  * per-library preset catalog the preset picker and the "save as new preset" form read),
- * window.kadenceDesignTokensLibraries (the token-library catalog the per-block library-override picker reads),
  * window.kadenceDesignTokensAttributeDefaults (the per-block attribute-default catalog the block-registration
  * filter reads), window.kadenceDesignTokensRest (the REST descriptor the preset writes POST to), and
  * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
@@ -42,15 +41,6 @@ final class Localizer {
 	 * @var string
 	 */
 	private const PRESETS_OBJECT = 'kadenceDesignTokensPresets';
-
-	/**
-	 * The JS global the per-block library-override picker reads.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private const LIBRARIES_OBJECT = 'kadenceDesignTokensLibraries';
 
 	/**
 	 * The JS global the block-registration preset-default filter reads.
@@ -98,15 +88,6 @@ final class Localizer {
 	private Preset_Catalog $preset_catalog;
 
 	/**
-	 * The token-library catalog builder.
-	 *
-	 * @since TBD
-	 *
-	 * @var Token_Library_Catalog
-	 */
-	private Token_Library_Catalog $library_catalog;
-
-	/**
 	 * The per-block attribute-default catalog builder.
 	 *
 	 * @since TBD
@@ -129,20 +110,17 @@ final class Localizer {
 	 *
 	 * @param Token_Registry            $registry           The token registry.
 	 * @param Preset_Catalog            $preset_catalog     The preset catalog builder.
-	 * @param Token_Library_Catalog     $library_catalog    The token-library catalog builder.
 	 * @param Attribute_Default_Catalog $attribute_defaults The per-block attribute-default catalog builder.
 	 * @param Pickable_Tokens_Catalog   $pickable           The pickable-token pool builder.
 	 */
 	public function __construct(
 		Token_Registry $registry,
 		Preset_Catalog $preset_catalog,
-		Token_Library_Catalog $library_catalog,
 		Attribute_Default_Catalog $attribute_defaults,
 		Pickable_Tokens_Catalog $pickable
 	) {
 		$this->registry           = $registry;
 		$this->preset_catalog     = $preset_catalog;
-		$this->library_catalog    = $library_catalog;
 		$this->attribute_defaults = $attribute_defaults;
 		$this->pickable           = $pickable;
 	}
@@ -164,7 +142,6 @@ final class Localizer {
 		}
 
 		$this->attach( self::PRESETS_OBJECT, $this->preset_catalog->all() );
-		$this->attach( self::LIBRARIES_OBJECT, $this->library_catalog->all() );
 		$this->attach( self::ATTRIBUTE_DEFAULTS_OBJECT, $this->attribute_defaults->all() );
 		$this->attach( self::REST_OBJECT, $this->rest() );
 		$this->attach( self::PICKABLE_OBJECT, $this->pickable->all() );

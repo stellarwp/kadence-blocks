@@ -5,10 +5,9 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
- * Registers the block-editor catalogs: binds the preset, token-library, attribute-default and pickable-token
- * catalog builders and the localizer as singletons, then hooks the localizer onto
- * enqueue_block_editor_assets so the early-filters bundle receives window.kadenceDesignTokensPresets
- * (preset picker), window.kadenceDesignTokensLibraries (per-block library-override picker),
+ * Registers the block-editor catalogs: binds the preset, attribute-default and pickable-token catalog
+ * builders and the localizer as singletons, then hooks the localizer onto enqueue_block_editor_assets so
+ * the early-filters bundle receives window.kadenceDesignTokensPresets (preset picker),
  * window.kadenceDesignTokensAttributeDefaults (block-registration attribute-default filter) and
  * window.kadenceDesignTokensPickable (the editor token picker's accessor).
  *
@@ -23,7 +22,6 @@ final class Provider extends Provider_Contract {
 	 */
 	public function register(): void {
 		$this->container->singleton( Preset_Catalog::class );
-		$this->container->singleton( Token_Library_Catalog::class );
 		$this->container->singleton( Attribute_Default_Catalog::class );
 		$this->container->singleton( Pickable_Tokens_Catalog::class );
 		$this->container->singleton( Localizer::class );

@@ -53,7 +53,7 @@ function currentPresetLabel(name, library, selected) {
  * @param {string}   props.blockName     The block name.
  * @param {Object}   props.attributes    The block's current attributes.
  * @param {Function} props.setAttributes The block's setAttributes.
- * @param {string}   [props.library]     The token library the block is on; defaults to kbTokenSet, then the active library.
+ * @param {string}   [props.library]     The token library the block is on; defaults to the active library.
  *
  * @since TBD
  *
@@ -64,7 +64,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 	const highlighting = useSelect((select) => select(TOKEN_INDICATORS_STORE).isHighlightingEdits(), []);
 	const { setHighlightEdits } = useDispatch(TOKEN_INDICATORS_STORE);
 
-	const resolvedLibrary = library || get(attributes, 'kbTokenSet', '') || activeLibrary();
+	const resolvedLibrary = library || activeLibrary();
 	const binding = usePresetBinding(blockName, attributes, resolvedLibrary);
 	const edited = Object.values(binding).some((entry) => entry.overridden);
 

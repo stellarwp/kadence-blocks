@@ -13,8 +13,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 /**
  * Builds the per-library preset catalog the block editor's preset picker and "save as new preset" form read.
  *
- * Keyed by token library so the picker can show the presets for whichever library a block is on (its
- * `kbTokenSet`, or the active library), not just the active one, then by block:
+ * Keyed by token library so the picker can show the presets for the active library, then by block:
  * `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
