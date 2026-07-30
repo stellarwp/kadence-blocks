@@ -218,6 +218,10 @@ export function TokenFieldControl({
 			? ''
 			: value;
 
+	// Open on the Custom tab when the slot already holds a literal value, so editing a custom radius lands
+	// on its editor rather than the token list.
+	const initialTab = !aliased && value !== '' && value !== undefined && value !== null ? 'custom' : 'style-library';
+
 	const writeNumber = (next) => onCustom(next === '' || next === undefined ? '' : Number(next));
 
 	// The Custom tab is a value editor (number + unit) plus a slider, seeded from the current literal or
@@ -287,6 +291,7 @@ export function TokenFieldControl({
 				renderContent={({ onClose }) => (
 					<TabPanel
 						className="kadence-token-field__tabs"
+						initialTabName={initialTab}
 						tabs={[
 							{
 								name: 'style-library',
