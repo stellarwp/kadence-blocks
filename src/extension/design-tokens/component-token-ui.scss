@@ -215,6 +215,17 @@
 		width: auto;
 		min-width: 0;
 	}
+
+	// The control emits the corners clockwise (top-left, top-right, bottom-right, bottom-left), which
+	// lands the bottom row backwards in the 2x2 grid. Swap the last two so each field sits in its true
+	// corner, reading top-left, top-right, bottom-left, bottom-right.
+	.kadence-token-field:nth-child(3) {
+		order: 2;
+	}
+
+	.kadence-token-field:nth-child(4) {
+		order: 1;
+	}
 }
 
 // A token-mapped measure control carries its unit switcher inside the popover's Custom tab, so hide the
