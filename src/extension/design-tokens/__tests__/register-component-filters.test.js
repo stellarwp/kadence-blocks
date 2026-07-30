@@ -1,14 +1,21 @@
 /* eslint-env jest */
 
 // `@wordpress/components` is not resolvable in the jest env; the token UI only references it at render
-// time, and these tests inspect the returned element types (never render), so a light stub is enough.
+// time, and these tests inspect the returned element types/props (never render), so light stubs are
+// enough.
 jest.mock(
 	'@wordpress/components',
 	() => ({
 		Button: 'Button',
+		Dropdown: 'Dropdown',
 		DropdownMenu: 'DropdownMenu',
+		Icon: 'Icon',
 		MenuGroup: 'MenuGroup',
 		MenuItem: 'MenuItem',
+		RangeControl: 'RangeControl',
+		SelectControl: 'SelectControl',
+		TabPanel: 'TabPanel',
+		__experimentalNumberControl: 'NumberControl',
 	}),
 	{ virtual: true }
 );
@@ -22,7 +29,7 @@ jest.mock('../../token-picker', () => ({
 import { applyFilters } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../../token-picker';
 import { registerComponentTokenFilters } from '../register-component-filters';
-import { TokenChip, TokenPickerButton } from '../component-token-ui';
+import { TokenChip, TokenPickerButton, TokenFieldControl } from '../component-token-ui';
 
 const EDITOR_HOOK = 'kadence.components.control.editor';
 const ACTIONS_HOOK = 'kadence.components.control.actions';
@@ -43,7 +50,102 @@ beforeEach(() => {
 });
 
 describe('editor seam', () => {
-	it('passes the default editor through for a numeric slot', () => {
+	/**
+	 * A field control with pickable tokens renders a `TokenFieldControl` in place of the slot editor,
+	 * carrying the slot's current value, the control unit, and the default editor.
+	 *
+	 * @return {void}
+	 */
+	it('renders a TokenFieldControl for a token-mapped field slot', () => {
+		const result = applyFilters(
+			EDITOR_HOOK,
+			{ props: { icon: 'CORNER_ICON' } },
+			{
+				control: 'measureRange',
+				index: 0,
+				value: ['0', '0', '0', '0'],
+				onChange: jest.fn(),
+				context: { ...CONTEXT, unit: 'px' },
+			}
+		);
+		expect(result.type).toBe(TokenFieldControl);
+		expect(result.props.value).toBe('0');
+		expect(result.props.unit).toBe('px');
+		// The corner icon is lifted off the control's own editor so the trigger mirrors the native input.
+		expect(result.props.icon).toBe('CORNER_ICON');
+	});
+
+	/**
+	 * The control's unit list and unit writer flow from the block context to the token field, so the
+	 * Custom tab can render a unit switcher.
+	 *
+	 * @return {void}
+	 */
+	it('threads the control units and unit writer to the token field', () => {
+		const onUnit = jest.fn();
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 0,
+			value: ['0', '0', '0', '0'],
+			onChange: jest.fn(),
+			context: { ...CONTEXT, unit: 'px', units: ['px', 'em', 'rem'], onUnit },
+		});
+		expect(result.props.units).toEqual(['px', 'em', 'rem']);
+		expect(result.props.onUnit).toBe(onUnit);
+	});
+
+	/**
+	 * Picking a token on an individual side writes the alias to only that side; clearing and a custom
+	 * value write to the same side, leaving the siblings untouched.
+	 *
+	 * @return {void}
+	 */
+	it('writes a pick/clear/custom to only the edited side', () => {
+		const onChange = jest.fn();
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 1,
+			value: ['0', '0', '0', '0'],
+			onChange,
+			context: CONTEXT,
+		});
+
+		result.props.onPick(RADIUS.alias);
+		expect(onChange).toHaveBeenLastCalledWith(['0', RADIUS.alias, '0', '0']);
+
+		result.props.onClear();
+		expect(onChange).toHaveBeenLastCalledWith(['0', '', '0', '0']);
+
+		result.props.onCustom(6);
+		expect(onChange).toHaveBeenLastCalledWith(['0', 6, '0', '0']);
+	});
+
+	/**
+	 * Picking on the linked "all" slot (index null) writes the alias to every side.
+	 *
+	 * @return {void}
+	 */
+	it('writes a pick on the linked slot to every side', () => {
+		const onChange = jest.fn();
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: null,
+			value: ['0', '0', '0', '0'],
+			onChange,
+			context: CONTEXT,
+		});
+
+		result.props.onPick(RADIUS.alias);
+		expect(onChange).toHaveBeenCalledWith([RADIUS.alias, RADIUS.alias, RADIUS.alias, RADIUS.alias]);
+	});
+
+	/**
+	 * Without a bound context (no tokens resolve), the control's own editor passes through untouched.
+	 *
+	 * @return {void}
+	 */
+	it('passes the default editor through when no tokens are available', () => {
+		pickableTokensForControl.mockReturnValue([]);
 		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
 			control: 'measureRange',
 			index: 0,
@@ -54,40 +156,16 @@ describe('editor seam', () => {
 		expect(result).toBe('DEFAULT');
 	});
 
-	it('renders a TokenChip for an aliased measureRange side and unlinks to the literal size at that index', () => {
-		const onChange = jest.fn();
+	/**
+	 * A control with no field adapter (the whole-value box-shadow control) is left untouched by the
+	 * editor seam.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a control with no field slot (boxShadow) untouched', () => {
 		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'measureRange',
-			index: 1,
-			value: ['0', RADIUS.alias, '0', '0'],
-			onChange,
-			context: CONTEXT,
-		});
-		expect(result.type).toBe(TokenChip);
-		expect(result.props.value).toBe(RADIUS.alias);
-
-		result.props.onUnlink();
-		// 0.5rem -> parseCssLength -> size 0.5, written at index 1 only.
-		expect(onChange).toHaveBeenCalledWith(['0', 0.5, '0', '0']);
-	});
-
-	it('unlinks the linked "all" slot (index null) to every side', () => {
-		const onChange = jest.fn();
-		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'measureRange',
-			index: null,
-			value: [RADIUS.alias, RADIUS.alias, RADIUS.alias, RADIUS.alias],
-			onChange,
-			context: CONTEXT,
-		});
-		result.props.onUnlink();
-		expect(onChange).toHaveBeenCalledWith([0.5, 0.5, 0.5, 0.5]);
-	});
-
-	it('leaves a control kind with no editor slot (border) untouched', () => {
-		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'border',
-			value: {},
+			control: 'boxShadow',
+			value: '',
 			onChange: jest.fn(),
 			context: CONTEXT,
 		});
@@ -96,55 +174,13 @@ describe('editor seam', () => {
 });
 
 describe('actions seam', () => {
-	it('appends a picker that writes the alias to every side for measureRange', () => {
-		const onChange = jest.fn();
-		const actions = applyFilters(ACTIONS_HOOK, [], {
-			control: 'measureRange',
-			value: ['0', '0', '0', '0'],
-			onChange,
-			context: CONTEXT,
-		});
-		expect(actions).toHaveLength(1);
-		expect(actions[0].type).toBe(TokenPickerButton);
-
-		actions[0].props.onSelect(RADIUS.alias);
-		expect(onChange).toHaveBeenCalledWith([RADIUS.alias, RADIUS.alias, RADIUS.alias, RADIUS.alias]);
-	});
-
-	it('marks the picker active when every side is aliased', () => {
-		const actions = applyFilters(ACTIONS_HOOK, [], {
-			control: 'measureRange',
-			value: [RADIUS.alias, RADIUS.alias, RADIUS.alias, RADIUS.alias],
-			onChange: jest.fn(),
-			context: CONTEXT,
-		});
-		expect(actions[0].props.isActive).toBe(true);
-	});
-
-	it('writes the alias into every side width for the border control', () => {
-		const onChange = jest.fn();
-		const actions = applyFilters(ACTIONS_HOOK, [], {
-			control: 'border',
-			value: {
-				top: ['#000', 'solid', 1],
-				right: ['#000', 'solid', 1],
-				bottom: ['#000', 'solid', 1],
-				left: ['#000', 'solid', 1],
-			},
-			onChange,
-			context: CONTEXT,
-		});
-		actions[0].props.onSelect(RADIUS.alias);
-		expect(onChange).toHaveBeenCalledWith({
-			top: ['#000', 'solid', RADIUS.alias],
-			right: ['#000', 'solid', RADIUS.alias],
-			bottom: ['#000', 'solid', RADIUS.alias],
-			left: ['#000', 'solid', RADIUS.alias],
-		});
-	});
-
-	it('returns the default actions when no context/tokens are available', () => {
-		pickableTokensForControl.mockReturnValue([]);
+	/**
+	 * A field control carries its token affordance in the editor seam, so it appends nothing to the
+	 * header actions.
+	 *
+	 * @return {void}
+	 */
+	it('appends no action for a field control', () => {
 		const actions = applyFilters(ACTIONS_HOOK, [], {
 			control: 'measureRange',
 			value: ['0', '0', '0', '0'],
@@ -156,6 +192,12 @@ describe('actions seam', () => {
 });
 
 describe('box-shadow whole-shadow seam', () => {
+	/**
+	 * With no token set, the box-shadow header renders a picker that writes the chosen alias through the
+	 * context-supplied write handler.
+	 *
+	 * @return {void}
+	 */
 	it('renders a picker when no token is set, writing via the context onChange', () => {
 		const onChange = jest.fn();
 		const actions = applyFilters(ACTIONS_HOOK, [], {
@@ -169,6 +211,11 @@ describe('box-shadow whole-shadow seam', () => {
 		expect(onChange).toHaveBeenCalledWith(RADIUS.alias);
 	});
 
+	/**
+	 * With a token set, the box-shadow header renders a chip whose unlink clears the alias.
+	 *
+	 * @return {void}
+	 */
 	it('renders a chip when a token is set, unlinking to empty', () => {
 		const onChange = jest.fn();
 		const actions = applyFilters(ACTIONS_HOOK, [], {

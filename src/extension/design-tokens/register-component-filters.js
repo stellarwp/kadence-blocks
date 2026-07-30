@@ -3,15 +3,17 @@
  *
  * The shared controls expose neutral `kadence.components.control.editor` / `.actions`
  * `@wordpress/hooks` seams and know nothing about design tokens. Here Kadence Blocks registers the
- * token behavior on both: the editor seam swaps a numeric editor for a read-only `TokenChip` when the
- * slot holds a `{dot.alias}`, and the actions seam adds the `TokenPickerButton` (or, for the
- * whole-shadow box-shadow control, a chip-or-picker). All token knowledge lives here; the package
- * stays clean, and the picker lights up for every block that passes a `context` to a shared control.
+ * token behavior on both. For a control with per-slot fields (measure, measure-range, range, single
+ * border) the editor seam replaces each slot's numeric input with a `TokenFieldControl`: a trigger
+ * that reads like the input and opens a Stylebook/Custom popover, so the field itself is the token
+ * entry point. The whole-value box-shadow control has no such field, so it keeps the actions-seam
+ * chip-or-picker.
  *
  * Each seam call carries neutral context `{ control, index, value, onChange, context }`, where
- * `context = { blockName, attribute, onChange? }` is the opaque blob the consuming block passes in.
- * The pickable-token list is resolved per control from `pickableTokensForControl`, and an unlink
- * converts the token's resolved literal back to the control's bare-number slot via `parseCssLength`.
+ * `context = { blockName, attribute, unit?, onChange? }` is the opaque blob the consuming block passes
+ * in. The pickable-token list is resolved per control from `pickableTokensForControl`; per-slot picks
+ * write through the adapter's `writeLeaf`, so a linked slot writes every side and an individual slot
+ * writes only its own — per-corner tokens fall out for free.
  */
 
 /**
@@ -19,8 +21,7 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { parseCssLength } from '../token-picker/parse-css-length';
-import { isTokenAlias, findTokenEntry, TokenChip, TokenPickerButton } from './component-token-ui';
+import { isTokenAlias, TokenChip, TokenPickerButton, TokenFieldControl } from './component-token-ui';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -28,8 +29,9 @@ const ACTIONS_HOOK = 'kadence.components.control.actions';
 
 /**
  * Per-control-kind value-shape adapters. Each shared control reports a `control` string and a value in
- * its own shape; these adapters read the slot being edited, write a literal or alias back, and answer
- * whether the whole control is token-driven — so the seam filters stay shape-agnostic.
+ * its own shape; a field adapter reads/writes the single slot the seam is editing (`leaf`/`writeLeaf`),
+ * so the field filter stays shape-agnostic. The whole-value box-shadow control writes its alias
+ * directly and needs no adapter.
  *
  * @since TBD
  *
@@ -47,39 +49,15 @@ const ADAPTERS = {
 			arr[index] = next;
 			return arr;
 		},
-		writeAll: (value, alias) => [alias, alias, alias, alias],
-		isActive: (value) => Array.isArray(value) && value.every(isTokenAlias),
 	},
 	// A single scalar value (the range slider / the border width slot).
 	range: {
 		leaf: (value) => value,
 		writeLeaf: (value, index, next) => next,
-		writeAll: (value, alias) => alias,
-		isActive: (value) => isTokenAlias(value),
 	},
 	singleBorder: {
 		leaf: (value) => value,
 		writeLeaf: (value, index, next) => next,
-		writeAll: (value, alias) => alias,
-		isActive: (value) => isTokenAlias(value),
-	},
-	// Side-keyed object { top:[color,style,width], … }; the width is index [2]. Actions only.
-	border: {
-		writeAll: (value, alias) => {
-			const next = { ...(value || {}) };
-			['top', 'right', 'bottom', 'left'].forEach((side) => {
-				const arr = Array.isArray(next[side]) ? [...next[side]] : ['', '', ''];
-				arr[2] = alias;
-				next[side] = arr;
-			});
-			return next;
-		},
-		isActive: (value) => ['top', 'right', 'bottom', 'left'].every((side) => isTokenAlias(value?.[side]?.[2])),
-	},
-	// Whole-shadow token: a single opaque alias, chip-or-picker in the header. Actions only.
-	boxShadow: {
-		writeAll: (value, alias) => alias,
-		isActive: (value) => isTokenAlias(value),
 	},
 };
 
@@ -119,16 +97,16 @@ function writerFor(ctx) {
 }
 
 /**
- * Editor seam: render a read-only `TokenChip` in place of the numeric editor when the edited slot holds
- * a `{dot.alias}`, else the control's own editor untouched. Unlink converts the token's resolved
- * literal back to the control's bare-number slot.
+ * Editor seam: replace a field control's numeric slot with a `TokenFieldControl` — the trigger + token
+ * popover — whenever the control is token-mapped (a `context` resolves pickable tokens). Falls back to
+ * the control's own editor for a control with no field adapter, no tokens, or no write handler.
  *
  * @param {*}      defaultEditor The control's own editor node for this slot.
  * @param {Object} ctx           Neutral seam context: { control, index, value, onChange, context }.
  *
  * @since TBD
  *
- * @return {*} The chip when the slot is aliased, otherwise `defaultEditor`.
+ * @return {*} The token field when the control is token-mapped, otherwise `defaultEditor`.
  */
 function editorFilter(defaultEditor, ctx) {
 	const adapter = ADAPTERS[ctx.control];
@@ -136,28 +114,36 @@ function editorFilter(defaultEditor, ctx) {
 		return defaultEditor;
 	}
 
-	const leaf = adapter.leaf(ctx.value, ctx.index);
-	if (!isTokenAlias(leaf)) {
+	const tokens = tokensFor(ctx);
+	const write = writerFor(ctx);
+	if (!tokens.length || !write) {
 		return defaultEditor;
 	}
 
-	const tokens = tokensFor(ctx);
-	const write = writerFor(ctx);
-	const onUnlink = write
-		? () => {
-				const entry = findTokenEntry(tokens, leaf);
-				const parsed = entry ? parseCssLength(entry.value) : null;
-				write(adapter.writeLeaf(ctx.value, ctx.index, parsed ? parsed.size : ''));
-			}
-		: undefined;
+	const leaf = adapter.leaf(ctx.value, ctx.index);
 
-	return <TokenChip value={leaf} tokens={tokens} onUnlink={onUnlink} />;
+	return (
+		<TokenFieldControl
+			value={leaf}
+			unit={ctx.context?.unit || ''}
+			units={ctx.context?.units}
+			onUnit={ctx.context?.onUnit}
+			icon={defaultEditor?.props?.icon}
+			min={ctx.context?.min}
+			max={ctx.context?.max}
+			step={ctx.context?.step}
+			tokens={tokens}
+			onPick={(alias) => write(adapter.writeLeaf(ctx.value, ctx.index, alias))}
+			onClear={() => write(adapter.writeLeaf(ctx.value, ctx.index, ''))}
+			onCustom={(next) => write(adapter.writeLeaf(ctx.value, ctx.index, next))}
+		/>
+	);
 }
 
 /**
- * Actions seam: append the token affordance beside the control label. For the box-shadow control the
- * header is a chip-or-picker for the whole-shadow token; for every other control it is the picker,
- * which writes the picked alias into the control's value.
+ * Actions seam: the whole-value box-shadow control has no per-slot field, so its token affordance lives
+ * beside the label — a `TokenChip` when a token is set (unlink clears it), else a `TokenPickerButton`.
+ * Field controls carry their affordance in the editor seam, so they append nothing here.
  *
  * @param {Array}  actions The default action nodes (empty).
  * @param {Object} ctx     Neutral seam context: { control, value, onChange, context, readOnly? }.
@@ -167,8 +153,7 @@ function editorFilter(defaultEditor, ctx) {
  * @return {Array} The action nodes to render.
  */
 function actionsFilter(actions, ctx) {
-	const adapter = ADAPTERS[ctx.control];
-	if (!adapter) {
+	if (ctx.control !== 'boxShadow') {
 		return actions;
 	}
 
@@ -179,32 +164,21 @@ function actionsFilter(actions, ctx) {
 
 	const write = writerFor(ctx);
 
-	if (ctx.control === 'boxShadow') {
-		if (isTokenAlias(ctx.value)) {
-			return [
-				...actions,
-				<TokenChip
-					key="kb-token"
-					value={ctx.value}
-					tokens={tokens}
-					onUnlink={write ? () => write('') : undefined}
-				/>,
-			];
-		}
+	if (isTokenAlias(ctx.value)) {
 		return [
 			...actions,
-			<TokenPickerButton key="kb-token" tokens={tokens} onSelect={write ? (alias) => write(alias) : undefined} />,
+			<TokenChip
+				key="kb-token"
+				value={ctx.value}
+				tokens={tokens}
+				onUnlink={write ? () => write('') : undefined}
+			/>,
 		];
 	}
 
 	return [
 		...actions,
-		<TokenPickerButton
-			key="kb-token"
-			tokens={tokens}
-			onSelect={write ? (alias) => write(adapter.writeAll(ctx.value, alias)) : undefined}
-			isActive={adapter.isActive(ctx.value)}
-		/>,
+		<TokenPickerButton key="kb-token" tokens={tokens} onSelect={write ? (alias) => write(alias) : undefined} />,
 	];
 }
 

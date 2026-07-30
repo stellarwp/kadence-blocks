@@ -1194,6 +1194,21 @@ export default function KadenceButtonEdit(props) {
 																context={{
 																	blockName: 'kadence/singlebtn',
 																	attribute: 'borderRadius',
+																	unit: borderRadiusUnit,
+																	units: ['px', 'em', 'rem', '%'],
+																	onUnit: (value) =>
+																		setAttributes({ borderRadiusUnit: value }),
+																	min: 0,
+																	max:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 24
+																			: 500,
+																	step:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 0.1
+																			: 1,
 																}}
 																reset={false}
 																value={borderRadius}
