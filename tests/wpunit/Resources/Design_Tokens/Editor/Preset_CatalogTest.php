@@ -40,7 +40,7 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The catalog reports the active set and, per set, the shipped Button's default and its named presets as
+	 * The catalog reports the active library and, per library, the shipped Button's default and its named presets as
 	 * { slug, label, userCreated }, plus the picker control label and the controllable surface.
 	 *
 	 * @return void
@@ -89,7 +89,7 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A preset authored into a set is flagged userCreated, while the baseline presets are not.
+	 * A preset authored into a library is flagged userCreated, while the baseline presets are not.
 	 *
 	 * @return void
 	 */

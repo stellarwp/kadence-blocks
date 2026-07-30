@@ -14,7 +14,7 @@ use WP_REST_Server;
 
 /**
  * Covers the palette REST controller: listing palettes, reading / creating / deleting a palette, getting /
- * setting the set's $current palette, and the write guards.
+ * setting the library's $current palette, and the write guards.
  */
 final class Palettes_ControllerTest extends TestCase {
 
@@ -50,7 +50,7 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The listing returns the set's $default / $current pointers and each shipped palette's id + label.
+	 * The listing returns the library's $default / $current pointers and each shipped palette's id + label.
 	 *
 	 * @return void
 	 */
@@ -449,7 +449,7 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A swatch write to a palette the set does not define is a 404.
+	 * A swatch write to a palette the library does not define is a 404.
 	 *
 	 * @return void
 	 */

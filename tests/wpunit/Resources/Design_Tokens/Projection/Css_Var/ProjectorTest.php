@@ -16,8 +16,8 @@ use Tests\Support\Classes\TestCase;
 /**
  * Covers the CSS-variable projector: it appends the resolved --kb-token--* declarations to KB's front-end
  * and editor style handles, routes the legacy color filter through the bridge, feeds KB's font-size scale
- * from the tokens, is a no-op when the registry is deactivated, and honors the active set — only the active
- * set is emitted, so pointing the active-set pointer at another set changes what is projected to the front
+ * from the tokens, is a no-op when the registry is deactivated, and honors the active library — only the active
+ * library is emitted, so pointing the active-library pointer at another library changes what is projected to the front
  * end.
  */
 final class ProjectorTest extends TestCase {
@@ -31,7 +31,7 @@ final class ProjectorTest extends TestCase {
 	private const BASELINE_BUTTON = '#3633e1';
 
 	/**
-	 * A sentinel value, absent from the baseline, that a non-default set overrides the button primitive to.
+	 * A sentinel value, absent from the baseline, that a non-default library overrides the button primitive to.
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ final class ProjectorTest extends TestCase {
 
 	/**
 	 * The button primitive id the shipped baseline resolves semantic.color.button-bg through; the active
-	 * set's canonical var carries its resolved literal.
+	 * library's canonical var carries its resolved literal.
 	 *
 	 * @var string
 	 */
@@ -239,10 +239,10 @@ final class ProjectorTest extends TestCase {
 		$this->assertSame( $colors, $this->projector->filter_global_colors( $colors ) );
 	}
 
-	// ---- Active set ----------------------------------------------------------------------------------
+	// ---- Active library ----------------------------------------------------------------------------------
 
 	/**
-	 * With the default set active, its baseline literal is emitted directly under the canonical button var.
+	 * With the default library active, its baseline literal is emitted directly under the canonical button var.
 	 *
 	 * @return void
 	 */
@@ -256,8 +256,8 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * Only the active set is emitted: pointing the active-set pointer at brand-b projects brand-b's literal
-	 * under the canonical button var, and the non-active default set's literal is absent.
+	 * Only the active library is emitted: pointing the active-library pointer at brand-b projects brand-b's literal
+	 * under the canonical button var, and the non-active default library's literal is absent.
 	 *
 	 * @return void
 	 */
@@ -269,16 +269,16 @@ final class ProjectorTest extends TestCase {
 
 		$css = $this->inline_css();
 
-		// The active set's literal is present under the canonical button var...
+		// The active library's literal is present under the canonical button var...
 		$this->assertStringContainsString( Css_Var::from_id( self::BUTTON_PRIMITIVE ) . ':' . self::BRAND_B_BUTTON, $css );
-		// ...and the non-active default set's literal is not emitted at all.
+		// ...and the non-active default library's literal is not emitted at all.
 		$this->assertStringNotContainsString( self::BASELINE_BUTTON, $css );
 	}
 
 	/**
-	 * Pointing the pointer back at the default set re-emits the default's baseline literal and drops the
+	 * Pointing the pointer back at the default library re-emits the default's baseline literal and drops the
 	 * brand-b literal, proving the projector reads the pointer on each build rather than caching the first
-	 * set it saw.
+	 * library it saw.
 	 *
 	 * @return void
 	 */
@@ -302,8 +302,8 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * The projector emits only the active set with no per-set namespaced blocks and no
-	 * `[data-kb-token-set]` switch selectors: a stored non-active set contributes nothing to the output.
+	 * The projector emits only the active library with no per-library namespaced blocks and no
+	 * `[data-kb-token-set]` switch selectors: a stored non-active library contributes nothing to the output.
 	 *
 	 * @return void
 	 */
@@ -318,12 +318,12 @@ final class ProjectorTest extends TestCase {
 		$this->assertStringNotContainsString( '--kb-token--default--', $css );
 		$this->assertStringNotContainsString( '--kb-token--brand-b--', $css );
 		$this->assertStringNotContainsString( '[data-kb-token-set', $css );
-		// The non-active set's sentinel literal never appears.
+		// The non-active library's sentinel literal never appears.
 		$this->assertStringNotContainsString( self::BRAND_B_BUTTON, $css );
 	}
 
 	/**
-	 * When the active set cannot be resolved (here, an alias cycle) the whole stylesheet is suppressed
+	 * When the active library cannot be resolved (here, an alias cycle) the whole stylesheet is suppressed
 	 * rather than emitting a partial block, so the page falls back to KB's existing variables.
 	 *
 	 * @return void

@@ -13,8 +13,8 @@ use Tests\Support\Classes\TestCase;
 /**
  * Exercises the selectable-preset CSS builder against the real shipped Button preset set, so these
  * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting, the
- * canonical preset-var definitions for the active set, and the class-less $default rule. Only the active
- * set is emitted — no per-set namespaced vars, no alias layer, no client-side switch selector.
+ * canonical preset-var definitions for the active library, and the class-less $default rule. Only the active
+ * library is emitted — no per-library namespaced vars, no alias layer, no client-side switch selector.
  */
 final class Css_BuilderTest extends TestCase {
 
@@ -55,7 +55,7 @@ final class Css_BuilderTest extends TestCase {
 	/**
 	 * Each preset's value lives as a canonical token var that preserves the alias indirection
 	 * (var(--kb-token--<semantic>)), so a token edit flows through the chain live and the preset follows the
-	 * active set.
+	 * active library.
 	 *
 	 * @return void
 	 */
@@ -67,8 +67,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The collapsed builder emits no per-set namespaced `--kb-token--<set>--preset--*` vars and no
-	 * `[data-kb-token-set]` switch selectors — only the active set's canonical preset vars and scoped rules.
+	 * The collapsed builder emits no per-library namespaced `--kb-token--<set>--preset--*` vars and no
+	 * `[data-kb-token-set]` switch selectors — only the active library's canonical preset vars and scoped rules.
 	 *
 	 * @return void
 	 */
@@ -142,8 +142,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A preset that exists only in a NON-active set (a user-created preset on the "dark" set) is not emitted
-	 * while "default" is active: only the active set's presets reach output.
+	 * A preset that exists only in a NON-active library (a user-created preset on the "dark" library) is not emitted
+	 * while "default" is active: only the active library's presets reach output.
 	 *
 	 * @return void
 	 */
@@ -196,8 +196,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Persist a user-created "midnight" button preset into the "dark" token set only, so it is absent from
-	 * the active "default" set.
+	 * Persist a user-created "midnight" button preset into the "dark" token library only, so it is absent from
+	 * the active "default" library.
 	 *
 	 * @return void
 	 */

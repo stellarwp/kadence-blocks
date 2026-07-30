@@ -43,7 +43,7 @@ final class Palette_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * With nothing stored, the catalog reports the active set slug, its `$current` palette id, and the
+	 * With nothing stored, the catalog reports the active library slug, its `$current` palette id, and the
 	 * shipped baseline palettes each as a `{ id, label }` pair with a non-empty string label.
 	 *
 	 * @return void
@@ -127,7 +127,7 @@ final class Palette_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * Store a single palette node under {@see self::PALETTE} in the default set's colorPalettes section.
+	 * Store a single palette node under {@see self::PALETTE} in the default library's colorPalettes section.
 	 *
 	 * @param array<string, mixed> $node The palette node to store (label and/or groups).
 	 *

@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 
 /**
- * Reads the effective colorPalettes section: the shipped baseline's palettes deep-merged with a set's stored
+ * Reads the effective colorPalettes section: the shipped baseline's palettes deep-merged with a library's stored
  * overrides, so a palette authored through the store is visible alongside the baseline ones.
  *
  * A thin reader mirroring {@see Effective_Presets}: the deep-merge is {@see Mutator::merge()} (which
@@ -18,7 +18,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * subtree, and delegates the merge. The sibling {@see Effective_Document} deliberately strips "$extensions",
  * so it cannot be reused here — palettes are read through this seam instead.
  *
- * Beyond the raw section it exposes the two things the resolver and projection need: the set's `$current`
+ * Beyond the raw section it exposes the two things the resolver and projection need: the library's `$current`
  * pointer (which palette is active at `:root`), and a palette flattened to a `{ token => $value }` overlay
  * (its groups' swatches collapsed) so the resolver can re-tint the color tokens before alias flattening.
  *
@@ -61,12 +61,12 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The effective colorPalettes section for a stored set: baseline deep-merged with the set's overrides,
+	 * The effective colorPalettes section for a stored library: baseline deep-merged with the library's overrides,
 	 * keyed by palette id (plus the `$default` / `$current` pointers).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -75,13 +75,13 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The effective palette node for one palette id in a stored set, or null when neither the baseline nor
+	 * The effective palette node for one palette id in a stored library, or null when neither the baseline nor
 	 * the overrides define it.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id, e.g. "default", "dark".
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>|null
 	 */
@@ -107,11 +107,11 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The named palette ids a set defines (every key except the `$default` / `$current` pointers), in order.
+	 * The named palette ids a library defines (every key except the `$default` / `$current` pointers), in order.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string[]
 	 */
@@ -130,11 +130,11 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The set's `$default` palette id (the shipped/fallback palette), falling back to "default".
+	 * The library's `$default` palette id (the shipped/fallback palette), falling back to "default".
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string
 	 */
@@ -143,12 +143,12 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The set's `$current` (active) palette id — the palette the resolver applies at `:root`. Falls back to
+	 * The library's `$current` (active) palette id — the palette the resolver applies at `:root`. Falls back to
 	 * the `$default` pointer, then to "default", and only ever returns an id that names a present palette.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string
 	 */
@@ -164,7 +164,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => literal-or-alias value.
 	 */
@@ -173,15 +173,15 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The effective `{ token => $value }` colors for a palette: the set's default palette overlaid with the
+	 * The effective `{ token => $value }` colors for a palette: the library's default palette overlaid with the
 	 * palette's own swatches, so a palette that stores only deltas resolves to a COMPLETE color set (its
 	 * deltas plus the default for everything it omits). This is what the per-block switch layer emits, so an
-	 * override fully re-skins a subtree with default fallback regardless of the set's current palette.
+	 * override fully re-skins a subtree with default fallback regardless of the library's current palette.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => literal-or-alias value.
 	 */
@@ -193,12 +193,12 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The `{ token => $value }` overlay for the set's `$current` palette — the color re-tint the resolver
+	 * The `{ token => $value }` overlay for the library's `$current` palette — the color re-tint the resolver
 	 * applies at `:root`.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string>
 	 */
@@ -222,7 +222,7 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The resolve-time color overlay for a set: the set's `$current` palette swatches that DIFFER from the
+	 * The resolve-time color overlay for a library: the library's `$current` palette swatches that DIFFER from the
 	 * baseline default palette (which carries the shipped baseline colors). Returning only the diff makes the
 	 * overlay non-destructive — with the shipped default palette and no palette edits it is empty, so a color
 	 * token that is otherwise unchanged (or carries a direct override) is left untouched; a non-default palette
@@ -239,7 +239,7 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * The resolve-time color overlay for a SPECIFIC palette (not the set's current): the palette's effective
+	 * The resolve-time color overlay for a SPECIFIC palette (not the library's current): the palette's effective
 	 * colors (default overlaid with its deltas) that differ from the baseline default. Used to resolve the
 	 * whole token graph "as if this palette were active", which the per-block switch layer emits so an
 	 * override fully re-skins its subtree.
@@ -247,7 +247,7 @@ final class Effective_Palettes {
 	 * @since TBD
 	 *
 	 * @param string $id   The palette id.
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, string> token dot-path => re-tint value.
 	 */
@@ -256,12 +256,12 @@ final class Effective_Palettes {
 	}
 
 	/**
-	 * Decode a set's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
+	 * Decode a library's stored overrides document, tolerating an absent/empty/malformed row as "no overrides".
 	 * The single decode seam for the stored overrides, mirroring {@see Effective_Presets::raw()}.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -407,7 +407,7 @@ final class Effective_Palettes {
 
 	/**
 	 * The pointer value (`$default` or `$current`) in an effective section, when it is a string naming a
-	 * present palette; otherwise the set's default slug ("default").
+	 * present palette; otherwise the library's default slug ("default").
 	 *
 	 * @since TBD
 	 *

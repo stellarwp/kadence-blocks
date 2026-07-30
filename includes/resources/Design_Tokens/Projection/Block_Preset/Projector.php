@@ -41,7 +41,7 @@ final class Projector {
 	private Preset_Resolver $resolver;
 
 	/**
-	 * Owns the active-library pointer, read at render time so preset defaults follow the active set.
+	 * Owns the active-library pointer, read at render time so preset defaults follow the active library.
 	 *
 	 * @since TBD
 	 *

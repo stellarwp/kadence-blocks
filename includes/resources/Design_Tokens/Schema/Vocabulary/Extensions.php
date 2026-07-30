@@ -11,7 +11,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *
  *   - "foundationPresets" → the beginner on-ramp: type scales and starter palettes that seed primitives.
  *   - "presets"          → block presets (the preset data model's concern).
- *   - "colorPalettes"     → named color palettes within the set (the palette feature): each an ordered list
+ *   - "colorPalettes"     → named color palettes within the library (the palette feature): each an ordered list
  *                           of groups, each an ordered list of self-describing swatches.
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
@@ -60,7 +60,7 @@ final class Extensions {
 	private const SECTION_PRESETS = 'presets';
 
 	/**
-	 * The color-palettes section: named palettes within the set, each an ordered list of groups of swatches.
+	 * The color-palettes section: named palettes within the library, each an ordered list of groups of swatches.
 	 * NOT returned by get_sections() — its values live under each swatch's `$value`, not a `tokens` map.
 	 *
 	 * @since TBD
@@ -107,7 +107,7 @@ final class Extensions {
 	private const LABEL_KEY = 'label';
 
 	/**
-	 * The key naming a set's current (active) color palette, written to switch the color layer.
+	 * The key naming a library's current (active) color palette, written to switch the color layer.
 	 *
 	 * @since TBD
 	 *
@@ -196,7 +196,7 @@ final class Extensions {
 	}
 
 	/**
-	 * The color-palettes section name: named palettes within the set.
+	 * The color-palettes section name: named palettes within the library.
 	 *
 	 * @since TBD
 	 *
@@ -293,7 +293,7 @@ final class Extensions {
 	}
 
 	/**
-	 * The key naming a set's current (active) color palette.
+	 * The key naming a library's current (active) color palette.
 	 *
 	 * @since TBD
 	 *
