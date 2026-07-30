@@ -43,8 +43,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
  * dimension / lineHeight leaf may declare a per-breakpoint `responsive` map or a structured `clamp` map
  * (mutually exclusive) whose slots are validated as alias-or-literal of the leaf's own $type; any other
  * leaf "$"-extension is passed through untouched. The document-level $extensions layer is validated only
- * as far as this ticket's scope: variant / preset `tokens` map values must be alias-or-literal; richer
- * variant semantics are out of scope here.
+ * as far as this ticket's scope: foundation-preset / block-preset `tokens` map values must be alias-or-literal; richer
+ * preset semantics are out of scope here.
  *
  * @since TBD
  */
@@ -555,12 +555,12 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * Validate the $extensions layer to this scope: every preset / variant `tokens` map value must be an
-	 * alias or a literal scalar. $default / label / structural variant semantics are validated elsewhere,
+	 * Validate the $extensions layer to this scope: every foundation-preset / block-preset `tokens` map value must be an
+	 * alias or a literal scalar. $default / label / structural preset semantics are validated elsewhere,
 	 * and any non-Kadence extension namespace is passed through untouched.
 	 *
 	 * Each owned section is walked without assuming a fixed depth: a `tokens` map can sit at varying depths — a
-	 * foundation preset and a variant nest it two levels under the section (preset → tokens, block/variant →
+	 * foundation preset and a preset nest it two levels under the section (preset → tokens, block/preset →
 	 * tokens). The walk descends every array branch and validates each `tokens` map it finds, so all of these
 	 * are covered by the same logic.
 	 *
@@ -706,7 +706,7 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * A preset / variant token value must be an alias or a non-empty literal scalar. The target token's
+	 * A foundation-preset / block-preset token value must be an alias or a non-empty literal scalar. The target token's
 	 * $type is not resolved here, so the literal is checked only for shape, not per-type grammar.
 	 *
 	 * @since TBD
@@ -736,7 +736,7 @@ final class Dtcg_Validator {
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A preset/variant token value must be an alias or a non-empty literal.'
+			'A foundation-preset/block-preset token value must be an alias or a non-empty literal.'
 		);
 	}
 

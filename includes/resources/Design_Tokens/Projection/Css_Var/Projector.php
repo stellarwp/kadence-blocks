@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -21,7 +21,7 @@ use Throwable;
  * This is the non-coercive surface: a custom property placed in :root styles nothing until something
  * references it. Only the single active set is emitted — its canonical --kb-token--<id> custom properties
  * at :root — so block content and the preset/slot bridges (which read the canonical names) resolve against
- * it. Multiple sets may still be stored; the active-set pointer selects the one set that is emitted, and
+ * it. Multiple sets may still be stored; the active-library pointer selects the one set that is emitted, and
  * switching the pointer re-emits with the new set's values. Only the active set's tokens reach the coercive
  * native-block and theme.json styling paths.
  *
@@ -45,13 +45,13 @@ final class Projector extends Abstract_Css_Projector {
 	private Token_Store $store;
 
 	/**
-	 * Owns the active-set pointer, read at build time so the projection follows the active set.
+	 * Owns the active-library pointer, read at build time so the projection follows the active set.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * @var Css_Builder
@@ -69,7 +69,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * @param Token_Registry       $registry
 	 * @param Token_Resolver       $resolver
 	 * @param Token_Store          $store
-	 * @param Active_Set_Store     $active
+	 * @param Active_Token_Library_Store     $active
 	 * @param Css_Builder          $css_builder
 	 * @param Legacy_Filter_Bridge $bridge
 	 */
@@ -77,7 +77,7 @@ final class Projector extends Abstract_Css_Projector {
 		Token_Registry $registry,
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
+		Active_Token_Library_Store $active,
 		Css_Builder $css_builder,
 		Legacy_Filter_Bridge $bridge
 	) {

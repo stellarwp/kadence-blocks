@@ -5,7 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts;
 /**
  * A projector that builds design-token CSS and appends it to KB's front-end and editor style handles.
  *
- * The shared shape of the CSS-emitting projectors (token vars, variants, block defaults):
+ * The shared shape of the CSS-emitting projectors (token vars, presets, block defaults):
  * each enqueues its CSS on the front end and in the editor, and exposes its unguarded builder through
  * `css()` (front end) and `editor_css()` (editor) — the strings the enqueue methods wrap behind their
  * context gates. The two are identical for a context-independent projector and differ only where the

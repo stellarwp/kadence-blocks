@@ -1,6 +1,6 @@
 /**
  * A tiny @wordpress/data store holding the editor-wide "highlight edits" flag: when on, controls that
- * have overridden their variant value are visually emphasized. Toggled from the variant picker's
+ * have overridden their preset value are visually emphasized. Toggled from the preset picker's
  * actions (Part D) and read by the token indicators (Part C). Editor-session state only — never persisted.
  */
 

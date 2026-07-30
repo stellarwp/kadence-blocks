@@ -13,15 +13,15 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
 /**
  * Builds the pickable-token pool the block editor's token picker reads.
  *
- * Two sections: `tokens` is the set-independent STRUCTURE — one { id, alias, label, type, layer, role }
+ * Two sections: `tokens` is the library-independent STRUCTURE — one { id, alias, label, type, layer, role }
  * entry per registered token, in registry order, where `alias` is the {id} string a pick will later
  * write to a block attribute, `layer` (semantic | primitive) is derived from the id's first
  * dot-segment so the picker can rank semantic tokens before primitives, and `role` is the sub-kind
  * (radius | spacing | … ) derived from the id so the picker can narrow one `$type` to the control's
- * sub-kind. `values` is the per-set
- * resolved literal map (set slug => ( id => literal )) used ONLY for the picker's preview
- * swatch/number — a pick writes the alias, never the literal. A set whose stored document cannot be
- * resolved (alias cycle / dangling alias from a raw DB write) is skipped, so one corrupt set never
+ * sub-kind. `values` is the per-library
+ * resolved literal map (library slug => ( id => literal )) used ONLY for the picker's preview
+ * swatch/number — a pick writes the alias, never the literal. A library whose stored document cannot be
+ * resolved (alias cycle / dangling alias from a raw DB write) is skipped, so one corrupt library never
  * empties the pool; structure is registry-driven and always ships.
  *
  * @since TBD
@@ -49,7 +49,7 @@ final class Pickable_Tokens_Catalog {
 	private Token_Registry $registry;
 
 	/**
-	 * The token resolver, source of each set's resolved literal values (by id).
+	 * The token resolver, source of each library's resolved literal values (by id).
 	 *
 	 * @since TBD
 	 *
@@ -58,7 +58,7 @@ final class Pickable_Tokens_Catalog {
 	private Token_Resolver $resolver;
 
 	/**
-	 * The persistence gateway, source of the stored set slugs.
+	 * The persistence gateway, source of the stored library slugs.
 	 *
 	 * @since TBD
 	 *
@@ -80,7 +80,7 @@ final class Pickable_Tokens_Catalog {
 	}
 
 	/**
-	 * The pool: the pickable token structure plus the per-set resolved preview values.
+	 * The pool: the pickable token structure plus the per-library resolved preview values.
 	 *
 	 * @since TBD
 	 *
@@ -95,7 +95,7 @@ final class Pickable_Tokens_Catalog {
 
 	/**
 	 * The pickable token structure: one { id, alias, label, type, layer, role } entry per registered
-	 * token, in registry insertion order. Set-independent — values live in values().
+	 * token, in registry insertion order. Library-independent — values live in values().
 	 *
 	 * @since TBD
 	 *
@@ -162,14 +162,14 @@ final class Pickable_Tokens_Catalog {
 	}
 
 	/**
-	 * The per-set resolved preview values: `set slug => ( token id => literal CSS value )`, for every
-	 * stored set plus the always-present default. Used only for the picker's swatch/number preview — a
-	 * pick writes the alias, so a stale or missing value is cosmetic. A set whose stored document cannot
-	 * be resolved is skipped, so one corrupt set never empties the map.
+	 * The per-library resolved preview values: `library slug => ( token id => literal CSS value )`, for
+	 * every stored library plus the always-present default. Used only for the picker's swatch/number
+	 * preview — a pick writes the alias, so a stale or missing value is cosmetic. A library whose stored
+	 * document cannot be resolved is skipped, so one corrupt library never empties the map.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, array<string, string>> set slug => ( id => literal value ).
+	 * @return array<string, array<string, string>> library slug => ( id => literal value ).
 	 */
 	private function values(): array {
 		$values = [];
@@ -178,7 +178,7 @@ final class Pickable_Tokens_Catalog {
 			try {
 				$values[ $slug ] = $this->resolver->resolve( $slug )->by_id();
 			} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
-				continue; // Corrupt stored document — skip this set, fail soft.
+				continue; // Corrupt stored document — skip this library, fail soft.
 			}
 		}
 
@@ -186,7 +186,7 @@ final class Pickable_Tokens_Catalog {
 	}
 
 	/**
-	 * The set slugs to resolve values for: every stored set plus the always-present default.
+	 * The library slugs to resolve values for: every stored library plus the always-present default.
 	 *
 	 * @since TBD
 	 *

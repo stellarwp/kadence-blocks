@@ -5,14 +5,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 use InvalidArgumentException;
 
 /**
- * One variant binding: how a single block property (e.g. "button-bg") reaches output when a variant is
+ * One preset binding: how a single block property (e.g. "button-bg") reaches output when a preset is
  * active. This is *structure* — the projection target, not a value. The value lives in the DTCG
- * document and is flattened by the Variant_Resolver.
+ * document and is flattened by the Preset_Resolver.
  *
  * A binding declares a **token reference**, **inline targets**, or **both** (they compose):
  *
  *   - **Token reference** — `['token' => 'semantic.color.button-bg']`. The property reuses that
- *     registered token's projections, so a variant retargets the exact variable the base property
+ *     registered token's projections, so a preset retargets the exact variable the base property
  *     already feeds and there is no duplicated projection to drift.
  *   - **Inline target** — `['kadence_slot' => 'palette3']` (and/or `block_attr`, `css_var`, `css_prop`,
  *     `css_selector`). For a property that is not (yet) a registered token, or to add a target the token
@@ -63,7 +63,7 @@ final class Binding {
 	 * Inline target: a KB-owned CSS custom property this property drives, named without the leading `--`
 	 * (e.g. "kb-btn-radius" → `--kb-btn-radius`). For a property with no Kadence palette slot or WordPress
 	 * preset bucket (e.g. border-radius): the block reads `var(--<css_var>, <token fallback>)`, and a selected
-	 * variant sets `--<css_var>` on its scope so the value can vary per variant.
+	 * preset sets `--<css_var>` on its scope so the value can vary per preset.
 	 *
 	 * @since TBD
 	 *
@@ -99,7 +99,7 @@ final class Binding {
 
 	/**
 	 * Editor-only target: the block attribute the editor control for this property writes, so the
-	 * indicator layer can tell whether a control is bound to the active variant or has been overridden.
+	 * indicator layer can tell whether a control is bound to the active preset or has been overridden.
 	 * Deliberately NOT a projection target — it is excluded from STRING_TARGETS / inline_targets(), so it
 	 * never enters $projections and effective_projections() never emits it. That is what keeps a bound but
 	 * untouched attribute EMPTY (nothing is seeded), which the editor's "empty = bound" detection relies on.
@@ -236,7 +236,7 @@ final class Binding {
 
 	/**
 	 * The block attribute this binding seeds, or null when it declares none. Used by the block-preset
-	 * projector to map a resolved variant value onto a block's default attribute. Always an inline target
+	 * projector to map a resolved preset value onto a block's default attribute. Always an inline target
 	 * — tokens never carry a `block_attr` — so it is read straight off this binding.
 	 *
 	 * @since TBD
@@ -251,7 +251,7 @@ final class Binding {
 
 	/**
 	 * The block attribute the editor control for this property writes, or null when the binding declares
-	 * none. Editor-only: read by the variant catalog so the indicator layer can key an override signal to a
+	 * none. Editor-only: read by the preset catalog so the indicator layer can key an override signal to a
 	 * control. Unlike block_attr(), this is NOT a projection target and never seeds an attribute default.
 	 *
 	 * @since TBD
@@ -294,8 +294,8 @@ final class Binding {
 
 	/**
 	 * The KB-owned CSS custom property this binding drives (named without the leading `--`, e.g.
-	 * "kb-btn-radius"), or null when it declares none. Read by the variant projector to set that variable on a
-	 * selected variant's scope so the value can vary per variant. Inline only.
+	 * "kb-btn-radius"), or null when it declares none. Read by the preset projector to set that variable on a
+	 * selected preset's scope so the value can vary per preset. Inline only.
 	 *
 	 * @since TBD
 	 *
