@@ -14,7 +14,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *   - "colorPalettes"     → named color palettes within the set (the palette feature): each an ordered list
  *                           of groups, each an ordered list of self-describing swatches.
  *
- * The preset / variant sections hold named groups; each group is a map of preset-slug =>
+ * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
  * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — so it is NOT
  * returned by get_sections() (that drives the tokens-map walk).

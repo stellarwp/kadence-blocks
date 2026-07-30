@@ -113,10 +113,10 @@ final class Projector extends Abstract_Css_Projector {
 	}
 
 	/**
-	 * Build the variant CSS for the single active token set, via the builder's fragment cache.
+	 * Build the preset CSS for the single active token set, via the builder's fragment cache.
 	 *
-	 * The active set's variants are emitted as canonical --kb-token--variant--* vars plus the coercive scoped
-	 * rules. Returns an empty string when the store version cannot be read or a variant cannot be resolved
+	 * The active set's presets are emitted as canonical --kb-token--preset--* vars plus the coercive scoped
+	 * rules. Returns an empty string when the store version cannot be read or a preset cannot be resolved
 	 * (e.g. an alias cycle from a direct DB write that bypassed the REST gate), so the page never crashes —
 	 * the inline style is simply omitted and KB falls back to its $default look.
 	 *

@@ -96,7 +96,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of css(): assembles the `:root` block from the object cache with a per-request memo. A
+	 * Cached version of css(): assembles the `:root` block from the object cache with a per-request memo. A
 	 * write bumps the set's store version, which changes the cache key, so a fresh block is built on the next
 	 * request.
 	 *

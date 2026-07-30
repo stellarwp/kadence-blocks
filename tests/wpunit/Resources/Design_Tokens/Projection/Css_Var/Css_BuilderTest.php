@@ -159,7 +159,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The projected CSS never uses !important, so per-instance variant overrides win by ordinary cascade.
+	 * The projected CSS never uses !important, so per-instance overrides win by ordinary cascade.
 	 *
 	 * @return void
 	 */

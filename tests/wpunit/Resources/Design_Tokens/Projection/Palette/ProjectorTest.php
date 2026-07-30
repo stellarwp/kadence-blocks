@@ -81,27 +81,27 @@ final class ProjectorTest extends TestCase {
 		$this->assertStringContainsString( Css_Var::from_id( 'primitive.color.brand.button' ) . ':#DD6B20;', $block );
 
 		// The semantic that aliases the re-tinted button primitive is resolved to sunset's color (not just the
-		// primitive) — this is what makes a block reading the semantic re-skin, and what the button's variant
+		// primitive) — this is what makes a block reading the semantic re-skin, and what the button's preset
 		// var chains to.
 		$this->assertStringContainsString( Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ':#DD6B20;', $block );
 	}
 
 	/**
-	 * A shared attribute-presence `[data-kb-palette]` rule re-emits the canonical variant-var declarations, so a
-	 * variant Button whose color aliases a palette-changed token re-resolves against the subtree's re-tinted
+	 * A shared attribute-presence `[data-kb-palette]` rule re-emits the canonical preset-var declarations, so a
+	 * preset Button whose color aliases a palette-changed token re-resolves against the subtree's re-tinted
 	 * semantics and follows the chosen palette.
 	 *
 	 * @return void
 	 */
-	public function testItReEmitsTheVariantVarsUnderTheSharedPresenceRule(): void {
+	public function testItReEmitsThePresetVarsUnderTheSharedPresenceRule(): void {
 		$css = $this->projector->css();
 
 		$start = strpos( $css, '[data-kb-palette]{' );
 		$this->assertNotFalse( $start );
 		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
 
-		// The Single Button's primary button-bg variant var chains to the button semantic, which the per-palette
-		// selector re-declares — so on a palette subtree the variant follows the palette.
+		// The Single Button's primary button-bg preset var chains to the button semantic, which the per-palette
+		// selector re-declares — so on a palette subtree the preset follows the palette.
 		$this->assertStringContainsString( 'kadence-singlebtn--primary--button-bg', $block );
 		$this->assertStringContainsString(
 			'var(' . Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ')',
