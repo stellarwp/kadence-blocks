@@ -85,7 +85,8 @@
 	}
 }
 
-// The tab bar: a gray-300 divider under the tabs, a theme-color underline on the active tab.
+// The tab bar: a gray-300 divider under the tabs, a theme-color underline on the active tab, each tab
+// showing its icon beside the label.
 .kadence-token-field__tabs {
 	> .components-tab-panel__tabs {
 		border-bottom: 1px solid #dddddd;
@@ -94,6 +95,18 @@
 			font-size: 13px;
 			font-weight: 500;
 		}
+	}
+}
+
+// Each tab's icon sits beside its label.
+.kadence-token-field__tab-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	svg {
+		width: 20px;
+		height: 20px;
 	}
 }
 
@@ -166,31 +179,28 @@
 	font-size: 13px;
 }
 
-// The Custom tab: a value + unit row above a full-width slider.
+// The Custom tab: the value input, unit switcher, and slider on a single centered row.
 .kadence-token-field__custom {
 	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	padding: 12px;
-}
-
-.kadence-token-field__custom-row {
-	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	gap: 8px;
+	padding: 12px;
 
 	.kadence-token-field__custom-input {
-		flex: 1 1 auto;
+		flex: 0 0 64px;
+		margin-bottom: 0;
 	}
 
 	.kadence-token-field__unit {
 		flex: 0 0 auto;
 		margin-bottom: 0;
 	}
-}
 
-.kadence-token-field__slider {
-	margin-bottom: 0;
+	.kadence-token-field__slider {
+		flex: 1 1 auto;
+		min-width: 0;
+		margin-bottom: 0;
+	}
 }
 
 // A measure control's four corner fields are wider as a token field than as a bare number input, so

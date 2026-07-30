@@ -31,7 +31,7 @@ import {
 	TabPanel,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-import { link, linkOff, undo } from '@wordpress/icons';
+import { globe, link, linkOff, settings, undo } from '@wordpress/icons';
 import { parseCssLength } from '../token-picker/parse-css-length';
 import './component-token-ui.scss';
 
@@ -224,28 +224,26 @@ export function TokenFieldControl({
 	// the bound token's resolved size — editing it drops the alias and leaves a plain number.
 	const customTab = (
 		<div className="kadence-token-field__custom">
-			<div className="kadence-token-field__custom-row">
-				<NumberControl
-					className="kadence-token-field__custom-input"
-					label={__('Custom value', 'kadence-blocks')}
+			<NumberControl
+				className="kadence-token-field__custom-input"
+				label={__('Custom value', 'kadence-blocks')}
+				hideLabelFromVision
+				value={number}
+				min={min}
+				max={max}
+				step={step}
+				onChange={writeNumber}
+			/>
+			{units && units.length > 0 && onUnit && (
+				<SelectControl
+					className="kadence-token-field__unit"
+					label={__('Unit', 'kadence-blocks')}
 					hideLabelFromVision
-					value={number}
-					min={min}
-					max={max}
-					step={step}
-					onChange={writeNumber}
+					value={unit}
+					options={units.map((option) => ({ label: option, value: option }))}
+					onChange={onUnit}
 				/>
-				{units && units.length > 0 && onUnit && (
-					<SelectControl
-						className="kadence-token-field__unit"
-						label={__('Unit', 'kadence-blocks')}
-						hideLabelFromVision
-						value={unit}
-						options={units.map((option) => ({ label: option, value: option }))}
-						onChange={onUnit}
-					/>
-				)}
-			</div>
+			)}
 			{typeof max === 'number' && (
 				<RangeControl
 					className="kadence-token-field__slider"
@@ -290,8 +288,24 @@ export function TokenFieldControl({
 					<TabPanel
 						className="kadence-token-field__tabs"
 						tabs={[
-							{ name: 'style-library', title: __('Style Library', 'kadence-blocks') },
-							{ name: 'custom', title: __('Custom', 'kadence-blocks') },
+							{
+								name: 'style-library',
+								title: (
+									<span className="kadence-token-field__tab-title">
+										<Icon icon={globe} size={20} />
+										{__('Style Library', 'kadence-blocks')}
+									</span>
+								),
+							},
+							{
+								name: 'custom',
+								title: (
+									<span className="kadence-token-field__tab-title">
+										<Icon icon={settings} size={20} />
+										{__('Custom', 'kadence-blocks')}
+									</span>
+								),
+							},
 						]}
 					>
 						{(tab) =>
