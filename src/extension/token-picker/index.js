@@ -176,13 +176,17 @@ export function pickableTokensForControl(blockName, controlAttr, library) {
 		return tokens;
 	}
 
-	// Narrow to the control's sub-kind, then pin the exact bound token first (semantic-first order
-	// carries through for the rest). An unresolved bound token drops out of the narrowed set, so the
-	// pin is a no-op rather than surfacing a token the filter already excluded.
+	// Narrow to the control's sub-kind. When that sub-kind has primitive scale steps (e.g. the radius
+	// sizes), offer only those — the picker surfaces sizes, not the component-specific semantic tokens
+	// that merely alias them. Fall back to the full narrowed set for a sub-kind with no primitives.
 	const narrowed = tokens.filter((token) => token.role === role);
+	const primitives = narrowed.filter((token) => token.id.startsWith('primitive.'));
+	const scoped = primitives.length ? primitives : narrowed;
 
+	// Pin the exact bound token first when it survived the scoping (order carries through for the rest).
+	// An unresolved or scoped-out bound token drops the pin to a no-op.
 	return [
-		...narrowed.filter((token) => token.id === property.token),
-		...narrowed.filter((token) => token.id !== property.token),
+		...scoped.filter((token) => token.id === property.token),
+		...scoped.filter((token) => token.id !== property.token),
 	];
 }
