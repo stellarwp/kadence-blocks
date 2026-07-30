@@ -100,7 +100,7 @@ export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function palettesPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function palettesPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/palettes?set=${encodeURIComponent(slug)}`;
 }
 
@@ -114,7 +114,7 @@ export function palettesPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function palettePath(namespace, id, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function palettePath(namespace, id, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/palettes/${encodeURIComponent(id)}?set=${encodeURIComponent(slug)}`;
 }
 
@@ -130,7 +130,7 @@ export function palettePath(namespace, id, slug = DEFAULT_TOKEN_SET_SLUG) {
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/palettes/${encodeURIComponent(id)}/swatches/${encodeURIComponent(token)}?set=${encodeURIComponent(slug)}`;
 }
 
@@ -143,6 +143,6 @@ export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_TOKEN_SET
  * @param {string} slug      Token set slug.
  * @return {string} REST path relative to wp-json root.
  */
-export function paletteCurrentPath(namespace, slug = DEFAULT_TOKEN_SET_SLUG) {
+export function paletteCurrentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/palettes/current?set=${encodeURIComponent(slug)}`;
 }
