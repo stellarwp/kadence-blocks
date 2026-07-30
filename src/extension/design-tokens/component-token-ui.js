@@ -8,7 +8,7 @@
  * pickable-token list the caller passes in.
  *
  * The primary surface is `TokenFieldControl`: it turns a control's numeric slot into a single field
- * that reads like the control's own input and, on click, opens a popover with two tabs — `Stylebook`
+ * that reads like the control's own input and, on click, opens a popover with two tabs — `Style Library`
  * (pick a token, or clear to none) and `Custom` (edit a literal value). This matches the sidebar
  * design, where the field itself is the entry point rather than a separate "use token" button.
  * `TokenChip`/`TokenPickerButton` remain for the whole-value box-shadow control, which has no per-slot
@@ -94,7 +94,7 @@ function fieldSummary(value, tokens, unit) {
 }
 
 /**
- * The `Stylebook` tab body: a `Reset` affordance, a `None` clear, and the pickable tokens (each showing
+ * The `Style Library` tab body: a `Reset` affordance, a `None` clear, and the pickable tokens (each showing
  * its label and resolved value, the active one pressed). Every choice closes the popover.
  *
  * @param {Object}   props
@@ -110,7 +110,7 @@ function fieldSummary(value, tokens, unit) {
  *
  * @return {Object} The rendered token list.
  */
-function StylebookTab({ value, tokens, onPick, onClear, canReset, onReset, onClose }) {
+function StyleLibraryTab({ value, tokens, onPick, onClear, canReset, onReset, onClose }) {
 	return (
 		<div className="kadence-token-field__list">
 			<Button
@@ -159,7 +159,7 @@ function StylebookTab({ value, tokens, onPick, onClear, canReset, onReset, onClo
 
 /**
  * A control's numeric slot as a token field: a corner icon plus a trigger that reads like the control's
- * input (showing the bound token or the literal), opening a popover with a `Stylebook` tab (pick/clear a
+ * input (showing the bound token or the literal), opening a popover with a `Style Library` tab (pick/clear a
  * token) and a `Custom` tab (edit a literal value + unit with a slider). The `Custom` number seeds from
  * the token's resolved size when a token is bound, so switching to a custom value drops the alias and
  * leaves a usable literal.
@@ -286,13 +286,13 @@ export function TokenFieldControl({
 					<TabPanel
 						className="kadence-token-field__tabs"
 						tabs={[
-							{ name: 'stylebook', title: __('Stylebook', 'kadence-blocks') },
+							{ name: 'style-library', title: __('Style Library', 'kadence-blocks') },
 							{ name: 'custom', title: __('Custom', 'kadence-blocks') },
 						]}
 					>
 						{(tab) =>
-							tab.name === 'stylebook' ? (
-								<StylebookTab
+							tab.name === 'style-library' ? (
+								<StyleLibraryTab
 									value={value}
 									tokens={tokens}
 									onPick={onPick}

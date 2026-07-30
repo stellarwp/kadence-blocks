@@ -5,7 +5,7 @@
  * `@wordpress/hooks` seams and know nothing about design tokens. Here Kadence Blocks registers the
  * token behavior on both. For a control with per-slot fields (measure, measure-range, range, single
  * border) the editor seam replaces each slot's numeric input with a `TokenFieldControl`: a trigger
- * that reads like the input and opens a Stylebook/Custom popover, so the field itself is the token
+ * that reads like the input and opens a Style Library/Custom popover, so the field itself is the token
  * entry point. The whole-value box-shadow control has no such field, so it keeps the actions-seam
  * chip-or-picker.
  *
