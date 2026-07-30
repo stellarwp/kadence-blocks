@@ -3,7 +3,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder as Token_Css_Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Scope;
@@ -14,8 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable Kadence block presets across every token set at once, so a preset
- * follows palette switching the same way the raw token layer does.
+ * Builds the scoped CSS for selectable Kadence block presets for the single active token set.
  *
  * A selected preset reaches output purely through the cascade: the editor adds a "kb-preset--<name>"
  * class to the block, and this builder emits, per (block, preset), a rule that retargets the --global-*
@@ -27,24 +26,15 @@ use RuntimeException;
  * that both retarget the same --global-<slot> carry equal specificity, so the selected-preset rule wins
  * over the class-less $default rule by higher specificity, and a per-instance edit wins over both.
  *
- * The emission mirrors the raw-token (Css_Var) projection so a preset var is just another token in the
- * same multi-set graph:
+ * Only the active set is emitted (the active-set pointer selects it). The build has two layers:
  *
- *   1. One namespaced preset-var block per set —
- *      --kb-token--<set>--preset--<block>--<preset>--<property>: <value-or-var> — where an aliased
- *      binding reads var(--kb-token--<set>--<target>), so the preset chains to that set's namespaced token
- *      and a set's chain stays inside the set; a literal binding emits the literal.
- *   2. An active-library alias layer pointing each canonical preset var at the active set's namespaced one
- *      (--kb-token--preset--…: var(--kb-token--<active>--preset--…)).
- *   3. One [data-kb-token-set="<set>"] switch selector per set re-pointing the canonical preset vars at
- *      that set, so a body class / container attribute swaps the preset palette client-side — the scoped
- *      rules below read the canonical preset var on the block element, so they follow it for their subtree.
- *   4. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
- *      --global-<slot> at the canonical preset var. These read the canonical var (which the switch
- *      selectors re-point per set), so a rule is set-independent and is emitted from every set's fragment —
- *      a preset that exists only in a non-active set (e.g. a user-created preset on the "dark" set) still
- *      gets its retarget rule. A class-less ".wp-block-<block>" rule for the active set's $default preset
- *      is emitted alongside the active fragment, so a block with no preset selected still shows its preset.
+ *   1. The canonical preset-var definitions at `:root` —
+ *      --kb-token--preset--<block>--<preset>--<property>: <value-or-var> — where an aliased binding reads
+ *      var(--kb-token--<target>) so the preset chains to the active set's canonical token, and a literal
+ *      binding emits the literal.
+ *   2. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
+ *      --global-<slot> at the canonical preset var, plus a class-less ".wp-block-<block>" rule for the
+ *      $default preset so a block with no preset selected still shows its preset.
  *
  * Scoping is per (block, preset): the same preset name on two blocks ("ghost" on a Button and a Row) gets
  * its own qualified rule, so values never collide. Both named presets and the "$default" preset carry
@@ -63,8 +53,7 @@ final class Css_Builder {
 	use Sanitizes_Css_Value;
 
 	/**
-	 * The preset var namespace, appended after the shared --kb-token-- prefix (and after any set
-	 * namespace).
+	 * The preset var namespace, appended after the shared --kb-token-- prefix.
 	 *
 	 * @since TBD
 	 *
@@ -113,8 +102,15 @@ final class Css_Builder {
 	private Preset_Resolver $presets;
 
 	/**
-	 * Per-request memo of built CSS, keyed on each cached fragment's object-cache key and the full-assembly
-	 * signature, so a write (which bumps a set's version) invalidates the affected entries on its own.
+	 * @var Token_Store The store, read for the cache-busting version the collect memo keys on.
+	 *
+	 * @since TBD
+	 */
+	private Token_Store $store;
+
+	/**
+	 * Per-request memo of built CSS, keyed on the active set's object-cache key, so a write (which bumps the
+	 * set's version) invalidates the affected entry on its own.
 	 *
 	 * @since TBD
 	 *
@@ -123,8 +119,9 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of the collected preset structure, keyed on the set slug, so the registry/resolver
-	 * walk runs once per set even when several layers read it.
+	 * Per-request memo of the collected preset structure, keyed on the set slug AND its store version, so the
+	 * registry/resolver walk runs once per set even when several layers read it, yet a write (which bumps the
+	 * version) produces a fresh collection rather than serving the pre-write structure.
 	 *
 	 * @since TBD
 	 *
@@ -137,112 +134,45 @@ final class Css_Builder {
 	 *
 	 * @param Token_Registry  $registry The token registry.
 	 * @param Preset_Resolver $presets  The preset resolver.
+	 * @param Token_Store     $store    The store, for the cache-busting version.
 	 */
-	public function __construct( Token_Registry $registry, Preset_Resolver $presets ) {
+	public function __construct( Token_Registry $registry, Preset_Resolver $presets, Token_Store $store ) {
 		$this->registry = $registry;
 		$this->presets  = $presets;
+		$this->store    = $store;
 	}
 
 	/**
-	 * Build the full multi-set preset CSS: a namespaced preset-var block plus switch selector per set, the
-	 * active-library alias layer, and the active set's scoped rules. The pure, uncached assembler (its cached
-	 * counterpart is css_for_version()).
+	 * Build the active set's preset CSS: the canonical preset-var definitions plus the scoped retarget
+	 * rules. The pure, uncached assembler (its cached counterpart is css_for_version()).
 	 *
 	 * @since TBD
 	 *
-	 * @param string[] $slugs       Every token set slug to emit, in order.
-	 * @param string   $active_slug The active set's slug — the set the canonical alias layer points at.
+	 * @param string $active_slug The active set's slug.
 	 *
 	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
 	 */
-	public function css( array $slugs, string $active_slug ): string {
-		$css = '';
-		foreach ( $slugs as $slug ) {
-			$css .= $this->build_set_fragment( (string) $slug );
-		}
-
-		return $css . $this->build_active_fragment( $active_slug );
+	public function css( string $active_slug ): string {
+		return $this->build( $active_slug );
 	}
 
 	/**
-	 * Cached preset of css(): assembles the per-set fragments and the active fragment from the object cache
-	 * at fragment granularity, with a per-request memo. Editing one set busts only that set's fragment;
-	 * switching the active set reuses every per-set fragment and rebuilds only the active one.
+	 * Cached preset of css(): assembles the active set's preset CSS from the object cache with a per-request
+	 * memo. A write bumps the set's store version, which changes the cache key, so a fresh build is produced on
+	 * the next request.
 	 *
-	 * The plugin version is folded into each fragment's cache key alongside the store version, so the cache
-	 * also busts on a plugin build (shipped preset definitions and the baseline can change with it).
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, string> $versions    Each token set slug => the store version it was built from.
-	 * @param string                $active_slug The active set's slug.
-	 *
-	 * @return string
-	 */
-	public function css_for_version( array $versions, string $active_slug ): string {
-		$signature = 'assembly:' . $active_slug;
-		foreach ( $versions as $slug => $version ) {
-			$signature .= '|' . (string) $slug . ':' . $version;
-		}
-
-		if ( isset( $this->memo[ $signature ] ) ) {
-			return $this->memo[ $signature ];
-		}
-
-		$css = '';
-		foreach ( $versions as $slug => $version ) {
-			$css .= $this->set_fragment( (string) $slug, $version );
-		}
-
-		$css .= $this->active_fragment( $active_slug, (string) ( $versions[ $active_slug ] ?? '' ) );
-
-		return $this->memo[ $signature ] = $css;
-	}
-
-	/**
-	 * A set's per-set fragment — its namespaced preset-var block plus its switch selector — served from /
-	 * stored in the object cache. Active-independent: it depends only on this set's resolved presets.
+	 * The plugin version is folded into the cache key alongside the store version, so the cache also busts on a
+	 * plugin build (shipped preset definitions and the baseline can change with it).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug    The set slug.
-	 * @param string $version The store version the set was built from.
-	 *
-	 * @return string
-	 */
-	public function set_fragment( string $slug, string $version ): string {
-		$cache_key = 'preset_css_set_' . KADENCE_BLOCKS_VERSION . '_' . $slug . '_' . $version;
-
-		if ( isset( $this->memo[ $cache_key ] ) ) {
-			return $this->memo[ $cache_key ];
-		}
-
-		$cached = wp_cache_get( $cache_key, self::CACHE_GROUP, false, $found );
-
-		if ( $found && is_string( $cached ) ) {
-			return $this->memo[ $cache_key ] = $cached;
-		}
-
-		$css = $this->build_set_fragment( $slug );
-
-		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
-
-		return $this->memo[ $cache_key ] = $css;
-	}
-
-	/**
-	 * The active fragment — the canonical alias layer plus the coercive scoped rules — served from / stored
-	 * in the object cache. Depends only on the active set, so a switch rebuilds just this.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $active_slug The active set slug.
+	 * @param string $active_slug The active set's slug.
 	 * @param string $version     The store version the active set was built from.
 	 *
 	 * @return string
 	 */
-	public function active_fragment( string $active_slug, string $version ): string {
-		$cache_key = 'preset_css_active_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version;
+	public function css_for_version( string $active_slug, string $version ): string {
+		$cache_key = 'preset_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version;
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {
 			return $this->memo[ $cache_key ];
@@ -254,7 +184,7 @@ final class Css_Builder {
 			return $this->memo[ $cache_key ] = $cached;
 		}
 
-		$css = $this->build_active_fragment( $active_slug );
+		$css = $this->build( $active_slug );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
@@ -262,29 +192,26 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) a set's per-set fragment: its namespaced preset-var block, its switch selector, and
-	 * its per-preset scoped retarget rules. The scoped rules read the canonical preset var (which the
-	 * switch selectors re-point per set), so emitting them from every set's fragment — not just the active
-	 * one — is what lets a preset that exists only in a non-active set still retarget its slots when a block
-	 * is placed on that set. A rule shared across sets is byte-identical, so the duplication is inert.
+	 * The active set's canonical `--kb-token--preset--*` declarations, without a selector wrapper — the raw
+	 * `--kb-token--preset--<block>--<preset>--<property>:<value>;` list. The palette switch layer re-emits
+	 * these under `[data-kb-palette]` so a per-block palette override forces each preset var to re-resolve
+	 * against the subtree's re-tinted semantics (a preset that aliases a palette-changed color follows the
+	 * chosen palette, so a preset Button re-skins with the rest of its subtree).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The set slug.
+	 * @param string $active_slug The active set's slug.
 	 *
 	 * @return string
 	 */
-	private function build_set_fragment( string $slug ): string {
-		$collected = $this->collect( $slug );
-
-		return $this->namespaced_block( $collected, $slug )
-			. $this->switch_block( $collected, $slug )
-			. $this->scoped_presets( $collected );
+	public function canonical_declarations( string $active_slug ): string {
+		return $this->declarations_of( $this->collect( $active_slug ) );
 	}
 
 	/**
-	 * Build (uncached) the active fragment: the canonical alias layer plus the class-less $default rules. The
-	 * single assembly definition shared by css() and the cached active_fragment().
+	 * Build (uncached) the active set's preset CSS: the canonical preset-var definitions followed by the
+	 * per-preset scoped rules and the class-less $default rules. The single assembly definition shared by
+	 * css() and the cached css_for_version().
 	 *
 	 * @since TBD
 	 *
@@ -292,26 +219,30 @@ final class Css_Builder {
 	 *
 	 * @return string
 	 */
-	private function build_active_fragment( string $active_slug ): string {
+	private function build( string $active_slug ): string {
 		$collected = $this->collect( $active_slug );
 
-		return $this->alias_block( $collected, $active_slug ) . $this->scoped_default( $collected );
+		return $this->canonical_block( $collected )
+			. $this->scoped_presets( $collected )
+			. $this->scoped_default( $collected );
 	}
 
 	/**
 	 * Walk every (block, preset, property) that resolves to a slot-targeted value for a set, into a
-	 * structure the layers below build from. The projected value namespaces its var() target to the set, so
-	 * an aliased preset chains to that set's namespaced token. Memoized per slug for the request.
+	 * structure the layers below build from. The projected value keeps its var() target canonical, so an
+	 * aliased preset chains to the set's canonical token. Memoized per slug for the request.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The set slug to resolve against (and namespace the values to).
+	 * @param string $slug The set slug to resolve against.
 	 *
 	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}>
 	 */
 	private function collect( string $slug ): array {
-		if ( isset( $this->collected[ $slug ] ) ) {
-			return $this->collected[ $slug ];
+		$key = $slug . '_' . $this->store->get_version( $slug );
+
+		if ( isset( $this->collected[ $key ] ) ) {
+			return $this->collected[ $key ];
 		}
 
 		$out = [];
@@ -335,7 +266,7 @@ final class Css_Builder {
 
 			foreach ( $names as $preset ) {
 				try {
-					$values = $this->presets->resolve( $block, $preset, $slug, $slug );
+					$values = $this->presets->resolve( $block, $preset, $slug );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
@@ -379,97 +310,46 @@ final class Css_Builder {
 			$out[ $block ] = [
 				'selector' => $this->block_selector( $block ),
 				'default'  => $default,
-				'presets'  => $presets,
+				'presets' => $presets,
 			];
 		}
 
-		return $this->collected[ $slug ] = $out;
+		return $this->collected[ $key ] = $out;
 	}
 
 	/**
-	 * Emit a set's `--kb-token--<set>--preset--*` definitions from its collected presets. The value
-	 * preserves alias indirection namespaced to the set, so the preset chains to that set's token.
+	 * Emit the canonical `--kb-token--preset--*` definitions from the active set's collected presets. The
+	 * value preserves alias indirection canonically, so the preset chains to the active set's token.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected presets.
-	 * @param string                                                                                                                            $slug      The set slug to namespace the var names under.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected presets.
 	 *
 	 * @return string
 	 */
-	private function namespaced_block( array $collected, string $slug ): string {
-		$declarations = '';
-
-		foreach ( $collected as $block => $data ) {
-			foreach ( $data['presets'] as $preset => $properties ) {
-				foreach ( $properties as $property => $info ) {
-					$declarations .= $this->preset_var( $block, $preset, $property, $slug ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
-				}
-			}
-		}
+	private function canonical_block( array $collected ): string {
+		$declarations = $this->declarations_of( $collected );
 
 		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
 	}
 
 	/**
-	 * Emit the active-library alias layer: each canonical preset var pointed at the active set's namespaced
-	 * preset var, so the scoped rules (which read the canonical var) follow the active set.
+	 * The raw `--kb-token--preset--*:<value>;` declaration list for the collected presets, shared by the
+	 * `:root` canonical block and the palette switch layer's re-emission.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected   The active set's collected presets.
-	 * @param string                                                                                                                            $active_slug The active set slug.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected presets.
 	 *
 	 * @return string
 	 */
-	private function alias_block( array $collected, string $active_slug ): string {
-		$declarations = $this->point_canonical_at_set( $collected, $active_slug );
-
-		return $declarations === '' ? '' : Scope::root() . '{' . $declarations . '}';
-	}
-
-	/**
-	 * Emit a set's switch selector: under `[data-kb-token-set="<set>"]`, re-point every canonical preset
-	 * var at that set's namespaced preset var for the matched element's subtree, so a body class /
-	 * container attribute swaps the preset palette client-side (the scoped --global-<slot> rules read the
-	 * canonical preset var on the block element, so they follow it there).
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected presets.
-	 * @param string                                                                                                                            $slug      The set slug.
-	 *
-	 * @return string
-	 */
-	private function switch_block( array $collected, string $slug ): string {
-		$declarations = $this->point_canonical_at_set( $collected, $slug );
-
-		if ( $declarations === '' ) {
-			return '';
-		}
-
-		return '[' . Token_Css_Builder::get_switch_attribute() . '="' . self::sanitize_identifier( $slug ) . '"]{' . $declarations . '}';
-	}
-
-	/**
-	 * Build the `--kb-token--preset--…: var(--kb-token--<slug>--preset--…);` declarations that point every
-	 * canonical preset var at its namespaced counterpart in $slug. Both names derive from preset_var(), so
-	 * the reference always matches the namespaced block's defined var.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The collected presets whose ids drive the layer.
-	 * @param string                                                                                                                            $slug      The set slug the canonical names are pointed at.
-	 *
-	 * @return string
-	 */
-	private function point_canonical_at_set( array $collected, string $slug ): string {
+	private function declarations_of( array $collected ): string {
 		$declarations = '';
 
 		foreach ( $collected as $block => $data ) {
 			foreach ( $data['presets'] as $preset => $properties ) {
 				foreach ( $properties as $property => $info ) {
-					$declarations .= $this->preset_var( $block, $preset, $property ) . ':var(' . $this->preset_var( $block, $preset, $property, $slug ) . ');';
+					$declarations .= $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
 				}
 			}
 		}
@@ -478,15 +358,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the per-preset scoped rules from a set's collected presets: per (block, preset) a
+	 * Emit the per-preset scoped rules from the active set's collected presets: per (block, preset) a
 	 * ".wp-block-<block>.kb-preset--<preset>" rule pointing each --global-<slot> at the canonical preset
-	 * var. Called for every set (not just the active one), so a preset that exists only in a non-active set
-	 * still gets its retarget rule; the rule body is set-independent (it reads the canonical var the switch
-	 * selectors re-point), so a rule shared across sets is byte-identical.
+	 * var.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The set's collected presets.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected presets.
 	 *
 	 * @return string
 	 */
@@ -510,8 +388,7 @@ final class Css_Builder {
 	 * Emit the class-less $default rules from the active set's collected presets: per block a
 	 * ".wp-block-<block>" rule re-emitting the $default preset's declarations so a block with no preset
 	 * selected still shows its preset. Its lower specificity yields to the kb-preset-- rules (a selected
-	 * preset) and to a per-instance edit, so it only fills the gap. Built from the active set — the preset a
-	 * block shows when it follows the active set with no selection.
+	 * preset) and to a per-instance edit, so it only fills the gap.
 	 *
 	 * @since TBD
 	 *
@@ -544,9 +421,9 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                                     $block      The block name.
-	 * @param string                                                     $preset    The preset slug.
-	 * @param array<string, array{target:string, value:string}>         $properties The preset's collected properties.
+	 * @param string                                             $block      The block name.
+	 * @param string                                             $preset    The preset slug.
+	 * @param array<string, array{target:string, value:string}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
@@ -636,23 +513,20 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The preset var name for a (block, preset, property), optionally namespaced to a token set:
-	 * "--kb-token--[<set>--]preset--<block>--<preset>--<property>", e.g.
-	 * --kb-token--dark--preset--kadence-singlebtn--secondary--button-bg.
+	 * The canonical preset var name for a (block, preset, property):
+	 * "--kb-token--preset--<block>--<preset>--<property>", e.g.
+	 * --kb-token--preset--kadence-singlebtn--secondary--button-bg.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $block     The block name.
-	 * @param string $preset   The preset slug.
-	 * @param string $property  The block property.
-	 * @param string $namespace Optional token-set slug to namespace the variable under. Empty yields the
-	 *                          canonical (un-namespaced) name.
+	 * @param string $block    The block name.
+	 * @param string $preset  The preset slug.
+	 * @param string $property The block property.
 	 *
 	 * @return string
 	 */
-	private function preset_var( string $block, string $preset, string $property, string $namespace = '' ): string {
+	private function preset_var( string $block, string $preset, string $property ): string {
 		return Css_Var::get_prefix()
-			. ( $namespace === '' ? '' : self::sanitize_identifier( $namespace ) . '--' )
 			. self::PRESET_SEGMENT
 			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
 			. self::sanitize_identifier( $preset ) . '--'

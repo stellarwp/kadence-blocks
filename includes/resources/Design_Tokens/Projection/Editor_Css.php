@@ -15,9 +15,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  * registry projects nothing, so it returns ''. The sources are concatenated in the order the Projection
  * provider supplies them, which mirrors the load-time enqueue — the token vars first (the foundation the
  * other layers reference), then presets, native retarget, and block defaults. Each source already fails
- * open to '' on its own, so one broken layer never suppresses the others. Multi-library (multi-palette)
- * support is preserved verbatim: the token-var and preset builders each emit every library's namespaced
- * vars plus the per-set switch selectors, unchanged.
+ * open to '' on its own, so one broken layer never suppresses the others. Only the single active set is
+ * emitted: the token-var and preset builders each project the active set's canonical vars, unchanged.
  *
  * `editor_css()` equals `css()` for the context-independent projectors (token vars, preset) — their output
  * carries no dependency on the editor's markup shape. It differs only for the block-default projector, whose

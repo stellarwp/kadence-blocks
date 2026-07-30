@@ -12,15 +12,17 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Exercises the selectable-preset CSS builder against the real shipped Button preset set, so these
- * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting,
- * the per-set namespaced preset-var indirection, the active-alias layer, the client-side switch selector,
- * and the class-less $default rule.
+ * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting, the
+ * canonical preset-var definitions for the active set, and the class-less $default rule. Only the active
+ * set is emitted — no per-set namespaced vars, no alias layer, no client-side switch selector.
  */
 final class Css_BuilderTest extends TestCase {
 
 	private Token_Registry $registry;
 
 	private Preset_Resolver $resolver;
+
+	private Token_Store $store;
 
 	/**
 	 * @return void
@@ -30,6 +32,7 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->registry = $this->container->get( Token_Registry::class );
 		$this->resolver = $this->container->get( Preset_Resolver::class );
+		$this->store    = $this->container->get( Token_Store::class );
 	}
 
 	/**
@@ -50,77 +53,40 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Each preset's value lives as a per-set namespaced token var that preserves the alias indirection
-	 * inside the set (var(--kb-token--<set>--<semantic>)), and the canonical preset var is pointed at the
-	 * active set's namespaced one by the alias layer — so a token edit flows through the chain live and the
-	 * preset follows the active set.
+	 * Each preset's value lives as a canonical token var that preserves the alias indirection
+	 * (var(--kb-token--<semantic>)), so a token edit flows through the chain live and the preset follows the
+	 * active set.
 	 *
 	 * @return void
 	 */
-	public function testItDefinesThePresetVarsNamespacedWithAnAliasLayer(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
+	public function testItDefinesThePresetVarsCanonically(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
 
-		// The namespaced preset var chains to that set's namespaced semantic.
-		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
-
-		// The canonical preset var is pointed at the active set's namespaced preset var (the alias layer).
-		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--preset--kadence-singlebtn--primary--button-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--secondary--button-bg:var(--kb-token--semantic--color--button-secondary-bg);', $css );
 	}
 
 	/**
-	 * Every set is emitted simultaneously: both namespaces carry their preset vars, and each set has a
-	 * [data-kb-token-set] switch selector re-pointing the canonical preset var, so a body class swaps the
-	 * preset palette client-side.
+	 * The collapsed builder emits no per-set namespaced `--kb-token--<set>--preset--*` vars and no
+	 * `[data-kb-token-set]` switch selectors — only the active set's canonical preset vars and scoped rules.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsEverySetNamespacedWithASwitchSelector(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'default' );
+	public function testItEmitsNoNamespacedVarsOrSwitchSelectors(): void {
+		$css = $this->builder( $this->registry )->css( 'default' );
 
-		// Both sets' namespaced preset vars are present (dark resolves from baseline here, namespaced).
-		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--dark--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
-
-		// The dark switch selector re-points the canonical preset var at the dark namespace.
-		$this->assertStringContainsString(
-			'[data-kb-token-set="dark"]{',
-			$css
-		);
-		$this->assertStringContainsString(
-			'--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--primary--button-bg);',
-			$css
-		);
-	}
-
-	/**
-	 * The :root alias layer targets the active set: the active set's canonical re-point appears twice (the
-	 * :root alias plus its own switch selector), a non-active set's only once (its switch selector).
-	 *
-	 * @return void
-	 */
-	public function testItPointsTheAliasLayerAtTheActiveSet(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'dark' );
-
-		$this->assertSame(
-			2,
-			substr_count( $css, '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--primary--button-bg);' )
-		);
-		$this->assertSame(
-			1,
-			substr_count( $css, '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--preset--kadence-singlebtn--primary--button-bg);' )
-		);
+		$this->assertStringNotContainsString( '--kb-token--default--', $css );
+		$this->assertStringNotContainsString( '[data-kb-token-set', $css );
 	}
 
 	/**
 	 * A named preset retargets the button's own --global-palette-btn-* slots (the vars the button render
-	 * path consumes), not the numbered palette, at the canonical preset var — so it follows the alias /
-	 * switch layers.
+	 * path consumes), not the numbered palette, at the canonical preset var.
 	 *
 	 * @return void
 	 */
 	public function testItRetargetsButtonSlotsForANamedPreset(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
+		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-preset--secondary{'
@@ -140,7 +106,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testItEmitsTheDefaultPresetOnTheBareSelector(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
+		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
@@ -155,61 +121,49 @@ final class Css_BuilderTest extends TestCase {
 
 	/**
 	 * button-radius is bound with a css_var (no palette slot), so a selected preset sets the --kb-btn-radius
-	 * variable the button's border-radius reads — via the scoped rule and a per-preset var in the namespaced
-	 * block — so the radius can vary per preset rather than being dropped.
+	 * variable the button's border-radius reads — via the scoped rule and a per-preset canonical var — so the
+	 * radius can vary per preset rather than being dropped.
 	 *
 	 * @return void
 	 */
 	public function testItProjectsACssVarBindingToItsVariable(): void {
-		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
+		$css = $this->builder( $this->registry )->css( 'default' );
 
 		// The scoped rule points --kb-btn-radius at the per-preset var.
 		$this->assertStringContainsString(
 			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);',
 			$css
 		);
-		// The namespaced block defines that per-preset var for the set.
+		// The canonical block defines that per-preset var.
 		$this->assertStringContainsString(
-			'--kb-token--default--preset--kadence-singlebtn--secondary--button-radius:',
+			'--kb-token--preset--kadence-singlebtn--secondary--button-radius:',
 			$css
 		);
 	}
 
 	/**
-	 * A preset that exists only in a NON-active set (a user-created preset on the "dark" set, absent from
-	 * the active "default" set) still gets its scoped ".kb-preset--<slug>" retarget rule, so a block placed
-	 * on that set applies the preset. The rule is emitted from the dark set's fragment — the active set has
-	 * no such preset — while the dark switch selector re-points the canonical var at the dark value.
+	 * A preset that exists only in a NON-active set (a user-created preset on the "dark" set) is not emitted
+	 * while "default" is active: only the active set's presets reach output.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsTheScopedRuleForAPresetOnlyInANonActiveSet(): void {
+	public function testItEmitsOnlyTheActiveSetsPresets(): void {
 		$this->seedDarkPreset();
 
-		// Building only the default (active) set never sees the dark-only preset, so no rule is emitted.
-		$default_only = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
-		$this->assertStringNotContainsString( '.kb-preset--midnight{', $default_only );
+		// Default is active, so the dark-only "midnight" preset contributes nothing.
+		$css = $this->builder( $this->registry )->css( 'default' );
 
-		// Building both sets with default active: the scoped retarget rule comes from the dark fragment.
-		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'default' );
-
-		$this->assertStringContainsString(
-			'.wp-block-kadence-singlebtn.kb-preset--midnight{'
-				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--midnight--button-bg);',
-			$css
-		);
-		// The dark switch selector re-points the canonical midnight var at the dark namespace.
-		$this->assertStringContainsString(
-			'--kb-token--preset--kadence-singlebtn--midnight--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--midnight--button-bg);',
-			$css
-		);
+		$this->assertStringNotContainsString( '.kb-preset--midnight{', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--midnight--', $css );
 	}
 
 	/**
+	 * With no preset sets registered, the builder emits nothing.
+	 *
 	 * @return void
 	 */
 	public function testItIsEmptyWhenNoPresetSetsAreRegistered(): void {
-		$this->assertSame( '', $this->builder( new Token_Registry() )->css( [ 'default' ], 'default' ) );
+		$this->assertSame( '', $this->builder( new Token_Registry() )->css( 'default' ) );
 	}
 
 	/**
@@ -227,7 +181,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( '', $this->builder( $registry )->css( [ 'default' ], 'default' ) );
+		$this->assertSame( '', $this->builder( $registry )->css( 'default' ) );
 	}
 
 	/**
@@ -238,7 +192,7 @@ final class Css_BuilderTest extends TestCase {
 	 * @return Css_Builder
 	 */
 	private function builder( Token_Registry $registry ): Css_Builder {
-		return new Css_Builder( $registry, $this->resolver );
+		return new Css_Builder( $registry, $this->resolver, $this->store );
 	}
 
 	/**

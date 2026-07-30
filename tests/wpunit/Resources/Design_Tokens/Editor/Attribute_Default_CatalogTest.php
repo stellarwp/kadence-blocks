@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Attribute_Default_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use Tests\Support\Classes\Fake_Baseline_Document;
@@ -107,7 +109,9 @@ final class Attribute_Default_CatalogTest extends TestCase {
 		$resolver = new Token_Resolver(
 			$this->container->get( Token_Store::class ),
 			new Effective_Document( new Fake_Baseline_Document( $baseline ) ),
-			new Css_Renderer()
+			new Css_Renderer(),
+			$this->container->get( Effective_Palettes::class ),
+			$this->container->get( Mutator::class )
 		);
 
 		return new Attribute_Default_Catalog( $resolver );

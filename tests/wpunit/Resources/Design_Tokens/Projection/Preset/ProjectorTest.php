@@ -101,7 +101,7 @@ final class ProjectorTest extends TestCase {
 	 * Build the projector with a given registry, the real preset resolver and the store.
 	 */
 	private function projector( Token_Registry $registry ): Projector {
-		return new Projector( $registry, $this->store, $this->active, new Css_Builder( $registry, $this->resolver ) );
+		return new Projector( $registry, $this->store, $this->active, new Css_Builder( $registry, $this->resolver, $this->store ) );
 	}
 
 	/**

@@ -13,6 +13,10 @@ import {
 	userPrimitivesPath,
 	userPrimitivePath,
 	userPrimitiveRenamePath,
+	palettesPath,
+	palettePath,
+	paletteSwatchPath,
+	paletteCurrentPath,
 } from './paths';
 
 /**
@@ -61,6 +65,110 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
+	});
+}
+
+/**
+ * Fetch the set's color palettes and its `$default` / `$current` pointers.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ '$default': string, '$current': string, palettes: object[] }>} Palette listing.
+ */
+export function fetchPalettes(namespace, slug) {
+	return apiFetch({ path: palettesPath(namespace, slug) });
+}
+
+/**
+ * Fetch a single palette node (its label and ordered groups of swatches).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ id: string, label: string, groups: object[] }>} The palette node.
+ */
+export function fetchPalette(namespace, id, slug) {
+	return apiFetch({ path: palettePath(namespace, id, slug) });
+}
+
+/**
+ * Set the set's current palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id to make current.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<{ current: string }>} The resolved current palette.
+ */
+export function setCurrentPalette(namespace, id, slug) {
+	return apiFetch({
+		path: paletteCurrentPath(namespace, slug),
+		method: 'PUT',
+		data: { current: id },
+	});
+}
+
+/**
+ * Create or replace a palette (label + ordered groups of swatches).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {{ label: string, groups: object[] }} payload The palette payload.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function savePalette(namespace, id, payload, slug) {
+	return apiFetch({
+		path: palettePath(namespace, id, slug),
+		method: 'PUT',
+		data: payload,
+	});
+}
+
+/**
+ * Set a single palette swatch (the granular per-token write): only this token is sent, and the palette's
+ * other swatches are untouched. A token the palette does not set falls back to the default palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} value     The color value (a literal color or a {dot.path} alias).
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function saveSwatch(namespace, id, token, value, slug) {
+	return apiFetch({
+		path: paletteSwatchPath(namespace, id, token, slug),
+		method: 'PUT',
+		data: { $value: value },
+	});
+}
+
+/**
+ * Revert a single palette swatch to inherited (the granular per-token delete): drop the palette's own value
+ * for this token so it falls back to the default palette.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} token     The swatch token dot-path.
+ * @param {string} slug      Token set slug.
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function deleteSwatch(namespace, id, token, slug) {
+	return apiFetch({
+		path: paletteSwatchPath(namespace, id, token, slug),
+		method: 'DELETE',
 	});
 }
 

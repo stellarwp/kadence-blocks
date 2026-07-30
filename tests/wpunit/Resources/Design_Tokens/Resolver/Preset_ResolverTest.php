@@ -71,19 +71,6 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * A namespace argument namespaces the var() target to that library, so a per-library preset var chains
-	 * to the library's namespaced token and the chain stays inside the library (the basis for client-side
-	 * palette switching of presets).
-	 *
-	 * @return void
-	 */
-	public function testResolveNamespacesTheVarTarget(): void {
-		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark' );
-
-		$this->assertSame( 'var(--kb-token--dark--semantic--color--button-primary-bg)', $projected['button-bg'] );
-		$this->assertSame( 'var(--kb-token--dark--semantic--radius--control)', $projected['button-radius'] );
-	}
-
 	/**
 	 * resolve() and resolve_literal() cover exactly the same properties — only the value form differs.
 	 *

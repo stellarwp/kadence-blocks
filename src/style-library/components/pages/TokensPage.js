@@ -14,6 +14,7 @@ import { useTokenEditor } from '../../hooks/use-token-editor';
 import { useUserPrimitiveEditor } from '../../hooks/use-user-primitive-editor';
 import { FoundationPage } from '../pages/FoundationPage';
 import { OverviewPage } from '../pages/OverviewPage';
+import { PalettesPage } from '../pages/PalettesPage';
 import { StyleLibraryShell } from '../templates/StyleLibraryShell';
 
 /**
@@ -128,6 +129,8 @@ export function TokensPage() {
 
 	if (section === SECTION_OVERVIEW) {
 		content = <OverviewPage sections={sections} tokens={tokens} values={values} onNavigate={setSection} />;
+	} else if (findSection(sections, section)?.kind === 'palettes') {
+		content = <PalettesPage namespace={rest?.namespace} slug={slug} />;
 	} else if (findSection(sections, section)?.kind === 'foundation') {
 		content = <FoundationPage sectionId={section} sections={sections} {...sharedListProps} />;
 	}

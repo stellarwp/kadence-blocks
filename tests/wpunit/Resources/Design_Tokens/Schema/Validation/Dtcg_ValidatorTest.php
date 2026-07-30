@@ -46,6 +46,50 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed colorPalettes section validates: a swatch `$value` may be a literal color or a
+	 * whole-string alias, both accepted by the palette branch's alias-or-literal grammar.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedColorPalettesSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'colorPalettes' => [
+						'$default' => 'default',
+						'$current' => 'default',
+						'default'  => [
+							'label'  => 'Default',
+							'groups' => [
+								[
+									'id'       => 'accent',
+									'label'    => 'Accent',
+									'swatches' => [
+										[
+											'token'  => 'primitive.color.brand.primary',
+											'label'  => 'Main 1',
+											'$value' => '#3182CE',
+										],
+										[
+											'token'  => 'semantic.color.link',
+											'label'  => 'Link',
+											'$value' => '{primitive.color.brand.primary}',
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItIsResolvableFromTheContainer(): void {
@@ -218,6 +262,69 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.presets.kadence/x.emphasis.solid.tokens.bg',
+		];
+		// A colorPalettes swatch value lives under `$value` (not a `tokens` map), so it is covered by the
+		// dedicated palette branch: an empty swatch value is rejected as an invalid literal.
+		yield 'bad colorPalettes swatch value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'colorPalettes' => [
+							'$default' => 'default',
+							'$current' => 'default',
+							'default'  => [
+								'label'  => 'Default',
+								'groups' => [
+									[
+										'id'       => 'accent',
+										'label'    => 'Accent',
+										'swatches' => [
+											[
+												'token'  => 'primitive.color.brand.primary',
+												'label'  => 'Main 1',
+												'$value' => '',
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.colorPalettes.default.groups.0.swatches.0.$value',
+		];
+		// A swatch value that embeds a `{dot.path}` reference but is not a whole-string alias is malformed.
+		yield 'malformed alias colorPalettes swatch value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'colorPalettes' => [
+							'default' => [
+								'label'  => 'Default',
+								'groups' => [
+									[
+										'id'       => 'accent',
+										'label'    => 'Accent',
+										'swatches' => [
+											[
+												'token'  => 'primitive.color.brand.primary',
+												'label'  => 'Main 1',
+												'$value' => 'rgb({primitive.color.brand.primary})',
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_alias_malformed(),
+			'path'     => '$extensions.com.kadence.designTokens.colorPalettes.default.groups.0.swatches.0.$value',
 		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
