@@ -56,13 +56,13 @@ final class RegistrationHelperTest extends TestCase {
 	}
 
 	public function testDeclarationsFileRegisteredTheButtonPresetBindings(): void {
-		// The button registers a picker set (it declares a "Style" control label).
-		$set = $this->registry->for_block( 'kadence/singlebtn' );
+		// The button registers picker-driven preset bindings (it declares a "Style" control label).
+		$bindings = $this->registry->for_block( 'kadence/singlebtn' );
 
-		$this->assertNotNull( $set );
-		$this->assertSame( 'kadence/singlebtn', $set->block );
-		$this->assertSame( 'Style', $set->label );
-		$this->assertNotNull( $set->binding( 'button-bg' ) );
+		$this->assertNotNull( $bindings );
+		$this->assertSame( 'kadence/singlebtn', $bindings->block );
+		$this->assertSame( 'Style', $bindings->label );
+		$this->assertNotNull( $bindings->binding( 'button-bg' ) );
 	}
 
 	public function testHelperRegistersAgainstTheSharedRegistry(): void {
@@ -89,11 +89,11 @@ final class RegistrationHelperTest extends TestCase {
 			]
 		);
 
-		$set = $this->registry->for_block( 'kadence/test-block' );
+		$bindings = $this->registry->for_block( 'kadence/test-block' );
 
-		$this->assertNotNull( $set );
-		$this->assertSame( 'kadence/test-block', $set->block );
-		$this->assertNotNull( $set->binding( 'thing' ) );
+		$this->assertNotNull( $bindings );
+		$this->assertSame( 'kadence/test-block', $bindings->block );
+		$this->assertNotNull( $bindings->binding( 'thing' ) );
 	}
 
 	public function testHelperFunctionsExist(): void {

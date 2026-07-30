@@ -88,7 +88,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * @var Token_Registry The registry the preset sets (and their bindings) are read from.
+	 * @var Token_Registry The registry the preset bindings are read from.
 	 *
 	 * @since TBD
 	 */
@@ -249,10 +249,10 @@ final class Css_Builder {
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			// A block may carry registered bindings before the document defines its presets; that is not an
-			// error, it simply contributes nothing yet, so skip a block whose set the registry never declared.
-			$set = $this->registry->for_block( $block );
+			// error, it simply contributes nothing yet, so skip a block whose preset bindings the registry never declared.
+			$bindings = $this->registry->for_block( $block );
 
-			if ( $set === null ) {
+			if ( $bindings === null ) {
 				continue;
 			}
 
@@ -274,7 +274,7 @@ final class Css_Builder {
 				$properties = [];
 
 				foreach ( $values as $property => $value ) {
-					$binding = $set->binding( $property );
+					$binding = $bindings->binding( $property );
 
 					if ( $binding === null ) {
 						continue;

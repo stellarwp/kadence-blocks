@@ -24,7 +24,7 @@ final class Token_Registry {
 	/** @var array<string, Token_Definition> Keyed by token id, insertion-ordered. */
 	private array $tokens = [];
 
-	/** @var array<string, Preset_Bindings> The one set a block accepts, keyed by block name. */
+	/** @var array<string, Preset_Bindings> The preset bindings a block accepts, keyed by block name. */
 	private array $preset_bindings = [];
 
 	/** @var array<string, Adapter_Interface> Keyed by block name. */
@@ -107,17 +107,17 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Register a block's preset bindings — its bindable surface and picker label. One binding set per
+	 * Register a block's preset bindings — its bindable surface and picker label. One preset-bindings registration per
 	 * block; a later registration for the same block replaces the earlier one.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set See Preset_Bindings::from_array().
+	 * @param array<string, mixed> $declaration See Preset_Bindings::from_array().
 	 *
 	 * @return void
 	 */
-	public function register_preset_bindings( array $set ): void {
-		$preset_bindings = Preset_Bindings::from_array( $set );
+	public function register_preset_bindings( array $declaration ): void {
+		$preset_bindings = Preset_Bindings::from_array( $declaration );
 
 		$this->preset_bindings[ $preset_bindings->block ] = $preset_bindings;
 	}
@@ -222,9 +222,9 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The one preset bindings set a block registers, or null when it registers none. Both the
-	 * picker-driven and the preset (no-picker) projectors read this; distinguish the two by the set's
-	 * `label` (a picker set declares one, a no-picker set does not).
+	 * The preset bindings a block registers, or null when it registers none. Both the
+	 * picker-driven and the preset (no-picker) projectors read this; distinguish the two by their
+	 * `label` (picker-driven preset bindings declare one, no-picker preset bindings do not).
 	 *
 	 * @since TBD
 	 *
@@ -237,7 +237,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * All registered preset bindings sets, keyed by block name, in registration order. The admin UI feed
+	 * All registered preset bindings, keyed by block name, in registration order. The admin UI feed
 	 * iterates this to render per-block preset editors; mirrors all() for tokens.
 	 *
 	 * @since TBD
@@ -274,7 +274,7 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The block names that have a registered preset bindings set, in registration order. Projectors walk
+	 * The block names that have registered preset bindings, in registration order. Projectors walk
 	 * these to emit each block's preset output; the preset values themselves come from the document via
 	 * the Preset_Resolver.
 	 *

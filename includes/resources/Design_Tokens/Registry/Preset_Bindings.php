@@ -5,16 +5,16 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 use InvalidArgumentException;
 
 /**
- * Immutable registration of the ONE binding set a block accepts — the block's full bindable surface: the
+ * Immutable registration of the preset bindings a block accepts — the block's full bindable surface: the
  * per-property bindings any of its presets may draw from. The *structure* half of the preset model, and
  * the only part that cannot live in the document.
  *
- * A block declares exactly one binding set. Its `bindings` are the union of every property any preset
+ * A block declares its preset bindings exactly once. Its `bindings` are the union of every property any preset
  * may control; a given preset in the document may define any subset of them (and different presets may
  * define different subsets), inheriting the rest from the block `$default` through the cascade.
  *
- * A binding set with a `label` is picker-driven: the editor renders a Design Presets control for it and
- * the preset projector emits `kb-preset--<preset>` rules. A binding set with no `label` is a preset /
+ * Preset bindings with a `label` are picker-driven: the editor renders a Design Presets control for them and
+ * the preset projector emits `kb-preset--<preset>` rules. Preset bindings with no `label` are a preset /
  * default look with NO picker: it seeds block attributes / low-specificity CSS through
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector} and
  * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder} instead.
@@ -54,7 +54,7 @@ final class Preset_Bindings {
 	public array $bindings;
 
 	/**
-	 * The editor picker's control label (e.g. "Style"), or null for a binding set that shows no picker.
+	 * The editor picker's control label (e.g. "Style"), or null for preset bindings that show no picker.
 	 * Names the CONTROL, not a preset.
 	 *
 	 * @since TBD
@@ -82,7 +82,7 @@ final class Preset_Bindings {
 	 *
 	 * @param string                 $block           The block name.
 	 * @param array<string, Binding> $bindings        The block's bindable surface, keyed by property.
-	 * @param string|null            $label           The picker control label, or null for a binding set.
+	 * @param string|null            $label           The picker control label, or null for preset bindings with no picker.
 	 * @param string|null            $editor_selector The editor-only selector override, or null to reuse the
 	 *                                                 front-end selector in the editor too.
 	 */
@@ -94,13 +94,13 @@ final class Preset_Bindings {
 	}
 
 	/**
-	 * Build a preset bindings set from its declaration array.
+	 * Build a preset bindings object from its declaration array.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set The declaration: "block", optional "bindings" (property =>
+	 * @param array<string, mixed> $declaration The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
-	 *                                  label; omit for a binding set with no picker), and optional
+	 *                                  label; omit for preset bindings with no picker), and optional
 	 *                                  "editor_selector" (see {@see self::$editor_selector}). Preset names,
 	 *                                  default and values are document data, not declared here.
 	 *
@@ -108,18 +108,18 @@ final class Preset_Bindings {
 	 *
 	 * @return self
 	 */
-	public static function from_array( array $set ): self {
+	public static function from_array( array $declaration ): self {
 		// Require a present, non-empty string. Avoid empty() so a legitimate "0" block name is not
 		// mistaken for a missing value, matching Token_Definition::from_array().
-		if ( ! isset( $set['block'] ) || ! is_string( $set['block'] ) || $set['block'] === '' ) {
+		if ( ! isset( $declaration['block'] ) || ! is_string( $declaration['block'] ) || $declaration['block'] === '' ) {
 			throw new InvalidArgumentException( 'Preset-bindings declaration is missing required string "block".' );
 		}
 
 		return new self(
-			$set['block'],
-			self::bindings( $set['block'], $set['bindings'] ?? [] ),
-			isset( $set['label'] ) && is_string( $set['label'] ) ? $set['label'] : null,
-			isset( $set['editor_selector'] ) && is_string( $set['editor_selector'] ) ? $set['editor_selector'] : null
+			$declaration['block'],
+			self::bindings( $declaration['block'], $declaration['bindings'] ?? [] ),
+			isset( $declaration['label'] ) && is_string( $declaration['label'] ) ? $declaration['label'] : null,
+			isset( $declaration['editor_selector'] ) && is_string( $declaration['editor_selector'] ) ? $declaration['editor_selector'] : null
 		);
 	}
 
@@ -139,14 +139,14 @@ final class Preset_Bindings {
 	/**
 	 * Report binding ↔ value mismatches against the properties the document's presets actually set.
 	 *
-	 * Pass the union of value properties across the set's presets (see
+	 * Pass the union of value properties across the block's presets (see
 	 * Preset_Resolver::value_properties()). "unbound" are valued properties with no binding — they
 	 * cannot reach output and are the harmful case; "unvalued" are bindings no preset ever sets — dead
-	 * wiring. A well-formed set reports neither.
+	 * wiring. Well-formed preset bindings report neither.
 	 *
 	 * @since TBD
 	 *
-	 * @param string[] $value_properties Properties set by the set's presets in the document.
+	 * @param string[] $value_properties Properties set by the block's presets in the document.
 	 *
 	 * @return array{unbound: string[], unvalued: string[]}
 	 */

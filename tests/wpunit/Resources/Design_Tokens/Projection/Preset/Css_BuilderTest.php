@@ -11,7 +11,7 @@ use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the selectable-preset CSS builder against the real shipped Button preset set, so these
+ * Exercises the selectable-preset CSS builder against the real shipped Button preset bindings, so these
  * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting, the
  * canonical preset-var definitions for the active library, and the class-less $default rule. Only the active
  * library is emitted — no per-library namespaced vars, no alias layer, no client-side switch selector.
@@ -158,7 +158,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * With no preset sets registered, the builder emits nothing.
+	 * With no preset bindings registered, the builder emits nothing.
 	 *
 	 * @return void
 	 */

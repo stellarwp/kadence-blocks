@@ -31,9 +31,9 @@ final class Preset_BindingsTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRetainsTheControlLabelWhenDeclared(): void {
-		$set = Preset_Bindings::from_array( $this->declaration() + [ 'label' => 'Style' ] );
+		$bindings = Preset_Bindings::from_array( $this->declaration() + [ 'label' => 'Style' ] );
 
-		$this->assertSame( 'Style', $set->label );
+		$this->assertSame( 'Style', $bindings->label );
 	}
 
 	/**
@@ -51,11 +51,11 @@ final class Preset_BindingsTest extends TestCase {
 	 * @return void
 	 */
 	public function testItRetainsTheEditorSelectorWhenDeclared(): void {
-		$set = Preset_Bindings::from_array(
+		$bindings = Preset_Bindings::from_array(
 			$this->declaration() + [ 'editor_selector' => '.wp-block-kadence-advancedheading .kadence-advancedheading-text' ]
 		);
 
-		$this->assertSame( '.wp-block-kadence-advancedheading .kadence-advancedheading-text', $set->editor_selector );
+		$this->assertSame( '.wp-block-kadence-advancedheading .kadence-advancedheading-text', $bindings->editor_selector );
 	}
 
 	/**
@@ -69,14 +69,14 @@ final class Preset_BindingsTest extends TestCase {
 	}
 
 	public function testItParsesTokenReferenceAndInlineBindings(): void {
-		$set = Preset_Bindings::from_array( $this->declaration() );
+		$bindings = Preset_Bindings::from_array( $this->declaration() );
 
-		$bg = $set->binding( 'button-bg' );
+		$bg = $bindings->binding( 'button-bg' );
 		$this->assertInstanceOf( Binding::class, $bg );
 		$this->assertTrue( $bg->is_token_ref() );
 		$this->assertSame( 'semantic.color.button-bg', $bg->token );
 
-		$border = $set->binding( 'button-border' );
+		$border = $bindings->binding( 'button-border' );
 		$this->assertInstanceOf( Binding::class, $border );
 		$this->assertFalse( $border->is_token_ref() );
 		$this->assertSame( [ 'kadence_slot' => 'palette3' ], $border->projections );
@@ -88,9 +88,9 @@ final class Preset_BindingsTest extends TestCase {
 
 	public function testItAcceptsABindingSetWithNoBindings(): void {
 		// A block can be preset-enabled before its bindings are wired.
-		$set = Preset_Bindings::from_array( [ 'block' => 'kadence/advancedbtn' ] );
+		$bindings = Preset_Bindings::from_array( [ 'block' => 'kadence/advancedbtn' ] );
 
-		$this->assertSame( [], $set->bindings );
+		$this->assertSame( [], $bindings->bindings );
 	}
 
 	public function testItThrowsWhenBlockIsMissing(): void {
@@ -111,19 +111,19 @@ final class Preset_BindingsTest extends TestCase {
 	}
 
 	public function testConsistencyReportsUnboundAndUnvaluedProperties(): void {
-		$set = Preset_Bindings::from_array( $this->declaration() ); // binds: button-bg, button-border.
+		$bindings = Preset_Bindings::from_array( $this->declaration() ); // binds: button-bg, button-border.
 
 		// Values set button-bg (bound) and button-text (unbound); button-border is bound but never set.
-		$report = $set->consistency( [ 'button-bg', 'button-text' ] );
+		$report = $bindings->consistency( [ 'button-bg', 'button-text' ] );
 
 		$this->assertSame( [ 'button-text' ], $report['unbound'] );
 		$this->assertSame( [ 'button-border' ], $report['unvalued'] );
 	}
 
 	public function testConsistencyIsCleanWhenBindingsAndValuesMatch(): void {
-		$set = Preset_Bindings::from_array( $this->declaration() );
+		$bindings = Preset_Bindings::from_array( $this->declaration() );
 
-		$report = $set->consistency( [ 'button-bg', 'button-border' ] );
+		$report = $bindings->consistency( [ 'button-bg', 'button-border' ] );
 
 		$this->assertSame( [], $report['unbound'] );
 		$this->assertSame( [], $report['unvalued'] );

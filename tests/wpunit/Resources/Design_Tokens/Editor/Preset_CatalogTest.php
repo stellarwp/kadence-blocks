@@ -13,7 +13,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Exercises the editor preset catalog against the real shipped baseline, so these assertions also
- * guard the Button binding set the picker offers.
+ * guard the Button preset bindings the picker offers.
  */
 final class Preset_CatalogTest extends TestCase {
 
@@ -54,7 +54,7 @@ final class Preset_CatalogTest extends TestCase {
 		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
-		// The picker's control label, declared on the binding set in declarations.php.
+		// The picker's control label, declared on the preset bindings in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
@@ -112,7 +112,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSkipsABlockAbsentFromTheDocument(): void {
-		// A picker set (it declares a label) whose block has no presets in the baseline — the names() lookup
+		// Picker-driven preset bindings (they declare a label) whose block has no presets in the baseline — the names() lookup
 		// throws Unknown_Preset_Exception and the block is skipped rather than emitted empty.
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings(

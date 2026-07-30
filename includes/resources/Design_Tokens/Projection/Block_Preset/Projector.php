@@ -19,7 +19,7 @@ use Throwable;
  * Only a property whose binding declares a `block_attr` can seed an attribute default; a property bound
  * solely to a CSS var or palette slot has no attribute to land in and is left to the CSS-variable
  * projectors. It is a no-op — returning KB's own defaults untouched — when projection is fail-closed,
- * when the block has no registered binding set, or when the token graph cannot resolve, so the filter
+ * when the block has no registered preset bindings, or when the token graph cannot resolve, so the filter
  * is safe to run for every block on every render.
  *
  * @since TBD
@@ -27,7 +27,7 @@ use Throwable;
 final class Projector {
 
 	/**
-	 * @var Token_Registry The registry the block's binding set (and its bindings) is read from.
+	 * @var Token_Registry The registry the block's preset bindings are read from.
 	 *
 	 * @since TBD
 	 */
@@ -79,9 +79,9 @@ final class Projector {
 			return $defaults;
 		}
 
-		$set = $this->registry->for_block( $block );
+		$bindings = $this->registry->for_block( $block );
 
-		if ( $set === null ) {
+		if ( $bindings === null ) {
 			return $defaults;
 		}
 
@@ -96,7 +96,7 @@ final class Projector {
 		$preset = [];
 
 		foreach ( $values as $property => $value ) {
-			$binding   = $set->binding( $property );
+			$binding   = $bindings->binding( $property );
 			$attribute = $binding !== null ? $binding->block_attr() : null;
 
 			if ( $attribute !== null ) {

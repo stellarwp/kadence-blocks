@@ -18,12 +18,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
  * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
- * its current value against the selected preset's value. Only PICKER binding sets appear (a binding set
- * that declares a `label`); a block's preset / default-preset binding set (no label) has no picker and is
+ * its current value against the selected preset's value. Only PICKER preset bindings appear (preset bindings
+ * that declare a `label`); a block's preset / default-preset bindings (no label) have no picker and are
  * omitted. It carries no
  * resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle errors the
- * admin feed must guard; a set registered but absent from a token library (Unknown_Preset_Exception) is
- * skipped, so one undefined set never empties the catalog.
+ * admin feed must guard; preset bindings registered but absent from a token library (Unknown_Preset_Exception) are
+ * skipped, so one undefined block never empties the catalog.
  *
  * @since TBD
  */
@@ -118,8 +118,8 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The per-block catalog for one token library. Only PICKER binding sets are surfaced; a block's preset /
-	 * default-preset binding set (one with no `label`) has no picker, so it is skipped.
+	 * The per-block catalog for one token library. Only PICKER preset bindings are surfaced; a block's preset /
+	 * default-preset bindings (with no `label`) have no picker, so they are skipped.
 	 *
 	 * @since TBD
 	 *
@@ -131,10 +131,10 @@ final class Preset_Catalog {
 		$out = [];
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
-			$set = $this->registry->for_block( $block );
+			$bindings = $this->registry->for_block( $block );
 
-			// A preset / default-preset binding set (no label) shows no picker, so it is not offered here.
-			if ( $set === null || $set->label === null ) {
+			// A block's preset / default-preset bindings (no label) show no picker, so they are not offered here.
+			if ( $bindings === null || $bindings->label === null ) {
 				continue;
 			}
 
@@ -160,9 +160,9 @@ final class Preset_Catalog {
 			$out[ $block ] = [
 				'default'    => $default,
 				'presets'    => $presets,
-				'properties' => $this->properties_for( $set ),
+				'properties' => $this->properties_for( $bindings ),
 				'values'     => $this->values_for( $block, $slug, $names ),
-				'label'      => $set->label,
+				'label'      => $bindings->label,
 			];
 		}
 
@@ -170,23 +170,23 @@ final class Preset_Catalog {
 	}
 
 	/**
-	 * The controllable surface for a binding set: one { key, kind, token, control_attr } entry per bound
+	 * The controllable surface for a block's preset bindings: one { key, kind, token, control_attr } entry per bound
 	 * property, in binding order, so the editor form renders an input per property and the indicator layer
-	 * can key an override signal to the control attribute. Set-structure read from the set's bindings.
+	 * can key an override signal to the control attribute. Structure read from the preset bindings.
 	 *
 	 * @since TBD
 	 *
-	 * @param Preset_Bindings $set The binding set.
+	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
 	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null}>
 	 */
-	private function properties_for( Preset_Bindings $set ): array {
+	private function properties_for( Preset_Bindings $bindings ): array {
 		$properties = [];
 
-		foreach ( $set->bindings as $property => $binding ) {
+		foreach ( $bindings->bindings as $property => $binding ) {
 			$properties[] = [
 				'key'          => (string) $property,
-				'kind'         => $set->kind( (string) $property ),
+				'kind'         => $bindings->kind( (string) $property ),
 				'token'        => $binding->token,
 				'control_attr' => $binding->control_attr(),
 			];

@@ -105,7 +105,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * A registry holding a Button preset set whose bindings target Kadence palette slots.
+	 * A registry holding a Button's preset bindings that target Kadence palette slots.
 	 */
 	private function button_set(): Token_Registry {
 		$registry = new Token_Registry();

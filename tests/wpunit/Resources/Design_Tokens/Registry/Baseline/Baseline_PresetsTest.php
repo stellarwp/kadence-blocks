@@ -37,7 +37,7 @@ final class Baseline_PresetsTest extends TestCase {
 			// that is an array without a "tokens" key is itself a collection). Assert each collection's shape either way.
 			if ( $this->is_grouped( $node ) ) {
 				foreach ( $this->named_presets( $node ) as $group ) {
-					$this->assertIsArray( $node[ $group ], sprintf( '"%s" set "%s" must be an object.', $block, $group ) );
+					$this->assertIsArray( $node[ $group ], sprintf( '"%s" collection "%s" must be an object.', $block, $group ) );
 					$this->assertSetShape( (string) $block . '.' . $group, $node[ $group ] );
 				}
 
@@ -52,8 +52,8 @@ final class Baseline_PresetsTest extends TestCase {
 	 * Assert one preset collection node is well-formed: a `$default` naming one of its own presets, and every
 	 * named preset carrying a label and a non-empty tokens map.
 	 *
-	 * @param string               $where The block[.set] label, for failure messages.
-	 * @param array<string, mixed> $node  The set's preset node.
+	 * @param string               $where The block[.collection] label, for failure messages.
+	 * @param array<string, mixed> $node  The collection's preset node.
 	 *
 	 * @return void
 	 */
@@ -61,7 +61,7 @@ final class Baseline_PresetsTest extends TestCase {
 		$names = $this->named_presets( $node );
 		$this->assertNotEmpty( $names, sprintf( 'Set "%s" declares no named presets.', $where ) );
 
-		// $default must be a non-empty string naming one of the set's own presets.
+		// $default must be a non-empty string naming one of the collection's own presets.
 		$this->assertArrayHasKey( '$default', $node, sprintf( 'Set "%s" is missing $default.', $where ) );
 		$default = $node['$default'];
 		$this->assertIsString( $default, sprintf( 'Set "%s" $default must be a string.', $where ) );
@@ -77,8 +77,8 @@ final class Baseline_PresetsTest extends TestCase {
 	}
 
 	/**
-	 * Whether a block node is a container of named sets rather than a flat set: a named child that is an
-	 * array without a "tokens" key is a set. Mirrors Preset_Resolver's shape detection.
+	 * Whether a block node is a container of named collections rather than a flat collection: a named child that is an
+	 * array without a "tokens" key is a collection. Mirrors Preset_Resolver's shape detection.
 	 *
 	 * @param array<string, mixed> $node The block's preset node.
 	 *

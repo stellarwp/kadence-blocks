@@ -150,7 +150,7 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetItemReturns404ForABlockThatAcceptsNoPresets(): void {
-		// kadence/spacer has no baseline preset data and no binding set registered for it.
+		// kadence/spacer has no baseline preset data and no preset bindings registered for it.
 		$result = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, 'kadence/spacer' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
@@ -159,7 +159,7 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * A create deep-merges a single preset into the set, leaving the baseline siblings and the default in
+	 * A create deep-merges a single preset into the block's presets, leaving the baseline siblings and the default in
 	 * place.
 	 *
 	 * @return void
@@ -255,7 +255,7 @@ final class PresetsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testUpdateReplacesTheStoredPresetCollection(): void {
-		// Seed two override-only presets, then PUT a set that keeps only one of them.
+		// Seed two override-only presets, then PUT a replacement that keeps only one of them.
 		$this->controller->create_item(
 			$this->block_request(
 				WP_REST_Server::CREATABLE,
@@ -323,7 +323,7 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a single override preset drops just that preset from the stored set.
+	 * Deleting a single override preset drops just that preset from the block's stored presets.
 	 *
 	 * @return void
 	 */
@@ -364,7 +364,7 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Removing a preset the effective set still defaults to is rejected before commit, so the default is
+	 * Removing a preset the effective presets still default to is rejected before commit, so the default is
 	 * never left dangling.
 	 *
 	 * @return void

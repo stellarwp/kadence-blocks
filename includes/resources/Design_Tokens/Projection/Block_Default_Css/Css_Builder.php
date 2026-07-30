@@ -61,7 +61,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The registry the binding sets (and their bindings) are read from.
+	 * The registry the preset bindings are read from.
 	 *
 	 * @since TBD
 	 *
@@ -179,9 +179,9 @@ final class Css_Builder {
 		$css = '';
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
-			$set = $this->registry->for_block( $block );
+			$bindings = $this->registry->for_block( $block );
 
-			if ( $set === null ) {
+			if ( $bindings === null ) {
 				continue;
 			}
 
@@ -193,8 +193,8 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = $editor && $set->editor_selector !== null
-				? '.editor-styles-wrapper ' . $set->editor_selector
+			$selector = $editor && $bindings->editor_selector !== null
+				? '.editor-styles-wrapper ' . $bindings->editor_selector
 				: '.wp-block-' . str_replace( '/', '-', $block );
 
 			// Group declarations by selector suffix so a block with several dimension props on the same
@@ -202,7 +202,7 @@ final class Css_Builder {
 			$by_suffix = [];
 
 			foreach ( $values as $property => $value ) {
-				$binding = $set->binding( $property );
+				$binding = $bindings->binding( $property );
 
 				// Only a token-referencing binding that names a css_prop contributes; the variable it points
 				// at is the referenced token's. An empty resolved value would produce a rule that resolves to
