@@ -92,16 +92,16 @@ export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
 }
 
 /**
- * Build a REST path for the color-palettes collection of a set.
+ * Build a REST path for the color-palettes collection of a library.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function palettesPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
-	return `/${namespace}/palettes?set=${encodeURIComponent(slug)}`;
+	return `/${namespace}/palettes?library=${encodeURIComponent(slug)}`;
 }
 
 /**
@@ -111,11 +111,11 @@ export function palettesPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function palettePath(namespace, id, slug = DEFAULT_LIBRARY_SLUG) {
-	return `/${namespace}/palettes/${encodeURIComponent(id)}?set=${encodeURIComponent(slug)}`;
+	return `/${namespace}/palettes/${encodeURIComponent(id)}?library=${encodeURIComponent(slug)}`;
 }
 
 /**
@@ -127,22 +127,22 @@ export function palettePath(namespace, id, slug = DEFAULT_LIBRARY_SLUG) {
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
  * @param {string} token     The swatch token dot-path.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_LIBRARY_SLUG) {
-	return `/${namespace}/palettes/${encodeURIComponent(id)}/swatches/${encodeURIComponent(token)}?set=${encodeURIComponent(slug)}`;
+	return `/${namespace}/palettes/${encodeURIComponent(id)}/swatches/${encodeURIComponent(token)}?library=${encodeURIComponent(slug)}`;
 }
 
 /**
- * Build a REST path for the set's current-palette pointer.
+ * Build a REST path for the library's current-palette pointer.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
- * @param {string} slug      Token set slug.
+ * @param {string} slug      Token library slug.
  * @return {string} REST path relative to wp-json root.
  */
 export function paletteCurrentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
-	return `/${namespace}/palettes/current?set=${encodeURIComponent(slug)}`;
+	return `/${namespace}/palettes/current?library=${encodeURIComponent(slug)}`;
 }
