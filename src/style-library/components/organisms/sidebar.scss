@@ -1,0 +1,67 @@
+@use '../../styles/tokens' as *;
+
+.kadence-blocks-style-library {
+	&__sidebar {
+		padding: $spacing-md 0;
+		border-right: 1px solid $color-border;
+		background: $color-surface-sidebar;
+		overflow-y: auto;
+	}
+
+	&__nav-section {
+		& + & {
+			margin-top: $spacing-sm;
+		}
+	}
+
+	&__nav-section-label {
+		padding: $spacing-sm $spacing-lg;
+		color: $color-text-muted;
+		font-size: $font-size-nav-label;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	&__nav-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__nav-button {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0.55rem $spacing-lg;
+		border: 0;
+		border-left: $nav-active-border solid transparent;
+		background: transparent;
+		color: $color-text-primary;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+
+		&.is-active {
+			background: $color-surface;
+			border-left-color: $color-accent;
+		}
+
+		&.is-disabled {
+			opacity: 0.65;
+			cursor: default;
+		}
+	}
+
+	&__nav-button-count {
+		min-width: 1.25rem;
+		padding: 0.1rem 0.35rem;
+		border-radius: $radius-pill;
+		background: $color-count-badge;
+		color: $color-text-secondary;
+		font-size: $font-size-nav-label;
+		font-weight: 600;
+		text-align: center;
+	}
+}

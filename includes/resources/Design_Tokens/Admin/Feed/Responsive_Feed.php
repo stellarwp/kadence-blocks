@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 
 /**
  * Extracts the raw authored responsive / clamp shape for every responsive-capable leaf in an effective
- * document, so the Style Book token editor can hydrate its per-breakpoint (and clamp) inputs exactly as
+ * document, so the Style Library token editor can hydrate its per-breakpoint (and clamp) inputs exactly as
  * authored rather than from the flat resolved value (which loses the tablet / mobile steps and the clamp
  * slots).
  *
