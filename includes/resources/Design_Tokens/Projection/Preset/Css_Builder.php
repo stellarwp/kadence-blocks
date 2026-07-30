@@ -157,7 +157,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached preset of css(): assembles the active set's preset CSS from the object cache with a per-request
+	 * Cached version of css(): assembles the active set's preset CSS from the object cache with a per-request
 	 * memo. A write bumps the set's store version, which changes the cache key, so a fresh build is produced on
 	 * the next request.
 	 *

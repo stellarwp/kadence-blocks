@@ -65,7 +65,7 @@ final class Preset_Bindings {
 
 	/**
 	 * The selector the {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder}
-	 * targets IN PLACE OF the block's `.wp-block-*` root when it builds the editor-scoped preset of the
+	 * targets IN PLACE OF the block's `.wp-block-*` root when it builds the editor-scoped version of the
 	 * block-default CSS, or null when the block root is the right target in the editor too (the common
 	 * case). Needed only when the block's editor markup does not put `.wp-block-*` on the element the
 	 * bindings are meant to style — e.g. a wrapper `<div>` around the real rendered element — so the

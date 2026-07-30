@@ -115,7 +115,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the EDITOR-scoped preset of the block-default CSS for a token library. Identical to {@see self::css()}
+	 * Build the EDITOR-scoped version of the block-default CSS for a token library. Identical to {@see self::css()}
 	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
 	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
 	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
@@ -132,7 +132,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached preset of css(): memoized per request and persisted in the object cache keyed on the store
+	 * Cached version of css(): memoized per request and persisted in the object cache keyed on the store
 	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
 	 * both invalidate it automatically.
 	 *
@@ -148,7 +148,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached preset of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * Cached version of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
 	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
 	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
 	 * front-end cache entry.
