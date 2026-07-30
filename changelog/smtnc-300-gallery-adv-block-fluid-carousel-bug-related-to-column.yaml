@@ -1,0 +1,6 @@
+significance: patch
+type: fixed
+entry: Advanced Gallery Block - Resolved an issue where long captions stretched
+  slides to the full container width in the Fluid Carousel gallery type when
+  captions were set to display below the image.
+timestamp: 2026-07-20T13:10:12.876Z
