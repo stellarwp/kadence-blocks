@@ -354,7 +354,7 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 									{/*
 									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
 									 * control. The design (see the B4 Figma) integrates the palette token picker
-									 * into the block's color controls — a "Stylebook | Custom" popover with a
+									 * into the block's color controls — a "Style Library | Custom" popover with a
 									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
 									 * Color row — which requires @kadence/components changes to the color-control
 									 * popover and is deferred.
