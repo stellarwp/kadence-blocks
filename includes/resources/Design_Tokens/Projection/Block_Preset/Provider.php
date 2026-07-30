@@ -6,7 +6,7 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 
 /**
  * Registers the block-preset projector: binds it as a singleton, then overlays each block's `$default`
- * variant onto KB's per-block attribute defaults.
+ * preset onto KB's per-block attribute defaults.
  *
  * @since TBD
  */
@@ -21,7 +21,7 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Projector::class );
 
 		// KB's abstract block emits this filter while assembling a block's default attributes (see
-		// get_attributes_with_defaults()). Overlaying the block's $default variant makes it render on-brand
+		// get_attributes_with_defaults()). Overlaying the block's $default preset makes it render on-brand
 		// out of the box. Resolved lazily through the container: the resolver graph need not boot before render.
 		add_filter(
 			'kadence_blocks_block_default_attributes',

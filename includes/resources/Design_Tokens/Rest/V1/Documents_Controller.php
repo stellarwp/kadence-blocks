@@ -31,7 +31,7 @@ use WP_REST_Server;
 /**
  * REST controller for the Design Tokens document resource.
  *
- * Exposes the full read and write surface for a token set: the raw overrides-only DTCG document
+ * Exposes the full read and write surface for a token library: the raw overrides-only DTCG document
  * (get_items / get_item), the resolved/flattened token map for previews (get_resolved), bulk
  * create / merge / replace / reset of the whole document, and set / delete of a single token by
  * dot-path. WP_REST_Controller houses a resource's read and write routes together.
@@ -40,18 +40,18 @@ use WP_REST_Server;
  * rejects alias cycles and dangling aliases (HTTP 422) before anything is committed, then a single
  * Token_Store::save_document() that bumps the version and fires the change action.
  *
- * The module holds any number of named token sets, each keyed by slug. The default set under
- * Token_Store::default_slug() is the always-present canonical set; writing an arbitrary valid slug
- * creates or updates that set, and reading or resolving an unknown slug returns 404. The default set
- * cannot be deleted — a DELETE against it resets it to baseline, while a DELETE against any other set
- * removes it entirely.
+ * The module holds any number of named token libraries, each keyed by slug. The default library under
+ * Token_Store::default_slug() is the always-present canonical library; writing an arbitrary valid slug
+ * creates or updates that library, and reading or resolving an unknown slug returns 404. The default
+ * library cannot be deleted — a DELETE against it resets it to baseline, while a DELETE against any
+ * other library removes it entirely.
  *
  * @since TBD
  */
 final class Documents_Controller extends Controller {
 
 	/**
-	 * The request parameter that carries the token set slug.
+	 * The request parameter that carries the token library slug.
 	 *
 	 * @since TBD
 	 *
@@ -78,7 +78,7 @@ final class Documents_Controller extends Controller {
 	private const DOCUMENT_PARAM = 'document';
 
 	/**
-	 * The request parameter that carries an optional human-readable label for the set.
+	 * The request parameter that carries an optional human-readable label for the library.
 	 *
 	 * @since TBD
 	 *
@@ -87,7 +87,7 @@ final class Documents_Controller extends Controller {
 	private const TITLE_PARAM = 'title';
 
 	/**
-	 * The slug path segment shared by the single-set routes. Built from SLUG_PARAM so the named capture
+	 * The slug path segment shared by the single-library routes. Built from SLUG_PARAM so the named capture
 	 * and the read parameter never drift apart.
 	 *
 	 * @since TBD
@@ -97,7 +97,7 @@ final class Documents_Controller extends Controller {
 	private const SLUG_ROUTE = '(?P<' . self::SLUG_PARAM . '>[\w-]+)';
 
 	/**
-	 * The sub-route, relative to a single set, that returns the resolved/flattened token map.
+	 * The sub-route, relative to a single library, that returns the resolved/flattened token map.
 	 *
 	 * @since TBD
 	 *
@@ -106,7 +106,7 @@ final class Documents_Controller extends Controller {
 	private const RESOLVED_ROUTE = 'resolved';
 
 	/**
-	 * The sub-route, relative to a single set, that collects the single-token endpoints.
+	 * The sub-route, relative to a single library, that collects the single-token endpoints.
 	 *
 	 * @since TBD
 	 *
@@ -116,7 +116,7 @@ final class Documents_Controller extends Controller {
 
 	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
-	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its set.
+	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
 	 * @since TBD
 	 *
@@ -134,7 +134,7 @@ final class Documents_Controller extends Controller {
 	private Token_Store $store;
 
 	/**
-	 * Flattens a stored token set into the ready-to-emit maps, and dry-runs candidate overrides.
+	 * Flattens a stored token library into the ready-to-emit maps, and dry-runs candidate overrides.
 	 *
 	 * @since TBD
 	 *
@@ -228,7 +228,7 @@ final class Documents_Controller extends Controller {
 	 * @since TBD
 	 *
 	 * @param Token_Store                       $store                 The sole gateway to the kb_design_tokens table.
-	 * @param Token_Resolver                    $resolver              Flattens a stored token set and dry-runs candidate overrides.
+	 * @param Token_Resolver                    $resolver              Flattens a stored token library and dry-runs candidate overrides.
 	 * @param Dtcg_Validator                    $validator             Validates the DTCG grammar of a candidate document.
 	 * @param Mutator                           $mutator               Assembles the candidate overrides document.
 	 * @param Effective_Document                $effective             Builds the effective document for $type inference.
@@ -287,7 +287,7 @@ final class Documents_Controller extends Controller {
 					'args'                => $this->get_collection_params(),
 				],
 				[
-					// POST = create-or-merge the set (partial update, per WP convention).
+					// POST = create-or-merge the library (partial update, per WP convention).
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'create_item' ],
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
@@ -381,10 +381,10 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Read the collection of token-set documents.
+	 * Read the collection of token-library documents.
 	 *
-	 * Lists every stored set. The default set is always included even before it has a row, since it
-	 * renders from baseline and must always be addressable; a stored default is not duplicated.
+	 * Lists every stored library. The default library is always included even before it has a row, since
+	 * it renders from baseline and must always be addressable; a stored default is not duplicated.
 	 *
 	 * @since TBD
 	 *
@@ -395,7 +395,7 @@ final class Documents_Controller extends Controller {
 	public function get_items( $request ) {
 		$slugs = array_column( $this->store->list_stores(), 'slug' );
 
-		// The default set is always addressable, even with no row yet (it renders from baseline), so
+		// The default library is always addressable, even with no row yet (it renders from baseline), so
 		// surface it whether or not the store has persisted it.
 		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {
 			array_unshift( $slugs, Token_Store::default_slug() );
@@ -407,9 +407,9 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Read a single token-set document by slug.
+	 * Read a single token-library document by slug.
 	 *
-	 * The default set is always known; any other slug must have a stored row, otherwise it is a 404.
+	 * The default library is always known; any other slug must have a stored row, otherwise it is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -428,15 +428,15 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Read the resolved/flattened token map for a set, for previews.
+	 * Read the resolved/flattened token map for a library, for previews.
 	 *
 	 * An unknown slug is a 404, mirroring get_item(). The resolver follows aliases and renders each leaf
-	 * to its CSS value; a stored set carrying an alias cycle or a dangling alias cannot be flattened, so it
-	 * is surfaced as HTTP 422 rather than a fatal.
+	 * to its CSS value; a stored library carrying an alias cycle or a dangling alias cannot be flattened,
+	 * so it is surfaced as HTTP 422 rather than a fatal.
 	 *
 	 * Alongside the flat by_id / by_var maps, the response carries the authored responsive / clamp shape per
-	 * token (empty for a set with no responsive tokens). The flat maps lose the per-breakpoint steps, so a
-	 * client that re-reads this endpoint after a write — the Style Book token editor does, to keep its
+	 * token (empty for a library with no responsive tokens). The flat maps lose the per-breakpoint steps, so a
+	 * client that re-reads this endpoint after a write — the Style Library token editor does, to keep its
 	 * per-breakpoint inputs fresh — would otherwise fall back to a stale bootstrap of the responsive shape.
 	 *
 	 * @since TBD
@@ -482,11 +482,11 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Create-or-merge a set from the collection route (POST /documents).
+	 * Create-or-merge a library from the collection route (POST /documents).
 	 *
 	 * Per the WordPress partial-update convention, the provided document is deep-merged into whatever is
-	 * stored; merging into an empty (or not-yet-existing) set simply creates it. The slug defaults to the
-	 * default set when omitted, since the collection route carries no slug path segment.
+	 * stored; merging into an empty (or not-yet-existing) library simply creates it. The slug defaults to
+	 * the default library when omitted, since the collection route carries no slug path segment.
 	 *
 	 * @since TBD
 	 *
@@ -507,7 +507,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Deep-merge a partial document into the stored set (POST or PATCH /documents/{slug}).
+	 * Deep-merge a partial document into the stored library (POST or PATCH /documents/{slug}).
 	 *
 	 * @since TBD
 	 *
@@ -531,7 +531,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Replace the whole overrides document for the set (PUT /documents/{slug}).
+	 * Replace the whole overrides document for the library (PUT /documents/{slug}).
 	 *
 	 * Unlike POST/PATCH, this drops any stored path absent from the body. Rejected with HTTP 409 while the
 	 * stored document has any user-created primitive, since a full replace has no way to express
@@ -566,12 +566,12 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Delete a token set (DELETE /documents/{slug}).
+	 * Delete a token library (DELETE /documents/{slug}).
 	 *
-	 * Delegates to Token_Store::delete(), which owns the rule that the default set is never removed
-	 * (deleting it clears its overrides to baseline) while any other set is dropped outright. An unknown
-	 * non-default set is a 404. The prior state is captured before the delete and returned as the deleted
-	 * resource, following the WordPress delete-response shape.
+	 * Delegates to Token_Store::delete(), which owns the rule that the default library is never removed
+	 * (deleting it clears its overrides to baseline) while any other library is dropped outright. An
+	 * unknown non-default library is a 404. The prior state is captured before the delete and returned as
+	 * the deleted resource, following the WordPress delete-response shape.
 	 *
 	 * @since TBD
 	 *
@@ -593,7 +593,7 @@ final class Documents_Controller extends Controller {
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_delete_failed',
-				__( 'The design token set could not be deleted.', 'kadence-blocks' ),
+				__( 'The design token library could not be deleted.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
 					'slug'   => $slug,
@@ -682,7 +682,7 @@ final class Documents_Controller extends Controller {
 	 * Remove a single token override by dot-path (DELETE /documents/{slug}/tokens/{path}).
 	 *
 	 * Dropping the override reverts that token to its baseline value. Idempotent for any non-reserved path:
-	 * when nothing is stored there, the set is returned unchanged without a write. A path inside
+	 * when nothing is stored there, the library is returned unchanged without a write. A path inside
 	 * primitive.*.custom.* is not idempotent — it is always rejected with HTTP 403, whether or not anything
 	 * is stored there, since deleting a custom primitive must go through the user-primitives endpoint. The
 	 * resulting document runs the same write pipeline as every other write, so a delete that would leave
@@ -758,7 +758,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * The JSON Schema for a token-set document item.
+	 * The JSON Schema for a token-library document item.
 	 *
 	 * @since TBD
 	 *
@@ -775,19 +775,19 @@ final class Documents_Controller extends Controller {
 			'type'       => 'object',
 			'properties' => [
 				'slug'     => [
-					'description' => __( 'The token set slug.', 'kadence-blocks' ),
+					'description' => __( 'The token library slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
 				'version'  => [
-					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
+					'description' => __( 'The cache-busting version hash for the library, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
 				'document' => [
-					'description'          => __( 'The raw overrides-only DTCG document, empty when the set renders entirely from baseline.', 'kadence-blocks' ),
+					'description'          => __( 'The raw overrides-only DTCG document, empty when the library renders entirely from baseline.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'context'              => [ 'view' ],
 					'additionalProperties' => true,
@@ -824,13 +824,13 @@ final class Documents_Controller extends Controller {
 			'type'       => 'object',
 			'properties' => [
 				'slug'       => [
-					'description' => __( 'The token set slug.', 'kadence-blocks' ),
+					'description' => __( 'The token library slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
 				'version'    => [
-					'description' => __( 'The cache-busting version hash for the set, empty when it renders from baseline.', 'kadence-blocks' ),
+					'description' => __( 'The cache-busting version hash for the library, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -887,13 +887,13 @@ final class Documents_Controller extends Controller {
 	 *
 	 * Validates the DTCG grammar (HTTP 422 on failure), dry-runs the Resolver to reject alias cycles /
 	 * dangling aliases before commit (HTTP 422), and finally persists. Writing a slug with no row yet
-	 * creates that set. An empty candidate clears the overrides (the set renders from baseline) and needs
-	 * no validation or dry-run, since an empty document cannot carry an alias cycle.
+	 * creates that library. An empty candidate clears the overrides (the library renders from baseline)
+	 * and needs no validation or dry-run, since an empty document cannot carry an alias cycle.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $candidate The full candidate overrides document to validate and store.
-	 * @param string               $slug      The token set slug.
+	 * @param string               $slug      The token library slug.
 	 * @param string               $title     Optional label; left untouched on update when empty.
 	 *
 	 * @return WP_REST_Response|WP_Error
@@ -901,7 +901,7 @@ final class Documents_Controller extends Controller {
 	private function validate_and_save( array $candidate, string $slug, string $title ) {
 		$expected_version = $this->store->get_version( $slug );
 
-		// A brand-new set has no version yet; report 201 Created rather than 200 OK on first write.
+		// A brand-new library has no version yet; report 201 Created rather than 200 OK on first write.
 		$status = $expected_version !== '' ? WP_Http::OK : WP_Http::CREATED;
 
 		if ( $candidate === [] ) {
@@ -972,7 +972,7 @@ final class Documents_Controller extends Controller {
 
 		$encoded = wp_json_encode( $candidate );
 
-		// Guard the encode: a false return cast to "" would clear the whole set on persist instead of storing it.
+		// Guard the encode: a false return cast to "" would clear the whole library on persist instead of storing it.
 		if ( $encoded === false ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
@@ -993,8 +993,8 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $document         The raw overrides-only DTCG JSON (empty string clears the set).
-	 * @param string $slug             The token set slug.
+	 * @param string $document         The raw overrides-only DTCG JSON (empty string clears the library).
+	 * @param string $slug             The token library slug.
 	 * @param string $title            Optional label; left untouched on update when empty.
 	 * @param int    $status           The success status code.
 	 * @param string $expected_version The version read at the start of this write; empty only for a first write.
@@ -1007,7 +1007,7 @@ final class Documents_Controller extends Controller {
 		} catch ( DatabaseQueryException $e ) {
 			return new WP_Error(
 				'rest_design_tokens_save_failed',
-				__( 'The design token set could not be saved.', 'kadence-blocks' ),
+				__( 'The design token library could not be saved.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::INTERNAL_SERVER_ERROR,
 					'slug'   => $slug,
@@ -1018,7 +1018,7 @@ final class Documents_Controller extends Controller {
 		if ( ! $saved ) {
 			return new WP_Error(
 				'rest_design_tokens_conflict',
-				__( 'The token set was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+				__( 'The token library was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::CONFLICT,
 					'slug'   => $slug,
@@ -1030,10 +1030,10 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Whether a slug names a readable token set.
+	 * Whether a slug names a readable token library.
 	 *
-	 * The default set is always known — it renders from baseline even before it has a row — and any other
-	 * slug is known once it has a stored row.
+	 * The default library is always known — it renders from baseline even before it has a row — and any
+	 * other slug is known once it has a stored row.
 	 *
 	 * @since TBD
 	 *
@@ -1058,7 +1058,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @param array<string, mixed> $effective The baseline-merged effective document.
 	 * @param string               $path      The token dot-path.
-	 * @param string               $slug      The token set slug.
+	 * @param string               $slug      The token library slug.
 	 *
 	 * @return WP_Error|null A WP_Error when the path does not address a leaf, null otherwise.
 	 */
@@ -1138,11 +1138,11 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Read and decode the stored overrides-only document for a set.
+	 * Read and decode the stored overrides-only document for a library.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
 	 */
@@ -1174,7 +1174,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments shared by the single-set routes: the slug path parameter.
+	 * The arguments shared by the single-library routes: the slug path parameter.
 	 *
 	 * @since TBD
 	 *
@@ -1183,7 +1183,7 @@ final class Documents_Controller extends Controller {
 	private function get_slug_params(): array {
 		return [
 			self::SLUG_PARAM => [
-				'description'       => __( 'The token set slug.', 'kadence-blocks' ),
+				'description'       => __( 'The token library slug.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => true,
 				'pattern'           => '^[\w-]+$',
@@ -1193,7 +1193,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments accepted by the bulk write routes on a single set: the slug, the DTCG document and an
+	 * The arguments accepted by the bulk write routes on a single library: the slug, the DTCG document and an
 	 * optional title. The document is validated for its DTCG grammar by Dtcg_Validator, so the arg only
 	 * asserts it is an object.
 	 *
@@ -1210,7 +1210,7 @@ final class Documents_Controller extends Controller {
 
 	/**
 	 * The arguments accepted by the collection create route: the DTCG document, an optional title and an
-	 * optional slug (defaulting to the default set, since the collection route has no slug path segment).
+	 * optional slug (defaulting to the default library, since the collection route has no slug path segment).
 	 *
 	 * @since TBD
 	 *
@@ -1220,7 +1220,7 @@ final class Documents_Controller extends Controller {
 		return array_merge(
 			[
 				self::SLUG_PARAM => [
-					'description'       => __( 'The token set slug to write. Defaults to the default set.', 'kadence-blocks' ),
+					'description'       => __( 'The token library slug to write. Defaults to the default library.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => false,
 					'pattern'           => '^[\w-]+$',
@@ -1247,7 +1247,7 @@ final class Documents_Controller extends Controller {
 				'additionalProperties' => true,
 			],
 			self::TITLE_PARAM    => [
-				'description'       => __( 'Optional human-readable label for the token set.', 'kadence-blocks' ),
+				'description'       => __( 'Optional human-readable label for the token library.', 'kadence-blocks' ),
 				'type'              => 'string',
 				'required'          => false,
 				'sanitize_callback' => 'sanitize_text_field',
@@ -1279,14 +1279,14 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Build the response payload for a single token-set document.
+	 * Build the response payload for a single token-library document.
 	 *
-	 * Reads the raw overrides-only DTCG document for the set. An absent or empty row yields an empty
-	 * document, since the set then renders entirely from baseline.
+	 * Reads the raw overrides-only DTCG document for the library. An absent or empty row yields an empty
+	 * document, since the library then renders entirely from baseline.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -1395,7 +1395,7 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * The error returned when a slug does not name a known token set.
+	 * The error returned when a slug does not name a known token library.
 	 *
 	 * @since TBD
 	 *
@@ -1406,7 +1406,7 @@ final class Documents_Controller extends Controller {
 	private function not_found( string $slug ): WP_Error {
 		return new WP_Error(
 			'rest_design_tokens_not_found',
-			__( 'Sorry, that design token set does not exist.', 'kadence-blocks' ),
+			__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::NOT_FOUND,
 				'slug'   => $slug,

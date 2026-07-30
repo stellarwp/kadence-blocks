@@ -223,7 +223,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'document' => [
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'variants' => [
+						'presets' => [
 							'kadence/x' => [
 								'$default' => 'default',
 								'default'  => [
@@ -237,15 +237,15 @@ final class Dtcg_ValidatorTest extends TestCase {
 			],
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.variants.kadence/x.default.tokens.bg',
+			'path'     => '$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.bg',
 		];
-		// A grouped (multi-axis) variant nests its tokens one level deeper, under a group: the validator
+		// A grouped (multi-axis) preset nests its tokens one level deeper, under a group: the validator
 		// descends to the tokens map wherever it sits, so the deep value is still reported.
 		yield 'bad grouped extension value' => [
 			'document' => [
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'variants' => [
+						'presets' => [
 							'kadence/x' => [
 								'emphasis' => [
 									'$default' => 'solid',
@@ -261,7 +261,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 			],
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.variants.kadence/x.emphasis.solid.tokens.bg',
+			'path'     => '$extensions.com.kadence.designTokens.presets.kadence/x.emphasis.solid.tokens.bg',
 		];
 		// A colorPalettes swatch value lives under `$value` (not a `tokens` map), so it is covered by the
 		// dedicated palette branch: an empty swatch value is rejected as an invalid literal.
