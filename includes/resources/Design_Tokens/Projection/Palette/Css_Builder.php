@@ -63,10 +63,10 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array<string, string>> $palettes             palette id => ( css-var => resolved literal ).
+	 * @param array<string, array<string, string>> $palettes            palette id => ( css-var => resolved literal ).
 	 * @param string                               $preset_declarations The canonical `--kb-token--preset--*`
-	 *                                                                    declarations to re-emit under the shared
-	 *                                                                    presence selector (already sanitized).
+	 *                                                                   declarations to re-emit under the shared
+	 *                                                                   presence selector (already sanitized).
 	 *
 	 * @return string
 	 */

@@ -310,7 +310,7 @@ final class Css_Builder {
 			$out[ $block ] = [
 				'selector' => $this->block_selector( $block ),
 				'default'  => $default,
-				'presets' => $presets,
+				'presets'  => $presets,
 			];
 		}
 
@@ -421,8 +421,8 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                             $block      The block name.
-	 * @param string                                             $preset    The preset slug.
+	 * @param string                                            $block      The block name.
+	 * @param string                                            $preset     The preset slug.
 	 * @param array<string, array{target:string, value:string}> $properties The preset's collected properties.
 	 *
 	 * @return string
@@ -520,7 +520,7 @@ final class Css_Builder {
 	 * @since TBD
 	 *
 	 * @param string $block    The block name.
-	 * @param string $preset  The preset slug.
+	 * @param string $preset   The preset slug.
 	 * @param string $property The block property.
 	 *
 	 * @return string

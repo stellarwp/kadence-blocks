@@ -101,7 +101,7 @@ final class Projector extends Abstract_Css_Projector {
 	 * @param Active_Token_Library_Store $active      Owns the active-library pointer.
 	 * @param Effective_Palettes         $palettes    Reads the active library's effective palettes.
 	 * @param Token_Resolver             $resolver    Resolves each palette's full color graph.
-	 * @param Preset_Css_Builder         $presets    Supplies the canonical preset-var declarations.
+	 * @param Preset_Css_Builder         $presets     Supplies the canonical preset-var declarations.
 	 * @param Css_Builder                $css_builder The palette switch-layer builder.
 	 */
 	public function __construct(
