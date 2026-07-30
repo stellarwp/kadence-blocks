@@ -67,7 +67,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The collapsed builder emits no per-library namespaced `--kb-token--<set>--preset--*` vars and no
+	 * The collapsed builder emits no per-library namespaced `--kb-token--<library>--preset--*` vars and no
 	 * `[data-kb-token-set]` switch selectors — only the active library's canonical preset vars and scoped rules.
 	 *
 	 * @return void
@@ -147,7 +147,7 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItEmitsOnlyTheActiveSetsPresets(): void {
+	public function testItEmitsOnlyTheActiveLibraryPresets(): void {
 		$this->seedDarkPreset();
 
 		// Default is active, so the dark-only "midnight" preset contributes nothing.
@@ -162,7 +162,7 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItIsEmptyWhenNoPresetSetsAreRegistered(): void {
+	public function testItIsEmptyWhenNoPresetBindingsAreRegistered(): void {
 		$this->assertSame( '', $this->builder( new Token_Registry() )->css( 'default' ) );
 	}
 

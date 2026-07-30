@@ -145,7 +145,7 @@ final class Token_RegistryTest extends TestCase {
 		$this->assertSame( [], $this->registry->all_preset_bindings() );
 	}
 
-	public function testAllPresetBindingsReturnsRegisteredSetsKeyedByBlockInOrder(): void {
+	public function testAllPresetBindingsReturnsRegisteredBindingsKeyedByBlockInOrder(): void {
 		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedbtn' ] );
 		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedheading' ] );
 

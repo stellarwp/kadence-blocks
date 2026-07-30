@@ -128,7 +128,7 @@ final class Preset_ResolverTest extends TestCase {
 		);
 	}
 
-	public function testTheShippedButtonSetIsConsistent(): void {
+	public function testTheShippedButtonPresetBindingsAreConsistent(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
 		$bindings = $registry->for_block( self::BUTTON );

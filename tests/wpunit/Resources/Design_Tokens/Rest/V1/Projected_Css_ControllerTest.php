@@ -70,7 +70,7 @@ final class Projected_Css_ControllerTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItEmitsOnlyTheActiveSet(): void {
+	public function testItEmitsOnlyTheActiveLibrary(): void {
 		$this->seedPreset( Token_Store::default_slug(), 'accent' );
 		$this->seedPreset( 'dark', 'accent' );
 

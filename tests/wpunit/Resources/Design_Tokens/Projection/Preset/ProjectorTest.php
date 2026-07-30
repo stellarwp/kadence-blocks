@@ -59,7 +59,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testItAppendsPresetCssToTheFrontEndHandle(): void {
-		$this->projector( $this->button_set() )->enqueue_front_end();
+		$this->projector( $this->button_bindings() )->enqueue_front_end();
 
 		$css = implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
 
@@ -75,13 +75,13 @@ final class ProjectorTest extends TestCase {
 	 * @return void
 	 */
 	public function testEditorCssEqualsCss(): void {
-		$projector = $this->projector( $this->button_set() );
+		$projector = $this->projector( $this->button_bindings() );
 
 		$this->assertSame( $projector->css(), $projector->editor_css() );
 	}
 
 	public function testItIsANoopWhenTheRegistryIsDeactivated(): void {
-		$registry = $this->button_set();
+		$registry = $this->button_bindings();
 		$registry->deactivate();
 
 		$this->projector( $registry )->enqueue_front_end();
@@ -107,7 +107,7 @@ final class ProjectorTest extends TestCase {
 	/**
 	 * A registry holding a Button's preset bindings that target Kadence palette slots.
 	 */
-	private function button_set(): Token_Registry {
+	private function button_bindings(): Token_Registry {
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings(
 			[

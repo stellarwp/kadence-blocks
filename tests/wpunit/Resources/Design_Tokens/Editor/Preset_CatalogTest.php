@@ -45,7 +45,7 @@ final class Preset_CatalogTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItBuildsTheButtonCatalogForTheDefaultSet(): void {
+	public function testItBuildsTheButtonCatalogForTheDefaultLibrary(): void {
 		$catalog = $this->catalog->all();
 
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );

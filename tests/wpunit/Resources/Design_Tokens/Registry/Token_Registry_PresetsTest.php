@@ -48,7 +48,7 @@ final class Token_Registry_PresetsTest extends TestCase {
 		return $registry;
 	}
 
-	public function testForBlockReturnsTheRegisteredSet(): void {
+	public function testForBlockReturnsTheRegisteredPresetBindings(): void {
 		$bindings = $this->registry()->for_block( 'kadence/advancedbtn' );
 
 		$this->assertInstanceOf( Preset_Bindings::class, $bindings );

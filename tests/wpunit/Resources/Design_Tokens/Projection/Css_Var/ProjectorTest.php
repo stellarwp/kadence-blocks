@@ -246,7 +246,7 @@ final class ProjectorTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItProjectsTheDefaultSetsBaselineValuesWhenDefaultIsActive(): void {
+	public function testItProjectsTheDefaultLibraryBaselineValuesWhenDefaultIsActive(): void {
 		$this->projector->enqueue_front_end();
 
 		$css = $this->inline_css();
@@ -261,7 +261,7 @@ final class ProjectorTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItProjectsOnlyTheActiveSetsResolvedValuesToTheFrontEnd(): void {
+	public function testItProjectsOnlyTheActiveLibraryResolvedValuesToTheFrontEnd(): void {
 		$this->store->save_document( $this->brand_b_document(), 'brand-b' );
 		$this->active->set( 'brand-b' );
 
@@ -307,7 +307,7 @@ final class ProjectorTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItEmitsOnlyTheActiveSetWithNoNamespacedOrSwitchLayers(): void {
+	public function testItEmitsOnlyTheActiveLibraryWithNoNamespacedOrSwitchLayers(): void {
 		$this->store->save_document( $this->brand_b_document(), 'brand-b' );
 
 		// Default stays active.
@@ -328,7 +328,7 @@ final class ProjectorTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testABrokenActiveSetSuppressesAllCss(): void {
+	public function testABrokenActiveLibrarySuppressesAllCss(): void {
 		$this->store->save_document( $this->cyclic_document(), 'brand-b' );
 		$this->active->set( 'brand-b' );
 

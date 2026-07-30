@@ -38,13 +38,13 @@ final class Baseline_PresetsTest extends TestCase {
 			if ( $this->is_grouped( $node ) ) {
 				foreach ( $this->named_presets( $node ) as $group ) {
 					$this->assertIsArray( $node[ $group ], sprintf( '"%s" collection "%s" must be an object.', $block, $group ) );
-					$this->assertSetShape( (string) $block . '.' . $group, $node[ $group ] );
+					$this->assertPresetCollectionShape( (string) $block . '.' . $group, $node[ $group ] );
 				}
 
 				continue;
 			}
 
-			$this->assertSetShape( (string) $block, $node );
+			$this->assertPresetCollectionShape( (string) $block, $node );
 		}
 	}
 
@@ -57,18 +57,18 @@ final class Baseline_PresetsTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	private function assertSetShape( string $where, array $node ): void {
+	private function assertPresetCollectionShape( string $where, array $node ): void {
 		$names = $this->named_presets( $node );
-		$this->assertNotEmpty( $names, sprintf( 'Set "%s" declares no named presets.', $where ) );
+		$this->assertNotEmpty( $names, sprintf( 'Collection "%s" declares no named presets.', $where ) );
 
 		// $default must be a non-empty string naming one of the collection's own presets.
-		$this->assertArrayHasKey( '$default', $node, sprintf( 'Set "%s" is missing $default.', $where ) );
+		$this->assertArrayHasKey( '$default', $node, sprintf( 'Collection "%s" is missing $default.', $where ) );
 		$default = $node['$default'];
-		$this->assertIsString( $default, sprintf( 'Set "%s" $default must be a string.', $where ) );
+		$this->assertIsString( $default, sprintf( 'Collection "%s" $default must be a string.', $where ) );
 		$this->assertContains(
 			$default,
 			$names,
-			sprintf( 'Set "%s" $default "%s" does not name a defined preset.', $where, $default )
+			sprintf( 'Collection "%s" $default "%s" does not name a defined preset.', $where, $default )
 		);
 
 		foreach ( $names as $name ) {

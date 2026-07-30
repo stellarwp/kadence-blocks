@@ -48,7 +48,7 @@ final class Palette_CatalogTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testItBuildsTheCatalogShapeForTheActiveSet(): void {
+	public function testItBuildsTheCatalogShapeForTheActiveLibrary(): void {
 		$catalog = $this->catalog->all();
 
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );

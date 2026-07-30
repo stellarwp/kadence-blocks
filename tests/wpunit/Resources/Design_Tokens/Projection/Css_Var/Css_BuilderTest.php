@@ -35,7 +35,7 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @return Resolved_Tokens
 	 */
-	private function set( array $by_id, array $projected ): Resolved_Tokens {
+	private function resolved( array $by_id, array $projected ): Resolved_Tokens {
 		return new Resolved_Tokens( $by_id, [], $projected );
 	}
 
@@ -61,7 +61,7 @@ final class Css_BuilderTest extends TestCase {
 		$id  = 'semantic.color.button-bg';
 		$var = Css_Var::from_id( $id );
 
-		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '#3182CE' ], [ $var => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( $var . ':#3182CE;', $css );
 	}
@@ -79,7 +79,7 @@ final class Css_BuilderTest extends TestCase {
 		$leaf_var = Css_Var::from_id( $leaf );
 
 		$css = $this->css_active(
-			$this->set(
+			$this->resolved(
 				[
 					$ref  => '#3182CE',
 					$leaf => '#3182CE',
@@ -109,7 +109,7 @@ final class Css_BuilderTest extends TestCase {
 		$color_var = Css_Var::from_id( 'primitive.color.ink' );
 		$projected = '0px 2px 8px 0px var(' . $color_var . ')';
 
-		$css = $this->css_active( $this->set( [ $id => '0px 2px 8px 0px #1A202C' ], [ $var => $projected ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '0px 2px 8px 0px #1A202C' ], [ $var => $projected ] ) );
 
 		$this->assertStringContainsString( $var . ':' . $projected . ';', $css );
 	}
@@ -117,7 +117,7 @@ final class Css_BuilderTest extends TestCase {
 	// ---- Single-library collapse (no namespaced / alias / switch layers) --------------------------------
 
 	/**
-	 * The collapsed builder emits no per-library namespaced `--kb-token--<set>--*` vars and no
+	 * The collapsed builder emits no per-library namespaced `--kb-token--<library>--*` vars and no
 	 * `[data-kb-token-set]` switch selectors — only the active library's canonical layer at `:root`.
 	 *
 	 * @return void
@@ -125,7 +125,7 @@ final class Css_BuilderTest extends TestCase {
 	public function testItEmitsNoNamespacedVarsOrSwitchSelectors(): void {
 		$id = 'semantic.color.button-bg';
 
-		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '--kb-token--default--', $css );
 		$this->assertStringNotContainsString( '[data-kb-token-set', $css );
@@ -141,7 +141,7 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testItScopesTheRootBlockToBothSelectors(): void {
 		$id  = 'semantic.color.button-bg';
-		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringContainsString( ':root,', $css );
 		$this->assertStringContainsString( ':root:where(.kb-tokens)', $css );
@@ -165,7 +165,7 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testItNeverEmitsImportant(): void {
 		$id  = 'semantic.color.button-bg';
-		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '!important', $css );
 	}
@@ -175,8 +175,8 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testEmptySetProducesNoCss(): void {
-		$css = $this->css_active( $this->set( [], [] ) );
+	public function testEmptyLibraryProducesNoCss(): void {
+		$css = $this->css_active( $this->resolved( [], [] ) );
 
 		$this->assertSame( '', $css );
 	}
@@ -201,7 +201,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-spacing-lg:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
@@ -223,7 +223,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
 	}
@@ -246,7 +246,7 @@ final class Css_BuilderTest extends TestCase {
 		);
 
 		// by_id is empty — no resolved value, so no override (it would resolve to nothing in the browser).
-		$css = $this->css_active( $this->set( [], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-spacing-', $css );
 	}
@@ -268,7 +268,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-gap-md:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
@@ -290,7 +290,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringNotContainsString( '--global-kb-gap-', $css );
 	}
@@ -313,7 +313,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '2rem' ], [ Css_Var::from_id( $id ) => '2rem' ] ) );
 
 		$this->assertStringContainsString( '--global-kb-font-size-lg:var(' . Css_Var::from_id( $id ) . ',2rem);', $css );
 	}
@@ -336,7 +336,7 @@ final class Css_BuilderTest extends TestCase {
 			]
 		);
 
-		$css = $this->css_active( $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] ) );
 
 		$this->assertStringNotContainsString( '--global-palette', $css );
 	}
@@ -379,7 +379,7 @@ final class Css_BuilderTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		// Value containing characters that could break out of a declaration.
-		$css = $this->css_active( $this->set( [ $id => 'red}body{color:blue' ], [ $var => 'red}body{color:blue' ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => 'red}body{color:blue' ], [ $var => 'red}body{color:blue' ] ) );
 
 		// The structural braces of the blocks are fine; the injected chars inside the VALUE must be stripped.
 		$this->assertStringNotContainsString( 'red}', $css );
@@ -397,7 +397,7 @@ final class Css_BuilderTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		$clamp = 'clamp(1.1rem, 0.995rem + 0.326vw, 1.25rem)';
-		$css   = $this->css_active( $this->set( [ $id => $clamp ], [ $var => $clamp ] ) );
+		$css   = $this->css_active( $this->resolved( [ $id => $clamp ], [ $var => $clamp ] ) );
 
 		$this->assertStringContainsString( $clamp, $css );
 	}
@@ -412,7 +412,7 @@ final class Css_BuilderTest extends TestCase {
 		$var = Css_Var::from_id( $id );
 
 		$stack = '"Inter", "Helvetica Neue", Arial, sans-serif';
-		$css   = $this->css_active( $this->set( [ $id => $stack ], [ $var => $stack ] ) );
+		$css   = $this->css_active( $this->resolved( [ $id => $stack ], [ $var => $stack ] ) );
 
 		$this->assertStringContainsString( $stack, $css );
 	}
@@ -426,7 +426,7 @@ final class Css_BuilderTest extends TestCase {
 		$id  = 'semantic.color.ctrl';
 		$var = Css_Var::from_id( $id );
 
-		$css = $this->css_active( $this->set( [ $id => "#abc\x00def\x1Fghi" ], [ $var => "#abc\x00def\x1Fghi" ] ) );
+		$css = $this->css_active( $this->resolved( [ $id => "#abc\x00def\x1Fghi" ], [ $var => "#abc\x00def\x1Fghi" ] ) );
 
 		$this->assertStringContainsString( '#abcdefghi', $css );
 		$this->assertStringNotContainsString( "\x00", $css );
@@ -442,7 +442,7 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testCssForVersionReturnsSameResultAsCss(): void {
 		$id       = 'semantic.color.button-bg';
-		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
+		$resolved = $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
 		$builder  = $this->builder();
 
 		$this->assertSame(
@@ -458,7 +458,7 @@ final class Css_BuilderTest extends TestCase {
 	 */
 	public function testTheRootBlockIsServedFromObjectCache(): void {
 		$id       = 'semantic.color.button-bg';
-		$resolved = $this->set( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
+		$resolved = $this->resolved( [ $id => '#3182CE' ], [ Css_Var::from_id( $id ) => '#3182CE' ] );
 
 		// Seed the root block cache with a sentinel so we can confirm it is served verbatim. The cache key
 		// carries the breakpoint signature, "none" here because css_for_version() is called with no breakpoints.
@@ -512,9 +512,9 @@ final class Css_BuilderTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testAFlatSetEmitsNoMediaQueries(): void {
+	public function testAFlatLibraryEmitsNoMediaQueries(): void {
 		$id       = 'semantic.color.text';
-		$resolved = $this->set( [ $id => '#111' ], [ Css_Var::from_id( $id ) => '#111' ] );
+		$resolved = $this->resolved( [ $id => '#111' ], [ Css_Var::from_id( $id ) => '#111' ] );
 
 		$css = $this->builder()->css_for_version(
 			$resolved,
