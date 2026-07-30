@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
  * React app reads.
  *
  * Reads token STRUCTURE from the registry ({@see Token_Registry::to_ui_schema()}) and folds in the
- * resolved VALUES, VARIANTS, REST descriptor and store version handed in by the Localizer — which owns
+ * resolved VALUES, PRESETS, REST descriptor and store version handed in by the Localizer — which owns
  * every WordPress call. When the registry is inactive (the fail-closed guard) it returns an empty,
  * `active:false` payload so the React section hides and KB's existing UI is untouched; when values could
  * not be resolved (a corrupt store) the caller passes `$resolved = false` and an empty values map, so
@@ -20,7 +20,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 final class Builder {
 
 	/**
-	 * The token registry, the single source of token + variant structure.
+	 * The token registry, the single source of token + preset structure.
 	 *
 	 * @since TBD
 	 *
@@ -38,22 +38,22 @@ final class Builder {
 	}
 
 	/**
-	 * Shape the localized payload from the pre-gathered values, variants, REST descriptor and version.
+	 * Shape the localized payload from the pre-gathered values, presets, REST descriptor and version.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, string>                                 $values     id => resolved value (by_id), or [] when unresolved.
 	 * @param bool                                                  $resolved   Whether resolution succeeded.
-	 * @param array<string, mixed>                                  $variants   Per-block variant structure + values.
+	 * @param array<string, mixed>                                  $presets   Per-block preset structure + values.
 	 * @param array{root: string, namespace: string, nonce: string} $rest       REST root, namespace and nonce.
 	 * @param string                                                $version    Store version hash ('' from baseline).
-	 * @param string                                                $slug       The token set slug the values/version/schema were resolved against.
+	 * @param string                                                $slug       The token library slug the values/version/schema were resolved against.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $variants, array $rest, string $version, string $slug, array $responsive = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, array $responsive = [] ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -63,7 +63,7 @@ final class Builder {
 			'slug'       => $slug,
 			'schema'     => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
 			'values'     => $active ? $values : [],
-			'variants'   => $active ? $variants : [],
+			'presets'    => $active ? $presets : [],
 			'responsive' => $active ? $responsive : [],
 			'rest'       => $rest,
 		];

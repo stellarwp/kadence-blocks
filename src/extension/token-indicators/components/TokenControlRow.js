@@ -21,7 +21,7 @@ import { TokenIndicator } from './TokenIndicator';
  *                                   heading the header row (and its indicator) is skipped and the wrapper
  *                                   only contributes the highlight tint.
  * @param {string}   props.attr      The attribute the wrapped control writes (the indicator's key).
- * @param {Object}   props.binding   The block's binding map from useVariantBinding.
+ * @param {Object}   props.binding   The block's binding map from usePresetBinding.
  * @param {Function} [props.onReset] Called with `attr` to reset that control's override (headed rows only).
  * @param {boolean}  [props.stacked] Stack the header above a full-width control (for block-level controls
  *                                   like the responsive measurement inputs) instead of the side-by-side row.

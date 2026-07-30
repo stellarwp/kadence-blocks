@@ -83,8 +83,8 @@ import {
 } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
-import { VariantButton } from '../../extension/variant-picker/VariantButton';
-import { useVariantBinding, resetAttr } from '../../extension/token-indicators';
+import { PresetButton } from '../../extension/preset-picker/PresetButton';
+import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
@@ -264,9 +264,9 @@ export default function KadenceButtonEdit(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
-	// Design-token indicators: the per-attribute bound/overridden state for the selected variant, plus a
-	// reset that clears the mapped attribute back to the variant value (served by the existing scoped CSS).
-	const tokenBinding = useVariantBinding('kadence/singlebtn', attributes);
+	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
+	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
+	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
 	useEffect(() => {
@@ -288,7 +288,7 @@ export default function KadenceButtonEdit(props) {
 	}, [isSelected]);
 
 	// A remount key for the token-mapped color pickers. PopColorControl keeps the picked color in its own
-	// internal state, so clearing the attribute (a per-control revert or the variant Reset-all) updates the
+	// internal state, so clearing the attribute (a per-control revert or the preset Reset-all) updates the
 	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
 	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
 	// TODO: remove this stopgap once `@kadence/components` teaches PopColorControl to re-read an externally
@@ -721,7 +721,7 @@ export default function KadenceButtonEdit(props) {
 			{showSettings('allSettings', 'kadence/advancedbtn') && (
 				<>
 					<InspectorControls>
-						<VariantButton blockName={name} attributes={attributes} setAttributes={setAttributes} />
+						<PresetButton blockName={name} attributes={attributes} setAttributes={setAttributes} />
 
 						<InspectorControlTabs
 							panelName={'singlebtn'}

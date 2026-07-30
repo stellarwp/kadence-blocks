@@ -754,7 +754,7 @@
 			"type": "boolean",
 			"default": false
 		},
-		"kbVariant": {
+		"kbPreset": {
 			"type": "string",
 			"default": ""
 		},
@@ -773,7 +773,7 @@
 		"reusable": false,
 		"kbMetadata": true,
 		"kbContentLabel": "text",
-		"kbVariant": {
+		"kbPreset": {
 			"inlinePicker": true
 		}
 	},

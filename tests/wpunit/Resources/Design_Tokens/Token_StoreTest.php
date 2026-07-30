@@ -132,7 +132,7 @@ final class Token_StoreTest extends TestCase {
 		$this->assertSame( 0, $this->count_rows() );
 	}
 
-	public function testTokenSetsAreIsolatedBySlug(): void {
+	public function testTokenLibrariesAreIsolatedBySlug(): void {
 		$this->store->save_document( '{"set":"a"}', 'set-a' );
 		$this->store->save_document( '{"set":"b"}', 'set-b' );
 
@@ -214,7 +214,7 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	public function testSupersededActionFiresEvenWhenThePreviousDocumentWasEmpty(): void {
-		// A saved-empty set is still a real prior state (an undo back to baseline),
+		// A saved-empty library is still a real prior state (an undo back to baseline),
 		// distinct from "no row at all".
 		$this->store->save_document( '' );
 
@@ -289,7 +289,7 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * With no rows stored, listing the sets yields an empty array.
+	 * With no rows stored, listing the libraries yields an empty array.
 	 *
 	 * @return void
 	 */
@@ -298,11 +298,11 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * Listing returns one slug/title/version entry per stored set, ordered by slug ascending.
+	 * Listing returns one slug/title/version entry per stored library, ordered by slug ascending.
 	 *
 	 * @return void
 	 */
-	public function testListStoresReturnsEverySetWithSlugTitleAndVersionOrderedBySlug(): void {
+	public function testListStoresReturnsEveryLibraryWithSlugTitleAndVersionOrderedBySlug(): void {
 		$this->store->save_document( '{"set":"b"}', 'set-b', 'Brand B' );
 		$this->store->save_document( '{"set":"a"}', 'set-a', 'Brand A' );
 
@@ -320,11 +320,11 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * exists() is false before a set is saved and true once its row is written.
+	 * exists() is false before a library is saved and true once its row is written.
 	 *
 	 * @return void
 	 */
-	public function testExistsReflectsWhetherASetHasARow(): void {
+	public function testExistsReflectsWhetherALibraryHasARow(): void {
 		$this->assertFalse( $this->store->exists( 'brand-b' ) );
 
 		$this->store->save_document( '{}', 'brand-b' );
@@ -333,11 +333,11 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a non-default set removes only that row and leaves its siblings intact.
+	 * Deleting a non-default library removes only that row and leaves its siblings intact.
 	 *
 	 * @return void
 	 */
-	public function testDeleteRemovesOnlyTheTargetSet(): void {
+	public function testDeleteRemovesOnlyTheTargetLibrary(): void {
 		$this->store->save_document( '{"set":"a"}', 'set-a' );
 		$this->store->save_document( '{"set":"b"}', 'set-b' );
 
@@ -349,7 +349,7 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a set fires the deleted action, passing the removed set's slug.
+	 * Deleting a library fires the deleted action, passing the removed library's slug.
 	 *
 	 * @return void
 	 */
@@ -370,12 +370,12 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * Deleting the default set clears its row to baseline rather than removing it, and never
-	 * signals removal for the canonical set.
+	 * Deleting the default library clears its row to baseline rather than removing it, and never
+	 * signals removal for the canonical library.
 	 *
 	 * @return void
 	 */
-	public function testDeleteResetsTheDefaultSetToBaselineInsteadOfRemovingItsRow(): void {
+	public function testDeleteResetsTheDefaultLibraryToBaselineInsteadOfRemovingItsRow(): void {
 		$this->store->save_document( '{"v":1}' );
 
 		$fired = 0;
@@ -388,7 +388,7 @@ final class Token_StoreTest extends TestCase {
 
 		$this->store->delete( Token_Store::default_slug() );
 
-		// The canonical set's row survives, cleared to baseline, and removal is never signalled for it.
+		// The canonical library's row survives, cleared to baseline, and removal is never signalled for it.
 		$this->assertTrue( $this->store->exists( Token_Store::default_slug() ) );
 		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
 		$this->assertSame( 1, $this->count_rows() );
@@ -396,11 +396,11 @@ final class Token_StoreTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a set that was never saved is a no-op and does not fire the deleted action.
+	 * Deleting a library that was never saved is a no-op and does not fire the deleted action.
 	 *
 	 * @return void
 	 */
-	public function testDeleteIsANoOpAndDoesNotFireForAMissingSet(): void {
+	public function testDeleteIsANoOpAndDoesNotFireForAMissingLibrary(): void {
 		$fired = 0;
 		add_action(
 			Token_Store::deleted_action(),

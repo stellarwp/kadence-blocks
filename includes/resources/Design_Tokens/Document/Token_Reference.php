@@ -55,7 +55,7 @@ final class Token_Reference {
 	private const KIND_COMPOSITE_FIELD = 'composite_field';
 
 	/**
-	 * Alias found inside $extensions.variants or $extensions.foundationPresets.
+	 * Alias found inside $extensions.presets or $extensions.foundationPresets.
 	 *
 	 * @since TBD
 	 *

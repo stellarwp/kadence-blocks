@@ -66,15 +66,15 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$this->assertFalse( $baseline->has( '' ) );
 	}
 
-	public function testHasIsFalseForExtensionsPresetsAndVariants(): void {
+	public function testHasIsFalseForExtensionsFoundationPresetsAndPresets(): void {
 		$baseline = new Json_Baseline_Document( self::BASELINE_PATH, 'test-extensions' );
 
-		// The $extensions layer (foundation presets, block presets, variants) is intentionally not
+		// The $extensions layer (foundation presets, block presets, selectable presets) is intentionally not
 		// indexed — those are not registrable tokens and must never satisfy the guard.
 		$this->assertFalse( $baseline->has( '$extensions' ) );
 		$this->assertFalse( $baseline->has( 'com.kadence.designTokens' ) );
 		$this->assertFalse( $baseline->has( 'kadence/advancedbtn' ) );
-		// A variant property key is not a token id.
+		// A preset property key is not a token id.
 		$this->assertFalse( $baseline->has( 'button-bg' ) );
 	}
 
@@ -123,7 +123,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 				// Must be ignored entirely.
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'variants' => [
+						'presets' => [
 							'kadence/advancedbtn' => [ '$default' => 'primary' ],
 						],
 					],
@@ -151,7 +151,7 @@ final class Json_Baseline_DocumentTest extends TestCase {
 		$this->assertSame( '#3182CE', $document['primitive']['color']['brand']['primary']['$value'] );
 		$this->assertArrayHasKey(
 			'kadence/singlebtn',
-			$document['$extensions']['com.kadence.designTokens']['variants']
+			$document['$extensions']['com.kadence.designTokens']['presets']
 		);
 	}
 

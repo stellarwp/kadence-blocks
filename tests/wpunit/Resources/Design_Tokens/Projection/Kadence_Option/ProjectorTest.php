@@ -3,7 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Kadence_Option;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option\Palette_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Option\Projector;
@@ -219,7 +219,7 @@ final class ProjectorTest extends TestCase {
 			$this->registry,
 			$corrupt_resolver,
 			$this->container->get( Token_Store::class ),
-			$this->container->get( Active_Set_Store::class ),
+			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Palette_Builder::class )
 		);
 
