@@ -126,7 +126,7 @@ final class MutatorTest extends TestCase {
 	}
 
 	/**
-	 * A merge preserves the stored `$extensions` layer verbatim. The `variants` entry uses a block the
+	 * A merge preserves the stored `$extensions` layer verbatim. The `presets` entry uses a block the
 	 * registry does not recognize, so the mutator must carry the opaque extension data through untouched
 	 * rather than validate or strip it.
 	 *
@@ -143,7 +143,7 @@ final class MutatorTest extends TestCase {
 				],
 			],
 			'$extensions' => [
-				'com.kadence.designTokens' => [ 'variants' => [ 'core/button' => [ '$default' => 'solid' ] ] ],
+				'com.kadence.designTokens' => [ 'presets' => [ 'core/button' => [ '$default' => 'solid' ] ] ],
 			],
 		];
 

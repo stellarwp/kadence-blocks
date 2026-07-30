@@ -9,7 +9,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
 /**
  * The sole gateway to the kb_design_tokens table.
  *
- * Stores the overrides-only DTCG document per token set. An empty (or absent)
+ * Stores the overrides-only DTCG document per token library. An empty (or absent)
  * row means the site renders entirely from baseline. No component other than
  * this store should touch the table directly.
  *
@@ -30,9 +30,9 @@ final class Token_Store extends Query {
 	private const CHANGED_ACTION = 'kadence_blocks_design_tokens_changed';
 
 	/**
-	 * @var string Action fired after a save overwrites a set's existing document,
+	 * @var string Action fired after a save overwrites a library's existing document,
 	 *             carrying the now-previous document so the history store can
-	 *             archive it. Fires only on a successful write to a set that
+	 *             archive it. Fires only on a successful write to a library that
 	 *             already existed — first saves have no prior state to keep, and a
 	 *             failed write throws before this is reached, so nothing is
 	 *             archived for a save that did not happen.
@@ -42,15 +42,15 @@ final class Token_Store extends Query {
 	private const SUPERSEDED_ACTION = 'kadence_blocks_design_tokens_superseded';
 
 	/**
-	 * @var string Action fired after a set's row is deleted, carrying the slug, so
-	 *             consumers (the history store) can drop the set's related state.
+	 * @var string Action fired after a library's row is deleted, carrying the slug, so
+	 *             consumers (the history store) can drop the library's related state.
 	 *
 	 * @since TBD
 	 */
 	private const DELETED_ACTION = 'kadence_blocks_design_tokens_deleted';
 
 	/**
-	 * @var string The default token set slug, the always-present canonical set.
+	 * @var string The default token library slug, the always-present canonical library.
 	 *
 	 * @since TBD
 	 */
@@ -68,7 +68,7 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * The action hook that fires after a save overwrites a set's existing document.
+	 * The action hook that fires after a save overwrites a library's existing document.
 	 *
 	 * Subscribers receive the slug plus the now-previous document and version, for
 	 * callers (the history store) that archive state once a save has committed.
@@ -82,8 +82,8 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * The action hook that fires after a set's row is deleted, for callers that need to drop a set's
-	 * related state once it is gone.
+	 * The action hook that fires after a library's row is deleted, for callers that need to drop a
+	 * library's related state once it is gone.
 	 *
 	 * @since TBD
 	 *
@@ -94,7 +94,7 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * The default token set slug.
+	 * The default token library slug.
 	 *
 	 * @since TBD
 	 *
@@ -105,11 +105,11 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Read the raw overrides-only DTCG document for a token set.
+	 * Read the raw overrides-only DTCG document for a token library.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string The raw DTCG JSON, or an empty string when no row exists
 	 *                (caller should then render entirely from baseline).
@@ -127,17 +127,17 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Read the cache-busting version hash for a token set.
+	 * Read the cache-busting version hash for a token library.
 	 *
 	 * Consumed by downstream caches (e.g. the projected-CSS string is keyed on
-	 * this value) to know when a token set has changed.
+	 * this value) to know when a token library has changed.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return string The stored version hash, or an empty string when no row
-	 *                exists (i.e. the set renders from baseline).
+	 *                exists (i.e. the library renders from baseline).
 	 */
 	public function get_version( string $slug = self::DEFAULT_SLUG ): string {
 		$row = $this->qb()
@@ -152,12 +152,12 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Insert or update a token set's document, bump its version and signal change.
+	 * Insert or update a token library's document, bump its version and signal change.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $document The raw overrides-only DTCG JSON to persist.
-	 * @param string $slug     The token set slug.
+	 * @param string $slug     The token library slug.
 	 * @param string $title    Optional human-readable label. Left untouched on
 	 *                         update when an empty string is passed.
 	 *
@@ -181,7 +181,7 @@ final class Token_Store extends Query {
 		// INSERT ... ON DUPLICATE KEY. Two concurrent first-writes for the same
 		// slug can both miss the SELECT and race to INSERT; the UNIQUE KEY on
 		// slug then makes the loser throw DatabaseQueryException. Fine for
-		// admin-driven single-set saves in v1; revisit if writes become concurrent.
+		// admin-driven single-library saves in v1; revisit if writes become concurrent.
 		$this->qb()->upsert( $data, [ 'slug' ] );
 
 		// Everything below is reached only on a successful write — a failed upsert
@@ -207,7 +207,7 @@ final class Token_Store extends Query {
 	 *
 	 * @param string $document         The raw DTCG JSON to persist.
 	 * @param string $expected_version The version the caller last read. Empty for first write.
-	 * @param string $slug             The token set slug.
+	 * @param string $slug             The token library slug.
 	 * @param string $title            Optional label; left untouched when empty.
 	 *
 	 * @return bool True on success; false when the version does not match.
@@ -269,19 +269,19 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Delete a named token set only when the stored version matches expected_version.
+	 * Delete a named token library only when the stored version matches expected_version.
 	 *
-	 * The default set is never row-deleted; use save_document_conditional with an empty
+	 * The default library is never row-deleted; use save_document_conditional with an empty
 	 * document to reset it instead.
 	 *
-	 * Returns true on success, false on version mismatch or if slug is the default set.
+	 * Returns true on success, false on version mismatch or if slug is the default library.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug             The named set slug.
+	 * @param string $slug             The named library slug.
 	 * @param string $expected_version The version the caller last read.
 	 *
-	 * @return bool True on success; false on mismatch or default-set attempt.
+	 * @return bool True on success; false on mismatch or default-library attempt.
 	 *
 	 * @throws DatabaseQueryException If the delete fails.
 	 */
@@ -318,13 +318,13 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Re-hash a token set's version to bust caches without changing its document.
+	 * Re-hash a token library's version to bust caches without changing its document.
 	 *
-	 * No-op when the set does not exist — there is nothing cached to invalidate.
+	 * No-op when the library does not exist — there is nothing cached to invalidate.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return void
 	 *
@@ -355,15 +355,15 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * List every stored token set, as its slug, title and version.
+	 * List every stored token library, as its slug, title and version.
 	 *
-	 * The default set is not synthesized here: a set appears only once it has a row, so a site that has
-	 * never written the default returns an empty list. Callers that must always surface the default
-	 * (the REST collection) layer that invariant on top.
+	 * The default library is not synthesized here: a library appears only once it has a row, so a site
+	 * that has never written the default returns an empty list. Callers that must always surface the
+	 * default (the REST collection) layer that invariant on top.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<int,array{slug:string,title:string,version:string}> The sets, ordered by slug.
+	 * @return array<int,array{slug:string,title:string,version:string}> The libraries, ordered by slug.
 	 */
 	public function list_stores(): array {
 		$rows = $this->qb()
@@ -386,14 +386,14 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Whether a token set has a stored row.
+	 * Whether a token library has a stored row.
 	 *
-	 * A set with no row renders entirely from baseline; the default set may legitimately have no row
-	 * yet, so callers that treat the default as always-known must account for that themselves.
+	 * A library with no row renders entirely from baseline; the default library may legitimately have no
+	 * row yet, so callers that treat the default as always-known must account for that themselves.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return bool
 	 */
@@ -406,17 +406,17 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Delete a token set.
+	 * Delete a token library.
 	 *
-	 * The default set is the always-present canonical set and is never physically removed: deleting it
-	 * clears its overrides back to baseline (the row stays). Any other set's row is dropped outright,
-	 * which signals its removal so related state (its history) can be dropped too. Removing a set that
-	 * does not exist is a no-op — there is nothing to remove and nothing to signal. This guard is enforced
-	 * here so every caller is protected, not just the REST surface.
+	 * The default library is the always-present canonical library and is never physically removed:
+	 * deleting it clears its overrides back to baseline (the row stays). Any other library's row is
+	 * dropped outright, which signals its removal so related state (its history) can be dropped too.
+	 * Removing a library that does not exist is a no-op — there is nothing to remove and nothing to
+	 * signal. This guard is enforced here so every caller is protected, not just the REST surface.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug.
+	 * @param string $slug The token library slug.
 	 *
 	 * @return void
 	 *
@@ -424,7 +424,7 @@ final class Token_Store extends Query {
 	 *                                removal, since a failed write throws before deleted() is reached.
 	 */
 	public function delete( string $slug = self::DEFAULT_SLUG ): void {
-		// The canonical set cannot be removed; clearing its overrides is the strongest delete it supports.
+		// The canonical library cannot be removed; clearing its overrides is the strongest delete it supports.
 		if ( $slug === self::DEFAULT_SLUG ) {
 			$this->save_document( '', $slug );
 
@@ -497,32 +497,32 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Signal that a token set changed so projectors and caches can react.
+	 * Signal that a token library changed so projectors and caches can react.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug that changed.
+	 * @param string $slug The token library slug that changed.
 	 *
 	 * @return void
 	 */
 	private function changed( string $slug ): void {
 		/**
-		 * Fires after a design token set is written.
+		 * Fires after a design token library is written.
 		 *
-		 * @param string $slug The token set slug that changed.
+		 * @param string $slug The token library slug that changed.
 		 */
 		do_action( self::CHANGED_ACTION, $slug );
 	}
 
 	/**
-	 * Signal that a save overwrote a set's existing document, carrying its prior state.
+	 * Signal that a save overwrote a library's existing document, carrying its prior state.
 	 *
 	 * Fires after a successful upsert so a subscriber can archive the document
 	 * that was just replaced (the history store), with the captured prior values.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug     The token set slug that was overwritten.
+	 * @param string $slug     The token library slug that was overwritten.
 	 * @param string $document The now-previous document that was replaced.
 	 * @param string $version  The now-previous version hash.
 	 *
@@ -530,9 +530,9 @@ final class Token_Store extends Query {
 	 */
 	private function superseded( string $slug, string $document, string $version ): void {
 		/**
-		 * Fires immediately after a design token set's existing document is overwritten.
+		 * Fires immediately after a design token library's existing document is overwritten.
 		 *
-		 * @param string $slug     The token set slug that was overwritten.
+		 * @param string $slug     The token library slug that was overwritten.
 		 * @param string $document The now-previous document that was replaced.
 		 * @param string $version  The now-previous version hash.
 		 */
@@ -540,19 +540,19 @@ final class Token_Store extends Query {
 	}
 
 	/**
-	 * Signal that a token set's row was deleted so consumers can drop its related state.
+	 * Signal that a token library's row was deleted so consumers can drop its related state.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token set slug that was deleted.
+	 * @param string $slug The token library slug that was deleted.
 	 *
 	 * @return void
 	 */
 	private function deleted( string $slug ): void {
 		/**
-		 * Fires after a design token set's row is deleted.
+		 * Fires after a design token library's row is deleted.
 		 *
-		 * @param string $slug The token set slug that was deleted.
+		 * @param string $slug The token library slug that was deleted.
 		 */
 		do_action( self::DELETED_ACTION, $slug );
 	}

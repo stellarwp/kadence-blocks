@@ -24,8 +24,8 @@ final class Token_Registry {
 	/** @var array<string, Token_Definition> Keyed by token id, insertion-ordered. */
 	private array $tokens = [];
 
-	/** @var array<string, Variant_Set> The one set a block accepts, keyed by block name. */
-	private array $variant_sets = [];
+	/** @var array<string, Preset_Bindings> The one set a block accepts, keyed by block name. */
+	private array $preset_bindings = [];
 
 	/** @var array<string, Adapter_Interface> Keyed by block name. */
 	private array $adapters = [];
@@ -107,19 +107,19 @@ final class Token_Registry {
 	}
 
 	/**
-	 * Register a block's variant set — its bindable surface and picker label. One set per block; a later
-	 * registration for the same block replaces the earlier one.
+	 * Register a block's preset bindings — its bindable surface and picker label. One binding set per
+	 * block; a later registration for the same block replaces the earlier one.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $set See Variant_Set::from_array().
+	 * @param array<string, mixed> $set See Preset_Bindings::from_array().
 	 *
 	 * @return void
 	 */
-	public function register_variant_set( array $set ): void {
-		$variant_set = Variant_Set::from_array( $set );
+	public function register_preset_bindings( array $set ): void {
+		$preset_bindings = Preset_Bindings::from_array( $set );
 
-		$this->variant_sets[ $variant_set->block ] = $variant_set;
+		$this->preset_bindings[ $preset_bindings->block ] = $preset_bindings;
 	}
 
 	/**
@@ -222,30 +222,30 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The one variant set a block registers, or null when it registers none. Both the picker-driven and the
-	 * preset (no-picker) projectors read this; distinguish the two by the set's `label` (a picker set
-	 * declares one, a preset set does not).
+	 * The one preset bindings set a block registers, or null when it registers none. Both the
+	 * picker-driven and the preset (no-picker) projectors read this; distinguish the two by the set's
+	 * `label` (a picker set declares one, a no-picker set does not).
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block The block name, e.g. "kadence/advancedbtn".
 	 *
-	 * @return Variant_Set|null
+	 * @return Preset_Bindings|null
 	 */
-	public function for_block( string $block ): ?Variant_Set {
-		return $this->variant_sets[ $block ] ?? null;
+	public function for_block( string $block ): ?Preset_Bindings {
+		return $this->preset_bindings[ $block ] ?? null;
 	}
 
 	/**
-	 * All registered variant sets, keyed by block name, in registration order. The admin UI feed iterates
-	 * this to render per-block variant editors; mirrors all() for tokens.
+	 * All registered preset bindings sets, keyed by block name, in registration order. The admin UI feed
+	 * iterates this to render per-block preset editors; mirrors all() for tokens.
 	 *
 	 * @since TBD
 	 *
-	 * @return array<string, Variant_Set>
+	 * @return array<string, Preset_Bindings>
 	 */
-	public function variant_sets(): array {
-		return $this->variant_sets;
+	public function all_preset_bindings(): array {
+		return $this->preset_bindings;
 	}
 
 	/**
@@ -274,21 +274,21 @@ final class Token_Registry {
 	}
 
 	/**
-	 * The block names that have a registered variant set, in registration order. Projectors walk these to
-	 * emit each block's variant output; the variant values themselves come from the document via the
-	 * Variant_Resolver.
+	 * The block names that have a registered preset bindings set, in registration order. Projectors walk
+	 * these to emit each block's preset output; the preset values themselves come from the document via
+	 * the Preset_Resolver.
 	 *
 	 * @since TBD
 	 *
 	 * @return string[]
 	 */
-	public function variant_blocks(): array {
-		return array_keys( $this->variant_sets );
+	public function preset_binding_blocks(): array {
+		return array_keys( $this->preset_bindings );
 	}
 
 	/**
 	 * The effective projection targets for a binding: a token reference contributes the referenced
-	 * token's projections (so a variant reuses the variable the base property already feeds), and the
+	 * token's projections (so a preset reuses the variable the base property already feeds), and the
 	 * binding's inline targets are merged on top, supplementing or overriding them (e.g. adding a
 	 * block_attr the token never carries). A reference to an unregistered token contributes nothing, so
 	 * a stale reference fails soft (its projections are skipped) rather than fatal.

@@ -668,13 +668,14 @@ final class Token_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * resolve_namespaced() namespaces every projected css-var name under the set slug, and keeps a set's
-	 * alias chain inside the set: a reference reads var(--kb-token--<slug>--<target>), not the canonical
-	 * target, so switching the active set never leaks one set's primitive into another.
+	 * resolve_namespaced() namespaces every projected css-var name under the library slug, and keeps a
+	 * library's alias chain inside the library: a reference reads var(--kb-token--<slug>--<target>), not
+	 * the canonical target, so switching the active library never leaks one library's primitive into
+	 * another.
 	 *
 	 * @return void
 	 */
-	public function testResolveNamespacedNamespacesTheProjectedNamesAndKeepsTheChainInSet(): void {
+	public function testResolveNamespacedNamespacesTheProjectedNamesAndKeepsTheChainInLibrary(): void {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
@@ -704,7 +705,7 @@ final class Token_ResolverTest extends TestCase {
 		// The leaf primitive carries the literal under its namespaced name.
 		$this->assertSame( '#3182CE', $projected[ Css_Var::from_id( 'primitive.color.brand.primary', 'dark' ) ] );
 
-		// The semantic alias points at the namespaced primitive, so the chain stays inside the set.
+		// The semantic alias points at the namespaced primitive, so the chain stays inside the library.
 		$this->assertSame(
 			'var(' . Css_Var::from_id( 'primitive.color.brand.primary', 'dark' ) . ')',
 			$projected[ Css_Var::from_id( 'semantic.color.button-bg', 'dark' ) ]
@@ -716,7 +717,7 @@ final class Token_ResolverTest extends TestCase {
 
 	/**
 	 * A composite's embedded var() reference is namespaced too, field by field, so a namespaced shadow's
-	 * aliased color follows that set's primitive.
+	 * aliased color follows that library's primitive.
 	 *
 	 * @return void
 	 */

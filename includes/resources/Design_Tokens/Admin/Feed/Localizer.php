@@ -2,8 +2,8 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Book\Asset_Loader;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  * Attaches the design-token schema feed to KB's admin dashboard bundle.
  *
  * On admin_head — after the dashboard's `admin_print_styles-{page}` enqueue has run, before the footer
- * where `admin-kadence-home` prints — it gathers the resolved values, the variants and the REST
+ * where `admin-kadence-home` prints — it gathers the resolved values, the presets and the REST
  * root/nonce, asks {@see Builder} to shape them, and attaches the result to the existing
  * 'admin-kadence-home' handle as `window.kadenceDesignTokens`. Guarded on
  * wp_script_is( …, 'enqueued' ) so it runs ONLY where that bundle loads (the Kadence dashboard, and any
@@ -73,7 +73,7 @@ final class Localizer {
 	private Token_Resolver $resolver;
 
 	/**
-	 * The store, for the current set's version hash.
+	 * The store, for the current library's version hash.
 	 *
 	 * @since TBD
 	 *
@@ -82,24 +82,24 @@ final class Localizer {
 	private Token_Store $store;
 
 	/**
-	 * The active-set pointer — the same slug the registry's user primitives and every projector
-	 * (CSS vars, theme.json, presets, variants) resolve against, so the dashboard edits the set that
+	 * The active-library pointer — the same slug the registry's user primitives and every projector
+	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the set that
 	 * is actually live rather than always the default one.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
-	 * The variants section builder.
+	 * The presets section builder.
 	 *
 	 * @since TBD
 	 *
-	 * @var Variants
+	 * @var Presets
 	 */
-	private Variants $variant_feed;
+	private Presets $preset_feed;
 
 	/**
 	 * The pure payload assembler.
@@ -122,25 +122,25 @@ final class Localizer {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Resolver   $resolver        The token resolver.
-	 * @param Token_Store      $store           The token store.
-	 * @param Active_Set_Store $active          The active-set pointer.
-	 * @param Variants         $variant_feed    The variants section builder.
-	 * @param Builder          $builder         The pure payload assembler.
-	 * @param Responsive_Feed  $responsive_feed The responsive / clamp shape extractor.
+	 * @param Token_Resolver             $resolver        The token resolver.
+	 * @param Token_Store                $store           The token store.
+	 * @param Active_Token_Library_Store $active          The active-library pointer.
+	 * @param Presets                    $preset_feed    The presets section builder.
+	 * @param Builder                    $builder         The pure payload assembler.
+	 * @param Responsive_Feed            $responsive_feed The responsive / clamp shape extractor.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
-		Active_Set_Store $active,
-		Variants $variant_feed,
+		Active_Token_Library_Store $active,
+		Presets $preset_feed,
 		Builder $builder,
 		Responsive_Feed $responsive_feed
 	) {
 		$this->resolver        = $resolver;
 		$this->store           = $store;
 		$this->active          = $active;
-		$this->variant_feed    = $variant_feed;
+		$this->preset_feed     = $preset_feed;
 		$this->builder         = $builder;
 		$this->responsive_feed = $responsive_feed;
 	}
@@ -159,28 +159,28 @@ final class Localizer {
 			return; // No supported admin bundle on this screen.
 		}
 
-		// The active set, not always Token_Store::default_slug() — the registry's user primitives and
-		// every projector already resolve against whichever set is active, so the dashboard must read
-		// (and, via the REST descriptor's slug, write) the same set or edits land in a document that
+		// The active library, not always Token_Store::default_slug() — the registry's user primitives and
+		// every projector already resolve against whichever library is active, so the dashboard must read
+		// (and, via the REST descriptor's slug, write) the same library or edits land in a document that
 		// is not the one being displayed.
 		$slug    = $this->active->get();
 		$version = $this->store->get_version( $slug );
 
 		$values     = [];
-		$variants   = [];
+		$presets    = [];
 		$responsive = [];
 		$resolved   = false;
 
 		try {
 			$values     = $this->resolver->resolve( $slug )->by_id();
-			$variants   = $this->variant_feed->all( $slug );
+			$presets    = $this->preset_feed->all( $slug );
 			$responsive = $this->responsive_feed->from_document( $this->resolver->effective_document( $slug ) );
 			$resolved   = true;
 		} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		$feed = $this->builder->build( $values, $resolved, $variants, $this->rest(), $version, $slug, $responsive );
+		$feed = $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $responsive );
 		$json = wp_json_encode(
 			$feed,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
