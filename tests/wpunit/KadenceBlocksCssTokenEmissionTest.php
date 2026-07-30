@@ -840,4 +840,132 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 			'expected' => '1px 1px 4px var(--kb-token--semantic--radius--media) #000000',
 		];
 	}
+
+	/**
+	 * render_measure_output emits the bare var() reference on the first corner for a strict alias,
+	 * the render site singlebtn's Border Radius uses on the front end.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureOutputEmitsBareVarForAlias(): void {
+		$this->css->render_measure_output(
+			[ 'borderRadius' => [ '{semantic.radius.media}', 10, 20, 30 ], 'borderRadiusUnit' => 'px' ],
+			'borderRadius',
+			'border-radius',
+			[ 'unit_key' => 'borderRadiusUnit' ]
+		);
+
+		$this->assertStringContainsString(
+			'border-top-left-radius:var(--kb-token--semantic--radius--media)',
+			$this->css->css_output(),
+			'render_measure_output must emit the bare var() on the aliased corner'
+		);
+	}
+
+	/**
+	 * Per-corner dimension mixing for render_measure_output: a 4-corner value with exactly one
+	 * corner an alias and the other three numeric emits the correct mixed declarations, with the
+	 * alias rotated through all four positions so a per-corner ordering bug cannot hide.
+	 *
+	 * @dataProvider measureOutputMixedCornersProvider
+	 *
+	 * @param array $corners  The 4-corner border-radius array with one aliased corner.
+	 * @param array $expected The full set of expected declarations that must all be present.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureOutputMixesAliasedAndNumericCorners( array $corners, array $expected ): void {
+		$this->css->render_measure_output(
+			[ 'borderRadius' => $corners, 'borderRadiusUnit' => 'px' ],
+			'borderRadius',
+			'border-radius',
+			[ 'unit_key' => 'borderRadiusUnit' ]
+		);
+		$output = $this->css->css_output();
+
+		foreach ( $expected as $fragment ) {
+			$this->assertStringContainsString(
+				$fragment,
+				$output,
+				'render_measure_output must emit every expected fragment for the mixed corners'
+			);
+		}
+	}
+
+	/**
+	 * Provides a 4-corner border-radius array with the alias rotated through each position, each
+	 * with the expected declarations for render_measure_output's corner mapping (top-left,
+	 * top-right, bottom-right, bottom-left).
+	 *
+	 * @return Generator
+	 */
+	public static function measureOutputMixedCornersProvider(): Generator {
+		yield 'alias in first (top-left) corner' => [
+			'corners'  => [ '{semantic.radius.media}', 20, 30, 40 ],
+			'expected' => [
+				'border-top-left-radius:var(--kb-token--semantic--radius--media)',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in second (top-right) corner' => [
+			'corners'  => [ 10, '{semantic.radius.media}', 30, 40 ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:var(--kb-token--semantic--radius--media)',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in third (bottom-right) corner' => [
+			'corners'  => [ 10, 20, '{semantic.radius.media}', 40 ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:var(--kb-token--semantic--radius--media)',
+				'border-bottom-left-radius:40px',
+			],
+		];
+		yield 'alias in fourth (last, bottom-left) corner' => [
+			'corners'  => [ 10, 20, 30, '{semantic.radius.media}' ],
+			'expected' => [
+				'border-top-left-radius:10px',
+				'border-top-right-radius:20px',
+				'border-bottom-right-radius:30px',
+				'border-bottom-left-radius:var(--kb-token--semantic--radius--media)',
+			],
+		];
+	}
+
+	/**
+	 * The fail-open matrix for render_measure_output: a malformed brace string on every corner
+	 * mints no var() and adds no radius declaration, since it is neither numeric nor a strict alias.
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderMeasureOutputFailsOpenForMalformedAlias( string $malformed ): void {
+		$this->css->render_measure_output(
+			[ 'borderRadius' => [ $malformed, $malformed, $malformed, $malformed ], 'borderRadiusUnit' => 'px' ],
+			'borderRadius',
+			'border-radius',
+			[ 'unit_key' => 'borderRadiusUnit' ]
+		);
+		$output = $this->css->css_output();
+
+		$this->assertStringNotContainsString(
+			'-radius:',
+			$output,
+			'render_measure_output must add no radius declaration when no corner is numeric or a strict alias'
+		);
+		$this->assertStringNotContainsString(
+			'var(',
+			$output,
+			'render_measure_output must not mint a var() from a malformed brace string'
+		);
+	}
 }
