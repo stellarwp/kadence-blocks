@@ -67,17 +67,19 @@ export function findTokenEntry(tokens, value) {
 /**
  * The label/value summary a token field shows on its trigger for the current slot value: the token's
  * label + resolved value when aliased (dot-path fallback when no matching entry is found), a `Custom`
- * label + literal (with unit) for a set literal, or an empty placeholder when the slot is unset.
+ * label + literal (with unit) for a set literal, or — when the slot is unset — the inherited default's
+ * size label and resolved value (so the trigger reads the effective size, not a bare "Default").
  *
- * @param {*}      value  The current slot value (alias string, literal number/string, or empty).
- * @param {Array}  tokens The pickable-token list, used to resolve an alias to its label/value.
- * @param {string} unit   The control's current unit, appended to a literal for display.
+ * @param {*}      value        The current slot value (alias string, literal number/string, or empty).
+ * @param {Array}  tokens       The pickable-token list, used to resolve an alias/default to its label.
+ * @param {string} unit         The control's current unit, appended to a literal for display.
+ * @param {string} defaultValue The inherited default's resolved value, shown when the slot is unset.
  *
  * @since TBD
  *
  * @return {{label: string, value: string}} The trigger label and its secondary value text.
  */
-function fieldSummary(value, tokens, unit) {
+function fieldSummary(value, tokens, unit, defaultValue) {
 	if (isTokenAlias(value)) {
 		const entry = findTokenEntry(tokens, value);
 		return {
@@ -90,69 +92,72 @@ function fieldSummary(value, tokens, unit) {
 		return { label: __('Custom', 'kadence-blocks'), value: `${value}${unit || ''}` };
 	}
 
+	// Unset: surface the inherited default's size (the token whose resolved value it matches) and value.
+	if (defaultValue) {
+		const match = (tokens || []).find((entry) => entry.value === defaultValue);
+		return { label: match ? match.label : __('Default', 'kadence-blocks'), value: defaultValue };
+	}
+
 	return { label: __('Default', 'kadence-blocks'), value: '' };
 }
 
 /**
- * The `Style Library` tab body: a `Reset` affordance, a `None` clear, and the pickable tokens (each showing
- * its label and resolved value, the active one pressed). Every choice closes the popover.
+ * The `Style Library` tab body: a `Reset` affordance that clears the slot back to its inherited default,
+ * followed by the pickable size tokens (each showing its label and resolved value, the active one
+ * pressed — the `None` size sits among them). Every choice closes the popover.
  *
  * @param {Object}   props
- * @param {*}        props.value    The current slot value, so the active token renders pressed.
- * @param {Array}    props.tokens   The pickable-token list.
- * @param {Function} props.onPick   Called with an entry's `alias` when a token is chosen.
- * @param {Function} props.onClear  Called when `None` is chosen.
- * @param {boolean}  props.canReset Whether the `Reset` affordance is enabled.
- * @param {Function} [props.onReset] Called when `Reset` is chosen.
- * @param {Function} props.onClose  Closes the popover after a choice.
+ * @param {*}        props.value        The current slot value, so the active token renders pressed.
+ * @param {Array}    props.tokens       The pickable-token list.
+ * @param {string}   [props.defaultValue] The inherited default's resolved value; its size is tagged
+ *                                      `Default` and marked active while the slot is unset.
+ * @param {Function} props.onPick       Called with an entry's `alias` when a token is chosen.
+ * @param {Function} props.onClear      Called when `Reset` is chosen; clears the slot's override.
+ * @param {Function} props.onClose      Closes the popover after a choice.
  *
  * @since TBD
  *
  * @return {Object} The rendered token list.
  */
-function StyleLibraryTab({ value, tokens, onPick, onClear, canReset, onReset, onClose }) {
+function StyleLibraryTab({ value, tokens, defaultValue, onPick, onClear, onClose }) {
+	// Reset clears the slot's override back to the inherited default; it is inert when nothing is set.
+	const hasOverride = isTokenAlias(value) || (value !== '' && value !== undefined && value !== null);
+	// While unset, the size matching the inherited default reads as the active row.
+	const onDefault = !hasOverride && !!defaultValue;
+
 	return (
 		<div className="kadence-token-field__list">
 			<Button
 				className="kadence-token-field__reset"
-				disabled={!canReset}
+				disabled={!hasOverride}
 				onClick={() => {
-					if (onReset) {
-						onReset();
-					}
+					onClear();
 					onClose();
 				}}
 			>
 				<span className="kadence-token-field__reset-label">{__('Reset', 'kadence-blocks')}</span>
 				<Icon className="kadence-token-field__reset-icon" icon={undo} size={20} />
 			</Button>
-			<Button
-				className="kadence-token-field__item"
-				isPressed={!isTokenAlias(value) && !value}
-				onClick={() => {
-					onClear();
-					onClose();
-				}}
-			>
-				<span className="kadence-token-field__item-label">{__('None', 'kadence-blocks')}</span>
-			</Button>
-			{tokens.map((entry) => (
-				<Button
-					key={entry.id}
-					className="kadence-token-field__item"
-					isPressed={entry.alias === value}
-					onClick={() => {
-						onPick(entry.alias);
-						onClose();
-					}}
-				>
-					<span className="kadence-token-field__item-label">{entry.label}</span>
-					{entry.isDefault && (
-						<span className="kadence-token-field__item-tag">{__('Default', 'kadence-blocks')}</span>
-					)}
-					<span className="kadence-token-field__item-value">{entry.value}</span>
-				</Button>
-			))}
+			{tokens.map((entry) => {
+				const isDefault = !!defaultValue && entry.value === defaultValue;
+				return (
+					<Button
+						key={entry.id}
+						className="kadence-token-field__item"
+						isPressed={entry.alias === value || (onDefault && isDefault)}
+						onClick={() => {
+							onPick(entry.alias);
+							onClose();
+						}}
+					>
+						<span className="kadence-token-field__item-label">{entry.label}</span>
+						{isDefault && (
+							<span className="kadence-token-field__item-tag">{__('Default', 'kadence-blocks')}</span>
+						)}
+						<span className="kadence-token-field__item-value">{entry.value}</span>
+					</Button>
+				);
+			})}
 		</div>
 	);
 }
@@ -170,6 +175,8 @@ function StyleLibraryTab({ value, tokens, onPick, onClear, canReset, onReset, on
  * @param {Array}    [props.units]    The control's selectable units; the `Custom` tab shows a unit
  *                                    switcher when this and `onUnit` are present.
  * @param {Function} [props.onUnit]   Writes the control's unit.
+ * @param {string}   [props.defaultValue] The inherited default's resolved value, shown on the trigger and
+ *                                    tagged in the list when the slot is unset.
  * @param {*}        [props.icon]     The control's per-slot corner icon (from the default editor), shown
  *                                    beside the trigger to match the native corner input.
  * @param {number}   [props.min]      The custom slider/number minimum.
@@ -177,10 +184,8 @@ function StyleLibraryTab({ value, tokens, onPick, onClear, canReset, onReset, on
  * @param {number}   [props.step]     The custom slider/number step.
  * @param {Array}    props.tokens     The pickable-token list.
  * @param {Function} props.onPick     Writes a picked token's `alias` to the slot.
- * @param {Function} props.onClear    Clears the slot (the `None` choice).
+ * @param {Function} props.onClear    Clears the slot's override (the `Reset` choice).
  * @param {Function} props.onCustom   Writes a literal number to the slot (used when leaving a token).
- * @param {boolean}  [props.canReset] Whether the `Reset` affordance is enabled.
- * @param {Function} [props.onReset]  Resets the slot to its bound default.
  *
  * @since TBD
  *
@@ -191,6 +196,7 @@ export function TokenFieldControl({
 	unit = '',
 	units,
 	onUnit,
+	defaultValue,
 	icon,
 	min,
 	max,
@@ -199,10 +205,8 @@ export function TokenFieldControl({
 	onPick,
 	onClear,
 	onCustom,
-	canReset = false,
-	onReset,
 }) {
-	const summary = fieldSummary(value, tokens, unit);
+	const summary = fieldSummary(value, tokens, unit, defaultValue);
 	const aliased = isTokenAlias(value);
 	const entry = aliased ? findTokenEntry(tokens, value) : null;
 	const seed = entry ? parseCssLength(entry.value) : null;
@@ -269,7 +273,7 @@ export function TokenFieldControl({
 			<Dropdown
 				className="kadence-token-field__dropdown"
 				contentClassName="kadence-token-field__popover"
-				popoverProps={{ placement: 'bottom-start' }}
+				popoverProps={{ placement: 'left-start' }}
 				renderToggle={({ isOpen, onToggle }) => (
 					<Button
 						className="kadence-token-field__trigger"
@@ -295,10 +299,9 @@ export function TokenFieldControl({
 								<StyleLibraryTab
 									value={value}
 									tokens={tokens}
+									defaultValue={defaultValue}
 									onPick={onPick}
 									onClear={onClear}
-									canReset={canReset}
-									onReset={onReset}
 									onClose={onClose}
 								/>
 							) : (

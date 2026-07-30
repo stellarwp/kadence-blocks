@@ -128,6 +128,7 @@ function editorFilter(defaultEditor, ctx) {
 			unit={ctx.context?.unit || ''}
 			units={ctx.context?.units}
 			onUnit={ctx.context?.onUnit}
+			defaultValue={ctx.context?.defaultValue}
 			icon={defaultEditor?.props?.icon}
 			min={ctx.context?.min}
 			max={ctx.context?.max}

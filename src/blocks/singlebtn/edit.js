@@ -1194,6 +1194,8 @@ export default function KadenceButtonEdit(props) {
 																context={{
 																	blockName: 'kadence/singlebtn',
 																	attribute: 'borderRadius',
+																	defaultValue:
+																		tokenBinding.borderRadius?.presetValue,
 																	unit: borderRadiusUnit,
 																	units: ['px', 'em', 'rem', '%'],
 																	onUnit: (value) =>
@@ -1210,6 +1212,7 @@ export default function KadenceButtonEdit(props) {
 																			? 0.1
 																			: 1,
 																}}
+																control="linked"
 																reset={false}
 																value={borderRadius}
 																tabletValue={tabletBorderRadius}
