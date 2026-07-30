@@ -156,21 +156,21 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 *
 	 * @param $attributes array
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function field_name( $attributes ) {
-		return ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'];
+		return strval( ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'] );
 	}
 	/**
 	 * Add the field name to the HTML response.
 	 *
 	 * @param $attributes array
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function field_id( $attributes ) {
 		$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-		return ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'];
+		return strval( ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'] );
 	}
 	/**
 	 * Add the field wrapper class ID.

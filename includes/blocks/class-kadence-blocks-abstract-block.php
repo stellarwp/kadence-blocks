@@ -567,7 +567,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @return string
 	 */
 	protected function sanitize_unique_id( $unique_id ) {
-		return preg_replace( '/[^A-Za-z0-9_-]/', '', str_replace( '/', '-', (string) $unique_id ) );
+		return (string) preg_replace( '/[^A-Za-z0-9_-]/', '', str_replace( '/', '-', (string) $unique_id ) );
 	}
 
 	/**

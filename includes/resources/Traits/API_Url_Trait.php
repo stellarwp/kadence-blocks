@@ -143,14 +143,17 @@ trait API_Url_Trait {
 	 * @return string[]
 	 */
 	protected function get_saved_library_urls(): array {
-		$settings = json_decode( (string) get_option( 'kadence_blocks_cloud' ), true );
+		$stored   = get_option( 'kadence_blocks_cloud' );
+		$settings = is_string( $stored ) ? json_decode( $stored, true ) : null;
 		$urls     = [];
 
-		if ( ! empty( $settings['connections'] ) && is_array( $settings['connections'] ) ) {
-			foreach ( $settings['connections'] as $connection ) {
-				if ( ! empty( $connection['url'] ) ) {
-					$urls[] = rtrim( (string) $connection['url'], '/' );
-				}
+		if ( ! is_array( $settings ) || empty( $settings['connections'] ) || ! is_array( $settings['connections'] ) ) {
+			return $urls;
+		}
+
+		foreach ( $settings['connections'] as $connection ) {
+			if ( is_array( $connection ) && ! empty( $connection['url'] ) && is_scalar( $connection['url'] ) ) {
+				$urls[] = rtrim( (string) $connection['url'], '/' );
 			}
 		}
 
