@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -28,8 +28,8 @@ use WP_REST_Server;
  *
  * Owns the `$extensions.com.kadence.designTokens.colorPalettes` surface: list the set's palettes, read /
  * create / replace / delete a palette (label + ordered groups of swatches), and get / set the set's
- * `$current` (active) palette. Modeled on {@see Variants_Controller} — the closest per-set `$extensions`
- * write precedent — plus {@see Active_Set_Controller} for the pointer.
+ * `$current` (active) palette. Modeled on {@see Presets_Controller} — the closest per-set `$extensions`
+ * write precedent — plus {@see Active_Token_Library_Controller} for the pointer.
  *
  * Writes go through the same gate: capability check (via {@see Controller}), the DTCG validator (swatch
  * `$value` grammar), a resolver dry-run, and palette-specific guards — `$current` / `$default` must name a
@@ -166,11 +166,11 @@ final class Palettes_Controller extends Controller {
 	private Token_Registry $registry;
 
 	/**
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 *
 	 * @since TBD
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * Memoised item schema for this request.
@@ -190,7 +190,7 @@ final class Palettes_Controller extends Controller {
 	 * @param Dtcg_Validator     $validator The DTCG grammar validator.
 	 * @param Effective_Palettes $palettes  The effective palettes reader.
 	 * @param Token_Registry     $registry  The token registry, for the swatch-target guard.
-	 * @param Active_Set_Store   $active    Owns the active-set pointer.
+	 * @param Active_Token_Library_Store   $active    Owns the active-library pointer.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -199,7 +199,7 @@ final class Palettes_Controller extends Controller {
 		Dtcg_Validator $validator,
 		Effective_Palettes $palettes,
 		Token_Registry $registry,
-		Active_Set_Store $active
+		Active_Token_Library_Store $active
 	) {
 		$this->store     = $store;
 		$this->mutator   = $mutator;
@@ -722,7 +722,7 @@ final class Palettes_Controller extends Controller {
 	/**
 	 * Validate and persist a candidate overrides document, then respond with the set's palette listing.
 	 *
-	 * Mirrors {@see Variants_Controller::validate_and_save()}: an empty candidate clears the set; otherwise
+	 * Mirrors {@see Presets_Controller::validate_and_save()}: an empty candidate clears the set; otherwise
 	 * the DTCG validator (422) and a resolver dry-run (422) gate the write, the encode is guarded (500), and
 	 * the store persists it. First write to a set reports 201.
 	 *

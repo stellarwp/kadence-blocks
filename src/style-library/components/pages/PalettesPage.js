@@ -34,7 +34,7 @@ export function PalettesPage({ namespace, slug }) {
 
 	if (!listing) {
 		return (
-			<div className="kadence-blocks-style-book__palettes">
+			<div className="kadence-blocks-style-library__palettes">
 				<Spinner />
 			</div>
 		);
@@ -44,8 +44,8 @@ export function PalettesPage({ namespace, slug }) {
 	const isCurrent = selectedId === listing.$current;
 
 	return (
-		<div className="kadence-blocks-style-book__palettes">
-			<header className="kadence-blocks-style-book__page-header">
+		<div className="kadence-blocks-style-library__palettes">
+			<header className="kadence-blocks-style-library__page-header">
 				<h2>{__('Color Palette', 'kadence-blocks')}</h2>
 				<p>
 					{__(
@@ -54,7 +54,7 @@ export function PalettesPage({ namespace, slug }) {
 					)}
 				</p>
 			</header>
-			<div className="kadence-blocks-style-book__palettes-toolbar">
+			<div className="kadence-blocks-style-library__palettes-toolbar">
 				<SelectControl
 					label={__('Color Palette', 'kadence-blocks')}
 					value={selectedId}
@@ -80,9 +80,9 @@ export function PalettesPage({ namespace, slug }) {
 
 			{selected &&
 				(selected.groups || []).map((group) => (
-					<section key={group.id} className="kadence-blocks-style-book__palette-group">
-						<h3 className="kadence-blocks-style-book__palette-group-label">{group.label}</h3>
-						<ul className="kadence-blocks-style-book__palette-swatches">
+					<section key={group.id} className="kadence-blocks-style-library__palette-group">
+						<h3 className="kadence-blocks-style-library__palette-group-label">{group.label}</h3>
+						<ul className="kadence-blocks-style-library__palette-swatches">
 							{(group.swatches || []).map((swatch) => (
 								<SwatchRow
 									key={swatch.token}
@@ -144,9 +144,9 @@ function SwatchRow({ swatch, busy, onSave }) {
 	};
 
 	return (
-		<li className="kadence-blocks-style-book__palette-swatch">
+		<li className="kadence-blocks-style-library__palette-swatch">
 			<Dropdown
-				className="kadence-blocks-style-book__palette-swatch-toggle"
+				className="kadence-blocks-style-library__palette-swatch-toggle"
 				renderToggle={({ isOpen, onToggle }) => (
 					<Button
 						aria-expanded={isOpen}
@@ -163,11 +163,11 @@ function SwatchRow({ swatch, busy, onSave }) {
 				)}
 				renderContent={() => <ColorPicker color={draft} enableAlpha={false} onChange={onPick} />}
 			/>
-			<span className="kadence-blocks-style-book__palette-swatch-meta">
+			<span className="kadence-blocks-style-library__palette-swatch-meta">
 				<strong>{swatch.label}</strong>
 				<code>{swatch.token}</code>
 				{swatch.overridden === false && (
-					<em className="kadence-blocks-style-book__palette-swatch-inherited">
+					<em className="kadence-blocks-style-library__palette-swatch-inherited">
 						{__('Inherited from default', 'kadence-blocks')}
 					</em>
 				)}

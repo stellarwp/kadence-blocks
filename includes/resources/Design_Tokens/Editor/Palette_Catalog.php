@@ -2,7 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Set_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 
@@ -19,13 +19,13 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 final class Palette_Catalog {
 
 	/**
-	 * The active-set pointer, so the catalog reports the set the editor renders by default.
+	 * The active-library pointer, so the catalog reports the set the editor renders by default.
 	 *
 	 * @since TBD
 	 *
-	 * @var Active_Set_Store
+	 * @var Active_Token_Library_Store
 	 */
-	private Active_Set_Store $active;
+	private Active_Token_Library_Store $active;
 
 	/**
 	 * The effective-palettes reader, source of the active set's palettes and its `$current` pointer.
@@ -39,10 +39,10 @@ final class Palette_Catalog {
 	/**
 	 * @since TBD
 	 *
-	 * @param Active_Set_Store   $active   The active-set pointer.
+	 * @param Active_Token_Library_Store   $active   The active-library pointer.
 	 * @param Effective_Palettes $palettes The effective-palettes reader.
 	 */
-	public function __construct( Active_Set_Store $active, Effective_Palettes $palettes ) {
+	public function __construct( Active_Token_Library_Store $active, Effective_Palettes $palettes ) {
 		$this->active   = $active;
 		$this->palettes = $palettes;
 	}
