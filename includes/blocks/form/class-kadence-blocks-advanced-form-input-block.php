@@ -156,23 +156,27 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
 	 * @return string
 	 */
 	public function field_name( $attributes ) {
-		return strval( ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'] );
+		$name = ! empty( $attributes['inputName'] ) ? $attributes['inputName'] : 'field' . $attributes['uniqueID'];
+
+		return is_scalar( $name ) ? strval( $name ) : '';
 	}
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param array $attributes The block attributes.
+	 * @param array<string, mixed> $attributes The block attributes.
 	 *
 	 * @return string
 	 */
 	public function field_id( $attributes ) {
 		$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-		return strval( ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'] );
+		$id      = ! empty( $attributes['anchor'] ) ? $attributes['anchor'] : 'field' . $form_id . $attributes['uniqueID'];
+
+		return is_scalar( $id ) ? strval( $id ) : '';
 	}
 	/**
 	 * Add the field wrapper class ID.

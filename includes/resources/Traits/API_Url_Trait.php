@@ -147,13 +147,11 @@ trait API_Url_Trait {
 		$settings = is_string( $stored ) ? json_decode( $stored, true ) : null;
 		$urls     = [];
 
-		if ( ! is_array( $settings ) || empty( $settings['connections'] ) || ! is_array( $settings['connections'] ) ) {
-			return $urls;
-		}
-
-		foreach ( $settings['connections'] as $connection ) {
-			if ( is_array( $connection ) && ! empty( $connection['url'] ) && is_scalar( $connection['url'] ) ) {
-				$urls[] = rtrim( (string) $connection['url'], '/' );
+		if ( is_array( $settings ) && ! empty( $settings['connections'] ) && is_array( $settings['connections'] ) ) {
+			foreach ( $settings['connections'] as $connection ) {
+				if ( ! empty( $connection['url'] ) ) {
+					$urls[] = rtrim( (string) $connection['url'], '/' );
+				}
 			}
 		}
 
