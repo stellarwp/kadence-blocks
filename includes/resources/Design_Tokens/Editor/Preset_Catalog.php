@@ -14,7 +14,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
  * Builds the per-library preset catalog the block editor's preset picker and "save as new preset" form read.
  *
  * Keyed by token library so the picker can show the presets for the active library, then by block:
- * `{ active: <slug>, sets: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
+ * `{ active: <slug>, libraries: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
  * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
@@ -102,18 +102,18 @@ final class Preset_Catalog {
 	 *
 	 * @since TBD
 	 *
-	 * @return array{active: string, sets: array<string, array<string, mixed>>}
+	 * @return array{active: string, libraries: array<string, array<string, mixed>>}
 	 */
 	public function all(): array {
-		$sets = [];
+		$libraries = [];
 
-		foreach ( $this->set_slugs() as $slug ) {
-			$sets[ $slug ] = $this->for_set( $slug );
+		foreach ( $this->library_slugs() as $slug ) {
+			$libraries[ $slug ] = $this->for_library( $slug );
 		}
 
 		return [
-			'active' => $this->active->get(),
-			'sets'   => $sets,
+			'active'    => $this->active->get(),
+			'libraries' => $libraries,
 		];
 	}
 
@@ -127,7 +127,7 @@ final class Preset_Catalog {
 	 *
 	 * @return array<string, array<string, mixed>> block => { default, presets, properties, values, label }.
 	 */
-	private function for_set( string $slug ): array {
+	private function for_library( string $slug ): array {
 		$out = [];
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
@@ -231,7 +231,7 @@ final class Preset_Catalog {
 	 *
 	 * @return string[]
 	 */
-	private function set_slugs(): array {
+	private function library_slugs(): array {
 		$slugs = array_map( 'strval', array_column( $this->store->list_stores(), 'slug' ) );
 
 		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {

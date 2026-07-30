@@ -1412,7 +1412,7 @@ final class Presets_Controller extends Controller {
 	private function slug( WP_REST_Request $request ): string {
 		$library = Cast::to_string( $request->get_param( self::LIBRARY_PARAM ) );
 
-		if ( $library !== '' && $this->is_known_set( $library ) ) {
+		if ( $library !== '' && $this->is_known_library( $library ) ) {
 			return $library;
 		}
 
@@ -1429,7 +1429,7 @@ final class Presets_Controller extends Controller {
 	 *
 	 * @return bool
 	 */
-	private function is_known_set( string $slug ): bool {
+	private function is_known_library( string $slug ): bool {
 		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 

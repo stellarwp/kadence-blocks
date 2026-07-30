@@ -49,9 +49,9 @@ final class Preset_CatalogTest extends TestCase {
 		$catalog = $this->catalog->all();
 
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );
-		$this->assertArrayHasKey( self::BUTTON, $catalog['sets'][ Token_Store::default_slug() ] );
+		$this->assertArrayHasKey( self::BUTTON, $catalog['libraries'][ Token_Store::default_slug() ] );
 
-		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+		$button = $catalog['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
 		// The picker's control label, declared on the preset bindings in declarations.php.
@@ -80,7 +80,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItExposesTheControllableSurface(): void {
-		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+		$properties = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
 
 		$kinds = wp_list_pluck( $properties, 'kind', 'key' );
 
@@ -99,7 +99,7 @@ final class Preset_CatalogTest extends TestCase {
 			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
 		);
 
-		$presets = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
+		$presets = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
 		$flags   = wp_list_pluck( $presets, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
@@ -130,7 +130,7 @@ final class Preset_CatalogTest extends TestCase {
 			$this->container->get( Effective_Presets::class )
 		) )->all();
 
-		$this->assertSame( [], $catalog['sets'][ Token_Store::default_slug() ] );
+		$this->assertSame( [], $catalog['libraries'][ Token_Store::default_slug() ] );
 	}
 
 	/**
@@ -140,7 +140,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSurfacesControlAttrAndPerPresetValues(): void {
-		$button = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$by_key = [];
 		foreach ( $button['properties'] as $property ) {
