@@ -1212,7 +1212,14 @@ export default function KadenceButtonEdit(props) {
 																			? 0.1
 																			: 1,
 																}}
-																control="linked"
+																control={
+																	!borderRadius ||
+																	borderRadius.every(
+																		(corner) => corner === borderRadius[0]
+																	)
+																		? 'linked'
+																		: 'individual'
+																}
 																reset={false}
 																value={borderRadius}
 																tabletValue={tabletBorderRadius}
