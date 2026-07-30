@@ -61,11 +61,11 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default' ], 'default' );
 
 		// The namespaced preset var chains to that set's namespaced semantic.
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--secondary--button-bg:var(--kb-token--default--semantic--color--button-secondary-bg);', $css );
 
 		// The canonical preset var is pointed at the active set's namespaced preset var (the alias layer).
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--preset--kadence-singlebtn--primary--button-bg);', $css );
 	}
 
 	/**
@@ -79,8 +79,8 @@ final class Css_BuilderTest extends TestCase {
 		$css = $this->builder( $this->registry )->css( [ 'default', 'dark' ], 'default' );
 
 		// Both sets' namespaced preset vars are present (dark resolves from baseline here, namespaced).
-		$this->assertStringContainsString( '--kb-token--default--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--dark--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--default--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--dark--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--semantic--color--button-primary-bg);', $css );
 
 		// The dark switch selector re-points the canonical preset var at the dark namespace.
 		$this->assertStringContainsString(
@@ -88,7 +88,7 @@ final class Css_BuilderTest extends TestCase {
 			$css
 		);
 		$this->assertStringContainsString(
-			'--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);',
+			'--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--primary--button-bg);',
 			$css
 		);
 	}
@@ -104,11 +104,11 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertSame(
 			2,
-			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--primary--button-bg);' )
+			substr_count( $css, '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--primary--button-bg);' )
 		);
 		$this->assertSame(
 			1,
-			substr_count( $css, '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--default--variant--kadence-singlebtn--primary--button-bg);' )
+			substr_count( $css, '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--default--preset--kadence-singlebtn--primary--button-bg);' )
 		);
 	}
 
@@ -124,11 +124,11 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-preset--secondary{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);}',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--secondary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);}',
 			$css
 		);
 	}
@@ -144,11 +144,11 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--primary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--primary--button-radius);}',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--primary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--primary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);}',
 			$css
 		);
 	}
@@ -165,12 +165,12 @@ final class Css_BuilderTest extends TestCase {
 
 		// The scoped rule points --kb-btn-radius at the per-preset var.
 		$this->assertStringContainsString(
-			'--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);',
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);',
 			$css
 		);
 		// The namespaced block defines that per-preset var for the set.
 		$this->assertStringContainsString(
-			'--kb-token--default--variant--kadence-singlebtn--secondary--button-radius:',
+			'--kb-token--default--preset--kadence-singlebtn--secondary--button-radius:',
 			$css
 		);
 	}
@@ -195,12 +195,12 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-preset--midnight{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--midnight--button-bg);',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--midnight--button-bg);',
 			$css
 		);
 		// The dark switch selector re-points the canonical midnight var at the dark namespace.
 		$this->assertStringContainsString(
-			'--kb-token--variant--kadence-singlebtn--midnight--button-bg:var(--kb-token--dark--variant--kadence-singlebtn--midnight--button-bg);',
+			'--kb-token--preset--kadence-singlebtn--midnight--button-bg:var(--kb-token--dark--preset--kadence-singlebtn--midnight--button-bg);',
 			$css
 		);
 	}

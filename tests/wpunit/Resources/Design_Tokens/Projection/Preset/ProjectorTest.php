@@ -64,7 +64,7 @@ final class ProjectorTest extends TestCase {
 		$css = implode( '', (array) wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
 
 		$this->assertStringContainsString( '.wp-block-kadence-singlebtn.kb-preset--primary{', $css );
-		$this->assertStringContainsString( '--global-palette1:var(--kb-token--variant--kadence-singlebtn--primary--button-bg', $css );
+		$this->assertStringContainsString( '--global-palette1:var(--kb-token--preset--kadence-singlebtn--primary--button-bg', $css );
 	}
 
 	/**
