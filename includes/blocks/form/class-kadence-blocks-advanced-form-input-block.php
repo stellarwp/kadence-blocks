@@ -3,6 +3,8 @@
  * Class to Build the Advanced Form Block.
  *
  * @package Kadence Blocks
+ *
+ * cSpell:ignore unslash
  */
 
 // Exit if accessed directly.
@@ -154,7 +156,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param $attributes array
+	 * @param array $attributes The block attributes.
 	 *
 	 * @return string
 	 */
@@ -164,7 +166,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	/**
 	 * Add the field name to the HTML response.
 	 *
-	 * @param $attributes array
+	 * @param array $attributes The block attributes.
 	 *
 	 * @return string
 	 */

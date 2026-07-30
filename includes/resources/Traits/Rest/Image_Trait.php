@@ -6,6 +6,8 @@ namespace KadenceWP\KadenceBlocks\Traits\Rest;
  * Shared image related functionality for REST controllers.
  *
  * @mixin \WP_REST_Controller
+ *
+ * cSpell:ignore absint
  */
 trait Image_Trait {
 
