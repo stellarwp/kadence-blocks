@@ -97,8 +97,8 @@ export function dimensionSlots(value) {
 /**
  * The value one corner inherits from the selected preset.
  *
- * A preset value may be a single literal (every corner) or a PER-CORNER list, in which case the corner
- * takes its matching slot; a one-entry list also means "every corner".
+ * A preset value is either a single literal, which every corner inherits, or a PER-CORNER list, in which
+ * case the corner takes its matching slot.
  *
  * @param {*}      presetValue The selected preset's value for the property.
  * @param {number} index       The corner index.
@@ -109,7 +109,7 @@ export function dimensionSlots(value) {
  */
 export function presetSlotAt(presetValue, index) {
 	if (Array.isArray(presetValue)) {
-		return String(presetValue.length === 1 ? presetValue[0] : (presetValue[index] ?? ''));
+		return String(presetValue[index] ?? '');
 	}
 
 	return presetValue === undefined || presetValue === null ? '' : String(presetValue);
@@ -248,9 +248,9 @@ function parseDimensionLiteral(literal) {
 /**
  * Whether a stored dimension matches a PER-CORNER preset value, compared slot by slot.
  *
- * Either side may carry a single entry, which means "every corner": a one-slot list is expanded to four
- * before the compare, so a uniform stored value still matches a single-slot preset. Comparing by position
- * means a rotated set of the same corners (e.g. `4,8,4,8` against `8,4,8,4`) correctly reads as overridden.
+ * Comparing by position means a rotated set of the same corners (e.g. `4,8,4,8` against `8,4,8,4`) reads
+ * as overridden, and a stored value with a different number of populated sides than the preset has slots
+ * cannot match at all.
  *
  * @param {string[]} sides       The stored sides, empties already dropped.
  * @param {string}   storedUnit  The stored companion unit.
@@ -261,10 +261,8 @@ function parseDimensionLiteral(literal) {
  * @return {boolean} True when every corner equals its preset slot.
  */
 function matchesPresetSlots(sides, storedUnit, presetSlots) {
-	const expand = (list) => (list.length === 1 ? [list[0], list[0], list[0], list[0]] : list);
-
-	const stored = expand(sides);
-	const presets = expand(presetSlots.map(parseDimensionLiteral));
+	const stored = sides;
+	const presets = presetSlots.map(parseDimensionLiteral);
 
 	if (stored.length !== presets.length) {
 		return false;

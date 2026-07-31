@@ -131,23 +131,6 @@ describe('editor seam', () => {
 	});
 
 	/**
-	 * A single-slot default means "every corner", so each slot reads that one value.
-	 *
-	 * @return {void}
-	 */
-	it('applies a single-slot default value to every corner', () => {
-		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
-			control: 'measureRange',
-			index: 3,
-			value: ['', '', '', ''],
-			onChange: jest.fn(),
-			context: { ...CONTEXT, defaultValue: ['0.5rem'] },
-		});
-
-		expect(result.props.defaultValue).toBe('0.5rem');
-	});
-
-	/**
 	 * Picking a token on an individual side writes the alias to only that side; clearing and a custom
 	 * value write to the same side, leaving the siblings untouched.
 	 *

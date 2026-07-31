@@ -512,10 +512,6 @@ final class Dtcg_ValidatorTest extends TestCase {
 	 * @return Generator
 	 */
 	public function validSlotListProvider(): Generator {
-		yield 'single alias slot' => [ 'value' => [ '{primitive.dimension.radius.sm}' ] ];
-
-		yield 'single literal slot' => [ 'value' => [ '8px' ] ];
-
 		yield 'four aliases' => [
 			'value' => [
 				'{primitive.dimension.radius.md}',
@@ -562,6 +558,12 @@ final class Dtcg_ValidatorTest extends TestCase {
 	 */
 	public function invalidSlotListProvider(): Generator {
 		$base = '$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.button-radius';
+
+		yield 'one slot' => [
+			'value' => [ '8px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
 
 		yield 'two slots' => [
 			'value' => [ '8px', '4px' ],
