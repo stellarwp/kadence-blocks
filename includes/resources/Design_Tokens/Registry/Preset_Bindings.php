@@ -35,6 +35,34 @@ use InvalidArgumentException;
 final class Preset_Bindings {
 
 	/**
+	 * The coarse input kind for a length-valued property — the only kind a per-corner slot list is
+	 * meaningful for.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_DIMENSION = 'dimension';
+
+	/**
+	 * The coarse input kind for a color-valued property.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_COLOR = 'color';
+
+	/**
+	 * The fallback kind for a property that classifies as neither a dimension nor a color.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_TEXT = 'text';
+
+	/**
 	 * The block name, e.g. "kadence/advancedbtn".
 	 *
 	 * @since TBD
@@ -183,6 +211,18 @@ final class Preset_Bindings {
 	}
 
 	/**
+	 * The coarse input kind for a length-valued property, the one kind a per-corner slot list is valid
+	 * for. Read by the REST write guard, which cannot compare against the constant directly.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_dimension(): string {
+		return self::KIND_DIMENSION;
+	}
+
+	/**
 	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's preset
 	 * form can render the right control per property. Read from the referenced token's group segment when the
 	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
@@ -208,7 +248,7 @@ final class Preset_Bindings {
 
 		$by_name = self::classify( $property );
 
-		return $by_name !== '' ? $by_name : 'text';
+		return $by_name !== '' ? $by_name : self::KIND_TEXT;
 	}
 
 	/**
@@ -262,13 +302,13 @@ final class Preset_Bindings {
 
 		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'size', 'height', 'dimension' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {
-				return 'dimension';
+				return self::KIND_DIMENSION;
 			}
 		}
 
 		foreach ( [ 'color', 'bg', 'background', 'text', 'border', 'fill', 'stroke' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {
-				return 'color';
+				return self::KIND_COLOR;
 			}
 		}
 

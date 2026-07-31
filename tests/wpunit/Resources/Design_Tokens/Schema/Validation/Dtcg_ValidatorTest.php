@@ -490,6 +490,123 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A preset token value may be a per-corner slot list of exactly 1 or 4 entries, each an alias or a
+	 * literal, so a block storing a 4-side measure attribute can persist its corners into a preset.
+	 *
+	 * @dataProvider validSlotListProvider
+	 *
+	 * @param mixed $value The preset token value under test.
+	 *
+	 * @return void
+	 */
+	public function testAValidSlotListValidates( $value ): void {
+		$result = $this->validator->validate(
+			$this->preset_document( $value ),
+			Dtcg_Validator::get_context_overrides()
+		);
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function validSlotListProvider(): Generator {
+		yield 'single alias slot' => [ 'value' => [ '{primitive.dimension.radius.sm}' ] ];
+
+		yield 'single literal slot' => [ 'value' => [ '8px' ] ];
+
+		yield 'four aliases' => [
+			'value' => [
+				'{primitive.dimension.radius.md}',
+				'{primitive.dimension.radius.sm}',
+				'{primitive.dimension.radius.md}',
+				'{primitive.dimension.radius.sm}',
+			],
+		];
+
+		yield 'four literals' => [ 'value' => [ '8px', '8px', '4px', '4px' ] ];
+
+		yield 'mixed alias and literal' => [
+			'value' => [ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.sm}', '4px' ],
+		];
+
+		yield 'numeric literal slots' => [ 'value' => [ 0, 8, 0, 8 ] ];
+	}
+
+	/**
+	 * A preset token slot list is rejected when its length is not 1 or 4, when a slot nests another list,
+	 * when a slot is empty, or when a slot carries braces without being a whole-string alias.
+	 *
+	 * @dataProvider invalidSlotListProvider
+	 *
+	 * @param mixed  $value The preset token value under test.
+	 * @param string $code  The expected validation-error code.
+	 * @param string $path  The expected dot-path the error is reported at.
+	 *
+	 * @return void
+	 */
+	public function testAnInvalidSlotListIsRejected( $value, string $code, string $path ): void {
+		$errors = $this->validator->validate(
+			$this->preset_document( $value ),
+			Dtcg_Validator::get_context_overrides()
+		)->errors();
+
+		$this->assertCount( 1, $errors, $this->describe( $errors ) );
+		$this->assertSame( $code, $errors[0]->code );
+		$this->assertSame( $path, $errors[0]->path );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function invalidSlotListProvider(): Generator {
+		$base = '$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.button-radius';
+
+		yield 'two slots' => [
+			'value' => [ '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'three slots' => [
+			'value' => [ '8px', '4px', '8px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'five slots' => [
+			'value' => [ '8px', '4px', '8px', '4px', '2px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'empty list' => [
+			'value' => [],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'nested list in a slot' => [
+			'value' => [ '8px', [ '4px' ], '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
+		];
+
+		yield 'empty slot' => [
+			'value' => [ '8px', '', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
+		];
+
+		yield 'brace-bearing slot that is not a whole-string alias' => [
+			'value' => [ '8px', '{primitive.dimension.radius.sm}px', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_alias_malformed(),
+			'path'  => $base . '.1',
+		];
+	}
+
+	/**
 	 * A dimension leaf carrying a well-formed per-breakpoint responsive map (literal and alias slots)
 	 * validates.
 	 *
@@ -691,7 +808,35 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
-	 * @param Validation_Error[] $errors
+	 * A minimal overrides document carrying one block preset whose `button-radius` token holds the given
+	 * value, so a preset token value can be exercised in isolation.
+	 *
+	 * @param mixed $value The preset token value to place under `button-radius`.
+	 *
+	 * @return array<string, mixed> The document.
+	 */
+	private function preset_document( $value ): array {
+		return [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/x' => [
+							'$default' => 'default',
+							'default'  => [
+								'label'  => 'Default',
+								'tokens' => [ 'button-radius' => $value ],
+							],
+						],
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Render a list of validation errors as a readable multi-line string for assertion messages.
+	 *
+	 * @param Validation_Error[] $errors The errors to describe.
 	 *
 	 * @return string
 	 */
