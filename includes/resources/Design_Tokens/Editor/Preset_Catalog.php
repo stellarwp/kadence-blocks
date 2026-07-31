@@ -202,13 +202,18 @@ final class Preset_Catalog {
 	 * cannot compare against a `var()` chain. A preset whose resolution fails (undefined in this library) is
 	 * skipped, so one bad preset never empties the map.
 	 *
+	 * A dimension property whose preset stores per-corner values carries the corners as a list rather than
+	 * a joined string, so the editor's compare and the control's inherited-default display read each corner
+	 * on its own — a joined shorthand is not parseable as a single length.
+	 *
 	 * @since TBD
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
 	 * @param string[] $names The preset slugs to resolve, in catalog order.
 	 *
-	 * @return array<string, array<string, string>> preset slug => ( property => literal value ).
+	 * @return array<string, array<string, string|string[]>> preset slug => ( property => literal value or
+	 *                                                       per-corner slot list ).
 	 */
 	private function values_for( string $block, string $slug, array $names ): array {
 		$values = [];
