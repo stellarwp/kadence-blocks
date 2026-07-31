@@ -112,8 +112,8 @@ function writerFor(ctx) {
  * The inherited default for one slot of a field control.
  *
  * A preset may resolve a dimension to a PER-CORNER list rather than one value, so the slot takes its
- * matching entry — a one-entry list means "every corner". Handed the list whole, the field would render
- * the whole shorthand as a single default (e.g. "1px,2px,3px,4px") on every corner.
+ * matching entry. Handed the list whole, the field would render the whole shorthand as a single default
+ * (e.g. "1px,2px,3px,4px") on every corner.
  *
  * @param {*}      defaultValue The context's inherited default (a value or a per-corner list).
  * @param {number} index        The slot index being rendered.
@@ -127,7 +127,7 @@ function defaultValueForSlot(defaultValue, index) {
 		return defaultValue;
 	}
 
-	return defaultValue.length === 1 ? defaultValue[0] : defaultValue[index];
+	return defaultValue[index];
 }
 
 function editorFilter(defaultEditor, ctx) {

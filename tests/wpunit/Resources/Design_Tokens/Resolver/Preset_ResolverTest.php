@@ -363,26 +363,6 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * A single-slot list means "every corner", so it resolves exactly as the equivalent scalar does.
-	 *
-	 * @return void
-	 */
-	public function testASingleSlotListResolvesLikeAScalar(): void {
-		$this->seedPreset(
-			Token_Store::default_slug(),
-			'corners',
-			'Corners',
-			[ 'button-radius' => [ '{semantic.radius.control}' ] ]
-		);
-
-		$this->assertSame( [ '0.5rem' ], $this->resolver->resolve_literal( self::BUTTON, 'corners' )['button-radius'] );
-		$this->assertSame(
-			'var(--kb-token--semantic--radius--control)',
-			$this->resolver->resolve( self::BUTTON, 'corners' )['button-radius']
-		);
-	}
-
-	/**
 	 * Persist a single button preset into a token library's overrides document.
 	 *
 	 * @param string               $slug   The token library slug to write into.

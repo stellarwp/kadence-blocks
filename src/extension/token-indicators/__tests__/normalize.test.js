@@ -106,10 +106,6 @@ describe('deriveMeasureMode', () => {
 		expect(deriveMeasureMode(['{primitive.dimension.radius.lg}', '', '', ''], '0.5rem')).toBe('individual');
 	});
 
-	it('reads a single-slot preset as applying to every corner', () => {
-		expect(deriveMeasureMode(['', '', '', ''], ['8px'])).toBe('linked');
-	});
-
 	it('reads an unset value with no preset as linked', () => {
 		expect(deriveMeasureMode(undefined, undefined)).toBe('linked');
 		expect(deriveMeasureMode(['', '', '', ''], '')).toBe('linked');
@@ -171,10 +167,6 @@ describe('matchesPreset dimension against a per-corner preset value', () => {
 
 	it('does not match when the corners are positionally rotated', () => {
 		expect(matchesPreset('dimension', ['4', '8', '4', '8'], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
-	});
-
-	it('matches a uniform stored value against a single-slot preset value', () => {
-		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'px', ['8px'])).toBe(true);
 	});
 
 	it('does not match when the unit differs from the preset slots', () => {

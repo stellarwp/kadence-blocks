@@ -757,8 +757,9 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * Validate a per-corner slot list: exactly 1 slot (all corners) or 4 (top-left, top-right,
-	 * bottom-right, bottom-left), each an alias or a non-empty literal scalar. A slot is validated by the
+	 * Validate a per-corner slot list: exactly 4 slots (top-left, top-right, bottom-right, bottom-left),
+	 * each an alias or a non-empty literal scalar. "Every corner" is already expressed by a bare scalar, so
+	 * a shorter list would be a second spelling of the same thing. A slot is validated by the
 	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
 	 * nested list is rejected because that rule accepts no array.
 	 *
@@ -772,15 +773,11 @@ final class Dtcg_Validator {
 	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
 		$count = count( $slots );
 
-		if ( $count !== 1 && $count !== self::SLOT_LIST_SIDES ) {
+		if ( $count !== self::SLOT_LIST_SIDES ) {
 			return new Validation_Error(
 				$path,
 				Validation_Error::get_code_value_invalid(),
-				sprintf(
-					'A preset token slot list must hold exactly 1 or %d values, %d given.',
-					self::SLOT_LIST_SIDES,
-					$count
-				)
+				sprintf( 'A preset token slot list must hold exactly %d values, %d given.', self::SLOT_LIST_SIDES, $count )
 			);
 		}
 
