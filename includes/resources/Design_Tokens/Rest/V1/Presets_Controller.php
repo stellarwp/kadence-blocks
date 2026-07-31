@@ -32,8 +32,8 @@ use WP_REST_Server;
  * so a preset authored through a write is visible on the next read. Resolved (CSS) preset values are out
  * of scope here — they are produced by the preset projectors, which own the resolver's override-merging.
  *
- * A block is addressable only when it has a registered binding set ({@see Token_Registry::for_block()});
- * a block with no binding set has no bindings, so a preset authored for it could never project. Reads and
+ * A block is addressable only when it has registered preset bindings ({@see Token_Registry::for_block()});
+ * a block without preset bindings has no bindable surface, so a preset authored for it could never project. Reads and
  * writes for such a block are a 404.
  *
  * Writes assemble a partial overrides document carrying only the addressed presets node and deep-merge it
@@ -215,7 +215,7 @@ final class Presets_Controller extends Controller {
 	private Effective_Presets $presets;
 
 	/**
-	 * Declares which blocks accept presets. A block with no registered set is a 404.
+	 * Declares which blocks accept presets. A block with no registered preset bindings is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -891,7 +891,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Reject a request for a block that has no registered binding set.
+	 * Reject a request for a block that has no registered preset bindings.
 	 *
 	 * @since TBD
 	 *
@@ -1054,9 +1054,9 @@ final class Presets_Controller extends Controller {
 	 * @return WP_Error|null A WP_Error when a written preset sets an unbound property, null otherwise.
 	 */
 	private function guard_surface( array $candidate, array $block_node, string $block ): ?WP_Error {
-		$set = $this->registry->for_block( $block );
+		$bindings = $this->registry->for_block( $block );
 
-		if ( $set === null ) {
+		if ( $bindings === null ) {
 			return null;
 		}
 
@@ -1071,7 +1071,7 @@ final class Presets_Controller extends Controller {
 
 			$preset = isset( $effective[ $slug ] ) && is_array( $effective[ $slug ] ) ? $effective[ $slug ] : [];
 			$tokens = isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
-			$report = $set->consistency( array_keys( $tokens ) );
+			$report = $bindings->consistency( array_keys( $tokens ) );
 
 			if ( $report['unbound'] !== [] ) {
 				return new WP_Error(
@@ -1219,7 +1219,7 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
-	 * Build a partial overrides document carrying only the given preset node for one block's set.
+	 * Build a partial overrides document carrying only the given preset node for one block's preset bindings.
 	 *
 	 * @since TBD
 	 *
@@ -1412,7 +1412,7 @@ final class Presets_Controller extends Controller {
 	private function slug( WP_REST_Request $request ): string {
 		$library = Cast::to_string( $request->get_param( self::LIBRARY_PARAM ) );
 
-		if ( $library !== '' && $this->is_known_set( $library ) ) {
+		if ( $library !== '' && $this->is_known_library( $library ) ) {
 			return $library;
 		}
 
@@ -1429,7 +1429,7 @@ final class Presets_Controller extends Controller {
 	 *
 	 * @return bool
 	 */
-	private function is_known_set( string $slug ): bool {
+	private function is_known_library( string $slug ): bool {
 		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 

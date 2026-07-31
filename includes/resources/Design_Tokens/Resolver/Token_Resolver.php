@@ -47,7 +47,7 @@ final class Token_Resolver {
 	private Css_Renderer $renderer;
 
 	/**
-	 * Reads the set's effective color palettes, so the resolver can re-tint the color tokens with the set's
+	 * Reads the library's effective color palettes, so the resolver can re-tint the color tokens with the library's
 	 * `$current` palette before alias flattening.
 	 *
 	 * @since TBD
@@ -93,7 +93,7 @@ final class Token_Resolver {
 	 * @param Token_Store        $store     The token library store.
 	 * @param Effective_Document $effective Builds the baseline-merged effective document.
 	 * @param Css_Renderer       $renderer  Renders a flattened value to a CSS-ready string.
-	 * @param Effective_Palettes $palettes  Reads the set's effective color palettes for the `:root` overlay.
+	 * @param Effective_Palettes $palettes  Reads the library's effective color palettes for the `:root` overlay.
 	 * @param Mutator            $mutator   The pure structural setter for the palette overlay.
 	 */
 	public function __construct(
@@ -192,7 +192,7 @@ final class Token_Resolver {
 	 * by_id / by_var maps have already dropped. Memoised per request on the store version like resolve(), so
 	 * the stored document is decoded and merged once rather than rebuilt by every caller.
 	 *
-	 * The set's `$current` color palette is overlaid onto the color token leaves here, before the resolved
+	 * The library's `$current` color palette is overlaid onto the color token leaves here, before the resolved
 	 * maps flatten aliases — so every semantic color that aliases a re-tinted primitive follows the palette
 	 * for free, and switching the palette (writing `$current`) re-tints without touching the primitives.
 	 *
@@ -222,7 +222,7 @@ final class Token_Resolver {
 	}
 
 	/**
-	 * Resolve the active set's tokens as if a SPECIFIC palette were current, rather than the set's stored
+	 * Resolve the active library's tokens as if a SPECIFIC palette were current, rather than the library's stored
 	 * `$current`. The per-block palette switch layer emits each palette's fully-resolved color graph so a
 	 * `[data-kb-palette="<id>"]` override re-skins its subtree — semantic colors and shadow composites
 	 * included, not just the primitives it re-tints. Memoized per request and cached on the store version
@@ -230,7 +230,7 @@ final class Token_Resolver {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug       The token set slug to resolve.
+	 * @param string $slug       The token library slug to resolve.
 	 * @param string $palette_id The palette whose colors the graph resolves against.
 	 *
 	 * @return Resolved_Tokens

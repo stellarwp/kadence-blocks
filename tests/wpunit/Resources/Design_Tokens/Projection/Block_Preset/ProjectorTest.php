@@ -17,7 +17,7 @@ use Tests\Support\Classes\TestCase;
 /**
  * Exercises the block-preset projector against a flat preset collection — the no-picker "default preset"
  * case the projector serves. A controllable fixture baseline supplies a single `$default` preset of literal
- * values, and a synthetic binding set supplies the `block_attr` bindings; together they prove the
+ * values, and synthetic preset bindings supply the `block_attr` bindings; together they prove the
  * property -> attribute mapping and the overlay semantics.
  */
 final class ProjectorTest extends TestCase {
@@ -60,7 +60,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {
-		$defaults = $this->projector( $this->button_set() )->add_preset_defaults( [], self::BUTTON );
+		$defaults = $this->projector( $this->button_bindings() )->add_preset_defaults( [], self::BUTTON );
 
 		// Button's $default is "primary": button-bg -> #3633e1, button-text -> #ffffff.
 		$this->assertSame( '#3633e1', $defaults['background'] );
@@ -71,7 +71,7 @@ final class ProjectorTest extends TestCase {
 	}
 
 	public function testThePresetWinsOverBlockJsonDefaultsButLeavesOthersIntact(): void {
-		$defaults = $this->projector( $this->button_set() )->add_preset_defaults(
+		$defaults = $this->projector( $this->button_bindings() )->add_preset_defaults(
 			[
 				'padding'    => '10px',          // not bound by the preset: must survive untouched.
 				'background' => 'rebeccapurple', // bound to button-bg: the preset must overwrite it.
@@ -90,8 +90,8 @@ final class ProjectorTest extends TestCase {
 
 	public function testItIsANoopWhenProjectionIsFailClosed(): void {
 		// The baseline guard deactivates projection on a broken token library; the projector must then fall
-		// back to KB's own defaults even for a block that does have a binding set.
-		$registry = $this->button_set();
+		// back to KB's own defaults even for a block that does have preset bindings.
+		$registry = $this->button_bindings();
 		$registry->deactivate();
 
 		$defaults = $this->projector( $registry )->add_preset_defaults( [ 'padding' => '10px' ], self::BUTTON );
@@ -99,8 +99,8 @@ final class ProjectorTest extends TestCase {
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
 	}
 
-	public function testItIsANoopForABlockWithNoBindingSet(): void {
-		// An empty registry knows no binding set for the block.
+	public function testItIsANoopForABlockWithNoPresetBindings(): void {
+		// An empty registry knows no preset bindings for the block.
 		$defaults = $this->projector( new Token_Registry() )->add_preset_defaults( [ 'padding' => '10px' ], self::BUTTON );
 
 		$this->assertSame( [ 'padding' => '10px' ], $defaults );
@@ -140,10 +140,10 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * A registry holding a Button binding set whose bindings declare the `block_attr` targets the shipped
+	 * A registry holding a Button's preset bindings that declare the `block_attr` targets the shipped
 	 * declarations omit until SOFT-3406.
 	 */
-	private function button_set(): Token_Registry {
+	private function button_bindings(): Token_Registry {
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings(
 			[

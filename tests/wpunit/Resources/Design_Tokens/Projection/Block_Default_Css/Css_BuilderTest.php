@@ -106,7 +106,7 @@ final class Css_BuilderTest extends TestCase {
 	/**
 	 * The legacy `kadence/icon` container (the pre-3.0 `icons[]` array shape) has no top-level
 	 * `color`/`size` attribute to bind, so none of Phases 1-3's wiring — all of which keys off the
-	 * `kadence/single-icon` child block — ever registers a binding set for `kadence/icon` and the builder
+	 * `kadence/single-icon` child block — ever registers preset bindings for `kadence/icon` and the builder
 	 * emits no rule scoped to it, confirming the legacy shape stays unaffected after this ticket's changes.
 	 *
 	 * @return void
@@ -298,7 +298,7 @@ final class Css_BuilderTest extends TestCase {
 	/**
 	 * Build the builder with a given registry and the real (baseline-backed) preset resolver.
 	 *
-	 * @param Token_Registry $registry The registry whose binding sets the builder reads.
+	 * @param Token_Registry $registry The registry whose preset bindings the builder reads.
 	 *
 	 * @return Css_Builder
 	 */
@@ -307,7 +307,7 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A registry holding the media-radius token and the Image binding set binding borderRadius to it via a
+	 * A registry holding the media-radius token and the Image preset bindings binding borderRadius to it via a
 	 * css_prop target, so the builder emits the block-default radius rule.
 	 *
 	 * @return Token_Registry

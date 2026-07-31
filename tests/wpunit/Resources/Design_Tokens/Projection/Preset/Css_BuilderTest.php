@@ -11,10 +11,10 @@ use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Exercises the selectable-variant CSS builder against the real shipped Button variant set, so these
+ * Exercises the selectable-preset CSS builder against the real shipped Button preset bindings, so these
  * assertions also guard the Button wiring: the button-specific --global-palette-btn-* slot retargeting, the
- * canonical variant-var definitions for the active set, and the class-less $default rule. Only the active
- * set is emitted — no per-set namespaced vars, no alias layer, no client-side switch selector.
+ * canonical preset-var definitions for the active library, and the class-less $default rule. Only the active
+ * library is emitted — no per-library namespaced vars, no alias layer, no client-side switch selector.
  */
 final class Css_BuilderTest extends TestCase {
 
@@ -53,22 +53,22 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Each variant's value lives as a canonical token var that preserves the alias indirection
-	 * (var(--kb-token--<semantic>)), so a token edit flows through the chain live and the variant follows the
-	 * active set.
+	 * Each preset's value lives as a canonical token var that preserves the alias indirection
+	 * (var(--kb-token--<semantic>)), so a token edit flows through the chain live and the preset follows the
+	 * active library.
 	 *
 	 * @return void
 	 */
-	public function testItDefinesTheVariantVarsCanonically(): void {
+	public function testItDefinesThePresetVarsCanonically(): void {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
-		$this->assertStringContainsString( '--kb-token--variant--kadence-singlebtn--secondary--button-bg:var(--kb-token--semantic--color--button-secondary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);', $css );
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--secondary--button-bg:var(--kb-token--semantic--color--button-secondary-bg);', $css );
 	}
 
 	/**
-	 * The collapsed builder emits no per-set namespaced `--kb-token--<set>--variant--*` vars and no
-	 * `[data-kb-token-set]` switch selectors — only the active set's canonical variant vars and scoped rules.
+	 * The collapsed builder emits no per-library namespaced `--kb-token--<library>--preset--*` vars and no
+	 * `[data-kb-token-set]` switch selectors — only the active library's canonical preset vars and scoped rules.
 	 *
 	 * @return void
 	 */
@@ -80,21 +80,21 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * A named variant retargets the button's own --global-palette-btn-* slots (the vars the button render
-	 * path consumes), not the numbered palette, at the canonical variant var.
+	 * A named preset retargets the button's own --global-palette-btn-* slots (the vars the button render
+	 * path consumes), not the numbered palette, at the canonical preset var.
 	 *
 	 * @return void
 	 */
-	public function testItRetargetsButtonSlotsForANamedVariant(): void {
+	public function testItRetargetsButtonSlotsForANamedPreset(): void {
 		$css = $this->builder( $this->registry )->css( 'default' );
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn.kb-preset--secondary{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--secondary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--secondary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);}',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--secondary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--secondary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);}',
 			$css
 		);
 	}
@@ -110,19 +110,19 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString(
 			'.wp-block-kadence-singlebtn{'
-				. '--global-palette-btn-bg:var(--kb-token--variant--kadence-singlebtn--primary--button-bg);'
-				. '--global-palette-btn:var(--kb-token--variant--kadence-singlebtn--primary--button-text);'
-				. '--global-palette-btn-bg-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-bg-hover);'
-				. '--global-palette-btn-hover:var(--kb-token--variant--kadence-singlebtn--primary--button-text-hover);'
-				. '--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--primary--button-radius);}',
+				. '--global-palette-btn-bg:var(--kb-token--preset--kadence-singlebtn--primary--button-bg);'
+				. '--global-palette-btn:var(--kb-token--preset--kadence-singlebtn--primary--button-text);'
+				. '--global-palette-btn-bg-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-bg-hover);'
+				. '--global-palette-btn-hover:var(--kb-token--preset--kadence-singlebtn--primary--button-text-hover);'
+				. '--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--primary--button-radius);}',
 			$css
 		);
 	}
 
 	/**
-	 * button-radius is bound with a css_var (no palette slot), so a selected variant sets the --kb-btn-radius
-	 * variable the button's border-radius reads — via the scoped rule and a per-variant canonical var — so the
-	 * radius can vary per variant rather than being dropped.
+	 * button-radius is bound with a css_var (no palette slot), so a selected preset sets the --kb-btn-radius
+	 * variable the button's border-radius reads — via the scoped rule and a per-preset canonical var — so the
+	 * radius can vary per preset rather than being dropped.
 	 *
 	 * @return void
 	 */
@@ -131,38 +131,38 @@ final class Css_BuilderTest extends TestCase {
 
 		// The scoped rule points --kb-btn-radius at the per-preset var.
 		$this->assertStringContainsString(
-			'--kb-btn-radius:var(--kb-token--variant--kadence-singlebtn--secondary--button-radius);',
+			'--kb-btn-radius:var(--kb-token--preset--kadence-singlebtn--secondary--button-radius);',
 			$css
 		);
-		// The canonical block defines that per-variant var.
+		// The canonical block defines that per-preset var.
 		$this->assertStringContainsString(
-			'--kb-token--variant--kadence-singlebtn--secondary--button-radius:',
+			'--kb-token--preset--kadence-singlebtn--secondary--button-radius:',
 			$css
 		);
 	}
 
 	/**
-	 * A variant that exists only in a NON-active set (a user-created variant on the "dark" set) is not emitted
-	 * while "default" is active: only the active set's variants reach output.
+	 * A preset that exists only in a NON-active library (a user-created preset on the "dark" library) is not emitted
+	 * while "default" is active: only the active library's presets reach output.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsOnlyTheActiveSetsVariants(): void {
+	public function testItEmitsOnlyTheActiveLibraryPresets(): void {
 		$this->seedDarkPreset();
 
-		// Default is active, so the dark-only "midnight" variant contributes nothing.
+		// Default is active, so the dark-only "midnight" preset contributes nothing.
 		$css = $this->builder( $this->registry )->css( 'default' );
 
-		$this->assertStringNotContainsString( '.kb-variant--midnight{', $css );
-		$this->assertStringNotContainsString( '--kb-token--variant--kadence-singlebtn--midnight--', $css );
+		$this->assertStringNotContainsString( '.kb-preset--midnight{', $css );
+		$this->assertStringNotContainsString( '--kb-token--preset--kadence-singlebtn--midnight--', $css );
 	}
 
 	/**
-	 * With no variant sets registered, the builder emits nothing.
+	 * With no preset bindings registered, the builder emits nothing.
 	 *
 	 * @return void
 	 */
-	public function testItIsEmptyWhenNoVariantSetsAreRegistered(): void {
+	public function testItIsEmptyWhenNoPresetBindingsAreRegistered(): void {
 		$this->assertSame( '', $this->builder( new Token_Registry() )->css( 'default' ) );
 	}
 
@@ -196,8 +196,8 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * Persist a user-created "midnight" button preset into the "dark" token set only, so it is absent from
-	 * the active "default" set.
+	 * Persist a user-created "midnight" button preset into the "dark" token library only, so it is absent from
+	 * the active "default" library.
 	 *
 	 * @return void
 	 */

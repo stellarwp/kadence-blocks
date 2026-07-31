@@ -31,7 +31,7 @@ final class ExtensionsTest extends TestCase {
 	}
 
 	/**
-	 * The color-palettes path is the variants path with the palettes section swapped in, from the document
+	 * The color-palettes path is the presets path with the palettes section swapped in, from the document
 	 * root through the module namespace.
 	 *
 	 * @return void

@@ -25,7 +25,7 @@ use InvalidArgumentException;
  * one tokens use, with three additions — `block_attr`, `css_prop`, and `css_selector`, which tokens
  * never carry.
  *
- * A binding may also declare `control_attr`, editor-only metadata kept out of the projection set — see
+ * A binding may also declare `control_attr`, editor-only metadata kept out of the projected bindings — see
  * {@see Binding::control_attr()}.
  *
  * @since TBD
