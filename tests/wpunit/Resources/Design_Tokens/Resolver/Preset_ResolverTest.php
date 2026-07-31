@@ -425,7 +425,7 @@ final class Preset_ResolverTest extends TestCase {
 		);
 
 		$this->assertSame(
-			[ 'mobile' => [ 'button-radius' => '0.5rem' ] ],
+			[ 'mobile' => [ 'button-radius' => '0.1875rem' ] ],
 			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
 		);
 	}

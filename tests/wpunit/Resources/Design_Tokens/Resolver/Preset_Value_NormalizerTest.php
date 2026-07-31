@@ -137,10 +137,10 @@ final class Preset_Value_NormalizerTest extends TestCase {
 			'$value'      => '8px',
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					// 0.5rem is the control radius semantic's resolved value; 3px matches nothing.
+					// 0.1875rem is the control radius semantic's resolved value; 9px matches nothing.
 					'responsive' => [
-						'tablet' => '0.5rem',
-						'mobile' => '3px',
+						'tablet' => '0.1875rem',
+						'mobile' => '9px',
 					],
 				],
 			],
@@ -152,11 +152,11 @@ final class Preset_Value_NormalizerTest extends TestCase {
 		$this->assertSame( '8px', $result['$value'], 'An unmatched base literal should stay a literal.' );
 		$this->assertTrue( Alias::is_alias( $responsive['tablet'] ), 'A matched override should become an alias.' );
 		$this->assertSame(
-			'0.5rem',
+			'0.1875rem',
 			$this->resolver->resolve( self::SET )->value( Alias::path_of( $responsive['tablet'] ) ),
 			'The chosen alias should resolve back to the captured value.'
 		);
-		$this->assertSame( '3px', $responsive['mobile'], 'An unmatched override should stay a literal.' );
+		$this->assertSame( '9px', $responsive['mobile'], 'An unmatched override should stay a literal.' );
 	}
 
 	/**

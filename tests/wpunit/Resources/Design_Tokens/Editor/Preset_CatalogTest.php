@@ -173,7 +173,7 @@ final class Preset_CatalogTest extends TestCase {
 
 		$this->assertSame( '8px', $button['values']['hero']['button-radius'] );
 		$this->assertSame(
-			[ 'mobile' => [ 'button-radius' => '0.5rem' ] ],
+			[ 'mobile' => [ 'button-radius' => '0.1875rem' ] ],
 			$button['responsive']['hero']
 		);
 	}
