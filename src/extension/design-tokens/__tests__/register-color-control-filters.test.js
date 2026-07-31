@@ -37,9 +37,14 @@ const allColors = [custom, token1, token2, theme];
 
 describe('registerColorControlFilters', () => {
 	beforeEach(() => {
-		// The Localizer attaches this global only when the design-tokens registry is active; the listener
-		// gates on it, so simulate an active registry.
-		window.kadenceDesignTokensPalettes = { active: 'default', current: 'default', palettes: [] };
+		// The Localizer attaches this global (with the slot -> alias map) only when the design-tokens
+		// registry is active; the listener reads `slots`, so simulate an active registry.
+		window.kadenceDesignTokensPalettes = {
+			active: 'default',
+			current: 'default',
+			palettes: [],
+			slots: { palette1: ALIAS1, palette2: ALIAS2 },
+		};
 		registerColorControlFilters();
 	});
 
