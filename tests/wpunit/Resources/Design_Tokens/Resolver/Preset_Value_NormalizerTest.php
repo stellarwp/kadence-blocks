@@ -96,8 +96,8 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	 * @return void
 	 */
 	public function testItAliasesEachSlotOfAPerCornerValue(): void {
-		// 0.5rem is the resolved value of the control radius semantic; 8px matches nothing.
-		$result = $this->normalizer->normalize( [ 'button-radius' => [ '0.5rem', '8px', '0.5rem', '8px' ] ], self::SET );
+		// 0.1875rem is the resolved value of the control radius semantic; 8px matches nothing.
+		$result = $this->normalizer->normalize( [ 'button-radius' => [ '0.1875rem', '8px', '0.1875rem', '8px' ] ], self::SET );
 
 		$this->assertIsArray( $result['button-radius'] );
 		$this->assertTrue( Alias::is_alias( $result['button-radius'][0] ), 'A matched slot should become an alias.' );
@@ -105,7 +105,7 @@ final class Preset_Value_NormalizerTest extends TestCase {
 		$this->assertTrue( Alias::is_alias( $result['button-radius'][2] ) );
 		$this->assertSame( '8px', $result['button-radius'][3] );
 		$this->assertSame(
-			'0.5rem',
+			'0.1875rem',
 			$this->resolver->resolve( self::SET )->value( Alias::path_of( $result['button-radius'][0] ) ),
 			'The chosen alias should resolve back to the captured value.'
 		);
