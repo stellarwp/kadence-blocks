@@ -38,14 +38,14 @@ if ( ! function_exists( 'kadence_blocks_register_design_preset_bindings' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Preset_Bindings::from_array().
+	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $declaration See Preset_Bindings::from_array().
 	 *
 	 * @return void
 	 */
-	function kadence_blocks_register_design_preset_bindings( array $set ): void {
+	function kadence_blocks_register_design_preset_bindings( array $declaration ): void {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
-		$registry->register_preset_bindings( $set );
+		$registry->register_preset_bindings( $declaration );
 	}
 }
 
@@ -98,7 +98,7 @@ if ( ! function_exists( 'kadence_blocks_apply_design_foundation_preset' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $group  The preset group key, e.g. "typeScale" or "colorPalette".
+	 * @param string $group  The preset group key, e.g. "typeScale".
 	 * @param string $choice The preset slug within the group, e.g. "goldenRatio".
 	 *
 	 * @return void

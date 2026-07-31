@@ -420,7 +420,7 @@ final class Documents_Controller extends Controller {
 	public function get_item( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		if ( ! $this->is_known_set( $slug ) ) {
+		if ( ! $this->is_known_library( $slug ) ) {
 			return $this->not_found( $slug );
 		}
 
@@ -448,7 +448,7 @@ final class Documents_Controller extends Controller {
 	public function get_resolved( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		if ( ! $this->is_known_set( $slug ) ) {
+		if ( ! $this->is_known_library( $slug ) ) {
 			return $this->not_found( $slug );
 		}
 
@@ -582,7 +582,7 @@ final class Documents_Controller extends Controller {
 	public function delete_item( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
 
-		if ( ! $this->is_known_set( $slug ) ) {
+		if ( ! $this->is_known_library( $slug ) ) {
 			return $this->not_found( $slug );
 		}
 
@@ -1041,7 +1041,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @return bool
 	 */
-	private function is_known_set( string $slug ): bool {
+	private function is_known_library( string $slug ): bool {
 		return $slug === Token_Store::default_slug() || $this->store->exists( $slug );
 	}
 

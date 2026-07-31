@@ -115,7 +115,7 @@ final class Token_History_Store extends Query {
 	 *
 	 * @return array<int,array<string,mixed>> The snapshot rows, newest first.
 	 */
-	public function for_set( string $slug = '', int $limit = 50, int $offset = 0 ): array {
+	public function for_library( string $slug = '', int $limit = 50, int $offset = 0 ): array {
 		$rows = $this->qb()
 					->where( 'slug', $slug === '' ? self::default_slug() : $slug )
 					->orderBy( 'id', 'DESC' )

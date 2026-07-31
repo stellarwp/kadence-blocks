@@ -48,12 +48,12 @@ final class Token_Registry_PresetsTest extends TestCase {
 		return $registry;
 	}
 
-	public function testForBlockReturnsTheRegisteredSet(): void {
-		$set = $this->registry()->for_block( 'kadence/advancedbtn' );
+	public function testForBlockReturnsTheRegisteredPresetBindings(): void {
+		$bindings = $this->registry()->for_block( 'kadence/advancedbtn' );
 
-		$this->assertInstanceOf( Preset_Bindings::class, $set );
-		$this->assertSame( 'kadence/advancedbtn', $set->block );
-		$this->assertNotNull( $set->binding( 'button-bg' ) );
+		$this->assertInstanceOf( Preset_Bindings::class, $bindings );
+		$this->assertSame( 'kadence/advancedbtn', $bindings->block );
+		$this->assertNotNull( $bindings->binding( 'button-bg' ) );
 	}
 
 	public function testForBlockReturnsNullForAnUnregisteredBlock(): void {

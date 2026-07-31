@@ -4,7 +4,34 @@ import {
 	userPrimitiveReferencesPath,
 	userPrimitivePath,
 	userPrimitiveRenamePath,
+	palettesPath,
+	palettePath,
+	paletteCurrentPath,
 } from '../api/paths';
+
+describe('palette paths', () => {
+	it('builds the palettes collection path with the library query', () => {
+		expect(palettesPath('kb-design-tokens/v1', 'default')).toBe('/kb-design-tokens/v1/palettes?library=default');
+	});
+
+	it('builds a single palette path with the id and library', () => {
+		expect(palettePath('kb-design-tokens/v1', 'dark', 'default')).toBe(
+			'/kb-design-tokens/v1/palettes/dark?library=default'
+		);
+	});
+
+	it('builds the current-palette pointer path', () => {
+		expect(paletteCurrentPath('kb-design-tokens/v1', 'default')).toBe(
+			'/kb-design-tokens/v1/palettes/current?library=default'
+		);
+	});
+
+	it('URL-encodes the palette id and library', () => {
+		expect(palettePath('kb-design-tokens/v1', 'my id', 'my set')).toBe(
+			'/kb-design-tokens/v1/palettes/my%20id?library=my%20set'
+		);
+	});
+});
 
 describe('userPrimitivesPath', () => {
 	it('builds the collection path for a slug', () => {

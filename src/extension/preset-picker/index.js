@@ -3,9 +3,9 @@
  *
  * The catalog is printed by the server-side editor localizer to `window.kadenceDesignTokensPresets`,
  * keyed by token library then by block:
- * `{ active, sets: { <slug>: { <block>: { default, presets, properties, label } } } }`.
- * Reads take the token library a block is on (its `kbTokenSet`, or the active library). A picker-driven
- * block declares one binding set; its selection lives in the block's `kbPreset` string attribute. Both
+ * `{ active, libraries: { <slug>: { <block>: { default, presets, properties, label } } } }`.
+ * Reads take the active token library. A picker-driven block declares one binding set; its selection lives
+ * in the block's `kbPreset` string attribute. Both
  * the generic inspector picker (src/early-filters.js) and a block that renders the picker inline in its own
  * Style tab (e.g. kadence/singlebtn) use this so the control stays identical wherever it surfaces.
  */
@@ -17,7 +17,7 @@ import { __ } from '@wordpress/i18n';
  * The whole design-token preset catalog the editor localizer prints, or an empty object when the token
  * registry is inactive (no presets offered).
  *
- * @return {Object} The catalog ({ active, sets }).
+ * @return {Object} The catalog ({ active, libraries }).
  */
 function presetCatalog() {
 	return get(window, 'kadenceDesignTokensPresets', {}) || {};
@@ -39,7 +39,7 @@ export function activeLibrary() {
  * @return {Object} The per-block catalog for the library (block => entry).
  */
 function libraryBlocks(library) {
-	return get(presetCatalog(), ['sets', library || activeLibrary()], {}) || {};
+	return get(presetCatalog(), ['libraries', library || activeLibrary()], {}) || {};
 }
 
 /**

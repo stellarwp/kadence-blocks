@@ -14,6 +14,11 @@ export const SECTION_OVERVIEW = 'overview';
 export const SECTION_CUSTOM_COLORS = 'custom-colors';
 
 /**
+ * Section id for the color-palettes page.
+ */
+export const SECTION_PALETTES = 'palettes';
+
+/**
  * Group label assigned to user-created primitives in the JS layer.
  * Must match the label used in groupSectionId() below.
  */

@@ -13,7 +13,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Exercises the editor preset catalog against the real shipped baseline, so these assertions also
- * guard the Button binding set the picker offers.
+ * guard the Button preset bindings the picker offers.
  */
 final class Preset_CatalogTest extends TestCase {
 
@@ -40,21 +40,21 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * The catalog reports the active set and, per set, the shipped Button's default and its named presets as
+	 * The catalog reports the active library and, per library, the shipped Button's default and its named presets as
 	 * { slug, label, userCreated }, plus the picker control label and the controllable surface.
 	 *
 	 * @return void
 	 */
-	public function testItBuildsTheButtonCatalogForTheDefaultSet(): void {
+	public function testItBuildsTheButtonCatalogForTheDefaultLibrary(): void {
 		$catalog = $this->catalog->all();
 
 		$this->assertSame( Token_Store::default_slug(), $catalog['active'] );
-		$this->assertArrayHasKey( self::BUTTON, $catalog['sets'][ Token_Store::default_slug() ] );
+		$this->assertArrayHasKey( self::BUTTON, $catalog['libraries'][ Token_Store::default_slug() ] );
 
-		$button = $catalog['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+		$button = $catalog['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$this->assertSame( 'primary', $button['default'] );
-		// The picker's control label, declared on the binding set in declarations.php.
+		// The picker's control label, declared on the preset bindings in declarations.php.
 		$this->assertSame( 'Style', $button['label'] );
 		$this->assertSame(
 			[
@@ -80,7 +80,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItExposesTheControllableSurface(): void {
-		$properties = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
+		$properties = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['properties'];
 
 		$kinds = wp_list_pluck( $properties, 'kind', 'key' );
 
@@ -89,7 +89,7 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * A preset authored into a set is flagged userCreated, while the baseline presets are not.
+	 * A preset authored into a library is flagged userCreated, while the baseline presets are not.
 	 *
 	 * @return void
 	 */
@@ -99,7 +99,7 @@ final class Preset_CatalogTest extends TestCase {
 			. '"accent":{"label":"Accent","tokens":{"button-bg":"#ff0000"}}}}}}}'
 		);
 
-		$presets = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
+		$presets = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ]['presets'];
 		$flags   = wp_list_pluck( $presets, 'userCreated', 'slug' );
 
 		$this->assertTrue( $flags['accent'] );
@@ -112,7 +112,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSkipsABlockAbsentFromTheDocument(): void {
-		// A picker set (it declares a label) whose block has no presets in the baseline — the names() lookup
+		// Picker-driven preset bindings (they declare a label) whose block has no presets in the baseline — the names() lookup
 		// throws Unknown_Preset_Exception and the block is skipped rather than emitted empty.
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings(
@@ -130,7 +130,7 @@ final class Preset_CatalogTest extends TestCase {
 			$this->container->get( Effective_Presets::class )
 		) )->all();
 
-		$this->assertSame( [], $catalog['sets'][ Token_Store::default_slug() ] );
+		$this->assertSame( [], $catalog['libraries'][ Token_Store::default_slug() ] );
 	}
 
 	/**
@@ -140,7 +140,7 @@ final class Preset_CatalogTest extends TestCase {
 	 * @return void
 	 */
 	public function testItSurfacesControlAttrAndPerPresetValues(): void {
-		$button = $this->catalog->all()['sets'][ Token_Store::default_slug() ][ self::BUTTON ];
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
 
 		$by_key = [];
 		foreach ( $button['properties'] as $property ) {

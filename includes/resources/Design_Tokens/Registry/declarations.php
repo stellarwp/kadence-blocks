@@ -148,6 +148,70 @@ foreach ( $button_color_labels as $suffix => $label ) {
 	];
 }
 
+/**
+ * Notice / feedback color primitives (success/warning/error/info). Registered so Css_Var emits each
+ * --kb-token--primitive--color--notice--* variable and the color palette's "Notices and Feedback" group
+ * can name them. Like the semantic colors, they claim NO Kadence palette slot — they deliver at the block
+ * level and never re-skin the global palette.
+ */
+$notice_color_labels = [
+	'success' => __( 'Success', 'kadence-blocks' ),
+	'warning' => __( 'Warning', 'kadence-blocks' ),
+	'error'   => __( 'Error', 'kadence-blocks' ),
+	'info'    => __( 'Info', 'kadence-blocks' ),
+];
+
+$notice_color_tokens = [];
+foreach ( $notice_color_labels as $suffix => $label ) {
+	$notice_color_tokens[] = [
+		'id'    => 'primitive.color.notice.' . $suffix,
+		'type'  => 'color',
+		'label' => $label,
+		'group' => __( 'Notices', 'kadence-blocks' ),
+	];
+}
+
+/**
+ * Brand + neutral color primitives a color palette exposes as swatches but that claim NO Kadence palette
+ * slot: the accent brand color, the button resting/hover colors (the button reads these through its
+ * semantics), and the two lighter neutral ramp steps (border / subtle surface). Like the semantic and
+ * notice colors they deliver at the block level and never re-skin the --global-paletteN palette. Registered
+ * so the palette write guard accepts an edit to them — the palette groups name these tokens, and a full-field
+ * palette save submits every swatch it shows, so an unregistered one would reject the whole write.
+ */
+$palette_delivery_color_tokens = [
+	[
+		'id'    => 'primitive.color.brand.accent',
+		'type'  => 'color',
+		'label' => __( 'Brand Accent', 'kadence-blocks' ),
+		'group' => __( 'Brand', 'kadence-blocks' ),
+	],
+	[
+		'id'    => 'primitive.color.brand.button',
+		'type'  => 'color',
+		'label' => __( 'Brand Button', 'kadence-blocks' ),
+		'group' => __( 'Brand', 'kadence-blocks' ),
+	],
+	[
+		'id'    => 'primitive.color.brand.button-hover',
+		'type'  => 'color',
+		'label' => __( 'Brand Button (Hover)', 'kadence-blocks' ),
+		'group' => __( 'Brand', 'kadence-blocks' ),
+	],
+	[
+		'id'    => 'primitive.color.neutral.300',
+		'type'  => 'color',
+		'label' => __( 'Neutral 300', 'kadence-blocks' ),
+		'group' => __( 'Palette', 'kadence-blocks' ),
+	],
+	[
+		'id'    => 'primitive.color.neutral.200',
+		'type'  => 'color',
+		'label' => __( 'Neutral 200', 'kadence-blocks' ),
+		'group' => __( 'Palette', 'kadence-blocks' ),
+	],
+];
+
 return [
 	'tokens'          => array_merge(
 		[
@@ -261,6 +325,8 @@ return [
 			],
 		],
 		$button_color_tokens,
+		$notice_color_tokens,
+		$palette_delivery_color_tokens,
 		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens,

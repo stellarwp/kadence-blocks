@@ -69,7 +69,7 @@ final class Selector {
 	 *
 	 * @since TBD
 	 *
-	 * @param string      $group  The preset group key, e.g. "typeScale" or "colorPalette".
+	 * @param string      $group  The preset group key, e.g. "typeScale".
 	 * @param string      $choice The preset slug within the group, e.g. "goldenRatio".
 	 * @param string|null $slug   The token library to write to. Defaults to the single v1 "default" library.
 	 *

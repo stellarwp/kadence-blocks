@@ -83,7 +83,7 @@ final class Localizer {
 
 	/**
 	 * The active-library pointer — the same slug the registry's user primitives and every projector
-	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the set that
+	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the library that
 	 * is actually live rather than always the default one.
 	 *
 	 * @since TBD

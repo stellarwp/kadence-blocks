@@ -89,7 +89,7 @@ const POOL = {
  */
 const PRESETS = {
 	active: 'default',
-	sets: {
+	libraries: {
 		default: {
 			'kadence/singlebtn': {
 				properties: [
@@ -107,7 +107,7 @@ const PRESETS = {
  */
 const boundPresets = (token) => ({
 	active: 'default',
-	sets: {
+	libraries: {
 		default: {
 			'kadence/singlebtn': {
 				properties: [{ key: 'button-radius', kind: 'dimension', token, control_attr: 'borderRadius' }],

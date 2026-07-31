@@ -71,19 +71,6 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * A namespace argument namespaces the var() target to that library, so a per-library preset var chains
-	 * to the library's namespaced token and the chain stays inside the library (the basis for client-side
-	 * palette switching of presets).
-	 *
-	 * @return void
-	 */
-	public function testResolveNamespacesTheVarTarget(): void {
-		$projected = $this->resolver->resolve( self::BUTTON, 'primary', 'dark', 'dark' );
-
-		$this->assertSame( 'var(--kb-token--dark--semantic--color--button-primary-bg)', $projected['button-bg'] );
-		$this->assertSame( 'var(--kb-token--dark--semantic--radius--control)', $projected['button-radius'] );
-	}
-
 	/**
 	 * resolve() and resolve_literal() cover exactly the same properties — only the value form differs.
 	 *
@@ -141,15 +128,15 @@ final class Preset_ResolverTest extends TestCase {
 		);
 	}
 
-	public function testTheShippedButtonSetIsConsistent(): void {
+	public function testTheShippedButtonPresetBindingsAreConsistent(): void {
 		/** @var Token_Registry $registry */
 		$registry = $this->container->get( Token_Registry::class );
-		$set      = $registry->for_block( self::BUTTON );
+		$bindings = $registry->for_block( self::BUTTON );
 
-		$this->assertNotNull( $set, 'The Button binding set should be registered at boot.' );
+		$this->assertNotNull( $bindings, 'The Button preset bindings should be registered at boot.' );
 
 		// Every property the presets value has a binding.
-		$report = $set->consistency( $this->resolver->value_properties( self::BUTTON ) );
+		$report = $bindings->consistency( $this->resolver->value_properties( self::BUTTON ) );
 
 		$this->assertSame( [], $report['unbound'], 'Valued properties with no binding.' );
 
@@ -158,7 +145,7 @@ final class Preset_ResolverTest extends TestCase {
 		 * the preset token map, so the binding carries a kadence_slot projection rather than a token ref.
 		 * Assert the slot actually lands (an empty result would mean the binding silently projected nothing).
 		 */
-		$binding = $set->binding( 'button-bg' );
+		$binding = $bindings->binding( 'button-bg' );
 		$this->assertNotNull( $binding, 'button-bg should be bound.' );
 		$this->assertSame(
 			'palette-btn-bg',
@@ -168,7 +155,7 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	 * The Advanced Text (heading) binding set is registered at boot and its $default resolves the full
+	 * The Advanced Text (heading) preset bindings are registered at boot and their $default resolves the full
 	 * 13-property core-design and typography surface to the shipped baseline's literal values.
 	 *
 	 * @return void
@@ -179,7 +166,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		$this->assertNotNull(
 			$registry->for_block( 'kadence/advancedheading' ),
-			'The Advanced Text binding set should be registered at boot.'
+			'The Advanced Text preset bindings should be registered at boot.'
 		);
 
 		$this->assertSame(
