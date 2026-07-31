@@ -9,6 +9,7 @@
 import { get } from 'lodash';
 import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
 import { normalizeColor, normalizeDimension, normalizeText, isEmptyValue } from '../token-indicators/normalize';
+import { isTokenAlias } from '../design-tokens/alias';
 
 /**
  * Reduce a block attribute value to the literal a preset token stores, per kind: a color resolves to its
@@ -28,7 +29,18 @@ function attrToLiteral(kind, value, unit) {
 		// its first populated side — matching how the indicator's bound/overridden compare reads a dimension.
 		const dimension = normalizeDimension(value, unit);
 
-		return dimension.value === '' ? '' : `${dimension.value}${dimension.unit}`;
+		if (dimension.value === '') {
+			return '';
+		}
+
+		// A token alias is a whole-string `{dot.path}` reference — the preset stores it verbatim. Appending
+		// the unit would produce `{dot.path}px`, which the server rejects as `alias_malformed` because
+		// `Alias::looks_like_alias()` fires on a brace anywhere in the value.
+		if (isTokenAlias(dimension.value)) {
+			return dimension.value;
+		}
+
+		return `${dimension.value}${dimension.unit}`;
 	}
 
 	if (kind === 'color') {
