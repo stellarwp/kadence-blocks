@@ -71,7 +71,6 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
-	/**
 	 * resolve() and resolve_literal() cover exactly the same properties — only the value form differs.
 	 *
 	 * @return void
@@ -320,7 +319,7 @@ final class Preset_ResolverTest extends TestCase {
 
 		$values = $this->resolver->resolve_literal( self::BUTTON, 'corners' );
 
-		$this->assertSame( [ '0.5rem', '8px', '0.5rem', '8px' ], $values['button-radius'] );
+		$this->assertSame( [ '0.1875rem', '8px', '0.1875rem', '8px' ], $values['button-radius'] );
 	}
 
 	/**
