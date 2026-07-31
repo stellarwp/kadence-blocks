@@ -73,10 +73,12 @@ $font_size_primitive_tokens = array_map(
 // radius tokens hold the block-level css_var bindings, and the primitives are pick targets only.
 $radius_labels = [
 	'none' => __( 'None', 'kadence-blocks' ),
+	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
 	'sm'   => __( 'Small', 'kadence-blocks' ),
 	'md'   => __( 'Medium', 'kadence-blocks' ),
 	'lg'   => __( 'Large', 'kadence-blocks' ),
-	'full' => __( 'Round', 'kadence-blocks' ),
+	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'full' => __( 'Full', 'kadence-blocks' ),
 ];
 
 $radius_tokens = [];
@@ -228,8 +230,9 @@ return [
 				 * Control radius (buttons, inputs). Registered so Css_Var emits
 				 * --kb-token--semantic--radius--control; the button's own default border-radius rule references
 				 * that variable directly (the button is never empty, so the low-specificity block-default CSS
-				 * mechanism can't reach it). Resolves to the radius scale's "md" step, the design system's
-				 * control radius. A user's explicit radius still wins by specificity.
+				 * mechanism can't reach it). Resolves to the radius scale's "sm" step, which carries the
+				 * button's long-standing 3px radius, so an existing site that never set a radius renders
+				 * unchanged. A user's explicit radius still wins by specificity.
 				 */
 				'id'    => 'semantic.radius.control',
 				'type'  => 'dimension',

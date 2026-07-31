@@ -35,7 +35,7 @@ final class Preset_ResolverTest extends TestCase {
 		$this->assertSame( '#ffffff', $values['button-text'] );         // {semantic.color.button-secondary-text} -> neutral.0
 		$this->assertSame( '#2D3748', $values['button-bg-hover'] );     // {semantic.color.button-secondary-bg-hover} -> neutral.700
 		$this->assertSame( '#ffffff', $values['button-text-hover'] );   // {semantic.color.button-secondary-text-hover} -> neutral.0
-		$this->assertSame( '0.5rem', $values['button-radius'] );        // {semantic.radius.control} -> radius.md
+		$this->assertSame( '0.1875rem', $values['button-radius'] );     // {semantic.radius.control} -> radius.sm (the button's long-standing 3px)
 	}
 
 	public function testItFlattensMultiHopAliasesForThePrimaryPreset(): void {
