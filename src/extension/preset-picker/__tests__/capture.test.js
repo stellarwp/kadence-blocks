@@ -25,7 +25,16 @@ function seedCatalog() {
 					presets: [{ slug: 'primary', label: 'Primary' }],
 					properties: [
 						{ key: 'button-bg', kind: 'color', token: null, control_attr: 'background' },
-						{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+						{
+							key: 'button-radius',
+							kind: 'dimension',
+							token: null,
+							control_attr: 'borderRadius',
+							responsive_attrs: {
+								tablet: 'tabletBorderRadius',
+								mobile: 'mobileBorderRadius',
+							},
+						},
 					],
 					values: {
 						primary: { 'button-bg': '#111111', 'button-radius': '4px' },
@@ -155,6 +164,75 @@ describe('capturedTokens', () => {
 
 		// Nothing edited: the not-edited fallback must hand the slot list back unchanged.
 		expect(capturedTokens(BLOCK, SET, { kbPreset: 'primary' })['button-radius']).toEqual(slots);
+	});
+
+	it('captures a per-breakpoint override as a responsive envelope', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			mobileBorderRadius: ['2', '2', '2', '2'],
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual({
+			$value: '8px',
+			$extensions: { 'com.kadence.designTokens': { responsive: { mobile: '2px' } } },
+		});
+	});
+
+	it('captures per-corner values at a breakpoint', () => {
+		const alias = '{primitive.dimension.radius.md}';
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: [alias, '4', alias, '4'],
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual({
+			$value: '8px',
+			$extensions: {
+				'com.kadence.designTokens': { responsive: { tablet: [alias, '4px', alias, '4px'] } },
+			},
+		});
+	});
+
+	it('captures both breakpoints when both are set', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['4', '4', '4', '4'],
+			mobileBorderRadius: ['2', '2', '2', '2'],
+		};
+
+		expect(
+			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
+		).toEqual({ tablet: '4px', mobile: '2px' });
+	});
+
+	it('omits a breakpoint whose attribute is unset, so it inherits', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['', '', '', ''],
+			mobileBorderRadius: ['2', '2', '2', '2'],
+		};
+
+		expect(
+			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
+		).toEqual({ mobile: '2px' });
+	});
+
+	it('stays a bare value when no breakpoint is set', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe('8px');
 	});
 
 	it('uses the default preset when no preset is selected', () => {

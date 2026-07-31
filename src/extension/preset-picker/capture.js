@@ -81,6 +81,51 @@ function attrToLiteral(kind, value, unit, presetValue) {
 }
 
 /**
+ * Wrap a captured base value in the responsive envelope when the block carries per-breakpoint values for
+ * the property, otherwise return the base unchanged.
+ *
+ * The envelope is the same one a responsive token leaf uses — base under `$value`, overrides under the
+ * vendor extension — so each override is validated, resolved and projected by exactly the rules the base
+ * goes through. A breakpoint whose attribute is unset is omitted rather than frozen, so it keeps
+ * inheriting; a property with no breakpoint values stays a bare value, leaving every existing preset
+ * byte-identical.
+ *
+ * @param {*}      base        The captured base (desktop) value.
+ * @param {Object} property    The bound property, carrying `responsive_attrs`.
+ * @param {Object} attributes  The block's current attributes.
+ * @param {string} unit        The property's unit. A responsive measure control carries ONE unit across
+ *                             all three devices, so every breakpoint composes against the same one.
+ * @param {*}      presetValue The selected preset's value, used to fill an unset corner.
+ *
+ * @since TBD
+ *
+ * @return {*} The base value, or the responsive envelope wrapping it.
+ */
+function withResponsive(base, property, attributes, unit, presetValue) {
+	const responsive = {};
+
+	Object.entries(property.responsive_attrs || {}).forEach(([breakpoint, attr]) => {
+		const raw = get(attributes, attr, '');
+
+		if (isEmptyValue(property.kind, raw)) {
+			return;
+		}
+
+		const value = attrToLiteral(property.kind, raw, unit, presetValue);
+
+		if (value !== '') {
+			responsive[breakpoint] = value;
+		}
+	});
+
+	if (!Object.keys(responsive).length) {
+		return base;
+	}
+
+	return { $value: base, $extensions: { 'com.kadence.designTokens': { responsive } } };
+}
+
+/**
  * The block's current values across its preset surface, as a `{ propertyKey: literal }` token map: each
  * mapped control's edited value when it has one, else the selected preset's value. Feeds the "save as a
  * new preset" write so the new preset matches what the editor currently shows.
@@ -107,8 +152,9 @@ export function capturedTokens(blockName, library, attributes) {
 		// value that happens to equal the preset is captured all the same (no differs-from-preset compare).
 		const edited = attr && !isEmptyValue(property.kind, raw);
 		const presetValue = get(presetValues, property.key, '');
+		const base = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
-		tokens[property.key] = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
+		tokens[property.key] = withResponsive(base, property, attributes, unit, presetValue);
 
 		return tokens;
 	}, {});

@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry;
 
 use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 
 /**
  * One preset binding: how a single block property (e.g. "button-bg") reaches output when a preset is
@@ -111,6 +112,16 @@ final class Binding {
 	private const CONTROL_ATTR = 'control_attr';
 
 	/**
+	 * Declaration key naming the per-breakpoint block attributes an editor control writes, keyed by
+	 * breakpoint. Editor-only metadata, like CONTROL_ATTR.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const RESPONSIVE_ATTRS = 'responsive_attrs';
+
+	/**
 	 * The inline string targets and their validation: each, when present, must be a non-empty string.
 	 *
 	 * @since TBD
@@ -158,18 +169,30 @@ final class Binding {
 	public ?string $control_attr;
 
 	/**
+	 * The per-breakpoint block attributes this binding's editor control writes, keyed by breakpoint
+	 * ("tablet" => "tabletBorderRadius"). Empty when the binding declares none.
+	 *
 	 * @since TBD
 	 *
-	 * @param string               $property     The block property this binding drives.
-	 * @param string|null          $token        Referenced token id, or null when inline.
-	 * @param array<string, mixed> $projections  Inline projection targets, empty when a token reference.
-	 * @param string|null          $control_attr The editor control attribute, or null when none declared.
+	 * @var array<string, string>
 	 */
-	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr ) {
-		$this->property     = $property;
-		$this->token        = $token;
-		$this->projections  = $projections;
-		$this->control_attr = $control_attr;
+	public array $responsive_attrs;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param string                $property     The block property this binding drives.
+	 * @param string|null           $token        Referenced token id, or null when inline.
+	 * @param array<string, mixed>  $projections  Inline projection targets, empty when a token reference.
+	 * @param string|null           $control_attr     The editor control attribute, or null when none declared.
+	 * @param array<string, string> $responsive_attrs Breakpoint => attribute, empty when none declared.
+	 */
+	private function __construct( string $property, ?string $token, array $projections, ?string $control_attr, array $responsive_attrs = [] ) {
+		$this->property         = $property;
+		$this->token            = $token;
+		$this->projections      = $projections;
+		$this->control_attr     = $control_attr;
+		$this->responsive_attrs = $responsive_attrs;
 	}
 
 	/**
@@ -208,7 +231,7 @@ final class Binding {
 			);
 		}
 
-		return new self( $property, $token, $inline, self::control_attr_of( $property, $spec ) );
+		return new self( $property, $token, $inline, self::control_attr_of( $property, $spec ), self::responsive_attrs_of( $property, $spec ) );
 	}
 
 	/**
@@ -260,6 +283,22 @@ final class Binding {
 	 */
 	public function control_attr(): ?string {
 		return $this->control_attr;
+	}
+
+	/**
+	 * The per-breakpoint block attributes this binding's editor control writes, keyed by breakpoint, or an
+	 * empty map when it declares none.
+	 *
+	 * A block names these by a prefix convention ("borderRadius" => "tabletBorderRadius"), which is a
+	 * naming rule rather than something safely derivable across blocks, so it is declared. Editor-only,
+	 * like control_attr(): never a projection target.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> Breakpoint => attribute name.
+	 */
+	public function responsive_attrs(): array {
+		return $this->responsive_attrs;
 	}
 
 	/**
@@ -337,6 +376,61 @@ final class Binding {
 		}
 
 		return $inline;
+	}
+
+	/**
+	 * Parse a binding's `responsive_attrs` declaration into a breakpoint => attribute map.
+	 *
+	 * Breakpoint keys are checked against {@see Responsive::get_breakpoint_keys()} at registration, so a
+	 * typo fails loudly here rather than silently never capturing that device.
+	 *
+	 * @since TBD
+	 *
+	 * @param string               $property The property the binding is for, for error messages.
+	 * @param array<string, mixed> $spec     The binding declaration.
+	 *
+	 * @throws InvalidArgumentException When the map, a key, or a value is malformed.
+	 *
+	 * @return array<string, string> Breakpoint => attribute, empty when the declaration omits it.
+	 */
+	private static function responsive_attrs_of( string $property, array $spec ): array {
+		if ( ! array_key_exists( self::RESPONSIVE_ATTRS, $spec ) ) {
+			return [];
+		}
+
+		$declared = $spec[ self::RESPONSIVE_ATTRS ];
+
+		if ( ! is_array( $declared ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Binding "%s" target "%s" must be a breakpoint => attribute map.', $property, self::RESPONSIVE_ATTRS )
+			);
+		}
+
+		$allowed = Responsive::get_breakpoint_keys();
+		$out     = [];
+
+		foreach ( $declared as $breakpoint => $attribute ) {
+			if ( ! in_array( (string) $breakpoint, $allowed, true ) ) {
+				throw new InvalidArgumentException(
+					sprintf(
+						'Binding "%s" declares unknown responsive breakpoint "%s"; expected one of: %s.',
+						$property,
+						(string) $breakpoint,
+						implode( ', ', $allowed )
+					)
+				);
+			}
+
+			if ( ! is_string( $attribute ) || $attribute === '' ) {
+				throw new InvalidArgumentException(
+					sprintf( 'Binding "%s" responsive attribute for "%s" must be a non-empty string.', $property, (string) $breakpoint )
+				);
+			}
+
+			$out[ (string) $breakpoint ] = $attribute;
+		}
+
+		return $out;
 	}
 
 	/**

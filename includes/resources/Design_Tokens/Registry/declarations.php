@@ -377,8 +377,15 @@ return [
 					'control_attr' => 'colorHover',
 				],
 				'button-radius'     => [
-					'css_var'      => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
-					'control_attr' => 'borderRadius',
+					'css_var'          => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
+					'control_attr'     => 'borderRadius',
+					// The block names its per-device radius attributes by a prefix convention, which is a naming
+					// rule rather than something safely derivable, so the editor is told them rather than
+					// guessing. Lets a captured preset carry a different radius per breakpoint.
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],

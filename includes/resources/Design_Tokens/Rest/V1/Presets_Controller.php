@@ -1018,6 +1018,27 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Every value a preset token entry carries: its base, plus one entry per breakpoint override.
+	 *
+	 * A property that varies by breakpoint stores an envelope rather than a bare value, so a guard that
+	 * inspected the raw entry would both miss the overrides and mistake the envelope itself for a slot
+	 * list. Unwrapping here keeps each guard's own rule unchanged — it just runs over every value the
+	 * entry actually contributes.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return array<int, mixed> The base value followed by each breakpoint override.
+	 */
+	private function preset_entry_values( $entry ): array {
+		return array_merge(
+			[ Extensions::preset_value_of( $entry ) ],
+			array_values( Extensions::preset_responsive_of( $entry ) )
+		);
+	}
+
+	/**
 	 * Reject a per-corner slot list written to a property that is not a dimension.
 	 *
 	 * A slot list expresses the four sides of a measure control, so it is meaningful only where the bound
@@ -1050,21 +1071,30 @@ final class Presets_Controller extends Controller {
 
 			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
 
-			foreach ( $tokens as $property => $value ) {
-				if ( ! is_array( $value ) || $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_dimension() ) {
+			foreach ( $tokens as $property => $entry ) {
+				if ( $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_dimension() ) {
 					continue;
 				}
 
-				return new WP_Error(
-					'rest_design_tokens_invalid',
-					__( 'A per-corner value is only valid for a dimension property.', 'kadence-blocks' ),
-					[
-						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'    => $block,
-						'preset'   => (string) $preset_slug,
-						'property' => (string) $property,
-					]
-				);
+				// Check the base and every breakpoint override. Each is unwrapped first, so what remains is
+				// a scalar, an alias or a slot list — an array here is therefore a slot list, never the
+				// responsive envelope (which is legal on any kind).
+				foreach ( $this->preset_entry_values( $entry ) as $value ) {
+					if ( ! is_array( $value ) ) {
+						continue;
+					}
+
+					return new WP_Error(
+						'rest_design_tokens_invalid',
+						__( 'A per-corner value is only valid for a dimension property.', 'kadence-blocks' ),
+						[
+							'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+							'block'    => $block,
+							'preset'   => (string) $preset_slug,
+							'property' => (string) $property,
+						]
+					);
+				}
 			}
 		}
 
@@ -1216,10 +1246,15 @@ final class Presets_Controller extends Controller {
 
 			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
 
-			foreach ( $tokens as $property => $value ) {
-				// A per-corner slot list carries one alias per corner, so every slot is checked; otherwise a
-				// dangling corner would pass the write and silently drop the whole property at projection.
-				$candidates = is_array( $value ) ? $value : [ $value ];
+			foreach ( $tokens as $property => $entry ) {
+				// Flatten the entry to every value it carries — its base, each breakpoint override, and each
+				// corner of any slot list among them — so a dangling alias anywhere is caught on write rather
+				// than silently dropping its property (or breakpoint) at projection.
+				$candidates = [];
+
+				foreach ( $this->preset_entry_values( $entry ) as $value ) {
+					$candidates = array_merge( $candidates, is_array( $value ) ? array_values( $value ) : [ $value ] );
+				}
 
 				foreach ( $candidates as $candidate ) {
 					if ( ! Alias::is_alias( $candidate ) || $resolved->value( Alias::path_of( $candidate ) ) !== null ) {

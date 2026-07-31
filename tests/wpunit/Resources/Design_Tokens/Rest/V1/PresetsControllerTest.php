@@ -530,6 +530,98 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A dangling alias inside a per-breakpoint override is caught on write, exactly as one in the base
+	 * value is — otherwise it would pass the guards and silently drop at projection.
+	 *
+	 * @return void
+	 */
+	public function testADanglingAliasInAResponsiveOverrideIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens(
+						[
+							'button-radius' => $this->responsive_entry(
+								'8px',
+								[ 'mobile' => '{primitive.dimension.radius.nope}' ]
+							),
+						]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A per-corner slot list inside a breakpoint override is gated on the property's kind exactly as the
+	 * base value is, so a four-slot color cannot slip in through a breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testASlotListInAResponsiveOverrideOnANonDimensionPropertyIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens(
+						[
+							'button-bg' => $this->responsive_entry(
+								'#3633e1',
+								[ 'mobile' => [ '#ff0000', '#00ff00', '#0000ff', '#ffffff' ] ]
+							),
+						]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( 'button-bg', $result->get_error_data()['property'] );
+	}
+
+	/**
+	 * A well-formed responsive entry is stored intact, base and overrides together.
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryIsStored(): void {
+		$entry = $this->responsive_entry( [ '8px', '4px', '8px', '4px' ], [ 'mobile' => '2px' ] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['hero']['tokens'];
+
+		$this->assertSame( [ '8px', '4px', '8px', '4px' ], $tokens['button-radius']['$value'] );
+		$this->assertSame(
+			'2px',
+			$tokens['button-radius']['$extensions']['com.kadence.designTokens']['responsive']['mobile']
+		);
+	}
+
+	/**
 	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *
@@ -791,6 +883,26 @@ final class PresetsControllerTest extends TestCase {
 		}
 
 		return $request;
+	}
+
+	/**
+	 * A preset token entry carrying per-breakpoint overrides, in the same envelope a responsive token leaf
+	 * uses.
+	 *
+	 * @param mixed                $base       The entry's base value.
+	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 *
+	 * @return array<string, mixed> The entry.
+	 */
+	private function responsive_entry( $base, array $responsive ): array {
+		return [
+			'$value'      => $base,
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => $responsive,
+				],
+			],
+		];
 	}
 
 	/**

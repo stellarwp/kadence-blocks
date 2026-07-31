@@ -127,6 +127,39 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	}
 
 	/**
+	 * A per-breakpoint override is matched on its own, so a captured tablet/mobile literal re-joins the
+	 * theming cascade exactly as the base value does — and the envelope survives intact.
+	 *
+	 * @return void
+	 */
+	public function testItAliasesEachBreakpointOfAResponsiveEntry(): void {
+		$entry = [
+			'$value'      => '8px',
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					// 0.5rem is the control radius semantic's resolved value; 3px matches nothing.
+					'responsive' => [
+						'tablet' => '0.5rem',
+						'mobile' => '3px',
+					],
+				],
+			],
+		];
+
+		$result     = $this->normalizer->normalize( [ 'button-radius' => $entry ], self::SET )['button-radius'];
+		$responsive = $result['$extensions']['com.kadence.designTokens']['responsive'];
+
+		$this->assertSame( '8px', $result['$value'], 'An unmatched base literal should stay a literal.' );
+		$this->assertTrue( Alias::is_alias( $responsive['tablet'] ), 'A matched override should become an alias.' );
+		$this->assertSame(
+			'0.5rem',
+			$this->resolver->resolve( self::SET )->value( Alias::path_of( $responsive['tablet'] ) ),
+			'The chosen alias should resolve back to the captured value.'
+		);
+		$this->assertSame( '3px', $responsive['mobile'], 'An unmatched override should stay a literal.' );
+	}
+
+	/**
 	 * When several semantics share a value, the one whose id best matches the property's role wins: #ffffff is
 	 * shared by the plain and hover button-text semantics, and the hover property picks the hover semantic.
 	 *

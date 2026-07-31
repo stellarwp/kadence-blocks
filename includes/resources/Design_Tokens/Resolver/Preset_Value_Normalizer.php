@@ -3,7 +3,10 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 
 /**
  * Rewrites a preset's captured literal values into semantic aliases, so a value captured off a block
@@ -81,6 +84,21 @@ final class Preset_Value_Normalizer {
 	 * @return mixed The alias string when matched, otherwise the original value.
 	 */
 	private function alias_for( string $property, $value, array $index ) {
+		// A property that varies by breakpoint keeps its envelope; its base and each override are matched
+		// on their own, so a captured per-breakpoint literal re-joins the cascade like any other value.
+		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
+			$entry = $value;
+
+			$entry[ Sentinels::get_value_key() ] = $this->alias_for( $property, Extensions::preset_value_of( $value ), $index );
+
+			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
+				$entry[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Responsive::get_responsive_key() ][ $breakpoint ] =
+					$this->alias_for( $property, $override, $index );
+			}
+
+			return $entry;
+		}
+
 		if ( is_array( $value ) ) {
 			$slots = [];
 
