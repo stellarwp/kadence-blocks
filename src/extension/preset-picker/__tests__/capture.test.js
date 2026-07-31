@@ -67,6 +67,17 @@ describe('capturedTokens', () => {
 		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe('8px');
 	});
 
+	it('captures a uniform token alias as a whole-string alias with no unit appended', () => {
+		const alias = '{primitive.dimension.radius.sm}';
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: [alias, alias, alias, alias],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe(alias);
+	});
+
 	it('uses the default preset when no preset is selected', () => {
 		const tokens = capturedTokens(BLOCK, SET, {});
 
