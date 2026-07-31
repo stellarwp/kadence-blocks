@@ -74,6 +74,32 @@ describe('matchesPreset dimension', () => {
 	});
 });
 
+describe('matchesPreset dimension against a per-corner preset value', () => {
+	it('matches when every corner equals its preset slot', () => {
+		expect(matchesPreset('dimension', ['8', '4', '8', '4'], 'px', ['8px', '4px', '8px', '4px'])).toBe(true);
+	});
+
+	it('does not match when one corner differs from its preset slot', () => {
+		expect(matchesPreset('dimension', ['8', '4', '8', '2'], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('does not match when the corners are positionally rotated', () => {
+		expect(matchesPreset('dimension', ['4', '8', '4', '8'], 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('matches a uniform stored value against a single-slot preset value', () => {
+		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'px', ['8px'])).toBe(true);
+	});
+
+	it('does not match when the unit differs from the preset slots', () => {
+		expect(matchesPreset('dimension', ['8', '4', '8', '4'], 'rem', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+
+	it('does not match a scalar stored value against a mixed per-corner preset value', () => {
+		expect(matchesPreset('dimension', '8', 'px', ['8px', '4px', '8px', '4px'])).toBe(false);
+	});
+});
+
 describe('matchesPreset text', () => {
 	it('matches trimmed equal strings', () => {
 		expect(matchesPreset('text', ' bold ', '', 'bold')).toBe(true);

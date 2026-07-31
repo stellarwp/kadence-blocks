@@ -95,6 +95,59 @@ describe('editor seam', () => {
 	});
 
 	/**
+	 * A scalar inherited default reaches every slot unchanged, so a preset holding one value still shows
+	 * that value as the default on each corner.
+	 *
+	 * @return {void}
+	 */
+	it('passes a scalar default value through to every slot', () => {
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 2,
+			value: ['', '', '', ''],
+			onChange: jest.fn(),
+			context: { ...CONTEXT, defaultValue: '0.5rem' },
+		});
+
+		expect(result.props.defaultValue).toBe('0.5rem');
+	});
+
+	/**
+	 * A per-corner inherited default is narrowed to the slot being rendered, so each corner shows its own
+	 * default rather than the whole list.
+	 *
+	 * @return {void}
+	 */
+	it('narrows a per-corner default value to the rendered slot', () => {
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 2,
+			value: ['', '', '', ''],
+			onChange: jest.fn(),
+			context: { ...CONTEXT, defaultValue: ['1px', '2px', '3px', '4px'] },
+		});
+
+		expect(result.props.defaultValue).toBe('3px');
+	});
+
+	/**
+	 * A single-slot default means "every corner", so each slot reads that one value.
+	 *
+	 * @return {void}
+	 */
+	it('applies a single-slot default value to every corner', () => {
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 3,
+			value: ['', '', '', ''],
+			onChange: jest.fn(),
+			context: { ...CONTEXT, defaultValue: ['0.5rem'] },
+		});
+
+		expect(result.props.defaultValue).toBe('0.5rem');
+	});
+
+	/**
 	 * Picking a token on an individual side writes the alias to only that side; clearing and a custom
 	 * value write to the same side, leaving the siblings untouched.
 	 *
