@@ -136,7 +136,8 @@ final class Preset_Resolver {
 	 *
 	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
 	 *
-	 * @return array<string, string> property => flattened literal CSS value.
+	 * @return array<string, string|string[]> property => flattened literal CSS value, or the per-corner
+	 *                                        slot list when the preset stores one.
 	 */
 	public function resolve_literal( string $block, string $preset, string $slug = 'default' ): array {
 		$tokens   = $this->preset_tokens( $block, $preset, $slug );
@@ -172,7 +173,8 @@ final class Preset_Resolver {
 	 *
 	 * @throws Unknown_Preset_Exception When the block is not defined or declares no default.
 	 *
-	 * @return array<string, string> property => flattened literal CSS value.
+	 * @return array<string, string|string[]> property => flattened literal CSS value, or the per-corner
+	 *                                        slot list when the preset stores one.
 	 */
 	public function resolve_default( string $block, string $slug = 'default' ): array {
 		return $this->resolve_literal( $block, $this->default_preset( $block, $slug ), $slug );
@@ -310,14 +312,19 @@ final class Preset_Resolver {
 	 * Flatten one binding value: an alias is looked up in the resolved id map; a scalar literal passes
 	 * through. Anything else (or an unresolvable alias) yields null so the property is dropped.
 	 *
+	 * A per-corner slot list flattens slot by slot and STAYS a list — it is deliberately not joined here.
+	 * flatten() feeds the editor and admin surfaces through resolve_literal(), and those read a dimension
+	 * corner by corner; a pre-joined "8px 4px 8px 4px" is not parseable as a single length and would read
+	 * back as one opaque literal. Joining is the css-emitting caller's job, in project().
+	 *
 	 * @since TBD
 	 *
-	 * @param mixed           $value    The raw binding value (alias string or literal).
+	 * @param mixed           $value    The raw binding value (alias string, literal, or slot list).
 	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
-	 * @return string|null
+	 * @return string|string[]|null
 	 */
-	private function flatten( $value, Resolved_Tokens $resolved ): ?string {
+	private function flatten( $value, Resolved_Tokens $resolved ) {
 		if ( is_string( $value ) ) {
 			return Alias::is_alias( $value ) ? $resolved->value( Alias::path_of( $value ) ) : $value;
 		}
@@ -326,7 +333,42 @@ final class Preset_Resolver {
 			return (string) $value;
 		}
 
+		if ( is_array( $value ) ) {
+			return $this->flatten_slots( $value, $resolved );
+		}
+
 		return null;
+	}
+
+	/**
+	 * Flatten a per-corner slot list, or null when any slot fails to flatten.
+	 *
+	 * A single unresolvable slot drops the WHOLE property rather than emitting a partial shorthand: a
+	 * border-radius missing one corner is not a usable value, so failing the property is the same
+	 * fail-closed choice a scalar binding makes when its alias resolves to nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $slots    The raw slot list.
+	 * @param Resolved_Tokens          $resolved The resolved token maps.
+	 *
+	 * @return string[]|null
+	 */
+	private function flatten_slots( array $slots, Resolved_Tokens $resolved ): ?array {
+		$flat = [];
+
+		foreach ( $slots as $slot ) {
+			// Nested lists are rejected at validation; guard anyway so a hand-edited document fails closed.
+			$value = is_array( $slot ) ? null : $this->flatten( $slot, $resolved );
+
+			if ( ! is_string( $value ) ) {
+				return null;
+			}
+
+			$flat[] = $value;
+		}
+
+		return $flat === [] ? null : $flat;
 	}
 
 	/**
@@ -335,15 +377,29 @@ final class Preset_Resolver {
 	 * of flatten(), called only after flatten() has confirmed the value resolves, so the target var is
 	 * guaranteed to be emitted.
 	 *
+	 * A per-corner slot list projects each slot the same way and joins them with a space, yielding a CSS
+	 * shorthand (e.g. `var(--kb-token--…) 8px var(--kb-token--…) 8px`) that each aliased corner still
+	 * chains through, so a token edit reaches that corner live.
+	 *
 	 * @since TBD
 	 *
-	 * @param mixed $value The raw binding value (alias string or literal).
+	 * @param mixed $value The raw binding value (alias string, literal, or slot list).
 	 *
 	 * @return string
 	 */
 	private function project( $value ): string {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
 			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+		}
+
+		if ( is_array( $value ) ) {
+			$projected = [];
+
+			foreach ( $value as $slot ) {
+				$projected[] = $this->project( $slot );
+			}
+
+			return implode( ' ', $projected );
 		}
 
 		return Cast::to_string( $value );

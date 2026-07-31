@@ -213,14 +213,18 @@ final class Css_Builder {
 
 				$prop = $binding->css_prop();
 
-				if ( $prop === null || $value === '' ) {
+				// A per-corner slot list is a CSS shorthand here — this is a css-emitting surface, so the
+				// corners join into one declaration value (the resolver keeps them apart for the editor).
+				$literal = is_array( $value ) ? implode( ' ', $value ) : $value;
+
+				if ( $prop === null || $literal === '' ) {
 					continue;
 				}
 
 				$var      = $this->registry->css_var_for( (string) $binding->token );
 				$suffix   = $this->selector_suffix( $binding->css_selector() );
 
-				$by_suffix[ $suffix ][] = $prop . ':var(' . $var . ',' . $this->sanitize_value( $value ) . ')';
+				$by_suffix[ $suffix ][] = $prop . ':var(' . $var . ',' . $this->sanitize_value( $literal ) . ')';
 			}
 
 			foreach ( $by_suffix as $suffix => $declarations ) {

@@ -305,12 +305,90 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * A per-corner slot list flattens to literals slot by slot and stays an array, so the editor and admin
+	 * surfaces can read each corner rather than a pre-joined string they cannot parse.
+	 *
+	 * @return void
+	 */
+	public function testResolveLiteralKeepsASlotListUnjoined(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}', '8px', '{semantic.radius.control}', '8px' ] ]
+		);
+
+		$values = $this->resolver->resolve_literal( self::BUTTON, 'corners' );
+
+		$this->assertSame( [ '0.5rem', '8px', '0.5rem', '8px' ], $values['button-radius'] );
+	}
+
+	/**
+	 * A per-corner slot list projects to a space-separated CSS shorthand, each aliased corner keeping its
+	 * var() indirection so the corner still follows a token edit live.
+	 *
+	 * @return void
+	 */
+	public function testResolveJoinsASlotListIntoAVarShorthand(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}', '8px', '{semantic.radius.control}', '8px' ] ]
+		);
+
+		$projected = $this->resolver->resolve( self::BUTTON, 'corners' );
+
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--control) 8px var(--kb-token--semantic--radius--control) 8px',
+			$projected['button-radius']
+		);
+	}
+
+	/**
+	 * A slot list holding an unresolvable alias drops the whole property, matching how a scalar binding
+	 * whose alias resolves to nothing is dropped rather than emitted half-formed.
+	 *
+	 * @return void
+	 */
+	public function testASlotListWithAnUnresolvableAliasDropsTheProperty(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}', '{primitive.dimension.radius.nope}', '8px', '8px' ] ]
+		);
+
+		$this->assertArrayNotHasKey( 'button-radius', $this->resolver->resolve_literal( self::BUTTON, 'corners' ) );
+	}
+
+	/**
+	 * A single-slot list means "every corner", so it resolves exactly as the equivalent scalar does.
+	 *
+	 * @return void
+	 */
+	public function testASingleSlotListResolvesLikeAScalar(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'corners',
+			'Corners',
+			[ 'button-radius' => [ '{semantic.radius.control}' ] ]
+		);
+
+		$this->assertSame( [ '0.5rem' ], $this->resolver->resolve_literal( self::BUTTON, 'corners' )['button-radius'] );
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--control)',
+			$this->resolver->resolve( self::BUTTON, 'corners' )['button-radius']
+		);
+	}
+
+	/**
 	 * Persist a single button preset into a token library's overrides document.
 	 *
-	 * @param string                $slug    The token library slug to write into.
-	 * @param string                $preset The preset slug.
-	 * @param string                $label   The preset label.
-	 * @param array<string, string> $tokens  The property => value map for the preset.
+	 * @param string               $slug   The token library slug to write into.
+	 * @param string               $preset The preset slug.
+	 * @param string               $label  The preset label.
+	 * @param array<string, mixed> $tokens The property => value map for the preset.
 	 *
 	 * @return void
 	 */
