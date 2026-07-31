@@ -85,7 +85,7 @@ import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
-import { deriveMeasureMode } from '../../extension/token-indicators/normalize';
+import { deriveMeasureMode, measureAttrsForDevice } from '../../extension/token-indicators/normalize';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
@@ -262,6 +262,14 @@ export default function KadenceButtonEdit(props) {
 		},
 		[clientId]
 	);
+	// The Border Radius control keeps ONE linked/individual mode but writes a different attribute per
+	// breakpoint, so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
@@ -286,11 +294,13 @@ export default function KadenceButtonEdit(props) {
 	// linked), so no new attribute is needed and old buttons open in the right mode. This ephemeral
 	// override only records an explicit "unlink" of already-equal corners for the current session — it
 	// resets on remount, matching how the control's mode has always been session-local.
-	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState(null);
+	// Keyed by device: the responsive control keeps ONE mode but writes three attributes, so a choice
+	// made on Tablet must not flip Desktop's corners (and vice versa).
+	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState({});
 	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
 	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius.
 	useEffect(() => {
-		setBorderRadiusModeOverride(null);
+		setBorderRadiusModeOverride({});
 	}, [attributes.kbPreset]);
 	useEffect(() => {
 		if (!isSelected) {
@@ -1224,34 +1234,43 @@ export default function KadenceButtonEdit(props) {
 																			: 1,
 																}}
 																control={
-																	borderRadiusModeOverride ??
+																	borderRadiusModeOverride[previewDevice] ??
 																	deriveMeasureMode(
-																		borderRadius,
+																		borderRadiusForDevice.value,
 																		tokenBinding.borderRadius?.presetValue
 																	)
 																}
 																onChangeControl={(mode) => {
 																	if ('linked' === mode) {
-																		// Collapse to the top-left corner so the
-																		// button reflects the link immediately, and
-																		// drop the override so the derived mode
-																		// (now all-equal) reads as linked.
-																		const corner = borderRadius?.[0] ?? '';
+																		// Collapse to the top-left corner so the button
+																		// reflects the link immediately, and drop the
+																		// override so the derived mode (now all-equal)
+																		// reads as linked. Only the ACTIVE device's
+																		// attribute is written, so the other breakpoints
+																		// keep their own corners.
+																		const corner =
+																			borderRadiusForDevice.value?.[0] ?? '';
 																		setAttributes({
-																			borderRadius: [
+																			[borderRadiusForDevice.attr]: [
 																				corner,
 																				corner,
 																				corner,
 																				corner,
 																			],
 																		});
-																		setBorderRadiusModeOverride(null);
+																		setBorderRadiusModeOverride((current) => ({
+																			...current,
+																			[previewDevice]: undefined,
+																		}));
 																	} else {
 																		// Unlinking equal corners leaves the values
 																		// untouched, so remember the choice for this
-																		// session; a differing corner would derive
-																		// individual on its own.
-																		setBorderRadiusModeOverride('individual');
+																		// session AND this device; a differing corner
+																		// would derive individual on its own.
+																		setBorderRadiusModeOverride((current) => ({
+																			...current,
+																			[previewDevice]: 'individual',
+																		}));
 																	}
 																}}
 																reset={false}
