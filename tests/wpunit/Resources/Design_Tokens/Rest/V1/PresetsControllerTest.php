@@ -448,6 +448,60 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A dimension property accepts a per-corner slot list, so a button whose corners carry different
+	 * radii can be saved as a preset without flattening to one value.
+	 *
+	 * @return void
+	 */
+	public function testASlotListOnADimensionPropertyIsAccepted(): void {
+		$slots = [ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.md}', '8px' ];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'corners',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $slots ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['corners']['tokens'];
+
+		$this->assertSame( $slots, $tokens['button-radius'] );
+	}
+
+	/**
+	 * A slot list is meaningful only for a dimension property, so the registry-aware write guard rejects
+	 * one written to a color property. The schema validator checks shape only and cannot see the kind.
+	 *
+	 * @return void
+	 */
+	public function testASlotListOnANonDimensionPropertyIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'broken',
+					'tokens' => $this->button_tokens( [ 'button-bg' => [ '#ff0000', '#00ff00', '#0000ff', '#ffffff' ] ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-bg', $result->get_error_data()['property'] );
+		// The write was rejected before commit.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
 	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *
@@ -715,9 +769,9 @@ final class PresetsControllerTest extends TestCase {
 	 * The button's full bound surface as literal values, so a written preset satisfies the full-surface
 	 * guard. Individual properties can be overridden for a specific assertion.
 	 *
-	 * @param array<string, string> $overrides Property values to override on the base surface.
+	 * @param array<string, mixed> $overrides Property values to override on the base surface.
 	 *
-	 * @return array<string, string>
+	 * @return array<string, mixed>
 	 */
 	private function button_tokens( array $overrides = [] ): array {
 		return array_merge(

@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -475,6 +476,12 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
+		$error = $this->guard_slot_arrays( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
@@ -530,6 +537,12 @@ final class Presets_Controller extends Controller {
 		}
 
 		$error = $this->guard_reserved_slugs( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_slot_arrays( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -996,6 +1009,60 @@ final class Presets_Controller extends Controller {
 						'status' => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'  => $block,
 						'preset' => (string) $slug,
+					]
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Reject a per-corner slot list written to a property that is not a dimension.
+	 *
+	 * A slot list expresses the four sides of a measure control, so it is meaningful only where the bound
+	 * property is a dimension — a four-slot color says nothing. The DTCG validator cannot make this call:
+	 * it validates a preset token map by shape alone and never resolves the bound property's kind (the key
+	 * it walks is a property name like "button-radius", not a token id). The registry does know, so the
+	 * check lives here, alongside the other registry-aware guards.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's preset node being written.
+	 * @param string               $block      The block name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when a slot list sits on a non-dimension property, null otherwise.
+	 */
+	private function guard_slot_arrays( array $block_node, string $block ): ?WP_Error {
+		$bindings = $this->registry->for_block( $block );
+
+		// An unregistered block is guard_block()'s error to report; nothing to check here.
+		if ( $bindings === null ) {
+			return null;
+		}
+
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( $block_node as $preset_slug => $preset ) {
+			if ( is_string( $preset_slug ) && strpos( $preset_slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
+
+			foreach ( $tokens as $property => $value ) {
+				if ( ! is_array( $value ) || $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_dimension() ) {
+					continue;
+				}
+
+				return new WP_Error(
+					'rest_design_tokens_invalid',
+					__( 'A per-corner value is only valid for a dimension property.', 'kadence-blocks' ),
+					[
+						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+						'block'    => $block,
+						'preset'   => (string) $preset_slug,
+						'property' => (string) $property,
 					]
 				);
 			}

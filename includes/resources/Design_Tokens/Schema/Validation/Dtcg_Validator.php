@@ -69,6 +69,16 @@ final class Dtcg_Validator {
 	private const CONTEXT_OVERRIDES = 'overrides';
 
 	/**
+	 * The side count of a per-corner preset token slot list, matching the 4-side measure attribute a
+	 * block stores (top-left, top-right, bottom-right, bottom-left).
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const SLOT_LIST_SIDES = 4;
+
+	/**
 	 * Value validators keyed by $type.
 	 *
 	 * @since TBD
@@ -706,8 +716,10 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * A foundation-preset / block-preset token value must be an alias or a non-empty literal scalar. The target token's
-	 * $type is not resolved here, so the literal is checked only for shape, not per-type grammar.
+	 * A foundation-preset / block-preset token value must be an alias, a non-empty literal scalar, or a
+	 * per-corner slot list. The target token's $type is not resolved here, so the literal is checked only
+	 * for shape, not per-type grammar; whether a slot list is meaningful for the bound property's kind is
+	 * a registry-aware question answered by the REST write guard, not by the schema.
 	 *
 	 * @since TBD
 	 *
@@ -733,11 +745,81 @@ final class Dtcg_Validator {
 			return null;
 		}
 
+		if ( is_array( $value ) && $this->is_list( $value ) ) {
+			return $this->validate_extension_slots( $value, $path );
+		}
+
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias or a non-empty literal.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, or a slot list.'
 		);
+	}
+
+	/**
+	 * Validate a per-corner slot list: exactly 1 slot (all corners) or 4 (top-left, top-right,
+	 * bottom-right, bottom-left), each an alias or a non-empty literal scalar. A slot is validated by the
+	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
+	 * nested list is rejected because that rule accepts no array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed> $slots The slot list.
+	 * @param string            $path  Dot-path to the list.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
+		$count = count( $slots );
+
+		if ( $count !== 1 && $count !== self::SLOT_LIST_SIDES ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				sprintf(
+					'A preset token slot list must hold exactly 1 or %d values, %d given.',
+					self::SLOT_LIST_SIDES,
+					$count
+				)
+			);
+		}
+
+		foreach ( $slots as $index => $slot ) {
+			if ( is_array( $slot ) ) {
+				return new Validation_Error(
+					$path . '.' . $index,
+					Validation_Error::get_code_value_invalid(),
+					'A preset token slot must be an alias or a non-empty literal, not a nested list.'
+				);
+			}
+
+			$error = $this->validate_extension_value( $slot, $path . '.' . $index );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether an array is a list — sequential integer keys from zero. Hand-rolled because the plugin
+	 * supports PHP 7.4, where array_is_list() does not exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $value The array to test.
+	 *
+	 * @return bool True when the array is a list.
+	 */
+	private function is_list( array $value ): bool {
+		// range( 0, -1 ) yields [ 0, -1 ], so the empty array is answered before the key compare.
+		if ( $value === [] ) {
+			return true;
+		}
+
+		return array_keys( $value ) === range( 0, count( $value ) - 1 );
 	}
 
 	/**
