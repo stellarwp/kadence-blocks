@@ -95,6 +95,52 @@ export function dimensionSlots(value) {
 }
 
 /**
+ * The value one corner inherits from the selected preset.
+ *
+ * A preset value may be a single literal (every corner) or a PER-CORNER list, in which case the corner
+ * takes its matching slot; a one-entry list also means "every corner".
+ *
+ * @param {*}      presetValue The selected preset's value for the property.
+ * @param {number} index       The corner index.
+ *
+ * @since TBD
+ *
+ * @return {string} The inherited value for that corner, or '' when the preset has none.
+ */
+export function presetSlotAt(presetValue, index) {
+	if (Array.isArray(presetValue)) {
+		return String(presetValue.length === 1 ? presetValue[0] : (presetValue[index] ?? ''));
+	}
+
+	return presetValue === undefined || presetValue === null ? '' : String(presetValue);
+}
+
+/**
+ * The linked/individual mode a measure control should open in, derived from the corners the user would
+ * actually see: each stored corner where one is set, otherwise the value that corner inherits from the
+ * selected preset.
+ *
+ * Deriving from the stored attribute alone is not enough. A block on a preset stores NOTHING — every
+ * corner is empty, which trivially reads as "all equal" — so a preset carrying four different corners
+ * would open the control in linked mode and hide the difference it is displaying.
+ *
+ * @param {*} value       The stored dimension value (4-side array or scalar).
+ * @param {*} presetValue The selected preset's value for the property.
+ *
+ * @since TBD
+ *
+ * @return {string} 'linked' when every effective corner matches, otherwise 'individual'.
+ */
+export function deriveMeasureMode(value, presetValue) {
+	const stored = dimensionSlots(value);
+	const corners = [0, 1, 2, 3].map((index) =>
+		stored[index] !== undefined && stored[index] !== '' ? stored[index] : presetSlotAt(presetValue, index)
+	);
+
+	return corners.every((corner) => corner === corners[0]) ? 'linked' : 'individual';
+}
+
+/**
  * Normalize a dimension attribute to `{ value, unit }`. A measurement control writes a 4-side array
  * (`[top, right, bottom, left]`); the representative value is the first populated side. An empty value
  * yields an empty marker so "no override" is detectable. This is the scalar view used for empty

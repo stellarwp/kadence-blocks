@@ -85,6 +85,7 @@ import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
+import { deriveMeasureMode } from '../../extension/token-indicators/normalize';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
@@ -286,6 +287,11 @@ export default function KadenceButtonEdit(props) {
 	// override only records an explicit "unlink" of already-equal corners for the current session — it
 	// resets on remount, matching how the control's mode has always been session-local.
 	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState(null);
+	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
+	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius.
+	useEffect(() => {
+		setBorderRadiusModeOverride(null);
+	}, [attributes.kbPreset]);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -1219,12 +1225,10 @@ export default function KadenceButtonEdit(props) {
 																}}
 																control={
 																	borderRadiusModeOverride ??
-																	(!borderRadius ||
-																	borderRadius.every(
-																		(corner) => corner === borderRadius[0]
+																	deriveMeasureMode(
+																		borderRadius,
+																		tokenBinding.borderRadius?.presetValue
 																	)
-																		? 'linked'
-																		: 'individual')
 																}
 																onChangeControl={(mode) => {
 																	if ('linked' === mode) {
