@@ -149,7 +149,7 @@ trait API_Url_Trait {
 
 		if ( is_array( $settings ) && ! empty( $settings['connections'] ) && is_array( $settings['connections'] ) ) {
 			foreach ( $settings['connections'] as $connection ) {
-				if ( ! empty( $connection['url'] ) ) {
+				if ( is_array( $connection ) && ! empty( $connection['url'] ) ) {
 					$urls[] = rtrim( (string) $connection['url'], '/' );
 				}
 			}
