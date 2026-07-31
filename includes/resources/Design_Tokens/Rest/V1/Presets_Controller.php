@@ -1217,21 +1217,27 @@ final class Presets_Controller extends Controller {
 			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
 
 			foreach ( $tokens as $property => $value ) {
-				if ( ! Alias::is_alias( $value ) || $resolved->value( Alias::path_of( $value ) ) !== null ) {
-					continue;
-				}
+				// A per-corner slot list carries one alias per corner, so every slot is checked; otherwise a
+				// dangling corner would pass the write and silently drop the whole property at projection.
+				$candidates = is_array( $value ) ? $value : [ $value ];
 
-				return new WP_Error(
-					'rest_design_tokens_unresolvable',
-					__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
-					[
-						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'    => $block,
-						'preset'   => (string) $preset_slug,
-						'property' => (string) $property,
-						'alias'    => $value,
-					]
-				);
+				foreach ( $candidates as $candidate ) {
+					if ( ! Alias::is_alias( $candidate ) || $resolved->value( Alias::path_of( $candidate ) ) !== null ) {
+						continue;
+					}
+
+					return new WP_Error(
+						'rest_design_tokens_unresolvable',
+						__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
+						[
+							'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+							'block'    => $block,
+							'preset'   => (string) $preset_slug,
+							'property' => (string) $property,
+							'alias'    => $candidate,
+						]
+					);
+				}
 			}
 		}
 

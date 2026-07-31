@@ -68,15 +68,29 @@ final class Preset_Value_Normalizer {
 	 * The semantic alias for a captured value, or the value unchanged when it is already an alias, is not a
 	 * string, or matches no semantic.
 	 *
+	 * A per-corner slot list is matched slot by slot, so a corner captured as a literal re-joins the theming
+	 * cascade exactly as a scalar capture does. Without this a per-corner preset would be second-class:
+	 * frozen as literals while every scalar preset gets aliased.
+	 *
 	 * @since TBD
 	 *
 	 * @param string                  $property The property the value is set on, used to break ties.
-	 * @param mixed                   $value    The captured value (alias string or literal).
+	 * @param mixed                   $value    The captured value (alias string, literal, or slot list).
 	 * @param array<string, string[]> $index    The normalized-value => semantic-ids map.
 	 *
 	 * @return mixed The alias string when matched, otherwise the original value.
 	 */
 	private function alias_for( string $property, $value, array $index ) {
+		if ( is_array( $value ) ) {
+			$slots = [];
+
+			foreach ( $value as $key => $slot ) {
+				$slots[ $key ] = $this->alias_for( $property, $slot, $index );
+			}
+
+			return $slots;
+		}
+
 		if ( ! is_string( $value ) || Alias::is_alias( $value ) ) {
 			return $value;
 		}

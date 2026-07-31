@@ -502,6 +502,34 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * An alias inside a per-corner slot list is checked for resolvability like a scalar alias is, so a
+	 * dangling reference is refused on write rather than silently dropping the property at projection.
+	 *
+	 * @return void
+	 */
+	public function testADanglingAliasInsideASlotListIsRejected(): void {
+		$slots = [ '{semantic.radius.control}', '{primitive.dimension.radius.nope}', '8px', '8px' ];
+
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'corners',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $slots ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		// The write was rejected before commit.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
 	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *

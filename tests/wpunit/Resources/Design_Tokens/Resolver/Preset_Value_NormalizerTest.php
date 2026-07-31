@@ -90,6 +90,43 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	}
 
 	/**
+	 * Each slot of a per-corner value is matched on its own, so a captured corner that equals a semantic's
+	 * value re-joins the theming cascade exactly as a scalar capture does.
+	 *
+	 * @return void
+	 */
+	public function testItAliasesEachSlotOfAPerCornerValue(): void {
+		// 0.5rem is the resolved value of the control radius semantic; 8px matches nothing.
+		$result = $this->normalizer->normalize( [ 'button-radius' => [ '0.5rem', '8px', '0.5rem', '8px' ] ], self::SET );
+
+		$this->assertIsArray( $result['button-radius'] );
+		$this->assertTrue( Alias::is_alias( $result['button-radius'][0] ), 'A matched slot should become an alias.' );
+		$this->assertSame( '8px', $result['button-radius'][1], 'An unmatched slot should stay a literal.' );
+		$this->assertTrue( Alias::is_alias( $result['button-radius'][2] ) );
+		$this->assertSame( '8px', $result['button-radius'][3] );
+		$this->assertSame(
+			'0.5rem',
+			$this->resolver->resolve( self::SET )->value( Alias::path_of( $result['button-radius'][0] ) ),
+			'The chosen alias should resolve back to the captured value.'
+		);
+	}
+
+	/**
+	 * A slot that already holds an alias is passed through untouched, so a token the user picked per corner
+	 * is never re-pointed at a different semantic.
+	 *
+	 * @return void
+	 */
+	public function testItLeavesAnExistingAliasSlotUnchanged(): void {
+		$result = $this->normalizer->normalize(
+			[ 'button-radius' => [ '{semantic.radius.control}', '8px', '8px', '8px' ] ],
+			self::SET
+		);
+
+		$this->assertSame( '{semantic.radius.control}', $result['button-radius'][0] );
+	}
+
+	/**
 	 * When several semantics share a value, the one whose id best matches the property's role wins: #ffffff is
 	 * shared by the plain and hover button-text semantics, and the hover property picks the hover semantic.
 	 *
