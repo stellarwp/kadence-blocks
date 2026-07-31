@@ -136,28 +136,28 @@ final class Token_RegistryTest extends TestCase {
 			]
 		);
 
-		$set = $this->registry->for_block( 'kadence/advancedbtn' );
-		$this->assertNotNull( $set );
-		$this->assertSame( 'kadence/advancedbtn', $set->block );
+		$bindings = $this->registry->for_block( 'kadence/advancedbtn' );
+		$this->assertNotNull( $bindings );
+		$this->assertSame( 'kadence/advancedbtn', $bindings->block );
 	}
 
 	public function testAllPresetBindingsIsEmptyUntilRegistered(): void {
 		$this->assertSame( [], $this->registry->all_preset_bindings() );
 	}
 
-	public function testAllPresetBindingsReturnsRegisteredSetsKeyedByBlockInOrder(): void {
+	public function testAllPresetBindingsReturnsRegisteredBindingsKeyedByBlockInOrder(): void {
 		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedbtn' ] );
 		$this->registry->register_preset_bindings( [ 'block' => 'kadence/advancedheading' ] );
 
-		$sets = $this->registry->all_preset_bindings();
+		$bindings = $this->registry->all_preset_bindings();
 
 		$this->assertSame(
 			[ 'kadence/advancedbtn', 'kadence/advancedheading' ],
-			array_keys( $sets )
+			array_keys( $bindings )
 		);
-		// Each block maps to its single set.
-		$this->assertSame( 'kadence/advancedbtn', $sets['kadence/advancedbtn']->block );
-		$this->assertSame( 'kadence/advancedheading', $sets['kadence/advancedheading']->block );
+		// Each block maps to its own preset bindings.
+		$this->assertSame( 'kadence/advancedbtn', $bindings['kadence/advancedbtn']->block );
+		$this->assertSame( 'kadence/advancedheading', $bindings['kadence/advancedheading']->block );
 	}
 
 	public function testIsActiveByDefaultAndDeactivates(): void {

@@ -61,7 +61,7 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * The registry the binding sets (and their bindings) are read from.
+	 * The registry the preset bindings are read from.
 	 *
 	 * @since TBD
 	 *
@@ -115,7 +115,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the EDITOR-scoped preset of the block-default CSS for a token library. Identical to {@see self::css()}
+	 * Build the EDITOR-scoped version of the block-default CSS for a token library. Identical to {@see self::css()}
 	 * for every block that declares no `editor_selector` (e.g. Image, Single Icon, Row Layout, Column) — the
 	 * front-end `.wp-block-*` selector is reused verbatim. For a block that declares one (currently Advanced
 	 * Heading), the rule targets `.editor-styles-wrapper <editor_selector>` instead, so the default lands on
@@ -132,7 +132,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached preset of css(): memoized per request and persisted in the object cache keyed on the store
+	 * Cached version of css(): memoized per request and persisted in the object cache keyed on the store
 	 * version (and plugin version), so a token write (which bumps the store version) and a plugin upgrade
 	 * both invalidate it automatically.
 	 *
@@ -148,7 +148,7 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached preset of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
+	 * Cached version of editor_css(): same memo/object-cache mechanics as {@see self::css_for_version()}, but
 	 * keyed under a distinct `editor:` context so the editor-scoped string (which differs from the front-end
 	 * one for any block declaring an `editor_selector`) never collides with, or gets served in place of, the
 	 * front-end cache entry.
@@ -179,9 +179,9 @@ final class Css_Builder {
 		$css = '';
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
-			$set = $this->registry->for_block( $block );
+			$bindings = $this->registry->for_block( $block );
 
-			if ( $set === null ) {
+			if ( $bindings === null ) {
 				continue;
 			}
 
@@ -193,8 +193,8 @@ final class Css_Builder {
 				continue;
 			}
 
-			$selector = $editor && $set->editor_selector !== null
-				? '.editor-styles-wrapper ' . $set->editor_selector
+			$selector = $editor && $bindings->editor_selector !== null
+				? '.editor-styles-wrapper ' . $bindings->editor_selector
 				: '.wp-block-' . str_replace( '/', '-', $block );
 
 			// Group declarations by selector suffix so a block with several dimension props on the same
@@ -202,7 +202,7 @@ final class Css_Builder {
 			$by_suffix = [];
 
 			foreach ( $values as $property => $value ) {
-				$binding = $set->binding( $property );
+				$binding = $bindings->binding( $property );
 
 				// Only a token-referencing binding that names a css_prop contributes; the variable it points
 				// at is the referenced token's. An empty resolved value would produce a rule that resolves to

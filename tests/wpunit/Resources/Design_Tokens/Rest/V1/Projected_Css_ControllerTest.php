@@ -14,7 +14,7 @@ use WP_REST_Server;
 
 /**
  * Covers the projected-CSS controller: it aggregates every design-token editor projector into one CSS string
- * for the editor to re-inject live, emits only the single active set, and is capability-gated.
+ * for the editor to re-inject live, emits only the single active library, and is capability-gated.
  */
 final class Projected_Css_ControllerTest extends TestCase {
 
@@ -65,19 +65,19 @@ final class Projected_Css_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Only the active set is aggregated: a stored non-active set contributes no namespaced vars and no
-	 * switch selector, so the projected CSS carries a single active set's layer.
+	 * Only the active library is aggregated: a stored non-active library contributes no namespaced vars and no
+	 * switch selector, so the projected CSS carries a single active library's layer.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsOnlyTheActiveSet(): void {
+	public function testItEmitsOnlyTheActiveLibrary(): void {
 		$this->seedPreset( Token_Store::default_slug(), 'accent' );
 		$this->seedPreset( 'dark', 'accent' );
 
 		$css = $this->css();
 
-		$this->assertStringNotContainsString( '--kb-token--dark--', $css, 'A non-active set must not emit namespaced vars.' );
-		$this->assertStringNotContainsString( 'data-kb-token-set', $css, 'A non-active set must not emit a switch selector.' );
+		$this->assertStringNotContainsString( '--kb-token--dark--', $css, 'A non-active library must not emit namespaced vars.' );
+		$this->assertStringNotContainsString( 'data-kb-token-set', $css, 'A non-active library must not emit a switch selector.' );
 	}
 
 	/**

@@ -20,7 +20,7 @@ final class Token_History_StoreTest extends TestCase {
 	public function testCountIsZeroAndLatestIsNullWhenNoHistoryExists(): void {
 		$this->assertSame( 0, $this->history->count() );
 		$this->assertNull( $this->history->latest() );
-		$this->assertSame( [], $this->history->for_set() );
+		$this->assertSame( [], $this->history->for_library() );
 	}
 
 	public function testRecordPersistsASnapshotReadableByCountAndLatest(): void {
@@ -62,23 +62,23 @@ final class Token_History_StoreTest extends TestCase {
 		$this->assertSame( '{"v":2}', $latest['document'] );
 	}
 
-	public function testForSetReturnsSnapshotsNewestFirst(): void {
+	public function testForLibraryReturnsSnapshotsNewestFirst(): void {
 		$this->history->record( Token_History_Store::default_slug(), '{"v":1}', 'one' );
 		$this->history->record( Token_History_Store::default_slug(), '{"v":2}', 'two' );
 		$this->history->record( Token_History_Store::default_slug(), '{"v":3}', 'three' );
 
-		$documents = array_column( $this->history->for_set(), 'document' );
+		$documents = array_column( $this->history->for_library(), 'document' );
 
 		$this->assertSame( [ '{"v":3}', '{"v":2}', '{"v":1}' ], $documents );
 	}
 
-	public function testForSetHonoursLimitAndOffset(): void {
+	public function testForLibraryHonorsLimitAndOffset(): void {
 		foreach ( [ '{"v":1}', '{"v":2}', '{"v":3}', '{"v":4}' ] as $index => $document ) {
 			$this->history->record( Token_History_Store::default_slug(), $document, (string) $index );
 		}
 
 		// Newest first: v4, v3, v2, v1. Skip the newest, take the next two.
-		$documents = array_column( $this->history->for_set( '', 2, 1 ), 'document' );
+		$documents = array_column( $this->history->for_library( '', 2, 1 ), 'document' );
 
 		$this->assertSame( [ '{"v":3}', '{"v":2}' ], $documents );
 	}
@@ -103,7 +103,7 @@ final class Token_History_StoreTest extends TestCase {
 		// Default retention is 5.
 		$this->assertSame( 5, $this->history->count() );
 
-		$documents = array_column( $this->history->for_set( '', 100 ), 'document' );
+		$documents = array_column( $this->history->for_library( '', 100 ), 'document' );
 
 		// Newest five kept, oldest two (v1, v2) gone.
 		$this->assertSame( [ '{"v":7}', '{"v":6}', '{"v":5}', '{"v":4}', '{"v":3}' ], $documents );
@@ -120,7 +120,7 @@ final class Token_History_StoreTest extends TestCase {
 		remove_filter( 'kadence_blocks_design_tokens_history_limit', $to_two );
 
 		$this->assertSame( 2, $this->history->count() );
-		$documents = array_column( $this->history->for_set( '', 100 ), 'document' );
+		$documents = array_column( $this->history->for_library( '', 100 ), 'document' );
 		$this->assertSame( [ '{"v":4}', '{"v":3}' ], $documents );
 	}
 

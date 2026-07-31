@@ -14,34 +14,34 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use RuntimeException;
 
 /**
- * Builds the scoped CSS for selectable Kadence block variants for the single active token set.
+ * Builds the scoped CSS for selectable Kadence block presets for the single active token library.
  *
- * A selected variant reaches output purely through the cascade: the editor adds a "kb-variant--<name>"
- * class to the block, and this builder emits, per (block, variant), a rule that retargets the --global-*
+ * A selected preset reaches output purely through the cascade: the editor adds a "kb-preset--<name>"
+ * class to the block, and this builder emits, per (block, preset), a rule that retargets the --global-*
  * custom properties (a numbered palette slot or a named button slot) the block consumes in its render path
  * / SCSS, re-skinning it with zero changes to the block's markup.
  *
- * A block declares one flat variant list, and each variant may define a different subset of the block's
- * bound surface; the build emits, per variant, exactly the properties that variant resolves. Two variants
- * that both retarget the same --global-<slot> carry equal specificity, so the selected-variant rule wins
+ * A block declares one flat preset list, and each preset may define a different subset of the block's
+ * bound surface; the build emits, per preset, exactly the properties that preset resolves. Two presets
+ * that both retarget the same --global-<slot> carry equal specificity, so the selected-preset rule wins
  * over the class-less $default rule by higher specificity, and a per-instance edit wins over both.
  *
- * Only the active set is emitted (the active-set pointer selects it). The build has two layers:
+ * Only the active library is emitted (the active-library pointer selects it). The build has two layers:
  *
- *   1. The canonical variant-var definitions at `:root` —
- *      --kb-token--variant--<block>--<variant>--<property>: <value-or-var> — where an aliased binding reads
- *      var(--kb-token--<target>) so the variant chains to the active set's canonical token, and a literal
+ *   1. The canonical preset-var definitions at `:root` —
+ *      --kb-token--preset--<block>--<preset>--<property>: <value-or-var> — where an aliased binding reads
+ *      var(--kb-token--<target>) so the preset chains to the active library's canonical token, and a literal
  *      binding emits the literal.
- *   2. Per (block, variant) scoped rules — ".wp-block-<block>.kb-variant--<variant>" — pointing each
- *      --global-<slot> at the canonical variant var, plus a class-less ".wp-block-<block>" rule for the
- *      $default variant so a block with no variant selected still shows its preset.
+ *   2. Per (block, preset) scoped rules — ".wp-block-<block>.kb-preset--<preset>" — pointing each
+ *      --global-<slot> at the canonical preset var, plus a class-less ".wp-block-<block>" rule for the
+ *      $default preset so a block with no preset selected still shows its preset.
  *
- * Scoping is per (block, variant): the same variant name on two blocks ("ghost" on a Button and a Row) gets
- * its own qualified rule, so values never collide. Both named variants and the "$default" preset carry
+ * Scoping is per (block, preset): the same preset name on two blocks ("ghost" on a Button and a Row) gets
+ * its own qualified rule, so values never collide. Both named presets and the "$default" preset carry
  * ordinary class/element specificity, so a per-instance edit still wins.
  *
  * Nothing here is !important and the scope carries ordinary class specificity, so a per-instance inline
- * style still wins over a variant. Values are sanitized defensively before they reach a declaration.
+ * style still wins over a preset. Values are sanitized defensively before they reach a declaration.
  *
  * Pure: no WordPress calls beyond the object cache in css_for_version(). The hooks live in Projector.
  *
@@ -53,18 +53,18 @@ final class Css_Builder {
 	use Sanitizes_Css_Value;
 
 	/**
-	 * The variant var namespace, appended after the shared --kb-token-- prefix.
+	 * The preset var namespace, appended after the shared --kb-token-- prefix.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const VARIANT_SEGMENT = 'variant--';
+	private const PRESET_SEGMENT = 'preset--';
 
 	/**
-	 * Kadence theme global custom-property slots a variant may retarget beyond the numbered palette
+	 * Kadence theme global custom-property slots a preset may retarget beyond the numbered palette
 	 * (palette1..9). These are the button's own color slots — the exact --global-* properties the
-	 * button render path already consumes — so a variant re-skins the button with no change to its
+	 * button render path already consumes — so a preset re-skins the button with no change to its
 	 * render path.
 	 *
 	 * @since TBD
@@ -88,14 +88,14 @@ final class Css_Builder {
 	private const CACHE_GROUP = 'kb_design_tokens';
 
 	/**
-	 * @var Token_Registry The registry the preset sets (and their bindings) are read from.
+	 * @var Token_Registry The registry the preset bindings are read from.
 	 *
 	 * @since TBD
 	 */
 	private Token_Registry $registry;
 
 	/**
-	 * @var Preset_Resolver Flattens each variant's bindings to resolved CSS values.
+	 * @var Preset_Resolver Flattens each preset's bindings to resolved CSS values.
 	 *
 	 * @since TBD
 	 */
@@ -109,8 +109,8 @@ final class Css_Builder {
 	private Token_Store $store;
 
 	/**
-	 * Per-request memo of built CSS, keyed on the active set's object-cache key, so a write (which bumps the
-	 * set's version) invalidates the affected entry on its own.
+	 * Per-request memo of built CSS, keyed on the active library's object-cache key, so a write (which bumps the
+	 * library's version) invalidates the affected entry on its own.
 	 *
 	 * @since TBD
 	 *
@@ -119,13 +119,13 @@ final class Css_Builder {
 	private array $memo = [];
 
 	/**
-	 * Per-request memo of the collected variant structure, keyed on the set slug AND its store version, so the
-	 * registry/resolver walk runs once per set even when several layers read it, yet a write (which bumps the
+	 * Per-request memo of the collected preset structure, keyed on the library slug AND its store version, so the
+	 * registry/resolver walk runs once per library even when several layers read it, yet a write (which bumps the
 	 * version) produces a fresh collection rather than serving the pre-write structure.
 	 *
 	 * @since TBD
 	 *
-	 * @var array<string, array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>>
+	 * @var array<string, array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}>>
 	 */
 	private array $collected = [];
 
@@ -143,12 +143,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the active set's variant CSS: the canonical variant-var definitions plus the scoped retarget
+	 * Build the active library's preset CSS: the canonical preset-var definitions plus the scoped retarget
 	 * rules. The pure, uncached assembler (its cached counterpart is css_for_version()).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
+	 * @param string $active_slug The active library's slug.
 	 *
 	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
 	 */
@@ -157,22 +157,22 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Cached variant of css(): assembles the active set's variant CSS from the object cache with a per-request
-	 * memo. A write bumps the set's store version, which changes the cache key, so a fresh build is produced on
+	 * Cached version of css(): assembles the active library's preset CSS from the object cache with a per-request
+	 * memo. A write bumps the library's store version, which changes the cache key, so a fresh build is produced on
 	 * the next request.
 	 *
 	 * The plugin version is folded into the cache key alongside the store version, so the cache also busts on a
-	 * plugin build (shipped variant definitions and the baseline can change with it).
+	 * plugin build (shipped preset definitions and the baseline can change with it).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
-	 * @param string $version     The store version the active set was built from.
+	 * @param string $active_slug The active library's slug.
+	 * @param string $version     The store version the active library was built from.
 	 *
 	 * @return string
 	 */
 	public function css_for_version( string $active_slug, string $version ): string {
-		$cache_key = 'variant_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version;
+		$cache_key = 'preset_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version;
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {
 			return $this->memo[ $cache_key ];
@@ -192,15 +192,15 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The active set's canonical `--kb-token--variant--*` declarations, without a selector wrapper — the raw
-	 * `--kb-token--variant--<block>--<variant>--<property>:<value>;` list. The palette switch layer re-emits
-	 * these under `[data-kb-palette]` so a per-block palette override forces each variant var to re-resolve
-	 * against the subtree's re-tinted semantics (a variant that aliases a palette-changed color follows the
-	 * chosen palette, so a variant Button re-skins with the rest of its subtree).
+	 * The active library's canonical `--kb-token--preset--*` declarations, without a selector wrapper — the raw
+	 * `--kb-token--preset--<block>--<preset>--<property>:<value>;` list. The palette switch layer re-emits
+	 * these under `[data-kb-palette]` so a per-block palette override forces each preset var to re-resolve
+	 * against the subtree's re-tinted semantics (a preset that aliases a palette-changed color follows the
+	 * chosen palette, so a preset Button re-skins with the rest of its subtree).
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set's slug.
+	 * @param string $active_slug The active library's slug.
 	 *
 	 * @return string
 	 */
@@ -209,13 +209,13 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build (uncached) the active set's variant CSS: the canonical variant-var definitions followed by the
-	 * per-variant scoped rules and the class-less $default rules. The single assembly definition shared by
+	 * Build (uncached) the active library's preset CSS: the canonical preset-var definitions followed by the
+	 * per-preset scoped rules and the class-less $default rules. The single assembly definition shared by
 	 * css() and the cached css_for_version().
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active set slug.
+	 * @param string $active_slug The active library slug.
 	 *
 	 * @return string
 	 */
@@ -223,20 +223,20 @@ final class Css_Builder {
 		$collected = $this->collect( $active_slug );
 
 		return $this->canonical_block( $collected )
-			. $this->scoped_variants( $collected )
+			. $this->scoped_presets( $collected )
 			. $this->scoped_default( $collected );
 	}
 
 	/**
-	 * Walk every (block, variant, property) that resolves to a slot-targeted value for a set, into a
+	 * Walk every (block, preset, property) that resolves to a slot-targeted value for a library, into a
 	 * structure the layers below build from. The projected value keeps its var() target canonical, so an
-	 * aliased variant chains to the set's canonical token. Memoized per slug for the request.
+	 * aliased preset chains to the library's canonical token. Memoized per slug for the request.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The set slug to resolve against.
+	 * @param string $slug The library slug to resolve against.
 	 *
-	 * @return array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}>
+	 * @return array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}>
 	 */
 	private function collect( string $slug ): array {
 		$key = $slug . '_' . $this->store->get_version( $slug );
@@ -248,11 +248,11 @@ final class Css_Builder {
 		$out = [];
 
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
-			// A block may carry registered bindings before the document defines its variants; that is not an
-			// error, it simply contributes nothing yet, so skip a block whose set the registry never declared.
-			$set = $this->registry->for_block( $block );
+			// A block may carry registered bindings before the document defines its presets; that is not an
+			// error, it simply contributes nothing yet, so skip a block whose preset bindings the registry never declared.
+			$bindings = $this->registry->for_block( $block );
 
-			if ( $set === null ) {
+			if ( $bindings === null ) {
 				continue;
 			}
 
@@ -262,11 +262,11 @@ final class Css_Builder {
 				continue;
 			}
 
-			$variants = [];
+			$presets = [];
 
-			foreach ( $names as $variant ) {
+			foreach ( $names as $preset ) {
 				try {
-					$values = $this->presets->resolve( $block, $variant, $slug );
+					$values = $this->presets->resolve( $block, $preset, $slug );
 				} catch ( RuntimeException $e ) {
 					continue;
 				}
@@ -274,7 +274,7 @@ final class Css_Builder {
 				$properties = [];
 
 				foreach ( $values as $property => $value ) {
-					$binding = $set->binding( $property );
+					$binding = $bindings->binding( $property );
 
 					if ( $binding === null ) {
 						continue;
@@ -293,11 +293,11 @@ final class Css_Builder {
 				}
 
 				if ( $properties !== [] ) {
-					$variants[ $variant ] = $properties;
+					$presets[ $preset ] = $properties;
 				}
 			}
 
-			if ( $variants === [] ) {
+			if ( $presets === [] ) {
 				continue;
 			}
 
@@ -310,7 +310,7 @@ final class Css_Builder {
 			$out[ $block ] = [
 				'selector' => $this->block_selector( $block ),
 				'default'  => $default,
-				'variants' => $variants,
+				'presets'  => $presets,
 			];
 		}
 
@@ -318,12 +318,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the canonical `--kb-token--variant--*` definitions from the active set's collected variants. The
-	 * value preserves alias indirection canonically, so the variant chains to the active set's token.
+	 * Emit the canonical `--kb-token--preset--*` definitions from the active library's collected presets. The
+	 * value preserves alias indirection canonically, so the preset chains to the active library's token.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -334,12 +334,12 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The raw `--kb-token--variant--*:<value>;` declaration list for the collected variants, shared by the
+	 * The raw `--kb-token--preset--*:<value>;` declaration list for the collected presets, shared by the
 	 * `:root` canonical block and the palette switch layer's re-emission.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -347,9 +347,9 @@ final class Css_Builder {
 		$declarations = '';
 
 		foreach ( $collected as $block => $data ) {
-			foreach ( $data['variants'] as $variant => $properties ) {
+			foreach ( $data['presets'] as $preset => $properties ) {
 				foreach ( $properties as $property => $info ) {
-					$declarations .= $this->variant_var( $block, $variant, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
+					$declarations .= $this->preset_var( $block, $preset, $property ) . ':' . $this->sanitize_value( $info['value'] ) . ';';
 				}
 			}
 		}
@@ -358,25 +358,25 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the per-variant scoped rules from the active set's collected variants: per (block, variant) a
-	 * ".wp-block-<block>.kb-variant--<variant>" rule pointing each --global-<slot> at the canonical variant
+	 * Emit the per-preset scoped rules from the active library's collected presets: per (block, preset) a
+	 * ".wp-block-<block>.kb-preset--<preset>" rule pointing each --global-<slot> at the canonical preset
 	 * var.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
-	private function scoped_variants( array $collected ): string {
+	private function scoped_presets( array $collected ): string {
 		$css = '';
 
 		foreach ( $collected as $block => $data ) {
-			foreach ( $data['variants'] as $variant => $properties ) {
-				$declarations = $this->slot_declarations( $block, $variant, $properties );
+			foreach ( $data['presets'] as $preset => $properties ) {
+				$declarations = $this->slot_declarations( $block, $preset, $properties );
 
 				if ( $declarations !== '' ) {
-					$css .= $data['selector'] . '.' . Style::preset_class( $variant ) . '{' . $declarations . '}';
+					$css .= $data['selector'] . '.' . Style::preset_class( $preset ) . '{' . $declarations . '}';
 				}
 			}
 		}
@@ -385,14 +385,14 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Emit the class-less $default rules from the active set's collected variants: per block a
-	 * ".wp-block-<block>" rule re-emitting the $default variant's declarations so a block with no variant
-	 * selected still shows its preset. Its lower specificity yields to the kb-variant-- rules (a selected
-	 * variant) and to a per-instance edit, so it only fills the gap.
+	 * Emit the class-less $default rules from the active library's collected presets: per block a
+	 * ".wp-block-<block>" rule re-emitting the $default preset's declarations so a block with no preset
+	 * selected still shows its preset. Its lower specificity yields to the kb-preset-- rules (a selected
+	 * preset) and to a per-instance edit, so it only fills the gap.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, array{selector:string, default:string, variants:array<string, array<string, array{target:string, value:string}>>}> $collected The active set's collected variants.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The active library's collected presets.
 	 *
 	 * @return string
 	 */
@@ -402,11 +402,11 @@ final class Css_Builder {
 		foreach ( $collected as $block => $data ) {
 			$default = $data['default'];
 
-			if ( $default === '' || ! isset( $data['variants'][ $default ] ) ) {
+			if ( $default === '' || ! isset( $data['presets'][ $default ] ) ) {
 				continue;
 			}
 
-			$declarations = $this->slot_declarations( $block, $default, $data['variants'][ $default ] );
+			$declarations = $this->slot_declarations( $block, $default, $data['presets'][ $default ] );
 
 			if ( $declarations !== '' ) {
 				$css .= $data['selector'] . '{' . $declarations . '}';
@@ -417,37 +417,37 @@ final class Css_Builder {
 	}
 
 	/**
-	 * Build the `--global-<slot>:var(<canonical variant var>);` declarations for one variant's properties.
+	 * Build the `--global-<slot>:var(<canonical preset var>);` declarations for one preset's properties.
 	 *
 	 * @since TBD
 	 *
-	 * @param string                                             $block      The block name.
-	 * @param string                                             $variant    The variant slug.
-	 * @param array<string, array{target:string, value:string}> $properties The variant's collected properties.
+	 * @param string                                            $block      The block name.
+	 * @param string                                            $preset     The preset slug.
+	 * @param array<string, array{target:string, value:string}> $properties The preset's collected properties.
 	 *
 	 * @return string
 	 */
-	private function slot_declarations( string $block, string $variant, array $properties ): string {
+	private function slot_declarations( string $block, string $preset, array $properties ): string {
 		$declarations = '';
 
 		foreach ( $properties as $property => $info ) {
-			$declarations .= $info['target'] . ':var(' . $this->variant_var( $block, $variant, $property ) . ');';
+			$declarations .= $info['target'] . ':var(' . $this->preset_var( $block, $preset, $property ) . ');';
 		}
 
 		return $declarations;
 	}
 
 	/**
-	 * The CSS custom property a selected variant sets for a binding, or null when the binding drives none.
+	 * The CSS custom property a selected preset sets for a binding, or null when the binding drives none.
 	 *
 	 * A binding that targets a Kadence palette slot resolves to `--global-<slot>` (the color path); a binding
 	 * that declares a `css_var` resolves to `--<css_var>` (e.g. `--kb-btn-radius` for border-radius, which has
-	 * no palette slot). The variant's scoped rule sets this property to the per-variant value, so it can vary
-	 * per variant while the block reads the same variable.
+	 * no palette slot). The preset's scoped rule sets this property to the per-preset value, so it can vary
+	 * per preset while the block reads the same variable.
 	 *
 	 * @since TBD
 	 *
-	 * @param Binding $binding The variant binding.
+	 * @param Binding $binding The preset binding.
 	 *
 	 * @return string|null The full custom-property name (e.g. "--global-palette-btn-bg", "--kb-btn-radius"), or null.
 	 */
@@ -477,7 +477,7 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param Binding $binding The variant binding.
+	 * @param Binding $binding The preset binding.
 	 *
 	 * @return string|null The slot ("palette3", "palette-btn-bg"), or null.
 	 */
@@ -513,23 +513,23 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The canonical variant var name for a (block, variant, property):
-	 * "--kb-token--variant--<block>--<variant>--<property>", e.g.
-	 * --kb-token--variant--kadence-singlebtn--secondary--button-bg.
+	 * The canonical preset var name for a (block, preset, property):
+	 * "--kb-token--preset--<block>--<preset>--<property>", e.g.
+	 * --kb-token--preset--kadence-singlebtn--secondary--button-bg.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $block    The block name.
-	 * @param string $variant  The variant slug.
+	 * @param string $preset   The preset slug.
 	 * @param string $property The block property.
 	 *
 	 * @return string
 	 */
-	private function variant_var( string $block, string $variant, string $property ): string {
+	private function preset_var( string $block, string $preset, string $property ): string {
 		return Css_Var::get_prefix()
-			. self::VARIANT_SEGMENT
+			. self::PRESET_SEGMENT
 			. self::sanitize_identifier( str_replace( '/', '-', $block ) ) . '--'
-			. self::sanitize_identifier( $variant ) . '--'
+			. self::sanitize_identifier( $preset ) . '--'
 			. self::sanitize_identifier( $property );
 	}
 }

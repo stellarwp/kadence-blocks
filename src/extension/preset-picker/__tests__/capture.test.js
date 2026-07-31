@@ -18,7 +18,7 @@ const SET = 'default';
 function seedCatalog() {
 	window.kadenceDesignTokensPresets = {
 		active: 'default',
-		sets: {
+		libraries: {
 			default: {
 				[BLOCK]: {
 					default: 'primary',

@@ -174,7 +174,7 @@ final class Pickable_Tokens_Catalog {
 	private function values(): array {
 		$values = [];
 
-		foreach ( $this->set_slugs() as $slug ) {
+		foreach ( $this->library_slugs() as $slug ) {
 			try {
 				$values[ $slug ] = $this->resolver->resolve( $slug )->by_id();
 			} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
@@ -192,7 +192,7 @@ final class Pickable_Tokens_Catalog {
 	 *
 	 * @return string[]
 	 */
-	private function set_slugs(): array {
+	private function library_slugs(): array {
 		$slugs = array_map( 'strval', array_column( $this->store->list_stores(), 'slug' ) );
 
 		if ( ! in_array( Token_Store::default_slug(), $slugs, true ) ) {

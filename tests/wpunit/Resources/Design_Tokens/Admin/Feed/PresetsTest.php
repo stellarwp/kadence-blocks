@@ -32,7 +32,7 @@ final class PresetsTest extends TestCase {
 
 		$this->assertArrayHasKey( self::BUTTON, $presets );
 
-		// The button's presets live directly under the block (one flat set per block).
+		// The button's presets live directly under the block (one flat preset collection per block).
 		$button = $presets[ self::BUTTON ];
 
 		$this->assertSame( 'Style', $button['label'] );
@@ -50,7 +50,7 @@ final class PresetsTest extends TestCase {
 	}
 
 	public function testABlockRegisteredButAbsentFromTheDocumentIsSkipped(): void {
-		// A fresh registry whose only binding set has no matching presets in the shipped baseline.
+		// A fresh registry whose only preset bindings have no matching presets in the shipped baseline.
 		$registry = new Token_Registry();
 		$registry->register_preset_bindings( [ 'block' => 'kadence/not-a-real-block' ] );
 

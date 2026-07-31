@@ -38,14 +38,14 @@ if ( ! function_exists( 'kadence_blocks_register_design_preset_bindings' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $set See Preset_Bindings::from_array().
+	 * @param array{block: string, bindings?: array<string, array<string, mixed>>} $declaration See Preset_Bindings::from_array().
 	 *
 	 * @return void
 	 */
-	function kadence_blocks_register_design_preset_bindings( array $set ): void {
+	function kadence_blocks_register_design_preset_bindings( array $declaration ): void {
 		/** @var Token_Registry $registry */
 		$registry = kadence_blocks()->get( Token_Registry::class );
-		$registry->register_preset_bindings( $set );
+		$registry->register_preset_bindings( $declaration );
 	}
 }
 

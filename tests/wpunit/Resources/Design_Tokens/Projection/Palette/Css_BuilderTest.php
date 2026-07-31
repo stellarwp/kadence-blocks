@@ -8,7 +8,7 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Covers the per-block palette switch-layer builder: a shared `[data-kb-palette]` rule re-emitting the
- * variant declarations, plus one `[data-kb-palette="<id>"]` selector per palette re-declaring that palette's
+ * preset declarations, plus one `[data-kb-palette="<id>"]` selector per palette re-declaring that palette's
  * resolved color vars as literals.
  */
 final class Css_BuilderTest extends TestCase {
@@ -38,29 +38,29 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
-	 * The variant declarations are re-emitted under a shared attribute-presence `[data-kb-palette]` rule, so a
-	 * variant var re-resolves against the subtree's re-declared semantics inside any palette.
+	 * The preset declarations are re-emitted under a shared attribute-presence `[data-kb-palette]` rule, so a
+	 * preset var re-resolves against the subtree's re-declared semantics inside any palette.
 	 *
 	 * @return void
 	 */
-	public function testItEmitsTheVariantDeclarationsUnderTheSharedPresenceSelector(): void {
+	public function testItEmitsThePresetDeclarationsUnderTheSharedPresenceSelector(): void {
 		$css = $this->builder()->css(
 			[ 'dark' => [ '--kb-token--primitive--color--brand--primary' => '#0b1020' ] ],
-			'--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);'
+			'--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);'
 		);
 
 		$this->assertStringContainsString(
-			'[data-kb-palette]{--kb-token--variant--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);}',
+			'[data-kb-palette]{--kb-token--preset--kadence-singlebtn--primary--button-bg:var(--kb-token--semantic--color--button-primary-bg);}',
 			$css
 		);
 	}
 
 	/**
-	 * With no variant declarations, no shared presence rule is emitted (only the per-palette selectors).
+	 * With no preset declarations, no shared presence rule is emitted (only the per-palette selectors).
 	 *
 	 * @return void
 	 */
-	public function testItOmitsTheSharedRuleWhenThereAreNoVariantDeclarations(): void {
+	public function testItOmitsTheSharedRuleWhenThereAreNoPresetDeclarations(): void {
 		$css = $this->builder()->css( [ 'dark' => [ '--kb-token--primitive--color--brand--primary' => '#0b1020' ] ] );
 
 		$this->assertStringNotContainsString( '[data-kb-palette]{', $css );
