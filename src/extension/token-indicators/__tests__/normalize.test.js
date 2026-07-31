@@ -1,5 +1,12 @@
 /* eslint-env jest */
-import { deriveMeasureMode, isEmptyValue, matchesPreset, normalizeColor, normalizeDimension } from '../normalize';
+import {
+	deriveMeasureMode,
+	measureAttrsForDevice,
+	isEmptyValue,
+	matchesPreset,
+	normalizeColor,
+	normalizeDimension,
+} from '../normalize';
 
 describe('normalizeColor', () => {
 	beforeEach(() => {
@@ -106,6 +113,50 @@ describe('deriveMeasureMode', () => {
 	it('reads an unset value with no preset as linked', () => {
 		expect(deriveMeasureMode(undefined, undefined)).toBe('linked');
 		expect(deriveMeasureMode(['', '', '', ''], '')).toBe('linked');
+	});
+});
+
+describe('measureAttrsForDevice', () => {
+	const ATTRS = {
+		borderRadius: ['8', '8', '8', '8'],
+		tabletBorderRadius: ['8', '4', '8', '4'],
+		mobileBorderRadius: ['', '', '', ''],
+	};
+	const RESPONSIVE = { tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' };
+
+	it('reads the desktop attribute for Desktop', () => {
+		expect(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Desktop').value).toEqual(['8', '8', '8', '8']);
+		expect(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Desktop').attr).toBe('borderRadius');
+	});
+
+	it('reads the tablet attribute for Tablet', () => {
+		const read = measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Tablet');
+
+		expect(read.value).toEqual(['8', '4', '8', '4']);
+		expect(read.attr).toBe('tabletBorderRadius');
+	});
+
+	it('reads the mobile attribute for Mobile', () => {
+		const read = measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Mobile');
+
+		expect(read.value).toEqual(['', '', '', '']);
+		expect(read.attr).toBe('mobileBorderRadius');
+	});
+
+	it('falls back to the desktop attribute when the device has no mapping', () => {
+		const read = measureAttrsForDevice(ATTRS, 'borderRadius', {}, 'Tablet');
+
+		expect(read.attr).toBe('borderRadius');
+	});
+
+	it('derives the mode per device, so breakpoints can differ', () => {
+		// Desktop corners are equal (linked) while tablet corners differ (individual).
+		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Desktop').value, '')).toBe(
+			'linked'
+		);
+		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Tablet').value, '')).toBe(
+			'individual'
+		);
 	});
 });
 

@@ -116,6 +116,29 @@ export function presetSlotAt(presetValue, index) {
 }
 
 /**
+ * The attribute a responsive measure control is editing at the given device, and its current value.
+ *
+ * A responsive measure control keeps ONE linked/individual mode but writes three separate attributes
+ * (`borderRadius` / `tabletBorderRadius` / `mobileBorderRadius`). Deriving the mode — or collapsing
+ * corners on "link" — against the desktop attribute while the editor is on Tablet reads and writes the
+ * wrong breakpoint, so both must resolve the device's own attribute first.
+ *
+ * @param {Object} attributes  The block's attributes.
+ * @param {string} baseAttr    The desktop attribute name.
+ * @param {Object} [responsive] Device key ('tablet' | 'mobile') => attribute name.
+ * @param {string} [device]    The active preview device ('Desktop' | 'Tablet' | 'Mobile').
+ *
+ * @since TBD
+ *
+ * @return {{ attr: string, value: * }} The device's attribute name and its stored value.
+ */
+export function measureAttrsForDevice(attributes, baseAttr, responsive = {}, device = 'Desktop') {
+	const attr = get(responsive, String(device).toLowerCase(), '') || baseAttr;
+
+	return { attr, value: get(attributes, attr, '') };
+}
+
+/**
  * The linked/individual mode a measure control should open in, derived from the corners the user would
  * actually see: each stored corner where one is set, otherwise the value that corner inherits from the
  * selected preset.
