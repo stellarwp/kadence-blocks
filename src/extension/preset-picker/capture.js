@@ -8,39 +8,89 @@
  */
 import { get } from 'lodash';
 import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
-import { normalizeColor, normalizeDimension, normalizeText, isEmptyValue } from '../token-indicators/normalize';
+import {
+	normalizeColor,
+	normalizeDimension,
+	normalizeText,
+	isEmptyValue,
+	dimensionSlots,
+} from '../token-indicators/normalize';
 import { isTokenAlias } from '../design-tokens/alias';
+
+/**
+ * Compose one dimension slot into the literal a preset stores: a token alias is stored verbatim, any
+ * other value gets the control's unit appended.
+ *
+ * A token alias is a whole-string `{dot.path}` reference. Appending the unit would produce
+ * `{dot.path}px`, which the server rejects as `alias_malformed` — `Alias::looks_like_alias()` fires on
+ * a brace anywhere in the value, so a suffixed alias is not "an alias with a unit", it is malformed.
+ *
+ * @param {string} slot The stored slot value.
+ * @param {string} unit The companion unit.
+ *
+ * @since TBD
+ *
+ * @return {string} The slot literal.
+ */
+function slotToLiteral(slot, unit) {
+	return isTokenAlias(slot) ? slot : `${slot}${unit}`;
+}
+
+/**
+ * The preset's own value for one corner, used to fill a corner the user never set.
+ *
+ * The preset value may itself be a slot list, in which case the corner takes the MATCHING slot — taking
+ * the whole list would nest an array inside a slot, which the server rejects.
+ *
+ * @param {*}      presetValue The selected preset's value for this property.
+ * @param {number} index       The corner index.
+ *
+ * @since TBD
+ *
+ * @return {string} The preset's value for that corner, or '' when it has none.
+ */
+function presetSlotAt(presetValue, index) {
+	if (Array.isArray(presetValue)) {
+		return String(presetValue.length === 1 ? presetValue[0] : (presetValue[index] ?? ''));
+	}
+
+	return presetValue === undefined || presetValue === null ? '' : String(presetValue);
+}
 
 /**
  * Reduce a block attribute value to the literal a preset token stores, per kind: a color resolves to its
  * literal, a dimension composes its value and unit (`8` + `px` -> `8px`), text passes through trimmed.
  *
- * @param {string} kind  The property kind ('color' | 'dimension' | 'text').
- * @param {*}      value The stored attribute value.
- * @param {string} unit  The companion unit (dimension only; '' otherwise).
+ * A dimension keeps its corners: four identical corners collapse to one value (so a uniform preset is
+ * stored exactly as before), and corners that differ are stored as a slot list so a per-corner radius
+ * survives the round trip instead of narrowing to its first side.
+ *
+ * @param {string} kind        The property kind ('color' | 'dimension' | 'text').
+ * @param {*}      value       The stored attribute value.
+ * @param {string} unit        The companion unit (dimension only; '' otherwise).
+ * @param {*}      presetValue The selected preset's value, used to fill an unset corner.
  *
  * @since TBD
  *
- * @return {string} The token literal.
+ * @return {string|string[]} The token literal, or the per-corner slot list.
  */
-function attrToLiteral(kind, value, unit) {
+function attrToLiteral(kind, value, unit, presetValue) {
 	if (kind === 'dimension') {
-		// A preset token is a single scalar, so a per-corner override (e.g. `['8','8','8','4']`) narrows to
-		// its first populated side — matching how the indicator's bound/overridden compare reads a dimension.
-		const dimension = normalizeDimension(value, unit);
-
-		if (dimension.value === '') {
+		if (normalizeDimension(value, unit).value === '') {
 			return '';
 		}
 
-		// A token alias is a whole-string `{dot.path}` reference — the preset stores it verbatim. Appending
-		// the unit would produce `{dot.path}px`, which the server rejects as `alias_malformed` because
-		// `Alias::looks_like_alias()` fires on a brace anywhere in the value.
-		if (isTokenAlias(dimension.value)) {
-			return dimension.value;
+		const slots = dimensionSlots(value).map((slot, index) =>
+			slot === '' ? presetSlotAt(presetValue, index) : slotToLiteral(slot, unit)
+		);
+
+		// A corner the user left unset whose preset has no value either cannot be expressed in a shorthand,
+		// so the whole property is omitted and inherited through the cascade instead.
+		if (slots.some((slot) => slot === '')) {
+			return '';
 		}
 
-		return `${dimension.value}${dimension.unit}`;
+		return slots.every((slot) => slot === slots[0]) ? slots[0] : slots;
 	}
 
 	if (kind === 'color') {
@@ -76,8 +126,9 @@ export function capturedTokens(blockName, library, attributes) {
 		// "Edited" here is simply "the control carries a value" — we snapshot the current visual state, so a
 		// value that happens to equal the preset is captured all the same (no differs-from-preset compare).
 		const edited = attr && !isEmptyValue(property.kind, raw);
+		const presetValue = get(presetValues, property.key, '');
 
-		tokens[property.key] = edited ? attrToLiteral(property.kind, raw, unit) : get(presetValues, property.key, '');
+		tokens[property.key] = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
 		return tokens;
 	}, {});

@@ -60,7 +60,7 @@ describe('capturedTokens', () => {
 	it('composes an edited dimension from its value and unit', () => {
 		const attributes = {
 			kbPreset: 'primary',
-			borderRadius: ['8', '', '', ''],
+			borderRadius: '8',
 			borderRadiusUnit: 'px',
 		};
 
@@ -76,6 +76,85 @@ describe('capturedTokens', () => {
 		};
 
 		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe(alias);
+	});
+
+	it('captures four identical literals as a single value', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toBe('8px');
+	});
+
+	it('captures mixed literal corners as a slot list', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '4', '4'],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual(['8px', '8px', '4px', '4px']);
+	});
+
+	it('captures mixed alias and literal corners as a slot list, with no unit on the aliases', () => {
+		const alias = '{primitive.dimension.radius.md}';
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: [alias, '8', alias, '8'],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual([alias, '8px', alias, '8px']);
+	});
+
+	it('captures mixed alias corners as a slot list', () => {
+		const md = '{primitive.dimension.radius.md}';
+		const sm = '{primitive.dimension.radius.sm}';
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: [md, sm, md, sm],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual([md, sm, md, sm]);
+	});
+
+	it('fills an empty corner from the preset value', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '', '', ''],
+			borderRadiusUnit: 'px',
+		};
+
+		// The preset's button-radius is '4px', so the three untouched corners inherit it.
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual(['8px', '4px', '4px', '4px']);
+	});
+
+	it('fills an empty corner from the matching slot of a per-corner preset value', () => {
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary['button-radius'] = [
+			'1px',
+			'2px',
+			'3px',
+			'4px',
+		];
+
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '', '', ''],
+			borderRadiusUnit: 'px',
+		};
+
+		expect(capturedTokens(BLOCK, SET, attributes)['button-radius']).toEqual(['8px', '2px', '3px', '4px']);
+	});
+
+	it('survives a round trip through the preset values without flattening', () => {
+		const slots = ['8px', '8px', '4px', '4px'];
+		window.kadenceDesignTokensPresets.libraries[SET][BLOCK].values.primary['button-radius'] = slots;
+
+		// Nothing edited: the not-edited fallback must hand the slot list back unchanged.
+		expect(capturedTokens(BLOCK, SET, { kbPreset: 'primary' })['button-radius']).toEqual(slots);
 	});
 
 	it('uses the default preset when no preset is selected', () => {

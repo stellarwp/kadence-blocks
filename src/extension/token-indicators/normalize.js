@@ -77,6 +77,24 @@ function dimensionSides(value) {
 }
 
 /**
+ * The stored sides of a dimension value with their POSITION preserved: a 4-side array maps one-to-one
+ * and an untouched side stays `''`, while a scalar is a single slot. This is the positional counterpart
+ * to `dimensionSides`, which drops empties and so cannot say WHICH corner a value belongs to — needed
+ * wherever a per-corner value is composed or compared slot by slot.
+ *
+ * @param {*} value The stored dimension value (number, string, or 4-side array).
+ *
+ * @since TBD
+ *
+ * @return {string[]} The slots as trimmed strings, empty slots preserved as ''.
+ */
+export function dimensionSlots(value) {
+	const raw = Array.isArray(value) ? value : [value];
+
+	return raw.map((side) => (side === undefined || side === null ? '' : String(side).trim()));
+}
+
+/**
  * Normalize a dimension attribute to `{ value, unit }`. A measurement control writes a 4-side array
  * (`[top, right, bottom, left]`); the representative value is the first populated side. An empty value
  * yields an empty marker so "no override" is detectable. This is the scalar view used for empty
@@ -159,6 +177,39 @@ function parseDimensionLiteral(literal) {
 }
 
 /**
+ * Whether a stored dimension matches a PER-CORNER preset value, compared slot by slot.
+ *
+ * Either side may carry a single entry, which means "every corner": a one-slot list is expanded to four
+ * before the compare, so a uniform stored value still matches a single-slot preset. Comparing by position
+ * means a rotated set of the same corners (e.g. `4,8,4,8` against `8,4,8,4`) correctly reads as overridden.
+ *
+ * @param {string[]} sides       The stored sides, empties already dropped.
+ * @param {string}   storedUnit  The stored companion unit.
+ * @param {Array}    presetSlots The preset's per-corner literals.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when every corner equals its preset slot.
+ */
+function matchesPresetSlots(sides, storedUnit, presetSlots) {
+	const expand = (list) => (list.length === 1 ? [list[0], list[0], list[0], list[0]] : list);
+
+	const stored = expand(sides);
+	const presets = expand(presetSlots.map(parseDimensionLiteral));
+
+	if (stored.length !== presets.length) {
+		return false;
+	}
+
+	return stored.every((side, index) => {
+		const preset = presets[index];
+		const unitMatches = preset.unit === '' || storedUnit === preset.unit;
+
+		return unitMatches && side === preset.value;
+	});
+}
+
+/**
  * Whether a stored value equals the selected preset's resolved value, normalized per kind.
  *
  * @param {string} kind        The property kind.
@@ -174,12 +225,19 @@ export function matchesPreset(kind, value, unit, presetValue) {
 	if (kind === 'dimension') {
 		const sides = dimensionSides(value);
 		const storedUnit = String(unit || '').trim();
-		const preset = parseDimensionLiteral(presetValue);
 
 		if (!sides.length) {
 			return false;
 		}
 
+		// A per-corner preset value is compared corner by corner. `parseDimensionLiteral` reads one length,
+		// so a slot list handed to it whole would never match and the control would read as overridden even
+		// when it exactly matches its preset.
+		if (Array.isArray(presetValue)) {
+			return matchesPresetSlots(sides, storedUnit, presetValue);
+		}
+
+		const preset = parseDimensionLiteral(presetValue);
 		const unitMatches = preset.unit === '' || storedUnit === preset.unit;
 
 		// Side-aware: a stored dimension matches only when EVERY populated side equals the preset value.
