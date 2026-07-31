@@ -99,11 +99,13 @@ final class Preset_Resolver {
 		$values = [];
 
 		foreach ( $tokens as $property => $value ) {
-			if ( $this->flatten( $value, $resolved ) === null ) {
+			$base = Extensions::preset_value_of( $value );
+
+			if ( $this->flatten( $base, $resolved ) === null ) {
 				continue;
 			}
 
-			$values[ $property ] = $this->project( $value );
+			$values[ $property ] = $this->project( $base );
 		}
 
 		return $values;
@@ -146,7 +148,7 @@ final class Preset_Resolver {
 		$values = [];
 
 		foreach ( $tokens as $property => $value ) {
-			$flat = $this->flatten( $value, $resolved );
+			$flat = $this->flatten( Extensions::preset_value_of( $value ), $resolved );
 
 			if ( $flat !== null ) {
 				$values[ $property ] = $flat;
@@ -154,6 +156,81 @@ final class Preset_Resolver {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * Resolve a preset's PER-BREAKPOINT overrides for the css-var projection, in the same var()-preserving
+	 * form as resolve().
+	 *
+	 * A property that varies by breakpoint carries the same envelope a responsive token leaf uses, so an
+	 * override is just another preset value — alias, literal or per-corner slot list — and flattens and
+	 * projects through the identical path. Only breakpoints that actually override something appear.
+	 *
+	 * An override whose alias resolves to nothing is dropped for THAT breakpoint only: the base and the
+	 * other breakpoints are unaffected, so a stale reference degrades to "no override here" rather than
+	 * taking the whole property down.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library whose effective presets and resolved values are read.
+	 *
+	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
+	 *
+	 * @return array<string, array<string, string>> breakpoint => ( property => var()-preserving value ).
+	 */
+	public function resolve_responsive( string $block, string $preset, string $slug = 'default' ): array {
+		$resolved = $this->resolver->resolve( $slug );
+		$out      = [];
+
+		foreach ( $this->preset_tokens( $block, $preset, $slug ) as $property => $value ) {
+			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
+				// Gate on the literal first, exactly as resolve() does, so an override that resolves to
+				// nothing never emits a var() pointing at a token the base projection did not define.
+				if ( $this->flatten( $override, $resolved ) === null ) {
+					continue;
+				}
+
+				$out[ (string) $breakpoint ][ (string) $property ] = $this->project( $override );
+			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Resolve a preset's PER-BREAKPOINT overrides to flattened LITERALS, for the editor surfaces that
+	 * cannot consume a var() chain. The literal counterpart of resolve_responsive(), covering exactly the
+	 * same overrides.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library whose effective presets and resolved values are read.
+	 *
+	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
+	 *
+	 * @return array<string, array<string, string|string[]>> breakpoint => ( property => literal value ).
+	 */
+	public function resolve_responsive_literal( string $block, string $preset, string $slug = 'default' ): array {
+		$resolved = $this->resolver->resolve( $slug );
+		$out      = [];
+
+		foreach ( $this->preset_tokens( $block, $preset, $slug ) as $property => $value ) {
+			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
+				$flat = $this->flatten( $override, $resolved );
+
+				if ( $flat === null ) {
+					continue;
+				}
+
+				$out[ (string) $breakpoint ][ (string) $property ] = $flat;
+			}
+		}
+
+		return $out;
 	}
 
 	/**

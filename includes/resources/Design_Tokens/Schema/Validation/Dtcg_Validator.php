@@ -749,11 +749,74 @@ final class Dtcg_Validator {
 			return $this->validate_extension_slots( $value, $path );
 		}
 
+		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
+			return $this->validate_extension_envelope( $value, $path );
+		}
+
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, or a slot list.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, or a responsive entry.'
 		);
+	}
+
+	/**
+	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base, and each override
+	 * under the vendor extension's `responsive` map is itself a preset token value.
+	 *
+	 * Mirrors {@see self::validate_responsive_shape()} — same envelope, same breakpoint-key check — but
+	 * validates each override by SHAPE rather than against a `$type`. A preset property has no `$type`
+	 * (the walk sees a property name like "button-radius", not a token id), which is also why the kind
+	 * gate lives in the REST write guard rather than here.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $entry The decoded entry.
+	 * @param string               $path  Dot-path to the entry.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_envelope( array $entry, string $path ): ?Validation_Error {
+		$error = $this->validate_extension_value( Extensions::preset_value_of( $entry ), $path );
+
+		if ( $error !== null ) {
+			return $error;
+		}
+
+		$responsive = Extensions::preset_responsive_of( $entry );
+
+		// An entry object with no overrides says nothing a bare value does not; refuse the dead shape.
+		if ( $responsive === [] ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				'A responsive preset token entry must declare at least one breakpoint override; use a bare value otherwise.'
+			);
+		}
+
+		$allowed = Responsive::get_breakpoint_keys();
+
+		foreach ( $responsive as $breakpoint => $override ) {
+			if ( ! in_array( $breakpoint, $allowed, true ) ) {
+				return new Validation_Error(
+					$path . '.' . $breakpoint,
+					Validation_Error::get_code_composite_field_unknown(),
+					sprintf(
+						'Unknown responsive breakpoint "%s"; expected one of: %s.',
+						(string) $breakpoint,
+						implode( ', ', $allowed )
+					)
+				);
+			}
+
+			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
 	}
 
 	/**

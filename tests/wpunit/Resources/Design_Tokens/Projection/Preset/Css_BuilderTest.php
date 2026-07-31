@@ -196,6 +196,100 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A preset property that varies by breakpoint redeclares its preset var inside that breakpoint's
+	 * @media block. The block-level slot bridge is untouched — it already points at the preset var, so
+	 * overriding the var is enough for the breakpoint to take effect.
+	 *
+	 * @return void
+	 */
+	public function testItRedeclaresAPresetVarInsideItsBreakpointMediaBlock(): void {
+		$this->seedResponsivePreset();
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 767px){:root,:root:where(.kb-tokens){--kb-token--preset--kadence-singlebtn--hero--button-radius:2px;}}',
+			$css
+		);
+		// The base value still lives in the flat, non-media declaration.
+		$this->assertStringContainsString( '--kb-token--preset--kadence-singlebtn--hero--button-radius:8px;', $css );
+	}
+
+	/**
+	 * An aliased override keeps its var() indirection inside the media block, so a token edit still reaches
+	 * that breakpoint live.
+	 *
+	 * @return void
+	 */
+	public function testAnAliasedOverrideKeepsItsVarIndirectionInTheMediaBlock(): void {
+		$this->seedResponsivePreset( [ 'tablet' => '{semantic.radius.control}' ] );
+
+		$css = $this->builder( $this->registry )->css( 'default', $this->breakpoints() );
+
+		$this->assertStringContainsString(
+			'@media all and (max-width: 1024px){:root,:root:where(.kb-tokens){--kb-token--preset--kadence-singlebtn--hero--button-radius:var(--kb-token--semantic--radius--control);}}',
+			$css
+		);
+	}
+
+	/**
+	 * A library whose presets declare no breakpoint overrides emits no media blocks at all, so every
+	 * existing preset projects byte-identically.
+	 *
+	 * @return void
+	 */
+	public function testItEmitsNoMediaBlocksWithoutResponsivePresets(): void {
+		$this->assertStringNotContainsString( '@media', $this->builder( $this->registry )->css( 'default', $this->breakpoints() ) );
+	}
+
+	/**
+	 * The breakpoint => media-query map a projector passes at emit time.
+	 *
+	 * @return array<string, string>
+	 */
+	private function breakpoints(): array {
+		return [
+			'tablet' => '(max-width: 1024px)',
+			'mobile' => '(max-width: 767px)',
+		];
+	}
+
+	/**
+	 * Persist a "hero" button preset whose radius varies by breakpoint into the active library.
+	 *
+	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 *
+	 * @return void
+	 */
+	private function seedResponsivePreset( array $responsive = [ 'mobile' => '2px' ] ): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							'hero' => [
+								'label'  => 'Hero',
+								'tokens' => [
+									'button-radius' => [
+										'$value'      => '8px',
+										'$extensions' => [
+											'com.kadence.designTokens' => [
+												'responsive' => $responsive,
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
+
+	/**
 	 * Persist a user-created "midnight" button preset into the "dark" token library only, so it is absent from
 	 * the active "default" library.
 	 *

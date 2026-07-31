@@ -362,6 +362,134 @@ final class Preset_ResolverTest extends TestCase {
 	}
 
 	/**
+	 * A responsive preset entry resolves its base value exactly as a bare entry does, so adding
+	 * breakpoints never changes what desktop renders.
+	 *
+	 * @return void
+	 */
+	public function testAResponsiveEntryResolvesItsBaseForDesktop(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[ 'button-radius' => $this->responsiveEntry( '8px', [ 'mobile' => '2px' ] ) ]
+		);
+
+		$this->assertSame( '8px', $this->resolver->resolve_literal( self::BUTTON, 'hero' )['button-radius'] );
+		$this->assertSame( '8px', $this->resolver->resolve( self::BUTTON, 'hero' )['button-radius'] );
+	}
+
+	/**
+	 * Per-breakpoint overrides project to the same var()-preserving form as the base, keyed by breakpoint,
+	 * so an aliased override still chains through the token cascade.
+	 *
+	 * @return void
+	 */
+	public function testResolveResponsiveProjectsEachBreakpoint(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[
+				'button-radius' => $this->responsiveEntry(
+					'8px',
+					[
+						'tablet' => [ '4px', '2px', '4px', '2px' ],
+						'mobile' => '{semantic.radius.control}',
+					]
+				),
+			]
+		);
+
+		$this->assertSame(
+			[
+				'tablet' => [ 'button-radius' => '4px 2px 4px 2px' ],
+				'mobile' => [ 'button-radius' => 'var(--kb-token--semantic--radius--control)' ],
+			],
+			$this->resolver->resolve_responsive( self::BUTTON, 'hero' )
+		);
+	}
+
+	/**
+	 * Per-breakpoint overrides also flatten to literals, for the editor surfaces that cannot consume a
+	 * var() chain.
+	 *
+	 * @return void
+	 */
+	public function testResolveResponsiveLiteralFlattensEachBreakpoint(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[ 'button-radius' => $this->responsiveEntry( '8px', [ 'mobile' => '{semantic.radius.control}' ] ) ]
+		);
+
+		$this->assertSame(
+			[ 'mobile' => [ 'button-radius' => '0.5rem' ] ],
+			$this->resolver->resolve_responsive_literal( self::BUTTON, 'hero' )
+		);
+	}
+
+	/**
+	 * An override whose alias resolves to nothing is dropped for that breakpoint only, leaving the base and
+	 * the other breakpoints intact — the same fail-closed choice a scalar binding makes.
+	 *
+	 * @return void
+	 */
+	public function testAnUnresolvableOverrideDropsOnlyThatBreakpoint(): void {
+		$this->seedPreset(
+			Token_Store::default_slug(),
+			'hero',
+			'Hero',
+			[
+				'button-radius' => $this->responsiveEntry(
+					'8px',
+					[
+						'tablet' => '{primitive.dimension.radius.nope}',
+						'mobile' => '2px',
+					]
+				),
+			]
+		);
+
+		$responsive = $this->resolver->resolve_responsive( self::BUTTON, 'hero' );
+
+		$this->assertArrayNotHasKey( 'tablet', $responsive );
+		$this->assertSame( [ 'button-radius' => '2px' ], $responsive['mobile'] );
+		$this->assertSame( '8px', $this->resolver->resolve_literal( self::BUTTON, 'hero' )['button-radius'] );
+	}
+
+	/**
+	 * A preset with no responsive entries resolves to an empty breakpoint map, so every existing preset
+	 * contributes no media queries.
+	 *
+	 * @return void
+	 */
+	public function testAPresetWithNoResponsiveEntriesResolvesEmpty(): void {
+		$this->assertSame( [], $this->resolver->resolve_responsive( self::BUTTON, 'primary' ) );
+	}
+
+	/**
+	 * A preset token entry carrying per-breakpoint overrides, in the same envelope a responsive token leaf
+	 * uses.
+	 *
+	 * @param mixed                $base       The entry's base value.
+	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 *
+	 * @return array<string, mixed> The entry.
+	 */
+	private function responsiveEntry( $base, array $responsive ): array {
+		return [
+			'$value'      => $base,
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => $responsive,
+				],
+			],
+		];
+	}
+
+	/**
 	 * Persist a single button preset into a token library's overrides document.
 	 *
 	 * @param string               $slug   The token library slug to write into.
