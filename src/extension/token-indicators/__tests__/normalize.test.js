@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { isEmptyValue, matchesPreset, normalizeColor, normalizeDimension } from '../normalize';
+import { deriveMeasureMode, isEmptyValue, matchesPreset, normalizeColor, normalizeDimension } from '../normalize';
 
 describe('normalizeColor', () => {
 	beforeEach(() => {
@@ -71,6 +71,41 @@ describe('matchesPreset dimension', () => {
 
 	it('does not match a different value with the same unit', () => {
 		expect(matchesPreset('dimension', ['8', '8', '8', '8'], 'px', '1.5rem')).toBe(false);
+	});
+});
+
+describe('deriveMeasureMode', () => {
+	it('reads all-empty corners on a scalar preset as linked', () => {
+		expect(deriveMeasureMode(['', '', '', ''], '0.5rem')).toBe('linked');
+	});
+
+	it('reads all-empty corners on a per-corner preset as individual', () => {
+		expect(deriveMeasureMode(['', '', '', ''], ['0', '0.125rem', '9999px', '1rem'])).toBe('individual');
+	});
+
+	it('reads all-empty corners on a uniform per-corner preset as linked', () => {
+		expect(deriveMeasureMode(['', '', '', ''], ['8px', '8px', '8px', '8px'])).toBe('linked');
+	});
+
+	it('reads equal stored corners as linked whatever the preset holds', () => {
+		expect(deriveMeasureMode(['8', '8', '8', '8'], ['0', '0.125rem', '9999px', '1rem'])).toBe('linked');
+	});
+
+	it('reads a differing stored corner as individual', () => {
+		expect(deriveMeasureMode(['8', '8', '8', '4'], '0.5rem')).toBe('individual');
+	});
+
+	it('reads one overridden corner against an inherited scalar as individual', () => {
+		expect(deriveMeasureMode(['{primitive.dimension.radius.lg}', '', '', ''], '0.5rem')).toBe('individual');
+	});
+
+	it('reads a single-slot preset as applying to every corner', () => {
+		expect(deriveMeasureMode(['', '', '', ''], ['8px'])).toBe('linked');
+	});
+
+	it('reads an unset value with no preset as linked', () => {
+		expect(deriveMeasureMode(undefined, undefined)).toBe('linked');
+		expect(deriveMeasureMode(['', '', '', ''], '')).toBe('linked');
 	});
 });
 

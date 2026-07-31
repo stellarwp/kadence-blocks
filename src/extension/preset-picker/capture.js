@@ -14,6 +14,7 @@ import {
 	normalizeText,
 	isEmptyValue,
 	dimensionSlots,
+	presetSlotAt,
 } from '../token-indicators/normalize';
 import { isTokenAlias } from '../design-tokens/alias';
 
@@ -34,27 +35,6 @@ import { isTokenAlias } from '../design-tokens/alias';
  */
 function slotToLiteral(slot, unit) {
 	return isTokenAlias(slot) ? slot : `${slot}${unit}`;
-}
-
-/**
- * The preset's own value for one corner, used to fill a corner the user never set.
- *
- * The preset value may itself be a slot list, in which case the corner takes the MATCHING slot — taking
- * the whole list would nest an array inside a slot, which the server rejects.
- *
- * @param {*}      presetValue The selected preset's value for this property.
- * @param {number} index       The corner index.
- *
- * @since TBD
- *
- * @return {string} The preset's value for that corner, or '' when it has none.
- */
-function presetSlotAt(presetValue, index) {
-	if (Array.isArray(presetValue)) {
-		return String(presetValue.length === 1 ? presetValue[0] : (presetValue[index] ?? ''));
-	}
-
-	return presetValue === undefined || presetValue === null ? '' : String(presetValue);
 }
 
 /**
