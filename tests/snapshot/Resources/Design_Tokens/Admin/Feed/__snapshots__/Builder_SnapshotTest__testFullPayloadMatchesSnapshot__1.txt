@@ -68,6 +68,7 @@
             }
         }
     },
+    "presetNav": [],
     "responsive": [],
     "rest": {
         "root": "https:\/\/example.test\/wp-json\/",
