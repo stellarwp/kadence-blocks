@@ -1,5 +1,40 @@
+// Neutralize wp-admin chrome spacing that fights a full-height locked frame.
+body.kadence-blocks-style-library-page {
+	#wpcontent {
+		padding-left: 0;
+	}
+
+	#wpbody-content {
+		padding-bottom: 0;
+	}
+
+	.kadence-blocks-style-library-wrap {
+		margin: 0;
+	}
+
+	// #wpfooter renders outside #wpbody-content/#wpbody/#wpcontent (a body-level sibling, not a
+	// descendant the app's own root can reach), so it is hidden here rather than from the app's
+	// own markup. It costs the app viewport space the design has no room for.
+	#wpfooter {
+		display: none;
+	}
+}
+
 .kadence-blocks-style-library-root {
 	min-height: var(--kb-sl-size-shell-min-height);
+
+	// wp-admin styles ul/li globally (list-style, and a margin-bottom on li); reset it here so it
+	// can't leak into the app.
+	ul,
+	li {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		display: block;
+	}
 }
 
 .kadence-blocks-style-library__shell {
