@@ -212,6 +212,8 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
+	 * @since 3.7.8.2 Insert the excerpt element without reprocessing the inner content.
+	 *
 	 * @param array $attributes the blocks attributes.
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $content the block content.
@@ -231,10 +233,10 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		// Find the opening div tag of the container and insert excerpt right after it
 		// Match: <div class="kb-block-show-more-container...">
 		$pattern = '/(<div[^>]*class="[^"]*kb-block-show-more-container[^"]*"[^>]*>)/i';
-		
-		if ( preg_match( $pattern, $content, $matches ) ) {
+
+		if ( preg_match( $pattern, $content, $matches, PREG_OFFSET_CAPTURE ) ) {
 			// Insert excerpt div right after the opening container div
-			$content = preg_replace( $pattern, $matches[0] . $excerpt_html, $content, 1 );
+			$content = substr_replace( $content, $excerpt_html, $matches[0][1] + strlen( $matches[0][0] ), 0 );
 		} else {
 			// Fallback: if pattern doesn't match, prepend to content
 			$content = $excerpt_html . $content;

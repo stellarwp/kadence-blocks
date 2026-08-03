@@ -1,0 +1,6 @@
+significance: patch
+type: fix
+entry: Resolved a JavaScript error that prevented Auto Spacing Under from
+  working when the Advanced Header used a Transparent Header inside a block
+  theme template.
+timestamp: 2026-07-21T19:53:28.013Z

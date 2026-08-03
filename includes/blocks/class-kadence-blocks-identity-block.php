@@ -93,6 +93,8 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Return dynamically generated HTML for block
 	 *
+	 * @since 3.7.8.2 Build the transparent and sticky images from escaped attributes.
+	 *
 	 * @param array    $attributes    The block attributes.
 	 * @param string   $unique_id     The unique ID for the block.
 	 * @param string   $content       The block inner content.
@@ -105,42 +107,14 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 		$layout_class = esc_attr( 'kb-identity-layout-container kb-identity-layout-' . $layout );
 		$content = $this->strip_anchor_tags( $content );
 
-		if (!empty($attributes['urlTransparent'])) {
-			// Use regex to find the existing img tag
-			$pattern = '/<img[^>]+>/i';
-			if (preg_match($pattern, $content, $matches)) {
-				$existing_img = $matches[0];
-
-				// Create the transparent image by cloning and modifying the existing img tag
-				$transparent_img = $existing_img;
-				$transparent_img = preg_replace('/\bsrc=["\'][^"\']+["\']/', 'src="' . esc_url($attributes['urlTransparent']) . '"', $transparent_img);
-				$transparent_img = preg_replace('/\bclass=["\']([^"\']*)["\']/', 'class="kb-img kb-img-transparent"', $transparent_img);
-				$transparent_img = preg_replace('/\bsrcset=["\'][^"\']+["\']/', '', $transparent_img);
-				$transparent_img = preg_replace('/\bsizes=["\'][^"\']+["\']/', '', $transparent_img);
-
-				// Insert the transparent image after the existing image
-				$content = preg_replace($pattern, '$0' . $transparent_img, $content, 1);
-			}
+		if ( ! empty( $attributes['urlTransparent'] ) ) {
+			$content = $this->add_alternate_image( $content, $attributes['urlTransparent'], 'kb-img kb-img-transparent' );
 		}
 
-		if (!empty($attributes['urlSticky'])) {
-			$this->enqueue_script('kadence-blocks-header-sticky-image');
+		if ( ! empty( $attributes['urlSticky'] ) ) {
+			$this->enqueue_script( 'kadence-blocks-header-sticky-image' );
 
-			// Use regex to find the existing img tag
-			$pattern = '/<img[^>]+>/i';
-			if (preg_match($pattern, $content, $matches)) {
-				$existing_img = $matches[0];
-
-				// Create the transparent image by cloning and modifying the existing img tag
-				$sticky_img = $existing_img;
-				$sticky_img = preg_replace('/\bsrc=["\'][^"\']+["\']/', 'src="' . esc_url($attributes['urlSticky']) . '"', $sticky_img);
-				$sticky_img = preg_replace('/\bclass=["\']([^"\']*)["\']/', 'class="kb-img kb-img-sticky"', $sticky_img);
-				$sticky_img = preg_replace('/\bsrcset=["\'][^"\']+["\']/', '', $sticky_img);
-				$sticky_img = preg_replace('/\bsizes=["\'][^"\']+["\']/', '', $sticky_img);
-
-				// Insert the transparent image after the existing image
-				$content = preg_replace($pattern, '$0' . $sticky_img, $content, 1);
-			}
+			$content = $this->add_alternate_image( $content, $attributes['urlSticky'], 'kb-img kb-img-sticky' );
 		}
 
 		$outer_classes = array( 'kb-identity', 'kb-identity' . $unique_id );
@@ -160,6 +134,44 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
+	}
+
+	/**
+	 * Adds a copy of the logo image that points at an alternate source.
+	 *
+	 * @since 3.7.8.2
+	 *
+	 * @param string $content    The block inner content.
+	 * @param string $url        The alternate image source.
+	 * @param string $class_name The class for the added image.
+	 *
+	 * @return string
+	 */
+	private function add_alternate_image( $content, $url, $class_name ) {
+		if ( ! preg_match( '/<img[^>]+>/i', $content, $matches, PREG_OFFSET_CAPTURE ) ) {
+			return $content;
+		}
+
+		$processor = new WP_HTML_Tag_Processor( $matches[0][0] );
+
+		if ( ! $processor->next_tag( [ 'tag_name' => 'img' ] ) ) {
+			return $content;
+		}
+
+		// Build the image from scratch so nothing from the inner content is reused as markup.
+		$image = '<img src="' . esc_url( $url ) . '" class="' . esc_attr( $class_name ) . '"';
+
+		foreach ( [ 'alt', 'width', 'height', 'loading', 'decoding' ] as $attribute ) {
+			$value = $processor->get_attribute( $attribute );
+
+			if ( is_string( $value ) ) {
+				$image .= ' ' . $attribute . '="' . esc_attr( $value ) . '"';
+			}
+		}
+
+		$image .= ' />';
+
+		return substr_replace( $content, $image, $matches[0][1] + strlen( $matches[0][0] ), 0 );
 	}
 
 	 public function strip_anchor_tags($html) {

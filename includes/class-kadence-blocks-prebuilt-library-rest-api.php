@@ -1411,7 +1411,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			} else {
 				$endpoint = '/wp-json/kadence-cloud/v1/single/';
 			}
-			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
 			if ( empty( $library_url ) ) {
 				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
@@ -1493,7 +1493,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_connection( WP_REST_Request $request ) {
 		$library     = $request->get_param( self::PROP_LIBRARY );
@@ -1554,7 +1554,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library_categories( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1566,7 +1566,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( ! empty( $library_url ) ) {
 			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/page-categories/' : '/wp-json/kadence-cloud/v1/categories/';
-			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
 			if ( empty( $library_url ) ) {
 				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
@@ -1665,7 +1665,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @since 3.7.8.1 Restrict requests to known library locations.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1677,7 +1677,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( ! empty( $library_url ) ) {
 			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/pages/' : '/wp-json/kadence-cloud/v1/get/';
-			$library_url = $this->resolve_library_url( $library_url, $endpoint );
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
 			if ( empty( $library_url ) ) {
 				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
