@@ -329,9 +329,14 @@ return [
 			 * symmetric and each is overridable on its own semantic. Picking a preset re-skins a button with
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
-			'block'    => 'kadence/singlebtn',
-			'label'    => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
-			'bindings' => [
+			'block'         => 'kadence/singlebtn',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Button', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'button-bg'         => [
 					'kadence_slot' => 'palette-btn-bg',
 					'control_attr' => 'background',
