@@ -111,6 +111,64 @@ trait API_Url_Trait {
 	}
 
 	/**
+	 * The lowercase host of a URL, with or without a scheme.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url The URL to read.
+	 */
+	protected function url_host( string $url ): string {
+		$url = trim( $url );
+
+		if ( '' !== $url && ! str_contains( $url, '://' ) ) {
+			$url = 'https://' . ltrim( $url, '/' );
+		}
+
+		return strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+	}
+
+	/**
+	 * Whether a URL's host matches one of the given URLs, subdomains included.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $url     The URL to check.
+	 * @param string[] $allowed The URLs to check against.
+	 */
+	protected function url_host_matches( string $url, array $allowed ): bool {
+		$host = $this->url_host( $url );
+
+		if ( '' === $host ) {
+			return false;
+		}
+
+		foreach ( $allowed as $allowed_url ) {
+			$allowed_host = $this->url_host( (string) $allowed_url );
+
+			if ( '' !== $allowed_host && ( $host === $allowed_host || str_ends_with( $host, '.' . $allowed_host ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The Kadence library base URLs.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_kadence_api_urls(): array {
+		return [
+			$this->get_patterns_base_url(),
+			$this->get_starter_base_url(),
+			$this->get_template_sites_base_url(),
+		];
+	}
+
+	/**
 	 * Whether a URL points at one of the Kadence library hosts.
 	 *
 	 * @since 3.7.8.1
@@ -118,21 +176,7 @@ trait API_Url_Trait {
 	 * @param string $url The URL to check.
 	 */
 	protected function is_kadence_api_url( string $url ): bool {
-		$host = wp_parse_url( $url, PHP_URL_HOST );
-
-		if ( empty( $host ) ) {
-			return false;
-		}
-
-		$allowed = array_filter(
-			[
-				wp_parse_url( $this->get_patterns_base_url(), PHP_URL_HOST ),
-				wp_parse_url( $this->get_starter_base_url(), PHP_URL_HOST ),
-				wp_parse_url( $this->get_template_sites_base_url(), PHP_URL_HOST ),
-			]
-		);
-
-		return in_array( $host, $allowed, true );
+		return $this->url_host_matches( $url, $this->get_kadence_api_urls() );
 	}
 
 	/**
@@ -158,10 +202,60 @@ trait API_Url_Trait {
 	}
 
 	/**
+	 * The library URLs registered as custom prebuilt libraries.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_registered_library_urls(): array {
+		$libraries = apply_filters( 'kadence_blocks_custom_prebuilt_libraries', [] );
+
+		return array_filter( array_column( (array) $libraries, 'url' ), 'is_string' );
+	}
+
+	/**
+	 * The library locations this site allows the editor to request.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_allowed_library_urls(): array {
+		/*
+		 * ---------------------------------------------------------------
+		 * Add your own design library locations here, one per line:
+		 *
+		 *     'https://patterns.mycompany.com',
+		 *
+		 * Matching is by host, so one entry covers every path on it.
+		 * ---------------------------------------------------------------
+		 */
+		$custom = [];
+
+		$urls = array_merge(
+			$custom,
+			$this->get_kadence_api_urls(),
+			$this->get_saved_library_urls(),
+			$this->get_registered_library_urls()
+		);
+
+		/**
+		 * Filters the library locations the editor is allowed to request.
+		 *
+		 * Matching is by host, so one entry covers every path on it.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $urls Allowed library URLs.
+		 */
+		return (array) apply_filters( 'kadence_blocks_allowed_library_urls', $urls );
+	}
+
+	/**
 	 * Resolve a requested library URL into a full endpoint URL.
 	 *
-	 * Only the Kadence library hosts and the saved cloud connections are
-	 * allowed as request targets.
+	 * Only the library locations this site allows are valid request targets.
 	 *
 	 * @since 3.7.8.1
 	 *
@@ -178,11 +272,9 @@ trait API_Url_Trait {
 			return $fallback;
 		}
 
-		if ( $this->is_kadence_api_url( $requested ) || in_array( $requested, $this->get_saved_library_urls(), true ) ) {
-			return $requested . $endpoint;
-		}
-
-		return '';
+		return $this->url_host_matches( $requested, $this->get_allowed_library_urls() )
+			? $requested . $endpoint
+			: '';
 	}
 
 	/**
