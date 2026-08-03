@@ -1,13 +1,15 @@
 /**
- * Internal dependencies
+ * The Style Library application root.
  */
-import { TokensPage } from '../components/pages/TokensPage';
 
 /**
- * Root Style Library application shell.
+ * Render the Style Library application. Rebuilt incrementally as the app shell, header, and
+ * screens land.
  *
- * @return {JSX.Element} Style Library app.
+ * @since TBD
+ *
+ * @return {null} Nothing yet.
  */
 export function StyleLibraryApp() {
-	return <TokensPage />;
+	return null;
 }
