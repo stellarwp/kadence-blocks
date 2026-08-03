@@ -1,5 +1,3 @@
-@use 'tokens' as *;
-
 .kadence-blocks-style-library-root {
-	min-height: $shell-min-height;
+	min-height: var(--kb-sl-size-shell-min-height);
 }

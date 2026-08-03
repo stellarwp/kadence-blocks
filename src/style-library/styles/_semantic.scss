@@ -1,0 +1,38 @@
+// Style Library design tokens — semantic aliases. A semantic token holds only a `var()`
+// reference to a primitive from _primitives.scss — never a literal.
+
+.kadence-blocks-style-library-root {
+	// Color — surface/border/text.
+	--kb-sl-color-surface: var(--kb-sl-color-white);
+	// The design specifies a different system's border color; this is the nearest in-ramp gray.
+	--kb-sl-color-border: var(--kb-sl-color-gray-200);
+	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
+	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
+	--kb-sl-color-text-muted: var(--kb-sl-color-gray-700);
+
+	// Color — sidebar nav.
+	--kb-sl-color-nav-tab-text: var(--kb-sl-color-gray-800);
+	--kb-sl-color-nav-tab-text-hover: var(--kb-sl-color-theme);
+	--kb-sl-color-nav-tab-text-selected: var(--kb-sl-color-theme);
+	--kb-sl-color-nav-tab-bg-selected: var(--kb-sl-color-theme-tint-4);
+	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-800);
+	--kb-sl-color-heading: var(--kb-sl-color-gray-800);
+
+	// Typography
+	--kb-sl-font-size-page-title: var(--kb-sl-font-size-xl);
+	--kb-sl-font-size-group-title: var(--kb-sl-font-size-16);
+	--kb-sl-font-size-body: var(--kb-sl-font-size-l);
+	--kb-sl-font-size-small: var(--kb-sl-font-size-m);
+	--kb-sl-font-size-meta: var(--kb-sl-font-size-s);
+	--kb-sl-line-height-nav-tab: var(--kb-sl-line-height-s);
+
+	// Component sizing — grid-unit aliases.
+	--kb-sl-size-toggle-width: var(--kb-sl-space-40);
+	--kb-sl-size-toggle-height: var(--kb-sl-space-20);
+	--kb-sl-size-checkbox: var(--kb-sl-space-20);
+	--kb-sl-size-radio: var(--kb-sl-space-20);
+	--kb-sl-space-field-spacing-horizontal: var(--kb-sl-space-10);
+	--kb-sl-size-button-small: var(--kb-sl-space-30);
+	--kb-sl-size-button-medium: var(--kb-sl-space-40);
+	--kb-sl-size-button-large: var(--kb-sl-space-50);
+}

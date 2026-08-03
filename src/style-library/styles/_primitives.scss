@@ -1,0 +1,101 @@
+// Style Library design tokens — primitives. A primitive holds a raw value and references
+// nothing else (the theme color group is the one exception, justified inline below).
+//
+// Scoped to the app root, not :root, so these tokens don't leak onto the rest of wp-admin. Only
+// this file and _semantic.scss emit this selector — don't `@use` either from another partial or
+// the block duplicates into the bundle once per importer.
+//
+// Sizes are rem, not px: the wp-admin root is 16px, so 1rem = 16px here — never em, since the app
+// root itself renders at 13px.
+
+.kadence-blocks-style-library-root {
+	// Grays — Gutenberg's own gray ramp. Deliberately no gray-500; do not invent one.
+	--kb-sl-color-gray-100: #f0f0f0;
+	--kb-sl-color-gray-200: #e0e0e0;
+	--kb-sl-color-gray-300: #dddddd;
+	--kb-sl-color-gray-400: #cccccc;
+	--kb-sl-color-gray-600: #949494;
+	--kb-sl-color-gray-700: #757575;
+	--kb-sl-color-gray-800: #2f2f2f;
+	--kb-sl-color-gray-900: #1e1e1e;
+	--kb-sl-color-black: #000000;
+	--kb-sl-color-white: #ffffff;
+
+	// Alerts
+	--kb-sl-color-alert-yellow: #f0b849;
+	--kb-sl-color-alert-red: #cc1818;
+	--kb-sl-color-alert-green: #4ab866;
+
+	// Theme — sourced from wp-admin at runtime, with a literal WordPress blue as the fallback.
+	--kb-sl-color-theme: var(--wp-admin-theme-color, #2271b1);
+	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
+	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
+
+	// Spacing — Gutenberg's grid-unit scale, re-declared because core only ships it as Sass.
+	--kb-sl-space-05: 0.25rem;
+	--kb-sl-space-10: 0.5rem;
+	--kb-sl-space-15: 0.75rem;
+	--kb-sl-space-20: 1rem;
+	--kb-sl-space-30: 1.5rem;
+	--kb-sl-space-40: 2rem;
+	--kb-sl-space-50: 2.5rem;
+	--kb-sl-space-60: 3rem;
+	--kb-sl-space-70: 3.5rem;
+
+	// Radii
+	--kb-sl-radius-xs: 0.0625rem;
+	--kb-sl-radius-s: 0.125rem;
+	--kb-sl-radius-m: 0.25rem;
+	--kb-sl-radius-l: 0.5rem;
+	// A "large enough to always round fully" sentinel, not a measurement — stays px.
+	--kb-sl-radius-full: 999px;
+
+	// Border width — px, not rem: a hairline that scales with root font size renders as a blurry
+	// sub-pixel or a heavy line depending on zoom.
+	--kb-sl-border-width-input: 1px;
+	--kb-sl-border-width-input-focus: 1.5px;
+
+	// Font size — the Figma type ramp, plus one app-specific size named by pixel value.
+	--kb-sl-font-size-xs: 0.6875rem;
+	--kb-sl-font-size-s: 0.75rem;
+	--kb-sl-font-size-m: 0.8125rem;
+	--kb-sl-font-size-l: 0.9375rem;
+	--kb-sl-font-size-xl: 1.25rem;
+	--kb-sl-font-size-2xl: 2rem;
+	--kb-sl-font-size-16: 1rem;
+
+	// Font weight
+	--kb-sl-font-weight-regular: 400;
+	--kb-sl-font-weight-medium: 500;
+	--kb-sl-font-weight-semibold: 600;
+
+	// Line height — the Figma px ramp.
+	--kb-sl-line-height-xs: 1rem;
+	--kb-sl-line-height-s: 1.25rem;
+	--kb-sl-line-height-m: 1.5rem;
+	--kb-sl-line-height-l: 1.75rem;
+	--kb-sl-line-height-xl: 2rem;
+	--kb-sl-line-height-2xl: 2.5rem;
+	// Relative multipliers so they scale with whatever font-size they're paired with.
+	--kb-sl-line-height-ratio-snug: 1.3;
+	--kb-sl-line-height-ratio-relaxed: 1.6;
+
+	// Layout dimensions — app-specific, not derived from any scale.
+	--kb-sl-size-shell-min-height: 32rem;
+	--kb-sl-size-sidebar-width: 12rem;
+	--kb-sl-size-settings-panel-width: 17.5rem;
+	--kb-sl-size-content-max-width: 42rem;
+	--kb-sl-size-text-max-width: 50rem;
+	--kb-sl-size-modal-small: 24rem;
+	--kb-sl-size-modal-medium: 32rem;
+	--kb-sl-size-modal-large: 52.5rem;
+}
+
+// A custom property mixing var() and color-mix() is valid at parse time even in browsers that
+// don't support color-mix(), so a plain two-declaration fallback can't work — it has to be
+// gated behind a real @supports check instead.
+@supports (background: color-mix(in srgb, red 10%, transparent)) {
+	.kadence-blocks-style-library-root {
+		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
+	}
+}
