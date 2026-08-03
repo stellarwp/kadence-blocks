@@ -15,6 +15,47 @@ namespace KadenceWP\KadenceBlocks\Traits;
 trait API_Url_Trait {
 
 	/**
+	 * The library locations this site allows the editor to request.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_allowed_library_urls(): array {
+		/*
+		 * ---------------------------------------------------------------
+		 * Add your own design library locations here, one per line:
+		 *
+		 *     'https://patterns.mycompany.com',
+		 *
+		 * Matching is by host, so one entry covers every path on it.
+		 *
+		 * Editing this file is lost on update. To keep your locations,
+		 * use the kadence_blocks_allowed_library_urls filter instead.
+		 * ---------------------------------------------------------------
+		 */
+		$custom = [];
+
+		$urls = array_merge(
+			$custom,
+			$this->get_kadence_api_urls(),
+			$this->get_saved_library_urls(),
+			$this->get_registered_library_urls()
+		);
+
+		/**
+		 * Filters the library locations the editor is allowed to request.
+		 *
+		 * Matching is by host, so one entry covers every path on it.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $urls Allowed library URLs.
+		 */
+		return (array) apply_filters( 'kadence_blocks_allowed_library_urls', $urls );
+	}
+
+	/**
 	 * Resolve the patterns-cloud base URL with override.
 	 *
 	 * KADENCE_BLOCKS_PATTERNS_BASE_URL constant, otherwise production default.
@@ -118,13 +159,18 @@ trait API_Url_Trait {
 	 * @param string $url The URL to read.
 	 */
 	protected function url_host( string $url ): string {
-		$url = trim( $url );
+		$url    = trim( $url );
+		$scheme = strtolower( (string) wp_parse_url( $url, PHP_URL_SCHEME ) );
 
-		if ( '' !== $url && ! str_contains( $url, '://' ) ) {
+		if ( '' === $scheme ) {
 			$url = 'https://' . ltrim( $url, '/' );
+		} elseif ( 'http' !== $scheme && 'https' !== $scheme ) {
+			return '';
 		}
 
-		return strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+		$host = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
+
+		return preg_match( '/^[a-z0-9.-]+$/', $host ) ? $host : '';
 	}
 
 	/**
@@ -142,8 +188,8 @@ trait API_Url_Trait {
 			return false;
 		}
 
-		foreach ( $allowed as $allowed_url ) {
-			$allowed_host = $this->url_host( (string) $allowed_url );
+		foreach ( array_filter( $allowed, 'is_string' ) as $allowed_url ) {
+			$allowed_host = $this->url_host( $allowed_url );
 
 			if ( '' !== $allowed_host && ( $host === $allowed_host || str_ends_with( $host, '.' . $allowed_host ) ) ) {
 				return true;
@@ -212,44 +258,6 @@ trait API_Url_Trait {
 		$libraries = apply_filters( 'kadence_blocks_custom_prebuilt_libraries', [] );
 
 		return array_filter( array_column( (array) $libraries, 'url' ), 'is_string' );
-	}
-
-	/**
-	 * The library locations this site allows the editor to request.
-	 *
-	 * @since TBD
-	 *
-	 * @return string[]
-	 */
-	protected function get_allowed_library_urls(): array {
-		/*
-		 * ---------------------------------------------------------------
-		 * Add your own design library locations here, one per line:
-		 *
-		 *     'https://patterns.mycompany.com',
-		 *
-		 * Matching is by host, so one entry covers every path on it.
-		 * ---------------------------------------------------------------
-		 */
-		$custom = [];
-
-		$urls = array_merge(
-			$custom,
-			$this->get_kadence_api_urls(),
-			$this->get_saved_library_urls(),
-			$this->get_registered_library_urls()
-		);
-
-		/**
-		 * Filters the library locations the editor is allowed to request.
-		 *
-		 * Matching is by host, so one entry covers every path on it.
-		 *
-		 * @since TBD
-		 *
-		 * @param string[] $urls Allowed library URLs.
-		 */
-		return (array) apply_filters( 'kadence_blocks_allowed_library_urls', $urls );
 	}
 
 	/**

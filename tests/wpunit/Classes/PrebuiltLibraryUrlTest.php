@@ -179,18 +179,53 @@ class PrebuiltLibraryUrlTest extends KadenceBlocksTestCase {
 		$this->assertTrue( (bool) $this->call( 'is_kadence_api_url', 'https://g85.startertemplatecloud.com/wp-json/x' ) );
 	}
 
-	public function testMalformedCustomLibraryEntriesAreIgnored() {
+	public function testANonArrayCustomLibraryReturnIsIgnored() {
 		add_filter( 'kadence_blocks_custom_prebuilt_libraries', static fn() => 'not-an-array' );
-		add_filter(
-			'kadence_blocks_custom_prebuilt_libraries',
-			static fn() => [ [ 'slug' => 'x' ], [ 'url' => [] ], 'nope' ],
-			11
-		);
 
 		$this->assertSame(
 			'',
 			$this->call( 'resolve_library_url', 'https://external.example', self::ENDPOINT, '' )
 		);
+	}
+
+	public function testAValidCustomLibrarySurvivesMalformedEntries() {
+		add_filter(
+			'kadence_blocks_custom_prebuilt_libraries',
+			static fn() => [ [ 'slug' => 'x' ], [ 'url' => [] ], 'nope', [ 'url' => null ], [ 'url' => 'https://ok.example' ] ]
+		);
+
+		$this->assertSame(
+			'https://ok.example' . self::ENDPOINT,
+			$this->call( 'resolve_library_url', 'https://ok.example', self::ENDPOINT, '' )
+		);
+		$this->assertSame(
+			'',
+			$this->call( 'resolve_library_url', 'https://external.example', self::ENDPOINT, '' )
+		);
+	}
+
+	public function testNonHttpSchemesAreRejected() {
+		foreach ( [ 'ftp', 'gopher', 'dict', 'javascript' ] as $scheme ) {
+			$url = $scheme . '://startertemplatecloud.com';
+
+			$this->assertFalse( (bool) $this->call( 'is_kadence_api_url', $url ), $url );
+			$this->assertSame( '', $this->call( 'resolve_library_url', $url, self::ENDPOINT, '' ), $url );
+		}
+	}
+
+	public function testHostsWithIllegalCharactersAreRejected() {
+		$hosts = [
+			'https://evil.com\.startertemplatecloud.com/',
+			'https://evil.com%2f.startertemplatecloud.com/',
+			'https://evil.com%00.startertemplatecloud.com',
+			'https://startertemplatecloud.com@evil.example/x',
+			'https://startertemplatecloud.com.',
+		];
+
+		foreach ( $hosts as $url ) {
+			$this->assertFalse( (bool) $this->call( 'is_kadence_api_url', $url ), $url );
+			$this->assertSame( '', $this->call( 'resolve_library_url', $url, self::ENDPOINT, '' ), $url );
+		}
 	}
 
 	public function testUnknownLocationResolvesToNothing() {
