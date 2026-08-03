@@ -7,10 +7,10 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts;
  *
  * Two consumers, two methods:
  *   - the Registry guard asks has() — "does this token id exist in the baseline?";
- *   - the Resolver (SOFT-3380) reads document() — the full baseline to deep-merge with the stored
+ *   - the Resolver reads document() — the full baseline to deep-merge with the stored
  *     overrides into the effective document it then walks.
  *
- * Fulfilled by SOFT-3377 (Baseline DTCG document). Until then, a stub is bound.
+ * Fulfilled by the shipped baseline DTCG document (Json_Baseline_Document).
  *
  * @since TBD
  */

@@ -11,7 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Screen;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider as Provider_Contract;
 
 /**
- * Registers the admin UI schema feed (SOFT-3385): binds the builder, preset feed and localizer as
+ * Registers the admin UI schema feed: binds the builder, preset feed and localizer as
  * singletons, then hooks the localizer onto admin_head so the dashboard bundle receives
  * window.kadenceDesignTokens.
  *

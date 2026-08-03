@@ -26,8 +26,8 @@
  * value is not parsed as a CSS declaration), so a token — OR a palette — color delivered this way may
  * not actually paint in the browser. That is a pre-existing limitation of the stripe divider's
  * `stroke=` delivery, not something introduced here; making a token (or palette) stripe truly render
- * means moving the color into a CSS context — out of scope here and tracked in SOFT-3909 (residual JS
- * seam / per-block rollout), which is why the spacer `dividerColor` is held out of the initial alias
+ * means moving the color into a CSS context — out of scope here and tracked as a residual JS seam /
+ * per-block rollout item, which is why the spacer `dividerColor` is held out of the initial alias
  * picker scope. What this test locks in is that the seam is additive and deterministic at the
  * save-markup boundary.
  *
