@@ -5,6 +5,7 @@
 /**
  * WordPress dependencies
  */
+import { useEffect, useMemo } from '@wordpress/element';
 import { Spinner } from '@wordpress/components';
 
 /**
@@ -12,24 +13,51 @@ import { Spinner } from '@wordpress/components';
  */
 import { AppShell } from '../components/templates/AppShell';
 import { AppHeader } from '../components/organisms/AppHeader';
+import { AppSidebar } from '../components/organisms/AppSidebar';
+import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
+import { DEFAULT_SCREEN_ID } from '../constants/screens';
+import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 
 /**
- * Render the Style Library application: the feed gate, the route hook, and the app shell with
- * its header bar. The sidebar, content, and settings panel are still empty slots — they are
- * filled once the navigation, screen registry, and settings panel exist.
+ * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
+ * resolved for the active route. The settings panel is still an empty slot — it is filled once
+ * the settings panel and field library exist.
  *
  * @since TBD
  *
- * @return {JSX.Element} The app.
+ * @return {?JSX.Element} The app, or null while the route is being normalized to a known screen.
  */
 export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
+	const { route, navigate, replace } = useStyleLibraryRoute();
 
-	// Keeps the URL route state alive even though nothing consumes it here yet — the sidebar and
-	// screen registry read it once they land.
-	useStyleLibraryRoute();
+	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
+	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
+
+	// Every Base Styles id resolves to the placeholder until its per-screen work lands, and the
+	// preset fallback is the placeholder until the first real preset screen ships.
+	// @todo SOFT-4083 / SOFT-4084: first real preset screens replace this fallback.
+	const registry = useMemo(() => {
+		const baseStyles = {};
+
+		baseStylesNav.forEach((entry) => {
+			baseStyles[entry.id] = PlaceholderScreen;
+		});
+
+		return { baseStyles, presetFallback: PlaceholderScreen };
+	}, [baseStylesNav]);
+
+	const activeScreenId = route.screen || DEFAULT_SCREEN_ID;
+	const resolution = resolveScreen(activeScreenId, registry);
+
+	useEffect(() => {
+		if (!resolution) {
+			// replace, not navigate — an unknown screen id must not enter browser history.
+			replace({ screen: DEFAULT_SCREEN_ID, item: '' });
+		}
+	}, [resolution, replace]);
 
 	if (!feed.isReady) {
 		return (
@@ -39,11 +67,19 @@ export function StyleLibraryApp() {
 		);
 	}
 
+	if (!resolution) {
+		return null;
+	}
+
+	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
+	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
+	const onNavigate = (id) => navigate({ screen: id, item: '' });
+
 	return (
 		<AppShell
 			header={<AppHeader librarySlot={null} actionsSlot={null} />}
-			sidebar={null}
-			content={null}
+			sidebar={<AppSidebar feed={feed.feed} activeId={activeScreenId} onNavigate={onNavigate} />}
+			content={<resolution.Component label={label} />}
 			settingsPanel={null}
 		/>
 	);
