@@ -1,0 +1,33 @@
+.kadence-blocks-style-library__body {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.kadence-blocks-style-library__sidebar {
+	flex: 0 0 var(--kb-sl-size-sidebar-width);
+	overflow-y: auto;
+	border-right: 1px solid var(--kb-sl-color-border);
+	// White: the design's only tinted surface in this column is the active nav item, not the
+	// sidebar surface itself. Keep the surface white here so the active-item treatment isn't
+	// fighting a tint set at this level.
+	background: var(--kb-sl-color-surface);
+}
+
+.kadence-blocks-style-library__content {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-y: auto;
+	background: var(--kb-sl-color-surface);
+
+	&--has-settings {
+		border-right: 1px solid var(--kb-sl-color-border);
+	}
+}
+
+.kadence-blocks-style-library__settings {
+	flex: 0 0 var(--kb-sl-size-settings-panel-width);
+	overflow-y: auto;
+	border-left: 1px solid var(--kb-sl-color-border);
+	background: var(--kb-sl-color-surface);
+}

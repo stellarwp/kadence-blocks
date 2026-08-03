@@ -1,0 +1,25 @@
+.kadence-blocks-style-library__header-bar {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	padding: 0.875rem var(--kb-sl-space-20);
+}
+
+// Qualified with the app root so this reliably outranks wp-admin's own `.wrap h1` page-title
+// rule, which otherwise wins the cascade and overrides font-size, line-height and padding.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__title {
+	margin: 0;
+	padding: 0;
+	color: var(--kb-sl-color-heading);
+	font-size: var(--kb-sl-font-size-xl);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-xl);
+}
+
+.kadence-blocks-style-library__header-library {
+	flex: 1 1 auto;
+}
+
+.kadence-blocks-style-library__header-actions {
+	flex: 0 0 auto;
+}
