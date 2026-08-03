@@ -24,7 +24,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
  *
  * Does NOT affect a freshly inserted icon block: `single-icon` is a static (client-rendered) block,
  * so a fresh insert's `size` comes from block.json's JS default at insert time, before this
- * render-path filter ever runs. See Phase 3 (the editor-default catalog) for that case.
+ * render-path filter ever runs. See the editor-default catalog for that case.
  *
  * @since TBD
  */
