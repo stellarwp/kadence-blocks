@@ -7,6 +7,10 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import {
+	documentPath,
+	documentsPath,
+	activeLibraryPath,
+	activateLibraryPath,
 	resolvedPath,
 	tokenPath,
 	userPrimitiveReferencesPath,
@@ -18,6 +22,16 @@ import {
 	paletteSwatchPath,
 	paletteCurrentPath,
 } from './paths';
+import { DEFAULT_LIBRARY_SLUG } from '../constants';
+
+/**
+ * The fixed REST namespace this module's endpoints live under. The library-management calls
+ * address the module's own routes only, unlike the token/palette calls above which take a
+ * namespace parameter for reuse from other consumers.
+ *
+ * @since TBD
+ */
+const NAMESPACE = 'kb-design-tokens/v1';
 
 /**
  * Configure apiFetch middleware from the localized REST descriptor.
@@ -236,4 +250,75 @@ export function renameUserPrimitive(slug, id, payload) {
 		method: 'POST',
 		data: payload,
 	});
+}
+
+/**
+ * List every stored token library. The default library is always present even before it has a
+ * row (it renders from baseline). `title` is the empty string for a library that was never given
+ * one — never the slug or another synthesized value — so a caller that wants a display label
+ * falls back to the slug itself.
+ *
+ * @since TBD
+ *
+ * @return {Promise<Array<{slug: string, title: string, version: string, document: object}>>} The library rows.
+ */
+export function fetchLibraries() {
+	return apiFetch({ path: documentsPath() });
+}
+
+/**
+ * Read the active-library pointer.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string}>} The resolved active slug.
+ */
+export function getActiveLibrary() {
+	return apiFetch({ path: activeLibraryPath() });
+}
+
+/**
+ * Point the active-library pointer at a named library.
+ *
+ * @param {string} slug Token library slug to make active.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string}>} The resolved active slug.
+ */
+export function setActiveLibrary(slug) {
+	return apiFetch({ path: activateLibraryPath(slug), method: 'PUT' });
+}
+
+/**
+ * Create a token library, or merge into it if one already exists at that slug. Sends an empty
+ * document so the library starts from baseline with only the given title stored.
+ *
+ * @param {string} slug  Token library slug.
+ * @param {string} title Human-readable label for the library.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string, version: string, document: object}>} The created document item.
+ */
+export function createLibrary(slug, title) {
+	return apiFetch({
+		path: documentPath(NAMESPACE, slug || DEFAULT_LIBRARY_SLUG),
+		method: 'POST',
+		data: { document: {}, title },
+	});
+}
+
+/**
+ * Delete a token library. Deleting the default library resets it to baseline instead of removing
+ * it — the same endpoint serves both, the server decides which behavior applies.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{deleted: boolean, previous: object}>} The delete result.
+ */
+export function deleteLibrary(slug) {
+	return apiFetch({ path: documentPath(NAMESPACE, slug), method: 'DELETE' });
 }

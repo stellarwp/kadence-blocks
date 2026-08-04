@@ -92,6 +92,42 @@ export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
 }
 
 /**
+ * Build a REST path for the token-library documents collection (list, or create-by-merge at the
+ * default library).
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function documentsPath() {
+	return '/kb-design-tokens/v1/documents';
+}
+
+/**
+ * Build a REST path for the active-library pointer.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function activeLibraryPath() {
+	return '/kb-design-tokens/v1/active-library';
+}
+
+/**
+ * Build a REST path for the action that activates a library.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function activateLibraryPath(slug) {
+	return `/kb-design-tokens/v1/active-library/${encodeURIComponent(slug)}`;
+}
+
+/**
  * Build a REST path for the color-palettes collection of a library.
  *
  * @since TBD
