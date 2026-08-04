@@ -152,6 +152,27 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * Read the human-readable label for a token library.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string The stored title, or an empty string when no row exists or none was ever set.
+	 */
+	public function get_title( string $slug = self::DEFAULT_SLUG ): string {
+		$row = $this->qb()
+					->where( 'slug', $slug )
+					->get( ARRAY_A );
+
+		if ( ! is_array( $row ) ) {
+			return '';
+		}
+
+		return (string) ( $row['title'] ?? '' );
+	}
+
+	/**
 	 * Insert or update a token library's document, bump its version and signal change.
 	 *
 	 * @since TBD

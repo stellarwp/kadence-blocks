@@ -384,7 +384,9 @@ final class Documents_Controller extends Controller {
 	 * Read the collection of token-library documents.
 	 *
 	 * Lists every stored library. The default library is always included even before it has a row, since
-	 * it renders from baseline and must always be addressable; a stored default is not duplicated.
+	 * it renders from baseline and must always be addressable; a stored default is not duplicated. The
+	 * titles come from this one list_stores() call rather than a per-item lookup, so surfacing title
+	 * alongside slug/version costs no additional query over the whole collection.
 	 *
 	 * @since TBD
 	 *
@@ -393,7 +395,10 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$slugs = array_column( $this->store->list_stores(), 'slug' );
+		// Keyed by slug so title is a single, already-fetched lookup per item below — not a fresh
+		// query per library.
+		$titles_by_slug = array_column( $this->store->list_stores(), 'title', 'slug' );
+		$slugs          = array_keys( $titles_by_slug );
 
 		// The default library is always addressable, even with no row yet (it renders from baseline), so
 		// surface it whether or not the store has persisted it.
@@ -401,7 +406,10 @@ final class Documents_Controller extends Controller {
 			array_unshift( $slugs, Token_Store::default_slug() );
 		}
 
-		$items = array_map( [ $this, 'prepare_item' ], $slugs );
+		$items = array_map(
+			fn( string $slug ): array => $this->prepare_item( $slug, $titles_by_slug[ $slug ] ?? '' ),
+			$slugs
+		);
 
 		return new WP_REST_Response( array_values( $items ), WP_Http::OK );
 	}
@@ -776,6 +784,12 @@ final class Documents_Controller extends Controller {
 			'properties' => [
 				'slug'     => [
 					'description' => __( 'The token library slug.', 'kadence-blocks' ),
+					'type'        => 'string',
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
+				'title'    => [
+					'description' => __( 'The human-readable label for the library, empty when none is stored.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -1282,17 +1296,25 @@ final class Documents_Controller extends Controller {
 	 * Build the response payload for a single token-library document.
 	 *
 	 * Reads the raw overrides-only DTCG document for the library. An absent or empty row yields an empty
-	 * document, since the library then renders entirely from baseline.
+	 * document, since the library then renders entirely from baseline. Empty is likewise the title of a
+	 * library that has none stored (e.g. the default library before it is ever renamed) — never the slug
+	 * or any other synthesized value, so the client can tell "no title" from "a title happens to look
+	 * like the slug".
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token library slug.
+	 * @param string      $slug  The token library slug.
+	 * @param string|null $title The library's title when the caller already has it (the collection route
+	 *                           reads every title in one list_stores() call and passes it through here so
+	 *                           this method does not re-query per item); null to look it up here for a
+	 *                           single-library call.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function prepare_item( string $slug ): array {
+	private function prepare_item( string $slug, ?string $title = null ): array {
 		return [
 			'slug'     => $slug,
+			'title'    => $title ?? $this->store->get_title( $slug ),
 			'version'  => $this->store->get_version( $slug ),
 			'document' => $this->read_stored_document( $slug ),
 		];
