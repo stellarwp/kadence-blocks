@@ -23,8 +23,11 @@ body.kadence-blocks-style-library-page {
 .kadence-blocks-style-library-root {
 	min-height: var(--kb-sl-size-shell-min-height);
 
-	// wp-admin styles ul/li globally (list-style, and a margin-bottom on li); reset it here so it
-	// can't leak into the app.
+	// wp-admin styles ul/li globally; reset it here so it can't leak into the app. `display` is
+	// deliberately NOT reset for every `<li>` — a blanket `li { display: block }` selector (one
+	// class + one element) outranks a component's own single-class rule regardless of source order,
+	// so `ListRow` could never win the flex layout it declares. Only the nav item wants block, so
+	// that lives on its own class below instead.
 	ul,
 	li {
 		margin: 0;
@@ -32,7 +35,7 @@ body.kadence-blocks-style-library-page {
 		list-style: none;
 	}
 
-	li {
+	.kadence-blocks-style-library__nav-item {
 		display: block;
 	}
 }

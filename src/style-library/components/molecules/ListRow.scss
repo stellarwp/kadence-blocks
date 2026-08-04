@@ -1,0 +1,111 @@
+.kadence-blocks-style-library__list-row {
+	// A component-scoped custom property, not a global primitive — 1.25rem isn't on the spacing
+	// ramp, and this value recurs twice in this file (the handle's offset below, and
+	// `.list-row-main`'s padding further down), so it's named once to keep them from drifting apart.
+	--kb-sl-list-row-inset: 1.25rem;
+
+	position: relative;
+	list-style: none;
+	background: transparent;
+
+	&:not(:last-child) {
+		border-bottom: 1px solid var(--kb-sl-color-border);
+	}
+
+	&--selected {
+		background: var(--kb-sl-color-theme-tint-4);
+	}
+
+	// `:not()` excludes `--selected` explicitly so a row that's both selected and hovered keeps its
+	// theme tint instead of flipping to gray.
+	&:hover:not(.kadence-blocks-style-library__list-row--selected) {
+		background: var(--kb-sl-color-row-bg-hover);
+	}
+
+	// The drop-target placeholder shown while this row is the one being dragged. Neutral gray,
+	// dashed — deliberately not the theme color, which already signals *selected*.
+	// `&.list-row--placeholder`, not a bare `&--placeholder`: this ties the `:not(:last-child)` rule
+	// above on specificity and wins on source order, since a lone modifier class alone would lose
+	// the border-bottom fight.
+	&.kadence-blocks-style-library__list-row--placeholder {
+		border: var(--kb-sl-border-width-input) dashed var(--kb-sl-color-control-border);
+		background: var(--kb-sl-color-gray-100);
+
+		// `visibility: hidden`, not removed, so the placeholder's size stays identical to the row's
+		// normal size.
+		> * {
+			visibility: hidden;
+		}
+	}
+}
+
+.kadence-blocks-style-library__list-row-main {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	// 6rem per spec, not on the spacing ramp.
+	gap: 6rem;
+	padding: var(--kb-sl-space-30) var(--kb-sl-list-row-inset);
+	border: 0;
+	background: transparent;
+	text-align: left;
+	cursor: pointer;
+}
+
+.kadence-blocks-style-library__list-row-label {
+	// A fixed column width, not a minimum — content that doesn't fit wraps to a new line rather than
+	// truncating or overflowing.
+	flex: 0 0 auto;
+	width: 4rem;
+	// `overflow-wrap: anywhere`, not just `word-break`'s default, so a long unbroken string (a hex
+	// value, a token id) wraps inside the fixed column instead of overflowing it.
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-medium);
+	// 1.2188rem per spec, not on the line-height ramp.
+	line-height: 1.2188rem;
+}
+
+.kadence-blocks-style-library__list-row-value {
+	// Same treatment as the label column, at its own fixed width.
+	flex: 0 0 auto;
+	width: 6rem;
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-color-text-secondary);
+	font-family: var(--kb-sl-font-family-monospace);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-regular);
+	// 0.6875rem per spec, not on the line-height ramp.
+	line-height: 0.6875rem;
+}
+
+// Scoped to this context (a descendant rule) rather than making the shared `DragHandle` atom
+// position-aware — `SwatchCard` scopes its own presentation of the same atom the same way.
+.kadence-blocks-style-library__list-row .kadence-blocks-style-library__drag-handle {
+	position: absolute;
+	top: 50%;
+	right: var(--kb-sl-list-row-inset);
+	transform: translateY(-50%);
+}
+
+// The preview slot's default look: a gray-filled square with a visible border, so a screen that
+// passes plain content still reads correctly; a per-screen rule overrides radius/border-width/size
+// as needed. A normal in-flow child of `.list-row-main`, not absolutely positioned — the row's own
+// height grows to contain it.
+.kadence-blocks-style-library__list-row-preview {
+	// `border-box`, not the `<span>` default `content-box` — otherwise the border below renders the
+	// box oversize.
+	box-sizing: border-box;
+	// Fixed, not shrinkable — a screen-supplied larger override must be free to grow the row rather
+	// than being squeezed back down by the row's own flex layout.
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	width: var(--kb-sl-size-row-preview);
+	height: var(--kb-sl-size-row-preview);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-700);
+	background: var(--kb-sl-color-gray-200);
+}
