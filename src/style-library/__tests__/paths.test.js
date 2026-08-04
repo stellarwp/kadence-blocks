@@ -7,6 +7,9 @@ import {
 	palettesPath,
 	palettePath,
 	paletteCurrentPath,
+	documentsPath,
+	activeLibraryPath,
+	activateLibraryPath,
 } from '../api/paths';
 
 describe('palette paths', () => {
@@ -64,5 +67,27 @@ describe('userPrimitiveRenamePath', () => {
 		expect(userPrimitiveRenamePath('default', 'primitive.color.custom.blue')).toBe(
 			'/kb-design-tokens/v1/documents/default/user-primitives/primitive.color.custom.blue/rename'
 		);
+	});
+});
+
+describe('documentsPath', () => {
+	it('builds the documents collection path', () => {
+		expect(documentsPath()).toBe('/kb-design-tokens/v1/documents');
+	});
+});
+
+describe('activeLibraryPath', () => {
+	it('returns the active-library path', () => {
+		expect(activeLibraryPath()).toBe('/kb-design-tokens/v1/active-library');
+	});
+});
+
+describe('activateLibraryPath', () => {
+	it('builds the activate path for a slug', () => {
+		expect(activateLibraryPath('default')).toBe('/kb-design-tokens/v1/active-library/default');
+	});
+
+	it('escapes the slug', () => {
+		expect(activateLibraryPath('my set')).toBe('/kb-design-tokens/v1/active-library/my%20set');
 	});
 });
