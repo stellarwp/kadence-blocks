@@ -15,7 +15,11 @@
 
 .kadence-blocks-style-library-root,
 body.kadence-blocks-style-library-page {
-	// Grays — Gutenberg's own gray ramp. Deliberately no gray-500; do not invent one.
+	// Grays — Gutenberg's own gray ramp. Deliberately no gray-500; do not invent one. `gray-50`
+	// extends the ramp downward for a near-white surface value — the achromatic midpoint between
+	// white and `gray-100`, not the blue-tinted `#f9fafb` a different design system's spec called
+	// for; this app standardizes on one gray ramp.
+	--kb-sl-color-gray-50: #f8f8f8;
 	--kb-sl-color-gray-100: #f0f0f0;
 	--kb-sl-color-gray-200: #e0e0e0;
 	--kb-sl-color-gray-300: #dddddd;
@@ -43,6 +47,10 @@ body.kadence-blocks-style-library-page {
 	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
 	--kb-sl-color-theme-tint-4: rgba(34, 113, 177, 0.04);
 
+	// Gray-200 at 60% alpha — AddTile's border. Solid fallback; a browser without color-mix() keeps
+	// this value — see the @supports block below.
+	--kb-sl-color-gray-200-tint-60: rgba(224, 224, 224, 0.6);
+
 	// Spacing — Gutenberg's grid-unit scale, re-declared because core only ships it as Sass.
 	--kb-sl-space-05: 0.25rem;
 	--kb-sl-space-10: 0.5rem;
@@ -67,6 +75,11 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-border-width-input: 1px;
 	--kb-sl-border-width-input-focus: 1.5px;
 
+	// Font family — the design-system tables never covered this; extends them for `ListRow`'s
+	// monospaced value column. A degrading stack: the platform's UI-monospace font, common installed
+	// monospace fonts, then the generic `monospace` keyword as the final fallback.
+	--kb-sl-font-family-monospace: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
 	// Font size — the Figma type ramp, plus one app-specific size named by pixel value.
 	--kb-sl-font-size-xs: 0.6875rem;
 	--kb-sl-font-size-s: 0.75rem;
@@ -75,8 +88,14 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-font-size-xl: 1.25rem;
 	--kb-sl-font-size-2xl: 2rem;
 	--kb-sl-font-size-16: 1rem;
+	// `ScreenHeader`'s title. Not on the Figma ramp (11/12/13/15/20/32) — named by raw px identity,
+	// not reused from --kb-sl-icon-size-s (also 1.125rem): that primitive is a deliberately separate
+	// scale from font-size.
+	--kb-sl-font-size-18: 1.125rem;
 
-	// Font weight
+	// Font weight. `semibold` is not on the Figma type table (Regular/Medium only) — it extends that
+	// table for the handful of places (`section-heading` in _mixins.scss, `MetaChip`) that call for
+	// a heavier weight.
 	--kb-sl-font-weight-regular: 400;
 	--kb-sl-font-weight-medium: 500;
 	--kb-sl-font-weight-semibold: 600;
@@ -101,18 +120,25 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-size-modal-small: 24rem;
 	--kb-sl-size-modal-medium: 32rem;
 	--kb-sl-size-modal-large: 52.5rem;
-	// The shared select-dropdown control's toggle width (a fixed size, not a minimum) and its
-	// menu's matching min-width — the menu is never narrower than the toggle it opens from.
-	// Numerically equal to --kb-sl-size-sidebar-width (both 12rem / 192px per Figma) but a
-	// distinct, independent value — the two are unrelated, so this never points at the sidebar
-	// token even though the numbers happen to match; changing the sidebar must never silently
-	// resize this control.
+	// The select-dropdown control's toggle width (fixed, not a minimum) and its menu's matching
+	// min-width. Numerically equal to --kb-sl-size-sidebar-width but a distinct, independent value —
+	// changing the sidebar must never silently resize this control.
 	--kb-sl-size-select-dropdown-width: 12rem;
-	// The menu's width cap — it can grow past the toggle's width up to this before its items wrap.
-	// Numerically equal to --kb-sl-size-modal-small (both 24rem / 384px) purely by coincidence — a
-	// selector's max width and a small modal's width are unrelated roles, so this stays its own
-	// token rather than pointing at the modal one.
+	// The menu's width cap before its items wrap. Numerically equal to --kb-sl-size-modal-small by
+	// coincidence — stays its own token rather than pointing at the modal one.
 	--kb-sl-size-select-dropdown-max-width: 24rem;
+
+	// The preview slot's width inside a card. Height reuses --kb-sl-space-50 directly rather than a
+	// second, numerically-identical primitive.
+	--kb-sl-size-swatch-preview-width: 5rem;
+	// `SwatchCard`'s own width (read by `.swatch-card-main`) — derived as the preview's width plus
+	// its own inline padding on both sides, so a change to either can't silently drift this out of
+	// alignment.
+	--kb-sl-size-swatch-card-width: calc(var(--kb-sl-size-swatch-preview-width) + var(--kb-sl-space-10) * 2);
+
+	// `ListRow`'s default preview-slot square — numerically equal to --kb-sl-size-swatch-preview-width
+	// above by coincidence; kept as its own token since the two roles must stay free to diverge.
+	--kb-sl-size-row-preview: 5rem;
 
 	// Icon sizes — dropdown/menu glyphs. A separate scale from font-size even though one value
 	// (20px) happens to coincide with --kb-sl-font-size-xl: the two ramps mean different things
@@ -135,5 +161,6 @@ body.kadence-blocks-style-library-page {
 	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
 		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);
+		--kb-sl-color-gray-200-tint-60: color-mix(in srgb, var(--kb-sl-color-gray-200) 60%, transparent);
 	}
 }
