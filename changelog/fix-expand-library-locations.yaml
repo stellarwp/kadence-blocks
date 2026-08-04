@@ -1,0 +1,4 @@
+significance: patch
+type: fix
+entry: Restored support for custom design library locations.
+timestamp: 2026-08-04T00:04:17.384Z
