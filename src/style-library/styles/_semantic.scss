@@ -1,14 +1,33 @@
 // Style Library design tokens — semantic aliases. A semantic token holds only a `var()`
 // reference to a primitive from _primitives.scss — never a literal.
+//
+// Scoped to the app root and the page's body class — see _primitives.scss for why the body
+// selector is needed alongside the root (Popover content portals outside the root).
 
-.kadence-blocks-style-library-root {
+.kadence-blocks-style-library-root,
+body.kadence-blocks-style-library-page {
 	// Color — surface/border/text.
 	--kb-sl-color-surface: var(--kb-sl-color-white);
 	// The design specifies a different system's border color; this is the nearest in-ramp gray.
+	// This is a structural edge (sidebar/header rules), not a form control's border — see the
+	// control-border pair below for that distinct role, which is deliberately a different gray.
 	--kb-sl-color-border: var(--kb-sl-color-gray-200);
 	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
 	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
 	--kb-sl-color-text-muted: var(--kb-sl-color-gray-700);
+
+	// Color — form control border (e.g. the library-selector toggle). A darker gray than the
+	// structural --kb-sl-color-border above, and a separate token because the two roles must be
+	// free to diverge even though both are "a border".
+	--kb-sl-color-control-border: var(--kb-sl-color-gray-600);
+	--kb-sl-color-control-border-focus: var(--kb-sl-color-theme);
+
+	// Color — destructive actions (e.g. the header's "Delete" library action). First consumer of
+	// the alert-red primitive; named for the role, not the color, same as every other semantic
+	// alias here.
+	--kb-sl-color-action-destructive: var(--kb-sl-color-alert-red);
+	--kb-sl-color-action-destructive-hover: var(--kb-sl-color-alert-red-dark);
+	--kb-sl-color-action-destructive-bg-hover: var(--kb-sl-color-alert-red-tint-4);
 
 	// Color — sidebar nav.
 	--kb-sl-color-nav-tab-text: var(--kb-sl-color-gray-800);
@@ -35,4 +54,11 @@
 	--kb-sl-size-button-small: var(--kb-sl-space-30);
 	--kb-sl-size-button-medium: var(--kb-sl-space-40);
 	--kb-sl-size-button-large: var(--kb-sl-space-50);
+
+	// Component sizing — icons, named for what they're for.
+	--kb-sl-size-icon-chevron: var(--kb-sl-icon-size-s);
+	--kb-sl-size-icon-check: var(--kb-sl-icon-size-m);
+
+	// Elevation
+	--kb-sl-shadow-menu: var(--kb-sl-shadow-elevation-m);
 }
