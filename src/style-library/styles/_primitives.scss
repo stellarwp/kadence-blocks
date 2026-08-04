@@ -1,14 +1,20 @@
 // Style Library design tokens — primitives. A primitive holds a raw value and references
 // nothing else (the theme color group is the one exception, justified inline below).
 //
-// Scoped to the app root, not :root, so these tokens don't leak onto the rest of wp-admin. Only
-// this file and _semantic.scss emit this selector — don't `@use` either from another partial or
-// the block duplicates into the bundle once per importer.
+// Scoped to the app root and the page's body class, not :root, so these tokens don't leak onto
+// the rest of wp-admin. The body class is needed alongside the root: `@wordpress/components`
+// `Popover` (which `DropdownMenu`/`Modal` render through) portals its content to a container
+// appended directly under `<body>`, outside `.kadence-blocks-style-library-root` — a rule inside
+// a popover that reads one of these custom properties finds nothing without the body selector
+// here too, since custom properties only reach DOM descendants. Only this file and
+// _semantic.scss emit these selectors — don't `@use` either from another partial or the block
+// duplicates into the bundle once per importer.
 //
 // Sizes are rem, not px: the wp-admin root is 16px, so 1rem = 16px here — never em, since the app
 // root itself renders at 13px.
 
-.kadence-blocks-style-library-root {
+.kadence-blocks-style-library-root,
+body.kadence-blocks-style-library-page {
 	// Grays — Gutenberg's own gray ramp. Deliberately no gray-500; do not invent one.
 	--kb-sl-color-gray-100: #f0f0f0;
 	--kb-sl-color-gray-200: #e0e0e0;
@@ -25,6 +31,12 @@
 	--kb-sl-color-alert-yellow: #f0b849;
 	--kb-sl-color-alert-red: #cc1818;
 	--kb-sl-color-alert-green: #4ab866;
+	// Not on the Figma alert ramp — this is WordPress core's own destructive-button hover color
+	// (the editor's `isDestructive` hover state), reused here so the delete action matches it
+	// exactly rather than inventing a different darker red.
+	--kb-sl-color-alert-red-dark: #710d0d;
+	// Solid fallback; a browser without color-mix() keeps this value — see the @supports block below.
+	--kb-sl-color-alert-red-tint-4: rgba(204, 24, 24, 0.04);
 
 	// Theme — sourced from wp-admin at runtime, with a literal WordPress blue as the fallback.
 	--kb-sl-color-theme: var(--wp-admin-theme-color, #2271b1);
@@ -89,13 +101,39 @@
 	--kb-sl-size-modal-small: 24rem;
 	--kb-sl-size-modal-medium: 32rem;
 	--kb-sl-size-modal-large: 52.5rem;
+	// The shared select-dropdown control's toggle width (a fixed size, not a minimum) and its
+	// menu's matching min-width — the menu is never narrower than the toggle it opens from.
+	// Numerically equal to --kb-sl-size-sidebar-width (both 12rem / 192px per Figma) but a
+	// distinct, independent value — the two are unrelated, so this never points at the sidebar
+	// token even though the numbers happen to match; changing the sidebar must never silently
+	// resize this control.
+	--kb-sl-size-select-dropdown-width: 12rem;
+	// The menu's width cap — it can grow past the toggle's width up to this before its items wrap.
+	// Numerically equal to --kb-sl-size-modal-small (both 24rem / 384px) purely by coincidence — a
+	// selector's max width and a small modal's width are unrelated roles, so this stays its own
+	// token rather than pointing at the modal one.
+	--kb-sl-size-select-dropdown-max-width: 24rem;
+
+	// Icon sizes — dropdown/menu glyphs. A separate scale from font-size even though one value
+	// (20px) happens to coincide with --kb-sl-font-size-xl: the two ramps mean different things
+	// and may diverge, so an icon never references a font-size primitive.
+	--kb-sl-icon-size-s: 1.125rem;
+	--kb-sl-icon-size-m: 1.25rem;
+
+	// Elevation — layered drop shadows for raised surfaces (menus, popovers). Authoritative
+	// per-layer values and order from Figma (specified as rgba(), matching exactly); each layer's
+	// alpha is a specific design decision, not derived from the alert/gray ramps.
+	--kb-sl-shadow-elevation-m: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 4px 5px 0 rgba(0, 0, 0, 0.04),
+		0 4px 5px 0 rgba(0, 0, 0, 0.03), 0 16px 16px 0 rgba(0, 0, 0, 0.02);
 }
 
 // A custom property mixing var() and color-mix() is valid at parse time even in browsers that
 // don't support color-mix(), so a plain two-declaration fallback can't work — it has to be
 // gated behind a real @supports check instead.
 @supports (background: color-mix(in srgb, red 10%, transparent)) {
-	.kadence-blocks-style-library-root {
+	.kadence-blocks-style-library-root,
+	body.kadence-blocks-style-library-page {
 		--kb-sl-color-theme-tint-4: color-mix(in srgb, var(--kb-sl-color-theme) 4%, transparent);
+		--kb-sl-color-alert-red-tint-4: color-mix(in srgb, var(--kb-sl-color-alert-red) 4%, transparent);
 	}
 }
