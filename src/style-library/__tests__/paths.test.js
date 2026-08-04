@@ -10,6 +10,7 @@ import {
 	documentsPath,
 	activeLibraryPath,
 	activateLibraryPath,
+	feedPath,
 } from '../api/paths';
 
 describe('palette paths', () => {
@@ -89,5 +90,15 @@ describe('activateLibraryPath', () => {
 
 	it('escapes the slug', () => {
 		expect(activateLibraryPath('my set')).toBe('/kb-design-tokens/v1/active-library/my%20set');
+	});
+});
+
+describe('feedPath', () => {
+	it('builds the feed path for a slug', () => {
+		expect(feedPath('default')).toBe('/kb-design-tokens/v1/feed/default');
+	});
+
+	it('escapes the slug', () => {
+		expect(feedPath('my set')).toBe('/kb-design-tokens/v1/feed/my%20set');
 	});
 });

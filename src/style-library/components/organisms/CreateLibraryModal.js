@@ -2,8 +2,9 @@
  * The "Create Library" modal: a title field and Cancel / Create actions. The derived slug (used
  * for the REST path and the collision check) is an implementation detail and is never shown —
  * the field reads as a plain name input. Creation is pessimistic — the caller keeps the modal busy
- * until the request resolves (a successful create is followed by a switch-and-reload, which
- * unmounts this modal).
+ * until the request resolves. A successful create is followed by a switch and a refreshed
+ * libraries list (see `hooks/use-libraries`); the caller (`LibrarySelector`) closes this modal
+ * explicitly once that settles, rather than relying on a page reload to unmount it.
  */
 
 /**
@@ -84,9 +85,8 @@ export function CreateLibraryModal({ libraries, isBusy, error, onClose, onCreate
 					onClick={() => onCreate(title)}
 				>
 					{/* The progressive label is the only progress indication — no spinner alongside it.
-					 * A successful create is always followed by a switch-and-reload (see the hook), so
-					 * this stays on the pending label right up to the reload rather than needing an
-					 * explicit close: nothing ever sets `isBusy` back to false on the success path. */}
+					 * `isBusy` returns to false once the create-and-switch flow settles (see the
+					 * hook), at which point the caller (LibrarySelector) closes this modal explicitly. */}
 					{isBusy ? __('Creating…', 'kadence-blocks') : __('Create', 'kadence-blocks')}
 				</Button>
 			</div>

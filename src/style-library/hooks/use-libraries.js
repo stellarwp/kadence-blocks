@@ -2,45 +2,39 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { fetchLibraries, setActiveLibrary, createLibrary, deleteLibrary } from '../api/client';
-import { slugifyLibraryTitle, sortLibraries } from '../helpers/libraries';
-
-/**
- * Read the message off a REST error, falling back to a generic string when the error carries
- * none (e.g. a network failure `apiFetch` surfaces as a plain thrown value).
- *
- * @param {*} error The rejected value from an `apiFetch` call.
- *
- * @since TBD
- *
- * @return {string} A user-facing message.
- */
-function errorMessage(error) {
-	return error?.message || __('Something went wrong. Please try again.', 'kadence-blocks');
-}
+import { fetchLibraries } from '../api/client';
+import { sortLibraries } from '../helpers/libraries';
+import { createLibraryFlow, deleteLibraryFlow, errorMessage, switchLibraryFlow } from '../helpers/library-flows';
 
 /**
  * The library management surface for the Style Library header: the list, the active slug, and
  * the switch/create/delete operations against the design-tokens REST API.
  *
- * Activation and deletion wait for the server before acting, because both are followed by a
- * reload or a refetch — an optimistic flip that then errored would leave the UI lying about which
- * library the printed feed describes. Creation is also pessimistic: the modal stays busy until
- * the create request resolves.
+ * This hook is a thin binding of React state onto the pure flows in `helpers/library-flows` —
+ * `switchLibraryFlow`, `createLibraryFlow`, `deleteLibraryFlow` — which do the actual request
+ * orchestration and are what a test exercises directly. Activation and deletion wait for the
+ * server before acting, because both are followed by an in-place feed refresh — an optimistic
+ * flip that then errored would leave the UI lying about which library the feed describes.
+ * Creation is also pessimistic: the modal stays busy until the create request resolves. None of
+ * the three flows reloads the page; each settles by either refreshing the feed for the now-active
+ * library or, on failure, clearing `isBusy` so the caller (the create/delete modal) can close or
+ * stay open on its own.
  *
- * @param {Object} feed The design-tokens admin feed (provides the initial active slug).
+ * @param {Object}   feed        The design-tokens admin feed (provides the initial active slug).
+ * @param {Function} refreshFeed Replaces the feed with a fresh REST read for a slug (from
+ *                               `use-design-tokens-feed`), so switching or deleting the active
+ *                               library re-renders every consumer without a page reload.
  *
  * @since TBD
  *
  * @return {Object} `{ libraries, activeSlug, isLoading, isBusy, error, clearError, switchLibrary,
  *                  createLibrary, deleteLibrary }`.
  */
-export function useLibraries(feed) {
+export function useLibraries(feed, refreshFeed) {
 	const [libraries, setLibraries] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isBusy, setIsBusy] = useState(false);
@@ -60,73 +54,35 @@ export function useLibraries(feed) {
 
 	const clearError = useCallback(() => setError(null), []);
 
-	const switchLibrary = useCallback((slug) => {
-		setIsBusy(true);
-
-		return setActiveLibrary(slug)
-			.then(() => {
-				window.location.reload();
-			})
-			.catch((err) => {
-				setError({ message: errorMessage(err) });
-				setIsBusy(false);
-			});
-	}, []);
+	const switchLibrary = useCallback(
+		(slug) => switchLibraryFlow({ slug, refreshFeed, onBusy: setIsBusy, onError: setError }),
+		[refreshFeed]
+	);
 
 	const addLibrary = useCallback(
-		(title) => {
-			const slug = slugifyLibraryTitle(title);
-
-			if (!slug) {
-				setError({ message: __('Enter a library title.', 'kadence-blocks') });
-				return Promise.resolve();
-			}
-
-			if (libraries.some((library) => library.slug === slug)) {
-				setError({ message: __('A library with that title already exists.', 'kadence-blocks') });
-				return Promise.resolve();
-			}
-
-			setIsBusy(true);
-
-			return createLibrary(slug, title)
-				.then(() => switchLibrary(slug))
-				.catch((err) => {
-					setError({ message: errorMessage(err) });
-					setIsBusy(false);
-				});
-		},
-		[libraries, switchLibrary]
+		(title) =>
+			createLibraryFlow({
+				title,
+				libraries,
+				switchLibrary,
+				loadLibraries,
+				onBusy: setIsBusy,
+				onError: setError,
+			}),
+		[libraries, switchLibrary, loadLibraries]
 	);
 
 	const removeLibrary = useCallback(
-		(slug) => {
-			setIsBusy(true);
-
-			return deleteLibrary(slug)
-				.then(() => {
-					if (slug === activeSlug) {
-						window.location.reload();
-						return;
-					}
-
-					setIsBusy(false);
-					return loadLibraries();
-				})
-				.catch((err) => {
-					setError({ message: errorMessage(err) });
-					setIsBusy(false);
-
-					// Re-thrown, unlike the other flows here, because the caller (the delete/reset
-					// modal) needs to tell success from failure to know whether to close itself — a
-					// non-active-library delete has no reload to fall back on, so this is the only
-					// signal it gets. Success and failure look the same (a resolved promise) without
-					// this; the modal would close on an error too, hiding the very Notice it left
-					// behind to explain what went wrong.
-					throw err;
-				});
-		},
-		[activeSlug, loadLibraries]
+		(slug) =>
+			deleteLibraryFlow({
+				slug,
+				activeSlug,
+				refreshFeed,
+				loadLibraries,
+				onBusy: setIsBusy,
+				onError: setError,
+			}),
+		[activeSlug, loadLibraries, refreshFeed]
 	);
 
 	return {

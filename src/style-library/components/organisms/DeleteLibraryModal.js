@@ -41,14 +41,12 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onD
 	// flight; there is no spinner alongside it.
 	const pendingLabel = isDefault ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks');
 
-	// Deleting the active library (the only target this modal ever offers) ends in a page reload,
-	// so there is nothing to close — the reload replaces the whole page before this would matter.
-	// Closing here anyway is what makes a *non-active* delete correct too (a hypothetical future
-	// caller of the same onDelete contract that does not reload): it resolves in place, and the
-	// modal has to close itself since nothing else will. `.catch` deliberately does nothing beyond
-	// swallowing the promise rejection — a failed delete already re-set `isBusy`/`error` in the
-	// hook, and staying open (not calling setIsOpen at all) is exactly the "do not close" behavior
-	// a caught rejection gives here for free.
+	// Deleting the active library (the only target this modal ever offers) resolves in place —
+	// the hook refreshes the feed for whatever library ends up active rather than reloading the
+	// page — so this modal has to close itself explicitly once that settles; nothing else will.
+	// `.catch` deliberately does nothing beyond swallowing the promise rejection — a failed delete
+	// already re-set `isBusy`/`error` in the hook, and staying open (not calling setIsOpen at all)
+	// is exactly the "do not close" behavior a caught rejection gives here for free.
 	const handleConfirm = () => {
 		onDelete(activeSlug)
 			.then(() => setIsOpen(false))
