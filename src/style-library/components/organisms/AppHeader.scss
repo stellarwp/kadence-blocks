@@ -16,10 +16,11 @@
 	line-height: var(--kb-sl-line-height-xl);
 }
 
-.kadence-blocks-style-library__header-library {
-	flex: 1 1 auto;
-}
-
+// Neither slot grows — the header row is title, selector, delete, all flowing left and separated
+// only by the row's own gap. A growing library slot (`flex: 1 1 auto`, the previous rule here)
+// consumes all the row's leftover space and pushes the actions slot to the far right edge; with
+// nothing set to grow, the actions slot instead sits immediately after the selector.
+.kadence-blocks-style-library__header-library,
 .kadence-blocks-style-library__header-actions {
 	flex: 0 0 auto;
 }

@@ -14,9 +14,12 @@ import { Spinner } from '@wordpress/components';
 import { AppShell } from '../components/templates/AppShell';
 import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
+import { LibrarySelector } from '../components/organisms/LibrarySelector';
+import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
+import { useLibraries } from '../hooks/use-libraries';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 
@@ -32,6 +35,7 @@ import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../help
 export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
+	const libraries = useLibraries(feed.feed);
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
@@ -74,10 +78,34 @@ export function StyleLibraryApp() {
 	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
 	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
 	const onNavigate = (id) => navigate({ screen: id, item: '' });
+	const activeLibrary = libraries.libraries.find((library) => library.slug === libraries.activeSlug);
 
 	return (
 		<AppShell
-			header={<AppHeader librarySlot={null} actionsSlot={null} />}
+			header={
+				<AppHeader
+					librarySlot={
+						<LibrarySelector
+							libraries={libraries.libraries}
+							activeSlug={libraries.activeSlug}
+							isBusy={libraries.isBusy}
+							error={libraries.error}
+							onSwitch={libraries.switchLibrary}
+							onCreate={libraries.createLibrary}
+							onClearError={libraries.clearError}
+						/>
+					}
+					actionsSlot={
+						<DeleteLibraryModal
+							activeSlug={libraries.activeSlug}
+							activeTitle={activeLibrary?.title}
+							isBusy={libraries.isBusy}
+							error={libraries.error}
+							onDelete={libraries.deleteLibrary}
+						/>
+					}
+				/>
+			}
 			sidebar={<AppSidebar feed={feed.feed} activeId={activeScreenId} onNavigate={onNavigate} />}
 			content={<resolution.Component label={label} />}
 			settingsPanel={null}
