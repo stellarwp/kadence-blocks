@@ -1,0 +1,13 @@
+.kadence-blocks-style-library__section-heading {
+	// Zero, not a bottom margin: the heading-to-content gap is a `gap` on whatever container pairs
+	// this with its content (e.g. `SwatchGrid`) — container gap over child margin, this app's
+	// convention.
+	margin: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	// 0.9625rem per spec, not on the line-height ramp.
+	line-height: 0.9625rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}

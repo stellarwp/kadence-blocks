@@ -37,6 +37,21 @@ body.kadence-blocks-style-library-page {
 	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-800);
 	--kb-sl-color-heading: var(--kb-sl-color-gray-800);
 
+	// Color — a generic hover tint for an interactive surface (e.g. `AddTile`). Same value as
+	// --kb-sl-color-nav-tab-bg-selected but a separate alias — the two roles should stay free to
+	// diverge even though they currently agree.
+	--kb-sl-color-surface-hover: var(--kb-sl-color-theme-tint-4);
+
+	// Color — `gray-50` does two distinct jobs (`AddTile`'s resting surface, `ListRow`'s hover
+	// background), so each gets its own role alias rather than pointing at the primitive directly.
+	--kb-sl-color-tile-surface: var(--kb-sl-color-gray-50);
+	// Sized to read as the same visual weight as the theme tint above — differs from `--selected` in
+	// hue only, not intensity.
+	--kb-sl-color-row-bg-hover: var(--kb-sl-color-gray-50);
+	// `SwatchCard`'s own hover background — a sibling alias, not a shared reference to
+	// --kb-sl-color-row-bg-hover, since a row and a card should stay free to diverge.
+	--kb-sl-color-card-bg-hover: var(--kb-sl-color-gray-50);
+
 	// Typography
 	--kb-sl-font-size-page-title: var(--kb-sl-font-size-xl);
 	--kb-sl-font-size-group-title: var(--kb-sl-font-size-16);
@@ -58,6 +73,11 @@ body.kadence-blocks-style-library-page {
 	// Component sizing — icons, named for what they're for.
 	--kb-sl-size-icon-chevron: var(--kb-sl-icon-size-s);
 	--kb-sl-size-icon-check: var(--kb-sl-icon-size-m);
+	// Shared by every plus/action icon in the app (`AddTile`, `ScreenHeader`'s primary action) — a
+	// 24px hit box around a deliberately smaller 16px SVG, so a future glyph-size change happens
+	// once and both consumers move together instead of drifting.
+	--kb-sl-size-action-icon-box: var(--kb-sl-space-30);
+	--kb-sl-size-action-icon-glyph: var(--kb-sl-space-20);
 
 	// Elevation
 	--kb-sl-shadow-menu: var(--kb-sl-shadow-elevation-m);

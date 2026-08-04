@@ -103,6 +103,11 @@
 // icon's own `width="24" height="24"` attributes stay in the markup (from `@wordpress/icons`, not
 // something this CSS file controls) but a CSS width/height on a rendered SVG always outranks its
 // own presentation attributes, so this still renders at the wrapper's 18px.
+//
+// `AddTile`'s plus icon (components/atoms/AddTile.scss) deliberately does the opposite — its SVG
+// is sized smaller than its wrapper instead of filling it. `plus` and this thin chevron V fill
+// different proportions of the same 24-unit viewBox, so the two need different ratios to land on
+// the same apparent size — not an inconsistency to "fix."
 .kadence-blocks-style-library__select-dropdown-chevron {
 	display: block;
 	width: 100%;
