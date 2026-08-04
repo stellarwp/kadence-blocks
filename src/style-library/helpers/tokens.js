@@ -13,6 +13,28 @@ export function getDesignTokensFeed() {
 }
 
 /**
+ * Fetch the feed for a library and apply it. Pulled out of `use-design-tokens-feed` so the
+ * refresh behavior can be exercised directly in a test without rendering the hook — the same
+ * shape the hook's `refreshFeed` exposes to its callers. `fetchFeed` is injected (the hook passes
+ * `fetchDesignTokensFeed` from `api/client`) rather than imported here, so this pure-helpers
+ * module carries no REST dependency of its own and a test can pass a plain mock.
+ *
+ * @param {string}   slug      The token library slug to read the feed for.
+ * @param {Function} applyFeed Called with the fetched feed payload once it resolves.
+ * @param {Function} fetchFeed Fetches the feed payload for a slug (`fetchDesignTokensFeed`).
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The fetched feed payload.
+ */
+export function refreshFeedFlow(slug, applyFeed, fetchFeed) {
+	return fetchFeed(slug).then((nextFeed) => {
+		applyFeed(nextFeed);
+		return nextFeed;
+	});
+}
+
+/**
  * Flatten schema groups into a single token list.
  *
  * User-created primitives have no server-assigned group (empty string); they

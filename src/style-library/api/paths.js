@@ -115,6 +115,21 @@ export function activeLibraryPath() {
 }
 
 /**
+ * Build a REST path for the admin UI schema feed of a single library — the same payload shape
+ * the page-load Localizer prints as `window.kadenceDesignTokens`, addressable per slug so the
+ * app can refresh it in place after switching the active library.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function feedPath(slug) {
+	return `/kb-design-tokens/v1/feed/${encodeURIComponent(slug)}`;
+}
+
+/**
  * Build a REST path for the action that activates a library.
  *
  * @param {string} slug Token library slug.

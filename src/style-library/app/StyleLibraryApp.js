@@ -35,7 +35,7 @@ import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../help
 export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
-	const libraries = useLibraries(feed.feed);
+	const libraries = useLibraries(feed.feed, feed.refreshFeed);
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);

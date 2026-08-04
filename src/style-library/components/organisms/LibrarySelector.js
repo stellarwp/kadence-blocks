@@ -43,6 +43,14 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 		label: libraryDisplayTitle(library),
 	}));
 
+	// A plain switch from the dropdown has no follow-up action waiting on its result — the
+	// `error` state above already surfaces a failure, so the rejection `onSwitch`'s promise carries
+	// (there for a caller that chains off it, e.g. the create flow) is swallowed here rather than
+	// left unhandled.
+	const handleSwitch = (slug) => {
+		onSwitch(slug).catch(() => {});
+	};
+
 	return (
 		<>
 			<SelectDropdown
@@ -58,7 +66,7 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 				// surfacing it here too would display it twice.
 				error={isCreateOpen ? null : error}
 				onClearError={onClearError}
-				onChange={onSwitch}
+				onChange={handleSwitch}
 				trailingAction={{
 					label: __('Create Library', 'kadence-blocks'),
 					onClick: () => setIsCreateOpen(true),
@@ -73,7 +81,20 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 						setIsCreateOpen(false);
 						onClearError();
 					}}
-					onCreate={onCreate}
+					onCreate={(title) =>
+						onCreate(title)
+							.then(() => {
+								// A successful create is followed by a switch to the new library and a
+								// refreshed libraries list (see the hook) — this is the explicit close
+								// that used to be moot when the flow ended in a page reload.
+								setIsCreateOpen(false);
+								onClearError();
+							})
+							// Swallowed: a validation or request failure already lands in `error` via the
+							// hook's setError, which the modal renders inline — nothing further to do
+							// here beyond leaving the modal open.
+							.catch(() => {})
+					}
 				/>
 			)}
 		</>

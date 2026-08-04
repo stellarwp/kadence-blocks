@@ -21,6 +21,7 @@ import {
 	palettePath,
 	paletteSwatchPath,
 	paletteCurrentPath,
+	feedPath,
 } from './paths';
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
@@ -321,4 +322,19 @@ export function createLibrary(slug, title) {
  */
 export function deleteLibrary(slug) {
 	return apiFetch({ path: documentPath(NAMESPACE, slug), method: 'DELETE' });
+}
+
+/**
+ * Fetch the admin UI schema feed for a single library — the same payload shape the page-load
+ * Localizer prints as `window.kadenceDesignTokens`. Used to refresh the app in place after the
+ * active library changes, instead of reloading the page.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The feed payload.
+ */
+export function fetchDesignTokensFeed(slug) {
+	return apiFetch({ path: feedPath(slug) });
 }
