@@ -771,6 +771,41 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
+	 * Each collection item carries its own stored title, keyed to the right library; a library saved
+	 * without a title, and the always-present default with no row of its own, both read back an empty
+	 * string rather than falling back to the slug.
+	 *
+	 * @return void
+	 */
+	public function testCollectionItemsCarryTheirOwnStoredTitleOrEmptyWhenNoneIsStored(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Brand A' );
+		$this->store->save_document( '{"set":"b"}', 'brand-b' );
+
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( 'Brand A', $titles_by_slug['brand-a'] );
+		$this->assertSame( '', $titles_by_slug['brand-b'] );
+		$this->assertSame( '', $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * A single-library read carries the stored title too, not only the collection route.
+	 *
+	 * @return void
+	 */
+	public function testItemReadCarriesTheStoredTitle(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Brand A' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( 'Brand A', $data['title'] );
+	}
+
+	/**
 	 * GET on a non-default slug returns that library's slug and decoded document.
 	 *
 	 * @return void
