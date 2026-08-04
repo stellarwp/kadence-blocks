@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
@@ -13,8 +14,8 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 
 /**
  * Registers the admin UI schema feed: binds the builder, preset feed, nav-ready block-presets
- * section and localizer as singletons, then hooks the localizer onto admin_head so the dashboard
- * bundle receives window.kadenceDesignTokens.
+ * section, the shared feed-assembly pipeline, and the localizer as singletons, then hooks the
+ * localizer onto admin_head so the dashboard bundle receives window.kadenceDesignTokens.
  *
  * @since TBD
  */
@@ -29,6 +30,7 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Builder::class );
 		$this->container->singleton( Presets::class );
 		$this->container->singleton( Preset_Nav::class );
+		$this->container->singleton( Feed_Assembler::class );
 		$this->container->singleton( Localizer::class );
 		$this->container->singleton( Screen::class );
 		$this->container->singleton( Asset_Loader::class );
