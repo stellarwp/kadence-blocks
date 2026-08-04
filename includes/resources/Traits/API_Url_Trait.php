@@ -255,6 +255,17 @@ trait API_Url_Trait {
 	 * @return string[]
 	 */
 	protected function get_registered_library_urls(): array {
+		/**
+		 * Filters the custom design libraries added to the editor.
+		 *
+		 * Each entry is an array with a `url` key, which is also allowed as a
+		 * request location. Register the callback early, so it is available
+		 * outside the editor.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array[] $libraries Custom prebuilt libraries.
+		 */
 		$libraries = apply_filters( 'kadence_blocks_custom_prebuilt_libraries', [] );
 
 		return array_filter( array_column( (array) $libraries, 'url' ), 'is_string' );
