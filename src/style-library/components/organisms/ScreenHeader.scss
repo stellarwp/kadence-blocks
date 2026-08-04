@@ -1,0 +1,54 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__screen-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__screen-header-lead {
+	display: flex;
+	align-items: center;
+	// 1.3125rem per spec, not on the spacing ramp.
+	gap: 1.3125rem;
+	min-width: 0;
+}
+
+.kadence-blocks-style-library__screen-header-trail {
+	@include flex-row(var(--kb-sl-space-15));
+
+	min-width: 0;
+}
+
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-header-title {
+	margin: 0;
+	// --kb-sl-color-text-primary, not the shared --kb-sl-color-heading semantic — that alias also
+	// drives `AppHeader`'s app-wide title, which this was not asked to touch.
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-18);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	line-height: var(--kb-sl-line-height-l);
+}
+
+// `variant="secondary"` is the caller's contract for this slot — core's secondary button already
+// draws the outlined, theme-colored look this design wants, so this rule only sets what core
+// doesn't already give it: padding, font, gap, and icon sizing. No border/background/color/radius
+// here on purpose — adding them would duplicate what core's variant already provides.
+.kadence-blocks-style-library-root
+	.kadence-blocks-style-library__screen-header-primary-action
+	.components-button {
+	padding: var(--kb-sl-space-10);
+	gap: var(--kb-sl-space-05);
+	font-size: var(--kb-sl-font-size-m);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-s);
+
+	// The same shared icon-glyph token `AddTile`'s plus icon uses, so the two render identically —
+	// see --kb-sl-size-action-icon-glyph in _semantic.scss. No `fill` override needed here: this is
+	// a real `Button`, and core's `.components-button svg { fill: currentcolor }` already covers it.
+	svg {
+		width: var(--kb-sl-size-action-icon-glyph);
+		height: var(--kb-sl-size-action-icon-glyph);
+	}
+}
