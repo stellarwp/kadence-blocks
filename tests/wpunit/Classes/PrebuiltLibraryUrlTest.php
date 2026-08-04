@@ -1,4 +1,7 @@
 <?php
+/**
+ * cSpell:ignore startertemplatecloud
+ */
 
 namespace Tests\wpunit\Classes;
 
