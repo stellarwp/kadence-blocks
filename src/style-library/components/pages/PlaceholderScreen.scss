@@ -22,3 +22,65 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.kadence-blocks-style-library__placeholder-gallery {
+	@include flex-column(var(--kb-sl-space-30));
+
+	width: 100%;
+	margin-top: var(--kb-sl-space-60);
+	padding-top: var(--kb-sl-space-30);
+	border-top: 1px dashed var(--kb-sl-color-control-border);
+	text-align: left;
+}
+
+.kadence-blocks-style-library__placeholder-gallery-title {
+	@include section-heading;
+
+	margin: 0;
+	color: var(--kb-sl-color-text-muted);
+}
+
+// One labeled, separated block per primitive demo. The chrome below is deliberately unlike
+// anything a real primitive renders, so it's never mistaken for part of the demonstrated component.
+.kadence-blocks-style-library__placeholder-gallery-section {
+	@include flex-column(var(--kb-sl-space-15));
+
+	padding-bottom: var(--kb-sl-space-30);
+
+	&:not(:last-child) {
+		border-bottom: 1px dashed var(--kb-sl-color-control-border);
+	}
+}
+
+.kadence-blocks-style-library__placeholder-gallery-section-heading {
+	display: flex;
+	align-items: baseline;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__placeholder-gallery-section-name {
+	padding: var(--kb-sl-space-05) var(--kb-sl-space-10);
+	border-radius: var(--kb-sl-radius-s);
+	background: var(--kb-sl-color-gray-800);
+	color: var(--kb-sl-color-white);
+	font-family: monospace;
+	font-size: var(--kb-sl-font-size-s);
+	font-weight: var(--kb-sl-font-weight-medium);
+}
+
+.kadence-blocks-style-library__placeholder-gallery-section-layer {
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-meta);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.kadence-blocks-style-library__placeholder-gallery-section-note {
+	margin: 0;
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-meta);
+}
+
+.kadence-blocks-style-library__placeholder-gallery-atoms {
+	@include flex-row(var(--kb-sl-space-20));
+}
