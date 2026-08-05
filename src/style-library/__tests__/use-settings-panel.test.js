@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { resolveDraftSeed } from '../hooks/use-settings-panel';
+import { computeIsDirty, resolveDraftSeed } from '../hooks/use-settings-panel';
 
 describe('resolveDraftSeed', () => {
 	it('does not seed while the caller has no values yet (initialValues null)', () => {
@@ -59,5 +59,44 @@ describe('resolveDraftSeed', () => {
 			shouldSeed: false,
 			nextSeededFor: null,
 		});
+	});
+});
+
+describe('computeIsDirty', () => {
+	it('is false while the draft matches the caller’s persisted values', () => {
+		const values = { label: 'Main 1', value: '#3182ce' };
+
+		expect(computeIsDirty(values, values)).toBe(false);
+		expect(computeIsDirty({ label: 'Main 1', value: '#3182ce' }, { label: 'Main 1', value: '#3182ce' })).toBe(
+			false
+		);
+	});
+
+	it('is true once the draft diverges from the persisted values', () => {
+		const initialValues = { label: 'Main 1', value: '#3182ce' };
+		const draft = { label: 'Main 1', value: '#ff0000' };
+
+		expect(computeIsDirty(draft, initialValues)).toBe(true);
+	});
+
+	it('settles back to false on its own once a reload catches up to a draft that was never reset — the exact sequence a swatch color save relies on instead of a stale-closure reset', () => {
+		const initialValues = { label: 'Main 1', value: '#3182ce' };
+		// The user edits the color; the draft now holds what will be saved.
+		const draft = { label: 'Main 1', value: '#ff0000' };
+
+		expect(computeIsDirty(draft, initialValues)).toBe(true);
+
+		// The save lands, and the caller's `initialValues` recomputes from the reloaded server data —
+		// a NEW object, but with the same values the draft already holds (no `resetDraft()` call
+		// needed to get here): `computeIsDirty` reads the current values, not a captured `initialValues`
+		// from an earlier render, so it converges on its own.
+		const reloadedValues = { label: 'Main 1', value: '#ff0000' };
+
+		expect(computeIsDirty(draft, reloadedValues)).toBe(false);
+	});
+
+	it('treats a missing initialValues as an empty object, matching an empty draft', () => {
+		expect(computeIsDirty({}, null)).toBe(false);
+		expect(computeIsDirty({ label: 'Main 1' }, null)).toBe(true);
 	});
 });
