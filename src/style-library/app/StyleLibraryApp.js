@@ -18,16 +18,12 @@ import { LibrarySelector } from '../components/organisms/LibrarySelector';
 import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
 import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
-import { SettingsPanel } from '../components/templates/SettingsPanel';
-import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
-import { useSettingsPanel } from '../hooks/use-settings-panel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
-import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 import { libraryDisplayTitle } from '../helpers/libraries';
 
@@ -41,9 +37,12 @@ const SCREEN_COMPONENTS = { 'color-palette': ColorPaletteScreen };
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
- * resolved for the active route. The settings panel opens for the dev-only field-library demo
- * item; a real per-screen item is wired up by the per-screen tickets that ship a save/delete
- * implementation.
+ * resolved for the active route. A screen that owns a settings panel exposes it as a static
+ * `SettingsPanel` property on its page component (`MyScreen.SettingsPanel = MyScreenSettings`);
+ * this is the one place that property is read and mounted into `AppShell`'s `settingsPanel` slot.
+ * The app itself carries no per-screen knowledge — not the demo, not any real screen's panel
+ * contents — so a screen and its panel are siblings that share state only through the server and
+ * the route, never through this component.
  *
  * @since TBD
  *
@@ -53,14 +52,6 @@ export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
-
-	// Dev-only affordance, compiled out of production; see PlaceholderScreen's demo button.
-	const isDemoItem = process.env.NODE_ENV === 'development' && route.item === DEMO_ITEM_ID;
-	const settingsPanelState = useSettingsPanel({
-		route,
-		navigate,
-		initialValues: isDemoItem ? DEMO_SETTINGS_VALUES : {},
-	});
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
@@ -196,29 +187,10 @@ export function StyleLibraryApp() {
 					onNavigate={onNavigate}
 				/>
 			}
-			content={
-				<resolution.Component
-					label={label}
-					route={route}
-					navigate={navigate}
-					library={feed}
-					onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })}
-				/>
-			}
+			content={<resolution.Component label={label} route={route} navigate={navigate} library={feed} />}
 			settingsPanel={
-				isDemoItem ? (
-					<SettingsPanel
-						onClose={settingsPanelState.close}
-						onDelete={() => settingsPanelState.close()}
-						onSave={() => settingsPanelState.resetDraft()}
-						isDirty={settingsPanelState.isDirty}
-					>
-						<SettingsForm
-							schema={DEMO_SETTINGS_SCHEMA}
-							values={settingsPanelState.draft}
-							onChange={settingsPanelState.setFieldValue}
-						/>
-					</SettingsPanel>
+				resolution.Component.SettingsPanel && route.item ? (
+					<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
 				) : null
 			}
 		/>
