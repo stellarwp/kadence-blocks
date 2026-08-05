@@ -15,7 +15,9 @@ import {
 	addGroupFlow,
 	createPaletteFlow,
 	deletePaletteFlow,
+	removeGroupFlow,
 	removeSwatchFlow,
+	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
 	saveSwatchEditsFlow,
@@ -66,7 +68,8 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
  *                  clearDeleteError, clearSaveError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
- *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches }`.
+ *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches,
+ *                  renameGroup, removeGroup }`.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [listing, setListing] = useState({ defaultId: '', currentId: '', palettes: [] });
@@ -382,6 +385,54 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug, listing, reload, refreshFeed]
 	);
 
+	const renameGroup = useCallback(
+		(groupId, label) => {
+			setStructureError(null);
+			return renameGroupFlow({
+				namespace,
+				slug,
+				defaultId: listing.defaultId,
+				groupId,
+				label,
+				reload,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: setStructureError,
+			});
+		},
+		[namespace, slug, listing, reload, refreshFeed]
+	);
+
+	const removeGroup = useCallback(
+		(groupId) => {
+			setStructureError(null);
+
+			// Same defense-in-depth as `removeSwatch`: trust the feed's own `userCreated` flag when
+			// the token has a feed entry, fall back to the prefix check for a token minted since the
+			// last feed refresh.
+			const group = (palette?.groups ?? []).find((row) => row.id === groupId);
+			const userCreatedTokens = (group?.swatches ?? [])
+				.map((swatch) => swatch.token)
+				.filter((token) => {
+					const feedEntry = feedTokens.find((entry) => entry.id === token);
+					return feedEntry ? Boolean(feedEntry.userCreated) : isCustomColorToken(token);
+				});
+
+			return removeGroupFlow({
+				namespace,
+				slug,
+				defaultId: listing.defaultId,
+				groupId,
+				userCreatedTokens,
+				reload,
+				refreshFeed,
+				onBusy: setIsBusy,
+				onError: setStructureError,
+			});
+		},
+		[namespace, slug, listing, palette, feedTokens, reload, refreshFeed]
+	);
+
 	return {
 		listing,
 		activeId: listing.currentId,
@@ -414,5 +465,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		addColor,
 		addGroup,
 		reorderSwatches,
+		renameGroup,
+		removeGroup,
 	};
 }

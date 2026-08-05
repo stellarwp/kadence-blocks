@@ -10,9 +10,9 @@
  * WordPress dependencies
  */
 import { useMemo, useState } from '@wordpress/element';
-import { Button, Notice, Spinner } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-import { plus } from '@wordpress/icons';
+import { Button, DropdownMenu, MenuGroup, MenuItem, Notice, Spinner } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
+import { moreVertical, plus } from '@wordpress/icons';
 
 /**
  * External dependencies
@@ -31,6 +31,8 @@ import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
 import { RenamePaletteModal } from '../organisms/RenamePaletteModal';
 import { DeletePaletteModal } from '../organisms/DeletePaletteModal';
 import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
+import { RenameColorGroupModal } from '../organisms/RenameColorGroupModal';
+import { DeleteColorGroupModal } from '../organisms/DeleteColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
 import { isDefaultPalette, mapPaletteToSwatchGroups, paletteDisplayLabel } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
@@ -76,6 +78,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
+	// Carries the whole mapped group entry (`{ id, label, items }`), not just an id, so the modals
+	// can seed the label and count the swatches without a second lookup.
+	const [renameGroupTarget, setRenameGroupTarget] = useState(null);
+	const [deleteGroupTarget, setDeleteGroupTarget] = useState(null);
 
 	const editingRow = palettes.listing.palettes.find((row) => row.id === palettes.editingId);
 	const activeRow = palettes.listing.palettes.find((row) => row.id === palettes.activeId);
@@ -185,10 +191,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				<Spinner />
 			) : palettes.palette ? (
 				<>
-					{/* Suppressed while the add-group modal is open — that flow shares this same
-					 * `structureError` slot (per the settled six-slot design) and shows it inline
-					 * instead, so surfacing it here too would render the same message twice. */}
-					{!isAddGroupOpen && palettes.structureError && (
+					{/* Suppressed while the add-group, rename-group, or delete-group modal is open —
+					 * every one of those flows shares this same `structureError` slot (per the settled
+					 * six-slot design) and shows it inline instead, so surfacing it here too would
+					 * render the same message twice. */}
+					{!isAddGroupOpen && !renameGroupTarget && !deleteGroupTarget && palettes.structureError && (
 						<Notice status="error" onRemove={palettes.clearStructureError}>
 							{palettes.structureError.message}
 						</Notice>
@@ -206,6 +213,46 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 								.catch(() => {})
 						}
 						addLabel={__('Add color', 'kadence-blocks')}
+						groupActions={(group) => (
+							<DropdownMenu
+								icon={moreVertical}
+								label={sprintf(
+									// translators: %s: the color group name.
+									__('Options for %s', 'kadence-blocks'),
+									group.label
+								)}
+								popoverProps={{ placement: 'bottom-end' }}
+								toggleProps={{ size: 'small' }}
+							>
+								{({ onClose }) => (
+									<MenuGroup>
+										<MenuItem
+											onClick={() => {
+												setRenameGroupTarget(group);
+												onClose();
+											}}
+										>
+											{__('Rename', 'kadence-blocks')}
+										</MenuItem>
+										{/* Absence, not a disabled item, when only one group remains — the server
+										 * rejects an empty `groups` array (`guard_palette_shape()`), and this
+										 * screen's ethos throughout is to hide an affordance it cannot honor rather
+										 * than disable it. */}
+										{gridGroups.length > 1 && (
+											<MenuItem
+												isDestructive
+												onClick={() => {
+													setDeleteGroupTarget(group);
+													onClose();
+												}}
+											>
+												{__('Delete', 'kadence-blocks')}
+											</MenuItem>
+										)}
+									</MenuGroup>
+								)}
+							</DropdownMenu>
+						)}
 					/>
 				</>
 			) : (
@@ -284,6 +331,65 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							// `structureError`, rendered inline — the modal stays open on it.
 							.catch(() => {})
 					}
+				/>
+			)}
+			{renameGroupTarget && (
+				<RenameColorGroupModal
+					group={renameGroupTarget}
+					isBusy={palettes.isBusy}
+					error={palettes.structureError}
+					onClose={() => {
+						setRenameGroupTarget(null);
+						palettes.clearStructureError();
+					}}
+					onRename={(label) =>
+						palettes
+							.renameGroup(renameGroupTarget.id, label)
+							.then(() => {
+								setRenameGroupTarget(null);
+								palettes.clearStructureError();
+							})
+							// Swallowed: a request failure already lands in `structureError`, rendered
+							// inline — the modal stays open on it.
+							.catch(() => {})
+					}
+				/>
+			)}
+			{deleteGroupTarget && (
+				<DeleteColorGroupModal
+					group={deleteGroupTarget}
+					isBusy={palettes.isBusy}
+					error={palettes.structureError}
+					onClose={() => {
+						setDeleteGroupTarget(null);
+						palettes.clearStructureError();
+					}}
+					onConfirm={() => {
+						// Captured before the delete resolves: the group is gone from `gridGroups` by
+						// then, so this is the only point the selected swatch can still be checked
+						// against the group being removed.
+						const selectedInGroup = deleteGroupTarget.items.some((item) => item.id === route.item);
+
+						return (
+							palettes
+								.removeGroup(deleteGroupTarget.id)
+								.then(() => {
+									setDeleteGroupTarget(null);
+									palettes.clearStructureError();
+
+									// The panel must close when its swatch no longer exists in any palette —
+									// otherwise it points at a token that was just deleted. A failed best-effort
+									// token cleanup never reaches here: the flow resolves once the row removal
+									// has settled, regardless of the cleanup outcome.
+									if (selectedInGroup) {
+										navigate({ item: '' });
+									}
+								})
+								// Swallowed: a request failure already lands in `structureError`, rendered
+								// inline — the modal stays open on it.
+								.catch(() => {})
+						);
+					}}
 				/>
 			)}
 		</div>
