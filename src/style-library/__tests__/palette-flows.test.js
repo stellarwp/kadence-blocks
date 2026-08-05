@@ -376,6 +376,7 @@ describe('createPaletteFlow', () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
 		client.savePalette.mockResolvedValue({});
 		const openPalette = jest.fn().mockResolvedValue(undefined);
+		const reload = jest.fn().mockResolvedValue(undefined);
 		const listing = { defaultId: DEFAULT_ID, palettes: [] };
 
 		await createPaletteFlow({
@@ -383,6 +384,7 @@ describe('createPaletteFlow', () => {
 			slug: SLUG,
 			label: 'Forest',
 			listing,
+			reload,
 			openPalette,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -399,11 +401,42 @@ describe('createPaletteFlow', () => {
 		expect(client.setCurrentPalette).not.toHaveBeenCalled();
 	});
 
+	it('reloads the listing before opening the new palette, so the fresh row exists first', async () => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockResolvedValue({});
+		const order = [];
+		const reload = jest.fn(async () => {
+			order.push('reload');
+		});
+		const openPalette = jest.fn(async () => {
+			order.push('openPalette');
+		});
+		const listing = { defaultId: DEFAULT_ID, palettes: [] };
+
+		await createPaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			label: 'Forest',
+			listing,
+			reload,
+			openPalette,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		// `reload()` must land BEFORE `openPalette()`: `hooks/use-palettes.js`'s `reload()` keeps
+		// `editingId` unchanged (it still points at the previously-edited palette, which still
+		// exists), so this ordering means the listing already carries the new row by the time
+		// `editingId` moves onto it — otherwise the dropdown would render the raw id for one tick.
+		expect(order).toEqual(['reload', 'openPalette']);
+	});
+
 	it('surfaces the error, clears busy, and rejects when the create request fails', async () => {
 		const failure = new Error('Could not create the palette.');
 		client.fetchPalette.mockRejectedValue(failure);
 		const onBusy = jest.fn();
 		const onError = jest.fn();
+		const reload = jest.fn().mockResolvedValue(undefined);
 		const listing = { defaultId: DEFAULT_ID, palettes: [] };
 
 		await expect(
@@ -412,6 +445,7 @@ describe('createPaletteFlow', () => {
 				slug: SLUG,
 				label: 'Forest',
 				listing,
+				reload,
 				openPalette: jest.fn(),
 				onBusy,
 				onError,
@@ -420,6 +454,7 @@ describe('createPaletteFlow', () => {
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
+		expect(reload).not.toHaveBeenCalled();
 	});
 });
 
