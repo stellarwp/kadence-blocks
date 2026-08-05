@@ -132,6 +132,9 @@ body.kadence-blocks-style-library-page {
 	// The menu's width cap before its items wrap. Numerically equal to --kb-sl-size-modal-small by
 	// coincidence — stays its own token rather than pointing at the modal one.
 	--kb-sl-size-select-dropdown-max-width: 24rem;
+	// The floor for a menu item's label column, so a short label still holds the row open and the
+	// badges after it line up across rows instead of tracking each label's own width.
+	--kb-sl-size-select-dropdown-label-min-width: 8rem;
 
 	// The preview slot's width inside a card. Height reuses --kb-sl-space-50 directly rather than a
 	// second, numerically-identical primitive.
