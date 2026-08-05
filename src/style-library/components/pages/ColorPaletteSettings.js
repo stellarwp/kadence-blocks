@@ -48,7 +48,11 @@ const SWATCH_SETTINGS_SCHEMA = {
  * @return {?JSX.Element} The panel, or null while a stale item normalizes away.
  */
 export function ColorPaletteSettings({ route, navigate, library }) {
-	const palettes = usePalettes(library.feed, library.refreshFeed);
+	// Same `route`/`navigate` threading as `ColorPaletteScreen` — this instance never opens a
+	// palette itself, but it must derive `editingId` from the SAME `route.scope` the screen writes,
+	// or it independently falls back to `$current` and edits the wrong palette (see
+	// `usePalettes`'s own docblock for the bug this closes).
+	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
 	const token = route.item;
 	const swatch = findSwatch(palettes.palette, token);
 	// null, not a computed empty object, while the palette itself hasn't loaded yet — the open item
@@ -72,16 +76,16 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		return null;
 	}
 
-	// Once a real seed has happened for this item, `useSettingsPanel` ignores every later
-	// `initialValues` identity change (see that hook's own docblock) — so after a successful save,
-	// the reload's fresh `initialValues` alone would not clear the draft. `resetDraft()` here is what
-	// makes the panel read as clean again; on failure it is skipped, so the draft (and the Save
-	// button) survive.
-	const onSave = () =>
-		palettes
-			.saveSwatchEdits(token, panel.draft, initialValues)
-			.then(() => panel.resetDraft())
-			.catch(() => {});
+	// Deliberately does NOT call `panel.resetDraft()` on success. `resetDraft` closes over
+	// `initialValues` from the render it was created in — by the time this promise resolves, that
+	// closure is the PRE-save values, so calling it would silently revert the panel to what the
+	// user just replaced (confirmed: the write itself lands correctly; only the UI would regress).
+	// Leaving the draft alone is enough: it already holds exactly what was saved, so the picker
+	// keeps showing it, and once `saveSwatchEdits`'s `reload()` refreshes `palettes.palette`, the
+	// next render's `initialValues` recomputes to the same values, `computeIsDirty` sees them as
+	// equal, and the Save button disables itself — no reset step required. On failure the draft
+	// (and the Save button) simply survive, which is what we want anyway.
+	const onSave = () => palettes.saveSwatchEdits(token, panel.draft, initialValues).catch(() => {});
 
 	return (
 		<SettingsPanel

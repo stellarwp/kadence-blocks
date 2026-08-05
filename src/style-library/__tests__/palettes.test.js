@@ -14,6 +14,7 @@ import {
 	removeSwatchFromGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
+	resolveEditingPaletteId,
 	slugifyPaletteLabel,
 	stripEffectiveFlags,
 	swatchInitialValues,
@@ -123,6 +124,37 @@ describe('isDefaultPalette', () => {
 		expect(isDefaultPalette({ defaultId: 'default' }, 'sunset')).toBe(false);
 		expect(isDefaultPalette({ defaultId: '' }, 'sunset')).toBe(true);
 		expect(isDefaultPalette({}, 'sunset')).toBe(true);
+	});
+});
+
+describe('resolveEditingPaletteId', () => {
+	const listing = {
+		currentId: 'scratch-two',
+		palettes: [
+			{ id: 'default', label: 'Default' },
+			{ id: 'sunset', label: 'Sunset' },
+			{ id: 'scratch-two', label: 'Scratch Two' },
+		],
+	};
+
+	it('resolves to the active palette when the route carries no scope', () => {
+		expect(resolveEditingPaletteId('', listing)).toBe('scratch-two');
+		expect(resolveEditingPaletteId(undefined, listing)).toBe('scratch-two');
+	});
+
+	it('resolves to scope when it names a palette in the listing', () => {
+		expect(resolveEditingPaletteId('sunset', listing)).toBe('sunset');
+	});
+
+	it('falls back to the active palette when scope names no palette in the listing', () => {
+		// A deleted palette's id lingering in scope, or a hand-edited/stale deep link — either way
+		// this must resolve to something real rather than an id nothing can look up.
+		expect(resolveEditingPaletteId('long-gone', listing)).toBe('scratch-two');
+	});
+
+	it('falls back to an empty string when the listing itself has no current pointer yet', () => {
+		expect(resolveEditingPaletteId('sunset', { currentId: '', palettes: [] })).toBe('');
+		expect(resolveEditingPaletteId('', {})).toBe('');
 	});
 });
 
