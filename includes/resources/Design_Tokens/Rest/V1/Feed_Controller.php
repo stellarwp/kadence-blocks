@@ -66,7 +66,7 @@ final class Feed_Controller extends Controller {
 	private Feed_Assembler $assembler;
 
 	/**
-	 * Memoised item schema for this request. Null until first built.
+	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
 	 *
