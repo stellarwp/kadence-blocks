@@ -16,17 +16,22 @@ import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
+import { SettingsPanel } from '../components/templates/SettingsPanel';
+import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
+import { useSettingsPanel } from '../hooks/use-settings-panel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
+import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
- * resolved for the active route. The settings panel is still an empty slot — it is filled once
- * the settings panel and field library exist.
+ * resolved for the active route. The settings panel opens for the dev-only field-library demo
+ * item; a real per-screen item is wired up by the per-screen tickets that ship a save/delete
+ * implementation.
  *
  * @since TBD
  *
@@ -36,6 +41,14 @@ export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
+
+	// Dev-only affordance, compiled out of production; see PlaceholderScreen's demo button.
+	const isDemoItem = process.env.NODE_ENV === 'development' && route.item === DEMO_ITEM_ID;
+	const settingsPanelState = useSettingsPanel({
+		route,
+		navigate,
+		initialValues: isDemoItem ? DEMO_SETTINGS_VALUES : {},
+	});
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
@@ -107,8 +120,25 @@ export function StyleLibraryApp() {
 				/>
 			}
 			sidebar={<AppSidebar feed={feed.feed} activeId={activeScreenId} onNavigate={onNavigate} />}
-			content={<resolution.Component label={label} />}
-			settingsPanel={null}
+			content={
+				<resolution.Component label={label} onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })} />
+			}
+			settingsPanel={
+				isDemoItem ? (
+					<SettingsPanel
+						onClose={settingsPanelState.close}
+						onDelete={() => settingsPanelState.close()}
+						onSave={() => settingsPanelState.resetDraft()}
+						isDirty={settingsPanelState.isDirty}
+					>
+						<SettingsForm
+							schema={DEMO_SETTINGS_SCHEMA}
+							values={settingsPanelState.draft}
+							onChange={settingsPanelState.setFieldValue}
+						/>
+					</SettingsPanel>
+				) : null
+			}
 		/>
 	);
 }

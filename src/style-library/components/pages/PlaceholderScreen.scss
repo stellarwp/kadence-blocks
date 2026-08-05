@@ -84,3 +84,10 @@
 .kadence-blocks-style-library__placeholder-gallery-atoms {
 	@include flex-row(var(--kb-sl-space-20));
 }
+
+// Bounded height so the sticky header/footer demo against a scrolling field area, like AppShell's.
+.kadence-blocks-style-library__placeholder-gallery-settings-panel {
+	max-width: var(--kb-sl-size-settings-panel-width);
+	height: 28rem;
+	border: 1px solid var(--kb-sl-color-border);
+}

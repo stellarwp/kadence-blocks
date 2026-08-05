@@ -18,12 +18,16 @@ import { plus } from '@wordpress/icons';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { RowList } from '../templates/RowList';
+import { SettingsPanel } from '../templates/SettingsPanel';
+import { SettingsForm } from '../organisms/SettingsForm';
 import { EmptyState } from '../molecules/EmptyState';
 import { DragHandle } from '../atoms/DragHandle';
 import { MetaChip } from '../atoms/MetaChip';
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
 import { SelectDropdown } from '../molecules/SelectDropdown';
+import { DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../../constants/demo-settings-schema';
+import { isEqual, setValueAtPath } from '../../helpers/settings-schema';
 import './PlaceholderScreen.scss';
 
 /**
@@ -145,8 +149,10 @@ function isGalleryRequested() {
 /**
  * Render the placeholder screen.
  *
- * @param {Object} props       The component props.
- * @param {string} props.label The active screen's nav label.
+ * @param {Object}   props                          The component props.
+ * @param {string}   props.label                    The active screen's nav label.
+ * @param {Function} [props.onOpenFieldLibraryDemo]  Opens the field-library demo in the settings panel
+ *                                                    (`?kb-item=demo`); dev builds only.
  *
  * @since TBD
  *
@@ -154,13 +160,18 @@ function isGalleryRequested() {
  *
  * @todo Replaced per screen by the Style Library per-screen work.
  */
-export function PlaceholderScreen({ label }) {
+export function PlaceholderScreen({ label, onOpenFieldLibraryDemo }) {
 	return (
 		<div className="kadence-blocks-style-library__placeholder-screen">
 			<h2 className="kadence-blocks-style-library__placeholder-screen-title">{label}</h2>
 			<p className="kadence-blocks-style-library__placeholder-screen-copy">
 				{__('This screen is coming soon.', 'kadence-blocks')}
 			</p>
+			{process.env.NODE_ENV === 'development' && (
+				<Button variant="secondary" onClick={onOpenFieldLibraryDemo}>
+					{'Open field-library demo'}
+				</Button>
+			)}
 			{process.env.NODE_ENV === 'development' && isGalleryRequested() && <PrimitivesGallery />}
 		</div>
 	);
@@ -217,6 +228,10 @@ function PrimitivesGallery() {
 
 	const rowsById = Object.fromEntries(GALLERY_ROWS.map((row) => [row.id, row]));
 	const orderedRows = rowOrder.map((id) => rowsById[id]);
+
+	// A static "baseline item" pass with no onDelete, proving Delete is absent, not disabled — the
+	// route-driven "custom item" pass (onDelete present) is the real settings-panel slot.
+	const [baselineDemoValues, setBaselineDemoValues] = useState(DEMO_SETTINGS_VALUES);
 
 	return (
 		<div className="kadence-blocks-style-library__placeholder-gallery">
@@ -326,6 +341,28 @@ function PrimitivesGallery() {
 					<MetaChip>4XL</MetaChip>
 					<SectionHeading>Group label</SectionHeading>
 					<AddTile label="Add color" onClick={() => window.console.log('add tile clicked')} />
+				</div>
+			</GallerySection>
+
+			<GallerySection
+				name="SettingsPanel + SettingsForm (baseline item)"
+				layer="template + organism"
+				note="The demo schema's baseline-item pass: onDelete is omitted, so the footer Delete button is absent, not disabled. The route-driven custom-item pass (Delete present) is reached via the 'Open field-library demo' button above."
+			>
+				<div className="kadence-blocks-style-library__placeholder-gallery-settings-panel">
+					<SettingsPanel
+						onClose={() => window.console.log('close settings panel')}
+						onSave={() => window.console.log('save', baselineDemoValues)}
+						isDirty={!isEqual(baselineDemoValues, DEMO_SETTINGS_VALUES)}
+					>
+						<SettingsForm
+							schema={DEMO_SETTINGS_SCHEMA}
+							values={baselineDemoValues}
+							onChange={(path, value) =>
+								setBaselineDemoValues((current) => setValueAtPath(current, path, value))
+							}
+						/>
+					</SettingsPanel>
 				</div>
 			</GallerySection>
 		</div>
