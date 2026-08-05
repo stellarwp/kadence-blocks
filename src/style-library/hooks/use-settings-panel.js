@@ -56,6 +56,24 @@ export function resolveDraftSeed(itemId, initialValues, seededFor) {
 }
 
 /**
+ * Whether the draft differs from the caller's persisted values. A named, exported wrapper (rather
+ * than an inline expression in the hook) purely so the exact comparison `isDirty` uses is directly
+ * testable without rendering a component — see this module's own test file for the scenario this
+ * exists to prove: a draft holding a just-saved value converges to "not dirty" on its own once
+ * `initialValues` catches up to it, with no reset step required.
+ *
+ * @param {Object}  draft         The panel's current draft values.
+ * @param {?Object} initialValues The caller's persisted values, or null while still loading.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `draft` differs from `initialValues`.
+ */
+export function computeIsDirty(draft, initialValues) {
+	return !isEqual(draft, initialValues || {});
+}
+
+/**
  * Read and drive the settings-panel state.
  *
  * @param {Object}   options               The options.
@@ -92,7 +110,7 @@ export function useSettingsPanel({ route, navigate, initialValues }) {
 	const close = () => navigate({ item: '' });
 	const setFieldValue = (path, value) => setDraft((current) => setValueAtPath(current, path, value));
 	const resetDraft = () => setDraft(initialValues || {});
-	const isDirty = !isEqual(draft, initialValues || {});
+	const isDirty = computeIsDirty(draft, initialValues);
 
 	return { itemId, isOpen: Boolean(itemId), close, draft, setFieldValue, isDirty, resetDraft };
 }
