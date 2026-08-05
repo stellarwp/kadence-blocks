@@ -78,7 +78,14 @@ export function StyleLibraryApp() {
 	return (
 		<AppShell
 			header={<AppHeader librarySlot={null} actionsSlot={null} />}
-			sidebar={<AppSidebar feed={feed.feed} activeId={activeScreenId} onNavigate={onNavigate} />}
+			sidebar={
+				<AppSidebar
+					baseStylesNav={baseStylesNav}
+					blockPresetsNav={blockPresetsNav}
+					activeId={activeScreenId}
+					onNavigate={onNavigate}
+				/>
+			}
 			content={<resolution.Component label={label} />}
 			settingsPanel={null}
 		/>
