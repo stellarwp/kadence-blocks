@@ -56,6 +56,7 @@
 	// A fixed column width, not a minimum — content that doesn't fit wraps to a new line rather than
 	// truncating or overflowing.
 	flex: 0 0 auto;
+	// 4rem per spec, not on the spacing ramp.
 	width: 4rem;
 	// `overflow-wrap: anywhere`, not just `word-break`'s default, so a long unbroken string (a hex
 	// value, a token id) wraps inside the fixed column instead of overflowing it.
@@ -70,6 +71,7 @@
 .kadence-blocks-style-library__list-row-value {
 	// Same treatment as the label column, at its own fixed width.
 	flex: 0 0 auto;
+	// 6rem per spec, not on the spacing ramp.
 	width: 6rem;
 	overflow-wrap: anywhere;
 	color: var(--kb-sl-color-text-secondary);
