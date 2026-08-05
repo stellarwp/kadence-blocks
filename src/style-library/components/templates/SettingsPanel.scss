@@ -1,0 +1,47 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__settings-panel {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	// The panel is its own scroll container (not the AppShell aside) so the header and the sticky
+	// footer stay put while only the field area scrolls.
+	overflow-y: auto;
+}
+
+.kadence-blocks-style-library__settings-panel-header {
+	@include flex-row(var(--kb-sl-space-10), center);
+	justify-content: space-between;
+	flex: 0 0 auto;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	padding: var(--kb-sl-space-15) var(--kb-sl-space-20);
+	border-bottom: 1px solid var(--kb-sl-color-border);
+	background: var(--kb-sl-color-surface);
+}
+
+.kadence-blocks-style-library__settings-panel-title {
+	margin: 0;
+	font-size: var(--kb-sl-font-size-body);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	color: var(--kb-sl-color-heading);
+}
+
+// `flex: 1 1 auto` lets this grow to fill the space between the sticky header and footer, which is
+// what confines `.settings-panel`'s scrolling to this region. No padding: `PanelBody`'s own
+// `.is-opened` padding already supplies it.
+.kadence-blocks-style-library__settings-panel-fields {
+	flex: 1 1 auto;
+}
+
+.kadence-blocks-style-library__settings-panel-footer {
+	@include flex-row(var(--kb-sl-space-10), center);
+	justify-content: flex-end;
+	flex: 0 0 auto;
+	position: sticky;
+	bottom: 0;
+	padding: var(--kb-sl-space-15) var(--kb-sl-space-20);
+	border-top: 1px solid var(--kb-sl-color-border);
+	background: var(--kb-sl-color-surface);
+}
