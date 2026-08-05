@@ -47,7 +47,9 @@ import {
 	isDuplicatePaletteLabel,
 	newSwatchValue,
 	nextCustomColorSlug,
+	removeGroupFromGroups,
 	removeSwatchFromGroups,
+	renameGroupInGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
 	slugifyPaletteLabel,
@@ -825,4 +827,116 @@ export function addGroupFlow({
 			})
 		)
 		.then(() => token);
+}
+
+/**
+ * Rename a color group — a structure edit, written to the default palette node. Label only: the
+ * group's id is immutable, because `template_slot_for()` places minted swatches by group id and
+ * every non-default palette's stored deltas key their groups by the same ids — changing the id
+ * would silently misfile future colors and orphan existing deltas.
+ *
+ * @param {Object}   args
+ * @param {string}   args.namespace   The REST namespace.
+ * @param {string}   args.slug        The token library slug.
+ * @param {string}   args.defaultId   The listing's `$default` palette id.
+ * @param {string}   args.groupId     The group id to rename.
+ * @param {string}   args.label       The new label.
+ * @param {Function} args.reload      Re-reads the listing (and the edited view) from the hook.
+ * @param {Function} args.refreshFeed Replaces the feed for a slug.
+ * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} See `writeDefaultPaletteFlow`.
+ */
+export function renameGroupFlow({ namespace, slug, defaultId, groupId, label, reload, refreshFeed, onBusy, onError }) {
+	return writeDefaultPaletteFlow({
+		namespace,
+		slug,
+		defaultId,
+		edit: (groups) => renameGroupInGroups(groups, groupId, label),
+		reload,
+		refreshFeed,
+		onBusy,
+		onError,
+	});
+}
+
+/**
+ * Remove a color group and every swatch in it: strips the group from the default palette's
+ * structure first, then — for each user-created token the group carried — best-effort deletes
+ * the underlying primitive, one at a time.
+ *
+ * Same load-bearing order as `removeSwatchFlow`, for the same reason: `Token_Reference_Policy`
+ * never scans palette swatches, so nothing server-side blocks deleting a primitive a palette
+ * still references — safety comes entirely from the group-removal write landing first, which
+ * removes every one of its tokens from every palette's effective view before any primitive
+ * delete runs. Each cleanup delete swallows its own failure and refreshes the feed regardless,
+ * so a token that is legitimately blocked (aliased outside the palette layer) neither reverses
+ * the group removal nor wedges the deletes after it on a stale version.
+ *
+ * @param {Object}        args
+ * @param {string}        args.namespace         The REST namespace.
+ * @param {string}        args.slug              The token library slug.
+ * @param {string}        args.defaultId         The listing's `$default` palette id.
+ * @param {string}        args.groupId           The group id to remove.
+ * @param {Array<string>} args.userCreatedTokens The group's user-created swatch tokens — gates
+ *                                               ONLY the cleanup steps, never the group removal.
+ * @param {Function}      args.reload            Re-reads the listing (and the edited view).
+ * @param {Function}      args.refreshFeed       Replaces the feed for a slug; resolves with the
+ *                                               fresh feed payload, whose `version` each cleanup
+ *                                               delete needs.
+ * @param {Function}      args.onBusy            Called with a boolean as the chain starts and settles.
+ * @param {Function}      args.onError           Called with `{ message }` on failure of the
+ *                                               group-removal write.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the group-removal write and every best-effort cleanup
+ *                          attempt settle; rejects only when the group-removal write itself
+ *                          fails (e.g. the last-group 400), after `onError`/`onBusy` have run.
+ */
+export function removeGroupFlow({
+	namespace,
+	slug,
+	defaultId,
+	groupId,
+	userCreatedTokens,
+	reload,
+	refreshFeed,
+	onBusy,
+	onError,
+}) {
+	onBusy(true);
+
+	return fetchPalette(namespace, defaultId, slug)
+		.then((view) => {
+			const groups = removeGroupFromGroups(stripEffectiveFlags(view.groups), groupId);
+
+			return savePalette(namespace, defaultId, { label: view.label, groups }, slug);
+		})
+		.then(() => reload())
+		.then(() => refreshFeed(slug))
+		.then((freshFeed) => {
+			let chain = Promise.resolve(freshFeed);
+
+			userCreatedTokens.forEach((token) => {
+				chain = chain
+					.then((feed) =>
+						deleteUserPrimitive(slug, token, feed?.version).catch(() => {
+							// Best-effort: a cleanup failure never reverses the group removal and
+							// never blocks the deletes after it.
+						})
+					)
+					.then(() => refreshFeed(slug));
+			});
+
+			return chain.then(() => onBusy(false));
+		})
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+			throw err;
+		});
 }
