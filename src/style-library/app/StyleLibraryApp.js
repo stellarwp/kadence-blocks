@@ -21,6 +21,7 @@ import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { SettingsPanel } from '../components/templates/SettingsPanel';
 import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
+import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -29,6 +30,14 @@ import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 import { libraryDisplayTitle } from '../helpers/libraries';
+
+/**
+ * The Base Styles ids with a real screen component, extended by each subsequent per-screen
+ * ticket. Every id not listed here falls back to `PlaceholderScreen` in the registry below.
+ *
+ * @since TBD
+ */
+const SCREEN_COMPONENTS = { 'color-palette': ColorPaletteScreen };
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
@@ -56,14 +65,15 @@ export function StyleLibraryApp() {
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
 
-	// Every Base Styles id resolves to the placeholder until its per-screen work lands, and the
-	// preset fallback is the placeholder until the first real preset screen ships.
+	// Every Base Styles id without an entry in SCREEN_COMPONENTS resolves to the placeholder until
+	// its per-screen work lands, and the preset fallback is the placeholder until the first real
+	// preset screen ships.
 	// @todo SOFT-4083 / SOFT-4084: first real preset screens replace this fallback.
 	const registry = useMemo(() => {
 		const baseStyles = {};
 
 		baseStylesNav.forEach((entry) => {
-			baseStyles[entry.id] = PlaceholderScreen;
+			baseStyles[entry.id] = SCREEN_COMPONENTS[entry.id] ?? PlaceholderScreen;
 		});
 
 		return { baseStyles, presetFallback: PlaceholderScreen };
@@ -187,7 +197,13 @@ export function StyleLibraryApp() {
 				/>
 			}
 			content={
-				<resolution.Component label={label} onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })} />
+				<resolution.Component
+					label={label}
+					route={route}
+					navigate={navigate}
+					library={feed}
+					onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })}
+				/>
 			}
 			settingsPanel={
 				isDemoItem ? (
