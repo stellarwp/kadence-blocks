@@ -187,16 +187,16 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	// needs to reject; kept as a resolved Promise so existing `.then()` callers (e.g.
 	// `createPaletteFlow`, which opens the palette it just created) keep working unchanged.
 	//
-	// Deliberately does NOT touch `item`: `navigate({ scope: id })` merges onto the current route,
-	// so a swatch open in the panel stays open across a palette switch. That is intentional, not an
-	// oversight — swatch tokens are shared across palettes (structure lives on the default node —
-	// decision 1/4), so the open item stays valid, and clearing it on every switch would be a
-	// regression a user has to re-select through. This is Color Palette's own call, not something
-	// `helpers/route.js`/`useStyleLibraryRoute` should impose on every screen.
+	// Clears `item` as well as setting `scope`. A swatch token is valid on every palette (structure
+	// lives on the default node), so the panel *could* stay open across a switch — but its values
+	// would change underneath the user without them asking, which reads as the panel silently
+	// editing something else. Switching palettes is a context switch, so the selection resets with
+	// it. This is Color Palette's own call, not something `helpers/route.js` imposes on every
+	// screen.
 	const openPalette = useCallback(
 		(id) => {
 			setOpenError(null);
-			navigate({ scope: id });
+			navigate({ scope: id, item: '' });
 
 			return Promise.resolve();
 		},
