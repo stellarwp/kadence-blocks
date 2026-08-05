@@ -20,6 +20,27 @@ body.kadence-blocks-style-library-page {
 	#wpfooter {
 		display: none;
 	}
+
+	// Core stacks popovers above modals — `.components-popover` is z-index 1000000 while
+	// `.components-modal__screen-overlay` is 100000 — so a Popover that is still open when a modal
+	// opens floats over the modal's dim layer instead of being covered by it. The header's library
+	// dropdown does exactly that: open it, click Rename or Delete, and the menu stays drawn on top
+	// of the dialog.
+	//
+	// Core's ordering is deliberate, not a bug: it is what lets a popover opened *from inside* a
+	// modal (a color picker, a dropdown in a modal form) render above it. So this override is
+	// scoped to this admin page rather than applied globally. Modals portal to `document.body`,
+	// which carries this page's body class, so the rule still reaches them even though they render
+	// far outside the app root.
+	//
+	// The consequence to know about: on this page, a popover opened from inside one of these
+	// modals would now be covered by the modal it belongs to. None of the library modals contains
+	// one today — the delete modal's successor picker is a native `<select>`, which the browser
+	// draws in its own layer and z-index cannot touch. A modal that needs a real popover inside it
+	// will have to raise that popover above this value.
+	.components-modal__screen-overlay {
+		z-index: 1000001;
+	}
 }
 
 .kadence-blocks-style-library-root {
