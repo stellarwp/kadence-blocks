@@ -2,24 +2,22 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
 
 /**
- * Attaches the editor catalogs to the block editor's early-filters bundle.
+ * Attaches the editor catalogs to the block editor's early-filters bundle, and the pickable-token
+ * pool alone to whichever of the editor bundle or the Style Library admin bundle is on the page.
  *
- * On enqueue_block_editor_assets (after the editor-assets class has enqueued the script) it attaches five
- * globals to the existing 'kadence-blocks-early-filters-js' handle: window.kadenceDesignTokensPresets (the
- * per-library preset catalog the preset picker and the "save as new preset" form read),
- * window.kadenceDesignTokensPalettes (the active library's color palettes the per-block palette selector reads),
- * window.kadenceDesignTokensAttributeDefaults (the per-block attribute-default catalog the block-registration
- * filter reads), window.kadenceDesignTokensRest (the REST descriptor the preset writes POST to), and
- * window.kadenceDesignTokensPickable (the pickable-token pool the editor token picker's accessor reads).
- * Guarded on wp_script_is( …, 'enqueued' ) so it runs only where that bundle loads, and skipped entirely
- * when the registry is fail-closed (a deactivated registry projects nothing, so the pickers offer nothing).
+ * {@see localize()} attaches the preset/palette/attribute-default/REST globals to the editor bundle
+ * on enqueue_block_editor_assets. {@see localize_pickable()} attaches the pickable-token pool to
+ * whichever bundle is enqueued on admin_head, so the settings panel reads the same pool the editor's
+ * token picker does. Both no-op when the registry is fail-closed. Kept as separate hook targets so
+ * they cannot double-attach on an editor screen.
  *
  * Emitted with wp_add_inline_script + wp_json_encode; the JSON_HEX_* flags make the payload safe to
- * inline inside a <script> (no </script> breakout, no & ambiguity) without further escaping.
+ * inline inside a <script> without further escaping.
  *
  * @since TBD
  */
@@ -148,7 +146,23 @@ final class Localizer {
 	}
 
 	/**
-	 * Attach the catalogs to the editor bundle, when that bundle is on the page and the registry is active.
+	 * Script handles that receive the pickable-token pool, in resolution order: the editor bundle,
+	 * then the Style Library admin bundle. Only the first found enqueued is used.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	private function pickable_handles(): array {
+		return [
+			self::HANDLE,
+			Asset_Loader::get_script_handle(),
+		];
+	}
+
+	/**
+	 * Attach the four editor-only catalogs to the editor bundle, when that bundle is on the page and
+	 * the registry is active.
 	 *
 	 * @since TBD
 	 *
@@ -163,11 +177,49 @@ final class Localizer {
 			return; // Fail-closed: no projection, so offer nothing.
 		}
 
-		$this->attach( self::PRESETS_OBJECT, $this->preset_catalog->all() );
-		$this->attach( self::PALETTES_OBJECT, $this->palette_catalog->all() );
-		$this->attach( self::ATTRIBUTE_DEFAULTS_OBJECT, $this->attribute_defaults->all() );
-		$this->attach( self::REST_OBJECT, $this->rest() );
-		$this->attach( self::PICKABLE_OBJECT, $this->pickable->all() );
+		$this->attach( self::HANDLE, self::PRESETS_OBJECT, $this->preset_catalog->all() );
+		$this->attach( self::HANDLE, self::PALETTES_OBJECT, $this->palette_catalog->all() );
+		$this->attach( self::HANDLE, self::ATTRIBUTE_DEFAULTS_OBJECT, $this->attribute_defaults->all() );
+		$this->attach( self::HANDLE, self::REST_OBJECT, $this->rest() );
+	}
+
+	/**
+	 * Attach the pickable-token pool alone to whichever of {@see pickable_handles()} is enqueued,
+	 * when the registry is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function localize_pickable(): void {
+		if ( ! $this->registry->is_active() ) {
+			return; // Fail-closed: no projection, so offer nothing.
+		}
+
+		$handle = $this->resolve_pickable_handle();
+
+		if ( $handle === null ) {
+			return; // Neither bundle is on this screen.
+		}
+
+		$this->attach( $handle, self::PICKABLE_OBJECT, $this->pickable->all() );
+	}
+
+	/**
+	 * The first {@see pickable_handles()} entry enqueued on the current screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	private function resolve_pickable_handle(): ?string {
+		foreach ( $this->pickable_handles() as $handle ) {
+			if ( wp_script_is( $handle, 'enqueued' ) ) {
+				return $handle;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -187,17 +239,18 @@ final class Localizer {
 	}
 
 	/**
-	 * Encode a catalog and attach it to the editor bundle as a window global. A catalog that cannot be
+	 * Encode a catalog and attach it to a script handle as a window global. A catalog that cannot be
 	 * serialized is skipped rather than injected as malformed JS.
 	 *
 	 * @since TBD
 	 *
+	 * @param string              $handle      The script handle to attach the inline script to.
 	 * @param string              $global_name The window global name to assign.
 	 * @param array<string,mixed> $catalog     The catalog payload to encode.
 	 *
 	 * @return void
 	 */
-	private function attach( string $global_name, array $catalog ): void {
+	private function attach( string $handle, string $global_name, array $catalog ): void {
 		$json = wp_json_encode(
 			$catalog,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
@@ -208,7 +261,7 @@ final class Localizer {
 		}
 
 		wp_add_inline_script(
-			self::HANDLE,
+			$handle,
 			'window.' . $global_name . ' = ' . $json . ';',
 			'before'
 		);
