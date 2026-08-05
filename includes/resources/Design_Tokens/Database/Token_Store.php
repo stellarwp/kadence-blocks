@@ -290,6 +290,70 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * Write a token library's human-readable label, touching nothing else.
+	 *
+	 * A title is metadata: it appears in the library picker and nowhere in any projection, so
+	 * renaming a library must not travel through the document write path. Doing so would re-validate
+	 * and re-resolve the entire stored document to change a label — turning a rename into a failure
+	 * for any library whose stored document does not currently validate, for reasons that have
+	 * nothing to do with the new name.
+	 *
+	 * Neither the version hash nor the change action moves here, for the same reason: no projector
+	 * output depends on a title, so bumping the version would invalidate the projected-CSS cache for
+	 * a change no visitor can see.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug  The token library slug.
+	 * @param string $title The new label. An empty string is rejected rather than treated as
+	 *                      "leave the stored title alone", which is what the document write path
+	 *                      does with an empty title — here, clearing is simply not an operation.
+	 *
+	 * @return bool True when the title was written.
+	 *
+	 * @throws DatabaseQueryException If the update fails.
+	 */
+	public function save_title( string $slug, string $title ): bool {
+		if ( $title === '' ) {
+			return false;
+		}
+
+		$existing = $this->qb()
+						->where( 'slug', $slug )
+						->get( ARRAY_A );
+
+		if ( ! is_array( $existing ) ) {
+			// The default library has no row until something is written to it, so naming it is that
+			// first write. The empty document stored alongside the title is not a change of content —
+			// it is exactly what the library already resolved to, since no row means "render from
+			// baseline". Every other slug is rejected by the caller before reaching this point.
+			try {
+				$this->qb()->insert( $this->build_document_data( '', $title, $slug ) );
+			} catch ( DatabaseQueryException $e ) {
+				// Duplicate-key on a concurrent first write → the row now exists and carries someone
+				// else's title; report the miss rather than a fatal.
+				return false;
+			}
+
+			return true;
+		}
+
+		$this->qb()
+			->where( 'slug', $slug )
+			->update(
+				[
+					'title'      => $title,
+					'updated_at' => current_time( 'mysql', true ),
+				]
+			);
+
+		// Deliberately not gated on the affected-row count: MySQL reports zero rows affected when an
+		// UPDATE sets a column to the value it already holds, which is a no-op, not a failure. A real
+		// write failure throws instead.
+		return true;
+	}
+
+	/**
 	 * Delete a named token library only when the stored version matches expected_version.
 	 *
 	 * The default library is never row-deleted; use save_document_conditional with an empty

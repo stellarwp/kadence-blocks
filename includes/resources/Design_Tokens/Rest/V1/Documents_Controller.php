@@ -115,6 +115,15 @@ final class Documents_Controller extends Controller {
 	private const TOKENS_ROUTE = 'tokens';
 
 	/**
+	 * The sub-route, relative to a single library, that writes only its human-readable label.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const TITLE_ROUTE = 'title';
+
+	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
@@ -353,6 +362,23 @@ final class Documents_Controller extends Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::TITLE_ROUTE,
+			[
+				[
+					// Its own route rather than the title parameter the bulk write routes accept: a
+					// rename is a metadata edit, and routing it through a document write would
+					// re-validate and re-resolve the whole stored document to change a label.
+					'methods'             => 'PUT',
+					'callback'            => [ $this, 'update_title' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_title_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::TOKENS_ROUTE . '/' . self::PATH_ROUTE,
 			[
 				[
@@ -571,6 +597,67 @@ final class Documents_Controller extends Controller {
 			$slug,
 			Cast::to_string( $request->get_param( self::TITLE_PARAM ) )
 		);
+	}
+
+	/**
+	 * Rename a token library (PUT /documents/{slug}/title).
+	 *
+	 * Writes the label alone. The stored document is neither read, validated, resolved nor rewritten,
+	 * so a rename cannot fail because of the document's contents — which is the whole reason this is
+	 * not the `title` parameter on the bulk write routes. Those merge-then-validate the entire
+	 * document, so using one to change a label makes renaming impossible for any library whose stored
+	 * document does not currently pass validation.
+	 *
+	 * The default library is renameable like any other: it has no row until something is written to
+	 * it, and naming it is a legitimate first write.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function update_title( $request ) {
+		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$title = trim( Cast::to_string( $request->get_param( self::TITLE_PARAM ) ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return new WP_Error(
+				'rest_design_tokens_not_found',
+				__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::NOT_FOUND,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		// Whitespace-only is empty once trimmed. Rejected rather than stored, and rejected rather than
+		// silently ignored — a library whose label is blank falls back to displaying its slug, which
+		// is never what someone typing a name intended.
+		if ( $title === '' ) {
+			return new WP_Error(
+				'rest_design_tokens_invalid_title',
+				__( 'A library title cannot be empty.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::BAD_REQUEST,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		if ( ! $this->store->save_title( $slug, $title ) ) {
+			return new WP_Error(
+				'rest_design_tokens_save_failed',
+				__( 'The library title could not be saved.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::INTERNAL_SERVER_ERROR,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 	}
 
 	/**
@@ -1204,6 +1291,31 @@ final class Documents_Controller extends Controller {
 				'sanitize_callback' => 'sanitize_key',
 			],
 		];
+	}
+
+	/**
+	 * The arguments accepted by the rename route: the slug and a required title.
+	 *
+	 * Required here, unlike the optional title the bulk write routes take alongside a document — a
+	 * request to this route carries nothing else, so an absent title would ask the server to do
+	 * nothing at all.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_title_params(): array {
+		return array_merge(
+			$this->get_slug_params(),
+			[
+				self::TITLE_PARAM => [
+					'description'       => __( 'The human-readable label for the token library.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
 	}
 
 	/**

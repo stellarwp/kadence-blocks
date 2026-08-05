@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Documents_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use Generator;
 use ReflectionClass;
 use ReflectionProperty;
 use Tests\Support\Classes\TestCase;
@@ -1325,6 +1326,162 @@ final class DocumentsControllerTest extends TestCase {
 		$this->assertInstanceOf( WP_Error::class, $response );
 		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $response->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * The rename route is registered under the library, accepts PUT, and exposes a schema.
+	 *
+	 * @return void
+	 */
+	public function testItRegistersTheTitleRoute(): void {
+		$namespace   = $this->controller_namespace();
+		$base        = $this->controller_rest_base();
+		$slug_route  = $this->controller_constant( 'SLUG_ROUTE' );
+		$title_route = $this->controller_constant( 'TITLE_ROUTE' );
+
+		$route = "/$namespace/$base/$slug_route/$title_route";
+
+		$this->assertContains( 'PUT', $this->route_methods( $route ) );
+
+		$options = $this->rest_server->get_route_options( $route );
+		$this->assertArrayHasKey( 'schema', $options );
+		$this->assertIsCallable( $options['schema'] );
+	}
+
+	/**
+	 * Renaming a library writes its label and leaves its stored document and version alone.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleWritesTheLabelWithoutTouchingTheDocument(): void {
+		$document = '{"primitive":{"color":{"a":{"$type":"color","$value":"#aaaaaa"}}}}';
+		$this->store->save_document( $document, 'brand-a', 'Brand A' );
+		$version = $this->store->get_version( 'brand-a' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', 'Winter 2026' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+		$this->assertSame( $document, $this->store->get_document( 'brand-a' ) );
+		// The version drives the projected-CSS cache key. A label is in no projection, so renaming
+		// must not invalidate anything downstream.
+		$this->assertSame( $version, $this->store->get_version( 'brand-a' ) );
+	}
+
+	/**
+	 * A library whose stored document would fail validation can still be renamed.
+	 *
+	 * This is the reason the route exists. Sending a title alongside an empty document to a bulk
+	 * write route merges and re-validates the whole stored document, so a library holding anything
+	 * the validator rejects becomes impossible to rename — for reasons that have nothing to do with
+	 * the new name. The document here is deliberately not even valid JSON, which is a stronger
+	 * statement than "invalid DTCG": the rename must not read it at all.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleSucceedsWhenTheStoredDocumentIsNotValidJson(): void {
+		$corrupt = '{ this is not json';
+		$this->store->save_document( $corrupt, 'brand-a', 'Brand A' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', 'Winter 2026' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+		$this->assertSame( $corrupt, $this->store->get_document( 'brand-a' ) );
+	}
+
+	/**
+	 * The default library can be renamed even though it has no row until something is written to it.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleNamesTheDefaultLibraryOnItsFirstWrite(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->assertFalse( $this->store->exists( $slug ) );
+
+		$response = $this->controller->update_title( $this->title_request( $slug, 'Our Brand' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( 'Our Brand', $this->store->get_title( $slug ) );
+		// Named, but still rendering from baseline — naming a library is not authoring one.
+		$this->assertSame( '', $this->store->get_document( $slug ) );
+	}
+
+	/**
+	 * A blank or whitespace-only title is refused rather than stored or silently ignored.
+	 *
+	 * @dataProvider blankTitleProvider
+	 *
+	 * @param string $title The rejected title.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleRejectsABlankTitle( string $title ): void {
+		$this->store->save_document( '{}', 'brand-a', 'Brand A' );
+
+		$response = $this->controller->update_title( $this->title_request( 'brand-a', $title ) );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_invalid_title', $response->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $response->get_error_data()['status'] );
+		$this->assertSame( 'Brand A', $this->store->get_title( 'brand-a' ) );
+	}
+
+	/**
+	 * Titles that are empty once trimmed.
+	 *
+	 * @return Generator
+	 */
+	public function blankTitleProvider(): Generator {
+		yield 'empty' => [ 'title' => '' ];
+		yield 'spaces' => [ 'title' => '   ' ];
+		yield 'tab and newline' => [ 'title' => "\t\n" ];
+	}
+
+	/**
+	 * Renaming a library that does not exist is a 404, not a silent create.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleIsNotFoundForAnUnknownLibrary(): void {
+		$response = $this->controller->update_title( $this->title_request( 'ghost', 'Ghost' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( 'rest_design_tokens_not_found', $response->get_error_code() );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+		$this->assertFalse( $this->store->exists( 'ghost' ) );
+	}
+
+	/**
+	 * A surrounding-whitespace title is stored trimmed.
+	 *
+	 * @return void
+	 */
+	public function testUpdateTitleTrimsSurroundingWhitespace(): void {
+		$this->store->save_document( '{}', 'brand-a', 'Brand A' );
+
+		$this->controller->update_title( $this->title_request( 'brand-a', '  Winter 2026  ' ) );
+
+		$this->assertSame( 'Winter 2026', $this->store->get_title( 'brand-a' ) );
+	}
+
+	/**
+	 * Build a rename request carrying the slug and the new title.
+	 *
+	 * @param string $slug  The token library slug.
+	 * @param string $title The new label.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function title_request( string $slug, string $title ): WP_REST_Request {
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'slug', $slug );
+		$request->set_param( 'title', $title );
+
+		return $request;
 	}
 
 	/**

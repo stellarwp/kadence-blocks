@@ -14,6 +14,22 @@ export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 }
 
 /**
+ * Build a REST path for a token library's human-readable label.
+ *
+ * Its own endpoint, separate from the document routes: a rename writes the label alone and never
+ * validates, resolves or rewrites the stored document.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} slug      Token library slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function libraryTitlePath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
+	return `${documentPath(namespace, slug)}/title`;
+}
+
+/**
  * Build a REST path for the user-primitives collection of a document.
  *
  * @since TBD
