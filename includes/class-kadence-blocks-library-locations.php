@@ -2,6 +2,8 @@
 /**
  * Approve design library locations the editor could not load.
  *
+ * cSpell:ignore unslash
+ *
  * @package Kadence Blocks
  */
 
