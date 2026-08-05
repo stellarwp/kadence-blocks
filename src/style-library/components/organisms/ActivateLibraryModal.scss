@@ -1,3 +1,15 @@
+// Core sizes a modal to its content, so the two paragraphs of consequence copy below stretch it
+// to the viewport cap and each line runs the full width of the screen — unreadable for text whose
+// whole job is to be read before confirming. Capped at the medium step rather than the small one:
+// this is prose, not a single field, and 24rem would trade the over-long lines for an over-tall
+// column.
+//
+// The class lands on `.components-modal__frame`; the compound selector is what outranks core's own
+// sizing rule on that element.
+.components-modal__frame.kadence-blocks-style-library__activate-library-modal {
+	max-width: var(--kb-sl-size-modal-medium);
+}
+
 .kadence-blocks-style-library__activate-library-modal-actions {
 	display: flex;
 	justify-content: flex-end;
