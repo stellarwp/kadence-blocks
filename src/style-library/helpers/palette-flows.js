@@ -290,6 +290,10 @@ export function activatePaletteFlow({ namespace, slug, id, reload, refreshFeed, 
  * @param {string}   args.label       The typed palette label.
  * @param {Object}   args.listing     The current listing (`{ defaultId, palettes }`), for the
  *                                    duplicate-id check.
+ * @param {Function} args.reload      Re-reads the listing (and the edited view) from the hook —
+ *                                    run BEFORE `openPalette` so the fresh listing already carries
+ *                                    the new row by the time `editingId` moves onto it (see the
+ *                                    ordering note below).
  * @param {Function} args.openPalette Opens a palette for editing (typically `openPaletteFlow`
  *                                    bound to the new id).
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
@@ -297,11 +301,11 @@ export function activatePaletteFlow({ namespace, slug, id, reload, refreshFeed, 
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once the palette is created and opened for editing; rejects on
- *                          an empty or duplicate label, or a request failure, after `onError` has
- *                          already run.
+ * @return {Promise<void>} Resolves once the palette is created, the listing reloaded, and the new
+ *                          palette opened for editing; rejects on an empty or duplicate label, or a
+ *                          request failure, after `onError` has already run.
  */
-export function createPaletteFlow({ namespace, slug, label, listing, openPalette, onBusy, onError }) {
+export function createPaletteFlow({ namespace, slug, label, listing, reload, openPalette, onBusy, onError }) {
 	const id = slugifyPaletteLabel(label);
 
 	// Both validation failures reject rather than resolve: a caller that closes its modal on a
@@ -321,15 +325,26 @@ export function createPaletteFlow({ namespace, slug, label, listing, openPalette
 
 	onBusy(true);
 
-	return fetchPalette(namespace, listing.defaultId, slug)
-		.then((view) => savePalette(namespace, id, { label, groups: stripEffectiveFlags(view.groups) }, slug))
-		.then(() => openPalette(id))
-		.catch((err) => {
-			onError({ message: errorMessage(err) });
-			onBusy(false);
+	return (
+		fetchPalette(namespace, listing.defaultId, slug)
+			.then((view) => savePalette(namespace, id, { label, groups: stripEffectiveFlags(view.groups) }, slug))
+			// Reloaded BEFORE `openPalette`, not after: `hooks/use-palettes.js`'s `reload()` keeps
+			// `editingId` unchanged when the currently-edited palette still exists in the fresh
+			// listing (true here — nothing about creating a sibling palette removes it), so this
+			// step only refreshes `listing.palettes` with the new row. `openPalette` then moves
+			// `editingId` onto that row with the listing already populated, so the dropdown can
+			// resolve its label and render it as a real option instead of falling back to the raw
+			// id. Reloading after `openPalette` instead would leave the dropdown showing the new,
+			// still-missing-from-the-list id for one render.
+			.then(() => reload())
+			.then(() => openPalette(id))
+			.catch((err) => {
+				onError({ message: errorMessage(err) });
+				onBusy(false);
 
-			throw err;
-		});
+				throw err;
+			})
+	);
 }
 
 /**
