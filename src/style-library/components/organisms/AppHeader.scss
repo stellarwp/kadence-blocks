@@ -21,6 +21,12 @@
 // consumes all the row's leftover space and pushes the actions slot to the far right edge; with
 // nothing set to grow, the actions slot instead sits immediately after the selector.
 .kadence-blocks-style-library__header-library,
+// A row, not a bare block: the slot holds several sibling controls (activate, rename, delete),
+// and without an explicit gap they would sit flush against each other — `Button` is inline-flex,
+// so the whitespace between JSX siblings is not rendered as a space.
 .kadence-blocks-style-library__header-actions {
+	display: flex;
 	flex: 0 0 auto;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
 }

@@ -1,10 +1,12 @@
 /* eslint-env jest */
 import {
 	isDefaultLibrary,
+	isDuplicateLibraryName,
 	isDuplicateLibraryTitle,
 	libraryDisplayTitle,
 	slugifyLibraryTitle,
 	sortLibraries,
+	successorOptions,
 } from '../helpers/libraries';
 
 describe('isDefaultLibrary', () => {
@@ -119,5 +121,72 @@ describe('sortLibraries', () => {
 		sortLibraries(libraries);
 
 		expect(libraries).toEqual(original);
+	});
+});
+
+describe('isDuplicateLibraryName', () => {
+	const libraries = [
+		{ slug: 'brand-a', title: 'Winter 2026' },
+		{ slug: 'brand-b', title: 'Brand B' },
+	];
+
+	it('matches another library ignoring case and surrounding whitespace', () => {
+		expect(isDuplicateLibraryName('brand b', libraries, 'brand-a')).toBe(true);
+		expect(isDuplicateLibraryName('  Brand B  ', libraries, 'brand-a')).toBe(true);
+	});
+
+	it('lets a library keep its own name', () => {
+		// The user may edit the field and revert it — a library must not collide with itself.
+		expect(isDuplicateLibraryName('Winter 2026', libraries, 'brand-a')).toBe(false);
+	});
+
+	// The regression test for the slug/title divergence: a slug is minted from the title once, at
+	// creation, and never follows a rename. Checking a rename against slugs (as creation does)
+	// would refuse "Brand A" here even though nothing on screen is called that any more, leaving
+	// the user no way to understand the refusal.
+	it('ignores a slug collision when no library actually displays that name', () => {
+		expect(isDuplicateLibraryName('Brand A', libraries, 'brand-b')).toBe(false);
+	});
+
+	it('treats an empty name as no collision', () => {
+		expect(isDuplicateLibraryName('', libraries, 'brand-a')).toBe(false);
+		expect(isDuplicateLibraryName('   ', libraries, 'brand-a')).toBe(false);
+	});
+
+	it('compares against the displayed name of an untitled library', () => {
+		// An untitled non-default library displays its slug, so that is what a rename collides with.
+		expect(isDuplicateLibraryName('brand-c', [{ slug: 'brand-c', title: '' }], 'brand-a')).toBe(true);
+	});
+});
+
+// Guards the split from isDuplicateLibraryName above: creation still compares derived slugs,
+// because creation is where the slug is minted and a slug collision is a genuine conflict. The
+// two helpers answer different questions and must not be collapsed into one.
+describe('isDuplicateLibraryTitle still compares derived slugs', () => {
+	it('flags a title whose slug is taken even when no library displays that title', () => {
+		expect(isDuplicateLibraryTitle('Brand A', [{ slug: 'brand-a', title: 'Winter 2026' }])).toBe(true);
+	});
+});
+
+describe('successorOptions', () => {
+	it('excludes the delete target and keeps dropdown order', () => {
+		const libraries = [
+			{ slug: 'zeta', title: 'Zeta' },
+			{ slug: 'default', title: '' },
+			{ slug: 'alpha', title: 'Alpha' },
+		];
+
+		expect(successorOptions(libraries, 'alpha').map((library) => library.slug)).toEqual(['default', 'zeta']);
+	});
+
+	it('still offers the default library when the target is the only other one', () => {
+		// The default library can never be deleted (a DELETE against it resets it instead), so the
+		// successor list is never empty.
+		const libraries = [
+			{ slug: 'default', title: '' },
+			{ slug: 'brand-a', title: 'Brand A' },
+		];
+
+		expect(successorOptions(libraries, 'brand-a').map((library) => library.slug)).toEqual(['default']);
 	});
 });
