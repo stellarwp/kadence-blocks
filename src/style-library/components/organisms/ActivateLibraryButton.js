@@ -2,10 +2,9 @@
  * The header's "Set as active" affordance and its confirmation modal, owning its own open state
  * the way `DeleteLibraryModal` owns its trigger.
  *
- * Renders one of two things, never nothing: the button while the library being edited is not the
- * active one, and a static "Active" indicator while it is. Collapsing the slot instead would
- * reflow the header every time the user opens a different library, and would leave the most
- * important fact about the current screen — whether these edits are live — unstated.
+ * Renders nothing while the library being edited is already the active one — there is no action to
+ * offer, and the selector's own check icon already marks which library the site is live with, so a
+ * second "Active" label here would only repeat it.
  */
 
 /**
@@ -36,7 +35,8 @@ import './ActivateLibraryButton.scss';
  *
  * @since TBD
  *
- * @return {JSX.Element} The action or the indicator, plus the modal while open.
+ * @return {?JSX.Element} The action and, while open, its modal — or null when the library being
+ *                         edited is already active.
  */
 export function ActivateLibraryButton({
 	editingSlug,
@@ -51,11 +51,7 @@ export function ActivateLibraryButton({
 	const [isOpen, setIsOpen] = useState(false);
 
 	if (isEditingActive) {
-		return (
-			<span className="kadence-blocks-style-library__active-library-indicator">
-				{__('Active', 'kadence-blocks')}
-			</span>
-		);
+		return null;
 	}
 
 	// Closes the modal and clears its own error, whether that is a confirmed activation, a Cancel

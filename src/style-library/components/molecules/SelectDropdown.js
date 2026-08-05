@@ -32,11 +32,14 @@ import './SelectDropdown.scss';
  *                                                                       The selectable options, in display order. An option may carry short badges
  *                                                                       rendered after its label in the menu (never in the toggle, which is a fixed
  *                                                                       width the label already truncates against). `variant` is `'state'` for a
- *                                                                       condition that changes over time and `'muted'` for an inherent property —
+ *                                                                       condition that changes over time and `'muted'` for an unchanging property —
  *                                                                       this component only maps them to class names, it does not know what any
  *                                                                       badge means.
  * @param {Function}                              props.onChange        Called with a value when a different option is chosen.
  * @param {boolean}                               [props.isBusy]        Whether a change is in flight.
+ * @param {boolean}                               [props.showSpinner]   Whether the inline busy spinner is drawn. Defaults to true; a caller that
+ *                                                                       already shows progress for the same wait elsewhere passes false to avoid a
+ *                                                                       second indicator. Independent of `isBusy`, which still disables the control.
  * @param {?{message: string}}                    [props.error]         The current error, if any.
  * @param {Function}                              [props.onClearError]  Dismisses the current error.
  * @param {?{label: string, onClick: Function}}   [props.trailingAction] A single action rendered below a divider, separate from the option list.
@@ -58,6 +61,7 @@ export function SelectDropdown({
 	options,
 	onChange,
 	isBusy,
+	showSpinner = true,
 	error,
 	onClearError,
 	trailingAction,
@@ -176,7 +180,7 @@ export function SelectDropdown({
 					</>
 				)}
 			/>
-			{isBusy && <Spinner className="kadence-blocks-style-library__select-dropdown-spinner" />}
+			{isBusy && showSpinner && <Spinner className="kadence-blocks-style-library__select-dropdown-spinner" />}
 			{error && (
 				<Notice
 					status="error"

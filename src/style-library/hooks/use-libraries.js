@@ -62,6 +62,8 @@ export function useLibraries(feed, refreshFeed) {
 	const [createError, setCreateError] = useState(null);
 	const [renameError, setRenameError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
+	const [isSwappingLibrary, setIsSwappingLibrary] = useState(false);
+
 	// The feed always carries a slug, but the default library is the one every read falls back to, so
 	// naming it here keeps a malformed feed from addressing REST paths with `undefined`.
 	const editingSlug = feed?.slug || DEFAULT_LIBRARY_SLUG;
@@ -89,20 +91,30 @@ export function useLibraries(feed, refreshFeed) {
 	const clearRenameError = useCallback(() => setRenameError(null), []);
 	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 
+	// Marks the operations that replace the feed, and therefore the content of every screen at
+	// once, so the app can block itself rather than show a spinner next to one control. Distinct
+	// from `isBusy`, which is also true for a rename or an activation — neither of those changes
+	// anything on screen, and blanking the app for them would be theatre.
+	const setSwapBusy = useCallback((busy) => {
+		setIsBusy(busy);
+		setIsSwappingLibrary(busy);
+	}, []);
+
 	// Shared by `openLibrary` (below) and by `addLibrary`'s post-create open — each call site
 	// passes its own `onError` so an open that fails as part of create reports through
-	// `createError`, never through `openError`.
+	// `createError`, never through `openError`, and its own `onBusy` so only the user-initiated
+	// open blocks the app. Creation runs behind its own modal, which reports progress itself.
 	const runOpen = useCallback(
-		({ slug, onError }) => openLibraryFlow({ slug, refreshFeed, onBusy: setIsBusy, onError }),
+		({ slug, onError, onBusy }) => openLibraryFlow({ slug, refreshFeed, onBusy, onError }),
 		[refreshFeed]
 	);
 
 	const openLibrary = useCallback(
 		(slug) => {
 			setOpenError(null);
-			return runOpen({ slug, onError: setOpenError });
+			return runOpen({ slug, onError: setOpenError, onBusy: setSwapBusy });
 		},
-		[runOpen]
+		[runOpen, setSwapBusy]
 	);
 
 	const activateLibrary = useCallback((slug) => {
@@ -121,7 +133,7 @@ export function useLibraries(feed, refreshFeed) {
 			return createLibraryFlow({
 				title,
 				libraries,
-				openLibrary: (slug) => runOpen({ slug, onError: setCreateError }),
+				openLibrary: (slug) => runOpen({ slug, onError: setCreateError, onBusy: setIsBusy }),
 				loadLibraries,
 				onBusy: setIsBusy,
 				onError: setCreateError,
@@ -154,12 +166,12 @@ export function useLibraries(feed, refreshFeed) {
 				successorSlug,
 				refreshFeed,
 				loadLibraries,
-				onBusy: setIsBusy,
+				onBusy: setSwapBusy,
 				onError: setDeleteError,
 				onActiveChanged: setActiveSlug,
 			});
 		},
-		[activeSlug, loadLibraries, refreshFeed]
+		[activeSlug, loadLibraries, refreshFeed, setSwapBusy]
 	);
 
 	return {
@@ -169,6 +181,7 @@ export function useLibraries(feed, refreshFeed) {
 		isEditingActive: activeSlug === editingSlug,
 		isLoading,
 		isBusy,
+		isSwappingLibrary,
 		openError,
 		activateError,
 		createError,

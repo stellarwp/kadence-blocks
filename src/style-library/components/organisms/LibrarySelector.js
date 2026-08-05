@@ -6,8 +6,11 @@
  * library data and the create flow.
  *
  * Choosing a library here *opens* it for editing. It does not change which library the site
- * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`). The badges
- * below are what keep the two legible at the point of choosing.
+ * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`).
+ *
+ * The check icon keeps its ordinary meaning — the row you are on — because that is what a check in
+ * a menu reads as, and overloading it to mean "live" made the menu harder to read, not easier.
+ * Which library the site is serving is said in words instead, by the `Active` badge.
  */
 
 /**
@@ -33,6 +36,7 @@ import { CreateLibraryModal } from './CreateLibraryModal';
  * @param {string}        [props.editingTitle]     The edited library's display name, from the feed, so
  *                                                 the toggle can name it before `libraries` loads.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
+ * @param {boolean}       props.isSwapping         Whether the app is being repopulated for a different library.
  * @param {?{message: string}} props.openError     The current open error, if any.
  * @param {?{message: string}} props.createError   The current create error, if any.
  * @param {Function}      props.onOpen             Called with a slug to open that library for editing.
@@ -50,6 +54,7 @@ export function LibrarySelector({
 	editingSlug,
 	editingTitle,
 	isBusy,
+	isSwapping,
 	openError,
 	createError,
 	onOpen,
@@ -62,8 +67,8 @@ export function LibrarySelector({
 	const options = libraries.map((library) => {
 		const badges = [];
 
-		// Order is fixed — the inherent property before the mutable state — so a row carrying both
-		// does not reshuffle its badges as the active library moves.
+		// Order is fixed — the unchanging property before the one that moves — so a row carrying
+		// both does not reshuffle its badges as the active library changes.
 		if (isDefaultLibrary(library.slug)) {
 			// Answers "why can't I delete this one?" before the user tries: the default library is
 			// never removed, only reset to the shipped baseline.
@@ -99,6 +104,10 @@ export function LibrarySelector({
 				// moment, so the toggle never flashes the raw slug while the list is in flight.
 				valueLabel={libraryDisplayTitle({ slug: editingSlug, title: editingTitle })}
 				isBusy={isBusy}
+				// The app draws its own scrim while a library is being opened, so the dropdown's
+				// inline spinner would be a second progress indicator for the same wait — and one
+				// sitting underneath the scrim at that. The control still disables via `isBusy`.
+				showSpinner={!isSwapping}
 				// Suppressed while the create modal is open — it shows its own (separately scoped)
 				// createError inline instead, so surfacing openError here too would display two
 				// unrelated errors at once.

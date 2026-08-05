@@ -116,6 +116,7 @@ export function StyleLibraryApp() {
 
 	return (
 		<AppShell
+			isBlocked={libraries.isSwappingLibrary}
 			header={
 				<AppHeader
 					librarySlot={
@@ -125,6 +126,7 @@ export function StyleLibraryApp() {
 							editingSlug={libraries.editingSlug}
 							editingTitle={editingTitle}
 							isBusy={libraries.isBusy}
+							isSwapping={libraries.isSwappingLibrary}
 							openError={libraries.openError}
 							createError={libraries.createError}
 							onOpen={libraries.openLibrary}

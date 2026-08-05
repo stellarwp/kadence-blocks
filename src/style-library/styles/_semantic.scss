@@ -41,6 +41,7 @@ body.kadence-blocks-style-library-page {
 	// --kb-sl-color-nav-tab-bg-selected but a separate alias — the two roles should stay free to
 	// diverge even though they currently agree.
 	--kb-sl-color-surface-hover: var(--kb-sl-color-theme-tint-4);
+	--kb-sl-color-scrim: var(--kb-sl-color-white-tint-70);
 
 	// Color — `gray-50` does two distinct jobs (`AddTile`'s resting surface, `ListRow`'s hover
 	// background), so each gets its own role alias rather than pointing at the primitive directly.
