@@ -4,12 +4,54 @@
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Internal dependencies
+ */
+import { PICKABLE_TOKENS_GLOBAL } from '../constants';
+
+/**
  * Read the localized design-token feed from the window global.
  *
  * @return {object|null} Feed payload or null when unavailable.
  */
 export function getDesignTokensFeed() {
 	return window.kadenceDesignTokens ?? null;
+}
+
+/**
+ * Read the localized pickable-token pool from the window global. Yields an empty pool rather than
+ * null when absent, so a caller never has to null-check before filtering.
+ *
+ * @since TBD
+ *
+ * @return {{tokens: Array<{id: string, label: string, type: string}>, values: Record<string, Record<string, string>>}}
+ *         The pickable pool.
+ */
+export function getPickableTokensPool() {
+	return window[PICKABLE_TOKENS_GLOBAL] ?? { tokens: [], values: {} };
+}
+
+/**
+ * The pickable tokens of one DTCG `$type` (e.g. `dimension`, `color`), each with its resolved
+ * literal value from the active library.
+ *
+ * @param {string} type The DTCG token `$type` to filter to.
+ *
+ * @since TBD
+ *
+ * @return {Array<{id: string, label: string, value: string}>} The pickable tokens for the type.
+ */
+export function pickableTokensForType(type) {
+	const pool = getPickableTokensPool();
+	const feed = getDesignTokensFeed();
+	const libraryValues = pool.values?.[feed?.slug] ?? {};
+
+	return (pool.tokens || [])
+		.filter((token) => token.type === type)
+		.map((token) => ({
+			id: token.id,
+			label: token.label,
+			value: libraryValues[token.id] ?? '',
+		}));
 }
 
 /**

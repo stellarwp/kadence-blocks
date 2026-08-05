@@ -89,7 +89,9 @@ final class Asset_Loader {
 		wp_enqueue_style(
 			self::SCRIPT_HANDLE,
 			$this->asset->get_url( self::SCRIPT_PATH . '.css' ),
-			[ 'wp-components' ],
+			// 'dashicons' is declared explicitly — the breakpoint switcher's glyphs need it enqueued,
+			// not just coincidentally present from elsewhere in wp-admin.
+			[ 'wp-components', 'dashicons' ],
 			$meta['version'] ?? KADENCE_BLOCKS_VERSION,
 			'all'
 		);
