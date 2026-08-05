@@ -935,7 +935,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 *
 	 * @since 3.7.8 Require the upload_files capability.
 	 * @since 3.7.8.1 Restrict requests to known library locations.
-	 * @since TBD Remove the unused library location check.
+	 * @since 3.7.9 Remove the unused library location check.
 	 */
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).

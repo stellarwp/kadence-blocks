@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Lets a site manager approve a design library location.
+ *
+ * @since 3.7.9
  */
 class Kadence_Blocks_Library_Locations {
 
@@ -22,11 +24,15 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * The admin-post action.
+	 *
+	 * @since 3.7.9
 	 */
 	const ACTION = 'kadence_blocks_library_location';
 
 	/**
 	 * Instance of this class
+	 *
+	 * @since 3.7.9
 	 *
 	 * @var null|Kadence_Blocks_Library_Locations
 	 */
@@ -34,6 +40,8 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * Instance Control
+	 *
+	 * @since 3.7.9
 	 *
 	 * @return self
 	 */
@@ -47,6 +55,8 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * Class Constructor.
+	 *
+	 * @since 3.7.9
 	 */
 	public function __construct() {
 		add_action( 'admin_notices', [ $this, 'render_notice' ] );
@@ -55,6 +65,8 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * The recorded locations that are still not allowed.
+	 *
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -80,8 +92,12 @@ class Kadence_Blocks_Library_Locations {
 	/**
 	 * The link that carries a decision about a location.
 	 *
+	 * @since 3.7.9
+	 *
 	 * @param string $url      The library URL.
 	 * @param string $decision Either approve or dismiss.
+	 *
+	 * @return string
 	 */
 	private function get_decision_url( string $url, string $decision ): string {
 		return wp_nonce_url(
@@ -99,6 +115,10 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * Ask about the locations the editor could not load.
+	 *
+	 * @since 3.7.9
+	 *
+	 * @return void
 	 */
 	public function render_notice(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -123,6 +143,10 @@ class Kadence_Blocks_Library_Locations {
 
 	/**
 	 * Store the decision about a location.
+	 *
+	 * @since 3.7.9
+	 *
+	 * @return void
 	 */
 	public function handle_decision(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {

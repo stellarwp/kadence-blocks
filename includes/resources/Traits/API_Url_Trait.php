@@ -17,7 +17,7 @@ trait API_Url_Trait {
 	/**
 	 * The library locations this site allows the editor to request.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -49,7 +49,7 @@ trait API_Url_Trait {
 		 *
 		 * Matching is by host, so one entry covers every path on it.
 		 *
-		 * @since TBD
+		 * @since 3.7.9
 		 *
 		 * @param string[] $urls Allowed library URLs.
 		 */
@@ -155,7 +155,7 @@ trait API_Url_Trait {
 	/**
 	 * The lowercase host of a URL, with or without a scheme.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @param string $url The URL to read.
 	 */
@@ -177,7 +177,7 @@ trait API_Url_Trait {
 	/**
 	 * Whether a URL's host matches one of the given URLs, subdomains included.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @param string   $url     The URL to check.
 	 * @param string[] $allowed The URLs to check against.
@@ -203,7 +203,7 @@ trait API_Url_Trait {
 	/**
 	 * The Kadence library base URLs.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -252,7 +252,7 @@ trait API_Url_Trait {
 	/**
 	 * The library URLs registered as custom prebuilt libraries.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -276,7 +276,7 @@ trait API_Url_Trait {
 	/**
 	 * The library URLs a site manager approved.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -287,7 +287,7 @@ trait API_Url_Trait {
 	/**
 	 * The library URLs a site manager was asked to approve.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @return string[]
 	 */
@@ -298,7 +298,7 @@ trait API_Url_Trait {
 	/**
 	 * Read a stored list of library URLs.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @param string $option The option name.
 	 *
@@ -316,7 +316,7 @@ trait API_Url_Trait {
 	 * Only recorded for users who can approve it, so the prompt cannot be
 	 * filled by someone else.
 	 *
-	 * @since TBD
+	 * @since 3.7.9
 	 *
 	 * @param string $url The requested library URL.
 	 */
