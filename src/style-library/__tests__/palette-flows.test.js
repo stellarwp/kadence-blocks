@@ -7,10 +7,12 @@ import {
 	deletePaletteFlow,
 	openPaletteFlow,
 	removeSwatchFlow,
+	renamePaletteFlow,
 	reorderSwatchesFlow,
 	saveSwatchEditsFlow,
 	writeDefaultPaletteFlow,
 } from '../helpers/palette-flows';
+import { stripEffectiveFlags } from '../helpers/palettes';
 import * as client from '../api/client';
 
 // A factory, not bare automocking: the real module imports `@wordpress/api-fetch`, which is
@@ -504,6 +506,138 @@ describe('deletePaletteFlow', () => {
 		).rejects.toBe(failure);
 
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+	});
+});
+
+describe('renamePaletteFlow', () => {
+	it('rejects an empty label with an inline error and no request', async () => {
+		const onError = jest.fn();
+
+		await expect(
+			renamePaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				id: 'sunset',
+				label: '   ',
+				listing: { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] },
+				reload: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+			})
+		).rejects.toThrow();
+
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: expect.stringMatching(/enter a palette name/i) });
+	});
+
+	it('rejects a label that collides with a DIFFERENT palette, without requesting', async () => {
+		const onError = jest.fn();
+		const listing = {
+			defaultId: DEFAULT_ID,
+			palettes: [
+				{ id: 'sunset', label: 'Sunset' },
+				{ id: 'forest', label: 'Forest' },
+			],
+		};
+
+		await expect(
+			renamePaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				id: 'sunset',
+				label: 'Forest',
+				listing,
+				reload: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+			})
+		).rejects.toThrow();
+
+		expect(client.fetchPalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: expect.stringMatching(/already exists/i) });
+	});
+
+	it('allows renaming a palette to its own current label', async () => {
+		client.fetchPalette.mockResolvedValue(selectedView());
+		client.savePalette.mockResolvedValue({});
+		const reload = jest.fn().mockResolvedValue(undefined);
+		const listing = { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] };
+
+		await renamePaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			id: 'sunset',
+			label: 'Sunset',
+			listing,
+			reload,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(client.savePalette).toHaveBeenCalledWith(
+			NAMESPACE,
+			'sunset',
+			expect.objectContaining({ label: 'Sunset' }),
+			SLUG
+		);
+	});
+
+	it('preserves the id, re-sends the palette’s own groups under the new label, and reloads the listing', async () => {
+		client.fetchPalette.mockResolvedValue(selectedView());
+		client.savePalette.mockResolvedValue({});
+		const reload = jest.fn().mockResolvedValue(undefined);
+		const onBusy = jest.fn();
+		const listing = { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] };
+
+		await renamePaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			id: 'sunset',
+			label: 'Sunset Dusk',
+			listing,
+			reload,
+			onBusy,
+			onError: jest.fn(),
+		});
+
+		// Reads and writes the SAME id throughout — never a slug derived from the new label (that
+		// derivation is `createPaletteFlow`'s job for a brand-new palette, not this flow's).
+		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
+		const [namespaceArg, idArg, payload, slugArg] = client.savePalette.mock.calls[0];
+
+		expect(namespaceArg).toBe(NAMESPACE);
+		expect(idArg).toBe('sunset');
+		expect(slugArg).toBe(SLUG);
+		expect(payload.label).toBe('Sunset Dusk');
+		expect(payload.groups).toEqual(stripEffectiveFlags(selectedView().groups));
+		expect(reload).toHaveBeenCalled();
+		// No feed refresh: a palette's label never reaches a resolved token value (see the flow's
+		// own docblock), so there is nothing for a refresh to correct.
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+
+	it('surfaces the error, clears busy, and rejects when the rename request fails', async () => {
+		const failure = new Error('Could not rename the palette.');
+		client.fetchPalette.mockRejectedValue(failure);
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+		const listing = { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] };
+
+		await expect(
+			renamePaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				id: 'sunset',
+				label: 'Sunset Dusk',
+				listing,
+				reload: jest.fn(),
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(failure);
+
+		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(onBusy).toHaveBeenLastCalledWith(false);
 	});
 });
 
