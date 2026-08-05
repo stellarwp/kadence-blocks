@@ -1,3 +1,5 @@
+@use "mixins" as mixins;
+
 // Neutralize wp-admin chrome spacing that fights a full-height locked frame.
 body.kadence-blocks-style-library-page {
 	#wpcontent {
@@ -40,21 +42,13 @@ body.kadence-blocks-style-library-page {
 .kadence-blocks-style-library__shell {
 	display: flex;
 	flex-direction: column;
-	// Core maintains --wp-admin--admin-bar--height across the 782px breakpoint (32px / 46px), so
-	// no breakpoint math of our own is needed for supporting core versions.
-	height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+	@include mixins.app-viewport-height;
 	overflow: hidden;
-
-	// Fallback for the variable-less case only (older core without the custom property); matches
-	// what the custom property already resolves to on supporting versions.
-	@media (max-width: 782px) {
-		height: calc(100vh - 46px);
-	}
 }
 
 .kadence-blocks-style-library__loading {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	@include mixins.app-viewport-height;
 }
