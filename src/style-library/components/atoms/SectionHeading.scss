@@ -9,3 +9,27 @@
 	margin: 0;
 	letter-spacing: 0.04em;
 }
+
+.kadence-blocks-style-library__section-heading-row {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-05);
+
+	.kadence-blocks-style-library__section-heading-actions {
+		// Opacity, never `display: none`/`visibility: hidden` — a hidden-by-display button falls out
+		// of the tab order, and the overflow menu must stay reachable by keyboard at all times.
+		opacity: 0;
+		transition: opacity 0.15s ease;
+	}
+
+	// `:focus-within` keeps keyboard use first-class: tabbing onto the trigger button reveals it
+	// without a pointer ever touching the row. The `[aria-expanded='true']` arm keeps the trigger
+	// visible while its menu is open and the pointer has moved into the portalled popover, which
+	// renders outside this row, so `:hover` alone would drop the trigger the instant the pointer
+	// left it.
+	&:hover .kadence-blocks-style-library__section-heading-actions,
+	&:focus-within .kadence-blocks-style-library__section-heading-actions,
+	.kadence-blocks-style-library__section-heading-actions:has([aria-expanded='true']) {
+		opacity: 1;
+	}
+}
