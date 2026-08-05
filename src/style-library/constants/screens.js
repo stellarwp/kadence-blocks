@@ -21,20 +21,6 @@ import { __ } from '@wordpress/i18n';
 export const PRESET_SCREENS_FILTER = 'kadence_blocks.style_library.preset_screens';
 
 /**
- * The BASE STYLES sidebar section id.
- *
- * @since TBD
- */
-export const BASE_STYLES_SECTION = 'base-styles';
-
-/**
- * The BLOCK PRESETS sidebar section id.
- *
- * @since TBD
- */
-export const BLOCK_PRESETS_SECTION = 'block-presets';
-
-/**
  * The fixed BASE STYLES nav entries, in design order. Every entry renders `PlaceholderScreen`
  * until its per-screen ticket lands.
  *

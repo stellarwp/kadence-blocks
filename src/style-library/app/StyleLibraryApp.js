@@ -102,10 +102,12 @@ export function StyleLibraryApp() {
 							libraries={libraries.libraries}
 							activeSlug={libraries.activeSlug}
 							isBusy={libraries.isBusy}
-							error={libraries.error}
+							switchError={libraries.switchError}
+							createError={libraries.createError}
 							onSwitch={libraries.switchLibrary}
 							onCreate={libraries.createLibrary}
-							onClearError={libraries.clearError}
+							onClearSwitchError={libraries.clearSwitchError}
+							onClearCreateError={libraries.clearCreateError}
 						/>
 					}
 					actionsSlot={
@@ -113,13 +115,21 @@ export function StyleLibraryApp() {
 							activeSlug={libraries.activeSlug}
 							activeTitle={activeLibrary?.title}
 							isBusy={libraries.isBusy}
-							error={libraries.error}
+							error={libraries.deleteError}
+							onClearError={libraries.clearDeleteError}
 							onDelete={libraries.deleteLibrary}
 						/>
 					}
 				/>
 			}
-			sidebar={<AppSidebar feed={feed.feed} activeId={activeScreenId} onNavigate={onNavigate} />}
+			sidebar={
+				<AppSidebar
+					baseStylesNav={baseStylesNav}
+					blockPresetsNav={blockPresetsNav}
+					activeId={activeScreenId}
+					onNavigate={onNavigate}
+				/>
+			}
 			content={
 				<resolution.Component label={label} onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })} />
 			}

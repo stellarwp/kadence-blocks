@@ -2,8 +2,8 @@
  * Pure capability checks over a feed token entry: whether it is baseline (shipped), deletable, or
  * renameable. The one module in the shared content primitives that knows the feed's token shape —
  * every component stays agnostic and only ever sees the resulting booleans. Not yet imported by any
- * screen; consumed by `ListRow`/`SwatchCard` callers gating the delete affordance in the settings
- * panel.
+ * screen; callers that render `ListRow`/`SwatchCard` will use these when gating the delete
+ * affordance in the settings panel.
  *
  * The server refuses baseline deletion regardless of what the UI shows; these helpers are
  * defense-in-depth driving the affordances, and they **fail closed**: a missing `userCreated` flag

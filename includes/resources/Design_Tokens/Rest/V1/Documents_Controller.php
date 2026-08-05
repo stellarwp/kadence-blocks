@@ -207,7 +207,7 @@ final class Documents_Controller extends Controller {
 	private Responsive_Feed $responsive_feed;
 
 	/**
-	 * Memoised item schema for this request. Null until first built.
+	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
 	 *
@@ -216,7 +216,7 @@ final class Documents_Controller extends Controller {
 	private ?array $item_schema = null;
 
 	/**
-	 * Memoised resolved-map schema for this request. Null until first built.
+	 * Memoized resolved-map schema for this request. Null until first built.
 	 *
 	 * @since TBD
 	 *
