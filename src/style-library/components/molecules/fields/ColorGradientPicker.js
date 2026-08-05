@@ -41,18 +41,34 @@ export function isGradientValue(value) {
 /**
  * Render the Color/Gradient picker body.
  *
- * @param {Object}   props            The component props.
- * @param {string}   props.value      The current CSS color or gradient string.
+ * @param {Object}   props             The component props.
+ * @param {string}   props.value       The current CSS color or gradient string.
  * @param {Array}    [props.gradients] The gradient presets to offer on the Gradient tab.
- * @param {boolean}  [props.readOnly] Whether the picker is non-interactive.
- * @param {Function} props.onChange   Called with the new value on edit; never called when read-only.
+ * @param {boolean}  [props.readOnly]  Whether the picker is non-interactive.
+ * @param {boolean}  [props.colorOnly] Renders the solid-color tab body with no Gradient tab at all.
+ * @param {Function} props.onChange    Called with the new value on edit; never called when read-only.
  *
  * @since TBD
  *
  * @return {JSX.Element} The picker body.
  */
-export function ColorGradientPicker({ value, gradients = [], readOnly = false, onChange }) {
+export function ColorGradientPicker({ value, gradients = [], readOnly = false, colorOnly = false, onChange }) {
 	const handleChange = (next) => !readOnly && onChange(next);
+
+	// A gradient string picked here would persist: `guard_swatches()` accepts function-shaped strings
+	// via `Literals::is_color()`'s `is_function()` fallback, so it would then be projected as a color.
+	// Until the backend can store gradient tokens, the Gradient tab must not exist on this path — a
+	// disabled tab would still let a value through the same fallback, so the tab itself is dropped.
+	// @todo SOFT-4114: drop the colorOnly escape and re-enable the Gradient tab once gradient tokens land.
+	if (colorOnly) {
+		return (
+			<ColorPicker
+				color={colord(value || '#000000').toHex()}
+				enableAlpha
+				onChange={(next) => handleChange(next.hex ?? next)}
+			/>
+		);
+	}
 
 	return (
 		<TabPanel
