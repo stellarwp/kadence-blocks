@@ -121,7 +121,16 @@ final class Feed_Assembler {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		return $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $responsive );
+		return $this->builder->build(
+			$values,
+			$resolved,
+			$presets,
+			$this->rest(),
+			$version,
+			$slug,
+			$responsive,
+			$this->store->get_title( $slug )
+		);
 	}
 
 	/**

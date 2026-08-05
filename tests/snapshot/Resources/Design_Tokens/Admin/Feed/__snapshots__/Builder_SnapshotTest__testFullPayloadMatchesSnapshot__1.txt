@@ -3,6 +3,7 @@
     "resolved": true,
     "version": "v7",
     "slug": "default",
+    "title": "",
     "schema": {
         "groups": {
             "Brand": [

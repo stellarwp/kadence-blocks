@@ -62,10 +62,14 @@ final class Builder {
 	 * @param string                                                $slug       The token library slug the values/version/schema were resolved against.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
+	 * @param string                                                $title      The library's stored label, '' when it has none. Carried here so
+	 *                                                                          the admin page can name the library on first paint, without
+	 *                                                                          waiting on the separate libraries request and visibly correcting
+	 *                                                                          itself once that arrives.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, array $responsive = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, array $responsive = [], string $title = '' ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -73,6 +77,9 @@ final class Builder {
 			'resolved'   => $active && $resolved,
 			'version'    => $version,
 			'slug'       => $slug,
+			// Outside the `$active` gate below: a label is not token data, and a deactivated registry
+			// still renders a page that has to name the library it is showing.
+			'title'      => $title,
 			'schema'     => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
 			'values'     => $active ? $values : [],
 			'presets'    => $active ? $presets : [],

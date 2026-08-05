@@ -97,18 +97,28 @@ export function StyleLibraryApp() {
 
 	// Two different libraries are named in the header: the one being edited (the selector's value,
 	// and the target of rename/delete/activate) and the one the site renders with (named in the
-	// activation modal's copy). `libraryDisplayTitle` resolves either from the slug alone, so both
-	// stay correct on the first paint before the list has loaded.
+	// activation modal's copy).
+	//
+	// The fetched list is preferred over the feed for both, because a rename refreshes the list but
+	// deliberately not the feed — reading the feed first would leave the header showing the old
+	// name until something else reloaded it. The feed is the fallback, and it is what makes the
+	// first paint correct: it is printed inline with the page, so the header names the library
+	// immediately instead of showing a slug-derived guess and correcting itself a moment later when
+	// the list request lands.
 	const editingTitle = libraryDisplayTitle(
 		libraries.libraries.find((library) => library.slug === libraries.editingSlug) ?? {
 			slug: libraries.editingSlug,
-			title: '',
+			title: feed.title,
 		}
 	);
+
+	// No feed fallback here: the feed only ever describes the library being edited, so borrowing its
+	// title for a different library would be wrong rather than merely early. Before the list loads
+	// these are the same library anyway, and `libraryDisplayTitle` names it from the slug.
 	const activeTitle = libraryDisplayTitle(
 		libraries.libraries.find((library) => library.slug === libraries.activeSlug) ?? {
 			slug: libraries.activeSlug,
-			title: '',
+			title: libraries.isEditingActive ? feed.title : '',
 		}
 	);
 
@@ -122,6 +132,7 @@ export function StyleLibraryApp() {
 							libraries={libraries.libraries}
 							activeSlug={libraries.activeSlug}
 							editingSlug={libraries.editingSlug}
+							editingTitle={editingTitle}
 							isBusy={libraries.isBusy}
 							isSwapping={libraries.isSwappingLibrary}
 							openError={libraries.openError}
