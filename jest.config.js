@@ -8,6 +8,10 @@
  * splitting the registry so helper `applyFilters` calls never see filters this plugin registered.
  * Mapping every `@wordpress/hooks` import to the top-level copy mirrors the production single-instance
  * behavior.
+ *
+ * `@wordpress/components` is not an installed top-level dependency (production externalizes it to
+ * `wp.components`), but jest still needs to resolve it wherever a module references it. Mapped to
+ * the copy nested under `@kadence/components` rather than adding a new top-level dependency.
  */
 const path = require('path');
 const baseConfig = require('@wordpress/scripts/config/jest-unit.config.js');
@@ -19,6 +23,10 @@ module.exports = {
 		'^@wordpress/hooks$': path.join(
 			path.dirname(require.resolve('@wordpress/hooks/package.json')),
 			'build/index.cjs'
+		),
+		'^@wordpress/components$': path.join(
+			__dirname,
+			'node_modules/@kadence/components/node_modules/@wordpress/components/build/index.js'
 		),
 	},
 };

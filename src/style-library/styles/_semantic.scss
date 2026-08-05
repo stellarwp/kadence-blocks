@@ -78,6 +78,10 @@ body.kadence-blocks-style-library-page {
 	// once and both consumers move together instead of drifting.
 	--kb-sl-size-action-icon-box: var(--kb-sl-space-30);
 	--kb-sl-size-action-icon-glyph: var(--kb-sl-space-20);
+	// A small icon-only button's own hit box (e.g. the breakpoint switcher). Coincides numerically
+	// with --kb-sl-size-icon-chevron but stays a separate, role-named alias — that one sizes a glyph
+	// nested inside a larger button, not a whole button's own box.
+	--kb-sl-size-icon-button: var(--kb-sl-icon-size-s);
 
 	// Elevation
 	--kb-sl-shadow-menu: var(--kb-sl-shadow-elevation-m);

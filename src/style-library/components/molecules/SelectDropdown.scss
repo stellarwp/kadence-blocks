@@ -61,6 +61,17 @@
 	}
 }
 
+// Same fixed box as the trailing chevron; `flex: 0 0 auto` so a shrinking label can't squeeze it.
+.kadence-blocks-style-library__select-dropdown-leading-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-icon-chevron);
+	height: var(--kb-sl-size-icon-chevron);
+	color: var(--kb-sl-color-text-muted);
+}
+
 .kadence-blocks-style-library__select-dropdown-label {
 	flex: 1 1 auto;
 	// Without this, a flex item refuses to shrink below its content's natural width, and the
