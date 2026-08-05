@@ -2,7 +2,7 @@
 /**
  * Approve design library locations the editor could not load.
  *
- * cSpell:ignore unslash
+ * CSpell:ignore unslash
  *
  * @package Kadence Blocks
  */
