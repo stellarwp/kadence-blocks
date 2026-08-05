@@ -15,9 +15,31 @@
 	min-width: 0;
 }
 
+// Color Palette's lead can hold five items at once (title, palette dropdown, Set-as-active,
+// Rename, Delete) with `flex-wrap: nowrap`, so under horizontal pressure (a narrow viewport, or
+// the settings panel open, which takes ~200px off the content column) something has to give. Every
+// action slot below holds its intrinsic width instead — the title (further down) is the one
+// designated to shrink and truncate.
+.kadence-blocks-style-library__screen-header-inline-control,
+.kadence-blocks-style-library__screen-header-secondary,
+.kadence-blocks-style-library__screen-header-destructive {
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+// The dropdown and the Set-as-active button both live in this one slot (`ColorPaletteScreen`
+// passes them as a fragment) — without its own flex row, the dropdown's block-level root would
+// force the button onto a second line inside the slot instead of sitting beside it.
+.kadence-blocks-style-library__screen-header-inline-control {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-15);
+}
+
 .kadence-blocks-style-library__screen-header-trail {
 	@include flex-row(var(--kb-sl-space-15));
 
+	flex-shrink: 0;
 	min-width: 0;
 }
 
@@ -29,6 +51,14 @@
 	font-size: var(--kb-sl-font-size-18);
 	font-weight: var(--kb-sl-font-weight-semibold);
 	line-height: var(--kb-sl-line-height-l);
+	// The one thing in the header allowed to give: `min-width: 0` lets it shrink below its own
+	// content's width inside the flex row above (a plain flex item otherwise refuses to shrink
+	// past that), and the three rules together turn the overflow that would otherwise happen into
+	// a truncated, single-line label instead of a squashed or overflowing header.
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 // `variant="secondary"` is the caller's contract for this slot — core's secondary button already
@@ -43,6 +73,9 @@
 	font-size: var(--kb-sl-font-size-m);
 	font-weight: var(--kb-sl-font-weight-medium);
 	line-height: var(--kb-sl-line-height-s);
+	// The trail already holds its intrinsic width (`flex-shrink: 0` above); this stops the label
+	// itself from breaking mid-word if that width still runs short of the text.
+	white-space: nowrap;
 
 	// The same shared icon-glyph token `AddTile`'s plus icon uses, so the two render identically —
 	// see --kb-sl-size-action-icon-glyph in _semantic.scss. No `fill` override needed here: this is
