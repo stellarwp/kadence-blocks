@@ -6,7 +6,9 @@ import {
 	createPaletteFlow,
 	deletePaletteFlow,
 	openPaletteFlow,
+	removeGroupFlow,
 	removeSwatchFlow,
+	renameGroupFlow,
 	renamePaletteFlow,
 	reorderSwatchesFlow,
 	saveSwatchEditsFlow,
@@ -1062,5 +1064,162 @@ describe('reorderSwatchesFlow', () => {
 			'primitive.color.brand.secondary',
 			'primitive.color.brand.primary',
 		]);
+	});
+});
+
+describe('renameGroupFlow', () => {
+	it('fetches and saves the DEFAULT palette with the relabeled group, keeping its id', async () => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockResolvedValue({});
+		const reload = jest.fn().mockResolvedValue(undefined);
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+
+		await renameGroupFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			defaultId: DEFAULT_ID,
+			groupId: 'accent',
+			label: 'Renamed Accent',
+			reload,
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
+		const [, id, payload] = client.savePalette.mock.calls[0];
+		expect(id).toBe(DEFAULT_ID);
+		// The id-stability assertion: the saved group still carries its original id under the new
+		// label — the regression test for the `template_slot_for()` misfiling hazard.
+		expect(payload.groups.find((group) => group.label === 'Renamed Accent').id).toBe('accent');
+		expect(reload).toHaveBeenCalled();
+		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
+	});
+
+	it('surfaces the error, clears busy, and re-throws on failure', async () => {
+		const failure = new Error('Could not rename the group.');
+		client.fetchPalette.mockRejectedValue(failure);
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			renameGroupFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				groupId: 'accent',
+				label: 'Renamed Accent',
+				reload: jest.fn(),
+				refreshFeed: jest.fn(),
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(failure);
+
+		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+});
+
+describe('removeGroupFlow', () => {
+	const baseArgs = (overrides) => ({
+		namespace: NAMESPACE,
+		slug: SLUG,
+		defaultId: DEFAULT_ID,
+		groupId: 'accent',
+		userCreatedTokens: [],
+		reload: jest.fn().mockResolvedValue(undefined),
+		refreshFeed: jest.fn().mockResolvedValue({ version: 'v3' }),
+		onBusy: jest.fn(),
+		onError: jest.fn(),
+		...overrides,
+	});
+
+	beforeEach(() => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockResolvedValue({});
+	});
+
+	it('writes the group removal to the default node from a fresh read before any cleanup delete', async () => {
+		client.deleteUserPrimitive.mockResolvedValue({});
+		const order = [];
+		client.savePalette.mockImplementation(async () => {
+			order.push('savePalette');
+			return {};
+		});
+		client.deleteUserPrimitive.mockImplementation(async () => {
+			order.push('deleteUserPrimitive');
+			return {};
+		});
+		const flowArgs = baseArgs({
+			userCreatedTokens: ['primitive.color.custom.custom-1'],
+			reload: jest.fn(async () => {
+				order.push('reload');
+			}),
+			refreshFeed: jest.fn(async () => {
+				order.push('refreshFeed');
+				return { version: 'v3' };
+			}),
+		});
+
+		await removeGroupFlow(flowArgs);
+
+		expect(order).toEqual(['savePalette', 'reload', 'refreshFeed', 'deleteUserPrimitive', 'refreshFeed']);
+		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, SLUG);
+	});
+
+	it('calls deleteUserPrimitive once per user-created token, each with the preceding refresh’s version', async () => {
+		client.deleteUserPrimitive.mockResolvedValue({});
+		let call = 0;
+		const refreshFeed = jest.fn(async () => {
+			call += 1;
+			return { version: `v${call}` };
+		});
+		const flowArgs = baseArgs({
+			userCreatedTokens: ['primitive.color.custom.custom-1', 'primitive.color.custom.custom-2'],
+			refreshFeed,
+		});
+
+		await removeGroupFlow(flowArgs);
+
+		expect(client.deleteUserPrimitive).toHaveBeenCalledTimes(2);
+		expect(client.deleteUserPrimitive).toHaveBeenNthCalledWith(1, SLUG, 'primitive.color.custom.custom-1', 'v1');
+		expect(client.deleteUserPrimitive).toHaveBeenNthCalledWith(2, SLUG, 'primitive.color.custom.custom-2', 'v2');
+	});
+
+	it('never calls deleteUserPrimitive for an empty userCreatedTokens list', async () => {
+		const flowArgs = baseArgs({ userCreatedTokens: [] });
+
+		await removeGroupFlow(flowArgs);
+
+		expect(client.savePalette).toHaveBeenCalled();
+		expect(client.deleteUserPrimitive).not.toHaveBeenCalled();
+	});
+
+	it('swallows an individual cleanup rejection, still attempts the rest, and resolves', async () => {
+		client.deleteUserPrimitive.mockRejectedValueOnce(new Error('Referenced elsewhere.')).mockResolvedValueOnce({});
+		const refreshFeed = jest.fn().mockResolvedValue({ version: 'v3' });
+		const flowArgs = baseArgs({
+			userCreatedTokens: ['primitive.color.custom.custom-1', 'primitive.color.custom.custom-2'],
+			refreshFeed,
+		});
+
+		await expect(removeGroupFlow(flowArgs)).resolves.toBeUndefined();
+
+		expect(client.deleteUserPrimitive).toHaveBeenCalledTimes(2);
+		// Once for the write's own refresh, once per cleanup attempt regardless of outcome.
+		expect(refreshFeed).toHaveBeenCalledTimes(3);
+		expect(flowArgs.onError).not.toHaveBeenCalled();
+	});
+
+	it('rejects (after onError) only when the group-removal write itself fails, with no cleanup attempt', async () => {
+		const failure = new Error('A palette must define at least one color group.');
+		client.savePalette.mockRejectedValue(failure);
+		const flowArgs = baseArgs({ userCreatedTokens: ['primitive.color.custom.custom-1'] });
+
+		await expect(removeGroupFlow(flowArgs)).rejects.toBe(failure);
+
+		expect(flowArgs.onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(client.deleteUserPrimitive).not.toHaveBeenCalled();
 	});
 });
