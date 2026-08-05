@@ -14,7 +14,7 @@ import { FieldLabel } from './FieldLabel';
  * Render a color/gradient field.
  *
  * @param {Object}   props              The component props.
- * @param {Object}   props.field        The field definition ({ label, gradients, readOnly }).
+ * @param {Object}   props.field        The field definition ({ label, gradients, readOnly, colorOnly }).
  * @param {string}   props.value        The current CSS color or gradient string.
  * @param {Function} props.onChange     Called with the new value on edit; never called when read-only.
  *
@@ -30,6 +30,7 @@ export function ColorField({ field, value, onChange }) {
 				value={value}
 				gradients={field.gradients}
 				readOnly={field.readOnly}
+				colorOnly={field.colorOnly}
 				onChange={onChange}
 			/>
 		</div>

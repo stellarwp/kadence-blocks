@@ -102,6 +102,16 @@ describe('normalizeSchema', () => {
 		expect(normalized.panels[0].fields[0].responsive).toBe(false);
 		expect(console).toHaveWarned();
 	});
+
+	it('carries colorOnly through untouched on a color field', () => {
+		const schema = {
+			fields: [{ type: 'color', path: 'value', label: 'Color', colorOnly: true }],
+		};
+
+		const normalized = normalizeSchema(schema);
+
+		expect(normalized.panels[0].fields[0].colorOnly).toBe(true);
+	});
 });
 
 describe('fieldComponentFor', () => {
