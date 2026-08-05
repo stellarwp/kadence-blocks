@@ -75,8 +75,11 @@ export function StyleLibraryApp() {
 
 	useEffect(() => {
 		if (!resolution) {
-			// replace, not navigate — an unknown screen id must not enter browser history.
-			replace({ screen: DEFAULT_SCREEN_ID, item: '' });
+			// replace, not navigate — an unknown screen id must not enter browser history. Clears
+			// `scope` alongside `item`: it is the PREVIOUS screen's own sub-selection (e.g. a
+			// palette id), and it would otherwise leak onto whatever screen `DEFAULT_SCREEN_ID`
+			// resolves to, which has no reason to expect it.
+			replace({ screen: DEFAULT_SCREEN_ID, scope: '', item: '' });
 		}
 	}, [resolution, replace]);
 
@@ -94,7 +97,10 @@ export function StyleLibraryApp() {
 
 	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
 	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
-	const onNavigate = (id) => navigate({ screen: id, item: '' });
+	// `scope` is the PREVIOUS screen's own sub-selection (Color Palette's is a palette id) — it
+	// must be cleared on every screen switch alongside `item`, or it leaks onto a screen with no
+	// idea what to do with it (e.g. a palette id showing up in Typography's URL).
+	const onNavigate = (id) => navigate({ screen: id, scope: '', item: '' });
 
 	// Two different libraries are named in the header: the one being edited (the selector's value,
 	// and the target of rename/delete/activate) and the one the site renders with (named in the
