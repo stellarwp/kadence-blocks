@@ -4,6 +4,10 @@
 	@include flex-column(var(--kb-sl-space-15));
 }
 
+.kadence-blocks-style-library__settings-form-untitled-panel {
+	padding: var(--kb-sl-space-20) var(--kb-sl-space-15);
+}
+
 // Only the outer `Panel` border is suppressed (no frame shows one). `PanelBody`'s own
 // border-top/border-bottom and its `margin-top: -1px` adjacent-section collapse are left exactly as
 // core ships them — removing either doubles the divider between sections.

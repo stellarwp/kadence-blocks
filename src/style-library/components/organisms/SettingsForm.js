@@ -11,7 +11,6 @@
 /**
  * WordPress dependencies
  */
-import { Fragment } from '@wordpress/element';
 import { Panel, PanelBody } from '@wordpress/components';
 
 /**
@@ -32,6 +31,24 @@ import './SettingsForm.scss';
  *
  * @return {JSX.Element} The form.
  */
+/**
+ * What an untitled panel renders instead of a `PanelBody`. Core gives `PanelBody` its own padding,
+ * so a titled panel is already inset; an untitled one renders bare and would sit flush against the
+ * settings panel's edges. The padding belongs here, on the case that lacks it, rather than on the
+ * shared scroll container — a container rule would land on both cases and double up wherever core's
+ * padding already applies.
+ *
+ * @param {Object}      props          The component props.
+ * @param {JSX.Element} props.children The panel's fields.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The wrapped fields.
+ */
+function UntitledPanelBody({ children }) {
+	return <div className="kadence-blocks-style-library__settings-form-untitled-panel">{children}</div>;
+}
+
 export function SettingsForm({ schema, values, onChange }) {
 	const normalized = normalizeSchema(schema);
 
@@ -56,7 +73,7 @@ export function SettingsForm({ schema, values, onChange }) {
 				);
 
 				if (!panel.title) {
-					return <Fragment key={panel.id}>{fields}</Fragment>;
+					return <UntitledPanelBody key={panel.id}>{fields}</UntitledPanelBody>;
 				}
 
 				return (
