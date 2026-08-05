@@ -27,6 +27,7 @@ import { SelectDropdown } from '../molecules/SelectDropdown';
 import { EmptyState } from '../molecules/EmptyState';
 import { usePalettes } from '../../hooks/use-palettes';
 import { mapPaletteToSwatchGroups, paletteDisplayLabel } from '../../helpers/palettes';
+import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
 
 /**
@@ -73,8 +74,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				items: group.items.map((item) => ({
 					...item,
 					previewStyle: swatchPreviewStyle(item.value),
-					// Reordering persists once the mutations phase lands its default-palette write; until
-					// then no drag handle renders, so the grid reads as non-reorderable rather than lying.
+					// Reordering persists once the default-palette write lands; until then no drag handle
+					// renders, so the grid reads as non-reorderable rather than lying.
 					isDraggable: false,
 				})),
 			})),
@@ -122,3 +123,11 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 		</div>
 	);
 }
+
+/**
+ * The screen-panel contract: a screen exposes its settings panel as a static property on its page
+ * component, read by `StyleLibraryApp` and mounted into `AppShell`'s `settingsPanel` slot.
+ *
+ * @since TBD
+ */
+ColorPaletteScreen.SettingsPanel = ColorPaletteSettings;
