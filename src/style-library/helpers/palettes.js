@@ -434,3 +434,44 @@ export function newSwatchValue(groups, groupId) {
 export function isCustomColorToken(token) {
 	return typeof token === 'string' && token.startsWith(CUSTOM_COLOR_PREFIX);
 }
+
+/**
+ * Set the `label` of the group with `groupId`. The group's id is never touched — a group id is
+ * load-bearing server state (`Palettes_Controller::template_slot_for()` places swatches by group
+ * id), so a rename is a label-only edit by design, mirroring `renameSwatchInGroups`.
+ *
+ * @param {Array<Object>} groups  The write-payload groups array.
+ * @param {string}        groupId The target group's id.
+ * @param {string}        label   The new label.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} A new groups array with the target group relabeled.
+ */
+export function renameGroupInGroups(groups, groupId, label) {
+	return (groups ?? []).map((group) => (group.id === groupId ? { ...group, label } : group));
+}
+
+/**
+ * Remove the group with `groupId` — and every swatch in it. Deliberately does NOT block removing
+ * the last remaining group: `guard_palette_shape()` rejects `groups: []` with "A palette must
+ * define at least one color group", and that server rule is the authority; the UI hides the
+ * affordance instead (the caller's concern, not this helper's).
+ *
+ * @param {Array<Object>} groups  The write-payload groups array.
+ * @param {string}        groupId The group id to remove.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} A new groups array without the group; the same reference as `groups`
+ *         (a no-op) when `groupId` matches no group, so callers can detect the miss.
+ */
+export function removeGroupFromGroups(groups, groupId) {
+	const rows = groups ?? [];
+
+	if (!rows.some((group) => group.id === groupId)) {
+		return groups;
+	}
+
+	return rows.filter((group) => group.id !== groupId);
+}
