@@ -1,6 +1,9 @@
 .kadence-blocks-style-library__add-tile {
-	// No width of its own — sizes to its own content plus the padding below, and stretches to match
-	// `SwatchCard`'s height via the row's own `align-items: stretch`.
+	// Floored at `SwatchCard`'s width so a wrapped grid lines up, rather than the tile sitting a few
+	// pixels wider than every card beside it. A floor, not a fixed width: a longer label grows the
+	// tile instead of overflowing it.
+	min-width: var(--kb-sl-size-swatch-card-width);
+	// Stretches to match `SwatchCard`'s height via the row's own `align-items: stretch`.
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: row;
@@ -24,13 +27,12 @@
 	}
 }
 
-// This inline padding stacks on top of the tile's own box padding above — two separate rules
-// because the design specifies them as two distinct values, not one asymmetric shorthand.
+// No gap and no inline padding: both are what pushed the tile's natural width past the card width
+// above, which left the `min-width` floor never engaging. The icon carries its own alignment box,
+// so the two sit close without needing a gap between them.
 .kadence-blocks-style-library__add-tile-content {
 	display: flex;
 	align-items: center;
-	gap: var(--kb-sl-space-05);
-	padding: 0 var(--kb-sl-space-05);
 }
 
 // The icon's hit/alignment box — shared with `ScreenHeader`'s primary action so the two plus icons
