@@ -171,6 +171,40 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The feed carries the library's stored label, so a client can name the library it is showing
+	 * from the page-load payload alone instead of waiting on the separate libraries request.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheStoredTitle(): void {
+		$this->store->save_document( '{}', 'brand-b', 'Winter 2026' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( 'Winter 2026', $data['title'] );
+	}
+
+	/**
+	 * A library with no stored label reports an empty title rather than its slug or any other
+	 * synthesized value, leaving the client to decide how to name an untitled library.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsAnEmptyTitleForAnUntitledLibrary(): void {
+		$this->store->save_document( '{}', 'brand-b' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-b' );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( '', $data['title'] );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.

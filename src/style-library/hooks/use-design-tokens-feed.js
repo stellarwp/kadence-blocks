@@ -24,7 +24,7 @@ import { DEFAULT_LIBRARY_SLUG } from '../constants';
  *
  * @since TBD
  *
- * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, responsive: Record<string, object>, rest: object|null, version: string, slug: string, refreshFeed: Function }}
+ * @return {{ feed: object|null, tokens: object[], isReady: boolean, isActive: boolean, isResolved: boolean, values: Record<string, string>, responsive: Record<string, object>, rest: object|null, version: string, slug: string, title: string, refreshFeed: Function }}
  */
 export function useDesignTokensFeed() {
 	const [feed, setFeed] = useState(() => getDesignTokensFeed());
@@ -59,6 +59,7 @@ export function useDesignTokensFeed() {
 		rest: feed?.rest ?? null,
 		version: feed?.version ?? '',
 		slug: feed?.slug ?? DEFAULT_LIBRARY_SLUG,
+		title: feed?.title ?? '',
 		refreshFeed,
 	};
 }

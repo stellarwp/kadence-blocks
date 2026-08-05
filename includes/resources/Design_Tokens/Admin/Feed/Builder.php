@@ -60,7 +60,10 @@ final class Builder {
 	 * @param array{root: string, namespace: string, nonce: string} $rest       REST root, namespace and nonce.
 	 * @param string                                                $version    Store version hash ('' from baseline).
 	 * @param string                                                $slug       The token library slug the values/version/schema were resolved against.
-	 * @param string                                                $title      The active library's display title, already defaulted for an untitled default library.
+	 * @param string                                                $title      The library's display title, already defaulted for an untitled
+	 *                                                                          default library. Carried here so the admin page can name the
+	 *                                                                          library on first paint, without waiting on the separate libraries
+	 *                                                                          request and visibly correcting itself once that arrives.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 *

@@ -174,6 +174,12 @@ final class Feed_Controller extends Controller {
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
+				'title'      => [
+					'description' => __( 'The library\'s stored label, empty when it has none.', 'kadence-blocks' ),
+					'type'        => 'string',
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
 				'slug'       => [
 					'description' => __( 'The token library slug the feed was assembled for.', 'kadence-blocks' ),
 					'type'        => 'string',

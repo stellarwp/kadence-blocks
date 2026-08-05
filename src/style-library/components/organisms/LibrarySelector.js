@@ -33,8 +33,7 @@ import { CreateLibraryModal } from './CreateLibraryModal';
  * @param {Array<Object>} props.libraries          The ordered library rows (`{ slug, title }`).
  * @param {string}        props.activeSlug         The slug the site renders with.
  * @param {string}        props.editingSlug        The slug the app is showing.
- * @param {string}        [props.editingTitle]     The edited library's display name, from the feed, so
- *                                                 the toggle can name it before `libraries` loads.
+ * @param {string}        props.editingTitle       That library's display title, already resolved by the caller.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
  * @param {boolean}       props.isSwapping         Whether the app is being repopulated for a different library.
  * @param {?{message: string}} props.openError     The current open error, if any.
@@ -99,10 +98,11 @@ export function LibrarySelector({
 			<SelectDropdown
 				value={editingSlug}
 				options={options}
-				// What the toggle shows on first paint, before `libraries` has loaded and any option can
-				// match `editingSlug`. The feed carries the edited library's name for exactly this
-				// moment, so the toggle never flashes the raw slug while the list is in flight.
-				valueLabel={libraryDisplayTitle({ slug: editingSlug, title: editingTitle })}
+				// What the toggle shows until `libraries` has loaded and an option can match
+				// `editingSlug`. The caller resolves it from the inline page feed, so the library is
+				// named correctly from the first paint rather than showing a slug-derived guess and
+				// silently correcting itself when the list request lands.
+				valueLabel={editingTitle}
 				isBusy={isBusy}
 				// The app draws its own scrim while a library is being opened, so the dropdown's
 				// inline spinner would be a second progress indicator for the same wait — and one
