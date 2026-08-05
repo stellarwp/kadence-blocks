@@ -151,6 +151,11 @@ function isGalleryRequested() {
  *
  * @param {Object}   props                          The component props.
  * @param {string}   props.label                    The active screen's nav label.
+ * @param {Object}   [props.route]                  The route from `useStyleLibraryRoute` — part of
+ *                                                   the uniform screen-prop contract every screen
+ *                                                   receives; unused here.
+ * @param {Function} [props.navigate]                The route navigator; unused here.
+ * @param {Object}   [props.library]                 The design-tokens feed surface; unused here.
  * @param {Function} [props.onOpenFieldLibraryDemo]  Opens the field-library demo in the settings panel
  *                                                    (`?kb-item=demo`); dev builds only.
  *

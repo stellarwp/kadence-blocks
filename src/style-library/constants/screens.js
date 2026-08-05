@@ -27,7 +27,6 @@ export const PRESET_SCREENS_FILTER = 'kadence_blocks.style_library.preset_screen
  * @since TBD
  */
 export const BASE_STYLES_SCREENS = [
-	// @todo SOFT-4076: replace the placeholder with the Color Palette screen.
 	{ id: 'color-palette', label: __('Color Palette', 'kadence-blocks') },
 	// @todo SOFT-4077: replace the placeholder with the Typography screen.
 	{ id: 'typography', label: __('Typography', 'kadence-blocks') },
