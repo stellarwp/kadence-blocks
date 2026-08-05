@@ -60,7 +60,11 @@ function swatchPreviewStyle(value) {
  * @return {JSX.Element} The screen.
  */
 export function ColorPaletteScreen({ label, route, navigate, library }) {
-	const palettes = usePalettes(library.feed, library.refreshFeed);
+	// `route`/`navigate` are threaded through so `usePalettes` can derive `editingId` from
+	// `route.scope` and write it via `openPalette` — see that hook's own docblock for why the
+	// route, not another `useState`, has to be the source of truth shared with the settings panel's
+	// own separate instance below.
+	const palettes = usePalettes(library.feed, library.refreshFeed, route, navigate);
 
 	const options = useMemo(
 		() => palettes.listing.palettes.map((row) => ({ value: row.id, label: paletteDisplayLabel(row) })),
