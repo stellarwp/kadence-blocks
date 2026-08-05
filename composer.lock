@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6ed2968a9056fe96b5d6228bba4e974",
+    "content-hash": "9dc31cbf2f71ab015a82f3cfd0a5215c",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1023,16 +1023,16 @@
         },
         {
             "name": "stellarwp/harbor",
-            "version": "v1.4.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/harbor.git",
-                "reference": "0d21b6e6da4352364610168c053ed0ec9d59253d"
+                "reference": "e0253fa5512522a50dd73abe990d3591017494fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/0d21b6e6da4352364610168c053ed0ec9d59253d",
-                "reference": "0d21b6e6da4352364610168c053ed0ec9d59253d",
+                "url": "https://api.github.com/repos/stellarwp/harbor/zipball/e0253fa5512522a50dd73abe990d3591017494fb",
+                "reference": "e0253fa5512522a50dd73abe990d3591017494fb",
                 "shasum": ""
             },
             "require": {
@@ -1087,9 +1087,9 @@
             "description": "A library that integrates a WordPress product with the Liquid Web licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/harbor/issues",
-                "source": "https://github.com/stellarwp/harbor/tree/v1.4.0"
+                "source": "https://github.com/stellarwp/harbor/tree/v1.6.0"
             },
-            "time": "2026-05-21T17:13:36+00:00"
+            "time": "2026-07-27T14:52:06+00:00"
         },
         {
             "name": "stellarwp/licensing-api-client",
@@ -1946,16 +1946,16 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v5.4.45",
+            "version": "v5.4.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "8c1b9b3e5b52981551fc6044539af1d974e39064"
+                "reference": "8f89d3a319b92486b0bcc43c0479d19fdb0e2f64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/8c1b9b3e5b52981551fc6044539af1d974e39064",
-                "reference": "8c1b9b3e5b52981551fc6044539af1d974e39064",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/8f89d3a319b92486b0bcc43c0479d19fdb0e2f64",
+                "reference": "8f89d3a319b92486b0bcc43c0479d19fdb0e2f64",
                 "shasum": ""
             },
             "require": {
@@ -2011,7 +2011,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v5.4.45"
+                "source": "https://github.com/symfony/mime/tree/v5.4.52"
             },
             "funding": [
                 {
@@ -2023,11 +2023,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-23T20:18:32+00:00"
+            "time": "2026-05-05T14:35:32+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -12987,9 +12991,9 @@
     "platform": {
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

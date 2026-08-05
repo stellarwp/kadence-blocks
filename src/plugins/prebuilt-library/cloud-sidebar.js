@@ -45,8 +45,8 @@ function CloudLibrarySidebar({
 		setIsVisible((state) => !state);
 	};
 
-	const activePageCategorySlug = pageCategory?.[connection.slug] || 'all';
-	const activeCategorySlug = category?.[connection.slug] || 'all';
+	const activePageCategorySlug = pageCategory?.[connection?.slug] || 'all';
+	const activeCategorySlug = category?.[connection?.slug] || 'all';
 
 	return (
 		<div className="kt-prebuilt-sidebar kb-section-sidebar">

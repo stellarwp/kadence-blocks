@@ -935,6 +935,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 *
 	 * @since 3.7.8 Require the upload_files capability.
 	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 * @since 3.7.9 Remove the unused library location check.
 	 */
 	public function process_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
@@ -953,9 +954,6 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->package  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url      = $this->resolve_library_url( empty( $_POST['url'] ) ? '' : sanitize_text_field( $_POST['url'] ), '/wp-json/kadence-cloud/v1/get/', $this->remote_url );
 		$this->key      = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';
-		if ( empty( $this->url ) ) {
-			wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
-		}
 		$data           = $this->process_content( $data, $import_library, $import_type, $import_id, $import_style );
 		if ( ! $data ) {
 			// Send JSON Error response to the AJAX call.
