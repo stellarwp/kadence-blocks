@@ -21,18 +21,19 @@ import './DeleteLibraryModal.scss';
 /**
  * Render the delete/reset action and its confirmation modal.
  *
- * @param {Object}              props            The component props.
- * @param {string}              props.activeSlug The active library slug, the delete target.
+ * @param {Object}              props             The component props.
+ * @param {string}              props.activeSlug  The active library slug, the delete target.
  * @param {string}              props.activeTitle The active library's display title.
  * @param {boolean}             props.isBusy      Whether a library operation is in flight.
- * @param {?{message: string}} props.error        The current delete error, if any.
- * @param {Function}            props.onDelete    Called with the active slug to delete/reset it.
+ * @param {?{message: string}} props.error         The current delete error, if any.
+ * @param {Function}            props.onClearError Dismisses the current delete error.
+ * @param {Function}            props.onDelete     Called with the active slug to delete/reset it.
  *
  * @since TBD
  *
  * @return {JSX.Element} The delete action and, when open, its modal.
  */
-export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onDelete }) {
+export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onClearError, onDelete }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const isDefault = isDefaultLibrary(activeSlug);
 	const label = libraryDisplayTitle({ slug: activeSlug, title: activeTitle ?? '' });
@@ -41,15 +42,24 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onD
 	// flight; there is no spinner alongside it.
 	const pendingLabel = isDefault ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks');
 
+	// Closes the modal and clears its own error, whether that is a confirmed delete, a Cancel
+	// click, or the Modal's own dismiss paths (Escape, click-outside) — all of which are already
+	// gated off while `isBusy`, so this never fires mid-request. Clearing here (not just on the
+	// next open) keeps a past failure from resurfacing anywhere else the delete error is read.
+	const handleClose = () => {
+		setIsOpen(false);
+		onClearError();
+	};
+
 	// Deleting the active library (the only target this modal ever offers) resolves in place —
 	// the hook refreshes the feed for whatever library ends up active rather than reloading the
 	// page — so this modal has to close itself explicitly once that settles; nothing else will.
 	// `.catch` deliberately does nothing beyond swallowing the promise rejection — a failed delete
-	// already re-set `isBusy`/`error` in the hook, and staying open (not calling setIsOpen at all)
-	// is exactly the "do not close" behavior a caught rejection gives here for free.
+	// already re-set `isBusy`/`error` in the hook, and staying open (not calling handleClose at
+	// all) is exactly the "do not close" behavior a caught rejection gives here for free.
 	const handleConfirm = () => {
 		onDelete(activeSlug)
-			.then(() => setIsOpen(false))
+			.then(() => handleClose())
 			.catch(() => {});
 	};
 
@@ -68,7 +78,7 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onD
 				<Modal
 					title={isDefault ? __('Reset Library', 'kadence-blocks') : __('Delete Library', 'kadence-blocks')}
 					className="kadence-blocks-style-library__delete-library-modal"
-					onRequestClose={() => setIsOpen(false)}
+					onRequestClose={handleClose}
 					// Locked while pending: no close icon, Escape does nothing, clicking outside does
 					// nothing. A user hammering Escape mid-request must not be able to walk away from
 					// (or re-trigger) a delete that is still in flight.
@@ -101,7 +111,7 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onD
 								)}
 					</p>
 					<div className="kadence-blocks-style-library__delete-library-modal-actions">
-						<Button variant="tertiary" onClick={() => setIsOpen(false)} disabled={isBusy}>
+						<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
 							{__('Cancel', 'kadence-blocks')}
 						</Button>
 						<Button variant="primary" isDestructive disabled={isBusy} onClick={handleConfirm}>

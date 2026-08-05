@@ -22,20 +22,32 @@ import { CreateLibraryModal } from './CreateLibraryModal';
 /**
  * Render the library selector.
  *
- * @param {Object}        props               The component props.
- * @param {Array<Object>} props.libraries     The ordered library rows (`{ slug, title }`).
- * @param {string}        props.activeSlug    The active library slug.
- * @param {boolean}       props.isBusy        Whether a library operation is in flight.
- * @param {?{message: string}} props.error    The current library-operation error, if any.
- * @param {Function}      props.onSwitch      Called with a slug to switch the active library.
- * @param {Function}      props.onCreate      Called with a title to create a library.
- * @param {Function}      props.onClearError  Dismisses the current error.
+ * @param {Object}        props                    The component props.
+ * @param {Array<Object>} props.libraries          The ordered library rows (`{ slug, title }`).
+ * @param {string}        props.activeSlug         The active library slug.
+ * @param {boolean}       props.isBusy             Whether a library operation is in flight.
+ * @param {?{message: string}} props.switchError   The current switch error, if any.
+ * @param {?{message: string}} props.createError   The current create error, if any.
+ * @param {Function}      props.onSwitch           Called with a slug to switch the active library.
+ * @param {Function}      props.onCreate           Called with a title to create a library.
+ * @param {Function}      props.onClearSwitchError Dismisses the current switch error.
+ * @param {Function}      props.onClearCreateError Dismisses the current create error.
  *
  * @since TBD
  *
  * @return {JSX.Element} The selector, and, while open, the create-library modal.
  */
-export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch, onCreate, onClearError }) {
+export function LibrarySelector({
+	libraries,
+	activeSlug,
+	isBusy,
+	switchError,
+	createError,
+	onSwitch,
+	onCreate,
+	onClearSwitchError,
+	onClearCreateError,
+}) {
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
 	const options = libraries.map((library) => ({
@@ -44,9 +56,9 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 	}));
 
 	// A plain switch from the dropdown has no follow-up action waiting on its result — the
-	// `error` state above already surfaces a failure, so the rejection `onSwitch`'s promise carries
-	// (there for a caller that chains off it, e.g. the create flow) is swallowed here rather than
-	// left unhandled.
+	// `switchError` state above already surfaces a failure, so the rejection `onSwitch`'s promise
+	// carries (there for a caller that chains off it, e.g. the create flow) is swallowed here
+	// rather than left unhandled.
 	const handleSwitch = (slug) => {
 		onSwitch(slug).catch(() => {});
 	};
@@ -62,10 +74,11 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 				// the raw slug while the list is in flight.
 				valueLabel={libraryDisplayTitle({ slug: activeSlug, title: '' })}
 				isBusy={isBusy}
-				// Suppressed while the create modal is open — it shows the same error inline itself, so
-				// surfacing it here too would display it twice.
-				error={isCreateOpen ? null : error}
-				onClearError={onClearError}
+				// Suppressed while the create modal is open — it shows its own (separately scoped)
+				// createError inline instead, so surfacing switchError here too would display two
+				// unrelated errors at once.
+				error={isCreateOpen ? null : switchError}
+				onClearError={onClearSwitchError}
 				onChange={handleSwitch}
 				trailingAction={{
 					label: __('Create Library', 'kadence-blocks'),
@@ -76,10 +89,10 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 				<CreateLibraryModal
 					libraries={libraries}
 					isBusy={isBusy}
-					error={error}
+					error={createError}
 					onClose={() => {
 						setIsCreateOpen(false);
-						onClearError();
+						onClearCreateError();
 					}}
 					onCreate={(title) =>
 						onCreate(title)
@@ -88,11 +101,11 @@ export function LibrarySelector({ libraries, activeSlug, isBusy, error, onSwitch
 								// refreshed libraries list (see the hook) — this is the explicit close
 								// that used to be moot when the flow ended in a page reload.
 								setIsCreateOpen(false);
-								onClearError();
+								onClearCreateError();
 							})
-							// Swallowed: a validation or request failure already lands in `error` via the
-							// hook's setError, which the modal renders inline — nothing further to do
-							// here beyond leaving the modal open.
+							// Swallowed: a validation or request failure already lands in `createError` via
+							// the hook's setCreateError, which the modal renders inline — nothing further to
+							// do here beyond leaving the modal open.
 							.catch(() => {})
 					}
 				/>

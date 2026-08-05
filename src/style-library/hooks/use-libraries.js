@@ -24,6 +24,12 @@ import { createLibraryFlow, deleteLibraryFlow, errorMessage, switchLibraryFlow }
  * library or, on failure, clearing `isBusy` so the caller (the create/delete modal) can close or
  * stay open on its own.
  *
+ * Each of the three flows gets its own error slot (`switchError`, `createError`, `deleteError`)
+ * rather than sharing one — a failed switch must never render inside the delete/reset modal, and
+ * a failed delete must never resurface under the library dropdown. Each slot is cleared the
+ * instant its own flow starts again, so a stale error from a previous attempt never lingers past
+ * a fresh try at the same action.
+ *
  * @param {Object}   feed        The design-tokens admin feed (provides the initial active slug).
  * @param {Function} refreshFeed Replaces the feed with a fresh REST read for a slug (from
  *                               `use-design-tokens-feed`), so switching or deleting the active
@@ -31,20 +37,23 @@ import { createLibraryFlow, deleteLibraryFlow, errorMessage, switchLibraryFlow }
  *
  * @since TBD
  *
- * @return {Object} `{ libraries, activeSlug, isLoading, isBusy, error, clearError, switchLibrary,
- *                  createLibrary, deleteLibrary }`.
+ * @return {Object} `{ libraries, activeSlug, isLoading, isBusy, switchError, createError,
+ *                  deleteError, clearSwitchError, clearCreateError, clearDeleteError,
+ *                  switchLibrary, createLibrary, deleteLibrary }`.
  */
 export function useLibraries(feed, refreshFeed) {
 	const [libraries, setLibraries] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isBusy, setIsBusy] = useState(false);
-	const [error, setError] = useState(null);
+	const [switchError, setSwitchError] = useState(null);
+	const [createError, setCreateError] = useState(null);
+	const [deleteError, setDeleteError] = useState(null);
 	const activeSlug = feed?.slug;
 
 	const loadLibraries = useCallback(() => {
 		return fetchLibraries()
 			.then((rows) => setLibraries(sortLibraries(rows)))
-			.catch((err) => setError({ message: errorMessage(err) }));
+			.catch((err) => setSwitchError({ message: errorMessage(err) }));
 	}, []);
 
 	useEffect(() => {
@@ -52,36 +61,53 @@ export function useLibraries(feed, refreshFeed) {
 		loadLibraries().finally(() => setIsLoading(false));
 	}, [loadLibraries]);
 
-	const clearError = useCallback(() => setError(null), []);
+	const clearSwitchError = useCallback(() => setSwitchError(null), []);
+	const clearCreateError = useCallback(() => setCreateError(null), []);
+	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 
-	const switchLibrary = useCallback(
-		(slug) => switchLibraryFlow({ slug, refreshFeed, onBusy: setIsBusy, onError: setError }),
+	// Shared by `switchLibrary` (below) and by `addLibrary`'s post-create switch — each call site
+	// passes its own `onError` so a switch that fails as part of create reports through
+	// `createError`, never through `switchError`.
+	const runSwitch = useCallback(
+		({ slug, onError }) => switchLibraryFlow({ slug, refreshFeed, onBusy: setIsBusy, onError }),
 		[refreshFeed]
 	);
 
+	const switchLibrary = useCallback(
+		(slug) => {
+			setSwitchError(null);
+			return runSwitch({ slug, onError: setSwitchError });
+		},
+		[runSwitch]
+	);
+
 	const addLibrary = useCallback(
-		(title) =>
-			createLibraryFlow({
+		(title) => {
+			setCreateError(null);
+			return createLibraryFlow({
 				title,
 				libraries,
-				switchLibrary,
+				switchLibrary: (slug) => runSwitch({ slug, onError: setCreateError }),
 				loadLibraries,
 				onBusy: setIsBusy,
-				onError: setError,
-			}),
-		[libraries, switchLibrary, loadLibraries]
+				onError: setCreateError,
+			});
+		},
+		[libraries, runSwitch, loadLibraries]
 	);
 
 	const removeLibrary = useCallback(
-		(slug) =>
-			deleteLibraryFlow({
+		(slug) => {
+			setDeleteError(null);
+			return deleteLibraryFlow({
 				slug,
 				activeSlug,
 				refreshFeed,
 				loadLibraries,
 				onBusy: setIsBusy,
-				onError: setError,
-			}),
+				onError: setDeleteError,
+			});
+		},
 		[activeSlug, loadLibraries, refreshFeed]
 	);
 
@@ -90,8 +116,12 @@ export function useLibraries(feed, refreshFeed) {
 		activeSlug,
 		isLoading,
 		isBusy,
-		error,
-		clearError,
+		switchError,
+		createError,
+		deleteError,
+		clearSwitchError,
+		clearCreateError,
+		clearDeleteError,
 		switchLibrary,
 		createLibrary: addLibrary,
 		deleteLibrary: removeLibrary,
