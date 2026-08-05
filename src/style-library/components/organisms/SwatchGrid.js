@@ -30,12 +30,24 @@ import './SwatchGrid.scss';
  * @param {Function}       props.onAdd      Called with the group id when its add tile is clicked.
  * @param {string}         props.addLabel   The add-tile label (e.g. 'Add color') — no literal `+`,
  *                                          the icon supplies it.
+ * @param {Function}       [props.groupActions] Called with a group and returning the node for its
+ *                                          heading's actions slot (e.g. an overflow menu); the
+ *                                          grid stays agnostic about what the actions are, the
+ *                                          same division of labor as `SwatchCard`'s `preview`.
  *
  * @since TBD
  *
  * @return {JSX.Element} The grid.
  */
-export function SwatchGrid({ groups, selectedId = '', onSelect, onReorder = () => {}, onAdd, addLabel }) {
+export function SwatchGrid({
+	groups,
+	selectedId = '',
+	onSelect,
+	onReorder = () => {},
+	onAdd,
+	addLabel,
+	groupActions = null,
+}) {
 	return (
 		<div className="kadence-blocks-style-library__swatch-grid">
 			{groups.map((group) => (
@@ -47,6 +59,7 @@ export function SwatchGrid({ groups, selectedId = '', onSelect, onReorder = () =
 					onReorder={onReorder}
 					onAdd={onAdd}
 					addLabel={addLabel}
+					groupActions={groupActions}
 				/>
 			))}
 		</div>
@@ -65,12 +78,14 @@ export function SwatchGrid({ groups, selectedId = '', onSelect, onReorder = () =
  * @param {Function}      props.onReorder  Called with `(groupId, orderedIds)` after a drop.
  * @param {Function}      props.onAdd      Called with the group id when its add tile is clicked.
  * @param {string}        props.addLabel   The add-tile label.
+ * @param {Function}      [props.groupActions] Called with `group`, returning the heading's
+ *                                         actions slot node.
  *
  * @since TBD
  *
  * @return {JSX.Element} The group.
  */
-function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLabel }) {
+function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLabel, groupActions }) {
 	const ids = group.items.map((item) => item.id);
 	const { contextProps, sortableContextProps, useSortableItem, activeId } = useReorderableList({
 		ids,
@@ -80,7 +95,7 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 
 	return (
 		<div className="kadence-blocks-style-library__swatch-group">
-			<SectionHeading>{group.label}</SectionHeading>
+			<SectionHeading actions={groupActions ? groupActions(group) : null}>{group.label}</SectionHeading>
 			<DndContext {...contextProps}>
 				<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
 					<div className="kadence-blocks-style-library__swatch-group-row">
