@@ -1,6 +1,9 @@
 /**
- * The Style Library's route state: the active screen and the open settings item, read from and
- * written to the URL query string via the History API. No routing library.
+ * The Style Library's route state: the active screen, the screen's own sub-selection (`scope`),
+ * and the open settings item, read from and written to the URL query string via the History API.
+ * No routing library. This hook is a thin wrapper over `helpers/route.js` — `navigate`/`replace`
+ * merge whatever partial route object a caller passes onto the current one, so a new route field
+ * (like `scope`) needs no change here to be carried through.
  */
 
 /**
@@ -18,8 +21,8 @@ import { parseRoute, serializeRoute } from '../helpers/route';
  *
  * @since TBD
  *
- * @return {{route: {screen: string, item: string}, navigate: Function, replace: Function}} The
- *         current route plus the push/replace navigators, each taking a partial route object.
+ * @return {{route: {screen: string, scope: string, item: string}, navigate: Function, replace: Function}}
+ *         The current route plus the push/replace navigators, each taking a partial route object.
  */
 export function useStyleLibraryRoute() {
 	const [route, setRoute] = useState(() => parseRoute(window.location.href));
