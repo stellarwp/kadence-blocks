@@ -176,18 +176,23 @@ export function slugifyPaletteLabel(label) {
  * Whether a typed palette label collides with an existing palette id once run through
  * `slugifyPaletteLabel`.
  *
- * @param {string}         label   The typed palette label.
- * @param {Object}         listing The palette listing (`{ palettes }`).
+ * @param {string}  label       The typed palette label.
+ * @param {Object}  listing     The palette listing (`{ palettes }`).
+ * @param {string}  [excludeId] A palette id to exclude from the check — a rename compares the
+ *                               typed label against every OTHER palette, so retyping the palette's
+ *                               own current label (whose derived slug is its own unchanged id)
+ *                               is not reported as a collision with itself.
  *
  * @since TBD
  *
- * @return {boolean} True when the label's derived slug matches an existing palette id.
+ * @return {boolean} True when the label's derived slug matches an existing palette id other than
+ *         `excludeId`.
  */
-export function isDuplicatePaletteLabel(label, listing) {
+export function isDuplicatePaletteLabel(label, listing, excludeId) {
 	const slug = slugifyPaletteLabel(label);
 	const rows = Array.isArray(listing?.palettes) ? listing.palettes : [];
 
-	return slug !== '' && rows.some((row) => row.id === slug);
+	return slug !== '' && rows.some((row) => row.id === slug && row.id !== excludeId);
 }
 
 /**

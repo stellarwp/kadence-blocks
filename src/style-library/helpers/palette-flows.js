@@ -1,8 +1,8 @@
 /**
- * Pure orchestration for the Color Palette screen's write flows: open, activate, create, delete,
- * the settings-panel save (rename + recolor), swatch removal, add color, add color group, and
- * within-group reorder. Extracted out of `hooks/use-palettes` so each flow can be exercised
- * directly in tests without rendering a component — a flow takes the REST calls it needs
+ * Pure orchestration for the Color Palette screen's write flows: open, activate, create, rename,
+ * delete, the settings-panel save (swatch rename + recolor), swatch removal, add color, add color
+ * group, and within-group reorder. Extracted out of `hooks/use-palettes` so each flow can be
+ * exercised directly in tests without rendering a component — a flow takes the REST calls it needs
  * (imported here, so a test mocks `api/client`) plus a small set of injected callbacks for the
  * state a caller reacts to (busy, a scoped error slot, and a `reload`/`refreshFeed` pair the hook
  * provides). Every flow settles pessimistically and re-throws on failure so its caller (a modal,
@@ -401,6 +401,75 @@ export function deletePaletteFlow({ namespace, slug, id, reload, refreshFeed, on
 	return deletePalette(namespace, id, slug)
 		.then(() => reload())
 		.then(() => refreshFeed(slug))
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+			throw err;
+		});
+}
+
+/**
+ * Rename a palette: re-send its own effective view under the SAME id with a new label. Available
+ * for any palette, including the default — the server only refuses DELETING the default palette,
+ * not relabeling it (`Palettes_Controller::update_item()` carries no default-id guard, unlike
+ * `delete_item()`).
+ *
+ * `id` is never re-derived from `label` here — that is the one deliberate divergence from
+ * `createPaletteFlow`, which mints an id from the typed label because it is minting a NEW palette.
+ * A rename's target already exists and is referenced elsewhere by that exact id (the `$current` /
+ * `$default` pointers, and `data-kb-palette="<id>"` attributes already rendered onto blocks);
+ * re-deriving it from the new label would silently orphan every one of those references. Do not
+ * "fix" this to match `createPaletteFlow`'s id derivation — it would corrupt every reference the
+ * unchanged id currently satisfies.
+ *
+ * Re-sending the palette's own effective view is safe and lossless: `prepare_for_storage()`
+ * re-reduces a non-default palette back to its deltas on write (dropping swatches that already
+ * equal the default value), so this round-trips exactly what was already stored, just under a new
+ * label. No `refreshFeed` here, unlike every write above — a palette's `label` lives under
+ * `$extensions.colorPalettes` in the stored document, and `Effective_Document::build()` (the layer
+ * `Token_Resolver` walks to produce resolved CSS) explicitly walks only `Layers::token_layers()`
+ * and returns "$extensions stripped"; `apply_palette_overlay()` likewise only ever touches a
+ * swatch's `$value`, never its `label`. A label change cannot reach a single resolved token value,
+ * so there is nothing for a feed refresh to correct.
+ *
+ * @param {Object}   args
+ * @param {string}   args.namespace The REST namespace.
+ * @param {string}   args.slug      The token library slug.
+ * @param {string}   args.id        The palette id to rename — unchanged by this flow.
+ * @param {string}   args.label     The typed label.
+ * @param {Object}   args.listing   The current listing (`{ palettes }`), for the duplicate-label check.
+ * @param {Function} args.reload    Re-reads the listing (and the edited view) from the hook, so the
+ *                                  dropdown's label updates immediately.
+ * @param {Function} args.onBusy    Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError   Called with `{ message }` on failure or invalid input.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the rename and the listing reload complete; rejects on an
+ *                          empty or duplicate label, or a request failure, after `onError` has
+ *                          already run.
+ */
+export function renamePaletteFlow({ namespace, slug, id, label, listing, reload, onBusy, onError }) {
+	const trimmed = String(label ?? '').trim();
+
+	if (trimmed === '') {
+		const message = __('Enter a palette name.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
+	if (isDuplicatePaletteLabel(trimmed, listing, id)) {
+		const message = __('A palette with that name already exists.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
+	onBusy(true);
+
+	return fetchPalette(namespace, id, slug)
+		.then((view) => savePalette(namespace, id, { label: trimmed, groups: stripEffectiveFlags(view.groups) }, slug))
+		.then(() => reload())
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });

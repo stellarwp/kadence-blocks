@@ -177,6 +177,20 @@ describe('slugifyPaletteLabel / isDuplicatePaletteLabel', () => {
 		expect(isDuplicatePaletteLabel('Forest', listing)).toBe(false);
 		expect(isDuplicatePaletteLabel('   ', listing)).toBe(false);
 	});
+
+	it('excludes the given id from the collision check, so renaming to its own label is allowed', () => {
+		const listing = {
+			palettes: [
+				{ id: 'sunset', label: 'Sunset' },
+				{ id: 'forest', label: 'Forest' },
+			],
+		};
+
+		// Retyping "Sunset" while renaming the "sunset" palette itself is not a collision…
+		expect(isDuplicatePaletteLabel('Sunset', listing, 'sunset')).toBe(false);
+		// …but retyping a name that belongs to a DIFFERENT palette still is.
+		expect(isDuplicatePaletteLabel('Forest', listing, 'sunset')).toBe(true);
+	});
 });
 
 describe('stripEffectiveFlags', () => {
