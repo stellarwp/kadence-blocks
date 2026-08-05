@@ -146,21 +146,6 @@ final class Localizer {
 	}
 
 	/**
-	 * Script handles that receive the pickable-token pool, in resolution order: the editor bundle,
-	 * then the Style Library admin bundle. Only the first found enqueued is used.
-	 *
-	 * @since TBD
-	 *
-	 * @return string[]
-	 */
-	private function pickable_handles(): array {
-		return [
-			self::HANDLE,
-			Asset_Loader::get_script_handle(),
-		];
-	}
-
-	/**
 	 * Attach the four editor-only catalogs to the editor bundle, when that bundle is on the page and
 	 * the registry is active.
 	 *
@@ -220,6 +205,21 @@ final class Localizer {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Script handles that receive the pickable-token pool, in resolution order: the editor bundle,
+	 * then the Style Library admin bundle. Only the first found enqueued is used.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	private function pickable_handles(): array {
+		return [
+			self::HANDLE,
+			Asset_Loader::get_script_handle(),
+		];
 	}
 
 	/**
