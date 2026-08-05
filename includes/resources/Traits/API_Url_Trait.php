@@ -40,7 +40,8 @@ trait API_Url_Trait {
 			$custom,
 			$this->get_kadence_api_urls(),
 			$this->get_saved_library_urls(),
-			$this->get_registered_library_urls()
+			$this->get_registered_library_urls(),
+			$this->get_approved_library_urls()
 		);
 
 		/**
@@ -273,6 +274,77 @@ trait API_Url_Trait {
 	}
 
 	/**
+	 * The library URLs a site manager approved.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_approved_library_urls(): array {
+		return $this->get_library_url_option( 'kadence_blocks_approved_library_urls' );
+	}
+
+	/**
+	 * The library URLs a site manager was asked to approve.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	protected function get_blocked_library_urls(): array {
+		return $this->get_library_url_option( 'kadence_blocks_blocked_library_urls' );
+	}
+
+	/**
+	 * Read a stored list of library URLs.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option The option name.
+	 *
+	 * @return string[]
+	 */
+	private function get_library_url_option( string $option ): array {
+		$urls = get_option( $option, [] );
+
+		return is_array( $urls ) ? array_values( array_filter( $urls, 'is_string' ) ) : [];
+	}
+
+	/**
+	 * Record a location so a site manager can approve it.
+	 *
+	 * Only recorded for users who can approve it, so the prompt cannot be
+	 * filled by someone else.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url The requested library URL.
+	 */
+	protected function remember_blocked_library_url( string $url ): void {
+		if ( '' === $this->url_host( $url ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$allowed = $this->get_allowed_library_urls();
+		$blocked = array_values(
+			array_filter(
+				$this->get_blocked_library_urls(),
+				function ( string $blocked_url ) use ( $allowed ): bool {
+					return ! $this->url_host_matches( $blocked_url, $allowed );
+				}
+			)
+		);
+
+		if ( in_array( $url, $blocked, true ) || count( $blocked ) >= 5 ) {
+			return;
+		}
+
+		$blocked[] = $url;
+
+		update_option( 'kadence_blocks_blocked_library_urls', $blocked, false );
+	}
+
+	/**
 	 * Resolve a requested library URL into a full endpoint URL.
 	 *
 	 * Only the library locations this site allows are valid request targets.
@@ -292,9 +364,13 @@ trait API_Url_Trait {
 			return $fallback;
 		}
 
-		return $this->url_host_matches( $requested, $this->get_allowed_library_urls() )
-			? $requested . $endpoint
-			: '';
+		if ( $this->url_host_matches( $requested, $this->get_allowed_library_urls() ) ) {
+			return $requested . $endpoint;
+		}
+
+		$this->remember_blocked_library_url( $requested );
+
+		return '';
 	}
 
 	/**
@@ -311,13 +387,16 @@ trait API_Url_Trait {
 	 * @return string Empty string when the requested URL is not allowed.
 	 */
 	protected function resolve_connection_url( string $requested, string $endpoint ): string {
-		$url = $this->resolve_library_url( $requested, $endpoint );
+		$requested = rtrim( trim( $requested ), '/' );
 
-		if ( '' === $url && current_user_can( 'manage_options' ) ) {
-			$requested = rtrim( trim( $requested ), '/' );
-			$url       = '' === $requested ? '' : $requested . $endpoint;
+		if ( '' === $requested ) {
+			return '';
 		}
 
-		return $url;
+		if ( current_user_can( 'manage_options' ) || $this->url_host_matches( $requested, $this->get_allowed_library_urls() ) ) {
+			return $requested . $endpoint;
+		}
+
+		return '';
 	}
 }
