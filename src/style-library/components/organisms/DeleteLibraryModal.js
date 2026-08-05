@@ -7,7 +7,9 @@
  * Deleting the library the site is currently rendering with additionally requires naming its
  * successor. Without that, the server would drop the pointer back to the default library and the
  * user would discover a site-wide restyle they never chose, as a side effect of a cleanup. The
- * successor field starts empty and the confirm button stays disabled until it is answered.
+ * successor field starts empty and the confirm button stays disabled until it is answered — unless
+ * only one library could succeed it, in which case the copy names that library and there is no
+ * field, since a question with a single possible answer is friction rather than a safeguard.
  */
 
 /**
@@ -61,6 +63,18 @@ export function DeleteLibraryModal({
 	const needsSuccessor = editingSlug === activeSlug && !isDefault;
 	const successors = needsSuccessor ? successorOptions(libraries, editingSlug) : [];
 
+	// With a single candidate there is nothing to decide — the site can only land in one place, so
+	// asking would be a question with one answer. The consequence is still stated, naming that
+	// library outright; what is dropped is the choosing, not the telling.
+	//
+	// This is reachable on most sites, not a corner case: the default library can never be deleted,
+	// so any site with exactly two libraries hits it the moment it deletes the active one.
+	const isSuccessorForced = needsSuccessor && successors.length === 1;
+	// Read through rather than seeded into state on open: the libraries list arrives from its own
+	// request, so a modal opened before it lands would otherwise keep a stale '' with no picker
+	// rendered to correct it — a dead end with the confirm button disabled forever.
+	const chosenSuccessor = isSuccessorForced ? successors[0].slug : successorSlug;
+
 	const restingLabel = isDefault ? __('Reset', 'kadence-blocks') : __('Delete', 'kadence-blocks');
 	// The progressive form of restingLabel — the only progress indication while the request is in
 	// flight; there is no spinner alongside it.
@@ -89,7 +103,7 @@ export function DeleteLibraryModal({
 	// (not calling handleClose at all) is exactly the "do not close" behavior a caught rejection
 	// gives here for free.
 	const handleConfirm = () => {
-		onDelete(editingSlug, needsSuccessor ? successorSlug : undefined)
+		onDelete(editingSlug, needsSuccessor ? chosenSuccessor : undefined)
 			.then(() => handleClose())
 			.catch(() => {});
 	};
@@ -141,7 +155,19 @@ export function DeleteLibraryModal({
 									label
 								)}
 					</p>
-					{needsSuccessor && (
+					{isSuccessorForced && (
+						<p>
+							{sprintf(
+								// translators: %s: the library the site will use instead.
+								__(
+									'This is also your active library, so your site will use "%s" instead. Its colors, typography, spacing, and other styles go live across your site immediately — on the front end and in the editor.',
+									'kadence-blocks'
+								),
+								libraryDisplayTitle(successors[0])
+							)}
+						</p>
+					)}
+					{needsSuccessor && !isSuccessorForced && (
 						<>
 							<p>
 								{__(
@@ -157,7 +183,9 @@ export function DeleteLibraryModal({
 								// The empty option is deliberately kept selectable-looking rather than
 								// preselecting a library: defaulting to one would reproduce the very
 								// silent fallback this picker exists to remove, since the user would
-								// confirm without reading and land somewhere they never chose.
+								// confirm without reading and land somewhere they never chose. That
+								// reasoning does not apply when there is only one candidate, which is
+								// why that case skips the picker entirely rather than preselecting here.
 								options={[
 									{ value: '', label: __('Select a library…', 'kadence-blocks') },
 									...successors.map((library) => ({
@@ -175,7 +203,7 @@ export function DeleteLibraryModal({
 						<Button
 							variant="primary"
 							isDestructive
-							disabled={isBusy || (needsSuccessor && successorSlug === '')}
+							disabled={isBusy || (needsSuccessor && chosenSuccessor === '')}
 							onClick={handleConfirm}
 						>
 							{isBusy ? pendingLabel : restingLabel}
