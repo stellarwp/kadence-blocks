@@ -11,7 +11,9 @@ import {
 	newSwatchValue,
 	nextCustomColorSlug,
 	paletteDisplayLabel,
+	removeGroupFromGroups,
 	removeSwatchFromGroups,
+	renameGroupInGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
 	resolveEditingPaletteId,
@@ -331,6 +333,8 @@ describe('immutability', () => {
 		renameSwatchInGroups(groups, 'primitive.color.brand.primary', 'Renamed');
 		reorderGroupSwatches(groups, 'accent', ['primitive.color.brand.secondary', 'primitive.color.brand.primary']);
 		addGroupToGroups(groups, { id: 'x', label: 'X', swatches: [] });
+		renameGroupInGroups(groups, 'accent', 'Renamed Accent');
+		removeGroupFromGroups(groups, 'accent');
 
 		expect(groups).toEqual(frozen);
 	});
@@ -360,6 +364,57 @@ describe('newSwatchValue', () => {
 		expect(newSwatchValue(groups, 'accent')).toBe('#445566');
 		expect(newSwatchValue(groups, 'ghost')).toBe('#000000');
 		expect(newSwatchValue([], 'accent')).toBe('#000000');
+	});
+});
+
+describe('renameGroupInGroups', () => {
+	it('relabels only the target group and preserves its id', () => {
+		const groups = stripEffectiveFlags(effectivePalette().groups);
+		const next = renameGroupInGroups(groups, 'accent', 'Renamed Accent');
+		const renamed = next.find((group) => group.label === 'Renamed Accent');
+
+		// The regression test for the `template_slot_for()` misfiling hazard: a rename must never
+		// touch the id a swatch-placement lookup depends on.
+		expect(renamed.id).toBe('accent');
+		expect(next.find((group) => group.id === 'contrast').label).toBe('Contrast');
+	});
+
+	it('leaves every group’s swatches untouched', () => {
+		const groups = stripEffectiveFlags(effectivePalette().groups);
+		const next = renameGroupInGroups(groups, 'accent', 'Renamed Accent');
+
+		expect(next.find((group) => group.id === 'accent').swatches).toEqual(
+			groups.find((group) => group.id === 'accent').swatches
+		);
+	});
+
+	it('changes no labels when the group id matches nothing', () => {
+		const groups = stripEffectiveFlags(effectivePalette().groups);
+		const next = renameGroupInGroups(groups, 'ghost', 'Renamed');
+
+		expect(next.map((group) => group.label)).toEqual(groups.map((group) => group.label));
+	});
+});
+
+describe('removeGroupFromGroups', () => {
+	it('removes the target group and only it, keeping sibling order', () => {
+		const groups = stripEffectiveFlags(effectivePalette().groups);
+		const next = removeGroupFromGroups(groups, 'accent');
+
+		expect(next).toHaveLength(1);
+		expect(next[0].id).toBe('contrast');
+	});
+
+	it('returns the same reference when the id matches nothing', () => {
+		const groups = stripEffectiveFlags(effectivePalette().groups);
+
+		expect(removeGroupFromGroups(groups, 'ghost')).toBe(groups);
+	});
+
+	it('does not block removing the only remaining group — the server owns that rejection', () => {
+		const groups = [stripEffectiveFlags(effectivePalette().groups)[0]];
+
+		expect(removeGroupFromGroups(groups, 'accent')).toEqual([]);
 	});
 });
 
