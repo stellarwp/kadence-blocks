@@ -9,6 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	documentPath,
 	documentsPath,
+	libraryTitlePath,
 	activeLibraryPath,
 	activateLibraryPath,
 	resolvedPath,
@@ -315,29 +316,27 @@ export function createLibrary(slug, title) {
  * identity (the active-library pointer stores it, every document/palette/token route addresses by
  * it) and is never rewritten.
  *
- * The title is a column of its own, so an empty document body is all that is needed to leave
- * every stored token value untouched.
+ * Addresses the dedicated title endpoint rather than sending a title alongside an empty document
+ * to a document route. Those routes merge and then re-validate the whole stored document, so a
+ * rename through one fails for any library whose document does not currently validate — for
+ * reasons that have nothing to do with the new name. This route touches the label alone, so it
+ * cannot fail on the document's contents and does not bump the library's version.
  *
- * PATCH is not interchangeable with PUT here, and the method is hardcoded rather than exposed as
- * a parameter for that reason: PATCH deep-merges the given document into what is stored, so `{}`
- * is a no-op that preserves every override, while PUT against the same route *replaces* the
- * document and would wipe them all. Do not turn this into a shared helper that takes a method.
- *
- * Note the server treats an empty title as "leave the stored title untouched", so this cannot
- * clear a title back to empty — callers must reject an empty name before calling.
+ * The server rejects an empty title rather than reading it as "leave the stored one alone", so a
+ * blank rename reports a real error instead of silently doing nothing.
  *
  * @param {string} slug  Token library slug.
  * @param {string} title The new human-readable label.
  *
  * @since TBD
  *
- * @return {Promise<{slug: string, version: string, document: object}>} The updated document item.
+ * @return {Promise<{slug: string, title: string, version: string, document: object}>} The updated document item.
  */
 export function renameLibrary(slug, title) {
 	return apiFetch({
-		path: documentPath(NAMESPACE, slug),
-		method: 'PATCH',
-		data: { document: {}, title },
+		path: libraryTitlePath(NAMESPACE, slug),
+		method: 'PUT',
+		data: { title },
 	});
 }
 

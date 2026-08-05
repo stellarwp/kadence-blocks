@@ -8,6 +8,7 @@ import {
 	palettePath,
 	paletteCurrentPath,
 	documentsPath,
+	libraryTitlePath,
 	activeLibraryPath,
 	activateLibraryPath,
 	feedPath,
@@ -74,6 +75,16 @@ describe('userPrimitiveRenamePath', () => {
 describe('documentsPath', () => {
 	it('builds the documents collection path', () => {
 		expect(documentsPath()).toBe('/kb-design-tokens/v1/documents');
+	});
+});
+
+describe('libraryTitlePath', () => {
+	it('hangs the title endpoint off the library document path', () => {
+		expect(libraryTitlePath('kb-design-tokens/v1', 'brand-a')).toBe('/kb-design-tokens/v1/documents/brand-a/title');
+	});
+
+	it('falls back to the default library slug', () => {
+		expect(libraryTitlePath('kb-design-tokens/v1')).toBe('/kb-design-tokens/v1/documents/default/title');
 	});
 });
 
