@@ -141,6 +141,32 @@ describe('createLibraryFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy).toHaveBeenLastCalledWith(false);
 	});
+
+	it('routes a failure from the post-create switch step through its own onError, never calling loadLibraries', async () => {
+		client.createLibrary.mockResolvedValue({ slug: 'brand-b' });
+		const switchFailure = new Error('Switch failed');
+		const switchLibrary = jest.fn().mockRejectedValue(switchFailure);
+		const loadLibraries = jest.fn();
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			createLibraryFlow({
+				title: 'Brand B',
+				libraries: [],
+				switchLibrary,
+				loadLibraries,
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(switchFailure);
+
+		expect(switchLibrary).toHaveBeenCalledWith('brand-b');
+		expect(loadLibraries).not.toHaveBeenCalled();
+		// The caller (use-libraries) binds this onError to createError, never to switchError — a
+		// failure in the internal switch step must still report through create's own callback.
+		expect(onError).toHaveBeenCalledWith({ message: switchFailure.message });
+	});
 });
 
 describe('deleteLibraryFlow', () => {
