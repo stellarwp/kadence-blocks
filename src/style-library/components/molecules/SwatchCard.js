@@ -27,6 +27,14 @@ import './SwatchCard.scss';
  *
  * @param {Object}       props                  The component props.
  * @param {string}       props.id               The stable card id (also the dnd-kit sortable id).
+ * @param {Object}       [props.previewStyle]   Inline style applied to the preview slot itself, for
+ *                                              a preview that is only a fill (a solid color, a
+ *                                              gradient). The slot already draws the border, the
+ *                                              corner radius, and clips overflow, so filling it
+ *                                              directly avoids nesting a child that would stack a
+ *                                              second border inside those rounded corners. Pass
+ *                                              `preview` instead when the preview needs real
+ *                                              content rather than a fill.
  * @param {JSX.Element}  props.preview          The preview slot (a color square, a gradient, …) —
  *                                              always caller-supplied; see the module docblock for why
  *                                              this is never derived from `subLine`.
@@ -54,6 +62,7 @@ import './SwatchCard.scss';
 export function SwatchCard({
 	id,
 	preview,
+	previewStyle,
 	name,
 	subLine,
 	isSelected = false,
@@ -78,7 +87,9 @@ export function SwatchCard({
 				className="kadence-blocks-style-library__swatch-card-main"
 				onClick={() => onSelect(id)}
 			>
-				<span className="kadence-blocks-style-library__swatch-card-preview">{preview}</span>
+				<span className="kadence-blocks-style-library__swatch-card-preview" style={previewStyle}>
+					{preview}
+				</span>
 				<span className="kadence-blocks-style-library__swatch-card-name">{name}</span>
 				{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
 			</button>
