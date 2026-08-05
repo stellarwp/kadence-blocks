@@ -68,6 +68,29 @@ body.kadence-blocks-style-library-page {
 	flex-direction: column;
 	@include mixins.app-viewport-height;
 	overflow: hidden;
+	// The containing block for the busy scrim below, which covers the whole frame.
+	position: relative;
+}
+
+// Laid over the entire frame while the app's content is being replaced — opening a different
+// library swaps the values behind every screen at once, so a spinner tucked beside the selector
+// understates what is happening and leaves the stale content looking current and clickable.
+//
+// Translucent rather than opaque, so the frame stays visible and the app reads as busy rather than
+// as gone. The low z-index is deliberate: it lives inside the shell's own stacking context, so it
+// covers the app and nothing else — never wp-admin's chrome, and never a modal.
+.kadence-blocks-style-library__blocker {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--kb-sl-color-scrim);
+	// Blocks every pointer interaction underneath for the duration. Keyboard focus can still reach
+	// the covered controls, which is a known gap — the operations they start are all guarded by
+	// their own busy checks, so the worst case is a queued request, not a corrupt state.
+	cursor: progress;
 }
 
 .kadence-blocks-style-library__loading {

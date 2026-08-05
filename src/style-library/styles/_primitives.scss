@@ -51,6 +51,11 @@ body.kadence-blocks-style-library-page {
 	// this value — see the @supports block below.
 	--kb-sl-color-gray-200-tint-60: rgba(224, 224, 224, 0.6);
 
+	// White at 70% alpha — the scrim laid over the app while its content is being replaced. Kept
+	// translucent rather than opaque so the frame stays visible underneath and the app reads as
+	// busy rather than as gone.
+	--kb-sl-color-white-tint-70: rgba(255, 255, 255, 0.7);
+
 	// Spacing — Gutenberg's grid-unit scale, re-declared because core only ships it as Sass.
 	--kb-sl-space-05: 0.25rem;
 	--kb-sl-space-10: 0.5rem;
