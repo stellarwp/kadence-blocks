@@ -1,3 +1,12 @@
+// Fills the app viewport below the wp-admin bar, matching core's toolbar height swap at 782px.
+@mixin app-viewport-height {
+	height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+
+	@media (max-width: 782px) {
+		height: calc(100vh - 46px);
+	}
+}
+
 @mixin flex-column($gap) {
 	display: flex;
 	flex-direction: column;
