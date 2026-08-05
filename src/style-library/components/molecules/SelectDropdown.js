@@ -40,6 +40,8 @@ import './SelectDropdown.scss';
  *                                                                       Lets a caller that knows how to name its value without the fetched list (the
  *                                                                       library selector does, from the slug alone) avoid a flash of the raw value on
  *                                                                       first paint; this component stays unaware of what that naming rule is.
+ * @param {?import('@wordpress/icons').IconType}  [props.leadingIcon]   An optional glyph rendered before the label inside the toggle only (never
+ *                                                                       in the menu rows); caller data, omitted for the plain library-selector shape.
  *
  * @since TBD
  *
@@ -55,6 +57,7 @@ export function SelectDropdown({
 	trailingAction,
 	className,
 	valueLabel,
+	leadingIcon,
 }) {
 	const activeOption = options.find((option) => option.value === value);
 	const activeLabel = activeOption?.label ?? valueLabel ?? value;
@@ -74,6 +77,12 @@ export function SelectDropdown({
 						disabled={isBusy}
 						onClick={onToggle}
 					>
+						{leadingIcon && (
+							<Icon
+								className="kadence-blocks-style-library__select-dropdown-leading-icon"
+								icon={leadingIcon}
+							/>
+						)}
 						{/* The visible label is the button's accessible name — the active option's label must
 						 * be what a screen reader announces, not just the trailing chevron icon. */}
 						<span className="kadence-blocks-style-library__select-dropdown-label">{activeLabel}</span>

@@ -43,3 +43,14 @@
 	font-size: var(--kb-sl-font-size-meta);
 	color: var(--kb-sl-color-text-muted);
 }
+
+// Shared by `SectionHeading` and `FieldLabel`'s label text — not the same as `section-heading($size)`
+// above (a different, larger heading). `0.9625rem` is the one place this off-ramp literal lives; do
+// not re-add it in either consumer.
+@mixin small-uppercase-label {
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: 0.9625rem;
+	text-transform: uppercase;
+	color: var(--kb-sl-color-text-primary);
+}

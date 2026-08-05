@@ -1,0 +1,5 @@
+@use '../../../styles/mixins' as *;
+
+.kadence-blocks-style-library__field-number-unit-row {
+	@include flex-row(var(--kb-sl-space-10));
+}
