@@ -189,6 +189,22 @@ export function deleteSwatch(namespace, id, token, slug) {
 }
 
 /**
+ * Delete a palette. The library's default palette cannot be deleted — the server refuses with a
+ * 400 — and the response on success is the fresh palette listing.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} slug      Token set slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function deletePalette(namespace, id, slug) {
+	return apiFetch({ path: palettePath(namespace, id, slug), method: 'DELETE' });
+}
+
+/**
  * Fetch the alias-reference preview for a user primitive.
  *
  * @since TBD
