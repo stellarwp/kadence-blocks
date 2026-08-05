@@ -138,7 +138,7 @@ body.kadence-blocks-style-library-page {
 
 	// The preview slot's width inside a card. Height reuses --kb-sl-space-50 directly rather than a
 	// second, numerically-identical primitive.
-	--kb-sl-size-swatch-preview-width: 5rem;
+	--kb-sl-size-swatch-preview-width: 5.5rem;
 	// `SwatchCard`'s own width (read by `.swatch-card-main`) — derived as the preview's width plus
 	// its own inline padding on both sides, so a change to either can't silently drift this out of
 	// alignment.
