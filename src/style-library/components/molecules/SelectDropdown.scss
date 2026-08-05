@@ -155,6 +155,18 @@
 	padding: 0;
 }
 
+// The trailing column every row reserves, checked or not (see SelectDropdown.js). Sized to the
+// check it may hold so an empty slot occupies exactly what a filled one does; `flex: 0 0 auto`
+// keeps it from being squeezed by a long label.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-check-slot {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-size-icon-check);
+	height: var(--kb-sl-size-icon-check);
+}
+
 // Ancestor-qualified so this outranks core's `.components-button svg { fill: currentcolor }`,
 // which otherwise wins on specificity (a class-plus-element selector beats a bare class one) and
 // leaves the check rendering in the inherited text color instead of the theme color.
@@ -233,6 +245,13 @@
 	.components-menu-item__item {
 		display: flex;
 		align-items: center;
+		// Fills the row rather than hugging its content, which is what gives the badge group's
+		// `margin-left: auto` some slack to push against. Core sizes this to its content and pins
+		// the suffix right with its own `margin-right: auto`; that lands the suffix in the same
+		// place, but leaves nothing inside the item for an auto margin to distribute.
+		flex: 1 1 auto;
+		// Lets a long label shrink instead of forcing the row wider than the menu.
+		min-width: 0;
 		// --kb-sl-space-30 (24px), not --kb-sl-line-height-m (also 24px): this is sizing the item's
 		// content row, the same role the identical-valued space token already plays for the
 		// check-icon gap just above — not spacing text lines, which is what the line-height ramp is
@@ -267,6 +286,23 @@
 // first one pins the group to the row's trailing edge, which is where the token-value picker puts
 // its own "Default" tag.
 //
+// The run of badges, right-aligned so it ends against the check icon's column rather than
+// trailing the label at whatever width that happens to be. `margin-left: auto` does the aligning;
+// the `padding-left` is the floor that keeps the group off a label long enough to consume all the
+// slack, at which point the auto margin has nothing left to distribute.
+//
+// The gap here and the padding both use the same step as the menu item's own item-to-suffix gap
+// (see `.components-menu-item__button` below), so badge-to-badge, label-to-badge and
+// badge-to-check are all spaced identically and the row reads as one evenly-spaced run.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-badges {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: var(--kb-sl-space-30);
+	margin-left: auto;
+	padding-left: var(--kb-sl-space-30);
+}
+
 // Two variants, because the two badges this menu shows are different kinds of fact and must not
 // read as one list of equal labels. `state` says which library the site is actually serving — the
 // answer with consequences — so it takes the theme color and the heavier weight. `muted` marks an
@@ -278,17 +314,6 @@
 	font-size: var(--kb-sl-font-size-s);
 	line-height: var(--kb-sl-line-height-s);
 	white-space: nowrap;
-
-	& + & {
-		margin-left: var(--kb-sl-space-10);
-	}
-
-	&:first-of-type {
-		margin-left: auto;
-		// Keeps the badge group off the label when a long label fills the row; the `auto` margin
-		// above only spaces them when there is slack left to distribute.
-		padding-left: var(--kb-sl-space-10);
-	}
 }
 
 .kadence-blocks-style-library__select-dropdown-badge--muted {
