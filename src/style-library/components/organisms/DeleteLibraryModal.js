@@ -1,46 +1,77 @@
 /**
  * The header's destructive library action: a red "Delete" text link and its confirmation modal.
- * Always targets the active library. Copy branches on whether the target is the default
+ * Always targets the library being edited. Copy branches on whether the target is the default
  * library — deleting it resets its token values to baseline instead of removing it, and the
  * confirmation must say so honestly rather than presenting a removal that will not happen.
+ *
+ * Deleting the library the site is currently rendering with additionally requires naming its
+ * successor. Without that, the server would drop the pointer back to the default library and the
+ * user would discover a site-wide restyle they never chose, as a side effect of a cleanup. The
+ * successor field starts empty and the confirm button stays disabled until it is answered.
  */
 
 /**
  * WordPress dependencies
  */
-import { Button, Modal, Notice } from '@wordpress/components';
+import { Button, Modal, Notice, SelectControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { isDefaultLibrary, libraryDisplayTitle } from '../../helpers/libraries';
+import { isDefaultLibrary, libraryDisplayTitle, successorOptions } from '../../helpers/libraries';
 import './DeleteLibraryModal.scss';
 
 /**
  * Render the delete/reset action and its confirmation modal.
  *
- * @param {Object}              props             The component props.
- * @param {string}              props.activeSlug  The active library slug, the delete target.
- * @param {string}              props.activeTitle The active library's display title.
- * @param {boolean}             props.isBusy      Whether a library operation is in flight.
- * @param {?{message: string}} props.error         The current delete error, if any.
- * @param {Function}            props.onClearError Dismisses the current delete error.
- * @param {Function}            props.onDelete     Called with the active slug to delete/reset it.
+ * @param {Object}             props              The component props.
+ * @param {string}             props.editingSlug  The library being edited, and the delete target.
+ * @param {string}             props.editingTitle That library's display title.
+ * @param {string}             props.activeSlug   The slug the site renders with.
+ * @param {Array<Object>}      props.libraries    The existing library rows, for the successor list.
+ * @param {boolean}            props.isBusy       Whether a library operation is in flight.
+ * @param {?{message: string}} props.error        The current delete error, if any.
+ * @param {Function}           props.onClearError Dismisses the current delete error.
+ * @param {Function}           props.onDelete     Called with the target slug and, when required, the successor slug.
  *
  * @since TBD
  *
  * @return {JSX.Element} The delete action and, when open, its modal.
  */
-export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onClearError, onDelete }) {
+export function DeleteLibraryModal({
+	editingSlug,
+	editingTitle,
+	activeSlug,
+	libraries,
+	isBusy,
+	error,
+	onClearError,
+	onDelete,
+}) {
 	const [isOpen, setIsOpen] = useState(false);
-	const isDefault = isDefaultLibrary(activeSlug);
-	const label = libraryDisplayTitle({ slug: activeSlug, title: activeTitle ?? '' });
+	const [successorSlug, setSuccessorSlug] = useState('');
+
+	const isDefault = isDefaultLibrary(editingSlug);
+	const label = libraryDisplayTitle({ slug: editingSlug, title: editingTitle ?? '' });
+
+	// Only a real removal of the live library leaves the site without one. Resetting the default
+	// keeps it in place and still active, so there is nothing to succeed it.
+	const needsSuccessor = editingSlug === activeSlug && !isDefault;
+	const successors = needsSuccessor ? successorOptions(libraries, editingSlug) : [];
+
 	const restingLabel = isDefault ? __('Reset', 'kadence-blocks') : __('Delete', 'kadence-blocks');
 	// The progressive form of restingLabel — the only progress indication while the request is in
 	// flight; there is no spinner alongside it.
 	const pendingLabel = isDefault ? __('Resetting…', 'kadence-blocks') : __('Deleting…', 'kadence-blocks');
+
+	const handleOpen = () => {
+		// Reset per open, so a successor picked and then abandoned in an earlier attempt is never
+		// silently reused by the next one.
+		setSuccessorSlug('');
+		setIsOpen(true);
+	};
 
 	// Closes the modal and clears its own error, whether that is a confirmed delete, a Cancel
 	// click, or the Modal's own dismiss paths (Escape, click-outside) — all of which are already
@@ -51,14 +82,14 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onC
 		onClearError();
 	};
 
-	// Deleting the active library (the only target this modal ever offers) resolves in place —
-	// the hook refreshes the feed for whatever library ends up active rather than reloading the
-	// page — so this modal has to close itself explicitly once that settles; nothing else will.
-	// `.catch` deliberately does nothing beyond swallowing the promise rejection — a failed delete
-	// already re-set `isBusy`/`error` in the hook, and staying open (not calling handleClose at
-	// all) is exactly the "do not close" behavior a caught rejection gives here for free.
+	// The flow resolves in place — the hook moves the feed to whatever library the app should land
+	// on rather than reloading the page — so this modal has to close itself once that settles;
+	// nothing else will. `.catch` deliberately does nothing beyond swallowing the promise
+	// rejection: a failed delete already re-set `isBusy`/`error` in the hook, and staying open
+	// (not calling handleClose at all) is exactly the "do not close" behavior a caught rejection
+	// gives here for free.
 	const handleConfirm = () => {
-		onDelete(activeSlug)
+		onDelete(editingSlug, needsSuccessor ? successorSlug : undefined)
 			.then(() => handleClose())
 			.catch(() => {});
 	};
@@ -69,7 +100,7 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onC
 				variant="link"
 				isDestructive
 				disabled={isBusy}
-				onClick={() => setIsOpen(true)}
+				onClick={handleOpen}
 				className="kadence-blocks-style-library__delete-library-action"
 			>
 				{__('Delete', 'kadence-blocks')}
@@ -110,11 +141,43 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onC
 									label
 								)}
 					</p>
+					{needsSuccessor && (
+						<>
+							<p>
+								{__(
+									'This is also your active library, so your site needs another one. The library you choose below goes live immediately — colors, typography, spacing, and other styles change across your site on the front end and in the editor.',
+									'kadence-blocks'
+								)}
+							</p>
+							<SelectControl
+								label={__('Which library should your site use instead?', 'kadence-blocks')}
+								value={successorSlug}
+								disabled={isBusy}
+								onChange={setSuccessorSlug}
+								// The empty option is deliberately kept selectable-looking rather than
+								// preselecting a library: defaulting to one would reproduce the very
+								// silent fallback this picker exists to remove, since the user would
+								// confirm without reading and land somewhere they never chose.
+								options={[
+									{ value: '', label: __('Select a library…', 'kadence-blocks') },
+									...successors.map((library) => ({
+										value: library.slug,
+										label: libraryDisplayTitle(library),
+									})),
+								]}
+							/>
+						</>
+					)}
 					<div className="kadence-blocks-style-library__delete-library-modal-actions">
 						<Button variant="tertiary" onClick={handleClose} disabled={isBusy}>
 							{__('Cancel', 'kadence-blocks')}
 						</Button>
-						<Button variant="primary" isDestructive disabled={isBusy} onClick={handleConfirm}>
+						<Button
+							variant="primary"
+							isDestructive
+							disabled={isBusy || (needsSuccessor && successorSlug === '')}
+							onClick={handleConfirm}
+						>
 							{isBusy ? pendingLabel : restingLabel}
 						</Button>
 					</div>

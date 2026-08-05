@@ -1,12 +1,18 @@
 /**
- * Pure orchestration for the library-management flows the Style Library header runs: switch,
- * create-then-switch, and delete-or-reset. Extracted out of `hooks/use-libraries` so each flow can
- * be exercised directly in tests without rendering a component — a flow takes the REST calls it
- * needs (imported here, so a test mocks `api/client`) plus a small set of injected callbacks for
- * the state a caller reacts to (busy, error, and — for create/delete — a refresh of the libraries
- * list or the feed). None of the three flows reloads the page; each settles by resolving once its
- * side effects (the switch, the refreshed feed, the refreshed list) are done, or rejecting so its
- * caller (a modal) can tell success from failure.
+ * Pure orchestration for the library-management flows the Style Library header runs: open,
+ * activate, create-then-open, rename, and delete-or-reset. Extracted out of `hooks/use-libraries`
+ * so each flow can be exercised directly in tests without rendering a component — a flow takes the
+ * REST calls it needs (imported here, so a test mocks `api/client`) plus a small set of injected
+ * callbacks for the state a caller reacts to (busy, error, and a refresh of the libraries list,
+ * the feed, or the active-library pointer). None of the flows reloads the page; each settles by
+ * resolving once its side effects are done, or rejecting so its caller (a modal) can tell success
+ * from failure.
+ *
+ * The central distinction here is between the library a site *renders with* and the library the
+ * app is *editing*. Opening is free and reversible: it only re-reads the feed, so a user can
+ * browse and edit any library without touching what visitors see. Activating is the deliberate,
+ * guarded act that changes what the site uses, and it lives in exactly one flow so it stays easy
+ * to audit.
  */
 
 /**
@@ -17,8 +23,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { createLibrary, deleteLibrary, getActiveLibrary, setActiveLibrary } from '../api/client';
-import { slugifyLibraryTitle } from './libraries';
+import { createLibrary, deleteLibrary, renameLibrary, setActiveLibrary } from '../api/client';
+import { isDefaultLibrary, isDuplicateLibraryName, slugifyLibraryTitle } from './libraries';
 
 /**
  * Read the message off a REST error, falling back to a generic string when the error carries
@@ -35,55 +41,104 @@ export function errorMessage(error) {
 }
 
 /**
- * Point the active-library pointer at a slug, then refresh the feed for it.
+ * Show a library in the app: refresh the feed for it, and nothing else.
+ *
+ * This never writes the active-library pointer. Choosing a library from the header dropdown is a
+ * navigation act, not a publishing one — the site keeps rendering whatever library is active
+ * until someone explicitly activates a different one through `activateLibraryFlow`.
  *
  * @param {Object}   args
- * @param {string}   args.slug        The token library slug to make active.
+ * @param {string}   args.slug        The token library slug to open for editing.
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once the switch and the feed refresh both complete; rejects on
- *                          failure, after `onError`/`onBusy` have already run.
+ * @return {Promise<void>} Resolves once the feed refresh completes; rejects on failure, after
+ *                          `onError`/`onBusy` have already run.
  */
-export function switchLibraryFlow({ slug, refreshFeed, onBusy, onError }) {
+export function openLibraryFlow({ slug, refreshFeed, onBusy, onError }) {
 	onBusy(true);
 
-	return setActiveLibrary(slug)
-		.then(() => refreshFeed(slug))
+	return refreshFeed(slug)
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
 			onBusy(false);
 
-			// Re-thrown so a caller chaining off a switch (the create flow, below) can tell a failed
-			// switch from a successful one instead of treating this as done. A caller that only fires
-			// a plain switch (no chained action) must catch this itself — the error is already
+			// Re-thrown so a caller chaining off an open (the create flow, below) can tell a failed
+			// open from a successful one instead of treating this as done. A caller that only fires
+			// a plain open (no chained action) must catch this itself — the error is already
 			// surfaced through `onError` regardless.
 			throw err;
 		});
 }
 
 /**
- * Create a library from a typed title, then switch to it and refresh the libraries list.
+ * Point the site's active-library pointer at a slug.
+ *
+ * The one place in the app that writes that pointer, so the blast radius of "the whole site
+ * restyles" stays auditable: if this function has one caller, the guarded modal is the only way
+ * a site can change its active library.
+ *
+ * Deliberately does not refresh the feed. Activating a library changes which library the front
+ * end reads, not any value inside it — the app is already showing this library's tokens, and
+ * re-reading them would cost a request and re-render every screen to produce identical output.
+ *
+ * @param {Object}   args
+ * @param {string}   args.slug        The token library slug to make active.
+ * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ * @param {Function} args.onActivated Called with the slug the server resolved as active.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the pointer has moved; rejects on failure, after
+ *                          `onError`/`onBusy` have already run.
+ */
+export function activateLibraryFlow({ slug, onBusy, onError, onActivated }) {
+	onBusy(true);
+
+	return (
+		setActiveLibrary(slug)
+			// The resolved slug comes from the response rather than the request: the server owns
+			// which library ended up active, and reading it back is what keeps the app honest if it
+			// ever resolves something other than what was asked for.
+			.then((result) => onActivated(result?.slug ?? slug))
+			.then(() => onBusy(false))
+			.catch((err) => {
+				onError({ message: errorMessage(err) });
+				onBusy(false);
+
+				// Re-thrown so the confirmation modal can tell success from failure and knows whether
+				// to close itself.
+				throw err;
+			})
+	);
+}
+
+/**
+ * Create a library from a typed title, then open it for editing and refresh the libraries list.
+ *
+ * Creating a library does not activate it. A new library starts empty and is built up over time;
+ * publishing it to the site is a separate, explicit decision the user makes once it is ready.
  *
  * @param {Object}        args
  * @param {string}        args.title         The typed library title.
  * @param {Array<Object>} args.libraries     The existing library rows, for the duplicate-title check.
- * @param {Function}      args.switchLibrary Switches the active library (typically `switchLibraryFlow` bound to a slug).
+ * @param {Function}      args.openLibrary   Opens a library for editing (typically `openLibraryFlow` bound to a slug).
  * @param {Function}      args.loadLibraries Refreshes the libraries list.
  * @param {Function}      args.onBusy        Called with a boolean as the request starts and settles.
  * @param {Function}      args.onError       Called with `{ message }` on failure or invalid input.
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once the library is created, switched to, and the list is
+ * @return {Promise<void>} Resolves once the library is created, opened, and the list is
  *                          refreshed; rejects on an invalid title, a duplicate title, or a
  *                          request failure, after `onError` has already run.
  */
-export function createLibraryFlow({ title, libraries, switchLibrary, loadLibraries, onBusy, onError }) {
+export function createLibraryFlow({ title, libraries, openLibrary, loadLibraries, onBusy, onError }) {
 	const slug = slugifyLibraryTitle(title);
 
 	// Both validation failures reject rather than resolve: a caller that closes on a resolved
@@ -104,7 +159,7 @@ export function createLibraryFlow({ title, libraries, switchLibrary, loadLibrari
 	onBusy(true);
 
 	return createLibrary(slug, title)
-		.then(() => switchLibrary(slug))
+		.then(() => openLibrary(slug))
 		.then(() => loadLibraries())
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
@@ -117,50 +172,144 @@ export function createLibraryFlow({ title, libraries, switchLibrary, loadLibrari
 }
 
 /**
- * Delete (or, for the default library, reset) a library. When the deleted library was active,
- * re-reads the resolved active-library pointer and refreshes the feed for whatever library ends
- * up active, rather than assuming which slug that is.
+ * Rename a library, then refresh the libraries list so the dropdown label and ordering follow.
  *
- * @param {Object}   args
- * @param {string}   args.slug          The token library slug to delete or reset.
- * @param {string}   args.activeSlug    The currently active library slug.
- * @param {Function} args.refreshFeed   Replaces the feed with a fresh REST read for a slug.
- * @param {Function} args.loadLibraries Refreshes the libraries list.
- * @param {Function} args.onBusy        Called with a boolean as the request starts and settles.
- * @param {Function} args.onError       Called with `{ message }` on failure.
+ * Only the title changes; the slug is the library's permanent identity. The feed is deliberately
+ * not refreshed — a library's name is not part of the feed payload, and every screen renders
+ * token values rather than the library's name.
+ *
+ * @param {Object}        args
+ * @param {string}        args.slug          The library to rename.
+ * @param {string}        args.title         The new title.
+ * @param {Array<Object>} args.libraries     The existing library rows, for the duplicate-name check.
+ * @param {Function}      args.loadLibraries Refreshes the libraries list.
+ * @param {Function}      args.onBusy        Called with a boolean as the request starts and settles.
+ * @param {Function}      args.onError       Called with `{ message }` on failure or invalid input.
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once the delete (and, when the target was active, the feed
- *                          refresh) completes; rejects on failure, after `onError` has already run.
+ * @return {Promise<void>} Resolves once the rename and the list refresh complete; rejects on an
+ *                          empty or duplicate name, or a request failure, after `onError` has run.
  */
-export function deleteLibraryFlow({ slug, activeSlug, refreshFeed, loadLibraries, onBusy, onError }) {
+export function renameLibraryFlow({ slug, title, libraries, loadLibraries, onBusy, onError }) {
+	const trimmed = String(title ?? '').trim();
+
+	// The server reads an empty title as "leave the stored one untouched", so a blank name would
+	// silently do nothing rather than clearing the name. Rejecting here makes that honest, and
+	// reuses the create flow's wording for the same condition.
+	if (trimmed === '') {
+		const message = __('Enter a library title.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
+	if (isDuplicateLibraryName(trimmed, libraries, slug)) {
+		const message = __('A library with that title already exists.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
 	onBusy(true);
 
-	return deleteLibrary(slug)
-		.then(() => {
-			if (slug !== activeSlug) {
-				onBusy(false);
-				return loadLibraries();
-			}
-
-			// Deleting the active library always leaves some library active (deleting the default
-			// resets it in place; deleting any other library falls the pointer back to the default) —
-			// re-read the resolved pointer rather than assuming which slug that is, then refresh the
-			// feed for it.
-			return getActiveLibrary()
-				.then(({ slug: nextActiveSlug }) => refreshFeed(nextActiveSlug))
-				.then(() => loadLibraries())
-				.then(() => onBusy(false));
-		})
+	return renameLibrary(slug, trimmed)
+		.then(() => loadLibraries())
+		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
 			onBusy(false);
 
-			// Re-thrown, unlike the create flow but for the same reason, because the caller (the
-			// delete/reset modal) needs to tell success from failure to know whether to close itself.
-			// Success and failure look the same (a resolved promise) without this; the modal would
-			// close on an error too, hiding the very Notice it left behind to explain what went wrong.
+			// Re-thrown so the rename modal stays open on its inline error instead of closing as if
+			// the rename had worked.
+			throw err;
+		});
+}
+
+/**
+ * Delete (or, for the default library, reset) a library.
+ *
+ * Deleting the library the site is currently using requires naming its successor: that library is
+ * activated *first*, then the target is deleted. The reverse order would let the server fall the
+ * pointer back to the default in between, briefly serving a site-wide look nobody chose. Doing it
+ * this way, the site moves straight from the old library to the chosen one and the delete that
+ * follows changes nothing a visitor can see.
+ *
+ * The default library is exempt: deleting it resets its values in place rather than removing it,
+ * so it remains and stays active, and there is no successor to name.
+ *
+ * @param {Object}   args
+ * @param {string}   args.slug            The token library slug to delete or reset.
+ * @param {string}   args.activeSlug      The slug the site currently renders with.
+ * @param {string}   [args.successorSlug] The library to activate first, required when deleting the
+ *                                        active non-default library.
+ * @param {Function} args.refreshFeed     Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.loadLibraries   Refreshes the libraries list.
+ * @param {Function} args.onBusy          Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError         Called with `{ message }` on failure.
+ * @param {Function} args.onActiveChanged Called with the slug that ends up active, when it moves.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the delete (and any activation and feed refresh it
+ *                          entails) completes; rejects on failure, after `onError` has run.
+ */
+export function deleteLibraryFlow({
+	slug,
+	activeSlug,
+	successorSlug,
+	refreshFeed,
+	loadLibraries,
+	onBusy,
+	onError,
+	onActiveChanged,
+}) {
+	const needsSuccessor = slug === activeSlug && !isDefaultLibrary(slug);
+
+	// The modal's disabled confirm button is the real gate, but this flow is the unit under test
+	// and a future caller could get it wrong — refusing here means no request is ever issued
+	// without somewhere for the site to land.
+	if (needsSuccessor && !successorSlug) {
+		const message = __('Choose which library your site should use instead.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
+	onBusy(true);
+
+	// Activate the successor before deleting, never after — see the docblock.
+	const activation = needsSuccessor
+		? setActiveLibrary(successorSlug).then((result) => onActiveChanged(result?.slug ?? successorSlug))
+		: Promise.resolve();
+
+	// Where the app lands afterwards. `slug` is always the library being edited (the modal offers
+	// no other target), so the feed it is showing is invalid the moment that row is gone and has
+	// to move somewhere that certainly exists.
+	let nextSlug = activeSlug; // Deleted a library the site was not using: fall back to the one it is.
+
+	if (needsSuccessor) {
+		nextSlug = successorSlug; // Deleted the live library: the successor just activated.
+	} else if (slug === activeSlug) {
+		nextSlug = slug; // Reset the default library: it stays put, now holding baseline values.
+	}
+
+	return activation
+		.then(() => deleteLibrary(slug))
+		.then(() => refreshFeed(nextSlug))
+		.then(() => loadLibraries())
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+
+			// Re-thrown, like the create and rename flows and for the same reason: the modal needs to
+			// tell success from failure to know whether to close itself. Success and failure look the
+			// same (a resolved promise) without this; the modal would close on an error too, hiding
+			// the very Notice it left behind to explain what went wrong.
+			//
+			// Note a successor may already have been activated when the delete itself fails. That
+			// leaves the site on a library the user explicitly chose, with the target intact — a
+			// partial outcome, but every part of it was asked for, and retrying the delete finishes
+			// the job. Reordering to "delete first" to avoid it would trade this for a window where
+			// the site serves default styles nobody picked.
 			throw err;
 		});
 }

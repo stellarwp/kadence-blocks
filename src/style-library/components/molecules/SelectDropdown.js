@@ -28,7 +28,13 @@ import './SelectDropdown.scss';
  *
  * @param {Object}                               props                 The component props.
  * @param {string}                                props.value           The current option's value.
- * @param {Array<{value: string, label: string}>} props.options         The selectable options, in display order.
+ * @param {Array<{value: string, label: string, badges?: Array<{text: string, variant?: string}>}>} props.options
+ *                                                                       The selectable options, in display order. An option may carry short badges
+ *                                                                       rendered after its label in the menu (never in the toggle, which is a fixed
+ *                                                                       width the label already truncates against). `variant` is `'state'` for a
+ *                                                                       condition that changes over time and `'muted'` for an inherent property —
+ *                                                                       this component only maps them to class names, it does not know what any
+ *                                                                       badge means.
  * @param {Function}                              props.onChange        Called with a value when a different option is chosen.
  * @param {boolean}                               [props.isBusy]        Whether a change is in flight.
  * @param {?{message: string}}                    [props.error]         The current error, if any.
@@ -123,6 +129,17 @@ export function SelectDropdown({
 										}}
 									>
 										{option.label}
+										{option.badges?.map((badge) => (
+											<span
+												key={badge.text}
+												className={classnames(
+													'kadence-blocks-style-library__select-dropdown-badge',
+													`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
+												)}
+											>
+												{badge.text}
+											</span>
+										))}
 									</MenuItem>
 								);
 							})}

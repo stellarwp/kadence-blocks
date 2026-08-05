@@ -262,6 +262,57 @@
 	text-decoration: none;
 }
 
+// Badges sit after an option's label, inside the same wrapping content row, so a long label
+// wraps and carries them along rather than pushing them out of the menu. `margin-left: auto` on
+// the first one pins the whole group to the row's trailing edge, which is where the token-value
+// picker puts its own "Default" tag.
+//
+// Two variants, because the two badges this menu shows are different kinds of fact and must not
+// read as one list of equal labels. `state` marks something that changes over time and is the
+// answer to "which one is live?", so it takes the theme color and the heavier weight; `muted` is
+// an inherent, unchanging property and stays reference-level quiet. A row can carry both — the
+// default library is also the active one on a fresh install, which is the common first-run case,
+// not an edge case.
+.kadence-blocks-style-library__select-dropdown-menu .kadence-blocks-style-library__select-dropdown-badge {
+	flex: 0 0 auto;
+	font-size: var(--kb-sl-font-size-s);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+
+	& + & {
+		margin-left: var(--kb-sl-space-10);
+	}
+
+	&:first-of-type {
+		margin-left: auto;
+		// Keeps the badge group off the label when a long label fills the row; the `auto` margin
+		// above only spaces them when there is slack left to distribute.
+		padding-left: var(--kb-sl-space-10);
+	}
+}
+
+.kadence-blocks-style-library__select-dropdown-badge--muted {
+	color: var(--kb-sl-color-text-muted);
+	font-weight: var(--kb-sl-font-weight-regular);
+}
+
+.kadence-blocks-style-library__select-dropdown-badge--state {
+	color: var(--kb-sl-color-theme);
+	font-weight: var(--kb-sl-font-weight-semibold);
+}
+
+// The hover/focus rule on the menu item swaps the whole row to the theme color, which would erase
+// the muted badge's deliberate quietness exactly when the user is looking at that row. Re-assert
+// it so the two variants stay distinguishable in every state.
+.kadence-blocks-style-library__select-dropdown-menu
+	.components-menu-item__button:hover
+	.kadence-blocks-style-library__select-dropdown-badge--muted,
+.kadence-blocks-style-library__select-dropdown-menu
+	.components-menu-item__button:focus-visible
+	.kadence-blocks-style-library__select-dropdown-badge--muted {
+	color: var(--kb-sl-color-text-muted);
+}
+
 .kadence-blocks-style-library__select-dropdown-error {
 	margin: 0;
 }

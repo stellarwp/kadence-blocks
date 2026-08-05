@@ -15,6 +15,8 @@ import { AppShell } from '../components/templates/AppShell';
 import { AppHeader } from '../components/organisms/AppHeader';
 import { AppSidebar } from '../components/organisms/AppSidebar';
 import { LibrarySelector } from '../components/organisms/LibrarySelector';
+import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
+import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { SettingsPanel } from '../components/templates/SettingsPanel';
 import { SettingsForm } from '../components/organisms/SettingsForm';
@@ -26,6 +28,7 @@ import { useSettingsPanel } from '../hooks/use-settings-panel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
+import { libraryDisplayTitle } from '../helpers/libraries';
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
@@ -91,7 +94,23 @@ export function StyleLibraryApp() {
 	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
 	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
 	const onNavigate = (id) => navigate({ screen: id, item: '' });
-	const activeLibrary = libraries.libraries.find((library) => library.slug === libraries.activeSlug);
+
+	// Two different libraries are named in the header: the one being edited (the selector's value,
+	// and the target of rename/delete/activate) and the one the site renders with (named in the
+	// activation modal's copy). `libraryDisplayTitle` resolves either from the slug alone, so both
+	// stay correct on the first paint before the list has loaded.
+	const editingTitle = libraryDisplayTitle(
+		libraries.libraries.find((library) => library.slug === libraries.editingSlug) ?? {
+			slug: libraries.editingSlug,
+			title: '',
+		}
+	);
+	const activeTitle = libraryDisplayTitle(
+		libraries.libraries.find((library) => library.slug === libraries.activeSlug) ?? {
+			slug: libraries.activeSlug,
+			title: '',
+		}
+	);
 
 	return (
 		<AppShell
@@ -101,24 +120,48 @@ export function StyleLibraryApp() {
 						<LibrarySelector
 							libraries={libraries.libraries}
 							activeSlug={libraries.activeSlug}
+							editingSlug={libraries.editingSlug}
 							isBusy={libraries.isBusy}
-							switchError={libraries.switchError}
+							openError={libraries.openError}
 							createError={libraries.createError}
-							onSwitch={libraries.switchLibrary}
+							onOpen={libraries.openLibrary}
 							onCreate={libraries.createLibrary}
-							onClearSwitchError={libraries.clearSwitchError}
+							onClearOpenError={libraries.clearOpenError}
 							onClearCreateError={libraries.clearCreateError}
 						/>
 					}
 					actionsSlot={
-						<DeleteLibraryModal
-							activeSlug={libraries.activeSlug}
-							activeTitle={activeLibrary?.title}
-							isBusy={libraries.isBusy}
-							error={libraries.deleteError}
-							onClearError={libraries.clearDeleteError}
-							onDelete={libraries.deleteLibrary}
-						/>
+						<>
+							<ActivateLibraryButton
+								editingSlug={libraries.editingSlug}
+								editingTitle={editingTitle}
+								activeTitle={activeTitle}
+								isEditingActive={libraries.isEditingActive}
+								isBusy={libraries.isBusy}
+								error={libraries.activateError}
+								onClearError={libraries.clearActivateError}
+								onActivate={libraries.activateLibrary}
+							/>
+							<RenameLibraryModal
+								slug={libraries.editingSlug}
+								currentTitle={editingTitle}
+								libraries={libraries.libraries}
+								isBusy={libraries.isBusy}
+								error={libraries.renameError}
+								onClearError={libraries.clearRenameError}
+								onRename={libraries.renameLibrary}
+							/>
+							<DeleteLibraryModal
+								editingSlug={libraries.editingSlug}
+								editingTitle={editingTitle}
+								activeSlug={libraries.activeSlug}
+								libraries={libraries.libraries}
+								isBusy={libraries.isBusy}
+								error={libraries.deleteError}
+								onClearError={libraries.clearDeleteError}
+								onDelete={libraries.deleteLibrary}
+							/>
+						</>
 					}
 				/>
 			}

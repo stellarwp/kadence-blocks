@@ -4,6 +4,10 @@
  * modal its trailing action opens. All of the selector's visual behavior (the toggle, the check
  * icon, the divider, the menu geometry) lives in `SelectDropdown` — this component only supplies
  * library data and the create flow.
+ *
+ * Choosing a library here *opens* it for editing. It does not change which library the site
+ * renders with; that is a separate, confirmed action (see `ActivateLibraryButton`). The badges
+ * below are what keep the two legible at the point of choosing.
  */
 
 /**
@@ -16,7 +20,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { SelectDropdown } from '../molecules/SelectDropdown';
-import { libraryDisplayTitle } from '../../helpers/libraries';
+import { isDefaultLibrary, libraryDisplayTitle } from '../../helpers/libraries';
 import { CreateLibraryModal } from './CreateLibraryModal';
 
 /**
@@ -24,13 +28,14 @@ import { CreateLibraryModal } from './CreateLibraryModal';
  *
  * @param {Object}        props                    The component props.
  * @param {Array<Object>} props.libraries          The ordered library rows (`{ slug, title }`).
- * @param {string}        props.activeSlug         The active library slug.
+ * @param {string}        props.activeSlug         The slug the site renders with.
+ * @param {string}        props.editingSlug        The slug the app is showing.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
- * @param {?{message: string}} props.switchError   The current switch error, if any.
+ * @param {?{message: string}} props.openError     The current open error, if any.
  * @param {?{message: string}} props.createError   The current create error, if any.
- * @param {Function}      props.onSwitch           Called with a slug to switch the active library.
+ * @param {Function}      props.onOpen             Called with a slug to open that library for editing.
  * @param {Function}      props.onCreate           Called with a title to create a library.
- * @param {Function}      props.onClearSwitchError Dismisses the current switch error.
+ * @param {Function}      props.onClearOpenError   Dismisses the current open error.
  * @param {Function}      props.onClearCreateError Dismisses the current create error.
  *
  * @since TBD
@@ -40,46 +45,64 @@ import { CreateLibraryModal } from './CreateLibraryModal';
 export function LibrarySelector({
 	libraries,
 	activeSlug,
+	editingSlug,
 	isBusy,
-	switchError,
+	openError,
 	createError,
-	onSwitch,
+	onOpen,
 	onCreate,
-	onClearSwitchError,
+	onClearOpenError,
 	onClearCreateError,
 }) {
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-	const options = libraries.map((library) => ({
-		value: library.slug,
-		label: libraryDisplayTitle(library),
-	}));
+	const options = libraries.map((library) => {
+		const badges = [];
 
-	// A plain switch from the dropdown has no follow-up action waiting on its result — the
-	// `switchError` state above already surfaces a failure, so the rejection `onSwitch`'s promise
+		// Order is fixed — the inherent property before the mutable state — so a row carrying both
+		// does not reshuffle its badges as the active library moves.
+		if (isDefaultLibrary(library.slug)) {
+			// Answers "why can't I delete this one?" before the user tries: the default library is
+			// never removed, only reset to the shipped baseline.
+			badges.push({ text: __('Default', 'kadence-blocks'), variant: 'muted' });
+		}
+
+		if (library.slug === activeSlug) {
+			badges.push({ text: __('Active', 'kadence-blocks'), variant: 'state' });
+		}
+
+		return {
+			value: library.slug,
+			label: libraryDisplayTitle(library),
+			badges,
+		};
+	});
+
+	// A plain open from the dropdown has no follow-up action waiting on its result — the
+	// `openError` state above already surfaces a failure, so the rejection `onOpen`'s promise
 	// carries (there for a caller that chains off it, e.g. the create flow) is swallowed here
 	// rather than left unhandled.
-	const handleSwitch = (slug) => {
-		onSwitch(slug).catch(() => {});
+	const handleOpen = (slug) => {
+		onOpen(slug).catch(() => {});
 	};
 
 	return (
 		<>
 			<SelectDropdown
-				value={activeSlug}
+				value={editingSlug}
 				options={options}
-				// The slug alone is enough to name the active library correctly (see
-				// libraryDisplayTitle) — this is what the toggle shows on first paint, before
-				// `libraries` has loaded and any option can match `activeSlug`, so it never flashes
-				// the raw slug while the list is in flight.
-				valueLabel={libraryDisplayTitle({ slug: activeSlug, title: '' })}
+				// The slug alone is enough to name the library correctly (see libraryDisplayTitle) —
+				// this is what the toggle shows on first paint, before `libraries` has loaded and any
+				// option can match `editingSlug`, so it never flashes the raw slug while the list is
+				// in flight.
+				valueLabel={libraryDisplayTitle({ slug: editingSlug, title: '' })}
 				isBusy={isBusy}
 				// Suppressed while the create modal is open — it shows its own (separately scoped)
-				// createError inline instead, so surfacing switchError here too would display two
+				// createError inline instead, so surfacing openError here too would display two
 				// unrelated errors at once.
-				error={isCreateOpen ? null : switchError}
-				onClearError={onClearSwitchError}
-				onChange={handleSwitch}
+				error={isCreateOpen ? null : openError}
+				onClearError={onClearOpenError}
+				onChange={handleOpen}
 				trailingAction={{
 					label: __('Create Library', 'kadence-blocks'),
 					onClick: () => setIsCreateOpen(true),
@@ -97,9 +120,9 @@ export function LibrarySelector({
 					onCreate={(title) =>
 						onCreate(title)
 							.then(() => {
-								// A successful create is followed by a switch to the new library and a
-								// refreshed libraries list (see the hook) — this is the explicit close
-								// that used to be moot when the flow ended in a page reload.
+								// A successful create opens the new library and refreshes the libraries
+								// list (see the hook) — this is the explicit close that used to be moot
+								// when the flow ended in a page reload.
 								setIsCreateOpen(false);
 								onClearCreateError();
 							})

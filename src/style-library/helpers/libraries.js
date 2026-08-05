@@ -92,6 +92,63 @@ export function libraryDisplayTitle(library) {
 }
 
 /**
+ * Whether a typed name collides with another library's *displayed* name, for the rename flow.
+ *
+ * Deliberately not `isDuplicateLibraryTitle`, which compares derived slugs. A slug is minted from
+ * the title once, at creation, and never changes afterwards — so the moment a library is renamed
+ * the two diverge permanently: one created as "Brand A" (slug `brand-a`) and renamed to
+ * "Winter 2026" keeps `brand-a` forever. Checking a rename against slugs would then reject
+ * "Brand A" as taken while nothing on screen is named that, leaving the user no way to understand
+ * the refusal. Creation still checks slugs — that is where the slug is minted and a slug
+ * collision is a real conflict — so the two questions stay two helpers.
+ *
+ * `excludeSlug` is the library being renamed, which must be allowed to keep its own name (the
+ * user may edit the field and revert it).
+ *
+ * @param {string}                                title       The typed library name.
+ * @param {Array<{slug: string, title: string}>} libraries    The existing library rows.
+ * @param {string}                                excludeSlug The slug of the library being renamed.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when another library already displays that name.
+ */
+export function isDuplicateLibraryName(title, libraries, excludeSlug) {
+	const candidate = String(title ?? '')
+		.trim()
+		.toLowerCase();
+
+	if (candidate === '') {
+		return false;
+	}
+
+	const rows = Array.isArray(libraries) ? libraries : [];
+
+	return rows.some(
+		(library) => library.slug !== excludeSlug && libraryDisplayTitle(library).trim().toLowerCase() === candidate
+	);
+}
+
+/**
+ * The libraries offered as a successor when the one being deleted is the active library — every
+ * library except the delete target, in dropdown order.
+ *
+ * Never empty in practice: the default library cannot be deleted (a DELETE against it resets its
+ * values to baseline instead of removing it), so it is always present and always a valid choice,
+ * even when the target is the only other library.
+ *
+ * @param {Array<{slug: string, title: string}>} libraries  The existing library rows.
+ * @param {string}                                targetSlug The library about to be deleted.
+ *
+ * @since TBD
+ *
+ * @return {Array<{slug: string, title: string}>} The candidate successors, ordered.
+ */
+export function successorOptions(libraries, targetSlug) {
+	return sortLibraries(libraries).filter((library) => library.slug !== targetSlug);
+}
+
+/**
  * Order the libraries for the dropdown: the default library first, the rest by title. A library
  * with no stored title (its `title` is the empty string, per the REST contract) sorts by its
  * slug instead.

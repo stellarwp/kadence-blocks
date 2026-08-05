@@ -1,0 +1,26 @@
+// Qualified with the app root so this outranks wp-admin's own default button sizing, the same
+// way the select toggle's rule does.
+.kadence-blocks-style-library-root .kadence-blocks-style-library__activate-library-action {
+	height: var(--kb-sl-space-50);
+	padding: 0 var(--kb-sl-space-15);
+	font-size: var(--kb-sl-font-size-m);
+	line-height: var(--kb-sl-line-height-s);
+	font-weight: var(--kb-sl-font-weight-medium);
+	white-space: nowrap;
+}
+
+// The resting state when the edited library is already live. Deliberately not a button and not
+// interactive — there is nothing to do here, and styling it like an action would invite a click
+// that could do nothing but disappoint. It matches the dropdown's own `state` badge, since the
+// two say the same thing about the same library.
+.kadence-blocks-style-library__active-library-indicator {
+	display: inline-flex;
+	align-items: center;
+	height: var(--kb-sl-space-50);
+	padding: 0 var(--kb-sl-space-15);
+	color: var(--kb-sl-color-theme);
+	font-size: var(--kb-sl-font-size-m);
+	line-height: var(--kb-sl-line-height-s);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	white-space: nowrap;
+}

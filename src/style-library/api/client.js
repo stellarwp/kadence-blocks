@@ -311,6 +311,37 @@ export function createLibrary(slug, title) {
 }
 
 /**
+ * Rename a token library. Only its human-readable title changes; the slug is the library's
+ * identity (the active-library pointer stores it, every document/palette/token route addresses by
+ * it) and is never rewritten.
+ *
+ * The title is a column of its own, so an empty document body is all that is needed to leave
+ * every stored token value untouched.
+ *
+ * PATCH is not interchangeable with PUT here, and the method is hardcoded rather than exposed as
+ * a parameter for that reason: PATCH deep-merges the given document into what is stored, so `{}`
+ * is a no-op that preserves every override, while PUT against the same route *replaces* the
+ * document and would wipe them all. Do not turn this into a shared helper that takes a method.
+ *
+ * Note the server treats an empty title as "leave the stored title untouched", so this cannot
+ * clear a title back to empty — callers must reject an empty name before calling.
+ *
+ * @param {string} slug  Token library slug.
+ * @param {string} title The new human-readable label.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string, version: string, document: object}>} The updated document item.
+ */
+export function renameLibrary(slug, title) {
+	return apiFetch({
+		path: documentPath(NAMESPACE, slug),
+		method: 'PATCH',
+		data: { document: {}, title },
+	});
+}
+
+/**
  * Delete a token library. Deleting the default library resets it to baseline instead of removing
  * it — the same endpoint serves both, the server decides which behavior applies.
  *
