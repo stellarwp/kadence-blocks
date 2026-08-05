@@ -1,8 +1,8 @@
 /**
  * The Color Palette screen's settings panel: edits one swatch — its display name (a structure edit
  * written to the default palette) and its color (a granular value write on the palette being
- * edited). Mounted by the app when a swatch token is the open route item; see
- * `ColorPaletteScreen.SettingsPanel`.
+ * edited) — and deletes it (also a structure edit, with a best-effort token cleanup after). Mounted
+ * by the app when a swatch token is the open route item; see `ColorPaletteScreen.SettingsPanel`.
  */
 
 /**
@@ -91,7 +91,16 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			onDelete={null /* swatch deletion ships with the default-palette write */}
+			// Renders for every swatch: what Delete removes is a palette row (user-editable document
+			// data), not the token — `removeSwatch` decides internally whether the underlying token
+			// is user-created and only then best-effort cleans it up (settled decision 8).
+			onDelete={() =>
+				palettes
+					.removeSwatch(token)
+					.then(() => navigate({ item: '' }))
+					// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
+					.catch(() => {})
+			}
 			isDirty={panel.isDirty}
 		>
 			{palettes.saveError && (

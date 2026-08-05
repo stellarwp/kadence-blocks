@@ -16,6 +16,7 @@ import {
 	createPaletteFlow,
 	deletePaletteFlow,
 	removeSwatchFlow,
+	renamePaletteFlow,
 	reorderSwatchesFlow,
 	saveSwatchEditsFlow,
 } from '../helpers/palette-flows';
@@ -60,10 +61,11 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  * @since TBD
  *
  * @return {Object} `{ listing, activeId, editingId, isEditingActive, palette, isLoading, isBusy,
- *                  openError, activateError, createError, deleteError, saveError, structureError,
- *                  clearOpenError, clearActivateError, clearCreateError, clearDeleteError,
- *                  clearSaveError, clearStructureError,
- *                  openPalette, activatePalette, createPalette, deletePalette,
+ *                  openError, activateError, createError, renameError, deleteError, saveError,
+ *                  structureError,
+ *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
+ *                  clearDeleteError, clearSaveError, clearStructureError,
+ *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
  *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches }`.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
@@ -74,6 +76,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
 	const [createError, setCreateError] = useState(null);
+	const [renameError, setRenameError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
 	const [saveError, setSaveError] = useState(null);
 	const [structureError, setStructureError] = useState(null);
@@ -157,6 +160,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
 	const clearCreateError = useCallback(() => setCreateError(null), []);
+	const clearRenameError = useCallback(() => setRenameError(null), []);
 	const clearDeleteError = useCallback(() => setDeleteError(null), []);
 	const clearSaveError = useCallback(() => setSaveError(null), []);
 	const clearStructureError = useCallback(() => setStructureError(null), []);
@@ -231,6 +235,23 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 			});
 		},
 		[namespace, slug, listing, reload, openPalette]
+	);
+
+	const renamePalette = useCallback(
+		(id, label) => {
+			setRenameError(null);
+			return renamePaletteFlow({
+				namespace,
+				slug,
+				id,
+				label,
+				listing,
+				reload,
+				onBusy: setIsBusy,
+				onError: setRenameError,
+			});
+		},
+		[namespace, slug, listing, reload]
 	);
 
 	const removePalette = useCallback(
@@ -372,18 +393,21 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		openError,
 		activateError,
 		createError,
+		renameError,
 		deleteError,
 		saveError,
 		structureError,
 		clearOpenError,
 		clearActivateError,
 		clearCreateError,
+		clearRenameError,
 		clearDeleteError,
 		clearSaveError,
 		clearStructureError,
 		openPalette,
 		activatePalette,
 		createPalette: addPalette,
+		renamePalette,
 		deletePalette: removePalette,
 		saveSwatchEdits,
 		removeSwatch,
