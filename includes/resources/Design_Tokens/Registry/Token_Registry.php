@@ -41,24 +41,30 @@ final class Token_Registry {
 	/**
 	 * Register a user-created primitive. Throws when the id is already held by a non-user-created token.
 	 *
+	 * $group must already be resolved to its current-locale label — this method never calls
+	 * group_label_for() itself; see User_Primitive_Registrar::register_entry(), the one caller with
+	 * a logger to report an unresolvable $group_key.
+	 *
 	 * @since TBD
 	 *
 	 * @param string $id
 	 * @param string $type
 	 * @param string $label
+	 * @param string $group     Already-resolved, current-locale group label. Empty for ungrouped.
+	 * @param string $group_key Stable machine key the group label was resolved from. Empty for ungrouped.
 	 *
 	 * @throws \RuntimeException When the id belongs to a system registration.
 	 *
 	 * @return void
 	 */
-	public function register_user_primitive( string $id, string $type, string $label = '' ): void {
+	public function register_user_primitive( string $id, string $type, string $label = '', string $group = '', string $group_key = '' ): void {
 		if ( isset( $this->tokens[ $id ] ) && ! $this->tokens[ $id ]->is_user_created() ) {
 			throw new \RuntimeException(
 				sprintf( 'Cannot register user primitive "%s": id is already registered as a system token.', $id )
 			);
 		}
 
-		$this->tokens[ $id ] = Token_Definition::from_user_primitive( $id, $type, $label );
+		$this->tokens[ $id ] = Token_Definition::from_user_primitive( $id, $type, $label, $group, $group_key );
 	}
 
 	/**
@@ -349,6 +355,34 @@ final class Token_Registry {
 		}
 
 		return [ 'groups' => $groups ];
+	}
+
+	/**
+	 * The current-locale group label a stable group_key resolves to, or null when no declared token
+	 * carries that key. A pure accessor: it scans the already-registered declarations for the key and
+	 * returns their translated group verbatim — it never calls __() itself, because the key is a
+	 * variable and a dynamic string passed to __() is invisible to WP's static string extraction and
+	 * would never be translated. The key only ever selects among labels that already exist as literal
+	 * __() calls in declarations.php.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group_key The stable machine key, e.g. "border-radius".
+	 *
+	 * @return string|null
+	 */
+	public function group_label_for( string $group_key ): ?string {
+		if ( $group_key === '' ) {
+			return null;
+		}
+
+		foreach ( $this->tokens as $token ) {
+			if ( $token->group_key === $group_key ) {
+				return $token->group;
+			}
+		}
+
+		return null;
 	}
 
 	// ---- Fail-closed activation guard -------------------------------------------------------------
