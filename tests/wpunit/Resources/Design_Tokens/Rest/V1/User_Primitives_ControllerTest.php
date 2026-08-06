@@ -580,10 +580,11 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A shadow `$value` with an unknown sub-field (here, `inset`) is rejected by
+	 * A shadow `$value` with a genuinely unknown sub-field (here, `glow`) is rejected by
 	 * Composite_Value's composite_field_unknown code. This also covers the DTCG stacked-array
 	 * shape implicitly: a list body fails the same declared-field checks (every numeric key
-	 * reads as unknown).
+	 * reads as unknown). `inset` is deliberately not used here since it is now a supported
+	 * optional field (see the inset-specific tests below).
 	 *
 	 * @return void
 	 */
@@ -599,15 +600,79 @@ final class User_Primitives_ControllerTest extends TestCase {
 			'offsetY' => '2px',
 			'blur'    => '8px',
 			'spread'  => '0px',
-			'inset'   => 'true',
+			'glow'    => 'true',
 		];
 
-		$request = $this->make_create_request( $slug, 'inset-shadow', 'shadow', $shadow_value, $version );
+		$request = $this->make_create_request( $slug, 'unknown-field-shadow', 'shadow', $shadow_value, $version );
 		$result  = $this->controller->create_item( $request );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A shadow `$value` whose `inset` sub-field is a non-boolean literal (a string, not the
+	 * literal PHP boolean) is rejected by Composite_Value's strict-boolean check, surfaced
+	 * through the same rest_design_tokens_invalid shape a missing/unknown sub-field gets.
+	 *
+	 * @return void
+	 */
+	public function testShadowValueWithNonBooleanInsetIsRejectedByThePipeline(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => 'true',
+		];
+
+		$request = $this->make_create_request( $slug, 'non-boolean-inset-shadow', 'shadow', $shadow_value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A shadow user primitive created with a literal boolean `inset` sub-field round-trips
+	 * through the create endpoint: 201, and the stored leaf's `$value` carries `inset` intact
+	 * alongside the five required fields — the case this ticket exists to enable.
+	 *
+	 * @return void
+	 */
+	public function testItCreatesANewShadowPrimitiveWithInset(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => true,
+		];
+
+		$request = $this->make_create_request( $slug, 'inset-shadow', 'shadow', $shadow_value, $version, 'Inset Shadow' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+
+		$doc  = $result->get_data()['document'];
+		$leaf = $doc['primitive']['shadow']['custom']['inset-shadow'];
+		$this->assertSame( 'shadow', $leaf['$type'] );
+		$this->assertSame( $shadow_value, $leaf['$value'] );
 	}
 
 	// -------------------------------------------------------------------------
