@@ -492,6 +492,98 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'primitive.dimension.custom.gap-md', $ext );
 	}
 
+	// -------------------------------------------------------------------------
+	// create_item — the optional stable group key
+	// -------------------------------------------------------------------------
+
+	/**
+	 * A create request carrying a group key that a real declaration owns (the shipped
+	 * border-radius scale) stores that key verbatim in the envelope, and the minted token
+	 * surfaces inside the matching feed group.
+	 *
+	 * @return void
+	 */
+	public function testCreateWithAKnownGroupStoresTheKeyAndJoinsTheGroup(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'border-radius' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+
+		$doc = $result->get_data()['document'];
+		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
+
+		$this->assertSame( 'border-radius', $ext['primitive.dimension.custom.radius-md']['group'] );
+	}
+
+	/**
+	 * A create request with no group param behaves exactly as before: no "group" key is written
+	 * to the envelope entry at all.
+	 *
+	 * @return void
+	 */
+	public function testCreateWithoutAGroupStoresNoGroupKey(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'brand-teal', 'color', '#0d9488', $version, 'Brand Teal' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+
+		$doc = $result->get_data()['document'];
+		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
+
+		$this->assertArrayNotHasKey( 'group', $ext['primitive.color.custom.brand-teal'] );
+	}
+
+	/**
+	 * A group key no declaration carries is rejected outright — minting into it would leave the
+	 * token invisible on its own screen.
+	 *
+	 * @return void
+	 */
+	public function testCreateWithAnUndeclaredGroupIsRejected(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'not-a-declared-group' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_kb_unknown_group', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A group key that is not lowercase kebab-case is rejected before any group lookup, mirroring
+	 * the id slug's own charset guard.
+	 *
+	 * @return void
+	 */
+	public function testCreateWithAMalformedGroupIsRejected(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'Border_Radius' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_kb_invalid_group', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
+	}
+
 	/**
 	 * A shadow primitive create proves the shape-agnostic `$value` arg and leaf build end to
 	 * end: the object `$value` (five literal sub-fields) is stored intact.
@@ -1297,6 +1389,38 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertArrayNotHasKey( 'old-name', $doc_after['primitive']['color']['custom'] );
 	}
 
+	/**
+	 * Renaming a grouped custom token's id (not just its label) carries the stored group to the
+	 * new id — User_Primitive_Index::rename() reads the old entry's group before removing it,
+	 * rather than losing it the way a naive add()-with-no-group call would.
+	 *
+	 * @return void
+	 */
+	public function testRenamingAGroupedTokensIdCarriesTheGroupToTheNewId(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$create = $this->controller->create_item(
+			$this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'border-radius' )
+		);
+		$this->assertInstanceOf( WP_REST_Response::class, $create );
+
+		$new_version = $create->get_data()['version'];
+
+		$request = $this->make_rename_request( $slug, 'primitive.dimension.custom.radius-md', 'radius-medium', $new_version );
+		$result  = $this->controller->rename_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+
+		$doc = $result->get_data()['document'];
+		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
+
+		$this->assertSame( 'border-radius', $ext['primitive.dimension.custom.radius-medium']['group'] );
+		$this->assertArrayNotHasKey( 'primitive.dimension.custom.radius-md', $ext );
+	}
+
 	// -------------------------------------------------------------------------
 	// rename_item — $type derived from stored tree, not client
 	// -------------------------------------------------------------------------
@@ -1778,10 +1902,11 @@ final class User_Primitives_ControllerTest extends TestCase {
 	 * @param mixed  $value   The DTCG `$value`.
 	 * @param string $version The version token.
 	 * @param string $label   Optional label.
+	 * @param string $group   Optional stable group key.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function make_create_request( string $slug, string $id, string $type, $value, string $version, string $label = '' ): WP_REST_Request {
+	private function make_create_request( string $slug, string $id, string $type, $value, string $version, string $label = '', string $group = '' ): WP_REST_Request {
 		$request = new WP_REST_Request( WP_REST_Server::CREATABLE );
 		$request->set_param( 'slug', $slug );
 		$request->set_param( 'id', $id );
@@ -1789,6 +1914,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$request->set_param( '$value', $value );
 		$request->set_param( 'version', $version );
 		$request->set_param( 'label', $label );
+		$request->set_param( 'group', $group );
 
 		return $request;
 	}
