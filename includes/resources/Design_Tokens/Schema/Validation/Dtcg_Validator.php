@@ -749,6 +749,9 @@ final class Dtcg_Validator {
 		$errors = [];
 
 		foreach ( $order as $group => $ids ) {
+			// The `$ids === []` check is required, not redundant: `range( 0, -1 )` returns
+			// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty order list
+			// would be misclassified as malformed rather than as a valid empty list.
 			$is_valid = is_string( $group ) && $group !== '' && is_array( $ids )
 				&& ( $ids === [] || array_keys( $ids ) === range( 0, count( $ids ) - 1 ) );
 
