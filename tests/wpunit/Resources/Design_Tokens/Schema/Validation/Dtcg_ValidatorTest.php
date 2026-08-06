@@ -90,6 +90,48 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed tokenLabels section validates: every entry maps a non-empty string id to a
+	 * non-empty string label.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedTokenLabelsSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenLabels' => [
+						'semantic.color.button-bg' => 'Brand Button',
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A document without a tokenLabels section produces no new errors, and a non-Kadence
+	 * extension namespace alongside it is passed through untouched.
+	 *
+	 * @return void
+	 */
+	public function testADocumentWithoutTheTokenLabelsSectionIsUnaffected(): void {
+		$document = [
+			'$extensions' => [
+				'some.other.vendor' => [
+					'tokenLabels' => [ 0 => 'not-kadence-owned' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItIsResolvableFromTheContainer(): void {
@@ -325,6 +367,44 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_alias_malformed(),
 			'path'     => '$extensions.com.kadence.designTokens.colorPalettes.default.groups.0.swatches.0.$value',
+		];
+		// A tokenLabels entry keyed by an integer (rather than a token dot-path string) is rejected
+		// by the section's own explicit branch.
+		yield 'integer-keyed tokenLabels entry' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 0 => 'Numeric Key' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.0',
+		];
+		yield 'non-string tokenLabels label' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 'semantic.color.button-bg' => 42 ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
+		];
+		yield 'empty-string tokenLabels label' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 'semantic.color.button-bg' => '' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
 		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
