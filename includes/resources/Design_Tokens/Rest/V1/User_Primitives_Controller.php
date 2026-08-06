@@ -54,7 +54,7 @@ final class User_Primitives_Controller extends Controller {
 
 	/**
 	 * The id path segment for user-primitive sub-resources.
-	 * Matches the canonical path format: primitive.color.custom.<slug>
+	 * Matches the canonical path format: primitive.<type>.custom.<slug>
 	 *
 	 * @since TBD
 	 *
@@ -291,7 +291,7 @@ final class User_Primitives_Controller extends Controller {
 	}
 
 	/**
-	 * Create a new user-defined color primitive.
+	 * Create a new user-defined primitive.
 	 *
 	 * @since TBD
 	 *
@@ -323,22 +323,23 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$type      = Cast::to_string( $request->get_param( '$type' ) );
-		$value     = $request->get_param( '$value' );
-		$label     = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $slug_input );
-		$canonical = Reserved_Namespace::canonical( $slug_input );
-		$stored    = $this->pipeline->load_document( $slug );
+		$type  = Cast::to_string( $request->get_param( '$type' ) );
+		$value = $request->get_param( '$value' );
+		$label = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $slug_input );
 
-		if ( $type !== Token_Type::get_type_color() ) {
+		if ( ! Reserved_Namespace::is_supported_type( $type ) ) {
 			return new WP_Error(
 				'rest_design_tokens_type_not_supported',
-				__( 'Only color primitives can be created in this version.', 'kadence-blocks' ),
+				__( 'That $type does not support user-created primitives in this version.', 'kadence-blocks' ),
 				[
 					'status' => WP_Http::UNPROCESSABLE_ENTITY,
 					'$type'  => $type,
 				]
 			);
 		}
+
+		$canonical = Reserved_Namespace::canonical( $type, $slug_input );
+		$stored    = $this->pipeline->load_document( $slug );
 
 		if ( $this->baseline->has( $canonical ) ) {
 			return new WP_Error(
@@ -561,7 +562,7 @@ final class User_Primitives_Controller extends Controller {
 			);
 		}
 
-		$new_id    = Reserved_Namespace::canonical( $new_slug );
+		$new_id    = Reserved_Namespace::canonical( $type, $new_slug );
 		$new_label = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $new_slug );
 
 		if ( $this->baseline->has( $new_id ) || $this->index->has( $stored, $new_id ) ) {
@@ -768,7 +769,7 @@ final class User_Primitives_Controller extends Controller {
 
 		return new WP_Error(
 			'rest_invalid_param',
-			__( 'The id must be a canonical color custom primitive path (primitive.color.custom.<slug>).', 'kadence-blocks' ),
+			__( 'The id must be a canonical custom primitive path (primitive.<type>.custom.<slug>).', 'kadence-blocks' ),
 			[
 				'status' => WP_Http::BAD_REQUEST,
 				'id'     => $id,

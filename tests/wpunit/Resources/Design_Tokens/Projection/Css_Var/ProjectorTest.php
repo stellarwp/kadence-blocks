@@ -239,6 +239,31 @@ final class ProjectorTest extends TestCase {
 		$this->assertSame( $colors, $this->projector->filter_global_colors( $colors ) );
 	}
 
+	// ---- User-created primitives ---------------------------------------------------------------------
+
+	/**
+	 * A stored shadow user primitive reaches Css_Renderer::shadow() through the resolver with
+	 * zero resolver/renderer changes: the projected CSS carries the token's custom property
+	 * with the rendered single-shadow shorthand. This is the first projection pin for a
+	 * user-created token of any type.
+	 *
+	 * @return void
+	 */
+	public function testItProjectsAStoredShadowUserPrimitiveAsTheSingleShadowShorthand(): void {
+		$id = 'primitive.shadow.custom.elevated';
+
+		$this->store->save_document( $this->shadow_user_primitive_document( $id, 'Elevated' ) );
+
+		$this->projector->enqueue_front_end();
+
+		$css = $this->inline_css();
+
+		$this->assertStringContainsString(
+			Css_Var::from_id( $id ) . ':0px 2px 8px 0px #1A202C',
+			$css
+		);
+	}
+
 	// ---- Active library ----------------------------------------------------------------------------------
 
 	/**
@@ -353,6 +378,45 @@ final class ProjectorTest extends TestCase {
 								'$type'  => 'color',
 								'$value' => self::BRAND_B_BUTTON,
 							],
+						],
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * A stored document containing one shadow user primitive: the tree leaf plus its provenance
+	 * envelope entry, the shape the create endpoint would have written.
+	 *
+	 * @param string $id    The canonical dot-path id.
+	 * @param string $label The label to store in the provenance map.
+	 *
+	 * @return string
+	 */
+	private function shadow_user_primitive_document( string $id, string $label ): string {
+		return (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'shadow' => [
+						'custom' => [
+							'elevated' => [
+								'$type'  => 'shadow',
+								'$value' => [
+									'color'   => '#1A202C',
+									'offsetX' => '0px',
+									'offsetY' => '2px',
+									'blur'    => '8px',
+									'spread'  => '0px',
+								],
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [ 'label' => $label ],
 						],
 					],
 				],
