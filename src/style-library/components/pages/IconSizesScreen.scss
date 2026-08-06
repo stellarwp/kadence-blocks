@@ -1,0 +1,21 @@
+// The star preview's own fill. Body-scoped `--kb-sl-*` custom properties (see
+// `.local/style-library-reference.md` section 3) so the `DragOverlay` portal, which renders
+// outside `.kadence-blocks-style-library-root`, still resolves the fill mid-drag.
+.kadence-blocks-style-library__icon-size-preview {
+	display: block;
+	fill: currentColor;
+	color: var(--kb-sl-color-gray-700);
+	// The mock's largest declared row (LG, 2.25rem/36px) sits well under this; the clamp only
+	// guards a pathological custom value (e.g. `50rem`) from making the row list hard to scan.
+	max-width: 3rem;
+	max-height: 3rem;
+}
+
+// Scoped to this screen via `ScaleScreen`'s per-screen root modifier class (see
+// `.local/style-library-reference.md`) — Border Radius and Border Width keep the default framed
+// 80px slot from `ListRow.scss`; Icon Sizes needs a bare star with no gray box around it, since
+// every declared star fits inside the slot's own 80px there is no need to unlock its dimensions.
+.kadence-blocks-style-library__scale-screen--icon-sizes .kadence-blocks-style-library__list-row-preview {
+	border: 0;
+	background: transparent;
+}
