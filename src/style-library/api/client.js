@@ -14,6 +14,8 @@ import {
 	activateLibraryPath,
 	resolvedPath,
 	tokenPath,
+	tokenLabelPath,
+	groupOrderPath,
 	userPrimitiveReferencesPath,
 	userPrimitivesPath,
 	userPrimitivePath,
@@ -81,6 +83,43 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
+	});
+}
+
+/**
+ * Set or clear a token's display-label override.
+ *
+ * @since TBD
+ *
+ * @param {string}                             slug    Token library slug.
+ * @param {string}                             id      The token id (baseline dot-path, or a user
+ *                                                       primitive's canonical id).
+ * @param {{ label: string, version: string }} payload Request body.
+ * @return {Promise<object>} Updated document item.
+ */
+export function setTokenLabel(slug, id, payload) {
+	return apiFetch({
+		path: tokenLabelPath(slug, id),
+		method: 'PUT',
+		data: payload,
+	});
+}
+
+/**
+ * Persist a UI-schema group's full sort order.
+ *
+ * @since TBD
+ *
+ * @param {string}                                       slug    Token library slug.
+ * @param {string}                                        group   The UI-schema group label.
+ * @param {{ order: string[], version: string }}          payload Request body.
+ * @return {Promise<object>} Updated document item.
+ */
+export function setGroupOrder(slug, group, payload) {
+	return apiFetch({
+		path: groupOrderPath(slug, group),
+		method: 'PUT',
+		data: payload,
 	});
 }
 
