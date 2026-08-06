@@ -1,0 +1,113 @@
+@use '../../../styles/mixins' as *;
+
+.kadence-blocks-style-library__color-picker {
+	padding: var(--kb-sl-space-10);
+}
+
+// react-color's Saturation/Hue/Alpha primitives position their internals with `absolute` insets and
+// expect the wrapper to already have `position: relative` and an explicit size. 64.66% is the
+// reference control's measured ratio (a 232×150 saturation area).
+.kadence-blocks-style-library__color-picker-saturation {
+	position: relative;
+	width: 100%;
+	padding-bottom: 64.66%;
+	overflow: hidden;
+	border-radius: var(--kb-sl-radius-m) var(--kb-sl-radius-m) 0 0;
+}
+
+.kadence-blocks-style-library__color-picker-controls {
+	display: flex;
+	align-items: center;
+	gap: var(--kb-sl-space-10);
+	padding: var(--kb-sl-space-10) 0;
+}
+
+.kadence-blocks-style-library__color-picker-sliders {
+	@include flex-column(var(--kb-sl-space-05));
+	flex: 1;
+}
+
+.kadence-blocks-style-library__color-picker-hue,
+.kadence-blocks-style-library__color-picker-alpha {
+	position: relative;
+	// 10px, off the grid-unit scale — matches the reference control's slider thickness.
+	height: 10px;
+	border-radius: var(--kb-sl-radius-s);
+}
+
+.kadence-blocks-style-library__color-picker-swatch {
+	position: relative;
+	flex: 0 0 auto;
+	// 30px, off the grid-unit scale — matches the reference control's current-color swatch.
+	width: 30px;
+	height: 30px;
+	overflow: hidden;
+	border-radius: var(--kb-sl-radius-full);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.kadence-blocks-style-library__color-picker-swatch-color {
+	position: absolute;
+	inset: 0;
+}
+
+.kadence-blocks-style-library__color-picker-fields {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--kb-sl-space-05);
+}
+
+.kadence-blocks-style-library__color-picker-field {
+	flex: 1;
+	min-width: 0;
+
+	// EditableInput's own `<input>` and `<label>` — it takes only inline `style` objects for these
+	// (no `className`), so the box model stays there; typography and color live here.
+	input {
+		width: 100%;
+		box-sizing: border-box;
+		padding: var(--kb-sl-space-05);
+		border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-control-border);
+		border-radius: var(--kb-sl-radius-s);
+		font-size: var(--kb-sl-font-size-xs);
+		text-align: center;
+
+		&:focus {
+			border-color: var(--kb-sl-color-control-border-focus);
+			outline: none;
+		}
+	}
+
+	label {
+		display: block;
+		margin-top: var(--kb-sl-space-05);
+		text-align: center;
+		text-transform: capitalize;
+		color: var(--kb-sl-color-text-primary);
+		font-size: var(--kb-sl-font-size-xs);
+	}
+}
+
+.kadence-blocks-style-library__color-picker-field--hex {
+	flex: 2;
+}
+
+.kadence-blocks-style-library__color-picker-view-cycle {
+	@include flex-column(0);
+	flex: 0 0 auto;
+}
+
+.kadence-blocks-style-library__color-picker-view-cycle-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: none;
+	background: none;
+	color: var(--kb-sl-color-text-muted);
+	cursor: pointer;
+
+	&:hover {
+		color: var(--kb-sl-color-text-primary);
+	}
+}
