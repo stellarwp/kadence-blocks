@@ -89,9 +89,9 @@ final class User_Primitive_Document_Validator {
 	/**
 	 * @since TBD
 	 *
-	 * @param array<string, mixed>        $document
-	 * @param string                      $id
-	 * @param array{label?: string}|mixed $entry
+	 * @param array<string, mixed>                        $document
+	 * @param string                                      $id
+	 * @param array{label?: string, group?: string}|mixed $entry
 	 *
 	 * @return User_Primitive_Validation_Error[]
 	 */
@@ -109,6 +109,10 @@ final class User_Primitive_Document_Validator {
 
 		if ( ! is_array( $entry ) || ! isset( $entry['label'] ) || ! is_string( $entry['label'] ) || $entry['label'] === '' ) {
 			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" has a missing or empty label.', $id ) );
+		}
+
+		if ( is_array( $entry ) && isset( $entry['group'] ) && ( ! is_string( $entry['group'] ) || ! Reserved_Namespace::is_valid_slug( $entry['group'] ) ) ) {
+			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" has an invalid group.', $id ) );
 		}
 
 		if ( $this->baseline->has( $id ) ) {
