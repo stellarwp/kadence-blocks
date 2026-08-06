@@ -248,6 +248,39 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The declared border-radius scale surfaces as its own feed group, in declaration order, with
+	 * every step's value resolved — the Border Radius screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheBorderRadiusScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Border Radius', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Border Radius'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.radius.none',
+				'primitive.dimension.radius.sm',
+				'primitive.dimension.radius.md',
+				'primitive.dimension.radius.lg',
+				'primitive.dimension.radius.full',
+			],
+			$ids
+		);
+
+		$this->assertSame( '0', $data['values']['primitive.dimension.radius.none'] );
+		$this->assertSame( '0.125rem', $data['values']['primitive.dimension.radius.sm'] );
+		$this->assertSame( '0.5rem', $data['values']['primitive.dimension.radius.md'] );
+		$this->assertSame( '1rem', $data['values']['primitive.dimension.radius.lg'] );
+		$this->assertSame( '9999px', $data['values']['primitive.dimension.radius.full'] );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
