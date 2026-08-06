@@ -467,6 +467,123 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The declared icon-size scale surfaces as its own feed group, in declaration order, with every
+	 * step's value resolved and no projections — the Icon Sizes screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheIconSizesScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Icon Sizes', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Icon Sizes'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.icon-size.sm',
+				'primitive.dimension.icon-size.md',
+				'primitive.dimension.icon-size.lg',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Icon Sizes'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared icon-size scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '1rem', $data['values']['primitive.dimension.icon-size.sm'] );
+		$this->assertSame( '1.5rem', $data['values']['primitive.dimension.icon-size.md'] );
+		$this->assertSame( '2.25rem', $data['values']['primitive.dimension.icon-size.lg'] );
+	}
+
+	/**
+	 * `semantic.icon-size.default` keeps resolving through the "md" primitive after the scale is
+	 * declared — declaring the primitives for the Style Library screen must not disturb the alias
+	 * that already projects into the icon block and the button's icon size.
+	 *
+	 * @return void
+	 */
+	public function testSemanticIconSizeDefaultStillResolvesThroughTheMdPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.dimension.icon-size.md'],
+			$data['values']['semantic.icon-size.default']
+		);
+	}
+
+	/**
+	 * A user-created token minted into the icon-sizes group (the stable key this ticket declares as
+	 * `group_key` alongside the newly declared icon-size scale) surfaces inside the declared
+	 * "Icon Sizes" UI-schema group and is flagged `userCreated`, exercising the shared group-key
+	 * backend against this screen's own key. Asserted against `Token_Registry::to_ui_schema()`
+	 * directly — the same surface `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken`
+	 * checks for the sibling border-radius group — rather than through the REST controller, whose
+	 * resolved dependency chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoIconSizesSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.icon-size-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'icon-size-2' => [
+								'$type'  => 'dimension',
+								'$value' => '3rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Icon Size',
+								'group' => 'icon-sizes',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Icon Sizes', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Icon Sizes'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Icon Sizes" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
