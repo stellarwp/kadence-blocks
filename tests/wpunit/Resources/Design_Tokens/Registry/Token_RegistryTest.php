@@ -297,4 +297,45 @@ final class Token_RegistryTest extends TestCase {
 		$user_entry = $schema['groups'][''][0];
 		$this->assertTrue( $user_entry['userCreated'] );
 	}
+
+	/**
+	 * A declared group_key resolves to the current-locale label of the group it was declared
+	 * alongside, not any other group.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForResolvesADeclaredKey(): void {
+		$this->registry->register(
+			[
+				'id'        => 'primitive.dimension.radius.sm',
+				'type'      => 'dimension',
+				'label'     => 'SM',
+				'group'     => 'Border Radius',
+				'group_key' => 'border-radius',
+			]
+		);
+
+		$this->assertSame( 'Border Radius', $this->registry->group_label_for( 'border-radius' ) );
+	}
+
+	/**
+	 * A key no declaration carries resolves to null rather than a fatal, so a caller can fail soft.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForReturnsNullForAnUnknownKey(): void {
+		$this->assertNull( $this->registry->group_label_for( 'not-declared' ) );
+	}
+
+	/**
+	 * An empty key is never a valid lookup — it must not accidentally match an ungrouped token,
+	 * which also carries an empty group_key by default.
+	 *
+	 * @return void
+	 */
+	public function testGroupLabelForReturnsNullForAnEmptyKey(): void {
+		$this->register_button_bg();
+
+		$this->assertNull( $this->registry->group_label_for( '' ) );
+	}
 }
