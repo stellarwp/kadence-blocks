@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -191,7 +192,8 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class ),
-			$this->container->get( Token_Label_Index::class )
+			$this->container->get( Token_Label_Index::class ),
+			$this->container->get( Token_Order_Index::class )
 		);
 
 		$localizer = new Localizer(

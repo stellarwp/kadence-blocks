@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -25,9 +26,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * than a fatal, so the caller still gets structure. The fail-closed case (registry deactivated) is
  * handled inside the builder.
  *
- * The per-token label-override read also lives here rather than in either emitter: it is applied
- * inside Builder::build(), so both {@see Localizer} and {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller}
- * get the overridden labels automatically instead of one of them silently missing them.
+ * The per-token label-override and per-group sort-order reads also live here rather than in either
+ * emitter: they are applied inside Builder::build(), so both {@see Localizer} and
+ * {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller} get the overridden labels
+ * and stored order automatically instead of one of them silently missing them.
  *
  * @since TBD
  */
@@ -88,6 +90,15 @@ final class Feed_Assembler {
 	private Token_Label_Index $label_index;
 
 	/**
+	 * Reads the tokenOrder map out of the stored document.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Order_Index
+	 */
+	private Token_Order_Index $order_index;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Token_Resolver    $resolver        The token resolver.
@@ -96,6 +107,7 @@ final class Feed_Assembler {
 	 * @param Builder           $builder         The pure payload assembler.
 	 * @param Responsive_Feed   $responsive_feed The responsive / clamp shape extractor.
 	 * @param Token_Label_Index $label_index     Reads the tokenLabels override map.
+	 * @param Token_Order_Index $order_index     Reads the tokenOrder map.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
@@ -103,7 +115,8 @@ final class Feed_Assembler {
 		Presets $preset_feed,
 		Builder $builder,
 		Responsive_Feed $responsive_feed,
-		Token_Label_Index $label_index
+		Token_Label_Index $label_index,
+		Token_Order_Index $order_index
 	) {
 		$this->resolver        = $resolver;
 		$this->store           = $store;
@@ -111,6 +124,7 @@ final class Feed_Assembler {
 		$this->builder         = $builder;
 		$this->responsive_feed = $responsive_feed;
 		$this->label_index     = $label_index;
+		$this->order_index     = $order_index;
 	}
 
 	/**
@@ -138,6 +152,8 @@ final class Feed_Assembler {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
+		$document = $this->read_document( $slug );
+
 		return $this->builder->build(
 			$values,
 			$resolved,
@@ -147,7 +163,8 @@ final class Feed_Assembler {
 			$slug,
 			$this->title( $slug ),
 			$responsive,
-			$this->label_index->all( $this->read_document( $slug ) )
+			$this->label_index->all( $document ),
+			$this->order_index->all( $document )
 		);
 	}
 

@@ -9,6 +9,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
@@ -179,7 +181,8 @@ final class Feed_AssemblerTest extends TestCase {
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class ),
-			$this->container->get( Token_Label_Index::class )
+			$this->container->get( Token_Label_Index::class ),
+			$this->container->get( Token_Order_Index::class )
 		);
 
 		$feed = $assembler->for_slug( Token_Store::default_slug() );
@@ -231,5 +234,44 @@ final class Feed_AssemblerTest extends TestCase {
 		$this->assertNotNull( $found, 'The overridden token must appear in the assembled schema.' );
 		$this->assertSame( 'Cozy Button', $found['label'] );
 		$this->assertTrue( $found['labelOverridden'] );
+	}
+
+	/**
+	 * A stored tokenOrder entry surfaces in for_slug()'s assembled schema sequence — the wiring
+	 * that hands the decoded order map into Builder::build(), not the pure merge itself (covered
+	 * in BuilderTest).
+	 *
+	 * @return void
+	 */
+	public function testForSlugAppliesStoredTokenOrder(): void {
+		$schema = $this->container->get( Token_Registry::class )->to_ui_schema();
+		$groups = array_keys( $schema['groups'] );
+
+		$this->assertNotEmpty( $groups, 'The registry fixture must declare at least one group to reorder.' );
+
+		$group = $groups[0];
+		$ids   = array_column( $schema['groups'][ $group ], 'id' );
+
+		$this->assertGreaterThan( 1, count( $ids ), 'The group must carry at least two tokens to observe a permutation.' );
+
+		$reversed = array_reverse( $ids );
+
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [
+							$group => $reversed,
+						],
+					],
+				],
+			]
+		);
+
+		$this->container->get( Token_Store::class )->save_document( $doc );
+
+		$feed = $this->assembler->for_slug( Token_Store::default_slug() );
+
+		$this->assertSame( $reversed, array_column( $feed['schema']['groups'][ $group ], 'id' ) );
 	}
 }
