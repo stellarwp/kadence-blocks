@@ -65,6 +65,26 @@ $radius_tokens = array_map(
 	$radius_slugs
 );
 
+// The border-width scale steps are primitives the Style Library's Border Width screen lists and
+// edits directly (semantic.border-width.default already carries the projection that delivers the
+// "sm" step into the image block, so the scale declares none of its own). group_key mirrors the
+// radius scale's mechanism above: it is the stable machine id "+ Add Border Width" mints custom
+// tokens into, resolved back to the group label at read time by Token_Registry::group_label_for().
+$border_width_slugs = [ 'sm', 'md', 'lg' ];
+
+$border_width_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.dimension.border-width.' . $slug,
+			'type'      => 'dimension',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Border Width', 'kadence-blocks' ),
+			'group_key' => 'border-width',
+		];
+	},
+	$border_width_slugs
+);
+
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
 // (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
@@ -328,7 +348,8 @@ return [
 		$spacing_tokens,
 		$gap_tokens,
 		$font_size_primitive_tokens,
-		$radius_tokens
+		$radius_tokens,
+		$border_width_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
