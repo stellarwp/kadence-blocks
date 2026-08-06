@@ -193,11 +193,20 @@ final class Documents_Controller extends Controller {
 	/**
 	 * The group path segment for the order sub-route.
 	 *
+	 * Unlike the token dot-path routes, this segment carries a human-readable, `__()`-translated
+	 * UI-schema group label (e.g. "Font Size"), not a slug — so it cannot be restricted to
+	 * `\w`/`-`. WordPress decodes the request path before matching route regexes (see
+	 * `WP::parse_request()`), so by match time the segment is the literal, fully-decoded label:
+	 * spaces, punctuation, and non-ASCII characters all appear as themselves, not percent-escapes.
+	 * The only character that must stay excluded is the path separator, since the group is a
+	 * single URL path segment; anything else is accepted here and validated against the real
+	 * declared groups downstream in `unknown_group()`.
+	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	private const GROUP_ROUTE = '(?P<' . self::GROUP_PARAM . '>[\w-]+)';
+	private const GROUP_ROUTE = '(?P<' . self::GROUP_PARAM . '>[^/]+)';
 
 	/**
 	 * The request parameter that carries the ordered list of token ids on an order write.
@@ -2027,7 +2036,9 @@ final class Documents_Controller extends Controller {
 					'description' => __( 'The UI-schema group name whose token order is being set.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'required'    => true,
-					'pattern'     => '^[\w-]+$',
+					// Matches self::GROUP_ROUTE: a translated group label, not a slug — only the
+					// path separator is excluded. See the GROUP_ROUTE docblock for why.
+					'pattern'     => '^[^/]+$',
 				],
 				self::VERSION_PARAM => [
 					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
