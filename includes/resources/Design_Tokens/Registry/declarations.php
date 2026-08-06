@@ -44,6 +44,27 @@ $gap_tokens = array_map(
 	$gap_slugs
 );
 
+// The border-radius scale steps are primitives the Style Library's Border Radius screen lists and
+// edits directly (semantic.radius.* already carries the projections that deliver these into blocks,
+// so the scale declares none of its own). group_key is the stable machine id "+ Add Border Radius"
+// mints custom tokens into — Token_Registry::group_label_for() resolves it back to the group label
+// below at read time, so a custom radius token's group survives a site language change instead of
+// drifting into its own bucket (see User_Primitive_Registrar::register_entry()).
+$radius_slugs = [ 'none', 'sm', 'md', 'lg', 'full' ];
+
+$radius_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.dimension.radius.' . $slug,
+			'type'      => 'dimension',
+			'label'     => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
+			'group'     => __( 'Border Radius', 'kadence-blocks' ),
+			'group_key' => 'border-radius',
+		];
+	},
+	$radius_slugs
+);
+
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
 // (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
@@ -306,7 +327,8 @@ return [
 		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens,
-		$font_size_primitive_tokens
+		$font_size_primitive_tokens,
+		$radius_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
