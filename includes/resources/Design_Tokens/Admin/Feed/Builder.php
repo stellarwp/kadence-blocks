@@ -67,7 +67,7 @@ final class Builder {
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 * @param array<string, string>                                 $labels     id => display-label override for this library.
-	 * @param array<string, list<string>>                           $order      group => ordered token ids for this library.
+	 * @param array<int, string>                                    $order      The flat ordered token id list for this library.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
@@ -121,39 +121,46 @@ final class Builder {
 	}
 
 	/**
-	 * Permute each schema group by its stored order. The stored order is partial and advisory:
-	 * ordered ids that exist in the group come first, in stored sequence; every remaining row
-	 * follows in declaration order — unmentioned ids append rather than sort last so a token
-	 * added after the order was saved (a later release, a newly created primitive) is never
-	 * silently pushed out of view. The result of every branch is the same row set the registry
-	 * emitted — a reorder can never hide a token — and a group with no stored order is returned
-	 * untouched (declaration order). Removing the stored order therefore restores declaration
+	 * Permute every schema group by the stored flat order. For each group independently: rows
+	 * whose id appears in the flat list come first, sorted by their position in that list; every
+	 * remaining row follows in declaration order — unmentioned ids append rather than sort last so
+	 * a token added after the order was saved (a later release, a newly created primitive) is
+	 * never silently pushed out of view. An id belonging to a different group simply never matches
+	 * one of this group's rows, so cross-group entries in the flat list are ignored naturally —
+	 * no explicit filtering by group is needed. The result of every branch is the same row set the
+	 * registry emitted — a reorder can never hide a token — and an empty stored order returns the
+	 * schema untouched (declaration order), so removing the stored order restores declaration
 	 * order with no other code path involved.
 	 *
 	 * @since TBD
 	 *
 	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The (label-overlaid) UI schema.
-	 * @param array<string, list<string>>                                    $order  group => ordered token ids.
+	 * @param array<int, string>                                             $order  The flat ordered token id list.
 	 *
 	 * @return array{groups: array<string, array<int, array<string, mixed>>>} The schema with groups permuted.
 	 */
 	private function apply_group_order( array $schema, array $order ): array {
-		foreach ( $order as $group => $ordered_ids ) {
-			if ( ! isset( $schema['groups'][ $group ] ) || $ordered_ids === [] ) {
-				continue;
-			}
+		if ( $order === [] ) {
+			return $schema;
+		}
 
-			$rows_by_id = array_column( $schema['groups'][ $group ], null, 'id' );
-			$sorted     = [];
+		$positions = array_flip( $order );
 
-			foreach ( $ordered_ids as $id ) {
-				if ( isset( $rows_by_id[ $id ] ) ) {
-					$sorted[ $id ] = $rows_by_id[ $id ]; // Stale ids fall through, ignored.
+		foreach ( $schema['groups'] as $group => $rows ) {
+			$ordered   = [];
+			$unordered = [];
+
+			foreach ( $rows as $row ) {
+				if ( isset( $positions[ $row['id'] ] ) ) {
+					$ordered[] = $row;
+				} else {
+					$unordered[] = $row; // Not in the stored order — declaration order, appended after.
 				}
 			}
 
-			// Everything the stored order did not mention, in declaration order.
-			$schema['groups'][ $group ] = array_values( $sorted + $rows_by_id );
+			usort( $ordered, fn( array $a, array $b ): int => $positions[ $a['id'] ] <=> $positions[ $b['id'] ] );
+
+			$schema['groups'][ $group ] = array_merge( $ordered, $unordered );
 		}
 
 		return $schema;

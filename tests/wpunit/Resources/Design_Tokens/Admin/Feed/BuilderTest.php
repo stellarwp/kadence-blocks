@@ -289,7 +289,7 @@ final class BuilderTest extends TestCase {
 			[],
 			'',
 			[],
-			[ 'Brand' => [ 'semantic.color.button-text', 'semantic.color.button-bg' ] ]
+			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
 		);
 
 		$this->assertSame(
@@ -315,7 +315,7 @@ final class BuilderTest extends TestCase {
 			[],
 			'',
 			[],
-			[ 'Brand' => [ 'semantic.color.does-not-exist', 'semantic.color.button-bg' ] ]
+			[ 'semantic.color.does-not-exist', 'semantic.color.button-bg' ]
 		);
 
 		$this->assertSame(
@@ -340,7 +340,7 @@ final class BuilderTest extends TestCase {
 			[],
 			'',
 			[],
-			[ 'Spacing' => [ 'spacing.sm' ] ]
+			[ 'spacing.sm' ]
 		);
 
 		$this->assertSame(
@@ -350,13 +350,13 @@ final class BuilderTest extends TestCase {
 	}
 
 	/**
-	 * An empty order map is the identity transform — every group's row set and sequence is
+	 * An empty order list is the identity transform — every group's row set and sequence is
 	 * unchanged, exactly the declaration order the registry emits. This is the property the
 	 * Builder payload snapshot pins: a snapshot regenerated for this ticket would hide a bug here.
 	 *
 	 * @return void
 	 */
-	public function testAnEmptyOrderMapIsTheIdentityTransform(): void {
+	public function testAnEmptyOrderListIsTheIdentityTransform(): void {
 		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', [], '', [], [] );
 
 		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
@@ -368,7 +368,7 @@ final class BuilderTest extends TestCase {
 	 *
 	 * @dataProvider orderFixtureProvider
 	 *
-	 * @param array<string, list<string>> $order The stored order to apply.
+	 * @param list<string> $order The stored flat order to apply.
 	 *
 	 * @return void
 	 */
@@ -393,25 +393,25 @@ final class BuilderTest extends TestCase {
 
 	/**
 	 * Order fixtures that must all preserve the full row set: a partial order, an order full of
-	 * stale ids, a duplicated id, and an empty group order.
+	 * stale ids, a duplicated id, and an empty order.
 	 *
 	 * @return Generator
 	 */
 	public function orderFixtureProvider(): Generator {
 		yield 'partial order' => [
-			'order' => [ 'Brand' => [ 'semantic.color.button-text' ] ],
+			'order' => [ 'semantic.color.button-text' ],
 		];
 
 		yield 'order full of stale ids' => [
-			'order' => [ 'Brand' => [ 'semantic.color.does-not-exist', 'semantic.color.also-missing' ] ],
+			'order' => [ 'semantic.color.does-not-exist', 'semantic.color.also-missing' ],
 		];
 
 		yield 'duplicated id' => [
-			'order' => [ 'Brand' => [ 'semantic.color.button-bg', 'semantic.color.button-bg' ] ],
+			'order' => [ 'semantic.color.button-bg', 'semantic.color.button-bg' ],
 		];
 
-		yield 'empty group order' => [
-			'order' => [ 'Brand' => [] ],
+		yield 'empty order' => [
+			'order' => [],
 		];
 	}
 
@@ -442,7 +442,7 @@ final class BuilderTest extends TestCase {
 			[],
 			'',
 			[ 'semantic.color.button-bg' => 'Cozy' ],
-			[ 'Brand' => [ 'semantic.color.button-text', 'semantic.color.button-bg' ] ]
+			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
 		);
 
 		$rows = $feed['schema']['groups']['Brand'];

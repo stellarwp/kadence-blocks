@@ -220,7 +220,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 		);
 
 		$stored = json_decode( $this->store->get_document( $slug ), true );
-		$this->assertSame( [ $this->group_ids[0] ], $this->order_index->for_group( $stored, $group ) );
+		$this->assertSame( [ $this->group_ids[0] ], $this->order_index->all( $stored ) );
 
 		// A follow-up PUT that prunes to nothing removes the stored entry entirely.
 		$this->controller->set_order(
@@ -228,7 +228,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 		);
 
 		$stored = json_decode( $this->store->get_document( $slug ), true );
-		$this->assertArrayNotHasKey( $group, $this->order_index->all( $stored ) );
+		$this->assertSame( [], $this->order_index->all( $stored ) );
 	}
 
 	/**
@@ -378,7 +378,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 		$this->assertSame( WP_Http::OK, $response->get_status() );
 
 		$stored = json_decode( $this->store->get_document( $slug ), true );
-		$this->assertSame( array_reverse( $this->group_ids ), $this->order_index->for_group( $stored, $group ) );
+		$this->assertSame( array_reverse( $this->group_ids ), $this->order_index->all( $stored ) );
 		$this->assertSame( 'not-a-color', $stored['primitive']['color']['x']['$value'], 'The pre-existing invalid remainder must be left untouched.' );
 	}
 
@@ -490,7 +490,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 
 		$document = $response->get_data()['document'];
-		$order    = $this->order_index->for_group( $document, $group );
+		$order    = $this->order_index->all( $document );
 		$schema   = $this->registry->to_ui_schema()['groups'][ $group ];
 
 		$rows_by_id = array_column( $schema, null, 'id' );

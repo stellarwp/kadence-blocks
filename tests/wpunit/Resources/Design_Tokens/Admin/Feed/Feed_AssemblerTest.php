@@ -238,8 +238,8 @@ final class Feed_AssemblerTest extends TestCase {
 
 	/**
 	 * A stored tokenOrder entry surfaces in for_slug()'s assembled schema sequence — the wiring
-	 * that hands the decoded order map into Builder::build(), not the pure merge itself (covered
-	 * in BuilderTest).
+	 * that hands the decoded flat order list into Builder::build(), not the pure merge itself
+	 * (covered in BuilderTest).
 	 *
 	 * @return void
 	 */
@@ -260,9 +260,7 @@ final class Feed_AssemblerTest extends TestCase {
 			[
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'tokenOrder' => [
-							$group => $reversed,
-						],
+						'tokenOrder' => $reversed,
 					],
 				],
 			]
