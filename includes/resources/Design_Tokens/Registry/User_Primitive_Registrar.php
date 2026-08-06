@@ -114,10 +114,10 @@ final class User_Primitive_Registrar {
 	/**
 	 * @since TBD
 	 *
-	 * @param string                      $slug     The token library slug the entry was read from.
-	 * @param array<string, mixed>        $document
-	 * @param string                      $id
-	 * @param array{label?: string}|mixed $entry
+	 * @param string                                      $slug     The token library slug the entry was read from.
+	 * @param array<string, mixed>                        $document
+	 * @param string                                      $id
+	 * @param array{label?: string, group?: string}|mixed $entry
 	 *
 	 * @return void
 	 */
@@ -152,8 +152,24 @@ final class User_Primitive_Registrar {
 
 		$label = is_string( $entry['label'] ?? null ) ? $entry['label'] : '';
 
+		$group_key = is_string( $entry['group'] ?? null ) ? $entry['group'] : '';
+		$group     = '';
+
+		if ( $group_key !== '' ) {
+			$resolved = $this->registry->group_label_for( $group_key );
+
+			if ( $resolved === null ) {
+				// The declaration that owned this key is gone (a downgrade, a removed group) — fail soft to
+				// ungrouped rather than a fatal; the token still surfaces, just without a home screen.
+				$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": group key "%s" no longer resolves — registering ungrouped.', $id, $slug, $group_key ) );
+				$group_key = '';
+			} else {
+				$group = $resolved;
+			}
+		}
+
 		try {
-			$this->registry->register_user_primitive( $id, $type, $label );
+			$this->registry->register_user_primitive( $id, $type, $label, $group, $group_key );
 		} catch ( \RuntimeException $e ) {
 			$this->logger->warning( sprintf( 'User primitive "%s" in library "%s": %s', $id, $slug, $e->getMessage() ) );
 		} catch ( \InvalidArgumentException $e ) { // @phpstan-ignore-line -- Token_Definition::from_user_primitive() throws this; Token_Registry::register_user_primitive() does not re-declare it.
