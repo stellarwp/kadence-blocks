@@ -158,4 +158,23 @@ final class ExtensionsTest extends TestCase {
 			Extensions::get_sections()
 		);
 	}
+
+	/**
+	 * The token-order section accessor returns the expected section name.
+	 *
+	 * @return void
+	 */
+	public function testItExposesTheTokenOrderSectionName(): void {
+		$this->assertSame( 'tokenOrder', Extensions::get_section_token_order() );
+	}
+
+	/**
+	 * The token-order section is deliberately NOT among get_sections(): it is a group-keyed
+	 * id-list map, not a preset-shaped `tokens` map, so the tokens-map walk must not descend it.
+	 *
+	 * @return void
+	 */
+	public function testTheTokenOrderSectionIsNotAmongTheTokensMapSections(): void {
+		$this->assertNotContains( Extensions::get_section_token_order(), Extensions::get_sections() );
+	}
 }
