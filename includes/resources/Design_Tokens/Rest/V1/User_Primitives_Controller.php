@@ -327,6 +327,30 @@ final class User_Primitives_Controller extends Controller {
 		$value = $request->get_param( '$value' );
 		$label = $this->sanitize_label( Cast::to_string( $request->get_param( 'label' ) ), $slug_input );
 
+		$group_key = Cast::to_string( $request->get_param( 'group' ) );
+
+		if ( $group_key !== '' && ! Reserved_Namespace::is_valid_slug( $group_key ) ) {
+			return new WP_Error(
+				'rest_kb_invalid_group',
+				__( 'The group must be a lowercase kebab-case key.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::BAD_REQUEST,
+					'group'  => $group_key,
+				]
+			);
+		}
+
+		if ( $group_key !== '' && $this->registry->group_label_for( $group_key ) === null ) {
+			return new WP_Error(
+				'rest_kb_unknown_group',
+				__( 'That group is not declared for user-created primitives.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::UNPROCESSABLE_ENTITY,
+					'group'  => $group_key,
+				]
+			);
+		}
+
 		if ( ! Reserved_Namespace::is_supported_type( $type ) ) {
 			return new WP_Error(
 				'rest_design_tokens_type_not_supported',
@@ -381,7 +405,7 @@ final class User_Primitives_Controller extends Controller {
 			'$value' => $value,
 		];
 		$candidate = $this->mutator->set( $stored, $canonical, $leaf );
-		$candidate = $this->index->add( $candidate, $canonical, $label );
+		$candidate = $this->index->add( $candidate, $canonical, $label, $group_key );
 
 		return $this->pipeline->validate_and_save( $candidate, $slug, '', $version, WP_Http::CREATED );
 	}
@@ -840,6 +864,12 @@ final class User_Primitives_Controller extends Controller {
 			],
 			'label'          => [
 				'description' => __( 'Optional human-readable label.', 'kadence-blocks' ),
+				'type'        => 'string',
+				'required'    => false,
+				'default'     => '',
+			],
+			'group'          => [
+				'description' => __( 'Optional stable machine key for the UI group this primitive should join.', 'kadence-blocks' ),
 				'type'        => 'string',
 				'required'    => false,
 				'default'     => '',
