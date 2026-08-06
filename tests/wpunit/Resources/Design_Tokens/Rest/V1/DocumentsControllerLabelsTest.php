@@ -286,6 +286,56 @@ final class DocumentsControllerLabelsTest extends TestCase {
 	}
 
 	/**
+	 * Renaming a grouped custom token's display label through the labels endpoint must not reset
+	 * the group it was created into — the label endpoint's request carries no group of its own, so
+	 * User_Primitive_Index::add() must preserve the entry's existing one rather than defaulting it
+	 * away. Proven end to end: the stored entry still carries the group, and after a registrar sync
+	 * the token still resolves into its declared feed group.
+	 *
+	 * @return void
+	 */
+	public function testRenamingAGroupedCustomTokenThroughLabelsEndpointPreservesItsGroup(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.radius-md';
+
+		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'border-radius' );
+
+		$response = $this->controller->set_label( $this->label_request( 'PUT', $slug, $id, $this->store->get_version( $slug ), 'Custom Radius' ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$stored = json_decode( $this->store->get_document( $slug ), true );
+		$this->assertSame( 'border-radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
+
+		$this->sync_registrar();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$this->assertSame( 'Border Radius', $registry->get( $id )->group );
+	}
+
+	/**
+	 * Clearing a grouped custom token's label override (the DELETE-equivalent PUT-empty path)
+	 * also preserves the stored group — the clear path routes through the same add() call as a
+	 * rename.
+	 *
+	 * @return void
+	 */
+	public function testClearingAGroupedCustomTokensLabelPreservesItsGroup(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.radius-md';
+
+		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'border-radius' );
+
+		$response = $this->controller->delete_label( $this->label_request( 'DELETE', $slug, $id, $this->store->get_version( $slug ) ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+
+		$stored = json_decode( $this->store->get_document( $slug ), true );
+		$this->assertSame( 'border-radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
+	}
+
+	/**
 	 * The narrowed write path lets a label rename succeed even in a library whose stored document
 	 * currently fails full DTCG validation, and leaves the invalid remainder untouched.
 	 *
@@ -349,21 +399,30 @@ final class DocumentsControllerLabelsTest extends TestCase {
 	 * @param string $slug  The token library slug.
 	 * @param string $id    The user-created primitive's canonical dot-path id.
 	 * @param string $label The label to seed.
+	 * @param string $group Optional stable group key to seed alongside the label.
 	 *
 	 * @return void
 	 */
-	private function seed_user_primitive( string $slug, string $id, string $label ): void {
+	private function seed_user_primitive( string $slug, string $id, string $label, string $group = '' ): void {
 		$segments = explode( '.', $id );
 		$leaf     = array_pop( $segments );
+		$type     = $segments[1];
+		$value    = $type === 'dimension' ? '0.75rem' : '#1a56db';
+
+		$entry = [ 'label' => $label ];
+
+		if ( $group !== '' ) {
+			$entry['group'] = $group;
+		}
 
 		$document = (string) wp_json_encode(
 			[
 				'primitive'   => [
-					'color' => [
+					$type => [
 						'custom' => [
 							$leaf => [
-								'$type'  => 'color',
-								'$value' => '#1a56db',
+								'$type'  => $type,
+								'$value' => $value,
 							],
 						],
 					],
@@ -371,7 +430,7 @@ final class DocumentsControllerLabelsTest extends TestCase {
 				'$extensions' => [
 					'com.kadence.designTokens' => [
 						'userPrimitives' => [
-							$id => [ 'label' => $label ],
+							$id => $entry,
 						],
 					],
 				],

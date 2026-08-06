@@ -440,6 +440,62 @@ final class DocumentsControllerOrderTest extends TestCase {
 	}
 
 	/**
+	 * A user-created token minted into a declared group (the border-radius scale, decision 3)
+	 * is addressable through that group's order route exactly like its baseline siblings — the
+	 * grouping is not merely cosmetic, it participates in persisted sort order.
+	 *
+	 * @return void
+	 */
+	public function testOrderIncludesAGroupedCustomToken(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.radius-md';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'radius-md' => [
+								'$type'  => 'dimension',
+								'$value' => '0.75rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'Radius MD',
+								'group' => 'border-radius',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		$schema = $this->registry->to_ui_schema();
+		$this->assertArrayHasKey( 'Border Radius', $schema['groups'] );
+
+		$group_ids = array_column( $schema['groups']['Border Radius'], 'id' );
+		$this->assertContains( $id, $group_ids, 'The grouped custom token must appear in the declared feed group.' );
+
+		$response = $this->controller->set_order(
+			$this->order_request( 'PUT', $slug, 'Border Radius', $this->store->get_version( $slug ), [ $id ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( $id, $this->assembled_group_ids( $slug, 'Border Radius' )[0] );
+	}
+
+	/**
 	 * Both routes enforce the sibling document routes' capability filter: an unauthenticated
 	 * request and a subscriber are both refused.
 	 *
