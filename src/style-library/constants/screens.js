@@ -31,7 +31,6 @@ export const BASE_STYLES_SCREENS = [
 	// @todo SOFT-4077: replace the placeholder with the Typography screen.
 	{ id: 'typography', label: __('Typography', 'kadence-blocks') },
 	{ id: 'border-radius', label: __('Border Radius', 'kadence-blocks') },
-	// @todo SOFT-4079: replace the placeholder with the Border Width screen.
 	{ id: 'border-width', label: __('Border Width', 'kadence-blocks') },
 	// @todo SOFT-4080: replace the placeholder with the Spacing screen.
 	{ id: 'spacing', label: __('Spacing', 'kadence-blocks') },
