@@ -31,7 +31,7 @@ import { findSwatch, swatchInitialValues } from '../../helpers/palettes';
 const SWATCH_SETTINGS_SCHEMA = {
 	fields: [
 		{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') },
-		{ type: 'color', path: 'value', label: __('Color', 'kadence-blocks'), colorOnly: true },
+		{ type: 'color', path: 'value', colorOnly: true },
 	],
 };
 
