@@ -40,6 +40,9 @@ final class Token_Order_Index {
 				continue;
 			}
 
+			// The `$ids === []` check is required, not redundant: `range( 0, -1 )` returns
+			// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty order list
+			// would be misclassified as malformed rather than as a valid empty list.
 			$is_list = $ids === [] || array_keys( $ids ) === range( 0, count( $ids ) - 1 );
 
 			if ( ! $is_list ) {
