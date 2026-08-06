@@ -66,10 +66,11 @@ final class Builder {
 	 *                                                                          request and visibly correcting itself once that arrives.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
+	 * @param array<string, string>                                 $labels     id => display-label override for this library.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [], array $labels = [] ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -80,12 +81,39 @@ final class Builder {
 			// Carried alongside the slug so the library selector can name the active library on first
 			// paint, before its REST list has loaded and any row is available to look the title up in.
 			'title'      => $title,
-			'schema'     => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
+			'schema'     => $active ? $this->apply_label_overrides( $this->registry->to_ui_schema(), $labels ) : [ 'groups' => [] ],
 			'values'     => $active ? $values : [],
 			'presets'    => $active ? $presets : [],
 			'presetNav'  => $active ? $this->preset_nav->all() : [],
 			'responsive' => $active ? $responsive : [],
 			'rest'       => $rest,
 		];
+	}
+
+	/**
+	 * Overlay per-library display-label overrides onto the registry's UI schema. Every token row
+	 * gains a `labelOverridden` flag (stable shape whether or not any override exists) so the
+	 * admin UI can offer a reset affordance and distinguish a custom name from a declared one; an
+	 * override for an id the schema does not contain is ignored (stale data, pruned by the write
+	 * surface on its next save of that id).
+	 *
+	 * @since TBD
+	 *
+	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The registry UI schema.
+	 * @param array<string, string>                                          $labels id => override label.
+	 *
+	 * @return array{groups: array<string, array<int, array<string, mixed>>>} The schema with effective labels applied.
+	 */
+	private function apply_label_overrides( array $schema, array $labels ): array {
+		foreach ( $schema['groups'] as $group => $rows ) {
+			foreach ( $rows as $i => $row ) {
+				$override = $labels[ $row['id'] ] ?? null;
+
+				$schema['groups'][ $group ][ $i ]['label']           = $override ?? $row['label'];
+				$schema['groups'][ $group ][ $i ]['labelOverridden'] = $override !== null;
+			}
+		}
+
+		return $schema;
 	}
 }

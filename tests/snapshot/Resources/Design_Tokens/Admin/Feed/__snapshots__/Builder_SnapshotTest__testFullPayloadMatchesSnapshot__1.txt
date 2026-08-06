@@ -15,7 +15,8 @@
                     "projections": {
                         "kadence_slot": "palette1"
                     },
-                    "userCreated": false
+                    "userCreated": false,
+                    "labelOverridden": false
                 },
                 {
                     "id": "semantic.color.button-text",
@@ -23,7 +24,8 @@
                     "label": "Button Text",
                     "cssVar": "--kb-token--semantic--color--button-text",
                     "projections": [],
-                    "userCreated": false
+                    "userCreated": false,
+                    "labelOverridden": false
                 }
             ],
             "Layout": [
@@ -33,7 +35,8 @@
                     "label": "Medium",
                     "cssVar": "--kb-token--semantic--spacing--md",
                     "projections": [],
-                    "userCreated": false
+                    "userCreated": false,
+                    "labelOverridden": false
                 }
             ]
         }
