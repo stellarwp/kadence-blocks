@@ -22,6 +22,7 @@ import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
 import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
+import { SpacingScreen } from '../components/pages/SpacingScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -39,6 +40,7 @@ const SCREEN_COMPONENTS = {
 	'border-radius': BorderRadiusScreen,
 	'color-palette': ColorPaletteScreen,
 	'border-width': BorderWidthScreen,
+	spacing: SpacingScreen,
 };
 
 /**
