@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Covers the tokenOrder per-group sort-order map read/write operations of Token_Order_Index.
+ * Covers the tokenOrder flat ordered-id-list read/write operations of Token_Order_Index.
  *
  * @since TBD
  */
@@ -39,7 +39,7 @@ final class Token_Order_IndexTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * An empty document has no stored group orders.
+	 * An empty document has no stored order.
 	 *
 	 * @return void
 	 */
@@ -48,7 +48,7 @@ final class Token_Order_IndexTest extends TestCase {
 	}
 
 	/**
-	 * A document missing the $extensions key has no stored group orders.
+	 * A document missing the $extensions key has no stored order.
 	 *
 	 * @return void
 	 */
@@ -64,23 +64,23 @@ final class Token_Order_IndexTest extends TestCase {
 	 * @return void
 	 */
 	public function testAllReturnsStoredEntries(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg', 'semantic.color.button-text' ] );
+		$doc = $this->doc_with_order( [ 'semantic.color.button-bg', 'semantic.color.button-text' ] );
 
 		$this->assertSame(
-			[ 'Brand' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ] ],
+			[ 'semantic.color.button-bg', 'semantic.color.button-text' ],
 			$this->index->all( $doc )
 		);
 	}
 
 	/**
-	 * A malformed group entry — a non-list ("map-shaped") value, a non-string group key, or
-	 * non-string ids inside the list — is dropped (or filtered) on read rather than surfaced, so a
-	 * hand-corrupted section degrades to declaration order instead of a type error downstream.
+	 * A malformed tokenOrder section — a non-list ("map-shaped") value, or non-string/empty ids
+	 * inside the list — is dropped (or filtered) on read rather than surfaced, so a hand-corrupted
+	 * section degrades to declaration order instead of a type error downstream.
 	 *
 	 * @dataProvider malformedSectionProvider
 	 *
 	 * @param array<int|string, mixed> $section  The raw decoded tokenOrder section.
-	 * @param array<string, list<string>> $expected The expected result of all() against that section.
+	 * @param list<string>             $expected The expected result of all() against that section.
 	 *
 	 * @return void
 	 */
@@ -102,60 +102,20 @@ final class Token_Order_IndexTest extends TestCase {
 	 * @return Generator
 	 */
 	public function malformedSectionProvider(): Generator {
-		yield 'integer-keyed group' => [
-			'section'  => [ 0 => [ 'semantic.color.button-bg' ] ],
-			'expected' => [],
-		];
-
-		yield 'map-shaped (non-sequential) group value' => [
-			'section'  => [ 'Brand' => [ 'a' => 'semantic.color.button-bg' ] ],
+		yield 'map-shaped (non-sequential) section value' => [
+			'section'  => [ 'a' => 'semantic.color.button-bg' ],
 			'expected' => [],
 		];
 
 		yield 'non-string id inside an otherwise valid list' => [
-			'section'  => [ 'Brand' => [ 'semantic.color.button-bg', 42, 'semantic.color.button-text' ] ],
-			'expected' => [ 'Brand' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ] ],
+			'section'  => [ 'semantic.color.button-bg', 42, 'semantic.color.button-text' ],
+			'expected' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
 		];
 
-		yield 'non-array group value' => [
-			'section'  => [ 'Brand' => 'not-a-list' ],
-			'expected' => [],
+		yield 'empty-string id inside an otherwise valid list' => [
+			'section'  => [ 'semantic.color.button-bg', '' ],
+			'expected' => [ 'semantic.color.button-bg' ],
 		];
-	}
-
-	// -------------------------------------------------------------------------
-	// for_group()
-	// -------------------------------------------------------------------------
-
-	/**
-	 * for_group() returns [] for a group with no stored order.
-	 *
-	 * @return void
-	 */
-	public function testForGroupReturnsEmptyArrayWhenAbsent(): void {
-		$this->assertSame( [], $this->index->for_group( [], 'Brand' ) );
-	}
-
-	/**
-	 * for_group() returns [] for a document with no tokenOrder section.
-	 *
-	 * @return void
-	 */
-	public function testForGroupReturnsEmptyArrayForDocumentWithNoSection(): void {
-		$doc = [ 'primitive' => [ 'color' => [] ] ];
-
-		$this->assertSame( [], $this->index->for_group( $doc, 'Brand' ) );
-	}
-
-	/**
-	 * for_group() returns the stored order for the requested group.
-	 *
-	 * @return void
-	 */
-	public function testForGroupReturnsStoredOrder(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg' ] );
-
-		$this->assertSame( [ 'semantic.color.button-bg' ], $this->index->for_group( $doc, 'Brand' ) );
 	}
 
 	// -------------------------------------------------------------------------
@@ -168,22 +128,23 @@ final class Token_Order_IndexTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetGroupCreatesFullPathWhenMissing(): void {
-		$result = $this->index->set_group( [], 'Brand', [ 'semantic.color.button-bg' ] );
+		$result = $this->index->set_group( [], [ 'semantic.color.button-bg' ], [ 'semantic.color.button-bg' ] );
 
-		$this->assertSame( [ 'semantic.color.button-bg' ], $this->index->for_group( $result, 'Brand' ) );
+		$this->assertSame( [ 'semantic.color.button-bg' ], $this->index->all( $result ) );
 	}
 
 	/**
-	 * set_group() replaces a previously stored order for the same group wholesale.
+	 * set_group() replaces a previously stored order for the same group's ids wholesale.
 	 *
 	 * @return void
 	 */
 	public function testSetGroupReplacesExistingOrderWholesale(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg', 'semantic.color.button-text' ] );
+		$group_ids = [ 'semantic.color.button-bg', 'semantic.color.button-text' ];
+		$doc       = $this->doc_with_order( $group_ids );
 
-		$result = $this->index->set_group( $doc, 'Brand', [ 'semantic.color.button-text' ] );
+		$result = $this->index->set_group( $doc, $group_ids, [ 'semantic.color.button-text' ] );
 
-		$this->assertSame( [ 'semantic.color.button-text' ], $this->index->for_group( $result, 'Brand' ) );
+		$this->assertSame( [ 'semantic.color.button-text' ], $this->index->all( $result ) );
 	}
 
 	/**
@@ -194,28 +155,28 @@ final class Token_Order_IndexTest extends TestCase {
 	public function testSetGroupDeduplicatesKeepingFirstOccurrence(): void {
 		$result = $this->index->set_group(
 			[],
-			'Brand',
+			[ 'semantic.color.button-bg', 'semantic.color.button-text' ],
 			[ 'semantic.color.button-bg', 'semantic.color.button-text', 'semantic.color.button-bg' ]
 		);
 
 		$this->assertSame(
 			[ 'semantic.color.button-bg', 'semantic.color.button-text' ],
-			$this->index->for_group( $result, 'Brand' )
+			$this->index->all( $result )
 		);
 	}
 
 	/**
-	 * set_group() leaves a sibling group's stored order untouched.
+	 * set_group() leaves a sibling group's stored ids untouched, since only the target group's own
+	 * id set is removed from the flat list before the new sequence is appended.
 	 *
 	 * @return void
 	 */
 	public function testSetGroupPreservesSiblingGroups(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg' ] );
+		$doc = $this->doc_with_order( [ 'semantic.color.button-bg' ] );
 
-		$result = $this->index->set_group( $doc, 'Spacing', [ 'spacing.sm' ] );
+		$result = $this->index->set_group( $doc, [ 'spacing.sm' ], [ 'spacing.sm' ] );
 
-		$this->assertSame( [ 'semantic.color.button-bg' ], $this->index->for_group( $result, 'Brand' ) );
-		$this->assertSame( [ 'spacing.sm' ], $this->index->for_group( $result, 'Spacing' ) );
+		$this->assertSame( [ 'semantic.color.button-bg', 'spacing.sm' ], $this->index->all( $result ) );
 	}
 
 	/**
@@ -226,7 +187,7 @@ final class Token_Order_IndexTest extends TestCase {
 	public function testSetGroupDoesNotModifyItsInput(): void {
 		$doc = [];
 
-		$this->index->set_group( $doc, 'Brand', [ 'semantic.color.button-bg' ] );
+		$this->index->set_group( $doc, [ 'semantic.color.button-bg' ], [ 'semantic.color.button-bg' ] );
 
 		$this->assertSame( [], $doc );
 	}
@@ -237,29 +198,28 @@ final class Token_Order_IndexTest extends TestCase {
 
 	/**
 	 * remove_group() is a no-op (the same document is returned) when nothing is stored for the
-	 * group.
+	 * group's ids.
 	 *
 	 * @return void
 	 */
 	public function testRemoveGroupIsNoOpWhenAbsent(): void {
-		$result = $this->index->remove_group( [], 'Brand' );
+		$result = $this->index->remove_group( [], [ 'semantic.color.button-bg' ] );
 
 		$this->assertSame( [], $result );
 	}
 
 	/**
-	 * remove_group() deletes only the targeted group, leaving sibling groups intact.
+	 * remove_group() deletes only the targeted group's ids, leaving sibling groups intact.
 	 *
 	 * @return void
 	 */
 	public function testRemoveGroupDeletesTargetGroupOnly(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg' ] );
-		$doc = $this->index->set_group( $doc, 'Spacing', [ 'spacing.sm' ] );
+		$doc = $this->doc_with_order( [ 'semantic.color.button-bg' ] );
+		$doc = $this->index->set_group( $doc, [ 'spacing.sm' ], [ 'spacing.sm' ] );
 
-		$result = $this->index->remove_group( $doc, 'Brand' );
+		$result = $this->index->remove_group( $doc, [ 'semantic.color.button-bg' ] );
 
-		$this->assertSame( [], $this->index->for_group( $result, 'Brand' ) );
-		$this->assertSame( [ 'spacing.sm' ], $this->index->for_group( $result, 'Spacing' ) );
+		$this->assertSame( [ 'spacing.sm' ], $this->index->all( $result ) );
 	}
 
 	/**
@@ -268,7 +228,7 @@ final class Token_Order_IndexTest extends TestCase {
 	 * @return void
 	 */
 	public function testRemoveGroupLeavesTheRestOfTheDocumentUnchanged(): void {
-		$doc = $this->doc_with_entry( 'Brand', [ 'semantic.color.button-bg' ] );
+		$doc = $this->doc_with_order( [ 'semantic.color.button-bg' ] );
 
 		$doc['primitive'] = [
 			'color' => [
@@ -279,7 +239,7 @@ final class Token_Order_IndexTest extends TestCase {
 			],
 		];
 
-		$result = $this->index->remove_group( $doc, 'Brand' );
+		$result = $this->index->remove_group( $doc, [ 'semantic.color.button-bg' ] );
 
 		$this->assertSame( $doc['primitive'], $result['primitive'] );
 	}
@@ -289,20 +249,17 @@ final class Token_Order_IndexTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Build a decoded document carrying a single tokenOrder group entry.
+	 * Build a decoded document carrying a flat tokenOrder list.
 	 *
-	 * @param string       $group The group name.
-	 * @param array<string> $ids   The stored ordered id list.
+	 * @param list<string> $ids The stored ordered id list.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function doc_with_entry( string $group, array $ids ): array {
+	private function doc_with_order( array $ids ): array {
 		return [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
-					Extensions::get_section_token_order() => [
-						$group => $ids,
-					],
+					Extensions::get_section_token_order() => $ids,
 				],
 			],
 		];
