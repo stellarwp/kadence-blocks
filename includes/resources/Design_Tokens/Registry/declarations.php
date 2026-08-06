@@ -14,7 +14,9 @@
 // owner can retune each step. Usage-specific intent (semantic.spacing.section/.block/.inline) aliases the
 // scale and is where intent-based delivery points — mirroring how semantic.radius.media aliases the radius
 // scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto is
-// omitted: it resolves to "auto", not a length.
+// omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
+// it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
+// resolved back to the group label at read time by Token_Registry::group_label_for().
 $spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
@@ -25,6 +27,7 @@ $spacing_tokens = array_map(
 			'type'        => 'dimension',
 			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
+			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
 		];
 	},
