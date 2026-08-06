@@ -19,6 +19,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Literals;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Validates a decoded DTCG document against the v1 grammar: leaf shape, the $type enum, the alias
@@ -617,6 +618,18 @@ final class Dtcg_Validator {
 			);
 		}
 
+		// tokenLabels is a flat { token id => label } string map — id-keyed metadata, not
+		// preset-shaped, so the tokens-map walk (driven by get_sections(), which excludes it)
+		// never covers it. Without this branch it would pass through with no validation at all.
+		$labels_section = Extensions::get_section_token_labels();
+
+		if ( isset( $namespace[ $labels_section ] ) && is_array( $namespace[ $labels_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_token_labels( $namespace[ $labels_section ], $base . '.' . $labels_section )
+			);
+		}
+
 		return $errors;
 	}
 
@@ -671,6 +684,35 @@ final class Dtcg_Validator {
 						$errors[] = $error;
 					}
 				}
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a tokenLabels section: every entry must map a non-empty string key to a
+	 * non-empty string label. Whether the id names a registered token is enforced by the REST
+	 * write guard, not here — a label for a since-unregistered token is stale data, not a
+	 * grammar error, and read-side consumers already ignore it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $labels The decoded tokenLabels section.
+	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_token_labels( array $labels, string $prefix ): array {
+		$errors = [];
+
+		foreach ( $labels as $id => $label ) {
+			if ( ! is_string( $id ) || $id === '' || ! is_string( $label ) || $label === '' ) {
+				$errors[] = new Validation_Error(
+					$prefix . '.' . Cast::to_string( $id ),
+					Validation_Error::get_code_value_invalid(),
+					'A token label override must map a non-empty token id to a non-empty string label.'
+				);
 			}
 		}
 
