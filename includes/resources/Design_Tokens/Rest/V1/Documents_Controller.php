@@ -328,7 +328,7 @@ final class Documents_Controller extends Controller {
 	private Token_Label_Index $label_index;
 
 	/**
-	 * Reads and writes the tokenOrder per-group sort-order map.
+	 * Reads and writes the tokenOrder flat ordered id list.
 	 *
 	 * @since TBD
 	 *
@@ -368,7 +368,7 @@ final class Documents_Controller extends Controller {
 	 * @param Responsive_Feed                   $responsive_feed       Extracts the authored responsive / clamp shape per token.
 	 * @param Token_Registry                    $registry              The token registry, for the labels sub-route's unregistered-id 404.
 	 * @param Token_Label_Index                 $label_index           Reads and writes the tokenLabels override map.
-	 * @param Token_Order_Index                 $order_index           Reads and writes the tokenOrder per-group sort-order map.
+	 * @param Token_Order_Index                 $order_index           Reads and writes the tokenOrder flat ordered id list.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -1115,14 +1115,14 @@ final class Documents_Controller extends Controller {
 			return $error;
 		}
 
-		$group_ids = array_column( $registered, 'id' );
+		$group_ids = array_map( [ Cast::class, 'to_string' ], array_column( $registered, 'id' ) );
 		$submitted = array_map( [ Cast::class, 'to_string' ], (array) $request->get_param( self::ORDER_PARAM ) );
 		$ids       = array_values( array_unique( array_intersect( $submitted, $group_ids ) ) );
 
 		$stored    = $this->read_stored_document( $slug );
 		$candidate = $ids === []
-			? $this->order_index->remove_group( $stored, $group )
-			: $this->order_index->set_group( $stored, $group, $ids );
+			? $this->order_index->remove_group( $stored, $group_ids )
+			: $this->order_index->set_group( $stored, $group_ids, $ids );
 
 		return $this->persist_metadata_candidate( $candidate, $slug );
 	}
@@ -1146,7 +1146,9 @@ final class Documents_Controller extends Controller {
 			return $this->not_found( $slug );
 		}
 
-		if ( ! isset( $this->registry->to_ui_schema()['groups'][ $group ] ) ) {
+		$registered = $this->registry->to_ui_schema()['groups'][ $group ] ?? null;
+
+		if ( $registered === null ) {
 			return $this->unknown_group( $group );
 		}
 
@@ -1156,8 +1158,9 @@ final class Documents_Controller extends Controller {
 			return $error;
 		}
 
+		$group_ids = array_map( [ Cast::class, 'to_string' ], array_column( $registered, 'id' ) );
 		$stored    = $this->read_stored_document( $slug );
-		$candidate = $this->order_index->remove_group( $stored, $group );
+		$candidate = $this->order_index->remove_group( $stored, $group_ids );
 
 		if ( $candidate === $stored ) {
 			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );

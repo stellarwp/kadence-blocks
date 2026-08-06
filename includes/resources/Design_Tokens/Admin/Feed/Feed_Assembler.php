@@ -90,7 +90,7 @@ final class Feed_Assembler {
 	private Token_Label_Index $label_index;
 
 	/**
-	 * Reads the tokenOrder map out of the stored document.
+	 * Reads the tokenOrder flat ordered id list out of the stored document.
 	 *
 	 * @since TBD
 	 *
@@ -107,7 +107,7 @@ final class Feed_Assembler {
 	 * @param Builder           $builder         The pure payload assembler.
 	 * @param Responsive_Feed   $responsive_feed The responsive / clamp shape extractor.
 	 * @param Token_Label_Index $label_index     Reads the tokenLabels override map.
-	 * @param Token_Order_Index $order_index     Reads the tokenOrder map.
+	 * @param Token_Order_Index $order_index     Reads the tokenOrder flat ordered id list.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
