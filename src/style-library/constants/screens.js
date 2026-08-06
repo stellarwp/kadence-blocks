@@ -33,7 +33,6 @@ export const BASE_STYLES_SCREENS = [
 	{ id: 'typography', label: __('Typography', 'kadence-blocks') },
 	{ id: 'border-radius', label: __('Border Radius', 'kadence-blocks') },
 	{ id: 'border-width', label: __('Border Width', 'kadence-blocks') },
-	// @todo SOFT-4080: replace the placeholder with the Spacing screen.
 	{ id: 'spacing', label: __('Spacing', 'kadence-blocks') },
 	// @todo SOFT-4081: replace the placeholder with the Icon Sizes screen.
 	{ id: 'icon-sizes', label: __('Icon Sizes', 'kadence-blocks') },

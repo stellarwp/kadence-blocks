@@ -23,6 +23,7 @@ import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
+import { SpacingScreen } from '../components/pages/SpacingScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -42,6 +43,7 @@ import { libraryDisplayTitle } from '../helpers/libraries';
 const SCREEN_COMPONENTS = {
 	'border-radius': BorderRadiusScreen,
 	'border-width': BorderWidthScreen,
+	spacing: SpacingScreen,
 };
 
 /**
