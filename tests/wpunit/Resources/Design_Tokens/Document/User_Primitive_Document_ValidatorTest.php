@@ -393,6 +393,88 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
+	// group
+	// -------------------------------------------------------------------------
+
+	/**
+	 * An envelope entry with no "group" key at all validates cleanly — group is optional and its
+	 * absence is the common case for every ungrouped custom token.
+	 *
+	 * @return void
+	 */
+	public function testEntryWithNoGroupKeyReturnsNoErrors(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
+
+		$this->assertSame( [], $this->validator->validate( $doc ) );
+	}
+
+	/**
+	 * An entry with a valid lowercase kebab-case group string validates cleanly.
+	 *
+	 * @return void
+	 */
+	public function testEntryWithAKebabCaseGroupReturnsNoErrors(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
+		$doc = $this->index->add( $doc, $id, 'Brand', 'border-radius' );
+
+		$this->assertSame( [], $this->validator->validate( $doc ) );
+	}
+
+	/**
+	 * A non-string "group" value is rejected — a hand-edited or corrupted document must not slip
+	 * past the invariant just because no real write path produces this shape.
+	 *
+	 * @return void
+	 */
+	public function testEntryWithANonStringGroupReturnsGroupError(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
+
+		$ext = Extensions::get_extensions_key();
+		$ns  = Extensions::get_namespace();
+		$sec = Extensions::get_section_user_primitives();
+		$doc[ $ext ][ $ns ][ $sec ][ $id ]['group'] = 123;
+
+		$errors   = $this->validator->validate( $doc );
+		$messages = array_map( static fn( User_Primitive_Validation_Error $e ) => $e->get_message(), $errors );
+
+		$found = false;
+		foreach ( $messages as $msg ) {
+			if ( strpos( $msg, 'invalid group' ) !== false ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertTrue( $found, 'Expected a group error.' );
+	}
+
+	/**
+	 * A "group" string outside the kebab-case charset (e.g. underscores, uppercase) is rejected —
+	 * it must never reach the same charset a token id segment enforces.
+	 *
+	 * @return void
+	 */
+	public function testEntryWithANonKebabGroupReturnsGroupError(): void {
+		$id  = 'primitive.color.custom.brand';
+		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
+		$doc = $this->index->add( $doc, $id, 'Brand', 'Border_Radius' );
+
+		$errors   = $this->validator->validate( $doc );
+		$messages = array_map( static fn( User_Primitive_Validation_Error $e ) => $e->get_message(), $errors );
+
+		$found = false;
+		foreach ( $messages as $msg ) {
+			if ( strpos( $msg, 'invalid group' ) !== false ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertTrue( $found, 'Expected a group error.' );
+	}
+
+	// -------------------------------------------------------------------------
 	// baseline collision
 	// -------------------------------------------------------------------------
 
