@@ -205,6 +205,49 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A stored tokenLabels override surfaces directly through this endpoint's schema, independent
+	 * of the Localizer — proving the override reaches the REST feed specifically, not merely that
+	 * the two callers happen to agree with each other.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsStoredTokenLabelOverrides(): void {
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [
+							'semantic.color.button-primary-bg' => 'Cozy Button',
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $doc );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$found = null;
+
+		foreach ( $data['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The overridden token must appear in the REST feed schema.' );
+		$this->assertSame( 'Cozy Button', $found['label'] );
+		$this->assertTrue( $found['labelOverridden'] );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.

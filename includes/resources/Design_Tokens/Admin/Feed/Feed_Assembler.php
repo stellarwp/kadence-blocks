@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
@@ -23,6 +24,10 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
  * (alias cycle / dangling alias from a raw DB write) yields an empty, `resolved:false` feed rather
  * than a fatal, so the caller still gets structure. The fail-closed case (registry deactivated) is
  * handled inside the builder.
+ *
+ * The per-token label-override read also lives here rather than in either emitter: it is applied
+ * inside Builder::build(), so both {@see Localizer} and {@see \KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller}
+ * get the overridden labels automatically instead of one of them silently missing them.
  *
  * @since TBD
  */
@@ -74,26 +79,38 @@ final class Feed_Assembler {
 	private Responsive_Feed $responsive_feed;
 
 	/**
+	 * Reads the tokenLabels display-label override map out of the stored document.
+	 *
 	 * @since TBD
 	 *
-	 * @param Token_Resolver  $resolver        The token resolver.
-	 * @param Token_Store     $store           The token store.
-	 * @param Presets         $preset_feed     The presets section builder.
-	 * @param Builder         $builder         The pure payload assembler.
-	 * @param Responsive_Feed $responsive_feed The responsive / clamp shape extractor.
+	 * @var Token_Label_Index
+	 */
+	private Token_Label_Index $label_index;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param Token_Resolver    $resolver        The token resolver.
+	 * @param Token_Store       $store           The token store.
+	 * @param Presets           $preset_feed     The presets section builder.
+	 * @param Builder           $builder         The pure payload assembler.
+	 * @param Responsive_Feed   $responsive_feed The responsive / clamp shape extractor.
+	 * @param Token_Label_Index $label_index     Reads the tokenLabels override map.
 	 */
 	public function __construct(
 		Token_Resolver $resolver,
 		Token_Store $store,
 		Presets $preset_feed,
 		Builder $builder,
-		Responsive_Feed $responsive_feed
+		Responsive_Feed $responsive_feed,
+		Token_Label_Index $label_index
 	) {
 		$this->resolver        = $resolver;
 		$this->store           = $store;
 		$this->preset_feed     = $preset_feed;
 		$this->builder         = $builder;
 		$this->responsive_feed = $responsive_feed;
+		$this->label_index     = $label_index;
 	}
 
 	/**
@@ -129,7 +146,8 @@ final class Feed_Assembler {
 			$version,
 			$slug,
 			$responsive,
-			$this->store->get_title( $slug )
+			$this->store->get_title( $slug ),
+			$this->label_index->all( $this->read_document( $slug ) )
 		);
 	}
 
@@ -148,5 +166,28 @@ final class Feed_Assembler {
 			'namespace' => Controller::namespace(),
 			'nonce'     => wp_create_nonce( 'wp_rest' ),
 		];
+	}
+
+	/**
+	 * Read and decode the stored overrides-only document for a library, empty when absent or
+	 * unreadable. Builder stays pure (no I/O, per its own docblock), so this owns the decode the
+	 * label overlay needs, alongside the store access this class already does for the version.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function read_document( string $slug ): array {
+		$raw = $this->store->get_document( $slug );
+
+		if ( $raw === '' ) {
+			return [];
+		}
+
+		$decoded = json_decode( $raw, true );
+
+		return is_array( $decoded ) ? $decoded : [];
 	}
 }

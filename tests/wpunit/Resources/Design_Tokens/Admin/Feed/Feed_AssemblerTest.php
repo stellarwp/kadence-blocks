@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
@@ -138,7 +139,8 @@ final class Feed_AssemblerTest extends TestCase {
 			$this->container->get( Token_Store::class ),
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
-			$this->container->get( Responsive_Feed::class )
+			$this->container->get( Responsive_Feed::class ),
+			$this->container->get( Token_Label_Index::class )
 		);
 
 		$feed = $assembler->for_slug( Token_Store::default_slug() );
@@ -150,5 +152,45 @@ final class Feed_AssemblerTest extends TestCase {
 		$this->assertSame( [], $feed['responsive'] );
 		$this->assertSame( Token_Store::default_slug(), $feed['slug'] );
 		$this->assertNotEmpty( $feed['rest']['nonce'] );
+	}
+
+	/**
+	 * A stored tokenLabels override reaches the assembled schema's `label` / `labelOverridden`
+	 * fields — the single place both the Localizer and the REST feed controller read from, so a
+	 * stored override cannot reach one caller and not the other.
+	 *
+	 * @return void
+	 */
+	public function testForSlugAppliesStoredTokenLabelOverrides(): void {
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [
+							'semantic.color.button-primary-bg' => 'Cozy Button',
+						],
+					],
+				],
+			]
+		);
+
+		$this->container->get( Token_Store::class )->save_document( $doc );
+
+		$feed = $this->assembler->for_slug( Token_Store::default_slug() );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The overridden token must appear in the assembled schema.' );
+		$this->assertSame( 'Cozy Button', $found['label'] );
+		$this->assertTrue( $found['labelOverridden'] );
 	}
 }
