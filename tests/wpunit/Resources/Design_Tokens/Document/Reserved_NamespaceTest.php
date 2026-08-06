@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Document;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -128,17 +129,115 @@ final class Reserved_NamespaceTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
+	 * canonical() builds the full dot-path id from a type and a terminal slug.
+	 *
+	 * @dataProvider canonicalTypeProvider
+	 *
+	 * @param string $type     The DTCG $type segment.
+	 * @param string $expected The expected canonical id.
+	 *
 	 * @return void
 	 */
-	public function testCanonicalBuildsTheFullIdFromASlug(): void {
-		$this->assertSame( 'primitive.color.custom.brand-accent', Reserved_Namespace::canonical( 'brand-accent' ) );
+	public function testCanonicalBuildsTheFullIdFromASlug( string $type, string $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::canonical( $type, 'brand-accent' ) );
 	}
 
 	/**
+	 * @return Generator
+	 */
+	public function canonicalTypeProvider(): Generator {
+		yield 'color' => [
+			'type'     => Token_Type::get_type_color(),
+			'expected' => 'primitive.color.custom.brand-accent',
+		];
+
+		yield 'dimension' => [
+			'type'     => Token_Type::get_type_dimension(),
+			'expected' => 'primitive.dimension.custom.brand-accent',
+		];
+
+		yield 'shadow' => [
+			'type'     => Token_Type::get_type_shadow(),
+			'expected' => 'primitive.shadow.custom.brand-accent',
+		];
+	}
+
+	/**
+	 * canonical() output for every supported type is recognized as reserved by is_reserved_id().
+	 *
+	 * @dataProvider supportedTypeProvider
+	 *
+	 * @param string $type The DTCG $type segment.
+	 *
 	 * @return void
 	 */
-	public function testCanonicalOutputIsRecognizedAsReserved(): void {
-		$this->assertTrue( Reserved_Namespace::is_reserved_id( Reserved_Namespace::canonical( 'brand-accent' ) ) );
+	public function testCanonicalOutputIsRecognizedAsReserved( string $type ): void {
+		$this->assertTrue( Reserved_Namespace::is_reserved_id( Reserved_Namespace::canonical( $type, 'brand-accent' ) ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function supportedTypeProvider(): Generator {
+		yield 'color' => [ 'type' => Token_Type::get_type_color() ];
+		yield 'dimension' => [ 'type' => Token_Type::get_type_dimension() ];
+		yield 'shadow' => [ 'type' => Token_Type::get_type_shadow() ];
+	}
+
+	// -------------------------------------------------------------------------
+	// is_supported_type()
+	// -------------------------------------------------------------------------
+
+	/**
+	 * is_supported_type() derives its allowlist from registration plus the kebab-case id-segment
+	 * grammar, so a registered but camelCase-spelled scalar type is refused even though it is a
+	 * valid $type — the camelCase yields guard against someone later simplifying the predicate
+	 * to Token_Type::is_valid() alone and silently shipping tokens that can never register.
+	 *
+	 * @dataProvider supportedTypePredicateProvider
+	 *
+	 * @param string $type     The candidate $type.
+	 * @param bool   $expected Whether $type is expected to support user-created primitives.
+	 *
+	 * @return void
+	 */
+	public function testIsSupportedType( string $type, bool $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::is_supported_type( $type ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function supportedTypePredicateProvider(): Generator {
+		yield 'color' => [
+			'type'     => Token_Type::get_type_color(),
+			'expected' => true,
+		];
+
+		yield 'dimension' => [
+			'type'     => Token_Type::get_type_dimension(),
+			'expected' => true,
+		];
+
+		yield 'shadow, a kebab-safe composite' => [
+			'type'     => Token_Type::get_type_shadow(),
+			'expected' => true,
+		];
+
+		yield 'fontWeight, a camelCase scalar' => [
+			'type'     => Token_Type::get_type_font_weight(),
+			'expected' => false,
+		];
+
+		yield 'fontFamily, a camelCase scalar' => [
+			'type'     => Token_Type::get_type_font_family(),
+			'expected' => false,
+		];
+
+		yield 'bogus, an unregistered type' => [
+			'type'     => 'bogus',
+			'expected' => false,
+		];
 	}
 
 	// -------------------------------------------------------------------------
