@@ -13,11 +13,14 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *   - "presets"          → block presets (the preset data model's concern).
  *   - "colorPalettes"     → named color palettes within the library (the palette feature): each an ordered list
  *                           of groups, each an ordered list of self-describing swatches.
+ *   - "tokenLabels"       → per-token display-label overrides: a flat { token id => label } string map,
+ *                           authoring metadata only.
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
- * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — so it is NOT
- * returned by get_sections() (that drives the tokens-map walk).
+ * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — and
+ * "tokenLabels" is id-keyed metadata with no tokens map at all, so neither is returned by get_sections()
+ * (that drives the tokens-map walk).
  *
  * @since TBD
  */
@@ -78,6 +81,19 @@ final class Extensions {
 	 * @var string
 	 */
 	private const SECTION_USER_PRIMITIVES = 'userPrimitives';
+
+	/**
+	 * The per-token display-label overrides section: a flat { token id => label } string map.
+	 * NOT returned by get_sections() — it is id-keyed authoring metadata, not preset-shaped, so
+	 * the tokens-map walk (and the reference scanner that follows get_sections()) must not
+	 * descend into it; it holds ids and labels, never {alias} values. The validator covers it
+	 * with its own explicit branch instead.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_TOKEN_LABELS = 'tokenLabels';
 
 	/**
 	 * The key naming a group's default preset slug.
@@ -216,6 +232,18 @@ final class Extensions {
 	 */
 	public static function get_section_user_primitives(): string {
 		return self::SECTION_USER_PRIMITIVES;
+	}
+
+	/**
+	 * The per-token display-label overrides section name.
+	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_token_labels(): string {
+		return self::SECTION_TOKEN_LABELS;
 	}
 
 	/**
