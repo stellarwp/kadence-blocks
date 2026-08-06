@@ -98,6 +98,27 @@ $border_width_tokens = array_map(
 	$border_width_slugs
 );
 
+// The icon-size scale steps are primitives the Style Library's Icon Sizes screen lists and edits
+// directly (semantic.icon-size.default already carries the projection that delivers the "md" step
+// into the icon block and the button's icon size, so the scale declares none of its own). group_key
+// mirrors the radius/border-width scales' mechanism above: it is the stable machine id "+ Add Icon
+// Size" mints custom tokens into, resolved back to the group label at read time by
+// Token_Registry::group_label_for().
+$icon_size_slugs = [ 'sm', 'md', 'lg' ];
+
+$icon_size_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.dimension.icon-size.' . $slug,
+			'type'      => 'dimension',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Icon Sizes', 'kadence-blocks' ),
+			'group_key' => 'icon-sizes',
+		];
+	},
+	$icon_size_slugs
+);
+
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
 // (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
@@ -363,7 +384,8 @@ return [
 		$gap_tokens,
 		$font_size_primitive_tokens,
 		$radius_tokens,
-		$border_width_tokens
+		$border_width_tokens,
+		$icon_size_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
