@@ -1,0 +1,9 @@
+// The rounded-square preview's own box. Sizing, background, and border for the slot itself already
+// come from `.list-row-preview` (ListRow.scss) — this element only has to fill that slot so its own
+// `border-radius` (set inline, per row) has a visible box to clip.
+.kadence-blocks-style-library__border-radius-preview {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: var(--kb-sl-color-gray-100);
+}
