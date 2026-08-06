@@ -30,7 +30,6 @@
 .kadence-blocks-style-library__color-picker-hue,
 .kadence-blocks-style-library__color-picker-alpha {
 	position: relative;
-	// 10px, off the grid-unit scale — matches the reference control's slider thickness.
 	height: 10px;
 	border-radius: var(--kb-sl-radius-s);
 }
@@ -38,7 +37,6 @@
 .kadence-blocks-style-library__color-picker-swatch {
 	position: relative;
 	flex: 0 0 auto;
-	// 30px, off the grid-unit scale — matches the reference control's current-color swatch.
 	width: 30px;
 	height: 30px;
 	overflow: hidden;
@@ -53,7 +51,7 @@
 
 .kadence-blocks-style-library__color-picker-fields {
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
 	gap: var(--kb-sl-space-05);
 }
 
@@ -61,15 +59,18 @@
 	flex: 1;
 	min-width: 0;
 
-	// EditableInput's own `<input>` and `<label>` — it takes only inline `style` objects for these
-	// (no `className`), so the box model stays there; typography and color live here.
+	// EditableInput takes only inline `style` objects for its own input/label, so its box model
+	// stays there; everything below is what it leaves to CSS.
 	input {
 		width: 100%;
+		height: 1.25rem;
 		box-sizing: border-box;
 		padding: var(--kb-sl-space-05);
-		border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-control-border);
+		border: var(--kb-sl-border-width-input) solid #dadada;
 		border-radius: var(--kb-sl-radius-s);
+		color: #000000;
 		font-size: var(--kb-sl-font-size-xs);
+		line-height: 1;
 		text-align: center;
 
 		&:focus {
@@ -95,17 +96,29 @@
 .kadence-blocks-style-library__color-picker-view-cycle {
 	@include flex-column(0);
 	flex: 0 0 auto;
+	width: 1.875rem;
+	padding-left: var(--kb-sl-space-05);
 }
 
 .kadence-blocks-style-library__color-picker-view-cycle-button {
+	// The glyph is deliberately larger than this box — `overflow: hidden` crops the chevron's
+	// padded viewBox down to the arrow itself.
+	position: relative;
 	display: flex;
+	overflow: hidden;
 	align-items: center;
 	justify-content: center;
+	height: 0.625rem;
 	padding: 0;
 	border: none;
 	background: none;
 	color: var(--kb-sl-color-text-muted);
 	cursor: pointer;
+
+	svg {
+		width: 1rem;
+		height: 1rem;
+	}
 
 	&:hover {
 		color: var(--kb-sl-color-text-primary);
