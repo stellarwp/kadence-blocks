@@ -15,8 +15,10 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *                           of groups, each an ordered list of self-describing swatches.
  *   - "tokenLabels"       → per-token display-label overrides: a flat { token id => label } string map,
  *                           authoring metadata only.
- *   - "tokenOrder"        → per-group token sort order: a { UI-schema group => ordered token id list }
- *                           map, authoring metadata only.
+ *   - "tokenOrder"        → token sort order: a single flat ordered token id list, authoring
+ *                           metadata only. Flat rather than group-keyed so the stored order stays
+ *                           locale-independent — a UI-schema group name is a translated display
+ *                           label, not a stable identifier (see Token_Order_Index).
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette

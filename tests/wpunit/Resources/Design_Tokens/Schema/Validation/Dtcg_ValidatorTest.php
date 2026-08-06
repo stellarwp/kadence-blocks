@@ -132,8 +132,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
-	 * A well-formed tokenOrder section validates: every entry maps a non-empty string group name
-	 * to a sequential list of non-empty string token ids.
+	 * A well-formed tokenOrder section validates: a sequential list of non-empty string token ids.
 	 *
 	 * @return void
 	 */
@@ -141,9 +140,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'tokenOrder' => [
-						'Brand' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
-					],
+					'tokenOrder' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
 				],
 			],
 		];
@@ -163,9 +160,7 @@ final class Dtcg_ValidatorTest extends TestCase {
 		$document = [
 			'$extensions' => [
 				'com.kadence.designTokens' => [
-					'tokenOrder' => [
-						'Brand' => [ 'semantic.color.does-not-exist' ],
-					],
+					'tokenOrder' => [ 'semantic.color.does-not-exist' ],
 				],
 			],
 		];
@@ -470,55 +465,43 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
 		];
-		// A tokenOrder group whose value is map-shaped (non-sequential keys) rather than an
-		// ordered list is rejected by the section's own explicit branch.
-		yield 'map-shaped (non-sequential) tokenOrder group value' => [
+		// tokenOrder must be a single flat sequential list (see Token_Order_Index for why it is
+		// never keyed by group); a map-shaped (non-sequential) value is rejected wholesale.
+		yield 'map-shaped (non-sequential) tokenOrder value' => [
 			'document' => [
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'tokenOrder' => [ 'Brand' => [ 'a' => 'semantic.color.button-bg' ] ],
+						'tokenOrder' => [ 'a' => 'semantic.color.button-bg' ],
 					],
 				],
 			],
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder',
 		];
 		yield 'non-string tokenOrder id' => [
 			'document' => [
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'tokenOrder' => [ 'Brand' => [ 'semantic.color.button-bg', 42 ] ],
+						'tokenOrder' => [ 'semantic.color.button-bg', 42 ],
 					],
 				],
 			],
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.1',
 		];
 		yield 'empty-string tokenOrder id' => [
 			'document' => [
 				'$extensions' => [
 					'com.kadence.designTokens' => [
-						'tokenOrder' => [ 'Brand' => [ '' ] ],
+						'tokenOrder' => [ '' ],
 					],
 				],
 			],
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
-		];
-		yield 'empty tokenOrder group name' => [
-			'document' => [
-				'$extensions' => [
-					'com.kadence.designTokens' => [
-						'tokenOrder' => [ '' => [ 'semantic.color.button-bg' ] ],
-					],
-				],
-			],
-			'context'  => Dtcg_Validator::get_context_overrides(),
-			'code'     => Validation_Error::get_code_value_invalid(),
-			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.',
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.0',
 		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
