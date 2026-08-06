@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller;
 use ReflectionClass;
@@ -278,6 +280,124 @@ final class Feed_ControllerTest extends TestCase {
 		$this->assertSame( '0.5rem', $data['values']['primitive.dimension.radius.md'] );
 		$this->assertSame( '1rem', $data['values']['primitive.dimension.radius.lg'] );
 		$this->assertSame( '9999px', $data['values']['primitive.dimension.radius.full'] );
+	}
+
+	/**
+	 * The declared border-width scale surfaces as its own feed group, in declaration order, with
+	 * every step's value resolved and no projections — the Border Width screen's data source end
+	 * to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheBorderWidthScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Border Width', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Border Width'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.border-width.sm',
+				'primitive.dimension.border-width.md',
+				'primitive.dimension.border-width.lg',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Border Width'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared border-width scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '1px', $data['values']['primitive.dimension.border-width.sm'] );
+		$this->assertSame( '2px', $data['values']['primitive.dimension.border-width.md'] );
+		$this->assertSame( '4px', $data['values']['primitive.dimension.border-width.lg'] );
+	}
+
+	/**
+	 * `semantic.border-width.default` keeps resolving through the "sm" primitive after the scale is
+	 * declared — declaring the primitives for the Style Library screen must not disturb the alias
+	 * that already projects into the image block.
+	 *
+	 * @return void
+	 */
+	public function testSemanticBorderWidthDefaultStillResolvesThroughTheSmPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.dimension.border-width.sm'],
+			$data['values']['semantic.border-width.default']
+		);
+	}
+
+	/**
+	 * A user-created token minted into the border-width group (the stable key, decision 3 of the
+	 * shared scale-screen contract) surfaces inside the declared "Border Width" UI-schema group and
+	 * is flagged `userCreated`, exercising the shared group-key backend against this screen's own
+	 * key. Asserted against `Token_Registry::to_ui_schema()` directly — the same surface
+	 * `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken` checks for the sibling
+	 * border-radius group — rather than through the REST controller, whose resolved dependency
+	 * chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoBorderWidthSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.border-width-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'border-width-2' => [
+								'$type'  => 'dimension',
+								'$value' => '3px',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Border Width',
+								'group' => 'border-width',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Border Width', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Border Width'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Border Width" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
 	}
 
 	/**
