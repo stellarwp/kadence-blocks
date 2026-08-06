@@ -66,6 +66,51 @@ final class Css_RendererTest extends TestCase {
 		$this->assertSame( '', $this->renderer->render( 'shadow', '#fff' ) );
 	}
 
+	/**
+	 * A shadow whose "inset" sub-field is strictly true renders with the leading "inset " keyword,
+	 * matching CSS's requirement that the keyword come first in the shorthand.
+	 *
+	 * @return void
+	 */
+	public function testShadowWithInsetTrueRendersLeadingKeyword(): void {
+		$shadow = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => true,
+		];
+
+		$this->assertSame( 'inset 0px 2px 8px 0px #1A202C', $this->renderer->render( 'shadow', $shadow ) );
+	}
+
+	/**
+	 * A shadow whose "inset" sub-field is strictly false renders byte-identical to the same shadow with
+	 * no "inset" field at all — this pins that every pre-existing shadow token (which never carries the
+	 * field) keeps its exact output.
+	 *
+	 * @return void
+	 */
+	public function testShadowWithInsetFalseRendersIdenticallyToNoInset(): void {
+		$shadow = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$withFalseInset          = $shadow;
+		$withFalseInset['inset'] = false;
+
+		$this->assertSame(
+			$this->renderer->render( 'shadow', $shadow ),
+			$this->renderer->render( 'shadow', $withFalseInset )
+		);
+		$this->assertSame( '0px 2px 8px 0px #1A202C', $this->renderer->render( 'shadow', $withFalseInset ) );
+	}
+
 	public function testNonScalarScalarTypeReturnsEmptyString(): void {
 		$this->assertSame( '', $this->renderer->render( 'color', [ 'unexpected' => 'array' ] ) );
 	}
