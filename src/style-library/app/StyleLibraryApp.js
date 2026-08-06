@@ -20,6 +20,7 @@ import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
+import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -33,7 +34,10 @@ import { libraryDisplayTitle } from '../helpers/libraries';
  *
  * @since TBD
  */
-const SCREEN_COMPONENTS = { 'color-palette': ColorPaletteScreen };
+const SCREEN_COMPONENTS = {
+	'border-radius': BorderRadiusScreen,
+	'color-palette': ColorPaletteScreen,
+};
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
