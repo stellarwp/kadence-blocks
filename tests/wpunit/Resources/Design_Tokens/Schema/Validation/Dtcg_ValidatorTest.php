@@ -132,6 +132,70 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed tokenOrder section validates: every entry maps a non-empty string group name
+	 * to a sequential list of non-empty string token ids.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedTokenOrderSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenOrder' => [
+						'Brand' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A stored id that names no registered token does not fail validation: whether it resolves is
+	 * data drift, enforced by the REST write guard and the feed merge, not full-document grammar.
+	 *
+	 * @return void
+	 */
+	public function testATokenOrderEntryNamingAnUnregisteredIdStillValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenOrder' => [
+						'Brand' => [ 'semantic.color.does-not-exist' ],
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A document without a tokenOrder section produces no new errors, and a non-Kadence extension
+	 * namespace alongside it is passed through untouched.
+	 *
+	 * @return void
+	 */
+	public function testADocumentWithoutTheTokenOrderSectionIsUnaffected(): void {
+		$document = [
+			'$extensions' => [
+				'some.other.vendor' => [
+					'tokenOrder' => [ 0 => 'not-kadence-owned' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItIsResolvableFromTheContainer(): void {
@@ -405,6 +469,56 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'context'  => Dtcg_Validator::get_context_overrides(),
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
+		];
+		// A tokenOrder group whose value is map-shaped (non-sequential keys) rather than an
+		// ordered list is rejected by the section's own explicit branch.
+		yield 'map-shaped (non-sequential) tokenOrder group value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ 'Brand' => [ 'a' => 'semantic.color.button-bg' ] ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
+		];
+		yield 'non-string tokenOrder id' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ 'Brand' => [ 'semantic.color.button-bg', 42 ] ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
+		];
+		yield 'empty-string tokenOrder id' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ 'Brand' => [ '' ] ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.Brand',
+		];
+		yield 'empty tokenOrder group name' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ '' => [ 'semantic.color.button-bg' ] ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.',
 		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
