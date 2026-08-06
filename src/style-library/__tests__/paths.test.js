@@ -12,6 +12,8 @@ import {
 	activeLibraryPath,
 	activateLibraryPath,
 	feedPath,
+	tokenLabelPath,
+	groupOrderPath,
 } from '../api/paths';
 
 describe('palette paths', () => {
@@ -111,5 +113,33 @@ describe('feedPath', () => {
 
 	it('escapes the slug', () => {
 		expect(feedPath('my set')).toBe('/kb-design-tokens/v1/feed/my%20set');
+	});
+});
+
+describe('tokenLabelPath', () => {
+	it('builds the label path for a token id', () => {
+		expect(tokenLabelPath('default', 'semantic.color.button-primary-bg')).toBe(
+			'/kb-design-tokens/v1/documents/default/labels/semantic.color.button-primary-bg'
+		);
+	});
+
+	it('escapes the slug and the id', () => {
+		expect(tokenLabelPath('my set', 'primitive.dimension.custom.radius 2')).toBe(
+			'/kb-design-tokens/v1/documents/my%20set/labels/primitive.dimension.custom.radius%202'
+		);
+	});
+});
+
+describe('groupOrderPath', () => {
+	it('builds the order path for a group', () => {
+		expect(groupOrderPath('default', 'Border Radius')).toBe(
+			'/kb-design-tokens/v1/documents/default/order/Border%20Radius'
+		);
+	});
+
+	it('escapes the slug', () => {
+		expect(groupOrderPath('my set', 'Border Radius')).toBe(
+			'/kb-design-tokens/v1/documents/my%20set/order/Border%20Radius'
+		);
 	});
 });
