@@ -7,9 +7,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Document;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -124,6 +126,52 @@ final class Documents_Controller extends Controller {
 	private const TITLE_ROUTE = 'title';
 
 	/**
+	 * The sub-route, relative to a single library, that collects the per-token label-override endpoints.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const LABELS_ROUTE = 'labels';
+
+	/**
+	 * The request parameter that carries a single token's canonical dot-path id, on the labels sub-route.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ID_PARAM = 'id';
+
+	/**
+	 * The id path segment for the labels sub-route. Same grammar as PATH_ROUTE — a token id is a dot-path.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ID_ROUTE = '(?P<' . self::ID_PARAM . '>[\w.-]+)';
+
+	/**
+	 * The request parameter that carries the display-label override text on a labels write.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const LABEL_PARAM = 'label';
+
+	/**
+	 * The request parameter that carries the client's last-read version, for the version-conditional
+	 * guard on the labels sub-route.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const VERSION_PARAM = 'version';
+
+	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
@@ -216,6 +264,24 @@ final class Documents_Controller extends Controller {
 	private Responsive_Feed $responsive_feed;
 
 	/**
+	 * The token registry, used only to 404 a label write against an unregistered id.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Registry
+	 */
+	private Token_Registry $registry;
+
+	/**
+	 * Reads and writes the tokenLabels display-label override map.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Label_Index
+	 */
+	private Token_Label_Index $label_index;
+
+	/**
 	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -245,6 +311,8 @@ final class Documents_Controller extends Controller {
 	 * @param User_Primitive_Document_Validator $user_primitive_validator Enforces the user-primitive document invariant.
 	 * @param Token_Reference_Policy            $reference_policy      Scans for alias references to a user primitive.
 	 * @param Responsive_Feed                   $responsive_feed       Extracts the authored responsive / clamp shape per token.
+	 * @param Token_Registry                    $registry              The token registry, for the labels sub-route's unregistered-id 404.
+	 * @param Token_Label_Index                 $label_index           Reads and writes the tokenLabels override map.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -255,7 +323,9 @@ final class Documents_Controller extends Controller {
 		User_Primitive_Index $user_primitive_index,
 		User_Primitive_Document_Validator $user_primitive_validator,
 		Token_Reference_Policy $reference_policy,
-		Responsive_Feed $responsive_feed
+		Responsive_Feed $responsive_feed,
+		Token_Registry $registry,
+		Token_Label_Index $label_index
 	) {
 		$this->store                    = $store;
 		$this->resolver                 = $resolver;
@@ -266,6 +336,8 @@ final class Documents_Controller extends Controller {
 		$this->user_primitive_validator = $user_primitive_validator;
 		$this->reference_policy         = $reference_policy;
 		$this->responsive_feed          = $responsive_feed;
+		$this->registry                 = $registry;
+		$this->label_index              = $label_index;
 		$this->rest_base                = 'documents';
 	}
 
@@ -402,6 +474,31 @@ final class Documents_Controller extends Controller {
 					'args'                => $this->get_token_path_params(),
 				],
 				'schema' => [ $this, 'get_token_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::LABELS_ROUTE . '/' . self::ID_ROUTE,
+			[
+				[
+					// PUT only: setting and clearing (empty label) are the same idempotent
+					// replace-the-override operation; there is no partial update of one label.
+					'methods'             => 'PUT',
+					'callback'            => [ $this, 'set_label' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_label_params(),
+				],
+				[
+					// DELETE uses the same capability as PUT — clearing an override is an update to
+					// the document, not a resource removal, so the two verbs of one operation cannot
+					// diverge on permission.
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_label' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_label_delete_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
 			]
 		);
 	}
@@ -816,6 +913,90 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * Set or clear a token's display-label override (PUT /documents/{slug}/labels/{id}).
+	 *
+	 * An empty or whitespace-only label is a clear, exactly equivalent to DELETE, so the UI needs
+	 * no separate reset path. A user-created id routes to the existing userPrimitives label
+	 * instead of tokenLabels — one id never carries two competing label stores; the registrar sync
+	 * then carries the rename into the registry, and the tokenLabels remove() is defense in depth
+	 * against a hand-written entry for the same id.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function set_label( $request ) {
+		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$id    = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+		$label = trim( Cast::to_string( $request->get_param( self::LABEL_PARAM ) ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		// Only a registered token can be renamed; a typo would otherwise accumulate silently as a
+		// tokenLabels entry with nothing to attach to.
+		if ( ! $this->registry->has( $id ) ) {
+			return $this->unknown_token( $id );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$stored = $this->read_stored_document( $slug );
+
+		if ( $label === '' ) {
+			return $this->persist_label_clear( $stored, $slug, $id );
+		}
+
+		if ( $this->user_primitive_index->has( $stored, $id ) ) {
+			$candidate = $this->user_primitive_index->add( $stored, $id, $label );
+			$candidate = $this->label_index->remove( $candidate, $id );
+		} else {
+			$candidate = $this->label_index->set( $stored, $id, $label );
+		}
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
+	 * Clear a token's display-label override (DELETE /documents/{slug}/labels/{id}), reverting a
+	 * baseline id to its declared label and a user-created id to the humanized-last-segment
+	 * fallback ({@see Token_Definition::from_user_primitive()}) — never a nameless token.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_label( $request ) {
+		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$id   = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		if ( ! $this->registry->has( $id ) ) {
+			return $this->unknown_token( $id );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		return $this->persist_label_clear( $this->read_stored_document( $slug ), $slug, $id );
+	}
+
+	/**
 	 * Validate that the token dot-path begins with a real token layer and names a token below it.
 	 *
 	 * Used as the path argument's validate_callback so a path into "$extensions" (any non-layer root), a
@@ -1131,6 +1312,125 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * Persist a candidate whose only change is inside an id-keyed authoring-metadata $extensions
+	 * section (token labels). Deliberately skips the full DTCG validator and the resolver dry-run:
+	 * the index helpers' edits are mechanically confined to a section the effective-document
+	 * builder strips, so they cannot introduce grammar or alias problems — and running the full
+	 * pipeline would make a rename impossible in any library whose stored document does not
+	 * currently validate, for reasons unrelated to the rename (the same trap the dedicated
+	 * single-token routes avoid by never re-validating the whole document either). The section is
+	 * still validated whenever the full document is (bulk POST/PATCH/PUT), via its validator branch.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $candidate The candidate document with the label edit applied.
+	 * @param string               $slug      The token library slug.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	private function persist_metadata_candidate( array $candidate, string $slug ) {
+		$expected_version = $this->store->get_version( $slug );
+		$status           = $expected_version !== '' ? WP_Http::OK : WP_Http::CREATED;
+
+		if ( $candidate === [] ) {
+			return $this->persist( '', $slug, '', $status, $expected_version );
+		}
+
+		$encoded = wp_json_encode( $candidate );
+
+		if ( $encoded === false ) {
+			return new WP_Error(
+				'rest_design_tokens_save_failed',
+				__( 'The design token document could not be encoded.', 'kadence-blocks' ),
+				[
+					'status' => WP_Http::INTERNAL_SERVER_ERROR,
+					'slug'   => $slug,
+				]
+			);
+		}
+
+		return $this->persist( $encoded, $slug, '', $status, $expected_version );
+	}
+
+	/**
+	 * Clear a token's label override: a user-created id's rename lands in userPrimitives, so
+	 * clearing resets that section's label to '' rather than removing a tokenLabels entry — which
+	 * Token_Definition::from_user_primitive() falls back from to a humanized last segment, so the
+	 * token stays named rather than becoming nameless. A baseline id removes its tokenLabels entry.
+	 * Either path is idempotent: when nothing changes, the candidate equals the stored document and
+	 * this returns the current item without a write, mirroring delete_token()'s idempotency.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $stored The stored document to clear the override from.
+	 * @param string               $slug   The token library slug.
+	 * @param string               $id     The token id.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	private function persist_label_clear( array $stored, string $slug, string $id ) {
+		if ( $this->user_primitive_index->has( $stored, $id ) ) {
+			$candidate = $this->user_primitive_index->add( $stored, $id, '' );
+		} else {
+			$candidate = $this->label_index->remove( $stored, $id );
+		}
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
+		}
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
+	 * Client-conditional guard for the labels sub-route, mirroring the write pipeline's version
+	 * check: the stored version must equal what the client last read (both '' for a first write).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug           The token library slug.
+	 * @param string $client_version The version the client last read. Empty only for a first write.
+	 *
+	 * @return WP_Error|null
+	 */
+	private function guard_client_version( string $slug, string $client_version ): ?WP_Error {
+		$stored = $this->store->get_version( $slug );
+
+		if ( $stored === $client_version ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_conflict',
+			__( 'The token library was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::CONFLICT,
+				'slug'   => $slug,
+			]
+		);
+	}
+
+	/**
+	 * The error returned when a labels-route id does not name a registered token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id The unregistered token id.
+	 *
+	 * @return WP_Error
+	 */
+	private function unknown_token( string $id ): WP_Error {
+		return new WP_Error(
+			'rest_design_tokens_unknown_token',
+			__( 'Sorry, that token is not registered.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::NOT_FOUND,
+				'id'     => $id,
+			]
+		);
+	}
+
+	/**
 	 * Whether a slug names a readable token library.
 	 *
 	 * The default library is always known — it renders from baseline even before it has a row — and any
@@ -1399,6 +1699,56 @@ final class Documents_Controller extends Controller {
 					'required'          => true,
 					'pattern'           => '^[\w.-]+$',
 					'validate_callback' => [ $this, 'validate_token_path' ],
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the labels-route PUT: the slug, the token id, the label text and
+	 * the version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_label_params(): array {
+		return array_merge(
+			$this->get_label_delete_params(),
+			[
+				self::LABEL_PARAM => [
+					'description'       => __( 'The display-label override. Empty or whitespace-only clears the override, equivalent to DELETE.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the labels-route DELETE: the slug, the token id and the
+	 * version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_label_delete_params(): array {
+		return array_merge(
+			$this->get_slug_params(),
+			[
+				self::ID_PARAM      => [
+					'description' => __( 'The token\'s canonical dot-path id, e.g. semantic.color.button-bg.', 'kadence-blocks' ),
+					'type'        => 'string',
+					'required'    => true,
+					'pattern'     => '^[\w.-]+$',
+				],
+				self::VERSION_PARAM => [
+					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
 				],
 			]
 		);
