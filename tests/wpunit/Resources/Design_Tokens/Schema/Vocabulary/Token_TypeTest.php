@@ -109,4 +109,41 @@ final class Token_TypeTest extends TestCase {
 		$this->assertSame( [], Token_Type::composite_fields( Token_Type::get_type_color() ) );
 		$this->assertSame( [], Token_Type::composite_fields( Token_Type::get_type_font_weight() ) );
 	}
+
+	/**
+	 * The required shadow field map stays exactly the five pre-existing fields: this is the regression
+	 * guard for "inset must not become required", since a required sixth field would invalidate every
+	 * baseline shadow token that predates it.
+	 *
+	 * @return void
+	 */
+	public function testShadowRequiredFieldsStayExactlyTheOriginalFive(): void {
+		$this->assertSame(
+			[ 'color', 'offsetX', 'offsetY', 'blur', 'spread' ],
+			array_keys( Token_Type::composite_fields( Token_Type::get_type_shadow() ) )
+		);
+	}
+
+	/**
+	 * Shadow's optional-field map carries "inset" and nothing else, so an alias/boolean check has
+	 * exactly one field to apply to today.
+	 *
+	 * @return void
+	 */
+	public function testShadowOptionalFieldsContainInset(): void {
+		$this->assertSame(
+			[ 'inset' => 'boolean' ],
+			Token_Type::optional_fields( Token_Type::get_type_shadow() )
+		);
+	}
+
+	/**
+	 * A non-composite type has no optional sub-fields, mirroring composite_fields()'s empty return.
+	 *
+	 * @return void
+	 */
+	public function testNonCompositeTypesHaveNoOptionalFields(): void {
+		$this->assertSame( [], Token_Type::optional_fields( Token_Type::get_type_color() ) );
+		$this->assertSame( [], Token_Type::optional_fields( Token_Type::get_type_font_weight() ) );
+	}
 }

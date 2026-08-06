@@ -67,14 +67,15 @@ final class Css_Renderer {
 	}
 
 	/**
-	 * Render a shadow composite to "<offsetX> <offsetY> <blur> <spread> <color>".
+	 * Render a shadow composite to "<offsetX> <offsetY> <blur> <spread> <color>", prefixed with
+	 * "inset " when the optional "inset" sub-field is present and strictly true.
 	 *
 	 * v1 supports a single shadow object. DTCG also permits a $value that is an array of
 	 * shadow objects (stacked box-shadows); that shape is intentionally not handled here —
 	 * Token_Resolver passes a list through untouched, and supporting it is a follow-up that
 	 * would change this method (join each layer with ", ") and the resolver's list handling.
 	 *
-	 * @param mixed|array{color: string, offsetX: string, offsetY: string, blur: string, spread: string} $value
+	 * @param mixed|array{color: string, offsetX: string, offsetY: string, blur: string, spread: string, inset?: bool} $value
 	 *              The resolved shadow shape; typed loosely so a malformed (non-array) token still degrades to "".
 	 */
 	private function shadow( $value ): string {
@@ -85,7 +86,7 @@ final class Css_Renderer {
 			return '';
 		}
 
-		return trim( sprintf(
+		$shorthand = trim( sprintf(
 			'%s %s %s %s %s',
 			$value['offsetX'] ?? '0',
 			$value['offsetY'] ?? '0',
@@ -93,5 +94,10 @@ final class Css_Renderer {
 			$value['spread']  ?? '0',
 			$value['color']   ?? ''
 		) );
+
+		// "inset" is optional and, unlike the required fields, only ever a strict boolean (Composite_Value
+		// rejects anything else at write time) — so absent, false, or a malformed value all fall through
+		// to the plain shorthand, keeping every pre-existing shadow token byte-identical.
+		return ( $value['inset'] ?? null ) === true ? 'inset ' . $shorthand : $shorthand;
 	}
 }
