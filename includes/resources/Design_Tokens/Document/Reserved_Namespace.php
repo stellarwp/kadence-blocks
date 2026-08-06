@@ -91,16 +91,47 @@ final class Reserved_Namespace {
 	}
 
 	/**
-	 * Build the canonical id for a terminal slug: primitive.color.custom.<slug>.
+	 * Build the canonical id for a supported type and terminal slug: primitive.<type>.custom.<slug>.
+	 *
+	 * A pure string builder, like the slug handling before it: the type is not validated here.
+	 * Callers pass a type that already passed is_supported_type() (the create gate) or was read
+	 * from a stored tree leaf (the rename cascade, the orphan scan); an unsupported type yields
+	 * an id the user-primitive document invariant rejects downstream.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $type The DTCG $type segment (spec spelling).
 	 * @param string $slug The terminal slug.
 	 *
 	 * @return string
 	 */
-	public static function canonical( string $slug ): string {
-		return self::LAYER . '.' . Token_Type::get_type_color() . '.' . self::SEGMENT . '.' . $slug;
+	public static function canonical( string $type, string $slug ): string {
+		return self::LAYER . '.' . $type . '.' . self::SEGMENT . '.' . $slug;
+	}
+
+	/**
+	 * Whether a $type supports user-created primitives: registered, and itself a valid
+	 * kebab-case id segment.
+	 *
+	 * The second predicate is load-bearing, not stylistic: the type spelling becomes the second
+	 * segment of a REGISTERED token id, and Token_Definition::from_user_primitive() rejects any
+	 * segment outside ^[a-z0-9]+([.-][a-z0-9]+)*$ (the id feeds Css_Var::from_id()). A camelCase
+	 * $type (fontWeight, lineHeight, ...) would store fine but could never register — the token
+	 * would silently never surface. Composites are not excluded: the shadow $type is a valid
+	 * segment, and the composite validate/render/reference machinery is fully wired.
+	 *
+	 * Deliberately narrower than is_reserved_id()/contains_reserved_path(), which guard the
+	 * whole namespace for every registered type: a generic write must not reach under
+	 * primitive.fontWeight.custom.* just because creation does not support that spelling yet.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The candidate DTCG $type.
+	 *
+	 * @return bool
+	 */
+	public static function is_supported_type( string $type ): bool {
+		return Token_Type::is_valid( $type ) && self::is_valid_slug( $type );
 	}
 
 	/**

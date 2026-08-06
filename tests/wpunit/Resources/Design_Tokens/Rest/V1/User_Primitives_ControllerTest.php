@@ -459,24 +459,254 @@ final class User_Primitives_ControllerTest extends TestCase {
 	}
 
 	// -------------------------------------------------------------------------
-	// create_item — type not supported (non-color)
+	// create_item — successful create (dimension, shadow)
 	// -------------------------------------------------------------------------
 
 	/**
+	 * A dimension primitive create mirrors the color case: 201, the leaf lands under
+	 * primitive.dimension.custom.<slug>, and the envelope entry is recorded.
+	 *
 	 * @return void
 	 */
-	public function testItRejects422ForNonColorType(): void {
+	public function testItCreatesANewDimensionPrimitive(): void {
 		$slug = Token_Store::default_slug();
 
 		$this->store->save_document( '{}' );
 		$version = $this->store->get_version( $slug );
 
-		$request = $this->make_create_request( $slug, 'my-dim', 'dimension', '16px', $version );
+		$request = $this->make_create_request( $slug, 'gap-md', 'dimension', '1.5rem', $version, 'Gap MD' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+
+		$data = $result->get_data();
+		$this->assertSame( $slug, $data['slug'] );
+		$this->assertNotSame( $version, $data['version'] );
+
+		$doc  = $data['document'];
+		$leaf = $doc['primitive']['dimension']['custom']['gap-md'];
+		$this->assertSame( 'dimension', $leaf['$type'] );
+		$this->assertSame( '1.5rem', $leaf['$value'] );
+
+		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
+		$this->assertArrayHasKey( 'primitive.dimension.custom.gap-md', $ext );
+	}
+
+	/**
+	 * A shadow primitive create proves the shape-agnostic `$value` arg and leaf build end to
+	 * end: the object `$value` (five literal sub-fields) is stored intact.
+	 *
+	 * @return void
+	 */
+	public function testItCreatesANewShadowPrimitive(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$request = $this->make_create_request( $slug, 'elevated', 'shadow', $shadow_value, $version, 'Elevated' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+
+		$doc  = $result->get_data()['document'];
+		$leaf = $doc['primitive']['shadow']['custom']['elevated'];
+		$this->assertSame( 'shadow', $leaf['$type'] );
+		$this->assertSame( $shadow_value, $leaf['$value'] );
+	}
+
+	// -------------------------------------------------------------------------
+	// create_item — invalid value rejected by the pipeline's per-type validator
+	// -------------------------------------------------------------------------
+
+	/**
+	 * An invalid dimension `$value` is rejected by the pipeline's validator, the same error
+	 * surface a bad color value gets today — the create path adds no bypass around per-type
+	 * value validation.
+	 *
+	 * @return void
+	 */
+	public function testInvalidDimensionValueIsRejectedByThePipeline(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'bad-dim', 'dimension', 'banana', $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A shadow `$value` missing a declared sub-field (here, `spread`) is rejected by
+	 * Composite_Value's composite_field_missing code, surfaced through the same
+	 * rest_design_tokens_invalid shape.
+	 *
+	 * @return void
+	 */
+	public function testShadowValueWithMissingSubFieldIsRejectedByThePipeline(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			// 'spread' intentionally omitted.
+		];
+
+		$request = $this->make_create_request( $slug, 'incomplete-shadow', 'shadow', $shadow_value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A shadow `$value` with an unknown sub-field (here, `inset`) is rejected by
+	 * Composite_Value's composite_field_unknown code. This also covers the DTCG stacked-array
+	 * shape implicitly: a list body fails the same declared-field checks (every numeric key
+	 * reads as unknown).
+	 *
+	 * @return void
+	 */
+	public function testShadowValueWithUnknownSubFieldIsRejectedByThePipeline(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => 'true',
+		];
+
+		$request = $this->make_create_request( $slug, 'inset-shadow', 'shadow', $shadow_value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	// -------------------------------------------------------------------------
+	// create_item — shadow sub-field alias references
+	// -------------------------------------------------------------------------
+
+	/**
+	 * A shadow whose `color` sub-field aliases a baseline color token succeeds: sub-field
+	 * aliases validate through Kind, and the write guard permits references to non-user tokens.
+	 *
+	 * @return void
+	 */
+	public function testShadowSubFieldAliasToBaselineTokenSucceeds(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '{primitive.color.neutral.900}',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$request = $this->make_create_request( $slug, 'baseline-aliased', 'shadow', $shadow_value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+	}
+
+	/**
+	 * A shadow whose `color` sub-field aliases a user-created color primitive is refused —
+	 * pinning that the dangling-alias state rewrite_node() cannot rewrite is unreachable
+	 * through the REST surface, so rename needs no composite awareness (settled decision E).
+	 *
+	 * @return void
+	 */
+	public function testShadowSubFieldAliasToUserPrimitiveIsRefused(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.user-color';
+
+		$this->store->save_document( wp_json_encode( $this->doc_with_primitive( $id, 'User Color' ) ) );
+		$version = $this->store->get_version( $slug );
+
+		$shadow_value = [
+			'color'   => '{' . $id . '}',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$request = $this->make_create_request( $slug, 'user-aliased', 'shadow', $shadow_value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_user_primitive_reference_unsupported', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	// -------------------------------------------------------------------------
+	// create_item — type not supported
+	// -------------------------------------------------------------------------
+
+	/**
+	 * A create for a $type outside the derived allowlist 422s with the existing
+	 * rest_design_tokens_type_not_supported contract, whether the type is a registered
+	 * camelCase scalar (which can never register, per is_supported_type()) or entirely unregistered.
+	 *
+	 * @dataProvider unsupportedTypeProvider
+	 *
+	 * @param string $type The unsupported DTCG $type.
+	 *
+	 * @return void
+	 */
+	public function testItRejects422ForUnsupportedType( string $type ): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'my-token', $type, '16px', $version );
 		$result  = $this->controller->create_item( $request );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'rest_design_tokens_type_not_supported', $result->get_error_code() );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function unsupportedTypeProvider(): Generator {
+		yield 'fontWeight, a camelCase scalar' => [ 'type' => 'fontWeight' ];
+		yield 'fontFamily, a camelCase scalar' => [ 'type' => 'fontFamily' ];
+		yield 'bogus, an unregistered type'    => [ 'type' => 'bogus' ];
 	}
 
 	// -------------------------------------------------------------------------
@@ -519,6 +749,49 @@ final class User_Primitives_ControllerTest extends TestCase {
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * The no-alias invariant follows the generalization to every type: a whole-`$value` alias
+	 * on a dimension create is rejected the same way a color one is.
+	 *
+	 * @return void
+	 */
+	public function testAliasValueOnDimensionIsRejectedByInvariant(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'alias-dim', 'dimension', '{primitive.dimension.spacing.md}', $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	// -------------------------------------------------------------------------
+	// create_item — id collision is scoped per type
+	// -------------------------------------------------------------------------
+
+	/**
+	 * The user-primitive namespaces are disjoint by construction: creating
+	 * primitive.dimension.custom.x does not collide with an existing primitive.color.custom.x.
+	 *
+	 * @return void
+	 */
+	public function testIdCollisionDoesNotCrossTypeNamespaces(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.color.custom.x';
+
+		$this->store->save_document( wp_json_encode( $this->doc_with_primitive( $id, 'X' ) ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'x', 'dimension', '1rem', $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
 	}
 
 	// -------------------------------------------------------------------------
@@ -601,6 +874,63 @@ final class User_Primitives_ControllerTest extends TestCase {
 		// The primitive tree is gone; the user primitives index is empty.
 		$doc = $data['document'];
 		$this->assertArrayNotHasKey( 'to-delete', $doc['primitive']['color']['custom'] ?? [] );
+		$primitives_index = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ] ?? [];
+		$this->assertArrayNotHasKey( $id, $primitives_index );
+	}
+
+	/**
+	 * The delete path is id-driven and passes untouched for non-color types: a dimension
+	 * primitive's leaf and envelope entry are both gone after delete.
+	 *
+	 * @return void
+	 */
+	public function testItDeletesADimensionPrimitive(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.to-delete';
+
+		$this->store->save_document( wp_json_encode( $this->doc_with_typed_primitive( $id, 'To Delete', 'dimension', '1rem' ) ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_delete_request( $slug, $id, $version );
+		$result  = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::OK, $result->get_status() );
+
+		$doc = $result->get_data()['document'];
+		$this->assertArrayNotHasKey( 'to-delete', $doc['primitive']['dimension']['custom'] ?? [] );
+		$primitives_index = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ] ?? [];
+		$this->assertArrayNotHasKey( $id, $primitives_index );
+	}
+
+	/**
+	 * A shadow primitive's object $value removes cleanly through the same id-driven delete
+	 * path — the composite shape needs no special handling on delete.
+	 *
+	 * @return void
+	 */
+	public function testItDeletesAShadowPrimitive(): void {
+		$slug         = Token_Store::default_slug();
+		$id           = 'primitive.shadow.custom.to-delete';
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$this->store->save_document( wp_json_encode( $this->doc_with_typed_primitive( $id, 'To Delete', 'shadow', $shadow_value ) ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_delete_request( $slug, $id, $version );
+		$result  = $this->controller->delete_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::OK, $result->get_status() );
+
+		$doc = $result->get_data()['document'];
+		$this->assertArrayNotHasKey( 'to-delete', $doc['primitive']['shadow']['custom'] ?? [] );
 		$primitives_index = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ] ?? [];
 		$this->assertArrayNotHasKey( $id, $primitives_index );
 	}
@@ -928,6 +1258,32 @@ final class User_Primitives_ControllerTest extends TestCase {
 
 		$this->assertIsArray( $leaf );
 		$this->assertSame( 'color', $leaf['$type'] );
+	}
+
+	/**
+	 * Renaming a non-color primitive keeps it in its own type's namespace — the latent-bug
+	 * fix to canonical()'s rename call site. Before the fix, this would have re-filed the
+	 * renamed primitive under primitive.color.custom.* regardless of its actual $type.
+	 *
+	 * @return void
+	 */
+	public function testRenameKeepsANonColorPrimitiveInItsOwnTypeNamespace(): void {
+		$slug   = Token_Store::default_slug();
+		$old_id = 'primitive.dimension.custom.gap-md';
+		$doc    = $this->doc_with_typed_primitive( $old_id, 'Gap MD', 'dimension', '1.5rem' );
+
+		$this->store->save_document( wp_json_encode( $doc ) );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_rename_request( $slug, $old_id, 'gap-lg', $version );
+		$result  = $this->controller->rename_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::OK, $result->get_status() );
+
+		$doc_after = $result->get_data()['document'];
+		$this->assertArrayHasKey( 'gap-lg', $doc_after['primitive']['dimension']['custom'] );
+		$this->assertArrayNotHasKey( 'gap-lg', $doc_after['primitive']['color']['custom'] ?? [] );
 	}
 
 	// -------------------------------------------------------------------------
@@ -1260,6 +1616,43 @@ final class User_Primitives_ControllerTest extends TestCase {
 						$slug => [
 							'$type'  => 'color',
 							'$value' => '#336699',
+						],
+					],
+				],
+			],
+			Extensions::get_extensions_key() => [
+				Extensions::get_namespace() => [
+					Extensions::get_section_user_primitives() => [
+						$id => [ 'label' => $label ],
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Build a minimal overrides document with one user primitive of an arbitrary $type and
+	 * $value registered in the index — the general form of doc_with_primitive() for the
+	 * dimension/shadow rename and delete round-trip tests.
+	 *
+	 * @param string $id    The canonical dot-path id.
+	 * @param string $label The label to store in the provenance map.
+	 * @param string $type  The DTCG $type.
+	 * @param mixed  $value The DTCG $value.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function doc_with_typed_primitive( string $id, string $label, string $type, $value ): array {
+		$segments = explode( '.', $id );
+		$slug     = end( $segments );
+
+		return [
+			'primitive'                      => [
+				$type => [
+					'custom' => [
+						$slug => [
+							'$type'  => $type,
+							'$value' => $value,
 						],
 					],
 				],

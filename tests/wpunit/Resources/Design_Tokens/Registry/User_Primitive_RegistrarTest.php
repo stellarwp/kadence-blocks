@@ -38,11 +38,26 @@ final class User_Primitive_RegistrarTest extends TestCase {
 	 * @return string JSON-encoded document.
 	 */
 	private function encode_document( string $id, string $type, string $label ): string {
+		return $this->encode_document_with_value( $id, $type, $label, '#ff0000' );
+	}
+
+	/**
+	 * Encode a document with one user primitive, accepting any $value shape (a composite's
+	 * object $value, in particular).
+	 *
+	 * @param string $id    Dot-path id (e.g. "primitive.my-color").
+	 * @param string $type  DTCG $type (e.g. "color").
+	 * @param string $label Human-readable label.
+	 * @param mixed  $value DTCG $value.
+	 *
+	 * @return string JSON-encoded document.
+	 */
+	private function encode_document_with_value( string $id, string $type, string $label, $value ): string {
 		$segments = explode( '.', $id );
 
 		$leaf = [
 			'$type'  => $type,
-			'$value' => '#ff0000',
+			'$value' => $value,
 		];
 
 		$tree = $leaf;
@@ -95,6 +110,69 @@ final class User_Primitive_RegistrarTest extends TestCase {
 		$this->assertNotNull( $token );
 		$this->assertSame( 'color', $token->type );
 		$this->assertSame( 'My Color', $token->label );
+		$this->assertFalse( $logger->hasWarningRecords() );
+	}
+
+	/**
+	 * A stored document with a dimension user primitive registers it, proving the registrar
+	 * is already type-agnostic — no registrar changes are needed for a non-color scalar.
+	 *
+	 * @return void
+	 */
+	public function testDimensionEntryRegistersWithTypeFromTree(): void {
+		$store    = $this->container->get( Token_Store::class );
+		$registry = new Token_Registry();
+		$logger   = new TestLogger();
+
+		$store->save_document(
+			$this->encode_document_with_value( 'primitive.dimension.custom.gap-md', 'dimension', 'Gap MD', '1.5rem' )
+		);
+
+		$this->make_registrar( $registry, $logger )->sync();
+
+		$this->assertSame( [ 'primitive.dimension.custom.gap-md' ], $registry->user_created_ids() );
+
+		$token = $registry->get( 'primitive.dimension.custom.gap-md' );
+		$this->assertNotNull( $token );
+		$this->assertSame( 'dimension', $token->type );
+		$this->assertTrue( $token->is_user_created() );
+		$this->assertSame( 'Gap MD', $token->label );
+		$this->assertFalse( $logger->hasWarningRecords() );
+	}
+
+	/**
+	 * A stored document with a shadow user primitive registers it — the registrar and
+	 * Token_Definition's charset guard accept the "shadow" id segment with zero registrar
+	 * changes, even though the leaf's $value is an object rather than a scalar.
+	 *
+	 * @return void
+	 */
+	public function testShadowEntryRegisters(): void {
+		$store    = $this->container->get( Token_Store::class );
+		$registry = new Token_Registry();
+		$logger   = new TestLogger();
+
+		$shadow_value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$store->save_document(
+			$this->encode_document_with_value( 'primitive.shadow.custom.elevated', 'shadow', 'Elevated', $shadow_value )
+		);
+
+		$this->make_registrar( $registry, $logger )->sync();
+
+		$this->assertSame( [ 'primitive.shadow.custom.elevated' ], $registry->user_created_ids() );
+
+		$token = $registry->get( 'primitive.shadow.custom.elevated' );
+		$this->assertNotNull( $token );
+		$this->assertSame( 'shadow', $token->type );
+		$this->assertTrue( $token->is_user_created() );
+		$this->assertSame( 'Elevated', $token->label );
 		$this->assertFalse( $logger->hasWarningRecords() );
 	}
 
