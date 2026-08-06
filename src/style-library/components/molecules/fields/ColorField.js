@@ -25,7 +25,8 @@ import { FieldLabel } from './FieldLabel';
 export function ColorField({ field, value, onChange }) {
 	return (
 		<div className="kadence-blocks-style-library__field kadence-blocks-style-library__field--color">
-			<FieldLabel>{field.label}</FieldLabel>
+			{/* Omitting the label is a real shape here: the picker's own tab strip names the field. */}
+			{field.label && <FieldLabel>{field.label}</FieldLabel>}
 			<ColorGradientPicker
 				value={value}
 				gradients={field.gradients}
