@@ -7,13 +7,19 @@
 /**
  * WordPress dependencies
  */
-import { ColorPicker, GradientPicker, TabPanel } from '@wordpress/components';
+import { GradientPicker, TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
  * External dependencies
  */
 import { colord } from 'colord';
+
+/**
+ * Internal dependencies
+ */
+import { ColorPicker } from './ColorPicker';
+import './ColorGradientPicker.scss';
 
 /**
  * The Color/Gradient tabs.
@@ -55,26 +61,18 @@ export function isGradientValue(value) {
 export function ColorGradientPicker({ value, gradients = [], readOnly = false, colorOnly = false, onChange }) {
 	const handleChange = (next) => !readOnly && onChange(next);
 
-	// A gradient string picked here would persist: `guard_swatches()` accepts function-shaped strings
-	// via `Literals::is_color()`'s `is_function()` fallback, so it would then be projected as a color.
-	// Until the backend can store gradient tokens, the Gradient tab must not exist on this path — a
-	// disabled tab would still let a value through the same fallback, so the tab itself is dropped.
-	// @todo SOFT-4114: drop the colorOnly escape and re-enable the Gradient tab once gradient tokens land.
-	if (colorOnly) {
-		return (
-			<ColorPicker
-				color={colord(value || '#000000').toHex()}
-				enableAlpha
-				onChange={(next) => handleChange(next.hex ?? next)}
-			/>
-		);
-	}
+	// A gradient picked here would persist and then project as a color: `guard_swatches()` accepts
+	// function-shaped strings through `Literals::is_color()`'s `is_function()` fallback. So the tab
+	// is dropped rather than disabled. It still renders through `TabPanel` with one tab so adding
+	// the Gradient tab back is additive rather than a rebuild.
+	// @todo SOFT-4114: re-enable the Gradient tab on this path once gradient tokens land.
+	const tabs = colorOnly ? TABS.slice(0, 1) : TABS;
 
 	return (
 		<TabPanel
 			className="kadence-blocks-style-library__color-gradient-picker"
-			tabs={TABS}
-			initialTabName={isGradientValue(value) ? 'gradient' : 'color'}
+			tabs={tabs}
+			initialTabName={!colorOnly && isGradientValue(value) ? 'gradient' : 'color'}
 		>
 			{(tab) =>
 				tab.name === 'gradient' ? (
@@ -87,8 +85,7 @@ export function ColorGradientPicker({ value, gradients = [], readOnly = false, c
 				) : (
 					<ColorPicker
 						color={isGradientValue(value) ? undefined : colord(value || '#000000').toHex()}
-						enableAlpha
-						onChange={(next) => handleChange(next.hex ?? next)}
+						onChange={handleChange}
 					/>
 				)
 			}
