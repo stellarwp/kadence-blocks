@@ -401,6 +401,72 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A user-created token minted into the spacing group (the stable key this ticket adds as
+	 * `group_key` on the already-declared spacing scale) surfaces inside the declared "Spacing"
+	 * UI-schema group and is flagged `userCreated`, exercising the shared group-key backend
+	 * against a pre-existing declaration rather than a newly declared one. Asserted against
+	 * `Token_Registry::to_ui_schema()` directly — the same surface
+	 * `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken` checks for the sibling
+	 * border-radius group — rather than through the REST controller, whose resolved dependency
+	 * chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoSpacingSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.spacing-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'spacing-2' => [
+								'$type'  => 'dimension',
+								'$value' => '2.5rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Spacing',
+								'group' => 'spacing',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Spacing', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Spacing'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Spacing" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
