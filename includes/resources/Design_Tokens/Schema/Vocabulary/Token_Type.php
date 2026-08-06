@@ -112,6 +112,17 @@ final class Token_Type {
 	private const KEY = '$type';
 
 	/**
+	 * The "boolean" kind label used by OPTIONAL_FIELDS. Not a v1 $type (DTCG has no boolean $type),
+	 * so it never appears in TYPES — it only marks an optional composite sub-field as a strict
+	 * literal boolean in Composite_Value::validate().
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_BOOLEAN = 'boolean';
+
+	/**
 	 * Every v1 $type, in declaration order.
 	 *
 	 * @var string[]
@@ -146,6 +157,26 @@ final class Token_Type {
 			'offsetY' => self::DIMENSION,
 			'blur'    => self::DIMENSION,
 			'spread'  => self::DIMENSION,
+		],
+	];
+
+	/**
+	 * The composite types and their sub-field => kind map for fields that MAY be present but are never
+	 * required. Kept separate from COMPOSITE_FIELDS (which Composite_Value::validate() treats as the
+	 * required set) so adding an optional field never turns an existing baseline token invalid — the
+	 * shadow tokens in baseline.json predate "inset" and carry only the five required fields.
+	 *
+	 * "boolean" is a label, not a v1 $type: DTCG has no boolean $type and none is registered here, so an
+	 * optional field is not dispatched through Kind::validate() (which would accept an alias for any
+	 * kind) — the composite validator checks it as a strict literal instead.
+	 *
+	 * @var array<string, array<string, string>>
+	 *
+	 * @since TBD
+	 */
+	private const OPTIONAL_FIELDS = [
+		self::SHADOW => [
+			'inset' => self::KIND_BOOLEAN,
 		],
 	];
 
@@ -200,6 +231,21 @@ final class Token_Type {
 	}
 
 	/**
+	 * The optional sub-field => kind map for a composite $type, or an empty array for a non-composite
+	 * type or one with no optional fields. A field returned here is never required by
+	 * Composite_Value::validate() — it is only validated when present.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The composite $type.
+	 *
+	 * @return array<string, string> Field name => the sub-field's kind label.
+	 */
+	public static function optional_fields( string $type ): array {
+		return self::OPTIONAL_FIELDS[ $type ] ?? [];
+	}
+
+	/**
 	 * The DTCG leaf key that carries a token's $type.
 	 *
 	 * @since TBD
@@ -208,6 +254,17 @@ final class Token_Type {
 	 */
 	public static function get_type_key(): string {
 		return self::KEY;
+	}
+
+	/**
+	 * The "boolean" kind label used by an optional composite sub-field (e.g. shadow's "inset").
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_boolean(): string {
+		return self::KIND_BOOLEAN;
 	}
 
 	/**
