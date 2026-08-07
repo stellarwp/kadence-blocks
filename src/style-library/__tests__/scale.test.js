@@ -93,6 +93,14 @@ describe('customScaleTokenId', () => {
 	it('builds primitive.<type>.custom.<slug>', () => {
 		expect(customScaleTokenId('dimension', 'radius-2')).toBe('primitive.dimension.custom.radius-2');
 	});
+
+	it('is unchanged for a type every sibling scale screen already passes (the no-op pin)', () => {
+		expect(customScaleTokenId('dimension', 'x')).toBe('primitive.dimension.custom.x');
+	});
+
+	it('maps a camelCase $type to its registered kebab id segment', () => {
+		expect(customScaleTokenId('fontFamily', 'abel')).toBe('primitive.font-family.custom.abel');
+	});
 });
 
 describe('scaleInitialValues', () => {
