@@ -166,9 +166,10 @@ $font_size_primitive_tokens = array_map(
 // The three preview fonts are primitives the Style Library's Typography screen lists as FONT
 // options; the font-family semantics (semantic.font-family.control / .heading) keep their own
 // values and already carry whatever projections deliver a family into a block, so these primitives
-// declare none of their own. No group_key: the user-primitive backend cannot mint a fontFamily
-// token today (its DTCG $type is camelCase, which can never be a valid kebab id segment), so
-// nothing can "+ Add Font" into this group until that backend gap is closed.
+// declare none of their own. group_key lets "+ Add Font" mint a user fontFamily primitive into
+// this same group: Token_Type maps the camelCase $type to the kebab id segment "font-family" (the
+// id feeds Css_Var::from_id(), which cannot take a camelCase segment), so the stored $type and the
+// registered id can differ while staying self-consistent.
 //
 // The id segment is kebab-case ("font-family", not "fontFamily") because Token_Definition::from_array()
 // validates every declared id against the kebab charset and throws on a camelCase segment — these
@@ -182,10 +183,11 @@ $font_family_slugs = [
 $font_family_tokens = array_map(
 	static function ( string $slug, string $label ): array {
 		return [
-			'id'    => 'primitive.font-family.' . $slug,
-			'type'  => 'fontFamily',
-			'label' => $label,
-			'group' => __( 'Font Family', 'kadence-blocks' ),
+			'id'        => 'primitive.font-family.' . $slug,
+			'type'      => 'fontFamily',
+			'label'     => $label,
+			'group'     => __( 'Font Family', 'kadence-blocks' ),
+			'group_key' => 'font-family',
 		];
 	},
 	array_keys( $font_family_slugs ),

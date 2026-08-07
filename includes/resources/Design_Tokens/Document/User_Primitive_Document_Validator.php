@@ -141,7 +141,7 @@ final class User_Primitive_Document_Validator {
 				$id,
 				sprintf( 'User primitive "%s" tree leaf has $type "%s"; that type does not support user-created primitives.', $id, Cast::to_string( $type ) )
 			);
-		} elseif ( $type !== $segment ) {
+		} elseif ( Token_Type::get_id_segment( $type ) !== $segment ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
 				sprintf( 'User primitive "%s" tree leaf declares $type "%s", which does not match its id namespace.', $id, $type )
@@ -187,7 +187,7 @@ final class User_Primitive_Document_Validator {
 		$orphans = [];
 
 		foreach ( Token_Type::all() as $type ) {
-			$subtree = $primitive[ $type ] ?? [];
+			$subtree = $primitive[ Token_Type::get_id_segment( $type ) ] ?? [];
 
 			if ( ! is_array( $subtree ) ) {
 				continue;

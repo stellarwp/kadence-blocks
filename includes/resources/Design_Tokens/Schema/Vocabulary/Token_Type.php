@@ -142,6 +142,29 @@ final class Token_Type {
 	];
 
 	/**
+	 * The registered-id segment for each $type whose DTCG spelling is not itself a valid
+	 * kebab-case id segment. A $type absent from this map uses its own spelling verbatim.
+	 *
+	 * The id segment is not the same vocabulary as the $type spelling: an id feeds
+	 * Css_Var::from_id(), which only swaps "." for "--" and therefore requires the kebab
+	 * charset, while $type is the DTCG spec spelling and stays camelCase where the spec says so.
+	 * This map is the single place that reconciles the two so Reserved_Namespace and the
+	 * mirrored JS map never re-derive it independently.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
+	 */
+	private const ID_SEGMENTS = [
+		self::FONT_FAMILY    => 'font-family',
+		self::FONT_WEIGHT    => 'font-weight',
+		self::LINE_HEIGHT    => 'line-height',
+		self::FONT_STYLE     => 'font-style',
+		self::TEXT_TRANSFORM => 'text-transform',
+		self::BORDER_STYLE   => 'border-style',
+	];
+
+	/**
 	 * The composite types and their sub-field => $type maps. A field absent from the document is a
 	 * missing-field error; a field present but not listed here is an unknown-field error. Every field is
 	 * validated "alias OR literal-of-$type", so an alias is accepted in any sub-field.
@@ -189,6 +212,35 @@ final class Token_Type {
 	 */
 	public static function all(): array {
 		return self::TYPES;
+	}
+
+	/**
+	 * The registered-id segment for a $type: the mapped kebab spelling if one is registered in
+	 * ID_SEGMENTS, or the $type verbatim otherwise.
+	 *
+	 * A pure string mapper that performs no validation of its own — the same posture as Reserved_Namespace::canonical():
+	 * callers pass a $type that already passed is_valid(). An unregistered input returns
+	 * verbatim and produces an id downstream validation rejects.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The DTCG $type (spec spelling).
+	 *
+	 * @return string The registered-id segment for $type.
+	 */
+	public static function get_id_segment( string $type ): string {
+		return self::ID_SEGMENTS[ $type ] ?? $type;
+	}
+
+	/**
+	 * Every v1 $type's registered-id segment, in the same declaration order as all().
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_id_segments(): array {
+		return array_map( [ self::class, 'get_id_segment' ], self::TYPES );
 	}
 
 	/**
