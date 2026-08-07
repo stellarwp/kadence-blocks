@@ -299,11 +299,15 @@ final class DocumentsControllerOrderTest extends TestCase {
 
 	/**
 	 * A real declared UI-schema group whose label contains a space (e.g. "Font Size") is
-	 * reachable through the actual WP REST dispatch layer. Every other test in this suite calls
-	 * the controller method directly, which never exercises `register_routes()`'s regex or the
-	 * `group` arg's `pattern` — this is the one test that dispatches a real request through
-	 * `$wp_rest_server`, so a route character class that excludes spaces (as it once did) would
-	 * fail this test with a 404 from WP's own routing layer instead of shipping unnoticed.
+	 * reachable through the actual WP REST dispatch layer, with the group segment built the way a
+	 * real client must build it: percent-encoded via `rawurlencode()`. Every other test in this
+	 * suite calls the controller method directly, which never exercises `register_routes()`'s
+	 * regex, the `group` arg's `pattern`/`sanitize_callback`, or WP's own URL routing — this is
+	 * the one test that dispatches a real request through `$wp_rest_server` on a path built the
+	 * way `WP_REST_Request::from_url()`/a browser `fetch()` would build it, so both a route
+	 * character class that excludes spaces and a handler that fails to decode the percent-escapes
+	 * (as it once did — a raw, unencoded path segment is not a request shape any real client can
+	 * send) would fail this test with a 404 instead of shipping unnoticed.
 	 *
 	 * @return void
 	 */
@@ -324,14 +328,14 @@ final class DocumentsControllerOrderTest extends TestCase {
 
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
 
-		$request = new WP_REST_Request( 'DELETE', '/kb-design-tokens/v1/documents/' . $slug . '/order/' . $group );
+		$request = new WP_REST_Request( 'DELETE', '/kb-design-tokens/v1/documents/' . $slug . '/order/' . rawurlencode( $group ) );
 		$request->set_param( 'version', $this->store->get_version( $slug ) );
 
 		global $wp_rest_server;
 		$response = $wp_rest_server->dispatch( $request );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
-		$this->assertSame( WP_Http::OK, $response->get_status(), 'The group route must match a label containing a space rather than 404 at the routing layer.' );
+		$this->assertSame( WP_Http::OK, $response->get_status(), 'The group route must match a percent-encoded multi-word label rather than 404 at the routing layer.' );
 	}
 
 	/**
