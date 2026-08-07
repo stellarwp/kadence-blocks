@@ -588,6 +588,135 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The declared shadow scale surfaces as its own feed group, in declaration order, with every
+	 * step's value resolved to the `Css_Renderer` shorthand and no projections — the Shadow
+	 * screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheShadowScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Shadow', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Shadow'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.shadow.xs',
+				'primitive.shadow.sm',
+				'primitive.shadow.md',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Shadow'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared shadow scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '0px 1px 2px 0px #1717171f', $data['values']['primitive.shadow.xs'] );
+		$this->assertSame( '0px 2px 4px 0px #1717171f', $data['values']['primitive.shadow.sm'] );
+		$this->assertSame( '0px 2px 8px 0px #1717171f', $data['values']['primitive.shadow.md'] );
+	}
+
+	/**
+	 * `semantic.shadow.card` keeps resolving through its own curated, palette-linked value after
+	 * the shadow primitive scale is declared — declaring the scale for the Style Library screen
+	 * must not disturb the semantic's existing alias.
+	 *
+	 * @return void
+	 */
+	public function testSemanticShadowCardIsUnaffectedByTheDeclaredScale(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertNotSame(
+			$data['values']['primitive.shadow.md'],
+			$data['values']['semantic.shadow.card'],
+			'semantic.shadow.card must keep its own curated value, not follow the new scale.'
+		);
+	}
+
+	/**
+	 * A user-created token minted into the shadow group (the stable key this ticket declares as
+	 * `group_key` alongside the newly declared shadow scale) surfaces inside the declared "Shadow"
+	 * UI-schema group and is flagged `userCreated`, and a stored `inset` sub-field round-trips into
+	 * the resolved value with the `inset ` prefix `Css_Renderer::shadow()` emits.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoShadowSurfacesInItsFeedGroupWithInsetResolved(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.shadow.custom.shadow-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'shadow' => [
+						'custom' => [
+							'shadow-2' => [
+								'$type'  => 'shadow',
+								'$value' => [
+									'color'   => '#171717',
+									'offsetX' => '0px',
+									'offsetY' => '4px',
+									'blur'    => '12px',
+									'spread'  => '0px',
+									'inset'   => true,
+								],
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'Elevated',
+								'group' => 'shadow',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Shadow', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Shadow'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Shadow" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( 'inset 0px 4px 12px 0px #171717', $resolved->value( $id ) );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
