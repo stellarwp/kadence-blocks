@@ -895,6 +895,75 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A user-created `fontFamily` primitive minted into the `font-family` group (the $type ->
+	 * id-segment mapping's headline unlock) surfaces inside the declared "Font Family" UI-schema
+	 * group as `userCreated`, and its single-family stack resolves with the spaced name quoted —
+	 * `Css_Renderer::font_family()`'s existing quoting rule, exercised end to end through a minted
+	 * token rather than only a baseline one.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoFontFamilySurfacesInItsFeedGroupWithQuotedValue(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.font-family.custom.abril-fatface';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'font-family' => [
+						'custom' => [
+							'abril-fatface' => [
+								'$type'  => 'fontFamily',
+								'$value' => [ 'Abril Fatface' ],
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'Abril Fatface',
+								'group' => 'font-family',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Font Family', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Font Family'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom font must appear in the declared "Font Family" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( '"Abril Fatface"', $resolved->value( $id ) );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
@@ -976,6 +1045,12 @@ final class Feed_ControllerTest extends TestCase {
 	/**
 	 * The decoded feed attached to the dashboard handle, or null when none was attached.
 	 *
+	 * The Localizer attaches TWO separate inline scripts to the handle (the feed, and — as its own
+	 * global, never folded into the feed payload — the page-load-only font catalog), each its own
+	 * entry in the 'before' data array. This walks the entries rather than imploding the whole array and running one
+	 * regular expression over it, so the catalog entry (whose global name is a superset string,
+	 * "window.kadenceDesignTokensFontCatalog") can never be mistaken for the feed entry.
+	 *
 	 * @return array<string, mixed>|null
 	 */
 	private function attached_feed(): ?array {
@@ -985,16 +1060,18 @@ final class Feed_ControllerTest extends TestCase {
 			return null;
 		}
 
-		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokens =' ) === false ) {
+				continue;
+			}
 
-		if ( strpos( $inline, 'window.kadenceDesignTokens' ) === false ) {
-			return null;
+			$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $entry );
+			$decoded = json_decode( $json, true );
+
+			return is_array( $decoded ) ? $decoded : null;
 		}
 
-		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( $json, true );
-
-		return is_array( $decoded ) ? $decoded : null;
+		return null;
 	}
 
 	/**
