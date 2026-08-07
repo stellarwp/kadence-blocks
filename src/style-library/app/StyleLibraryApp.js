@@ -22,6 +22,7 @@ import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal
 import { SettingsPanel } from '../components/templates/SettingsPanel';
 import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
+import { TypographyScreen } from '../components/pages/TypographyScreen';
 import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
 import { SpacingScreen } from '../components/pages/SpacingScreen';
@@ -45,6 +46,7 @@ import { libraryDisplayTitle } from '../helpers/libraries';
  * @since TBD
  */
 const SCREEN_COMPONENTS = {
+	typography: TypographyScreen,
 	'border-radius': BorderRadiusScreen,
 	'border-width': BorderWidthScreen,
 	spacing: SpacingScreen,
