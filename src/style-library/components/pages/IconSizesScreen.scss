@@ -5,10 +5,10 @@
 	display: block;
 	fill: currentColor;
 	color: var(--kb-sl-color-gray-700);
-	// The mock's largest declared row (LG, 2.25rem/36px) sits well under this; the clamp only
-	// guards a pathological custom value (e.g. `50rem`) from making the row list hard to scan.
-	max-width: 3rem;
-	max-height: 3rem;
+	// Unclamped on purpose: the preview must show a token's true CSS size, not a normalized
+	// approximation, so a custom icon size above the mock's largest declared step (LG, 2.25rem)
+	// still renders truthfully and the row grows to fit it. Accepted consequence: a very large
+	// custom value produces a very tall row.
 }
 
 // Scoped to this screen via `ScaleScreen`'s per-screen root modifier class (see
