@@ -94,7 +94,10 @@ export function useScaleScreen(config, library, route, navigate) {
 
 	const tokenById = useCallback((id) => baseRows.find((row) => row.id === id) ?? null, [baseRows]);
 
-	const initialValuesFor = useCallback((id) => scaleInitialValues(tokenById(id), feed?.values), [tokenById, feed]);
+	const initialValuesFor = useCallback(
+		(id) => scaleInitialValues(tokenById(id), feed?.values, config.parseValue),
+		[tokenById, feed, config.parseValue]
+	);
 
 	const addToken = useCallback(() => {
 		setAddError(null);
@@ -129,6 +132,7 @@ export function useScaleScreen(config, library, route, navigate) {
 				refreshFeed: library.refreshFeed,
 				onBusy: setIsBusy,
 				onError: setSaveError,
+				buildLeaf: config.buildLeaf,
 			});
 		},
 		[library, feed, config, feedVersion]
