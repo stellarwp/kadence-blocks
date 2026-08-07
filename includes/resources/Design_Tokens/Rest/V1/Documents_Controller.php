@@ -195,12 +195,13 @@ final class Documents_Controller extends Controller {
 	 *
 	 * Unlike the token dot-path routes, this segment carries a human-readable, `__()`-translated
 	 * UI-schema group label (e.g. "Font Size"), not a slug — so it cannot be restricted to
-	 * `\w`/`-`. WordPress decodes the request path before matching route regexes (see
-	 * `WP::parse_request()`), so by match time the segment is the literal, fully-decoded label:
-	 * spaces, punctuation, and non-ASCII characters all appear as themselves, not percent-escapes.
-	 * The only character that must stay excluded is the path separator, since the group is a
-	 * single URL path segment; anything else is accepted here and validated against the real
-	 * declared groups downstream in `unknown_group()`.
+	 * `\w`/`-`. Unlike the front-end `WP::parse_request()` path, the REST server matches route
+	 * regexes against the raw, still percent-encoded request path (`WP_REST_Server::dispatch()`
+	 * never calls `urldecode()`/`rawurldecode()` on it), so a multi-word label reaches this pattern
+	 * as e.g. `Font%20Size`, not `Font Size`. The pattern only needs to exclude the path separator,
+	 * since the group is a single URL path segment; the percent-encoding is undone afterward by the
+	 * `sanitize_callback` on the group arg (see `get_order_delete_params()`), and the decoded value
+	 * is what is validated against the real declared groups in `unknown_group()`.
 	 *
 	 * @since TBD
 	 *
@@ -1207,6 +1208,26 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * Decode the order sub-route's group path segment (sanitize_callback for the group arg).
+	 *
+	 * The REST server does not urldecode a route param before it reaches this callback (see the
+	 * `GROUP_ROUTE` docblock), so a multi-word label such as "Font Size" arrives as `Font%20Size`.
+	 * `rawurldecode()` (not `urldecode()`) is deliberate: this is a path segment, not a form-encoded
+	 * query value, so a literal `+` in a group label must stay a `+`, not become a space. Decoding
+	 * happens exactly once, here at the args layer, so every handler reading `self::GROUP_PARAM`
+	 * already sees the real label.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw, still percent-encoded group value from the URL.
+	 *
+	 * @return string The decoded group label.
+	 */
+	public function decode_group( $value ): string {
+		return rawurldecode( Cast::to_string( $value ) );
+	}
+
+	/**
 	 * The JSON Schema for a token-library document item.
 	 *
 	 * @since TBD
@@ -1984,12 +2005,15 @@ final class Documents_Controller extends Controller {
 			$this->get_slug_params(),
 			[
 				self::GROUP_PARAM   => [
-					'description' => __( 'The UI-schema group name whose token order is being set.', 'kadence-blocks' ),
-					'type'        => 'string',
-					'required'    => true,
+					'description'       => __( 'The UI-schema group name whose token order is being set.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
 					// Matches self::GROUP_ROUTE: a translated group label, not a slug — only the
 					// path separator is excluded. See the GROUP_ROUTE docblock for why.
-					'pattern'     => '^[^/]+$',
+					'pattern'           => '^[^/]+$',
+					// The value on the wire is still percent-encoded (e.g. "Font%20Size"); decode it
+					// once here so set_order()/delete_order() both see the real label. See decode_group().
+					'sanitize_callback' => [ $this, 'decode_group' ],
 				],
 				self::VERSION_PARAM => [
 					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
