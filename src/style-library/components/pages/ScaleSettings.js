@@ -54,20 +54,30 @@ export function ScaleSettings({ config, route, navigate, library }) {
 		}
 	}, [id, token, navigate]);
 
+	// Pulled out of `channel` rather than depending on `channel` itself: `useDraftChannelState()`
+	// (called by `StyleLibraryApp` on every one of its renders) returns a fresh object literal each
+	// time, while `publish`/`clearPublication` are individually stable (`useCallback(..., [])`).
+	// Depending on `channel` would re-fire this effect's cleanup — which nulls the pending guard
+	// action — on every unrelated app re-render, including the very re-render `guard()` triggers to
+	// open the unsaved-changes modal, destroying the pending action before it can render. Depending
+	// on the stable callbacks instead means the effect only re-runs for a real id/token/draft change
+	// or an actual unmount.
+	const publish = channel?.publish;
+	const clearPublication = channel?.clearPublication;
+
 	// Publishes the live draft on every change (including each keystroke) and wipes it on cleanup —
 	// which fires both on unmount and on the next publish, so a stale-item self-heal or an item
 	// switch never leaves a dangling publication behind. Only this panel ever publishes; the screen
 	// is read-only on the channel, and the app structure guarantees a single mounted panel.
 	useEffect(() => {
-		if (!channel || !id || !token) {
+		if (!publish || !clearPublication || !id || !token) {
 			return undefined;
 		}
 
-		channel.publish({ itemId: id, label: token.label, draft: panel.draft, isDirty: panel.isDirty });
+		publish({ itemId: id, label: token.label, draft: panel.draft, isDirty: panel.isDirty });
 
-		return () => channel.clearPublication();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [channel, id, token, panel.draft, panel.isDirty]);
+		return () => clearPublication();
+	}, [publish, clearPublication, id, token, panel.draft, panel.isDirty]);
 
 	// Reassigned every render, never held in state (decision 10b in the plan): these close over the
 	// current `panel.draft`, so storing them in state would either loop the publish effect above
