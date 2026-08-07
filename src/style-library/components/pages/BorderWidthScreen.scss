@@ -1,7 +1,17 @@
 // The bordered-square preview's own box. Sizing for the slot itself already comes from
 // `.list-row-preview` (ListRow.scss) — this element only has to fill that slot so its own
 // `border-width` (set inline, per row) has a visible box to frame.
+//
+// `box-sizing: border-box` is required here: a `<span>` defaults to `content-box`, so the inline
+// `border-width` was being added on top of the 100%/100% size instead of drawn inside it. The
+// flex parent (`.list-row-preview`, `display: flex`) then shrinks the box along its main
+// (horizontal) axis to fit, which visually compensated the inline and right edges back to the
+// right thickness — but the cross (vertical) axis isn't shrunk by flex layout, so the excess
+// height overflowed and was clipped by the parent's `overflow: hidden`, leaving the top and
+// bottom edges stuck thin regardless of the token's value. `border-box` keeps the border inside
+// the box on every axis, so all four sides thicken together.
 .kadence-blocks-style-library__border-width-preview {
+	box-sizing: border-box;
 	display: block;
 	width: 100%;
 	height: 100%;
