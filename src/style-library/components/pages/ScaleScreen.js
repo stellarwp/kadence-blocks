@@ -35,6 +35,8 @@ import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
 import { EmptyState } from '../molecules/EmptyState';
 import { useScaleScreen } from '../../hooks/use-scale-screen';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
+import { overlayDraft } from '../../helpers/scale';
 
 /**
  * Render a scale screen's body.
@@ -52,25 +54,48 @@ import { useScaleScreen } from '../../hooks/use-scale-screen';
  */
 export function ScaleScreen({ config, route, navigate, library }) {
 	const scale = useScaleScreen(config, library, route, navigate);
+	const channel = useDraftChannel();
 
+	// A null channel (no `DraftChannelContext.Provider` mounted) degrades to today's direct calls —
+	// keeps this screen usable in isolation, e.g. the dev gallery.
+	const mintToken = () => scale.addToken().then((id) => navigate({ item: id }));
 	const addAction = (
 		<Button
 			icon={plus}
 			variant="secondary"
 			disabled={scale.isBusy}
-			onClick={() => scale.addToken().then((id) => navigate({ item: id }))}
+			onClick={() => (channel ? channel.guard(mintToken) : mintToken())}
 		>
 			{config.addLabel}
 		</Button>
 	);
 
-	const items = scale.rows.map((row) => ({
+	// Strictly keyed to the open route item: a publication from a panel editing a different token
+	// (or one that already unmounted) can never leak onto this screen's rows.
+	const draft =
+		channel && channel.publication && channel.publication.itemId === route.item ? channel.publication.draft : null;
+	const rows = overlayDraft(scale.rows, route.item, draft);
+
+	const items = rows.map((row) => ({
 		id: row.id,
 		label: row.label,
 		value: config.formatValue ? config.formatValue(row) : row.value,
 		preview: config.renderPreview(row),
 		isDraggable: true,
 	}));
+
+	// Selecting the already-open token is a no-op (the draft survives — `useSettingsPanel` only
+	// re-seeds on itemId change) so it must bypass the guard entirely; prompting for a click that
+	// changes nothing would be pure friction.
+	const selectToken = (id) => {
+		if (id === route.item) {
+			return;
+		}
+
+		const run = () => scale.selectToken(id);
+
+		channel ? channel.guard(run) : run();
+	};
 
 	return (
 		<div
@@ -90,7 +115,7 @@ export function ScaleScreen({ config, route, navigate, library }) {
 			<RowList
 				items={items}
 				selectedId={scale.selectedId}
-				onSelect={scale.selectToken}
+				onSelect={selectToken}
 				onReorder={scale.reorderTokens}
 				empty={<EmptyState title={config.title} description={config.addLabel} action={addAction} />}
 			/>

@@ -20,6 +20,7 @@ import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { useScaleScreen } from '../../hooks/use-scale-screen';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { isDeletable } from '../../helpers/token-capabilities';
 import { scaleValueField } from '../../helpers/scale';
 
@@ -38,6 +39,7 @@ import { scaleValueField } from '../../helpers/scale';
  */
 export function ScaleSettings({ config, route, navigate, library }) {
 	const scale = useScaleScreen(config, library, route, navigate);
+	const channel = useDraftChannel();
 	const id = route.item;
 	const token = scale.tokenById(id);
 	const initialValues = scale.initialValuesFor(id);
@@ -51,6 +53,33 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			navigate({ item: '' });
 		}
 	}, [id, token, navigate]);
+
+	// Publishes the live draft on every change (including each keystroke) and wipes it on cleanup —
+	// which fires both on unmount and on the next publish, so a stale-item self-heal or an item
+	// switch never leaves a dangling publication behind. Only this panel ever publishes; the screen
+	// is read-only on the channel, and the app structure guarantees a single mounted panel.
+	useEffect(() => {
+		if (!channel || !id || !token) {
+			return undefined;
+		}
+
+		channel.publish({ itemId: id, label: token.label, draft: panel.draft, isDirty: panel.isDirty });
+
+		return () => channel.clearPublication();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [channel, id, token, panel.draft, panel.isDirty]);
+
+	// Reassigned every render, never held in state (decision 10b in the plan): these close over the
+	// current `panel.draft`, so storing them in state would either loop the publish effect above
+	// (new identity every render) or hand the guard modal a stale draft. `save` is the raw promise,
+	// re-thrown rejection and all — the modal's own Save button is the one place that needs to see a
+	// failure, unlike the panel's own Save button below, which swallows it into `scale.saveError`.
+	if (channel) {
+		channel.actionsRef.current = {
+			save: () => scale.saveToken(id, panel.draft, initialValues),
+			discard: panel.resetDraft,
+		};
+	}
 
 	if (!id || !token) {
 		return null;
@@ -77,9 +106,14 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			.catch(() => {});
 	};
 
+	// Delete is deliberately never guarded: destroying the token makes its draft moot, so prompting
+	// "save your changes?" about a token the user just chose to delete would be nonsense — this
+	// keeps calling `handleDelete` (and, through it, the raw `navigate({ item: '' })`) directly.
+	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
+
 	return (
 		<SettingsPanel
-			onClose={panel.close}
+			onClose={handleClose}
 			onDelete={isDeletable(token) ? handleDelete : null}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
