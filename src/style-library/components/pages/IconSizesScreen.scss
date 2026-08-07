@@ -19,3 +19,13 @@
 	border: 0;
 	background: transparent;
 }
+
+// `formatValue` (see IconSizesScreen.js) shows two dimensions (`N x N`), not the one `ListRow`'s
+// shared 6rem value column was sized for — the baseline scale's longest row ("2.25rem x 2.25rem",
+// 17 characters) wrapped onto two lines there. `ch` (not a fixed rem/px number) because the
+// column's own font is monospace (`ListRow.scss`), so `ch` tracks the actual glyph width; scoped
+// through the `scale-screen--icon-sizes` modifier so Border Radius/Border Width/Spacing, whose
+// values are short, keep the shared column width unchanged.
+.kadence-blocks-style-library__scale-screen--icon-sizes .kadence-blocks-style-library__list-row-value {
+	width: 19ch;
+}
