@@ -163,3 +163,60 @@ export function scaleInitialValues(entry, values) {
 export function scaleValueField(valueField) {
 	return { ...valueField, path: 'value', responsive: false };
 }
+
+/**
+ * Overlay a live settings-panel draft onto the row it edits, so the label, value column, and
+ * preview all show what Save would write instead of waiting for it. Draft keys are taken verbatim
+ * when present (an own-property check, not a truthiness check) — an emptied field previews as
+ * empty, because a live preview must be honest about what Save would write, not a prettified
+ * stand-in for it. `id` and `userCreated` are never overlaid; only `label` and `value` come from
+ * the draft.
+ *
+ * Returns the exact same array reference for a `null`/absent draft or an `itemId` matching no row
+ * (the `applyRowOrder` no-op discipline), so a memoized items mapping downstream can skip work when
+ * nothing is overlaid. Every non-matching row keeps its exact object identity either way.
+ *
+ * @param {Array<{id: string, label: string, value: string, userCreated: boolean}>} rows   The rows
+ *                                                                                          in feed
+ *                                                                                          order.
+ * @param {string}                                                                   itemId The
+ *                                                                                          open
+ *                                                                                          route
+ *                                                                                          item id.
+ * @param {?{label?: string, value?: string}}                                        draft  The
+ *                                                                                          open
+ *                                                                                          panel's
+ *                                                                                          live
+ *                                                                                          draft, or
+ *                                                                                          `null`.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} The rows, with the matching row's `label`/`value` overlaid.
+ */
+export function overlayDraft(rows, itemId, draft) {
+	if (!draft || !itemId) {
+		return rows;
+	}
+
+	const index = rows.findIndex((row) => row.id === itemId);
+
+	if (index === -1) {
+		return rows;
+	}
+
+	const overlaid = { ...rows[index] };
+
+	if (Object.prototype.hasOwnProperty.call(draft, 'label')) {
+		overlaid.label = draft.label;
+	}
+
+	if (Object.prototype.hasOwnProperty.call(draft, 'value')) {
+		overlaid.value = draft.value;
+	}
+
+	const next = [...rows];
+	next[index] = overlaid;
+
+	return next;
+}
