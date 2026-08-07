@@ -116,6 +116,10 @@ export function addScaleTokenFlow({
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
+ * @param {Function} [args.buildLeaf] Optional. Builds the full token leaf from `(tokenType, value)`;
+ *                                    defaults to `buildTokenLeaf` (the string/responsive-envelope
+ *                                    shape). A screen whose value is a composite object (e.g.
+ *                                    Shadow's `buildShadowLeaf`) supplies its own.
  *
  * @since TBD
  *
@@ -133,6 +137,7 @@ export function saveScaleTokenFlow({
 	refreshFeed,
 	onBusy,
 	onError,
+	buildLeaf = buildTokenLeaf,
 }) {
 	const labelChanged = draft.label !== initial.label;
 	const valueChanged = !isEqual(draft.value, initial.value);
@@ -150,7 +155,7 @@ export function saveScaleTokenFlow({
 	}
 
 	if (valueChanged) {
-		chain = chain.then(() => saveTokenLeaf(namespace, tokenId, buildTokenLeaf(tokenType, draft.value), slug));
+		chain = chain.then(() => saveTokenLeaf(namespace, tokenId, buildLeaf(tokenType, draft.value), slug));
 	}
 
 	return chain
