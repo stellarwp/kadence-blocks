@@ -717,6 +717,184 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The renamed, newly declared font-family primitives surface as their own feed group, in
+	 * declaration order, each resolved to the comma-joined stack the Typography screen's FONT
+	 * selector lists — the id rename from `primitive.fontFamily.*` to `primitive.font-family.*`
+	 * reaching all the way through registration and resolution.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheFontFamilyGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Font Family', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Font Family'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.font-family.sans',
+				'primitive.font-family.serif',
+				'primitive.font-family.mono',
+			],
+			$ids
+		);
+
+		$this->assertSame( 'Inter, system-ui, sans-serif', $data['values']['primitive.font-family.sans'] );
+		$this->assertSame( 'Georgia, Cambria, serif', $data['values']['primitive.font-family.serif'] );
+		$this->assertSame( 'Menlo, Consolas, monospace', $data['values']['primitive.font-family.mono'] );
+	}
+
+	/**
+	 * `semantic.font-family.control`'s alias followed the primitive rename in the same edit, so it
+	 * still resolves to the renamed primitive's value instead of dangling.
+	 *
+	 * @return void
+	 */
+	public function testSemanticFontFamilyControlResolvesThroughTheRenamedPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.font-family.sans'],
+			$data['values']['semantic.font-family.control']
+		);
+	}
+
+	/**
+	 * The declared `Font Size` scale still lists its six steps in declaration order, and the group's
+	 * newly declared `group_key` resolves back to the group's translated label — the mechanism
+	 * "+ Add Size" mints custom tokens through.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheFontSizeScaleGroupWithItsGroupKey(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$ids = array_column( $data['schema']['groups']['Font Size'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.font-size.sm',
+				'primitive.dimension.font-size.md',
+				'primitive.dimension.font-size.lg',
+				'primitive.dimension.font-size.xl',
+				'primitive.dimension.font-size.xxl',
+				'primitive.dimension.font-size.xxxl',
+			],
+			$ids
+		);
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$this->assertSame( 'Font Size', $registry->group_label_for( 'font-size' ) );
+	}
+
+	/**
+	 * A user-created dimension primitive minted into the font-size group (the stable key this
+	 * ticket declares as `group_key` alongside the `Font Size` scale) surfaces inside the declared
+	 * "Font Size" UI-schema group and is flagged `userCreated` — "+ Add Size"'s data path end to
+	 * end.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoFontSizeSurfacesInItsFeedGroup(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.font-size';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'font-size' => [
+								'$type'  => 'dimension',
+								'$value' => '1rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Font Size',
+								'group' => 'font-size',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Font Size', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Font Size'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Font Size" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
+	 * Writing a plain scalar leaf over a clamp-carrying `Font Size` step resolves to that scalar,
+	 * with no residual `clamp(...)` — the Typography screen's SIZE field can only ever write a
+	 * fixed value, and the step converting from fluid to fixed on an explicit edit is a documented
+	 * choice, not an accident.
+	 *
+	 * @return void
+	 */
+	public function testExplicitScalarWriteConvertsAClampedFontSizeStepToFixed(): void {
+		$slug = Token_Store::default_slug();
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive' => [
+					'dimension' => [
+						'font-size' => [
+							'sm' => [
+								'$type'  => 'dimension',
+								'$value' => '1.5rem',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( '1.5rem', $resolved->value( 'primitive.dimension.font-size.sm' ) );
+		$this->assertStringNotContainsString( 'clamp(', $resolved->value( 'primitive.dimension.font-size.sm' ) );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
