@@ -123,29 +123,43 @@ export function customScaleTokenId(tokenType, slug) {
 }
 
 /**
- * Seed a settings-panel draft for one row: the effective label, and the value — preferring the
- * authored responsive/clamp shape over the resolved scalar when the leaf carries one, so
- * `buildTokenLeaf()` round-trips an existing tablet/mobile envelope instead of clobbering it with a
- * flattened scalar on save.
+ * Seed a settings-panel draft for one row: the effective label and the resolved scalar value.
+ * Primitive scales never take a responsive value (only presets do — see `ScaleSettings`), so this
+ * always reads the resolved scalar and never an authored responsive/clamp envelope, even when the
+ * leaf carries one from before the rule was enforced.
  *
- * @param {?{id: string, label: string}}  entry      The row/schema entry (`{ id, label, ... }`), or
- *                                                    null for an unknown id.
- * @param {Record<string, string>}        values     The feed's resolved value map.
- * @param {Record<string, Object>}        responsive The feed's authored responsive/clamp map.
+ * @param {?{id: string, label: string}} entry  The row/schema entry (`{ id, label, ... }`), or null
+ *                                               for an unknown id.
+ * @param {Record<string, string>}       values The feed's resolved value map.
  *
  * @since TBD
  *
- * @return {?{label: string, value: *}} The seeded draft, or null for an unknown id.
+ * @return {?{label: string, value: string}} The seeded draft, or null for an unknown id.
  */
-export function scaleInitialValues(entry, values, responsive) {
+export function scaleInitialValues(entry, values) {
 	if (!entry) {
 		return null;
 	}
 
-	const authored = responsive?.[entry.id];
-
 	return {
 		label: entry.label,
-		value: authored !== undefined ? authored : (values?.[entry.id] ?? ''),
+		value: values?.[entry.id] ?? '',
 	};
+}
+
+/**
+ * Build the settings-panel value field for a scale screen's config. Every screen built on this
+ * contract (Border Radius, Border Width, Spacing, Icon Sizes) edits a primitive scale, and
+ * primitives never take a responsive value — only presets do. `responsive` is forced to `false`
+ * here, last, after the config spread, so a config's own `responsive: true` (stale, copy-pasted, or
+ * simply wrong) can never survive into the field the panel actually renders.
+ *
+ * @param {Object} valueField The per-screen `config.valueField` schema fragment.
+ *
+ * @since TBD
+ *
+ * @return {Object} The value field, with `path: 'value'` and `responsive` forced to `false`.
+ */
+export function scaleValueField(valueField) {
+	return { ...valueField, path: 'value', responsive: false };
 }
