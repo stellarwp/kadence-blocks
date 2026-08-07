@@ -492,6 +492,73 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'primitive.dimension.custom.gap-md', $ext );
 	}
 
+	/**
+	 * A `fontFamily` create — unblocked by the $type -> id-segment mapping — mirrors the color and
+	 * dimension cases: 201, the leaf lands under the MAPPED kebab id segment
+	 * (primitive.font-family.custom.<slug>, never the camelCase primitive.fontFamily.custom.<slug>),
+	 * and the single-family `$value` (no invented generic fallback — the shipped font arrays carry
+	 * no category data) is stored verbatim.
+	 *
+	 * @return void
+	 */
+	public function testItCreatesANewFontFamilyPrimitive(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'abel', 'fontFamily', [ 'Abel' ], $version, 'Abel', 'font-family' );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $result );
+		$this->assertSame( WP_Http::CREATED, $result->get_status() );
+
+		$doc  = $result->get_data()['document'];
+		$leaf = $doc['primitive']['font-family']['custom']['abel'];
+		$this->assertSame( 'fontFamily', $leaf['$type'] );
+		$this->assertSame( [ 'Abel' ], $leaf['$value'] );
+
+		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
+		$this->assertArrayHasKey( 'primitive.font-family.custom.abel', $ext );
+		$this->assertSame( 'font-family', $ext['primitive.font-family.custom.abel']['group'] );
+	}
+
+	/**
+	 * A malformed `fontFamily` $value (empty string, empty list, a list holding an empty string, or
+	 * a string-keyed map instead of a sequential list) is rejected by document validation exactly
+	 * like any other type's malformed value — the create path adds no bypass for this newly
+	 * unblocked type.
+	 *
+	 * @dataProvider malformedFontFamilyValueProvider
+	 *
+	 * @param mixed $value The malformed `$value` under test.
+	 *
+	 * @return void
+	 */
+	public function testMalformedFontFamilyValueIsRejectedByThePipeline( $value ): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$request = $this->make_create_request( $slug, 'bad-font', 'fontFamily', $value, $version );
+		$result  = $this->controller->create_item( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function malformedFontFamilyValueProvider(): Generator {
+		yield 'an empty string' => [ 'value' => '' ];
+		yield 'an empty list' => [ 'value' => [] ];
+		yield 'a list holding an empty string' => [ 'value' => [ '' ] ];
+		yield 'a string-keyed map' => [ 'value' => [ 'name' => 'Abel' ] ];
+	}
+
 	// -------------------------------------------------------------------------
 	// create_item — the optional stable group key
 	// -------------------------------------------------------------------------
@@ -833,8 +900,10 @@ final class User_Primitives_ControllerTest extends TestCase {
 
 	/**
 	 * A create for a $type outside the derived allowlist 422s with the existing
-	 * rest_design_tokens_type_not_supported contract, whether the type is a registered
-	 * camelCase scalar (which can never register, per is_supported_type()) or entirely unregistered.
+	 * rest_design_tokens_type_not_supported contract. Since the $type -> id-segment mapping
+	 * (Token_Type::get_id_segment()), every REGISTERED $type — including the six whose DTCG
+	 * spelling is camelCase, such as fontFamily and fontWeight — supports user-created primitives;
+	 * only an unregistered $type still hits this 422.
 	 *
 	 * @dataProvider unsupportedTypeProvider
 	 *
@@ -860,9 +929,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 	 * @return Generator
 	 */
 	public function unsupportedTypeProvider(): Generator {
-		yield 'fontWeight, a camelCase scalar' => [ 'type' => 'fontWeight' ];
-		yield 'fontFamily, a camelCase scalar' => [ 'type' => 'fontFamily' ];
-		yield 'bogus, an unregistered type'    => [ 'type' => 'bogus' ];
+		yield 'bogus, an unregistered type' => [ 'type' => 'bogus' ];
 	}
 
 	// -------------------------------------------------------------------------
@@ -1301,6 +1368,30 @@ final class User_Primitives_ControllerTest extends TestCase {
 		// Either outcome is correct: the guard did not crash, and no data was modified.
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertContains( $result->get_error_data()['status'], [ WP_Http::FORBIDDEN, WP_Http::NOT_FOUND ] );
+	}
+
+	/**
+	 * A baseline font-family id (primitive.font-family.sans) can never be deleted — but not
+	 * through the system-primitive 403 branch above: validate_canonical_id() requires the
+	 * reserved primitive.<type>.custom.<slug> shape, and no shipped baseline id is ever declared
+	 * under a ".custom." segment (that segment is reserved for user-created primitives only), so
+	 * a baseline id fails id-shape validation before the system-primitive guard is ever reached.
+	 * The never-delete-baseline rule is pinned on this group here at the shape-guard layer, which
+	 * every baseline id — font-family included — hits first.
+	 *
+	 * @return void
+	 */
+	public function testDeleteReturns400ForABaselineFontFamilyIdOutsideTheReservedShape(): void {
+		$slug = Token_Store::default_slug();
+
+		$this->store->save_document( '{}' );
+		$version = $this->store->get_version( $slug );
+
+		$result = $this->controller->delete_item( $this->make_delete_request( $slug, 'primitive.font-family.sans', $version ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_invalid_param', $result->get_error_code() );
+		$this->assertSame( WP_Http::BAD_REQUEST, $result->get_error_data()['status'] );
 	}
 
 	// -------------------------------------------------------------------------
