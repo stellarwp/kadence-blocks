@@ -18,6 +18,7 @@ import { LibrarySelector } from '../components/organisms/LibrarySelector';
 import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
 import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
+import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal';
 import { SettingsPanel } from '../components/templates/SettingsPanel';
 import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
@@ -29,6 +30,7 @@ import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
 import { useSettingsPanel } from '../hooks/use-settings-panel';
+import { DraftChannelContext, useDraftChannelState } from '../hooks/use-draft-channel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
@@ -71,6 +73,11 @@ export function StyleLibraryApp() {
 		initialValues: isDemoItem ? DEMO_SETTINGS_VALUES : {},
 	});
 
+	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
+	// component that already renders both the screen and its settings-panel slot, so it is the only
+	// place a provider for the two of them can live.
+	const channel = useDraftChannelState();
+
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
 
@@ -111,7 +118,9 @@ export function StyleLibraryApp() {
 
 	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
 	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
-	const onNavigate = (id) => navigate({ screen: id, item: '' });
+	// Screen switching loses the open draft exactly like closing the panel (the settings-panel slot
+	// unmounts either way), so it is guarded identically.
+	const onNavigate = (id) => channel.guard(() => navigate({ screen: id, item: '' }));
 
 	// Two different libraries are named in the header: the one being edited (the selector's value,
 	// and the target of rename/delete/activate) and the one the site renders with (named in the
@@ -141,96 +150,107 @@ export function StyleLibraryApp() {
 	);
 
 	return (
-		<AppShell
-			isBlocked={libraries.isSwappingLibrary}
-			header={
-				<AppHeader
-					librarySlot={
-						<LibrarySelector
-							libraries={libraries.libraries}
-							activeSlug={libraries.activeSlug}
-							editingSlug={libraries.editingSlug}
-							editingTitle={editingTitle}
-							isBusy={libraries.isBusy}
-							isSwapping={libraries.isSwappingLibrary}
-							openError={libraries.openError}
-							createError={libraries.createError}
-							onOpen={libraries.openLibrary}
-							onCreate={libraries.createLibrary}
-							onClearOpenError={libraries.clearOpenError}
-							onClearCreateError={libraries.clearCreateError}
-						/>
-					}
-					actionsSlot={
-						<>
-							<ActivateLibraryButton
-								editingSlug={libraries.editingSlug}
-								editingTitle={editingTitle}
-								activeTitle={activeTitle}
-								isEditingActive={libraries.isEditingActive}
-								isBusy={libraries.isBusy}
-								error={libraries.activateError}
-								onClearError={libraries.clearActivateError}
-								onActivate={libraries.activateLibrary}
-							/>
-							<RenameLibraryModal
-								slug={libraries.editingSlug}
-								currentTitle={editingTitle}
+		<DraftChannelContext.Provider value={channel}>
+			<AppShell
+				isBlocked={libraries.isSwappingLibrary}
+				header={
+					<AppHeader
+						librarySlot={
+							<LibrarySelector
 								libraries={libraries.libraries}
-								isBusy={libraries.isBusy}
-								error={libraries.renameError}
-								onClearError={libraries.clearRenameError}
-								onRename={libraries.renameLibrary}
-							/>
-							<DeleteLibraryModal
-								editingSlug={libraries.editingSlug}
-								editingTitle={editingTitle}
 								activeSlug={libraries.activeSlug}
-								libraries={libraries.libraries}
+								editingSlug={libraries.editingSlug}
+								editingTitle={editingTitle}
 								isBusy={libraries.isBusy}
-								error={libraries.deleteError}
-								onClearError={libraries.clearDeleteError}
-								onDelete={libraries.deleteLibrary}
+								isSwapping={libraries.isSwappingLibrary}
+								openError={libraries.openError}
+								createError={libraries.createError}
+								onOpen={libraries.openLibrary}
+								onCreate={libraries.createLibrary}
+								onClearOpenError={libraries.clearOpenError}
+								onClearCreateError={libraries.clearCreateError}
 							/>
-						</>
-					}
-				/>
-			}
-			sidebar={
-				<AppSidebar
-					baseStylesNav={baseStylesNav}
-					blockPresetsNav={blockPresetsNav}
-					activeId={activeScreenId}
-					onNavigate={onNavigate}
-				/>
-			}
-			content={
-				<resolution.Component
-					label={label}
-					route={route}
-					navigate={navigate}
-					library={feed}
-					onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })}
-				/>
-			}
-			settingsPanel={
-				resolution.Component.SettingsPanel && route.item ? (
-					<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
-				) : isDemoItem ? (
-					<SettingsPanel
-						onClose={settingsPanelState.close}
-						onDelete={() => settingsPanelState.close()}
-						onSave={() => settingsPanelState.resetDraft()}
-						isDirty={settingsPanelState.isDirty}
-					>
-						<SettingsForm
-							schema={DEMO_SETTINGS_SCHEMA}
-							values={settingsPanelState.draft}
-							onChange={settingsPanelState.setFieldValue}
-						/>
-					</SettingsPanel>
-				) : null
-			}
-		/>
+						}
+						actionsSlot={
+							<>
+								<ActivateLibraryButton
+									editingSlug={libraries.editingSlug}
+									editingTitle={editingTitle}
+									activeTitle={activeTitle}
+									isEditingActive={libraries.isEditingActive}
+									isBusy={libraries.isBusy}
+									error={libraries.activateError}
+									onClearError={libraries.clearActivateError}
+									onActivate={libraries.activateLibrary}
+								/>
+								<RenameLibraryModal
+									slug={libraries.editingSlug}
+									currentTitle={editingTitle}
+									libraries={libraries.libraries}
+									isBusy={libraries.isBusy}
+									error={libraries.renameError}
+									onClearError={libraries.clearRenameError}
+									onRename={libraries.renameLibrary}
+								/>
+								<DeleteLibraryModal
+									editingSlug={libraries.editingSlug}
+									editingTitle={editingTitle}
+									activeSlug={libraries.activeSlug}
+									libraries={libraries.libraries}
+									isBusy={libraries.isBusy}
+									error={libraries.deleteError}
+									onClearError={libraries.clearDeleteError}
+									onDelete={libraries.deleteLibrary}
+								/>
+							</>
+						}
+					/>
+				}
+				sidebar={
+					<AppSidebar
+						baseStylesNav={baseStylesNav}
+						blockPresetsNav={blockPresetsNav}
+						activeId={activeScreenId}
+						onNavigate={onNavigate}
+					/>
+				}
+				content={
+					<resolution.Component
+						label={label}
+						route={route}
+						navigate={navigate}
+						library={feed}
+						onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })}
+					/>
+				}
+				settingsPanel={
+					resolution.Component.SettingsPanel && route.item ? (
+						<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
+					) : isDemoItem ? (
+						<SettingsPanel
+							onClose={settingsPanelState.close}
+							onDelete={() => settingsPanelState.close()}
+							onSave={() => settingsPanelState.resetDraft()}
+							isDirty={settingsPanelState.isDirty}
+						>
+							<SettingsForm
+								schema={DEMO_SETTINGS_SCHEMA}
+								values={settingsPanelState.draft}
+								onChange={settingsPanelState.setFieldValue}
+							/>
+						</SettingsPanel>
+					) : null
+				}
+			/>
+			<UnsavedChangesModal
+				isOpen={channel.isGuardOpen}
+				label={channel.publication?.label}
+				isBusy={channel.isGuardBusy}
+				error={channel.guardError}
+				onSave={channel.confirmSave}
+				onDiscard={channel.confirmDiscard}
+				onCancel={channel.cancelGuard}
+			/>
+		</DraftChannelContext.Provider>
 	);
 }
