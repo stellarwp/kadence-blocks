@@ -293,7 +293,7 @@
 				}
 			}
 		},
-		"fontFamily": {
+		"font-family": {
 			"sans": {
 				"$type": "fontFamily",
 				"$value": [
@@ -526,7 +526,7 @@
 		"font-family": {
 			"control": {
 				"$type": "fontFamily",
-				"$value": "{primitive.fontFamily.sans}"
+				"$value": "{primitive.font-family.sans}"
 			},
 			"heading": {
 				"$type": "fontFamily",

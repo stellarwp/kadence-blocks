@@ -66,7 +66,7 @@ final class Value_ValidatorsTest extends TestCase {
 		$validator = new Font_Family_Value();
 
 		$this->assertSame( [], $validator->validate( [ 'Inter', 'system-ui', 'sans-serif' ], 'p.$value' ) );
-		$this->assertSame( [], $validator->validate( '{primitive.fontFamily.sans}', 'p.$value' ) );
+		$this->assertSame( [], $validator->validate( '{primitive.font-family.sans}', 'p.$value' ) );
 	}
 
 	/**

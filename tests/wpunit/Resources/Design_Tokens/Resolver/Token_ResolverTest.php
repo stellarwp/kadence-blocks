@@ -442,7 +442,7 @@ final class Token_ResolverTest extends TestCase {
 		$resolver = $this->resolver_for(
 			[
 				'primitive' => [
-					'fontFamily' => [
+					'font-family' => [
 						'sans' => [
 							'$type'  => 'fontFamily',
 							'$value' => [ 'Inter', 'system-ui', 'sans-serif' ],
@@ -454,7 +454,7 @@ final class Token_ResolverTest extends TestCase {
 
 		$this->assertSame(
 			'Inter, system-ui, sans-serif',
-			$resolver->resolve_overrides( [] )->value( 'primitive.fontFamily.sans' )
+			$resolver->resolve_overrides( [] )->value( 'primitive.font-family.sans' )
 		);
 	}
 

@@ -156,10 +156,36 @@ $font_size_primitive_tokens = array_map(
 			'type'        => 'dimension',
 			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Font Size', 'kadence-blocks' ),
+			'group_key'   => 'font-size',
 			'projections' => [ 'kb_font_size_slot' => $slug ],
 		];
 	},
 	$font_size_slugs
+);
+
+// The three preview fonts are primitives the Style Library's Typography screen lists as FONT
+// options; the font-family semantics (semantic.font-family.control / .heading) keep their own
+// values and already carry whatever projections deliver a family into a block, so these primitives
+// declare none of their own. No group_key: the user-primitive backend cannot mint a fontFamily
+// token today (its DTCG $type is camelCase, which can never be a valid kebab id segment), so
+// nothing can "+ Add Font" into this group until that backend gap is closed.
+$font_family_slugs = [
+	'sans'  => __( 'Sans', 'kadence-blocks' ),
+	'serif' => __( 'Serif', 'kadence-blocks' ),
+	'mono'  => __( 'Mono', 'kadence-blocks' ),
+];
+
+$font_family_tokens = array_map(
+	static function ( string $slug, string $label ): array {
+		return [
+			'id'    => 'primitive.font-family.' . $slug,
+			'type'  => 'fontFamily',
+			'label' => $label,
+			'group' => __( 'Font Family', 'kadence-blocks' ),
+		];
+	},
+	array_keys( $font_family_slugs ),
+	array_values( $font_family_slugs )
 );
 
 /**
@@ -405,6 +431,7 @@ return [
 		$spacing_tokens,
 		$gap_tokens,
 		$font_size_primitive_tokens,
+		$font_family_tokens,
 		$radius_tokens,
 		$border_width_tokens,
 		$icon_size_tokens,
