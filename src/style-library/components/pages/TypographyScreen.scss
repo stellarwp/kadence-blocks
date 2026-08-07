@@ -96,3 +96,11 @@
 .kadence-blocks-style-library__typography-font-label {
 	@include small-uppercase-label;
 }
+
+// The catalog dropdown and its contextual Add/Delete Font button sit side by side, beneath the
+// FONT label — the board's slot for both.
+.kadence-blocks-style-library__typography-font-picker {
+	@include flex-row(var(--kb-sl-space-10));
+
+	align-items: center;
+}
