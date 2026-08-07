@@ -76,7 +76,6 @@ export const ICON_SIZES_CONFIG = {
 			{ value: 'em', label: 'em' },
 			{ value: 'rem', label: 'rem' },
 		],
-		responsive: true,
 	},
 	formatValue: (row) => iconSizeRowValue(row.value),
 	renderPreview: renderIconSizePreview,
