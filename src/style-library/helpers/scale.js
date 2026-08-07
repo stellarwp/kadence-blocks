@@ -123,27 +123,35 @@ export function customScaleTokenId(tokenType, slug) {
 }
 
 /**
- * Seed a settings-panel draft for one row: the effective label and the resolved scalar value.
- * Primitive scales never take a responsive value (only presets do — see `ScaleSettings`), so this
- * always reads the resolved scalar and never an authored responsive/clamp envelope, even when the
- * leaf carries one from before the rule was enforced.
+ * Seed a settings-panel draft for one row: the effective label and the resolved value, optionally
+ * run through a per-screen parser first. Primitive scales never take a responsive value (only
+ * presets do — see `ScaleSettings`), so this always reads the resolved scalar and never an
+ * authored responsive/clamp envelope, even when the leaf carries one from before the rule was
+ * enforced.
  *
- * @param {?{id: string, label: string}} entry  The row/schema entry (`{ id, label, ... }`), or null
- *                                               for an unknown id.
- * @param {Record<string, string>}       values The feed's resolved value map.
+ * @param {?{id: string, label: string}} entry      The row/schema entry (`{ id, label, ... }`), or
+ *                                                   null for an unknown id.
+ * @param {Record<string, string>}       values     The feed's resolved value map.
+ * @param {Function}                     parseValue Optional. Transforms the resolved string into
+ *                                                   the draft's `value` shape (e.g. the Shadow
+ *                                                   screen's `parseShadowValue`). Absent behaves as
+ *                                                   the identity function, byte-identical to before
+ *                                                   this argument existed.
  *
  * @since TBD
  *
- * @return {?{label: string, value: string}} The seeded draft, or null for an unknown id.
+ * @return {?{label: string, value: *}} The seeded draft, or null for an unknown id.
  */
-export function scaleInitialValues(entry, values) {
+export function scaleInitialValues(entry, values, parseValue) {
 	if (!entry) {
 		return null;
 	}
 
+	const resolved = values?.[entry.id] ?? '';
+
 	return {
 		label: entry.label,
-		value: values?.[entry.id] ?? '',
+		value: parseValue ? parseValue(resolved) : resolved,
 	};
 }
 
