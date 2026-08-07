@@ -109,6 +109,28 @@ $icon_size_tokens = array_map(
 	$icon_size_slugs
 );
 
+// The shadow scale steps are primitives the Style Library's Shadow screen lists and edits
+// directly; the shadow semantics (semantic.shadow.card / .media) keep their own curated values and
+// declare no projections onto this scale, so re-pointing a semantic at one of these primitives is
+// deliberately not done here — semantic.shadow.card's color is aliased to a palette primitive, and
+// re-pointing would detach it. group_key mirrors the radius/border-width/icon-size scales'
+// mechanism above: it is the stable machine id "+ Add Shadow" mints custom tokens into, resolved
+// back to the group label at read time by Token_Registry::group_label_for().
+$shadow_slugs = [ 'xs', 'sm', 'md' ];
+
+$shadow_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.shadow.' . $slug,
+			'type'      => 'shadow',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Shadow', 'kadence-blocks' ),
+			'group_key' => 'shadow',
+		];
+	},
+	$shadow_slugs
+);
+
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
 // (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
@@ -374,7 +396,8 @@ return [
 		$font_size_primitive_tokens,
 		$radius_tokens,
 		$border_width_tokens,
-		$icon_size_tokens
+		$icon_size_tokens,
+		$shadow_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
