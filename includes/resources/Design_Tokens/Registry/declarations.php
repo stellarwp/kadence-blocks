@@ -169,6 +169,10 @@ $font_size_primitive_tokens = array_map(
 // declare none of their own. No group_key: the user-primitive backend cannot mint a fontFamily
 // token today (its DTCG $type is camelCase, which can never be a valid kebab id segment), so
 // nothing can "+ Add Font" into this group until that backend gap is closed.
+//
+// The id segment is kebab-case ("font-family", not "fontFamily") because Token_Definition::from_array()
+// validates every declared id against the kebab charset and throws on a camelCase segment — these
+// tokens (and the baseline.json tree backing them) could never have registered under the old spelling.
 $font_family_slugs = [
 	'sans'  => __( 'Sans', 'kadence-blocks' ),
 	'serif' => __( 'Serif', 'kadence-blocks' ),
