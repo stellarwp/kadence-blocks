@@ -61,7 +61,6 @@ export const BORDER_WIDTH_CONFIG = {
 			{ value: 'em', label: 'em' },
 			{ value: 'rem', label: 'rem' },
 		],
-		responsive: true,
 	},
 	renderPreview: renderBorderWidthPreview,
 };
