@@ -64,7 +64,6 @@ export const SPACING_CONFIG = {
 			{ value: 'vh', label: 'vh' },
 			{ value: 'vw', label: 'vw' },
 		],
-		responsive: true,
 	},
 	renderPreview: renderSpacingPreview,
 };
