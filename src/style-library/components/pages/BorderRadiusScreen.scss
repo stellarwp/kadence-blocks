@@ -1,9 +1,21 @@
-// The rounded-square preview's own box. Sizing, background, and border for the slot itself already
-// come from `.list-row-preview` (ListRow.scss) — this element only has to fill that slot so its own
-// `border-radius` (set inline, per row) has a visible box to clip.
+// `.list-row-preview` (ListRow.scss) draws its own border, but that border is on the shared slot
+// itself, not this row's content — with `border-radius` set inline only on this child, the result
+// was a rounded fill sitting inside a still-square outline (FULL, 9999px, looked like a circle
+// trapped in a square). Scoped through the `scale-screen--border-radius` modifier, the slot's
+// border moves onto this element so there is exactly one bordered, rounded shape.
+.kadence-blocks-style-library__scale-screen--border-radius .kadence-blocks-style-library__list-row-preview {
+	border: 0;
+	background: transparent;
+}
+
+// The rounded-square preview's own box. Sizing comes from filling the slot (100%); border and
+// background live here, not on the slot, so the border follows this element's own `border-radius`
+// (set inline, per row).
 .kadence-blocks-style-library__border-radius-preview {
+	box-sizing: border-box;
 	display: block;
 	width: 100%;
 	height: 100%;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-700);
 	background: var(--kb-sl-color-gray-100);
 }
