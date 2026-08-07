@@ -58,7 +58,6 @@ export const BORDER_RADIUS_CONFIG = {
 			{ value: 'rem', label: 'rem' },
 			{ value: '%', label: '%' },
 		],
-		responsive: true,
 	},
 	renderPreview: renderRadiusPreview,
 };
