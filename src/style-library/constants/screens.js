@@ -34,7 +34,6 @@ export const BASE_STYLES_SCREENS = [
 	{ id: 'border-width', label: __('Border Width', 'kadence-blocks') },
 	{ id: 'spacing', label: __('Spacing', 'kadence-blocks') },
 	{ id: 'icon-sizes', label: __('Icon Sizes', 'kadence-blocks') },
-	// @todo SOFT-4082: replace the placeholder with the Shadow screen.
 	{ id: 'shadow', label: __('Shadow', 'kadence-blocks') },
 ];
 

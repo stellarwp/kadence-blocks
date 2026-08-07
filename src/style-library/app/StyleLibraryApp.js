@@ -24,6 +24,7 @@ import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
 import { SpacingScreen } from '../components/pages/SpacingScreen';
 import { IconSizesScreen } from '../components/pages/IconSizesScreen';
+import { ShadowScreen } from '../components/pages/ShadowScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -43,6 +44,7 @@ const SCREEN_COMPONENTS = {
 	'border-width': BorderWidthScreen,
 	spacing: SpacingScreen,
 	'icon-sizes': IconSizesScreen,
+	shadow: ShadowScreen,
 };
 
 /**
