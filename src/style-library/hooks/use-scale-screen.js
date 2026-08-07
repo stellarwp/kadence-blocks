@@ -94,10 +94,7 @@ export function useScaleScreen(config, library, route, navigate) {
 
 	const tokenById = useCallback((id) => baseRows.find((row) => row.id === id) ?? null, [baseRows]);
 
-	const initialValuesFor = useCallback(
-		(id) => scaleInitialValues(tokenById(id), feed?.values, feed?.responsive),
-		[tokenById, feed]
-	);
+	const initialValuesFor = useCallback((id) => scaleInitialValues(tokenById(id), feed?.values), [tokenById, feed]);
 
 	const addToken = useCallback(() => {
 		setAddError(null);

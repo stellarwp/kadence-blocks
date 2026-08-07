@@ -21,6 +21,7 @@ import { SettingsForm } from '../organisms/SettingsForm';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { useScaleScreen } from '../../hooks/use-scale-screen';
 import { isDeletable } from '../../helpers/token-capabilities';
+import { scaleValueField } from '../../helpers/scale';
 
 /**
  * Render a scale screen's settings panel.
@@ -55,10 +56,13 @@ export function ScaleSettings({ config, route, navigate, library }) {
 		return null;
 	}
 
+	// `scaleValueField()` forces the value field non-responsive regardless of what `config.valueField`
+	// declares — primitives never take a responsive value, only presets do (see that helper's
+	// docblock in `helpers/scale.js` for why the guarantee lives there and not as a per-config flag).
 	const schema = {
 		fields: [
 			{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') },
-			{ ...config.valueField, path: 'value' },
+			scaleValueField(config.valueField),
 		],
 	};
 

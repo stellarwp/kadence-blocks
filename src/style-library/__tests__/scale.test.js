@@ -1,5 +1,12 @@
 /* eslint-env jest */
-import { applyRowOrder, customScaleTokenId, nextScaleSlug, scaleInitialValues, scaleRows } from '../helpers/scale';
+import {
+	applyRowOrder,
+	customScaleTokenId,
+	nextScaleSlug,
+	scaleInitialValues,
+	scaleRows,
+	scaleValueField,
+} from '../helpers/scale';
 
 describe('scaleRows', () => {
 	it('returns [] for a missing schema', () => {
@@ -89,24 +96,44 @@ describe('customScaleTokenId', () => {
 
 describe('scaleInitialValues', () => {
 	it('returns null for an unknown entry', () => {
-		expect(scaleInitialValues(null, {}, {})).toBeNull();
+		expect(scaleInitialValues(null, {})).toBeNull();
 	});
 
-	it('prefers the authored responsive shape over the scalar value', () => {
+	it('always seeds the resolved scalar value, never an authored responsive/clamp envelope', () => {
+		// Primitive scales never take a responsive value, so a leaf that still carries a
+		// responsive/clamp envelope from before the rule was enforced must be ignored here — the
+		// panel always shows the plain resolved scalar.
 		const entry = { id: 'primitive.dimension.radius.sm', label: 'SM' };
 		const values = { 'primitive.dimension.radius.sm': '0.125rem' };
-		const responsive = { 'primitive.dimension.radius.sm': { base: '0.125rem', responsive: { tablet: '0.25rem' } } };
 
-		expect(scaleInitialValues(entry, values, responsive)).toEqual({
-			label: 'SM',
-			value: { base: '0.125rem', responsive: { tablet: '0.25rem' } },
+		expect(scaleInitialValues(entry, values)).toEqual({ label: 'SM', value: '0.125rem' });
+	});
+
+	it('defaults the value to an empty string when the resolved map has no entry', () => {
+		const entry = { id: 'primitive.dimension.radius.sm', label: 'SM' };
+
+		expect(scaleInitialValues(entry, {})).toEqual({ label: 'SM', value: '' });
+	});
+});
+
+describe('scaleValueField', () => {
+	it('sets path to "value" and defaults responsive to false', () => {
+		expect(scaleValueField({ type: 'unit', label: 'Radius' })).toEqual({
+			type: 'unit',
+			label: 'Radius',
+			path: 'value',
+			responsive: false,
 		});
 	});
 
-	it('falls back to the resolved scalar value when nothing authored exists', () => {
-		const entry = { id: 'primitive.dimension.radius.sm', label: 'SM' };
-		const values = { 'primitive.dimension.radius.sm': '0.125rem' };
-
-		expect(scaleInitialValues(entry, values, {})).toEqual({ label: 'SM', value: '0.125rem' });
+	it('forces responsive to false even when the config wrongly declares it true', () => {
+		// Pins the structural guarantee: no per-screen config can opt a primitive-scale value field
+		// back into breakpoint controls, no matter what it declares.
+		expect(scaleValueField({ type: 'unit', label: 'Radius', responsive: true })).toEqual({
+			type: 'unit',
+			label: 'Radius',
+			path: 'value',
+			responsive: false,
+		});
 	});
 });
