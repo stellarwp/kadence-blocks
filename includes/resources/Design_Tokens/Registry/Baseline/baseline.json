@@ -348,6 +348,38 @@
 				"$type": "dimension",
 				"$value": "2.441rem"
 			}
+		},
+		"shadow": {
+			"xs": {
+				"$type": "shadow",
+				"$value": {
+					"color": "#1717171f",
+					"offsetX": "0px",
+					"offsetY": "1px",
+					"blur": "2px",
+					"spread": "0px"
+				}
+			},
+			"sm": {
+				"$type": "shadow",
+				"$value": {
+					"color": "#1717171f",
+					"offsetX": "0px",
+					"offsetY": "2px",
+					"blur": "4px",
+					"spread": "0px"
+				}
+			},
+			"md": {
+				"$type": "shadow",
+				"$value": {
+					"color": "#1717171f",
+					"offsetX": "0px",
+					"offsetY": "2px",
+					"blur": "8px",
+					"spread": "0px"
+				}
+			}
 		}
 	},
 	"semantic": {
