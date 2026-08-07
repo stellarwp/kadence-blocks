@@ -221,6 +221,71 @@ describe('saveScaleTokenFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
+
+	it('uses the supplied buildLeaf for the value write', async () => {
+		client.saveTokenLeaf.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue({});
+		const buildLeaf = jest.fn().mockReturnValue({ $type: 'shadow', $value: { color: '#171717' } });
+		const draftValue = { color: '#171717', offsetX: 0, offsetY: 2, blur: 8, spread: 0, inset: false };
+
+		await saveScaleTokenFlow({
+			...baseArgs,
+			tokenType: 'shadow',
+			draft: { label: 'MD', value: draftValue },
+			initial: { label: 'MD', value: { ...draftValue, offsetY: 4 } },
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+			buildLeaf,
+		});
+
+		expect(buildLeaf).toHaveBeenCalledWith('shadow', draftValue);
+		expect(client.saveTokenLeaf).toHaveBeenCalledWith(
+			'kb-design-tokens/v1',
+			baseArgs.tokenId,
+			{ $type: 'shadow', $value: { color: '#171717' } },
+			'default'
+		);
+	});
+
+	it('defaults to buildTokenLeaf when no buildLeaf is supplied', async () => {
+		client.saveTokenLeaf.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue({});
+
+		await saveScaleTokenFlow({
+			...baseArgs,
+			draft: { label: 'SM', value: '0.25rem' },
+			initial: { label: 'SM', value: '0.125rem' },
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(client.saveTokenLeaf).toHaveBeenCalledWith(
+			'kb-design-tokens/v1',
+			baseArgs.tokenId,
+			{ $type: 'dimension', $value: '0.25rem' },
+			'default'
+		);
+	});
+
+	it('detects an object value change deeply, issuing no request when unchanged', async () => {
+		const refreshFeed = jest.fn();
+		const draftValue = { color: '#171717', offsetX: 0, offsetY: 2, blur: 8, spread: 0, inset: false };
+
+		await saveScaleTokenFlow({
+			...baseArgs,
+			draft: { label: 'MD', value: { ...draftValue } },
+			initial: { label: 'MD', value: { ...draftValue } },
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		expect(client.setTokenLabel).not.toHaveBeenCalled();
+		expect(client.saveTokenLeaf).not.toHaveBeenCalled();
+		expect(refreshFeed).not.toHaveBeenCalled();
+	});
 });
 
 describe('deleteScaleTokenFlow', () => {
