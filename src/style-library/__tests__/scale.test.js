@@ -3,6 +3,7 @@ import {
 	applyRowOrder,
 	customScaleTokenId,
 	nextScaleSlug,
+	overlayDraft,
 	scaleInitialValues,
 	scaleRows,
 	scaleValueField,
@@ -135,5 +136,54 @@ describe('scaleValueField', () => {
 			path: 'value',
 			responsive: false,
 		});
+	});
+});
+
+describe('overlayDraft', () => {
+	const rows = [
+		{ id: 'a', label: 'A', value: '1px', userCreated: false },
+		{ id: 'b', label: 'B', value: '2px', userCreated: true },
+	];
+
+	it('returns the same array reference for a null draft', () => {
+		expect(overlayDraft(rows, 'a', null)).toBe(rows);
+	});
+
+	it('returns the same array reference when the itemId matches no row', () => {
+		expect(overlayDraft(rows, 'ghost', { label: 'X', value: '9px' })).toBe(rows);
+	});
+
+	it('overlays label and value verbatim on the matching row only', () => {
+		const next = overlayDraft(rows, 'a', { label: 'A edited', value: '3px' });
+
+		expect(next[0]).toEqual({ id: 'a', label: 'A edited', value: '3px', userCreated: false });
+		expect(next[1]).toBe(rows[1]);
+	});
+
+	it('overlays an empty string rather than falling back to the saved value', () => {
+		const next = overlayDraft(rows, 'a', { label: '', value: '' });
+
+		expect(next[0].label).toBe('');
+		expect(next[0].value).toBe('');
+	});
+
+	it('preserves id and userCreated on the overlaid row', () => {
+		const next = overlayDraft(rows, 'b', { label: 'B edited', value: '5px' });
+
+		expect(next[1].id).toBe('b');
+		expect(next[1].userCreated).toBe(true);
+	});
+
+	it("keeps every non-matching row's object identity", () => {
+		const next = overlayDraft(rows, 'a', { label: 'A edited', value: '3px' });
+
+		expect(next[1]).toBe(rows[1]);
+	});
+
+	it("leaves a key absent from the draft at the row's own value", () => {
+		const next = overlayDraft(rows, 'a', { label: 'A edited' });
+
+		expect(next[0].label).toBe('A edited');
+		expect(next[0].value).toBe('1px');
 	});
 });
