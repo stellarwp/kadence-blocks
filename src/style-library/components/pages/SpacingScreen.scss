@@ -5,11 +5,9 @@
 	display: block;
 	background: var(--kb-sl-color-gray-100);
 	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-700);
-	// The largest declared steps (3XL/4XL/5XL, 104px-160px) would otherwise blow the row past the
-	// mock's own tallest row (96px); the preview is an at-a-glance visual, not a measurement
-	// instrument, so it pins here and the value column disambiguates the top three rows.
-	max-width: 6rem;
-	max-height: 6rem;
+	// Unclamped on purpose: the preview must show a token's true CSS size, not a normalized
+	// approximation, so every step (including 3XL/4XL/5XL) renders at its real value and the row
+	// grows to fit it. Accepted consequence: a very large custom value produces a very tall row.
 }
 
 // Scoped to this screen via `ScaleScreen`'s per-screen root modifier class (see
