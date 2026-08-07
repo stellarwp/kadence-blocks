@@ -115,6 +115,24 @@ describe('scaleInitialValues', () => {
 
 		expect(scaleInitialValues(entry, {})).toEqual({ label: 'SM', value: '' });
 	});
+
+	it('applies parseValue to the resolved value', () => {
+		const entry = { id: 'primitive.shadow.sm', label: 'SM' };
+		const values = { 'primitive.shadow.sm': '0px 2px 4px 0px #171717' };
+		const parseValue = (css) => ({ raw: css });
+
+		expect(scaleInitialValues(entry, values, parseValue)).toEqual({
+			label: 'SM',
+			value: { raw: '0px 2px 4px 0px #171717' },
+		});
+	});
+
+	it('without parseValue behaves exactly as before', () => {
+		const entry = { id: 'primitive.dimension.radius.sm', label: 'SM' };
+		const values = { 'primitive.dimension.radius.sm': '0.125rem' };
+
+		expect(scaleInitialValues(entry, values)).toEqual({ label: 'SM', value: '0.125rem' });
+	});
 });
 
 describe('scaleValueField', () => {
