@@ -1296,10 +1296,14 @@ final class Documents_Controller extends Controller {
 	 * Build the response payload for a single token-library document.
 	 *
 	 * Reads the raw overrides-only DTCG document for the library. An absent or empty row yields an empty
-	 * document, since the library then renders entirely from baseline. Empty is likewise the title of a
-	 * library that has none stored (e.g. the default library before it is ever renamed) — never the slug
-	 * or any other synthesized value, so the client can tell "no title" from "a title happens to look
-	 * like the slug".
+	 * document, since the library then renders entirely from baseline.
+	 *
+	 * The title of an untitled library is empty — never the slug or any other synthesized value, so the
+	 * client can tell "no title" from "a title happens to look like the slug". The default library is the
+	 * one exception: it is addressable before it has a row at all, so an untitled default is served under
+	 * {@see Token_Store::default_title()}. Naming it here rather than in each client means no consumer
+	 * has to special-case the default library, and the name is translated per request instead of frozen
+	 * into the row.
 	 *
 	 * @since TBD
 	 *
@@ -1312,12 +1316,33 @@ final class Documents_Controller extends Controller {
 	 * @return array<string, mixed>
 	 */
 	private function prepare_item( string $slug, ?string $title = null ): array {
+		$stored = $title ?? $this->store->get_title( $slug );
+
 		return [
 			'slug'     => $slug,
-			'title'    => $title ?? $this->store->get_title( $slug ),
+			'title'    => $this->display_title( $slug, $stored ),
 			'version'  => $this->store->get_version( $slug ),
 			'document' => $this->read_stored_document( $slug ),
 		];
+	}
+
+	/**
+	 * The title to serve for a library: what it has stored, or the default library's standing name when
+	 * the default has none.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug   The token library slug.
+	 * @param string $stored The title stored for that library, empty when it has none.
+	 *
+	 * @return string
+	 */
+	private function display_title( string $slug, string $stored ): string {
+		if ( '' !== $stored ) {
+			return $stored;
+		}
+
+		return $slug === Token_Store::default_slug() ? Token_Store::default_title() : '';
 	}
 
 	/**

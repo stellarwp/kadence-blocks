@@ -771,9 +771,8 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * Each collection item carries its own stored title, keyed to the right library; a library saved
-	 * without a title, and the always-present default with no row of its own, both read back an empty
-	 * string rather than falling back to the slug.
+	 * Each collection item carries its own stored title, keyed to the right library. A non-default library
+	 * saved without one reads back an empty string rather than falling back to its slug.
 	 *
 	 * @return void
 	 */
@@ -786,7 +785,49 @@ final class DocumentsControllerTest extends TestCase {
 
 		$this->assertSame( 'Brand A', $titles_by_slug['brand-a'] );
 		$this->assertSame( '', $titles_by_slug['brand-b'] );
-		$this->assertSame( '', $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * The default library is served under its standing name when it has no stored title, so no client has
+	 * to supply a default of its own — including before it has a row at all.
+	 *
+	 * @return void
+	 */
+	public function testDefaultLibraryIsServedUnderItsDefaultTitleWhenUntitled(): void {
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( Token_Store::default_title(), $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * A title stored for the default library wins over its standing name, so renaming it is not undone by
+	 * the fallback.
+	 *
+	 * @return void
+	 */
+	public function testStoredDefaultLibraryTitleWinsOverTheDefaultTitle(): void {
+		$this->store->save_document( '{"set":"d"}', Token_Store::default_slug(), 'Acme Brand' );
+
+		$data           = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
+		$titles_by_slug = array_column( $data, 'title', 'slug' );
+
+		$this->assertSame( 'Acme Brand', $titles_by_slug[ Token_Store::default_slug() ] );
+	}
+
+	/**
+	 * The single-library read applies the same default, so the two routes cannot disagree about the
+	 * default library's name.
+	 *
+	 * @return void
+	 */
+	public function testItemReadAppliesTheDefaultTitleForTheUntitledDefaultLibrary(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame( Token_Store::default_title(), $data['title'] );
 	}
 
 	/**

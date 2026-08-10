@@ -105,6 +105,25 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * The display title for the default token library when it has none stored.
+	 *
+	 * The default library is the one most likely to go untitled — it exists before the user has named
+	 * anything — so it gets a friendlier name than its slug. It lives here beside the slug, rather than in
+	 * the UI, so the REST representation and the admin feed hand every client the same already-titled row
+	 * and no consumer has to special-case the default library to name it.
+	 *
+	 * Translated on read, never stored: a persisted title would then be indistinguishable from one the
+	 * user typed, and it would stay in whatever locale was active when the row happened to be written.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function default_title(): string {
+		return __( 'Your Library', 'kadence-blocks' );
+	}
+
+	/**
 	 * Read the raw overrides-only DTCG document for a token library.
 	 *
 	 * @since TBD
