@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { fetchLibraries } from '../api/client';
+import { DEFAULT_LIBRARY_SLUG } from '../constants';
 import { sortLibraries } from '../helpers/libraries';
 import { createLibraryFlow, deleteLibraryFlow, errorMessage, switchLibraryFlow } from '../helpers/library-flows';
 
@@ -48,7 +49,9 @@ export function useLibraries(feed, refreshFeed) {
 	const [switchError, setSwitchError] = useState(null);
 	const [createError, setCreateError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
-	const activeSlug = feed?.slug;
+	// The feed always carries a slug, but the default library is the one every read falls back to, so
+	// naming it here keeps a malformed feed from addressing REST paths with `undefined`.
+	const activeSlug = feed?.slug || DEFAULT_LIBRARY_SLUG;
 
 	const loadLibraries = useCallback(() => {
 		return fetchLibraries()
