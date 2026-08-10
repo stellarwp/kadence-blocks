@@ -520,19 +520,6 @@ final class Css_Builder {
 	}
 
 	/**
-	 * The canonical preset var name for a (block, preset, property):
-	 * "--kb-token--preset--<block>--<preset>--<property>", e.g.
-	 * --kb-token--preset--kadence-singlebtn--secondary--button-bg.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $block    The block name.
-	 * @param string $preset   The preset slug.
-	 * @param string $property The block property.
-	 *
-	 * @return string
-	 */
-	/**
 	 * Redeclare each preset var that varies by breakpoint inside that breakpoint's `@media` block.
 	 *
 	 * Only the canonical var is redeclared — the scoped `--global-*` / `--kb-*` bridges are untouched,
@@ -611,6 +598,19 @@ final class Css_Builder {
 		return md5( (string) wp_json_encode( $breakpoints ) );
 	}
 
+	/**
+	 * The canonical preset var name for a (block, preset, property):
+	 * "--kb-token--preset--<block>--<preset>--<property>", e.g.
+	 * --kb-token--preset--kadence-singlebtn--secondary--button-bg.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block    The block name.
+	 * @param string $preset   The preset slug.
+	 * @param string $property The block property.
+	 *
+	 * @return string
+	 */
 	private function preset_var( string $block, string $preset, string $property ): string {
 		return Css_Var::get_prefix()
 			. self::PRESET_SEGMENT
