@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import {
 	deriveMeasureMode,
+	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	isEmptyValue,
 	matchesPreset,
@@ -153,6 +154,52 @@ describe('measureAttrsForDevice', () => {
 		expect(deriveMeasureMode(measureAttrsForDevice(ATTRS, 'borderRadius', RESPONSIVE, 'Tablet').value, '')).toBe(
 			'individual'
 		);
+	});
+});
+
+describe('inheritedMeasureSlots', () => {
+	const DESKTOP = ['8', '4', '8', '4'];
+	const TABLET = ['2', '', '2', ''];
+
+	it('inherits the preset on Desktop, which has no wider breakpoint', () => {
+		const read = inheritedMeasureSlots('Desktop', { desktop: DESKTOP, tablet: TABLET }, '0.5rem');
+
+		expect(read.values).toEqual(['0.5rem', '0.5rem', '0.5rem', '0.5rem']);
+		expect(read.inherited).toEqual([false, false, false, false]);
+	});
+
+	it('spreads a per-corner preset across the Desktop corners', () => {
+		const read = inheritedMeasureSlots('Desktop', {}, ['0', '0.125rem', '9999px', '1rem']);
+
+		expect(read.values).toEqual(['0', '0.125rem', '9999px', '1rem']);
+	});
+
+	it('inherits the desktop corners on Tablet rather than the preset', () => {
+		const read = inheritedMeasureSlots('Tablet', { desktop: DESKTOP }, '0.5rem');
+
+		expect(read.values).toEqual(['8', '4', '8', '4']);
+		expect(read.inherited).toEqual([true, true, true, true]);
+	});
+
+	it('falls through an empty desktop corner to the preset, corner by corner', () => {
+		const read = inheritedMeasureSlots('Tablet', { desktop: ['8', '', '8', ''] }, '0.5rem');
+
+		expect(read.values).toEqual(['8', '0.5rem', '8', '0.5rem']);
+		expect(read.inherited).toEqual([true, false, true, false]);
+	});
+
+	it('prefers tablet over desktop on Mobile, per corner', () => {
+		const read = inheritedMeasureSlots('Mobile', { desktop: DESKTOP, tablet: TABLET }, '0.5rem');
+
+		expect(read.values).toEqual(['2', '4', '2', '4']);
+		expect(read.inherited).toEqual([true, true, true, true]);
+	});
+
+	it('ignores the device its own value, so a corner never inherits from itself', () => {
+		// Desktop stores four corners; asking for Desktop still resolves to the preset.
+		const read = inheritedMeasureSlots('Desktop', { desktop: DESKTOP }, '3px');
+
+		expect(read.values).toEqual(['3px', '3px', '3px', '3px']);
 	});
 });
 

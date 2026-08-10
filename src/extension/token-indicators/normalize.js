@@ -139,6 +139,55 @@ export function measureAttrsForDevice(attributes, baseAttr, responsive = {}, dev
 }
 
 /**
+ * What each corner of a measure control inherits at the given device WHEN THE DEVICE STORES NOTHING —
+ * the device's own value is deliberately left out, because this is the value the corner falls back to.
+ *
+ * A responsive measure control renders through a desktop -> tablet -> mobile cascade that runs PER CORNER:
+ * an empty tablet corner takes the desktop corner, an empty mobile corner takes the tablet corner and
+ * then the desktop one. Only once the whole device chain is empty does the corner reach the selected
+ * preset. Resolving straight to the preset skips those steps, so a Tablet sitting on four different
+ * desktop corners would report the preset's single value — naming a size the button is not rendering at
+ * that breakpoint.
+ *
+ * Nothing here is written back, and this does NOT feed the linked/individual mode: the corners stay empty
+ * so they keep inheriting, and the resolved values only tell the field's popover which size is currently
+ * in effect and where it came from.
+ *
+ * @param {string} device        The active preview device ('Desktop' | 'Tablet' | 'Mobile').
+ * @param {Object} [values]      The stored dimension per device: { desktop, tablet }.
+ * @param {*}      [presetValue] The selected preset's value for the property, the last fallback.
+ *
+ * @since TBD
+ *
+ * @return {{ values: string[], inherited: boolean[] }} The four inherited corners, and per corner whether
+ *                                                      it came from another device rather than the preset.
+ */
+export function inheritedMeasureSlots(device, values = {}, presetValue) {
+	const desktop = dimensionSlots(values.desktop);
+	const tablet = dimensionSlots(values.tablet);
+
+	// Mobile falls through tablet before desktop; tablet only through desktop; desktop inherits the preset.
+	const chain = 'Mobile' === device ? [tablet, desktop] : 'Tablet' === device ? [desktop] : [];
+
+	const slots = [0, 1, 2, 3].map((index) => {
+		const from = chain.find((source) => {
+			const corner = source[index];
+
+			return corner !== undefined && corner !== null && corner !== '';
+		});
+
+		return from
+			? { value: String(from[index]), inherited: true }
+			: { value: presetSlotAt(presetValue, index), inherited: false };
+	});
+
+	return {
+		values: slots.map((slot) => slot.value),
+		inherited: slots.map((slot) => slot.inherited),
+	};
+}
+
+/**
  * The linked/individual mode a measure control should open in, derived from the corners the user would
  * actually see: each stored corner where one is set, otherwise the value that corner inherits from the
  * selected preset.
