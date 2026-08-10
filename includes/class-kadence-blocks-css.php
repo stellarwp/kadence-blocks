@@ -2347,6 +2347,34 @@ class Kadence_Blocks_CSS {
 	}
 
 	/**
+	 * Adds one side of a measure output, matching render_measure_output()'s per-side rules: a numeric
+	 * value gets the shared unit, a `position` keyword is emitted verbatim, a design-token alias resolves
+	 * to its `var(--kb-token--…)` reference, and a legacy spacing variable resolves to its stored size.
+	 * An empty/unset value emits nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $prop     The CSS property to write (e.g. `border-top-left-radius`).
+	 * @param mixed  $value    The side's value: a number, a `position` keyword, a design-token alias, a
+	 *                         legacy spacing variable, or empty.
+	 * @param string $unit     The unit appended to a numeric value.
+	 * @param string $property The measure property being rendered, so `position` keywords pass through.
+	 *
+	 * @return void
+	 */
+	private function render_measure_side( $prop, $value, $unit, $property ) {
+		if ( $this->is_number( $value ) ) {
+			$this->add_property( $prop, $value . $unit );
+		} else if ( 'position' === $property && ! empty( $value ) ) {
+			$this->add_property( $prop, $value );
+		} else if ( ! empty( $value ) && null !== $this->get_token_reference( $value ) ) {
+			$this->add_property( $prop, $this->get_token_reference( $value ) );
+		} else if ( ! empty( $value ) && $this->is_variable_value( $value ) ) {
+			$this->add_property( $prop, $this->get_variable_value( $value ) );
+		}
+	}
+
+	/**
 	 * Generates the measure output.
 	 *
 	 * @param array  $attributes an array of attributes.
@@ -2410,96 +2438,24 @@ class Kadence_Blocks_CSS {
 		$args = wp_parse_args( $args, $defaults );
 		$unit = ! empty( $attributes[ $args['unit_key'] ] ) ? $attributes[ $args['unit_key'] ] : 'px';
 		if ( isset( $attributes[ $args['desktop_key'] ] ) && is_array( $attributes[ $args['desktop_key'] ] ) ) {
-			if ( $this->is_number( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] . $unit );
-			} else if ( 'position' === $property && ! empty( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][1] ) && is_numeric( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][1] ) && ! empty( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][2] ) && is_numeric( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][2] ) && ! empty( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][3] ) && is_numeric( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][3] ) && ! empty( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'tablet' );
 		if ( isset( $attributes[ $args['tablet_key'] ] ) && is_array( $attributes[ $args['tablet_key'] ] ) ) {
-			if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_numeric( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][0] ) && ! empty( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][1] ) && is_numeric( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][1] ) && ! empty( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][2] ) && is_numeric( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][2] ) && ! empty( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][3] ) && is_numeric( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][3] ) && ! empty( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'mobile' );
 		if ( isset( $attributes[ $args['mobile_key'] ] ) && is_array( $attributes[ $args['mobile_key'] ] ) ) {
-			if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_numeric( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][0] ) && ! empty( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][1] ) && is_numeric( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][1] ) && ! empty( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][2] ) && is_numeric( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][2] ) && ! empty( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][3] ) && is_numeric( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][3] ) && ! empty( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'desktop' );
 	}

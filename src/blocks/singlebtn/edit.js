@@ -281,6 +281,11 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
+	// The border-radius linked/individual mode is derived from the stored corners (all equal reads as
+	// linked), so no new attribute is needed and old buttons open in the right mode. This ephemeral
+	// override only records an explicit "unlink" of already-equal corners for the current session — it
+	// resets on remount, matching how the control's mode has always been session-local.
+	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState(null);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -1191,6 +1196,60 @@ export default function KadenceButtonEdit(props) {
 																		showReset
 																	/>
 																}
+																context={{
+																	blockName: 'kadence/singlebtn',
+																	attribute: 'borderRadius',
+																	defaultValue:
+																		tokenBinding.borderRadius?.presetValue,
+																	unit: borderRadiusUnit,
+																	units: ['px', 'em', 'rem', '%'],
+																	onUnit: (value) =>
+																		setAttributes({ borderRadiusUnit: value }),
+																	min: 0,
+																	max:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 24
+																			: 500,
+																	step:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 0.1
+																			: 1,
+																}}
+																control={
+																	borderRadiusModeOverride ??
+																	(!borderRadius ||
+																	borderRadius.every(
+																		(corner) => corner === borderRadius[0]
+																	)
+																		? 'linked'
+																		: 'individual')
+																}
+																onChangeControl={(mode) => {
+																	if ('linked' === mode) {
+																		// Collapse to the top-left corner so the
+																		// button reflects the link immediately, and
+																		// drop the override so the derived mode
+																		// (now all-equal) reads as linked.
+																		const corner = borderRadius?.[0] ?? '';
+																		setAttributes({
+																			borderRadius: [
+																				corner,
+																				corner,
+																				corner,
+																				corner,
+																			],
+																		});
+																		setBorderRadiusModeOverride(null);
+																	} else {
+																		// Unlinking equal corners leaves the values
+																		// untouched, so remember the choice for this
+																		// session; a differing corner would derive
+																		// individual on its own.
+																		setBorderRadiusModeOverride('individual');
+																	}
+																}}
 																reset={false}
 																value={borderRadius}
 																tabletValue={tabletBorderRadius}

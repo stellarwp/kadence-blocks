@@ -65,6 +65,32 @@ $font_size_primitive_tokens = array_map(
 	$font_size_slugs
 );
 
+// The radius scale steps are primitives (the slug IS a scale step). Registering them here surfaces the
+// radius SIZES in the token picker (a radius control offers these sizes rather than the component-specific
+// semantic radii, which alias this scale) and lets Css_Var emit each
+// --kb-token--primitive--dimension--radius--<slug> variable. Values live in the shipped baseline, so
+// registering changes nothing until a site owner overrides a step. They carry no projection: the semantic
+// radius tokens hold the block-level css_var bindings, and the primitives are pick targets only.
+$radius_labels = [
+	'none' => __( 'None', 'kadence-blocks' ),
+	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
+	'sm'   => __( 'Small', 'kadence-blocks' ),
+	'md'   => __( 'Medium', 'kadence-blocks' ),
+	'lg'   => __( 'Large', 'kadence-blocks' ),
+	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'full' => __( 'Full', 'kadence-blocks' ),
+];
+
+$radius_tokens = [];
+foreach ( $radius_labels as $slug => $label ) {
+	$radius_tokens[] = [
+		'id'    => 'primitive.dimension.radius.' . $slug,
+		'type'  => 'dimension',
+		'label' => $label,
+		'group' => __( 'Radius', 'kadence-blocks' ),
+	];
+}
+
 /**
  * The brand + neutral primitives ARE the site's global color palette: each claims a Kadence palette slot
  * (palette1..9), so --global-paletteN follows the primitive and the legacy kadence_blocks_colors palette
@@ -204,8 +230,9 @@ return [
 				 * Control radius (buttons, inputs). Registered so Css_Var emits
 				 * --kb-token--semantic--radius--control; the button's own default border-radius rule references
 				 * that variable directly (the button is never empty, so the low-specificity block-default CSS
-				 * mechanism can't reach it). Resolves to the radius scale's "md" step, the design system's
-				 * control radius. A user's explicit radius still wins by specificity.
+				 * mechanism can't reach it). Resolves to the radius scale's "sm" step, which carries the
+				 * button's long-standing 3px radius, so an existing site that never set a radius renders
+				 * unchanged. A user's explicit radius still wins by specificity.
 				 */
 				'id'    => 'semantic.radius.control',
 				'type'  => 'dimension',
@@ -306,7 +333,8 @@ return [
 		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens,
-		$font_size_primitive_tokens
+		$font_size_primitive_tokens,
+		$radius_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
