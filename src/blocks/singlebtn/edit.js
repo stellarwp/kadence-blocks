@@ -85,7 +85,11 @@ import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
-import { deriveMeasureMode, measureAttrsForDevice } from '../../extension/token-indicators/normalize';
+import {
+	deriveMeasureMode,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+} from '../../extension/token-indicators/normalize';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
@@ -277,6 +281,15 @@ export default function KadenceButtonEdit(props) {
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+
+	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
+	// before the preset's, matching the cascade the button actually renders through. The corners stay
+	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		tokenBinding.borderRadius?.presetValue
+	);
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -1215,8 +1228,8 @@ export default function KadenceButtonEdit(props) {
 																context={{
 																	blockName: 'kadence/singlebtn',
 																	attribute: 'borderRadius',
-																	defaultValue:
-																		tokenBinding.borderRadius?.presetValue,
+																	defaultValue: inheritedBorderRadius.values,
+																	inheritedDefault: inheritedBorderRadius.inherited,
 																	unit: borderRadiusUnit,
 																	units: ['px', 'em', 'rem', '%'],
 																	onUnit: (value) =>
@@ -1233,6 +1246,13 @@ export default function KadenceButtonEdit(props) {
 																			? 0.1
 																			: 1,
 																}}
+																// The mode describes what THIS device stores, not what it
+																// inherits. A breakpoint that stores nothing has nothing
+																// that differs, so it reads as linked — deriving from the
+																// inherited corners instead would split an all-empty Tablet
+																// into four identical blank fields, showing a difference the
+																// user cannot see. Where the value comes from is surfaced by
+																// the field's popover, not by the link toggle.
 																control={
 																	borderRadiusModeOverride[previewDevice] ??
 																	deriveMeasureMode(
@@ -1242,14 +1262,31 @@ export default function KadenceButtonEdit(props) {
 																}
 																onChangeControl={(mode) => {
 																	if ('linked' === mode) {
+																		const corner =
+																			borderRadiusForDevice.value?.[0] ?? '';
+
+																		if ('' === corner) {
+																			// Nothing stored on this device, so there is
+																			// nothing to collapse — the corners are empty
+																			// because they inherit, and writing the
+																			// inherited value here would silently pin
+																			// Tablet/Mobile to Desktop's current radius.
+																			// Remember the choice instead, so the control
+																			// links without the corners leaving inherit.
+																			setBorderRadiusModeOverride((current) => ({
+																				...current,
+																				[previewDevice]: 'linked',
+																			}));
+
+																			return;
+																		}
+
 																		// Collapse to the top-left corner so the button
 																		// reflects the link immediately, and drop the
 																		// override so the derived mode (now all-equal)
 																		// reads as linked. Only the ACTIVE device's
 																		// attribute is written, so the other breakpoints
 																		// keep their own corners.
-																		const corner =
-																			borderRadiusForDevice.value?.[0] ?? '';
 																		setAttributes({
 																			[borderRadiusForDevice.attr]: [
 																				corner,
