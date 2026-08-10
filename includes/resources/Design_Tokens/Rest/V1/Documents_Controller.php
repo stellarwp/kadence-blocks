@@ -368,7 +368,11 @@ final class Documents_Controller extends Controller {
 					// Its own route rather than the title parameter the bulk write routes accept: a
 					// rename is a metadata edit, and routing it through a document write would
 					// re-validate and re-resolve the whole stored document to change a label.
-					'methods'             => 'PUT',
+					//
+					// EDITABLE rather than PUT alone: setting a title is idempotent, so all three write
+					// verbs can share the handler, and a WordPress client reaching for POST or PATCH is
+					// following the convention every core endpoint sets rather than making a mistake.
+					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => [ $this, 'update_title' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_title_params(),

@@ -1370,7 +1370,9 @@ final class DocumentsControllerTest extends TestCase {
 	}
 
 	/**
-	 * The rename route is registered under the library, accepts PUT, and exposes a schema.
+	 * The rename route is registered under the library, accepts every write verb a WordPress client is
+	 * likely to reach for, and exposes a schema. Setting a title is idempotent, so POST and PATCH are as
+	 * correct as PUT here and all three share one handler.
 	 *
 	 * @return void
 	 */
@@ -1380,9 +1382,12 @@ final class DocumentsControllerTest extends TestCase {
 		$slug_route  = $this->controller_constant( 'SLUG_ROUTE' );
 		$title_route = $this->controller_constant( 'TITLE_ROUTE' );
 
-		$route = "/$namespace/$base/$slug_route/$title_route";
+		$route   = "/$namespace/$base/$slug_route/$title_route";
+		$methods = $this->route_methods( $route );
 
-		$this->assertContains( 'PUT', $this->route_methods( $route ) );
+		$this->assertContains( 'PUT', $methods );
+		$this->assertContains( 'POST', $methods );
+		$this->assertContains( 'PATCH', $methods );
 
 		$options = $this->rest_server->get_route_options( $route );
 		$this->assertArrayHasKey( 'schema', $options );
