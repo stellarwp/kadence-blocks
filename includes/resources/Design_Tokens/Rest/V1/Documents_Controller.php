@@ -365,6 +365,15 @@ final class Documents_Controller extends Controller {
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::TITLE_ROUTE,
 			[
 				[
+					// The read half of the title resource. The document read carries the title too, so this
+					// is not the only way to obtain it — it is here so the sub-resource that accepts writes
+					// can also be read, rather than being write-only.
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_title' ],
+					'permission_callback' => [ $this, 'get_item_permissions_check' ],
+					'args'                => $this->get_slug_params(),
+				],
+				[
 					// Its own route rather than the title parameter the bulk write routes accept: a
 					// rename is a metadata edit, and routing it through a document write would
 					// re-validate and re-resolve the whole stored document to change a label.
@@ -600,6 +609,45 @@ final class Documents_Controller extends Controller {
 			$this->read_document_param( $request ),
 			$slug,
 			Cast::to_string( $request->get_param( self::TITLE_PARAM ) )
+		);
+	}
+
+	/**
+	 * Read a token library's title (GET /documents/{slug}/title).
+	 *
+	 * The document read already carries the title, so this adds no field a client could not otherwise
+	 * reach; it exists so the title sub-resource is readable as well as writable, and so a client that
+	 * only wants the label does not have to fetch and discard the whole stored document to get it.
+	 *
+	 * An unknown library is a 404, matching {@see self::update_title()} — the two halves of the resource
+	 * agree on which libraries exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function get_title( $request ) {
+		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return new WP_Error(
+				'rest_design_tokens_not_found',
+				__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::NOT_FOUND,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		return new WP_REST_Response(
+			[
+				'slug'  => $slug,
+				'title' => $this->store->get_title( $slug ),
+			],
+			WP_Http::OK
 		);
 	}
 

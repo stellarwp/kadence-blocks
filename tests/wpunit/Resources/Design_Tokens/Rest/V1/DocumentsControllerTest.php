@@ -1388,10 +1388,74 @@ final class DocumentsControllerTest extends TestCase {
 		$this->assertContains( 'PUT', $methods );
 		$this->assertContains( 'POST', $methods );
 		$this->assertContains( 'PATCH', $methods );
+		$this->assertContains( 'GET', $methods );
 
 		$options = $this->rest_server->get_route_options( $route );
 		$this->assertArrayHasKey( 'schema', $options );
 		$this->assertIsCallable( $options['schema'] );
+	}
+
+	/**
+	 * Reading the title resource returns the stored label for that library.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsTheStoredTitle(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Winter 2026' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$data = $this->controller->get_title( $request )->get_data();
+
+		$this->assertSame( 'brand-a', $data['slug'] );
+		$this->assertSame( 'Winter 2026', $data['title'] );
+	}
+
+	/**
+	 * A library with no stored label reads back an empty title rather than its slug, so a client can tell
+	 * "unnamed" from "named after its slug".
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsEmptyForAnUntitledLibrary(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a' );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$this->assertSame( '', $this->controller->get_title( $request )->get_data()['title'] );
+	}
+
+	/**
+	 * Reading the title of a library that does not exist is a 404, matching what renaming one returns, so
+	 * both halves of the resource agree on which libraries exist.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReturnsNotFoundForAnUnknownLibrary(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'ghost' );
+
+		$response = $this->controller->get_title( $request );
+
+		$this->assertInstanceOf( WP_Error::class, $response );
+		$this->assertSame( WP_Http::NOT_FOUND, $response->get_error_data()['status'] );
+	}
+
+	/**
+	 * The title read reflects a rename immediately, so the two halves of the resource cannot disagree.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReflectsARename(): void {
+		$this->store->save_document( '{"set":"a"}', 'brand-a', 'Winter 2026' );
+		$this->controller->update_title( $this->title_request( 'brand-a', 'Spring 2027' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', 'brand-a' );
+
+		$this->assertSame( 'Spring 2027', $this->controller->get_title( $request )->get_data()['title'] );
 	}
 
 	/**
