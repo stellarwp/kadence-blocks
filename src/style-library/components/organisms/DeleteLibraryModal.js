@@ -96,7 +96,7 @@ export function DeleteLibraryModal({ activeSlug, activeTitle, isBusy, error, onC
 							? sprintf(
 									// translators: %s: the default library's display title.
 									__(
-										"Reset '%s'? Its token values return to the shipped baseline.",
+										"Reset '%s' to its default values?",
 										'kadence-blocks'
 									),
 									label
