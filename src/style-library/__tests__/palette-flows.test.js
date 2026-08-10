@@ -125,6 +125,75 @@ describe('writeDefaultPaletteFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
+
+	it('re-reads on failure, so an optimistically applied edit is put back to the server order', async () => {
+		const failure = new Error('Save failed.');
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockRejectedValue(failure);
+		const reload = jest.fn().mockResolvedValue(undefined);
+
+		await expect(
+			writeDefaultPaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				edit: (groups) => groups,
+				reload,
+				refreshFeed: jest.fn(),
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+			})
+		).rejects.toBe(failure);
+
+		// The whole point: reload() is in the success path too, so a version of this flow that only
+		// reloaded there would leave the caller's optimistic edit on screen after a failed write.
+		expect(reload).toHaveBeenCalledTimes(1);
+	});
+
+	it('keeps reporting the write error when the rollback re-read also fails, and still clears busy', async () => {
+		const failure = new Error('Save failed.');
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockRejectedValue(failure);
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			writeDefaultPaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				edit: (groups) => groups,
+				reload: jest.fn().mockRejectedValue(new Error('Re-read failed.')),
+				refreshFeed: jest.fn(),
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(failure);
+
+		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+
+	it('does not refresh the feed when the write failed', async () => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockRejectedValue(new Error('Save failed.'));
+		const refreshFeed = jest.fn();
+
+		await expect(
+			writeDefaultPaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				defaultId: DEFAULT_ID,
+				edit: (groups) => groups,
+				reload: jest.fn().mockResolvedValue(undefined),
+				refreshFeed,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+			})
+		).rejects.toThrow();
+
+		expect(refreshFeed).not.toHaveBeenCalled();
+	});
 });
 
 describe('saveSwatchEditsFlow', () => {

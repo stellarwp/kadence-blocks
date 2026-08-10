@@ -77,7 +77,9 @@ import {
  * @since TBD
  *
  * @return {Promise<void>} Resolves once the write, the re-reads, and the feed refresh complete;
- *                          rejects on failure after `onError`/`onBusy` have run.
+ *                          rejects on failure after `onError`, a rollback re-read, and `onBusy` have
+ *                          run — so a caller that applied its edit optimistically is put back in sync
+ *                          with the server whether the write succeeded or not.
  */
 export function writeDefaultPaletteFlow({ namespace, slug, defaultId, edit, reload, refreshFeed, onBusy, onError }) {
 	onBusy(true);
@@ -93,8 +95,23 @@ export function writeDefaultPaletteFlow({ namespace, slug, defaultId, edit, relo
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
-			onBusy(false);
-			throw err;
+
+			// Re-read on the way out too, not only on success. A caller may have applied its edit
+			// optimistically — the swatch reorder does, and says so — and depends on this re-read to put
+			// the server's version back when the write fails. Reloading only in the success path leaves a
+			// failed edit sitting on screen next to its own error message.
+			//
+			// A re-read that itself fails is swallowed: the write error is the one worth reporting, and
+			// masking it with a second failure would hide what actually went wrong. `onBusy(false)` runs
+			// either way, so the UI never stays stuck behind a spinner.
+			return Promise.resolve()
+				.then(() => reload())
+				.catch(() => {})
+				.then(() => {
+					onBusy(false);
+
+					throw err;
+				});
 		});
 }
 
