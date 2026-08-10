@@ -25,6 +25,8 @@ import { CreateLibraryModal } from './CreateLibraryModal';
  * @param {Object}        props                    The component props.
  * @param {Array<Object>} props.libraries          The ordered library rows (`{ slug, title }`).
  * @param {string}        props.activeSlug         The active library slug.
+ * @param {string}        [props.activeTitle]      The active library's display name, from the feed, so
+ *                                                 the toggle can name it before `libraries` loads.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
  * @param {?{message: string}} props.switchError   The current switch error, if any.
  * @param {?{message: string}} props.createError   The current create error, if any.
@@ -40,6 +42,7 @@ import { CreateLibraryModal } from './CreateLibraryModal';
 export function LibrarySelector({
 	libraries,
 	activeSlug,
+	activeTitle,
 	isBusy,
 	switchError,
 	createError,
@@ -68,11 +71,10 @@ export function LibrarySelector({
 			<SelectDropdown
 				value={activeSlug}
 				options={options}
-				// The slug alone is enough to name the active library correctly (see
-				// libraryDisplayTitle) — this is what the toggle shows on first paint, before
-				// `libraries` has loaded and any option can match `activeSlug`, so it never flashes
-				// the raw slug while the list is in flight.
-				valueLabel={libraryDisplayTitle({ slug: activeSlug, title: '' })}
+				// What the toggle shows on first paint, before `libraries` has loaded and any option can
+				// match `activeSlug`. The feed carries the active library's name for exactly this moment,
+				// so the toggle never flashes the raw slug while the list is in flight.
+				valueLabel={libraryDisplayTitle({ slug: activeSlug, title: activeTitle })}
 				isBusy={isBusy}
 				// Suppressed while the create modal is open — it shows its own (separately scoped)
 				// createError inline instead, so surfacing switchError here too would display two

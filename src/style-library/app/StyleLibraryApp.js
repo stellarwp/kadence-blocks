@@ -88,6 +88,7 @@ export function StyleLibraryApp() {
 						<LibrarySelector
 							libraries={libraries.libraries}
 							activeSlug={libraries.activeSlug}
+							activeTitle={activeLibrary?.title ?? feed.feed?.title}
 							isBusy={libraries.isBusy}
 							switchError={libraries.switchError}
 							createError={libraries.createError}
@@ -100,7 +101,7 @@ export function StyleLibraryApp() {
 					actionsSlot={
 						<DeleteLibraryModal
 							activeSlug={libraries.activeSlug}
-							activeTitle={activeLibrary?.title}
+							activeTitle={activeLibrary?.title ?? feed.feed?.title}
 							isBusy={libraries.isBusy}
 							error={libraries.deleteError}
 							onClearError={libraries.clearDeleteError}

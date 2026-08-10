@@ -4,11 +4,6 @@
  */
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
@@ -68,10 +63,12 @@ export function isDuplicateLibraryTitle(title, libraries) {
 
 /**
  * The display name for a library, wherever one is shown (the toggle label, a menu item, the
- * delete/reset confirmation): its stored title when it has one; "Your Library" for the default
- * library specifically when it doesn't, since the default is the library most likely to go
- * untitled and deserves a friendlier name than its slug; the slug for any other untitled library,
- * since there is no generic name that would not make two different libraries look identical.
+ * delete/reset confirmation): its title, falling back to its slug.
+ *
+ * There is no default name here on purpose. An untitled default library is served already named by
+ * PHP — both the REST row and the admin feed apply `Token_Store::default_title()` — so a row that
+ * reaches this helper carries whatever name it should display. Naming it a second time in JS would
+ * mean two sources for one string and an English default that survives translation.
  *
  * @param {{slug: string, title: string}} library The library row.
  *
@@ -80,15 +77,7 @@ export function isDuplicateLibraryTitle(title, libraries) {
  * @return {string} The display name.
  */
 export function libraryDisplayTitle(library) {
-	if (library?.title) {
-		return library.title;
-	}
-
-	if (isDefaultLibrary(library?.slug)) {
-		return __('Your Library', 'kadence-blocks');
-	}
-
-	return library?.slug ?? '';
+	return library?.title || library?.slug || '';
 }
 
 /**

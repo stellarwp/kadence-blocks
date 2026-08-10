@@ -67,16 +67,24 @@ describe('isDuplicateLibraryTitle', () => {
 });
 
 describe('libraryDisplayTitle', () => {
-	it('shows "Your Library" for the default library when it has no stored title', () => {
-		expect(libraryDisplayTitle({ slug: 'default', title: '' })).toBe('Your Library');
-	});
-
-	it('shows the stored title for the default library when it has one', () => {
+	it('shows the title a row carries', () => {
 		expect(libraryDisplayTitle({ slug: 'default', title: 'Acme Brand' })).toBe('Acme Brand');
 	});
 
-	it('falls back to the slug for a non-default library with no stored title', () => {
+	it('shows the default library the name PHP serves it under, with no JS default of its own', () => {
+		// The REST list and the admin feed both apply Token_Store::default_title(), so an untitled
+		// default library never reaches this helper without a name.
+		expect(libraryDisplayTitle({ slug: 'default', title: 'Your Library' })).toBe('Your Library');
+	});
+
+	it('falls back to the slug for a library with no title, default or not', () => {
 		expect(libraryDisplayTitle({ slug: 'brand-a', title: '' })).toBe('brand-a');
+		expect(libraryDisplayTitle({ slug: 'default', title: '' })).toBe('default');
+	});
+
+	it('is empty when the row has neither', () => {
+		expect(libraryDisplayTitle({})).toBe('');
+		expect(libraryDisplayTitle(undefined)).toBe('');
 	});
 });
 
