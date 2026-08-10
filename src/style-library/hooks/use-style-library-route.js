@@ -6,7 +6,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -23,9 +23,20 @@ import { parseRoute, serializeRoute } from '../helpers/route';
  */
 export function useStyleLibraryRoute() {
 	const [route, setRoute] = useState(() => parseRoute(window.location.href));
+	// The live route, kept alongside the state so a navigator can merge its partial without reading
+	// `route` through a state updater. A `setState` updater must be pure: StrictMode runs it twice, which
+	// would push the same entry onto the history stack twice and make Back appear to do nothing. The ref
+	// is written synchronously here rather than in an effect, so two navigations in one tick still
+	// compose instead of the second overwriting the first.
+	const routeRef = useRef(route);
 
 	useEffect(() => {
-		const onPopState = () => setRoute(parseRoute(window.location.href));
+		const onPopState = () => {
+			const next = parseRoute(window.location.href);
+
+			routeRef.current = next;
+			setRoute(next);
+		};
 
 		window.addEventListener('popstate', onPopState);
 
@@ -33,13 +44,13 @@ export function useStyleLibraryRoute() {
 	}, []);
 
 	const apply = useCallback((partial, method) => {
-		setRoute((current) => {
-			const next = { ...current, ...partial };
+		const next = { ...routeRef.current, ...partial };
 
-			window.history[method](null, '', serializeRoute(next, window.location.href));
+		routeRef.current = next;
 
-			return next;
-		});
+		window.history[method](null, '', serializeRoute(next, window.location.href));
+
+		setRoute(next);
 	}, []);
 
 	const navigate = useCallback((partial) => apply(partial, 'pushState'), [apply]);
