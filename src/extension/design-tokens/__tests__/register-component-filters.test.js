@@ -131,6 +131,68 @@ describe('editor seam', () => {
 	});
 
 	/**
+	 * The per-corner inherited-from-another-breakpoint flag is narrowed to the slot being rendered, so a
+	 * corner that inherits reads as inherited while a sibling falling back to the preset does not.
+	 *
+	 * @return {void}
+	 */
+	it('narrows the per-corner inherited flag to the rendered slot', () => {
+		const inheritedDefault = [true, false, true, false];
+		const slot = (index) =>
+			applyFilters(EDITOR_HOOK, 'DEFAULT', {
+				control: 'measureRange',
+				index,
+				value: ['', '', '', ''],
+				onChange: jest.fn(),
+				context: { ...CONTEXT, defaultValue: ['1px', '2px', '3px', '4px'], inheritedDefault },
+			});
+
+		expect(slot(0).props.inherited).toBe(true);
+		expect(slot(1).props.inherited).toBe(false);
+	});
+
+	/**
+	 * The linked "all sides" slot arrives with a null index and stands for the first corner, so it reports
+	 * that corner's default and inherited flag rather than nothing.
+	 *
+	 * @return {void}
+	 */
+	it('reads the first corner for the linked slot, which has a null index', () => {
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: null,
+			value: ['', '', '', ''],
+			onChange: jest.fn(),
+			context: {
+				...CONTEXT,
+				defaultValue: ['1px', '2px', '3px', '4px'],
+				inheritedDefault: [true, false, false, false],
+			},
+		});
+
+		expect(result.props.defaultValue).toBe('1px');
+		expect(result.props.inherited).toBe(true);
+	});
+
+	/**
+	 * With no inherited-default context the slot reports not-inherited, so a control that never passes the
+	 * flag keeps the preset-default wording.
+	 *
+	 * @return {void}
+	 */
+	it('reports not inherited when the context carries no inherited flag', () => {
+		const result = applyFilters(EDITOR_HOOK, 'DEFAULT', {
+			control: 'measureRange',
+			index: 0,
+			value: ['', '', '', ''],
+			onChange: jest.fn(),
+			context: { ...CONTEXT, defaultValue: '0.5rem' },
+		});
+
+		expect(result.props.inherited).toBe(false);
+	});
+
+	/**
 	 * Picking a token on an individual side writes the alias to only that side; clearing and a custom
 	 * value write to the same side, leaving the siblings untouched.
 	 *
