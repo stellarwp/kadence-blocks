@@ -51,6 +51,45 @@ final class Feed_AssemblerTest extends TestCase {
 	}
 
 	/**
+	 * The feed names the untitled default library, so the app's library selector can label it on first
+	 * paint without carrying a default of its own.
+	 *
+	 * @return void
+	 */
+	public function testForSlugCarriesTheDefaultTitleForTheUntitledDefaultLibrary(): void {
+		$feed = $this->assembler->for_slug( Token_Store::default_slug() );
+
+		$this->assertSame( Token_Store::default_title(), $feed['title'] );
+	}
+
+	/**
+	 * A stored title wins over the default library's standing name, matching what the REST list serves.
+	 *
+	 * @return void
+	 */
+	public function testForSlugPrefersAStoredTitleOverTheDefaultTitle(): void {
+		$this->container->get( Token_Store::class )->save_document( '{}', Token_Store::default_slug(), 'Acme Brand' );
+
+		$feed = $this->assembler->for_slug( Token_Store::default_slug() );
+
+		$this->assertSame( 'Acme Brand', $feed['title'] );
+	}
+
+	/**
+	 * A non-default library with no stored title carries an empty one — the default name belongs to the
+	 * default library alone, never to any library that happens to be untitled.
+	 *
+	 * @return void
+	 */
+	public function testForSlugLeavesAnUntitledNonDefaultLibraryUnnamed(): void {
+		$this->container->get( Token_Store::class )->save_document( '{}', 'brand-a' );
+
+		$feed = $this->assembler->for_slug( 'brand-a' );
+
+		$this->assertSame( '', $feed['title'] );
+	}
+
+	/**
 	 * A resolvable library yields every key the Builder emits, populated from the given slug.
 	 *
 	 * @return void

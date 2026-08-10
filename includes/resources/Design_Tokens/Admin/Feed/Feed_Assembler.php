@@ -121,7 +121,27 @@ final class Feed_Assembler {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		return $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $responsive );
+		return $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $this->title( $slug ), $responsive );
+	}
+
+	/**
+	 * The active library's display title, defaulted the same way the REST representation defaults it, so
+	 * the name the selector paints on load matches the one its list supplies a moment later.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string
+	 */
+	private function title( string $slug ): string {
+		$stored = $this->store->get_title( $slug );
+
+		if ( '' !== $stored ) {
+			return $stored;
+		}
+
+		return $slug === Token_Store::default_slug() ? Token_Store::default_title() : '';
 	}
 
 	/**

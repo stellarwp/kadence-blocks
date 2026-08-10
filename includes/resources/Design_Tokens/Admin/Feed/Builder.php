@@ -60,12 +60,13 @@ final class Builder {
 	 * @param array{root: string, namespace: string, nonce: string} $rest       REST root, namespace and nonce.
 	 * @param string                                                $version    Store version hash ('' from baseline).
 	 * @param string                                                $slug       The token library slug the values/version/schema were resolved against.
+	 * @param string                                                $title      The active library's display title, already defaulted for an untitled default library.
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, array $responsive = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [] ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -73,6 +74,9 @@ final class Builder {
 			'resolved'   => $active && $resolved,
 			'version'    => $version,
 			'slug'       => $slug,
+			// Carried alongside the slug so the library selector can name the active library on first
+			// paint, before its REST list has loaded and any row is available to look the title up in.
+			'title'      => $title,
 			'schema'     => $active ? $this->registry->to_ui_schema() : [ 'groups' => [] ],
 			'values'     => $active ? $values : [],
 			'presets'    => $active ? $presets : [],
