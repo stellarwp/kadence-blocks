@@ -20,8 +20,9 @@ import './SpacingScreen.scss';
 
 /**
  * The value-sized square preview for one row: a `div` sized inline to the row's own resolved
- * value, clamped by the stylesheet at `6rem` so the largest steps pin rather than blowing up the
- * row — an empty or zero value degrades to a collapsed square, the honest rendering.
+ * value, with no maximum — the stylesheet leaves it unclamped so every step renders at its true
+ * CSS size and the row grows to fit it. An empty or zero value degrades to a collapsed square,
+ * the honest rendering.
  *
  * @param {{id: string, label: string, value: string, userCreated: boolean}} row The row descriptor.
  *
