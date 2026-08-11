@@ -3,6 +3,7 @@ import {
 	aliasToId,
 	idToAlias,
 	resolveTokenValue,
+	isNonScalarPresetValue,
 	presetRows,
 	presetInitialValues,
 	presetSaveTokens,
@@ -54,6 +55,77 @@ describe('resolveTokenValue', () => {
 
 	it('resolves a dangling alias to an empty string', () => {
 		expect(resolveTokenValue(values, '{semantic.color.does-not-exist}')).toBe('');
+	});
+
+	it('unwraps a responsive envelope to its base $value, ignoring breakpoint overrides', () => {
+		const envelope = {
+			$value: '{semantic.color.action-primary}',
+			$extensions: {
+				'com.kadence.designTokens': {
+					responsive: { tablet: '#000000', mobile: '#111111' },
+				},
+			},
+		};
+
+		expect(resolveTokenValue(values, envelope)).toBe('#3633e1');
+	});
+
+	it('unwraps an envelope whose base $value is itself a literal', () => {
+		const envelope = {
+			$value: '4px',
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '2px' } } },
+		};
+
+		expect(resolveTokenValue(values, envelope)).toBe('4px');
+	});
+
+	it('resolves a per-corner slot list to a space-joined CSS value', () => {
+		const dimensionValues = { 'radius.lg': '1rem', 'radius.none': '0' };
+		const slots = ['{radius.lg}', '{radius.none}', '{radius.lg}', '{radius.none}'];
+
+		expect(resolveTokenValue(dimensionValues, slots)).toBe('1rem 0 1rem 0');
+	});
+
+	it('resolves a per-corner slot list of mixed aliases and literals', () => {
+		const dimensionValues = { 'radius.lg': '1rem' };
+		const slots = ['{radius.lg}', '4px', '{radius.lg}', '4px'];
+
+		expect(resolveTokenValue(dimensionValues, slots)).toBe('1rem 4px 1rem 4px');
+	});
+
+	it('unwraps an envelope whose base $value is a per-corner slot list', () => {
+		const dimensionValues = { 'radius.lg': '1rem' };
+		const envelope = {
+			$value: ['{radius.lg}', '0', '{radius.lg}', '0'],
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: ['0', '0', '0', '0'] } } },
+		};
+
+		expect(resolveTokenValue(dimensionValues, envelope)).toBe('1rem 0 1rem 0');
+	});
+
+	it('degrades an unresolvable non-string, non-array, non-envelope entry to an empty string rather than garbage', () => {
+		expect(resolveTokenValue(values, null)).toBe('');
+		expect(resolveTokenValue(values, undefined)).toBe('');
+	});
+});
+
+describe('isNonScalarPresetValue', () => {
+	it('is true for a responsive envelope', () => {
+		expect(isNonScalarPresetValue({ $value: '4px' })).toBe(true);
+	});
+
+	it('is true for a four-entry per-corner slot list', () => {
+		expect(isNonScalarPresetValue(['1rem', '0', '1rem', '0'])).toBe(true);
+	});
+
+	it('is false for a bare alias or literal', () => {
+		expect(isNonScalarPresetValue('{semantic.dimension.radius-md}')).toBe(false);
+		expect(isNonScalarPresetValue('4px')).toBe(false);
+	});
+
+	it('is false for an empty or non-four-entry array (not a valid slot list)', () => {
+		expect(isNonScalarPresetValue([])).toBe(false);
+		expect(isNonScalarPresetValue(['1rem', '0'])).toBe(false);
 	});
 });
 

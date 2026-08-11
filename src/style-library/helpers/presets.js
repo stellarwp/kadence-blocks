@@ -20,6 +20,24 @@ import { nextScaleSlug } from './scale';
 import { getDesignTokensFeed } from './tokens';
 
 /**
+ * The `$value` sentinel key a responsive preset-value envelope wraps its base value in, mirroring
+ * the sibling per-corner/responsive-value work's `Sentinels::get_value_key()`. Presence of this key
+ * on an object (never an array — a slot list is a plain array) is what distinguishes an envelope
+ * from a bare per-corner slot list.
+ *
+ * @since TBD
+ */
+const ENVELOPE_VALUE_KEY = '$value';
+
+/**
+ * The number of corners a per-corner slot list carries (top-left, top-right, bottom-right,
+ * bottom-left) — the sibling per-corner-values work's `Dtcg_Validator::SLOT_LIST_SIDES`.
+ *
+ * @since TBD
+ */
+const SLOT_LIST_SIDES = 4;
+
+/**
  * The block name the Button preset screen edits — the single JS spelling, so the preset-screens
  * filter registration, the fetch-and-bind hook, and any future preset screen reusing this contract
  * never risk a typo'd duplicate.
@@ -110,20 +128,82 @@ export function idToAlias(value) {
 }
 
 /**
- * Resolve a stored preset token value against the feed's resolved value map: an alias resolves to
- * its target's resolved value, a literal is returned as-is, and an alias pointing at nothing
- * resolves to an empty string.
+ * Whether a stored preset token entry is a responsive envelope: `{ $value, $extensions: {
+ * "com.kadence.designTokens": { responsive: { tablet, mobile } } } }`. Only the base `$value` is
+ * read here — the breakpoint overrides are an editor concern, out of scope for the Style Library's
+ * single-value preview/picker surface. An object is checked rather than any array, since a slot
+ * list (see `isSlotList`) is a plain array and never carries a `$value` key.
  *
- * @param {Record<string, string>} values The feed's resolved value map (`feed.values`).
- * @param {string}                 value  The stored token value (alias or literal).
+ * @param {*} value The stored token entry.
  *
  * @since TBD
  *
- * @return {string} The resolved value, or `''` for a dangling alias.
+ * @return {boolean} True when `value` is a responsive envelope.
+ */
+function isPresetEnvelope(value) {
+	return Boolean(value) && typeof value === 'object' && !Array.isArray(value) && ENVELOPE_VALUE_KEY in value;
+}
+
+/**
+ * Whether a stored preset token entry is a per-corner slot list: exactly four entries, each
+ * independently an alias or a literal.
+ *
+ * @param {*} value The stored token entry.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `value` is a per-corner slot list.
+ */
+function isSlotList(value) {
+	return Array.isArray(value) && value.length === SLOT_LIST_SIDES;
+}
+
+/**
+ * Whether a stored preset token entry is one of the shapes the single-value token picker cannot
+ * represent — a responsive envelope or a per-corner slot list. Both carry more than the picker's
+ * one alias-or-literal slot, so editing them through it would silently flatten the value on save;
+ * callers use this to render the field read-only instead.
+ *
+ * @param {*} value The stored (or draft-seeded) token entry.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when `value` is non-scalar.
+ */
+export function isNonScalarPresetValue(value) {
+	return isPresetEnvelope(value) || isSlotList(value);
+}
+
+/**
+ * Resolve a stored preset token value against the feed's resolved value map, tolerant of every
+ * shape a preset property's value can carry: a bare alias or literal (unchanged from the original
+ * contract), a responsive envelope (resolved from its base `$value`, breakpoint overrides ignored —
+ * this is a single preview/picker value, not a responsive editor), or a per-corner slot list (each
+ * corner resolved independently and joined with a space, the CSS `border-radius` shorthand order).
+ * Anything else unresolvable degrades to `''` rather than a stringified object or array.
+ *
+ * @param {Record<string, string>} values The feed's resolved value map (`feed.values`).
+ * @param {*}                       value  The stored token entry (alias, literal, envelope, or slot list).
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved value, or `''` when unresolvable.
  */
 export function resolveTokenValue(values, value) {
-	if (typeof value !== 'string' || !value.startsWith('{') || !value.endsWith('}')) {
-		return value ?? '';
+	if (isPresetEnvelope(value)) {
+		return resolveTokenValue(values, value[ENVELOPE_VALUE_KEY]);
+	}
+
+	if (isSlotList(value)) {
+		return value.map((slot) => resolveTokenValue(values, slot)).join(' ');
+	}
+
+	if (typeof value !== 'string') {
+		return '';
+	}
+
+	if (!value.startsWith('{') || !value.endsWith('}')) {
+		return value;
 	}
 
 	return values?.[aliasToId(value)] ?? '';
