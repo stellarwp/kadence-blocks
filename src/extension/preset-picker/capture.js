@@ -17,6 +17,23 @@ import {
 	presetSlotAt,
 } from '../token-indicators/normalize';
 import { isTokenAlias } from '../design-tokens/alias';
+import { tokenLiteral } from '../design-tokens/token-literals';
+
+/**
+ * The vendor extension a responsive token leaf carries its per-breakpoint overrides under. Mirrors the
+ * PHP `Extensions` vendor key.
+ *
+ * @since TBD
+ */
+const VENDOR_EXTENSION = 'com.kadence.designTokens';
+
+/**
+ * The breakpoints a responsive property can override, narrowest last — the order the device cascade runs
+ * in, so each breakpoint's unset corners fall back to the one above it.
+ *
+ * @since TBD
+ */
+const CASCADE = ['tablet', 'mobile'];
 
 /**
  * Compose one dimension slot into the literal a preset stores: a token alias is stored verbatim, any
@@ -90,28 +107,40 @@ function attrToLiteral(kind, value, unit, presetValue) {
  * inheriting; a property with no breakpoint values stays a bare value, leaving every existing preset
  * byte-identical.
  *
+ * A corner the breakpoint leaves unset inherits the way the editor renders it — through the device
+ * cascade, not from the preset: Tablet falls back to the captured base, Mobile to the captured Tablet
+ * value and then to the base. Filling from the preset instead would freeze the preset's default into the
+ * corners the user never touched, pinning them against the Desktop value they are rendering at.
+ *
  * @param {*}      base        The captured base (desktop) value.
  * @param {Object} property    The bound property, carrying `responsive_attrs`.
  * @param {Object} attributes  The block's current attributes.
  * @param {string} unit        The property's unit. A responsive measure control carries ONE unit across
  *                             all three devices, so every breakpoint composes against the same one.
- * @param {*}      presetValue The selected preset's value, used to fill an unset corner.
  *
  * @since TBD
  *
  * @return {*} The base value, or the responsive envelope wrapping it.
  */
-function withResponsive(base, property, attributes, unit, presetValue) {
+function withResponsive(base, property, attributes, unit) {
 	const responsive = {};
 
-	Object.entries(property.responsive_attrs || {}).forEach(([breakpoint, attr]) => {
-		const raw = get(attributes, attr, '');
+	// Cascade order, so a Mobile corner can inherit the Tablet value captured a step earlier.
+	CASCADE.forEach((breakpoint, index) => {
+		const attr = get(property.responsive_attrs, breakpoint, '');
+		const raw = attr ? get(attributes, attr, '') : '';
 
-		if (isEmptyValue(property.kind, raw)) {
+		if (!attr || isEmptyValue(property.kind, raw)) {
 			return;
 		}
 
-		const value = attrToLiteral(property.kind, raw, unit, presetValue);
+		// The nearest breakpoint above this one that captured a value, else the base.
+		const above = CASCADE.slice(0, index)
+			.reverse()
+			.map((breakpointAbove) => responsive[breakpointAbove])
+			.find((captured) => captured !== undefined);
+
+		const value = attrToLiteral(property.kind, raw, unit, above === undefined ? base : above);
 
 		if (value !== '') {
 			responsive[breakpoint] = value;
@@ -122,7 +151,60 @@ function withResponsive(base, property, attributes, unit, presetValue) {
 		return base;
 	}
 
-	return { $value: base, $extensions: { 'com.kadence.designTokens': { responsive } } };
+	return { $value: base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
+}
+
+/**
+ * Resolve a captured value to the literal the catalog's value map stores: an alias resolves through the
+ * library's token literals, a per-corner list resolves slot by slot.
+ *
+ * @param {*}      value   The captured value.
+ * @param {string} library The token library slug.
+ *
+ * @since TBD
+ *
+ * @return {*} The resolved literal, or the per-corner literal list.
+ */
+function capturedLiteral(value, library) {
+	return Array.isArray(value) ? value.map((slot) => tokenLiteral(slot, library)) : tokenLiteral(value, library);
+}
+
+/**
+ * The catalog view of a captured token map: the resolved `{ property: literal }` values plus the
+ * `{ breakpoint: { property: literal } }` overrides, matching what the server localizes for an existing
+ * preset (`values` / `responsive`).
+ *
+ * A newly saved preset is not in the localized catalog until the next page load, so the picker has to seed
+ * it from what was captured. Aliases are resolved here because the catalog stores literals — a control
+ * compares its own value against them, and a `{dot.path}` would never match.
+ *
+ * @param {Object} tokens  The captured token map ({ propertyKey: literal-or-envelope }).
+ * @param {string} library The token library the values were captured against.
+ *
+ * @since TBD
+ *
+ * @return {{ values: Object, responsive: Object }} The catalog value maps for the preset.
+ */
+export function capturedCatalogValues(tokens, library) {
+	const resolvedLibrary = library || activeLibrary();
+	const values = {};
+	const responsive = {};
+
+	Object.entries(tokens || {}).forEach(([key, captured]) => {
+		const overrides = get(captured, ['$extensions', VENDOR_EXTENSION, 'responsive'], null);
+		const base = overrides ? captured.$value : captured;
+
+		values[key] = capturedLiteral(base, resolvedLibrary);
+
+		Object.entries(overrides || {}).forEach(([breakpoint, value]) => {
+			responsive[breakpoint] = {
+				...(responsive[breakpoint] || {}),
+				[key]: capturedLiteral(value, resolvedLibrary),
+			};
+		});
+	});
+
+	return { values, responsive };
 }
 
 /**
@@ -154,7 +236,7 @@ export function capturedTokens(blockName, library, attributes) {
 		const presetValue = get(presetValues, property.key, '');
 		const base = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
-		tokens[property.key] = withResponsive(base, property, attributes, unit, presetValue);
+		tokens[property.key] = withResponsive(base, property, attributes, unit);
 
 		return tokens;
 	}, {});

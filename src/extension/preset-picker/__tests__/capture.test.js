@@ -4,7 +4,7 @@
 // its `PresetPicker` component. `capturedTokens` never renders it, so stub the module out.
 jest.mock('@kadence/components', () => ({}));
 
-import { capturedTokens } from '../capture';
+import { capturedTokens, capturedCatalogValues } from '../capture';
 
 const BLOCK = 'kadence/singlebtn';
 const SET = 'default';
@@ -225,6 +225,51 @@ describe('capturedTokens', () => {
 		).toEqual({ mobile: '2px' });
 	});
 
+	it('fills an unset corner at a breakpoint from the captured base, not from the preset', () => {
+		const full = '{primitive.dimension.radius.full}';
+		const xl = '{primitive.dimension.radius.xl}';
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: [xl, xl, xl, xl],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: [full, '', '', ''],
+		};
+
+		// The three untouched Tablet corners keep rendering Desktop's radius, so they capture it — filling
+		// them from the preset's '4px' would pin Tablet against what the button actually shows.
+		expect(
+			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
+		).toEqual({ tablet: [full, xl, xl, xl] });
+	});
+
+	it('fills an unset Mobile corner from the captured Tablet value', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['4', '4', '4', '4'],
+			mobileBorderRadius: ['2', '', '', ''],
+		};
+
+		expect(
+			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
+		).toEqual({ tablet: '4px', mobile: ['2px', '4px', '4px', '4px'] });
+	});
+
+	it('fills an unset Mobile corner from the base when Tablet stores nothing', () => {
+		const attributes = {
+			kbPreset: 'primary',
+			borderRadius: ['8', '8', '8', '8'],
+			borderRadiusUnit: 'px',
+			tabletBorderRadius: ['', '', '', ''],
+			mobileBorderRadius: ['2', '', '', ''],
+		};
+
+		expect(
+			capturedTokens(BLOCK, SET, attributes)['button-radius'].$extensions['com.kadence.designTokens'].responsive
+		).toEqual({ mobile: ['2px', '8px', '8px', '8px'] });
+	});
+
 	it('stays a bare value when no breakpoint is set', () => {
 		const attributes = {
 			kbPreset: 'primary',
@@ -246,5 +291,74 @@ describe('capturedTokens', () => {
 		const tokens = capturedTokens(BLOCK, SET, attributes);
 
 		expect(tokens).toEqual({ 'button-bg': '#00ff00', 'button-radius': '4px' });
+	});
+});
+
+describe('capturedCatalogValues', () => {
+	beforeEach(() => {
+		seedCatalog();
+
+		window.kadenceDesignTokensPickable = {
+			tokens: [],
+			values: {
+				default: {
+					'primitive.dimension.radius.xl': '1rem',
+					'primitive.dimension.radius.full': '9999px',
+				},
+			},
+		};
+	});
+
+	afterEach(() => {
+		delete window.kadenceDesignTokensPresets;
+		delete window.kadenceDesignTokensPickable;
+	});
+
+	it('resolves an alias to the library literal', () => {
+		const captured = capturedCatalogValues({ 'button-radius': '{primitive.dimension.radius.xl}' }, SET);
+
+		expect(captured).toEqual({ values: { 'button-radius': '1rem' }, responsive: {} });
+	});
+
+	it('passes a literal through untouched', () => {
+		const captured = capturedCatalogValues({ 'button-bg': '#ff0000' }, SET);
+
+		expect(captured.values).toEqual({ 'button-bg': '#ff0000' });
+	});
+
+	it('keeps an alias the library does not define, rather than emptying it', () => {
+		const captured = capturedCatalogValues({ 'button-radius': '{primitive.dimension.radius.none}' }, SET);
+
+		expect(captured.values['button-radius']).toBe('{primitive.dimension.radius.none}');
+	});
+
+	it('resolves a per-corner list slot by slot', () => {
+		const captured = capturedCatalogValues(
+			{ 'button-radius': ['{primitive.dimension.radius.full}', '8px', '8px', '8px'] },
+			SET
+		);
+
+		expect(captured.values['button-radius']).toEqual(['9999px', '8px', '8px', '8px']);
+	});
+
+	it('splits a responsive envelope into the base value and the per-breakpoint map', () => {
+		const captured = capturedCatalogValues(
+			{
+				'button-radius': {
+					$value: '{primitive.dimension.radius.xl}',
+					$extensions: {
+						'com.kadence.designTokens': {
+							responsive: { tablet: ['{primitive.dimension.radius.full}', '1rem', '1rem', '1rem'] },
+						},
+					},
+				},
+			},
+			SET
+		);
+
+		expect(captured).toEqual({
+			values: { 'button-radius': '1rem' },
+			responsive: { tablet: { 'button-radius': ['9999px', '1rem', '1rem', '1rem'] } },
+		});
 	});
 });

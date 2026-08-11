@@ -9,7 +9,8 @@
 import { Modal, TextControl, Button, Notice } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { appendPreset } from './index';
+import { appendPreset, setPresetValues } from './index';
+import { capturedCatalogValues } from './capture';
 import { createPreset } from '../presets/api/client';
 import { refreshProjectedCss } from '../design-tokens/live-css';
 import { deriveSlug, dedupeSlug } from '../presets/slug';
@@ -51,7 +52,12 @@ export function SavePresetModal({ blockName, library, tokens, existingSlugs = []
 
 		createPreset(blockName, { preset: slug, label: label.trim(), tokens }, library)
 			.then(() => {
+				const { values, responsive } = capturedCatalogValues(tokens, library);
+
 				appendPreset(blockName, library, { slug, label: label.trim(), userCreated: true });
+				// Selecting the new preset clears the block's overrides, so its values have to be in the
+				// catalog before that happens or every control lands on a preset that defines nothing.
+				setPresetValues(blockName, library, slug, values, responsive);
 				refreshProjectedCss();
 				onSaved(slug);
 				onClose();
