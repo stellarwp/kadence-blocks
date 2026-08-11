@@ -115,6 +115,22 @@ final class Extensions {
 	private const SECTION_TOKEN_ORDER = 'tokenOrder';
 
 	/**
+	 * The per-block preset display-order section: a map of block name => ordered list of preset
+	 * slugs. NOT returned by get_sections() — it is id-keyed authoring metadata, not
+	 * preset-shaped, so the tokens-map walk (and the reference scanner that follows
+	 * get_sections()) must not descend into it; it holds slugs only, never {alias} values. Keyed
+	 * per block, unlike tokenOrder's single flat list, because a preset slug is only unique
+	 * within its block. The stored order is partial and advisory, never authoritative membership:
+	 * readers append unmentioned slugs in declaration order and ignore stale ones, so an order can
+	 * permute the registered set but never hide a preset.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_PRESET_ORDER = 'presetOrder';
+
+	/**
 	 * The key naming a group's default preset slug.
 	 *
 	 * @since TBD
@@ -275,6 +291,18 @@ final class Extensions {
 	 */
 	public static function get_section_token_order(): string {
 		return self::SECTION_TOKEN_ORDER;
+	}
+
+	/**
+	 * The per-block preset display-order section name.
+	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_preset_order(): string {
+		return self::SECTION_PRESET_ORDER;
 	}
 
 	/**
