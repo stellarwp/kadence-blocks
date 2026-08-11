@@ -1,6 +1,6 @@
 /**
- * The draft channel: the one sanctioned exception to the screen/settings-panel siblings-only rule
- * (see `.local/style-library-reference.md` section 10). A screen and its settings panel are
+ * The draft channel: the one sanctioned exception to the screen/settings-panel siblings-only rule.
+ * A screen and its settings panel are
  * mounted as siblings under `AppShell`, each running its own data-hook instance, sharing state
  * only through the feed and the route — the feed only changes on Save. That leaves the open
  * panel's in-flight draft with no path to the row it edits, so `StyleLibraryApp` (the one
