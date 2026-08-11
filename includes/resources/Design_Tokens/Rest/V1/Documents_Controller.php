@@ -2034,11 +2034,10 @@ final class Documents_Controller extends Controller {
 			$this->get_order_delete_params(),
 			[
 				self::ORDER_PARAM => [
-					'description'          => __( 'The token ids in their new order for this group.', 'kadence-blocks' ),
-					'type'                 => 'array',
-					'required'             => true,
-					'items'                => [ 'type' => 'string' ],
-					'additionalProperties' => false,
+					'description' => __( 'The token ids in their new order for this group.', 'kadence-blocks' ),
+					'type'        => 'array',
+					'required'    => true,
+					'items'       => [ 'type' => 'string' ],
 				],
 			]
 		);
