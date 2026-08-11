@@ -549,7 +549,7 @@ describe('createPaletteFlow', () => {
 });
 
 describe('deletePaletteFlow', () => {
-	it('deletes, defers to reload for the server-resolved fallback, and never activates a successor', async () => {
+	it('deletes a palette that is not the live one without activating a successor', async () => {
 		client.deletePalette.mockResolvedValue({ $default: DEFAULT_ID, $current: DEFAULT_ID, palettes: [] });
 		const reload = jest.fn().mockResolvedValue(undefined);
 		const refreshFeed = jest.fn().mockResolvedValue(undefined);
@@ -559,6 +559,7 @@ describe('deletePaletteFlow', () => {
 			namespace: NAMESPACE,
 			slug: SLUG,
 			id: 'sunset',
+			currentId: DEFAULT_ID,
 			reload,
 			refreshFeed,
 			onBusy,
@@ -571,9 +572,58 @@ describe('deletePaletteFlow', () => {
 		expect(reload).toHaveBeenCalled();
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
-		// No successor is ever activated first — unlike deleteLibraryFlow, deleting a palette that
-		// is merely being edited has no live-site effect to sequence around.
 		expect(client.setCurrentPalette).not.toHaveBeenCalled();
+	});
+
+	it('refuses to delete the live palette with no successor chosen, and issues no request', async () => {
+		const onError = jest.fn();
+
+		await expect(
+			deletePaletteFlow({
+				namespace: NAMESPACE,
+				slug: SLUG,
+				id: 'sunset',
+				currentId: 'sunset',
+				reload: jest.fn(),
+				refreshFeed: jest.fn(),
+				onBusy: jest.fn(),
+				onError,
+			})
+		).rejects.toThrow();
+
+		expect(client.setCurrentPalette).not.toHaveBeenCalled();
+		expect(client.deletePalette).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: expect.stringMatching(/choose which palette/i) });
+	});
+
+	it('activates the chosen successor before deleting the live palette', async () => {
+		const order = [];
+		client.setCurrentPalette.mockImplementation(() => {
+			order.push('activate');
+			return Promise.resolve({ current: 'forest' });
+		});
+		client.deletePalette.mockImplementation(() => {
+			order.push('delete');
+			return Promise.resolve({});
+		});
+		const onActivated = jest.fn();
+
+		await deletePaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			id: 'sunset',
+			currentId: 'sunset',
+			successorId: 'forest',
+			reload: jest.fn().mockResolvedValue(undefined),
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+			onActivated,
+		});
+
+		expect(order).toEqual(['activate', 'delete']);
+		expect(client.setCurrentPalette).toHaveBeenCalledWith(NAMESPACE, 'forest', SLUG);
+		expect(onActivated).toHaveBeenCalledWith('forest');
 	});
 
 	it('surfaces the default-palette 400 message', async () => {

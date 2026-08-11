@@ -28,7 +28,12 @@ import { RenamePaletteModal } from '../organisms/RenamePaletteModal';
 import { DeletePaletteModal } from '../organisms/DeletePaletteModal';
 import { AddColorGroupModal } from '../organisms/AddColorGroupModal';
 import { usePalettes } from '../../hooks/use-palettes';
-import { isDefaultPalette, mapPaletteToSwatchGroups, paletteDisplayLabel } from '../../helpers/palettes';
+import {
+	isUserCreatedPalette,
+	mapPaletteToSwatchGroups,
+	paletteDisplayLabel,
+	paletteSuccessorOptions,
+} from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
 
@@ -74,6 +79,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 	const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 
 	const editingRow = palettes.listing.palettes.find((row) => row.id === palettes.editingId);
+	const isEditingUserCreated = isUserCreatedPalette(palettes.listing, palettes.editingId);
 	const activeRow = palettes.listing.palettes.find((row) => row.id === palettes.activeId);
 
 	const options = useMemo(
@@ -153,23 +159,21 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					/>
 				}
 				destructiveAction={
-					// The server refuses to delete `$default` (400), so the affordance is absent, not
-					// disabled, for it — the same treatment `DeleteLibraryModal`'s precedent sets. Delete
-					// always targets the palette being edited, never `activeId`: under the open/activate
-					// split you can be editing a palette that isn't live, and deleting the live one instead
+					// Always targets the palette being edited, never `activeId`: under the open/activate
+					// split you can be editing a palette that isn't live, and acting on the live one instead
 					// would silently re-tint the site as a side effect of cleaning up an unrelated draft.
-					isDefaultPalette(palettes.listing, palettes.editingId) ? null : (
-						<Button
-							isDestructive
-							variant="link"
-							// Reuses DeleteLibraryModal's own styling — the same red text-link treatment, no
-							// new rule needed for a class this app already ships.
-							className="kadence-blocks-style-library__delete-library-action"
-							onClick={() => setIsDeleteOpen(true)}
-						>
-							{__('Delete', 'kadence-blocks')}
-						</Button>
-					)
+					// The `$default` palette is offered too — as a Reset, since the server refuses to remove
+					// it but does drop its overrides.
+					<Button
+						isDestructive
+						variant="link"
+						// Reuses DeleteLibraryModal's own styling — the same red text-link treatment, no
+						// new rule needed for a class this app already ships.
+						className="kadence-blocks-style-library__delete-library-action"
+						onClick={() => setIsDeleteOpen(true)}
+					>
+						{isEditingUserCreated ? __('Delete', 'kadence-blocks') : __('Reset', 'kadence-blocks')}
+					</Button>
 				}
 				primaryAction={
 					<Button variant="secondary" icon={plus} onClick={() => setIsAddGroupOpen(true)}>
@@ -234,6 +238,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 			{isDeleteOpen && (
 				<DeletePaletteModal
 					label={paletteDisplayLabel(editingRow)}
+					isUserCreated={isEditingUserCreated}
+					successors={paletteSuccessorOptions(palettes.listing, palettes.editingId)}
 					isActive={palettes.isEditingActive}
 					isBusy={palettes.isBusy}
 					error={palettes.deleteError}
@@ -241,9 +247,9 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						setIsDeleteOpen(false);
 						palettes.clearDeleteError();
 					}}
-					onConfirm={() =>
+					onConfirm={(successorId) =>
 						palettes
-							.deletePalette(palettes.editingId)
+							.deletePalette(palettes.editingId, successorId)
 							.then(() => {
 								setIsDeleteOpen(false);
 								palettes.clearDeleteError();

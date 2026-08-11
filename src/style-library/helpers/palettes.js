@@ -160,6 +160,42 @@ export function paletteDisplayLabel(row) {
 }
 
 /**
+ * Whether a palette was created by the user rather than shipped in the baseline. Only a
+ * user-created palette can be removed; deleting a baseline one drops its overrides and reverts it
+ * to baseline, leaving it in the listing. Fails closed — an id the listing does not vouch for
+ * counts as baseline, so the destructive label is never shown against a guess.
+ *
+ * @param {Object} listing The palette listing (`{ userCreated }`).
+ * @param {string} id      The palette id to check.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the palette is user-created.
+ */
+export function isUserCreatedPalette(listing, id) {
+	const ids = Array.isArray(listing?.userCreated) ? listing.userCreated : [];
+
+	return Boolean(id) && ids.includes(id);
+}
+
+/**
+ * The palettes a deleted palette can hand the active pointer to: every palette but itself, in
+ * listing order. Mirrors `successorOptions` for libraries.
+ *
+ * @param {Object} listing  The palette listing (`{ palettes }`).
+ * @param {string} targetId The palette being deleted.
+ *
+ * @since TBD
+ *
+ * @return {Array<{id: string, label: string}>} The candidate rows.
+ */
+export function paletteSuccessorOptions(listing, targetId) {
+	const rows = Array.isArray(listing?.palettes) ? listing.palettes : [];
+
+	return rows.filter((row) => row?.id && row.id !== targetId);
+}
+
+/**
  * Derive a palette id from a typed label — the same kebab grammar token/library ids use.
  *
  * @param {string} label The typed palette label.

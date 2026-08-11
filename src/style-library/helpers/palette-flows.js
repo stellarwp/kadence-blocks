@@ -366,40 +366,61 @@ export function createPaletteFlow({ namespace, slug, label, listing, reload, ope
 }
 
 /**
- * Delete a palette. The server refuses to delete the `$default` palette (400), so this is only
- * ever called for a non-default id.
+ * Delete a palette, first handing the active pointer to a successor when the palette being deleted
+ * is the live one. Mirrors `deleteLibraryFlow`.
  *
- * Unlike `deleteLibraryFlow`, this never activates a successor first. Two things make that
- * ordering unnecessary here, not merely skipped: first, opening no longer writes `$current`, so
- * deleting a palette that is merely being edited (not the live one) has no effect on what a
- * visitor sees, regardless of ordering — there is nothing to sequence. Second, when the deleted
- * palette *is* `$current`, the server resolves its own fallback and returns it in the same
- * response (`prepare_items()`), the same way it always has; there is no UI for naming a preferred
- * successor for a palette the way `DeleteLibraryModal` offers one for a library; a confirm is all
- * this deletion ever asks for. `reload` re-reads the listing from the server rather than the flow
- * assuming which palette ends up current or which one the app should now edit — mirroring
- * `deleteLibraryFlow`'s re-read of the active-library pointer for the analogous case, and letting
- * the hook fall the edited palette back to `$current` when the one just deleted was it.
+ * Activation runs before the delete: left alone the server resolves a dangling `$current` to
+ * `$default`, so the site would briefly wear a palette nobody chose.
  *
  * @param {Object}   args
  * @param {string}   args.namespace   The REST namespace.
  * @param {string}   args.slug        The token library slug.
  * @param {string}   args.id          The palette id to delete.
+ * @param {string}   args.currentId   The listing's `$current` palette id, which decides whether a
+ *                                    successor is required at all.
+ * @param {string}   [args.successorId] The palette to make current first. Required only when
+ *                                    deleting the current palette.
  * @param {Function} args.reload      Re-reads the listing (and the edited view) from the hook.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
+ * @param {Function} [args.onActivated] Called with the id the server reports as current, once the
+ *                                    successor is activated.
  *
  * @since TBD
  *
- * @return {Promise<void>} Resolves once the delete, the reload, and the feed refresh complete;
- *                          rejects on failure (e.g. the default-palette 400) after
+ * @return {Promise<void>} Resolves once the activation, delete, reload, and feed refresh complete;
+ *                          rejects on a missing successor or a request failure, after
  *                          `onError`/`onBusy` have run.
  */
-export function deletePaletteFlow({ namespace, slug, id, reload, refreshFeed, onBusy, onError }) {
+export function deletePaletteFlow({
+	namespace,
+	slug,
+	id,
+	currentId,
+	successorId,
+	reload,
+	refreshFeed,
+	onBusy,
+	onError,
+	onActivated,
+}) {
+	const needsSuccessor = id === currentId;
+
+	if (needsSuccessor && !successorId) {
+		const message = __('Choose which palette your site should use instead.', 'kadence-blocks');
+		onError({ message });
+		return Promise.reject(new Error(message));
+	}
+
 	onBusy(true);
 
-	return deletePalette(namespace, id, slug)
+	const activation = needsSuccessor
+		? setCurrentPalette(namespace, successorId, slug).then((result) => onActivated(result?.current ?? successorId))
+		: Promise.resolve();
+
+	return activation
+		.then(() => deletePalette(namespace, id, slug))
 		.then(() => reload())
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))

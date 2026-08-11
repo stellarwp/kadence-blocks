@@ -7,10 +7,12 @@ import {
 	isCustomColorToken,
 	isDefaultPalette,
 	isDuplicatePaletteLabel,
+	isUserCreatedPalette,
 	mapPaletteToSwatchGroups,
 	newSwatchValue,
 	nextCustomColorSlug,
 	paletteDisplayLabel,
+	paletteSuccessorOptions,
 	removeSwatchFromGroups,
 	renameSwatchInGroups,
 	reorderGroupSwatches,
@@ -390,3 +392,49 @@ function deepFreeze(value) {
 
 	return Object.freeze(value);
 }
+
+describe('paletteSuccessorOptions', () => {
+	const listing = {
+		defaultId: 'default',
+		palettes: [
+			{ id: 'default', label: 'Default' },
+			{ id: 'sunset', label: 'Sunset' },
+			{ id: 'forest', label: '' },
+		],
+	};
+
+	it('offers every palette but the one being deleted, in listing order', () => {
+		expect(paletteSuccessorOptions(listing, 'sunset')).toEqual([
+			{ id: 'default', label: 'Default' },
+			{ id: 'forest', label: '' },
+		]);
+	});
+
+	it('keeps the default palette as a candidate', () => {
+		expect(paletteSuccessorOptions(listing, 'forest').map((row) => row.id)).toContain('default');
+	});
+
+	it('returns nothing for a listing that has not loaded', () => {
+		expect(paletteSuccessorOptions(undefined, 'sunset')).toEqual([]);
+		expect(paletteSuccessorOptions({}, 'sunset')).toEqual([]);
+	});
+});
+
+describe('isUserCreatedPalette', () => {
+	const listing = { defaultId: 'default', userCreated: ['ocean'] };
+
+	it('reports a palette the listing names as user-created', () => {
+		expect(isUserCreatedPalette(listing, 'ocean')).toBe(true);
+	});
+
+	it('reports a baseline palette as not user-created', () => {
+		expect(isUserCreatedPalette(listing, 'sunset')).toBe(false);
+		expect(isUserCreatedPalette(listing, 'default')).toBe(false);
+	});
+
+	it('fails closed when the listing carries no signal', () => {
+		expect(isUserCreatedPalette({}, 'ocean')).toBe(false);
+		expect(isUserCreatedPalette(undefined, 'ocean')).toBe(false);
+		expect(isUserCreatedPalette(listing, '')).toBe(false);
+	});
+});
