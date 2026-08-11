@@ -27,6 +27,7 @@ import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
 import { SpacingScreen } from '../components/pages/SpacingScreen';
 import { IconSizesScreen } from '../components/pages/IconSizesScreen';
 import { ShadowScreen } from '../components/pages/ShadowScreen';
+import '../components/pages/ButtonScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
@@ -78,9 +79,8 @@ export function StyleLibraryApp() {
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
 
 	// Every Base Styles id without an entry in SCREEN_COMPONENTS resolves to the placeholder until
-	// its per-screen work lands, and the preset fallback is the placeholder until the first real
-	// preset screen ships.
-	// @todo SOFT-4083 / SOFT-4084: first real preset screens replace this fallback.
+	// its per-screen work lands, and the preset fallback stays the placeholder for any preset-bound
+	// block with no registered screen component on the preset-screens filter.
 	const registry = useMemo(() => {
 		const baseStyles = {};
 
