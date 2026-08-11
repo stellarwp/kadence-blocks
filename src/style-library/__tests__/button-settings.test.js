@@ -9,13 +9,15 @@ import { createRoot } from 'react-dom/client';
  * Internal dependencies
  */
 import { ButtonSettings } from '../components/pages/ButtonSettings';
-import { useButtonPresets } from '../hooks/use-button-presets';
+import { useButtonScreen } from '../hooks/use-button-screen';
 
-// Same rationale as `button-screen.test.js`: `use-button-presets.js` pulls in `../api/client`,
-// which imports `@wordpress/api-fetch` (externalized in production, not an installed dependency),
-// so automocking would fail to resolve it. `ButtonSettings` only reads the hook's return value.
-jest.mock('../hooks/use-button-presets', () => ({
-	useButtonPresets: jest.fn(),
+// Same rationale as `button-screen.test.js`: `use-button-screen.js` pulls in
+// `helpers/preset-flows.js` -> `../api/client`, which imports `@wordpress/api-fetch`
+// (externalized in production, not an installed dependency), so automocking would fail to
+// resolve it. Both cases below resolve to no initial values, so `ButtonSettings` returns null
+// before mounting `ButtonSettingsPanel` — the hook's write-flow fields never need stubbing.
+jest.mock('../hooks/use-button-screen', () => ({
+	useButtonScreen: jest.fn(),
 }));
 
 const LIBRARY = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
@@ -24,18 +26,18 @@ let container;
 let root;
 
 /**
- * Render `ButtonSettings` with the given `useButtonPresets` stub and route item, returning the
+ * Render `ButtonSettings` with the given `useButtonScreen` stub and route item, returning the
  * `navigate` spy passed to it.
  *
- * @param {Object} presets The `useButtonPresets` return value to stub.
- * @param {string} item    The route's `item` (`kb-item`) value.
+ * @param {Object} screen The `useButtonScreen` return value to stub.
+ * @param {string} item   The route's `item` (`kb-item`) value.
  *
  * @since TBD
  *
  * @return {Function} The `navigate` jest spy.
  */
-function renderButtonSettings(presets, item) {
-	useButtonPresets.mockReturnValue(presets);
+function renderButtonSettings(screen, item) {
+	useButtonScreen.mockReturnValue(screen);
 	const navigate = jest.fn();
 
 	act(() => {
@@ -56,7 +58,7 @@ beforeEach(() => {
 	container = document.createElement('div');
 	document.body.appendChild(container);
 	root = createRoot(container);
-	useButtonPresets.mockReset();
+	useButtonScreen.mockReset();
 });
 
 afterEach(() => {

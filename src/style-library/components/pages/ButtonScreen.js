@@ -1,8 +1,8 @@
 /**
  * The Button preset screen: self-registers for `kadence/singlebtn` on the preset-screens filter,
  * exactly as a third party would (`constants/screens.js`'s `PRESET_SCREENS_FILTER` docblock). A
- * header with a (for now inert) "+ Add Button" action over a `RowList` of preset rows, each showing
- * a live-rendered Button chip resolved from the preset's bound color and radius tokens.
+ * header with a "+ Add Button" action over a `RowList` of preset rows, each showing a
+ * live-rendered Button chip resolved from the preset's bound color and radius tokens.
  *
  * This is a bespoke screen, not a `ScaleScreen` config: a preset row carries a five-property map
  * with two states (Normal/Hover), not one scalar token value, so it composes the shared components
@@ -24,7 +24,7 @@ import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
 import { EmptyState } from '../molecules/EmptyState';
 import { ButtonSettings } from './ButtonSettings';
-import { useButtonPresets } from '../../hooks/use-button-presets';
+import { useButtonScreen } from '../../hooks/use-button-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { BUTTON_BLOCK, overlayPresetRows } from '../../helpers/presets';
 import { PRESET_SCREENS_FILTER } from '../../constants/screens';
@@ -71,13 +71,19 @@ function renderButtonPreview(row) {
  * @return {JSX.Element} The screen body.
  */
 export function ButtonScreen({ label, route, navigate, library }) {
-	const presets = useButtonPresets(library);
+	const screen = useButtonScreen(library);
 	const channel = useDraftChannel();
 
-	// Disabled with no handler until the mutations flow lands (decision 11): visible intent, not a
-	// hidden affordance.
+	// Guarded exactly like the scale mint (`ScaleScreen.js`): a dirty draft in the open panel
+	// prompts before a new preset navigates it away.
+	const mintPreset = () => screen.addPreset().then((id) => navigate({ item: id }));
 	const addAction = (
-		<Button icon={plus} variant="secondary" disabled>
+		<Button
+			icon={plus}
+			variant="secondary"
+			disabled={screen.isBusy}
+			onClick={() => (channel ? channel.guard(mintPreset) : mintPreset())}
+		>
 			{__('Add Button', 'kadence-blocks')}
 		</Button>
 	);
@@ -87,7 +93,7 @@ export function ButtonScreen({ label, route, navigate, library }) {
 	// this screen's rows.
 	const draft =
 		channel && channel.publication && channel.publication.itemId === route.item ? channel.publication.draft : null;
-	const rows = overlayPresetRows(presets.rows, route.item, draft, library?.values);
+	const rows = overlayPresetRows(screen.rows, route.item, draft, library?.values);
 
 	const items = rows.map((row) => ({
 		id: row.id,
@@ -111,9 +117,14 @@ export function ButtonScreen({ label, route, navigate, library }) {
 	return (
 		<div className="kadence-blocks-style-library__button-screen">
 			<ScreenHeader title={label} primaryAction={addAction} />
-			{presets.loadError && (
+			{screen.loadError && (
 				<Notice status="error" isDismissible={false}>
-					{presets.loadError.message}
+					{screen.loadError.message}
+				</Notice>
+			)}
+			{screen.addError && (
+				<Notice status="error" isDismissible onRemove={screen.clearAddError}>
+					{screen.addError.message}
 				</Notice>
 			)}
 			{presets.isLoading ? (

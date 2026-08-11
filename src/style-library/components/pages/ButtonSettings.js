@@ -12,18 +12,20 @@
  * lands (`useSettingsPanel` only re-seeds on an `itemId` change, not on `initialValues` arriving).
  * `ButtonSettings` owns the fetch, the stale-item self-heal, and the loading/no-data gate;
  * `ButtonSettingsPanel` — mounted only once real values exist, `key`ed on the preset id — owns
- * `useSettingsPanel` and the tabs, so switching presets remounts it with a correct seed.
+ * `useSettingsPanel`, the tabs, and the write flows, so switching presets remounts it with a
+ * correct seed.
  *
- * The footer is deliberately inert (`onDelete`/`onSave` both null) and nothing publishes to the
- * draft channel yet: registering channel actions whose `save` is a stub would make the
- * unsaved-changes guard lie about what Save does. Edits are local and discarded on navigation with
- * no prompt until the mutations flow adds the publish effect and the real handlers.
+ * Save writes the label and the full token map together (a rename is just a Save with only the
+ * label changed), so a saved draft always equals the refreshed `initialValues` and `isDirty`
+ * settles to false on its own — no extra re-seed is needed after a save (see the module's sibling
+ * `ScaleSettings.js` for the same posture on scale tokens).
  */
 
 /**
  * WordPress dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
+import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -32,7 +34,8 @@ import { __ } from '@wordpress/i18n';
 import { SettingsPanel } from '../templates/SettingsPanel';
 import { SettingsForm } from '../organisms/SettingsForm';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
-import { useButtonPresets } from '../../hooks/use-button-presets';
+import { useButtonScreen } from '../../hooks/use-button-screen';
+import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { buttonSettingsSchema } from '../../helpers/presets';
 
 /**
@@ -53,26 +56,85 @@ const TABS = [
  * @param {Object}   props               The component props.
  * @param {Function} props.navigate      The route navigator.
  * @param {Object}   props.route         The current route (`{ screen, item }`).
+ * @param {Object}   props.screen        The `useButtonScreen` binding.
  * @param {Object}   props.initialValues The seeded draft (`{label, tokens}`) for the open preset.
+ * @param {string}   props.presetLabel   The open preset's persisted label, for the channel publication.
  *
  * @since TBD
  *
  * @return {JSX.Element} The panel.
  */
-function ButtonSettingsPanel({ navigate, route, initialValues }) {
+function ButtonSettingsPanel({ navigate, route, screen, initialValues, presetLabel }) {
+	const id = route.item;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	const [activeTab, setActiveTab] = useState(TABS[0].name);
+	const channel = useDraftChannel();
+
+	// Pulled out of `channel` rather than depending on `channel` itself — see `ScaleSettings.js`'s
+	// identical comment: `publish`/`clearPublication` are individually stable, while
+	// `useDraftChannelState()` returns a fresh object literal on every app render, so depending on
+	// `channel` would re-fire this effect's cleanup (nulling the pending guard action) on every
+	// unrelated re-render, including the one `guard()` itself triggers.
+	const publish = channel?.publish;
+	const clearPublication = channel?.clearPublication;
+
+	useEffect(() => {
+		if (!publish || !clearPublication || !id) {
+			return undefined;
+		}
+
+		publish({ itemId: id, label: presetLabel, draft: panel.draft, isDirty: panel.isDirty });
+
+		return () => clearPublication();
+	}, [publish, clearPublication, id, presetLabel, panel.draft, panel.isDirty]);
+
+	// Reassigned every render, never held in state (the `ScaleSettings.js` posture): these close
+	// over the current `panel.draft`, so storing them in state would either loop the publish effect
+	// above or hand the guard modal a stale draft. `save` is the raw promise, rejection intact — the
+	// modal's own Save button is the one place that needs to see a failure.
+	if (channel) {
+		channel.actionsRef.current = {
+			save: () => screen.savePreset(id, panel.draft, initialValues),
+			discard: panel.resetDraft,
+		};
+	}
+
+	const handleSave = () => {
+		screen.savePreset(id, panel.draft, initialValues).catch(() => {});
+	};
+
+	const handleDelete = () => {
+		screen
+			.deletePreset(id)
+			.then(() => navigate({ item: '' }))
+			.catch(() => {});
+	};
+
+	// Close becomes guarded now that the panel publishes a real draft — the `ScaleSettings.js`
+	// pattern. Delete is never guarded and never confirmed beyond the click: prompting to save a
+	// draft on a preset being destroyed is nonsense.
+	const handleClose = () => (channel ? channel.guard(panel.close) : panel.close());
 
 	return (
 		<SettingsPanel
-			onClose={panel.close}
+			onClose={handleClose}
 			tabs={TABS}
 			activeTab={activeTab}
 			onTabChange={setActiveTab}
-			onDelete={null}
-			onSave={null}
+			onDelete={screen.isDeletable(id) ? handleDelete : null}
+			onSave={handleSave}
 			isDirty={panel.isDirty}
 		>
+			{screen.saveError && (
+				<Notice status="error" isDismissible onRemove={screen.clearSaveError}>
+					{screen.saveError.message}
+				</Notice>
+			)}
+			{screen.deleteError && (
+				<Notice status="error" isDismissible onRemove={screen.clearDeleteError}>
+					{screen.deleteError.message}
+				</Notice>
+			)}
 			<SettingsForm
 				schema={buttonSettingsSchema(activeTab)}
 				values={panel.draft}
@@ -96,28 +158,38 @@ function ButtonSettingsPanel({ navigate, route, initialValues }) {
  *         a valid one's presets are still loading.
  */
 export function ButtonSettings({ route, navigate, library }) {
-	const presets = useButtonPresets(library);
+	const screen = useButtonScreen(library);
 	const id = route.item;
-	const initialValues = presets.initialValuesFor(id);
+	const initialValues = screen.initialValuesFor(id);
 	const hasInitialValues = Boolean(initialValues);
+	const presetLabel = screen.payload?.presets?.[id]?.label ?? id;
 
 	// A `kb-item` naming no preset (a stale deep link, or another screen's token id) closes the
 	// panel instead of rendering broken fields — the `ScaleSettings.js` self-healing idiom. Waiting
-	// on `!presets.isLoading` matters here: while the fetch is in flight, an unknown-slug draft and a
+	// on `!screen.isLoading` matters here: while the fetch is in flight, an unknown-slug draft and a
 	// still-loading one look identical (both `null`), so healing eagerly would bounce a valid deep
-	// link straight into the page before its fetch lands. Waiting on `!presets.loadError` matters just
+	// link straight into the page before its fetch lands. Waiting on `!screen.loadError` matters just
 	// as much: a rejected fetch also leaves `initialValuesFor` returning null, and a valid `kb-item`
 	// must not be mistaken for a stale one just because the request failed — that would rewrite the
 	// route and make the deep link unrecoverable even after a successful retry.
 	useEffect(() => {
-		if (id && !presets.isLoading && !presets.loadError && !hasInitialValues) {
+		if (id && !screen.isLoading && !screen.loadError && !hasInitialValues) {
 			navigate({ item: '' });
 		}
-	}, [id, presets.isLoading, presets.loadError, hasInitialValues, navigate]);
+	}, [id, screen.isLoading, screen.loadError, hasInitialValues, navigate]);
 
 	if (!id || !hasInitialValues) {
 		return null;
 	}
 
-	return <ButtonSettingsPanel key={id} route={route} navigate={navigate} initialValues={initialValues} />;
+	return (
+		<ButtonSettingsPanel
+			key={id}
+			route={route}
+			navigate={navigate}
+			screen={screen}
+			initialValues={initialValues}
+			presetLabel={presetLabel}
+		/>
+	);
 }
