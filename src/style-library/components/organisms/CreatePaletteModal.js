@@ -38,7 +38,7 @@ import './CreatePaletteModal.scss';
 export function CreatePaletteModal({ listing, isBusy, error, onClose, onCreate }) {
 	const [label, setLabel] = useState('');
 	const slug = slugifyPaletteLabel(label);
-	const isDuplicate = isDuplicatePaletteLabel(label, listing);
+	const isDuplicate = !isBusy && isDuplicatePaletteLabel(label, listing);
 
 	return (
 		<Modal
