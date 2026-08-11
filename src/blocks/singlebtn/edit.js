@@ -1262,10 +1262,15 @@ export default function KadenceButtonEdit(props) {
 																}
 																onChangeControl={(mode) => {
 																	if ('linked' === mode) {
-																		const corner =
-																			borderRadiusForDevice.value?.[0] ?? '';
+																		const corners =
+																			borderRadiusForDevice.value ?? [];
+																		const corner = corners[0] ?? '';
+																		const isEmpty = corners.every(
+																			(value) =>
+																				'' === value || undefined === value
+																		);
 
-																		if ('' === corner) {
+																		if (isEmpty) {
 																			// Nothing stored on this device, so there is
 																			// nothing to collapse — the corners are empty
 																			// because they inherit, and writing the
@@ -1282,11 +1287,12 @@ export default function KadenceButtonEdit(props) {
 																		}
 
 																		// Collapse to the top-left corner so the button
-																		// reflects the link immediately, and drop the
-																		// override so the derived mode (now all-equal)
-																		// reads as linked. Only the ACTIVE device's
-																		// attribute is written, so the other breakpoints
-																		// keep their own corners.
+																		// reflects the link immediately. A blank top-left
+																		// clears the other corners with it — linking means
+																		// every corner matches the first one, empty
+																		// included. Only the ACTIVE device's attribute is
+																		// written, so the other breakpoints keep their own
+																		// corners.
 																		setAttributes({
 																			[borderRadiusForDevice.attr]: [
 																				corner,
@@ -1295,9 +1301,14 @@ export default function KadenceButtonEdit(props) {
 																				corner,
 																			],
 																		});
+																		// All-equal corners derive linked on their own, so
+																		// the override can go — except when they collapsed
+																		// to blank and the preset carries a different value
+																		// per corner, which derives individual.
 																		setBorderRadiusModeOverride((current) => ({
 																			...current,
-																			[previewDevice]: undefined,
+																			[previewDevice]:
+																				'' === corner ? 'linked' : undefined,
 																		}));
 																	} else {
 																		// Unlinking equal corners leaves the values
