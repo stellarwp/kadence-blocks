@@ -1,7 +1,7 @@
 /**
  * The Typography screen: the scale config, the FONT preview toolbar, the sample-text preview
  * renderer, and the two thin wrappers that plug into the shared `ScaleScreen`/`ScaleSettings`
- * contract (see `.local/style-library-reference.md`). Two things make this screen genuinely
+ * contract (see `ScaleScreen.js`'s module docblock). Two things make this screen genuinely
  * different from its siblings: a toolbar between the header and the list (the FONT dropdown, font
  * tabs, and the "+ Add Size" action) built on `ScaleScreen`'s optional `renderToolbar` seam, and
  * screen-level preview state (the currently previewed font) that `renderPreview` closes over —
@@ -132,8 +132,8 @@ function typographyToolbarRenderer(fonts, selectedFontId, onSelectFont) {
 }
 
 /**
- * The Typography screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract. `formatValue`/
+ * The Typography screen's config — see `ScaleScreen`'s module docblock for the full per-screen
+ * config contract. `formatValue`/
  * `parseValue` both go through `fontSizeDisplayValue()`: the size chip and the SIZE field must both
  * seed from the authored scalar (a clamp's `max`), never the resolved `clamp(...)` string a
  * fluid step actually carries.
@@ -195,9 +195,12 @@ export function TypographyScreen(props) {
 
 	const selectedFont = fonts.find((font) => font.id === selectedFontId) ?? null;
 
-	// `useScaleScreen`'s memo deps read scalar config fields, not the config object's identity (see
-	// `.local/style-library-reference.md`), so rebuilding this object every render is safe as long as
-	// the field values it carries stay stable across renders that shouldn't change anything.
+	// Memoized because `useScaleScreen` splits how it reads this config: `baseRows` and
+	// `initialValuesFor` depend on scalar fields (`config.group`, `config.parseValue`), but
+	// `addToken`, `saveToken` and `reorderTokens` list the whole config object in their deps. A new
+	// object each render would therefore rebuild those three callbacks every render. Nothing reads
+	// them from an effect, so a config rebuilt inline would be wasted work rather than a bug — this
+	// keeps the identity stable so it stays neither.
 	const config = useMemo(
 		() => ({
 			...TYPOGRAPHY_CONFIG,

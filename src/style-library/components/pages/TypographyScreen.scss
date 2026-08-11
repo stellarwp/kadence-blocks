@@ -3,9 +3,9 @@
 // The card row wraps onto two lines: the label/size chips stay on the first line, the sample text
 // preview drops to its own full-width line below. `.list-row-main`'s shared layout is a single
 // non-wrapping flex line, so this screen unlocks wrapping and restyles the label/value spans as
-// small pills — `MetaChip`'s visual treatment, not the component itself (see
-// `.local/style-library-reference.md`: mounting `MetaChip` here would need a new label/value-node
-// seam in the shared row mapping for purely presentational gain).
+// small pills — `MetaChip`'s visual treatment, not the component itself: mounting `MetaChip` here
+// would need a new label/value-node seam in `ListRow`'s shared row mapping for purely
+// presentational gain.
 .kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-main {
 	flex-wrap: wrap;
 	gap: var(--kb-sl-space-10) var(--kb-sl-space-15);
