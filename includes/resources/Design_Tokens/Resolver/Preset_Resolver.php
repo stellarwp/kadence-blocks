@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Resolver;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
@@ -58,14 +59,25 @@ final class Preset_Resolver {
 	private Token_Resolver $resolver;
 
 	/**
+	 * @var Preset_Order_Index Applies the stored per-block display order to names(), the single seam every
+	 *                          other names()-derived surface (the admin feed, the editor picker) inherits it
+	 *                          through.
+	 *
+	 * @since TBD
+	 */
+	private Preset_Order_Index $order_index;
+
+	/**
 	 * @since TBD
 	 *
-	 * @param Effective_Presets $presets The per-library effective preset definitions.
-	 * @param Token_Resolver    $resolver The token resolver.
+	 * @param Effective_Presets  $presets     The per-library effective preset definitions.
+	 * @param Token_Resolver     $resolver    The token resolver.
+	 * @param Preset_Order_Index $order_index Applies the stored per-block display order to names().
 	 */
-	public function __construct( Effective_Presets $presets, Token_Resolver $resolver ) {
-		$this->presets  = $presets;
-		$this->resolver = $resolver;
+	public function __construct( Effective_Presets $presets, Token_Resolver $resolver, Preset_Order_Index $order_index ) {
+		$this->presets     = $presets;
+		$this->resolver    = $resolver;
+		$this->order_index = $order_index;
 	}
 
 	/**
@@ -258,9 +270,12 @@ final class Preset_Resolver {
 	}
 
 	/**
-	 * The preset slugs a block declares for a library, in document order — the effective library (the
-	 * baseline deep-merged with the library's stored overrides) being the source of truth, so a user-added
-	 * preset in the store appears here alongside the baseline ones.
+	 * The preset slugs a block declares for a library, in DISPLAY order — the effective library (the
+	 * baseline deep-merged with the library's stored overrides) being the source of truth for membership, so
+	 * a user-added preset in the store appears here alongside the baseline ones, and the stored presetOrder
+	 * (when any) determines the sequence. This is the single seam every names()-derived surface (the admin
+	 * feed's presets section, the editor picker, Preset_Nav consumers) inherits the display order through,
+	 * so the Style Library and the editor can never disagree on it.
 	 *
 	 * @since TBD
 	 *
@@ -283,7 +298,7 @@ final class Preset_Resolver {
 			$names[] = (string) $key;
 		}
 
-		return $names;
+		return $this->order_index->apply( $this->presets->raw( $slug ), $block, $names );
 	}
 
 	/**

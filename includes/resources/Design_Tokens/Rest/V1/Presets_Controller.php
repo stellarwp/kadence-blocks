@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
@@ -125,6 +126,24 @@ final class Presets_Controller extends Controller {
 	private const LIBRARY_PARAM = 'library';
 
 	/**
+	 * The request parameter that carries the version the client last read, on the order sub-route.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const VERSION_PARAM = 'version';
+
+	/**
+	 * The request parameter that carries the ordered list of preset slugs on an order write.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORDER_PARAM = 'order';
+
+	/**
 	 * The block vendor path segment. A slug-safe class with no slash; the block name is the second segment.
 	 *
 	 * @since TBD
@@ -169,6 +188,17 @@ final class Presets_Controller extends Controller {
 	 * @var string
 	 */
 	private const DEFAULT_ROUTE = 'default';
+
+	/**
+	 * The literal sub-route, relative to a block, that sets / clears the block's stored preset
+	 * display order. Registered before the single-preset route so the literal segment is not
+	 * captured as a preset slug — the same trick DEFAULT_ROUTE relies on.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORDER_ROUTE = 'order';
 
 	/**
 	 * The sole gateway to the kb_design_tokens table.
@@ -243,6 +273,16 @@ final class Presets_Controller extends Controller {
 	private Preset_Value_Normalizer $normalizer;
 
 	/**
+	 * Reads and writes the presetOrder per-block display-order map, applied at every read seam
+	 * this controller serves.
+	 *
+	 * @since TBD
+	 *
+	 * @var Preset_Order_Index
+	 */
+	private Preset_Order_Index $order_index;
+
+	/**
 	 * Memoised item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -254,14 +294,15 @@ final class Presets_Controller extends Controller {
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Store                $store     The sole gateway to the kb_design_tokens table.
-	 * @param Mutator                    $mutator   Assembles the candidate overrides document.
-	 * @param Token_Resolver             $resolver  Dry-runs a candidate's token layers before commit.
-	 * @param Dtcg_Validator             $validator Validates the DTCG grammar of a candidate document.
-	 * @param Effective_Presets          $presets   Reads the baseline-merged presets section.
-	 * @param Token_Registry             $registry   Declares which blocks accept presets.
-	 * @param Active_Token_Library_Store $active     Resolves the active library when a request names none.
-	 * @param Preset_Value_Normalizer    $normalizer Rewrites captured literals into semantic aliases.
+	 * @param Token_Store                $store       The sole gateway to the kb_design_tokens table.
+	 * @param Mutator                    $mutator     Assembles the candidate overrides document.
+	 * @param Token_Resolver             $resolver    Dry-runs a candidate's token layers before commit.
+	 * @param Dtcg_Validator             $validator   Validates the DTCG grammar of a candidate document.
+	 * @param Effective_Presets          $presets     Reads the baseline-merged presets section.
+	 * @param Token_Registry             $registry    Declares which blocks accept presets.
+	 * @param Active_Token_Library_Store $active      Resolves the active library when a request names none.
+	 * @param Preset_Value_Normalizer    $normalizer  Rewrites captured literals into semantic aliases.
+	 * @param Preset_Order_Index         $order_index Reads and writes the presetOrder display-order map.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -271,17 +312,19 @@ final class Presets_Controller extends Controller {
 		Effective_Presets $presets,
 		Token_Registry $registry,
 		Active_Token_Library_Store $active,
-		Preset_Value_Normalizer $normalizer
+		Preset_Value_Normalizer $normalizer,
+		Preset_Order_Index $order_index
 	) {
-		$this->store      = $store;
-		$this->mutator    = $mutator;
-		$this->resolver   = $resolver;
-		$this->validator  = $validator;
-		$this->presets    = $presets;
-		$this->registry   = $registry;
-		$this->active     = $active;
-		$this->normalizer = $normalizer;
-		$this->rest_base  = 'presets';
+		$this->store       = $store;
+		$this->mutator     = $mutator;
+		$this->resolver    = $resolver;
+		$this->validator   = $validator;
+		$this->presets     = $presets;
+		$this->registry    = $registry;
+		$this->active      = $active;
+		$this->normalizer  = $normalizer;
+		$this->order_index = $order_index;
+		$this->rest_base   = 'presets';
 	}
 
 	/**
@@ -289,10 +332,11 @@ final class Presets_Controller extends Controller {
 	 *
 	 * Verb semantics follow the WordPress REST convention: POST creates or merges a single preset, PUT
 	 * replaces the block's whole preset collection, DELETE on a block resets it to baseline, and DELETE on a
-	 * preset removes that one preset. The `$default` is read and set through a dedicated sub-route.
+	 * preset removes that one preset. The `$default` and the display order are each read/set through their
+	 * own dedicated sub-route.
 	 *
-	 * The `default` sub-route is registered before the single-preset route so the literal segment is not
-	 * captured as a preset slug.
+	 * The `default` and `order` sub-routes are registered before the single-preset route so their literal
+	 * segments are not captured as a preset slug.
 	 *
 	 * @since TBD
 	 *
@@ -369,6 +413,31 @@ final class Presets_Controller extends Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/' . self::BLOCK_ROUTE . '/' . self::ORDER_ROUTE,
+			[
+				[
+					// PUT only: the endpoint replaces the block's whole display order, so there is no
+					// partial-update verb to distinguish from PUT — the labels/order sub-route pattern.
+					'methods'             => 'PUT',
+					'callback'            => [ $this, 'set_order' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_order_params(),
+				],
+				[
+					// DELETE uses the same capability as PUT — clearing a stored order is an update to
+					// the document, not a resource removal, so the two verbs of one operation cannot
+					// diverge on permission.
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_order' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_order_delete_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/' . self::BLOCK_ROUTE . '/' . self::PRESET_ROUTE,
 			[
 				[
@@ -392,9 +461,10 @@ final class Presets_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$slug    = $this->slug( $request );
-		$section = $this->presets->section( $slug );
-		$blocks  = [];
+		$slug     = $this->slug( $request );
+		$section  = $this->presets->section( $slug );
+		$document = $this->stored_document( $slug );
+		$blocks   = [];
 
 		foreach ( array_keys( $this->registry->all_preset_bindings() ) as $block ) {
 			$node = $this->set_node( $section, $block );
@@ -402,7 +472,7 @@ final class Presets_Controller extends Controller {
 			$blocks[] = [
 				'block'   => $block,
 				'default' => $this->default_of( $node ),
-				'names'   => $this->preset_names( $node ),
+				'names'   => $this->order_index->apply( $document, $block, $this->preset_names( $node ) ),
 			];
 		}
 
@@ -725,6 +795,89 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Store a block's preset display order wholesale (PUT /presets/{block}/order).
+	 *
+	 * The submitted slugs are pruned to the block's effective preset names, first occurrence wins on
+	 * duplicates — silent by design, mirroring the documents controller's token-order route: the stored
+	 * order is advisory, and a client racing a preset deletion must not fail its whole reorder over one
+	 * vanished slug. Pruning to an empty list clears the stored order entirely, so "no preference" has one
+	 * spelling.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function set_order( $request ) {
+		$block = $this->block_from( $request );
+		$error = $this->guard_block( $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$slug  = $this->slug( $request );
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$node  = $this->set_node( $this->presets->section( $slug ), $block );
+		$names = $this->preset_names( $node );
+
+		$submitted = array_map( [ Cast::class, 'to_string' ], (array) $request->get_param( self::ORDER_PARAM ) );
+		$slugs     = array_values( array_unique( array_intersect( $submitted, $names ) ) );
+
+		$stored    = $this->stored_document( $slug );
+		$candidate = $slugs === []
+			? $this->order_index->remove_block( $stored, $block )
+			: $this->order_index->set_block( $stored, $block, $slugs );
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
+		}
+
+		return $this->validate_and_save( $candidate, $block, $slug );
+	}
+
+	/**
+	 * Clear a block's stored preset display order (DELETE /presets/{block}/order), reverting it to merge
+	 * order. Idempotent: a no-op when nothing is stored for the block.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_order( $request ) {
+		$block = $this->block_from( $request );
+		$error = $this->guard_block( $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$slug  = $this->slug( $request );
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$stored    = $this->stored_document( $slug );
+		$candidate = $this->order_index->remove_block( $stored, $block );
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $block, $slug ), WP_Http::OK );
+		}
+
+		return $this->validate_and_save( $candidate, $block, $slug );
+	}
+
+	/**
 	 * The JSON Schema for a block's preset collection.
 	 *
 	 * @since TBD
@@ -935,6 +1088,33 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Client-conditional guard for the order sub-route: the stored version must equal what the client last
+	 * read (both '' for a first write), mirroring the documents controller's identical guard for its own
+	 * order route.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug           The token library slug.
+	 * @param string $client_version The version the client last read. Empty only for a first write.
+	 *
+	 * @return WP_Error|null
+	 */
+	private function guard_client_version( string $slug, string $client_version ): ?WP_Error {
+		if ( $this->store->get_version( $slug ) === $client_version ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'rest_design_tokens_conflict',
+			__( 'The token library was modified since you last read it. Reload and try again.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::CONFLICT,
+				'slug'   => $slug,
+			]
+		);
+	}
+
+	/**
 	 * Reject a preset map whose entries are not well-formed: each named preset must have a non-empty
 	 * slug and be an object, its label (when present) a string and its tokens (when present) an object. The
 	 * alias-or-literal grammar of the token values is left to the DTCG validator.
@@ -991,8 +1171,8 @@ final class Presets_Controller extends Controller {
 
 	/**
 	 * Reject a preset whose slug is reserved. "default" is the literal used by the block's `/default`
-	 * sub-route and by `delete_preset`, so a preset named "default" could never be deleted or set through
-	 * the dedicated route; refuse to create one.
+	 * sub-route and by `delete_preset`, and "order" is the literal used by the block's `/order` sub-route, so
+	 * a preset named either could never be deleted or set through its dedicated route; refuse to create one.
 	 *
 	 * @since TBD
 	 *
@@ -1002,16 +1182,18 @@ final class Presets_Controller extends Controller {
 	 * @return WP_Error|null A WP_Error when a reserved slug is used, null otherwise.
 	 */
 	private function guard_reserved_slugs( array $block_node, string $block ): ?WP_Error {
+		$reserved = [ self::DEFAULT_ROUTE, self::ORDER_ROUTE ];
+
 		foreach ( array_keys( $block_node ) as $slug ) {
 			// $default and any other "$"-prefixed metadata key is not a named preset.
 			if ( is_string( $slug ) && strpos( $slug, '$' ) === 0 ) {
 				continue;
 			}
 
-			if ( (string) $slug === self::DEFAULT_ROUTE ) {
+			if ( in_array( (string) $slug, $reserved, true ) ) {
 				return new WP_Error(
 					'rest_design_tokens_reserved_slug',
-					__( 'The preset slug "default" is reserved.', 'kadence-blocks' ),
+					__( 'That preset slug is reserved.', 'kadence-blocks' ),
 					[
 						'status' => WP_Http::UNPROCESSABLE_ENTITY,
 						'block'  => $block,
@@ -1298,7 +1480,8 @@ final class Presets_Controller extends Controller {
 	 *                              the library defines beyond the baseline).
 	 */
 	private function prepare_item( string $block, string $slug ): array {
-		$node = $this->set_node( $this->presets->section( $slug ), $block );
+		$node    = $this->set_node( $this->presets->section( $slug ), $block );
+		$ordered = $this->order_index->apply( $this->stored_document( $slug ), $block, $this->preset_names( $node ) );
 
 		return [
 			'block'       => $block,
@@ -1306,8 +1489,31 @@ final class Presets_Controller extends Controller {
 			'version'     => $this->store->get_version( $slug ),
 			'default'     => $this->default_of( $node ),
 			'userCreated' => $this->presets->user_created( $block, $slug ),
-			'presets'     => $this->named_presets( $node ),
+			'presets'     => $this->ordered_presets( $this->named_presets( $node ), $ordered ),
 		];
+	}
+
+	/**
+	 * Reorder a slug => preset map to a given slug order. A slug the map does not carry (a stale ordered id
+	 * that has since been removed) is skipped rather than inserted as a hole.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $presets The named presets, keyed by slug.
+	 * @param string[]             $order   The desired slug order.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function ordered_presets( array $presets, array $order ): array {
+		$ordered = [];
+
+		foreach ( $order as $slug ) {
+			if ( array_key_exists( $slug, $presets ) ) {
+				$ordered[ $slug ] = $presets[ $slug ];
+			}
+		}
+
+		return $ordered;
 	}
 
 	/**
@@ -1697,6 +1903,50 @@ final class Presets_Controller extends Controller {
 					'required'          => true,
 					'pattern'           => '^[\w-]+$',
 					'sanitize_callback' => 'sanitize_key',
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the order-route PUT: the block segments, the ordered slug list and the
+	 * version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_order_params(): array {
+		return array_merge(
+			$this->get_order_delete_params(),
+			[
+				self::ORDER_PARAM => [
+					'description'          => __( 'The preset slugs in their new display order.', 'kadence-blocks' ),
+					'type'                 => 'array',
+					'required'             => true,
+					'items'                => [ 'type' => 'string' ],
+					'additionalProperties' => false,
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the order-route DELETE: the block segments plus the version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_order_delete_params(): array {
+		return array_merge(
+			$this->get_block_params(),
+			[
+				self::VERSION_PARAM => [
+					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
 				],
 			]
 		);
