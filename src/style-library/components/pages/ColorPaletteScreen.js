@@ -14,13 +14,9 @@ import { Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
- * External dependencies
- */
-import { colord } from 'colord';
-
-/**
  * Internal dependencies
  */
+import { colord } from '../../helpers/colord';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
