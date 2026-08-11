@@ -23,6 +23,7 @@ import { addFilter } from '@wordpress/hooks';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
 import { EmptyState } from '../molecules/EmptyState';
+import { ButtonSettings } from './ButtonSettings';
 import { useButtonPresets } from '../../hooks/use-button-presets';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { BUTTON_BLOCK, overlayPresetRows } from '../../helpers/presets';
@@ -131,6 +132,8 @@ export function ButtonScreen({ label, route, navigate, library }) {
 		</div>
 	);
 }
+
+ButtonScreen.SettingsPanel = ButtonSettings;
 
 /**
  * Register the Button screen for `kadence/singlebtn` on the public preset-screens filter, exactly
