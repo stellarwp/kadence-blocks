@@ -8,6 +8,7 @@ import {
 	presetSaveTokens,
 	nextPresetSlug,
 	getButtonPresetProperties,
+	overlayPresetRows,
 } from '../helpers/presets';
 
 describe('aliasToId', () => {
@@ -230,5 +231,68 @@ describe('nextPresetSlug', () => {
 	it('mints a numeric suffix against taken slugs', () => {
 		expect(nextPresetSlug(['button'], 'button')).toBe('button-2');
 		expect(nextPresetSlug(['button', 'button-2'], 'button')).toBe('button-3');
+	});
+});
+
+describe('overlayPresetRows', () => {
+	const values = {
+		'semantic.color.action-primary': '#3633e1',
+		'semantic.color.on-primary': '#ffffff',
+	};
+
+	const rows = [
+		{
+			id: 'primary',
+			label: 'Primary',
+			userCreated: false,
+			preview: { background: '#3633e1', color: '#ffffff', borderRadius: '0.5rem' },
+		},
+		{
+			id: 'secondary',
+			label: 'Secondary',
+			userCreated: false,
+			preview: { background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' },
+		},
+	];
+
+	it('overlays label and re-resolved preview values for the matching row only', () => {
+		const draft = {
+			label: 'Primary CTA',
+			tokens: {
+				'button-bg': 'semantic.color.on-primary',
+				'button-text': 'semantic.color.action-primary',
+				'button-bg-hover': 'semantic.color.action-primary',
+				'button-text-hover': 'semantic.color.on-primary',
+				'button-radius': '1rem',
+			},
+		};
+
+		const next = overlayPresetRows(rows, 'primary', draft, values);
+
+		expect(next[0]).toEqual({
+			id: 'primary',
+			label: 'Primary CTA',
+			userCreated: false,
+			preview: { background: '#ffffff', color: '#3633e1', borderRadius: '1rem' },
+		});
+		expect(next[1]).toBe(rows[1]);
+	});
+
+	it('returns the same array reference for a null draft', () => {
+		expect(overlayPresetRows(rows, 'primary', null, values)).toBe(rows);
+	});
+
+	it('returns the same array reference for an item id matching no row', () => {
+		const draft = { label: 'Ghost', tokens: {} };
+
+		expect(overlayPresetRows(rows, 'missing', draft, values)).toBe(rows);
+	});
+
+	it('leaves non-matching rows object identity untouched', () => {
+		const draft = { label: 'Primary CTA', tokens: {} };
+
+		const next = overlayPresetRows(rows, 'primary', draft, values);
+
+		expect(next[1]).toBe(rows[1]);
 	});
 });
