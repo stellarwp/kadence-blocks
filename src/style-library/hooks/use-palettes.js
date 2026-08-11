@@ -69,7 +69,7 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches }`.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
-	const [listing, setListing] = useState({ defaultId: '', currentId: '', palettes: [] });
+	const [listing, setListing] = useState({ defaultId: '', currentId: '', palettes: [], userCreated: [] });
 	const [palette, setPalette] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isBusy, setIsBusy] = useState(false);
@@ -112,6 +112,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				defaultId: response.$default,
 				currentId: response.$current,
 				palettes: response.palettes ?? [],
+				userCreated: response.userCreated ?? [],
 			};
 
 			setListing(nextListing);
@@ -255,19 +256,22 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	);
 
 	const removePalette = useCallback(
-		(id) => {
+		(id, successorId) => {
 			setDeleteError(null);
 			return deletePaletteFlow({
 				namespace,
 				slug,
 				id,
+				currentId: listing.currentId,
+				successorId,
 				reload,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setDeleteError,
+				onActivated: (activatedId) => setListing((prev) => ({ ...prev, currentId: activatedId })),
 			});
 		},
-		[namespace, slug, reload, refreshFeed]
+		[namespace, slug, listing.currentId, reload, refreshFeed]
 	);
 
 	const saveSwatchEdits = useCallback(

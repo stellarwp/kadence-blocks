@@ -1146,7 +1146,8 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The palette listing for a library: the `$default` / `$current` pointers and each palette's id + label.
+	 * The palette listing for a library: the `$default` / `$current` pointers, each palette's id + label, and
+	 * which ids are user-created (the only ones a delete removes rather than reverts to baseline).
 	 *
 	 * @since TBD
 	 *
@@ -1171,6 +1172,7 @@ final class Palettes_Controller extends Controller {
 			Extensions::get_default_key() => $this->palettes->default_palette( $slug ),
 			Extensions::get_current_key() => $this->palettes->current( $slug ),
 			'palettes'                    => $palettes,
+			'userCreated'                 => $this->palettes->user_created( $slug ),
 		];
 	}
 
