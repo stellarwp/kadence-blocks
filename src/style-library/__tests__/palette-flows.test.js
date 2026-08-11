@@ -443,6 +443,25 @@ describe('createPaletteFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: expect.stringMatching(/already exists/i) });
 	});
 
+	it('settles the busy flag on success so the screen leaves its loading state', async () => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockResolvedValue({});
+		const onBusy = jest.fn();
+
+		await createPaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			label: 'Forest',
+			listing: { defaultId: DEFAULT_ID, palettes: [] },
+			reload: jest.fn().mockResolvedValue(undefined),
+			openPalette: jest.fn().mockResolvedValue(undefined),
+			onBusy,
+			onError: jest.fn(),
+		});
+
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+
 	it('seeds the new node from the default view, opens it, and never activates it', async () => {
 		client.fetchPalette.mockResolvedValue(defaultView());
 		client.savePalette.mockResolvedValue({});

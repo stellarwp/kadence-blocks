@@ -355,6 +355,7 @@ export function createPaletteFlow({ namespace, slug, label, listing, reload, ope
 			// still-missing-from-the-list id for one render.
 			.then(() => reload())
 			.then(() => openPalette(id))
+			.then(() => onBusy(false))
 			.catch((err) => {
 				onError({ message: errorMessage(err) });
 				onBusy(false);
