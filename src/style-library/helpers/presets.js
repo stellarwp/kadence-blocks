@@ -15,11 +15,13 @@ import { nextScaleSlug } from './scale';
 import { getDesignTokensFeed } from './tokens';
 
 /**
- * The block whose preset bindings this module reads off the feed.
+ * The block name the Button preset screen edits — the single JS spelling, so the preset-screens
+ * filter registration, the fetch-and-bind hook, and any future preset screen reusing this contract
+ * never risk a typo'd duplicate.
  *
  * @since TBD
  */
-const BUTTON_BLOCK = 'kadence/singlebtn';
+export const BUTTON_BLOCK = 'kadence/singlebtn';
 
 /**
  * The button's bound property surface, in the order the panel and previews read it. Derived from
@@ -219,4 +221,53 @@ export function presetSaveTokens(draftTokens) {
  */
 export function nextPresetSlug(existingSlugs, base) {
 	return nextScaleSlug(existingSlugs, base);
+}
+
+/**
+ * Overlay a live settings-panel draft onto the row it edits: the label and a preview re-resolved
+ * from the draft's token map (bare ids), so the row chip always shows what Save would write instead
+ * of waiting for it — the preset analog of `overlayDraft` (`helpers/scale.js`), same
+ * reference-identity contract. Returns the exact same array reference for a `null`/absent draft or
+ * an `itemId` matching no row; every non-matching row keeps its exact object identity either way.
+ *
+ * @param {Array<{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}>} rows   The rows in payload order.
+ * @param {string}                                                                                                   itemId The open route item id.
+ * @param {?{label?: string, tokens?: Record<string, string>}}                                                      draft  The open panel's live draft, or null.
+ * @param {Record<string, string>}                                                                                   values The feed's resolved value map.
+ *
+ * @since TBD
+ *
+ * @return {Array<Object>} The rows, with the matching row's label/preview overlaid.
+ */
+export function overlayPresetRows(rows, itemId, draft, values) {
+	if (!draft || !itemId) {
+		return rows;
+	}
+
+	const index = rows.findIndex((row) => row.id === itemId);
+
+	if (index === -1) {
+		return rows;
+	}
+
+	const overlaid = { ...rows[index] };
+
+	if (Object.prototype.hasOwnProperty.call(draft, 'label')) {
+		overlaid.label = draft.label;
+	}
+
+	if (draft.tokens) {
+		const resolveDraftToken = (property) => resolveTokenValue(values, idToAlias(draft.tokens[property] ?? ''));
+
+		overlaid.preview = {
+			background: resolveDraftToken('button-bg'),
+			color: resolveDraftToken('button-text'),
+			borderRadius: resolveDraftToken('button-radius'),
+		};
+	}
+
+	const next = [...rows];
+	next[index] = overlaid;
+
+	return next;
 }

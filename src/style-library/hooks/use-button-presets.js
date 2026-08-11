@@ -17,14 +17,7 @@ import { useEffect, useMemo, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { fetchBlockPresets } from '../api/client';
-import { presetInitialValues, presetRows } from '../helpers/presets';
-
-/**
- * The block this app's Button screen edits.
- *
- * @since TBD
- */
-const BUTTON_BLOCK = 'kadence/singlebtn';
+import { BUTTON_BLOCK, presetInitialValues, presetRows } from '../helpers/presets';
 
 /**
  * Fetch a block's preset collection and bind it to row view models.
