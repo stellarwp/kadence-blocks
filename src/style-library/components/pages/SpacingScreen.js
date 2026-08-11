@@ -1,7 +1,7 @@
 /**
  * The Spacing screen: the scale config, the value-sized square preview renderer, and the two thin
  * wrappers that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
- * `.local/style-library-reference.md`). The `Spacing` group is already declared in
+ * `ScaleScreen.js`'s module docblock). The `Spacing` group is already declared in
  * `declarations.php` (its steps each carry a `kb_spacing_slot` projection, so a value edited here
  * changes every block that already stores that slug) — this screen only lists and edits it.
  */
@@ -40,8 +40,8 @@ function renderSpacingPreview(row) {
 }
 
 /**
- * The Spacing screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract.
+ * The Spacing screen's config — see `ScaleScreen`'s module docblock for the full per-screen
+ * config contract.
  *
  * @since TBD
  */

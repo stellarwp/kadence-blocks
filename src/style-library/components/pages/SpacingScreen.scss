@@ -14,8 +14,8 @@
 	// grows to fit it. Accepted consequence: a very large custom value produces a very tall row.
 }
 
-// Scoped to this screen via `ScaleScreen`'s per-screen root modifier class (see
-// `.local/style-library-reference.md`) — Border Radius and Border Width keep the default framed
+// Scoped to this screen via `ScaleScreen`'s per-screen root modifier class
+// (`--<config.id>`) — Border Radius and Border Width keep the default framed
 // 80px slot from `ListRow.scss`; only Spacing needs a bare, value-sized square with the row
 // growing to contain it.
 .kadence-blocks-style-library__scale-screen--spacing .kadence-blocks-style-library__list-row-preview {
