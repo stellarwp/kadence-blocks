@@ -333,6 +333,8 @@ final class Token_Store extends Query {
 	 * @throws DatabaseQueryException If the update fails.
 	 */
 	public function save_title( string $slug, string $title ): bool {
+		$title = sanitize_text_field( $title );
+
 		if ( $title === '' ) {
 			return false;
 		}
@@ -576,6 +578,8 @@ final class Token_Store extends Query {
 		if ( $slug !== null ) {
 			$data = [ 'slug' => $slug ] + $data;
 		}
+
+		$title = sanitize_text_field( $title );
 
 		if ( $title !== '' ) {
 			$data['title'] = $title;
