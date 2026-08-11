@@ -32,25 +32,29 @@ export function getPickableTokensPool() {
 
 /**
  * The pickable tokens of one DTCG `$type` (e.g. `dimension`, `color`), each with its resolved
- * literal value from the active library.
+ * literal value from the active library. An optional `role` narrows the pool further (e.g. the
+ * Radius picker wants only `role: 'radius'` dimensions, not every dimension token) — omitted, this
+ * behaves exactly as before.
  *
- * @param {string} type The DTCG token `$type` to filter to.
+ * @param {string}  type   The DTCG token `$type` to filter to.
+ * @param {?string} [role] When given, also require `token.role === role`.
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, value: string}>} The pickable tokens for the type.
+ * @return {Array<{id: string, label: string, value: string, role: ?string}>} The pickable tokens for the type.
  */
-export function pickableTokensForType(type) {
+export function pickableTokensForType(type, role) {
 	const pool = getPickableTokensPool();
 	const feed = getDesignTokensFeed();
 	const libraryValues = pool.values?.[feed?.slug] ?? {};
 
 	return (pool.tokens || [])
-		.filter((token) => token.type === type)
+		.filter((token) => token.type === type && (role === undefined || token.role === role))
 		.map((token) => ({
 			id: token.id,
 			label: token.label,
 			value: libraryValues[token.id] ?? '',
+			role: token.role ?? null,
 		}));
 }
 
