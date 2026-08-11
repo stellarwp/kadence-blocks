@@ -169,6 +169,26 @@ describe('presetInitialValues', () => {
 	it('returns null for an unknown slug', () => {
 		expect(presetInitialValues({ presets: {} }, 'missing')).toBeNull();
 	});
+
+	it('returns null for a null payload, indistinguishable from an unknown slug', () => {
+		// Pins the contract `ButtonSettings` relies on: a still-loading fetch (`payload === null`) and
+		// a genuinely unknown slug both read as null here, which is exactly why the panel gates on
+		// `!isLoading` before treating a null seed as a stale deep link rather than "not landed yet".
+		expect(presetInitialValues(null, 'secondary')).toBeNull();
+	});
+
+	it('seeds real values once the payload lands for a slug that first read null while loading', () => {
+		const slug = 'secondary';
+		const loading = presetInitialValues(null, slug);
+		const loaded = presetInitialValues(
+			{ presets: { secondary: { label: 'Secondary', tokens: { 'button-bg': 'transparent' } } } },
+			slug
+		);
+
+		expect(loading).toBeNull();
+		expect(loaded).not.toBeNull();
+		expect(loaded.label).toBe('Secondary');
+	});
 });
 
 describe('presetSaveTokens', () => {
