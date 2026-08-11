@@ -1,7 +1,7 @@
 /**
  * The Icon Sizes screen: the scale config, the star preview renderer, and the two thin wrappers
- * that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
- * `.local/style-library-reference.md`). Two things make this screen genuinely different from its
+ * that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see `ScaleScreen.js`'s module
+ * docblock). Two things make this screen genuinely different from its
  * siblings: the value column shows two dimensions for a one-dimension token (presentation-only,
  * via `iconSizeRowValue`), and the SIZE field restricts units to the ones
  * `Icon_Size_Adapter`'s px converter can actually round-trip.
@@ -23,8 +23,8 @@ import './IconSizesScreen.scss';
 /**
  * The full-bleed star preview for one row: a hand-authored path drawn to touch its `0 0 24 24`
  * viewBox's edges, sized inline to the row's own resolved value. A `@wordpress/icons` glyph is
- * deliberately not used here — those glyphs fill only a fraction of their declared viewBox (see
- * `.local/style-library-reference.md` section 15), and this preview's entire job is showing the
+ * deliberately not used here — those glyphs fill only a fraction of their declared viewBox, and
+ * this preview's entire job is showing the
  * icon *at the token's size*, which a partially-filled glyph would misrepresent. An empty or zero
  * value collapses the star — the honest rendering of what the value writes.
  *
@@ -49,8 +49,8 @@ function renderIconSizePreview(row) {
 }
 
 /**
- * The Icon Sizes screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract.
+ * The Icon Sizes screen's config — see `ScaleScreen`'s module docblock for the full per-screen
+ * config contract.
  *
  * @since TBD
  */
