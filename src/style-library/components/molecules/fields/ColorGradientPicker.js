@@ -11,13 +11,10 @@ import { GradientPicker, TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
- * External dependencies
- */
-import { colord } from 'colord';
-
-/**
  * Internal dependencies
  */
+import { colord } from '../../../helpers/colord';
+import { isSameColor } from '../../../helpers/color-picker';
 import { ColorPicker } from './ColorPicker';
 import './ColorGradientPicker.scss';
 
@@ -59,7 +56,7 @@ export function isGradientValue(value) {
  * @return {JSX.Element} The picker body.
  */
 export function ColorGradientPicker({ value, gradients = [], readOnly = false, colorOnly = false, onChange }) {
-	const handleChange = (next) => !readOnly && onChange(next);
+	const handleChange = (next) => !readOnly && !isSameColor(next, value) && onChange(next);
 
 	// A gradient picked here would persist and then project as a color: `guard_swatches()` accepts
 	// function-shaped strings through `Literals::is_color()`'s `is_function()` fallback. So the tab
