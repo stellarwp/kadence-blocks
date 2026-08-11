@@ -35,7 +35,7 @@ import './AddColorGroupModal.scss';
 export function AddColorGroupModal({ palette, isBusy, error, onClose, onAdd }) {
 	const [label, setLabel] = useState('');
 	const groupId = slugifyPaletteLabel(label);
-	const isDuplicate = groupId !== '' && (palette?.groups ?? []).some((group) => group.id === groupId);
+	const isDuplicate = !isBusy && groupId !== '' && (palette?.groups ?? []).some((group) => group.id === groupId);
 
 	return (
 		<Modal
