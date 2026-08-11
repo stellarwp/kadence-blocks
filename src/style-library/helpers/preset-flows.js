@@ -1,11 +1,13 @@
 /**
- * Pure orchestration for the Button preset screen's three write flows: create, save (which also
- * covers rename — a preset's label and token map are always written together), and delete. Same
+ * Pure orchestration for the Button preset screen's write flows: create, save (which also covers
+ * rename — a preset's label and token map are always written together), delete, and reorder. Same
  * `scale-flows.js` discipline: the REST call is imported here (so a test mocks `api/client`), the
  * caller supplies busy/error callbacks and a feed refresh, and every flow settles pessimistically
- * and re-throws on failure. Unlike the scale flows, no write here carries a `version` parameter —
- * the preset write routes have no optimistic-concurrency check (fact 15 of the plan overview), so
- * there is no 409 handling to thread through.
+ * and re-throws on failure. Create/save/delete carry no `version` parameter — the preset write
+ * routes have no optimistic-concurrency check for those verbs (fact 15 of the plan overview) — but
+ * reorder is the one exception: the display-order sub-route DOES guard the client version (the
+ * `reorderScaleTokensFlow` shape), since two rapid drags racing each other's refresh is exactly the
+ * case that guard exists to catch.
  */
 
 /**
@@ -16,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { deleteBlockPreset, saveBlockPreset } from '../api/client';
+import { deleteBlockPreset, saveBlockPreset, setBlockPresetOrder } from '../api/client';
 import { isEqual } from './settings-schema';
 import { nextPresetSlug, presetSaveTokens } from './presets';
 
@@ -158,6 +160,41 @@ export function deletePresetFlow({ namespace, block, preset, slug, refreshFeed, 
 	onBusy(true);
 
 	return deleteBlockPreset(namespace, block, preset, slug)
+		.then(() => refreshFeed(slug))
+		.then(() => onBusy(false))
+		.catch((err) => {
+			onError({ message: errorMessage(err) });
+			onBusy(false);
+
+			throw err;
+		});
+}
+
+/**
+ * Persist a block's full preset display order: PUT the ordered slug list with the version the
+ * caller last read, then refresh the feed. The `reorderScaleTokensFlow` shape — the caller is
+ * responsible for serializing concurrent calls (see `hooks/use-button-screen.js`'s reorder chain)
+ * so a second rapid drop's write always carries the first drop's refreshed version.
+ *
+ * @param {Object}   args
+ * @param {string}   args.namespace   REST namespace.
+ * @param {string}   args.block       The block name, e.g. `kadence/singlebtn`.
+ * @param {string[]} args.orderedIds  The preset slugs in their new display order.
+ * @param {string}   args.feedVersion The version the client last read.
+ * @param {string}   args.slug        Token library slug.
+ * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
+ * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} Resolves once the write and the feed refresh complete; rejects on
+ *                          failure, after `onError`/`onBusy` have already run.
+ */
+export function reorderPresetsFlow({ namespace, block, orderedIds, feedVersion, slug, refreshFeed, onBusy, onError }) {
+	onBusy(true);
+
+	return setBlockPresetOrder(namespace, block, { order: orderedIds, version: feedVersion }, slug)
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {

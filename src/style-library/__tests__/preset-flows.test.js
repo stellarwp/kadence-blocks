@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { createPresetFlow, deletePresetFlow, savePresetFlow } from '../helpers/preset-flows';
+import { createPresetFlow, deletePresetFlow, reorderPresetsFlow, savePresetFlow } from '../helpers/preset-flows';
 import * as client from '../api/client';
 
 // A factory, not bare automocking — see scale-flows.test.js's identical note: the real module
@@ -8,6 +8,7 @@ jest.mock('../api/client', () => ({
 	fetchBlockPresets: jest.fn(),
 	saveBlockPreset: jest.fn(),
 	deleteBlockPreset: jest.fn(),
+	setBlockPresetOrder: jest.fn(),
 }));
 
 beforeEach(() => {
@@ -283,6 +284,61 @@ describe('deletePresetFlow', () => {
 				namespace: 'kb-design-tokens/v1',
 				block: 'kadence/singlebtn',
 				preset: 'primary',
+				slug: 'default',
+				refreshFeed,
+				onBusy,
+				onError,
+			})
+		).rejects.toBe(failure);
+
+		expect(refreshFeed).not.toHaveBeenCalled();
+		expect(onError).toHaveBeenCalledWith({ message: failure.message });
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+	});
+});
+
+describe('reorderPresetsFlow', () => {
+	it('PUTs the full ordered slug list with the version and refreshes', async () => {
+		client.setBlockPresetOrder.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue({});
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await reorderPresetsFlow({
+			namespace: 'kb-design-tokens/v1',
+			block: 'kadence/singlebtn',
+			orderedIds: ['secondary', 'primary'],
+			feedVersion: 'v1',
+			slug: 'default',
+			refreshFeed,
+			onBusy,
+			onError,
+		});
+
+		expect(client.setBlockPresetOrder).toHaveBeenCalledWith(
+			'kb-design-tokens/v1',
+			'kadence/singlebtn',
+			{ order: ['secondary', 'primary'], version: 'v1' },
+			'default'
+		);
+		expect(refreshFeed).toHaveBeenCalledWith('default');
+		expect(onBusy.mock.calls).toEqual([[true], [false]]);
+		expect(onError).not.toHaveBeenCalled();
+	});
+
+	it('surfaces the error, clears busy, and re-throws on failure', async () => {
+		const failure = new Error('Boom');
+		client.setBlockPresetOrder.mockRejectedValue(failure);
+		const refreshFeed = jest.fn();
+		const onBusy = jest.fn();
+		const onError = jest.fn();
+
+		await expect(
+			reorderPresetsFlow({
+				namespace: 'kb-design-tokens/v1',
+				block: 'kadence/singlebtn',
+				orderedIds: ['secondary', 'primary'],
+				feedVersion: 'v1',
 				slug: 'default',
 				refreshFeed,
 				onBusy,

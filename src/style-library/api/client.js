@@ -27,6 +27,7 @@ import {
 	feedPath,
 	blockPresetsPath,
 	blockPresetPath,
+	blockPresetOrderPath,
 } from './paths';
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
@@ -464,6 +465,25 @@ export function deleteBlockPreset(namespace, block, preset, slug) {
 	return apiFetch({
 		path: blockPresetPath(namespace, block, preset, slug),
 		method: 'DELETE',
+	});
+}
+
+/**
+ * Persist a block's full preset display order.
+ *
+ * @since TBD
+ *
+ * @param {string}                                 namespace REST namespace.
+ * @param {string}                                 block     The block name, e.g. `kadence/singlebtn`.
+ * @param {{ order: string[], version: string }}    payload   Request body.
+ * @param {string}                                 slug      Token library slug.
+ * @return {Promise<object>} The updated preset collection.
+ */
+export function setBlockPresetOrder(namespace, block, payload, slug) {
+	return apiFetch({
+		path: blockPresetOrderPath(namespace, block, slug),
+		method: 'PUT',
+		data: payload,
 	});
 }
 

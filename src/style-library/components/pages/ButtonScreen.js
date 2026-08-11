@@ -107,7 +107,7 @@ export function ButtonScreen({ label, route, navigate, library }) {
 		id: row.id,
 		label: row.label,
 		preview: renderButtonPreview(row),
-		isDraggable: false,
+		isDraggable: true,
 	}));
 
 	// Selecting the already-open preset is a no-op bypassing the guard entirely (the draft
@@ -135,6 +135,11 @@ export function ButtonScreen({ label, route, navigate, library }) {
 					{screen.addError.message}
 				</Notice>
 			)}
+			{screen.orderError && (
+				<Notice status="error" isDismissible onRemove={screen.clearOrderError}>
+					{screen.orderError.message}
+				</Notice>
+			)}
 			{screen.isLoading ? (
 				<Spinner />
 			) : (
@@ -142,7 +147,7 @@ export function ButtonScreen({ label, route, navigate, library }) {
 					items={items}
 					selectedId={route.item}
 					onSelect={selectPreset}
-					onReorder={() => {}}
+					onReorder={screen.reorderPresets}
 					empty={
 						<EmptyState title={label} description={__('Add Button', 'kadence-blocks')} action={addAction} />
 					}
