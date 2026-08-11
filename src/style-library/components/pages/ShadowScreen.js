@@ -1,7 +1,7 @@
 /**
  * The Shadow screen: the scale config, the shadowed-square preview renderer, and the two thin
  * wrappers that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
- * `.local/style-library-reference.md`). The first consumer of the contract's composite value seam
+ * `ScaleScreen.js`'s module docblock). The first consumer of the contract's composite value seam
  * (`parseValue`/`buildLeaf`) — the panel edits a six-field object (`ShadowField`, unchanged from the
  * scaffold work) while the feed and the backend deal in one CSS string and dimension-string
  * sub-fields; `helpers/shadow.js` is where that boundary is crossed.
@@ -41,8 +41,8 @@ function renderShadowPreview(row) {
 }
 
 /**
- * The Shadow screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract. `formatValue` is set
+ * The Shadow screen's config — see `ScaleScreen`'s module docblock for the full per-screen config
+ * contract. `formatValue` is set
  * to always return an empty string: the board's rows carry no value column at all, and `ListRow`
  * already renders no column for a falsy `value`.
  *
