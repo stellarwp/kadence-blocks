@@ -104,6 +104,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	const PROP_META = 'meta';
 	/**
+	 * Maximum size for REST array parameters.
+	 */
+	const MAX_REST_ARRAY_SIZE = 50;
+	/**
 	 * The library folder.
 	 *
 	 * @access protected
@@ -644,6 +648,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Validates an array REST parameter.
+	 *
+	 * @param mixed $value Array to validate.
+	 * @return bool True if valid, false if oversized.
+	 */
+	public function validate_array( $value ) {
+		if ( ! is_array( $value ) ) {
+			return false;
+		}
+		return count( $value ) <= self::MAX_REST_ARRAY_SIZE;
 	}
 
 	/**
@@ -2843,11 +2860,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$query_params[ self::PROP_INDUSTRIES ]    = [
 			'description'       => __( 'The industries to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_industries_array' ],
 		];
 		$query_params[ self::PROP_IMAGE_SIZES ]   = [
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_image_sizes_array' ],
 		];
 		$query_params[ self::PROP_META ]          = [
@@ -2866,14 +2885,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
 	 */
 	public function sanitize_industries_array( $industries, $request ) {
-		if ( ! empty( $industries ) && is_array( $industries ) ) {
-			$new_industries = [];
-			foreach ( $industries as $key => $value ) {
-				$new_industries[] = sanitize_text_field( $value );
-			}
-			return $new_industries;
+		if ( ! is_array( $industries ) ) {
+			return [];
 		}
-		return [];
+		$industries = array_slice( $industries, 0, self::MAX_REST_ARRAY_SIZE );
+		$new_industries = [];
+		foreach ( $industries as $key => $value ) {
+			$new_industries[] = sanitize_text_field( $value );
+		}
+		return $new_industries;
 	}
 
 	/**
