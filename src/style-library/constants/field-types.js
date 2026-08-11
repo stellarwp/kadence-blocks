@@ -1,7 +1,7 @@
 /**
  * The settings-field type vocabulary: the single source of truth mapping a schema field's `type`
  * string to the component that renders it. Every per-screen settings schema authors against these
- * twelve strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
+ * thirteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
  */
 
 /**
@@ -17,6 +17,7 @@ import { ShadowField } from '../components/molecules/fields/ShadowField';
 import { StepperField } from '../components/molecules/fields/StepperField';
 import { TextField } from '../components/molecules/fields/TextField';
 import { ToggleField } from '../components/molecules/fields/ToggleField';
+import { TokenColorSelectField } from '../components/molecules/fields/TokenColorSelectField';
 import { TokenSelectField } from '../components/molecules/fields/TokenSelectField';
 import { UnitField } from '../components/molecules/fields/UnitField';
 
@@ -37,6 +38,7 @@ export const FIELD_TYPES = Object.freeze({
 	color: ColorField,
 	'color-list': ColorListField,
 	'token-select': TokenSelectField,
+	'token-color-select': TokenColorSelectField,
 	'box-sides': BoxSidesField,
 	shadow: ShadowField,
 });
@@ -44,9 +46,9 @@ export const FIELD_TYPES = Object.freeze({
 /**
  * The field types a schema may mark `responsive: true`, mirroring the backend's
  * `Schema\Vocabulary\Responsive::is_responsive_capable()` gate (`dimension`/`lineHeight` DTCG
- * types). `token-select`/`box-sides` are excluded — their value is a token reference, not a literal
- * a breakpoint override replaces; the rest are excluded because their DTCG types are never
- * responsive-capable.
+ * types). `token-select`/`token-color-select`/`box-sides` are excluded — their value is a token
+ * reference, not a literal a breakpoint override replaces; the rest are excluded because their DTCG
+ * types are never responsive-capable.
  *
  * @since TBD
  */

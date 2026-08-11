@@ -9,6 +9,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { nextScaleSlug } from './scale';
@@ -270,4 +275,79 @@ export function overlayPresetRows(rows, itemId, draft, values) {
 	next[index] = overlaid;
 
 	return next;
+}
+
+/**
+ * Resolve the color a `token-color-select` field's swatch should paint for the current value: the
+ * matching pickable option's own resolved value first (it already carries the active library's
+ * literal), then a direct lookup in the feed's resolved value map for an id outside the pool, then
+ * `''` (the caller renders that as transparent).
+ *
+ * @param {Array<{id: string, value: string}>} options The pickable color options (`pickableTokensForType('color')`).
+ * @param {Record<string, string>}             values  The feed's resolved value map.
+ * @param {string}                              id      The field's current value (a bare token id).
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved swatch color, or `''` when unresolvable.
+ */
+export function resolveSwatchColor(options, values, id) {
+	const match = (options ?? []).find((option) => option.id === id);
+
+	if (match?.value) {
+		return match.value;
+	}
+
+	return values?.[id] ?? '';
+}
+
+/**
+ * The Button settings panel's per-tab schema: NAME renders on both tabs (the draft's `label` path
+ * is shared), the Normal tab adds a Radius section, and the Hover tab never does — `button-radius`
+ * has no hover counterpart, so rendering one there would write a property `guard_surface` rejects.
+ *
+ * @param {string} tab The active tab name (`'normal'` or `'hover'`).
+ *
+ * @since TBD
+ *
+ * @return {{panels: Array<Object>}} The settings-form schema for the active tab.
+ */
+export function buttonSettingsSchema(tab) {
+	const namePanel = {
+		id: 'name',
+		fields: [{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') }],
+	};
+
+	const isHover = tab === 'hover';
+	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
+	const bgPath = isHover ? 'tokens.button-bg-hover' : 'tokens.button-bg';
+
+	const colorPanel = {
+		id: 'color',
+		title: __('Color', 'kadence-blocks'),
+		fields: [
+			{ type: 'token-color-select', path: textPath, label: __('Text', 'kadence-blocks') },
+			{ type: 'token-color-select', path: bgPath, label: __('Background', 'kadence-blocks') },
+		],
+	};
+
+	if (isHover) {
+		return { panels: [namePanel, colorPanel] };
+	}
+
+	const radiusPanel = {
+		id: 'radius',
+		title: __('Radius', 'kadence-blocks'),
+		fields: [
+			{
+				type: 'token-select',
+				tokenType: 'dimension',
+				role: 'radius',
+				path: 'tokens.button-radius',
+				label: __('Radius', 'kadence-blocks'),
+			},
+		],
+	};
+
+	return { panels: [namePanel, colorPanel, radiusPanel] };
 }

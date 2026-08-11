@@ -9,6 +9,8 @@ import {
 	nextPresetSlug,
 	getButtonPresetProperties,
 	overlayPresetRows,
+	resolveSwatchColor,
+	buttonSettingsSchema,
 } from '../helpers/presets';
 
 describe('aliasToId', () => {
@@ -294,5 +296,45 @@ describe('overlayPresetRows', () => {
 		const next = overlayPresetRows(rows, 'primary', draft, values);
 
 		expect(next[1]).toBe(rows[1]);
+	});
+});
+
+describe('resolveSwatchColor', () => {
+	const options = [{ id: 'semantic.color.action-primary', value: '#3633e1' }];
+	const values = { 'semantic.color.action-primary': '#000000', 'primitive.color.gray-100': '#eeeeee' };
+
+	it("prefers the matching option's own resolved value", () => {
+		expect(resolveSwatchColor(options, values, 'semantic.color.action-primary')).toBe('#3633e1');
+	});
+
+	it('falls back to the values map for an id outside the options pool', () => {
+		expect(resolveSwatchColor(options, values, 'primitive.color.gray-100')).toBe('#eeeeee');
+	});
+
+	it('returns an empty string when unresolvable by either source', () => {
+		expect(resolveSwatchColor(options, values, 'semantic.color.does-not-exist')).toBe('');
+	});
+});
+
+describe('buttonSettingsSchema', () => {
+	it('lists NAME, the Text/Background color fields, and the role-narrowed Radius field on the Normal tab', () => {
+		const schema = buttonSettingsSchema('normal');
+		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
+
+		expect(paths).toEqual(['label', 'tokens.button-text', 'tokens.button-bg', 'tokens.button-radius']);
+
+		const radiusField = schema.panels
+			.flatMap((panel) => panel.fields)
+			.find((field) => field.path === 'tokens.button-radius');
+
+		expect(radiusField).toMatchObject({ type: 'token-select', tokenType: 'dimension', role: 'radius' });
+	});
+
+	it('lists NAME and the hover color fields, with no radius field, on the Hover tab', () => {
+		const schema = buttonSettingsSchema('hover');
+		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
+
+		expect(paths).toEqual(['label', 'tokens.button-text-hover', 'tokens.button-bg-hover']);
+		expect(paths).not.toContain('tokens.button-radius');
 	});
 });
