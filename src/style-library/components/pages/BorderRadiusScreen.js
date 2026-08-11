@@ -1,7 +1,7 @@
 /**
  * The Border Radius screen: the scale config, the rounded-square preview renderer, and the two thin
  * wrappers that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
- * `.local/style-library-reference.md`). No link/unlink-corners control — a `dimension` token stores
+ * `ScaleScreen.js`'s module docblock). No link/unlink-corners control — a `dimension` token stores
  * one scalar; per-corner composition happens where tokens are consumed (the preset `box-sides`
  * field), not here.
  */
@@ -34,8 +34,8 @@ function renderRadiusPreview(row) {
 }
 
 /**
- * The Border Radius screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract.
+ * The Border Radius screen's config — see `ScaleScreen`'s module docblock for the full per-screen
+ * config contract.
  *
  * @since TBD
  */

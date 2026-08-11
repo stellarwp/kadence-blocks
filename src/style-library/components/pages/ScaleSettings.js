@@ -2,8 +2,8 @@
  * The generic scale-screen settings panel shared by Border Radius, Border Width, Spacing, and Icon
  * Sizes: NAME + the per-screen value field, and a Delete/Save footer. Mirrors the Color Palette
  * screen's settings-panel shape — calls `useScaleScreen` as its own sibling instance (the screen
- * and its panel share state only through the feed and the route, per the settings-panel contract;
- * see `.local/style-library-reference.md` section 10).
+ * and its panel share state only through the feed and the route, with `use-draft-channel.js` as
+ * the one sanctioned exception).
  */
 
 /**

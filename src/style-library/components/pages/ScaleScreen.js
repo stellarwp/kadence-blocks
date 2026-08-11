@@ -1,10 +1,25 @@
 /**
  * The generic scale-screen body shared by Border Radius, Border Width, Spacing, and Icon Sizes: a
  * header with the "+ Add X" primary action, the screen-scoped write-flow error notices, and a
- * sortable `RowList` over one feed group. Every consuming screen supplies a plain config object
- * (see `BorderRadiusScreen.js` for the shape and `.local/style-library-reference.md` for the full
- * contract) — this component and its sibling `ScaleSettings` carry no per-screen JSX or minting
- * parameters of their own.
+ * sortable `RowList` over one feed group. This component and its sibling `ScaleSettings` carry no
+ * per-screen JSX or minting parameters of their own: every consuming screen supplies a plain
+ * config object (`BorderRadiusScreen.js` is the smallest example) with these keys —
+ *
+ * - `id`             The screen id, matching its route segment.
+ * - `title`          The screen heading.
+ * - `addLabel`       The "+ Add X" button label.
+ * - `group`          The feed group whose tokens this screen lists, by its declared group name.
+ * - `groupKey`       That group's key, used when minting a token.
+ * - `tokenType`      The DTCG `$type` a minted token carries.
+ * - `slugBase`       The id segment a minted token's slug is derived from.
+ * - `newTokenLabel`  The label a minted token starts with.
+ * - `newTokenValue`  The value a minted token starts with.
+ * - `valueField`     The settings panel's value field descriptor (`type`, `label`, `units`).
+ * - `renderPreview`  Required. Renders one row's preview cell from the row descriptor.
+ * - `formatValue`    Optional. Maps a row to its value-column text; the raw value when absent.
+ * - `parseValue`     Optional. Maps a stored value to the panel's initial field value.
+ * - `buildLeaf`      Optional. Builds the DTCG leaf written on save, for a composite value.
+ * - `renderToolbar`  Optional. Renders a toolbar between the header and the list.
  */
 
 /**
