@@ -75,6 +75,61 @@ final class Font_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A font registered with a fallback — whose filter key is the whole stack expression
+	 * `"My Font", sans-serif`, the shape kadence_blocks_convert_custom_fonts() builds — is
+	 * catalogued under the family name alone, so what is stored (and later rendered as
+	 * `font-family`) is never a quoted stack nested inside another set of quotes.
+	 *
+	 * @return void
+	 */
+	public function testCustomNamesDropTheFallbackStackFromAKeyThatCarriesOne(): void {
+		add_filter(
+			'kadence_blocks_custom_fonts',
+			static function ( array $fonts ): array {
+				$fonts['"My Font", sans-serif'] = [
+					'name'    => '"My Font", sans-serif',
+					'weights' => [],
+					'styles'  => [],
+				];
+
+				return $fonts;
+			}
+		);
+
+		$result = $this->catalog->all();
+
+		$this->assertContains( 'My Font', $result['custom'] );
+		$this->assertNotContains( '"My Font", sans-serif', $result['custom'] );
+	}
+
+	/**
+	 * A Google family registered as a custom font WITH a fallback still deduplicates against the
+	 * Google list: the stack is reduced to the family name before the two lists are compared, so
+	 * the family is not offered twice.
+	 *
+	 * @return void
+	 */
+	public function testAFallbackStackDeduplicatesAgainstTheGoogleList(): void {
+		add_filter(
+			'kadence_blocks_custom_fonts',
+			static function ( array $fonts ): array {
+				$fonts['"Abel", sans-serif'] = [
+					'name'    => '"Abel", sans-serif',
+					'weights' => [],
+					'styles'  => [],
+				];
+
+				return $fonts;
+			}
+		);
+
+		$result = $this->catalog->all();
+
+		$this->assertNotContains( 'Abel', $result['custom'] );
+		$this->assertContains( 'Abel', $result['google'] );
+	}
+
+	/**
 	 * A custom-fonts filter returning a plain, integer-keyed list of names passes each name
 	 * through as-is.
 	 *

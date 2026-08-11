@@ -27,13 +27,13 @@
 	text-align: left;
 
 	&:hover,
-	&[aria-expanded='true'] {
+	&[aria-expanded="true"] {
 		color: var(--kb-sl-color-text-primary);
 	}
 
 	&:focus,
 	&:focus-visible,
-	&[aria-expanded='true'] {
+	&[aria-expanded="true"] {
 		border-color: var(--kb-sl-color-control-border-focus);
 	}
 
@@ -72,7 +72,8 @@
 // border/shadow. A taller max-height + its own scroll region is the one geometry difference from
 // SelectDropdown's menu: the catalog list (even capped at 100 rows) is far longer than any closed
 // list this app shows elsewhere.
-.kadence-blocks-style-library__searchable-select-dropdown-menu .components-popover__content.components-popover__content {
+.kadence-blocks-style-library__searchable-select-dropdown-menu
+	.components-popover__content.components-popover__content {
 	display: flex;
 	flex-direction: column;
 	background: var(--kb-sl-color-surface);
@@ -122,7 +123,8 @@
 	}
 }
 
-.kadence-blocks-style-library__searchable-select-dropdown-menu .kadence-blocks-style-library__searchable-select-dropdown-badge {
+.kadence-blocks-style-library__searchable-select-dropdown-menu
+	.kadence-blocks-style-library__searchable-select-dropdown-badge {
 	flex: 0 0 auto;
 	color: var(--kb-sl-color-text-muted);
 	font-size: var(--kb-sl-font-size-s);
@@ -135,6 +137,16 @@
 	flex: 0 0 auto;
 	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
 	border-top: var(--kb-sl-border-width-input) solid var(--kb-sl-color-border);
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-s);
+	text-align: center;
+}
+
+// The empty state replaces the option list, so unlike the footer it carries no top border — there
+// is nothing above it to divide it from but the search input's own bottom edge.
+.kadence-blocks-style-library__searchable-select-dropdown-empty {
+	flex: 0 0 auto;
+	padding: var(--kb-sl-space-15);
 	color: var(--kb-sl-color-text-muted);
 	font-size: var(--kb-sl-font-size-s);
 	text-align: center;

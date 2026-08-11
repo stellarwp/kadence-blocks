@@ -8,7 +8,8 @@
  *
  * The menu opens with a search input that is focused automatically, above a filtered, capped option list; a footer
  * row appears once the match count exceeds the cap, inviting the user to keep typing to narrow
- * further rather than ever rendering the full catalog. `filterCatalogOptions` — the matching + cap
+ * further rather than ever rendering the full catalog, and a query that matches nothing says so
+ * instead of leaving the menu blank. `filterCatalogOptions` — the matching + cap
  * logic — lives in `helpers/catalog-filter.js`, a plain module with no React/JSX, so it is
  * unit-testable without mounting this component or importing its `.scss` (this app's tests are
  * pure-helpers-only for exactly that reason).
@@ -121,6 +122,11 @@ export function SearchableSelectDropdown({ value, options, onChange, isBusy, cla
 								);
 							})}
 						</MenuGroup>
+						{visible.length === 0 && (
+							<div className="kadence-blocks-style-library__searchable-select-dropdown-empty">
+								{__('No fonts found', 'kadence-blocks')}
+							</div>
+						)}
 						{truncated && (
 							<div className="kadence-blocks-style-library__searchable-select-dropdown-footer">
 								{__('Keep typing to narrow the list', 'kadence-blocks')}

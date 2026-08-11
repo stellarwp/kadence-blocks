@@ -84,6 +84,18 @@ final class Font_Catalog {
 	 * @return string[]
 	 */
 	private function custom_names(): array {
+		/**
+		 * Filters the site-registered custom fonts, the same list the block editor localizes as
+		 * c_fonts. Each entry is keyed by the font's family name or by a whole font-stack
+		 * expression (`"My Font", sans-serif`, the shape kadence_blocks_convert_custom_fonts()
+		 * builds when a fallback is registered); an integer-keyed string entry is a plain name.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string|int, mixed> $fonts The registered custom fonts.
+		 *
+		 * @return array<string|int, mixed> The registered custom fonts.
+		 */
 		$fonts = apply_filters( self::CUSTOM_FONTS_FILTER, [] );
 
 		if ( ! is_array( $fonts ) ) {
@@ -93,13 +105,37 @@ final class Font_Catalog {
 		$names = [];
 
 		foreach ( $fonts as $key => $value ) {
-			if ( is_string( $key ) ) {
-				$names[] = $key;
-			} elseif ( is_string( $value ) ) {
-				$names[] = $value;
+			$name = is_string( $key ) ? $this->family_of( $key ) : ( is_string( $value ) ? $this->family_of( $value ) : '' );
+
+			if ( $name !== '' ) {
+				$names[] = $name;
 			}
 		}
 
 		return $names;
+	}
+
+	/**
+	 * The family name a catalog entry names, taken from a font-stack expression when it carries
+	 * one: the first family, with its surrounding quotes removed.
+	 *
+	 * A registered fallback puts the whole stack in the key (`"My Font", sans-serif`). Catalogued
+	 * verbatim, that string becomes the picked font's `$value`, which Css_Renderer quotes as one
+	 * family — `font-family: "\"My Font\", sans-serif"`, invalid — and never matches its own
+	 * Google entry when the two lists are deduplicated. The family alone is what both need. The
+	 * fallback is deliberately not carried into the token: a font primitive is minted as a
+	 * single-family stack, the same rule that keeps a generic fallback from being invented for a
+	 * Google family.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $entry The catalog entry, a family name or a font-stack expression.
+	 *
+	 * @return string The family name, or "" when the entry names none.
+	 */
+	private function family_of( string $entry ): string {
+		$first = explode( ',', $entry )[0];
+
+		return trim( $first, " \t\n\r\0\x0B\"'" );
 	}
 }
