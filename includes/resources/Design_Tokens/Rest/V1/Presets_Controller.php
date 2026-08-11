@@ -756,30 +756,37 @@ final class Presets_Controller extends Controller {
 			'title'      => 'design-token-presets',
 			'type'       => 'object',
 			'properties' => [
-				'block'   => [
+				'block'       => [
 					'description' => __( 'The block name the preset collection belongs to.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'slug'    => [
+				'slug'        => [
 					'description' => __( 'The token library slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'version' => [
+				'version'     => [
 					'description' => __( 'The cache-busting version hash for the library, empty when it renders from baseline.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
 				],
-				'default' => [
+				'default'     => [
 					'description' => __( 'The default preset slug.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 				],
-				'presets' => [
+				'userCreated' => [
+					'description' => __( 'The preset slugs the library defines beyond the baseline. Deleting one removes it; deleting anything else at most reverts an override.', 'kadence-blocks' ),
+					'type'        => 'array',
+					'items'       => [ 'type' => 'string' ],
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
+				'presets'     => [
 					'description'          => __( 'The named presets, keyed by slug.', 'kadence-blocks' ),
 					'type'                 => 'object',
 					'context'              => [ 'view' ],
@@ -1287,17 +1294,19 @@ final class Presets_Controller extends Controller {
 	 * @param string $block The block name.
 	 * @param string $slug  The token library slug being read.
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string, mixed> The item payload, including the `userCreated` preset slugs (those
+	 *                              the library defines beyond the baseline).
 	 */
 	private function prepare_item( string $block, string $slug ): array {
 		$node = $this->set_node( $this->presets->section( $slug ), $block );
 
 		return [
-			'block'   => $block,
-			'slug'    => $slug,
-			'version' => $this->store->get_version( $slug ),
-			'default' => $this->default_of( $node ),
-			'presets' => $this->named_presets( $node ),
+			'block'       => $block,
+			'slug'        => $slug,
+			'version'     => $this->store->get_version( $slug ),
+			'default'     => $this->default_of( $node ),
+			'userCreated' => $this->presets->user_created( $block, $slug ),
+			'presets'     => $this->named_presets( $node ),
 		];
 	}
 
