@@ -101,6 +101,19 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema documents the `userCreated` property added to the GET item response.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDescribesUserCreated(): void {
+		$schema = $this->controller->get_item_schema();
+
+		$this->assertArrayHasKey( 'userCreated', $schema['properties'] );
+		$this->assertSame( 'array', $schema['properties']['userCreated']['type'] );
+		$this->assertSame( 'string', $schema['properties']['userCreated']['items']['type'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItListsTheRegisteredPresetBlocks(): void {
@@ -147,6 +160,18 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A fresh library has no stored overrides, so every effective preset comes from the baseline and none is
+	 * reported as user-created.
+	 *
+	 * @return void
+	 */
+	public function testGetItemOnAFreshLibraryReportsNoUserCreatedPresets(): void {
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $data['userCreated'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testGetItemReturns404ForABlockThatAcceptsNoPresets(): void {
@@ -188,6 +213,57 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'primary', $data['presets'] );
 		$this->assertArrayHasKey( 'secondary', $data['presets'] );
 		$this->assertSame( 'primary', $data['default'] );
+	}
+
+	/**
+	 * Creating a preset slug the baseline does not define adds it to the response's `userCreated` list, and a
+	 * subsequent read agrees.
+	 *
+	 * @return void
+	 */
+	public function testCreatingANewPresetSlugAddsItToUserCreated(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertContains( 'outline', $response->get_data()['userCreated'] );
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+		$this->assertContains( 'outline', $data['userCreated'] );
+	}
+
+	/**
+	 * A label-only merge onto a baseline slug (a "shadow") edits the baseline preset in place: it must not be
+	 * reported as user-created, and the preset's existing tokens must still resolve after the label-only write
+	 * — the merge must not have dropped them.
+	 *
+	 * @return void
+	 */
+	public function testALabelOnlyMergeOntoABaselineShadowLeavesUserCreatedEmpty(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'primary',
+					'label'  => 'Renamed Primary',
+				]
+			)
+		);
+
+		$data = $response->get_data();
+
+		$this->assertNotContains( 'primary', $data['userCreated'] );
+		$this->assertSame( 'Renamed Primary', $data['presets']['primary']['label'] );
+		$this->assertNotEmpty( $data['presets']['primary']['tokens'] );
 	}
 
 	/**
