@@ -243,6 +243,101 @@ describe('savePresetFlow', () => {
 		expect(onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
+
+	// The sibling per-corner-values and responsive-values work widens a stored preset property's
+	// value to a per-corner slot list or a responsive envelope. Today's base can only produce a
+	// scalar, so these shapes are constructed by hand — pinning the save flow's forward-compatible
+	// contract against data this screen cannot itself author yet.
+	describe('non-scalar button-radius (per-corner / responsive shapes)', () => {
+		const nonScalarRadius = {
+			$value: ['{radius.lg}', '{radius.none}', '{radius.lg}', '{radius.none}'],
+			$extensions: {
+				'com.kadence.designTokens': {
+					responsive: { tablet: ['{radius.sm}', '0', '{radius.sm}', '0'] },
+				},
+			},
+		};
+
+		it('leaves a non-scalar button-radius untouched in the POST body when only the label changes', async () => {
+			client.saveBlockPreset.mockResolvedValue({});
+			const refreshFeed = jest.fn().mockResolvedValue({});
+			const storedTokens = {
+				'button-bg': '{semantic.color.action-primary}',
+				'button-radius': nonScalarRadius,
+			};
+			// initialValues.tokens mirrors presetInitialValues' seed: scalar properties as bare ids,
+			// a non-scalar property passed through unchanged (aliasToId is a no-op on non-strings).
+			const initialTokens = {
+				'button-bg': 'semantic.color.action-primary',
+				'button-radius': nonScalarRadius,
+			};
+
+			await savePresetFlow({
+				...baseArgs,
+				draft: { label: 'Renamed', tokens: initialTokens },
+				initialValues: { label: 'Primary', tokens: initialTokens },
+				storedTokens,
+				refreshFeed,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+			});
+
+			expect(client.saveBlockPreset).toHaveBeenCalledWith(
+				'kb-design-tokens/v1',
+				'kadence/singlebtn',
+				{
+					preset: 'primary',
+					label: 'Renamed',
+					tokens: {
+						'button-bg': '{semantic.color.action-primary}',
+						'button-radius': nonScalarRadius,
+					},
+				},
+				'default'
+			);
+		});
+
+		it('writes an edited color and still preserves the untouched non-scalar radius', async () => {
+			client.saveBlockPreset.mockResolvedValue({});
+			const refreshFeed = jest.fn().mockResolvedValue({});
+			const storedTokens = {
+				'button-bg': '{semantic.color.action-primary}',
+				'button-radius': nonScalarRadius,
+			};
+			const initialTokens = {
+				'button-bg': 'semantic.color.action-primary',
+				'button-radius': nonScalarRadius,
+			};
+			const draftTokens = {
+				'button-bg': 'semantic.color.action-primary-hover',
+				'button-radius': nonScalarRadius,
+			};
+
+			await savePresetFlow({
+				...baseArgs,
+				draft: { label: 'Primary', tokens: draftTokens },
+				initialValues: { label: 'Primary', tokens: initialTokens },
+				storedTokens,
+				refreshFeed,
+				onBusy: jest.fn(),
+				onError: jest.fn(),
+			});
+
+			expect(client.saveBlockPreset).toHaveBeenCalledWith(
+				'kb-design-tokens/v1',
+				'kadence/singlebtn',
+				{
+					preset: 'primary',
+					label: 'Primary',
+					tokens: {
+						'button-bg': '{semantic.color.action-primary-hover}',
+						'button-radius': nonScalarRadius,
+					},
+				},
+				'default'
+			);
+		});
+	});
 });
 
 describe('deletePresetFlow', () => {

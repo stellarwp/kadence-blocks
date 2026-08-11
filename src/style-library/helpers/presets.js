@@ -16,6 +16,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { isEqual } from './settings-schema';
 import { nextScaleSlug } from './scale';
 import { getDesignTokensFeed } from './tokens';
 
@@ -274,19 +275,52 @@ export function presetInitialValues(payload, slug) {
 }
 
 /**
- * Build the write-side token map from a settings-panel draft: each present entry wrapped as an
- * alias (or passed through when already an alias or a literal). Only the keys present in the
- * draft are sent.
+ * The preset's raw stored token map — the exact entries `presets.php`'s payload carries for a
+ * slug, in whatever shape each property was last written (scalar, per-corner slot list, or
+ * responsive envelope). `presetInitialValues` is not a substitute for this: it converts every
+ * scalar to a bare id for the picker, which is the wrong shape to write back verbatim.
  *
- * @param {Record<string, string>} draftTokens The panel's draft token map (bare ids).
+ * @param {{presets?: Record<string, {tokens?: Record<string, *>}>}} payload The preset GET payload.
+ * @param {string}                                                    slug    The preset slug.
  *
  * @since TBD
  *
- * @return {Record<string, string>} The property => alias-or-literal map ready for the write.
+ * @return {Record<string, *>} The property => stored-value map, or `{}` for an unknown slug.
  */
-export function presetSaveTokens(draftTokens) {
+export function presetStoredTokens(payload, slug) {
+	return payload?.presets?.[slug]?.tokens ?? {};
+}
+
+/**
+ * Build the write-side token map from a settings-panel draft: a property the draft actually
+ * changed from its seed is written as a fresh alias-or-literal; every untouched property is
+ * carried over from the preset's raw stored map, byte-for-byte, so a save that only edited the
+ * label (or a different property) never flattens a per-corner slot list or a responsive envelope
+ * the block editor wrote into a bare scalar. A property with no corresponding stored entry (a new
+ * preset with `storedTokens` `{}`, or a bound property the draft adds) always counts as touched,
+ * since there is nothing to carry over.
+ *
+ * @param {Record<string, string>} draftTokens   The panel's draft token map (bare ids, or a raw
+ *                                                 non-scalar entry the field never let the user
+ *                                                 touch — see `isNonScalarPresetValue`).
+ * @param {Record<string, string>} [initialTokens] The draft's seed (`presetInitialValues`'s bare-id
+ *                                                 map), compared against `draftTokens` to detect a
+ *                                                 genuine edit. Defaults to `{}`, under which every
+ *                                                 property counts as touched — the create-flow shape.
+ * @param {Record<string, *>}      [storedTokens]  The preset's raw stored token map
+ *                                                 (`presetStoredTokens`), read verbatim for any
+ *                                                 property the draft did not change.
+ *
+ * @since TBD
+ *
+ * @return {Record<string, *>} The property => value map ready for the write.
+ */
+export function presetSaveTokens(draftTokens, initialTokens = {}, storedTokens = {}) {
 	return Object.entries(draftTokens ?? {}).reduce((acc, [property, value]) => {
-		acc[property] = idToAlias(value);
+		const touched = !isEqual(value, initialTokens[property]);
+
+		acc[property] = touched || !(property in storedTokens) ? idToAlias(value) : storedTokens[property];
+
 		return acc;
 	}, {});
 }

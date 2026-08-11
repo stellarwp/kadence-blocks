@@ -7,6 +7,7 @@ import {
 	presetRows,
 	presetInitialValues,
 	presetSaveTokens,
+	presetStoredTokens,
 	nextPresetSlug,
 	getButtonPresetProperties,
 	overlayPresetRows,
@@ -286,6 +287,59 @@ describe('presetSaveTokens', () => {
 
 	it('passes a literal value through unchanged', () => {
 		expect(presetSaveTokens({ 'button-bg': 'transparent' })).toEqual({ 'button-bg': 'transparent' });
+	});
+
+	it('with no initialTokens/storedTokens, treats every entry as touched (the create-flow shape)', () => {
+		const slots = ['{radius.lg}', '0', '{radius.lg}', '0'];
+
+		expect(presetSaveTokens({ 'button-radius': slots })).toEqual({ 'button-radius': slots });
+	});
+
+	it('carries an untouched non-scalar property over from storedTokens byte-for-byte', () => {
+		const storedRadius = {
+			$value: '{semantic.dimension.radius-md}',
+			$extensions: { 'com.kadence.designTokens': { responsive: { tablet: '{semantic.dimension.radius-sm}' } } },
+		};
+		const draftTokens = { 'button-radius': storedRadius };
+		const initialTokens = { 'button-radius': storedRadius };
+		const storedTokens = { 'button-radius': storedRadius };
+
+		const result = presetSaveTokens(draftTokens, initialTokens, storedTokens);
+
+		expect(result['button-radius']).toBe(storedRadius);
+	});
+
+	it('writes a fresh alias for a property the draft changed, even with storedTokens present', () => {
+		const initialTokens = { 'button-bg': 'semantic.color.action-primary' };
+		const storedTokens = { 'button-bg': '{semantic.color.action-primary}' };
+		const draftTokens = { 'button-bg': 'semantic.color.action-primary-hover' };
+
+		expect(presetSaveTokens(draftTokens, initialTokens, storedTokens)).toEqual({
+			'button-bg': '{semantic.color.action-primary-hover}',
+		});
+	});
+
+	it('falls back to a fresh alias when a draft property has no stored counterpart', () => {
+		const result = presetSaveTokens({ 'button-radius': 'semantic.dimension.radius-md' }, {}, {});
+
+		expect(result).toEqual({ 'button-radius': '{semantic.dimension.radius-md}' });
+	});
+});
+
+describe('presetStoredTokens', () => {
+	it("reads the preset's raw stored token map, unmodified", () => {
+		const tokens = { 'button-bg': '{semantic.color.action-primary}', 'button-radius': ['1rem', '0', '1rem', '0'] };
+		const payload = { presets: { primary: { tokens } } };
+
+		expect(presetStoredTokens(payload, 'primary')).toBe(tokens);
+	});
+
+	it('returns an empty object for an unknown slug', () => {
+		expect(presetStoredTokens({ presets: {} }, 'missing')).toEqual({});
+	});
+
+	it('returns an empty object for a null payload', () => {
+		expect(presetStoredTokens(null, 'primary')).toEqual({});
 	});
 });
 

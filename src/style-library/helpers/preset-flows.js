@@ -103,6 +103,13 @@ export function createPresetFlow({
  * @param {string} args.preset        The preset slug being saved.
  * @param {Object} args.draft         The panel's current draft (`{ label, tokens }`).
  * @param {Object} args.initialValues The values the draft is compared against (`{ label, tokens }`).
+ * @param {Record<string, *>} [args.storedTokens] The preset's raw stored token map
+ *                                                 (`presetStoredTokens`); an untouched property is
+ *                                                 carried over from here byte-for-byte rather than
+ *                                                 rebuilt from the draft's bare-id seed, so a save
+ *                                                 that only edits, say, the label never flattens a
+ *                                                 per-corner slot list or a responsive envelope into
+ *                                                 a plain alias. Defaults to `{}`.
  * @param {string} args.slug          Token library slug.
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
@@ -117,7 +124,18 @@ export function createPresetFlow({
  *                          refresh complete; rejects on failure, after `onError`/`onBusy` have
  *                          already run.
  */
-export function savePresetFlow({ namespace, block, preset, draft, initialValues, slug, refreshFeed, onBusy, onError }) {
+export function savePresetFlow({
+	namespace,
+	block,
+	preset,
+	draft,
+	initialValues,
+	storedTokens = {},
+	slug,
+	refreshFeed,
+	onBusy,
+	onError,
+}) {
 	if (isEqual(draft, initialValues)) {
 		return Promise.resolve();
 	}
@@ -127,7 +145,7 @@ export function savePresetFlow({ namespace, block, preset, draft, initialValues,
 	return saveBlockPreset(
 		namespace,
 		block,
-		{ preset, label: draft.label, tokens: presetSaveTokens(draft.tokens) },
+		{ preset, label: draft.label, tokens: presetSaveTokens(draft.tokens, initialValues?.tokens, storedTokens) },
 		slug
 	)
 		.then(() => refreshFeed(slug))
