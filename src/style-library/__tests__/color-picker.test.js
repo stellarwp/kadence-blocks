@@ -105,4 +105,34 @@ describe('deriveFieldsChange', () => {
 	it('returns null when the edit matches neither a hex, rgb, nor hsl field', () => {
 		expect(deriveFieldsChange('rgb', {}, current)).toBeNull();
 	});
+
+	it('keeps the current channel when an rgb field is cleared to an empty string', () => {
+		expect(deriveFieldsChange('rgb', { r: '' }, current)).toEqual({
+			r: 10,
+			g: 20,
+			b: 30,
+			a: 0.5,
+			source: 'rgb',
+		});
+	});
+
+	it('keeps the current channel when an hsl field is cleared to an empty string', () => {
+		expect(deriveFieldsChange('hsl', { s: '' }, current)).toEqual({
+			h: 120,
+			s: 0.4,
+			l: 0.6,
+			a: 0.5,
+			source: 'hsl',
+		});
+	});
+
+	it('keeps the current alpha when the alpha field is cleared to an empty string', () => {
+		expect(deriveFieldsChange('rgb', { a: '' }, current)).toEqual({
+			r: 10,
+			g: 20,
+			b: 30,
+			a: 0.5,
+			source: 'rgb',
+		});
+	});
 });

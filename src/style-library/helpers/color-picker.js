@@ -45,6 +45,21 @@ function channelToHex(value) {
 }
 
 /**
+ * Whether a field value carries no number at all. `react-color`'s `EditableInput` reports a cleared
+ * field as `''`, which `Number()` reads as 0 rather than `NaN`, so emptiness has to be tested before
+ * any numeric parse rather than after it.
+ *
+ * @param {*} value The candidate value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the value is absent or blank.
+ */
+function isBlank(value) {
+	return value === undefined || value === null || String(value).trim() === '';
+}
+
+/**
  * Round an alpha value to two decimal places and clamp it to 0-1.
  *
  * @param {*} value The candidate alpha value.
@@ -54,6 +69,10 @@ function channelToHex(value) {
  * @return {number} The clamped, rounded alpha, or 1 when `value` is not a number.
  */
 function clampAlpha(value) {
+	if (isBlank(value)) {
+		return 1;
+	}
+
 	const number = Number(value);
 
 	if (Number.isNaN(number)) {
@@ -74,7 +93,7 @@ function clampAlpha(value) {
  * @return {number} The parsed number, or `fallback`.
  */
 function numberOr(value, fallback) {
-	if (value === undefined) {
+	if (isBlank(value)) {
 		return fallback;
 	}
 
@@ -94,7 +113,7 @@ function numberOr(value, fallback) {
  * @return {number} The parsed 0-1 fraction, or `fallback`.
  */
 function percentOr(value, fallback) {
-	if (value === undefined) {
+	if (isBlank(value)) {
 		return fallback;
 	}
 
@@ -186,7 +205,7 @@ export function deriveFieldsChange(view, data, current) {
 				h: current.hsl.h,
 				s: current.hsl.s,
 				l: current.hsl.l,
-				a: clampAlpha(data.a),
+				a: clampAlpha(numberOr(data.a, current.hsl.a)),
 				source: 'hsl',
 			};
 		}
@@ -209,7 +228,7 @@ export function deriveFieldsChange(view, data, current) {
 			r: current.rgb.r,
 			g: current.rgb.g,
 			b: current.rgb.b,
-			a: clampAlpha(data.a),
+			a: clampAlpha(numberOr(data.a, current.rgb.a)),
 			source: 'rgb',
 		};
 	}
