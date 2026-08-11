@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/el
  */
 import { applyRowOrder } from '../helpers/scale';
 import { createPresetFlow, deletePresetFlow, reorderPresetsFlow, savePresetFlow } from '../helpers/preset-flows';
-import { BUTTON_BLOCK, presetInitialValues } from '../helpers/presets';
+import { BUTTON_BLOCK, presetInitialValues, presetStoredTokens } from '../helpers/presets';
 import { useButtonPresets } from './use-button-presets';
 
 /**
@@ -108,6 +108,7 @@ export function useButtonScreen(library) {
 				preset: id,
 				draft,
 				initialValues,
+				storedTokens: presetStoredTokens(presets.payload, id),
 				slug,
 				refreshFeed,
 				onBusy: setIsBusy,
