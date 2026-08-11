@@ -141,7 +141,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @var string
 	 */
-	private const ID_PARAM = 'id';
+	private const LABELS_ID_PARAM = 'id';
 
 	/**
 	 * The id path segment for the labels sub-route. Same grammar as PATH_ROUTE — a token id is a dot-path.
@@ -150,7 +150,7 @@ final class Documents_Controller extends Controller {
 	 *
 	 * @var string
 	 */
-	private const ID_ROUTE = '(?P<' . self::ID_PARAM . '>[\w.-]+)';
+	private const LABELS_ID_ROUTE = '(?P<' . self::LABELS_ID_PARAM . '>[\w.-]+)';
 
 	/**
 	 * The request parameter that carries the display-label override text on a labels write.
@@ -492,7 +492,7 @@ final class Documents_Controller extends Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::LABELS_ROUTE . '/' . self::ID_ROUTE,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::LABELS_ROUTE . '/' . self::LABELS_ID_ROUTE,
 			[
 				[
 					// PUT only: setting and clearing (empty label) are the same idempotent
@@ -981,7 +981,7 @@ final class Documents_Controller extends Controller {
 	 */
 	public function set_label( $request ) {
 		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
-		$id    = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+		$id    = Cast::to_string( $request->get_param( self::LABELS_ID_PARAM ) );
 		$label = trim( Cast::to_string( $request->get_param( self::LABEL_PARAM ) ) );
 
 		if ( ! $this->is_known_library( $slug ) ) {
@@ -1029,7 +1029,7 @@ final class Documents_Controller extends Controller {
 	 */
 	public function delete_label( $request ) {
 		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
-		$id   = Cast::to_string( $request->get_param( self::ID_PARAM ) );
+		$id   = Cast::to_string( $request->get_param( self::LABELS_ID_PARAM ) );
 
 		if ( ! $this->is_known_library( $slug ) ) {
 			return $this->not_found( $slug );
@@ -1790,13 +1790,13 @@ final class Documents_Controller extends Controller {
 		return array_merge(
 			$this->get_slug_params(),
 			[
-				self::ID_PARAM      => [
+				self::LABELS_ID_PARAM => [
 					'description' => __( 'The token\'s canonical dot-path id, e.g. semantic.color.button-bg.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'required'    => true,
 					'pattern'     => '^[\w.-]+$',
 				],
-				self::VERSION_PARAM => [
+				self::VERSION_PARAM   => [
 					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => true,

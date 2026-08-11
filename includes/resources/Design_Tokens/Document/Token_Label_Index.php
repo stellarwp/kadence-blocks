@@ -19,6 +19,8 @@ final class Token_Label_Index {
 	 * All label overrides, keyed by canonical dot-path id. Read-side fail-soft: entries whose
 	 * key or value is not a non-empty string are dropped rather than surfaced, so a
 	 * hand-corrupted section degrades to "no override" instead of a type error downstream.
+	 * A whitespace-only label counts as empty — it would render as a nameless token, which is
+	 * the state an override exists to prevent.
 	 *
 	 * @since TBD
 	 *
@@ -36,7 +38,7 @@ final class Token_Label_Index {
 		$labels = [];
 
 		foreach ( $map as $id => $label ) {
-			if ( is_string( $id ) && $id !== '' && is_string( $label ) && $label !== '' ) {
+			if ( is_string( $id ) && $id !== '' && is_string( $label ) && trim( $label ) !== '' ) {
 				$labels[ $id ] = $label;
 			}
 		}
@@ -72,7 +74,8 @@ final class Token_Label_Index {
 	 * Store an override. An empty label is refused at the API level — storing an empty label
 	 * is impossible by construction, not merely validated against: clearing is remove(), never
 	 * set( '' ). The controller trims and routes '' to the clear path before this is ever
-	 * called; the throw guards future callers.
+	 * called; the throw guards future callers. Whitespace-only is empty here too, matching the
+	 * read side — an entry all() drops must not be storable in the first place.
 	 *
 	 * @since TBD
 	 *
@@ -85,7 +88,7 @@ final class Token_Label_Index {
 	 * @return array<string, mixed>
 	 */
 	public function set( array $document, string $id, string $label ): array {
-		if ( $label === '' ) {
+		if ( trim( $label ) === '' ) {
 			throw new InvalidArgumentException( 'A token label override cannot be empty; use remove() to clear it.' );
 		}
 

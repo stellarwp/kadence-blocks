@@ -110,6 +110,10 @@ final class Token_Label_IndexTest extends TestCase {
 		yield 'empty string value' => [
 			'section' => [ 'semantic.color.button-bg' => '' ],
 		];
+
+		yield 'whitespace-only value' => [
+			'section' => [ 'semantic.color.button-bg' => '   ' ],
+		];
 	}
 
 	// -------------------------------------------------------------------------
@@ -219,6 +223,18 @@ final class Token_Label_IndexTest extends TestCase {
 		$this->expectException( InvalidArgumentException::class );
 
 		$this->index->set( [], 'semantic.color.button-bg', '' );
+	}
+
+	/**
+	 * set() refuses a whitespace-only label too — it is the empty label with padding, and all()
+	 * would drop it on read, leaving an override that silently does not exist.
+	 *
+	 * @return void
+	 */
+	public function testSetThrowsForWhitespaceOnlyLabel(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		$this->index->set( [], 'semantic.color.button-bg', "  \t " );
 	}
 
 	/**
