@@ -1,7 +1,7 @@
 /**
  * The Border Width screen: the scale config, the bordered-square preview renderer, and the two thin
  * wrappers that plug into the shared `ScaleScreen`/`ScaleSettings` contract (see
- * `.local/style-library-reference.md`). No link/unlink control — a `dimension` token stores one
+ * `ScaleScreen.js`'s module docblock). No link/unlink control — a `dimension` token stores one
  * scalar; per-side border composition happens where tokens are consumed, not here.
  */
 
@@ -38,8 +38,8 @@ function renderBorderWidthPreview(row) {
 }
 
 /**
- * The Border Width screen's config — see `ScaleScreen`'s module docblock and
- * `.local/style-library-reference.md` for the full per-screen config contract.
+ * The Border Width screen's config — see `ScaleScreen`'s module docblock for the full per-screen
+ * config contract.
  *
  * @since TBD
  */
