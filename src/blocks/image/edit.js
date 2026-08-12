@@ -43,6 +43,7 @@ import './editor.scss';
  * Internal dependencies
  */
 import Image from './image';
+import { isSvgUrl } from './utils';
 
 /**
  * Module constants
@@ -522,7 +523,7 @@ export function ImageEdit(props) {
 		[`size-${sizeSlug}`]: sizeSlug,
 		[`filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
 		[`kb-image-is-ratio-size`]: useRatio,
-		'image-is-svg': url && url.endsWith('.svg'),
+		'image-is-svg': isSvgUrl(url),
 		[`kadence-image${uniqueID}`]: uniqueID,
 		'kb-image-max-width-set': imgMaxWidth,
 		'has-transparent-img': urlTransparent,
