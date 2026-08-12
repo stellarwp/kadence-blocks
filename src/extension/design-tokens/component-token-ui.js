@@ -279,12 +279,7 @@ export function TokenFieldControl({
 	// The inherited default has to be resolved before it is compared or shown — a raw alias or a unitless
 	// number would neither match a token row nor read as a value.
 	const resolvedDefault = resolveDefaultValue(defaultValue, tokens, unit, inherited);
-	// What an unset field shows: the inherited default, muted. The block stores nothing either way —
-	// this only stops the field reading as "no radius" when the preset (or another breakpoint) is
-	// giving it one.
 	const fallback = defaultSummary(resolvedDefault, tokens);
-	// The tooltip/aria-label names where the shown value comes from — "Default (8px)" or "Inherited
-	// (8px)" — which the muted field text alone cannot say.
 	const inheritedName = inherited
 		? sprintf(
 				/* translators: %s: the inherited value, e.g. "8px". */ __('Inherited (%s)', 'kadence-blocks'),

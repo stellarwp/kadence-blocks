@@ -134,7 +134,6 @@ function withResponsive(base, property, attributes, unit) {
 			return;
 		}
 
-		// The nearest breakpoint above this one that captured a value, else the base.
 		const above = CASCADE.slice(0, index)
 			.reverse()
 			.map((breakpointAbove) => responsive[breakpointAbove])

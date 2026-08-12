@@ -55,8 +55,7 @@ export function SavePresetModal({ blockName, library, tokens, existingSlugs = []
 				const { values, responsive } = capturedCatalogValues(tokens, library);
 
 				appendPreset(blockName, library, { slug, label: label.trim(), userCreated: true });
-				// Selecting the new preset clears the block's overrides, so its values have to be in the
-				// catalog before that happens or every control lands on a preset that defines nothing.
+				// Must precede onSaved: selecting the preset clears the block's overrides.
 				setPresetValues(blockName, library, slug, values, responsive);
 				refreshProjectedCss();
 				onSaved(slug);

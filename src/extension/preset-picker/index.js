@@ -200,7 +200,7 @@ export function setPresetValues(name, library, slug, values, responsive) {
 
 /**
  * Remove a preset from the in-memory catalog for a block's library, so the picker drops it without a page
- * reload.
+ * reload. Its values go with it, so a later preset reusing the slug never inherits them.
  *
  * @param {string} name    The block name.
  * @param {string} library The token library slug.
@@ -216,7 +216,6 @@ export function removePreset(name, library, slug) {
 
 	entry.presets = entry.presets.filter((existing) => existing.slug !== slug);
 
-	// Drop the values with the preset, so a later preset reusing the slug never inherits them.
 	delete (entry.values || {})[slug];
 	delete (entry.responsive || {})[slug];
 }

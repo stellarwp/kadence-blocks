@@ -86,8 +86,6 @@ export function usePresetBinding(blockName, attributes, library) {
 	// neither resolves, no control is bound.
 	const activePreset = selected || blockDefaultPreset(blockName, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
-	// The same surface at the other breakpoints, so a responsive control can report what the preset
-	// sets at the device the user is looking at instead of always naming the desktop value.
 	const presetBreakpoints = get(responsive, activePreset, {});
 
 	const state = {};

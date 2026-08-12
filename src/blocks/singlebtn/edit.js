@@ -283,9 +283,6 @@ export default function KadenceButtonEdit(props) {
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
-	// The preset's own value at the active device: a preset can set a different radius per breakpoint,
-	// and the button renders that, so naming the desktop value on Tablet would name a size the block is
-	// not showing there.
 	const borderRadiusPresetValue = presetValueForDevice(
 		tokenBinding.borderRadius?.presetValue,
 		tokenBinding.borderRadius?.responsive,
