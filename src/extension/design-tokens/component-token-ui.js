@@ -18,7 +18,7 @@
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	Button,
 	Dropdown,
@@ -65,21 +65,89 @@ export function findTokenEntry(tokens, value) {
 }
 
 /**
- * The label/value summary a token field shows on its trigger for the current slot value: the token's
- * label + resolved value when aliased (dot-path fallback when no matching entry is found), a `Custom`
- * label + literal (with unit) for a set literal, or — when the slot is unset — the inherited default's
- * size label and resolved value (so the trigger reads the effective size, not a bare "Default").
+ * An inherited default as a COMPARABLE, displayable value.
  *
- * @param {*}      value        The current slot value (alias string, literal number/string, or empty).
- * @param {Array}  tokens       The pickable-token list, used to resolve an alias/default to its label.
- * @param {string} unit         The control's current unit, appended to a literal for display.
- * @param {string} defaultValue The inherited default's resolved value, shown when the slot is unset.
+ * A default that comes from the preset is already resolved (`"0.5rem"`). One inherited from another
+ * breakpoint is the raw stored attribute instead — a token alias (`"{primitive.dimension.radius.sm}"`)
+ * or a bare number whose unit lives in a separate attribute. Passed through untouched, the alias leaks
+ * into the tooltip as a dot-path and neither shape ever equals a token's resolved `value`, so the popover
+ * could never mark the size that is actually in effect.
+ *
+ * The unit is only appended for an inherited number: a preset value already carries its own unit, and a
+ * unitless token value (`None` is `"0"`) must keep comparing equal to itself.
+ *
+ * @param {*}       defaultValue The inherited default (resolved preset value, alias, or bare number).
+ * @param {Array}   tokens       The pickable-token list, used to resolve an alias to its value.
+ * @param {string}  unit         The control's current unit, completing an inherited bare number.
+ * @param {boolean} [inherited]  Whether the default came from another breakpoint.
  *
  * @since TBD
  *
- * @return {{label: string, value: string}} The trigger label and its secondary value text.
+ * @return {string} The resolved value, or '' when there is none.
  */
-function fieldSummary(value, tokens, unit, defaultValue) {
+function resolveDefaultValue(defaultValue, tokens, unit, inherited) {
+	if (defaultValue === '' || defaultValue === undefined || defaultValue === null) {
+		return '';
+	}
+
+	if (isTokenAlias(defaultValue)) {
+		const entry = findTokenEntry(tokens, defaultValue);
+
+		return entry ? entry.value : '';
+	}
+
+	if (inherited && /^-?\d*\.?\d+$/.test(String(defaultValue))) {
+		return `${defaultValue}${unit || ''}`;
+	}
+
+	return String(defaultValue);
+}
+
+/**
+ * The label/value summary for the INHERITED default a field falls back to, so an unset field can show
+ * the size that is actually in effect instead of reading as empty.
+ *
+ * The default arrives resolved (`"9999px"`), which names a size but not the token it came from, so the
+ * pickable list is searched for the entry that resolves to the same value and its label is used when one
+ * matches. The result is rendered muted — the field is still unset, and picking it up as a set value is
+ * the confusion an empty-means-inherit attribute has to avoid.
+ *
+ * @param {string} resolvedDefault The inherited default, already resolved to a literal.
+ * @param {Array}  tokens          The pickable-token list, used to name the value.
+ *
+ * @since TBD
+ *
+ * @return {{label: string, value: string}} The label and value text, both '' when there is no default.
+ */
+function defaultSummary(resolvedDefault, tokens) {
+	if (!resolvedDefault) {
+		return { label: '', value: '' };
+	}
+
+	const entry = (tokens || []).find((candidate) => candidate.value === resolvedDefault) || null;
+
+	return { label: entry ? entry.label : '', value: resolvedDefault };
+}
+
+/**
+ * The label/value summary a token field shows on its trigger for the current slot value: the token's
+ * label + resolved value when aliased (dot-path fallback when no matching entry is found), a `Custom`
+ * label + literal (with unit) for a set literal, or NOTHING when the slot is unset.
+ *
+ * An unset slot summarizes to nothing — what the field then shows is the inherited default, rendered
+ * muted by `defaultSummary` so it reads as a placeholder rather than a value stored on this breakpoint.
+ * Keeping the two apart is the point: this function answers "what does this slot hold", and an unset
+ * slot holds nothing.
+ *
+ * @param {*}      value  The current slot value (alias string, literal number/string, or empty).
+ * @param {Array}  tokens The pickable-token list, used to resolve an alias to its label.
+ * @param {string} unit   The control's current unit, appended to a literal for display.
+ *
+ * @since TBD
+ *
+ * @return {{label: string, value: string}} The trigger label and its secondary value text, both '' when unset.
+ */
+function fieldSummary(value, tokens, unit) {
 	if (isTokenAlias(value)) {
 		const entry = findTokenEntry(tokens, value);
 		return {
@@ -92,13 +160,7 @@ function fieldSummary(value, tokens, unit, defaultValue) {
 		return { label: __('Custom', 'kadence-blocks'), value: `${value}${unit || ''}` };
 	}
 
-	// Unset: surface the inherited default's size (the token whose resolved value it matches) and value.
-	if (defaultValue) {
-		const match = (tokens || []).find((entry) => entry.value === defaultValue);
-		return { label: match ? match.label : __('Default', 'kadence-blocks'), value: defaultValue };
-	}
-
-	return { label: __('Default', 'kadence-blocks'), value: '' };
+	return { label: '', value: '' };
 }
 
 /**
@@ -111,6 +173,8 @@ function fieldSummary(value, tokens, unit, defaultValue) {
  * @param {Array}    props.tokens       The pickable-token list.
  * @param {string}   [props.defaultValue] The inherited default's resolved value; its size is tagged
  *                                      `Default` and marked active while the slot is unset.
+ * @param {boolean}  [props.inherited]  Whether that default comes from another breakpoint, which tags the
+ *                                      row `Inherited` instead.
  * @param {Function} props.onPick       Called with an entry's `alias` when a token is chosen.
  * @param {Function} props.onClear      Called when `Reset` is chosen; clears the slot's override.
  * @param {Function} props.onClose      Closes the popover after a choice.
@@ -119,7 +183,7 @@ function fieldSummary(value, tokens, unit, defaultValue) {
  *
  * @return {Object} The rendered token list.
  */
-function StyleLibraryTab({ value, tokens, defaultValue, onPick, onClear, onClose }) {
+function StyleLibraryTab({ value, tokens, defaultValue, inherited, onPick, onClear, onClose }) {
 	// Reset clears the slot's override back to the inherited default; it is inert when nothing is set.
 	const hasOverride = isTokenAlias(value) || (value !== '' && value !== undefined && value !== null);
 	// While unset, the size matching the inherited default reads as the active row.
@@ -152,7 +216,9 @@ function StyleLibraryTab({ value, tokens, defaultValue, onPick, onClear, onClose
 					>
 						<span className="kadence-token-field__item-label">{entry.label}</span>
 						{isDefault && (
-							<span className="kadence-token-field__item-tag">{__('Default', 'kadence-blocks')}</span>
+							<span className="kadence-token-field__item-tag">
+								{inherited ? __('Inherited', 'kadence-blocks') : __('Default', 'kadence-blocks')}
+							</span>
 						)}
 						<span className="kadence-token-field__item-value">{entry.value}</span>
 					</Button>
@@ -177,6 +243,8 @@ function StyleLibraryTab({ value, tokens, defaultValue, onPick, onClear, onClose
  * @param {Function} [props.onUnit]   Writes the control's unit.
  * @param {string}   [props.defaultValue] The inherited default's resolved value, shown on the trigger and
  *                                    tagged in the list when the slot is unset.
+ * @param {boolean}  [props.inherited] Whether that default comes from another breakpoint rather than the
+ *                                    preset, which reads as `Inherited` instead of the size name.
  * @param {*}        [props.icon]     The control's per-slot corner icon (from the default editor), shown
  *                                    beside the trigger to match the native corner input.
  * @param {number}   [props.min]      The custom slider/number minimum.
@@ -197,6 +265,7 @@ export function TokenFieldControl({
 	units,
 	onUnit,
 	defaultValue,
+	inherited,
 	icon,
 	min,
 	max,
@@ -206,7 +275,25 @@ export function TokenFieldControl({
 	onClear,
 	onCustom,
 }) {
-	const summary = fieldSummary(value, tokens, unit, defaultValue);
+	const summary = fieldSummary(value, tokens, unit);
+	// The inherited default has to be resolved before it is compared or shown — a raw alias or a unitless
+	// number would neither match a token row nor read as a value.
+	const resolvedDefault = resolveDefaultValue(defaultValue, tokens, unit, inherited);
+	const fallback = defaultSummary(resolvedDefault, tokens);
+	const inheritedName = inherited
+		? sprintf(
+				/* translators: %s: the inherited value, e.g. "8px". */ __('Inherited (%s)', 'kadence-blocks'),
+				resolvedDefault
+			)
+		: sprintf(
+				/* translators: %s: the default value, e.g. "3px". */ __('Default (%s)', 'kadence-blocks'),
+				resolvedDefault
+			);
+	const triggerName = summary.label
+		? `${summary.label}${summary.value ? ` (${summary.value})` : ''}`
+		: resolvedDefault
+			? inheritedName
+			: __('Default', 'kadence-blocks');
 	const aliased = isTokenAlias(value);
 	const entry = aliased ? findTokenEntry(tokens, value) : null;
 	const seed = entry ? parseCssLength(entry.value) : null;
@@ -281,11 +368,21 @@ export function TokenFieldControl({
 						className="kadence-token-field__trigger"
 						onClick={onToggle}
 						aria-expanded={isOpen}
-						label={summary.value ? `${summary.label} (${summary.value})` : summary.label}
+						label={triggerName}
 						showTooltip
 					>
-						<span className="kadence-token-field__label">{summary.label}</span>
+						{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
 						{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
+						{!summary.label && !summary.value && fallback.value && (
+							<>
+								{fallback.label && (
+									<span className="kadence-token-field__label kadence-token-field__label--default">
+										{fallback.label}
+									</span>
+								)}
+								<span className="kadence-token-field__value">{fallback.value}</span>
+							</>
+						)}
 					</Button>
 				)}
 				renderContent={({ onClose }) => (
@@ -318,7 +415,8 @@ export function TokenFieldControl({
 								<StyleLibraryTab
 									value={value}
 									tokens={tokens}
-									defaultValue={defaultValue}
+									defaultValue={resolvedDefault}
+									inherited={inherited}
 									onPick={onPick}
 									onClear={onClear}
 									onClose={onClose}

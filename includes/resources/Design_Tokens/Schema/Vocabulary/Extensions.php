@@ -346,4 +346,47 @@ final class Extensions {
 	public static function get_group_id_key(): string {
 		return self::GROUP_ID_KEY;
 	}
+
+	/**
+	 * The base value of a preset token entry.
+	 *
+	 * A preset property is normally a bare value — an alias, a literal, or a per-corner slot list. A
+	 * property that varies by breakpoint instead carries the same envelope a responsive token leaf uses
+	 * ({@see Responsive}): its base under `$value`, its overrides under the vendor extension. This reader
+	 * collapses both shapes to the base, so no consumer hand-rolls the unwrap. A slot list has no `$value`
+	 * key, so it is never mistaken for an envelope.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return mixed The base value.
+	 */
+	public static function preset_value_of( $entry ) {
+		if ( is_array( $entry ) && array_key_exists( Sentinels::get_value_key(), $entry ) ) {
+			return $entry[ Sentinels::get_value_key() ];
+		}
+
+		return $entry;
+	}
+
+	/**
+	 * The per-breakpoint overrides a preset token entry declares, or an empty array when it declares none.
+	 * Delegates to {@see Responsive} so the lookup path is byte-identical to a token leaf's.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return array<string, mixed> Breakpoint => override value.
+	 */
+	public static function preset_responsive_of( $entry ): array {
+		if ( ! is_array( $entry ) || ! Responsive::has_responsive( $entry ) ) {
+			return [];
+		}
+
+		$responsive = Responsive::responsive_of( $entry );
+
+		return is_array( $responsive ) ? $responsive : [];
+	}
 }

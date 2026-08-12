@@ -97,6 +97,32 @@ function writerFor(ctx) {
 }
 
 /**
+ * The inherited default for one slot of a field control.
+ *
+ * A preset may resolve a dimension to a PER-CORNER list rather than one value, so the slot takes its
+ * matching entry. Handed the list whole, the field would render the whole shorthand as a single default
+ * (e.g. "1px,2px,3px,4px") on every corner.
+ *
+ * The linked "all sides" slot arrives with a null index and stands for the first corner, exactly as the
+ * adapter's `leaf` reads it — without that fallback a linked field would look up `list[null]` and report
+ * no default at all.
+ *
+ * @param {*}      defaultValue The context's inherited default (a value or a per-corner list).
+ * @param {?number} index       The slot index being rendered; null for the linked slot.
+ *
+ * @since TBD
+ *
+ * @return {*} The default for this slot.
+ */
+function defaultValueForSlot(defaultValue, index) {
+	if (!Array.isArray(defaultValue)) {
+		return defaultValue;
+	}
+
+	return defaultValue[index ?? 0];
+}
+
+/**
  * Editor seam: replace a field control's numeric slot with a `TokenFieldControl` — the trigger + token
  * popover — whenever the control is token-mapped (a `context` resolves pickable tokens). Falls back to
  * the control's own editor for a control with no field adapter, no tokens, or no write handler.
@@ -128,7 +154,8 @@ function editorFilter(defaultEditor, ctx) {
 			unit={ctx.context?.unit || ''}
 			units={ctx.context?.units}
 			onUnit={ctx.context?.onUnit}
-			defaultValue={ctx.context?.defaultValue}
+			defaultValue={defaultValueForSlot(ctx.context?.defaultValue, ctx.index)}
+			inherited={!!defaultValueForSlot(ctx.context?.inheritedDefault, ctx.index)}
 			icon={defaultEditor?.props?.icon}
 			min={ctx.context?.min}
 			max={ctx.context?.max}

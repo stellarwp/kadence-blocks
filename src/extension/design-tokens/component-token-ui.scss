@@ -59,7 +59,7 @@
 		border-color: #1e1e1e;
 	}
 
-	&[aria-expanded='true'] {
+	&[aria-expanded="true"] {
 		border-color: #3858e9;
 		box-shadow: 0 0 0 1px #3858e9;
 	}
@@ -276,4 +276,8 @@
 	color: #949494;
 	font-size: 13px;
 	white-space: nowrap;
+}
+
+.kadence-token-field__label--default {
+	color: #949494;
 }

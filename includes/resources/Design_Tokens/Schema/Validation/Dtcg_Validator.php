@@ -69,6 +69,16 @@ final class Dtcg_Validator {
 	private const CONTEXT_OVERRIDES = 'overrides';
 
 	/**
+	 * The side count of a per-corner preset token slot list, matching the 4-side measure attribute a
+	 * block stores (top-left, top-right, bottom-right, bottom-left).
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const SLOT_LIST_SIDES = 4;
+
+	/**
 	 * Value validators keyed by $type.
 	 *
 	 * @since TBD
@@ -706,8 +716,10 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * A foundation-preset / block-preset token value must be an alias or a non-empty literal scalar. The target token's
-	 * $type is not resolved here, so the literal is checked only for shape, not per-type grammar.
+	 * A foundation-preset / block-preset token value must be an alias, a non-empty literal scalar, or a
+	 * per-corner slot list. The target token's $type is not resolved here, so the literal is checked only
+	 * for shape, not per-type grammar; whether a slot list is meaningful for the bound property's kind is
+	 * a registry-aware question answered by the REST write guard, not by the schema.
 	 *
 	 * @since TBD
 	 *
@@ -733,11 +745,141 @@ final class Dtcg_Validator {
 			return null;
 		}
 
+		if ( is_array( $value ) && $this->is_list( $value ) ) {
+			return $this->validate_extension_slots( $value, $path );
+		}
+
+		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
+			return $this->validate_extension_envelope( $value, $path );
+		}
+
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias or a non-empty literal.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, or a responsive entry.'
 		);
+	}
+
+	/**
+	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base, and each override
+	 * under the vendor extension's `responsive` map is itself a preset token value.
+	 *
+	 * Mirrors {@see self::validate_responsive_shape()} — same envelope, same breakpoint-key check — but
+	 * validates each override by SHAPE rather than against a `$type`. A preset property has no `$type`
+	 * (the walk sees a property name like "button-radius", not a token id), which is also why the kind
+	 * gate lives in the REST write guard rather than here.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $entry The decoded entry.
+	 * @param string               $path  Dot-path to the entry.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_envelope( array $entry, string $path ): ?Validation_Error {
+		$error = $this->validate_extension_value( Extensions::preset_value_of( $entry ), $path );
+
+		if ( $error !== null ) {
+			return $error;
+		}
+
+		$responsive = Extensions::preset_responsive_of( $entry );
+
+		// An entry object with no overrides says nothing a bare value does not; refuse the dead shape.
+		if ( $responsive === [] ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				'A responsive preset token entry must declare at least one breakpoint override; use a bare value otherwise.'
+			);
+		}
+
+		$allowed = Responsive::get_breakpoint_keys();
+
+		foreach ( $responsive as $breakpoint => $override ) {
+			if ( ! in_array( $breakpoint, $allowed, true ) ) {
+				return new Validation_Error(
+					$path . '.' . $breakpoint,
+					Validation_Error::get_code_composite_field_unknown(),
+					sprintf(
+						'Unknown responsive breakpoint "%s"; expected one of: %s.',
+						(string) $breakpoint,
+						implode( ', ', $allowed )
+					)
+				);
+			}
+
+			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Validate a per-corner slot list: exactly 4 slots (top-left, top-right, bottom-right, bottom-left),
+	 * each an alias or a non-empty literal scalar. "Every corner" is already expressed by a bare scalar, so
+	 * a shorter list would be a second spelling of the same thing. A slot is validated by the
+	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
+	 * nested list is rejected because that rule accepts no array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed> $slots The slot list.
+	 * @param string            $path  Dot-path to the list.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
+		$count = count( $slots );
+
+		if ( $count !== self::SLOT_LIST_SIDES ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				sprintf( 'A preset token slot list must hold exactly %d values, %d given.', self::SLOT_LIST_SIDES, $count )
+			);
+		}
+
+		foreach ( $slots as $index => $slot ) {
+			if ( is_array( $slot ) ) {
+				return new Validation_Error(
+					$path . '.' . $index,
+					Validation_Error::get_code_value_invalid(),
+					'A preset token slot must be an alias or a non-empty literal, not a nested list.'
+				);
+			}
+
+			$error = $this->validate_extension_value( $slot, $path . '.' . $index );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether an array is a list — sequential integer keys from zero. Hand-rolled because the plugin
+	 * supports PHP 7.4, where array_is_list() does not exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $value The array to test.
+	 *
+	 * @return bool True when the array is a list.
+	 */
+	private function is_list( array $value ): bool {
+		// range( 0, -1 ) yields [ 0, -1 ], so the empty array is answered before the key compare.
+		if ( $value === [] ) {
+			return true;
+		}
+
+		return array_keys( $value ) === range( 0, count( $value ) - 1 );
 	}
 
 	/**

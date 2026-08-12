@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Schema\Vocabulary;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Extensions;
 use Tests\Support\Classes\TestCase;
 
@@ -54,5 +55,75 @@ final class ExtensionsTest extends TestCase {
 		$this->assertSame( 'swatches', Extensions::get_swatches_key() );
 		$this->assertSame( 'token', Extensions::get_swatch_token_key() );
 		$this->assertSame( 'id', Extensions::get_group_id_key() );
+	}
+
+	/**
+	 * A bare preset token entry is its own base value and declares no per-breakpoint overrides, so every
+	 * existing preset reads through the new accessors unchanged.
+	 *
+	 * @dataProvider bareEntryProvider
+	 *
+	 * @param mixed $entry The bare preset token entry.
+	 *
+	 * @return void
+	 */
+	public function testABarePresetEntryIsItsOwnValue( $entry ): void {
+		$this->assertSame( $entry, Extensions::preset_value_of( $entry ) );
+		$this->assertSame( [], Extensions::preset_responsive_of( $entry ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function bareEntryProvider(): Generator {
+		yield 'literal' => [ 'entry' => '#3633e1' ];
+
+		yield 'alias' => [ 'entry' => '{semantic.radius.control}' ];
+
+		yield 'slot list' => [ 'entry' => [ '8px', '4px', '8px', '4px' ] ];
+
+		yield 'numeric' => [ 'entry' => 8 ];
+	}
+
+	/**
+	 * A preset token entry carrying the responsive envelope exposes its base value and its per-breakpoint
+	 * overrides separately, so a consumer never has to hand-roll the unwrap.
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryExposesItsBaseAndOverrides(): void {
+		$entry = [
+			'$value'      => [ '8px', '4px', '8px', '4px' ],
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => [
+						'tablet' => '4px',
+						'mobile' => '{primitive.dimension.radius.sm}',
+					],
+				],
+			],
+		];
+
+		$this->assertSame( [ '8px', '4px', '8px', '4px' ], Extensions::preset_value_of( $entry ) );
+		$this->assertSame(
+			[
+				'tablet' => '4px',
+				'mobile' => '{primitive.dimension.radius.sm}',
+			],
+			Extensions::preset_responsive_of( $entry )
+		);
+	}
+
+	/**
+	 * A slot list is never mistaken for an envelope: it has no `$value` key, so it reads as its own base
+	 * value with no overrides even though it is an array.
+	 *
+	 * @return void
+	 */
+	public function testASlotListIsNotTreatedAsAnEnvelope(): void {
+		$slots = [ '{primitive.dimension.radius.lg}', '8px', '8px', '8px' ];
+
+		$this->assertSame( $slots, Extensions::preset_value_of( $slots ) );
+		$this->assertSame( [], Extensions::preset_responsive_of( $slots ) );
 	}
 }

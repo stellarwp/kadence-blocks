@@ -162,6 +162,7 @@ final class Preset_Catalog {
 				'presets'    => $presets,
 				'properties' => $this->properties_for( $bindings ),
 				'values'     => $this->values_for( $block, $slug, $names ),
+				'responsive' => $this->responsive_for( $block, $slug, $names ),
 				'label'      => $bindings->label,
 			];
 		}
@@ -178,17 +179,18 @@ final class Preset_Catalog {
 	 *
 	 * @param Preset_Bindings $bindings The block's preset bindings.
 	 *
-	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null}>
+	 * @return array<int, array{key: string, kind: string, token: string|null, control_attr: string|null, responsive_attrs: array<string, string>}>
 	 */
 	private function properties_for( Preset_Bindings $bindings ): array {
 		$properties = [];
 
 		foreach ( $bindings->bindings as $property => $binding ) {
 			$properties[] = [
-				'key'          => (string) $property,
-				'kind'         => $bindings->kind( (string) $property ),
-				'token'        => $binding->token,
-				'control_attr' => $binding->control_attr(),
+				'key'              => (string) $property,
+				'kind'             => $bindings->kind( (string) $property ),
+				'token'            => $binding->token,
+				'control_attr'     => $binding->control_attr(),
+				'responsive_attrs' => $binding->responsive_attrs(),
 			];
 		}
 
@@ -202,13 +204,18 @@ final class Preset_Catalog {
 	 * cannot compare against a `var()` chain. A preset whose resolution fails (undefined in this library) is
 	 * skipped, so one bad preset never empties the map.
 	 *
+	 * A dimension property whose preset stores per-corner values carries the corners as a list rather than
+	 * a joined string, so the editor's compare and the control's inherited-default display read each corner
+	 * on its own — a joined shorthand is not parseable as a single length.
+	 *
 	 * @since TBD
 	 *
 	 * @param string   $block The block name.
 	 * @param string   $slug  The token library slug.
 	 * @param string[] $names The preset slugs to resolve, in catalog order.
 	 *
-	 * @return array<string, array<string, string>> preset slug => ( property => literal value ).
+	 * @return array<string, array<string, string|string[]>> preset slug => ( property => literal value or
+	 *                                                       per-corner slot list ).
 	 */
 	private function values_for( string $block, string $slug, array $names ): array {
 		$values = [];
@@ -222,6 +229,38 @@ final class Preset_Catalog {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * The per-breakpoint resolved values for a block's library: `preset slug => ( breakpoint => ( property
+	 * => literal ) )`, flattened for the same reason `values_for()` flattens — a control cannot compare
+	 * against a `var()` chain.
+	 *
+	 * A preset that declares no breakpoint overrides carries an empty map rather than being absent, so the
+	 * editor can read `responsive[preset]` unconditionally. A preset whose resolution fails is skipped,
+	 * matching `values_for()`.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $block The block name.
+	 * @param string   $slug  The token library slug.
+	 * @param string[] $names The preset slugs to resolve, in catalog order.
+	 *
+	 * @return array<string, array<string, array<string, string|string[]>>> preset slug => ( breakpoint =>
+	 *                                                                     ( property => literal value ) ).
+	 */
+	private function responsive_for( string $block, string $slug, array $names ): array {
+		$responsive = [];
+
+		foreach ( $names as $name ) {
+			try {
+				$responsive[ $name ] = $this->presets->resolve_responsive_literal( $block, $name, $slug );
+			} catch ( Unknown_Preset_Exception $e ) {
+				continue; // Preset undefined in this library — skip, fail soft.
+			}
+		}
+
+		return $responsive;
 	}
 
 	/**

@@ -8,27 +8,86 @@
  */
 import { get } from 'lodash';
 import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
-import { normalizeColor, normalizeDimension, normalizeText, isEmptyValue } from '../token-indicators/normalize';
+import {
+	normalizeColor,
+	normalizeDimension,
+	normalizeText,
+	isEmptyValue,
+	dimensionSlots,
+	presetSlotAt,
+} from '../token-indicators/normalize';
+import { isTokenAlias } from '../design-tokens/alias';
+import { tokenLiteral } from '../design-tokens/token-literals';
+
+/**
+ * The vendor extension a responsive token leaf carries its per-breakpoint overrides under. Mirrors the
+ * PHP `Extensions` vendor key.
+ *
+ * @since TBD
+ */
+const VENDOR_EXTENSION = 'com.kadence.designTokens';
+
+/**
+ * The breakpoints a responsive property can override, narrowest last — the order the device cascade runs
+ * in, so each breakpoint's unset corners fall back to the one above it.
+ *
+ * @since TBD
+ */
+const CASCADE = ['tablet', 'mobile'];
+
+/**
+ * Compose one dimension slot into the literal a preset stores: a token alias is stored verbatim, any
+ * other value gets the control's unit appended.
+ *
+ * A token alias is a whole-string `{dot.path}` reference. Appending the unit would produce
+ * `{dot.path}px`, which the server rejects as `alias_malformed` — `Alias::looks_like_alias()` fires on
+ * a brace anywhere in the value, so a suffixed alias is not "an alias with a unit", it is malformed.
+ *
+ * @param {string} slot The stored slot value.
+ * @param {string} unit The companion unit.
+ *
+ * @since TBD
+ *
+ * @return {string} The slot literal.
+ */
+function slotToLiteral(slot, unit) {
+	return isTokenAlias(slot) ? slot : `${slot}${unit}`;
+}
 
 /**
  * Reduce a block attribute value to the literal a preset token stores, per kind: a color resolves to its
  * literal, a dimension composes its value and unit (`8` + `px` -> `8px`), text passes through trimmed.
  *
- * @param {string} kind  The property kind ('color' | 'dimension' | 'text').
- * @param {*}      value The stored attribute value.
- * @param {string} unit  The companion unit (dimension only; '' otherwise).
+ * A dimension keeps its corners: four identical corners collapse to one value (so a uniform preset is
+ * stored exactly as before), and corners that differ are stored as a slot list so a per-corner radius
+ * survives the round trip instead of narrowing to its first side.
+ *
+ * @param {string} kind        The property kind ('color' | 'dimension' | 'text').
+ * @param {*}      value       The stored attribute value.
+ * @param {string} unit        The companion unit (dimension only; '' otherwise).
+ * @param {*}      presetValue The selected preset's value, used to fill an unset corner.
  *
  * @since TBD
  *
- * @return {string} The token literal.
+ * @return {string|string[]} The token literal, or the per-corner slot list.
  */
-function attrToLiteral(kind, value, unit) {
+function attrToLiteral(kind, value, unit, presetValue) {
 	if (kind === 'dimension') {
-		// A preset token is a single scalar, so a per-corner override (e.g. `['8','8','8','4']`) narrows to
-		// its first populated side — matching how the indicator's bound/overridden compare reads a dimension.
-		const dimension = normalizeDimension(value, unit);
+		if (normalizeDimension(value, unit).value === '') {
+			return '';
+		}
 
-		return dimension.value === '' ? '' : `${dimension.value}${dimension.unit}`;
+		const slots = dimensionSlots(value).map((slot, index) =>
+			slot === '' ? presetSlotAt(presetValue, index) : slotToLiteral(slot, unit)
+		);
+
+		// A corner the user left unset whose preset has no value either cannot be expressed in a shorthand,
+		// so the whole property is omitted and inherited through the cascade instead.
+		if (slots.some((slot) => slot === '')) {
+			return '';
+		}
+
+		return slots.every((slot) => slot === slots[0]) ? slots[0] : slots;
 	}
 
 	if (kind === 'color') {
@@ -36,6 +95,115 @@ function attrToLiteral(kind, value, unit) {
 	}
 
 	return normalizeText(value);
+}
+
+/**
+ * Wrap a captured base value in the responsive envelope when the block carries per-breakpoint values for
+ * the property, otherwise return the base unchanged.
+ *
+ * The envelope is the same one a responsive token leaf uses — base under `$value`, overrides under the
+ * vendor extension — so each override is validated, resolved and projected by exactly the rules the base
+ * goes through. A breakpoint whose attribute is unset is omitted rather than frozen, so it keeps
+ * inheriting; a property with no breakpoint values stays a bare value, leaving every existing preset
+ * byte-identical.
+ *
+ * A corner the breakpoint leaves unset inherits the way the editor renders it — through the device
+ * cascade, not from the preset: Tablet falls back to the captured base, Mobile to the captured Tablet
+ * value and then to the base. Filling from the preset instead would freeze the preset's default into the
+ * corners the user never touched, pinning them against the Desktop value they are rendering at.
+ *
+ * @param {*}      base        The captured base (desktop) value.
+ * @param {Object} property    The bound property, carrying `responsive_attrs`.
+ * @param {Object} attributes  The block's current attributes.
+ * @param {string} unit        The property's unit. A responsive measure control carries ONE unit across
+ *                             all three devices, so every breakpoint composes against the same one.
+ *
+ * @since TBD
+ *
+ * @return {*} The base value, or the responsive envelope wrapping it.
+ */
+function withResponsive(base, property, attributes, unit) {
+	const responsive = {};
+
+	// Cascade order, so a Mobile corner can inherit the Tablet value captured a step earlier.
+	CASCADE.forEach((breakpoint, index) => {
+		const attr = get(property.responsive_attrs, breakpoint, '');
+		const raw = attr ? get(attributes, attr, '') : '';
+
+		if (!attr || isEmptyValue(property.kind, raw)) {
+			return;
+		}
+
+		const above = CASCADE.slice(0, index)
+			.reverse()
+			.map((breakpointAbove) => responsive[breakpointAbove])
+			.find((captured) => captured !== undefined);
+
+		const value = attrToLiteral(property.kind, raw, unit, above === undefined ? base : above);
+
+		if (value !== '') {
+			responsive[breakpoint] = value;
+		}
+	});
+
+	if (!Object.keys(responsive).length) {
+		return base;
+	}
+
+	return { $value: base, $extensions: { [VENDOR_EXTENSION]: { responsive } } };
+}
+
+/**
+ * Resolve a captured value to the literal the catalog's value map stores: an alias resolves through the
+ * library's token literals, a per-corner list resolves slot by slot.
+ *
+ * @param {*}      value   The captured value.
+ * @param {string} library The token library slug.
+ *
+ * @since TBD
+ *
+ * @return {*} The resolved literal, or the per-corner literal list.
+ */
+function capturedLiteral(value, library) {
+	return Array.isArray(value) ? value.map((slot) => tokenLiteral(slot, library)) : tokenLiteral(value, library);
+}
+
+/**
+ * The catalog view of a captured token map: the resolved `{ property: literal }` values plus the
+ * `{ breakpoint: { property: literal } }` overrides, matching what the server localizes for an existing
+ * preset (`values` / `responsive`).
+ *
+ * A newly saved preset is not in the localized catalog until the next page load, so the picker has to seed
+ * it from what was captured. Aliases are resolved here because the catalog stores literals — a control
+ * compares its own value against them, and a `{dot.path}` would never match.
+ *
+ * @param {Object} tokens  The captured token map ({ propertyKey: literal-or-envelope }).
+ * @param {string} library The token library the values were captured against.
+ *
+ * @since TBD
+ *
+ * @return {{ values: Object, responsive: Object }} The catalog value maps for the preset.
+ */
+export function capturedCatalogValues(tokens, library) {
+	const resolvedLibrary = library || activeLibrary();
+	const values = {};
+	const responsive = {};
+
+	Object.entries(tokens || {}).forEach(([key, captured]) => {
+		const overrides = get(captured, ['$extensions', VENDOR_EXTENSION, 'responsive'], null);
+		const base = overrides ? captured.$value : captured;
+
+		values[key] = capturedLiteral(base, resolvedLibrary);
+
+		Object.entries(overrides || {}).forEach(([breakpoint, value]) => {
+			responsive[breakpoint] = {
+				...(responsive[breakpoint] || {}),
+				[key]: capturedLiteral(value, resolvedLibrary),
+			};
+		});
+	});
+
+	return { values, responsive };
 }
 
 /**
@@ -64,8 +232,10 @@ export function capturedTokens(blockName, library, attributes) {
 		// "Edited" here is simply "the control carries a value" — we snapshot the current visual state, so a
 		// value that happens to equal the preset is captured all the same (no differs-from-preset compare).
 		const edited = attr && !isEmptyValue(property.kind, raw);
+		const presetValue = get(presetValues, property.key, '');
+		const base = edited ? attrToLiteral(property.kind, raw, unit, presetValue) : presetValue;
 
-		tokens[property.key] = edited ? attrToLiteral(property.kind, raw, unit) : get(presetValues, property.key, '');
+		tokens[property.key] = withResponsive(base, property, attributes, unit);
 
 		return tokens;
 	}, {});

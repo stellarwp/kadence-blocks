@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Preset_Bindings;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
@@ -475,6 +476,12 @@ final class Presets_Controller extends Controller {
 			return $error;
 		}
 
+		$error = $this->guard_slot_arrays( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
 		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
@@ -530,6 +537,12 @@ final class Presets_Controller extends Controller {
 		}
 
 		$error = $this->guard_reserved_slugs( $block_node, $block );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$error = $this->guard_slot_arrays( $block_node, $block );
 
 		if ( $error instanceof WP_Error ) {
 			return $error;
@@ -1005,6 +1018,90 @@ final class Presets_Controller extends Controller {
 	}
 
 	/**
+	 * Every value a preset token entry carries: its base, plus one entry per breakpoint override.
+	 *
+	 * A property that varies by breakpoint stores an envelope rather than a bare value, so a guard that
+	 * inspected the raw entry would both miss the overrides and mistake the envelope itself for a slot
+	 * list. Unwrapping here keeps each guard's own rule unchanged — it just runs over every value the
+	 * entry actually contributes.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return array<int, mixed> The base value followed by each breakpoint override.
+	 */
+	private function preset_entry_values( $entry ): array {
+		return array_merge(
+			[ Extensions::preset_value_of( $entry ) ],
+			array_values( Extensions::preset_responsive_of( $entry ) )
+		);
+	}
+
+	/**
+	 * Reject a per-corner slot list written to a property that is not a dimension.
+	 *
+	 * A slot list expresses the four sides of a measure control, so it is meaningful only where the bound
+	 * property is a dimension — a four-slot color says nothing. The DTCG validator cannot make this call:
+	 * it validates a preset token map by shape alone and never resolves the bound property's kind (the key
+	 * it walks is a property name like "button-radius", not a token id). The registry does know, so the
+	 * check lives here, alongside the other registry-aware guards.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $block_node The block's preset node being written.
+	 * @param string               $block      The block name, for error context.
+	 *
+	 * @return WP_Error|null A WP_Error when a slot list sits on a non-dimension property, null otherwise.
+	 */
+	private function guard_slot_arrays( array $block_node, string $block ): ?WP_Error {
+		$bindings = $this->registry->for_block( $block );
+
+		// An unregistered block is guard_block()'s error to report; nothing to check here.
+		if ( $bindings === null ) {
+			return null;
+		}
+
+		$tokens_key = Extensions::get_tokens_key();
+
+		foreach ( $block_node as $preset_slug => $preset ) {
+			if ( is_string( $preset_slug ) && strpos( $preset_slug, '$' ) === 0 ) {
+				continue;
+			}
+
+			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
+
+			foreach ( $tokens as $property => $entry ) {
+				if ( $bindings->kind( (string) $property ) === Preset_Bindings::get_kind_dimension() ) {
+					continue;
+				}
+
+				// Check the base and every breakpoint override. Each is unwrapped first, so what remains is
+				// a scalar, an alias or a slot list — an array here is therefore a slot list, never the
+				// responsive envelope (which is legal on any kind).
+				foreach ( $this->preset_entry_values( $entry ) as $value ) {
+					if ( ! is_array( $value ) ) {
+						continue;
+					}
+
+					return new WP_Error(
+						'rest_design_tokens_invalid',
+						__( 'A per-corner value is only valid for a dimension property.', 'kadence-blocks' ),
+						[
+							'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+							'block'    => $block,
+							'preset'   => (string) $preset_slug,
+							'property' => (string) $property,
+						]
+					);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Reject a candidate whose effective `$default` does not name a present preset.
 	 *
 	 * Evaluated against the post-merge effective library (baseline merged with the candidate), so a default that
@@ -1149,22 +1246,33 @@ final class Presets_Controller extends Controller {
 
 			$tokens = is_array( $preset ) && isset( $preset[ $tokens_key ] ) && is_array( $preset[ $tokens_key ] ) ? $preset[ $tokens_key ] : [];
 
-			foreach ( $tokens as $property => $value ) {
-				if ( ! Alias::is_alias( $value ) || $resolved->value( Alias::path_of( $value ) ) !== null ) {
-					continue;
+			foreach ( $tokens as $property => $entry ) {
+				// Flatten the entry to every value it carries — its base, each breakpoint override, and each
+				// corner of any slot list among them — so a dangling alias anywhere is caught on write rather
+				// than silently dropping its property (or breakpoint) at projection.
+				$candidates = [];
+
+				foreach ( $this->preset_entry_values( $entry ) as $value ) {
+					$candidates = array_merge( $candidates, is_array( $value ) ? array_values( $value ) : [ $value ] );
 				}
 
-				return new WP_Error(
-					'rest_design_tokens_unresolvable',
-					__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
-					[
-						'status'   => WP_Http::UNPROCESSABLE_ENTITY,
-						'block'    => $block,
-						'preset'   => (string) $preset_slug,
-						'property' => (string) $property,
-						'alias'    => $value,
-					]
-				);
+				foreach ( $candidates as $candidate ) {
+					if ( ! Alias::is_alias( $candidate ) || $resolved->value( Alias::path_of( $candidate ) ) !== null ) {
+						continue;
+					}
+
+					return new WP_Error(
+						'rest_design_tokens_unresolvable',
+						__( 'A preset alias does not resolve to a token.', 'kadence-blocks' ),
+						[
+							'status'   => WP_Http::UNPROCESSABLE_ENTITY,
+							'block'    => $block,
+							'preset'   => (string) $preset_slug,
+							'property' => (string) $property,
+							'alias'    => $candidate,
+						]
+					);
+				}
 			}
 		}
 
