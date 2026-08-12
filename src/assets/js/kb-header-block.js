@@ -485,7 +485,7 @@ class KBHeader {
 			this.stickyWrapper.style.height = null;
 			this.stickyWrapper.style.top = null;
 			this.stickyWrapper.style.position = 'initial';
-			parent.classList.remove('child-is-fixed');
+			this.stickyWrapper.parentNode.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 			return;
 		}
