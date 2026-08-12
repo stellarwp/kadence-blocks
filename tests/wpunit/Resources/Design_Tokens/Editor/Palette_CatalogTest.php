@@ -43,8 +43,8 @@ final class Palette_CatalogTest extends TestCase {
 	}
 
 	/**
-	 * With nothing stored, the catalog reports the active library slug, its `$current` palette id, and the
-	 * shipped baseline palettes each as a `{ id, label }` pair with a non-empty string label.
+	 * With nothing stored, the catalog reports the active library slug, its `$current` palette id, and the sole
+	 * shipped baseline palette (`default`) as a `{ id, label }` pair with a non-empty string label.
 	 *
 	 * @return void
 	 */
@@ -56,8 +56,6 @@ final class Palette_CatalogTest extends TestCase {
 
 		$ids = array_column( $catalog['palettes'], 'id' );
 		$this->assertContains( 'default', $ids );
-		$this->assertContains( 'sunset', $ids );
-		$this->assertContains( 'forest', $ids );
 
 		// Every entry is a { id, label } pair with a non-empty string label.
 		foreach ( $catalog['palettes'] as $palette ) {
