@@ -448,6 +448,180 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A dimension property accepts a per-corner slot list, so a button whose corners carry different
+	 * radii can be saved as a preset without flattening to one value.
+	 *
+	 * @return void
+	 */
+	public function testASlotListOnADimensionPropertyIsAccepted(): void {
+		$slots = [ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.md}', '8px' ];
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'corners',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $slots ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['corners']['tokens'];
+
+		$this->assertSame( $slots, $tokens['button-radius'] );
+	}
+
+	/**
+	 * A slot list is meaningful only for a dimension property, so the registry-aware write guard rejects
+	 * one written to a color property. The schema validator checks shape only and cannot see the kind.
+	 *
+	 * @return void
+	 */
+	public function testASlotListOnANonDimensionPropertyIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'broken',
+					'tokens' => $this->button_tokens( [ 'button-bg' => [ '#ff0000', '#00ff00', '#0000ff', '#ffffff' ] ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-bg', $result->get_error_data()['property'] );
+		// The write was rejected before commit.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * An alias inside a per-corner slot list is checked for resolvability like a scalar alias is, so a
+	 * dangling reference is refused on write rather than silently dropping the property at projection.
+	 *
+	 * @return void
+	 */
+	public function testADanglingAliasInsideASlotListIsRejected(): void {
+		$slots = [ '{semantic.radius.control}', '{primitive.dimension.radius.nope}', '8px', '8px' ];
+
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'corners',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $slots ] ),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		// The write was rejected before commit.
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A dangling alias inside a per-breakpoint override is caught on write, exactly as one in the base
+	 * value is — otherwise it would pass the guards and silently drop at projection.
+	 *
+	 * @return void
+	 */
+	public function testADanglingAliasInAResponsiveOverrideIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens(
+						[
+							'button-radius' => $this->responsive_entry(
+								'8px',
+								[ 'mobile' => '{primitive.dimension.radius.nope}' ]
+							),
+						]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_unresolvable', $result->get_error_code() );
+		$this->assertSame( 'button-radius', $result->get_error_data()['property'] );
+		$this->assertSame( '', $this->store->get_document( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * A per-corner slot list inside a breakpoint override is gated on the property's kind exactly as the
+	 * base value is, so a four-slot color cannot slip in through a breakpoint.
+	 *
+	 * @return void
+	 */
+	public function testASlotListInAResponsiveOverrideOnANonDimensionPropertyIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens(
+						[
+							'button-bg' => $this->responsive_entry(
+								'#3633e1',
+								[ 'mobile' => [ '#ff0000', '#00ff00', '#0000ff', '#ffffff' ] ]
+							),
+						]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_invalid', $result->get_error_code() );
+		$this->assertSame( 'button-bg', $result->get_error_data()['property'] );
+	}
+
+	/**
+	 * A well-formed responsive entry is stored intact, base and overrides together.
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryIsStored(): void {
+		$entry = $this->responsive_entry( [ '8px', '4px', '8px', '4px' ], [ 'mobile' => '2px' ] );
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'hero',
+					'tokens' => $this->button_tokens( [ 'button-radius' => $entry ] ),
+				]
+			)
+		);
+
+		$this->assertNotInstanceOf( WP_Error::class, $response );
+
+		$stored = json_decode( $this->store->get_document( Token_Store::default_slug() ), true );
+		$tokens = $stored['$extensions']['com.kadence.designTokens']['presets'][ self::BUTTON ]['hero']['tokens'];
+
+		$this->assertSame( [ '8px', '4px', '8px', '4px' ], $tokens['button-radius']['$value'] );
+		$this->assertSame(
+			'2px',
+			$tokens['button-radius']['$extensions']['com.kadence.designTokens']['responsive']['mobile']
+		);
+	}
+
+	/**
 	 * A preset that sets a property the block does not bind is rejected: an unbound property could never
 	 * project, so it must not be storable.
 	 *
@@ -712,12 +886,32 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A preset token entry carrying per-breakpoint overrides, in the same envelope a responsive token leaf
+	 * uses.
+	 *
+	 * @param mixed                $base       The entry's base value.
+	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 *
+	 * @return array<string, mixed> The entry.
+	 */
+	private function responsive_entry( $base, array $responsive ): array {
+		return [
+			'$value'      => $base,
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => $responsive,
+				],
+			],
+		];
+	}
+
+	/**
 	 * The button's full bound surface as literal values, so a written preset satisfies the full-surface
 	 * guard. Individual properties can be overridden for a specific assertion.
 	 *
-	 * @param array<string, string> $overrides Property values to override on the base surface.
+	 * @param array<string, mixed> $overrides Property values to override on the base surface.
 	 *
-	 * @return array<string, string>
+	 * @return array<string, mixed>
 	 */
 	private function button_tokens( array $overrides = [] ): array {
 		return array_merge(

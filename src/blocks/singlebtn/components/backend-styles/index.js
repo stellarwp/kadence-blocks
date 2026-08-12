@@ -847,18 +847,27 @@ export default function BackendStyles(props) {
 		css.add_property('border-bottom', previewBorderBottomStyle);
 	}
 	if ('' !== previewRadiusTop) {
-		css.add_property('border-top-left-radius', previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px'));
+		css.add_property(
+			'border-top-left-radius',
+			css.render_size(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
+		);
 	}
 	if ('' !== previewRadiusRight) {
-		css.add_property('border-top-right-radius', previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px'));
+		css.add_property(
+			'border-top-right-radius',
+			css.render_size(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
+		);
 	}
 	if ('' !== previewRadiusLeft) {
-		css.add_property('border-bottom-left-radius', previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px'));
+		css.add_property(
+			'border-bottom-left-radius',
+			css.render_size(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
+		);
 	}
 	if ('' !== previewRadiusBottom) {
 		css.add_property(
 			'border-bottom-right-radius',
-			previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+			css.render_size(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
 		);
 	}
 	css.add_property(
@@ -1183,7 +1192,7 @@ export default function BackendStyles(props) {
 		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon`);
 		css.add_property('color', css.render_color(iconColorHover));
 	}
-	//pseudo stlyes
+	//pseudo styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before`);
 	css.add_property('background', btnbgHover);
 	css.add_property('box-shadow', btnBox2);

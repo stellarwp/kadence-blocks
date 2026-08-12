@@ -105,6 +105,24 @@ export function blockPresetValues(name, library) {
 }
 
 /**
+ * The per-preset, per-breakpoint resolved values for a block's library:
+ * `{ <presetSlug>: { <breakpoint>: { <property>: literalValue } } }`. Empty object when the block
+ * offers none, and a preset that declares no breakpoint overrides carries an empty map rather than
+ * being absent. The literals are flattened exactly like `blockPresetValues`, so a control can
+ * compare and display them the same way at any device.
+ *
+ * @param {string} name     The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The per-preset, per-breakpoint value map.
+ */
+export function blockPresetResponsive(name, library) {
+	return get(blockEntry(name, library), 'responsive', {}) || {};
+}
+
+/**
  * The block library's default preset slug in a token library.
  *
  * @param {string} name     The block name.
@@ -150,8 +168,39 @@ export function appendPreset(name, library, preset) {
 }
 
 /**
+ * Seed a preset's resolved values in the in-memory catalog for a block's library.
+ *
+ * A preset saved from the editor is absent from the localized catalog until the next page load, and the
+ * catalog's `values` map is what tells a control it is bound to the preset and which value it inherits.
+ * Without this seed the freshly selected preset looks like a preset that defines nothing: every control
+ * unbinds, so the block reads as un-edited and its values cannot be edited into a further preset.
+ *
+ * A no-op when the block has no entry for the token library.
+ *
+ * @param {string} name       The block name.
+ * @param {string} library    The token library slug.
+ * @param {string} slug       The preset slug.
+ * @param {Object} values     The preset's resolved values ({ property: literal }).
+ * @param {Object} responsive The preset's per-breakpoint values ({ breakpoint: { property: literal } }).
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function setPresetValues(name, library, slug, values, responsive) {
+	const entry = blockEntry(name, library);
+
+	if (!entry) {
+		return;
+	}
+
+	entry.values = { ...(entry.values || {}), [slug]: values || {} };
+	entry.responsive = { ...(entry.responsive || {}), [slug]: responsive || {} };
+}
+
+/**
  * Remove a preset from the in-memory catalog for a block's library, so the picker drops it without a page
- * reload.
+ * reload. Its values go with it, so a later preset reusing the slug never inherits them.
  *
  * @param {string} name    The block name.
  * @param {string} library The token library slug.
@@ -166,6 +215,9 @@ export function removePreset(name, library, slug) {
 	}
 
 	entry.presets = entry.presets.filter((existing) => existing.slug !== slug);
+
+	delete (entry.values || {})[slug];
+	delete (entry.responsive || {})[slug];
 }
 
 /**

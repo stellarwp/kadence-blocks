@@ -99,11 +99,13 @@ final class Preset_Resolver {
 		$values = [];
 
 		foreach ( $tokens as $property => $value ) {
-			if ( $this->flatten( $value, $resolved ) === null ) {
+			$base = Extensions::preset_value_of( $value );
+
+			if ( $this->flatten( $base, $resolved ) === null ) {
 				continue;
 			}
 
-			$values[ $property ] = $this->project( $value );
+			$values[ $property ] = $this->project( $base );
 		}
 
 		return $values;
@@ -136,7 +138,8 @@ final class Preset_Resolver {
 	 *
 	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
 	 *
-	 * @return array<string, string> property => flattened literal CSS value.
+	 * @return array<string, string|string[]> property => flattened literal CSS value, or the per-corner
+	 *                                        slot list when the preset stores one.
 	 */
 	public function resolve_literal( string $block, string $preset, string $slug = 'default' ): array {
 		$tokens   = $this->preset_tokens( $block, $preset, $slug );
@@ -145,7 +148,7 @@ final class Preset_Resolver {
 		$values = [];
 
 		foreach ( $tokens as $property => $value ) {
-			$flat = $this->flatten( $value, $resolved );
+			$flat = $this->flatten( Extensions::preset_value_of( $value ), $resolved );
 
 			if ( $flat !== null ) {
 				$values[ $property ] = $flat;
@@ -153,6 +156,81 @@ final class Preset_Resolver {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * Resolve a preset's PER-BREAKPOINT overrides for the css-var projection, in the same var()-preserving
+	 * form as resolve().
+	 *
+	 * A property that varies by breakpoint carries the same envelope a responsive token leaf uses, so an
+	 * override is just another preset value — alias, literal or per-corner slot list — and flattens and
+	 * projects through the identical path. Only breakpoints that actually override something appear.
+	 *
+	 * An override whose alias resolves to nothing is dropped for THAT breakpoint only: the base and the
+	 * other breakpoints are unaffected, so a stale reference degrades to "no override here" rather than
+	 * taking the whole property down.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library whose effective presets and resolved values are read.
+	 *
+	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
+	 *
+	 * @return array<string, array<string, string>> breakpoint => ( property => var()-preserving value ).
+	 */
+	public function resolve_responsive( string $block, string $preset, string $slug = 'default' ): array {
+		$resolved = $this->resolver->resolve( $slug );
+		$out      = [];
+
+		foreach ( $this->preset_tokens( $block, $preset, $slug ) as $property => $value ) {
+			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
+				// Gate on the literal first, exactly as resolve() does, so an override that resolves to
+				// nothing never emits a var() pointing at a token the base projection did not define.
+				if ( $this->flatten( $override, $resolved ) === null ) {
+					continue;
+				}
+
+				$out[ (string) $breakpoint ][ (string) $property ] = $this->project( $override );
+			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Resolve a preset's PER-BREAKPOINT overrides to flattened LITERALS, for the editor surfaces that
+	 * cannot consume a var() chain. The literal counterpart of resolve_responsive(), covering exactly the
+	 * same overrides.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $block  The block name.
+	 * @param string $preset The preset slug.
+	 * @param string $slug   The token library whose effective presets and resolved values are read.
+	 *
+	 * @throws Unknown_Preset_Exception When the block or preset is not defined.
+	 *
+	 * @return array<string, array<string, string|string[]>> breakpoint => ( property => literal value ).
+	 */
+	public function resolve_responsive_literal( string $block, string $preset, string $slug = 'default' ): array {
+		$resolved = $this->resolver->resolve( $slug );
+		$out      = [];
+
+		foreach ( $this->preset_tokens( $block, $preset, $slug ) as $property => $value ) {
+			foreach ( Extensions::preset_responsive_of( $value ) as $breakpoint => $override ) {
+				$flat = $this->flatten( $override, $resolved );
+
+				if ( $flat === null ) {
+					continue;
+				}
+
+				$out[ (string) $breakpoint ][ (string) $property ] = $flat;
+			}
+		}
+
+		return $out;
 	}
 
 	/**
@@ -172,7 +250,8 @@ final class Preset_Resolver {
 	 *
 	 * @throws Unknown_Preset_Exception When the block is not defined or declares no default.
 	 *
-	 * @return array<string, string> property => flattened literal CSS value.
+	 * @return array<string, string|string[]> property => flattened literal CSS value, or the per-corner
+	 *                                        slot list when the preset stores one.
 	 */
 	public function resolve_default( string $block, string $slug = 'default' ): array {
 		return $this->resolve_literal( $block, $this->default_preset( $block, $slug ), $slug );
@@ -310,14 +389,19 @@ final class Preset_Resolver {
 	 * Flatten one binding value: an alias is looked up in the resolved id map; a scalar literal passes
 	 * through. Anything else (or an unresolvable alias) yields null so the property is dropped.
 	 *
+	 * A per-corner slot list flattens slot by slot and STAYS a list — it is deliberately not joined here.
+	 * flatten() feeds the editor and admin surfaces through resolve_literal(), and those read a dimension
+	 * corner by corner; a pre-joined "8px 4px 8px 4px" is not parseable as a single length and would read
+	 * back as one opaque literal. Joining is the css-emitting caller's job, in project().
+	 *
 	 * @since TBD
 	 *
-	 * @param mixed           $value    The raw binding value (alias string or literal).
+	 * @param mixed           $value    The raw binding value (alias string, literal, or slot list).
 	 * @param Resolved_Tokens $resolved The resolved token maps.
 	 *
-	 * @return string|null
+	 * @return string|string[]|null
 	 */
-	private function flatten( $value, Resolved_Tokens $resolved ): ?string {
+	private function flatten( $value, Resolved_Tokens $resolved ) {
 		if ( is_string( $value ) ) {
 			return Alias::is_alias( $value ) ? $resolved->value( Alias::path_of( $value ) ) : $value;
 		}
@@ -326,7 +410,42 @@ final class Preset_Resolver {
 			return (string) $value;
 		}
 
+		if ( is_array( $value ) ) {
+			return $this->flatten_slots( $value, $resolved );
+		}
+
 		return null;
+	}
+
+	/**
+	 * Flatten a per-corner slot list, or null when any slot fails to flatten.
+	 *
+	 * A single unresolvable slot drops the WHOLE property rather than emitting a partial shorthand: a
+	 * border-radius missing one corner is not a usable value, so failing the property is the same
+	 * fail-closed choice a scalar binding makes when its alias resolves to nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $slots    The raw slot list.
+	 * @param Resolved_Tokens          $resolved The resolved token maps.
+	 *
+	 * @return string[]|null
+	 */
+	private function flatten_slots( array $slots, Resolved_Tokens $resolved ): ?array {
+		$flat = [];
+
+		foreach ( $slots as $slot ) {
+			// Nested lists are rejected at validation; guard anyway so a hand-edited document fails closed.
+			$value = is_array( $slot ) ? null : $this->flatten( $slot, $resolved );
+
+			if ( ! is_string( $value ) ) {
+				return null;
+			}
+
+			$flat[] = $value;
+		}
+
+		return $flat === [] ? null : $flat;
 	}
 
 	/**
@@ -335,15 +454,29 @@ final class Preset_Resolver {
 	 * of flatten(), called only after flatten() has confirmed the value resolves, so the target var is
 	 * guaranteed to be emitted.
 	 *
+	 * A per-corner slot list projects each slot the same way and joins them with a space, yielding a CSS
+	 * shorthand (e.g. `var(--kb-token--…) 8px var(--kb-token--…) 8px`) that each aliased corner still
+	 * chains through, so a token edit reaches that corner live.
+	 *
 	 * @since TBD
 	 *
-	 * @param mixed $value The raw binding value (alias string or literal).
+	 * @param mixed $value The raw binding value (alias string, literal, or slot list).
 	 *
 	 * @return string
 	 */
 	private function project( $value ): string {
 		if ( is_string( $value ) && Alias::is_alias( $value ) ) {
 			return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
+		}
+
+		if ( is_array( $value ) ) {
+			$projected = [];
+
+			foreach ( $value as $slot ) {
+				$projected[] = $this->project( $slot );
+			}
+
+			return implode( ' ', $projected );
 		}
 
 		return Cast::to_string( $value );

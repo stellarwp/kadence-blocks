@@ -92,7 +92,10 @@ const PRESETS = {
 	libraries: {
 		default: {
 			'kadence/singlebtn': {
-				properties: [{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' }],
+				properties: [
+					{ key: 'button-radius', kind: 'dimension', token: null, control_attr: 'borderRadius' },
+					{ key: 'button-gap', kind: 'dimension', token: null, control_attr: 'gap' },
+				],
 			},
 		},
 	},
@@ -241,8 +244,17 @@ describe('pickableTokensForControl', () => {
 		delete window.kadenceDesignTokensPresets;
 	});
 
-	it('delegates to the coarse kind list when the control binds no role token', () => {
-		expect(pickableTokensForControl('kadence/singlebtn', 'borderRadius')).toEqual(pickableTokensFor('dimension'));
+	it('infers the radius role and offers only the primitive sizes, dropping the semantic radii', () => {
+		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
+
+		// `borderRadius` implies the radius role (spacing drops out); with a primitive radius present the
+		// picker offers only the size scale, so the semantic radius token is dropped too.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
+		expect(result.every((token) => token.role === 'radius')).toBe(true);
+	});
+
+	it('falls back to the coarse kind list when the attribute implies no single role', () => {
+		expect(pickableTokensForControl('kadence/singlebtn', 'gap')).toEqual(pickableTokensFor('dimension'));
 	});
 
 	it('returns an empty array for an unmapped attribute', () => {
@@ -253,22 +265,23 @@ describe('pickableTokensForControl', () => {
 		expect(pickableTokensForControl('kadence/does-not-exist', 'borderRadius')).toEqual([]);
 	});
 
-	it('narrows to the bound token sub-kind, dropping other dimension roles', () => {
+	it('narrows to the bound token sub-kind, still dropping the semantic radii for the size scale', () => {
 		window.kadenceDesignTokensPresets = boundPresets('semantic.radius.button');
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
-		// Only radius tokens survive — spacing dimensions are dropped even though they share the kind.
-		expect(result.map((token) => token.id)).toEqual(['semantic.radius.button', 'primitive.dimension.radius.sm']);
+		// The bound token fixes the radius sub-kind (spacing drops out); the primitive size scale still wins,
+		// so even the bound semantic radius is dropped.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
 		expect(result.every((token) => token.role === 'radius')).toBe(true);
 	});
 
-	it('pins the bound token first, keeping semantic-first order for the rest', () => {
+	it('keeps a bound primitive size in the list', () => {
 		window.kadenceDesignTokensPresets = boundPresets('primitive.dimension.radius.sm');
 
 		const result = pickableTokensForControl('kadence/singlebtn', 'borderRadius');
 
-		// The bound primitive is pinned ahead of the semantic radius token it would otherwise trail.
-		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm', 'semantic.radius.button']);
+		// A bound primitive is itself a size, so it survives the primitives-only scoping and is pinned first.
+		expect(result.map((token) => token.id)).toEqual(['primitive.dimension.radius.sm']);
 	});
 });

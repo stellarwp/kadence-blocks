@@ -206,6 +206,67 @@ final class BindingTest extends TestCase {
 	}
 
 	/**
+	 * A binding parses responsive_attrs into a breakpoint => attribute map. The block names its per-device
+	 * attributes by a prefix convention ("tabletBorderRadius"), which is not safely derivable, so it is
+	 * declared rather than string-built.
+	 *
+	 * @return void
+	 */
+	public function testItParsesTheResponsiveAttrsField(): void {
+		$binding = Binding::from_array(
+			'button-radius',
+			[
+				'css_var'          => 'kb-btn-radius',
+				'control_attr'     => 'borderRadius',
+				'responsive_attrs' => [
+					'tablet' => 'tabletBorderRadius',
+					'mobile' => 'mobileBorderRadius',
+				],
+			]
+		);
+
+		$this->assertSame(
+			[
+				'tablet' => 'tabletBorderRadius',
+				'mobile' => 'mobileBorderRadius',
+			],
+			$binding->responsive_attrs()
+		);
+		// Editor-only metadata, like control_attr: it must not leak into the projection targets.
+		$this->assertArrayNotHasKey( 'responsive_attrs', $binding->projections );
+	}
+
+	/**
+	 * A binding with no responsive_attrs declaration exposes an empty map, so a caller can iterate it
+	 * unconditionally.
+	 *
+	 * @return void
+	 */
+	public function testABindingWithoutResponsiveAttrsExposesAnEmptyMap(): void {
+		$binding = Binding::from_array( 'button-bg', [ 'kadence_slot' => 'palette-btn-bg' ] );
+
+		$this->assertSame( [], $binding->responsive_attrs() );
+	}
+
+	/**
+	 * An unknown breakpoint key in responsive_attrs is refused at registration, so a typo fails loudly
+	 * rather than silently never capturing that device.
+	 *
+	 * @return void
+	 */
+	public function testAnUnknownResponsiveBreakpointIsRefused(): void {
+		$this->expectException( InvalidArgumentException::class );
+
+		Binding::from_array(
+			'button-radius',
+			[
+				'css_var'          => 'kb-btn-radius',
+				'responsive_attrs' => [ 'watch' => 'watchBorderRadius' ],
+			]
+		);
+	}
+
+	/**
 	 * A binding with no control_attr declaration exposes null.
 	 *
 	 * @return void

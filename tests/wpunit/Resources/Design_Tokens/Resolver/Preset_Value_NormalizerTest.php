@@ -90,6 +90,76 @@ final class Preset_Value_NormalizerTest extends TestCase {
 	}
 
 	/**
+	 * Each slot of a per-corner value is matched on its own, so a captured corner that equals a semantic's
+	 * value re-joins the theming cascade exactly as a scalar capture does.
+	 *
+	 * @return void
+	 */
+	public function testItAliasesEachSlotOfAPerCornerValue(): void {
+		// 0.1875rem is the resolved value of the control radius semantic; 8px matches nothing.
+		$result = $this->normalizer->normalize( [ 'button-radius' => [ '0.1875rem', '8px', '0.1875rem', '8px' ] ], self::SET );
+
+		$this->assertIsArray( $result['button-radius'] );
+		$this->assertTrue( Alias::is_alias( $result['button-radius'][0] ), 'A matched slot should become an alias.' );
+		$this->assertSame( '8px', $result['button-radius'][1], 'An unmatched slot should stay a literal.' );
+		$this->assertTrue( Alias::is_alias( $result['button-radius'][2] ) );
+		$this->assertSame( '8px', $result['button-radius'][3] );
+		$this->assertSame(
+			'0.1875rem',
+			$this->resolver->resolve( self::SET )->value( Alias::path_of( $result['button-radius'][0] ) ),
+			'The chosen alias should resolve back to the captured value.'
+		);
+	}
+
+	/**
+	 * A slot that already holds an alias is passed through untouched, so a token the user picked per corner
+	 * is never re-pointed at a different semantic.
+	 *
+	 * @return void
+	 */
+	public function testItLeavesAnExistingAliasSlotUnchanged(): void {
+		$result = $this->normalizer->normalize(
+			[ 'button-radius' => [ '{semantic.radius.control}', '8px', '8px', '8px' ] ],
+			self::SET
+		);
+
+		$this->assertSame( '{semantic.radius.control}', $result['button-radius'][0] );
+	}
+
+	/**
+	 * A per-breakpoint override is matched on its own, so a captured tablet/mobile literal re-joins the
+	 * theming cascade exactly as the base value does — and the envelope survives intact.
+	 *
+	 * @return void
+	 */
+	public function testItAliasesEachBreakpointOfAResponsiveEntry(): void {
+		$entry = [
+			'$value'      => '8px',
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					// 0.1875rem is the control radius semantic's resolved value; 9px matches nothing.
+					'responsive' => [
+						'tablet' => '0.1875rem',
+						'mobile' => '9px',
+					],
+				],
+			],
+		];
+
+		$result     = $this->normalizer->normalize( [ 'button-radius' => $entry ], self::SET )['button-radius'];
+		$responsive = $result['$extensions']['com.kadence.designTokens']['responsive'];
+
+		$this->assertSame( '8px', $result['$value'], 'An unmatched base literal should stay a literal.' );
+		$this->assertTrue( Alias::is_alias( $responsive['tablet'] ), 'A matched override should become an alias.' );
+		$this->assertSame(
+			'0.1875rem',
+			$this->resolver->resolve( self::SET )->value( Alias::path_of( $responsive['tablet'] ) ),
+			'The chosen alias should resolve back to the captured value.'
+		);
+		$this->assertSame( '9px', $responsive['mobile'], 'An unmatched override should stay a literal.' );
+	}
+
+	/**
 	 * When several semantics share a value, the one whose id best matches the property's role wins: #ffffff is
 	 * shared by the plain and hover button-text semantics, and the hover property picks the hover semantic.
 	 *
