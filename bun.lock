@@ -10,7 +10,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@floating-ui/react": "^0.27.12",
         "@hcaptcha/react-hcaptcha": "^1.8.1",
-        "@kadence/components": "github:stellarwp/kadence-components#SOFT-3870/color-control-override-seam",
+        "@kadence/components": "github:stellarwp/kadence-components#feature/design-tokens-module",
         "@kadence/helpers": "github:stellarwp/kadence-helpers#feature/design-tokens-module",
         "@kadence/icons": "github:stellarwp/kadence-icons#1.1.4",
         "@lottiefiles/dotlottie-react": "^0.15.2",
@@ -649,7 +649,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#145c492", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-145c492"],
+    "@kadence/components": ["@kadence/components@github:stellarwp/kadence-components#c0f79a0", { "dependencies": { "@floating-ui/react": "^0.26.16", "@wordpress/icons": "^9.49.0", "classnames": "^2.2.6", "colord": "^2.9.3", "react-color": "^2.18.0", "react-select": "^5.10.2" }, "peerDependencies": { "@kadence/helpers": "*", "@kadence/icons": "*", "react": ">=17 <19", "react-dom": ">=17 <19" }, "optionalPeers": ["@kadence/helpers", "@kadence/icons"] }, "stellarwp-kadence-components-c0f79a0"],
 
     "@kadence/helpers": ["@kadence/helpers@github:stellarwp/kadence-helpers#e192350", { "dependencies": { "@kadence/icons": "git+https://github.com/stellarwp/kadence-icons.git#1.1.0" }, "peerDependencies": { "@wordpress/hooks": ">=4 <5", "react": ">=17 <19", "react-dom": ">=17 <19" } }, "stellarwp-kadence-helpers-e192350"],
 
