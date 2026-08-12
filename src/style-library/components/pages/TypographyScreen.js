@@ -195,12 +195,8 @@ export function TypographyScreen(props) {
 
 	const selectedFont = fonts.find((font) => font.id === selectedFontId) ?? null;
 
-	// Memoized because `useScaleScreen` splits how it reads this config: `baseRows` and
-	// `initialValuesFor` depend on scalar fields (`config.group`, `config.parseValue`), but
-	// `addToken`, `saveToken` and `reorderTokens` list the whole config object in their deps. A new
-	// object each render would therefore rebuild those three callbacks every render. Nothing reads
-	// them from an effect, so a config rebuilt inline would be wasted work rather than a bug — this
-	// keeps the identity stable so it stays neither.
+	// `useScaleScreen`'s addToken/saveToken/reorderTokens list the whole config in their deps, so an
+	// inline object would rebuild all three every render.
 	const config = useMemo(
 		() => ({
 			...TYPOGRAPHY_CONFIG,
