@@ -89,6 +89,7 @@ import {
 	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
+	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
@@ -282,13 +283,22 @@ export default function KadenceButtonEdit(props) {
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
+	// The preset's own value at the active device: a preset can set a different radius per breakpoint,
+	// and the button renders that, so naming the desktop value on Tablet would name a size the block is
+	// not showing there.
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+
 	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
 	// before the preset's, matching the cascade the button actually renders through. The corners stay
 	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
 	const inheritedBorderRadius = inheritedMeasureSlots(
 		previewDevice,
 		{ desktop: borderRadius, tablet: tabletBorderRadius },
-		tokenBinding.borderRadius?.presetValue
+		borderRadiusPresetValue
 	);
 
 	useEffect(() => {
@@ -1257,7 +1267,7 @@ export default function KadenceButtonEdit(props) {
 																	borderRadiusModeOverride[previewDevice] ??
 																	deriveMeasureMode(
 																		borderRadiusForDevice.value,
-																		tokenBinding.borderRadius?.presetValue
+																		borderRadiusPresetValue
 																	)
 																}
 																onChangeControl={(mode) => {

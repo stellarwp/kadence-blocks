@@ -7,6 +7,7 @@ import {
 	matchesPreset,
 	normalizeColor,
 	normalizeDimension,
+	presetValueForDevice,
 } from '../normalize';
 
 describe('normalizeColor', () => {
@@ -260,5 +261,34 @@ describe('normalizeDimension', () => {
 
 	it('pairs the first populated side with its unit', () => {
 		expect(normalizeDimension(['8', '8', '8', '8'], 'px')).toEqual({ value: '8', unit: 'px' });
+	});
+});
+
+describe('presetValueForDevice', () => {
+	it('takes the preset base value on Desktop, even when breakpoints are declared', () => {
+		expect(presetValueForDevice('0.5rem', { tablet: '9999px', mobile: '1rem' }, 'Desktop')).toBe('0.5rem');
+	});
+
+	it('takes the tablet override on Tablet', () => {
+		expect(presetValueForDevice('0.5rem', { tablet: '9999px' }, 'Tablet')).toBe('9999px');
+	});
+
+	it('falls back to the base on Tablet when the preset declares no tablet override', () => {
+		expect(presetValueForDevice('0.5rem', { mobile: '1rem' }, 'Tablet')).toBe('0.5rem');
+	});
+
+	it('falls back through tablet to the base on Mobile', () => {
+		expect(presetValueForDevice('0.5rem', { tablet: '9999px' }, 'Mobile')).toBe('9999px');
+		expect(presetValueForDevice('0.5rem', {}, 'Mobile')).toBe('0.5rem');
+	});
+
+	it('keeps a per-corner override list intact', () => {
+		const corners = ['9999px', '1rem', '1rem', '1rem'];
+
+		expect(presetValueForDevice('0.5rem', { tablet: corners }, 'Tablet')).toEqual(corners);
+	});
+
+	it('degrades to the base value with no responsive map at all', () => {
+		expect(presetValueForDevice('0.5rem', undefined, 'Mobile')).toBe('0.5rem');
 	});
 });

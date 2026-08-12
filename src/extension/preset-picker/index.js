@@ -105,6 +105,24 @@ export function blockPresetValues(name, library) {
 }
 
 /**
+ * The per-preset, per-breakpoint resolved values for a block's library:
+ * `{ <presetSlug>: { <breakpoint>: { <property>: literalValue } } }`. Empty object when the block
+ * offers none, and a preset that declares no breakpoint overrides carries an empty map rather than
+ * being absent. The literals are flattened exactly like `blockPresetValues`, so a control can
+ * compare and display them the same way at any device.
+ *
+ * @param {string} name     The block name.
+ * @param {string} [library] The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {Object} The per-preset, per-breakpoint value map.
+ */
+export function blockPresetResponsive(name, library) {
+	return get(blockEntry(name, library), 'responsive', {}) || {};
+}
+
+/**
  * The block library's default preset slug in a token library.
  *
  * @param {string} name     The block name.

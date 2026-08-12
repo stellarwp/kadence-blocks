@@ -116,6 +116,33 @@ export function presetSlotAt(presetValue, index) {
 }
 
 /**
+ * The selected preset's value for a property AT THE ACTIVE DEVICE: its breakpoint override where the
+ * preset declares one, otherwise the value it inherits through the cascade.
+ *
+ * A preset can carry per-breakpoint values, and the button renders them — so a control sitting on
+ * Tablet that falls back to the preset's desktop value names a size the block is not rendering at
+ * that breakpoint. The fallback order mirrors the projected CSS: Mobile takes the mobile override,
+ * then the tablet one, then the base; Tablet takes the tablet override, then the base.
+ *
+ * @param {*}      presetValue  The preset's base value for the property.
+ * @param {Object} [responsive] The preset's breakpoint values ({ tablet, mobile }), each undefined
+ *                              when the preset declares no override there.
+ * @param {string} [device]     The active preview device ('Desktop' | 'Tablet' | 'Mobile').
+ *
+ * @since TBD
+ *
+ * @return {*} The preset's value in effect at that device.
+ */
+export function presetValueForDevice(presetValue, responsive = {}, device = 'Desktop') {
+	const chain =
+		'Mobile' === device ? [responsive.mobile, responsive.tablet] : 'Tablet' === device ? [responsive.tablet] : [];
+
+	const override = chain.find((value) => value !== undefined && value !== null && value !== '');
+
+	return override === undefined ? presetValue : override;
+}
+
+/**
  * The attribute a responsive measure control is editing at the given device, and its current value.
  *
  * A responsive measure control keeps ONE linked/individual mode but writes three separate attributes
