@@ -1,0 +1,33 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__empty-state {
+	@include flex-column(var(--kb-sl-space-10));
+
+	align-items: center;
+	padding: var(--kb-sl-space-60) var(--kb-sl-space-40);
+	text-align: center;
+}
+
+.kadence-blocks-style-library__empty-state-icon {
+	display: flex;
+	color: var(--kb-sl-color-text-muted);
+}
+
+.kadence-blocks-style-library__empty-state-title {
+	margin: 0;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-body);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-ratio-snug);
+}
+
+.kadence-blocks-style-library__empty-state-description {
+	@include body-text;
+
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.kadence-blocks-style-library__empty-state-action {
+	margin-top: var(--kb-sl-space-10);
+}

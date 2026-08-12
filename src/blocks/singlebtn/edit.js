@@ -333,7 +333,7 @@ export default function KadenceButtonEdit(props) {
 	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
 	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
 	// TODO: remove this stopgap once `@kadence/components` teaches PopColorControl to re-read an externally
-	// cleared value itself (planned alongside the SOFT-3870 component update).
+	// cleared value itself (planned alongside that upstream `@kadence/components` update).
 	const [colorResetNonce, setColorResetNonce] = useState(0);
 	const prevTokenColors = useRef({ color, background, colorHover, backgroundHover });
 	useEffect(() => {

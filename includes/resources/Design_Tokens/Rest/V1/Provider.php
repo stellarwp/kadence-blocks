@@ -31,6 +31,7 @@ final class Provider extends Provider_Contract {
 		Active_Token_Library_Controller::class,
 		Projected_Css_Controller::class,
 		User_Primitives_Controller::class,
+		Feed_Controller::class,
 	];
 
 	/**

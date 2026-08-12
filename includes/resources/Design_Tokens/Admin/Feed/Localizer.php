@@ -4,25 +4,21 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
-use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Contracts\Controller;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 
 /**
  * Attaches the design-token schema feed to KB's admin dashboard bundle.
  *
  * On admin_head — after the dashboard's `admin_print_styles-{page}` enqueue has run, before the footer
- * where `admin-kadence-home` prints — it gathers the resolved values, the presets and the REST
- * root/nonce, asks {@see Builder} to shape them, and attaches the result to the existing
+ * where `admin-kadence-home` prints — it resolves the active library's slug and asks
+ * {@see Feed_Assembler} to build the feed for it, then attaches the result to the existing
  * 'admin-kadence-home' handle as `window.kadenceDesignTokens`. Guarded on
  * wp_script_is( …, 'enqueued' ) so it runs ONLY where that bundle loads (the Kadence dashboard, and any
  * future screen using it), never plugin-wide.
  *
- * Resolution is wrapped fail-open: a corrupt store (alias cycle / dangling alias from a raw DB write)
- * yields an empty, `resolved:false` feed rather than a fatal, so the editor still renders structure.
- * The fail-closed case (registry deactivated) is handled inside the builder.
+ * The assembly of values/presets/responsive/version/rest for a slug lives entirely in
+ * {@see Feed_Assembler}, shared with the REST feed endpoint a client calls after switching
+ * libraries in place — this class owns only the WordPress-specific parts: which script handle to
+ * attach to, which library is active, and how to emit the inline script.
  *
  * The feed is emitted with wp_add_inline_script + wp_json_encode rather than wp_localize_script, which
  * would stringify the booleans, version and nested maps.
@@ -64,24 +60,6 @@ final class Localizer {
 	private const OBJECT = 'kadenceDesignTokens';
 
 	/**
-	 * The resolver supplying current token values (by_id).
-	 *
-	 * @since TBD
-	 *
-	 * @var Token_Resolver
-	 */
-	private Token_Resolver $resolver;
-
-	/**
-	 * The store, for the current library's version hash.
-	 *
-	 * @since TBD
-	 *
-	 * @var Token_Store
-	 */
-	private Token_Store $store;
-
-	/**
 	 * The active-library pointer — the same slug the registry's user primitives and every projector
 	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the library that
 	 * is actually live rather than always the default one.
@@ -93,56 +71,23 @@ final class Localizer {
 	private Active_Token_Library_Store $active;
 
 	/**
-	 * The presets section builder.
+	 * The shared pipeline that builds a feed payload for a slug.
 	 *
 	 * @since TBD
 	 *
-	 * @var Presets
+	 * @var Feed_Assembler
 	 */
-	private Presets $preset_feed;
-
-	/**
-	 * The pure payload assembler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Builder
-	 */
-	private Builder $builder;
-
-	/**
-	 * Extracts the raw authored responsive / clamp shapes for the editor to hydrate from.
-	 *
-	 * @since TBD
-	 *
-	 * @var Responsive_Feed
-	 */
-	private Responsive_Feed $responsive_feed;
+	private Feed_Assembler $assembler;
 
 	/**
 	 * @since TBD
 	 *
-	 * @param Token_Resolver             $resolver        The token resolver.
-	 * @param Token_Store                $store           The token store.
-	 * @param Active_Token_Library_Store $active          The active-library pointer.
-	 * @param Presets                    $preset_feed    The presets section builder.
-	 * @param Builder                    $builder         The pure payload assembler.
-	 * @param Responsive_Feed            $responsive_feed The responsive / clamp shape extractor.
+	 * @param Active_Token_Library_Store $active    The active-library pointer.
+	 * @param Feed_Assembler             $assembler The shared pipeline that builds a feed payload for a slug.
 	 */
-	public function __construct(
-		Token_Resolver $resolver,
-		Token_Store $store,
-		Active_Token_Library_Store $active,
-		Presets $preset_feed,
-		Builder $builder,
-		Responsive_Feed $responsive_feed
-	) {
-		$this->resolver        = $resolver;
-		$this->store           = $store;
-		$this->active          = $active;
-		$this->preset_feed     = $preset_feed;
-		$this->builder         = $builder;
-		$this->responsive_feed = $responsive_feed;
+	public function __construct( Active_Token_Library_Store $active, Feed_Assembler $assembler ) {
+		$this->active    = $active;
+		$this->assembler = $assembler;
 	}
 
 	/**
@@ -163,24 +108,8 @@ final class Localizer {
 		// every projector already resolve against whichever library is active, so the dashboard must read
 		// (and, via the REST descriptor's slug, write) the same library or edits land in a document that
 		// is not the one being displayed.
-		$slug    = $this->active->get();
-		$version = $this->store->get_version( $slug );
-
-		$values     = [];
-		$presets    = [];
-		$responsive = [];
-		$resolved   = false;
-
-		try {
-			$values     = $this->resolver->resolve( $slug )->by_id();
-			$presets    = $this->preset_feed->all( $slug );
-			$responsive = $this->responsive_feed->from_document( $this->resolver->effective_document( $slug ) );
-			$resolved   = true;
-		} catch ( Alias_Cycle_Exception | Dangling_Alias_Exception $e ) {
-			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
-		}
-
-		$feed = $this->builder->build( $values, $resolved, $presets, $this->rest(), $version, $slug, $responsive );
+		$slug = $this->active->get();
+		$feed = $this->assembler->for_slug( $slug );
 		$json = wp_json_encode(
 			$feed,
 			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
@@ -212,21 +141,5 @@ final class Localizer {
 		}
 
 		return null;
-	}
-
-	/**
-	 * The REST descriptor the React app POSTs edits to: the wp-json root, the v1 namespace, and a
-	 * wp_rest nonce (sent as X-WP-Nonce; the REST permission-check still re-validates capability).
-	 *
-	 * @since TBD
-	 *
-	 * @return array{root: string, namespace: string, nonce: string}
-	 */
-	private function rest(): array {
-		return [
-			'root'      => esc_url_raw( rest_url() ),
-			'namespace' => Controller::namespace(),
-			'nonce'     => wp_create_nonce( 'wp_rest' ),
-		];
 	}
 }

@@ -18,7 +18,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Layers;
  * cheap derivation of that cached document, rebuilt per request.
  *
  * Scope is deliberately narrow: this loads and INDEXES the document (structure), it never validates
- * token VALUES — value/$type/alias validation is SOFT-3378 (the DTCG schema), shared by the Resolver
+ * token VALUES — value/$type/alias validation is the DTCG schema's job, shared by the Resolver
  * and REST writes. A token "leaf" is any node carrying a $value; the $extensions layer (foundation
  * presets, block presets, presets) is intentionally NOT indexed, as those are not registrable tokens.
  *

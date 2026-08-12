@@ -1,25 +1,7 @@
-@use 'tokens' as *;
-
-.kadence-blocks-style-library__page-header {
-	margin-bottom: $spacing-xl;
-
-	h2 {
-		margin: 0 0 0.35rem;
-		font-size: $font-size-page-title;
-		font-weight: 600;
-	}
-
-	p {
-		margin: 0;
-		max-width: $content-max-width;
-		color: $color-text-muted;
-		font-size: $font-size-overview;
-		line-height: 1.6;
-	}
-}
-
-.kadence-blocks-style-library__empty {
-	margin: 0;
-	color: $color-text-muted;
-	font-size: $font-size-overview;
+.kadence-blocks-style-library__header {
+	// Height is content-driven by the header-bar's own padding, not a fixed value.
+	flex: 0 0 auto;
+	// Explicit surface color so wp-admin's page background doesn't show through.
+	background: var(--kb-sl-color-surface);
+	border-bottom: 1px solid var(--kb-sl-color-border);
 }

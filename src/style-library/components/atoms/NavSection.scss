@@ -1,0 +1,17 @@
+.kadence-blocks-style-library__nav-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--kb-sl-space-10);
+}
+
+.kadence-blocks-style-library__nav-section-label {
+	// wp-admin sets h2 margin globally; zero it so the section's flex gap is the only spacing.
+	margin: 0;
+	color: var(--kb-sl-color-nav-section-title);
+	font-size: var(--kb-sl-font-size-meta);
+	font-weight: var(--kb-sl-font-weight-medium);
+	// The design has no explicit line-height for this element.
+	line-height: normal;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}

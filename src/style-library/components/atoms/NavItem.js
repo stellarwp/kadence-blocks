@@ -1,33 +1,42 @@
 /**
- * Sidebar navigation item atom.
- *
- * @param {object}      props           Component props.
- * @param {boolean}     props.active    Whether this item is selected.
- * @param {boolean}     [props.disabled] Whether the item is disabled.
- * @param {Function}    [props.onClick] Click handler.
- * @param {number}      [props.count]   Optional badge count.
- * @param {import('react').ReactNode} props.children Label content.
- * @return {JSX.Element} Nav item button.
+ * A single Style Library sidebar navigation entry. A `<button>`, not an `<a>` — navigation is
+ * driven by the History API, not real links.
  */
-export function NavItem({ active, disabled = false, onClick, count, children }) {
+
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
+ * Internal dependencies
+ */
+import './NavItem.scss';
+
+/**
+ * Render a sidebar navigation item.
+ *
+ * @param {Object}   props         The component props.
+ * @param {string}   props.label   The item label.
+ * @param {boolean}  props.active  Whether this item is the active screen.
+ * @param {Function} props.onClick Called when the item is clicked.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The nav item.
+ */
+export function NavItem({ label, active, onClick }) {
 	return (
 		<li className="kadence-blocks-style-library__nav-item">
 			<button
 				type="button"
-				className={[
-					'kadence-blocks-style-library__nav-button',
-					active ? 'is-active' : '',
-					disabled ? 'is-disabled' : '',
-				]
-					.filter(Boolean)
-					.join(' ')}
-				onClick={disabled ? undefined : onClick}
-				disabled={disabled}
+				className={classnames('kadence-blocks-style-library__nav-item-button', {
+					'kadence-blocks-style-library__nav-item-button--active': active,
+				})}
+				aria-current={active ? 'page' : undefined}
+				onClick={onClick}
 			>
-				<span className="kadence-blocks-style-library__nav-button-label">{children}</span>
-				{typeof count === 'number' ? (
-					<span className="kadence-blocks-style-library__nav-button-count">{count}</span>
-				) : null}
+				{label}
 			</button>
 		</li>
 	);

@@ -105,6 +105,25 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * The display title for the default token library when it has none stored.
+	 *
+	 * The default library is the one most likely to go untitled — it exists before the user has named
+	 * anything — so it gets a friendlier name than its slug. It lives here beside the slug, rather than in
+	 * the UI, so the REST representation and the admin feed hand every client the same already-titled row
+	 * and no consumer has to special-case the default library to name it.
+	 *
+	 * Translated on read, never stored: a persisted title would then be indistinguishable from one the
+	 * user typed, and it would stay in whatever locale was active when the row happened to be written.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function default_title(): string {
+		return __( 'Your Library', 'kadence-blocks' );
+	}
+
+	/**
 	 * Read the raw overrides-only DTCG document for a token library.
 	 *
 	 * @since TBD
@@ -149,6 +168,27 @@ final class Token_Store extends Query {
 		}
 
 		return (string) ( $row['version'] ?? '' );
+	}
+
+	/**
+	 * Read the human-readable label for a token library.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string The stored title, or an empty string when no row exists or none was ever set.
+	 */
+	public function get_title( string $slug = self::DEFAULT_SLUG ): string {
+		$row = $this->qb()
+					->where( 'slug', $slug )
+					->get( ARRAY_A );
+
+		if ( ! is_array( $row ) ) {
+			return '';
+		}
+
+		return (string) ( $row['title'] ?? '' );
 	}
 
 	/**
@@ -265,6 +305,72 @@ final class Token_Store extends Query {
 		$this->superseded( $slug, (string) ( $previous['document'] ?? '' ), $expected_version );
 		$this->changed( $slug );
 
+		return true;
+	}
+
+	/**
+	 * Write a token library's human-readable label, touching nothing else.
+	 *
+	 * A title is metadata: it appears in the library picker and nowhere in any projection, so
+	 * renaming a library must not travel through the document write path. Doing so would re-validate
+	 * and re-resolve the entire stored document to change a label — turning a rename into a failure
+	 * for any library whose stored document does not currently validate, for reasons that have
+	 * nothing to do with the new name.
+	 *
+	 * Neither the version hash nor the change action moves here, for the same reason: no projector
+	 * output depends on a title, so bumping the version would invalidate the projected-CSS cache for
+	 * a change no visitor can see.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug  The token library slug.
+	 * @param string $title The new label. An empty string is rejected rather than treated as
+	 *                      "leave the stored title alone", which is what the document write path
+	 *                      does with an empty title — here, clearing is simply not an operation.
+	 *
+	 * @return bool True when the title was written.
+	 *
+	 * @throws DatabaseQueryException If the update fails.
+	 */
+	public function save_title( string $slug, string $title ): bool {
+		$title = sanitize_text_field( $title );
+
+		if ( $title === '' ) {
+			return false;
+		}
+
+		$existing = $this->qb()
+						->where( 'slug', $slug )
+						->get( ARRAY_A );
+
+		if ( ! is_array( $existing ) ) {
+			// The default library has no row until something is written to it, so naming it is that
+			// first write. The empty document stored alongside the title is not a change of content —
+			// it is exactly what the library already resolved to, since no row means "render from
+			// baseline". Every other slug is rejected by the caller before reaching this point.
+			try {
+				$this->qb()->insert( $this->build_document_data( '', $title, $slug ) );
+			} catch ( DatabaseQueryException $e ) {
+				// Duplicate-key on a concurrent first write → the row now exists and carries someone
+				// else's title; report the miss rather than a fatal.
+				return false;
+			}
+
+			return true;
+		}
+
+		$this->qb()
+			->where( 'slug', $slug )
+			->update(
+				[
+					'title'      => $title,
+					'updated_at' => current_time( 'mysql', true ),
+				]
+			);
+
+		// Deliberately not gated on the affected-row count: MySQL reports zero rows affected when an
+		// UPDATE sets a column to the value it already holds, which is a no-op, not a failure. A real
+		// write failure throws instead.
 		return true;
 	}
 
@@ -472,6 +578,8 @@ final class Token_Store extends Query {
 		if ( $slug !== null ) {
 			$data = [ 'slug' => $slug ] + $data;
 		}
+
+		$title = sanitize_text_field( $title );
 
 		if ( $title !== '' ) {
 			$data['title'] = $title;

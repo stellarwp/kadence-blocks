@@ -15,8 +15,7 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * Covers the references preview (Phase 9) and create/delete/rename (Phase 10) endpoints
- * on User_Primitives_Controller.
+ * Covers the references-preview and create/delete/rename endpoints on User_Primitives_Controller.
  */
 final class User_Primitives_ControllerTest extends TestCase {
 
@@ -936,8 +935,8 @@ final class User_Primitives_ControllerTest extends TestCase {
 
 	/**
 	 * A rename is blocked when an unsupported reference exists (here, an extension-section
-	 * alias). The phase-1 cascade can only rewrite direct `$value` aliases in the primitive and
-	 * semantic layers, so proceeding would leave the extension reference silently pointing at
+	 * alias). The rename/delete cascade can only rewrite direct `$value` aliases in the primitive
+	 * and semantic layers, so proceeding would leave the extension reference silently pointing at
 	 * an id that no longer exists.
 	 *
 	 * @return void

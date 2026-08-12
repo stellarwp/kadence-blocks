@@ -6,8 +6,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Contracts\Baseline_Document;
 
 /**
  * Placeholder baseline whose has() is always false: with no real baseline, every declared token is
- * "missing". Combined with the fail-closed policy this keeps token projection OFF until SOFT-3377
- * ships the real document — the safe default when no baseline exists.
+ * "missing". Combined with the fail-closed policy this keeps token projection OFF until the real
+ * document (Json_Baseline_Document) is bound — the safe default when no baseline exists.
  *
  * Not the bound default in this ticket (see Always_Present_Baseline_Document); kept as the
  * fail-closed reference stub and exercised by the guard's "missing" tests.

@@ -1,0 +1,11 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__section-heading {
+	@include small-uppercase-label;
+
+	// Zero, not a bottom margin: the heading-to-content gap is a `gap` on whatever container pairs
+	// this with its content (e.g. `SwatchGrid`) — container gap over child margin, this app's
+	// convention.
+	margin: 0;
+	letter-spacing: 0.04em;
+}

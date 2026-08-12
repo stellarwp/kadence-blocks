@@ -43,6 +43,21 @@ final class Token_StoreTest extends TestCase {
 		$this->assertMatchesRegularExpression( '/^[a-f0-9]{32}$/', $this->store->get_version() );
 	}
 
+	/**
+	 * A library saved with a title reads that title back; a library with no row, or a row saved without
+	 * a title, reads back an empty string rather than the slug or any other synthesized value.
+	 *
+	 * @return void
+	 */
+	public function testGetTitleReadsTheStoredLabelAndIsEmptyWhenNoneIsStored(): void {
+		$this->store->save_document( '{"a":1}', 'brand-a', 'Brand A' );
+		$this->store->save_document( '{"b":1}', 'brand-b' );
+
+		$this->assertSame( 'Brand A', $this->store->get_title( 'brand-a' ) );
+		$this->assertSame( '', $this->store->get_title( 'brand-b' ) );
+		$this->assertSame( '', $this->store->get_title( 'does-not-exist' ) );
+	}
+
 	public function testSavingAnEmptyDocumentReadsBackEmptyButStillCreatesAVersionedRow(): void {
 		$this->store->save_document( '' );
 
