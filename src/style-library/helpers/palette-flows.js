@@ -313,6 +313,11 @@ export function activatePaletteFlow({ namespace, slug, id, reload, refreshFeed, 
  *                                    ordering note below).
  * @param {Function} args.openPalette Opens a palette for editing (typically `openPaletteFlow`
  *                                    bound to the new id).
+ * @param {Function} args.refreshFeed Replaces the feed for a slug. Required even though a new
+ *                                    palette changes no resolved value: the feed carries the
+ *                                    version token every later write is checked against, so
+ *                                    skipping it leaves the page one version behind and the next
+ *                                    write is rejected with a 409 conflict.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
  *
@@ -322,7 +327,17 @@ export function activatePaletteFlow({ namespace, slug, id, reload, refreshFeed, 
  *                          palette opened for editing; rejects on an empty or duplicate label, or a
  *                          request failure, after `onError` has already run.
  */
-export function createPaletteFlow({ namespace, slug, label, listing, reload, openPalette, onBusy, onError }) {
+export function createPaletteFlow({
+	namespace,
+	slug,
+	label,
+	listing,
+	reload,
+	openPalette,
+	refreshFeed,
+	onBusy,
+	onError,
+}) {
 	const id = slugifyPaletteLabel(label);
 
 	// Both validation failures reject rather than resolve: a caller that closes its modal on a
@@ -353,6 +368,7 @@ export function createPaletteFlow({ namespace, slug, label, listing, reload, ope
 			// resolve its label and render it as a real option instead of falling back to the raw
 			// id. Reloading after `openPalette` instead would leave the dropdown showing the new,
 			// still-missing-from-the-list id for one render.
+			.then(() => refreshFeed(slug))
 			.then(() => reload())
 			.then(() => openPalette(id))
 			.then(() => onBusy(false))
@@ -448,12 +464,11 @@ export function deletePaletteFlow({
  * Re-sending the palette's own effective view is safe and lossless: `prepare_for_storage()`
  * re-reduces a non-default palette back to its deltas on write (dropping swatches that already
  * equal the default value), so this round-trips exactly what was already stored, just under a new
- * label. No `refreshFeed` here, unlike every write above — a palette's `label` lives under
- * `$extensions.colorPalettes` in the stored document, and `Effective_Document::build()` (the layer
- * `Token_Resolver` walks to produce resolved CSS) explicitly walks only `Layers::token_layers()`
- * and returns "$extensions stripped"; `apply_palette_overlay()` likewise only ever touches a
- * swatch's `$value`, never its `label`. A label change cannot reach a single resolved token value,
- * so there is nothing for a feed refresh to correct.
+ * label. `refreshFeed` is still needed even though no resolved value can change — a palette's
+ * `label` lives under `$extensions.colorPalettes`, which `Effective_Document::build()` strips, so
+ * the CSS is identical either way. The feed also carries the version token every later write is
+ * checked against, and this write bumps it, so skipping the refresh leaves the page one version
+ * behind and the next write is rejected with a 409 conflict.
  *
  * @param {Object}   args
  * @param {string}   args.namespace The REST namespace.
@@ -461,10 +476,12 @@ export function deletePaletteFlow({
  * @param {string}   args.id        The palette id to rename — unchanged by this flow.
  * @param {string}   args.label     The typed label.
  * @param {Object}   args.listing   The current listing (`{ palettes }`), for the duplicate-label check.
- * @param {Function} args.reload    Re-reads the listing (and the edited view) from the hook, so the
- *                                  dropdown's label updates immediately.
- * @param {Function} args.onBusy    Called with a boolean as the request starts and settles.
- * @param {Function} args.onError   Called with `{ message }` on failure or invalid input.
+ * @param {Function} args.reload      Re-reads the listing (and the edited view) from the hook, so
+ *                                    the dropdown's label updates immediately.
+ * @param {Function} args.refreshFeed Replaces the feed for a slug, so its version token matches the
+ *                                    document this write just bumped.
+ * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
+ * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
  *
  * @since TBD
  *
@@ -472,7 +489,7 @@ export function deletePaletteFlow({
  *                          empty or duplicate label, or a request failure, after `onError` has
  *                          already run.
  */
-export function renamePaletteFlow({ namespace, slug, id, label, listing, reload, onBusy, onError }) {
+export function renamePaletteFlow({ namespace, slug, id, label, listing, reload, refreshFeed, onBusy, onError }) {
 	const trimmed = String(label ?? '').trim();
 
 	if (trimmed === '') {
@@ -491,6 +508,7 @@ export function renamePaletteFlow({ namespace, slug, id, label, listing, reload,
 
 	return fetchPalette(namespace, id, slug)
 		.then((view) => savePalette(namespace, id, { label: trimmed, groups: stripEffectiveFlags(view.groups) }, slug))
+		.then(() => refreshFeed(slug))
 		.then(() => reload())
 		.then(() => onBusy(false))
 		.catch((err) => {

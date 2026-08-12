@@ -454,6 +454,7 @@ describe('createPaletteFlow', () => {
 			label: 'Forest',
 			listing: { defaultId: DEFAULT_ID, palettes: [] },
 			reload: jest.fn().mockResolvedValue(undefined),
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette: jest.fn().mockResolvedValue(undefined),
 			onBusy,
 			onError: jest.fn(),
@@ -475,6 +476,7 @@ describe('createPaletteFlow', () => {
 			label: 'Forest',
 			listing,
 			reload,
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -509,6 +511,7 @@ describe('createPaletteFlow', () => {
 			label: 'Forest',
 			listing,
 			reload,
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			openPalette,
 			onBusy: jest.fn(),
 			onError: jest.fn(),
@@ -519,6 +522,28 @@ describe('createPaletteFlow', () => {
 		// exists), so this ordering means the listing already carries the new row by the time
 		// `editingId` moves onto it — otherwise the dropdown would render the raw id for one tick.
 		expect(order).toEqual(['reload', 'openPalette']);
+	});
+
+	it('refreshes the feed, so the version token a later write is checked against is not left stale', async () => {
+		client.fetchPalette.mockResolvedValue(defaultView());
+		client.savePalette.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+
+		await createPaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			label: 'Forest',
+			listing: { defaultId: DEFAULT_ID, palettes: [] },
+			reload: jest.fn().mockResolvedValue(undefined),
+			openPalette: jest.fn().mockResolvedValue(undefined),
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		// Without this the page keeps the version it read before the create, and the next write —
+		// adding a color, say — is rejected with a 409 conflict.
+		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 
 	it('surfaces the error, clears busy, and rejects when the create request fails', async () => {
@@ -659,6 +684,7 @@ describe('renamePaletteFlow', () => {
 				label: '   ',
 				listing: { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] },
 				reload: jest.fn(),
+				refreshFeed: jest.fn().mockResolvedValue(undefined),
 				onBusy: jest.fn(),
 				onError,
 			})
@@ -708,6 +734,7 @@ describe('renamePaletteFlow', () => {
 			label: 'Sunset',
 			listing,
 			reload,
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy: jest.fn(),
 			onError: jest.fn(),
 		});
@@ -718,6 +745,27 @@ describe('renamePaletteFlow', () => {
 			expect.objectContaining({ label: 'Sunset' }),
 			SLUG
 		);
+	});
+
+	it('refreshes the feed, so a rename does not leave the version token stale', async () => {
+		client.fetchPalette.mockResolvedValue(selectedView());
+		client.savePalette.mockResolvedValue({});
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+
+		await renamePaletteFlow({
+			namespace: NAMESPACE,
+			slug: SLUG,
+			id: 'sunset',
+			label: 'Dusk',
+			listing: { defaultId: DEFAULT_ID, palettes: [{ id: 'sunset', label: 'Sunset' }] },
+			reload: jest.fn().mockResolvedValue(undefined),
+			refreshFeed,
+			onBusy: jest.fn(),
+			onError: jest.fn(),
+		});
+
+		// A label changes no resolved value, but it does bump the stored document's version.
+		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 
 	it('preserves the id, re-sends the palette’s own groups under the new label, and reloads the listing', async () => {
@@ -734,6 +782,7 @@ describe('renamePaletteFlow', () => {
 			label: 'Sunset Dusk',
 			listing,
 			reload,
+			refreshFeed: jest.fn().mockResolvedValue(undefined),
 			onBusy,
 			onError: jest.fn(),
 		});

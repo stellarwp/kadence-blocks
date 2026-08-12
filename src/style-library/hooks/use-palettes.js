@@ -231,11 +231,12 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				// comment), there is no separate error/busy path left to route through `createError`
 				// instead of `openError`.
 				openPalette,
+				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setCreateError,
 			});
 		},
-		[namespace, slug, listing, reload, openPalette]
+		[namespace, slug, listing, reload, refreshFeed, openPalette]
 	);
 
 	const renamePalette = useCallback(
@@ -248,11 +249,12 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				label,
 				listing,
 				reload,
+				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setRenameError,
 			});
 		},
-		[namespace, slug, listing, reload]
+		[namespace, slug, listing, reload, refreshFeed]
 	);
 
 	const removePalette = useCallback(
