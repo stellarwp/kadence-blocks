@@ -142,8 +142,7 @@
 	text-align: center;
 }
 
-// The empty state replaces the option list, so unlike the footer it carries no top border — there
-// is nothing above it to divide it from but the search input's own bottom edge.
+// Replaces the option list, so unlike the footer it needs no top border.
 .kadence-blocks-style-library__searchable-select-dropdown-empty {
 	flex: 0 0 auto;
 	padding: var(--kb-sl-space-15);
