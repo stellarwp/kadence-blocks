@@ -3,6 +3,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
@@ -183,13 +184,17 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		$localizer = new Localizer(
+		$assembler = new Feed_Assembler(
 			$cyclic,
 			$this->container->get( Token_Store::class ),
-			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
 			$this->container->get( Responsive_Feed::class )
+		);
+
+		$localizer = new Localizer(
+			$this->container->get( Active_Token_Library_Store::class ),
+			$assembler
 		);
 
 		$localizer->localize();

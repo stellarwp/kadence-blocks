@@ -14,6 +14,22 @@ export function documentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 }
 
 /**
+ * Build a REST path for a token library's human-readable label.
+ *
+ * Its own endpoint, separate from the document routes: a rename writes the label alone and never
+ * validates, resolves or rewrites the stored document.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} slug      Token library slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function libraryTitlePath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
+	return `${documentPath(namespace, slug)}/title`;
+}
+
+/**
  * Build a REST path for the user-primitives collection of a document.
  *
  * @since TBD
@@ -89,6 +105,57 @@ export function resolvedPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
  */
 export function tokenPath(namespace, tokenId, slug = DEFAULT_LIBRARY_SLUG) {
 	return `${documentPath(namespace, slug)}/tokens/${tokenId}`;
+}
+
+/**
+ * Build a REST path for the token-library documents collection (list, or create-by-merge at the
+ * default library).
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function documentsPath() {
+	return '/kb-design-tokens/v1/documents';
+}
+
+/**
+ * Build a REST path for the active-library pointer.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function activeLibraryPath() {
+	return '/kb-design-tokens/v1/active-library';
+}
+
+/**
+ * Build a REST path for the admin UI schema feed of a single library — the same payload shape
+ * the page-load Localizer prints as `window.kadenceDesignTokens`, addressable per slug so the
+ * app can refresh it in place after switching the active library.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function feedPath(slug) {
+	return `/kb-design-tokens/v1/feed/${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for the action that activates a library.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {string} REST path relative to wp-json root.
+ */
+export function activateLibraryPath(slug) {
+	return `/kb-design-tokens/v1/active-library/${encodeURIComponent(slug)}`;
 }
 
 /**

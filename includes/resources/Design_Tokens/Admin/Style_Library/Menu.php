@@ -41,6 +41,31 @@ final class Menu {
 	private const MENU_POSITION = 2;
 
 	/**
+	 * The body class scoping the full-height layout overrides to the Style Library screen.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const BODY_CLASS = 'kadence-blocks-style-library-page';
+
+	/**
+	 * The core hooks that print admin notices inside `#wpbody-content`
+	 * (`wp-admin/admin-header.php`), where the Style Library app mounts. Emptied on this screen
+	 * so a notice never renders inside — or beside — the app frame.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private const ADMIN_NOTICE_HOOKS = [
+		'admin_notices',
+		'all_admin_notices',
+		'user_admin_notices',
+		'network_admin_notices',
+	];
+
+	/**
 	 * Renders the Style Library admin screen markup.
 	 *
 	 * @since TBD
@@ -81,6 +106,28 @@ final class Menu {
 	}
 
 	/**
+	 * The body class scoping the full-height layout overrides to the Style Library screen.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_body_class(): string {
+		return self::BODY_CLASS;
+	}
+
+	/**
+	 * The core hooks emptied on this screen so no admin notice renders inside the app frame.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_admin_notice_hooks(): array {
+		return self::ADMIN_NOTICE_HOOKS;
+	}
+
+	/**
 	 * Register admin menu hooks.
 	 *
 	 * @since TBD
@@ -111,6 +158,47 @@ final class Menu {
 	}
 
 	/**
+	 * Add the body-class filter, scoped to the Style Library screen via the `load-{$hook}` action.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_body_class_filter(): void {
+		add_filter( 'admin_body_class', [ $this, 'filter_body_class' ] );
+	}
+
+	/**
+	 * Append the full-height layout body class, leaving every existing class intact.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $classes The space-separated body classes.
+	 *
+	 * @return string The body classes, with the Style Library class appended.
+	 */
+	public function filter_body_class( string $classes ): string {
+		return $classes . ' ' . self::BODY_CLASS;
+	}
+
+	/**
+	 * Empty every core admin-notice hook, scoped to the Style Library screen via the
+	 * `load-{$hook}` action. `load-{$hook}` fires immediately before `wp-admin/admin-header.php`
+	 * requires — the file that runs all four hooks inside `#wpbody-content`, where the app
+	 * mounts — and after `admin_init` and `admin_menu`, the hooks most notice registrations use,
+	 * so this catches them without touching the admin bar or admin menu.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function remove_admin_notices(): void {
+		foreach ( self::ADMIN_NOTICE_HOOKS as $hook_name ) {
+			remove_all_actions( $hook_name );
+		}
+	}
+
+	/**
 	 * Add the submenu page and wire screen assets.
 	 *
 	 * @since TBD
@@ -135,6 +223,8 @@ final class Menu {
 		}
 
 		add_action( 'admin_print_styles-' . $hook, [ $this->asset_loader, 'enqueue' ] );
+		add_action( 'load-' . $hook, [ $this, 'register_body_class_filter' ] );
+		add_action( 'load-' . $hook, [ $this, 'remove_admin_notices' ] );
 	}
 
 	/**

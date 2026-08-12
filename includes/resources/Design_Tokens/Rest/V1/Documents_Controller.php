@@ -115,6 +115,15 @@ final class Documents_Controller extends Controller {
 	private const TOKENS_ROUTE = 'tokens';
 
 	/**
+	 * The sub-route, relative to a single library, that writes only its human-readable label.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const TITLE_ROUTE = 'title';
+
+	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
@@ -207,7 +216,7 @@ final class Documents_Controller extends Controller {
 	private Responsive_Feed $responsive_feed;
 
 	/**
-	 * Memoised item schema for this request. Null until first built.
+	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
 	 *
@@ -216,7 +225,7 @@ final class Documents_Controller extends Controller {
 	private ?array $item_schema = null;
 
 	/**
-	 * Memoised resolved-map schema for this request. Null until first built.
+	 * Memoized resolved-map schema for this request. Null until first built.
 	 *
 	 * @since TBD
 	 *
@@ -353,6 +362,36 @@ final class Documents_Controller extends Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::TITLE_ROUTE,
+			[
+				[
+					// The read half of the title resource. The document read carries the title too, so this
+					// is not the only way to obtain it — it is here so the sub-resource that accepts writes
+					// can also be read, rather than being write-only.
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_title' ],
+					'permission_callback' => [ $this, 'get_item_permissions_check' ],
+					'args'                => $this->get_slug_params(),
+				],
+				[
+					// Its own route rather than the title parameter the bulk write routes accept: a
+					// rename is a metadata edit, and routing it through a document write would
+					// re-validate and re-resolve the whole stored document to change a label.
+					//
+					// EDITABLE rather than PUT alone: setting a title is idempotent, so all three write
+					// verbs can share the handler, and a WordPress client reaching for POST or PATCH is
+					// following the convention every core endpoint sets rather than making a mistake.
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => [ $this, 'update_title' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_title_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::TOKENS_ROUTE . '/' . self::PATH_ROUTE,
 			[
 				[
@@ -384,7 +423,9 @@ final class Documents_Controller extends Controller {
 	 * Read the collection of token-library documents.
 	 *
 	 * Lists every stored library. The default library is always included even before it has a row, since
-	 * it renders from baseline and must always be addressable; a stored default is not duplicated.
+	 * it renders from baseline and must always be addressable; a stored default is not duplicated. The
+	 * titles come from this one list_stores() call rather than a per-item lookup, so surfacing title
+	 * alongside slug/version costs no additional query over the whole collection.
 	 *
 	 * @since TBD
 	 *
@@ -393,7 +434,10 @@ final class Documents_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$slugs = array_column( $this->store->list_stores(), 'slug' );
+		// Keyed by slug so title is a single, already-fetched lookup per item below — not a fresh
+		// query per library.
+		$titles_by_slug = array_column( $this->store->list_stores(), 'title', 'slug' );
+		$slugs          = array_keys( $titles_by_slug );
 
 		// The default library is always addressable, even with no row yet (it renders from baseline), so
 		// surface it whether or not the store has persisted it.
@@ -401,7 +445,10 @@ final class Documents_Controller extends Controller {
 			array_unshift( $slugs, Token_Store::default_slug() );
 		}
 
-		$items = array_map( [ $this, 'prepare_item' ], $slugs );
+		$items = array_map(
+			fn( string $slug ): array => $this->prepare_item( $slug, $titles_by_slug[ $slug ] ?? '' ),
+			$slugs
+		);
 
 		return new WP_REST_Response( array_values( $items ), WP_Http::OK );
 	}
@@ -563,6 +610,106 @@ final class Documents_Controller extends Controller {
 			$slug,
 			Cast::to_string( $request->get_param( self::TITLE_PARAM ) )
 		);
+	}
+
+	/**
+	 * Read a token library's title (GET /documents/{slug}/title).
+	 *
+	 * The document read already carries the title, so this adds no field a client could not otherwise
+	 * reach; it exists so the title sub-resource is readable as well as writable, and so a client that
+	 * only wants the label does not have to fetch and discard the whole stored document to get it.
+	 *
+	 * An unknown library is a 404, matching {@see self::update_title()} — the two halves of the resource
+	 * agree on which libraries exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function get_title( $request ) {
+		$slug = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return new WP_Error(
+				'rest_design_tokens_not_found',
+				__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::NOT_FOUND,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		return new WP_REST_Response(
+			[
+				'slug'  => $slug,
+				'title' => $this->store->get_title( $slug ),
+			],
+			WP_Http::OK
+		);
+	}
+
+	/**
+	 * Rename a token library (PUT /documents/{slug}/title).
+	 *
+	 * Writes the label alone. The stored document is neither read, validated, resolved nor rewritten,
+	 * so a rename cannot fail because of the document's contents — which is the whole reason this is
+	 * not the `title` parameter on the bulk write routes. Those merge-then-validate the entire
+	 * document, so using one to change a label makes renaming impossible for any library whose stored
+	 * document does not currently pass validation.
+	 *
+	 * The default library is renameable like any other: it has no row until something is written to
+	 * it, and naming it is a legitimate first write.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function update_title( $request ) {
+		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$title = trim( Cast::to_string( $request->get_param( self::TITLE_PARAM ) ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return new WP_Error(
+				'rest_design_tokens_not_found',
+				__( 'Sorry, that design token library does not exist.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::NOT_FOUND,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		// Whitespace-only is empty once trimmed. Rejected rather than stored, and rejected rather than
+		// silently ignored — a library whose label is blank falls back to displaying its slug, which
+		// is never what someone typing a name intended.
+		if ( $title === '' ) {
+			return new WP_Error(
+				'rest_design_tokens_invalid_title',
+				__( 'A library title cannot be empty.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::BAD_REQUEST,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		if ( ! $this->store->save_title( $slug, $title ) ) {
+			return new WP_Error(
+				'rest_design_tokens_save_failed',
+				__( 'The library title could not be saved.', 'kadence-blocks' ),
+				[
+					'status'         => WP_Http::INTERNAL_SERVER_ERROR,
+					self::SLUG_PARAM => $slug,
+				]
+			);
+		}
+
+		return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
 	}
 
 	/**
@@ -776,6 +923,12 @@ final class Documents_Controller extends Controller {
 			'properties' => [
 				'slug'     => [
 					'description' => __( 'The token library slug.', 'kadence-blocks' ),
+					'type'        => 'string',
+					'context'     => [ 'view' ],
+					'readonly'    => true,
+				],
+				'title'    => [
+					'description' => __( 'The human-readable label for the library, empty when none is stored.', 'kadence-blocks' ),
 					'type'        => 'string',
 					'context'     => [ 'view' ],
 					'readonly'    => true,
@@ -1193,6 +1346,31 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * The arguments accepted by the rename route: the slug and a required title.
+	 *
+	 * Required here, unlike the optional title the bulk write routes take alongside a document — a
+	 * request to this route carries nothing else, so an absent title would ask the server to do
+	 * nothing at all.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_title_params(): array {
+		return array_merge(
+			$this->get_slug_params(),
+			[
+				self::TITLE_PARAM => [
+					'description'       => __( 'The human-readable label for the token library.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
+	}
+
+	/**
 	 * The arguments accepted by the bulk write routes on a single library: the slug, the DTCG document and an
 	 * optional title. The document is validated for its DTCG grammar by Dtcg_Validator, so the arg only
 	 * asserts it is an object.
@@ -1284,18 +1462,51 @@ final class Documents_Controller extends Controller {
 	 * Reads the raw overrides-only DTCG document for the library. An absent or empty row yields an empty
 	 * document, since the library then renders entirely from baseline.
 	 *
+	 * The title of an untitled library is empty — never the slug or any other synthesized value, so the
+	 * client can tell "no title" from "a title happens to look like the slug". The default library is the
+	 * one exception: it is addressable before it has a row at all, so an untitled default is served under
+	 * {@see Token_Store::default_title()}. Naming it here rather than in each client means no consumer
+	 * has to special-case the default library, and the name is translated per request instead of frozen
+	 * into the row.
+	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The token library slug.
+	 * @param string      $slug  The token library slug.
+	 * @param string|null $title The library's title when the caller already has it (the collection route
+	 *                           reads every title in one list_stores() call and passes it through here so
+	 *                           this method does not re-query per item); null to look it up here for a
+	 *                           single-library call.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function prepare_item( string $slug ): array {
+	private function prepare_item( string $slug, ?string $title = null ): array {
+		$stored = $title ?? $this->store->get_title( $slug );
+
 		return [
 			'slug'     => $slug,
+			'title'    => $this->display_title( $slug, $stored ),
 			'version'  => $this->store->get_version( $slug ),
 			'document' => $this->read_stored_document( $slug ),
 		];
+	}
+
+	/**
+	 * The title to serve for a library: what it has stored, or the default library's standing name when
+	 * the default has none.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug   The token library slug.
+	 * @param string $stored The title stored for that library, empty when it has none.
+	 *
+	 * @return string
+	 */
+	private function display_title( string $slug, string $stored ): string {
+		if ( '' !== $stored ) {
+			return $stored;
+		}
+
+		return $slug === Token_Store::default_slug() ? Token_Store::default_title() : '';
 	}
 
 	/**

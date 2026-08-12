@@ -1,0 +1,33 @@
+.kadence-blocks-style-library__drag-handle {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: var(--kb-sl-space-30);
+	height: var(--kb-sl-space-30);
+	padding: 0;
+	border: 0;
+	// Transparent, not opaque, so a translucent consumer background (e.g. `ListRow`'s selected-row
+	// tint) shows through instead of being covered. `SwatchCard` overrides this with an opaque
+	// white — see the comment on that rule in SwatchCard.scss.
+	border-radius: var(--kb-sl-radius-s);
+	background: transparent;
+	color: var(--kb-sl-color-text-primary);
+	cursor: grab;
+	touch-action: none;
+
+	&:hover,
+	&:focus-visible {
+		background: var(--kb-sl-color-gray-100);
+	}
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+// A plain `<button>`, not `@wordpress/components`' `Button`, so it never gets core's free
+// `fill: currentColor` — without this the SVG renders black instead of inheriting `color`.
+.kadence-blocks-style-library__drag-handle-icon {
+	fill: currentColor;
+}

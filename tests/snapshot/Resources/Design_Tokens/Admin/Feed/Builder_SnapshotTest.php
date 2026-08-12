@@ -4,6 +4,7 @@
 namespace Tests\snapshot\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\SnapshotTestCase;
 
@@ -73,7 +74,7 @@ final class Builder_SnapshotTest extends SnapshotTestCase {
 			'nonce'     => 'test-nonce',
 		];
 
-		$feed = ( new Builder( $this->registry ) )->build( $values, true, $presets, $rest, 'v7', 'default' );
+		$feed = ( new Builder( $this->registry, new Preset_Nav( $this->registry ) ) )->build( $values, true, $presets, $rest, 'v7', 'default' );
 
 		// Structural assertions that must always hold regardless of snapshot content.
 		$this->assertTrue( $feed['active'] );

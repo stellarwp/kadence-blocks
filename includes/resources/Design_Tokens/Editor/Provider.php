@@ -8,8 +8,9 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
  * Registers the block-editor catalogs: binds the preset, attribute-default and pickable-token catalog
  * builders and the localizer as singletons, then hooks the localizer onto enqueue_block_editor_assets so
  * the early-filters bundle receives window.kadenceDesignTokensPresets (preset picker),
- * window.kadenceDesignTokensAttributeDefaults (block-registration attribute-default filter) and
- * window.kadenceDesignTokensPickable (the editor token picker's accessor).
+ * window.kadenceDesignTokensAttributeDefaults (block-registration attribute-default filter), and onto
+ * admin_head so window.kadenceDesignTokensPickable (the token picker's accessor) reaches whichever of
+ * the editor bundle or the Style Library admin bundle is on the page.
  *
  * @since TBD
  */
@@ -36,5 +37,8 @@ final class Provider extends Provider_Contract {
 		 * rather than triggering a fatal error.
 		 */
 		add_action( 'enqueue_block_editor_assets', $this->container->callback( Localizer::class, 'localize' ), 20 );
+
+		// admin_head fires after both bundles' own enqueue, so either handle is already registered.
+		add_action( 'admin_head', $this->container->callback( Localizer::class, 'localize_pickable' ) );
 	}
 }
