@@ -1286,13 +1286,8 @@ export default function KadenceButtonEdit(props) {
 																			return;
 																		}
 
-																		// Collapse to the top-left corner so the button
-																		// reflects the link immediately. A blank top-left
-																		// clears the other corners with it — linking means
-																		// every corner matches the first one, empty
-																		// included. Only the ACTIVE device's attribute is
-																		// written, so the other breakpoints keep their own
-																		// corners.
+																		// Every corner matches the top-left, blank
+																		// included, and only on the ACTIVE device.
 																		setAttributes({
 																			[borderRadiusForDevice.attr]: [
 																				corner,
@@ -1301,10 +1296,8 @@ export default function KadenceButtonEdit(props) {
 																				corner,
 																			],
 																		});
-																		// All-equal corners derive linked on their own, so
-																		// the override can go — except when they collapsed
-																		// to blank and the preset carries a different value
-																		// per corner, which derives individual.
+																		// Equal corners derive linked on their own —
+																		// except blank ones under a per-corner preset.
 																		setBorderRadiusModeOverride((current) => ({
 																			...current,
 																			[previewDevice]:
