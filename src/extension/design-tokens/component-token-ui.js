@@ -104,14 +104,40 @@ function resolveDefaultValue(defaultValue, tokens, unit, inherited) {
 }
 
 /**
+ * The label/value summary for the INHERITED default a field falls back to, so an unset field can show
+ * the size that is actually in effect instead of reading as empty.
+ *
+ * The default arrives resolved (`"9999px"`), which names a size but not the token it came from, so the
+ * pickable list is searched for the entry that resolves to the same value and its label is used when one
+ * matches. The result is rendered muted — the field is still unset, and picking it up as a set value is
+ * the confusion an empty-means-inherit attribute has to avoid.
+ *
+ * @param {string} resolvedDefault The inherited default, already resolved to a literal.
+ * @param {Array}  tokens          The pickable-token list, used to name the value.
+ *
+ * @since TBD
+ *
+ * @return {{label: string, value: string}} The label and value text, both '' when there is no default.
+ */
+function defaultSummary(resolvedDefault, tokens) {
+	if (!resolvedDefault) {
+		return { label: '', value: '' };
+	}
+
+	const entry = (tokens || []).find((candidate) => candidate.value === resolvedDefault) || null;
+
+	return { label: entry ? entry.label : '', value: resolvedDefault };
+}
+
+/**
  * The label/value summary a token field shows on its trigger for the current slot value: the token's
  * label + resolved value when aliased (dot-path fallback when no matching entry is found), a `Custom`
  * label + literal (with unit) for a set literal, or NOTHING when the slot is unset.
  *
- * An unset slot renders blank on purpose, matching the plain number inputs the Border control uses: the
- * field shows what this slot holds, and it holds nothing. Naming the inherited size here would read as a
- * value set on this breakpoint, which is exactly the confusion an empty-means-inherit attribute has to
- * avoid. Where that value comes from stays visible one layer in, on the popover's tagged row.
+ * An unset slot summarizes to nothing — what the field then shows is the inherited default, rendered
+ * muted by `defaultSummary` so it reads as a placeholder rather than a value stored on this breakpoint.
+ * Keeping the two apart is the point: this function answers "what does this slot hold", and an unset
+ * slot holds nothing.
  *
  * @param {*}      value  The current slot value (alias string, literal number/string, or empty).
  * @param {Array}  tokens The pickable-token list, used to resolve an alias to its label.
@@ -253,9 +279,12 @@ export function TokenFieldControl({
 	// The inherited default has to be resolved before it is compared or shown — a raw alias or a unitless
 	// number would neither match a token row nor read as a value.
 	const resolvedDefault = resolveDefaultValue(defaultValue, tokens, unit, inherited);
-	// An unset field renders blank, so the button would have no accessible name and no way to tell a
-	// screen-reader user what it currently resolves to. The tooltip/aria-label carries the inherited value
-	// instead — available on hover and to assistive tech, without printing it in the field.
+	// What an unset field shows: the inherited default, muted. The block stores nothing either way —
+	// this only stops the field reading as "no radius" when the preset (or another breakpoint) is
+	// giving it one.
+	const fallback = defaultSummary(resolvedDefault, tokens);
+	// The tooltip/aria-label names where the shown value comes from — "Default (8px)" or "Inherited
+	// (8px)" — which the muted field text alone cannot say.
 	const inheritedName = inherited
 		? sprintf(
 				/* translators: %s: the inherited value, e.g. "8px". */ __('Inherited (%s)', 'kadence-blocks'),
@@ -349,6 +378,16 @@ export function TokenFieldControl({
 					>
 						{summary.label && <span className="kadence-token-field__label">{summary.label}</span>}
 						{summary.value && <span className="kadence-token-field__value">{summary.value}</span>}
+						{!summary.label && !summary.value && fallback.value && (
+							<>
+								{fallback.label && (
+									<span className="kadence-token-field__label kadence-token-field__label--default">
+										{fallback.label}
+									</span>
+								)}
+								<span className="kadence-token-field__value">{fallback.value}</span>
+							</>
+						)}
 					</Button>
 				)}
 				renderContent={({ onClose }) => (
