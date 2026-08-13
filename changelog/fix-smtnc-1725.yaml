@@ -1,5 +1,5 @@
 significance: patch
-type: fixed
+type: fix
 entry: Resolved an issue where the Advanced Image block could stop rendering in
   the editor when Dynamic Content supplied an image value that was not a url.
 timestamp: 2026-08-12T16:50:44.091Z
