@@ -4,6 +4,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
@@ -31,6 +32,7 @@ final class Provider extends Provider_Contract {
 		$this->container->singleton( Presets::class );
 		$this->container->singleton( Preset_Nav::class );
 		$this->container->singleton( Feed_Assembler::class );
+		$this->container->singleton( Font_Catalog::class );
 		$this->container->singleton( Localizer::class );
 		$this->container->singleton( Screen::class );
 		$this->container->singleton( Asset_Loader::class );

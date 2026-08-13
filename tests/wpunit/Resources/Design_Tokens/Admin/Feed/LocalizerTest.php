@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
@@ -60,6 +61,12 @@ final class LocalizerTest extends TestCase {
 	/**
 	 * The decoded feed attached to the dashboard handle, or null when none was attached.
 	 *
+	 * The Localizer attaches TWO separate inline scripts to the handle (the feed, and — as its own
+	 * global, never folded into the feed payload — the page-load-only font catalog), each its own
+	 * entry in the 'before' data array. This walks the entries rather than imploding the whole array and running one
+	 * regular expression over it, so the catalog entry (whose global name is a superset string,
+	 * "window.kadenceDesignTokensFontCatalog") can never be mistaken for the feed entry.
+	 *
 	 * @return array<string, mixed>|null
 	 */
 	private function attached_feed(): ?array {
@@ -69,16 +76,18 @@ final class LocalizerTest extends TestCase {
 			return null;
 		}
 
-		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokens =' ) === false ) {
+				continue;
+			}
 
-		if ( strpos( $inline, 'window.kadenceDesignTokens' ) === false ) {
-			return null;
+			$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $entry );
+			$decoded = json_decode( $json, true );
+
+			return is_array( $decoded ) ? $decoded : null;
 		}
 
-		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( $json, true );
-
-		return is_array( $decoded ) ? $decoded : null;
+		return null;
 	}
 
 	private function localizer(): Localizer {
@@ -135,6 +144,40 @@ final class LocalizerTest extends TestCase {
 		$this->assertSame( 'kb-design-tokens/v1', $feed['rest']['namespace'] );
 		$this->assertNotEmpty( $feed['rest']['nonce'] );
 		$this->assertSame( esc_url_raw( rest_url() ), $feed['rest']['root'] );
+	}
+
+	/**
+	 * The font catalog is attached as its own inline global — window.kadenceDesignTokensFontCatalog
+	 * — separate from window.kadenceDesignTokens, so a client can read the (static,
+	 * library-independent) catalog once at page load without it riding every feed refresh.
+	 *
+	 * @return void
+	 */
+	public function testItAttachesTheFontCatalogAsASeparateGlobal(): void {
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$data = wp_scripts()->get_data( self::HANDLE, 'before' );
+		$this->assertIsArray( $data );
+
+		$catalog_entry = null;
+
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokensFontCatalog =' ) !== false ) {
+				$catalog_entry = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $catalog_entry, 'The font catalog global must be attached to the dashboard handle.' );
+
+		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokensFontCatalog\s*=\s*(.*);\s*$/s', '$1', $catalog_entry );
+		$decoded = json_decode( $json, true );
+
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'google', $decoded );
+		$this->assertArrayHasKey( 'custom', $decoded );
 	}
 
 	public function testItAttachesNothingWhenTheDashboardIsNotOnThePage(): void {
@@ -198,7 +241,8 @@ final class LocalizerTest extends TestCase {
 
 		$localizer = new Localizer(
 			$this->container->get( Active_Token_Library_Store::class ),
-			$assembler
+			$assembler,
+			$this->container->get( Font_Catalog::class )
 		);
 
 		$localizer->localize();

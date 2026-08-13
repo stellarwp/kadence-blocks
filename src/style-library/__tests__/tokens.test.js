@@ -1,5 +1,29 @@
 /* eslint-env jest */
-import { buildTokenLeaf, flattenSchemaTokens, isResponsiveType, refreshFeedFlow } from '../helpers/tokens';
+import {
+	buildTokenLeaf,
+	flattenSchemaTokens,
+	isResponsiveType,
+	refreshFeedFlow,
+	tokenTypeIdSegment,
+} from '../helpers/tokens';
+
+describe('tokenTypeIdSegment', () => {
+	it('maps every camelCase $type to its registered kebab id segment', () => {
+		expect(tokenTypeIdSegment('fontFamily')).toBe('font-family');
+		expect(tokenTypeIdSegment('fontWeight')).toBe('font-weight');
+		expect(tokenTypeIdSegment('lineHeight')).toBe('line-height');
+		expect(tokenTypeIdSegment('fontStyle')).toBe('font-style');
+		expect(tokenTypeIdSegment('textTransform')).toBe('text-transform');
+		expect(tokenTypeIdSegment('borderStyle')).toBe('border-style');
+	});
+
+	it('passes an already kebab-safe or unregistered type through verbatim', () => {
+		expect(tokenTypeIdSegment('color')).toBe('color');
+		expect(tokenTypeIdSegment('dimension')).toBe('dimension');
+		expect(tokenTypeIdSegment('shadow')).toBe('shadow');
+		expect(tokenTypeIdSegment('bogus')).toBe('bogus');
+	});
+});
 
 describe('flattenSchemaTokens', () => {
 	it('returns empty array when schema has no groups', () => {

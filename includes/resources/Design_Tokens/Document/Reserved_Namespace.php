@@ -57,7 +57,7 @@ final class Reserved_Namespace {
 	public static function is_reserved_id( string $id ): bool {
 		$types = array_map(
 			static fn( string $type ): string => preg_quote( $type, '/' ),
-			Token_Type::all()
+			Token_Type::get_id_segments()
 		);
 
 		return (bool) preg_match(
@@ -98,31 +98,34 @@ final class Reserved_Namespace {
 	 * from a stored tree leaf (the rename cascade, the orphan scan); an unsupported type yields
 	 * an id the user-primitive document invariant rejects downstream.
 	 *
+	 * The id's second segment is the type's REGISTERED id segment (Token_Type::get_id_segment()),
+	 * not necessarily the $type spelling itself: the id feeds Css_Var::from_id(), which requires
+	 * the kebab charset, while $type stays the DTCG spec spelling.
+	 *
 	 * @since TBD
 	 *
-	 * @param string $type The DTCG $type segment (spec spelling).
+	 * @param string $type The DTCG $type (spec spelling).
 	 * @param string $slug The terminal slug.
 	 *
 	 * @return string
 	 */
 	public static function canonical( string $type, string $slug ): string {
-		return self::LAYER . '.' . $type . '.' . self::SEGMENT . '.' . $slug;
+		return self::LAYER . '.' . Token_Type::get_id_segment( $type ) . '.' . self::SEGMENT . '.' . $slug;
 	}
 
 	/**
-	 * Whether a $type supports user-created primitives: registered, and itself a valid
-	 * kebab-case id segment.
+	 * Whether a $type supports user-created primitives: registered, full stop.
 	 *
-	 * The second predicate is load-bearing, not stylistic: the type spelling becomes the second
-	 * segment of a REGISTERED token id, and Token_Definition::from_user_primitive() rejects any
-	 * segment outside ^[a-z0-9]+([.-][a-z0-9]+)*$ (the id feeds Css_Var::from_id()). A camelCase
-	 * $type (fontWeight, lineHeight, ...) would store fine but could never register — the token
-	 * would silently never surface. Composites are not excluded: the shadow $type is a valid
-	 * segment, and the composite validate/render/reference machinery is fully wired.
+	 * Before the $type -> id-segment mapping existed, this also required the $type spelling
+	 * itself to be a valid kebab-case id segment, because the raw $type became the id's second
+	 * segment and Token_Definition::from_user_primitive() rejects any segment outside
+	 * ^[a-z0-9]+([.-][a-z0-9]+)*$ (the id feeds Css_Var::from_id()). Token_Type::get_id_segment()
+	 * now supplies a kebab-safe segment for every registered $type, so that second predicate is
+	 * vacuous and has been dropped; every registered $type supports user-created primitives.
 	 *
-	 * Deliberately narrower than is_reserved_id()/contains_reserved_path(), which guard the
-	 * whole namespace for every registered type: a generic write must not reach under
-	 * primitive.fontWeight.custom.* just because creation does not support that spelling yet.
+	 * Kept as a named method (not inlined to Token_Type::is_valid()) because it is the creation
+	 * gate three call sites and the REST 422 contract hang off, and a future version may
+	 * genuinely want to gate a type again.
 	 *
 	 * @since TBD
 	 *
@@ -131,7 +134,7 @@ final class Reserved_Namespace {
 	 * @return bool
 	 */
 	public static function is_supported_type( string $type ): bool {
-		return Token_Type::is_valid( $type ) && self::is_valid_slug( $type );
+		return Token_Type::is_valid( $type );
 	}
 
 	/**
@@ -151,7 +154,7 @@ final class Reserved_Namespace {
 
 		return count( $segments ) >= 3
 			&& $segments[0] === self::LAYER
-			&& in_array( $segments[1], Token_Type::all(), true )
+			&& in_array( $segments[1], Token_Type::get_id_segments(), true )
 			&& $segments[2] === self::SEGMENT;
 	}
 

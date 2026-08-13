@@ -1,0 +1,106 @@
+@use '../../styles/mixins' as *;
+
+// The card row wraps onto two lines: the label/size chips stay on the first line, the sample text
+// preview drops to its own full-width line below. `.list-row-main`'s shared layout is a single
+// non-wrapping flex line, so this screen unlocks wrapping and restyles the label/value spans as
+// small pills — `MetaChip`'s visual treatment, not the component itself: mounting `MetaChip` here
+// would need a new label/value-node seam in `ListRow`'s shared row mapping for purely
+// presentational gain.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-main {
+	flex-wrap: wrap;
+	gap: var(--kb-sl-space-10) var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-label,
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-value {
+	flex: 0 0 auto;
+	width: auto;
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--kb-sl-space-10);
+	border-radius: var(--kb-sl-radius-full);
+	background: var(--kb-sl-color-gray-100);
+	color: var(--kb-sl-color-text-primary);
+	font-family: inherit;
+	font-size: var(--kb-sl-font-size-s);
+	font-weight: var(--kb-sl-font-weight-semibold);
+	line-height: 1.125rem;
+	white-space: nowrap;
+}
+
+// The sample text needs the card's full width on its own line — the shared preview slot's fixed
+// square, `overflow: hidden`, and gray fill exist for a content-agnostic swatch, not a sentence of
+// text at an arbitrary font size.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row-preview {
+	flex: 1 1 100%;
+	width: auto;
+	height: auto;
+	justify-content: flex-start;
+	overflow: visible;
+	border: 0;
+	background: transparent;
+}
+
+.kadence-blocks-style-library__typography-sample {
+	display: block;
+	overflow-wrap: anywhere;
+	color: var(--kb-sl-color-text-primary);
+	line-height: var(--kb-sl-line-height-ratio-snug);
+}
+
+// The board's selected-card treatment: the shared tinted background already applies through
+// `--list-row--selected`; this adds the blue accent border the board shows on top of it.
+.kadence-blocks-style-library__scale-screen--typography .kadence-blocks-style-library__list-row--selected {
+	border-left: var(--kb-sl-border-width-input) solid var(--kb-sl-color-theme);
+}
+
+// The FONT preview toolbar, rendered by `ScaleScreen`'s optional `renderToolbar` seam between the
+// header and the row list.
+.kadence-blocks-style-library__typography-toolbar {
+	@include flex-column(var(--kb-sl-space-15));
+
+	margin: var(--kb-sl-space-20) 0;
+}
+
+.kadence-blocks-style-library__typography-font-tabs {
+	@include flex-row(var(--kb-sl-space-10));
+}
+
+.kadence-blocks-style-library__typography-font-tab {
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	border: 0;
+	border-radius: var(--kb-sl-radius-s);
+	background: transparent;
+	color: var(--kb-sl-color-text-secondary);
+	font-size: var(--kb-sl-font-size-s);
+	cursor: pointer;
+
+	&--active {
+		background: var(--kb-sl-color-gray-100);
+		color: var(--kb-sl-color-text-primary);
+		font-weight: var(--kb-sl-font-weight-semibold);
+	}
+}
+
+.kadence-blocks-style-library__typography-toolbar-row {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: var(--kb-sl-space-15);
+}
+
+.kadence-blocks-style-library__typography-font-selector {
+	@include flex-column(var(--kb-sl-space-10));
+}
+
+.kadence-blocks-style-library__typography-font-label {
+	@include small-uppercase-label;
+}
+
+// The catalog dropdown and its contextual Add/Delete Font button sit side by side, beneath the
+// FONT label — the board's slot for both.
+.kadence-blocks-style-library__typography-font-picker {
+	@include flex-row(var(--kb-sl-space-10));
+
+	align-items: center;
+}

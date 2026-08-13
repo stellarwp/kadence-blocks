@@ -717,6 +717,253 @@ final class Feed_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * The renamed, newly declared font-family primitives surface as their own feed group, in
+	 * declaration order, each resolved to the comma-joined stack the Typography screen's FONT
+	 * selector lists — the id rename from `primitive.fontFamily.*` to `primitive.font-family.*`
+	 * reaching all the way through registration and resolution.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheFontFamilyGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Font Family', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Font Family'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.font-family.sans',
+				'primitive.font-family.serif',
+				'primitive.font-family.mono',
+			],
+			$ids
+		);
+
+		$this->assertSame( 'Inter, system-ui, sans-serif', $data['values']['primitive.font-family.sans'] );
+		$this->assertSame( 'Georgia, Cambria, serif', $data['values']['primitive.font-family.serif'] );
+		$this->assertSame( 'Menlo, Consolas, monospace', $data['values']['primitive.font-family.mono'] );
+	}
+
+	/**
+	 * `semantic.font-family.control`'s alias followed the primitive rename in the same edit, so it
+	 * still resolves to the renamed primitive's value instead of dangling.
+	 *
+	 * @return void
+	 */
+	public function testSemanticFontFamilyControlResolvesThroughTheRenamedPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.font-family.sans'],
+			$data['values']['semantic.font-family.control']
+		);
+	}
+
+	/**
+	 * The declared `Font Size` scale still lists its six steps in declaration order, and the group's
+	 * newly declared `group_key` resolves back to the group's translated label — the mechanism
+	 * "+ Add Size" mints custom tokens through.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheFontSizeScaleGroupWithItsGroupKey(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$ids = array_column( $data['schema']['groups']['Font Size'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.font-size.sm',
+				'primitive.dimension.font-size.md',
+				'primitive.dimension.font-size.lg',
+				'primitive.dimension.font-size.xl',
+				'primitive.dimension.font-size.xxl',
+				'primitive.dimension.font-size.xxxl',
+			],
+			$ids
+		);
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$this->assertSame( 'Font Size', $registry->group_label_for( 'font-size' ) );
+	}
+
+	/**
+	 * A user-created dimension primitive minted into the font-size group (the stable key this
+	 * ticket declares as `group_key` alongside the `Font Size` scale) surfaces inside the declared
+	 * "Font Size" UI-schema group and is flagged `userCreated` — "+ Add Size"'s data path end to
+	 * end.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoFontSizeSurfacesInItsFeedGroup(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.font-size';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'font-size' => [
+								'$type'  => 'dimension',
+								'$value' => '1rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Font Size',
+								'group' => 'font-size',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Font Size', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Font Size'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Font Size" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
+	 * Writing a plain scalar leaf over a clamp-carrying `Font Size` step resolves to that scalar,
+	 * with no residual `clamp(...)` — the Typography screen's SIZE field can only ever write a
+	 * fixed value, and the step converting from fluid to fixed on an explicit edit is a documented
+	 * choice, not an accident.
+	 *
+	 * @return void
+	 */
+	public function testExplicitScalarWriteConvertsAClampedFontSizeStepToFixed(): void {
+		$slug = Token_Store::default_slug();
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive' => [
+					'dimension' => [
+						'font-size' => [
+							'sm' => [
+								'$type'  => 'dimension',
+								'$value' => '1.5rem',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( '1.5rem', $resolved->value( 'primitive.dimension.font-size.sm' ) );
+		$this->assertStringNotContainsString( 'clamp(', $resolved->value( 'primitive.dimension.font-size.sm' ) );
+	}
+
+	/**
+	 * A user-created `fontFamily` primitive minted into the `font-family` group (the $type ->
+	 * id-segment mapping's headline unlock) surfaces inside the declared "Font Family" UI-schema
+	 * group as `userCreated`, and its single-family stack resolves with the spaced name quoted —
+	 * `Css_Renderer::font_family()`'s existing quoting rule, exercised end to end through a minted
+	 * token rather than only a baseline one.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoFontFamilySurfacesInItsFeedGroupWithQuotedValue(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.font-family.custom.abril-fatface';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'font-family' => [
+						'custom' => [
+							'abril-fatface' => [
+								'$type'  => 'fontFamily',
+								'$value' => [ 'Abril Fatface' ],
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'Abril Fatface',
+								'group' => 'font-family',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Font Family', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Font Family'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom font must appear in the declared "Font Family" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( '"Abril Fatface"', $resolved->value( $id ) );
+	}
+
+	/**
 	 * A slug naming no known library is rejected with a 404, mirroring Documents_Controller and
 	 * Active_Token_Library_Controller rather than silently substituting a different library's
 	 * data for the one requested.
@@ -798,6 +1045,12 @@ final class Feed_ControllerTest extends TestCase {
 	/**
 	 * The decoded feed attached to the dashboard handle, or null when none was attached.
 	 *
+	 * The Localizer attaches TWO separate inline scripts to the handle (the feed, and — as its own
+	 * global, never folded into the feed payload — the page-load-only font catalog), each its own
+	 * entry in the 'before' data array. This walks the entries rather than imploding the whole array and running one
+	 * regular expression over it, so the catalog entry (whose global name is a superset string,
+	 * "window.kadenceDesignTokensFontCatalog") can never be mistaken for the feed entry.
+	 *
 	 * @return array<string, mixed>|null
 	 */
 	private function attached_feed(): ?array {
@@ -807,16 +1060,18 @@ final class Feed_ControllerTest extends TestCase {
 			return null;
 		}
 
-		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokens =' ) === false ) {
+				continue;
+			}
 
-		if ( strpos( $inline, 'window.kadenceDesignTokens' ) === false ) {
-			return null;
+			$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $entry );
+			$decoded = json_decode( $json, true );
+
+			return is_array( $decoded ) ? $decoded : null;
 		}
 
-		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( $json, true );
-
-		return is_array( $decoded ) ? $decoded : null;
+		return null;
 	}
 
 	/**

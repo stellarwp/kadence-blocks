@@ -23,6 +23,12 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
  * The feed is emitted with wp_add_inline_script + wp_json_encode rather than wp_localize_script, which
  * would stringify the booleans, version and nested maps.
  *
+ * Alongside the feed, this also emits the font catalog ({@see Font_Catalog}) as a SEPARATE inline
+ * global, window.kadenceDesignTokensFontCatalog. It rides the same handle but is built once here,
+ * never inside Feed_Assembler's payload: the feed re-fetches after every write (refreshFeed) and
+ * on every library switch, while the catalog (~29KB of Google font names) is static and
+ * library-independent — folding it into the feed would re-send it on every save.
+ *
  * @since TBD
  */
 final class Localizer {
@@ -60,6 +66,15 @@ final class Localizer {
 	private const OBJECT = 'kadenceDesignTokens';
 
 	/**
+	 * The JS global the font catalog is emitted under.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const CATALOG_OBJECT = 'kadenceDesignTokensFontCatalog';
+
+	/**
 	 * The active-library pointer — the same slug the registry's user primitives and every projector
 	 * (CSS vars, theme.json, block presets, selectable presets) resolve against, so the dashboard edits the library that
 	 * is actually live rather than always the default one.
@@ -80,14 +95,25 @@ final class Localizer {
 	private Feed_Assembler $assembler;
 
 	/**
+	 * The font catalog reader, for the page-load-only catalog global.
+	 *
+	 * @since TBD
+	 *
+	 * @var Font_Catalog
+	 */
+	private Font_Catalog $catalog;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Active_Token_Library_Store $active    The active-library pointer.
 	 * @param Feed_Assembler             $assembler The shared pipeline that builds a feed payload for a slug.
+	 * @param Font_Catalog               $catalog   The font catalog reader.
 	 */
-	public function __construct( Active_Token_Library_Store $active, Feed_Assembler $assembler ) {
+	public function __construct( Active_Token_Library_Store $active, Feed_Assembler $assembler, Font_Catalog $catalog ) {
 		$this->active    = $active;
 		$this->assembler = $assembler;
+		$this->catalog   = $catalog;
 	}
 
 	/**
@@ -122,6 +148,35 @@ final class Localizer {
 		wp_add_inline_script(
 			$handle,
 			'window.' . self::OBJECT . ' = ' . $json . ';',
+			'before'
+		);
+
+		$this->localize_catalog( $handle );
+	}
+
+	/**
+	 * Attach the font catalog to the same handle, as its own inline global — built once per
+	 * page load, never rebuilt when the feed refreshes after a write.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $handle The script handle the feed was just attached to.
+	 *
+	 * @return void
+	 */
+	private function localize_catalog( string $handle ): void {
+		$json = wp_json_encode(
+			$this->catalog->all(),
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+		);
+
+		if ( $json === false ) {
+			return; // Catalog cannot be serialized — skip rather than inject malformed JS.
+		}
+
+		wp_add_inline_script(
+			$handle,
+			'window.' . self::CATALOG_OBJECT . ' = ' . $json . ';',
 			'before'
 		);
 	}

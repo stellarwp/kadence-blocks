@@ -120,6 +120,40 @@ export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
 export const RESPONSIVE_BREAKPOINTS = ['tablet', 'mobile'];
 
 /**
+ * The registered-id segment for each `$type` whose DTCG spelling is not itself a valid kebab-case
+ * id segment (mirrors PHP's `Schema\Vocabulary\Token_Type::ID_SEGMENTS`). A `$type` absent from
+ * this map uses its own spelling verbatim. The full six-entry map ships, not just `fontFamily`, so
+ * the two sides cannot drift entry by entry.
+ *
+ * @since TBD
+ *
+ * @type {Record<string, string>}
+ */
+export const TOKEN_TYPE_ID_SEGMENTS = {
+	fontFamily: 'font-family',
+	fontWeight: 'font-weight',
+	lineHeight: 'line-height',
+	fontStyle: 'font-style',
+	textTransform: 'text-transform',
+	borderStyle: 'border-style',
+};
+
+/**
+ * The registered-id segment for a `$type`: the mapped kebab spelling when one is registered in
+ * `TOKEN_TYPE_ID_SEGMENTS`, or the `$type` verbatim otherwise. Mirrors PHP's
+ * `Token_Type::get_id_segment()`.
+ *
+ * @param {string} type The DTCG `$type` (spec spelling).
+ *
+ * @since TBD
+ *
+ * @return {string} The registered-id segment for `type`.
+ */
+export function tokenTypeIdSegment(type) {
+	return TOKEN_TYPE_ID_SEGMENTS[type] ?? type;
+}
+
+/**
  * Build a DTCG leaf payload for a token value update.
  *
  * Accepts either a plain string (a flat token) or a structured value carrying a base plus a per-breakpoint
