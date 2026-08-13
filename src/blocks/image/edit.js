@@ -264,7 +264,7 @@ export function ImageEdit(props) {
 	uniqueIdHelper(props);
 
 	useEffect(() => {
-		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
+		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic settings )
 		debouncedSetDynamicState(
 			'kadence.dynamicImage',
 			'',

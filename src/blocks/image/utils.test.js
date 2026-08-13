@@ -1,9 +1,5 @@
 /* eslint-env jest */
-/**
- * Run this file’s tests from the plugin root (`kadence-blocks/`):
- *
- *   npm run test:unit -- src/blocks/image/utils.test.js
- */
+/* Run from the plugin root: npm run test:unit -- src/blocks/image/utils.test.js */
 import { isSvgUrl } from './utils';
 
 describe('image utils', () => {
