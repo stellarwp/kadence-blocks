@@ -3,14 +3,17 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Palette;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\TestCase;
 
 /**
- * Covers the palette switch-layer projector: it emits a `[data-kb-palette="<id>"]` selector for each of the
- * active library's shipped palettes, and is a no-op when the registry is deactivated.
+ * Covers the palette switch-layer projector: it emits a `[data-kb-palette="<id>"]` selector for each palette
+ * the active library defines that differs from the baseline default, and is a no-op when the registry is
+ * deactivated. The baseline ships only the `default` palette (whose graph equals the baseline, so it emits no
+ * declarations on its own), so the per-palette cases seed a local non-default palette to switch to.
  */
 final class ProjectorTest extends TestCase {
 
@@ -25,6 +28,11 @@ final class ProjectorTest extends TestCase {
 	private Token_Registry $registry;
 
 	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -32,6 +40,7 @@ final class ProjectorTest extends TestCase {
 
 		$this->projector = $this->container->get( Projector::class );
 		$this->registry  = $this->container->get( Token_Registry::class );
+		$this->store     = $this->container->get( Token_Store::class );
 	}
 
 	/**
@@ -44,17 +53,18 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
-	 * The projector emits a switch selector for each shipped palette, re-pointing the brand color vars to the
-	 * palette's values (here the "sunset" starter palette).
+	 * The projector emits a switch selector for each palette that differs from the baseline default, re-pointing
+	 * the brand color vars to the palette's values (here a seeded "custom" palette).
 	 *
 	 * @return void
 	 */
-	public function testItEmitsASwitchSelectorForEachShippedPalette(): void {
+	public function testItEmitsASwitchSelectorForEachPalette(): void {
+		$this->store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ) );
+
 		$css = $this->projector->css();
 
 		$this->assertStringContainsString( '[data-kb-palette="default"]{', $css );
-		$this->assertStringContainsString( '[data-kb-palette="sunset"]{', $css );
-		$this->assertStringContainsString( '[data-kb-palette="forest"]{', $css );
+		$this->assertStringContainsString( '[data-kb-palette="custom"]{', $css );
 
 		$this->assertStringContainsString(
 			Css_Var::from_id( 'primitive.color.brand.primary' ) . ':#DD6B20;',
@@ -70,19 +80,21 @@ final class ProjectorTest extends TestCase {
 	 * @return void
 	 */
 	public function testTheSwitchSelectorCarriesTheResolvedColorGraph(): void {
+		$this->store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ) );
+
 		$css = $this->projector->css();
 
-		// Isolate just the sunset selector's declarations (up to its closing brace).
-		$start = strpos( $css, '[data-kb-palette="sunset"]{' );
+		// Isolate just the custom selector's declarations (up to its closing brace).
+		$start = strpos( $css, '[data-kb-palette="custom"]{' );
 		$this->assertNotFalse( $start );
 		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
 
-		// Sunset's own button primitive delta is present.
+		// The custom palette's own button primitive delta is present.
 		$this->assertStringContainsString( Css_Var::from_id( 'primitive.color.brand.button' ) . ':#DD6B20;', $block );
 
-		// The semantic that aliases the re-tinted button primitive is resolved to sunset's color (not just the
-		// primitive) — this is what makes a block reading the semantic re-skin, and what the button's preset
-		// var chains to.
+		// The semantic that aliases the re-tinted button primitive is resolved to the custom palette's color (not
+		// just the primitive) — this is what makes a block reading the semantic re-skin, and what the button's
+		// preset var chains to.
 		$this->assertStringContainsString( Css_Var::from_id( 'semantic.color.button-primary-bg' ) . ':#DD6B20;', $block );
 	}
 
@@ -123,5 +135,61 @@ final class ProjectorTest extends TestCase {
 		$this->projector->enqueue_front_end();
 
 		$this->assertEmpty( wp_styles()->get_data( 'kadence-blocks-global-variables', 'after' ) );
+	}
+
+	/**
+	 * Seed a non-default "custom" palette (brand primary + button both re-tinted to #DD6B20) into the active
+	 * library, so the projector has a palette that differs from the baseline default to emit a switch selector
+	 * for. The baseline ships only the `default` palette, whose graph equals the baseline and so emits no
+	 * `[data-kb-palette]` declarations on its own.
+	 *
+	 * @return void
+	 */
+	private function custom_palette_overrides(): array {
+		return [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'colorPalettes' => [
+						'$current' => 'custom',
+						'custom'   => [
+							'label'  => 'Custom',
+							'groups' => [
+								[
+									'id'       => 'accent',
+									'label'    => 'Accent',
+									'swatches' => [
+										[
+											'token'  => 'primitive.color.brand.primary',
+											'label'  => 'Main 1',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.secondary',
+											'label'  => 'Main 2',
+											'$value' => '#C05621',
+										],
+										[
+											'token'  => 'primitive.color.brand.accent',
+											'label'  => 'Main 3',
+											'$value' => '#F6AD55',
+										],
+										[
+											'token'  => 'primitive.color.brand.button',
+											'label'  => 'Button',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.button-hover',
+											'label'  => 'Button Hover',
+											'$value' => '#C05621',
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 	}
 }

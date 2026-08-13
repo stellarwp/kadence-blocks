@@ -728,16 +728,13 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '#3182CE', $resolver->resolve()->value( 'semantic.color.link' ) );
 		$spacing = $resolver->resolve()->value( 'semantic.spacing.block' );
 
-		// Switch the library to the shipped "sunset" palette by writing $current; the write bumps the version.
-		$store->save_document(
-			(string) wp_json_encode(
-				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
-			)
-		);
+		// Switch the library to a non-default "custom" palette by writing it and pointing $current at it; the
+		// write bumps the version.
+		$store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ) );
 
 		$resolved = $resolver->resolve();
 
-		// The brand primitive and the semantic link that aliases it both re-tint to sunset's color.
+		// The brand primitive and the semantic link that aliases it both re-tint to the custom palette's color.
 		$this->assertSame( '#DD6B20', $resolved->value( 'primitive.color.brand.primary' ) );
 		$this->assertSame( '#DD6B20', $resolved->value( 'semantic.color.link' ) );
 
@@ -757,11 +754,7 @@ final class Token_ResolverTest extends TestCase {
 		/** @var Token_Store $store */
 		$store = $this->container->get( Token_Store::class );
 
-		$store->save_document(
-			(string) wp_json_encode(
-				[ '$extensions' => [ 'com.kadence.designTokens' => [ 'colorPalettes' => [ '$current' => 'sunset' ] ] ] ]
-			)
-		);
+		$store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ) );
 		$this->assertSame( '#DD6B20', $resolver->resolve()->value( 'primitive.color.brand.primary' ) );
 
 		$store->save_document(
@@ -976,5 +969,60 @@ final class Token_ResolverTest extends TestCase {
 		$this->assertSame( '1.125rem', $resolved->value( 'semantic.font-size.control' ) );
 		$this->assertSame( [], $resolved->projected_responsive() );
 		$this->assertNull( $resolved->value_at( 'semantic.font-size.control', 'tablet' ) );
+	}
+
+	/**
+	 * A stored-overrides document that defines a non-default "custom" color palette (brand + button deltas, no
+	 * neutral ramp) and points `$current` at it. The baseline ships only the `default` palette, so the
+	 * palette-switch tests define the palette they switch to here rather than leaning on a baseline placeholder.
+	 *
+	 * @return array<string, mixed> The decoded overrides document.
+	 */
+	private function custom_palette_overrides(): array {
+		return [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'colorPalettes' => [
+						'$current' => 'custom',
+						'custom'   => [
+							'label'  => 'Custom',
+							'groups' => [
+								[
+									'id'       => 'accent',
+									'label'    => 'Accent',
+									'swatches' => [
+										[
+											'token'  => 'primitive.color.brand.primary',
+											'label'  => 'Main 1',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.secondary',
+											'label'  => 'Main 2',
+											'$value' => '#C05621',
+										],
+										[
+											'token'  => 'primitive.color.brand.accent',
+											'label'  => 'Main 3',
+											'$value' => '#F6AD55',
+										],
+										[
+											'token'  => 'primitive.color.brand.button',
+											'label'  => 'Button',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.button-hover',
+											'label'  => 'Button Hover',
+											'$value' => '#C05621',
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 	}
 }

@@ -724,38 +724,6 @@
 							]
 						}
 					]
-				},
-				"sunset": {
-					"label": "Sunset",
-					"groups": [
-						{
-							"id": "accent",
-							"label": "Accent",
-							"swatches": [
-								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#DD6B20" },
-								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#C05621" },
-								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#F6AD55" },
-								{ "token": "primitive.color.brand.button", "label": "Button", "$value": "#DD6B20" },
-								{ "token": "primitive.color.brand.button-hover", "label": "Button Hover", "$value": "#C05621" }
-							]
-						}
-					]
-				},
-				"forest": {
-					"label": "Forest",
-					"groups": [
-						{
-							"id": "accent",
-							"label": "Accent",
-							"swatches": [
-								{ "token": "primitive.color.brand.primary", "label": "Main 1", "$value": "#2F855A" },
-								{ "token": "primitive.color.brand.secondary", "label": "Main 2", "$value": "#276749" },
-								{ "token": "primitive.color.brand.accent", "label": "Main 3", "$value": "#68D391" },
-								{ "token": "primitive.color.brand.button", "label": "Button", "$value": "#2F855A" },
-								{ "token": "primitive.color.brand.button-hover", "label": "Button Hover", "$value": "#276749" }
-							]
-						}
-					]
 				}
 			},
 			"presets": {

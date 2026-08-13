@@ -9,8 +9,8 @@ use Tests\Support\Classes\TestCase;
 
 /**
  * Covers the effective palettes reader: the shipped baseline's colorPalettes deep-merged with the stored
- * overrides, its `$current` / `$default` pointer resolution, and the resolve-time overlay diff — asserted
- * against the real baseline so these also guard its palette definitions.
+ * overrides, its `$current` / `$default` pointer resolution, and the resolve-time overlay diff. The baseline
+ * ships only the `default` palette, so the non-default cases define their own local palette to switch to.
  */
 final class Effective_PalettesTest extends TestCase {
 
@@ -35,7 +35,7 @@ final class Effective_PalettesTest extends TestCase {
 	}
 
 	/**
-	 * With nothing stored, the reader returns the baseline palettes and their pointers.
+	 * With nothing stored, the reader returns the sole shipped baseline palette (`default`) and its pointers.
 	 *
 	 * @return void
 	 */
@@ -43,8 +43,6 @@ final class Effective_PalettesTest extends TestCase {
 		$ids = $this->palettes->palette_ids();
 
 		$this->assertContains( 'default', $ids );
-		$this->assertContains( 'sunset', $ids );
-		$this->assertContains( 'forest', $ids );
 
 		$this->assertSame( 'default', $this->palettes->default_palette() );
 		$this->assertSame( 'default', $this->palettes->current() );
@@ -79,40 +77,34 @@ final class Effective_PalettesTest extends TestCase {
 	 * @return void
 	 */
 	public function testPointingCurrentAtANonDefaultPaletteBuildsTheOverlay(): void {
-		$overrides = [
-			'$extensions' => [
-				'com.kadence.designTokens' => [
-					'colorPalettes' => [ '$current' => 'sunset' ],
-				],
-			],
-		];
+		$overlay = $this->palettes->overlay_for_overrides( $this->custom_palette_overrides() );
 
-		$overlay = $this->palettes->overlay_for_overrides( $overrides );
-
-		// Sunset re-tints the brand accents (its swatches differ from the baseline default palette).
+		// The custom palette re-tints the brand accents (its swatches differ from the baseline default palette).
 		$this->assertSame( '#DD6B20', $overlay['primitive.color.brand.primary'] );
 		$this->assertSame( '#C05621', $overlay['primitive.color.brand.secondary'] );
 		$this->assertSame( '#F6AD55', $overlay['primitive.color.brand.accent'] );
 
-		// It does not touch the neutral ramp — sunset defines no swatch for it.
+		// It does not touch the neutral ramp — the custom palette defines no swatch for it.
 		$this->assertArrayNotHasKey( 'primitive.color.neutral.900', $overlay );
 	}
 
 	/**
-	 * The effective colors for a partial palette are the default palette overlaid with its own deltas: a
-	 * sunset swatch (brand) wins, while a token sunset omits (a neutral) falls back to the default value. This
+	 * The effective colors for a partial palette are the default palette overlaid with its own deltas: the
+	 * palette's own swatch (brand) wins, while a token it omits (a neutral) falls back to the default value. This
 	 * is the complete color set the per-block switch layer emits.
 	 *
 	 * @return void
 	 */
 	public function testEffectiveSwatchValuesOverlayThePaletteOverTheDefault(): void {
-		$effective = $this->palettes->effective_swatch_values( 'sunset' );
+		$this->store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ), 'default' );
 
-		// Sunset's own delta wins for the brand + button colors it defines.
+		$effective = $this->palettes->effective_swatch_values( 'custom' );
+
+		// The custom palette's own delta wins for the brand + button colors it defines.
 		$this->assertSame( '#DD6B20', $effective['primitive.color.brand.primary'] );
 		$this->assertSame( '#DD6B20', $effective['primitive.color.brand.button'] );
 
-		// A token sunset omits falls back to the default palette's value (a complete set).
+		// A token the custom palette omits falls back to the default palette's value (a complete set).
 		$this->assertSame( '#1A202C', $effective['primitive.color.neutral.900'] );
 		$this->assertSame( '#E2E8F0', $effective['primitive.color.neutral.200'] );
 	}
@@ -157,5 +149,60 @@ final class Effective_PalettesTest extends TestCase {
 		$this->assertContains( 'midnight', $this->palettes->palette_ids() );
 		$this->assertSame( 'midnight', $this->palettes->current() );
 		$this->assertSame( '#0b1020', $this->palettes->current_swatch_values()['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * A stored-overrides document that defines a non-default "custom" palette — brand + button deltas only, no
+	 * neutral ramp — pointing `$current` at it. The baseline ships only the `default` palette, so the non-default
+	 * cases own the palette they switch to instead of leaning on a baseline placeholder.
+	 *
+	 * @return array<string, mixed> The decoded overrides document.
+	 */
+	private function custom_palette_overrides(): array {
+		return [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'colorPalettes' => [
+						'$current' => 'custom',
+						'custom'   => [
+							'label'  => 'Custom',
+							'groups' => [
+								[
+									'id'       => 'accent',
+									'label'    => 'Accent',
+									'swatches' => [
+										[
+											'token'  => 'primitive.color.brand.primary',
+											'label'  => 'Main 1',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.secondary',
+											'label'  => 'Main 2',
+											'$value' => '#C05621',
+										],
+										[
+											'token'  => 'primitive.color.brand.accent',
+											'label'  => 'Main 3',
+											'$value' => '#F6AD55',
+										],
+										[
+											'token'  => 'primitive.color.brand.button',
+											'label'  => 'Button',
+											'$value' => '#DD6B20',
+										],
+										[
+											'token'  => 'primitive.color.brand.button-hover',
+											'label'  => 'Button Hover',
+											'$value' => '#C05621',
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 	}
 }
