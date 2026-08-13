@@ -85,7 +85,7 @@ describe('useStyleLibraryRoute under StrictMode', () => {
 		act(() => box.current.navigate({ screen: 'color' }));
 
 		expect(pushState).toHaveBeenCalledTimes(2);
-		expect(box.current.route).toEqual({ screen: 'color', item: '' });
+		expect(box.current.route).toEqual({ screen: 'color', scope: '', item: '' });
 	});
 
 	/**
@@ -114,7 +114,7 @@ describe('useStyleLibraryRoute under StrictMode', () => {
 		act(() => box.current.navigate({ screen: 'typography' }));
 		act(() => box.current.navigate({ item: 'heading-1' }));
 
-		expect(box.current.route).toEqual({ screen: 'typography', item: 'heading-1' });
+		expect(box.current.route).toEqual({ screen: 'typography', scope: '', item: 'heading-1' });
 		expect(pushState).toHaveBeenCalledTimes(2);
 	});
 
@@ -132,7 +132,7 @@ describe('useStyleLibraryRoute under StrictMode', () => {
 			box.current.navigate({ item: 'heading-1' });
 		});
 
-		expect(box.current.route).toEqual({ screen: 'typography', item: 'heading-1' });
+		expect(box.current.route).toEqual({ screen: 'typography', scope: '', item: 'heading-1' });
 
 		const lastUrl = pushState.mock.calls[pushState.mock.calls.length - 1][2];
 
@@ -157,7 +157,7 @@ describe('useStyleLibraryRoute under StrictMode', () => {
 			window.dispatchEvent(new window.PopStateEvent('popstate'));
 		});
 
-		expect(box.current.route).toEqual({ screen: 'color', item: '' });
+		expect(box.current.route).toEqual({ screen: 'color', scope: '', item: '' });
 		expect(pushState).not.toHaveBeenCalled();
 	});
 });
