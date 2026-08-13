@@ -8,6 +8,11 @@
  */
 
 /**
+ * Internal dependencies
+ */
+import { tokenTypeIdSegment } from './tokens';
+
+/**
  * Map a feed's UI-schema group to the row descriptors a scale screen renders, in feed order.
  *
  * @param {{ groups?: Record<string, Array<Object>> }} schema The feed's UI schema.
@@ -109,9 +114,13 @@ export function nextScaleSlug(existingIds, slugBase) {
 
 /**
  * Build the canonical id for a minted custom primitive. Mirrors
- * `Document\Reserved_Namespace::canonical()`.
+ * `Document\Reserved_Namespace::canonical()`: the id's second segment is the type's REGISTERED id
+ * segment (`tokenTypeIdSegment()`), not necessarily the `$type` spelling itself — the id feeds
+ * `Css_Var::from_id()`, which requires the kebab charset, while `$type` stays the DTCG spec
+ * spelling. Identity for every type already kebab-case, so every sibling scale screen (which only
+ * ever passes `dimension`) is unaffected.
  *
- * @param {string} tokenType The DTCG `$type` (e.g. `'dimension'`).
+ * @param {string} tokenType The DTCG `$type` (e.g. `'dimension'`, `'fontFamily'`).
  * @param {string} slug      The terminal slug.
  *
  * @since TBD
@@ -119,7 +128,7 @@ export function nextScaleSlug(existingIds, slugBase) {
  * @return {string} The canonical dot-path id.
  */
 export function customScaleTokenId(tokenType, slug) {
-	return `primitive.${tokenType}.custom.${slug}`;
+	return `primitive.${tokenTypeIdSegment(tokenType)}.custom.${slug}`;
 }
 
 /**

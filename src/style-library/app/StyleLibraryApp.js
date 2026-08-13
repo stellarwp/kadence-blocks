@@ -20,6 +20,7 @@ import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
 import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
+import { TypographyScreen } from '../components/pages/TypographyScreen';
 import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
 import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
 import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
@@ -41,6 +42,7 @@ import { libraryDisplayTitle } from '../helpers/libraries';
  * @since TBD
  */
 const SCREEN_COMPONENTS = {
+	typography: TypographyScreen,
 	'border-radius': BorderRadiusScreen,
 	'color-palette': ColorPaletteScreen,
 	'border-width': BorderWidthScreen,

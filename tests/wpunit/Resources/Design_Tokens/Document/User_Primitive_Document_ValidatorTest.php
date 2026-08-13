@@ -186,6 +186,25 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * The orphan walk reads the primitive subtree by the type's MAPPED id segment
+	 * (Token_Type::get_id_segment()), not the raw $type — a font-family leaf with no envelope
+	 * entry is found and reported under the kebab id, matching where it actually lives in the
+	 * document tree.
+	 *
+	 * @return void
+	 */
+	public function testFontFamilyTreeLeafWithNoEnvelopeEntryReturnsOrphanErrorUnderTheKebabId(): void {
+		$id  = 'primitive.font-family.custom.orphan';
+		$doc = $this->set_tree_leaf( [], $id, Token_Type::get_type_font_family(), '["Abel"]' );
+
+		$errors = $this->validator->validate( $doc );
+
+		$this->assertCount( 1, $errors );
+		$this->assertSame( $id, $errors[0]->get_id() );
+		$this->assertStringContainsString( 'no provenance envelope entry', $errors[0]->get_message() );
+	}
+
+	/**
 	 * The orphan scan covers every type segment, not one: it finds a leaf with no envelope entry under
 	 * dimension and shadow just as it does under color, and a shadow's object $value sub-fields
 	 * are not themselves reported as orphans.
@@ -233,12 +252,14 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * A leaf declaring a camelCase $type (which can never register, per is_supported_type()) is refused
-	 * with the "does not support user-created primitives" error.
+	 * An id whose second segment is the raw camelCase $type spelling (rather than
+	 * Token_Type::get_id_segment()'s mapped kebab spelling) no longer matches is_reserved_id() at
+	 * all — the mapping means "fontWeight" is never a valid id segment, only "font-weight" is — so
+	 * this now fails the namespace gate itself, not the (dropped) unsupported-type predicate.
 	 *
 	 * @return void
 	 */
-	public function testTreeLeafWithWrongTypeReturnsTypeError(): void {
+	public function testTreeLeafWithCamelCaseIdSegmentReturnsNamespaceError(): void {
 		$id  = 'primitive.fontWeight.custom.size';
 		$doc = $this->doc_with_leaf_type( $id, 'Size', 'fontWeight', '600' );
 
@@ -250,12 +271,12 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 		$messages = array_map( static fn( User_Primitive_Validation_Error $e ) => $e->get_message(), $errors );
 		$found    = false;
 		foreach ( $messages as $msg ) {
-			if ( strpos( $msg, 'does not support user-created primitives' ) !== false ) {
+			if ( strpos( $msg, 'allowed namespace' ) !== false ) {
 				$found = true;
 				break;
 			}
 		}
-		$this->assertTrue( $found, 'Expected a type error message mentioning "does not support user-created primitives".' );
+		$this->assertTrue( $found, 'Expected a namespace error message mentioning "allowed namespace".' );
 	}
 
 	// -------------------------------------------------------------------------
@@ -305,6 +326,31 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 			'id'            => 'primitive.color.custom.x',
 			'declared_type' => Token_Type::get_type_dimension(),
 		];
+
+		yield 'the mapped font-family id segment with a fontWeight leaf type' => [
+			'id'            => 'primitive.font-family.custom.x',
+			'declared_type' => Token_Type::get_type_font_weight(),
+		];
+	}
+
+	/**
+	 * The invariant compares the MAPPED id segment against $type, not the raw $type spelling: a
+	 * fontFamily leaf under the font-family id segment is self-consistent and returns no mismatch
+	 * error, even though "fontFamily" !== "font-family" as raw strings.
+	 *
+	 * @return void
+	 */
+	public function testTreeLeafTypeMatchingMappedIdSegmentReturnsNoMismatchError(): void {
+		$id  = 'primitive.font-family.custom.x';
+		$doc = $this->doc_with_leaf_type( $id, 'Label', Token_Type::get_type_font_family(), '["Abel"]' );
+
+		$errors = $this->validator->validate( $doc );
+
+		$messages = array_map( static fn( User_Primitive_Validation_Error $e ) => $e->get_message(), $errors );
+
+		foreach ( $messages as $msg ) {
+			$this->assertStringNotContainsString( 'does not match its id namespace', $msg );
+		}
 	}
 
 	// -------------------------------------------------------------------------
