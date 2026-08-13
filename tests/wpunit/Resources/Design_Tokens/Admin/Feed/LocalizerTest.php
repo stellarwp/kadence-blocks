@@ -10,6 +10,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -189,7 +190,8 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Token_Store::class ),
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
-			$this->container->get( Responsive_Feed::class )
+			$this->container->get( Responsive_Feed::class ),
+			$this->container->get( Token_Label_Index::class )
 		);
 
 		$localizer = new Localizer(
@@ -344,5 +346,51 @@ final class LocalizerTest extends TestCase {
 		}
 
 		$this->assertNotNull( $found, 'The active library\'s user primitive must appear in the localized schema.' );
+	}
+
+	/**
+	 * A stored tokenLabels entry surfaces as the effective label in the localized schema, with
+	 * labelOverridden set — proving the read/apply wiring end to end (Feed_Assembler decoding the
+	 * document and Builder overlaying it), not just the pure Builder overlay BuilderTest covers.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokenLabelOverridesReachTheLocalizedSchema(): void {
+		$store = $this->container->get( Token_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [
+							'semantic.color.button-primary-bg' => 'Cozy Button',
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc );
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The overridden token must appear in the localized schema.' );
+		$this->assertSame( 'Cozy Button', $found['label'] );
+		$this->assertTrue( $found['labelOverridden'] );
 	}
 }

@@ -62,7 +62,7 @@ final class BuilderTest extends TestCase {
 		$this->assertTrue( $feed['resolved'] );
 		$this->assertSame( 'v7', $feed['version'] );
 		$this->assertSame( 'default', $feed['slug'] );
-		$this->assertSame( $this->registry->to_ui_schema(), $feed['schema'] );
+		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
 		$this->assertSame( $values, $feed['values'] );
 		$this->assertSame( $presets, $feed['presets'] );
 		$this->assertSame( $this->rest(), $feed['rest'] );
@@ -78,7 +78,7 @@ final class BuilderTest extends TestCase {
 
 		$this->assertTrue( $feed['active'] );
 		$this->assertFalse( $feed['resolved'] );
-		$this->assertSame( $this->registry->to_ui_schema(), $feed['schema'] );
+		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
 		$this->assertSame( [], $feed['values'] );
 	}
 
@@ -163,5 +163,112 @@ final class BuilderTest extends TestCase {
 			],
 			$feed['presetNav']
 		);
+	}
+
+	/**
+	 * A label override rewrites `label` and sets `labelOverridden` only on the matching row;
+	 * every other row still carries the declared label and `labelOverridden: false`.
+	 *
+	 * @return void
+	 */
+	public function testOverridesRewriteLabelAndFlagOnlyMatchingIds(): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => 'Button Text',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[ 'semantic.color.button-bg' => 'Cozy' ]
+		);
+
+		$rows = [];
+		foreach ( $feed['schema']['groups'] as $group_rows ) {
+			foreach ( $group_rows as $row ) {
+				$rows[ $row['id'] ] = $row;
+			}
+		}
+
+		$this->assertSame( 'Cozy', $rows['semantic.color.button-bg']['label'] );
+		$this->assertTrue( $rows['semantic.color.button-bg']['labelOverridden'] );
+		$this->assertSame( 'Button Text', $rows['semantic.color.button-text']['label'] );
+		$this->assertFalse( $rows['semantic.color.button-text']['labelOverridden'] );
+	}
+
+	/**
+	 * An override for an id the schema does not contain is ignored — no row gains it, and no
+	 * error is raised.
+	 *
+	 * @return void
+	 */
+	public function testAnOverrideForAnUnknownIdIsIgnored(): void {
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[ 'semantic.color.does-not-exist' => 'Ghost' ]
+		);
+
+		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
+	}
+
+	/**
+	 * An inactive registry still yields an empty schema regardless of overrides passed in.
+	 *
+	 * @return void
+	 */
+	public function testAnInactiveRegistryYieldsEmptySchemaRegardlessOfOverrides(): void {
+		$this->registry->deactivate();
+
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[ 'semantic.color.button-bg' => 'Cozy' ]
+		);
+
+		$this->assertSame( [ 'groups' => [] ], $feed['schema'] );
+	}
+
+	/**
+	 * Overlay every row of a raw registry schema with `labelOverridden: false`, matching what the
+	 * Builder does when no override map is passed. Used to keep the existing structural
+	 * assertions comparing against the raw registry schema meaningful now that the Builder always
+	 * augments its rows.
+	 *
+	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema
+	 *
+	 * @return array{groups: array<string, array<int, array<string, mixed>>>}
+	 */
+	private function with_no_overrides( array $schema ): array {
+		foreach ( $schema['groups'] as $group => $rows ) {
+			foreach ( $rows as $i => $row ) {
+				$schema['groups'][ $group ][ $i ]['labelOverridden'] = false;
+			}
+		}
+
+		return $schema;
 	}
 }
