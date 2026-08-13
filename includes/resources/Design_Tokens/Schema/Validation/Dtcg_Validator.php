@@ -630,6 +630,18 @@ final class Dtcg_Validator {
 			);
 		}
 
+		// tokenOrder is a single flat ordered token id list — not preset-shaped and not a
+		// { key => value } map, so the tokens-map walk (driven by get_sections(), which excludes
+		// it) never covers it. Without this branch it would pass through with no validation at all.
+		$order_section = Extensions::get_section_token_order();
+
+		if ( isset( $namespace[ $order_section ] ) && is_array( $namespace[ $order_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_token_order( $namespace[ $order_section ], $base . '.' . $order_section )
+			);
+		}
+
 		return $errors;
 	}
 
@@ -712,6 +724,52 @@ final class Dtcg_Validator {
 					$prefix . '.' . Cast::to_string( $id ),
 					Validation_Error::get_code_value_invalid(),
 					'A token label override must map a non-empty token id to a non-empty string label.'
+				);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a tokenOrder section: it must be a single sequential list of non-empty string
+	 * token ids — never keyed by group, so a stored order stays locale-independent regardless of
+	 * which translated UI-schema group label a request addresses it through. Whether an id
+	 * resolves to a registered token is the REST write guard's concern (which prunes on save) and
+	 * the feed merge's concern (which ignores on read) — a stale id is data drift, not a grammar
+	 * error, so it does not fail full-document validation.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $order  The decoded tokenOrder section.
+	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_token_order( array $order, string $prefix ): array {
+		// The `$order === []` check is required, not redundant: `range( 0, -1 )` returns
+		// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty order list would be
+		// misclassified as malformed rather than as a valid empty list.
+		$is_list = $order === [] || array_keys( $order ) === range( 0, count( $order ) - 1 );
+
+		if ( ! $is_list ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'tokenOrder must be a sequential list of non-empty string token ids.'
+				),
+			];
+		}
+
+		$errors = [];
+
+		foreach ( $order as $index => $id ) {
+			if ( ! is_string( $id ) || $id === '' ) {
+				$errors[] = new Validation_Error(
+					$prefix . '.' . Cast::to_string( $index ),
+					Validation_Error::get_code_value_invalid(),
+					'tokenOrder must be a sequential list of non-empty string token ids.'
 				);
 			}
 		}

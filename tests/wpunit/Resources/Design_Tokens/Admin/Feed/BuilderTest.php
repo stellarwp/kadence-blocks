@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -250,6 +251,206 @@ final class BuilderTest extends TestCase {
 		);
 
 		$this->assertSame( [ 'groups' => [] ], $feed['schema'] );
+	}
+
+	/**
+	 * A stored order permutes a group's rows: ordered ids come first in stored sequence, and every
+	 * remaining row from the registry follows in declaration order.
+	 *
+	 * @return void
+	 */
+	public function testOrderPermutesAGroupAndAppendsTheRestInDeclarationOrder(): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => 'Button Text',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-border',
+				'type'        => 'color',
+				'label'       => 'Button Border',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[],
+			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
+		);
+
+		$this->assertSame(
+			[ 'semantic.color.button-text', 'semantic.color.button-bg', 'semantic.color.button-border' ],
+			array_column( $feed['schema']['groups']['Brand'], 'id' )
+		);
+	}
+
+	/**
+	 * A stale id in the stored order (naming no row in the group) is skipped, never surfaced as a
+	 * ghost row.
+	 *
+	 * @return void
+	 */
+	public function testOrderSkipsStaleIdsThatNameNoRowInTheGroup(): void {
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[],
+			[ 'semantic.color.does-not-exist', 'semantic.color.button-bg' ]
+		);
+
+		$this->assertSame(
+			[ 'semantic.color.button-bg' ],
+			array_column( $feed['schema']['groups']['Brand'], 'id' )
+		);
+	}
+
+	/**
+	 * A group with no stored order is returned untouched — declaration order.
+	 *
+	 * @return void
+	 */
+	public function testAGroupWithNoStoredOrderIsUntouched(): void {
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[],
+			[ 'spacing.sm' ]
+		);
+
+		$this->assertSame(
+			array_column( $this->registry->to_ui_schema()['groups']['Brand'], 'id' ),
+			array_column( $feed['schema']['groups']['Brand'], 'id' )
+		);
+	}
+
+	/**
+	 * An empty order list is the identity transform — every group's row set and sequence is
+	 * unchanged, exactly the declaration order the registry emits. This is the property the
+	 * Builder payload snapshot pins: a snapshot regenerated for this ticket would hide a bug here.
+	 *
+	 * @return void
+	 */
+	public function testAnEmptyOrderListIsTheIdentityTransform(): void {
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', '', [], [], [] );
+
+		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
+	}
+
+	/**
+	 * Every fixture above preserves the full registered row set for the ordered group — a reorder
+	 * permutes but never hides a token, regardless of which malformed or partial order is applied.
+	 *
+	 * @dataProvider orderFixtureProvider
+	 *
+	 * @param list<string> $order The stored flat order to apply.
+	 *
+	 * @return void
+	 */
+	public function testOrderNeverChangesTheRegisteredRowSet( array $order ): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => 'Button Text',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', '', [], [], $order );
+
+		$this->assertEqualsCanonicalizing(
+			[ 'semantic.color.button-bg', 'semantic.color.button-text' ],
+			array_column( $feed['schema']['groups']['Brand'], 'id' )
+		);
+	}
+
+	/**
+	 * Order fixtures that must all preserve the full row set: a partial order, an order full of
+	 * stale ids, a duplicated id, and an empty order.
+	 *
+	 * @return Generator
+	 */
+	public function orderFixtureProvider(): Generator {
+		yield 'partial order' => [
+			'order' => [ 'semantic.color.button-text' ],
+		];
+
+		yield 'order full of stale ids' => [
+			'order' => [ 'semantic.color.does-not-exist', 'semantic.color.also-missing' ],
+		];
+
+		yield 'duplicated id' => [
+			'order' => [ 'semantic.color.button-bg', 'semantic.color.button-bg' ],
+		];
+
+		yield 'empty order' => [
+			'order' => [],
+		];
+	}
+
+	/**
+	 * A label override rides its row to the row's new position when both labels and order are
+	 * applied together.
+	 *
+	 * @return void
+	 */
+	public function testLabelsAndOrderTogetherKeepTheOverriddenLabelOnItsRow(): void {
+		$this->registry->register(
+			[
+				'id'          => 'semantic.color.button-text',
+				'type'        => 'color',
+				'label'       => 'Button Text',
+				'group'       => 'Brand',
+				'projections' => [],
+			]
+		);
+
+		$feed = $this->builder()->build(
+			[],
+			true,
+			[],
+			$this->rest(),
+			'v7',
+			'default',
+			'',
+			[],
+			[ 'semantic.color.button-bg' => 'Cozy' ],
+			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
+		);
+
+		$rows = $feed['schema']['groups']['Brand'];
+
+		$this->assertSame( 'semantic.color.button-text', $rows[0]['id'] );
+		$this->assertSame( 'semantic.color.button-bg', $rows[1]['id'] );
+		$this->assertSame( 'Cozy', $rows[1]['label'] );
+		$this->assertTrue( $rows[1]['labelOverridden'] );
 	}
 
 	/**

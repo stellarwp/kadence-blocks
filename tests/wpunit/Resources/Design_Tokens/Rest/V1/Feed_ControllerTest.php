@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Feed_Controller;
 use ReflectionClass;
@@ -245,6 +247,473 @@ final class Feed_ControllerTest extends TestCase {
 		$this->assertNotNull( $found, 'The overridden token must appear in the REST feed schema.' );
 		$this->assertSame( 'Cozy Button', $found['label'] );
 		$this->assertTrue( $found['labelOverridden'] );
+	}
+
+	/**
+	 * The declared border-radius scale surfaces as its own feed group, in declaration order, with
+	 * every step's value resolved — the Border Radius screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheBorderRadiusScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Border Radius', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Border Radius'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.radius.none',
+				'primitive.dimension.radius.xs',
+				'primitive.dimension.radius.sm',
+				'primitive.dimension.radius.md',
+				'primitive.dimension.radius.lg',
+				'primitive.dimension.radius.xl',
+				'primitive.dimension.radius.full',
+			],
+			$ids
+		);
+
+		$this->assertSame( '0', $data['values']['primitive.dimension.radius.none'] );
+		$this->assertSame( '0.125rem', $data['values']['primitive.dimension.radius.xs'] );
+		$this->assertSame( '0.1875rem', $data['values']['primitive.dimension.radius.sm'] );
+		$this->assertSame( '0.375rem', $data['values']['primitive.dimension.radius.md'] );
+		$this->assertSame( '0.5rem', $data['values']['primitive.dimension.radius.lg'] );
+		$this->assertSame( '1rem', $data['values']['primitive.dimension.radius.xl'] );
+		$this->assertSame( '9999px', $data['values']['primitive.dimension.radius.full'] );
+	}
+
+	/**
+	 * The declared border-width scale surfaces as its own feed group, in declaration order, with
+	 * every step's value resolved and no projections — the Border Width screen's data source end
+	 * to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheBorderWidthScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Border Width', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Border Width'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.border-width.sm',
+				'primitive.dimension.border-width.md',
+				'primitive.dimension.border-width.lg',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Border Width'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared border-width scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '1px', $data['values']['primitive.dimension.border-width.sm'] );
+		$this->assertSame( '2px', $data['values']['primitive.dimension.border-width.md'] );
+		$this->assertSame( '4px', $data['values']['primitive.dimension.border-width.lg'] );
+	}
+
+	/**
+	 * `semantic.border-width.default` keeps resolving through the "sm" primitive after the scale is
+	 * declared — declaring the primitives for the Style Library screen must not disturb the alias
+	 * that already projects into the image block.
+	 *
+	 * @return void
+	 */
+	public function testSemanticBorderWidthDefaultStillResolvesThroughTheSmPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.dimension.border-width.sm'],
+			$data['values']['semantic.border-width.default']
+		);
+	}
+
+	/**
+	 * A user-created token minted into the border-width group (the stable key, decision 3 of the
+	 * shared scale-screen contract) surfaces inside the declared "Border Width" UI-schema group and
+	 * is flagged `userCreated`, exercising the shared group-key backend against this screen's own
+	 * key. Asserted against `Token_Registry::to_ui_schema()` directly — the same surface
+	 * `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken` checks for the sibling
+	 * border-radius group — rather than through the REST controller, whose resolved dependency
+	 * chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoBorderWidthSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.border-width-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'border-width-2' => [
+								'$type'  => 'dimension',
+								'$value' => '3px',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Border Width',
+								'group' => 'border-width',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Border Width', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Border Width'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Border Width" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
+	 * A user-created token minted into the spacing group (the stable key this ticket adds as
+	 * `group_key` on the already-declared spacing scale) surfaces inside the declared "Spacing"
+	 * UI-schema group and is flagged `userCreated`, exercising the shared group-key backend
+	 * against a pre-existing declaration rather than a newly declared one. Asserted against
+	 * `Token_Registry::to_ui_schema()` directly — the same surface
+	 * `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken` checks for the sibling
+	 * border-radius group — rather than through the REST controller, whose resolved dependency
+	 * chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoSpacingSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.spacing-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'spacing-2' => [
+								'$type'  => 'dimension',
+								'$value' => '2.5rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Spacing',
+								'group' => 'spacing',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Spacing', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Spacing'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Spacing" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
+	 * The declared icon-size scale surfaces as its own feed group, in declaration order, with every
+	 * step's value resolved and no projections — the Icon Sizes screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheIconSizesScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Icon Sizes', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Icon Sizes'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.dimension.icon-size.sm',
+				'primitive.dimension.icon-size.md',
+				'primitive.dimension.icon-size.lg',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Icon Sizes'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared icon-size scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '1rem', $data['values']['primitive.dimension.icon-size.sm'] );
+		$this->assertSame( '1.5rem', $data['values']['primitive.dimension.icon-size.md'] );
+		$this->assertSame( '2.25rem', $data['values']['primitive.dimension.icon-size.lg'] );
+	}
+
+	/**
+	 * `semantic.icon-size.default` keeps resolving through the "md" primitive after the scale is
+	 * declared — declaring the primitives for the Style Library screen must not disturb the alias
+	 * that already projects into the icon block and the button's icon size.
+	 *
+	 * @return void
+	 */
+	public function testSemanticIconSizeDefaultStillResolvesThroughTheMdPrimitive(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertSame(
+			$data['values']['primitive.dimension.icon-size.md'],
+			$data['values']['semantic.icon-size.default']
+		);
+	}
+
+	/**
+	 * A user-created token minted into the icon-sizes group (the stable key this ticket declares as
+	 * `group_key` alongside the newly declared icon-size scale) surfaces inside the declared
+	 * "Icon Sizes" UI-schema group and is flagged `userCreated`, exercising the shared group-key
+	 * backend against this screen's own key. Asserted against `Token_Registry::to_ui_schema()`
+	 * directly — the same surface `DocumentsControllerOrderTest::testOrderIncludesAGroupedCustomToken`
+	 * checks for the sibling border-radius group — rather than through the REST controller, whose
+	 * resolved dependency chain can be constructed once and cached earlier in a suite run.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoIconSizesSurfacesInItsFeedGroupAsUserCreated(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.dimension.custom.icon-size-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'dimension' => [
+						'custom' => [
+							'icon-size-2' => [
+								'$type'  => 'dimension',
+								'$value' => '3rem',
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'New Icon Size',
+								'group' => 'icon-sizes',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Icon Sizes', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Icon Sizes'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Icon Sizes" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+	}
+
+	/**
+	 * The declared shadow scale surfaces as its own feed group, in declaration order, with every
+	 * step's value resolved to the `Css_Renderer` shorthand and no projections — the Shadow
+	 * screen's data source end to end.
+	 *
+	 * @return void
+	 */
+	public function testGetItemReturnsTheShadowScaleGroup(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertArrayHasKey( 'Shadow', $data['schema']['groups'] );
+
+		$ids = array_column( $data['schema']['groups']['Shadow'], 'id' );
+		$this->assertSame(
+			[
+				'primitive.shadow.xs',
+				'primitive.shadow.sm',
+				'primitive.shadow.md',
+			],
+			$ids
+		);
+
+		foreach ( $data['schema']['groups']['Shadow'] as $entry ) {
+			$this->assertSame( [], $entry['projections'], 'The declared shadow scale carries no projections of its own.' );
+		}
+
+		$this->assertSame( '0px 1px 2px 0px #1717171f', $data['values']['primitive.shadow.xs'] );
+		$this->assertSame( '0px 2px 4px 0px #1717171f', $data['values']['primitive.shadow.sm'] );
+		$this->assertSame( '0px 2px 8px 0px #1717171f', $data['values']['primitive.shadow.md'] );
+	}
+
+	/**
+	 * `semantic.shadow.card` keeps resolving through its own curated, palette-linked value after
+	 * the shadow primitive scale is declared — declaring the scale for the Style Library screen
+	 * must not disturb the semantic's existing alias.
+	 *
+	 * @return void
+	 */
+	public function testSemanticShadowCardIsUnaffectedByTheDeclaredScale(): void {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'slug', Token_Store::default_slug() );
+
+		$data = $this->controller->get_item( $request )->get_data();
+
+		$this->assertNotSame(
+			$data['values']['primitive.shadow.md'],
+			$data['values']['semantic.shadow.card'],
+			'semantic.shadow.card must keep its own curated value, not follow the new scale.'
+		);
+	}
+
+	/**
+	 * A user-created token minted into the shadow group (the stable key this ticket declares as
+	 * `group_key` alongside the newly declared shadow scale) surfaces inside the declared "Shadow"
+	 * UI-schema group and is flagged `userCreated`, and a stored `inset` sub-field round-trips into
+	 * the resolved value with the `inset ` prefix `Css_Renderer::shadow()` emits.
+	 *
+	 * @return void
+	 */
+	public function testUserPrimitiveGroupedIntoShadowSurfacesInItsFeedGroupWithInsetResolved(): void {
+		$slug = Token_Store::default_slug();
+		$id   = 'primitive.shadow.custom.shadow-2';
+
+		$document = (string) wp_json_encode(
+			[
+				'primitive'   => [
+					'shadow' => [
+						'custom' => [
+							'shadow-2' => [
+								'$type'  => 'shadow',
+								'$value' => [
+									'color'   => '#171717',
+									'offsetX' => '0px',
+									'offsetY' => '4px',
+									'blur'    => '12px',
+									'spread'  => '0px',
+									'inset'   => true,
+								],
+							],
+						],
+					],
+				],
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'userPrimitives' => [
+							$id => [
+								'label' => 'Elevated',
+								'group' => 'shadow',
+							],
+						],
+					],
+				],
+			]
+		);
+
+		$this->store->save_document( $document, $slug );
+
+		/** @var User_Primitive_Registrar $registrar */
+		$registrar = $this->container->get( User_Primitive_Registrar::class );
+		$registrar->sync();
+
+		/** @var Token_Registry $registry */
+		$registry = $this->container->get( Token_Registry::class );
+		$schema   = $registry->to_ui_schema();
+
+		$this->assertArrayHasKey( 'Shadow', $schema['groups'] );
+
+		$found = null;
+
+		foreach ( $schema['groups']['Shadow'] as $entry ) {
+			if ( $id === $entry['id'] ) {
+				$found = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $found, 'The grouped custom token must appear in the declared "Shadow" UI-schema group.' );
+		$this->assertTrue( $found['userCreated'] );
+
+		/** @var Token_Resolver $resolver */
+		$resolver = $this->container->get( Token_Resolver::class );
+		$resolved = $resolver->resolve( $slug );
+
+		$this->assertSame( 'inset 0px 4px 12px 0px #171717', $resolved->value( $id ) );
 	}
 
 	/**

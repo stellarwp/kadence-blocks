@@ -18,11 +18,18 @@ import { LibrarySelector } from '../components/organisms/LibrarySelector';
 import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
 import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
+import { UnsavedChangesModal } from '../components/organisms/UnsavedChangesModal';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
 import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
+import { BorderRadiusScreen } from '../components/pages/BorderRadiusScreen';
+import { BorderWidthScreen } from '../components/pages/BorderWidthScreen';
+import { SpacingScreen } from '../components/pages/SpacingScreen';
+import { IconSizesScreen } from '../components/pages/IconSizesScreen';
+import { ShadowScreen } from '../components/pages/ShadowScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
+import { DraftChannelContext, useDraftChannelState } from '../hooks/use-draft-channel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 import { libraryDisplayTitle } from '../helpers/libraries';
@@ -33,7 +40,14 @@ import { libraryDisplayTitle } from '../helpers/libraries';
  *
  * @since TBD
  */
-const SCREEN_COMPONENTS = { 'color-palette': ColorPaletteScreen };
+const SCREEN_COMPONENTS = {
+	'border-radius': BorderRadiusScreen,
+	'color-palette': ColorPaletteScreen,
+	'border-width': BorderWidthScreen,
+	spacing: SpacingScreen,
+	'icon-sizes': IconSizesScreen,
+	shadow: ShadowScreen,
+};
 
 /**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
@@ -52,6 +66,11 @@ export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
+
+	// The draft channel (see `hooks/use-draft-channel.js`): built here because this is the one
+	// component that already renders both the screen and its settings-panel slot, so it is the only
+	// place a provider for the two of them can live.
+	const channel = useDraftChannelState();
 
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
@@ -100,7 +119,9 @@ export function StyleLibraryApp() {
 	// `scope` is the PREVIOUS screen's own sub-selection (Color Palette's is a palette id) — it
 	// must be cleared on every screen switch alongside `item`, or it leaks onto a screen with no
 	// idea what to do with it (e.g. a palette id showing up in Typography's URL).
-	const onNavigate = (id) => navigate({ screen: id, scope: '', item: '' });
+	// Screen switching loses the open draft exactly like closing the panel (the settings-panel slot
+	// unmounts either way), so it is guarded identically.
+	const onNavigate = (id) => channel.guard(() => navigate({ screen: id, scope: '', item: '' }));
 
 	// Two different libraries are named in the header: the one being edited (the selector's value,
 	// and the target of rename/delete/activate) and the one the site renders with (named in the
@@ -130,75 +151,86 @@ export function StyleLibraryApp() {
 	);
 
 	return (
-		<AppShell
-			isBlocked={libraries.isSwappingLibrary}
-			header={
-				<AppHeader
-					librarySlot={
-						<LibrarySelector
-							libraries={libraries.libraries}
-							activeSlug={libraries.activeSlug}
-							editingSlug={libraries.editingSlug}
-							editingTitle={editingTitle}
-							isBusy={libraries.isBusy}
-							isSwapping={libraries.isSwappingLibrary}
-							openError={libraries.openError}
-							createError={libraries.createError}
-							onOpen={libraries.openLibrary}
-							onCreate={libraries.createLibrary}
-							onClearOpenError={libraries.clearOpenError}
-							onClearCreateError={libraries.clearCreateError}
-						/>
-					}
-					actionsSlot={
-						<>
-							<ActivateLibraryButton
-								editingSlug={libraries.editingSlug}
-								editingTitle={editingTitle}
-								activeTitle={activeTitle}
-								isEditingActive={libraries.isEditingActive}
-								isBusy={libraries.isBusy}
-								error={libraries.activateError}
-								onClearError={libraries.clearActivateError}
-								onActivate={libraries.activateLibrary}
-							/>
-							<RenameLibraryModal
-								slug={libraries.editingSlug}
-								currentTitle={editingTitle}
+		<DraftChannelContext.Provider value={channel}>
+			<AppShell
+				isBlocked={libraries.isSwappingLibrary}
+				header={
+					<AppHeader
+						librarySlot={
+							<LibrarySelector
 								libraries={libraries.libraries}
-								isBusy={libraries.isBusy}
-								error={libraries.renameError}
-								onClearError={libraries.clearRenameError}
-								onRename={libraries.renameLibrary}
-							/>
-							<DeleteLibraryModal
-								editingSlug={libraries.editingSlug}
-								editingTitle={editingTitle}
 								activeSlug={libraries.activeSlug}
-								libraries={libraries.libraries}
+								editingSlug={libraries.editingSlug}
+								editingTitle={editingTitle}
 								isBusy={libraries.isBusy}
-								error={libraries.deleteError}
-								onClearError={libraries.clearDeleteError}
-								onDelete={libraries.deleteLibrary}
+								isSwapping={libraries.isSwappingLibrary}
+								openError={libraries.openError}
+								createError={libraries.createError}
+								onOpen={libraries.openLibrary}
+								onCreate={libraries.createLibrary}
+								onClearOpenError={libraries.clearOpenError}
+								onClearCreateError={libraries.clearCreateError}
 							/>
-						</>
-					}
-				/>
-			}
-			sidebar={
-				<AppSidebar
-					baseStylesNav={baseStylesNav}
-					blockPresetsNav={blockPresetsNav}
-					activeId={activeScreenId}
-					onNavigate={onNavigate}
-				/>
-			}
-			content={<resolution.Component label={label} route={route} navigate={navigate} library={feed} />}
-			settingsPanel={
-				resolution.Component.SettingsPanel && route.item ? (
-					<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
-				) : null
-			}
-		/>
+						}
+						actionsSlot={
+							<>
+								<ActivateLibraryButton
+									editingSlug={libraries.editingSlug}
+									editingTitle={editingTitle}
+									activeTitle={activeTitle}
+									isEditingActive={libraries.isEditingActive}
+									isBusy={libraries.isBusy}
+									error={libraries.activateError}
+									onClearError={libraries.clearActivateError}
+									onActivate={libraries.activateLibrary}
+								/>
+								<RenameLibraryModal
+									slug={libraries.editingSlug}
+									currentTitle={editingTitle}
+									libraries={libraries.libraries}
+									isBusy={libraries.isBusy}
+									error={libraries.renameError}
+									onClearError={libraries.clearRenameError}
+									onRename={libraries.renameLibrary}
+								/>
+								<DeleteLibraryModal
+									editingSlug={libraries.editingSlug}
+									editingTitle={editingTitle}
+									activeSlug={libraries.activeSlug}
+									libraries={libraries.libraries}
+									isBusy={libraries.isBusy}
+									error={libraries.deleteError}
+									onClearError={libraries.clearDeleteError}
+									onDelete={libraries.deleteLibrary}
+								/>
+							</>
+						}
+					/>
+				}
+				sidebar={
+					<AppSidebar
+						baseStylesNav={baseStylesNav}
+						blockPresetsNav={blockPresetsNav}
+						activeId={activeScreenId}
+						onNavigate={onNavigate}
+					/>
+				}
+				content={<resolution.Component label={label} route={route} navigate={navigate} library={feed} />}
+				settingsPanel={
+					resolution.Component.SettingsPanel && route.item ? (
+						<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
+					) : null
+				}
+			/>
+			<UnsavedChangesModal
+				isOpen={channel.isGuardOpen}
+				label={channel.publication?.label}
+				isBusy={channel.isGuardBusy}
+				error={channel.guardError}
+				onSave={channel.confirmSave}
+				onDiscard={channel.confirmDiscard}
+				onCancel={channel.cancelGuard}
+			/>
+		</DraftChannelContext.Provider>
 	);
 }

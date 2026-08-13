@@ -83,9 +83,29 @@ abstract class Composite_Value implements Value_Validator {
 			$errors = array_merge( $errors, Kind::validate( $kind, $value[ $field ], $path . '.' . $field ) );
 		}
 
-		// Any sub-field not in the map (and not a "$"-prefixed extension) is unknown.
+		$optional = Token_Type::optional_fields( $this->type() );
+
+		// Optional sub-fields (e.g. shadow's "inset") are validated only when present, and never through
+		// Kind::validate() — every optional kind so far ("boolean") has no v1 $type, so Kind has no
+		// literal validator for it and would accept any well-formed alias in its place unchecked; a
+		// strict literal check is required instead.
+		foreach ( $optional as $field => $kind ) {
+			if ( ! array_key_exists( $field, $value ) ) {
+				continue;
+			}
+
+			if ( $kind === Token_Type::get_kind_boolean() && ! is_bool( $value[ $field ] ) ) {
+				$errors[] = new Validation_Error(
+					$path . '.' . $field,
+					Validation_Error::get_code_value_invalid(),
+					sprintf( 'A %s value has an "%s" sub-field that must be a literal boolean (true or false); aliases are not accepted.', $this->type(), $field )
+				);
+			}
+		}
+
+		// Any sub-field not in the required or optional map (and not a "$"-prefixed extension) is unknown.
 		foreach ( array_keys( $value ) as $field ) {
-			if ( isset( $fields[ $field ] ) || ( is_string( $field ) && strncmp( $field, '$', 1 ) === 0 ) ) {
+			if ( isset( $fields[ $field ] ) || isset( $optional[ $field ] ) || ( is_string( $field ) && strncmp( $field, '$', 1 ) === 0 ) ) {
 				continue;
 			}
 

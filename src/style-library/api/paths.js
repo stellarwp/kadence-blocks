@@ -81,6 +81,33 @@ export function userPrimitiveRenamePath(slug, id) {
 }
 
 /**
+ * Build a REST path for a token's display-label override.
+ *
+ * @since TBD
+ *
+ * @param {string} slug Token library slug.
+ * @param {string} id   The token id (baseline dot-path, or a user primitive's canonical id).
+ * @return {string} REST path relative to wp-json root.
+ */
+export function tokenLabelPath(slug, id) {
+	return `/kb-design-tokens/v1/documents/${encodeURIComponent(slug)}/labels/${encodeURIComponent(id)}`;
+}
+
+/**
+ * Build a REST path for a UI-schema group's stored sort order. `group` is the translated feed
+ * group label (e.g. "Border Radius") — encoded because it contains a space.
+ *
+ * @since TBD
+ *
+ * @param {string} slug  Token library slug.
+ * @param {string} group The UI-schema group label.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function groupOrderPath(slug, group) {
+	return `/kb-design-tokens/v1/documents/${encodeURIComponent(slug)}/order/${encodeURIComponent(group)}`;
+}
+
+/**
  * Build a REST path for the resolved token map.
  *
  * @since TBD

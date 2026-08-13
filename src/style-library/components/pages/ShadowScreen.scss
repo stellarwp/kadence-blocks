@@ -1,0 +1,24 @@
+// A shadow is drawn *outside* the element casting it, but `.list-row-preview`'s shared default is
+// `overflow: hidden` on an exactly-sized frame — anything a shadowed child casts past that frame's
+// edge is clipped away entirely, which would make every row preview here render with no visible
+// shadow at all. Scoped through the `scale-screen--shadow` modifier: the 80px box itself stays as
+// the layout cell (width/height untouched), only its clipping and default fill are removed so the
+// square inside it has room to cast a shadow that actually reads.
+.kadence-blocks-style-library__scale-screen--shadow .kadence-blocks-style-library__list-row-preview {
+	overflow: visible;
+	border: 0;
+	background: transparent;
+}
+
+// The shadowed square itself: fixed 48px inside the 80px slot, centered by the slot's own flex
+// layout, giving 16px of clearance on every side for the cast shadow to read — matching the board's
+// light square sitting proud of the row.
+.kadence-blocks-style-library__shadow-preview {
+	box-sizing: border-box;
+	display: block;
+	width: 3rem;
+	height: 3rem;
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	border-radius: var(--kb-sl-radius-s);
+	background: var(--kb-sl-color-white);
+}

@@ -15,6 +15,10 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *                           of groups, each an ordered list of self-describing swatches.
  *   - "tokenLabels"       → per-token display-label overrides: a flat { token id => label } string map,
  *                           authoring metadata only.
+ *   - "tokenOrder"        → token sort order: a single flat ordered token id list, authoring
+ *                           metadata only. Flat rather than group-keyed so the stored order stays
+ *                           locale-independent — a UI-schema group name is a translated display
+ *                           label, not a stable identifier (see Token_Order_Index).
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
@@ -94,6 +98,21 @@ final class Extensions {
 	 * @var string
 	 */
 	private const SECTION_TOKEN_LABELS = 'tokenLabels';
+
+	/**
+	 * The per-group token sort-order section: a map of UI-schema group => ordered list of token
+	 * ids. NOT returned by get_sections() — it is id-keyed authoring metadata, not preset-shaped,
+	 * so the tokens-map walk (and the reference scanner that follows get_sections()) must not
+	 * descend into it; it holds ids only, never {alias} values. The stored order is partial and
+	 * advisory, never authoritative membership: readers append unmentioned ids in declaration
+	 * order and ignore stale ids, so an order can permute the registered set but never hide a
+	 * token. The validator covers it with its own explicit branch instead.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_TOKEN_ORDER = 'tokenOrder';
 
 	/**
 	 * The key naming a group's default preset slug.
@@ -244,6 +263,18 @@ final class Extensions {
 	 */
 	public static function get_section_token_labels(): string {
 		return self::SECTION_TOKEN_LABELS;
+	}
+
+	/**
+	 * The per-group token sort-order section name.
+	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_token_order(): string {
+		return self::SECTION_TOKEN_ORDER;
 	}
 
 	/**

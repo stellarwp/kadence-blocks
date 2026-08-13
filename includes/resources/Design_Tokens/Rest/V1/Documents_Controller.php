@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Document\Document_Path;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Reference_Policy;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Document_Validator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\User_Primitive_Index;
@@ -172,6 +173,52 @@ final class Documents_Controller extends Controller {
 	private const VERSION_PARAM = 'version';
 
 	/**
+	 * The sub-route, relative to a single library, that collects the per-group sort-order endpoints.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORDER_ROUTE = 'order';
+
+	/**
+	 * The request parameter that carries the UI-schema group name, on the order sub-route.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const GROUP_PARAM = 'group';
+
+	/**
+	 * The group path segment for the order sub-route.
+	 *
+	 * Unlike the token dot-path routes, this segment carries a human-readable, `__()`-translated
+	 * UI-schema group label (e.g. "Font Size"), not a slug — so it cannot be restricted to
+	 * `\w`/`-`. Unlike the front-end `WP::parse_request()` path, the REST server matches route
+	 * regexes against the raw, still percent-encoded request path (`WP_REST_Server::dispatch()`
+	 * never calls `urldecode()`/`rawurldecode()` on it), so a multi-word label reaches this pattern
+	 * as e.g. `Font%20Size`, not `Font Size`. The pattern only needs to exclude the path separator,
+	 * since the group is a single URL path segment; the percent-encoding is undone afterward by the
+	 * `sanitize_callback` on the group arg (see `get_order_delete_params()`), and the decoded value
+	 * is what is validated against the real declared groups in `unknown_group()`.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const GROUP_ROUTE = '(?P<' . self::GROUP_PARAM . '>[^/]+)';
+
+	/**
+	 * The request parameter that carries the ordered list of token ids on an order write.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const ORDER_PARAM = 'order';
+
+	/**
 	 * The dot-path path segment for the single-token routes. The character class matches the alias
 	 * grammar (a dot-path) minus the braces, so a token is addressable as a sub-resource of its library.
 	 *
@@ -282,6 +329,15 @@ final class Documents_Controller extends Controller {
 	private Token_Label_Index $label_index;
 
 	/**
+	 * Reads and writes the tokenOrder flat ordered id list.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Order_Index
+	 */
+	private Token_Order_Index $order_index;
+
+	/**
 	 * Memoized item schema for this request. Null until first built.
 	 *
 	 * @since TBD
@@ -313,6 +369,7 @@ final class Documents_Controller extends Controller {
 	 * @param Responsive_Feed                   $responsive_feed       Extracts the authored responsive / clamp shape per token.
 	 * @param Token_Registry                    $registry              The token registry, for the labels sub-route's unregistered-id 404.
 	 * @param Token_Label_Index                 $label_index           Reads and writes the tokenLabels override map.
+	 * @param Token_Order_Index                 $order_index           Reads and writes the tokenOrder flat ordered id list.
 	 */
 	public function __construct(
 		Token_Store $store,
@@ -325,7 +382,8 @@ final class Documents_Controller extends Controller {
 		Token_Reference_Policy $reference_policy,
 		Responsive_Feed $responsive_feed,
 		Token_Registry $registry,
-		Token_Label_Index $label_index
+		Token_Label_Index $label_index,
+		Token_Order_Index $order_index
 	) {
 		$this->store                    = $store;
 		$this->resolver                 = $resolver;
@@ -338,6 +396,7 @@ final class Documents_Controller extends Controller {
 		$this->responsive_feed          = $responsive_feed;
 		$this->registry                 = $registry;
 		$this->label_index              = $label_index;
+		$this->order_index              = $order_index;
 		$this->rest_base                = 'documents';
 	}
 
@@ -510,6 +569,31 @@ final class Documents_Controller extends Controller {
 					'callback'            => [ $this, 'delete_label' ],
 					'permission_callback' => [ $this, 'update_item_permissions_check' ],
 					'args'                => $this->get_label_delete_params(),
+				],
+				'schema' => [ $this, 'get_item_schema' ],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/' . self::SLUG_ROUTE . '/' . self::ORDER_ROUTE . '/' . self::GROUP_ROUTE,
+			[
+				[
+					// PUT only, mirroring the labels sub-route: the endpoint replaces a group's whole
+					// order, so there is no partial-update verb to distinguish from PUT.
+					'methods'             => 'PUT',
+					'callback'            => [ $this, 'set_order' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_order_params(),
+				],
+				[
+					// DELETE uses the same capability as PUT — clearing a stored order is an update to
+					// the document, not a resource removal, so the two verbs of one operation cannot
+					// diverge on permission.
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_order' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+					'args'                => $this->get_order_delete_params(),
 				],
 				'schema' => [ $this, 'get_item_schema' ],
 			]
@@ -1049,6 +1133,96 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
+	 * Store a group's token sort order wholesale (PUT /documents/{slug}/order/{group}).
+	 *
+	 * The submitted ids are pruned to those registered in the target group, first occurrence wins
+	 * on duplicates. Silent by design — the stored order is advisory, and a client racing a token
+	 * deletion must not fail its whole reorder over one vanished id. Pruning to an empty list stores
+	 * no entry at all, so "no preference" has one spelling. An unknown group, by contrast, is a
+	 * 404 — that is a caller bug, and accepting it would accumulate unreachable sections nothing can
+	 * display or clear from the UI.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function set_order( $request ) {
+		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$group = Cast::to_string( $request->get_param( self::GROUP_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		$registered = $this->registry->to_ui_schema()['groups'][ $group ] ?? null;
+
+		if ( $registered === null ) {
+			return $this->unknown_group( $group );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$group_ids = array_map( [ Cast::class, 'to_string' ], array_column( $registered, 'id' ) );
+		$submitted = array_map( [ Cast::class, 'to_string' ], (array) $request->get_param( self::ORDER_PARAM ) );
+		$ids       = array_values( array_unique( array_intersect( $submitted, $group_ids ) ) );
+
+		$stored    = $this->read_stored_document( $slug );
+		$candidate = $ids === []
+			? $this->order_index->remove_group( $stored, $group_ids )
+			: $this->order_index->set_group( $stored, $group_ids, $ids );
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
+	 * Clear a group's stored token sort order (DELETE /documents/{slug}/order/{group}), reverting
+	 * that group to declaration order. Idempotent: when nothing is stored for the group, this
+	 * returns the current item without a write, mirroring delete_label()'s idempotency.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_order( $request ) {
+		$slug  = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
+		$group = Cast::to_string( $request->get_param( self::GROUP_PARAM ) );
+
+		if ( ! $this->is_known_library( $slug ) ) {
+			return $this->not_found( $slug );
+		}
+
+		$registered = $this->registry->to_ui_schema()['groups'][ $group ] ?? null;
+
+		if ( $registered === null ) {
+			return $this->unknown_group( $group );
+		}
+
+		$error = $this->guard_client_version( $slug, Cast::to_string( $request->get_param( self::VERSION_PARAM ) ) );
+
+		if ( $error instanceof WP_Error ) {
+			return $error;
+		}
+
+		$group_ids = array_map( [ Cast::class, 'to_string' ], array_column( $registered, 'id' ) );
+		$stored    = $this->read_stored_document( $slug );
+		$candidate = $this->order_index->remove_group( $stored, $group_ids );
+
+		if ( $candidate === $stored ) {
+			return new WP_REST_Response( $this->prepare_item( $slug ), WP_Http::OK );
+		}
+
+		return $this->persist_metadata_candidate( $candidate, $slug );
+	}
+
+	/**
 	 * Validate that the token dot-path begins with a real token layer and names a token below it.
 	 *
 	 * Used as the path argument's validate_callback so a path into "$extensions" (any non-layer root), a
@@ -1083,6 +1257,26 @@ final class Documents_Controller extends Controller {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Decode the order sub-route's group path segment (sanitize_callback for the group arg).
+	 *
+	 * The REST server does not urldecode a route param before it reaches this callback (see the
+	 * `GROUP_ROUTE` docblock), so a multi-word label such as "Font Size" arrives as `Font%20Size`.
+	 * `rawurldecode()` (not `urldecode()`) is deliberate: this is a path segment, not a form-encoded
+	 * query value, so a literal `+` in a group label must stay a `+`, not become a space. Decoding
+	 * happens exactly once, here at the args layer, so every handler reading `self::GROUP_PARAM`
+	 * already sees the real label.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw, still percent-encoded group value from the URL.
+	 *
+	 * @return string The decoded group label.
+	 */
+	public function decode_group( $value ): string {
+		return rawurldecode( Cast::to_string( $value ) );
 	}
 
 	/**
@@ -1365,17 +1559,18 @@ final class Documents_Controller extends Controller {
 
 	/**
 	 * Persist a candidate whose only change is inside an id-keyed authoring-metadata $extensions
-	 * section (token labels). Deliberately skips the full DTCG validator and the resolver dry-run:
-	 * the index helpers' edits are mechanically confined to a section the effective-document
-	 * builder strips, so they cannot introduce grammar or alias problems — and running the full
-	 * pipeline would make a rename impossible in any library whose stored document does not
-	 * currently validate, for reasons unrelated to the rename (the same trap the dedicated
-	 * single-token routes avoid by never re-validating the whole document either). The section is
-	 * still validated whenever the full document is (bulk POST/PATCH/PUT), via its validator branch.
+	 * section (token labels or token order). Deliberately skips the full DTCG validator and the
+	 * resolver dry-run: the index helpers' edits are mechanically confined to a section the
+	 * effective-document builder strips, so they cannot introduce grammar or alias problems — and
+	 * running the full pipeline would make a rename or reorder impossible in any library whose
+	 * stored document does not currently validate, for reasons unrelated to the edit (the same
+	 * trap the dedicated single-token routes avoid by never re-validating the whole document
+	 * either). The section is still validated whenever the full document is (bulk POST/PATCH/PUT),
+	 * via its validator branch.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $candidate The candidate document with the label edit applied.
+	 * @param array<string, mixed> $candidate The candidate document with the metadata edit applied.
 	 * @param string               $slug      The token library slug.
 	 *
 	 * @return WP_REST_Response|WP_Error
@@ -1478,6 +1673,26 @@ final class Documents_Controller extends Controller {
 			[
 				'status' => WP_Http::NOT_FOUND,
 				'id'     => $id,
+			]
+		);
+	}
+
+	/**
+	 * The error returned when an order-route group does not name a UI-schema group.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $group The unknown group name.
+	 *
+	 * @return WP_Error
+	 */
+	private function unknown_group( string $group ): WP_Error {
+		return new WP_Error(
+			'rest_design_tokens_unknown_group',
+			__( 'Sorry, that token group does not exist.', 'kadence-blocks' ),
+			[
+				'status' => WP_Http::NOT_FOUND,
+				'group'  => $group,
 			]
 		);
 	}
@@ -1797,6 +2012,61 @@ final class Documents_Controller extends Controller {
 					'pattern'     => '^[\w.-]+$',
 				],
 				self::VERSION_PARAM   => [
+					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the order-route PUT: the slug, the group, the ordered id list and
+	 * the version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_order_params(): array {
+		return array_merge(
+			$this->get_order_delete_params(),
+			[
+				self::ORDER_PARAM => [
+					'description' => __( 'The token ids in their new order for this group.', 'kadence-blocks' ),
+					'type'        => 'array',
+					'required'    => true,
+					'items'       => [ 'type' => 'string' ],
+				],
+			]
+		);
+	}
+
+	/**
+	 * The arguments accepted by the order-route DELETE: the slug, the group and the
+	 * version-conditional guard.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function get_order_delete_params(): array {
+		return array_merge(
+			$this->get_slug_params(),
+			[
+				self::GROUP_PARAM   => [
+					'description'       => __( 'The UI-schema group name whose token order is being set.', 'kadence-blocks' ),
+					'type'              => 'string',
+					'required'          => true,
+					// Matches self::GROUP_ROUTE: a translated group label, not a slug — only the
+					// path separator is excluded. See the GROUP_ROUTE docblock for why.
+					'pattern'           => '^[^/]+$',
+					// The value on the wire is still percent-encoded (e.g. "Font%20Size"); decode it
+					// once here so set_order()/delete_order() both see the real label. See decode_group().
+					'sanitize_callback' => [ $this, 'decode_group' ],
+				],
+				self::VERSION_PARAM => [
 					'description'       => __( 'The version the client last read; empty for a first write. A mismatch is rejected with HTTP 409.', 'kadence-blocks' ),
 					'type'              => 'string',
 					'required'          => true,

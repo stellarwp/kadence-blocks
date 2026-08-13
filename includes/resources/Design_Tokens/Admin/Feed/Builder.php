@@ -67,10 +67,11 @@ final class Builder {
 	 * @param array<string, array<string, mixed>>                   $responsive id => raw authored responsive / clamp shape, for
 	 *                                                                          tokens that carry one (for editor hydration).
 	 * @param array<string, string>                                 $labels     id => display-label override for this library.
+	 * @param array<int, string>                                    $order      The flat ordered token id list for this library.
 	 *
 	 * @return array<string, mixed> The localized payload.
 	 */
-	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [], array $labels = [] ): array {
+	public function build( array $values, bool $resolved, array $presets, array $rest, string $version, string $slug, string $title = '', array $responsive = [], array $labels = [], array $order = [] ): array {
 		$active = $this->registry->is_active();
 
 		return [
@@ -81,7 +82,9 @@ final class Builder {
 			// Carried alongside the slug so the library selector can name the active library on first
 			// paint, before its REST list has loaded and any row is available to look the title up in.
 			'title'      => $title,
-			'schema'     => $active ? $this->apply_label_overrides( $this->registry->to_ui_schema(), $labels ) : [ 'groups' => [] ],
+			'schema'     => $active
+				? $this->apply_group_order( $this->apply_label_overrides( $this->registry->to_ui_schema(), $labels ), $order )
+				: [ 'groups' => [] ],
 			'values'     => $active ? $values : [],
 			'presets'    => $active ? $presets : [],
 			'presetNav'  => $active ? $this->preset_nav->all() : [],
@@ -112,6 +115,52 @@ final class Builder {
 				$schema['groups'][ $group ][ $i ]['label']           = $override ?? $row['label'];
 				$schema['groups'][ $group ][ $i ]['labelOverridden'] = $override !== null;
 			}
+		}
+
+		return $schema;
+	}
+
+	/**
+	 * Permute every schema group by the stored flat order. For each group independently: rows
+	 * whose id appears in the flat list come first, sorted by their position in that list; every
+	 * remaining row follows in declaration order — unmentioned ids append rather than sort last so
+	 * a token added after the order was saved (a later release, a newly created primitive) is
+	 * never silently pushed out of view. An id belonging to a different group simply never matches
+	 * one of this group's rows, so cross-group entries in the flat list are ignored naturally —
+	 * no explicit filtering by group is needed. The result of every branch is the same row set the
+	 * registry emitted — a reorder can never hide a token — and an empty stored order returns the
+	 * schema untouched (declaration order), so removing the stored order restores declaration
+	 * order with no other code path involved.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{groups: array<string, array<int, array<string, mixed>>>} $schema The (label-overlaid) UI schema.
+	 * @param array<int, string>                                             $order  The flat ordered token id list.
+	 *
+	 * @return array{groups: array<string, array<int, array<string, mixed>>>} The schema with groups permuted.
+	 */
+	private function apply_group_order( array $schema, array $order ): array {
+		if ( $order === [] ) {
+			return $schema;
+		}
+
+		$positions = array_flip( $order );
+
+		foreach ( $schema['groups'] as $group => $rows ) {
+			$ordered   = [];
+			$unordered = [];
+
+			foreach ( $rows as $row ) {
+				if ( isset( $positions[ $row['id'] ] ) ) {
+					$ordered[] = $row;
+				} else {
+					$unordered[] = $row; // Not in the stored order — declaration order, appended after.
+				}
+			}
+
+			usort( $ordered, fn( array $a, array $b ): int => $positions[ $a['id'] ] <=> $positions[ $b['id'] ] );
+
+			$schema['groups'][ $group ] = array_merge( $ordered, $unordered );
 		}
 
 		return $schema;

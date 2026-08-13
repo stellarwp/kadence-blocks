@@ -2,6 +2,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Schema\Validation\Values;
 
+use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Validation_Error;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Border_Style_Value;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Validation\Values\Color_Value;
@@ -151,6 +152,115 @@ final class Value_ValidatorsTest extends TestCase {
 
 		$this->assertCount( 1, $errors );
 		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+	}
+
+	/**
+	 * A shadow with no "inset" sub-field is valid — this pins the baseline shape
+	 * (semantic.shadow.card/media carry only the five required fields) so adding the optional field
+	 * never invalidates a pre-existing shadow token.
+	 *
+	 * @return void
+	 */
+	public function testShadowWithNoInsetIsValid(): void {
+		$value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+		];
+
+		$this->assertSame( [], ( new Shadow_Value() )->validate( $value, 's.$value' ) );
+	}
+
+	/**
+	 * A literal boolean "inset", true or false, is a valid optional sub-field.
+	 *
+	 * @dataProvider validInsetProvider
+	 *
+	 * @param bool $inset The literal boolean to validate.
+	 *
+	 * @return void
+	 */
+	public function testShadowAcceptsLiteralBooleanInset( bool $inset ): void {
+		$value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => $inset,
+		];
+
+		$this->assertSame( [], ( new Shadow_Value() )->validate( $value, 's.$value' ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function validInsetProvider(): Generator {
+		yield 'true' => [ 'inset' => true ];
+		yield 'false' => [ 'inset' => false ];
+	}
+
+	/**
+	 * "inset" is a strict boolean: a truthy string, an integer, or an alias are each rejected with
+	 * value_invalid rather than being coerced or, for the alias case, resolved.
+	 *
+	 * @dataProvider malformedInsetProvider
+	 *
+	 * @param mixed $inset The malformed candidate for the "inset" sub-field.
+	 *
+	 * @return void
+	 */
+	public function testShadowRejectsNonLiteralBooleanInset( $inset ): void {
+		$value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => $inset,
+		];
+
+		$errors = ( new Shadow_Value() )->validate( $value, 's.$value' );
+
+		$this->assertCount( 1, $errors );
+		$this->assertSame( Validation_Error::get_code_value_invalid(), $errors[0]->code );
+		$this->assertSame( 's.$value.inset', $errors[0]->path );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function malformedInsetProvider(): Generator {
+		yield 'string true' => [ 'inset' => 'true' ];
+		yield 'integer one' => [ 'inset' => 1 ];
+		yield 'alias' => [ 'inset' => '{primitive.color.gray.900}' ];
+	}
+
+	/**
+	 * A valid "inset" is never reported as an unknown sub-field, while a genuine typo alongside it still
+	 * is — the unknown-field walk must consult both the required and the optional map.
+	 *
+	 * @return void
+	 */
+	public function testShadowAcceptsInsetButStillRejectsAGenuinelyUnknownField(): void {
+		$value = [
+			'color'   => '#1A202C',
+			'offsetX' => '0px',
+			'offsetY' => '2px',
+			'blur'    => '8px',
+			'spread'  => '0px',
+			'inset'   => true,
+			'bogus'   => 'x',
+		];
+
+		$errors = ( new Shadow_Value() )->validate( $value, 's.$value' );
+
+		$this->assertCount( 1, $errors );
+		$this->assertSame( Validation_Error::get_code_composite_field_unknown(), $errors[0]->code );
+		$this->assertSame( 's.$value.bogus', $errors[0]->path );
 	}
 
 	/**
