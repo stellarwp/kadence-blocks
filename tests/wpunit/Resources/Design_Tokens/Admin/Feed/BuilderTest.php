@@ -189,8 +189,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[ 'semantic.color.button-bg' => 'Cozy' ]
 		);
 
@@ -221,8 +221,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[ 'semantic.color.does-not-exist' => 'Ghost' ]
 		);
 
@@ -244,8 +244,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[ 'semantic.color.button-bg' => 'Cozy' ]
 		);
 
