@@ -50,20 +50,30 @@ $gap_tokens = array_map(
 // mints custom tokens into — Token_Registry::group_label_for() resolves it back to the group label
 // below at read time, so a custom radius token's group survives a site language change instead of
 // drifting into its own bucket (see User_Primitive_Registrar::register_entry()).
-$radius_slugs = [ 'none', 'sm', 'md', 'lg', 'full' ];
+// The step list mirrors the shipped baseline exactly: the screen renders whatever this group holds, and
+// a step declared without a baseline entry would trip Baseline_Guard. Labels are the scale's own, so the
+// Style Library and the editor's token picker name each step identically.
+$radius_labels = [
+	'none' => __( 'None', 'kadence-blocks' ),
+	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
+	'sm'   => __( 'Small', 'kadence-blocks' ),
+	'md'   => __( 'Medium', 'kadence-blocks' ),
+	'lg'   => __( 'Large', 'kadence-blocks' ),
+	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'full' => __( 'Full', 'kadence-blocks' ),
+];
 
-$radius_tokens = array_map(
-	static function ( string $slug ): array {
-		return [
-			'id'        => 'primitive.dimension.radius.' . $slug,
-			'type'      => 'dimension',
-			'label'     => 'none' === $slug ? __( 'None', 'kadence-blocks' ) : strtoupper( $slug ),
-			'group'     => __( 'Border Radius', 'kadence-blocks' ),
-			'group_key' => 'border-radius',
-		];
-	},
-	$radius_slugs
-);
+$radius_tokens = [];
+
+foreach ( $radius_labels as $slug => $label ) {
+	$radius_tokens[] = [
+		'id'        => 'primitive.dimension.radius.' . $slug,
+		'type'      => 'dimension',
+		'label'     => $label,
+		'group'     => __( 'Border Radius', 'kadence-blocks' ),
+		'group_key' => 'border-radius',
+	];
+}
 
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
@@ -85,32 +95,6 @@ $font_size_primitive_tokens = array_map(
 	},
 	$font_size_slugs
 );
-
-// The radius scale steps are primitives (the slug IS a scale step). Registering them here surfaces the
-// radius SIZES in the token picker (a radius control offers these sizes rather than the component-specific
-// semantic radii, which alias this scale) and lets Css_Var emit each
-// --kb-token--primitive--dimension--radius--<slug> variable. Values live in the shipped baseline, so
-// registering changes nothing until a site owner overrides a step. They carry no projection: the semantic
-// radius tokens hold the block-level css_var bindings, and the primitives are pick targets only.
-$radius_labels = [
-	'none' => __( 'None', 'kadence-blocks' ),
-	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
-	'sm'   => __( 'Small', 'kadence-blocks' ),
-	'md'   => __( 'Medium', 'kadence-blocks' ),
-	'lg'   => __( 'Large', 'kadence-blocks' ),
-	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
-	'full' => __( 'Full', 'kadence-blocks' ),
-];
-
-$radius_tokens = [];
-foreach ( $radius_labels as $slug => $label ) {
-	$radius_tokens[] = [
-		'id'    => 'primitive.dimension.radius.' . $slug,
-		'type'  => 'dimension',
-		'label' => $label,
-		'group' => __( 'Radius', 'kadence-blocks' ),
-	];
-}
 
 /**
  * The brand + neutral primitives ARE the site's global color palette: each claims a Kadence palette slot
