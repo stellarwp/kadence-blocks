@@ -67,6 +67,28 @@ final class Palette_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * The catalog exposes each global-palette slot mapped to the `{alias}` of the token bound to it, so a
+	 * color control resolves a slot to its token reference from the projection registry rather than a second
+	 * hardcoded copy of the slot -> token map.
+	 *
+	 * @return void
+	 */
+	public function testItExposesTheSlotToTokenAliasMap(): void {
+		$slots = $this->catalog->all()['slots'];
+
+		$this->assertCount( 9, $slots );
+		$this->assertSame( '{primitive.color.brand.primary}', $slots['palette1'] );
+		$this->assertSame( '{primitive.color.brand.secondary}', $slots['palette2'] );
+		$this->assertSame( '{primitive.color.neutral.900}', $slots['palette3'] );
+		$this->assertSame( '{primitive.color.neutral.700}', $slots['palette4'] );
+		$this->assertSame( '{primitive.color.neutral.600}', $slots['palette5'] );
+		$this->assertSame( '{primitive.color.neutral.500}', $slots['palette6'] );
+		$this->assertSame( '{primitive.color.neutral.100}', $slots['palette7'] );
+		$this->assertSame( '{primitive.color.neutral.50}', $slots['palette8'] );
+		$this->assertSame( '{primitive.color.neutral.0}', $slots['palette9'] );
+	}
+
+	/**
 	 * A stored palette's string `label` is carried through to the catalog verbatim.
 	 *
 	 * @return void
