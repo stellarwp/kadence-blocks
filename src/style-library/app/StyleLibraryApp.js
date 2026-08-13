@@ -18,23 +18,31 @@ import { LibrarySelector } from '../components/organisms/LibrarySelector';
 import { ActivateLibraryButton } from '../components/organisms/ActivateLibraryButton';
 import { RenameLibraryModal } from '../components/organisms/RenameLibraryModal';
 import { DeleteLibraryModal } from '../components/organisms/DeleteLibraryModal';
-import { SettingsPanel } from '../components/templates/SettingsPanel';
-import { SettingsForm } from '../components/organisms/SettingsForm';
 import { PlaceholderScreen } from '../components/pages/PlaceholderScreen';
+import { ColorPaletteScreen } from '../components/pages/ColorPaletteScreen';
 import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { useStyleLibraryRoute } from '../hooks/use-style-library-route';
 import { useLibraries } from '../hooks/use-libraries';
-import { useSettingsPanel } from '../hooks/use-settings-panel';
 import { DEFAULT_SCREEN_ID } from '../constants/screens';
-import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../constants/demo-settings-schema';
 import { buildBaseStylesNav, buildBlockPresetsNav, resolveScreen } from '../helpers/screens';
 import { libraryDisplayTitle } from '../helpers/libraries';
 
 /**
+ * The Base Styles ids with a real screen component, extended by each subsequent per-screen
+ * ticket. Every id not listed here falls back to `PlaceholderScreen` in the registry below.
+ *
+ * @since TBD
+ */
+const SCREEN_COMPONENTS = { 'color-palette': ColorPaletteScreen };
+
+/**
  * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
- * resolved for the active route. The settings panel opens for the dev-only field-library demo
- * item; a real per-screen item is wired up by the per-screen tickets that ship a save/delete
- * implementation.
+ * resolved for the active route. A screen that owns a settings panel exposes it as a static
+ * `SettingsPanel` property on its page component (`MyScreen.SettingsPanel = MyScreenSettings`);
+ * this is the one place that property is read and mounted into `AppShell`'s `settingsPanel` slot.
+ * The app itself carries no per-screen knowledge — not the demo, not any real screen's panel
+ * contents — so a screen and its panel are siblings that share state only through the server and
+ * the route, never through this component.
  *
  * @since TBD
  *
@@ -45,25 +53,18 @@ export function StyleLibraryApp() {
 	const { route, navigate, replace } = useStyleLibraryRoute();
 	const libraries = useLibraries(feed.feed, feed.refreshFeed);
 
-	// Dev-only affordance, compiled out of production; see PlaceholderScreen's demo button.
-	const isDemoItem = process.env.NODE_ENV === 'development' && route.item === DEMO_ITEM_ID;
-	const settingsPanelState = useSettingsPanel({
-		route,
-		navigate,
-		initialValues: isDemoItem ? DEMO_SETTINGS_VALUES : {},
-	});
-
 	const baseStylesNav = useMemo(() => buildBaseStylesNav(), []);
 	const blockPresetsNav = useMemo(() => buildBlockPresetsNav(feed.feed), [feed.feed]);
 
-	// Every Base Styles id resolves to the placeholder until its per-screen work lands, and the
-	// preset fallback is the placeholder until the first real preset screen ships.
+	// Every Base Styles id without an entry in SCREEN_COMPONENTS resolves to the placeholder until
+	// its per-screen work lands, and the preset fallback is the placeholder until the first real
+	// preset screen ships.
 	// @todo SOFT-4083 / SOFT-4084: first real preset screens replace this fallback.
 	const registry = useMemo(() => {
 		const baseStyles = {};
 
 		baseStylesNav.forEach((entry) => {
-			baseStyles[entry.id] = PlaceholderScreen;
+			baseStyles[entry.id] = SCREEN_COMPONENTS[entry.id] ?? PlaceholderScreen;
 		});
 
 		return { baseStyles, presetFallback: PlaceholderScreen };
@@ -74,8 +75,11 @@ export function StyleLibraryApp() {
 
 	useEffect(() => {
 		if (!resolution) {
-			// replace, not navigate — an unknown screen id must not enter browser history.
-			replace({ screen: DEFAULT_SCREEN_ID, item: '' });
+			// replace, not navigate — an unknown screen id must not enter browser history. Clears
+			// `scope` alongside `item`: it is the PREVIOUS screen's own sub-selection (e.g. a
+			// palette id), and it would otherwise leak onto whatever screen `DEFAULT_SCREEN_ID`
+			// resolves to, which has no reason to expect it.
+			replace({ screen: DEFAULT_SCREEN_ID, scope: '', item: '' });
 		}
 	}, [resolution, replace]);
 
@@ -93,7 +97,10 @@ export function StyleLibraryApp() {
 
 	const navEntry = [...baseStylesNav, ...blockPresetsNav].find((entry) => entry.id === activeScreenId);
 	const label = navEntry ? navEntry.label : resolution.block || activeScreenId;
-	const onNavigate = (id) => navigate({ screen: id, item: '' });
+	// `scope` is the PREVIOUS screen's own sub-selection (Color Palette's is a palette id) — it
+	// must be cleared on every screen switch alongside `item`, or it leaks onto a screen with no
+	// idea what to do with it (e.g. a palette id showing up in Typography's URL).
+	const onNavigate = (id) => navigate({ screen: id, scope: '', item: '' });
 
 	// Two different libraries are named in the header: the one being edited (the selector's value,
 	// and the target of rename/delete/activate) and the one the site renders with (named in the
@@ -186,23 +193,10 @@ export function StyleLibraryApp() {
 					onNavigate={onNavigate}
 				/>
 			}
-			content={
-				<resolution.Component label={label} onOpenFieldLibraryDemo={() => navigate({ item: DEMO_ITEM_ID })} />
-			}
+			content={<resolution.Component label={label} route={route} navigate={navigate} library={feed} />}
 			settingsPanel={
-				isDemoItem ? (
-					<SettingsPanel
-						onClose={settingsPanelState.close}
-						onDelete={() => settingsPanelState.close()}
-						onSave={() => settingsPanelState.resetDraft()}
-						isDirty={settingsPanelState.isDirty}
-					>
-						<SettingsForm
-							schema={DEMO_SETTINGS_SCHEMA}
-							values={settingsPanelState.draft}
-							onChange={settingsPanelState.setFieldValue}
-						/>
-					</SettingsPanel>
+				resolution.Component.SettingsPanel && route.item ? (
+					<resolution.Component.SettingsPanel route={route} navigate={navigate} library={feed} />
 				) : null
 			}
 		/>

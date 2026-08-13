@@ -130,6 +130,31 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * The palette ids a library defines that are NOT in the baseline — i.e. the user-created ones.
+	 * An id that shadows a baseline palette is excluded, since deleting it reverts that palette to
+	 * baseline rather than removing it.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return string[]
+	 */
+	public function user_created( string $slug = 'default' ): array {
+		$baseline_ids = [];
+
+		foreach ( array_keys( $this->palettes_of( $this->baseline->document() ) ) as $key ) {
+			if ( is_string( $key ) && strpos( $key, '$' ) === 0 ) {
+				continue;
+			}
+
+			$baseline_ids[] = (string) $key;
+		}
+
+		return array_values( array_diff( $this->palette_ids( $slug ), $baseline_ids ) );
+	}
+
+	/**
 	 * The library's `$default` palette id (the shipped/fallback palette), falling back to "default".
 	 *
 	 * @since TBD

@@ -14,7 +14,7 @@ import { FieldLabel } from './FieldLabel';
  * Render a color/gradient field.
  *
  * @param {Object}   props              The component props.
- * @param {Object}   props.field        The field definition ({ label, gradients, readOnly }).
+ * @param {Object}   props.field        The field definition ({ label, gradients, readOnly, colorOnly }).
  * @param {string}   props.value        The current CSS color or gradient string.
  * @param {Function} props.onChange     Called with the new value on edit; never called when read-only.
  *
@@ -25,11 +25,13 @@ import { FieldLabel } from './FieldLabel';
 export function ColorField({ field, value, onChange }) {
 	return (
 		<div className="kadence-blocks-style-library__field kadence-blocks-style-library__field--color">
-			<FieldLabel>{field.label}</FieldLabel>
+			{/* Omitting the label is a real shape here: the picker's own tab strip names the field. */}
+			{field.label && <FieldLabel>{field.label}</FieldLabel>}
 			<ColorGradientPicker
 				value={value}
 				gradients={field.gradients}
 				readOnly={field.readOnly}
+				colorOnly={field.colorOnly}
 				onChange={onChange}
 			/>
 		</div>

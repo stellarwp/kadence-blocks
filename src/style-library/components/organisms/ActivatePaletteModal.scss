@@ -1,0 +1,13 @@
+// Mirrors ActivateLibraryModal.scss — see that file for why the selector is compound (it lands on
+// `.components-modal__frame`, and the max-width is capped so the consequence copy wraps at a
+// readable measure instead of stretching to the viewport cap).
+.components-modal__frame.kadence-blocks-style-library__activate-palette-modal {
+	max-width: var(--kb-sl-size-modal-medium);
+}
+
+.kadence-blocks-style-library__activate-palette-modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--kb-sl-space-10);
+	margin-top: var(--kb-sl-space-20);
+}

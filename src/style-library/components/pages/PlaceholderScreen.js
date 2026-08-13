@@ -7,7 +7,7 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getQueryArg } from '@wordpress/url';
 import { plus } from '@wordpress/icons';
@@ -26,7 +26,8 @@ import { MetaChip } from '../atoms/MetaChip';
 import { SectionHeading } from '../atoms/SectionHeading';
 import { AddTile } from '../atoms/AddTile';
 import { SelectDropdown } from '../molecules/SelectDropdown';
-import { DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../../constants/demo-settings-schema';
+import { useSettingsPanel } from '../../hooks/use-settings-panel';
+import { DEMO_ITEM_ID, DEMO_SETTINGS_SCHEMA, DEMO_SETTINGS_VALUES } from '../../constants/demo-settings-schema';
 import { isEqual, setValueAtPath } from '../../helpers/settings-schema';
 import './PlaceholderScreen.scss';
 
@@ -149,10 +150,11 @@ function isGalleryRequested() {
 /**
  * Render the placeholder screen.
  *
- * @param {Object}   props                          The component props.
- * @param {string}   props.label                    The active screen's nav label.
- * @param {Function} [props.onOpenFieldLibraryDemo]  Opens the field-library demo in the settings panel
- *                                                    (`?kb-item=demo`); dev builds only.
+ * @param {Object}   props          The component props.
+ * @param {string}   props.label    The active screen's nav label.
+ * @param {Object}   props.route    The route from `useStyleLibraryRoute`.
+ * @param {Function} props.navigate The route navigator.
+ * @param {Object}   [props.library] The design-tokens feed surface; unused here.
  *
  * @since TBD
  *
@@ -160,7 +162,7 @@ function isGalleryRequested() {
  *
  * @todo Replaced per screen by the Style Library per-screen work.
  */
-export function PlaceholderScreen({ label, onOpenFieldLibraryDemo }) {
+export function PlaceholderScreen({ label, route, navigate }) {
 	return (
 		<div className="kadence-blocks-style-library__placeholder-screen">
 			<h2 className="kadence-blocks-style-library__placeholder-screen-title">{label}</h2>
@@ -168,7 +170,7 @@ export function PlaceholderScreen({ label, onOpenFieldLibraryDemo }) {
 				{__('This screen is coming soon.', 'kadence-blocks')}
 			</p>
 			{process.env.NODE_ENV === 'development' && (
-				<Button variant="secondary" onClick={onOpenFieldLibraryDemo}>
+				<Button variant="secondary" onClick={() => navigate({ item: DEMO_ITEM_ID })}>
 					{'Open field-library demo'}
 				</Button>
 			)}
@@ -176,6 +178,55 @@ export function PlaceholderScreen({ label, onOpenFieldLibraryDemo }) {
 		</div>
 	);
 }
+
+/**
+ * The field-library demo's settings panel — the dev-only proving ground for `SettingsPanel` and
+ * `SettingsForm` against a real route-driven item (`?kb-item=demo`), relocated here from the app
+ * root so `StyleLibraryApp` carries no demo knowledge. Owns only `DEMO_ITEM_ID`; any other open
+ * item (a stale id, or another screen's token reached by editing the URL by hand) self-heals the
+ * same way `ColorPaletteSettings` does, clearing the route instead of rendering nothing forever.
+ *
+ * @param {Object}   props          The component props.
+ * @param {Object}   props.route    The route from `useStyleLibraryRoute`.
+ * @param {Function} props.navigate The route navigator.
+ *
+ * @since TBD
+ *
+ * @return {?JSX.Element} The demo panel, or null while a stale item normalizes away.
+ */
+function PlaceholderDemoSettingsPanel({ route, navigate }) {
+	const isDemoItem = route.item === DEMO_ITEM_ID;
+	const panel = useSettingsPanel({ route, navigate, initialValues: DEMO_SETTINGS_VALUES });
+
+	useEffect(() => {
+		if (!isDemoItem) {
+			navigate({ item: '' });
+		}
+	}, [isDemoItem, navigate]);
+
+	if (!isDemoItem) {
+		return null;
+	}
+
+	return (
+		<SettingsPanel
+			onClose={panel.close}
+			onDelete={() => panel.close()}
+			onSave={() => panel.resetDraft()}
+			isDirty={panel.isDirty}
+		>
+			<SettingsForm schema={DEMO_SETTINGS_SCHEMA} values={panel.draft} onChange={panel.setFieldValue} />
+		</SettingsPanel>
+	);
+}
+
+/**
+ * The screen-panel contract (see `ColorPaletteScreen.SettingsPanel`), assigned only in a dev build
+ * so the demo panel — and everything it imports — compiles out of production entirely.
+ *
+ * @since TBD
+ */
+PlaceholderScreen.SettingsPanel = process.env.NODE_ENV === 'development' ? PlaceholderDemoSettingsPanel : undefined;
 
 /**
  * A labeled, visually separated wrapper around one primitive's demo: a heading naming the
