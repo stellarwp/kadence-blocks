@@ -18,6 +18,7 @@ import { PresetActions } from './extension/preset-picker/PresetActions';
 import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
+import { registerComponentTokenFilters } from './extension/design-tokens/register-component-filters';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
 // their `var(--kb-token--<id>)` reference through the library's filter seam.
@@ -26,6 +27,10 @@ registerTokenAliasFilters();
 // Keep token-backed global-palette colors visible in the shared Kadence color controls when the
 // "Use only Custom Colors" override is on, through the color control's swatch filter seam.
 registerColorControlFilters();
+
+// Inject the design-token picker UI into the token-agnostic @kadence/components control seams, so a
+// control that receives a `context` gets the chip/picker without the package knowing about tokens.
+registerComponentTokenFilters();
 
 /**
  * Add animation attributes

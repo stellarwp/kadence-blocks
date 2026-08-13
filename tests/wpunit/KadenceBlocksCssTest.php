@@ -827,6 +827,98 @@ class KadenceBlocksCssTest extends WPTestCase {
 	}
 
 	/**
+	 * Passing per-caller $defaults fills any empty or missing leg so an inline builder routed
+	 * through render_shadow() stays byte-identical to its former output, while numeric and
+	 * {alias} legs still pass through untouched.
+	 *
+	 * @dataProvider renderShadowDefaultsProvider
+	 *
+	 * @param array  $shadow   The stored shadow parts (possibly partial).
+	 * @param array  $defaults The per-caller fallback literals.
+	 * @param string $expected The expected box-shadow declaration.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowAppliesDefaults( array $shadow, array $defaults, string $expected ): void {
+		$this->assertSame( $expected, $this->css->render_shadow( $shadow, $defaults ),
+			'Defaults must fill empty/missing legs without altering present numeric or alias legs' );
+	}
+
+	/**
+	 * Provides shadow objects, per-caller defaults, and the expected declaration for the
+	 * defaults-aware render_shadow() path used by the routed inline box-shadow builders.
+	 *
+	 * @return Generator
+	 */
+	public static function renderShadowDefaultsProvider(): Generator {
+		$button_defaults = [
+			'hOffset' => '0',
+			'vOffset' => '0',
+			'blur'    => '14',
+			'spread'  => '0',
+			'color'   => '#000000',
+			'opacity' => 0.2,
+		];
+		$hover_defaults = [
+			'hOffset' => '2',
+			'vOffset' => '2',
+			'blur'    => '3',
+			'spread'  => '0',
+			'color'   => '#000000',
+			'opacity' => 0.4,
+		];
+
+		yield 'complete literal shadow renders byte-identically' => [
+			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '2', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => false ],
+			'defaults' => $button_defaults,
+			'expected' => '1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
+		];
+		yield 'empty blur falls back to its default' => [
+			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => false ],
+			'defaults' => $button_defaults,
+			'expected' => '1px 1px 14px 0px rgba(0, 0, 0, 0.2)',
+		];
+		yield 'missing legs use the supplied defaults' => [
+			'shadow'   => [ 'color' => '#000000', 'opacity' => 0.2 ],
+			'defaults' => $button_defaults,
+			'expected' => '0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
+		];
+		yield 'aliased offset passes through as a token var' => [
+			'shadow'   => [ 'hOffset' => '{semantic.shadow.x}', 'vOffset' => '1', 'blur' => '4', 'spread' => '2', 'color' => '#000000', 'opacity' => 0.5, 'inset' => false ],
+			'defaults' => $button_defaults,
+			'expected' => 'var(--kb-token--semantic--shadow--x) 1px 4px 2px rgba(0, 0, 0, 0.5)',
+		];
+		yield 'truthy inset prefixes the declaration' => [
+			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '2', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => true ],
+			'defaults' => $button_defaults,
+			'expected' => 'inset 1px 1px 2px 0px rgba(0, 0, 0, 0.2)',
+		];
+		yield 'all-empty legs fall back to the hover defaults' => [
+			'shadow'   => [ 'color' => '', 'opacity' => '', 'hOffset' => '', 'vOffset' => '', 'blur' => '', 'spread' => '', 'inset' => false ],
+			'defaults' => $hover_defaults,
+			'expected' => '2px 2px 3px 0px rgba(0, 0, 0, 0.4)',
+		];
+	}
+
+	/**
+	 * With no $defaults the method is unchanged: a complete shadow still renders and a shadow
+	 * missing a required leg still returns false rather than emitting a partial declaration.
+	 *
+	 * @return void
+	 */
+	public function testRenderShadowWithoutDefaultsIsUnchanged(): void {
+		$this->assertSame(
+			'1px 1px 4px 2px rgba(0, 0, 0, 0.5)',
+			$this->css->render_shadow( [ 'color' => '#000000', 'opacity' => 0.5, 'spread' => 2, 'blur' => 4, 'hOffset' => 1, 'vOffset' => 1, 'inset' => false ] ),
+			'A complete shadow with no defaults renders exactly as before'
+		);
+		$this->assertFalse(
+			$this->css->render_shadow( [ 'color' => '#000000', 'opacity' => 0.5, 'spread' => 2, 'blur' => 4, 'hOffset' => 1, 'vOffset' => 1 ] ),
+			'A shadow missing a required leg still returns false when no defaults are supplied'
+		);
+	}
+
+	/**
 	 * render_border_styles emits a token var for an aliased width so the width branch
 	 * still fires, while numeric widths remain byte-identical.
 	 *

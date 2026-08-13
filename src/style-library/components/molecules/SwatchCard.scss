@@ -1,0 +1,135 @@
+.kadence-blocks-style-library__swatch-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	// No width, border, or background of its own — `.swatch-card-main` below carries border, radius,
+	// and background together on the one element that has an explicit width, and this shrink-wraps
+	// to it. Splitting the border across this wrapper and `.main` used to make the card measure 98px
+	// against main's 96px: a shrink-wrapping container's own border adds on top of its child
+	// regardless of `box-sizing`, since the container itself has no explicit width.
+
+	&:hover .kadence-blocks-style-library__swatch-card-handle-slot,
+	&:focus-within .kadence-blocks-style-library__swatch-card-handle-slot,
+	&--selected .kadence-blocks-style-library__swatch-card-handle-slot {
+		opacity: 1;
+	}
+}
+
+.kadence-blocks-style-library__swatch-card-main {
+	// `border-box`, not the `<div>` default `content-box` — without it, the padding below renders
+	// 16px wider than the width intends.
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--kb-sl-space-05);
+	width: var(--kb-sl-size-swatch-card-width);
+	padding: var(--kb-sl-space-10);
+	// gray-300, not the structural --kb-sl-color-border (gray-200) semantic — a card outline is a
+	// distinct role from structural chrome edges.
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-300);
+	border-radius: var(--kb-sl-radius-m);
+	background: var(--kb-sl-color-surface);
+	text-align: left;
+	cursor: pointer;
+}
+
+// Hover, mirroring `ListRow`'s own hover treatment — a sibling semantic alias
+// (`--kb-sl-color-card-bg-hover`), not a shared one, since a row and a card should stay free to
+// diverge even though they agree today. `:not(&--selected)` keeps a selected-and-hovered card
+// showing its selected tint instead of flipping to the neutral hover one.
+.kadence-blocks-style-library__swatch-card:hover:not(.kadence-blocks-style-library__swatch-card--selected)
+	.kadence-blocks-style-library__swatch-card-main {
+	background: var(--kb-sl-color-card-bg-hover);
+}
+
+// Selected — the theme-color border stays the primary signal, and a theme tint background
+// (--kb-sl-color-theme-tint-4, same as `ListRow`'s `&--selected`) is added on top of it. Both live
+// on `.main` now, so the fill and the outline always describe the same box.
+.kadence-blocks-style-library__swatch-card--selected .kadence-blocks-style-library__swatch-card-main {
+	border-color: var(--kb-sl-color-theme);
+	background: var(--kb-sl-color-theme-tint-4);
+}
+
+// The drop-target placeholder shown while this card is the one being dragged. Neutral gray,
+// dashed — deliberately not the theme color, which already signals *selected*. Lives on `.main`,
+// not the outer wrapper: the wrapper carries no border in any state, so a placeholder border there
+// would reintroduce the 98-vs-96px mismatch above.
+.kadence-blocks-style-library__swatch-card--placeholder .kadence-blocks-style-library__swatch-card-main {
+	border-style: dashed;
+	border-color: var(--kb-sl-color-control-border);
+	background: var(--kb-sl-color-gray-100);
+
+	// Scoped to `.main`'s children, not `.main` itself: `visibility: hidden` hides the whole box,
+	// which would also hide the border/background set just above.
+	> * {
+		visibility: hidden;
+	}
+}
+
+// The handle-slot has no border or background of its own to preserve, so it can be hidden outright.
+.kadence-blocks-style-library__swatch-card--placeholder .kadence-blocks-style-library__swatch-card-handle-slot {
+	visibility: hidden;
+}
+
+// The card's resting background is opaque white, so the handle can safely take an opaque one too
+// and sit flush against it — a card-specific presentation of a context-agnostic atom, not
+// something `DragHandle` carries itself (a consumer with a translucent background, e.g. `ListRow`'s
+// selected-row tint, needs the handle to inherit through instead). See DragHandle.scss.
+//
+// This is only true at rest: `.main`'s hover/selected backgrounds above tint the surface behind
+// this handle, so it can read as a white chip on a tinted surface in those states — left as-is
+// pending an explicit decision (the `ListRow` fix made the handle inherit instead).
+.kadence-blocks-style-library__swatch-card .kadence-blocks-style-library__drag-handle {
+	border-top-left-radius: 0;
+	// 0.1875rem, not on the radius ramp.
+	border-top-right-radius: 0.1875rem;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0.1875rem;
+	background: var(--kb-sl-color-surface);
+}
+
+.kadence-blocks-style-library__swatch-card-preview {
+	// `border-box`, same reason as `.swatch-card-main` above — otherwise the border below renders
+	// the box oversize.
+	box-sizing: border-box;
+	display: flex;
+	overflow: hidden;
+	// 100% of `.swatch-card-main`'s content box, not its own fixed token — main's width minus its
+	// padding already works out to exactly --kb-sl-size-swatch-preview-width (see _primitives.scss).
+	width: 100%;
+	height: var(--kb-sl-space-50);
+	border: var(--kb-sl-border-width-input) solid var(--kb-sl-color-gray-200);
+	border-radius: var(--kb-sl-radius-m);
+}
+
+.kadence-blocks-style-library__swatch-card-name {
+	overflow: hidden;
+	max-width: 100%;
+	color: var(--kb-sl-color-text-primary);
+	font-size: var(--kb-sl-font-size-small);
+	font-weight: var(--kb-sl-font-weight-regular);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.kadence-blocks-style-library__swatch-card-sub-line {
+	color: var(--kb-sl-color-text-muted);
+	font-size: var(--kb-sl-font-size-xs);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-xs);
+}
+
+.kadence-blocks-style-library__swatch-card-handle-slot {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	// Reserved even when the drag handle is absent — an empty flex box with no sized child collapses
+	// to 0×0, leaving nothing for `:hover`/`:focus-within` to reveal.
+	min-width: var(--kb-sl-space-30);
+	min-height: var(--kb-sl-space-30);
+	opacity: 0;
+}

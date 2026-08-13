@@ -19,6 +19,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Literals;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Responsive;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
+use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
  * Validates a decoded DTCG document against the v1 grammar: leaf shape, the $type enum, the alias
@@ -67,6 +68,16 @@ final class Dtcg_Validator {
 	 * @var string
 	 */
 	private const CONTEXT_OVERRIDES = 'overrides';
+
+	/**
+	 * The side count of a per-corner preset token slot list, matching the 4-side measure attribute a
+	 * block stores (top-left, top-right, bottom-right, bottom-left).
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private const SLOT_LIST_SIDES = 4;
 
 	/**
 	 * Value validators keyed by $type.
@@ -607,6 +618,30 @@ final class Dtcg_Validator {
 			);
 		}
 
+		// tokenLabels is a flat { token id => label } string map — id-keyed metadata, not
+		// preset-shaped, so the tokens-map walk (driven by get_sections(), which excludes it)
+		// never covers it. Without this branch it would pass through with no validation at all.
+		$labels_section = Extensions::get_section_token_labels();
+
+		if ( isset( $namespace[ $labels_section ] ) && is_array( $namespace[ $labels_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_token_labels( $namespace[ $labels_section ], $base . '.' . $labels_section )
+			);
+		}
+
+		// tokenOrder is a single flat ordered token id list — not preset-shaped and not a
+		// { key => value } map, so the tokens-map walk (driven by get_sections(), which excludes
+		// it) never covers it. Without this branch it would pass through with no validation at all.
+		$order_section = Extensions::get_section_token_order();
+
+		if ( isset( $namespace[ $order_section ] ) && is_array( $namespace[ $order_section ] ) ) {
+			$errors = array_merge(
+				$errors,
+				$this->validate_token_order( $namespace[ $order_section ], $base . '.' . $order_section )
+			);
+		}
+
 		return $errors;
 	}
 
@@ -668,6 +703,81 @@ final class Dtcg_Validator {
 	}
 
 	/**
+	 * Validate a tokenLabels section: every entry must map a non-empty string key to a
+	 * non-empty string label. Whether the id names a registered token is enforced by the REST
+	 * write guard, not here — a label for a since-unregistered token is stale data, not a
+	 * grammar error, and read-side consumers already ignore it.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $labels The decoded tokenLabels section.
+	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_token_labels( array $labels, string $prefix ): array {
+		$errors = [];
+
+		foreach ( $labels as $id => $label ) {
+			if ( ! is_string( $id ) || $id === '' || ! is_string( $label ) || $label === '' ) {
+				$errors[] = new Validation_Error(
+					$prefix . '.' . Cast::to_string( $id ),
+					Validation_Error::get_code_value_invalid(),
+					'A token label override must map a non-empty token id to a non-empty string label.'
+				);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validate a tokenOrder section: it must be a single sequential list of non-empty string
+	 * token ids — never keyed by group, so a stored order stays locale-independent regardless of
+	 * which translated UI-schema group label a request addresses it through. Whether an id
+	 * resolves to a registered token is the REST write guard's concern (which prunes on save) and
+	 * the feed merge's concern (which ignores on read) — a stale id is data drift, not a grammar
+	 * error, so it does not fail full-document validation.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $order  The decoded tokenOrder section.
+	 * @param string                   $prefix Dot-path to the section, for error messages.
+	 *
+	 * @return Validation_Error[]
+	 */
+	private function validate_token_order( array $order, string $prefix ): array {
+		// The `$order === []` check is required, not redundant: `range( 0, -1 )` returns
+		// `[ 0, -1 ]` in PHP, not `[]`, so without this short-circuit an empty order list would be
+		// misclassified as malformed rather than as a valid empty list.
+		$is_list = $order === [] || array_keys( $order ) === range( 0, count( $order ) - 1 );
+
+		if ( ! $is_list ) {
+			return [
+				new Validation_Error(
+					$prefix,
+					Validation_Error::get_code_value_invalid(),
+					'tokenOrder must be a sequential list of non-empty string token ids.'
+				),
+			];
+		}
+
+		$errors = [];
+
+		foreach ( $order as $index => $id ) {
+			if ( ! is_string( $id ) || $id === '' ) {
+				$errors[] = new Validation_Error(
+					$prefix . '.' . Cast::to_string( $index ),
+					Validation_Error::get_code_value_invalid(),
+					'tokenOrder must be a sequential list of non-empty string token ids.'
+				);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
 	 * Recursively validate every `tokens` map within a section subtree, regardless of nesting depth. A node
 	 * carrying a `tokens` map has each of its values checked; every other array branch is descended into.
 	 * The `$default` slug (and any other non-array metadata) is a leaf with no `tokens` map, so it is
@@ -706,8 +816,10 @@ final class Dtcg_Validator {
 	}
 
 	/**
-	 * A foundation-preset / block-preset token value must be an alias or a non-empty literal scalar. The target token's
-	 * $type is not resolved here, so the literal is checked only for shape, not per-type grammar.
+	 * A foundation-preset / block-preset token value must be an alias, a non-empty literal scalar, or a
+	 * per-corner slot list. The target token's $type is not resolved here, so the literal is checked only
+	 * for shape, not per-type grammar; whether a slot list is meaningful for the bound property's kind is
+	 * a registry-aware question answered by the REST write guard, not by the schema.
 	 *
 	 * @since TBD
 	 *
@@ -733,11 +845,141 @@ final class Dtcg_Validator {
 			return null;
 		}
 
+		if ( is_array( $value ) && $this->is_list( $value ) ) {
+			return $this->validate_extension_slots( $value, $path );
+		}
+
+		if ( is_array( $value ) && array_key_exists( Sentinels::get_value_key(), $value ) ) {
+			return $this->validate_extension_envelope( $value, $path );
+		}
+
 		return new Validation_Error(
 			$path,
 			Validation_Error::get_code_value_invalid(),
-			'A foundation-preset/block-preset token value must be an alias or a non-empty literal.'
+			'A foundation-preset/block-preset token value must be an alias, a non-empty literal, a slot list, or a responsive entry.'
 		);
+	}
+
+	/**
+	 * Validate a preset token entry that varies by breakpoint: its `$value` is the base, and each override
+	 * under the vendor extension's `responsive` map is itself a preset token value.
+	 *
+	 * Mirrors {@see self::validate_responsive_shape()} — same envelope, same breakpoint-key check — but
+	 * validates each override by SHAPE rather than against a `$type`. A preset property has no `$type`
+	 * (the walk sees a property name like "button-radius", not a token id), which is also why the kind
+	 * gate lives in the REST write guard rather than here.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $entry The decoded entry.
+	 * @param string               $path  Dot-path to the entry.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_envelope( array $entry, string $path ): ?Validation_Error {
+		$error = $this->validate_extension_value( Extensions::preset_value_of( $entry ), $path );
+
+		if ( $error !== null ) {
+			return $error;
+		}
+
+		$responsive = Extensions::preset_responsive_of( $entry );
+
+		// An entry object with no overrides says nothing a bare value does not; refuse the dead shape.
+		if ( $responsive === [] ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				'A responsive preset token entry must declare at least one breakpoint override; use a bare value otherwise.'
+			);
+		}
+
+		$allowed = Responsive::get_breakpoint_keys();
+
+		foreach ( $responsive as $breakpoint => $override ) {
+			if ( ! in_array( $breakpoint, $allowed, true ) ) {
+				return new Validation_Error(
+					$path . '.' . $breakpoint,
+					Validation_Error::get_code_composite_field_unknown(),
+					sprintf(
+						'Unknown responsive breakpoint "%s"; expected one of: %s.',
+						(string) $breakpoint,
+						implode( ', ', $allowed )
+					)
+				);
+			}
+
+			$error = $this->validate_extension_value( $override, $path . '.' . $breakpoint );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Validate a per-corner slot list: exactly 4 slots (top-left, top-right, bottom-right, bottom-left),
+	 * each an alias or a non-empty literal scalar. "Every corner" is already expressed by a bare scalar, so
+	 * a shorter list would be a second spelling of the same thing. A slot is validated by the
+	 * same alias-or-literal rule as a scalar value, so "alias anywhere" stays one rule applied once; a
+	 * nested list is rejected because that rule accepts no array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed> $slots The slot list.
+	 * @param string            $path  Dot-path to the list.
+	 *
+	 * @return Validation_Error|null Null when valid.
+	 */
+	private function validate_extension_slots( array $slots, string $path ): ?Validation_Error {
+		$count = count( $slots );
+
+		if ( $count !== self::SLOT_LIST_SIDES ) {
+			return new Validation_Error(
+				$path,
+				Validation_Error::get_code_value_invalid(),
+				sprintf( 'A preset token slot list must hold exactly %d values, %d given.', self::SLOT_LIST_SIDES, $count )
+			);
+		}
+
+		foreach ( $slots as $index => $slot ) {
+			if ( is_array( $slot ) ) {
+				return new Validation_Error(
+					$path . '.' . $index,
+					Validation_Error::get_code_value_invalid(),
+					'A preset token slot must be an alias or a non-empty literal, not a nested list.'
+				);
+			}
+
+			$error = $this->validate_extension_value( $slot, $path . '.' . $index );
+
+			if ( $error !== null ) {
+				return $error;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether an array is a list — sequential integer keys from zero. Hand-rolled because the plugin
+	 * supports PHP 7.4, where array_is_list() does not exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int|string, mixed> $value The array to test.
+	 *
+	 * @return bool True when the array is a list.
+	 */
+	private function is_list( array $value ): bool {
+		// range( 0, -1 ) yields [ 0, -1 ], so the empty array is answered before the key compare.
+		if ( $value === [] ) {
+			return true;
+		}
+
+		return array_keys( $value ) === range( 0, count( $value ) - 1 );
 	}
 
 	/**

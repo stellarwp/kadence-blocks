@@ -90,6 +90,107 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed tokenLabels section validates: every entry maps a non-empty string id to a
+	 * non-empty string label.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedTokenLabelsSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenLabels' => [
+						'semantic.color.button-bg' => 'Brand Button',
+					],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A document without a tokenLabels section produces no new errors, and a non-Kadence
+	 * extension namespace alongside it is passed through untouched.
+	 *
+	 * @return void
+	 */
+	public function testADocumentWithoutTheTokenLabelsSectionIsUnaffected(): void {
+		$document = [
+			'$extensions' => [
+				'some.other.vendor' => [
+					'tokenLabels' => [ 0 => 'not-kadence-owned' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A well-formed tokenOrder section validates: a sequential list of non-empty string token ids.
+	 *
+	 * @return void
+	 */
+	public function testAWellFormedTokenOrderSectionValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenOrder' => [ 'semantic.color.button-bg', 'semantic.color.button-text' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A stored id that names no registered token does not fail validation: whether it resolves is
+	 * data drift, enforced by the REST write guard and the feed merge, not full-document grammar.
+	 *
+	 * @return void
+	 */
+	public function testATokenOrderEntryNamingAnUnregisteredIdStillValidates(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'tokenOrder' => [ 'semantic.color.does-not-exist' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * A document without a tokenOrder section produces no new errors, and a non-Kadence extension
+	 * namespace alongside it is passed through untouched.
+	 *
+	 * @return void
+	 */
+	public function testADocumentWithoutTheTokenOrderSectionIsUnaffected(): void {
+		$document = [
+			'$extensions' => [
+				'some.other.vendor' => [
+					'tokenOrder' => [ 0 => 'not-kadence-owned' ],
+				],
+			],
+		];
+
+		$result = $this->validator->validate( $document, Dtcg_Validator::get_context_overrides() );
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItIsResolvableFromTheContainer(): void {
@@ -326,6 +427,82 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'code'     => Validation_Error::get_code_alias_malformed(),
 			'path'     => '$extensions.com.kadence.designTokens.colorPalettes.default.groups.0.swatches.0.$value',
 		];
+		// A tokenLabels entry keyed by an integer (rather than a token dot-path string) is rejected
+		// by the section's own explicit branch.
+		yield 'integer-keyed tokenLabels entry' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 0 => 'Numeric Key' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.0',
+		];
+		yield 'non-string tokenLabels label' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 'semantic.color.button-bg' => 42 ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
+		];
+		yield 'empty-string tokenLabels label' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [ 'semantic.color.button-bg' => '' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenLabels.semantic.color.button-bg',
+		];
+		// tokenOrder must be a single flat sequential list (see Token_Order_Index for why it is
+		// never keyed by group); a map-shaped (non-sequential) value is rejected wholesale.
+		yield 'map-shaped (non-sequential) tokenOrder value' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ 'a' => 'semantic.color.button-bg' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder',
+		];
+		yield 'non-string tokenOrder id' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ 'semantic.color.button-bg', 42 ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.1',
+		];
+		yield 'empty-string tokenOrder id' => [
+			'document' => [
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenOrder' => [ '' ],
+					],
+				],
+			],
+			'context'  => Dtcg_Validator::get_context_overrides(),
+			'code'     => Validation_Error::get_code_value_invalid(),
+			'path'     => '$extensions.com.kadence.designTokens.tokenOrder.0',
+		];
 		yield 'responsive on non-capable type' => [
 			'document' => [
 				'semantic' => [
@@ -486,6 +663,250 @@ final class Dtcg_ValidatorTest extends TestCase {
 			'context'  => Dtcg_Validator::get_context_baseline(),
 			'code'     => Validation_Error::get_code_value_invalid(),
 			'path'     => 'semantic.x.$extensions.com.kadence.designTokens.clamp.preferred',
+		];
+	}
+
+	/**
+	 * A preset token value may be a per-corner slot list of exactly 1 or 4 entries, each an alias or a
+	 * literal, so a block storing a 4-side measure attribute can persist its corners into a preset.
+	 *
+	 * @dataProvider validSlotListProvider
+	 *
+	 * @param mixed $value The preset token value under test.
+	 *
+	 * @return void
+	 */
+	public function testAValidSlotListValidates( $value ): void {
+		$result = $this->validator->validate(
+			$this->preset_document( $value ),
+			Dtcg_Validator::get_context_overrides()
+		);
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function validSlotListProvider(): Generator {
+		yield 'four aliases' => [
+			'value' => [
+				'{primitive.dimension.radius.md}',
+				'{primitive.dimension.radius.sm}',
+				'{primitive.dimension.radius.md}',
+				'{primitive.dimension.radius.sm}',
+			],
+		];
+
+		yield 'four literals' => [ 'value' => [ '8px', '8px', '4px', '4px' ] ];
+
+		yield 'mixed alias and literal' => [
+			'value' => [ '{primitive.dimension.radius.md}', '8px', '{primitive.dimension.radius.sm}', '4px' ],
+		];
+
+		yield 'numeric literal slots' => [ 'value' => [ 0, 8, 0, 8 ] ];
+	}
+
+	/**
+	 * A preset token slot list is rejected when its length is not 1 or 4, when a slot nests another list,
+	 * when a slot is empty, or when a slot carries braces without being a whole-string alias.
+	 *
+	 * @dataProvider invalidSlotListProvider
+	 *
+	 * @param mixed  $value The preset token value under test.
+	 * @param string $code  The expected validation-error code.
+	 * @param string $path  The expected dot-path the error is reported at.
+	 *
+	 * @return void
+	 */
+	public function testAnInvalidSlotListIsRejected( $value, string $code, string $path ): void {
+		$errors = $this->validator->validate(
+			$this->preset_document( $value ),
+			Dtcg_Validator::get_context_overrides()
+		)->errors();
+
+		$this->assertCount( 1, $errors, $this->describe( $errors ) );
+		$this->assertSame( $code, $errors[0]->code );
+		$this->assertSame( $path, $errors[0]->path );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function invalidSlotListProvider(): Generator {
+		$base = '$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.button-radius';
+
+		yield 'one slot' => [
+			'value' => [ '8px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'two slots' => [
+			'value' => [ '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'three slots' => [
+			'value' => [ '8px', '4px', '8px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'five slots' => [
+			'value' => [ '8px', '4px', '8px', '4px', '2px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'empty list' => [
+			'value' => [],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'nested list in a slot' => [
+			'value' => [ '8px', [ '4px' ], '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
+		];
+
+		yield 'empty slot' => [
+			'value' => [ '8px', '', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.1',
+		];
+
+		yield 'brace-bearing slot that is not a whole-string alias' => [
+			'value' => [ '8px', '{primitive.dimension.radius.sm}px', '8px', '4px' ],
+			'code'  => Validation_Error::get_code_alias_malformed(),
+			'path'  => $base . '.1',
+		];
+	}
+
+	/**
+	 * A preset token entry may carry per-breakpoint overrides in the same envelope a responsive token leaf
+	 * uses, and each override follows the same alias / literal / slot-list rules as the base value.
+	 *
+	 * @dataProvider validResponsivePresetProvider
+	 *
+	 * @param mixed $entry The preset token entry under test.
+	 *
+	 * @return void
+	 */
+	public function testAResponsivePresetEntryValidates( $entry ): void {
+		$result = $this->validator->validate(
+			$this->preset_document( $entry ),
+			Dtcg_Validator::get_context_overrides()
+		);
+
+		$this->assertTrue( $result->is_valid(), $this->describe( $result->errors() ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function validResponsivePresetProvider(): Generator {
+		yield 'scalar base, literal overrides' => [
+			'entry' => $this->responsive_entry(
+				'8px',
+				[
+					'tablet' => '4px',
+					'mobile' => '2px',
+				] 
+			),
+		];
+
+		yield 'slot-list base, scalar overrides' => [
+			'entry' => $this->responsive_entry(
+				[ '8px', '4px', '8px', '4px' ],
+				[ 'mobile' => '{primitive.dimension.radius.sm}' ]
+			),
+		];
+
+		yield 'slot-list base, slot-list overrides' => [
+			'entry' => $this->responsive_entry(
+				[ '8px', '4px', '8px', '4px' ],
+				[ 'tablet' => [ '4px', '2px', '4px', '2px' ] ]
+			),
+		];
+
+		yield 'alias base, alias override' => [
+			'entry' => $this->responsive_entry(
+				'{semantic.radius.control}',
+				[ 'mobile' => '{primitive.dimension.radius.none}' ]
+			),
+		];
+
+		yield 'single breakpoint only' => [
+			'entry' => $this->responsive_entry( '8px', [ 'mobile' => '2px' ] ),
+		];
+	}
+
+	/**
+	 * A malformed responsive preset entry is rejected: an unknown breakpoint, an empty override map, a
+	 * missing base value, and a bad value at a breakpoint each fail at their own path.
+	 *
+	 * @dataProvider invalidResponsivePresetProvider
+	 *
+	 * @param mixed  $entry The preset token entry under test.
+	 * @param string $code  The expected validation-error code.
+	 * @param string $path  The expected dot-path the error is reported at.
+	 *
+	 * @return void
+	 */
+	public function testAnInvalidResponsivePresetEntryIsRejected( $entry, string $code, string $path ): void {
+		$errors = $this->validator->validate(
+			$this->preset_document( $entry ),
+			Dtcg_Validator::get_context_overrides()
+		)->errors();
+
+		$this->assertCount( 1, $errors, $this->describe( $errors ) );
+		$this->assertSame( $code, $errors[0]->code );
+		$this->assertSame( $path, $errors[0]->path );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function invalidResponsivePresetProvider(): Generator {
+		$base = '$extensions.com.kadence.designTokens.presets.kadence/x.default.tokens.button-radius';
+
+		yield 'unknown breakpoint' => [
+			'entry' => $this->responsive_entry( '8px', [ 'watch' => '2px' ] ),
+			'code'  => Validation_Error::get_code_composite_field_unknown(),
+			'path'  => $base . '.watch',
+		];
+
+		yield 'empty responsive map' => [
+			'entry' => $this->responsive_entry( '8px', [] ),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
+		];
+
+		yield 'empty override value' => [
+			'entry' => $this->responsive_entry( '8px', [ 'tablet' => '' ] ),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.tablet',
+		];
+
+		yield 'brace-bearing override that is not a whole-string alias' => [
+			'entry' => $this->responsive_entry( '8px', [ 'mobile' => '{semantic.radius.control}px' ] ),
+			'code'  => Validation_Error::get_code_alias_malformed(),
+			'path'  => $base . '.mobile',
+		];
+
+		yield 'bad slot count in an override' => [
+			'entry' => $this->responsive_entry( '8px', [ 'tablet' => [ '4px', '2px' ] ] ),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base . '.tablet',
+		];
+
+		yield 'bad base value under a valid responsive map' => [
+			'entry' => $this->responsive_entry( '', [ 'tablet' => '4px' ] ),
+			'code'  => Validation_Error::get_code_value_invalid(),
+			'path'  => $base,
 		];
 	}
 
@@ -691,7 +1112,55 @@ final class Dtcg_ValidatorTest extends TestCase {
 	}
 
 	/**
-	 * @param Validation_Error[] $errors
+	 * A preset token entry carrying per-breakpoint overrides, in the same envelope a responsive token leaf
+	 * uses.
+	 *
+	 * @param mixed                $base       The entry's base value.
+	 * @param array<string, mixed> $responsive Breakpoint => override value.
+	 *
+	 * @return array<string, mixed> The entry.
+	 */
+	private function responsive_entry( $base, array $responsive ): array {
+		return [
+			'$value'      => $base,
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'responsive' => $responsive,
+				],
+			],
+		];
+	}
+
+	/**
+	 * A minimal overrides document carrying one block preset whose `button-radius` token holds the given
+	 * value, so a preset token value can be exercised in isolation.
+	 *
+	 * @param mixed $value The preset token value to place under `button-radius`.
+	 *
+	 * @return array<string, mixed> The document.
+	 */
+	private function preset_document( $value ): array {
+		return [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/x' => [
+							'$default' => 'default',
+							'default'  => [
+								'label'  => 'Default',
+								'tokens' => [ 'button-radius' => $value ],
+							],
+						],
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Render a list of validation errors as a readable multi-line string for assertion messages.
+	 *
+	 * @param Validation_Error[] $errors The errors to describe.
 	 *
 	 * @return string
 	 */

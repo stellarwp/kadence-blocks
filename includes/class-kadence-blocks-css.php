@@ -1558,10 +1558,17 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the shadow output.
 	 *
-	 * @param array  $shadow an array of shadow settings.
+	 * @param array                     $shadow   an array of shadow settings.
+	 * @param array<string, string|float> $defaults optional per-caller fallback literals used to fill
+	 *                                            any empty/missing leg before rendering. When omitted
+	 *                                            the method behaves exactly as before. Numeric and
+	 *                                            {alias} values always pass through untouched.
 	 * @return string
 	 */
-	public function render_shadow( $shadow ) {
+	public function render_shadow( $shadow, array $defaults = [] ) {
+		if ( ! empty( $defaults ) && is_array( $shadow ) ) {
+			$shadow = $this->normalize_shadow_defaults( $shadow, $defaults );
+		}
 		if ( empty( $shadow ) ) {
 			return false;
 		}
@@ -1607,6 +1614,35 @@ class Kadence_Blocks_CSS {
 		return $shadow_string;
 	}
 
+	/**
+	 * Render a legacy positional box-shadow array through the alias-aware render_shadow().
+	 *
+	 * Several blocks store a box-shadow as a positional array where index 0 is the enabled flag,
+	 * 1 the color, 2 the opacity, 3-6 the offsets/blur/spread and 7 the inset flag. This maps that
+	 * shape onto the keyed array render_shadow() expects and applies the caller's per-state
+	 * defaults, so a {dot.alias} on any numeric leg resolves to its token var().
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int, mixed>           $box_shadow The positional shadow array (indexes 1-7 are read).
+	 * @param array<string, string|float> $defaults   Per-caller fallback literals for empty legs.
+	 *
+	 * @return string The rendered box-shadow declaration.
+	 */
+	public function render_legacy_shadow( array $box_shadow, array $defaults ): string {
+		return (string) $this->render_shadow(
+			[
+				'color'   => $box_shadow[1] ?? '',
+				'opacity' => $box_shadow[2] ?? '',
+				'hOffset' => $box_shadow[3] ?? '',
+				'vOffset' => $box_shadow[4] ?? '',
+				'blur'    => $box_shadow[5] ?? '',
+				'spread'  => $box_shadow[6] ?? '',
+				'inset'   => ! empty( $box_shadow[7] ),
+			],
+			$defaults
+		);
+	}
 
 	/**
 	 * Generates the border radius color output.
@@ -2347,6 +2383,34 @@ class Kadence_Blocks_CSS {
 	}
 
 	/**
+	 * Adds one side of a measure output, matching render_measure_output()'s per-side rules: a numeric
+	 * value gets the shared unit, a `position` keyword is emitted verbatim, a design-token alias resolves
+	 * to its `var(--kb-token--…)` reference, and a legacy spacing variable resolves to its stored size.
+	 * An empty/unset value emits nothing.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $prop     The CSS property to write (e.g. `border-top-left-radius`).
+	 * @param mixed  $value    The side's value: a number, a `position` keyword, a design-token alias, a
+	 *                         legacy spacing variable, or empty.
+	 * @param string $unit     The unit appended to a numeric value.
+	 * @param string $property The measure property being rendered, so `position` keywords pass through.
+	 *
+	 * @return void
+	 */
+	private function render_measure_side( $prop, $value, $unit, $property ) {
+		if ( $this->is_number( $value ) ) {
+			$this->add_property( $prop, $value . $unit );
+		} else if ( 'position' === $property && ! empty( $value ) ) {
+			$this->add_property( $prop, $value );
+		} else if ( ! empty( $value ) && null !== $this->get_token_reference( $value ) ) {
+			$this->add_property( $prop, $this->get_token_reference( $value ) );
+		} else if ( ! empty( $value ) && $this->is_variable_value( $value ) ) {
+			$this->add_property( $prop, $this->get_variable_value( $value ) );
+		}
+	}
+
+	/**
 	 * Generates the measure output.
 	 *
 	 * @param array  $attributes an array of attributes.
@@ -2410,96 +2474,24 @@ class Kadence_Blocks_CSS {
 		$args = wp_parse_args( $args, $defaults );
 		$unit = ! empty( $attributes[ $args['unit_key'] ] ) ? $attributes[ $args['unit_key'] ] : 'px';
 		if ( isset( $attributes[ $args['desktop_key'] ] ) && is_array( $attributes[ $args['desktop_key'] ] ) ) {
-			if ( $this->is_number( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] . $unit );
-			} else if ( 'position' === $property && ! empty( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][1] ) && is_numeric( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][1] ) && ! empty( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][2] ) && is_numeric( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][2] ) && ! empty( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['desktop_key'] ][3] ) && is_numeric( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['desktop_key'] ][3] ) && ! empty( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['desktop_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['desktop_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['desktop_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['desktop_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['desktop_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['desktop_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['desktop_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'tablet' );
 		if ( isset( $attributes[ $args['tablet_key'] ] ) && is_array( $attributes[ $args['tablet_key'] ] ) ) {
-			if ( isset( $attributes[ $args['tablet_key'] ][0] ) && is_numeric( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][0] ) && ! empty( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][1] ) && is_numeric( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][1] ) && ! empty( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][2] ) && is_numeric( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][2] ) && ! empty( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['tablet_key'] ][3] ) && is_numeric( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['tablet_key'] ][3] ) && ! empty( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['tablet_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['tablet_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['tablet_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['tablet_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['tablet_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['tablet_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['tablet_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'mobile' );
 		if ( isset( $attributes[ $args['mobile_key'] ] ) && is_array( $attributes[ $args['mobile_key'] ] ) ) {
-			if ( isset( $attributes[ $args['mobile_key'] ][0] ) && is_numeric( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][0] ) && ! empty( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][0] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][0] ) ) {
-				$this->add_property( $args['first_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][0] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][1] ) && is_numeric( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][1] ) && ! empty( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][1] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][1] ) ) {
-				$this->add_property( $args['second_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][1] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][2] ) && is_numeric( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][2] ) && ! empty( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][2] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][2] ) ) {
-				$this->add_property( $args['third_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][2] ) );
-			}
-			if ( isset( $attributes[ $args['mobile_key'] ][3] ) && is_numeric( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] . $unit );
-			} else if ( 'position' === $property && isset( $attributes[ $args['mobile_key'] ][3] ) && ! empty( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] );
-			} else if ( ! empty( $attributes[ $args['mobile_key'] ][3] ) && $this->is_variable_value( $attributes[ $args['mobile_key'] ][3] ) ) {
-				$this->add_property( $args['fourth_prop'], $this->get_variable_value( $attributes[ $args['mobile_key'] ][3] ) );
-			}
+			$this->render_measure_side( $args['first_prop'], $attributes[ $args['mobile_key'] ][0] ?? null, $unit, $property );
+			$this->render_measure_side( $args['second_prop'], $attributes[ $args['mobile_key'] ][1] ?? null, $unit, $property );
+			$this->render_measure_side( $args['third_prop'], $attributes[ $args['mobile_key'] ][2] ?? null, $unit, $property );
+			$this->render_measure_side( $args['fourth_prop'], $attributes[ $args['mobile_key'] ][3] ?? null, $unit, $property );
 		}
 		$this->set_media_state( 'desktop' );
 	}
@@ -2535,8 +2527,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the opacity css output.
 	 *
-	 * @param array $attributes an array of attributes.
-	 * @param null|integer $name name of opacity attribute.
+	 * @param array       $attributes an array of attributes.
+	 * @param string|null $name name of opacity attribute.
 	 */
 	public function render_opacity_from_100( $attributes, $name = null ) {
 		if ( ! isset( $attributes[ $name ] ) || ! $this->is_number( $attributes[ $name ] ) ) {
@@ -3064,6 +3056,38 @@ class Kadence_Blocks_CSS {
 		}
 
 		return $sized_array;
+	}
+
+	/**
+	 * Fill any empty or missing shadow leg with the caller's legacy default so render_shadow()
+	 * can emit a complete declaration.
+	 *
+	 * Numeric and {alias} values pass through untouched so they still resolve to `<n>px` or
+	 * `var(--kb-token--...)`. Only a genuinely empty (`''`/missing) leg is replaced with the
+	 * supplied default, matching the historic per-site `is_numeric( $value ) ? $value : $default`
+	 * inline behavior.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed>        $shadow   The stored shadow parts (may be partial).
+	 * @param array<string, string|float> $defaults Per-caller fallback literals for empty legs.
+	 *
+	 * @return array<string, mixed> The complete keyed array.
+	 */
+	private function normalize_shadow_defaults( array $shadow, array $defaults ): array {
+		$pick = static function ( $value, $fallback ) {
+			return ( isset( $value ) && '' !== $value ) ? $value : $fallback;
+		};
+
+		return [
+			'hOffset' => $pick( $shadow['hOffset'] ?? null, $defaults['hOffset'] ),
+			'vOffset' => $pick( $shadow['vOffset'] ?? null, $defaults['vOffset'] ),
+			'blur'    => $pick( $shadow['blur'] ?? null, $defaults['blur'] ),
+			'spread'  => $pick( $shadow['spread'] ?? null, $defaults['spread'] ),
+			'color'   => $pick( $shadow['color'] ?? null, $defaults['color'] ),
+			'opacity' => ( isset( $shadow['opacity'] ) && is_numeric( $shadow['opacity'] ) ) ? $shadow['opacity'] : $defaults['opacity'],
+			'inset'   => ! empty( $shadow['inset'] ),
+		];
 	}
 }
 Kadence_Blocks_CSS::get_instance();

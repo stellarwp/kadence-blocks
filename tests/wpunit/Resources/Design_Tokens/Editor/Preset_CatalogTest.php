@@ -159,4 +159,67 @@ final class Preset_CatalogTest extends TestCase {
 		$this->assertArrayHasKey( 'button-bg', $button['values']['primary'] );
 		$this->assertNotSame( '', $button['values']['primary']['button-bg'] );
 	}
+
+	/**
+	 * A preset whose property varies by breakpoint surfaces those overrides as flattened literals under a
+	 * `responsive` map, so a control can show the inherited default for the device the editor is on.
+	 *
+	 * @return void
+	 */
+	public function testItSurfacesPerBreakpointPresetValues(): void {
+		$this->seedResponsivePreset();
+
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertSame( '8px', $button['values']['hero']['button-radius'] );
+		$this->assertSame(
+			[ 'mobile' => [ 'button-radius' => '0.1875rem' ] ],
+			$button['responsive']['hero']
+		);
+	}
+
+	/**
+	 * A preset with no per-breakpoint overrides carries an empty responsive map, so every existing preset
+	 * is unchanged in the feed.
+	 *
+	 * @return void
+	 */
+	public function testAPresetWithoutBreakpointsCarriesAnEmptyResponsiveMap(): void {
+		$button = $this->catalog->all()['libraries'][ Token_Store::default_slug() ][ self::BUTTON ];
+
+		$this->assertSame( [], $button['responsive']['primary'] );
+	}
+
+	/**
+	 * Persist a "hero" button preset whose radius takes an aliased override on mobile.
+	 *
+	 * @return void
+	 */
+	private function seedResponsivePreset(): void {
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						self::BUTTON => [
+							'hero' => [
+								'label'  => 'Hero',
+								'tokens' => [
+									'button-radius' => [
+										'$value'      => '8px',
+										'$extensions' => [
+											'com.kadence.designTokens' => [
+												'responsive' => [ 'mobile' => '{semantic.radius.control}' ],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$this->store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+	}
 }

@@ -148,12 +148,15 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active library's slug.
+	 * @param string                $active_slug The active library's slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string (e.g.
+	 *                                           "tablet" => "(max-width: 1024px)"), for the per-breakpoint
+	 *                                           redeclarations. Empty emits none.
 	 *
 	 * @return string The CSS, or an empty string when no block contributes a slot-targeted value.
 	 */
-	public function css( string $active_slug ): string {
-		return $this->build( $active_slug );
+	public function css( string $active_slug, array $breakpoints = [] ): string {
+		return $this->build( $active_slug, $breakpoints );
 	}
 
 	/**
@@ -166,13 +169,15 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active library's slug.
-	 * @param string $version     The store version the active library was built from.
+	 * @param string                $active_slug The active library's slug.
+	 * @param string                $version     The store version the active library was built from.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string, for the per-breakpoint
+	 *                                           redeclarations.
 	 *
 	 * @return string
 	 */
-	public function css_for_version( string $active_slug, string $version ): string {
-		$cache_key = 'preset_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version;
+	public function css_for_version( string $active_slug, string $version, array $breakpoints = [] ): string {
+		$cache_key = 'preset_css_root_' . KADENCE_BLOCKS_VERSION . '_' . $active_slug . '_' . $version . '_' . $this->breakpoint_signature( $breakpoints );
 
 		if ( isset( $this->memo[ $cache_key ] ) ) {
 			return $this->memo[ $cache_key ];
@@ -184,7 +189,7 @@ final class Css_Builder {
 			return $this->memo[ $cache_key ] = $cached;
 		}
 
-		$css = $this->build( $active_slug );
+		$css = $this->build( $active_slug, $breakpoints );
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
@@ -215,16 +220,18 @@ final class Css_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $active_slug The active library slug.
+	 * @param string                $active_slug The active library slug.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
 	 *
 	 * @return string
 	 */
-	private function build( string $active_slug ): string {
+	private function build( string $active_slug, array $breakpoints = [] ): string {
 		$collected = $this->collect( $active_slug );
 
 		return $this->canonical_block( $collected )
 			. $this->scoped_presets( $collected )
-			. $this->scoped_default( $collected );
+			. $this->scoped_default( $collected )
+			. $this->responsive_blocks( $active_slug, $collected, $breakpoints );
 	}
 
 	/**
@@ -510,6 +517,85 @@ final class Css_Builder {
 		$name      = $parts[1] ?? $namespace;
 
 		return '.wp-block-' . self::sanitize_identifier( $namespace ) . '-' . self::sanitize_identifier( $name );
+	}
+
+	/**
+	 * Redeclare each preset var that varies by breakpoint inside that breakpoint's `@media` block.
+	 *
+	 * Only the canonical var is redeclared — the scoped `--global-*` / `--kb-*` bridges are untouched,
+	 * because they already point at the preset var, so overriding it inside the media query is enough for
+	 * every consumer (including each corner of a per-corner shorthand) to follow. Mirrors the token
+	 * projection's {@see \KadenceWP\KadenceBlocks\Design_Tokens\Projection\Css_Var\Css_Builder} responsive
+	 * layer: same media wrapper, same :root scope, same "redeclare the same custom property" approach.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $active_slug The active library's slug.
+	 * @param array<string, array{selector:string, default:string, presets:array<string, array<string, array{target:string, value:string}>>}> $collected The collected preset structure, for the block/preset list.
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	private function responsive_blocks( string $active_slug, array $collected, array $breakpoints ): string {
+		if ( $collected === [] || $breakpoints === [] ) {
+			return '';
+		}
+
+		$by_breakpoint = [];
+
+		foreach ( $collected as $block => $data ) {
+			foreach ( array_keys( $data['presets'] ) as $preset ) {
+				try {
+					$responsive = $this->presets->resolve_responsive( $block, (string) $preset, $active_slug );
+				} catch ( RuntimeException $e ) {
+					continue; // A preset that stopped resolving contributes no overrides, like the flat layer.
+				}
+
+				foreach ( $responsive as $breakpoint => $properties ) {
+					foreach ( $properties as $property => $value ) {
+						// Only a property the flat layer emitted has a var to override; skip anything else so a
+						// media block can never introduce a var the base projection never defined.
+						if ( ! isset( $data['presets'][ $preset ][ $property ] ) ) {
+							continue;
+						}
+
+						$by_breakpoint[ $breakpoint ][] = $this->preset_var( $block, (string) $preset, (string) $property )
+							. ':' . $this->sanitize_value( $value ) . ';';
+					}
+				}
+			}
+		}
+
+		$css = '';
+
+		foreach ( $breakpoints as $breakpoint => $query ) {
+			if ( $query === '' || empty( $by_breakpoint[ $breakpoint ] ) ) {
+				continue;
+			}
+
+			$css .= '@media all and ' . $query . '{' . Scope::root() . '{' . implode( '', $by_breakpoint[ $breakpoint ] ) . '}}';
+		}
+
+		return $css;
+	}
+
+	/**
+	 * A stable signature for a breakpoint map, so the cache key changes when the filtered media queries do.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, string> $breakpoints Breakpoint => media-query string.
+	 *
+	 * @return string
+	 */
+	private function breakpoint_signature( array $breakpoints ): string {
+		if ( $breakpoints === [] ) {
+			return 'none';
+		}
+
+		ksort( $breakpoints );
+
+		return md5( (string) wp_json_encode( $breakpoints ) );
 	}
 
 	/**

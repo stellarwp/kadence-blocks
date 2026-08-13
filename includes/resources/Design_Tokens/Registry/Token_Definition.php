@@ -51,6 +51,16 @@ final class Token_Definition {
 	public string $group;
 
 	/**
+	 * Stable machine key for the group, e.g. "border-radius". Empty for a group nothing can mint
+	 * a user primitive into. Never a translated string — see Token_Registry::group_label_for().
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public string $group_key;
+
+	/**
 	 * The canonical (or overridden) CSS custom-property name.
 	 *
 	 * @since TBD
@@ -85,6 +95,7 @@ final class Token_Definition {
 	 * @param string               $css_var      Canonical (or overridden) CSS custom-property name.
 	 * @param array<string, mixed> $projections  Projection targets keyed by projection id.
 	 * @param bool                 $user_created Whether the token was created by a user.
+	 * @param string               $group_key    Stable machine key for the group.
 	 */
 	private function __construct(
 		string $id,
@@ -93,7 +104,8 @@ final class Token_Definition {
 		string $group,
 		string $css_var,
 		array $projections,
-		bool $user_created = false
+		bool $user_created = false,
+		string $group_key = ''
 	) {
 		$this->id           = $id;
 		$this->type         = $type;
@@ -102,6 +114,7 @@ final class Token_Definition {
 		$this->css_var      = $css_var;
 		$this->projections  = $projections;
 		$this->user_created = $user_created;
+		$this->group_key    = $group_key;
 	}
 
 	/**
@@ -132,6 +145,13 @@ final class Token_Definition {
 		$group   = self::optional_string( $definition['group'] ?? null, 'group' );
 		$css_var = self::optional_string( $definition['css_var'] ?? null, 'css_var' );
 
+		$group_key = self::optional_string( $definition['group_key'] ?? null, 'group_key' );
+		if ( $group_key !== null && $group_key !== '' && ! preg_match( '/^[a-z0-9]+(-[a-z0-9]+)*$/', $group_key ) ) {
+			throw new InvalidArgumentException(
+				sprintf( 'Design token declaration "group_key" "%s" must be a lowercase kebab-case key.', $group_key )
+			);
+		}
+
 		// Type-checked here so a bad declaration raises the documented InvalidArgumentException rather than
 		// a raw TypeError from the constructor's typed param — this is a public helper.
 		$projections = $definition['projections'] ?? [];
@@ -146,7 +166,9 @@ final class Token_Definition {
 			$group ?? '',
 			// css_var override is rare; default is derived and impossible to drift from the id.
 			$css_var ?? Css_Var::from_id( $id ),
-			$projections
+			$projections,
+			false,
+			$group_key ?? ''
 		);
 	}
 
@@ -155,15 +177,17 @@ final class Token_Definition {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $id    Canonical dot-path id.
-	 * @param string $type  DTCG $type.
-	 * @param string $label Display label; derived from the terminal slug when empty.
+	 * @param string $id        Canonical dot-path id.
+	 * @param string $type      DTCG $type.
+	 * @param string $label     Display label; derived from the terminal slug when empty.
+	 * @param string $group     Already-resolved, current-locale group label. Empty for ungrouped.
+	 * @param string $group_key Stable machine key the group label was resolved from. Empty for ungrouped.
 	 *
 	 * @throws \InvalidArgumentException When the id fails the charset check.
 	 *
 	 * @return self
 	 */
-	public static function from_user_primitive( string $id, string $type, string $label = '' ): self {
+	public static function from_user_primitive( string $id, string $type, string $label = '', string $group = '', string $group_key = '' ): self {
 		if ( ! preg_match( '/^[a-z0-9]+([.-][a-z0-9]+)*$/', $id ) ) {
 			throw new InvalidArgumentException(
 				sprintf( 'Design token id "%s" must be a dot-path of lowercase alphanumeric segments.', $id )
@@ -175,7 +199,7 @@ final class Token_Definition {
 			$label    = ucwords( str_replace( '-', ' ', (string) end( $segments ) ) );
 		}
 
-		return new self( $id, $type, $label, '', Css_Var::from_id( $id ), [], true );
+		return new self( $id, $type, $label, $group, Css_Var::from_id( $id ), [], true, $group_key );
 	}
 
 	/**

@@ -1,5 +1,29 @@
 /* eslint-env jest */
-import { buildTokenLeaf, flattenSchemaTokens, isResponsiveType } from '../helpers/tokens';
+import {
+	buildTokenLeaf,
+	flattenSchemaTokens,
+	isResponsiveType,
+	refreshFeedFlow,
+	tokenTypeIdSegment,
+} from '../helpers/tokens';
+
+describe('tokenTypeIdSegment', () => {
+	it('maps every camelCase $type to its registered kebab id segment', () => {
+		expect(tokenTypeIdSegment('fontFamily')).toBe('font-family');
+		expect(tokenTypeIdSegment('fontWeight')).toBe('font-weight');
+		expect(tokenTypeIdSegment('lineHeight')).toBe('line-height');
+		expect(tokenTypeIdSegment('fontStyle')).toBe('font-style');
+		expect(tokenTypeIdSegment('textTransform')).toBe('text-transform');
+		expect(tokenTypeIdSegment('borderStyle')).toBe('border-style');
+	});
+
+	it('passes an already kebab-safe or unregistered type through verbatim', () => {
+		expect(tokenTypeIdSegment('color')).toBe('color');
+		expect(tokenTypeIdSegment('dimension')).toBe('dimension');
+		expect(tokenTypeIdSegment('shadow')).toBe('shadow');
+		expect(tokenTypeIdSegment('bogus')).toBe('bogus');
+	});
+});
 
 describe('flattenSchemaTokens', () => {
 	it('returns empty array when schema has no groups', () => {
@@ -133,5 +157,28 @@ describe('buildTokenLeaf', () => {
 		});
 
 		expect(leaf.$extensions).toBeUndefined();
+	});
+});
+
+describe('refreshFeedFlow', () => {
+	it('fetches the feed for the given slug and applies it', async () => {
+		const feed = { slug: 'brand-b', active: true };
+		const fetchFeed = jest.fn().mockResolvedValue(feed);
+		const applyFeed = jest.fn();
+
+		const result = await refreshFeedFlow('brand-b', applyFeed, fetchFeed);
+
+		expect(fetchFeed).toHaveBeenCalledWith('brand-b');
+		expect(applyFeed).toHaveBeenCalledWith(feed);
+		expect(result).toBe(feed);
+	});
+
+	it('rejects and does not apply anything when the fetch fails', async () => {
+		const error = new Error('network down');
+		const fetchFeed = jest.fn().mockRejectedValue(error);
+		const applyFeed = jest.fn();
+
+		await expect(refreshFeedFlow('brand-b', applyFeed, fetchFeed)).rejects.toBe(error);
+		expect(applyFeed).not.toHaveBeenCalled();
 	});
 });

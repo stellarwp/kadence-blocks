@@ -30,9 +30,42 @@ use InvalidArgumentException;
  * "the button's background" maps to the same output slot whichever preset is active — only the value
  * changes.
  *
+ * The optional `style_library` section is a second, unrelated piece of structural config: the Style
+ * Library admin page's per-block presentation metadata (today, the BLOCK PRESETS nav label). It is
+ * intentionally distinct from `label` — that names the picker CONTROL rendered inside the block
+ * inspector, not the block itself, so it is the wrong string to show as a nav entry.
+ *
  * @since TBD
  */
 final class Preset_Bindings {
+
+	/**
+	 * The coarse input kind for a length-valued property — the only kind a per-corner slot list is
+	 * meaningful for.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_DIMENSION = 'dimension';
+
+	/**
+	 * The coarse input kind for a color-valued property.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_COLOR = 'color';
+
+	/**
+	 * The fallback kind for a property that classifies as neither a dimension nor a color.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_TEXT = 'text';
 
 	/**
 	 * The block name, e.g. "kadence/advancedbtn".
@@ -78,19 +111,35 @@ final class Preset_Bindings {
 	public ?string $editor_selector;
 
 	/**
+	 * The Style Library admin page's per-block presentation metadata, or null when the declaration
+	 * omits the optional "style_library" section. Keyed for forward compatibility rather than a bare
+	 * scalar: today it carries only "label" (the block's BLOCK PRESETS nav label — never the picker
+	 * control's `$label`, which names the inspector control, not the block); a later per-block
+	 * settings-field schema is expected to add sibling keys here without a breaking change.
+	 *
 	 * @since TBD
 	 *
-	 * @param string                 $block           The block name.
-	 * @param array<string, Binding> $bindings        The block's bindable surface, keyed by property.
-	 * @param string|null            $label           The picker control label, or null for preset bindings with no picker.
-	 * @param string|null            $editor_selector The editor-only selector override, or null to reuse the
-	 *                                                 front-end selector in the editor too.
+	 * @var array{label?: string}|null
 	 */
-	private function __construct( string $block, array $bindings, ?string $label, ?string $editor_selector ) {
+	public ?array $style_library;
+
+	/**
+	 * @since TBD
+	 *
+	 * @param string                     $block           The block name.
+	 * @param array<string, Binding>     $bindings        The block's bindable surface, keyed by property.
+	 * @param string|null                $label           The picker control label, or null for preset bindings with no picker.
+	 * @param string|null                $editor_selector The editor-only selector override, or null to reuse the
+	 *                                                     front-end selector in the editor too.
+	 * @param array{label?: string}|null $style_library The Style Library admin page's per-block presentation
+	 *                                                   metadata, or null when the declaration omits it.
+	 */
+	private function __construct( string $block, array $bindings, ?string $label, ?string $editor_selector, ?array $style_library ) {
 		$this->block           = $block;
 		$this->bindings        = $bindings;
 		$this->label           = $label;
 		$this->editor_selector = $editor_selector;
+		$this->style_library   = $style_library;
 	}
 
 	/**
@@ -100,8 +149,9 @@ final class Preset_Bindings {
 	 *
 	 * @param array<string, mixed> $declaration The declaration: "block", optional "bindings" (property =>
 	 *                                  {@see Binding::from_array()}), optional "label" (the picker control
-	 *                                  label; omit for preset bindings with no picker), and optional
-	 *                                  "editor_selector" (see {@see self::$editor_selector}). Preset names,
+	 *                                  label; omit for preset bindings with no picker), optional
+	 *                                  "editor_selector" (see {@see self::$editor_selector}), and optional
+	 *                                  "style_library" (see {@see self::$style_library}). Preset names,
 	 *                                  default and values are document data, not declared here.
 	 *
 	 * @throws InvalidArgumentException When "block" is missing or a binding is malformed.
@@ -119,7 +169,8 @@ final class Preset_Bindings {
 			$declaration['block'],
 			self::bindings( $declaration['block'], $declaration['bindings'] ?? [] ),
 			isset( $declaration['label'] ) && is_string( $declaration['label'] ) ? $declaration['label'] : null,
-			isset( $declaration['editor_selector'] ) && is_string( $declaration['editor_selector'] ) ? $declaration['editor_selector'] : null
+			isset( $declaration['editor_selector'] ) && is_string( $declaration['editor_selector'] ) ? $declaration['editor_selector'] : null,
+			self::style_library( $declaration['style_library'] ?? null )
 		);
 	}
 
@@ -183,6 +234,18 @@ final class Preset_Bindings {
 	}
 
 	/**
+	 * The coarse input kind for a length-valued property, the one kind a per-corner slot list is valid
+	 * for. Read by the REST write guard, which cannot compare against the constant directly.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_dimension(): string {
+		return self::KIND_DIMENSION;
+	}
+
+	/**
 	 * A coarse input kind for a bound property — "color", "dimension" or "text" — so the editor's preset
 	 * form can render the right control per property. Read from the referenced token's group segment when the
 	 * binding is a token reference (e.g. `semantic.radius.media` => "dimension"), otherwise inferred from the
@@ -208,7 +271,22 @@ final class Preset_Bindings {
 
 		$by_name = self::classify( $property );
 
-		return $by_name !== '' ? $by_name : 'text';
+		return $by_name !== '' ? $by_name : self::KIND_TEXT;
+	}
+
+	/**
+	 * The Style Library BLOCK PRESETS nav label declared for this block, or null when the
+	 * declaration has no "style_library" section or leaves "label" empty. Distinct from
+	 * {@see self::$label}, which names the picker CONTROL rather than the block.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function style_library_label(): ?string {
+		$label = $this->style_library['label'] ?? null;
+
+		return is_string( $label ) && $label !== '' ? $label : null;
 	}
 
 	/**
@@ -247,6 +325,32 @@ final class Preset_Bindings {
 	}
 
 	/**
+	 * Parse the optional "style_library" declaration section: the Style Library admin page's
+	 * per-block presentation metadata. Lenient like "label" and "editor_selector" — a missing or
+	 * malformed section yields null rather than throwing, since it is optional and its absence must
+	 * not block registration of the block's preset bindings.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $declared The declared "style_library" value.
+	 *
+	 * @return array{label?: string}|null
+	 */
+	private static function style_library( $declared ): ?array {
+		if ( ! is_array( $declared ) ) {
+			return null;
+		}
+
+		$section = [];
+
+		if ( isset( $declared['label'] ) && is_string( $declared['label'] ) && $declared['label'] !== '' ) {
+			$section['label'] = $declared['label'];
+		}
+
+		return $section;
+	}
+
+	/**
 	 * Classify a term (a token group segment or a property name) into a coarse input kind, or "" when it
 	 * matches neither a dimension nor a color. Dimension terms are checked first so "borderRadius" resolves to
 	 * "dimension" rather than matching the "border" color term.
@@ -262,13 +366,13 @@ final class Preset_Bindings {
 
 		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'size', 'height', 'dimension' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {
-				return 'dimension';
+				return self::KIND_DIMENSION;
 			}
 		}
 
 		foreach ( [ 'color', 'bg', 'background', 'text', 'border', 'fill', 'stroke' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {
-				return 'color';
+				return self::KIND_COLOR;
 			}
 		}
 

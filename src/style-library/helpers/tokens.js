@@ -4,12 +4,76 @@
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Internal dependencies
+ */
+import { PICKABLE_TOKENS_GLOBAL } from '../constants';
+
+/**
  * Read the localized design-token feed from the window global.
  *
  * @return {object|null} Feed payload or null when unavailable.
  */
 export function getDesignTokensFeed() {
 	return window.kadenceDesignTokens ?? null;
+}
+
+/**
+ * Read the localized pickable-token pool from the window global. Yields an empty pool rather than
+ * null when absent, so a caller never has to null-check before filtering.
+ *
+ * @since TBD
+ *
+ * @return {{tokens: Array<{id: string, label: string, type: string}>, values: Record<string, Record<string, string>>}}
+ *         The pickable pool.
+ */
+export function getPickableTokensPool() {
+	return window[PICKABLE_TOKENS_GLOBAL] ?? { tokens: [], values: {} };
+}
+
+/**
+ * The pickable tokens of one DTCG `$type` (e.g. `dimension`, `color`), each with its resolved
+ * literal value from the active library.
+ *
+ * @param {string} type The DTCG token `$type` to filter to.
+ *
+ * @since TBD
+ *
+ * @return {Array<{id: string, label: string, value: string}>} The pickable tokens for the type.
+ */
+export function pickableTokensForType(type) {
+	const pool = getPickableTokensPool();
+	const feed = getDesignTokensFeed();
+	const libraryValues = pool.values?.[feed?.slug] ?? {};
+
+	return (pool.tokens || [])
+		.filter((token) => token.type === type)
+		.map((token) => ({
+			id: token.id,
+			label: token.label,
+			value: libraryValues[token.id] ?? '',
+		}));
+}
+
+/**
+ * Fetch the feed for a library and apply it. Pulled out of `use-design-tokens-feed` so the
+ * refresh behavior can be exercised directly in a test without rendering the hook — the same
+ * shape the hook's `refreshFeed` exposes to its callers. `fetchFeed` is injected (the hook passes
+ * `fetchDesignTokensFeed` from `api/client`) rather than imported here, so this pure-helpers
+ * module carries no REST dependency of its own and a test can pass a plain mock.
+ *
+ * @param {string}   slug      The token library slug to read the feed for.
+ * @param {Function} applyFeed Called with the fetched feed payload once it resolves.
+ * @param {Function} fetchFeed Fetches the feed payload for a slug (`fetchDesignTokensFeed`).
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The fetched feed payload.
+ */
+export function refreshFeedFlow(slug, applyFeed, fetchFeed) {
+	return fetchFeed(slug).then((nextFeed) => {
+		applyFeed(nextFeed);
+		return nextFeed;
+	});
 }
 
 /**
@@ -54,6 +118,40 @@ export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
  * @type {string[]}
  */
 export const RESPONSIVE_BREAKPOINTS = ['tablet', 'mobile'];
+
+/**
+ * The registered-id segment for each `$type` whose DTCG spelling is not itself a valid kebab-case
+ * id segment (mirrors PHP's `Schema\Vocabulary\Token_Type::ID_SEGMENTS`). A `$type` absent from
+ * this map uses its own spelling verbatim. The full six-entry map ships, not just `fontFamily`, so
+ * the two sides cannot drift entry by entry.
+ *
+ * @since TBD
+ *
+ * @type {Record<string, string>}
+ */
+export const TOKEN_TYPE_ID_SEGMENTS = {
+	fontFamily: 'font-family',
+	fontWeight: 'font-weight',
+	lineHeight: 'line-height',
+	fontStyle: 'font-style',
+	textTransform: 'text-transform',
+	borderStyle: 'border-style',
+};
+
+/**
+ * The registered-id segment for a `$type`: the mapped kebab spelling when one is registered in
+ * `TOKEN_TYPE_ID_SEGMENTS`, or the `$type` verbatim otherwise. Mirrors PHP's
+ * `Token_Type::get_id_segment()`.
+ *
+ * @param {string} type The DTCG `$type` (spec spelling).
+ *
+ * @since TBD
+ *
+ * @return {string} The registered-id segment for `type`.
+ */
+export function tokenTypeIdSegment(type) {
+	return TOKEN_TYPE_ID_SEGMENTS[type] ?? type;
+}
 
 /**
  * Build a DTCG leaf payload for a token value update.

@@ -1,0 +1,12 @@
+@use '../../styles/mixins' as *;
+
+.kadence-blocks-style-library__color-palette-screen {
+	@include flex-column(var(--kb-sl-space-30));
+}
+
+// SwatchCard's sub-line renders the swatch's raw `$value` unmodified; this screen renders it in
+// upper case visually only, scoped under the screen root rather than touching SwatchCard.scss,
+// which stays agnostic about the shape of any caller's `subLine`.
+.kadence-blocks-style-library__color-palette-screen .kadence-blocks-style-library__swatch-card-sub-line {
+	text-transform: uppercase;
+}

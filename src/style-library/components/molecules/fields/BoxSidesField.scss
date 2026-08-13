@@ -1,0 +1,14 @@
+@use '../../../styles/mixins' as *;
+
+// The trailing-slot cluster: a would-be breakpoint switcher (currently always absent — see the
+// module docblock) beside the link/unlink toggle, matching the editor reference control's own
+// clustered trailing group (reset, device toggles, link toggle).
+.kadence-blocks-style-library__field-trailing-cluster {
+	@include flex-row(var(--kb-sl-space-05));
+}
+
+.kadence-blocks-style-library__field-box-sides-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--kb-sl-space-10);
+}

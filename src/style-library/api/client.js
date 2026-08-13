@@ -7,8 +7,15 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import {
+	documentPath,
+	documentsPath,
+	libraryTitlePath,
+	activeLibraryPath,
+	activateLibraryPath,
 	resolvedPath,
 	tokenPath,
+	tokenLabelPath,
+	groupOrderPath,
 	userPrimitiveReferencesPath,
 	userPrimitivesPath,
 	userPrimitivePath,
@@ -17,7 +24,18 @@ import {
 	palettePath,
 	paletteSwatchPath,
 	paletteCurrentPath,
+	feedPath,
 } from './paths';
+import { DEFAULT_LIBRARY_SLUG } from '../constants';
+
+/**
+ * The fixed REST namespace this module's endpoints live under. The library-management calls
+ * address the module's own routes only, unlike the token/palette calls above which take a
+ * namespace parameter for reuse from other consumers.
+ *
+ * @since TBD
+ */
+const NAMESPACE = 'kb-design-tokens/v1';
 
 /**
  * Configure apiFetch middleware from the localized REST descriptor.
@@ -65,6 +83,43 @@ export function saveTokenLeaf(namespace, tokenId, leaf, slug) {
 		path: tokenPath(namespace, tokenId, slug),
 		method: 'PUT',
 		data: leaf,
+	});
+}
+
+/**
+ * Set or clear a token's display-label override.
+ *
+ * @since TBD
+ *
+ * @param {string}                             slug    Token library slug.
+ * @param {string}                             id      The token id (baseline dot-path, or a user
+ *                                                       primitive's canonical id).
+ * @param {{ label: string, version: string }} payload Request body.
+ * @return {Promise<object>} Updated document item.
+ */
+export function setTokenLabel(slug, id, payload) {
+	return apiFetch({
+		path: tokenLabelPath(slug, id),
+		method: 'PUT',
+		data: payload,
+	});
+}
+
+/**
+ * Persist a UI-schema group's full sort order.
+ *
+ * @since TBD
+ *
+ * @param {string}                                       slug    Token library slug.
+ * @param {string}                                        group   The UI-schema group label.
+ * @param {{ order: string[], version: string }}          payload Request body.
+ * @return {Promise<object>} Updated document item.
+ */
+export function setGroupOrder(slug, group, payload) {
+	return apiFetch({
+		path: groupOrderPath(slug, group),
+		method: 'PUT',
+		data: payload,
 	});
 }
 
@@ -173,6 +228,22 @@ export function deleteSwatch(namespace, id, token, slug) {
 }
 
 /**
+ * Delete a palette. The library's default palette cannot be deleted — the server refuses with a
+ * 400 — and the response on success is the fresh palette listing.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} id        The palette id.
+ * @param {string} slug      Token set slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The updated palette listing.
+ */
+export function deletePalette(namespace, id, slug) {
+	return apiFetch({ path: palettePath(namespace, id, slug), method: 'DELETE' });
+}
+
+/**
  * Fetch the alias-reference preview for a user primitive.
  *
  * @since TBD
@@ -236,4 +307,119 @@ export function renameUserPrimitive(slug, id, payload) {
 		method: 'POST',
 		data: payload,
 	});
+}
+
+/**
+ * List every stored token library. The default library is always present even before it has a
+ * row (it renders from baseline). `title` is the empty string for a library that was never given
+ * one — never the slug or another synthesized value — so a caller that wants a display label
+ * falls back to the slug itself.
+ *
+ * @since TBD
+ *
+ * @return {Promise<Array<{slug: string, title: string, version: string, document: object}>>} The library rows.
+ */
+export function fetchLibraries() {
+	return apiFetch({ path: documentsPath() });
+}
+
+/**
+ * Read the active-library pointer.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string}>} The resolved active slug.
+ */
+export function getActiveLibrary() {
+	return apiFetch({ path: activeLibraryPath() });
+}
+
+/**
+ * Point the active-library pointer at a named library.
+ *
+ * @param {string} slug Token library slug to make active.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string}>} The resolved active slug.
+ */
+export function setActiveLibrary(slug) {
+	return apiFetch({ path: activateLibraryPath(slug), method: 'PUT' });
+}
+
+/**
+ * Create a token library, or merge into it if one already exists at that slug. Sends an empty
+ * document so the library starts from baseline with only the given title stored.
+ *
+ * @param {string} slug  Token library slug.
+ * @param {string} title Human-readable label for the library.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string, version: string, document: object}>} The created document item.
+ */
+export function createLibrary(slug, title) {
+	return apiFetch({
+		path: documentPath(NAMESPACE, slug || DEFAULT_LIBRARY_SLUG),
+		method: 'POST',
+		data: { document: {}, title },
+	});
+}
+
+/**
+ * Rename a token library. Only its human-readable title changes; the slug is the library's
+ * identity (the active-library pointer stores it, every document/palette/token route addresses by
+ * it) and is never rewritten.
+ *
+ * Addresses the dedicated title endpoint rather than sending a title alongside an empty document
+ * to a document route. Those routes merge and then re-validate the whole stored document, so a
+ * rename through one fails for any library whose document does not currently validate — for
+ * reasons that have nothing to do with the new name. This route touches the label alone, so it
+ * cannot fail on the document's contents and does not bump the library's version.
+ *
+ * The server rejects an empty title rather than reading it as "leave the stored one alone", so a
+ * blank rename reports a real error instead of silently doing nothing.
+ *
+ * @param {string} slug  Token library slug.
+ * @param {string} title The new human-readable label.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{slug: string, title: string, version: string, document: object}>} The updated document item.
+ */
+export function renameLibrary(slug, title) {
+	return apiFetch({
+		path: libraryTitlePath(NAMESPACE, slug),
+		method: 'PUT',
+		data: { title },
+	});
+}
+
+/**
+ * Delete a token library. Deleting the default library resets it to baseline instead of removing
+ * it — the same endpoint serves both, the server decides which behavior applies.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<{deleted: boolean, previous: object}>} The delete result.
+ */
+export function deleteLibrary(slug) {
+	return apiFetch({ path: documentPath(NAMESPACE, slug), method: 'DELETE' });
+}
+
+/**
+ * Fetch the admin UI schema feed for a single library — the same payload shape the page-load
+ * Localizer prints as `window.kadenceDesignTokens`. Used to refresh the app in place after the
+ * active library changes, instead of reloading the page.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Promise<object>} The feed payload.
+ */
+export function fetchDesignTokensFeed(slug) {
+	return apiFetch({ path: feedPath(slug) });
 }

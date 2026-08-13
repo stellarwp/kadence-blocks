@@ -14,7 +14,9 @@
 // owner can retune each step. Usage-specific intent (semantic.spacing.section/.block/.inline) aliases the
 // scale and is where intent-based delivery points — mirroring how semantic.radius.media aliases the radius
 // scale. Defaults match KB's own values, so registering them changes nothing until overridden. ss-auto is
-// omitted: it resolves to "auto", not a length.
+// omitted: it resolves to "auto", not a length. group_key mirrors the radius/border-width scales' mechanism:
+// it is the stable machine id the Style Library's Spacing screen's "+ Add Spacing" mints custom tokens into,
+// resolved back to the group label at read time by Token_Registry::group_label_for().
 $spacing_slugs = [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl', '5xl' ];
 $gap_slugs     = [ 'none', 'xs', 'sm', 'md', 'lg' ];
 
@@ -25,6 +27,7 @@ $spacing_tokens = array_map(
 			'type'        => 'dimension',
 			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Spacing', 'kadence-blocks' ),
+			'group_key'   => 'spacing',
 			'projections' => [ 'kb_spacing_slot' => $slug ],
 		];
 	},
@@ -44,6 +47,100 @@ $gap_tokens = array_map(
 	$gap_slugs
 );
 
+// The border-radius scale steps are primitives the Style Library's Border Radius screen lists and
+// edits directly (semantic.radius.* already carries the projections that deliver these into blocks,
+// so the scale declares none of its own). group_key is the stable machine id "+ Add Border Radius"
+// mints custom tokens into — Token_Registry::group_label_for() resolves it back to the group label
+// below at read time, so a custom radius token's group survives a site language change instead of
+// drifting into its own bucket (see User_Primitive_Registrar::register_entry()).
+// The step list mirrors the shipped baseline exactly: the screen renders whatever this group holds, and
+// a step declared without a baseline entry would trip Baseline_Guard. Labels are the scale's own, so the
+// Style Library and the editor's token picker name each step identically.
+$radius_labels = [
+	'none' => __( 'None', 'kadence-blocks' ),
+	'xs'   => __( 'Extra Small', 'kadence-blocks' ),
+	'sm'   => __( 'Small', 'kadence-blocks' ),
+	'md'   => __( 'Medium', 'kadence-blocks' ),
+	'lg'   => __( 'Large', 'kadence-blocks' ),
+	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'full' => __( 'Full', 'kadence-blocks' ),
+];
+
+$radius_tokens = [];
+
+foreach ( $radius_labels as $slug => $label ) {
+	$radius_tokens[] = [
+		'id'        => 'primitive.dimension.radius.' . $slug,
+		'type'      => 'dimension',
+		'label'     => $label,
+		'group'     => __( 'Border Radius', 'kadence-blocks' ),
+		'group_key' => 'border-radius',
+	];
+}
+
+// The border-width scale steps are primitives the Style Library's Border Width screen lists and
+// edits directly (semantic.border-width.default already carries the projection that delivers the
+// "sm" step into the image block, so the scale declares none of its own). group_key mirrors the
+// radius scale's mechanism above: it is the stable machine id "+ Add Border Width" mints custom
+// tokens into, resolved back to the group label at read time by Token_Registry::group_label_for().
+$border_width_slugs = [ 'sm', 'md', 'lg' ];
+
+$border_width_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.dimension.border-width.' . $slug,
+			'type'      => 'dimension',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Border Width', 'kadence-blocks' ),
+			'group_key' => 'border-width',
+		];
+	},
+	$border_width_slugs
+);
+
+// The icon-size scale steps are primitives the Style Library's Icon Sizes screen lists and edits
+// directly (semantic.icon-size.default already carries the projection that delivers the "md" step
+// into the icon block and the button's icon size, so the scale declares none of its own). group_key
+// mirrors the radius/border-width scales' mechanism above: it is the stable machine id "+ Add Icon
+// Size" mints custom tokens into, resolved back to the group label at read time by
+// Token_Registry::group_label_for().
+$icon_size_slugs = [ 'sm', 'md', 'lg' ];
+
+$icon_size_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.dimension.icon-size.' . $slug,
+			'type'      => 'dimension',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Icon Sizes', 'kadence-blocks' ),
+			'group_key' => 'icon-sizes',
+		];
+	},
+	$icon_size_slugs
+);
+
+// The shadow scale steps are primitives the Style Library's Shadow screen lists and edits
+// directly; the shadow semantics (semantic.shadow.card / .media) keep their own curated values and
+// declare no projections onto this scale, so re-pointing a semantic at one of these primitives is
+// deliberately not done here — semantic.shadow.card's color is aliased to a palette primitive, and
+// re-pointing would detach it. group_key mirrors the radius/border-width/icon-size scales'
+// mechanism above: it is the stable machine id "+ Add Shadow" mints custom tokens into, resolved
+// back to the group label at read time by Token_Registry::group_label_for().
+$shadow_slugs = [ 'xs', 'sm', 'md' ];
+
+$shadow_tokens = array_map(
+	static function ( string $slug ): array {
+		return [
+			'id'        => 'primitive.shadow.' . $slug,
+			'type'      => 'shadow',
+			'label'     => strtoupper( $slug ),
+			'group'     => __( 'Shadow', 'kadence-blocks' ),
+			'group_key' => 'shadow',
+		];
+	},
+	$shadow_slugs
+);
+
 // The fluid font-size scale steps are primitives (the slug IS a scale step), each holding the shipped
 // clamp() value from includes/init.php and claiming the Kadence Blocks font-size slug it backs
 // (class-kadence-blocks-css.php): the Css_Var builder redefines --global-kb-font-size-<slug> as the
@@ -59,10 +156,42 @@ $font_size_primitive_tokens = array_map(
 			'type'        => 'dimension',
 			'label'       => strtoupper( $slug ),
 			'group'       => __( 'Font Size', 'kadence-blocks' ),
+			'group_key'   => 'font-size',
 			'projections' => [ 'kb_font_size_slot' => $slug ],
 		];
 	},
 	$font_size_slugs
+);
+
+// The three preview fonts are primitives the Style Library's Typography screen lists as FONT
+// options; the font-family semantics (semantic.font-family.control / .heading) keep their own
+// values and already carry whatever projections deliver a family into a block, so these primitives
+// declare none of their own. group_key lets "+ Add Font" mint a user fontFamily primitive into
+// this same group: Token_Type maps the camelCase $type to the kebab id segment "font-family" (the
+// id feeds Css_Var::from_id(), which cannot take a camelCase segment), so the stored $type and the
+// registered id can differ while staying self-consistent.
+//
+// The id segment is kebab-case ("font-family", not "fontFamily") because Token_Definition::from_array()
+// validates every declared id against the kebab charset and throws on a camelCase segment — these
+// tokens (and the baseline.json tree backing them) could never have registered under the old spelling.
+$font_family_slugs = [
+	'sans'  => __( 'Sans', 'kadence-blocks' ),
+	'serif' => __( 'Serif', 'kadence-blocks' ),
+	'mono'  => __( 'Mono', 'kadence-blocks' ),
+];
+
+$font_family_tokens = array_map(
+	static function ( string $slug, string $label ): array {
+		return [
+			'id'        => 'primitive.font-family.' . $slug,
+			'type'      => 'fontFamily',
+			'label'     => $label,
+			'group'     => __( 'Font Family', 'kadence-blocks' ),
+			'group_key' => 'font-family',
+		];
+	},
+	array_keys( $font_family_slugs ),
+	array_values( $font_family_slugs )
 );
 
 /**
@@ -204,8 +333,9 @@ return [
 				 * Control radius (buttons, inputs). Registered so Css_Var emits
 				 * --kb-token--semantic--radius--control; the button's own default border-radius rule references
 				 * that variable directly (the button is never empty, so the low-specificity block-default CSS
-				 * mechanism can't reach it). Resolves to the radius scale's "md" step, the design system's
-				 * control radius. A user's explicit radius still wins by specificity.
+				 * mechanism can't reach it). Resolves to the radius scale's "sm" step, which carries the
+				 * button's long-standing 3px radius, so an existing site that never set a radius renders
+				 * unchanged. A user's explicit radius still wins by specificity.
 				 */
 				'id'    => 'semantic.radius.control',
 				'type'  => 'dimension',
@@ -306,7 +436,12 @@ return [
 		$palette_tokens,
 		$spacing_tokens,
 		$gap_tokens,
-		$font_size_primitive_tokens
+		$font_size_primitive_tokens,
+		$font_family_tokens,
+		$radius_tokens,
+		$border_width_tokens,
+		$icon_size_tokens,
+		$shadow_tokens
 	),
 	/**
 	 * Preset bindings for the Button block: that it accepts presets, plus the per-property bindings (a
@@ -329,9 +464,14 @@ return [
 			 * symmetric and each is overridable on its own semantic. Picking a preset re-skins a button with
 			 * zero changes to its render path; a fresh button follows the $default.
 			 */
-			'block'    => 'kadence/singlebtn',
-			'label'    => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
-			'bindings' => [
+			'block'         => 'kadence/singlebtn',
+			'label'         => __( 'Style', 'kadence-blocks' ), // a picker-driven set; this is the editor control's label.
+			'style_library' => [
+				// The Style Library BLOCK PRESETS nav label — distinct from "label" above, which names the
+				// inspector's picker control, not the block.
+				'label' => __( 'Button', 'kadence-blocks' ),
+			],
+			'bindings'      => [
 				'button-bg'         => [
 					'kadence_slot' => 'palette-btn-bg',
 					'control_attr' => 'background',
@@ -349,8 +489,15 @@ return [
 					'control_attr' => 'colorHover',
 				],
 				'button-radius'     => [
-					'css_var'      => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
-					'control_attr' => 'borderRadius',
+					'css_var'          => 'kb-btn-radius', // drives --kb-btn-radius so a preset can vary the radius.
+					'control_attr'     => 'borderRadius',
+					// The block names its per-device radius attributes by a prefix convention, which is a naming
+					// rule rather than something safely derivable, so the editor is told them rather than
+					// guessing. Lets a captured preset carry a different radius per breakpoint.
+					'responsive_attrs' => [
+						'tablet' => 'tabletBorderRadius',
+						'mobile' => 'mobileBorderRadius',
+					],
 				],
 			],
 		],

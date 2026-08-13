@@ -85,6 +85,12 @@ import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
+import {
+	deriveMeasureMode,
+	inheritedMeasureSlots,
+	measureAttrsForDevice,
+	presetValueForDevice,
+} from '../../extension/token-indicators/normalize';
 import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 
@@ -261,6 +267,14 @@ export default function KadenceButtonEdit(props) {
 		},
 		[clientId]
 	);
+	// The Border Radius control keeps ONE linked/individual mode but writes a different attribute per
+	// breakpoint, so the mode must be read from — and "link" must collapse — whichever device is active.
+	const borderRadiusForDevice = measureAttrsForDevice(
+		attributes,
+		'borderRadius',
+		{ tablet: 'tabletBorderRadius', mobile: 'mobileBorderRadius' },
+		previewDevice
+	);
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
@@ -268,6 +282,21 @@ export default function KadenceButtonEdit(props) {
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
 	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
+
+	const borderRadiusPresetValue = presetValueForDevice(
+		tokenBinding.borderRadius?.presetValue,
+		tokenBinding.borderRadius?.responsive,
+		previewDevice
+	);
+
+	// What an unset Border Radius corner falls back to on the active device: another breakpoint's corner
+	// before the preset's, matching the cascade the button actually renders through. The corners stay
+	// stored-empty — this only tells the field's popover which size is in effect and where it came from.
+	const inheritedBorderRadius = inheritedMeasureSlots(
+		previewDevice,
+		{ desktop: borderRadius, tablet: tabletBorderRadius },
+		borderRadiusPresetValue
+	);
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -281,6 +310,18 @@ export default function KadenceButtonEdit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isEditingURL, setIsEditingURL] = useState(false);
+	// The border-radius linked/individual mode is derived from the stored corners (all equal reads as
+	// linked), so no new attribute is needed and old buttons open in the right mode. This ephemeral
+	// override only records an explicit "unlink" of already-equal corners for the current session — it
+	// resets on remount, matching how the control's mode has always been session-local.
+	// Keyed by device: the responsive control keeps ONE mode but writes three attributes, so a choice
+	// made on Tablet must not flip Desktop's corners (and vice versa).
+	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState({});
+	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
+	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius.
+	useEffect(() => {
+		setBorderRadiusModeOverride({});
+	}, [attributes.kbPreset]);
 	useEffect(() => {
 		if (!isSelected) {
 			setIsEditingURL(false);
@@ -292,7 +333,7 @@ export default function KadenceButtonEdit(props) {
 	// block but not the swatch. Bumping this key when a mapped color attribute goes from set -> empty
 	// remounts the picker, which re-reads the now-empty attribute — the missing wire for token reset.
 	// TODO: remove this stopgap once `@kadence/components` teaches PopColorControl to re-read an externally
-	// cleared value itself (planned alongside the SOFT-3870 component update).
+	// cleared value itself (planned alongside that upstream `@kadence/components` update).
 	const [colorResetNonce, setColorResetNonce] = useState(0);
 	const prevTokenColors = useRef({ color, background, colorHover, backgroundHover });
 	useEffect(() => {
@@ -1191,6 +1232,95 @@ export default function KadenceButtonEdit(props) {
 																		showReset
 																	/>
 																}
+																context={{
+																	blockName: 'kadence/singlebtn',
+																	attribute: 'borderRadius',
+																	defaultValue: inheritedBorderRadius.values,
+																	inheritedDefault: inheritedBorderRadius.inherited,
+																	unit: borderRadiusUnit,
+																	units: ['px', 'em', 'rem', '%'],
+																	onUnit: (value) =>
+																		setAttributes({ borderRadiusUnit: value }),
+																	min: 0,
+																	max:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 24
+																			: 500,
+																	step:
+																		borderRadiusUnit === 'em' ||
+																		borderRadiusUnit === 'rem'
+																			? 0.1
+																			: 1,
+																}}
+																// The mode describes what THIS device stores, not what it
+																// inherits. A breakpoint that stores nothing has nothing
+																// that differs, so it reads as linked — deriving from the
+																// inherited corners instead would split an all-empty Tablet
+																// into four identical blank fields, showing a difference the
+																// user cannot see. Where the value comes from is surfaced by
+																// the field's popover, not by the link toggle.
+																control={
+																	borderRadiusModeOverride[previewDevice] ??
+																	deriveMeasureMode(
+																		borderRadiusForDevice.value,
+																		borderRadiusPresetValue
+																	)
+																}
+																onChangeControl={(mode) => {
+																	if ('linked' === mode) {
+																		const corners =
+																			borderRadiusForDevice.value ?? [];
+																		const corner = corners[0] ?? '';
+																		const isEmpty = corners.every(
+																			(value) =>
+																				'' === value || undefined === value
+																		);
+
+																		if (isEmpty) {
+																			// Nothing stored on this device, so there is
+																			// nothing to collapse — the corners are empty
+																			// because they inherit, and writing the
+																			// inherited value here would silently pin
+																			// Tablet/Mobile to Desktop's current radius.
+																			// Remember the choice instead, so the control
+																			// links without the corners leaving inherit.
+																			setBorderRadiusModeOverride((current) => ({
+																				...current,
+																				[previewDevice]: 'linked',
+																			}));
+
+																			return;
+																		}
+
+																		// Every corner matches the top-left, blank
+																		// included, and only on the ACTIVE device.
+																		setAttributes({
+																			[borderRadiusForDevice.attr]: [
+																				corner,
+																				corner,
+																				corner,
+																				corner,
+																			],
+																		});
+																		// Equal corners derive linked on their own —
+																		// except blank ones under a per-corner preset.
+																		setBorderRadiusModeOverride((current) => ({
+																			...current,
+																			[previewDevice]:
+																				'' === corner ? 'linked' : undefined,
+																		}));
+																	} else {
+																		// Unlinking equal corners leaves the values
+																		// untouched, so remember the choice for this
+																		// session AND this device; a differing corner
+																		// would derive individual on its own.
+																		setBorderRadiusModeOverride((current) => ({
+																			...current,
+																			[previewDevice]: 'individual',
+																		}));
+																	}
+																}}
 																reset={false}
 																value={borderRadius}
 																tabletValue={tabletBorderRadius}

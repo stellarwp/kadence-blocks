@@ -13,7 +13,13 @@
  */
 
 import { get } from 'lodash';
-import { activeLibrary, blockDefaultPreset, blockProperties, blockPresetValues } from '../preset-picker';
+import {
+	activeLibrary,
+	blockDefaultPreset,
+	blockProperties,
+	blockPresetValues,
+	blockPresetResponsive,
+} from '../preset-picker';
 import { isEmptyValue, matchesPreset } from './normalize';
 import './token-indicators.scss';
 
@@ -65,13 +71,14 @@ export function mappedAttrsFor(blockName, library) {
  *
  * @since TBD
  *
- * @return {Object} attrName => { property, token, kind, presetValue, bound, overridden }.
+ * @return {Object} attrName => { property, token, kind, presetValue, responsive, bound, overridden }.
  */
 export function usePresetBinding(blockName, attributes, library) {
 	const resolvedLibrary = library || activeLibrary();
 	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);
+	const responsive = blockPresetResponsive(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
 	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
@@ -79,6 +86,7 @@ export function usePresetBinding(blockName, attributes, library) {
 	// neither resolves, no control is bound.
 	const activePreset = selected || blockDefaultPreset(blockName, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
+	const presetBreakpoints = get(responsive, activePreset, {});
 
 	const state = {};
 
@@ -105,6 +113,10 @@ export function usePresetBinding(blockName, attributes, library) {
 			token: property.token,
 			kind,
 			presetValue,
+			responsive: {
+				tablet: get(presetBreakpoints, ['tablet', property.key]),
+				mobile: get(presetBreakpoints, ['mobile', property.key]),
+			},
 			bound: true,
 			overridden,
 		};

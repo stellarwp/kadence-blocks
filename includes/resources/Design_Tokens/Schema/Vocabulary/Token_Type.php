@@ -112,6 +112,17 @@ final class Token_Type {
 	private const KEY = '$type';
 
 	/**
+	 * The "boolean" kind label used by OPTIONAL_FIELDS. Not a v1 $type (DTCG has no boolean $type),
+	 * so it never appears in TYPES — it only marks an optional composite sub-field as a strict
+	 * literal boolean in Composite_Value::validate().
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const KIND_BOOLEAN = 'boolean';
+
+	/**
 	 * Every v1 $type, in declaration order.
 	 *
 	 * @var string[]
@@ -128,6 +139,29 @@ final class Token_Type {
 		self::TEXT_TRANSFORM,
 		self::BORDER_STYLE,
 		self::SHADOW,
+	];
+
+	/**
+	 * The registered-id segment for each $type whose DTCG spelling is not itself a valid
+	 * kebab-case id segment. A $type absent from this map uses its own spelling verbatim.
+	 *
+	 * The id segment is not the same vocabulary as the $type spelling: an id feeds
+	 * Css_Var::from_id(), which only swaps "." for "--" and therefore requires the kebab
+	 * charset, while $type is the DTCG spec spelling and stays camelCase where the spec says so.
+	 * This map is the single place that reconciles the two so Reserved_Namespace and the
+	 * mirrored JS map never re-derive it independently.
+	 *
+	 * @since TBD
+	 *
+	 * @var array<string, string>
+	 */
+	private const ID_SEGMENTS = [
+		self::FONT_FAMILY    => 'font-family',
+		self::FONT_WEIGHT    => 'font-weight',
+		self::LINE_HEIGHT    => 'line-height',
+		self::FONT_STYLE     => 'font-style',
+		self::TEXT_TRANSFORM => 'text-transform',
+		self::BORDER_STYLE   => 'border-style',
 	];
 
 	/**
@@ -150,6 +184,26 @@ final class Token_Type {
 	];
 
 	/**
+	 * The composite types and their sub-field => kind map for fields that MAY be present but are never
+	 * required. Kept separate from COMPOSITE_FIELDS (which Composite_Value::validate() treats as the
+	 * required set) so adding an optional field never turns an existing baseline token invalid — the
+	 * shadow tokens in baseline.json predate "inset" and carry only the five required fields.
+	 *
+	 * "boolean" is a label, not a v1 $type: DTCG has no boolean $type and none is registered here, so an
+	 * optional field is not dispatched through Kind::validate() (which would accept an alias for any
+	 * kind) — the composite validator checks it as a strict literal instead.
+	 *
+	 * @var array<string, array<string, string>>
+	 *
+	 * @since TBD
+	 */
+	private const OPTIONAL_FIELDS = [
+		self::SHADOW => [
+			'inset' => self::KIND_BOOLEAN,
+		],
+	];
+
+	/**
 	 * Every v1 $type.
 	 *
 	 * @since TBD
@@ -158,6 +212,35 @@ final class Token_Type {
 	 */
 	public static function all(): array {
 		return self::TYPES;
+	}
+
+	/**
+	 * The registered-id segment for a $type: the mapped kebab spelling if one is registered in
+	 * ID_SEGMENTS, or the $type verbatim otherwise.
+	 *
+	 * A pure string mapper that performs no validation of its own — the same posture as Reserved_Namespace::canonical():
+	 * callers pass a $type that already passed is_valid(). An unregistered input returns
+	 * verbatim and produces an id downstream validation rejects.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The DTCG $type (spec spelling).
+	 *
+	 * @return string The registered-id segment for $type.
+	 */
+	public static function get_id_segment( string $type ): string {
+		return self::ID_SEGMENTS[ $type ] ?? $type;
+	}
+
+	/**
+	 * Every v1 $type's registered-id segment, in the same declaration order as all().
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_id_segments(): array {
+		return array_map( [ self::class, 'get_id_segment' ], self::TYPES );
 	}
 
 	/**
@@ -200,6 +283,21 @@ final class Token_Type {
 	}
 
 	/**
+	 * The optional sub-field => kind map for a composite $type, or an empty array for a non-composite
+	 * type or one with no optional fields. A field returned here is never required by
+	 * Composite_Value::validate() — it is only validated when present.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The composite $type.
+	 *
+	 * @return array<string, string> Field name => the sub-field's kind label.
+	 */
+	public static function optional_fields( string $type ): array {
+		return self::OPTIONAL_FIELDS[ $type ] ?? [];
+	}
+
+	/**
 	 * The DTCG leaf key that carries a token's $type.
 	 *
 	 * @since TBD
@@ -208,6 +306,17 @@ final class Token_Type {
 	 */
 	public static function get_type_key(): string {
 		return self::KEY;
+	}
+
+	/**
+	 * The "boolean" kind label used by an optional composite sub-field (e.g. shadow's "inset").
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_kind_boolean(): string {
+		return self::KIND_BOOLEAN;
 	}
 
 	/**

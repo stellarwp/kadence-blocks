@@ -57,7 +57,7 @@ final class Reserved_Namespace {
 	public static function is_reserved_id( string $id ): bool {
 		$types = array_map(
 			static fn( string $type ): string => preg_quote( $type, '/' ),
-			Token_Type::all()
+			Token_Type::get_id_segments()
 		);
 
 		return (bool) preg_match(
@@ -91,16 +91,50 @@ final class Reserved_Namespace {
 	}
 
 	/**
-	 * Build the canonical id for a terminal slug: primitive.color.custom.<slug>.
+	 * Build the canonical id for a supported type and terminal slug: primitive.<type>.custom.<slug>.
+	 *
+	 * A pure string builder, like the slug handling before it: the type is not validated here.
+	 * Callers pass a type that already passed is_supported_type() (the create gate) or was read
+	 * from a stored tree leaf (the rename cascade, the orphan scan); an unsupported type yields
+	 * an id the user-primitive document invariant rejects downstream.
+	 *
+	 * The id's second segment is the type's REGISTERED id segment (Token_Type::get_id_segment()),
+	 * not necessarily the $type spelling itself: the id feeds Css_Var::from_id(), which requires
+	 * the kebab charset, while $type stays the DTCG spec spelling.
 	 *
 	 * @since TBD
 	 *
+	 * @param string $type The DTCG $type (spec spelling).
 	 * @param string $slug The terminal slug.
 	 *
 	 * @return string
 	 */
-	public static function canonical( string $slug ): string {
-		return self::LAYER . '.' . Token_Type::get_type_color() . '.' . self::SEGMENT . '.' . $slug;
+	public static function canonical( string $type, string $slug ): string {
+		return self::LAYER . '.' . Token_Type::get_id_segment( $type ) . '.' . self::SEGMENT . '.' . $slug;
+	}
+
+	/**
+	 * Whether a $type supports user-created primitives: registered, full stop.
+	 *
+	 * Before the $type -> id-segment mapping existed, this also required the $type spelling
+	 * itself to be a valid kebab-case id segment, because the raw $type became the id's second
+	 * segment and Token_Definition::from_user_primitive() rejects any segment outside
+	 * ^[a-z0-9]+([.-][a-z0-9]+)*$ (the id feeds Css_Var::from_id()). Token_Type::get_id_segment()
+	 * now supplies a kebab-safe segment for every registered $type, so that second predicate is
+	 * vacuous and has been dropped; every registered $type supports user-created primitives.
+	 *
+	 * Kept as a named method (not inlined to Token_Type::is_valid()) because it is the creation
+	 * gate three call sites and the REST 422 contract hang off, and a future version may
+	 * genuinely want to gate a type again.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The candidate DTCG $type.
+	 *
+	 * @return bool
+	 */
+	public static function is_supported_type( string $type ): bool {
+		return Token_Type::is_valid( $type );
 	}
 
 	/**
@@ -120,7 +154,7 @@ final class Reserved_Namespace {
 
 		return count( $segments ) >= 3
 			&& $segments[0] === self::LAYER
-			&& in_array( $segments[1], Token_Type::all(), true )
+			&& in_array( $segments[1], Token_Type::get_id_segments(), true )
 			&& $segments[2] === self::SEGMENT;
 	}
 

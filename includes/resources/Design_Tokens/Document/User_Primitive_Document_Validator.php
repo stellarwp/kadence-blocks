@@ -12,7 +12,7 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * Enforces the user-primitive document invariant: every envelope entry has a matching valid
  * tree leaf, and every custom tree leaf has a matching envelope entry.
  *
- * Only primitive.color.custom.* is accepted.
+ * Only primitive.<type>.custom.* leaves of supported types are accepted.
  *
  * @since TBD
  */
@@ -89,9 +89,9 @@ final class User_Primitive_Document_Validator {
 	/**
 	 * @since TBD
 	 *
-	 * @param array<string, mixed>        $document
-	 * @param string                      $id
-	 * @param array{label?: string}|mixed $entry
+	 * @param array<string, mixed>                        $document
+	 * @param string                                      $id
+	 * @param array{label?: string, group?: string}|mixed $entry
 	 *
 	 * @return User_Primitive_Validation_Error[]
 	 */
@@ -101,7 +101,7 @@ final class User_Primitive_Document_Validator {
 		if ( ! Reserved_Namespace::is_reserved_id( $id ) ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
-				sprintf( 'User primitive id "%s" is not in the allowed namespace (primitive.color.custom.*).', $id )
+				sprintf( 'User primitive id "%s" is not in the allowed namespace (primitive.<type>.custom.*).', $id )
 			);
 
 			return $errors;
@@ -109,6 +109,10 @@ final class User_Primitive_Document_Validator {
 
 		if ( ! is_array( $entry ) || ! isset( $entry['label'] ) || ! is_string( $entry['label'] ) || $entry['label'] === '' ) {
 			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" has a missing or empty label.', $id ) );
+		}
+
+		if ( is_array( $entry ) && isset( $entry['group'] ) && ( ! is_string( $entry['group'] ) || ! Reserved_Namespace::is_valid_slug( $entry['group'] ) ) ) {
+			$errors[] = new User_Primitive_Validation_Error( $id, sprintf( 'User primitive "%s" has an invalid group.', $id ) );
 		}
 
 		if ( $this->baseline->has( $id ) ) {
@@ -129,12 +133,18 @@ final class User_Primitive_Document_Validator {
 			return $errors;
 		}
 
-		$type = $leaf[ Token_Type::get_type_key() ] ?? null;
+		$type    = $leaf[ Token_Type::get_type_key() ] ?? null;
+		$segment = explode( '.', $id )[1];
 
-		if ( $type !== Token_Type::get_type_color() ) {
+		if ( ! is_string( $type ) || ! Reserved_Namespace::is_supported_type( $type ) ) {
 			$errors[] = new User_Primitive_Validation_Error(
 				$id,
-				sprintf( 'User primitive "%s" tree leaf has $type "%s"; only "color" is allowed at this time.', $id, Cast::to_string( $type ) )
+				sprintf( 'User primitive "%s" tree leaf has $type "%s"; that type does not support user-created primitives.', $id, Cast::to_string( $type ) )
+			);
+		} elseif ( Token_Type::get_id_segment( $type ) !== $segment ) {
+			$errors[] = new User_Primitive_Validation_Error(
+				$id,
+				sprintf( 'User primitive "%s" tree leaf declares $type "%s", which does not match its id namespace.', $id, $type )
 			);
 		}
 
@@ -151,7 +161,15 @@ final class User_Primitive_Document_Validator {
 	}
 
 	/**
-	 * Walk primitive.color.custom.* in the document and return any id that has no envelope entry.
+	 * Walk primitive.<type>.custom.* for every registered type in the document and return any
+	 * id that has no envelope entry.
+	 *
+	 * This walk terminates one level below "custom": it iterates the direct children of the
+	 * custom group and treats every array child as a leaf slug. It must never descend into a
+	 * node or read $value — a shadow leaf's sub-field map lives inside that opaque node, so
+	 * descending would let color/offsetX/... be mistaken for orphan slugs. The walk stays safe
+	 * because it keys off tree position, not node shape; do not "improve" it into a recursive
+	 * walk.
 	 *
 	 * @since TBD
 	 *
@@ -166,29 +184,31 @@ final class User_Primitive_Document_Validator {
 			return [];
 		}
 
-		$color = $primitive['color'] ?? [];
-
-		if ( ! is_array( $color ) ) {
-			return [];
-		}
-
-		$custom = $color['custom'] ?? [];
-
-		if ( ! is_array( $custom ) ) {
-			return [];
-		}
-
 		$orphans = [];
 
-		foreach ( $custom as $slug => $node ) {
-			if ( ! is_string( $slug ) || strncmp( $slug, '$', 1 ) === 0 || ! is_array( $node ) ) {
+		foreach ( Token_Type::all() as $type ) {
+			$subtree = $primitive[ Token_Type::get_id_segment( $type ) ] ?? [];
+
+			if ( ! is_array( $subtree ) ) {
 				continue;
 			}
 
-			$id = Reserved_Namespace::canonical( $slug );
+			$custom = $subtree['custom'] ?? [];
 
-			if ( ! $this->index->has( $document, $id ) ) {
-				$orphans[] = $id;
+			if ( ! is_array( $custom ) ) {
+				continue;
+			}
+
+			foreach ( $custom as $slug => $node ) {
+				if ( ! is_string( $slug ) || strncmp( $slug, '$', 1 ) === 0 || ! is_array( $node ) ) {
+					continue;
+				}
+
+				$id = Reserved_Namespace::canonical( $type, $slug );
+
+				if ( ! $this->index->has( $document, $id ) ) {
+					$orphans[] = $id;
+				}
 			}
 		}
 

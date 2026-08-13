@@ -3,12 +3,16 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Feed_Assembler;
+use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Font_Catalog;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Localizer;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Responsive_Feed;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Presets;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Style_Library\Asset_Loader;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Label_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Css_Renderer;
@@ -57,6 +61,12 @@ final class LocalizerTest extends TestCase {
 	/**
 	 * The decoded feed attached to the dashboard handle, or null when none was attached.
 	 *
+	 * The Localizer attaches TWO separate inline scripts to the handle (the feed, and — as its own
+	 * global, never folded into the feed payload — the page-load-only font catalog), each its own
+	 * entry in the 'before' data array. This walks the entries rather than imploding the whole array and running one
+	 * regular expression over it, so the catalog entry (whose global name is a superset string,
+	 * "window.kadenceDesignTokensFontCatalog") can never be mistaken for the feed entry.
+	 *
 	 * @return array<string, mixed>|null
 	 */
 	private function attached_feed(): ?array {
@@ -66,16 +76,18 @@ final class LocalizerTest extends TestCase {
 			return null;
 		}
 
-		$inline = implode( "\n", array_filter( $data, 'is_string' ) );
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokens =' ) === false ) {
+				continue;
+			}
 
-		if ( strpos( $inline, 'window.kadenceDesignTokens' ) === false ) {
-			return null;
+			$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $entry );
+			$decoded = json_decode( $json, true );
+
+			return is_array( $decoded ) ? $decoded : null;
 		}
 
-		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokens\s*=\s*(.*);\s*$/s', '$1', $inline );
-		$decoded = json_decode( $json, true );
-
-		return is_array( $decoded ) ? $decoded : null;
+		return null;
 	}
 
 	private function localizer(): Localizer {
@@ -134,6 +146,40 @@ final class LocalizerTest extends TestCase {
 		$this->assertSame( esc_url_raw( rest_url() ), $feed['rest']['root'] );
 	}
 
+	/**
+	 * The font catalog is attached as its own inline global — window.kadenceDesignTokensFontCatalog
+	 * — separate from window.kadenceDesignTokens, so a client can read the (static,
+	 * library-independent) catalog once at page load without it riding every feed refresh.
+	 *
+	 * @return void
+	 */
+	public function testItAttachesTheFontCatalogAsASeparateGlobal(): void {
+		$this->enqueue_dashboard();
+
+		$this->localizer()->localize();
+
+		$data = wp_scripts()->get_data( self::HANDLE, 'before' );
+		$this->assertIsArray( $data );
+
+		$catalog_entry = null;
+
+		foreach ( array_filter( $data, 'is_string' ) as $entry ) {
+			if ( strpos( $entry, 'window.kadenceDesignTokensFontCatalog =' ) !== false ) {
+				$catalog_entry = $entry;
+				break;
+			}
+		}
+
+		$this->assertNotNull( $catalog_entry, 'The font catalog global must be attached to the dashboard handle.' );
+
+		$json    = (string) preg_replace( '/^.*?window\.kadenceDesignTokensFontCatalog\s*=\s*(.*);\s*$/s', '$1', $catalog_entry );
+		$decoded = json_decode( $json, true );
+
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'google', $decoded );
+		$this->assertArrayHasKey( 'custom', $decoded );
+	}
+
 	public function testItAttachesNothingWhenTheDashboardIsNotOnThePage(): void {
 		// No enqueue.
 		$this->localizer()->localize();
@@ -183,13 +229,20 @@ final class LocalizerTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		$localizer = new Localizer(
+		$assembler = new Feed_Assembler(
 			$cyclic,
 			$this->container->get( Token_Store::class ),
-			$this->container->get( Active_Token_Library_Store::class ),
 			$this->container->get( Presets::class ),
 			$this->container->get( Builder::class ),
-			$this->container->get( Responsive_Feed::class )
+			$this->container->get( Responsive_Feed::class ),
+			$this->container->get( Token_Label_Index::class ),
+			$this->container->get( Token_Order_Index::class )
+		);
+
+		$localizer = new Localizer(
+			$this->container->get( Active_Token_Library_Store::class ),
+			$assembler,
+			$this->container->get( Font_Catalog::class )
 		);
 
 		$localizer->localize();
@@ -339,5 +392,51 @@ final class LocalizerTest extends TestCase {
 		}
 
 		$this->assertNotNull( $found, 'The active library\'s user primitive must appear in the localized schema.' );
+	}
+
+	/**
+	 * A stored tokenLabels entry surfaces as the effective label in the localized schema, with
+	 * labelOverridden set — proving the read/apply wiring end to end (Feed_Assembler decoding the
+	 * document and Builder overlaying it), not just the pure Builder overlay BuilderTest covers.
+	 *
+	 * @return void
+	 */
+	public function testStoredTokenLabelOverridesReachTheLocalizedSchema(): void {
+		$store = $this->container->get( Token_Store::class );
+
+		$doc = (string) wp_json_encode(
+			[
+				'$extensions' => [
+					'com.kadence.designTokens' => [
+						'tokenLabels' => [
+							'semantic.color.button-primary-bg' => 'Cozy Button',
+						],
+					],
+				],
+			]
+		);
+
+		$store->save_document( $doc );
+
+		$this->enqueue_dashboard();
+		$this->localizer()->localize();
+
+		$feed = $this->attached_feed();
+		$this->assertNotNull( $feed );
+
+		$found = null;
+
+		foreach ( $feed['schema']['groups'] as $entries ) {
+			foreach ( $entries as $entry ) {
+				if ( ( $entry['id'] ?? '' ) === 'semantic.color.button-primary-bg' ) {
+					$found = $entry;
+					break 2;
+				}
+			}
+		}
+
+		$this->assertNotNull( $found, 'The overridden token must appear in the localized schema.' );
+		$this->assertSame( 'Cozy Button', $found['label'] );
+		$this->assertTrue( $found['labelOverridden'] );
 	}
 }

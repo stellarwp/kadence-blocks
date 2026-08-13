@@ -13,11 +13,18 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary;
  *   - "presets"          → block presets (the preset data model's concern).
  *   - "colorPalettes"     → named color palettes within the library (the palette feature): each an ordered list
  *                           of groups, each an ordered list of self-describing swatches.
+ *   - "tokenLabels"       → per-token display-label overrides: a flat { token id => label } string map,
+ *                           authoring metadata only.
+ *   - "tokenOrder"        → token sort order: a single flat ordered token id list, authoring
+ *                           metadata only. Flat rather than group-keyed so the stored order stays
+ *                           locale-independent — a UI-schema group name is a translated display
+ *                           label, not a stable identifier (see Token_Order_Index).
  *
  * The preset sections hold named groups; each group is a map of preset-slug =>
  * { "label": …, "tokens": … } alongside a "$default" key naming the group's default preset. A color palette
- * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — so it is NOT
- * returned by get_sections() (that drives the tokens-map walk).
+ * differs — its values live under each swatch's "$value" rather than in a flat "tokens" map — and
+ * "tokenLabels" is id-keyed metadata with no tokens map at all, so neither is returned by get_sections()
+ * (that drives the tokens-map walk).
  *
  * @since TBD
  */
@@ -78,6 +85,34 @@ final class Extensions {
 	 * @var string
 	 */
 	private const SECTION_USER_PRIMITIVES = 'userPrimitives';
+
+	/**
+	 * The per-token display-label overrides section: a flat { token id => label } string map.
+	 * NOT returned by get_sections() — it is id-keyed authoring metadata, not preset-shaped, so
+	 * the tokens-map walk (and the reference scanner that follows get_sections()) must not
+	 * descend into it; it holds ids and labels, never {alias} values. The validator covers it
+	 * with its own explicit branch instead.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_TOKEN_LABELS = 'tokenLabels';
+
+	/**
+	 * The per-group token sort-order section: a map of UI-schema group => ordered list of token
+	 * ids. NOT returned by get_sections() — it is id-keyed authoring metadata, not preset-shaped,
+	 * so the tokens-map walk (and the reference scanner that follows get_sections()) must not
+	 * descend into it; it holds ids only, never {alias} values. The stored order is partial and
+	 * advisory, never authoritative membership: readers append unmentioned ids in declaration
+	 * order and ignore stale ids, so an order can permute the registered set but never hide a
+	 * token. The validator covers it with its own explicit branch instead.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private const SECTION_TOKEN_ORDER = 'tokenOrder';
 
 	/**
 	 * The key naming a group's default preset slug.
@@ -219,6 +254,30 @@ final class Extensions {
 	}
 
 	/**
+	 * The per-token display-label overrides section name.
+	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_token_labels(): string {
+		return self::SECTION_TOKEN_LABELS;
+	}
+
+	/**
+	 * The per-group token sort-order section name.
+	 * NOT returned by get_sections() — it is id-keyed metadata, not preset-shaped.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_section_token_order(): string {
+		return self::SECTION_TOKEN_ORDER;
+	}
+
+	/**
 	 * Every section name the module owns under its namespace.
 	 *
 	 * @since TBD
@@ -345,5 +404,48 @@ final class Extensions {
 	 */
 	public static function get_group_id_key(): string {
 		return self::GROUP_ID_KEY;
+	}
+
+	/**
+	 * The base value of a preset token entry.
+	 *
+	 * A preset property is normally a bare value — an alias, a literal, or a per-corner slot list. A
+	 * property that varies by breakpoint instead carries the same envelope a responsive token leaf uses
+	 * ({@see Responsive}): its base under `$value`, its overrides under the vendor extension. This reader
+	 * collapses both shapes to the base, so no consumer hand-rolls the unwrap. A slot list has no `$value`
+	 * key, so it is never mistaken for an envelope.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return mixed The base value.
+	 */
+	public static function preset_value_of( $entry ) {
+		if ( is_array( $entry ) && array_key_exists( Sentinels::get_value_key(), $entry ) ) {
+			return $entry[ Sentinels::get_value_key() ];
+		}
+
+		return $entry;
+	}
+
+	/**
+	 * The per-breakpoint overrides a preset token entry declares, or an empty array when it declares none.
+	 * Delegates to {@see Responsive} so the lookup path is byte-identical to a token leaf's.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $entry The preset token entry.
+	 *
+	 * @return array<string, mixed> Breakpoint => override value.
+	 */
+	public static function preset_responsive_of( $entry ): array {
+		if ( ! is_array( $entry ) || ! Responsive::has_responsive( $entry ) ) {
+			return [];
+		}
+
+		$responsive = Responsive::responsive_of( $entry );
+
+		return is_array( $responsive ) ? $responsive : [];
 	}
 }

@@ -20,8 +20,8 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
  * a preset Button whose color aliases a palette-changed token re-skins with the rest of its subtree, at any
  * palette, respecting preset selection (a selected preset keeps its own binding, re-tinted).
  *
- * This is the narrow color-only replacement for the cross-library `[data-kb-token-set]` switch removed in the
- * Phase A collapse: it stays within the single active library and swaps only colors. Accepted v1 limitation: the
+ * This is the narrow color-only replacement for the cross-library `[data-kb-token-set]` switch removed by the
+ * single-active-library pivot: it stays within the single active library and swaps only colors. Accepted v1 limitation: the
  * numbered `--global-palette*` bridges resolve at `:root`, so a `[data-kb-palette]` subtree live-swaps content
  * that reads `--kb-token--*` color vars (directly or through a preset), but not blocks that read a numbered
  * `--global-paletteN` bridge directly.

@@ -7,6 +7,13 @@ import {
 	palettesPath,
 	palettePath,
 	paletteCurrentPath,
+	documentsPath,
+	libraryTitlePath,
+	activeLibraryPath,
+	activateLibraryPath,
+	feedPath,
+	tokenLabelPath,
+	groupOrderPath,
 } from '../api/paths';
 
 describe('palette paths', () => {
@@ -63,6 +70,76 @@ describe('userPrimitiveRenamePath', () => {
 	it('appends /rename to the primitive path', () => {
 		expect(userPrimitiveRenamePath('default', 'primitive.color.custom.blue')).toBe(
 			'/kb-design-tokens/v1/documents/default/user-primitives/primitive.color.custom.blue/rename'
+		);
+	});
+});
+
+describe('documentsPath', () => {
+	it('builds the documents collection path', () => {
+		expect(documentsPath()).toBe('/kb-design-tokens/v1/documents');
+	});
+});
+
+describe('libraryTitlePath', () => {
+	it('hangs the title endpoint off the library document path', () => {
+		expect(libraryTitlePath('kb-design-tokens/v1', 'brand-a')).toBe('/kb-design-tokens/v1/documents/brand-a/title');
+	});
+
+	it('falls back to the default library slug', () => {
+		expect(libraryTitlePath('kb-design-tokens/v1')).toBe('/kb-design-tokens/v1/documents/default/title');
+	});
+});
+
+describe('activeLibraryPath', () => {
+	it('returns the active-library path', () => {
+		expect(activeLibraryPath()).toBe('/kb-design-tokens/v1/active-library');
+	});
+});
+
+describe('activateLibraryPath', () => {
+	it('builds the activate path for a slug', () => {
+		expect(activateLibraryPath('default')).toBe('/kb-design-tokens/v1/active-library/default');
+	});
+
+	it('escapes the slug', () => {
+		expect(activateLibraryPath('my set')).toBe('/kb-design-tokens/v1/active-library/my%20set');
+	});
+});
+
+describe('feedPath', () => {
+	it('builds the feed path for a slug', () => {
+		expect(feedPath('default')).toBe('/kb-design-tokens/v1/feed/default');
+	});
+
+	it('escapes the slug', () => {
+		expect(feedPath('my set')).toBe('/kb-design-tokens/v1/feed/my%20set');
+	});
+});
+
+describe('tokenLabelPath', () => {
+	it('builds the label path for a token id', () => {
+		expect(tokenLabelPath('default', 'semantic.color.button-primary-bg')).toBe(
+			'/kb-design-tokens/v1/documents/default/labels/semantic.color.button-primary-bg'
+		);
+	});
+
+	it('escapes the slug and the id', () => {
+		expect(tokenLabelPath('my set', 'primitive.dimension.custom.radius 2')).toBe(
+			'/kb-design-tokens/v1/documents/my%20set/labels/primitive.dimension.custom.radius%202'
+		);
+	});
+});
+
+describe('groupOrderPath', () => {
+	it('builds the order path for a group', () => {
+		expect(groupOrderPath('default', 'Border Radius')).toBe(
+			'/kb-design-tokens/v1/documents/default/order/Border%20Radius'
+		);
+	});
+
+	it('escapes the slug', () => {
+		expect(groupOrderPath('my set', 'Border Radius')).toBe(
+			'/kb-design-tokens/v1/documents/my%20set/order/Border%20Radius'
 		);
 	});
 });

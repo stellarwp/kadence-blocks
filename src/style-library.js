@@ -3,6 +3,8 @@
  */
 import { createRoot } from '@wordpress/element';
 import { StyleLibraryApp } from './style-library/app/StyleLibraryApp';
+import './style-library/styles/_primitives.scss';
+import './style-library/styles/_semantic.scss';
 import './style-library/styles/_shell.scss';
 import './style-library/styles/_layout.scss';
 

@@ -50,11 +50,14 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The listing returns the library's $default / $current pointers and each shipped palette's id + label.
+	 * The listing returns the library's $default / $current pointers and each palette's id + label — the shipped
+	 * `default` plus a stored non-default palette.
 	 *
 	 * @return void
 	 */
-	public function testGetItemsListsTheShippedPalettes(): void {
+	public function testGetItemsListsThePalettes(): void {
+		$this->create_custom_palette();
+
 		$data = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
 
 		$this->assertSame( 'default', $data['$default'] );
@@ -62,22 +65,23 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$ids = array_column( $data['palettes'], 'id' );
 		$this->assertContains( 'default', $ids );
-		$this->assertContains( 'sunset', $ids );
-		$this->assertContains( 'forest', $ids );
+		$this->assertContains( 'custom', $ids );
 	}
 
 	/**
-	 * Reading a shipped palette returns its label and groups; an unknown id is a 404.
+	 * Reading a defined palette returns its label and groups; an unknown id is a 404.
 	 *
 	 * @return void
 	 */
 	public function testGetItemReturnsAPaletteAndUnknownIsNotFound(): void {
+		$this->create_custom_palette();
+
 		$request = new WP_REST_Request( WP_REST_Server::READABLE );
-		$request->set_param( 'id', 'sunset' );
+		$request->set_param( 'id', 'custom' );
 
 		$response = $this->controller->get_item( $request );
 		$this->assertSame( WP_Http::OK, $response->get_status() );
-		$this->assertSame( 'Sunset', $response->get_data()['label'] );
+		$this->assertSame( 'Custom', $response->get_data()['label'] );
 
 		$missing = new WP_REST_Request( WP_REST_Server::READABLE );
 		$missing->set_param( 'id', 'nope' );
@@ -90,12 +94,14 @@ final class Palettes_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetCurrentPersistsAndRejectsUnknown(): void {
+		$this->create_custom_palette();
+
 		$request = new WP_REST_Request( 'PUT' );
-		$request->set_param( 'current', 'sunset' );
+		$request->set_param( 'current', 'custom' );
 
 		$response = $this->controller->set_current( $request );
 		$this->assertNotInstanceOf( WP_Error::class, $response );
-		$this->assertSame( 'sunset', $this->palettes->current() );
+		$this->assertSame( 'custom', $this->palettes->current() );
 
 		$bad = new WP_REST_Request( 'PUT' );
 		$bad->set_param( 'current', 'nope' );
@@ -124,8 +130,10 @@ final class Palettes_ControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetItemReturnsTheEffectiveViewWithInheritedValues(): void {
+		$this->create_custom_palette();
+
 		$request = new WP_REST_Request( WP_REST_Server::READABLE );
-		$request->set_param( 'id', 'sunset' );
+		$request->set_param( 'id', 'custom' );
 
 		$data     = $this->controller->get_item( $request )->get_data();
 		$swatches = [];
@@ -136,11 +144,11 @@ final class Palettes_ControllerTest extends TestCase {
 			}
 		}
 
-		// A sunset delta is overridden and carries sunset's value.
+		// A custom-palette delta is overridden and carries the custom palette's value.
 		$this->assertTrue( $swatches['primitive.color.brand.primary']['overridden'] );
 		$this->assertSame( '#DD6B20', $swatches['primitive.color.brand.primary']['$value'] );
 
-		// A token sunset omits is present but inherited from the default palette's value.
+		// A token the custom palette omits is present but inherited from the default palette's value.
 		$this->assertFalse( $swatches['primitive.color.neutral.900']['overridden'] );
 		$this->assertSame( '#1A202C', $swatches['primitive.color.neutral.900']['$value'] );
 	}
@@ -522,6 +530,18 @@ final class Palettes_ControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'POST', $methods );
 		$this->assertArrayHasKey( 'PUT', $methods );
 		$this->assertArrayHasKey( 'DELETE', $methods );
+	}
+
+	/**
+	 * Create a non-default "custom" palette (a single brand-primary delta of #DD6B20, labelled "Custom") through
+	 * the controller's own write path, without pointing `$current` at it. The baseline no longer ships a
+	 * non-default palette, so the list / read / $current cases own the one they exercise — and creating it inactive
+	 * keeps the library `$current` on `default` until a test sets it explicitly.
+	 *
+	 * @return void
+	 */
+	private function create_custom_palette(): void {
+		$this->controller->update_item( $this->write_request( 'custom', 'Custom', '#DD6B20' ) );
 	}
 
 	/**

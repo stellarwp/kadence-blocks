@@ -1,0 +1,89 @@
+// Style Library design tokens — semantic aliases. A semantic token holds only a `var()`
+// reference to a primitive from _primitives.scss — never a literal.
+//
+// Scoped to the app root and the page's body class — see _primitives.scss for why the body
+// selector is needed alongside the root (Popover content portals outside the root).
+
+.kadence-blocks-style-library-root,
+body.kadence-blocks-style-library-page {
+	// Color — surface/border/text.
+	--kb-sl-color-surface: var(--kb-sl-color-white);
+	// The design specifies a different system's border color; this is the nearest in-ramp gray.
+	// This is a structural edge (sidebar/header rules), not a form control's border — see the
+	// control-border pair below for that distinct role, which is deliberately a different gray.
+	--kb-sl-color-border: var(--kb-sl-color-gray-200);
+	--kb-sl-color-text-primary: var(--kb-sl-color-gray-900);
+	--kb-sl-color-text-secondary: var(--kb-sl-color-gray-700);
+	--kb-sl-color-text-muted: var(--kb-sl-color-gray-700);
+
+	// Color — form control border (e.g. the library-selector toggle). A darker gray than the
+	// structural --kb-sl-color-border above, and a separate token because the two roles must be
+	// free to diverge even though both are "a border".
+	--kb-sl-color-control-border: var(--kb-sl-color-gray-600);
+	--kb-sl-color-control-border-focus: var(--kb-sl-color-theme);
+
+	// Color — destructive actions (e.g. the header's "Delete" library action). First consumer of
+	// the alert-red primitive; named for the role, not the color, same as every other semantic
+	// alias here.
+	--kb-sl-color-action-destructive: var(--kb-sl-color-alert-red);
+	--kb-sl-color-action-destructive-hover: var(--kb-sl-color-alert-red-dark);
+	--kb-sl-color-action-destructive-bg-hover: var(--kb-sl-color-alert-red-tint-4);
+
+	// Color — sidebar nav.
+	--kb-sl-color-nav-tab-text: var(--kb-sl-color-gray-800);
+	--kb-sl-color-nav-tab-text-hover: var(--kb-sl-color-theme);
+	--kb-sl-color-nav-tab-text-selected: var(--kb-sl-color-theme);
+	--kb-sl-color-nav-tab-bg-selected: var(--kb-sl-color-theme-tint-4);
+	--kb-sl-color-nav-section-title: var(--kb-sl-color-gray-800);
+	--kb-sl-color-heading: var(--kb-sl-color-gray-800);
+
+	// Color — a generic hover tint for an interactive surface (e.g. `AddTile`). Same value as
+	// --kb-sl-color-nav-tab-bg-selected but a separate alias — the two roles should stay free to
+	// diverge even though they currently agree.
+	--kb-sl-color-surface-hover: var(--kb-sl-color-theme-tint-4);
+	--kb-sl-color-scrim: var(--kb-sl-color-white-tint-70);
+
+	// Color — `gray-50` does two distinct jobs (`AddTile`'s resting surface, `ListRow`'s hover
+	// background), so each gets its own role alias rather than pointing at the primitive directly.
+	--kb-sl-color-tile-surface: var(--kb-sl-color-gray-50);
+	// Sized to read as the same visual weight as the theme tint above — differs from `--selected` in
+	// hue only, not intensity.
+	--kb-sl-color-row-bg-hover: var(--kb-sl-color-gray-50);
+	// `SwatchCard`'s own hover background — a sibling alias, not a shared reference to
+	// --kb-sl-color-row-bg-hover, since a row and a card should stay free to diverge.
+	--kb-sl-color-card-bg-hover: var(--kb-sl-color-gray-50);
+
+	// Typography
+	--kb-sl-font-size-page-title: var(--kb-sl-font-size-xl);
+	--kb-sl-font-size-group-title: var(--kb-sl-font-size-16);
+	--kb-sl-font-size-body: var(--kb-sl-font-size-l);
+	--kb-sl-font-size-small: var(--kb-sl-font-size-m);
+	--kb-sl-font-size-meta: var(--kb-sl-font-size-s);
+	--kb-sl-line-height-nav-tab: var(--kb-sl-line-height-s);
+
+	// Component sizing — grid-unit aliases.
+	--kb-sl-size-toggle-width: var(--kb-sl-space-40);
+	--kb-sl-size-toggle-height: var(--kb-sl-space-20);
+	--kb-sl-size-checkbox: var(--kb-sl-space-20);
+	--kb-sl-size-radio: var(--kb-sl-space-20);
+	--kb-sl-space-field-spacing-horizontal: var(--kb-sl-space-10);
+	--kb-sl-size-button-small: var(--kb-sl-space-30);
+	--kb-sl-size-button-medium: var(--kb-sl-space-40);
+	--kb-sl-size-button-large: var(--kb-sl-space-50);
+
+	// Component sizing — icons, named for what they're for.
+	--kb-sl-size-icon-chevron: var(--kb-sl-icon-size-s);
+	--kb-sl-size-icon-check: var(--kb-sl-icon-size-m);
+	// Shared by every plus/action icon in the app (`AddTile`, `ScreenHeader`'s primary action) — a
+	// 24px hit box around a deliberately smaller 16px SVG, so a future glyph-size change happens
+	// once and both consumers move together instead of drifting.
+	--kb-sl-size-action-icon-box: var(--kb-sl-space-30);
+	--kb-sl-size-action-icon-glyph: var(--kb-sl-space-20);
+	// A small icon-only button's own hit box (e.g. the breakpoint switcher). Coincides numerically
+	// with --kb-sl-size-icon-chevron but stays a separate, role-named alias — that one sizes a glyph
+	// nested inside a larger button, not a whole button's own box.
+	--kb-sl-size-icon-button: var(--kb-sl-icon-size-s);
+
+	// Elevation
+	--kb-sl-shadow-menu: var(--kb-sl-shadow-elevation-m);
+}

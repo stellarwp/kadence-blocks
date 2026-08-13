@@ -4,6 +4,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Document;
 
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
+use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Token_Type;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -63,6 +64,16 @@ final class Reserved_NamespaceTest extends TestCase {
 
 		yield 'the bucket itself with no slug' => [
 			'id'       => 'primitive.color.custom',
+			'expected' => false,
+		];
+
+		yield 'a font-family custom leaf, the mapped kebab segment' => [
+			'id'       => 'primitive.font-family.custom.abel',
+			'expected' => true,
+		];
+
+		yield 'the pre-mapping camelCase segment no longer matches' => [
+			'id'       => 'primitive.fontFamily.custom.abel',
 			'expected' => false,
 		];
 	}
@@ -128,17 +139,170 @@ final class Reserved_NamespaceTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
+	 * canonical() builds the full dot-path id from a type and a terminal slug.
+	 *
+	 * @dataProvider canonicalTypeProvider
+	 *
+	 * @param string $type     The DTCG $type segment.
+	 * @param string $expected The expected canonical id.
+	 *
 	 * @return void
 	 */
-	public function testCanonicalBuildsTheFullIdFromASlug(): void {
-		$this->assertSame( 'primitive.color.custom.brand-accent', Reserved_Namespace::canonical( 'brand-accent' ) );
+	public function testCanonicalBuildsTheFullIdFromASlug( string $type, string $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::canonical( $type, 'brand-accent' ) );
 	}
 
 	/**
+	 * @return Generator
+	 */
+	public function canonicalTypeProvider(): Generator {
+		yield 'color' => [
+			'type'     => Token_Type::get_type_color(),
+			'expected' => 'primitive.color.custom.brand-accent',
+		];
+
+		yield 'dimension' => [
+			'type'     => Token_Type::get_type_dimension(),
+			'expected' => 'primitive.dimension.custom.brand-accent',
+		];
+
+		yield 'shadow' => [
+			'type'     => Token_Type::get_type_shadow(),
+			'expected' => 'primitive.shadow.custom.brand-accent',
+		];
+	}
+
+	/**
+	 * canonical() output for every supported type is recognized as reserved by is_reserved_id().
+	 *
+	 * @dataProvider supportedTypeProvider
+	 *
+	 * @param string $type The DTCG $type segment.
+	 *
 	 * @return void
 	 */
-	public function testCanonicalOutputIsRecognizedAsReserved(): void {
-		$this->assertTrue( Reserved_Namespace::is_reserved_id( Reserved_Namespace::canonical( 'brand-accent' ) ) );
+	public function testCanonicalOutputIsRecognizedAsReserved( string $type ): void {
+		$this->assertTrue( Reserved_Namespace::is_reserved_id( Reserved_Namespace::canonical( $type, 'brand-accent' ) ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function supportedTypeProvider(): Generator {
+		yield 'color' => [ 'type' => Token_Type::get_type_color() ];
+		yield 'dimension' => [ 'type' => Token_Type::get_type_dimension() ];
+		yield 'shadow' => [ 'type' => Token_Type::get_type_shadow() ];
+	}
+
+	/**
+	 * canonical() builds the id's second segment from the type's REGISTERED id segment
+	 * (Token_Type::get_id_segment()), not the raw $type spelling — a mapped type (fontFamily) and
+	 * an unmapped one (color) coexist through the same call, pinning that the mapping is applied
+	 * uniformly rather than special-cased.
+	 *
+	 * @dataProvider canonicalMappedSegmentProvider
+	 *
+	 * @param string $type     The DTCG $type.
+	 * @param string $slug     The terminal slug.
+	 * @param string $expected The expected canonical id.
+	 *
+	 * @return void
+	 */
+	public function testCanonicalUsesTheMappedIdSegment( string $type, string $slug, string $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::canonical( $type, $slug ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function canonicalMappedSegmentProvider(): Generator {
+		yield 'fontFamily maps to the font-family id segment' => [
+			'type'     => Token_Type::get_type_font_family(),
+			'slug'     => 'abel',
+			'expected' => 'primitive.font-family.custom.abel',
+		];
+
+		yield 'color, already kebab-case, is unaffected by the mapping' => [
+			'type'     => Token_Type::get_type_color(),
+			'slug'     => 'x',
+			'expected' => 'primitive.color.custom.x',
+		];
+	}
+
+	// -------------------------------------------------------------------------
+	// is_supported_type()
+	// -------------------------------------------------------------------------
+
+	/**
+	 * is_supported_type() now means "registered", full stop: Token_Type::get_id_segment() supplies
+	 * a kebab-safe id segment for every registered $type (including the six whose DTCG spelling is
+	 * camelCase), so the old second predicate — the raw $type spelling itself had to be kebab-case —
+	 * is vacuous and has been dropped. Only an unregistered $type is refused now.
+	 *
+	 * @dataProvider supportedTypePredicateProvider
+	 *
+	 * @param string $type     The candidate $type.
+	 * @param bool   $expected Whether $type is expected to support user-created primitives.
+	 *
+	 * @return void
+	 */
+	public function testIsSupportedType( string $type, bool $expected ): void {
+		$this->assertSame( $expected, Reserved_Namespace::is_supported_type( $type ) );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function supportedTypePredicateProvider(): Generator {
+		yield 'color' => [
+			'type'     => Token_Type::get_type_color(),
+			'expected' => true,
+		];
+
+		yield 'dimension' => [
+			'type'     => Token_Type::get_type_dimension(),
+			'expected' => true,
+		];
+
+		yield 'shadow, a kebab-safe composite' => [
+			'type'     => Token_Type::get_type_shadow(),
+			'expected' => true,
+		];
+
+		yield 'fontFamily, mapped to the font-family id segment' => [
+			'type'     => Token_Type::get_type_font_family(),
+			'expected' => true,
+		];
+
+		yield 'fontWeight, mapped to the font-weight id segment' => [
+			'type'     => Token_Type::get_type_font_weight(),
+			'expected' => true,
+		];
+
+		yield 'lineHeight, mapped to the line-height id segment' => [
+			'type'     => Token_Type::get_type_line_height(),
+			'expected' => true,
+		];
+
+		yield 'fontStyle, mapped to the font-style id segment' => [
+			'type'     => Token_Type::get_type_font_style(),
+			'expected' => true,
+		];
+
+		yield 'textTransform, mapped to the text-transform id segment' => [
+			'type'     => Token_Type::get_type_text_transform(),
+			'expected' => true,
+		];
+
+		yield 'borderStyle, mapped to the border-style id segment' => [
+			'type'     => Token_Type::get_type_border_style(),
+			'expected' => true,
+		];
+
+		yield 'bogus, an unregistered type' => [
+			'type'     => 'bogus',
+			'expected' => false,
+		];
 	}
 
 	// -------------------------------------------------------------------------
@@ -202,6 +366,16 @@ final class Reserved_NamespaceTest extends TestCase {
 
 		yield 'too short to reach the custom segment' => [
 			'path'     => 'primitive.color',
+			'expected' => false,
+		];
+
+		yield 'a font-family custom leaf, the mapped kebab segment' => [
+			'path'     => 'primitive.font-family.custom.abel',
+			'expected' => true,
+		];
+
+		yield 'the pre-mapping camelCase segment no longer matches' => [
+			'path'     => 'primitive.fontFamily.custom.abel',
 			'expected' => false,
 		];
 	}

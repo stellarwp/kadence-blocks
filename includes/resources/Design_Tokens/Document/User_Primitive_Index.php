@@ -20,7 +20,7 @@ final class User_Primitive_Index {
 	 *
 	 * @param array<string, mixed> $document
 	 *
-	 * @return array<string, array{label: string}>
+	 * @return array<string, array{label: string, group?: string}>
 	 */
 	public function all( array $document ): array {
 		$map = $this->read_map( $document );
@@ -55,15 +55,23 @@ final class User_Primitive_Index {
 	}
 
 	/**
+	 * Write (or overwrite) an entry's label. The group is preserved by default — `null` (the
+	 * default) keeps whatever group the existing entry already stores, so a caller with no group in
+	 * its own request (the label endpoints) never resets one a create or rename request set. A
+	 * string sets the group explicitly; `''` clears it, and an empty group is omitted from the
+	 * entry so a document with no grouped custom tokens stays byte-identical to before this param
+	 * existed.
+	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $document
 	 * @param string               $id
 	 * @param string               $label
+	 * @param string|null          $group Null preserves the existing entry's group; a string sets it.
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function add( array $document, string $id, string $label ): array {
+	public function add( array $document, string $id, string $label, ?string $group = null ): array {
 		$ext = Extensions::get_extensions_key();
 		$ns  = Extensions::get_namespace();
 		$sec = Extensions::get_section_user_primitives();
@@ -77,7 +85,18 @@ final class User_Primitive_Index {
 		/** @var array<string, mixed> $sec_data */
 		$sec_data = $ns_data[ $sec ];
 
-		$sec_data[ $id ]  = [ 'label' => $label ];
+		if ( $group === null ) {
+			$existing = $sec_data[ $id ] ?? null;
+			$group    = is_array( $existing ) && is_string( $existing['group'] ?? null ) ? $existing['group'] : '';
+		}
+
+		$entry = [ 'label' => $label ];
+
+		if ( $group !== '' ) {
+			$entry['group'] = $group;
+		}
+
+		$sec_data[ $id ]  = $entry;
 		$ns_data[ $sec ]  = $sec_data;
 		$ext_data[ $ns ]  = $ns_data;
 		$document[ $ext ] = $ext_data;
@@ -119,7 +138,9 @@ final class User_Primitive_Index {
 	}
 
 	/**
-	 * Swap the old id for the new id, updating the label.
+	 * Swap the old id for the new id, updating the label. The old entry's group carries to the new
+	 * id explicitly — the old entry is gone by the time add() would look for it, so relying on
+	 * add()'s own preserve-by-default lookup here would silently drop the group instead.
 	 *
 	 * @since TBD
 	 *
@@ -131,9 +152,12 @@ final class User_Primitive_Index {
 	 * @return array<string, mixed>
 	 */
 	public function rename( array $document, string $old_id, string $new_id, string $new_label ): array {
+		$old_entry = $this->all( $document )[ $old_id ] ?? null;
+		$group     = is_array( $old_entry ) && is_string( $old_entry['group'] ?? null ) ? $old_entry['group'] : '';
+
 		$document = $this->remove( $document, $old_id );
 
-		return $this->add( $document, $new_id, $new_label );
+		return $this->add( $document, $new_id, $new_label, $group );
 	}
 
 	/**
