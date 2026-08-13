@@ -286,8 +286,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[],
 			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
 		);
@@ -312,8 +312,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[],
 			[ 'semantic.color.does-not-exist', 'semantic.color.button-bg' ]
 		);
@@ -337,8 +337,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[],
 			[ 'spacing.sm' ]
 		);
@@ -357,7 +357,7 @@ final class BuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testAnEmptyOrderListIsTheIdentityTransform(): void {
-		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', [], '', [], [] );
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', '', [], [], [] );
 
 		$this->assertSame( $this->with_no_overrides( $this->registry->to_ui_schema() ), $feed['schema'] );
 	}
@@ -383,7 +383,7 @@ final class BuilderTest extends TestCase {
 			]
 		);
 
-		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', [], '', [], $order );
+		$feed = $this->builder()->build( [], true, [], $this->rest(), 'v7', 'default', '', [], [], $order );
 
 		$this->assertEqualsCanonicalizing(
 			[ 'semantic.color.button-bg', 'semantic.color.button-text' ],
@@ -439,8 +439,8 @@ final class BuilderTest extends TestCase {
 			$this->rest(),
 			'v7',
 			'default',
-			[],
 			'',
+			[],
 			[ 'semantic.color.button-bg' => 'Cozy' ],
 			[ 'semantic.color.button-text', 'semantic.color.button-bg' ]
 		);
