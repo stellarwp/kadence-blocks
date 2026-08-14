@@ -377,6 +377,24 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * A well-formed but unbacked alias in a numeric lineHeight slot emits no line-height declaration (and
+	 * never the raw alias text), so the property falls back to the global CSS. Covers the numeric-array
+	 * shape the typography paths use, not just the keyed one.
+	 *
+	 * @return void
+	 */
+	public function testRenderTypographyDropsUnresolvedNumericLineHeight(): void {
+		$this->css->render_typography( [
+			'typography' => [
+				'lineType'   => 'px',
+				'lineHeight' => [ '{semantic.does.not.exist}', '', '' ],
+			],
+		] );
+
+		$this->assertStringNotContainsString( 'line-height:', $this->css->css_output() );
+	}
+
+	/**
 	 * The fail-open matrix for render_border (width): a malformed, non-empty brace width is not
 	 * a strict alias, so it passes through literally with its unit suffix and never mints a var().
 	 *

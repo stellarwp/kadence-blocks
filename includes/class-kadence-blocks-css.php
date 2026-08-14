@@ -857,7 +857,7 @@ class Kadence_Blocks_CSS {
 		$line_height_reference = $this->get_backed_token_reference( $font['lineHeight'][0] ?? null );
 		if ( null !== $line_height_reference ) {
 			$this->add_property( 'line-height', $line_height_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][0] ) && ! empty( $font['lineHeight'][0] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][0] ) && ! empty( $font['lineHeight'][0] ) && ! Alias::is_alias( $font['lineHeight'][0] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][0] . $line_type );
 		}
 		if ( isset( $font['letterSpacing'] ) && is_array( $font['letterSpacing'] ) ) {
@@ -914,7 +914,7 @@ class Kadence_Blocks_CSS {
 		$line_height_tablet_reference = $this->get_backed_token_reference( $font['lineHeight'][1] ?? null );
 		if ( null !== $line_height_tablet_reference ) {
 			$this->add_property( 'line-height', $line_height_tablet_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][1] ) && ! empty( $font['lineHeight'][1] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][1] ) && ! empty( $font['lineHeight'][1] ) && ! Alias::is_alias( $font['lineHeight'][1] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][1] . $line_type );
 		}
 		$letter_spacing_tablet_key_reference = $this->get_backed_token_reference( $font['letterSpacing']['tablet'] ?? null );
@@ -943,7 +943,7 @@ class Kadence_Blocks_CSS {
 		$line_height_mobile_reference = $this->get_backed_token_reference( $font['lineHeight'][2] ?? null );
 		if ( null !== $line_height_mobile_reference ) {
 			$this->add_property( 'line-height', $line_height_mobile_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][2] ) && ! empty( $font['lineHeight'][2] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][2] ) && ! empty( $font['lineHeight'][2] ) && ! Alias::is_alias( $font['lineHeight'][2] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][2] . $line_type );
 		}
 		$letter_spacing_mobile_key_reference = $this->get_backed_token_reference( $font['letterSpacing']['mobile'] ?? null );
