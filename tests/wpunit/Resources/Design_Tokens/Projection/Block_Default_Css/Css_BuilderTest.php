@@ -7,6 +7,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Build
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
+use KadenceWP\KadenceBlocks\Monolog\Handler\TestHandler;
+use KadenceWP\KadenceBlocks\Monolog\Logger;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
+use KadenceWP\KadenceBlocks\Psr\Log\NullLogger;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -23,12 +28,18 @@ final class Css_BuilderTest extends TestCase {
 	private Preset_Resolver $resolver;
 
 	/**
+	 * @var Token_Resolver
+	 */
+	private Token_Resolver $token_resolver;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->resolver = $this->container->get( Preset_Resolver::class );
+		$this->resolver       = $this->container->get( Preset_Resolver::class );
+		$this->token_resolver = $this->container->get( Token_Resolver::class );
 	}
 
 	/**
@@ -296,14 +307,40 @@ final class Css_BuilderTest extends TestCase {
 	}
 
 	/**
+	 * A binding whose `token` id is not backed by the resolved library emits no declaration for that control
+	 * at all — not even a `var()` with a literal fallback — so the block falls back to its own native
+	 * default CSS, and the mismatch is logged via the injected logger.
+	 *
+	 * @return void
+	 */
+	public function testItSkipsAndLogsABindingReferencingAnUnresolvedToken(): void {
+		$handler = new TestHandler();
+		$logger  = new Logger( 'test' );
+		$logger->pushHandler( $handler );
+
+		$css = $this->builder( $this->unresolved_token_registry(), $logger )->css();
+
+		// No declaration is emitted for the control: no rule for the block, no dead var() with a fallback.
+		$this->assertSame( '', $css );
+		$this->assertStringNotContainsString( 'border-radius:var(', $css );
+
+		// The mismatch is logged, naming the offending block and the unresolved token id.
+		$this->assertTrue( $handler->hasErrorThatContains( 'unresolved token id' ) );
+		$this->assertTrue( $handler->hasErrorThatContains( 'semantic.radius.gone' ) );
+		$this->assertTrue( $handler->hasErrorThatContains( 'kadence/image' ) );
+	}
+
+	/**
 	 * Build the builder with a given registry and the real (baseline-backed) preset resolver.
 	 *
-	 * @param Token_Registry $registry The registry whose preset bindings the builder reads.
+	 * @param Token_Registry       $registry The registry whose preset bindings the builder reads.
+	 * @param LoggerInterface|null $logger   The logger to inject; defaults to a NullLogger so tests that do
+	 *                                       not assert on logging are unaffected.
 	 *
 	 * @return Css_Builder
 	 */
-	private function builder( Token_Registry $registry ): Css_Builder {
-		return new Css_Builder( $registry, $this->resolver );
+	private function builder( Token_Registry $registry, ?LoggerInterface $logger = null ): Css_Builder {
+		return new Css_Builder( $registry, $this->resolver, $this->token_resolver, $logger ?? new NullLogger() );
 	}
 
 	/**
@@ -327,6 +364,33 @@ final class Css_BuilderTest extends TestCase {
 				'bindings' => [
 					'borderRadius' => [
 						'token'        => 'semantic.radius.media',
+						'css_prop'     => 'border-radius',
+						'css_selector' => 'img',
+					],
+				],
+			]
+		);
+
+		return $registry;
+	}
+
+	/**
+	 * A registry that binds the Image `borderRadius` css_prop to a token id the resolved library does not
+	 * back (`semantic.radius.gone` has no baseline entry), so the builder resolves a default literal for the
+	 * control (from the shipped document's `$default` preset) but finds the binding's token unresolved —
+	 * exercising the skip-and-log path. Mirrors {@see self::image_registry()} but points the binding at an
+	 * unbacked token id.
+	 *
+	 * @return Token_Registry
+	 */
+	private function unresolved_token_registry(): Token_Registry {
+		$registry = new Token_Registry();
+		$registry->register_preset_bindings(
+			[
+				'block'    => 'kadence/image',
+				'bindings' => [
+					'borderRadius' => [
+						'token'        => 'semantic.radius.gone',
 						'css_prop'     => 'border-radius',
 						'css_selector' => 'img',
 					],
