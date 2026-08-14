@@ -70,6 +70,26 @@ describe('registerTokenAliasFilters', () => {
 	});
 
 	/**
+	 * The dimension hook is wired the same way as the color hook: a backed alias resolves to its var and a
+	 * stale alias is left untouched, proving the listener validates backing on both registered hooks (not
+	 * just passing raw values through).
+	 */
+	it('resolves a backed alias and leaves a stale one on the dimension hook', () => {
+		window.kadenceDesignTokensPresets = { active: 'default' };
+		window.kadenceDesignTokensPickable = {
+			tokens: [],
+			values: { default: { 'semantic.radius.media': '8px' } },
+		};
+
+		const DIMENSION_HOOK = 'kadence.helpers.dimensionValue';
+
+		expect(applyFilters(DIMENSION_HOOK, '{semantic.radius.media}')).toBe(
+			'var(--kb-token--semantic--radius--media)'
+		);
+		expect(applyFilters(DIMENSION_HOOK, STALE_ALIAS)).toBe(STALE_ALIAS);
+	});
+
+	/**
 	 * A non-alias value passes through untouched on both registered hooks.
 	 */
 	it('passes a non-alias value through unchanged', () => {

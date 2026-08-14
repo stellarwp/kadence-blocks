@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
-use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
@@ -1087,10 +1086,11 @@ class Kadence_Blocks_CSS {
 	 * after it was stored); minting a var() for it would leave a dead custom property with no definition,
 	 * so callers use this to skip the declaration and fall back to the global CSS instead.
 	 *
-	 * The active library's canonical id map is resolved once and memoized per request (keyed by slug), so
-	 * the per-value render path stays a hash lookup. Fails open: if the container/resolver is unavailable
-	 * or resolution throws, the alias is treated as backed (today's behavior) so a render never crashes and
-	 * transient resolver issues do not drop all token CSS.
+	 * The active library is resolved through Token_Resolver, which memoizes per store version, so repeated
+	 * lookups stay cheap and always reflect the current version. The unresolved-alias log is de-duplicated
+	 * per (library, id) so one stale alias does not flood the error log across a page's many blocks. Fails
+	 * open: if the container/resolver is unavailable or resolution throws, the alias is treated as backed
+	 * (today's behavior) so a render never crashes and transient resolver issues do not drop all token CSS.
 	 *
 	 * @since TBD
 	 *
@@ -1099,23 +1099,20 @@ class Kadence_Blocks_CSS {
 	 * @return bool True when the id resolves in the active library, or on any error (fail-open).
 	 */
 	private function token_alias_is_backed( string $id ): bool {
-		/** @var array<string, Resolved_Tokens> $backed_by_slug */
-		static $backed_by_slug = array();
+		/** @var array<string, bool> $logged */
+		static $logged = array();
 
 		try {
 			/** @var Active_Token_Library_Store $active */
 			$active = kadence_blocks()->get( Active_Token_Library_Store::class );
 			$slug   = $active->get();
 
-			if ( ! isset( $backed_by_slug[ $slug ] ) ) {
-				/** @var Token_Resolver $resolver */
-				$resolver                = kadence_blocks()->get( Token_Resolver::class );
-				$backed_by_slug[ $slug ] = $resolver->resolve( $slug );
-			}
+			/** @var Token_Resolver $resolver */
+			$resolver = kadence_blocks()->get( Token_Resolver::class );
+			$backed   = $resolver->resolve( $slug )->value( $id ) !== null;
 
-			$backed = $backed_by_slug[ $slug ]->value( $id ) !== null;
-
-			if ( ! $backed && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			if ( ! $backed && ! isset( $logged[ $slug . '|' . $id ] ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				$logged[ $slug . '|' . $id ] = true;
 				/** @var LoggerInterface $logger */
 				$logger = kadence_blocks()->get( LoggerInterface::class );
 				$logger->error( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
@@ -2526,12 +2523,13 @@ class Kadence_Blocks_CSS {
 	 * @return void
 	 */
 	private function render_measure_side( $prop, $value, $unit, $property ) {
+		$token_reference = $this->get_backed_token_reference( $value );
 		if ( $this->is_number( $value ) ) {
 			$this->add_property( $prop, $value . $unit );
 		} else if ( 'position' === $property && ! empty( $value ) ) {
 			$this->add_property( $prop, $value );
-		} else if ( ! empty( $value ) && null !== $this->get_backed_token_reference( $value ) ) {
-			$this->add_property( $prop, $this->get_backed_token_reference( $value ) );
+		} else if ( ! empty( $value ) && null !== $token_reference ) {
+			$this->add_property( $prop, $token_reference );
 		} else if ( ! empty( $value ) && $this->is_variable_value( $value ) ) {
 			$this->add_property( $prop, $this->get_variable_value( $value ) );
 		}
