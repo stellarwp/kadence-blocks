@@ -228,6 +228,80 @@ final class KadenceBlocksCssTokenEmissionTest extends TestCase {
 	}
 
 	/**
+	 * render_border emits the bare var() reference for a strict alias width, dropping the
+	 * literal unit, with the literal style and color untouched in the shorthand.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderEmitsBareVarForAliasedWidth(): void {
+		$border = [
+			[
+				'top'  => [ '#000000', 'solid', '{semantic.radius.media}' ],
+				'unit' => 'px',
+			],
+		];
+
+		$this->assertSame(
+			'var(--kb-token--semantic--radius--media) solid #000000',
+			$this->css->render_border( $border, 'top' ),
+			'render_border must emit the bare var() for a strict alias width, dropping the unit'
+		);
+	}
+
+	/**
+	 * render_border resolves a strict alias in both the width and color positions together,
+	 * emitting each as its own bare var() in the shorthand.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderResolvesAliasedWidthAndColorTogether(): void {
+		$border = [
+			[
+				'top'  => [ '{semantic.color.brand}', 'solid', '{semantic.border.width.thin}' ],
+				'unit' => 'px',
+			],
+		];
+
+		$this->assertSame(
+			'var(--kb-token--semantic--border--width--thin) solid var(--kb-token--semantic--color--brand)',
+			$this->css->render_border( $border, 'top' ),
+			'render_border must resolve both the aliased width and the aliased color'
+		);
+	}
+
+	/**
+	 * The fail-open matrix for render_border (width): a malformed, non-empty brace width is not
+	 * a strict alias, so it passes through literally with its unit suffix and never mints a var().
+	 *
+	 * @dataProvider malformedAliasProvider
+	 *
+	 * @param string $malformed The malformed brace string under test.
+	 *
+	 * @return void
+	 */
+	public function testRenderBorderFailsOpenForMalformedAliasWidth( string $malformed ): void {
+		$border = [
+			[
+				'top'  => [ '#000000', 'solid', $malformed ],
+				'unit' => 'px',
+			],
+		];
+
+		$actual = $this->css->render_border( $border, 'top' );
+
+		$this->assertSame(
+			$malformed . 'px solid #000000',
+			$actual,
+			'render_border must pass a malformed brace width through literally with its unit suffix'
+		);
+		$this->assertStringNotContainsString(
+			'--kb-token--',
+			(string) $actual,
+			'render_border must not mint a var() from a malformed brace width'
+		);
+	}
+
+	/**
 	 * The fail-open matrix: a malformed brace string must never mint a var() and never reach
 	 * numeric handling as if it were an alias, for every representative method's own value site.
 	 *
