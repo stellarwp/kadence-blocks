@@ -8,16 +8,17 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { ButtonScreen } from '../components/pages/ButtonScreen';
-import { useButtonScreen } from '../hooks/use-button-screen';
+import { PresetScreen } from '../components/pages/PresetScreen';
+import { usePresetScreen } from '../hooks/use-preset-screen';
+import { BUTTON_PRESET } from '../presets/button-preset';
 import { useDraftChannel } from '../hooks/use-draft-channel';
 
-// A factory: `use-button-screen.js` pulls in `helpers/preset-flows.js` -> `../api/client`, which
-// imports `@wordpress/api-fetch` (externalized to the `wp.apiFetch` global in production, not an
-// installed npm dependency), so automocking would fail to resolve it. The screen only reads the
-// hook's return value, so a bare jest.fn() stand-in is enough.
-jest.mock('../hooks/use-button-screen', () => ({
-	useButtonScreen: jest.fn(),
+// A factory: `use-preset-screen.js` pulls in `../api/client`, which imports `@wordpress/api-fetch`
+// (externalized to the `wp.apiFetch` global in production, not an installed npm dependency), so
+// automocking would fail to resolve it. The screen only reads the hook's return value, so a bare
+// jest.fn() stand-in is enough.
+jest.mock('../hooks/use-preset-screen', () => ({
+	usePresetScreen: jest.fn(),
 }));
 
 // `jest.config.js` maps the `@wordpress/components` specifier to the copy nested under
@@ -39,14 +40,16 @@ jest.mock('@wordpress/components', () => ({
 	Spinner: (props) => <div className="components-spinner" {...props} />,
 }));
 
-// `DragHandle` renders an `Icon` from `@wordpress/icons`, which pulls its `<SVG>` primitive from
-// `@wordpress/primitives` — a package with its own nested `react` copy (unlike `@wordpress/icons`
-// itself). Mounting it under this test's top-level `react-dom/client` renderer trips the same
-// cross-copy element-identity mismatch the `@wordpress/components` mock above sidesteps. The rows
-// this test renders always come back with `isDraggable: true`, so a bare stand-in keeps the row
-// list mountable without exercising the drag affordance.
-jest.mock('../components/atoms/DragHandle', () => ({
-	DragHandle: () => null,
+// `@wordpress/primitives` (which `@wordpress/icons`'s `Icon`/`SVG` build on) nests its own `react`
+// copy under `node_modules/@wordpress/primitives/node_modules/react` — a different module instance
+// than the top-level `react-dom/client` this test renders with. `DragHandle` mounts a real `Icon`
+// for draggable rows, which trips the same "Objects are not valid as a React child" cross-copy
+// error the `@wordpress/components` mock above sidesteps; stub `Icon` and the icon glyphs it takes
+// for the same reason.
+jest.mock('@wordpress/icons', () => ({
+	Icon: (props) => <span className="components-icon" {...props} />,
+	dragHandle: 'dragHandle',
+	plus: 'plus',
 }));
 
 const LIBRARY = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
@@ -55,10 +58,11 @@ let container;
 let root;
 
 /**
- * Render `ButtonScreen` with the given `useButtonScreen` stub and return the mounted container.
+ * Render `PresetScreen` (with `BUTTON_PRESET`, the same value `ButtonScreen` passes) using the
+ * given `usePresetScreen` stub and return the mounted container.
  *
- * @param {Object}   screen     The `useButtonScreen` return value to stub.
- * @param {Object}   [options]  Overrides for the props the selection and overlay paths read.
+ * @param {Object}   screen             The `usePresetScreen` return value to stub.
+ * @param {Object}   [options]          Overrides for the props the selection and overlay paths read.
  * @param {string}   [options.item]     The route's open `kb-item`.
  * @param {Function} [options.navigate] The navigate spy.
  *
@@ -66,16 +70,17 @@ let root;
  *
  * @return {HTMLElement} The container the screen was rendered into.
  */
-function renderButtonScreen(screen, { item = '', navigate = () => {} } = {}) {
-	useButtonScreen.mockReturnValue(screen);
+function renderPresetScreen(screen, { item = '', navigate = () => {} } = {}) {
+	usePresetScreen.mockReturnValue(screen);
 
 	act(() => {
 		root.render(
-			createElement(ButtonScreen, {
+			createElement(PresetScreen, {
 				label: 'Button',
 				route: { screen: 'blocks/kadence/singlebtn', item },
 				navigate,
 				library: LIBRARY,
+				preset: BUTTON_PRESET,
 			})
 		);
 	});
@@ -88,7 +93,7 @@ beforeEach(() => {
 	container = document.createElement('div');
 	document.body.appendChild(container);
 	root = createRoot(container);
-	useButtonScreen.mockReset();
+	usePresetScreen.mockReset();
 	useDraftChannel.mockReset();
 	useDraftChannel.mockReturnValue(null);
 });
@@ -100,26 +105,16 @@ afterEach(() => {
 	container.remove();
 });
 
-describe('ButtonScreen loading state', () => {
+describe('PresetScreen loading state', () => {
 	/**
-	 * While `useButtonScreen` is still fetching, the screen must show a busy indicator instead of
-	 * the empty state — `useButtonScreen` starts with `isLoading: true` and no rows, and rendering
+	 * While `usePresetScreen` is still fetching, the screen must show a busy indicator instead of
+	 * the empty state — `usePresetScreen` starts with `isLoading: true` and no rows, and rendering
 	 * the empty state at that point would flash "Add Button" before the presets arrive.
 	 *
 	 * @return {void}
 	 */
 	it('renders a spinner instead of the empty state while loading', () => {
-		renderButtonScreen({
-			payload: null,
-			isLoading: true,
-			loadError: null,
-			rows: [],
-			initialValuesFor: () => ({}),
-			isBusy: false,
-			addError: null,
-			clearAddError: () => {},
-			addPreset: () => Promise.resolve(),
-		});
+		renderPresetScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
 
 		expect(container.querySelector('.components-spinner')).not.toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
@@ -131,17 +126,7 @@ describe('ButtonScreen loading state', () => {
 	 * @return {void}
 	 */
 	it('renders the empty state once loading finishes with no rows', () => {
-		renderButtonScreen({
-			payload: {},
-			isLoading: false,
-			loadError: null,
-			rows: [],
-			initialValuesFor: () => ({}),
-			isBusy: false,
-			addError: null,
-			clearAddError: () => {},
-			addPreset: () => Promise.resolve(),
-		});
+		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) });
 
 		expect(container.querySelector('.components-spinner')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).not.toBeNull();
@@ -161,17 +146,7 @@ describe('ButtonScreen loading state', () => {
 			},
 		];
 
-		renderButtonScreen({
-			payload: {},
-			isLoading: false,
-			loadError: null,
-			rows,
-			initialValuesFor: () => ({}),
-			isBusy: false,
-			addError: null,
-			clearAddError: () => {},
-			addPreset: () => Promise.resolve(),
-		});
+		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows, initialValuesFor: () => ({}) });
 
 		expect(container.querySelector('.components-spinner')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
@@ -179,7 +154,7 @@ describe('ButtonScreen loading state', () => {
 	});
 });
 
-describe('ButtonScreen load failure', () => {
+describe('PresetScreen load failure', () => {
 	/**
 	 * A failed preset fetch renders its message as a notice. The list still renders, so a retry
 	 * that succeeds needs no remount.
@@ -187,7 +162,7 @@ describe('ButtonScreen load failure', () => {
 	 * @return {void}
 	 */
 	it('renders the load error message and still renders the list', () => {
-		renderButtonScreen({
+		renderPresetScreen({
 			payload: null,
 			isLoading: false,
 			loadError: new Error('Request failed'),
@@ -200,7 +175,7 @@ describe('ButtonScreen load failure', () => {
 	});
 });
 
-describe('ButtonScreen draft overlay', () => {
+describe('PresetScreen draft overlay', () => {
 	const ROWS = [
 		{
 			id: 'primary',
@@ -226,7 +201,7 @@ describe('ButtonScreen draft overlay', () => {
 			guard: (fn) => fn(),
 		});
 
-		renderButtonScreen(
+		renderPresetScreen(
 			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
 			{ item: 'primary' }
 		);
@@ -247,7 +222,7 @@ describe('ButtonScreen draft overlay', () => {
 			guard: (fn) => fn(),
 		});
 
-		renderButtonScreen(
+		renderPresetScreen(
 			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
 			{ item: 'primary' }
 		);
@@ -257,7 +232,7 @@ describe('ButtonScreen draft overlay', () => {
 	});
 });
 
-describe('ButtonScreen selection', () => {
+describe('PresetScreen selection', () => {
 	const ROWS = [
 		{
 			id: 'primary',
@@ -282,7 +257,7 @@ describe('ButtonScreen selection', () => {
 		const navigate = jest.fn();
 		useDraftChannel.mockReturnValue({ publication: null, guard });
 
-		renderButtonScreen(
+		renderPresetScreen(
 			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
 			{ item: 'primary', navigate }
 		);
@@ -306,7 +281,7 @@ describe('ButtonScreen selection', () => {
 		const navigate = jest.fn();
 		useDraftChannel.mockReturnValue({ publication: null, guard });
 
-		renderButtonScreen(
+		renderPresetScreen(
 			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
 			{ item: 'primary', navigate }
 		);

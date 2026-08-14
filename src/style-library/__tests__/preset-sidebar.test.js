@@ -8,44 +8,38 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { ButtonSettings } from '../components/pages/ButtonSettings';
-import { useButtonScreen } from '../hooks/use-button-screen';
+import { PresetSidebar } from '../components/pages/PresetSidebar';
 
-// Same rationale as `button-screen.test.js`: `use-button-screen.js` pulls in
-// `helpers/preset-flows.js` -> `../api/client`, which imports `@wordpress/api-fetch`
-// (externalized in production, not an installed dependency), so automocking would fail to
-// resolve it. Both cases below resolve to no initial values, so `ButtonSettings` returns null
-// before mounting `ButtonSettingsPanel` — the hook's write-flow fields never need stubbing.
-jest.mock('../hooks/use-button-screen', () => ({
-	useButtonScreen: jest.fn(),
-}));
-
-const LIBRARY = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
+// `PresetSidebar` takes the preset-screen binding as a prop rather than calling a hook itself, so
+// both cases below can stub `screen` directly with a plain object — no module mock is needed.
+// Both resolve to no initial values, so `PresetSidebar` returns null before mounting its body; the
+// write-flow fields (`savePreset`, `isDeletable`, etc.) never need stubbing.
+const PRESET = { tabs: null, schemaFor: () => [] };
 
 let container;
 let root;
 
 /**
- * Render `ButtonSettings` with the given `useButtonScreen` stub and route item, returning the
- * `navigate` spy passed to it.
+ * Render `PresetSidebar` with the given `screen` binding and route item, returning the `navigate`
+ * spy passed to it.
  *
- * @param {Object} screen The `useButtonScreen` return value to stub.
+ * @param {Object} screen The preset-screen binding to stub.
  * @param {string} item   The route's `item` (`kb-item`) value.
  *
  * @since TBD
  *
  * @return {Function} The `navigate` jest spy.
  */
-function renderButtonSettings(screen, item) {
-	useButtonScreen.mockReturnValue(screen);
+function renderPresetSidebar(screen, item) {
 	const navigate = jest.fn();
 
 	act(() => {
 		root.render(
-			createElement(ButtonSettings, {
+			createElement(PresetSidebar, {
 				route: { screen: 'blocks/kadence/singlebtn', item },
 				navigate,
-				library: LIBRARY,
+				screen,
+				preset: PRESET,
 			})
 		);
 	});
@@ -58,7 +52,6 @@ beforeEach(() => {
 	container = document.createElement('div');
 	document.body.appendChild(container);
 	root = createRoot(container);
-	useButtonScreen.mockReset();
 });
 
 afterEach(() => {
@@ -68,7 +61,7 @@ afterEach(() => {
 	container.remove();
 });
 
-describe('ButtonSettings self-heal guard', () => {
+describe('PresetSidebar self-heal guard', () => {
 	/**
 	 * A failed preset fetch must not be mistaken for a stale `kb-item`: the route must survive so a
 	 * retry can still restore the selected preset.
@@ -76,12 +69,11 @@ describe('ButtonSettings self-heal guard', () => {
 	 * @return {void}
 	 */
 	it('does not clear a valid kb-item when the preset fetch fails', () => {
-		const navigate = renderButtonSettings(
+		const navigate = renderPresetSidebar(
 			{
 				payload: null,
 				isLoading: false,
 				loadError: new Error('Request failed'),
-				rows: [],
 				initialValuesFor: () => null,
 			},
 			'primary'
@@ -97,12 +89,11 @@ describe('ButtonSettings self-heal guard', () => {
 	 * @return {void}
 	 */
 	it('clears an unknown kb-item once a successful load finds no matching preset', () => {
-		const navigate = renderButtonSettings(
+		const navigate = renderPresetSidebar(
 			{
 				payload: {},
 				isLoading: false,
 				loadError: null,
-				rows: [],
 				initialValuesFor: () => null,
 			},
 			'does-not-exist'

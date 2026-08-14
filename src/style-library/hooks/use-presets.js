@@ -17,7 +17,7 @@ import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { fetchBlockPresets } from '../api/client';
-import { BUTTON_BLOCK, presetInitialValues, presetRows } from '../helpers/presets';
+import { presetInitialValues, presetRows } from '../helpers/presets';
 
 /**
  * Fetch a block's preset collection and bind it to row view models.
@@ -33,7 +33,8 @@ import { BUTTON_BLOCK, presetInitialValues, presetRows } from '../helpers/preset
  *
  * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function}}
  */
-export function useButtonPresets(library, block = BUTTON_BLOCK) {
+export function usePresets(library, preset) {
+	const { block, properties, preview } = preset;
 	const [payload, setPayload] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadError, setLoadError] = useState(null);
@@ -90,9 +91,9 @@ export function useButtonPresets(library, block = BUTTON_BLOCK) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [namespace, block, slug, version]);
 
-	const rows = useMemo(() => presetRows(payload, library?.values), [payload, library?.values]);
+	const rows = useMemo(() => presetRows(payload, library?.values, preview), [payload, library?.values, preview]);
 
-	const initialValuesFor = (presetSlug) => presetInitialValues(payload, presetSlug);
+	const initialValuesFor = (presetSlug) => presetInitialValues(payload, presetSlug, properties);
 
 	return { payload, isLoading, loadError, rows, initialValuesFor };
 }

@@ -43,6 +43,7 @@ function errorMessage(error) {
  * the new preset's slug so the caller can open its settings panel.
  *
  * @param {Object}                 args
+ * @param {string}                 args.slugBase      The stem new slugs are minted from, e.g. `'button'`.
  * @param {string}                 args.namespace     REST namespace.
  * @param {string}                 args.block         The block name, e.g. `kadence/singlebtn`.
  * @param {string[]}               args.existingSlugs The preset slugs already taken.
@@ -59,6 +60,7 @@ function errorMessage(error) {
  *                            `onError`/`onBusy` have already run.
  */
 export function createPresetFlow({
+	slugBase,
 	namespace,
 	block,
 	existingSlugs,
@@ -70,7 +72,7 @@ export function createPresetFlow({
 }) {
 	onBusy(true);
 
-	const preset = nextPresetSlug(existingSlugs, 'button');
+	const preset = nextPresetSlug(existingSlugs, slugBase);
 
 	return saveBlockPreset(
 		namespace,
@@ -194,7 +196,7 @@ export function deletePresetFlow({ namespace, block, preset, slug, refreshFeed, 
 /**
  * Persist a block's full preset display order: PUT the ordered slug list with the version the
  * caller last read, then refresh the feed. The `reorderScaleTokensFlow` shape — the caller is
- * responsible for serializing concurrent calls (see `hooks/use-button-screen.js`'s reorder chain)
+ * responsible for serializing concurrent calls (see `hooks/use-preset-screen.js`'s reorder chain)
  * so a second rapid drop's write always carries the first drop's refreshed version.
  *
  * @param {Object}   args

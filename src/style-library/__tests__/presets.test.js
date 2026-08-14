@@ -12,8 +12,9 @@ import {
 	getButtonPresetProperties,
 	overlayPresetRows,
 	resolveSwatchColor,
-	buttonSettingsSchema,
+	presetNameSchema,
 } from '../helpers/presets';
+import { BUTTON_PRESET } from '../presets/button-preset';
 
 describe('aliasToId', () => {
 	it('strips the braces off an alias', () => {
@@ -182,7 +183,7 @@ describe('presetRows', () => {
 			},
 		};
 
-		const rows = presetRows(payload, values);
+		const rows = presetRows(payload, values, BUTTON_PRESET.preview);
 
 		expect(rows.map((row) => row.id)).toEqual(['primary', 'secondary']);
 		expect(rows[0]).toEqual({
@@ -197,7 +198,7 @@ describe('presetRows', () => {
 	it('falls back to the slug for a label-less preset', () => {
 		const payload = { userCreated: [], presets: { outline: { tokens: {} } } };
 
-		expect(presetRows(payload, values)[0].label).toBe('outline');
+		expect(presetRows(payload, values, BUTTON_PRESET.preview)[0].label).toBe('outline');
 	});
 
 	it('marks userCreated true only for the listed slugs', () => {
@@ -206,7 +207,7 @@ describe('presetRows', () => {
 			presets: { primary: { tokens: {} }, outline: { tokens: {} } },
 		};
 
-		const rows = presetRows(payload, values);
+		const rows = presetRows(payload, values, BUTTON_PRESET.preview);
 
 		expect(rows.find((row) => row.id === 'primary').userCreated).toBe(false);
 		expect(rows.find((row) => row.id === 'outline').userCreated).toBe(true);
@@ -215,7 +216,7 @@ describe('presetRows', () => {
 	it('marks nothing user-created when the payload has no userCreated key (fail closed)', () => {
 		const payload = { presets: { primary: { tokens: {} }, outline: { tokens: {} } } };
 
-		const rows = presetRows(payload, values);
+		const rows = presetRows(payload, values, BUTTON_PRESET.preview);
 
 		expect(rows.every((row) => row.userCreated === false)).toBe(true);
 	});
@@ -250,7 +251,7 @@ describe('presetInitialValues', () => {
 			},
 		};
 
-		expect(presetInitialValues(payload, 'primary')).toEqual({
+		expect(presetInitialValues(payload, 'primary', BUTTON_PRESET.properties)).toEqual({
 			label: 'Primary',
 			tokens: {
 				'button-bg': 'semantic.color.action-primary',
@@ -263,14 +264,14 @@ describe('presetInitialValues', () => {
 	});
 
 	it('returns null for an unknown slug', () => {
-		expect(presetInitialValues({ presets: {} }, 'missing')).toBeNull();
+		expect(presetInitialValues({ presets: {} }, 'missing', BUTTON_PRESET.properties)).toBeNull();
 	});
 
 	it('returns null for a null payload, indistinguishable from an unknown slug', () => {
 		// Pins the contract `ButtonSettings` relies on: a still-loading fetch (`payload === null`) and
 		// a genuinely unknown slug both read as null here, which is exactly why the panel gates on
 		// `!isLoading` before treating a null seed as a stale deep link rather than "not landed yet".
-		expect(presetInitialValues(null, 'secondary')).toBeNull();
+		expect(presetInitialValues(null, 'secondary', BUTTON_PRESET.properties)).toBeNull();
 	});
 
 	it('seeds real values once the payload lands for a slug that first read null while loading', () => {
@@ -283,10 +284,11 @@ describe('presetInitialValues', () => {
 		};
 
 		const slug = 'secondary';
-		const loading = presetInitialValues(null, slug);
+		const loading = presetInitialValues(null, slug, BUTTON_PRESET.properties);
 		const loaded = presetInitialValues(
 			{ presets: { secondary: { label: 'Secondary', tokens: { 'button-bg': 'transparent' } } } },
-			slug
+			slug,
+			BUTTON_PRESET.properties
 		);
 
 		expect(loading).toBeNull();
@@ -475,7 +477,7 @@ describe('overlayPresetRows', () => {
 			},
 		};
 
-		const next = overlayPresetRows(rows, 'primary', draft, values);
+		const next = overlayPresetRows(rows, 'primary', draft, values, BUTTON_PRESET.preview);
 
 		expect(next[0]).toEqual({
 			id: 'primary',
@@ -487,19 +489,19 @@ describe('overlayPresetRows', () => {
 	});
 
 	it('returns the same array reference for a null draft', () => {
-		expect(overlayPresetRows(rows, 'primary', null, values)).toBe(rows);
+		expect(overlayPresetRows(rows, 'primary', null, values, BUTTON_PRESET.preview)).toBe(rows);
 	});
 
 	it('returns the same array reference for an item id matching no row', () => {
 		const draft = { label: 'Ghost', tokens: {} };
 
-		expect(overlayPresetRows(rows, 'missing', draft, values)).toBe(rows);
+		expect(overlayPresetRows(rows, 'missing', draft, values, BUTTON_PRESET.preview)).toBe(rows);
 	});
 
 	it('leaves non-matching rows object identity untouched', () => {
 		const draft = { label: 'Primary CTA', tokens: {} };
 
-		const next = overlayPresetRows(rows, 'primary', draft, values);
+		const next = overlayPresetRows(rows, 'primary', draft, values, BUTTON_PRESET.preview);
 
 		expect(next[1]).toBe(rows[1]);
 	});
@@ -522,12 +524,22 @@ describe('resolveSwatchColor', () => {
 	});
 });
 
-describe('buttonSettingsSchema', () => {
-	it('lists NAME, the Text/Background color fields, and the role-narrowed Radius field on the Normal tab', () => {
-		const schema = buttonSettingsSchema('normal');
+describe('presetNameSchema', () => {
+	it('carries only the label field, since the name is tab-independent', () => {
+		const schema = presetNameSchema();
+		const fields = schema.panels.flatMap((panel) => panel.fields);
+
+		expect(fields).toHaveLength(1);
+		expect(fields[0]).toMatchObject({ type: 'text', path: 'label' });
+	});
+});
+
+describe('BUTTON_PRESET.schemaFor', () => {
+	it('lists the Text/Background color fields and the role-narrowed Radius field on the Normal tab', () => {
+		const schema = BUTTON_PRESET.schemaFor('normal');
 		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
 
-		expect(paths).toEqual(['label', 'tokens.button-text', 'tokens.button-bg', 'tokens.button-radius']);
+		expect(paths).toEqual(['tokens.button-text', 'tokens.button-bg', 'tokens.button-radius']);
 
 		const radiusField = schema.panels
 			.flatMap((panel) => panel.fields)
@@ -536,11 +548,21 @@ describe('buttonSettingsSchema', () => {
 		expect(radiusField).toMatchObject({ type: 'token-select', tokenType: 'dimension', role: 'radius' });
 	});
 
-	it('lists NAME and the hover color fields, with no radius field, on the Hover tab', () => {
-		const schema = buttonSettingsSchema('hover');
+	it('lists the hover color fields, with no radius field, on the Hover tab', () => {
+		const schema = BUTTON_PRESET.schemaFor('hover');
 		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
 
-		expect(paths).toEqual(['label', 'tokens.button-text-hover', 'tokens.button-bg-hover']);
+		expect(paths).toEqual(['tokens.button-text-hover', 'tokens.button-bg-hover']);
 		expect(paths).not.toContain('tokens.button-radius');
+	});
+
+	it('leaves the name out of both tabs, so it cannot render twice', () => {
+		for (const tab of ['normal', 'hover']) {
+			const paths = BUTTON_PRESET.schemaFor(tab).panels.flatMap((panel) =>
+				panel.fields.map((field) => field.path)
+			);
+
+			expect(paths).not.toContain('label');
+		}
 	});
 });

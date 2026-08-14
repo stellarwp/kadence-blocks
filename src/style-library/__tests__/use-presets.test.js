@@ -8,7 +8,8 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { useButtonPresets } from '../hooks/use-button-presets';
+import { usePresets } from '../hooks/use-presets';
+import { BUTTON_PRESET } from '../presets/button-preset';
 import { fetchBlockPresets } from '../api/client';
 
 // A factory, not automock: `../api/client` imports `@wordpress/api-fetch`, which is externalized to
@@ -23,7 +24,7 @@ const LIBRARY_B = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'brand', v
 const PAYLOAD_A = { version: 'a1', default: 'primary', presets: { primary: { label: 'Primary', tokens: {} } } };
 const PAYLOAD_B = { version: 'b1', default: 'primary', presets: { primary: { label: 'Brand Primary', tokens: {} } } };
 
-describe('useButtonPresets library switching', () => {
+describe('usePresets library switching', () => {
 	let container;
 	let root;
 
@@ -64,7 +65,7 @@ describe('useButtonPresets library switching', () => {
 		let latest = null;
 
 		function Probe({ library }) {
-			latest = useButtonPresets(library);
+			latest = usePresets(library, BUTTON_PRESET);
 
 			return null;
 		}

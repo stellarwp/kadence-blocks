@@ -8,9 +8,9 @@ import { createRoot } from 'react-dom/client';
 /**
  * Internal dependencies
  */
-import { useButtonScreen } from '../hooks/use-button-screen';
+import { usePresetScreen } from '../hooks/use-preset-screen';
 import { reorderPresetsFlow } from '../helpers/preset-flows';
-import { useButtonPresets } from '../hooks/use-button-presets';
+import { usePresets } from '../hooks/use-presets';
 
 // A factory, not automock: `helpers/preset-flows.js` reaches `../api/client`, which imports
 // `@wordpress/api-fetch` — externalized to the `wp.apiFetch` global in production and therefore
@@ -24,9 +24,13 @@ jest.mock('../helpers/preset-flows', () => ({
 
 // Stubbed for the same reason, and so the fetched payload can be pinned to a version that never
 // advances — the state this regression is about.
-jest.mock('../hooks/use-button-presets', () => ({
-	useButtonPresets: jest.fn(),
+jest.mock('../hooks/use-presets', () => ({
+	usePresets: jest.fn(),
 }));
+
+// Inline rather than the real `BUTTON_PRESET`, which reads its properties from the localized feed.
+// `usePresets` is mocked here, so the hook only needs the three keys it reads itself.
+const PRESET = { block: 'kadence/singlebtn', properties: ['color'], slugBase: 'preset' };
 
 const LIBRARY = {
 	rest: { namespace: 'kb-design-tokens/v1' },
@@ -35,7 +39,7 @@ const LIBRARY = {
 	refreshFeed: jest.fn().mockResolvedValue({}),
 };
 
-describe('useButtonScreen reorder version handling', () => {
+describe('usePresetScreen reorder version handling', () => {
 	let container;
 	let root;
 
@@ -43,7 +47,7 @@ describe('useButtonScreen reorder version handling', () => {
 		jest.clearAllMocks();
 		global.IS_REACT_ACT_ENVIRONMENT = true;
 
-		useButtonPresets.mockReturnValue({
+		usePresets.mockReturnValue({
 			payload: { version: 'v1' },
 			isLoading: false,
 			loadError: null,
@@ -63,7 +67,7 @@ describe('useButtonScreen reorder version handling', () => {
 	});
 
 	/**
-	 * Mount `useButtonScreen` behind a single probe component type, so a re-render updates the
+	 * Mount `usePresetScreen` behind a single probe component type, so a re-render updates the
 	 * mounted hook rather than replacing it. A fresh component type per render would remount and
 	 * reset the version refs these tests are about.
 	 *
@@ -76,7 +80,7 @@ describe('useButtonScreen reorder version handling', () => {
 		let latest = null;
 
 		function Probe() {
-			latest = useButtonScreen(LIBRARY);
+			latest = usePresetScreen(LIBRARY, PRESET);
 
 			return null;
 		}
@@ -91,7 +95,7 @@ describe('useButtonScreen reorder version handling', () => {
 	it('sends the version the previous write returned when a second drop follows the first', async () => {
 		const sentVersions = [];
 
-		// The payload's version stays 'v1' throughout: `useButtonPresets` re-reads it in a later
+		// The payload's version stays 'v1' throughout: `usePresets` re-reads it in a later
 		// effect, and the point of this test is the window before that read lands.
 		reorderPresetsFlow.mockImplementation(({ feedVersion, onVersion }) => {
 			sentVersions.push(feedVersion);
@@ -127,7 +131,7 @@ describe('useButtonScreen reorder version handling', () => {
 		});
 
 		// The re-read lands on the mounted hook, carrying the version the write reported.
-		useButtonPresets.mockReturnValue({
+		usePresets.mockReturnValue({
 			payload: { version: 'v2' },
 			isLoading: false,
 			loadError: null,
@@ -205,7 +209,7 @@ describe('useButtonScreen reorder version handling', () => {
 
 		// Not 'v2': someone else wrote in between, so the payload moved somewhere the override
 		// cannot describe.
-		useButtonPresets.mockReturnValue({
+		usePresets.mockReturnValue({
 			payload: { version: 'v9' },
 			isLoading: false,
 			loadError: null,

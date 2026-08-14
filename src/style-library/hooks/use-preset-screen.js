@@ -1,12 +1,14 @@
 /**
- * The state binding both `ButtonScreen` and `ButtonSettings` call as siblings (the
- * `useScaleScreen` role, applied to a fetched-not-localized payload): wraps `useButtonPresets`
- * and adds the four preset write flows. Create/save/delete carry no version parameter
- * (`helpers/preset-flows.js`'s module docblock), so only reorder needs the serialized-chain
- * machinery — copied from `use-scale-screen.js`'s `reorderTokens`. This screen's data source is
- * `useButtonPresets`, not the feed in hand, and that payload's `version` only refreshes on a later
- * re-read, so the chain carries the version each write returns until the payload catches up. Two
- * rapid drags therefore cannot race the re-read into a spurious 409 against themselves.
+ * The state binding a preset screen and its settings panel call as siblings (the `useScaleScreen`
+ * role, applied to a fetched-not-localized payload): wraps `usePresets` and adds the four preset
+ * write flows for whichever block the caller names.
+ *
+ * Create/save/delete carry no version parameter (`helpers/preset-flows.js`'s module docblock), so
+ * only reorder needs the serialized-chain machinery — copied from `use-scale-screen.js`'s
+ * `reorderTokens`. This screen's data source is `usePresets`, not the feed in hand, and that
+ * payload's `version` only refreshes on a later re-read, so the chain carries the version each
+ * write returns until the payload catches up. Two rapid drags therefore cannot race the re-read
+ * into a spurious 409 against themselves.
  */
 
 /**
@@ -19,21 +21,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/el
  */
 import { applyRowOrder } from '../helpers/scale';
 import { createPresetFlow, deletePresetFlow, reorderPresetsFlow, savePresetFlow } from '../helpers/preset-flows';
-import { BUTTON_BLOCK, presetInitialValues, presetStoredTokens } from '../helpers/presets';
-import { useButtonPresets } from './use-button-presets';
+import { presetInitialValues, presetStoredTokens } from '../helpers/presets';
+import { usePresets } from './use-presets';
 
 /**
- * Bind the Button preset screen's config to the fetched preset collection and its four write
- * flows.
+ * Bind a preset screen to its block's fetched preset collection and the four write flows.
  *
  * @param {Object} library The design-tokens feed hook's return value (`useDesignTokensFeed()`).
+ * @param {string} block   The block name whose presets this screen edits.
  *
  * @since TBD
  *
  * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
  */
-export function useButtonScreen(library) {
-	const presets = useButtonPresets(library);
+export function usePresetScreen(library, preset) {
+	const { block, properties, slugBase } = preset;
+	const presets = usePresets(library, preset);
 
 	const [isBusy, setIsBusy] = useState(false);
 	const [addError, setAddError] = useState(null);
@@ -107,11 +110,12 @@ export function useButtonScreen(library) {
 		setAddError(null);
 
 		const existingSlugs = Object.keys(presets.payload?.presets ?? {});
-		const defaultTokens = presetInitialValues(presets.payload, presets.payload?.default)?.tokens ?? {};
+		const defaultTokens = presetInitialValues(presets.payload, presets.payload?.default, properties)?.tokens ?? {};
 
 		return createPresetFlow({
 			namespace,
-			block: BUTTON_BLOCK,
+			block,
+			slugBase,
 			existingSlugs,
 			defaultTokens,
 			slug,
@@ -119,7 +123,7 @@ export function useButtonScreen(library) {
 			onBusy: setIsBusy,
 			onError: setAddError,
 		});
-	}, [namespace, presets.payload, slug, refreshFeed]);
+	}, [namespace, block, slugBase, properties, presets.payload, slug, refreshFeed]);
 
 	const savePreset = useCallback(
 		(id, draft, initialValues) => {
@@ -127,7 +131,7 @@ export function useButtonScreen(library) {
 
 			return savePresetFlow({
 				namespace,
-				block: BUTTON_BLOCK,
+				block,
 				preset: id,
 				draft,
 				initialValues,
@@ -138,7 +142,7 @@ export function useButtonScreen(library) {
 				onError: setSaveError,
 			});
 		},
-		[namespace, presets.payload, slug, refreshFeed]
+		[namespace, block, presets.payload, slug, refreshFeed]
 	);
 
 	const deletePreset = useCallback(
@@ -147,7 +151,7 @@ export function useButtonScreen(library) {
 
 			return deletePresetFlow({
 				namespace,
-				block: BUTTON_BLOCK,
+				block,
 				preset: id,
 				slug,
 				refreshFeed,
@@ -155,7 +159,7 @@ export function useButtonScreen(library) {
 				onError: setDeleteError,
 			});
 		},
-		[namespace, presets.payload, slug, refreshFeed]
+		[namespace, block, presets.payload, slug, refreshFeed]
 	);
 
 	const isDeletable = useCallback(
@@ -175,7 +179,7 @@ export function useButtonScreen(library) {
 
 				return reorderPresetsFlow({
 					namespace,
-					block: BUTTON_BLOCK,
+					block,
 					orderedIds,
 					// Dereferenced here, inside the queued continuation — never a value captured earlier.
 					feedVersion: feedVersionRef.current,
@@ -214,7 +218,7 @@ export function useButtonScreen(library) {
 
 			return reorderChainRef.current;
 		},
-		[namespace, slug, refreshFeed]
+		[namespace, block, slug, refreshFeed]
 	);
 
 	return {

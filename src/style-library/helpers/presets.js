@@ -4,7 +4,7 @@
  * alias<->id codec the preset write surface needs (presets store `{dot.path}` aliases, not bare
  * ids), resolving a stored token value (alias or literal) against the feed's resolved value map,
  * seeding a settings-panel draft, and minting the next free preset slug. No React, no JSX, no
- * REST — see `hooks/use-button-presets.js` for the state binding and `api/client.js` for the REST
+ * REST — see `hooks/use-presets.js` for the state binding and `api/client.js` for the REST
  * wrappers this module's output feeds.
  */
 
@@ -76,6 +76,7 @@ export function getButtonPresetProperties() {
 	return properties;
 }
 
+/**
 /**
  * Convert a stored alias to its bare dot-path id. A value that is not brace-wrapped (a literal) is
  * returned verbatim.
@@ -226,12 +227,13 @@ export function resolveTokenValue(values, value) {
  *
  * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>, userCreated?: string[]}} payload The preset GET payload.
  * @param {Record<string, string>}                                                                                 values  The feed's resolved value map.
+ * @param {Function}                                                                                               preview `(tokens, values) => object` — the block's own row preview.
  *
  * @since TBD
  *
- * @return {Array<{id: string, label: string, userCreated: boolean, preview: {background: string, color: string, borderRadius: string}}>} The preset rows.
+ * @return {Array<{id: string, label: string, userCreated: boolean, preview: Object}>} The preset rows.
  */
-export function presetRows(payload, values) {
+export function presetRows(payload, values, preview) {
 	const presets = payload?.presets ?? {};
 	const userCreated = Array.isArray(payload?.userCreated) ? payload.userCreated : [];
 
@@ -242,11 +244,7 @@ export function presetRows(payload, values) {
 			id: slug,
 			label: preset?.label ?? slug,
 			userCreated: userCreated.includes(slug),
-			preview: {
-				background: resolveTokenValue(values, tokens['button-bg']),
-				color: resolveTokenValue(values, tokens['button-text']),
-				borderRadius: resolveTokenValue(values, tokens['button-radius']),
-			},
+			preview: preview(tokens, values),
 		};
 	});
 }
@@ -256,14 +254,15 @@ export function presetRows(payload, values) {
  * (ready for a token picker), or `null` for an unknown slug — the `scaleInitialValues` null
  * contract a stale-open-item self-heal relies on.
  *
- * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>}} payload The preset GET payload.
- * @param {string}                                                                        slug    The preset slug to seed.
+ * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>}} payload    The preset GET payload.
+ * @param {string}                                                                        slug       The preset slug to seed.
+ * @param {string[]}                                                                      properties The block's bound property surface.
  *
  * @since TBD
  *
  * @return {?{label: string, tokens: Record<string, string>}} The seeded draft, or null.
  */
-export function presetInitialValues(payload, slug) {
+export function presetInitialValues(payload, slug, properties) {
 	const preset = payload?.presets?.[slug];
 
 	if (!preset) {
@@ -274,7 +273,7 @@ export function presetInitialValues(payload, slug) {
 
 	return {
 		label: preset.label ?? slug,
-		tokens: getButtonPresetProperties().reduce((acc, property) => {
+		tokens: properties.reduce((acc, property) => {
 			acc[property] = aliasToId(tokens[property] ?? '');
 			return acc;
 		}, {}),
@@ -394,16 +393,19 @@ export function nextPresetSlug(existingSlugs, base) {
  * reference-identity contract. Returns the exact same array reference for a `null`/absent draft or
  * an `itemId` matching no row; every non-matching row keeps its exact object identity either way.
  *
- * @param {Array<{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}>} rows   The rows in payload order.
- * @param {string}                                                                                                   itemId The open route item id.
- * @param {?{label?: string, tokens?: Record<string, string>}}                                                      draft  The open panel's live draft, or null.
- * @param {Record<string, string>}                                                                                   values The feed's resolved value map.
+ * @param {Array<{id: string, label: string, preview: Object}>} rows    The rows in payload order.
+ * @param {string}                                              itemId  The open route item id.
+ * @param {?{label?: string, tokens?: Record<string, string>}}  draft   The open panel's live draft, or null.
+ * @param {Record<string, string>}                              values  The feed's resolved value map.
+ * @param {Function}                                            preview `(tokens, values) => object` — the same
+ *                                                                      builder `presetRows` used, so an overlaid
+ *                                                                      row and a fetched one cannot drift.
  *
  * @since TBD
  *
  * @return {Array<Object>} The rows, with the matching row's label/preview overlaid.
  */
-export function overlayPresetRows(rows, itemId, draft, values) {
+export function overlayPresetRows(rows, itemId, draft, values, preview) {
 	if (!draft || !itemId) {
 		return rows;
 	}
@@ -421,13 +423,15 @@ export function overlayPresetRows(rows, itemId, draft, values) {
 	}
 
 	if (draft.tokens) {
-		const resolveDraftToken = (property) => resolveTokenValue(values, idToAlias(draft.tokens[property] ?? ''));
+		// The draft holds bare ids (what the picker writes); the block's preview builder expects the
+		// stored alias shape, same as a fetched payload. Re-wrapping here means both paths run the
+		// identical builder, so a live overlay can never resolve differently from what lands on save.
+		const asStored = Object.entries(draft.tokens).reduce((acc, [property, value]) => {
+			acc[property] = idToAlias(value ?? '');
+			return acc;
+		}, {});
 
-		overlaid.preview = {
-			background: resolveDraftToken('button-bg'),
-			color: resolveDraftToken('button-text'),
-			borderRadius: resolveDraftToken('button-radius'),
-		};
+		overlaid.preview = preview(asStored, values);
 	}
 
 	const next = [...rows];
@@ -461,9 +465,31 @@ export function resolveSwatchColor(options, values, id) {
 }
 
 /**
- * The Button settings panel's per-tab schema: NAME renders on both tabs (the draft's `label` path
- * is shared), the Normal tab adds a Radius section, and the Hover tab never does — `button-radius`
- * has no hover counterpart, so rendering one there would write a property `guard_surface` rejects.
+ * The preset name's own schema, rendered above the tabs rather than inside them.
+ *
+ * The name belongs to the preset, not to one of its states — a rename applies on Normal and Hover
+ * alike, because both write the same `label` path.
+ *
+ * @since TBD
+ *
+ * @return {{panels: Array<Object>}} The name-only settings-form schema.
+ */
+export function presetNameSchema() {
+	return {
+		panels: [
+			{
+				id: 'name',
+				fields: [{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') }],
+			},
+		],
+	};
+}
+
+/**
+ * The Button settings panel's per-tab schema: the Normal tab adds a Radius section and the Hover
+ * tab never does — `button-radius` has no hover counterpart, so rendering one there would write a
+ * property `guard_surface` rejects. NAME is not here; it is tab-independent and comes from
+ * `presetNameSchema()`.
  *
  * @param {string} tab The active tab name (`'normal'` or `'hover'`).
  *
@@ -472,11 +498,6 @@ export function resolveSwatchColor(options, values, id) {
  * @return {{panels: Array<Object>}} The settings-form schema for the active tab.
  */
 export function buttonSettingsSchema(tab) {
-	const namePanel = {
-		id: 'name',
-		fields: [{ type: 'text', path: 'label', label: __('Name', 'kadence-blocks') }],
-	};
-
 	const isHover = tab === 'hover';
 	const textPath = isHover ? 'tokens.button-text-hover' : 'tokens.button-text';
 	const bgPath = isHover ? 'tokens.button-bg-hover' : 'tokens.button-bg';
@@ -491,7 +512,7 @@ export function buttonSettingsSchema(tab) {
 	};
 
 	if (isHover) {
-		return { panels: [namePanel, colorPanel] };
+		return { panels: [colorPanel] };
 	}
 
 	const radiusPanel = {
@@ -508,5 +529,5 @@ export function buttonSettingsSchema(tab) {
 		],
 	};
 
-	return { panels: [namePanel, colorPanel, radiusPanel] };
+	return { panels: [colorPanel, radiusPanel] };
 }

@@ -31,6 +31,7 @@ describe('createPresetFlow', () => {
 		const onError = jest.fn();
 
 		const result = await createPresetFlow({
+			slugBase: 'button',
 			namespace: 'kb-design-tokens/v1',
 			block: 'kadence/singlebtn',
 			existingSlugs: ['primary', 'secondary'],
@@ -68,6 +69,7 @@ describe('createPresetFlow', () => {
 		const refreshFeed = jest.fn().mockResolvedValue({});
 
 		const result = await createPresetFlow({
+			slugBase: 'button',
 			namespace: 'kb-design-tokens/v1',
 			block: 'kadence/singlebtn',
 			existingSlugs: ['primary', 'secondary', 'button'],
@@ -96,6 +98,7 @@ describe('createPresetFlow', () => {
 
 		await expect(
 			createPresetFlow({
+				slugBase: 'button',
 				namespace: 'kb-design-tokens/v1',
 				block: 'kadence/singlebtn',
 				existingSlugs: [],
