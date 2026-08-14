@@ -626,13 +626,13 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderColorResolvesTokenAlias(): void {
 		$this->assertSame(
-			'var(--kb-token--dark--primitive--color--brand--primary)',
-			$this->css->render_color( '{dark.primitive.color.brand.primary}' ),
+			'var(--kb-token--semantic--color--border)',
+			$this->css->render_color( '{semantic.color.border}' ),
 			'A color alias resolves to the bare token var'
 		);
 		$this->assertSame(
-			'var(--kb-token--dark--primitive--color--brand--primary)',
-			$this->css->sanitize_color( '{dark.primitive.color.brand.primary}' ),
+			'var(--kb-token--semantic--color--border)',
+			$this->css->sanitize_color( '{semantic.color.border}' ),
 			'sanitize_color resolves a color alias the same way'
 		);
 		$this->assertSame(
@@ -678,13 +678,13 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderMeasureRangeResolvesTokenAlias(): void {
 		$this->css->render_measure_range(
-			[ 'borderWidth' => [ '{semantic.border.width}', 2, 2, 2 ] ],
+			[ 'borderWidth' => [ '{semantic.border-width.default}', 2, 2, 2 ] ],
 			'borderWidth',
 			'border-width'
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top-width:var(--kb-token--semantic--border--width)', $output,
+		$this->assertStringContainsString( 'border-top-width:var(--kb-token--semantic--border-width--default)', $output,
 			'An aliased side emits the token var with no unit' );
 		$this->assertStringContainsString( 'border-right-width:2px', $output,
 			'A numeric side is still rendered with its unit' );
@@ -697,8 +697,8 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 * @return void
 	 */
 	public function testRenderRangeResolvesTokenAlias(): void {
-		$this->css->render_range( [ 'width' => '{semantic.size.width}' ], 'width', 'width' );
-		$this->assertStringContainsString( 'width:var(--kb-token--semantic--size--width)', $this->css->css_output(),
+		$this->css->render_range( [ 'width' => '{semantic.radius.media}' ], 'width', 'width' );
+		$this->assertStringContainsString( 'width:var(--kb-token--semantic--radius--media)', $this->css->css_output(),
 			'An aliased range value emits the token var with no unit' );
 
 		$numeric = new Kadence_Blocks_CSS();
@@ -715,17 +715,17 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderResponsiveRangeResolvesTokenAlias(): void {
 		$this->css->render_responsive_range(
-			[ 'spacing' => [ '{semantic.space.md}', 20, '{semantic.space.sm}' ], 'spacingType' => 'px' ],
+			[ 'spacing' => [ '{semantic.spacing.media-padding}', 20, '{semantic.radius.control}' ], 'spacingType' => 'px' ],
 			'spacing',
 			'margin'
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--space--md)', $output,
+		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--spacing--media-padding)', $output,
 			'An aliased desktop value emits the token var with no unit' );
 		$this->assertStringContainsString( 'margin:20px', $output,
 			'A numeric tablet value is still rendered with its unit' );
-		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--space--sm)', $output,
+		$this->assertStringContainsString( 'margin:var(--kb-token--semantic--radius--control)', $output,
 			'An aliased mobile value emits the token var with no unit' );
 	}
 
@@ -737,13 +737,13 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderResponsiveSizeResolvesTokenAlias(): void {
 		$this->css->render_responsive_size(
-			[ 'width' => '{semantic.size.width}', 'tabletWidth' => '20', 'mobileWidth' => '' ],
+			[ 'width' => '{semantic.radius.media}', 'tabletWidth' => '20', 'mobileWidth' => '' ],
 			[ 'width', 'tabletWidth', 'mobileWidth' ],
 			'width'
 		);
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'width:var(--kb-token--semantic--size--width)', $output,
+		$this->assertStringContainsString( 'width:var(--kb-token--semantic--radius--media)', $output,
 			'An aliased desktop value emits the token var with no unit' );
 		$this->assertStringContainsString( 'width:20px', $output,
 			'A literal tablet value is still rendered with its unit' );
@@ -757,8 +757,8 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderMeasureResolvesTokenAlias(): void {
 		$this->assertSame(
-			'var(--kb-token--semantic--space--md) 20px 0px 40px',
-			$this->css->render_measure( [ '{semantic.space.md}', 20, '', 40 ] ),
+			'var(--kb-token--semantic--spacing--media-padding) 20px 0px 40px',
+			$this->css->render_measure( [ '{semantic.spacing.media-padding}', 20, '', 40 ] ),
 			'An aliased side is a bare var and non-numeric siblings fall back to 0 with the unit'
 		);
 		$this->assertSame(
@@ -776,8 +776,8 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderNumberResolvesTokenAlias(): void {
 		$this->assertSame(
-			'var(--kb-token--semantic--size--icon)',
-			$this->css->render_number( '{semantic.size.icon}', 'px' ),
+			'var(--kb-token--semantic--icon-size--default)',
+			$this->css->render_number( '{semantic.icon-size.default}', 'px' ),
 			'An alias returns the bare token var with no unit'
 		);
 		$this->assertSame(
@@ -799,13 +799,13 @@ class KadenceBlocksCssTest extends WPTestCase {
 	 */
 	public function testRenderShadowResolvesTokenAlias(): void {
 		$this->assertSame(
-			'var(--kb-token--semantic--shadow--x) 1px 4px 2px rgba(0, 0, 0, 0.5)',
+			'var(--kb-token--semantic--radius--media) 1px 4px 2px rgba(0, 0, 0, 0.5)',
 			$this->css->render_shadow( [
 				'color'   => '#000000',
 				'opacity' => 0.5,
 				'spread'  => 2,
 				'blur'    => 4,
-				'hOffset' => '{semantic.shadow.x}',
+				'hOffset' => '{semantic.radius.media}',
 				'vOffset' => 1,
 				'inset'   => false,
 			] ),
@@ -884,9 +884,9 @@ class KadenceBlocksCssTest extends WPTestCase {
 			'expected' => '0px 0px 14px 0px rgba(0, 0, 0, 0.2)',
 		];
 		yield 'aliased offset passes through as a token var' => [
-			'shadow'   => [ 'hOffset' => '{semantic.shadow.x}', 'vOffset' => '1', 'blur' => '4', 'spread' => '2', 'color' => '#000000', 'opacity' => 0.5, 'inset' => false ],
+			'shadow'   => [ 'hOffset' => '{semantic.radius.media}', 'vOffset' => '1', 'blur' => '4', 'spread' => '2', 'color' => '#000000', 'opacity' => 0.5, 'inset' => false ],
 			'defaults' => $button_defaults,
-			'expected' => 'var(--kb-token--semantic--shadow--x) 1px 4px 2px rgba(0, 0, 0, 0.5)',
+			'expected' => 'var(--kb-token--semantic--radius--media) 1px 4px 2px rgba(0, 0, 0, 0.5)',
 		];
 		yield 'truthy inset prefixes the declaration' => [
 			'shadow'   => [ 'hOffset' => '1', 'vOffset' => '1', 'blur' => '2', 'spread' => '0', 'color' => '#000000', 'opacity' => 0.2, 'inset' => true ],
@@ -928,7 +928,7 @@ class KadenceBlocksCssTest extends WPTestCase {
 		$this->css->render_border_styles( [
 			'borderStyle' => [
 				[
-					'top'    => [ '#000000', 'solid', '{semantic.border.width}' ],
+					'top'    => [ '#000000', 'solid', '{semantic.border-width.default}' ],
 					'right'  => [ '#000000', 'solid', 1 ],
 					'bottom' => [ '#000000', 'solid', 1 ],
 					'left'   => [ '#000000', 'solid', 1 ],
@@ -938,7 +938,7 @@ class KadenceBlocksCssTest extends WPTestCase {
 		] );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'border-top:var(--kb-token--semantic--border--width) solid #000000', $output,
+		$this->assertStringContainsString( 'border-top:var(--kb-token--semantic--border-width--default) solid #000000', $output,
 			'An aliased width resolves to the token var and the width branch still fires' );
 		$this->assertStringContainsString( 'border-right:1px solid #000000', $output,
 			'A numeric width is still rendered with its unit' );
@@ -953,15 +953,15 @@ class KadenceBlocksCssTest extends WPTestCase {
 	public function testRenderTypographyResolvesTokenAlias(): void {
 		$this->css->render_typography( [
 			'typography' => [
-				'lineHeight'    => [ '{semantic.line-height.tight}', '', '' ],
-				'letterSpacing' => [ '{semantic.letter-spacing.wide}', '', '' ],
+				'lineHeight'    => [ '{semantic.line-height.heading}', '', '' ],
+				'letterSpacing' => [ '{semantic.letter-spacing.heading}', '', '' ],
 			],
 		] );
 		$output = $this->css->css_output();
 
-		$this->assertStringContainsString( 'line-height:var(--kb-token--semantic--line-height--tight)', $output,
+		$this->assertStringContainsString( 'line-height:var(--kb-token--semantic--line-height--heading)', $output,
 			'An aliased line-height resolves to the token var with no unit' );
-		$this->assertStringContainsString( 'letter-spacing:var(--kb-token--semantic--letter-spacing--wide)', $output,
+		$this->assertStringContainsString( 'letter-spacing:var(--kb-token--semantic--letter-spacing--heading)', $output,
 			'An aliased letter-spacing resolves to the token var with no unit' );
 
 		$numeric = new Kadence_Blocks_CSS();

@@ -13,8 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Resolved_Tokens;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Token_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
+use KadenceWP\KadenceBlocks\Psr\Log\LoggerInterface;
 
 /**
  * Class to create a minified css output.
@@ -843,34 +847,34 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font['size'] ) && isset( $font['size'][0] ) && ! empty( $font['size'][0] ) ) {
 			$this->add_property( 'font-size', $this->get_font_size( $font['size'][0], $size_type ) );
 		}
-		$line_height_desktop_reference = $this->get_token_reference( $font['lineHeight']['desktop'] ?? null );
+		$line_height_desktop_reference = $this->get_backed_token_reference( $font['lineHeight']['desktop'] ?? null );
 		if ( null !== $line_height_desktop_reference ) {
 			$this->add_property( 'line-height', $line_height_desktop_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) && ! Alias::is_alias( $font['lineHeight']['desktop'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['desktop'] . $line_type );
 		}
 		// Numeric array.
-		$line_height_reference = $this->get_token_reference( $font['lineHeight'][0] ?? null );
+		$line_height_reference = $this->get_backed_token_reference( $font['lineHeight'][0] ?? null );
 		if ( null !== $line_height_reference ) {
 			$this->add_property( 'line-height', $line_height_reference );
 		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][0] ) && ! empty( $font['lineHeight'][0] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][0] . $line_type );
 		}
 		if ( isset( $font['letterSpacing'] ) && is_array( $font['letterSpacing'] ) ) {
-			$letter_spacing_desktop_reference = $this->get_token_reference( $font['letterSpacing']['desktop'] ?? null );
+			$letter_spacing_desktop_reference = $this->get_backed_token_reference( $font['letterSpacing']['desktop'] ?? null );
 			if ( null !== $letter_spacing_desktop_reference ) {
 				$this->add_property( 'letter-spacing', $letter_spacing_desktop_reference );
 			} elseif ( isset( $font['letterSpacing']['desktop'] ) && is_numeric( $font['letterSpacing']['desktop'] ) ) {
 				$this->add_property( 'letter-spacing', $font['letterSpacing']['desktop'] . $letter_type );
 			}
-			$letter_spacing_reference = $this->get_token_reference( $font['letterSpacing'][0] ?? null );
+			$letter_spacing_reference = $this->get_backed_token_reference( $font['letterSpacing'][0] ?? null );
 			if ( null !== $letter_spacing_reference ) {
 				$this->add_property( 'letter-spacing', $letter_spacing_reference );
 			} elseif ( isset( $font['letterSpacing'][0] ) && is_numeric( $font['letterSpacing'][0] ) ) {
 				$this->add_property( 'letter-spacing', $font['letterSpacing'][0] . $letter_type );
 			}
 		} else {
-			$letter_spacing_scalar_reference = $this->get_token_reference( $font['letterSpacing'] ?? null );
+			$letter_spacing_scalar_reference = $this->get_backed_token_reference( $font['letterSpacing'] ?? null );
 			if ( null !== $letter_spacing_scalar_reference ) {
 				$this->add_property( 'letter-spacing', $letter_spacing_scalar_reference );
 			} elseif ( isset( $font['letterSpacing'] ) && is_numeric( $font['letterSpacing'] ) ) {
@@ -901,25 +905,25 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font['size'] ) && isset( $font['size'][1] ) && ! empty( $font['size'][1] ) ) {
 			$this->add_property( 'font-size', $this->get_font_size( $font['size'][1], $size_type ) );
 		}
-		$line_height_tablet_key_reference = $this->get_token_reference( $font['lineHeight']['tablet'] ?? null );
+		$line_height_tablet_key_reference = $this->get_backed_token_reference( $font['lineHeight']['tablet'] ?? null );
 		if ( null !== $line_height_tablet_key_reference ) {
 			$this->add_property( 'line-height', $line_height_tablet_key_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['tablet'] ) && ! empty( $font['lineHeight']['tablet'] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['tablet'] ) && ! empty( $font['lineHeight']['tablet'] ) && ! Alias::is_alias( $font['lineHeight']['tablet'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['tablet'] . $line_type );
 		}
-		$line_height_tablet_reference = $this->get_token_reference( $font['lineHeight'][1] ?? null );
+		$line_height_tablet_reference = $this->get_backed_token_reference( $font['lineHeight'][1] ?? null );
 		if ( null !== $line_height_tablet_reference ) {
 			$this->add_property( 'line-height', $line_height_tablet_reference );
 		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][1] ) && ! empty( $font['lineHeight'][1] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][1] . $line_type );
 		}
-		$letter_spacing_tablet_key_reference = $this->get_token_reference( $font['letterSpacing']['tablet'] ?? null );
+		$letter_spacing_tablet_key_reference = $this->get_backed_token_reference( $font['letterSpacing']['tablet'] ?? null );
 		if ( null !== $letter_spacing_tablet_key_reference ) {
 			$this->add_property( 'letter-spacing', $letter_spacing_tablet_key_reference );
 		} elseif ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing']['tablet'] ) && is_numeric( $font['letterSpacing']['tablet'] ) ) {
 			$this->add_property( 'letter-spacing', $font['letterSpacing']['tablet'] . $letter_type );
 		}
-		$letter_spacing_tablet_reference = $this->get_token_reference( $font['letterSpacing'][1] ?? null );
+		$letter_spacing_tablet_reference = $this->get_backed_token_reference( $font['letterSpacing'][1] ?? null );
 		if ( null !== $letter_spacing_tablet_reference ) {
 			$this->add_property( 'letter-spacing', $letter_spacing_tablet_reference );
 		} elseif ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing'][1] ) && is_numeric( $font['letterSpacing'][1] ) ) {
@@ -930,25 +934,25 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font['size'] ) && isset( $font['size'][2] ) && ! empty( $font['size'][2] ) ) {
 			$this->add_property( 'font-size', $this->get_font_size( $font['size'][2], $size_type ) );
 		}
-		$line_height_mobile_key_reference = $this->get_token_reference( $font['lineHeight']['mobile'] ?? null );
+		$line_height_mobile_key_reference = $this->get_backed_token_reference( $font['lineHeight']['mobile'] ?? null );
 		if ( null !== $line_height_mobile_key_reference ) {
 			$this->add_property( 'line-height', $line_height_mobile_key_reference );
-		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['mobile'] ) && ! empty( $font['lineHeight']['mobile'] ) ) {
+		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['mobile'] ) && ! empty( $font['lineHeight']['mobile'] ) && ! Alias::is_alias( $font['lineHeight']['mobile'] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight']['mobile'] . $line_type );
 		}
-		$line_height_mobile_reference = $this->get_token_reference( $font['lineHeight'][2] ?? null );
+		$line_height_mobile_reference = $this->get_backed_token_reference( $font['lineHeight'][2] ?? null );
 		if ( null !== $line_height_mobile_reference ) {
 			$this->add_property( 'line-height', $line_height_mobile_reference );
 		} elseif ( isset( $font['lineHeight'] ) && isset( $font['lineHeight'][2] ) && ! empty( $font['lineHeight'][2] ) ) {
 			$this->add_property( 'line-height', $font['lineHeight'][2] . $line_type );
 		}
-		$letter_spacing_mobile_key_reference = $this->get_token_reference( $font['letterSpacing']['mobile'] ?? null );
+		$letter_spacing_mobile_key_reference = $this->get_backed_token_reference( $font['letterSpacing']['mobile'] ?? null );
 		if ( null !== $letter_spacing_mobile_key_reference ) {
 			$this->add_property( 'letter-spacing', $letter_spacing_mobile_key_reference );
 		} elseif ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing']['mobile'] ) && is_numeric( $font['letterSpacing']['mobile'] ) ) {
 			$this->add_property( 'letter-spacing', $font['letterSpacing']['mobile'] . $letter_type );
 		}
-		$letter_spacing_mobile_reference = $this->get_token_reference( $font['letterSpacing'][2] ?? null );
+		$letter_spacing_mobile_reference = $this->get_backed_token_reference( $font['letterSpacing'][2] ?? null );
 		if ( null !== $letter_spacing_mobile_reference ) {
 			$this->add_property( 'letter-spacing', $letter_spacing_mobile_reference );
 		} elseif ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing'][2] ) && is_numeric( $font['letterSpacing'][2] ) ) {
@@ -1027,9 +1031,12 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Resolve a design-token alias reference to its CSS custom-property var().
 	 *
-	 * A value matching the strict {dot.alias} form resolves to a bare
-	 * var(--kb-token--<id>) with no fallback literal; anything else returns null so
-	 * the caller falls through to its existing numeric/palette handling.
+	 * A value matching the strict {dot.alias} form resolves to a bare var(--kb-token--<id>) with no
+	 * fallback literal; anything else returns null so the caller falls through to its existing
+	 * numeric/palette handling. This is the pure syntactic recognizer — the byte-for-byte PHP peer of the
+	 * JS `resolveTokenAlias()` (see src/extension/design-tokens/alias.js and the shared conformance
+	 * fixture); it does NOT consider whether the token resolves. Render callers that must drop an
+	 * unresolved (e.g. since-deleted) token use {@see self::get_backed_token_reference()} instead.
 	 *
 	 * @since TBD
 	 *
@@ -1044,6 +1051,81 @@ class Kadence_Blocks_CSS {
 
 		return 'var(' . Css_Var::from_id( Alias::path_of( $value ) ) . ')';
 	}
+
+	/**
+	 * Like {@see self::get_token_reference()}, but only for a token that is backed by the active library —
+	 * i.e. one the Css_Var projector actually emits a `--kb-token--<id>` custom property for. A binding may
+	 * reference a stale alias (a token deleted after it was saved into a post); minting a var() for it
+	 * would leave a dead custom property with no definition, so render callers use this to emit nothing and
+	 * let the property fall back to whatever global CSS exists. A syntactically-valid but unbacked alias,
+	 * and any non-alias, both return null.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value The raw attribute value.
+	 *
+	 * @return string|null The var() reference for a backed alias, or null otherwise.
+	 */
+	private function get_backed_token_reference( $value ): ?string {
+		$reference = $this->get_token_reference( $value );
+
+		// Only a string alias yields a non-null reference, so $value is a resolvable id path here.
+		if ( null === $reference || ! is_string( $value ) ) {
+			return null;
+		}
+
+		if ( ! $this->token_alias_is_backed( Alias::path_of( $value ) ) ) {
+			return null;
+		}
+
+		return $reference;
+	}
+
+	/**
+	 * Whether a design-token id is backed by the active library — i.e. the Css_Var projector emits a
+	 * `--kb-token--<id>` custom property for it. A binding may reference a stale alias (a token removed
+	 * after it was stored); minting a var() for it would leave a dead custom property with no definition,
+	 * so callers use this to skip the declaration and fall back to the global CSS instead.
+	 *
+	 * The active library's canonical id map is resolved once and memoized per request (keyed by slug), so
+	 * the per-value render path stays a hash lookup. Fails open: if the container/resolver is unavailable
+	 * or resolution throws, the alias is treated as backed (today's behavior) so a render never fatals and
+	 * transient resolver issues do not drop all token CSS.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id The design-token id (the alias path).
+	 *
+	 * @return bool True when the id resolves in the active library, or on any error (fail-open).
+	 */
+	private function token_alias_is_backed( string $id ): bool {
+		/** @var array<string, Resolved_Tokens> $backed_by_slug */
+		static $backed_by_slug = array();
+
+		try {
+			/** @var Active_Token_Library_Store $active */
+			$active = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$slug   = $active->get();
+
+			if ( ! isset( $backed_by_slug[ $slug ] ) ) {
+				/** @var Token_Resolver $resolver */
+				$resolver                = kadence_blocks()->get( Token_Resolver::class );
+				$backed_by_slug[ $slug ] = $resolver->resolve( $slug );
+			}
+
+			$backed = $backed_by_slug[ $slug ]->value( $id ) !== null;
+
+			if ( ! $backed && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				/** @var LoggerInterface $logger */
+				$logger = kadence_blocks()->get( LoggerInterface::class );
+				$logger->error( sprintf( 'CSS render: skipped unresolved token alias "%s"; falling back to global CSS.', $id ) );
+			}
+
+			return $backed;
+		} catch ( \Throwable $e ) {
+			return true;
+		}
+	}
 	/**
 	 * Outputs a string if set.
 	 *
@@ -1052,7 +1134,7 @@ class Kadence_Blocks_CSS {
 	 * @return string
 	 */
 	public function render_number( $number = null, $unit = null ) {
-		$token_reference = $this->get_token_reference( $number );
+		$token_reference = $this->get_backed_token_reference( $number );
 		if ( null !== $token_reference ) {
 			return $token_reference;
 		}
@@ -1067,15 +1149,19 @@ class Kadence_Blocks_CSS {
 	 * Generates the color output.
 	 *
 	 * @param string $color any color attribute.
-	 * @return string
+	 * @return string|false
 	 */
 	public function render_color( $color, $opacity = null ) {
 		if ( empty( $color ) ) {
 			return false;
 		}
-		$token_reference = $this->get_token_reference( $color );
+		$token_reference = $this->get_backed_token_reference( $color );
 		if ( null !== $token_reference ) {
 			return $token_reference;
+		}
+		if ( is_string( $color ) && Alias::is_alias( $color ) ) {
+			// A strict alias that did not resolve: emit nothing so the property falls back to the global CSS.
+			return false;
 		}
 		if ( ! is_array( $color ) && strpos( $color, 'palette' ) === 0 ) {
 			switch ( $color ) {
@@ -1117,15 +1203,19 @@ class Kadence_Blocks_CSS {
 	 * Generates the color output.
 	 *
 	 * @param string $color any color attribute.
-	 * @return string
+	 * @return string|false
 	 */
 	public function sanitize_color( $color, $opacity = null ) {
 		if ( empty( $color ) ) {
 			return false;
 		}
-		$token_reference = $this->get_token_reference( $color );
+		$token_reference = $this->get_backed_token_reference( $color );
 		if ( null !== $token_reference ) {
 			return $token_reference;
+		}
+		if ( is_string( $color ) && Alias::is_alias( $color ) ) {
+			// A strict alias that did not resolve: emit nothing so the property falls back to the global CSS.
+			return false;
 		}
 		if ( ! is_array( $color ) && strpos( $color, 'palette' ) === 0 ) {
 			switch ( $color ) {
@@ -1230,7 +1320,7 @@ class Kadence_Blocks_CSS {
 		if ( ! isset( $attributes[ $name ] ) ) {
 			return false;
 		}
-		$token_reference = $this->get_token_reference( $attributes[ $name ] );
+		$token_reference = $this->get_backed_token_reference( $attributes[ $name ] );
 		if ( null !== $token_reference ) {
 			$this->add_property( $property, $token_reference );
 		} else {
@@ -1311,36 +1401,36 @@ class Kadence_Blocks_CSS {
 		$args = wp_parse_args( $args, $defaults );
 		$unit = ! empty( $attributes[ $args['unit_key'] ] ) ? $attributes[ $args['unit_key'] ] : $unit;
 		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
-			$first_reference = $this->get_token_reference( $attributes[ $name ][0] ?? null );
+			$first_reference = $this->get_backed_token_reference( $attributes[ $name ][0] ?? null );
 			if ( null !== $first_reference ) {
 				$this->add_property( $args['first_prop'], $first_reference );
 			} else if ( $render_zero && is_numeric( $attributes[ $name ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $name ][0] . $unit );
-			} else if ( ! $render_zero && ! empty( $attributes[ $name ][0] ) ) {
+			} else if ( ! $render_zero && ! empty( $attributes[ $name ][0] ) && ! Alias::is_alias( $attributes[ $name ][0] ) ) {
 				$this->add_property( $args['first_prop'], $attributes[ $name ][0] . $unit );
 			}
-			$second_reference = $this->get_token_reference( $attributes[ $name ][1] ?? null );
+			$second_reference = $this->get_backed_token_reference( $attributes[ $name ][1] ?? null );
 			if ( null !== $second_reference ) {
 				$this->add_property( $args['second_prop'], $second_reference );
 			} else if ( $render_zero && is_numeric( $attributes[ $name ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $name ][1] . $unit );
-			} else if ( ! $render_zero && ! empty( $attributes[ $name ][1] ) ) {
+			} else if ( ! $render_zero && ! empty( $attributes[ $name ][1] ) && ! Alias::is_alias( $attributes[ $name ][1] ) ) {
 				$this->add_property( $args['second_prop'], $attributes[ $name ][1] . $unit );
 			}
-			$third_reference = $this->get_token_reference( $attributes[ $name ][2] ?? null );
+			$third_reference = $this->get_backed_token_reference( $attributes[ $name ][2] ?? null );
 			if ( null !== $third_reference ) {
 				$this->add_property( $args['third_prop'], $third_reference );
 			} else if ( $render_zero && is_numeric( $attributes[ $name ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $name ][2] . $unit );
-			} else if ( ! $render_zero && ! empty( $attributes[ $name ][2] ) ) {
+			} else if ( ! $render_zero && ! empty( $attributes[ $name ][2] ) && ! Alias::is_alias( $attributes[ $name ][2] ) ) {
 				$this->add_property( $args['third_prop'], $attributes[ $name ][2] . $unit );
 			}
-			$fourth_reference = $this->get_token_reference( $attributes[ $name ][3] ?? null );
+			$fourth_reference = $this->get_backed_token_reference( $attributes[ $name ][3] ?? null );
 			if ( null !== $fourth_reference ) {
 				$this->add_property( $args['fourth_prop'], $fourth_reference );
 			} else if ( $render_zero && is_numeric( $attributes[ $name ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $name ][3] . $unit );
-			} else if ( ! $render_zero && ! empty( $attributes[ $name ][3] ) ) {
+			} else if ( ! $render_zero && ! empty( $attributes[ $name ][3] ) && ! Alias::is_alias( $attributes[ $name ][3] ) ) {
 				$this->add_property( $args['fourth_prop'], $attributes[ $name ][3] . $unit );
 			}
 		}
@@ -1563,7 +1653,7 @@ class Kadence_Blocks_CSS {
 	 *                                            any empty/missing leg before rendering. When omitted
 	 *                                            the method behaves exactly as before. Numeric and
 	 *                                            {alias} values always pass through untouched.
-	 * @return string
+	 * @return string|false
 	 */
 	public function render_shadow( $shadow, array $defaults = [] ) {
 		if ( ! empty( $defaults ) && is_array( $shadow ) ) {
@@ -1596,15 +1686,28 @@ class Kadence_Blocks_CSS {
 		if ( ! isset( $shadow['inset'] ) ) {
 			return false;
 		}
-		$h_offset_reference = $this->get_token_reference( $shadow['hOffset'] );
+		$h_offset_reference = $this->get_backed_token_reference( $shadow['hOffset'] );
 		$h_offset           = null !== $h_offset_reference ? $h_offset_reference : ( ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px' );
-		$v_offset_reference = $this->get_token_reference( $shadow['vOffset'] );
+		$v_offset_reference = $this->get_backed_token_reference( $shadow['vOffset'] );
 		$v_offset           = null !== $v_offset_reference ? $v_offset_reference : ( ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px' );
-		$blur_reference     = $this->get_token_reference( $shadow['blur'] );
+		$blur_reference     = $this->get_backed_token_reference( $shadow['blur'] );
 		$blur               = null !== $blur_reference ? $blur_reference : ( ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px' );
-		$spread_reference   = $this->get_token_reference( $shadow['spread'] );
+		$spread_reference   = $this->get_backed_token_reference( $shadow['spread'] );
 		$spread             = null !== $spread_reference ? $spread_reference : ( ( ! empty( $shadow['spread'] ) ? $shadow['spread'] : '0' ) . 'px' );
 		$color              = ! empty( $shadow['color'] ) ? $this->render_color( $shadow['color'], $shadow['opacity'] ) : $this->render_color( '#000000', $shadow['opacity'] );
+
+		// A strict alias part that did not resolve (offset/blur/spread reference null, or an unresolved
+		// alias color returned false) invalidates the whole shorthand; emit nothing so the box-shadow
+		// falls back to the global CSS.
+		if (
+			( Alias::is_alias( $shadow['hOffset'] ) && null === $h_offset_reference ) ||
+			( Alias::is_alias( $shadow['vOffset'] ) && null === $v_offset_reference ) ||
+			( Alias::is_alias( $shadow['blur'] ) && null === $blur_reference ) ||
+			( Alias::is_alias( $shadow['spread'] ) && null === $spread_reference ) ||
+			false === $color
+		) {
+			return false;
+		}
 		if ( $shadow['inset'] ) {
 			$shadow_string = 'inset ' . $h_offset . ' ' . $v_offset . ' ' . $blur . ' ' . $spread . ' ' . $color;
 		} else {
@@ -1659,25 +1762,25 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
-			$top_left_reference = $this->get_token_reference( $attributes[ $name ][0] ?? null );
+			$top_left_reference = $this->get_backed_token_reference( $attributes[ $name ][0] ?? null );
 			if ( null !== $top_left_reference ) {
 				$this->add_property( 'border-top-left-radius', $top_left_reference );
 			} else if ( isset( $attributes[ $name ][0] ) && is_numeric( $attributes[ $name ][0] ) ) {
 				$this->add_property( 'border-top-left-radius', $attributes[ $name ][0] . $unit );
 			}
-			$top_right_reference = $this->get_token_reference( $attributes[ $name ][1] ?? null );
+			$top_right_reference = $this->get_backed_token_reference( $attributes[ $name ][1] ?? null );
 			if ( null !== $top_right_reference ) {
 				$this->add_property( 'border-top-right-radius', $top_right_reference );
 			} else if ( isset( $attributes[ $name ][1] ) && is_numeric( $attributes[ $name ][1] ) ) {
 				$this->add_property( 'border-top-right-radius', $attributes[ $name ][1] . $unit );
 			}
-			$bottom_right_reference = $this->get_token_reference( $attributes[ $name ][2] ?? null );
+			$bottom_right_reference = $this->get_backed_token_reference( $attributes[ $name ][2] ?? null );
 			if ( null !== $bottom_right_reference ) {
 				$this->add_property( 'border-bottom-right-radius', $bottom_right_reference );
 			} else if ( isset( $attributes[ $name ][2] ) && is_numeric( $attributes[ $name ][2] ) ) {
 				$this->add_property( 'border-bottom-right-radius', $attributes[ $name ][2] . $unit );
 			}
-			$bottom_left_reference = $this->get_token_reference( $attributes[ $name ][3] ?? null );
+			$bottom_left_reference = $this->get_backed_token_reference( $attributes[ $name ][3] ?? null );
 			if ( null !== $bottom_left_reference ) {
 				$this->add_property( 'border-bottom-left-radius', $bottom_left_reference );
 			} else if ( isset( $attributes[ $name ][3] ) && is_numeric( $attributes[ $name ][3] ) ) {
@@ -1857,13 +1960,13 @@ class Kadence_Blocks_CSS {
 		}
 		$unit = ! empty( $attributes[ $unit ] ) ? $attributes[ $unit ] : 'px';
 		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
-			$desktop_reference = $this->get_token_reference( $attributes[ $name ][0] ?? null );
+			$desktop_reference = $this->get_backed_token_reference( $attributes[ $name ][0] ?? null );
 			if ( null !== $desktop_reference ) {
 				$this->add_property( $property, $desktop_reference );
 			} else if ( isset( $attributes[ $name ][0] ) && is_numeric( $attributes[ $name ][0] ) ) {
 				$this->add_property( $property, $attributes[ $name ][0] . $unit );
 			}
-			$tablet_reference = $this->get_token_reference( $attributes[ $name ][1] ?? null );
+			$tablet_reference = $this->get_backed_token_reference( $attributes[ $name ][1] ?? null );
 			if ( null !== $tablet_reference ) {
 				$this->set_media_state( 'tablet' );
 				$this->add_property( $property, $tablet_reference );
@@ -1871,7 +1974,7 @@ class Kadence_Blocks_CSS {
 				$this->set_media_state( 'tablet' );
 				$this->add_property( $property, $attributes[ $name ][1] . $unit );
 			}
-			$mobile_reference = $this->get_token_reference( $attributes[ $name ][2] ?? null );
+			$mobile_reference = $this->get_backed_token_reference( $attributes[ $name ][2] ?? null );
 			if ( null !== $mobile_reference ) {
 				$this->set_media_state( 'mobile' );
 				$this->add_property( $property, $mobile_reference );
@@ -1905,31 +2008,39 @@ class Kadence_Blocks_CSS {
 		$unit = ! empty( $attributes[ $unit ] ) ? $attributes[ $unit ] : 'px';
 
 		$this->set_media_state( 'desktop' );
-		$desktop_reference = $this->get_token_reference( $attributes[ $name[0] ] ?? null );
+		$desktop_reference = $this->get_backed_token_reference( $attributes[ $name[0] ] ?? null );
 		if ( null !== $desktop_reference ) {
 			$this->add_property( $property, $desktop_reference );
-		} else if ( isset( $attributes[ $name[0] ] ) && '' !== $attributes[ $name[0] ] ) {
-			$this->add_property( $property, $attributes[ $name[0] ] . $unit );
-		} else if ( $defaults[0] ) {
-			$this->add_property( $property, $defaults[0] . $unit );
+		} else if ( ! Alias::is_alias( $attributes[ $name[0] ] ?? null ) ) {
+			// A resolved alias emits above; an unresolved strict alias emits nothing so the property falls
+			// back to the global CSS. Only a non-alias reaches the literal/defaults handling.
+			if ( isset( $attributes[ $name[0] ] ) && '' !== $attributes[ $name[0] ] ) {
+				$this->add_property( $property, $attributes[ $name[0] ] . $unit );
+			} else if ( $defaults[0] ) {
+				$this->add_property( $property, $defaults[0] . $unit );
+			}
 		}
 		$this->set_media_state( 'tablet' );
-		$tablet_reference = $this->get_token_reference( $attributes[ $name[1] ] ?? null );
+		$tablet_reference = $this->get_backed_token_reference( $attributes[ $name[1] ] ?? null );
 		if ( null !== $tablet_reference ) {
 			$this->add_property( $property, $tablet_reference );
-		} else if ( isset( $attributes[ $name[1] ] ) && '' !== $attributes[ $name[1] ] ) {
-			$this->add_property( $property, $attributes[ $name[1] ] . $unit );
-		} else if ( $defaults[1] ) {
-			$this->add_property( $property, $defaults[1] . $unit );
+		} else if ( ! Alias::is_alias( $attributes[ $name[1] ] ?? null ) ) {
+			if ( isset( $attributes[ $name[1] ] ) && '' !== $attributes[ $name[1] ] ) {
+				$this->add_property( $property, $attributes[ $name[1] ] . $unit );
+			} else if ( $defaults[1] ) {
+				$this->add_property( $property, $defaults[1] . $unit );
+			}
 		}
 		$this->set_media_state( 'mobile' );
-		$mobile_reference = $this->get_token_reference( $attributes[ $name[2] ] ?? null );
+		$mobile_reference = $this->get_backed_token_reference( $attributes[ $name[2] ] ?? null );
 		if ( null !== $mobile_reference ) {
 			$this->add_property( $property, $mobile_reference );
-		} else if ( isset( $attributes[ $name[2] ] ) && '' !== $attributes[ $name[2] ] ) {
-			$this->add_property( $property, $attributes[ $name[2] ] . $unit );
-		} else if ( $defaults[2] ) {
-			$this->add_property( $property, $defaults[2] . $unit );
+		} else if ( ! Alias::is_alias( $attributes[ $name[2] ] ?? null ) ) {
+			if ( isset( $attributes[ $name[2] ] ) && '' !== $attributes[ $name[2] ] ) {
+				$this->add_property( $property, $attributes[ $name[2] ] . $unit );
+			} else if ( $defaults[2] ) {
+				$this->add_property( $property, $defaults[2] . $unit );
+			}
 		}
 		$this->set_media_state( 'desktop' );
 	}
@@ -2074,7 +2185,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $border an array of border settings.
 	 * @param string $side   the border side to render (top, right, bottom, left). Default 'top'.
 	 *
-	 * @return string
+	 * @return string|false
 	 */
 	public function render_border( $border, $side = 'top' ) {
 		if ( empty( $border ) || empty( $border[0] ) ) {
@@ -2100,10 +2211,17 @@ class Kadence_Blocks_CSS {
 		$color         = ( isset( $border_side[0] ) && ! empty( $border_side[0] ) ? $border_side[0] : 'transparent' );
 
 		// A token-reference width resolves to a self-contained var() (unit included), so the literal unit is dropped.
-		$width_reference = $this->get_token_reference( $width );
+		$width_reference = $this->get_backed_token_reference( $width );
 		$width_output    = null !== $width_reference ? $width_reference : $width . $unit;
+		$color_output    = $this->render_color( $color );
 
-		$border_string = $width_output . ' ' . $style . ' ' . $this->render_color( $color );
+		// A strict alias width or color that did not resolve invalidates the whole shorthand; emit nothing
+		// so the border falls back to the global CSS.
+		if ( ( Alias::is_alias( $width ) && null === $width_reference ) || false === $color_output ) {
+			return false;
+		}
+
+		$border_string = $width_output . ' ' . $style . ' ' . $color_output;
 
 		return $border_string;
 	}
@@ -2277,7 +2395,7 @@ class Kadence_Blocks_CSS {
 			$return_value = $this->sanitize_color($return_value);
 		}
 		if( $given_value == 'width') {
-			$width_reference = $this->get_token_reference( $return_value );
+			$width_reference = $this->get_backed_token_reference( $return_value );
 			if ( null !== $width_reference ) {
 				$return_value = $width_reference;
 			} else {
@@ -2412,8 +2530,8 @@ class Kadence_Blocks_CSS {
 			$this->add_property( $prop, $value . $unit );
 		} else if ( 'position' === $property && ! empty( $value ) ) {
 			$this->add_property( $prop, $value );
-		} else if ( ! empty( $value ) && null !== $this->get_token_reference( $value ) ) {
-			$this->add_property( $prop, $this->get_token_reference( $value ) );
+		} else if ( ! empty( $value ) && null !== $this->get_backed_token_reference( $value ) ) {
+			$this->add_property( $prop, $this->get_backed_token_reference( $value ) );
 		} else if ( ! empty( $value ) && $this->is_variable_value( $value ) ) {
 			$this->add_property( $prop, $this->get_variable_value( $value ) );
 		}
@@ -2508,7 +2626,7 @@ class Kadence_Blocks_CSS {
 	 * Generates the measure output.
 	 *
 	 * @param array $measure an array of font settings.
-	 * @return string
+	 * @return string|false
 	 */
 	public function render_measure( $measure, $unit = 'px' ) {
 		if ( empty( $measure ) ) {
@@ -2521,11 +2639,20 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$references = array(
-			$this->get_token_reference( $measure[0] ),
-			$this->get_token_reference( $measure[1] ?? null ),
-			$this->get_token_reference( $measure[2] ?? null ),
-			$this->get_token_reference( $measure[3] ?? null ),
+			$this->get_backed_token_reference( $measure[0] ),
+			$this->get_backed_token_reference( $measure[1] ?? null ),
+			$this->get_backed_token_reference( $measure[2] ?? null ),
+			$this->get_backed_token_reference( $measure[3] ?? null ),
 		);
+
+		// A strict alias side that did not resolve invalidates the whole value; emit nothing so the
+		// property falls back to the global CSS.
+		foreach ( array( $measure[0], $measure[1] ?? null, $measure[2] ?? null, $measure[3] ?? null ) as $index => $side ) {
+			if ( Alias::is_alias( $side ) && null === $references[ $index ] ) {
+				return false;
+			}
+		}
+
 		$has_alias  = null !== $references[0] || null !== $references[1] || null !== $references[2] || null !== $references[3];
 		if ( ! $has_alias && ! is_numeric( $measure[0] ) && ! is_numeric( $measure[1] ) && ! is_numeric( $measure[2] ) && ! is_numeric( $measure[3] ) ) {
 			return false;
