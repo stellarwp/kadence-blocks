@@ -1089,7 +1089,7 @@ class Kadence_Blocks_CSS {
 	 *
 	 * The active library's canonical id map is resolved once and memoized per request (keyed by slug), so
 	 * the per-value render path stays a hash lookup. Fails open: if the container/resolver is unavailable
-	 * or resolution throws, the alias is treated as backed (today's behavior) so a render never fatals and
+	 * or resolution throws, the alias is treated as backed (today's behavior) so a render never crashes and
 	 * transient resolver issues do not drop all token CSS.
 	 *
 	 * @since TBD
