@@ -26,6 +26,9 @@ import './SettingsPanel.scss';
  * @param {?Array<Object>} [props.tabs]         `[{ name, title }]` state tabs (e.g. Normal/Hover), or null for none.
  * @param {?string}        [props.activeTab]    The active tab name (controlled), null without tabs.
  * @param {?Function}      [props.onTabChange]  Tab-change handler.
+ * @param {?JSX.Element}   [props.beforeTabs]   Content rendered between the header and the tabs, for
+ *                                              fields that belong to the item rather than to one tab
+ *                                              (a preset's name is the same on Normal and Hover).
  * @param {JSX.Element}    props.children       The field area content (typically a `SettingsForm`).
  * @param {?Function}      [props.onDelete]     Footer Delete handler; null hides the button (a non-deletable item).
  * @param {?Function}      [props.onSave]       Footer Save handler; null hides the button.
@@ -47,6 +50,7 @@ export function SettingsPanel({
 	tabs = null,
 	activeTab = null,
 	onTabChange,
+	beforeTabs = null,
 	children,
 	onDelete = null,
 	onSave = null,
@@ -70,6 +74,7 @@ export function SettingsPanel({
 					onClick={onClose}
 				/>
 			</div>
+			{beforeTabs && <div className="kadence-blocks-style-library__settings-panel-before-tabs">{beforeTabs}</div>}
 			{tabs && tabs.length > 0 ? (
 				<TabPanel
 					// Remounted on an external activeTab change — TabPanel only reads initialTabName once.
