@@ -2069,7 +2069,8 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates a border string for a single side at a single screen size.
 	 *
-	 * @param array $border an array of border settings.
+	 * @param array  $border an array of border settings.
+	 * @param string $side   the border side to render (top, right, bottom, left).
 	 * @return string
 	 */
 	public function render_border( $border, $side = 'top' ) {
@@ -2094,7 +2095,12 @@ class Kadence_Blocks_CSS {
 		$width         = ( isset( $border_side[2] ) && ! empty( $border_side[2] ) ? $border_side[2] : '0' );
 		$unit          = ( isset( $border[0]['unit'] ) && ! empty( $border[0]['unit'] ) ? $border[0]['unit'] : 'px' );
 		$color         = ( isset( $border_side[0] ) && ! empty( $border_side[0] ) ? $border_side[0] : 'transparent' );
-		$border_string = $width . $unit . ' ' . $style . ' ' . $this->render_color( $color );
+
+		// A token-reference width resolves to a self-contained var() (unit included), so the literal unit is dropped.
+		$width_reference = $this->get_token_reference( $width );
+		$width_output    = null !== $width_reference ? $width_reference : $width . $unit;
+
+		$border_string = $width_output . ' ' . $style . ' ' . $this->render_color( $color );
 
 		return $border_string;
 	}
