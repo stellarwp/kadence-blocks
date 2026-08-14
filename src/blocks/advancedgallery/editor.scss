@@ -499,6 +499,12 @@
 		}
 	}
 }
+/* Match the front-end fix: keep the always-below caption within the image column so long captions do not stretch the Fluid Carousel slides. */
+.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-caption-style-below .kadence-blocks-gallery-item__caption {
+	box-sizing: border-box;
+	width: 0;
+	min-width: 100%;
+}
 .kb-gallery-type-carousel .kb-gallery-image-ratio-inherit.kb-gallery-image-contain:after, .kb-gallery-type-slider .kb-gallery-image-ratio-inherit.kb-gallery-image-contain:after, .kb-gallery-type-thumbslider .kb-gallery-image-ratio-inherit.kb-gallery-image-contain:after {
 	display:none;
 }

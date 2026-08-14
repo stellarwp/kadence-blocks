@@ -198,11 +198,16 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS in Page Head.
 	 *
+	 * @since 3.7.8.1 Normalize the unique id before use.
+	 *
 	 * @param array $block the block data.
 	 */
 	public function output_head_data( $block ) {
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
+			if ( ! empty( $attributes['uniqueID'] ) ) {
+				$attributes['uniqueID'] = $this->sanitize_unique_id( $attributes['uniqueID'] );
+			}
 			if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
 				$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-cpt-id' : '';
 				if ( empty( $unique_id ) ) {
@@ -212,7 +217,7 @@ class Kadence_Blocks_Abstract_Block {
 				$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 			}
 			if ( ! empty( $unique_id ) ) {
-				$unique_id = str_replace( '/', '-', $unique_id );
+				$unique_id = $this->sanitize_unique_id( $unique_id );
 				if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
 					$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes );
 				}
@@ -252,12 +257,17 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Render Block CSS
 	 *
-	 * @param array    $attributes the blocks attributes.
+	 * @since 3.7.8.1 Normalize the unique id before use.
+	 *
+	 * @param array    $attributes The blocks attributes.
 	 * @param string   $content the blocks content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 */
 	public function render_css( $attributes, $content, $block_instance ) {
 		$this->render_scripts( $attributes, true );
+		if ( ! empty( $attributes['uniqueID'] ) ) {
+			$attributes['uniqueID'] = $this->sanitize_unique_id( $attributes['uniqueID'] );
+		}
 		if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
 			$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-cpt-id' : '';
 			if ( empty( $unique_id ) ) {
@@ -267,7 +277,7 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 		}
 		if ( ! empty( $unique_id ) ) {
-			$unique_id       = str_replace( '/', '-', $unique_id );
+			$unique_id       = $this->sanitize_unique_id( $unique_id );
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $unique_id, $this->block_name, $attributes );
 			$css_class       = Kadence_Blocks_CSS::get_instance();
 
@@ -570,6 +580,19 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	protected function get_pro_version() {
 		return defined( 'KBP_VERSION' ) ? KBP_VERSION : null;
+	}
+
+	/**
+	 * Normalize a blocks unique id so it is safe to use in markup and style rules.
+	 *
+	 * @since 3.7.8.1
+	 *
+	 * @param string $unique_id The blocks unique id.
+	 *
+	 * @return string
+	 */
+	protected function sanitize_unique_id( $unique_id ) {
+		return (string) preg_replace( '/[^A-Za-z0-9_-]/', '', str_replace( '/', '-', (string) $unique_id ) );
 	}
 
 	/**

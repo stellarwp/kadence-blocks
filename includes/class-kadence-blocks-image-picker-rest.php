@@ -26,6 +26,10 @@ class Kadence_Blocks_Image_Picker_REST_Controller extends WP_REST_Controller {
 	 */
 	const PROP_IMAGE_SIZES = 'image_sizes';
 
+	/**
+	 * Maximum size for REST array parameters.
+	 */
+	const MAX_REST_ARRAY_SIZE = 50;
 
 	/**
 	 * Constructor.
@@ -61,6 +65,21 @@ class Kadence_Blocks_Image_Picker_REST_Controller extends WP_REST_Controller {
 	 */
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Validates array parameters to prevent DoS attacks via unbounded arrays.
+	 * Rejects arrays exceeding MAX_REST_ARRAY_SIZE or containing non-scalar elements.
+	 *
+	 * @param mixed $value The value to validate.
+	 * @return bool True if valid, false otherwise.
+	 */
+	public function validate_array( $value ): bool {
+		if ( ! is_array( $value ) ) {
+			return true;
+		}
+		
+		return count( $value ) <= self::MAX_REST_ARRAY_SIZE;
 	}
 
 	/**
@@ -105,7 +124,9 @@ class Kadence_Blocks_Image_Picker_REST_Controller extends WP_REST_Controller {
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => array( $this, 'sanitize_image_sizes_array' ),
+			'validate_callback' => array( $this, 'validate_array' ),
 		);
+
 		return $query_params;
 	}
 

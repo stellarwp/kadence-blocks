@@ -104,6 +104,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	const PROP_META = 'meta';
 	/**
+	 * Maximum size for REST array parameters.
+	 */
+	const MAX_REST_ARRAY_SIZE = 50;
+	/**
 	 * The library folder.
 	 *
 	 * @access protected
@@ -644,6 +648,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Validates an array REST parameter.
+	 *
+	 * @param mixed $value Array to validate.
+	 * @return bool True if valid, false if oversized.
+	 */
+	public function validate_array( $value ) {
+		if ( ! is_array( $value ) ) {
+			return false;
+		}
+		return count( $value ) <= self::MAX_REST_ARRAY_SIZE;
 	}
 
 	/**
@@ -1388,6 +1405,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
@@ -1404,10 +1423,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( ! empty( $library_url ) ) {
 			if ( 'page' === $pattern_type ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page/';
-				$extra       = 'page-item';
+				$extra    = 'page-item';
+				$endpoint = '/wp-json/kadence-cloud/v1/page/';
 			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/single/';
+				$endpoint = '/wp-json/kadence-cloud/v1/single/';
+			}
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} else {
 			$library_url = $this->get_patterns_single_url();
@@ -1430,7 +1453,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			if ( 'templates' !== $library && 'pages' !== $library && 'template' !== $library ) {
 				$args['data'] = 'true';
 			}
-			if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+			// License credentials are only ever sent to the Kadence library hosts.
+			if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 				$args['api_key'] = $this->api_key;
 				if ( ! empty( $this->api_email ) ) {
 					// Send in case we need to verify with old api.
@@ -1483,8 +1507,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_connection( WP_REST_Request $request ) {
 		$library     = $request->get_param( self::PROP_LIBRARY );
@@ -1493,7 +1519,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $library_url ) || empty( $key ) ) {
 			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
 		}
-		$url = empty( $library_url ) ? '' : rtrim( sanitize_text_field( $library_url ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
+		$url = $this->resolve_connection_url( sanitize_text_field( $library_url ), '/wp-json/kadence-cloud/v1/info/' );
+		if ( empty( $url ) ) {
+			return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
+		}
 		// Do you have the data?
 		$site_url = get_original_domain();
 		$args     = [
@@ -1539,8 +1568,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library_categories( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1551,10 +1582,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/page-categories/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/page-categories/' : '/wp-json/kadence-cloud/v1/categories/';
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_cat_url;
@@ -1648,8 +1679,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Retrieves a collection of objects.
 	 *
+	 * @since 3.7.8.1 Restrict requests to known library locations.
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_library( WP_REST_Request $request ) {
 		$this->get_license_keys();
@@ -1660,10 +1693,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$meta        = $request->get_param( self::PROP_META );
 
 		if ( ! empty( $library_url ) ) {
-			if ( ! empty( $meta ) && 'pages' === $meta ) {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/pages/';
-			} else {
-				$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/get/';
+			$endpoint    = ! empty( $meta ) && 'pages' === $meta ? '/wp-json/kadence-cloud/v1/pages/' : '/wp-json/kadence-cloud/v1/get/';
+			$library_url = $this->resolve_library_url( is_string( $library_url ) ? $library_url : '', $endpoint );
+			if ( empty( $library_url ) ) {
+				return rest_ensure_response( new WP_Error( 'invalid_request', __( 'Invalid Request, Unknown Library', 'kadence-blocks' ), [ 'status' => 400 ] ) );
 			}
 		} elseif ( ! empty( $library ) && 'pages' === $library ) {
 			$library_url = $this->remote_pages_url;
@@ -2349,6 +2382,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2358,7 +2393,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
@@ -2405,6 +2441,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Get remote file contents.
 	 *
+	 * @since 3.7.8.1 Only attach credentials for known library locations.
+	 *
 	 * @access public
 	 * @return string Returns the remote URL contents.
 	 */
@@ -2414,7 +2452,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'key'  => $key,
 			'site' => $site_url,
 		];
-		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+		// License credentials are only ever sent to the Kadence library hosts.
+		if ( $this->is_kadence_api_url( $library_url ) && ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) ) {
 			$args['api_email']  = $this->api_email;
 			$args['api_key']    = $this->api_key;
 			$args['product_id'] = $this->product_id;
@@ -2821,11 +2860,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$query_params[ self::PROP_INDUSTRIES ]    = [
 			'description'       => __( 'The industries to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_industries_array' ],
 		];
 		$query_params[ self::PROP_IMAGE_SIZES ]   = [
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
+			'validate_callback' => [ $this, 'validate_array' ],
 			'sanitize_callback' => [ $this, 'sanitize_image_sizes_array' ],
 		];
 		$query_params[ self::PROP_META ]          = [
@@ -2844,14 +2885,15 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
 	 */
 	public function sanitize_industries_array( $industries, $request ) {
-		if ( ! empty( $industries ) && is_array( $industries ) ) {
-			$new_industries = [];
-			foreach ( $industries as $key => $value ) {
-				$new_industries[] = sanitize_text_field( $value );
-			}
-			return $new_industries;
+		if ( ! is_array( $industries ) ) {
+			return [];
 		}
-		return [];
+		$industries = array_slice( $industries, 0, self::MAX_REST_ARRAY_SIZE );
+		$new_industries = [];
+		foreach ( $industries as $key => $value ) {
+			$new_industries[] = sanitize_text_field( $value );
+		}
+		return $new_industries;
 	}
 
 	/**
