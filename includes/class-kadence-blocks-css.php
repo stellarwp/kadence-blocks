@@ -2069,8 +2069,11 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates a border string for a single side at a single screen size.
 	 *
+	 * @since 3.3.2
+	 *
 	 * @param array  $border an array of border settings.
-	 * @param string $side   the border side to render (top, right, bottom, left).
+	 * @param string $side   the border side to render (top, right, bottom, left). Default 'top'.
+	 *
 	 * @return string
 	 */
 	public function render_border( $border, $side = 'top' ) {
