@@ -245,7 +245,7 @@
 				},
 				"sm": {
 					"$type": "dimension",
-					"$value": "0.1875rem"
+					"$value": "0.25rem"
 				},
 				"md": {
 					"$type": "dimension",
@@ -257,7 +257,15 @@
 				},
 				"xl": {
 					"$type": "dimension",
+					"$value": "0.75rem"
+				},
+				"2xl": {
+					"$type": "dimension",
 					"$value": "1rem"
+				},
+				"3xl": {
+					"$type": "dimension",
+					"$value": "1.5rem"
 				},
 				"full": {
 					"$type": "dimension",
@@ -486,7 +494,7 @@
 		"radius": {
 			"control": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.sm}"
+				"$value": "0.1875rem"
 			},
 			"media": {
 				"$type": "dimension",

@@ -63,6 +63,8 @@ $radius_labels = [
 	'md'   => __( 'Medium', 'kadence-blocks' ),
 	'lg'   => __( 'Large', 'kadence-blocks' ),
 	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'2xl'  => __( '2X Large', 'kadence-blocks' ),
+	'3xl'  => __( '3X Large', 'kadence-blocks' ),
 	'full' => __( 'Full', 'kadence-blocks' ),
 ];
 

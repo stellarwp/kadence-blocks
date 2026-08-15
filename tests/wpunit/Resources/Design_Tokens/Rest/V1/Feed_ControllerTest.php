@@ -272,6 +272,8 @@ final class Feed_ControllerTest extends TestCase {
 				'primitive.dimension.radius.md',
 				'primitive.dimension.radius.lg',
 				'primitive.dimension.radius.xl',
+				'primitive.dimension.radius.2xl',
+				'primitive.dimension.radius.3xl',
 				'primitive.dimension.radius.full',
 			],
 			$ids
@@ -279,10 +281,12 @@ final class Feed_ControllerTest extends TestCase {
 
 		$this->assertSame( '0', $data['values']['primitive.dimension.radius.none'] );
 		$this->assertSame( '0.125rem', $data['values']['primitive.dimension.radius.xs'] );
-		$this->assertSame( '0.1875rem', $data['values']['primitive.dimension.radius.sm'] );
+		$this->assertSame( '0.25rem', $data['values']['primitive.dimension.radius.sm'] );
 		$this->assertSame( '0.375rem', $data['values']['primitive.dimension.radius.md'] );
 		$this->assertSame( '0.5rem', $data['values']['primitive.dimension.radius.lg'] );
-		$this->assertSame( '1rem', $data['values']['primitive.dimension.radius.xl'] );
+		$this->assertSame( '0.75rem', $data['values']['primitive.dimension.radius.xl'] );
+		$this->assertSame( '1rem', $data['values']['primitive.dimension.radius.2xl'] );
+		$this->assertSame( '1.5rem', $data['values']['primitive.dimension.radius.3xl'] );
 		$this->assertSame( '9999px', $data['values']['primitive.dimension.radius.full'] );
 	}
 
