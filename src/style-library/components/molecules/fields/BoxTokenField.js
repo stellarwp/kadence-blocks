@@ -189,6 +189,8 @@ function mapSlots(value, convert) {
  * @param {?string}  [props.field.label]    The control's label.
  * @param {boolean}  [props.field.readOnly] Whether the control is non-interactive.
  * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
+ * @param {*}        [props.field.defaultValue] What the block renders when the preset sets nothing,
+ *                                              shown muted so an unset field is not blank.
  * @param {?Array}   [props.field.units]    Units the Custom tab offers.
  * @param {?number}  [props.field.min]      Lowest allowed number on the Custom tab.
  * @param {?number}  [props.field.max]      Highest allowed number; the slider needs one.
@@ -219,12 +221,33 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	// from the next breakpoint up, not straight from desktop: mobile shows the tablet value whenever
 	// tablet is set, because the projected tablet media query also covers mobile widths. Desktop has
 	// nothing above it — a preset's base value is the root of that chain.
+	//
+	// Desktop has no breakpoint above it, but it can still have something to fall back to: a property
+	// whose block renders a built-in value when the preset sets nothing (a button's padding comes from
+	// its size and style classes) declares that value as the field's default, so an unset field reads as
+	// the size actually in effect rather than looking empty. Nothing is stored either way.
 	const onDesktop = !responsive || breakpoint === PRESET_BREAKPOINTS[0];
-	const inheritedFrom = onDesktop
+	const fieldDefault = field.defaultValue ?? null;
+	const inheritedAbove = onDesktop
 		? null
 		: resolvePresetBreakpoint(value, PRESET_BREAKPOINTS[PRESET_BREAKPOINTS.indexOf(breakpoint) - 1]);
+	const inheritsFromBreakpoint = inheritedAbove !== null && inheritedAbove !== '';
 
-	const stored = unitInPlay(atBreakpoint, units[0]);
+	// An inherited value is shown, not offered. Resolving it to its literal here means the picker can
+	// stay exactly the role's scale — the list the token's own screen shows — while a value outside that
+	// scale (a semantic alias the preset happens to use) still reads as the size in effect, labelled
+	// `Custom`. Exempting it from the narrowing instead would put a row in the list that the screen it
+	// mirrors does not have.
+	const everyToken = pickableTokensForType(field.tokenType);
+	const asLiteral = (slot) =>
+		typeof slot === 'string' ? (everyToken.find((token) => token.id === slot)?.value ?? slot) : slot;
+
+	const shownDefault = inheritsFromBreakpoint ? mapSlots(inheritedAbove, asLiteral) : fieldDefault;
+
+	// The unit falls back the same way the value does. With nothing stored there is no unit to read, and
+	// defaulting to `units[0]` made the Custom tab open on `px` while the field beside it displayed the
+	// default's own `em` — one value described two different ways.
+	const stored = unitInPlay(atBreakpoint, unitInPlay(shownDefault, units[0]));
 
 	// A unit the user picked before typing a number has nowhere to persist — no slot carries it yet
 	// — so it is held here until a value exists to attach it to. Keyed per breakpoint for the same
@@ -262,15 +285,17 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 			// breakpoint's own. A breakpoint that inherits binds nothing itself, so without this the
 			// semantic it falls back to is filtered out of the pool and the field, finding no entry for
 			// it, shows nothing at all instead of the value actually in effect.
-			tokens={pickableTokensForType(field.tokenType, field.role, [
-				...boundTokenIds(atBreakpoint),
-				...boundTokenIds(inheritedFrom),
-			]).map((token) => ({
+			tokens={pickableTokensForType(field.tokenType, field.role, boundTokenIds(atBreakpoint)).map((token) => ({
 				...token,
 				alias: `{${token.id}}`,
 			}))}
-			defaultValue={inheritedFrom === null ? undefined : mapSlots(inheritedFrom, toControlValue)}
-			inherited={!onDesktop}
+			// The two kinds of default are still shaped differently, which is why `shownDefault` resolves
+			// them separately above instead of passing either straight through: a value inherited from
+			// another breakpoint is stored the way this app stores values, so it is read through `asLiteral`
+			// to match what the picker offers, while a field default is already a literal carrying its own
+			// unit (`0.4em`) and needs no conversion at all.
+			defaultValue={shownDefault ?? undefined}
+			inherited={inheritsFromBreakpoint}
 			unit={unit}
 			units={units}
 			onUnit={(next) => {

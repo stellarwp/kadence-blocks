@@ -127,6 +127,10 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-radius',
 				label: __('Radius', 'kadence-blocks'),
+				// The button's built-in corner radius — `advancedbtn`'s style.scss falls back to 3px, the
+				// same value `semantic.radius.control` holds. Shown muted when the preset sets nothing, so a
+				// reset field reports the radius the button really has rather than reading as empty.
+				defaultValue: ['0.1875rem', '0.1875rem', '0.1875rem', '0.1875rem'],
 			},
 		],
 	};
@@ -144,6 +148,10 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-padding',
 				label: __('Padding', 'kadence-blocks'),
+				// What `advancedbtn`'s style.scss gives a standard fill button, so an unset field shows the
+				// padding a button actually has. Only the base case is named: the size and outline variants
+				// compute their own, and the preset deliberately stores nothing until a user sets it.
+				defaultValue: ['0.4em', '1em', '0.4em', '1em'],
 			},
 			{
 				type: 'spacing',
@@ -152,6 +160,8 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-margin',
 				label: __('Margin', 'kadence-blocks'),
+				// The button carries no margin of its own, which is a real answer rather than an absent one.
+				defaultValue: ['0', '0', '0', '0'],
 			},
 		],
 	};
