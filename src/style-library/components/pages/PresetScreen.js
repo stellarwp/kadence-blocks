@@ -26,6 +26,7 @@ import { EmptyState } from '../molecules/EmptyState';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { overlayPresetRows } from '../../helpers/presets';
+import { useBreakpoint } from '../../../token-controls/context/breakpoint';
 
 /**
  * Render a preset list screen for whichever block the config names.
@@ -72,7 +73,8 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	// this screen's rows.
 	const draft =
 		channel && channel.publication && channel.publication.itemId === route.item ? channel.publication.draft : null;
-	const rows = overlayPresetRows(screen.rows, route.item, draft, library?.values, preset.preview);
+	const [breakpoint] = useBreakpoint();
+	const rows = overlayPresetRows(screen.rows, route.item, draft, library?.values, preset.preview, breakpoint);
 
 	const items = rows.map((row) => ({
 		id: row.id,

@@ -18,6 +18,7 @@ import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
  */
 import { fetchBlockPresets } from '../api/client';
 import { presetInitialValues, presetRows } from '../helpers/presets';
+import { useBreakpoint } from '../../token-controls/context/breakpoint';
 
 /**
  * Fetch a block's preset collection and bind it to row view models.
@@ -93,7 +94,13 @@ export function usePresets(library, preset) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [namespace, block, slug, version]);
 
-	const rows = useMemo(() => presetRows(payload, library?.values, preview), [payload, library?.values, preview]);
+	// The row previews resolve at the active breakpoint, so switching the panel to Tablet re-renders
+	// every chip with its tablet value rather than leaving them all showing desktop.
+	const [breakpoint] = useBreakpoint();
+	const rows = useMemo(
+		() => presetRows(payload, library?.values, preview, breakpoint),
+		[payload, library?.values, preview, breakpoint]
+	);
 
 	const initialValuesFor = (presetSlug) => presetInitialValues(payload, presetSlug, preset.properties);
 
