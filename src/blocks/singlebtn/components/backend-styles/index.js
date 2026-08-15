@@ -7,6 +7,30 @@ import {
 	getBorderColor,
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
+import { blockDefaultPreset, blockPresetValues } from '../../../../extension/preset-picker';
+
+/**
+ * Whether the button's active preset resolves a padding and/or a margin.
+ *
+ * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree about
+ * whether a preset carries spacing. A block with no explicit selection follows the block's default
+ * preset, exactly as the server does.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {{padding: boolean, margin: boolean}} Which spacing properties the preset defines.
+ */
+function presetSpacingProperties(attributes) {
+	const preset = attributes?.kbPreset || blockDefaultPreset('kadence/singlebtn');
+	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
+
+	return {
+		padding: 'button-padding' in tokens,
+		margin: 'button-margin' in tokens,
+	};
+}
 
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
@@ -784,6 +808,26 @@ export default function BackendStyles(props) {
 	}
 	//standard styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+
+	/*
+	 * Mirrors the front end's gate (`render_preset_spacing` in the block's PHP): point spacing at the
+	 * preset variable, but only for a property the active preset actually resolves.
+	 *
+	 * The condition is load-bearing rather than defensive. `padding: var(--kb-btn-padding)` with the
+	 * variable undefined is invalid at computed-value time, which resets padding to 0 instead of letting
+	 * the button's size class supply it — so emitting unconditionally would flatten every button that has
+	 * no preset spacing. Written before the per-side output below, so an explicit attribute still wins.
+	 */
+	const presetSpacing = presetSpacingProperties(attributes);
+
+	if (presetSpacing.padding) {
+		css.add_property('padding', 'var(--kb-btn-padding)');
+	}
+
+	if (presetSpacing.margin) {
+		css.add_property('margin', 'var(--kb-btn-margin)');
+	}
+
 	if (previewPaddingTop) {
 		css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit));
 	}
