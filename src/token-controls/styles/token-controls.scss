@@ -1,0 +1,284 @@
+/**
+ * Design-token UI injected into the `@kadence/components` control seams.
+ *
+ * Styles the token field (the corner icon + input-styled trigger that replaces a control's numeric
+ * slot) and its Style Library/Custom popover to the sidebar design, plus the whole-value box-shadow
+ * chip/picker. Values mirror the design tokens: gray-900 #1e1e1e text, gray-600 #949494 borders and
+ * muted values, gray-300 #dddddd dividers, gray-100 #f0f0f0 selection, theme #3858e9 accents, 13px
+ * body type, 2px control radius, 4px popover radius.
+ */
+
+// The token field is a corner icon beside the trigger, filling the slot the numeric input held.
+.kadence-token-field {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+}
+
+// The per-slot corner icon (top-left/right/…) mirrored from the native control, sitting outside the box.
+.kadence-token-field__icon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	color: #949494;
+
+	svg {
+		width: 16px;
+		height: 16px;
+		fill: currentColor;
+	}
+}
+
+.kadence-token-field__dropdown {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+// The trigger box: label on the left, resolved value muted on the right — matching a 13px input with a
+// 1px gray-600 border and 2px radius.
+.kadence-token-field__trigger.components-button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px;
+	width: 100%;
+	height: 32px;
+	padding: 0 8px;
+	border: 1px solid #949494;
+	border-radius: var(--kb-token-control-field-radius, 2px);
+	background: #fff;
+	color: #1e1e1e;
+	font-size: 13px;
+	line-height: 1.4;
+
+	&:hover {
+		border-color: #1e1e1e;
+	}
+
+	&[aria-expanded="true"] {
+		border-color: #3858e9;
+		box-shadow: 0 0 0 1px #3858e9;
+	}
+}
+
+.kadence-token-field__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.kadence-token-field__value {
+	flex: 0 0 auto;
+	color: #949494;
+	font-size: 13px;
+}
+
+// The popover: a 260px white sheet with a 4px radius. WordPress supplies the drop shadow/border chrome.
+.kadence-token-field__popover {
+	.components-popover__content {
+		min-width: 260px;
+		border-radius: 4px;
+	}
+}
+
+// The tab bar: a gray-300 divider under the tabs, a theme-color underline on the active tab, each tab
+// showing its icon beside the label.
+.kadence-token-field__tabs {
+	> .components-tab-panel__tabs {
+		border-bottom: 1px solid #dddddd;
+
+		.components-tab-panel__tabs-item {
+			font-size: 13px;
+			font-weight: 500;
+		}
+	}
+}
+
+// Each tab's icon sits beside its label.
+.kadence-token-field__tab-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+}
+
+.kadence-token-field__list {
+	display: flex;
+	flex-direction: column;
+	padding: 4px;
+	max-height: 320px;
+	overflow-y: auto;
+}
+
+// Each row: label left, value (and optional Default tag) right, on a 40px line with a 2px-radius hover.
+.kadence-token-field__item.components-button,
+.kadence-token-field__reset.components-button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	height: auto;
+	min-height: 40px;
+	padding: 0 8px;
+	border-radius: 2px;
+	color: #1e1e1e;
+	font-size: 13px;
+	text-align: left;
+
+	&:hover:not(:disabled) {
+		background: #f0f0f0;
+		color: #1e1e1e;
+	}
+}
+
+// The active row (a picked token, or None) reads as the soft gray-100 highlight from the design.
+.kadence-token-field__item.components-button.is-pressed {
+	background: #f0f0f0;
+	color: #1e1e1e;
+
+	&:hover:not(:disabled) {
+		background: #e8e8e8;
+	}
+}
+
+// Reset: a muted label on the left with the undo glyph pushed to the far right.
+.kadence-token-field__reset.components-button {
+	color: #949494;
+}
+
+.kadence-token-field__reset-icon {
+	flex: 0 0 auto;
+	color: #949494;
+}
+
+.kadence-token-field__item-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.kadence-token-field__item-tag {
+	flex: 0 0 auto;
+	margin-left: auto;
+	color: #949494;
+	font-size: 13px;
+}
+
+.kadence-token-field__item-value {
+	flex: 0 0 auto;
+	color: #949494;
+	font-size: 13px;
+}
+
+// The Custom tab: the value input, unit switcher, and slider on a single centered row.
+.kadence-token-field__custom {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px;
+
+	.kadence-token-field__custom-input {
+		flex: 0 0 64px;
+		margin-bottom: 0;
+	}
+
+	.kadence-token-field__unit {
+		flex: 0 0 auto;
+		margin-bottom: 0;
+	}
+
+	.kadence-token-field__slider {
+		flex: 1 1 auto;
+		min-width: 0;
+		margin-bottom: 0;
+	}
+}
+
+// A measure control's four corner fields are wider as a token field than as a bare number input, so
+// wrap them into a 2x2 grid (matching the design) instead of cramming four across one row. The linked
+// "all" control has a single field, which still grows to the full width.
+.kadence-controls-content:has(.kadence-token-field) {
+	flex-wrap: wrap;
+	gap: 4px;
+
+	.kadence-token-field {
+		flex: 1 1 calc(50% - 4px);
+		width: auto;
+		min-width: 0;
+	}
+
+	// The control emits the corners clockwise (top-left, top-right, bottom-right, bottom-left), which
+	// lands the bottom row backwards in the 2x2 grid. Swap the last two so each field sits in its true
+	// corner, reading top-left, top-right, bottom-left, bottom-right.
+	.kadence-token-field:nth-child(3) {
+		order: 2;
+	}
+
+	.kadence-token-field:nth-child(4) {
+		order: 1;
+	}
+}
+
+// A token-mapped measure control carries its unit switcher inside the popover's Custom tab, so hide the
+// control's own bottom unit select for those controls only (scoped by the token field's presence).
+.kadence-controls-content:has(.kadence-token-field) .kadence-measure-control-select-wrapper {
+	display: none;
+}
+
+// The measure control's linked/individual toggle ships without a pressed fill, so it reads differently
+// from the Border control's toggle (which fills with the theme color when active). Match that pressed
+// treatment for token-mapped measure controls so the Border Radius header is consistent with Border.
+.kb-responsive-measure-control:has(.kadence-token-field) {
+	.components-button.kadence-control-toggle.is-pressed {
+		background: var(--wp-admin-theme-color, #3858e9);
+		color: #fff;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+}
+
+// The whole-value box-shadow chip: label plus optional unlink button, laid out inline with a small gap.
+.kadence-token-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+}
+
+.kadence-token-chip__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.kadence-token-chip__unlink.components-button {
+	min-width: 0;
+	padding: 0;
+	height: auto;
+}
+
+// The box-shadow picker dropdown's menu items: the resolved-value preview is pushed to the far right so
+// the label and preview read as two columns instead of butting up against each other.
+.kadence-token-picker__preview {
+	margin-inline-start: auto;
+	padding-inline-start: 12px;
+	color: #949494;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.kadence-token-field__label--default {
+	color: #949494;
+}
+
