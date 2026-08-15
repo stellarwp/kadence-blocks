@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { parseCssLength } from '../parse-css-length';
+import { parseCssLength } from '../helpers/parse-css-length';
 
 describe('parseCssLength', () => {
 	it.each([

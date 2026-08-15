@@ -32,7 +32,7 @@ import {
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import { globe, link, linkOff, settings, undo } from '@wordpress/icons';
-import { parseCssLength } from '../token-picker/parse-css-length';
+import { parseCssLength } from '../../token-controls/helpers/parse-css-length';
 import './component-token-ui.scss';
 
 const TOKEN_ALIAS_PATTERN = /^\{[\w.-]+\}$/;
