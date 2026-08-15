@@ -549,7 +549,7 @@ describe('BUTTON_PRESET.schemaFor', () => {
 			.flatMap((panel) => panel.fields)
 			.find((field) => field.path === 'tokens.button-radius');
 
-		expect(radiusField).toMatchObject({ type: 'token-select', tokenType: 'dimension', role: 'radius' });
+		expect(radiusField).toMatchObject({ type: 'radius', tokenType: 'dimension', role: 'radius' });
 	});
 
 	it('lists the hover color fields, with no radius field, on the Hover tab', () => {
@@ -568,5 +568,146 @@ describe('BUTTON_PRESET.schemaFor', () => {
 
 			expect(paths).not.toContain('label');
 		}
+	});
+});
+
+describe('presetSaveTokens with non-scalar values', () => {
+	const NS = 'com.kadence.designTokens';
+
+	it('aliases the ids inside a responsive envelope, not just a bare scalar', () => {
+		const draft = {
+			'button-radius': {
+				$value: 'primitive.dimension.radius-sm',
+				$extensions: { [NS]: { responsive: { tablet: 'primitive.dimension.radius-xs' } } },
+			},
+		};
+
+		const written = presetSaveTokens(draft, {}, {});
+
+		expect(written['button-radius'].$value).toBe('{primitive.dimension.radius-sm}');
+		expect(written['button-radius'].$extensions[NS].responsive.tablet).toBe('{primitive.dimension.radius-xs}');
+	});
+
+	it('aliases every id in a per-corner slot list', () => {
+		const draft = {
+			'button-radius': ['semantic.dimension.control-radius', '0.5rem', 'primitive.dimension.radius-sm', ''],
+		};
+
+		expect(presetSaveTokens(draft, {}, {})['button-radius']).toEqual([
+			'{semantic.dimension.control-radius}',
+			'0.5rem',
+			'{primitive.dimension.radius-sm}',
+			'',
+		]);
+	});
+
+	it('leaves an untouched non-scalar exactly as it was stored', () => {
+		const stored = { $value: '{primitive.dimension.radius-lg}' };
+		const seeded = { $value: '{primitive.dimension.radius-lg}' };
+
+		const written = presetSaveTokens(
+			{ 'button-radius': seeded },
+			{ 'button-radius': seeded },
+			{
+				'button-radius': stored,
+			}
+		);
+
+		expect(written['button-radius']).toBe(stored);
+	});
+});
+
+describe('seed/save round trip', () => {
+	const NS = 'com.kadence.designTokens';
+
+	it('seeds a responsive envelope as bare ids so a saved draft stops being dirty', () => {
+		const stored = {
+			$value: '{primitive.dimension.radius-sm}',
+			$extensions: { [NS]: { responsive: { tablet: '{primitive.dimension.radius-lg}' } } },
+		};
+
+		const seeded = presetInitialValues(
+			{ presets: { primary: { label: 'Primary', tokens: { 'button-radius': stored } } } },
+			'primary',
+			['button-radius']
+		);
+
+		// What the panel compares its draft against: every nested alias unwrapped, matching exactly
+		// what the field writes back into the draft.
+		expect(seeded.tokens['button-radius']).toEqual({
+			$value: 'primitive.dimension.radius-sm',
+			$extensions: { [NS]: { responsive: { tablet: 'primitive.dimension.radius-lg' } } },
+		});
+
+		// And re-aliasing that seed reproduces the stored shape, so an untouched draft is byte-identical
+		// to what is already on the server.
+		expect(presetSaveTokens({ 'button-radius': seeded.tokens['button-radius'] }, {}, {})).toEqual({
+			'button-radius': stored,
+		});
+	});
+
+	it('seeds a per-corner slot list as bare ids', () => {
+		const seeded = presetInitialValues(
+			{
+				presets: {
+					primary: {
+						tokens: {
+							'button-radius': [
+								'{primitive.dimension.radius-sm}',
+								'0.5rem',
+								'',
+								'{semantic.dimension.control-radius}',
+							],
+						},
+					},
+				},
+			},
+			'primary',
+			['button-radius']
+		);
+
+		expect(seeded.tokens['button-radius']).toEqual([
+			'primitive.dimension.radius-sm',
+			'0.5rem',
+			'',
+			'semantic.dimension.control-radius',
+		]);
+	});
+});
+
+describe('resolveTokenValue at a breakpoint', () => {
+	const NS = 'com.kadence.designTokens';
+	const values = { 'radius.sm': '0.1875rem', 'radius.lg': '0.5rem', 'radius.none': '0' };
+
+	const envelope = {
+		$value: '{radius.sm}',
+		$extensions: { [NS]: { responsive: { tablet: '{radius.lg}' } } },
+	};
+
+	it('resolves the breakpoint override when one exists', () => {
+		expect(resolveTokenValue(values, envelope, 'tablet')).toBe('0.5rem');
+	});
+
+	it('steps an unset mobile down to the tablet override, not to desktop', () => {
+		// The projected tablet media query covers mobile widths, so tablet is what actually renders here.
+		expect(resolveTokenValue(values, envelope, 'mobile')).toBe('0.5rem');
+	});
+
+	it('falls through to the base value when no breakpoint above is set either', () => {
+		expect(resolveTokenValue(values, { $value: '{radius.sm}' }, 'mobile')).toBe('0.1875rem');
+	});
+
+	it('resolves the base value at desktop, and by default', () => {
+		expect(resolveTokenValue(values, envelope, 'desktop')).toBe('0.1875rem');
+		expect(resolveTokenValue(values, envelope)).toBe('0.1875rem');
+	});
+
+	it('resolves a slot list held at a breakpoint into the shorthand', () => {
+		const perCorner = {
+			$value: '{radius.sm}',
+			$extensions: { [NS]: { responsive: { tablet: ['{radius.lg}', '{radius.none}', '{radius.lg}', '0'] } } },
+		};
+
+		expect(resolveTokenValue(values, perCorner, 'tablet')).toBe('0.5rem 0 0.5rem 0');
 	});
 });

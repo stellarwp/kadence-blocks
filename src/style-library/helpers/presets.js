@@ -17,18 +17,15 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { isEqual } from './settings-schema';
+import {
+	isPresetEnvelope,
+	PRESET_BREAKPOINTS,
+	readPresetBreakpoint,
+	resolvePresetBreakpoint,
+	writePresetBreakpoint,
+} from '../../token-controls/helpers/preset-envelope';
 import { nextScaleSlug } from './scale';
 import { getDesignTokensFeed } from './tokens';
-
-/**
- * The `$value` sentinel key a responsive preset-value envelope wraps its base value in, mirroring
- * the sibling per-corner/responsive-value work's `Sentinels::get_value_key()`. Presence of this key
- * on an object (never an array — a slot list is a plain array) is what distinguishes an envelope
- * from a bare per-corner slot list.
- *
- * @since TBD
- */
-const ENVELOPE_VALUE_KEY = '$value';
 
 /**
  * The number of corners a per-corner slot list carries (top-left, top-right, bottom-right,
@@ -130,23 +127,6 @@ export function idToAlias(value) {
 }
 
 /**
- * Whether a stored preset token entry is a responsive envelope: `{ $value, $extensions: {
- * "com.kadence.designTokens": { responsive: { tablet, mobile } } } }`. Only the base `$value` is
- * read here — the breakpoint overrides are an editor concern, out of scope for the Style Library's
- * single-value preview/picker surface. An object is checked rather than any array, since a slot
- * list (see `isSlotList`) is a plain array and never carries a `$value` key.
- *
- * @param {*} value The stored token entry.
- *
- * @since TBD
- *
- * @return {boolean} True when `value` is a responsive envelope.
- */
-function isPresetEnvelope(value) {
-	return Boolean(value) && typeof value === 'object' && !Array.isArray(value) && ENVELOPE_VALUE_KEY in value;
-}
-
-/**
  * Whether a stored preset token entry is a per-corner slot list: exactly four entries, each
  * independently an alias or a literal.
  *
@@ -179,25 +159,35 @@ export function isNonScalarPresetValue(value) {
 /**
  * Resolve a stored preset token value against the feed's resolved value map, tolerant of every
  * shape a preset property's value can carry: a bare alias or literal (unchanged from the original
- * contract), a responsive envelope (resolved from its base `$value`, breakpoint overrides ignored —
- * this is a single preview/picker value, not a responsive editor), or a per-corner slot list (each
- * corner resolved independently and joined with a space, the CSS `border-radius` shorthand order).
- * Anything else unresolvable degrades to `''` rather than a stringified object or array.
+ * contract), a responsive envelope (resolved at `breakpoint`, stepping down the cascade to whatever is
+ * actually in effect there), or
+ * a per-corner slot list (each corner resolved independently and joined with a space, the CSS
+ * `border-radius` shorthand order). Anything else unresolvable degrades to `''` rather than a
+ * stringified object or array.
  *
- * @param {Record<string, string>} values The feed's resolved value map (`feed.values`).
- * @param {*}                       value  The stored token entry (alias, literal, envelope, or slot list).
+ * `breakpoint` is what lets a row preview show what the user is actually looking at: switching the
+ * panel to Tablet has to re-render the chip with the tablet override, not keep showing desktop.
+ *
+ * @param {Record<string, string>} values       The feed's resolved value map (`feed.values`).
+ * @param {*}                      value        The stored token entry (alias, literal, envelope, or
+ *                                              slot list).
+ * @param {string}                 [breakpoint] The breakpoint to resolve at; defaults to desktop.
  *
  * @since TBD
  *
  * @return {string} The resolved value, or `''` when unresolvable.
  */
-export function resolveTokenValue(values, value) {
+export function resolveTokenValue(values, value, breakpoint = PRESET_BREAKPOINTS[0]) {
 	if (isPresetEnvelope(value)) {
-		return resolveTokenValue(values, value[ENVELOPE_VALUE_KEY]);
+		// Stepped, not flat: an unset mobile renders the tablet value and only falls through to desktop
+		// when tablet is unset too, because the projected tablet media query covers mobile widths.
+		return resolveTokenValue(values, resolvePresetBreakpoint(value, breakpoint), breakpoint);
 	}
 
 	if (isSlotList(value)) {
-		const slots = value.map((slot) => (typeof slot === 'string' ? resolveTokenValue(values, slot) : ''));
+		const slots = value.map((slot) =>
+			typeof slot === 'string' ? resolveTokenValue(values, slot, breakpoint) : ''
+		);
 
 		// All four slots or none: joining a partial resolution emits a valid-looking shorthand
 		// (`1rem  1rem 1rem`) that silently renders a different radius than the one stored, which is
@@ -227,13 +217,14 @@ export function resolveTokenValue(values, value) {
  *
  * @param {{presets?: Record<string, {label?: string, tokens?: Record<string, string>}>, userCreated?: string[]}} payload The preset GET payload.
  * @param {Record<string, string>}                                                                                 values  The feed's resolved value map.
- * @param {Function}                                                                                               preview `(tokens, values) => object` — the block's own row preview.
+ * @param {Function}                                                                                               preview `(tokens, values, breakpoint) => object` — the block's own row preview.
+ * @param {string}                                                                                                 [breakpoint] The breakpoint the preview resolves at; defaults to desktop.
  *
  * @since TBD
  *
  * @return {Array<{id: string, label: string, userCreated: boolean, preview: Object}>} The preset rows.
  */
-export function presetRows(payload, values, preview) {
+export function presetRows(payload, values, preview, breakpoint = PRESET_BREAKPOINTS[0]) {
 	const presets = payload?.presets ?? {};
 	const userCreated = Array.isArray(payload?.userCreated) ? payload.userCreated : [];
 
@@ -244,7 +235,7 @@ export function presetRows(payload, values, preview) {
 			id: slug,
 			label: preset?.label ?? slug,
 			userCreated: userCreated.includes(slug),
-			preview: preview(tokens, values),
+			preview: preview(tokens, values, breakpoint),
 		};
 	});
 }
@@ -274,7 +265,7 @@ export function presetInitialValues(payload, slug, properties) {
 	return {
 		label: preset.label ?? slug,
 		tokens: properties.reduce((acc, property) => {
-			acc[property] = aliasToId(tokens[property] ?? '');
+			acc[property] = aliasToIdDeep(tokens[property] ?? '');
 			return acc;
 		}, {}),
 	};
@@ -324,6 +315,61 @@ function isUnsetPresetValue(value) {
 }
 
 /**
+ * Alias every token id inside a value, whatever shape holds it.
+ *
+ * `idToAlias` only understands a bare string, which was enough while every editable property was a
+ * scalar. A per-corner slot list and a responsive envelope both carry ids *inside* them, and passing
+ * either through unchanged writes bare dot-paths where the server expects `{aliases}`. Keys are left
+ * alone — only values are candidates — and a non-id string (a literal, a clamp expression) is
+ * returned untouched by `idToAlias` itself.
+ *
+ * @param {*} value A scalar, a slot list, or a responsive envelope.
+ *
+ * @since TBD
+ *
+ * @return {*} The same shape, with every token id alias-wrapped.
+ */
+function aliasDeep(value) {
+	if (Array.isArray(value)) {
+		return value.map(aliasDeep);
+	}
+
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, aliasDeep(entry)]));
+	}
+
+	return idToAlias(value);
+}
+
+/**
+ * Unwrap every alias inside a value back to its bare id, whatever shape holds it.
+ *
+ * The read-side mirror of `aliasDeep`, and it has to reach just as deep for the panel's dirty bit to
+ * ever clear. `isDirty` compares the draft against these seeded values, and the two sides disagree on
+ * a nested id unless both are unwrapped: the field writes a bare id into the draft while the stored
+ * envelope still carries `{braces}`, so a shallow unwrap leaves them permanently unequal and Save
+ * stays enabled forever after a successful write. Both shapes happen to render identically, which is
+ * what makes the mismatch invisible until the button never goes quiet.
+ *
+ * @param {*} value A scalar, a slot list, or a responsive envelope.
+ *
+ * @since TBD
+ *
+ * @return {*} The same shape, with every alias unwrapped to a bare id.
+ */
+function aliasToIdDeep(value) {
+	if (Array.isArray(value)) {
+		return value.map(aliasToIdDeep);
+	}
+
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, aliasToIdDeep(entry)]));
+	}
+
+	return aliasToId(value);
+}
+
+/**
  * Build the write-side token map from a settings-panel draft: a property the draft actually
  * changed from its seed is written as a fresh alias-or-literal; every untouched property is
  * carried over from the preset's raw stored map, byte-for-byte, so a save that only edited the
@@ -363,7 +409,7 @@ export function presetSaveTokens(draftTokens, initialTokens = {}, storedTokens =
 
 		const touched = !isEqual(value, initialTokens[property]);
 
-		acc[property] = touched || !(property in storedTokens) ? idToAlias(value) : storedTokens[property];
+		acc[property] = touched || !(property in storedTokens) ? aliasDeep(value) : storedTokens[property];
 
 		return acc;
 	}, {});
@@ -397,15 +443,16 @@ export function nextPresetSlug(existingSlugs, base) {
  * @param {string}                                              itemId  The open route item id.
  * @param {?{label?: string, tokens?: Record<string, string>}}  draft   The open panel's live draft, or null.
  * @param {Record<string, string>}                              values  The feed's resolved value map.
- * @param {Function}                                            preview `(tokens, values) => object` — the same
- *                                                                      builder `presetRows` used, so an overlaid
- *                                                                      row and a fetched one cannot drift.
+ * @param {Function}                                            preview `(tokens, values, breakpoint) => object` —
+ *                                                                      the same builder `presetRows` used, so an
+ *                                                                      overlaid row and a fetched one cannot drift.
+ * @param {string} [breakpoint] The breakpoint the preview resolves at; defaults to desktop.
  *
  * @since TBD
  *
  * @return {Array<Object>} The rows, with the matching row's label/preview overlaid.
  */
-export function overlayPresetRows(rows, itemId, draft, values, preview) {
+export function overlayPresetRows(rows, itemId, draft, values, preview, breakpoint = PRESET_BREAKPOINTS[0]) {
 	if (!draft || !itemId) {
 		return rows;
 	}
@@ -427,11 +474,11 @@ export function overlayPresetRows(rows, itemId, draft, values, preview) {
 		// stored alias shape, same as a fetched payload. Re-wrapping here means both paths run the
 		// identical builder, so a live overlay can never resolve differently from what lands on save.
 		const asStored = Object.entries(draft.tokens).reduce((acc, [property, value]) => {
-			acc[property] = idToAlias(value ?? '');
+			acc[property] = aliasDeep(value ?? '');
 			return acc;
 		}, {});
 
-		overlaid.preview = preview(asStored, values);
+		overlaid.preview = preview(asStored, values, breakpoint);
 	}
 
 	const next = [...rows];
@@ -484,3 +531,5 @@ export function presetNameSchema() {
 		],
 	};
 }
+
+export { isPresetEnvelope, PRESET_BREAKPOINTS, readPresetBreakpoint, writePresetBreakpoint };
