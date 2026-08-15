@@ -130,6 +130,14 @@ export const DEMO_SETTINGS_SCHEMA = {
 					leadingIcon: cornerAll,
 				},
 				{
+					// The token-controls `BoxControl` in corner geometry — the replacement for the
+					// `box-sides` entry above, kept alongside it while both exist.
+					type: 'radius',
+					path: 'tokenRadius',
+					label: __('Radius (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
 					// Same shape as Radius, different leading glyph — proving the glyph is schema data.
 					type: 'box-sides',
 					path: 'borderWidth',

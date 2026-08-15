@@ -36,11 +36,13 @@ const TABS = [
  * Another block's rows would preview something else entirely, which is why the generic row mapper
  * takes this as a function rather than reading fixed keys.
  *
- * @param {Record<string, *>}      tokens     The preset's stored token map.
- * @param {Record<string, string>} values     The feed's resolved value map.
- * @param {string}                 breakpoint The breakpoint the row is previewing, so a responsive
- *                                              value resolves to the step being viewed rather than
- *                                              always to desktop.
+ * @param {Record<string, *>}      tokens       The preset's stored token map.
+ * @param {Record<string, string>} values       The feed's resolved value map.
+ * @param {string}                 [breakpoint] The breakpoint to resolve responsive values at —
+ *                                              defaults to desktop. Passed through by both the row
+ *                                              preview and the draft-overlay chip, so either one
+ *                                              shows the step currently being viewed/edited rather
+ *                                              than always falling back to desktop.
  *
  * @since TBD
  *
@@ -115,13 +117,14 @@ function schemaFor(tab) {
 	}
 
 	const radiusPanel = {
-		id: 'radius',
-		title: __('Radius', 'kadence-blocks'),
+		id: 'border-and-shadow',
+		title: __('Border and Shadow', 'kadence-blocks'),
 		fields: [
 			{
-				type: 'token-select',
+				type: 'radius',
 				tokenType: 'dimension',
 				role: 'radius',
+				responsive: true,
 				path: 'tokens.button-radius',
 				label: __('Radius', 'kadence-blocks'),
 			},

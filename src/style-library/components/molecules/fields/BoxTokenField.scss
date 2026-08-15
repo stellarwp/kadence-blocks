@@ -1,0 +1,12 @@
+@use '../../../styles/mixins' as *;
+
+// `src/token-controls` stays host-agnostic, so `ControlShell` ships its label with layout only and no
+// type treatment. Here that label sits directly beside `FieldLabel`'s (NAME, and every other field in
+// the panel), so it has to read as the same kind of label — via the shared mixin rather than a copy of
+// its values.
+//
+// Scoped to the page body class on purpose: the block editor is expected to adopt the same shell, and
+// an unscoped rule would restyle every editor control label the moment it does.
+body.kadence-blocks-style-library-page .kb-token-control__label {
+	@include small-uppercase-label;
+}
