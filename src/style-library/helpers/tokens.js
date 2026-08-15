@@ -31,24 +31,79 @@ export function getPickableTokensPool() {
 }
 
 /**
+ * Narrow a role-scoped token list to its primitive-layer entries, when it has any. A role's
+ * primitives are its scale steps (e.g. the radius sizes); its semantic tokens merely alias them, so
+ * a picker that already knows the role offers only the steps rather than duplicating them with the
+ * component-specific aliases. A role with no primitives (only semantics) falls back to the full list
+ * unchanged.
+ *
+ * The narrowing can never drop a currently-bound token from the list, though: a stored preset value
+ * is often a semantic alias by design (e.g. `{semantic.radius.control}`), and a semantic id the
+ * primitive narrowing would otherwise remove is kept — the field would otherwise find no matching
+ * entry and mistake a valid token for a literal, rendering the raw dot-path as if it were text.
+ *
+ * Every bound id is exempt, not just one. A box control's four corners can each hold a different
+ * token, so exempting only the first would drop the others the moment one corner is pointed at a
+ * primitive — and the corners still holding the semantic would render as raw ids.
+ *
+ * @param {Array<{id: string}>}   tokens   The role-narrowed token list.
+ * @param {?(string|Array)}       selected The currently-bound token id, or ids, exempt from the
+ *                                         narrowing.
+ *
+ * @since TBD
+ *
+ * @return {Array<{id: string}>} The primitive-only list plus any exempted selections, in the pool's
+ * own order, or `tokens` unchanged when it has no primitives.
+ */
+export function preferPrimitiveTokens(tokens, selected) {
+	const primitives = tokens.filter((token) => token.id.startsWith('primitive.'));
+
+	if (!primitives.length) {
+		return tokens;
+	}
+
+	const exempt = new Set(
+		(Array.isArray(selected) ? selected : [selected]).filter(
+			(id) => id && !primitives.some((token) => token.id === id)
+		)
+	);
+
+	if (!exempt.size) {
+		return primitives;
+	}
+
+	// Filtered from the full list rather than appended to the primitives, so an exempted semantic keeps
+	// its place in the pool's order instead of being pushed to the end.
+	return tokens.filter((token) => token.id.startsWith('primitive.') || exempt.has(token.id));
+}
+
+/**
  * The pickable tokens of one DTCG `$type` (e.g. `dimension`, `color`), each with its resolved
  * literal value from the active library. An optional `role` narrows the pool further (e.g. the
  * Radius picker wants only `role: 'radius'` dimensions, not every dimension token) — omitted, this
- * behaves exactly as before.
+ * behaves exactly as before. When a `role` is given, the pool also prefers that role's primitive
+ * scale (see `preferPrimitiveTokens`, exempting `selectedId` from the narrowing).
  *
- * @param {string}  type   The DTCG token `$type` to filter to.
- * @param {?string} [role] When given, also require `token.role === role`.
+ * The order is the pool's own, which is the order its scale screen lists — a picker that reshuffled
+ * by what happens to be bound would read differently every time the value changed.
+ *
+ * @param {string}            type       The DTCG token `$type` to filter to.
+ * @param {?string}           [role]     When given, also require `token.role === role` and prefer
+ *                                       that role's primitives.
+ * @param {?(string|Array)}   [selected] The currently-bound token id, or ids, exempt from the
+ *                                       primitive narrowing so a bound semantic alias is never
+ *                                       filtered out of its own picker.
  *
  * @since TBD
  *
  * @return {Array<{id: string, label: string, value: string, role: ?string}>} The pickable tokens for the type.
  */
-export function pickableTokensForType(type, role) {
+export function pickableTokensForType(type, role, selected) {
 	const pool = getPickableTokensPool();
 	const feed = getDesignTokensFeed();
 	const libraryValues = pool.values?.[feed?.slug] ?? {};
 
-	return (pool.tokens || [])
+	const matched = (pool.tokens || [])
 		.filter((token) => token.type === type && (role === undefined || token.role === role))
 		.map((token) => ({
 			id: token.id,
@@ -56,6 +111,12 @@ export function pickableTokensForType(type, role) {
 			value: libraryValues[token.id] ?? '',
 			role: token.role ?? null,
 		}));
+
+	if (role === undefined) {
+		return matched;
+	}
+
+	return preferPrimitiveTokens(matched, selected);
 }
 
 /**
@@ -105,14 +166,11 @@ export function flattenSchemaTokens(schema) {
 	);
 }
 
-/**
- * The vendor-extension namespace the module owns (mirrors Schema\Vocabulary\Extensions::NAMESPACE).
- *
- * @since TBD
- *
- * @type {string}
- */
-export const KADENCE_TOKEN_NAMESPACE = 'com.kadence.designTokens';
+// Re-exported, not redeclared: the envelope contract owns the spelling, and this module both
+// uses it and keeps the name available to existing importers.
+import { KADENCE_TOKEN_NAMESPACE } from '../../token-controls/helpers/preset-envelope';
+
+export { KADENCE_TOKEN_NAMESPACE };
 
 /**
  * The stepped responsive breakpoint keys, in cascade order (mirrors Schema\Vocabulary\Responsive).
