@@ -501,6 +501,27 @@ return [
 						'mobile' => 'mobileBorderRadius',
 					],
 				],
+				// Padding and margin carry no preset value by default, and that omission is the point: a
+				// button's spacing comes from its size class today, so shipping a value here would restyle
+				// every existing button and take padding away from the Button Size control. The binding
+				// exists so a preset CAN set them; until one does, the property resolves to nothing and no
+				// declaration is emitted.
+				'button-padding'    => [
+					'css_var'          => 'kb-btn-padding',
+					'control_attr'     => 'padding',
+					'responsive_attrs' => [
+						'tablet' => 'tabletPadding',
+						'mobile' => 'mobilePadding',
+					],
+				],
+				'button-margin'     => [
+					'css_var'          => 'kb-btn-margin',
+					'control_attr'     => 'margin',
+					'responsive_attrs' => [
+						'tablet' => 'tabletMargin',
+						'mobile' => 'mobileMargin',
+					],
+				],
 			],
 		],
 		[
