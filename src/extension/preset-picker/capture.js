@@ -7,6 +7,7 @@
  * token stores.
  */
 import { get } from 'lodash';
+import { KADENCE_TOKEN_NAMESPACE } from '../../token-controls/helpers/preset-envelope';
 import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
 import {
 	normalizeColor,
@@ -25,7 +26,8 @@ import { tokenLiteral } from '../design-tokens/token-literals';
  *
  * @since TBD
  */
-const VENDOR_EXTENSION = 'com.kadence.designTokens';
+// The one definition lives with the envelope contract both hosts read and write.
+const VENDOR_EXTENSION = KADENCE_TOKEN_NAMESPACE;
 
 /**
  * The breakpoints a responsive property can override, narrowest last — the order the device cascade runs

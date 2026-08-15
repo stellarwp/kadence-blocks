@@ -29,7 +29,9 @@ jest.mock('../../token-picker', () => ({
 import { applyFilters } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../../token-picker';
 import { registerComponentTokenFilters } from '../register-component-filters';
-import { TokenChip, TokenPickerButton, TokenFieldControl } from '../component-token-ui';
+import { TokenChip } from '../../../token-controls/atoms/TokenChip';
+import { TokenPickerButton } from '../../../token-controls/molecules/TokenPickerButton';
+import { TokenSelector as TokenFieldControl } from '../../../token-controls/organisms/TokenSelector';
 
 const EDITOR_HOOK = 'kadence.components.control.editor';
 const ACTIONS_HOOK = 'kadence.components.control.actions';
