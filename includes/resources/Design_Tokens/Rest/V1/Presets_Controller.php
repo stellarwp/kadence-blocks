@@ -897,9 +897,13 @@ final class Presets_Controller extends Controller {
 					'type'        => 'string',
 				],
 				Extensions::get_tokens_key() => [
-					'description'          => __( 'The preset\'s property => alias-or-literal token map.', 'kadence-blocks' ),
+					'description'          => __( 'The preset\'s property => value map: an alias or literal, a per-corner list, or a responsive envelope.', 'kadence-blocks' ),
 					'type'                 => 'object',
-					'additionalProperties' => [ 'type' => [ 'string', 'number' ] ],
+					// A value is not always scalar. A dimension property can hold a per-corner list, or a
+					// responsive envelope carrying its base value plus per-breakpoint overrides, so the
+					// documented shape has to admit both — the write routes already accept them, and a
+					// schema that says otherwise misleads anything generated from it.
+					'additionalProperties' => [ 'type' => [ 'string', 'number', 'array', 'object' ] ],
 				],
 			],
 		];
