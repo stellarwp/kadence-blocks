@@ -1,7 +1,7 @@
 /**
  * The settings-field type vocabulary: the single source of truth mapping a schema field's `type`
  * string to the component that renders it. Every per-screen settings schema authors against these
- * thirteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
+ * fourteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
  */
 
 /**
@@ -37,6 +37,20 @@ import { UnitField } from '../components/molecules/fields/UnitField';
 const RadiusField = (props) => <BoxTokenField {...props} slots="corners" />;
 
 /**
+ * The `spacing` field: a box control whose four slots are sides.
+ *
+ * Same control as `radius`, different geometry — padding and margin name edges where a radius names
+ * corners. Bound here for the same reason: a schema names the property, not the arrangement.
+ *
+ * @param {Object} props The field props from `SettingsForm`.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The field.
+ */
+const SpacingField = (props) => <BoxTokenField {...props} slots="sides" />;
+
+/**
  * The field-type registry: `type` string => field component. Frozen so a consumer can't mutate the
  * vocabulary at runtime.
  *
@@ -56,14 +70,15 @@ export const FIELD_TYPES = Object.freeze({
 	'token-color-select': TokenColorSelectField,
 	'box-sides': BoxSidesField,
 	radius: RadiusField,
+	spacing: SpacingField,
 	shadow: ShadowField,
 });
 
 /**
  * The field types a schema may mark `responsive: true`, mirroring the backend's
  * `Schema\Vocabulary\Responsive::is_responsive_capable()` gate (`dimension`/`lineHeight` DTCG
- * types). `radius` qualifies: its slots hold `dimension` values, and the envelope stores whatever a
- * slot holds — an alias overrides per breakpoint just as a literal does.
+ * types). `radius` and `spacing` qualify: their slots hold `dimension` values, and the envelope stores
+ * whatever a slot holds — an alias overrides per breakpoint just as a literal does.
  *
  * `token-select`/`token-color-select`/`box-sides` remain excluded. Those render a single picker with
  * no breakpoint switcher to drive one, so marking them responsive would write an override no part of
@@ -75,6 +90,7 @@ export const FIELD_TYPES = Object.freeze({
 export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze([
 	'number-unit',
 	'radius',
+	'spacing',
 	'range-number',
 	'stepper',
 	'unit',

@@ -138,6 +138,13 @@ export const DEMO_SETTINGS_SCHEMA = {
 					tokenType: 'dimension',
 				},
 				{
+					// The same control in side geometry, which is what padding and margin use.
+					type: 'spacing',
+					path: 'tokenSpacing',
+					label: __('Spacing (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
 					// Same shape as Radius, different leading glyph — proving the glyph is schema data.
 					type: 'box-sides',
 					path: 'borderWidth',
@@ -181,6 +188,7 @@ export const DEMO_SETTINGS_VALUES = {
 	tokenColor: '',
 	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
 	radius: '',
+	tokenSpacing: '',
 	borderWidth: '',
 	spacing: '',
 	enabled: true,

@@ -131,7 +131,32 @@ function schemaFor(tab) {
 		],
 	};
 
-	return { panels: [colorPanel, radiusPanel] };
+	// Normal only, like the radius panel: neither property has a hover counterpart, so a field on the
+	// Hover tab would write something `guard_surface` rejects.
+	const spacingPanel = {
+		id: 'spacing',
+		title: __('Spacing', 'kadence-blocks'),
+		fields: [
+			{
+				type: 'spacing',
+				tokenType: 'dimension',
+				role: 'spacing',
+				responsive: true,
+				path: 'tokens.button-padding',
+				label: __('Padding', 'kadence-blocks'),
+			},
+			{
+				type: 'spacing',
+				tokenType: 'dimension',
+				role: 'spacing',
+				responsive: true,
+				path: 'tokens.button-margin',
+				label: __('Margin', 'kadence-blocks'),
+			},
+		],
+	};
+
+	return { panels: [colorPanel, radiusPanel, spacingPanel] };
 }
 
 /**

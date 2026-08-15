@@ -261,7 +261,15 @@ describe('presetInitialValues', () => {
 		window.kadenceDesignTokens = {
 			presets: {
 				'kadence/singlebtn': {
-					properties: ['button-bg', 'button-text', 'button-bg-hover', 'button-text-hover', 'button-radius'],
+					properties: [
+						'button-bg',
+						'button-text',
+						'button-bg-hover',
+						'button-text-hover',
+						'button-radius',
+						'button-padding',
+						'button-margin',
+					],
 				},
 			},
 		};
@@ -271,7 +279,7 @@ describe('presetInitialValues', () => {
 		delete window.kadenceDesignTokens;
 	});
 
-	it('seeds all five bound properties as bare ids', () => {
+	it('seeds every bound property as a bare id', () => {
 		const payload = {
 			presets: {
 				primary: {
@@ -295,6 +303,10 @@ describe('presetInitialValues', () => {
 				'button-bg-hover': 'semantic.color.action-primary-hover',
 				'button-text-hover': 'semantic.color.on-primary',
 				'button-radius': '0.5rem',
+				// Bound but unvalued by this preset, so they seed empty — the shape that keeps a button's
+				// spacing owned by its size class until someone sets one.
+				'button-padding': '',
+				'button-margin': '',
 			},
 		});
 	});
@@ -575,7 +587,13 @@ describe('BUTTON_PRESET.schemaFor', () => {
 		const schema = BUTTON_PRESET.schemaFor('normal');
 		const paths = schema.panels.flatMap((panel) => panel.fields.map((field) => field.path));
 
-		expect(paths).toEqual(['tokens.button-text', 'tokens.button-bg', 'tokens.button-radius']);
+		expect(paths).toEqual([
+			'tokens.button-text',
+			'tokens.button-bg',
+			'tokens.button-radius',
+			'tokens.button-padding',
+			'tokens.button-margin',
+		]);
 
 		const radiusField = schema.panels
 			.flatMap((panel) => panel.fields)
