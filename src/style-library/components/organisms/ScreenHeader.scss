@@ -1,10 +1,11 @@
-@use '../../styles/mixins' as *;
+@use "../../styles/mixins" as *;
 
 .kadence-blocks-style-library__screen-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--kb-sl-space-15);
+	margin-bottom: var(--kb-sl-space-30);
 }
 
 .kadence-blocks-style-library__screen-header-lead {
@@ -65,9 +66,7 @@
 // draws the outlined, theme-colored look this design wants, so this rule only sets what core
 // doesn't already give it: padding, font, gap, and icon sizing. No border/background/color/radius
 // here on purpose — adding them would duplicate what core's variant already provides.
-.kadence-blocks-style-library-root
-	.kadence-blocks-style-library__screen-header-primary-action
-	.components-button {
+.kadence-blocks-style-library-root .kadence-blocks-style-library__screen-header-primary-action .components-button {
 	padding: var(--kb-sl-space-10);
 	gap: var(--kb-sl-space-05);
 	font-size: var(--kb-sl-font-size-m);
