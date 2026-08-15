@@ -282,3 +282,395 @@
 	color: #949494;
 }
 
+/**
+ * The control shell: a header carrying the label and its affordances, above the control body.
+ *
+ * Sibling of `.kadence-token-field` — that styles one value slot, this styles the frame a whole
+ * control sits in. Both are shared between the Style Library and the block editor, so neither may
+ * depend on an app-scoped custom property; the WP admin palette is the common vocabulary.
+ */
+.kb-token-control {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.kb-token-control__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/*
+	 * No gap: the affordances open with the indicator's dot, which marks the label and has to read as
+	 * attached to it. Spacing here would detach the mark from the thing it marks; the affordances set
+	 * their own internal spacing, and the trailing controls are held apart by the indicator's growth.
+	 */
+	gap: 0;
+	min-height: 24px;
+}
+
+.kb-token-control__label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: #1e1e1e;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+/*
+ * Separates the mark from the affordances that follow it. Scoped to this header rather than set on
+ * `.kb-token-indicator` itself: the same indicator is still used by the block editor's own control
+ * rows, and those are laid out differently — widening the class would shift them too.
+ */
+.kb-token-control__header > .kb-token-indicator {
+	padding-right: 8px;
+}
+
+.kb-token-control__affordances {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	min-width: 0;
+
+	/* Held at the trailing edge; the indicator sits outside this group, against the label. */
+	margin-left: auto;
+}
+
+/**
+ * The affordance buttons: flat and borderless, with a color-only active state.
+ *
+ * WordPress renders `ButtonGroup` as a bordered segmented control and `isPressed` as a solid dark
+ * fill, which reads far heavier than the rest of a settings row. The Style Library's own breakpoint
+ * switcher is borderless with a color-only checked state, so this matches that — in plain CSS, since
+ * shared CSS cannot reach for `--kb-sl-*` custom properties that only exist in one host.
+ */
+/**
+ * The device switcher, ported verbatim from `@kadence/components`' measurement control so the
+ * Style Library and the block editor render one control rather than two lookalikes. The package's
+ * `editor.scss` only ships in the editor bundle, which is why matching class names alone was never
+ * going to be enough — the rules have to live somewhere both hosts load.
+ */
+.kb-token-control__affordances .components-button.kb-responsive-btn {
+	width: auto;
+	height: auto;
+	margin-bottom: 0;
+	padding: 2px 4px;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+	outline: 0;
+	color: #a0aec0;
+	font-size: 10px;
+
+	&:hover:not(:disabled) {
+		background: transparent;
+		color: #718096;
+	}
+
+	/*
+	 * No ring on click, matching the editor's device switcher. WordPress's own focus style has the same
+	 * specificity as the reset above, so source order decides it — this raises the specificity to settle
+	 * it. Scoped to `:not(:focus-visible)` so the ring still appears for keyboard users, who have nothing
+	 * else telling them where they are.
+	 */
+	&:focus:not(:focus-visible) {
+		box-shadow: none;
+		outline: 0;
+	}
+
+	&.is-active {
+		background: transparent;
+		color: var(--wp-admin-theme-color, #00669b);
+	}
+
+	.dashicon {
+		width: 15px;
+		height: 15px;
+		font-size: 15px;
+	}
+}
+
+.kb-token-control__affordances .kb-measure-responsive-options {
+	display: inline-flex;
+	align-items: center;
+	/* The device buttons sit flush, as they do in the editor's own switcher. */
+	gap: 0;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.kb-token-control__affordances .components-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 24px;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: 0;
+	border-radius: 2px;
+	background: transparent;
+	box-shadow: none;
+	color: #1e1e1e;
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	&:hover:not(:disabled) {
+		background: #f0f0f0;
+		color: #1e1e1e;
+	}
+
+	/* Checked reads as color, not as a filled block — the same signal the app's own switcher uses. */
+	&.is-pressed,
+	&.is-pressed:hover:not(:disabled) {
+		background: transparent;
+		color: #3858e9;
+	}
+
+	&:focus-visible {
+		outline: 2px solid #3858e9;
+		outline-offset: 1px;
+		box-shadow: none;
+	}
+}
+
+.kb-token-control__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+/* The unlinked slot grid: two columns, in the display order the control's role decided. */
+.kb-token-control__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 4px;
+}
+
+/*
+ * A slot in the unlinked grid: a titled cell, the title and the field reading as one box.
+ *
+ * Half the control's width has to carry a token name and its value, and inline they do not fit — at
+ * the panel's width the name alone is about as wide as the whole slot, so side by side the name is
+ * what gets truncated. Stacking gives the name the full width and keeps the value visible under it.
+ */
+.kb-token-control__slot {
+	/* Local to this library on purpose: shared CSS cannot reach for a host's own spacing scale. */
+	--kb-token-control-slot-padding-y: 0.25rem;
+	--kb-token-control-slot-padding-x: 0.5rem;
+	/* Clears the field's 1px border, so the mark reads as inside the box rather than drawn over it. */
+	--kb-token-control-mark-inset: 1px;
+	/* Floored at zero so a field flatter than the inset cannot ask for a negative radius. */
+	--kb-token-control-mark-radius: max(
+		0px,
+		calc(var(--kb-token-control-field-radius, 2px) - var(--kb-token-control-mark-inset))
+	);
+
+	position: relative;
+
+	.kadence-token-field__trigger.components-button {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0;
+		height: auto;
+		padding: var(--kb-token-control-slot-padding-y) var(--kb-token-control-slot-padding-x);
+		border-radius: var(--kb-token-control-field-radius, 2px);
+		font-size: 12px;
+		text-align: center;
+	}
+
+	.kadence-token-field__label {
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Set explicitly on the base rule, so it has to be pulled back to the slot's own size here. */
+	.kadence-token-field__value {
+		font-size: inherit;
+	}
+
+	/*
+	 * The position mark hangs off the field itself rather than the cell, so it can sit on the very
+	 * corner (or edge) it names. It is inset by its own border width so it reads as sitting just inside
+	 * the field rather than smudging the field's own border.
+	 */
+	.kadence-token-field {
+		position: relative;
+	}
+
+	.kadence-token-field::before {
+		position: absolute;
+		z-index: 1;
+		box-sizing: border-box;
+		width: 1rem;
+		height: 1rem;
+		border: 0 solid var(--kb-border-dark-color, #6f8094);
+		content: "";
+		pointer-events: none;
+	}
+
+	/*
+	 * One rule set for both geometries, because they are the same idea at different arity: a corner
+	 * sets two adjacent borders, a side sets one. Radius uses the corner classes; border, margin and
+	 * padding use the side ones. Each edge is addressed with its own offset, so a corner simply gets
+	 * two of them and needs no transform to reach the far side.
+	 */
+	&--top-left .kadence-token-field::before,
+	&--top-right .kadence-token-field::before,
+	&--top .kadence-token-field::before {
+		top: var(--kb-token-control-mark-inset);
+		border-top-width: 3px;
+	}
+
+	&--bottom-left .kadence-token-field::before,
+	&--bottom-right .kadence-token-field::before,
+	&--bottom .kadence-token-field::before {
+		bottom: var(--kb-token-control-mark-inset);
+		border-bottom-width: 3px;
+	}
+
+	&--top-left .kadence-token-field::before,
+	&--bottom-left .kadence-token-field::before,
+	&--left .kadence-token-field::before {
+		left: var(--kb-token-control-mark-inset);
+		border-left-width: 3px;
+	}
+
+	&--top-right .kadence-token-field::before,
+	&--bottom-right .kadence-token-field::before,
+	&--right .kadence-token-field::before {
+		right: var(--kb-token-control-mark-inset);
+		border-right-width: 3px;
+	}
+
+	/*
+	 * A corner mark traces the field's own corner, so it follows the same curve — left square, it would
+	 * cut across the rounded edge it is tracing. Inset by the mark's own offset, though: a curve sitting
+	 * 1px inside a 2px one is a 1px curve, so the radius is the field's less the inset rather than the
+	 * field's outright. A side mark is mid-edge and stays straight.
+	 */
+	&--top-left .kadence-token-field::before {
+		border-top-left-radius: var(--kb-token-control-mark-radius);
+	}
+
+	&--top-right .kadence-token-field::before {
+		border-top-right-radius: var(--kb-token-control-mark-radius);
+	}
+
+	&--bottom-right .kadence-token-field::before {
+		border-bottom-right-radius: var(--kb-token-control-mark-radius);
+	}
+
+	&--bottom-left .kadence-token-field::before {
+		border-bottom-left-radius: var(--kb-token-control-mark-radius);
+	}
+
+	/* A side names one edge, so it is centered along that edge rather than pinned to a corner. */
+	&--top .kadence-token-field::before,
+	&--bottom .kadence-token-field::before {
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	&--left .kadence-token-field::before,
+	&--right .kadence-token-field::before {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+}
+
+.kb-token-control__indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+}
+
+/* Bound and matching: a quiet mark in the same slot the reset would occupy, so the row's controls
+   do not shift as a value is edited. */
+.kb-token-control__indicator-linked {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #3858e9;
+}
+
+.kb-token-control__indicator-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #cc1818;
+}
+
+.kb-token-control__indicator-reset.components-button {
+	min-width: 24px;
+	height: 24px;
+	padding: 0;
+	color: #757575;
+
+	&:hover:not(:disabled) {
+		color: #1e1e1e;
+	}
+}
+
+/* An edited control, flagged by a host that offers "highlight edits". */
+.kb-token-control--highlight {
+	border-radius: 2px;
+	background: #fcf9e8;
+	box-shadow: 0 0 0 4px #fcf9e8;
+}
+
+/**
+ * The linked/individual toggle's resting state, ported from `@kadence/components`' `editor.scss`.
+ *
+ * That CSS only ships in the editor bundle, so the toggle arrived here unstyled — WordPress's
+ * own `is-tertiary` gives it a filled grey chip rather than the flat muted glyph the editor shows.
+ * The pressed (linked) fill is handled above, alongside the measure control it matches.
+ */
+.kb-token-control__affordances .components-button.has-icon.kadence-control-toggle {
+	width: auto;
+	min-width: 0;
+	height: auto;
+	margin-bottom: 0;
+	padding: 2px 4px;
+	border: 0;
+	border-radius: 2px;
+	background: transparent;
+	box-shadow: none;
+	outline: 0;
+	color: #a0aec0;
+	font-size: 18px;
+
+	/*
+	 * `:not(.is-pressed)` is load-bearing: this selector is more specific than the pressed rule
+	 * below, so without it a hover while linked would strip the fill back to transparent.
+	 */
+	&:hover:not(:disabled):not(.is-pressed) {
+		background: transparent;
+		color: #718096;
+	}
+
+	/*
+	 * Linked takes the filled treatment, matching the Border control's toggle. Nested rather than
+	 * written as a sibling selector: both states would otherwise carry identical specificity and the
+	 * winner would come down to source order, which is how this rendered grey while linked.
+	 */
+	&.is-pressed,
+	&.is-pressed:hover:not(:disabled) {
+		background: var(--wp-admin-theme-color, #3858e9);
+		color: #fff;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+}
