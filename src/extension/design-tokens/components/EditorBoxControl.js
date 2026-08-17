@@ -38,6 +38,19 @@ const BREAKPOINT_FOR_DEVICE = {
 };
 
 /**
+ * The editor device name for a control breakpoint key — the inverse of `BREAKPOINT_FOR_DEVICE`.
+ *
+ * @param {string} breakpoint The control's breakpoint key (`desktop`/`tablet`/`mobile`).
+ *
+ * @since TBD
+ *
+ * @return {string} The matching editor device name, defaulting to `Desktop`.
+ */
+function deviceForBreakpoint(breakpoint) {
+	return Object.keys(BREAKPOINT_FOR_DEVICE).find((name) => BREAKPOINT_FOR_DEVICE[name] === breakpoint) ?? 'Desktop';
+}
+
+/**
  * Render a box-shaped token control over the editor's per-device attributes.
  *
  * @param {Object}    props                The component props.
@@ -91,14 +104,7 @@ export function EditorBoxControl({
 	// The provider is handed the editor's device rather than holding one of its own: the device
 	// preview is global here, so a switcher that tracked its own would disagree with the canvas.
 	return (
-		<BreakpointProvider
-			value={breakpoint}
-			onChange={(next) => {
-				const device = Object.keys(BREAKPOINT_FOR_DEVICE).find((name) => BREAKPOINT_FOR_DEVICE[name] === next);
-
-				onDeviceChange(device ?? 'Desktop');
-			}}
-		>
+		<BreakpointProvider value={breakpoint} onChange={(next) => onDeviceChange(deviceForBreakpoint(next))}>
 			<BoxControl
 				label={label}
 				value={value}
@@ -117,6 +123,9 @@ export function EditorBoxControl({
 				role={role}
 				breakpoints={Object.values(BREAKPOINT_FOR_DEVICE)}
 				breakpoint={breakpoint}
+				// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
+				// the `BreakpointProvider` context above, so both must map back to a device the same way.
+				onBreakpointChange={(next) => onDeviceChange(deviceForBreakpoint(next))}
 				unit={unit}
 				units={units}
 				onUnit={onUnit}
