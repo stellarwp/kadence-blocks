@@ -12,22 +12,43 @@
  * Internal dependencies
  */
 import { nextScaleSlug } from './scale';
+import { getDesignTokensFeed } from './tokens';
 
 /**
- * The frozen bound surface a button preset defines, in the order the panel and previews read it.
- * The single JS spelling of the properties `declarations.php` binds for the button block — every
- * seed, save, and preview walk goes through this list, so this app can never write a property the
- * server's `guard_surface` would reject as unbound.
+ * The block whose preset bindings this module reads off the feed.
  *
  * @since TBD
  */
-export const BUTTON_PRESET_PROPERTIES = [
-	'button-bg',
-	'button-text',
-	'button-bg-hover',
-	'button-text-hover',
-	'button-radius',
-];
+const BUTTON_BLOCK = 'kadence/singlebtn';
+
+/**
+ * The button's bound property surface, in the order the panel and previews read it. Derived from
+ * the localized feed (`feed.presets['kadence/singlebtn'].properties`, itself
+ * `array_keys( $bindings->bindings )` off `declarations.php` — see
+ * `Design_Tokens\Admin\Feed\Presets::all()`), so this app can never drift from the properties the
+ * server's `guard_surface` accepts as bound. On the Style Library screen the feed is always
+ * present — it is inline-scripted onto the page before this bundle runs (see
+ * `Design_Tokens\Admin\Feed\Localizer`) — so a missing or empty surface here is a genuine bug, not
+ * a normal condition. Throwing surfaces that bug immediately instead of letting every preset seed
+ * and save silently no-op, which would be data loss with no error.
+ *
+ * @since TBD
+ *
+ * @throws {Error} When the feed has no non-empty `properties` array for the button block.
+ *
+ * @return {string[]} The button's bound property ids, in read order.
+ */
+export function getButtonPresetProperties() {
+	const properties = getDesignTokensFeed()?.presets?.[BUTTON_BLOCK]?.properties;
+
+	if (!Array.isArray(properties) || properties.length === 0) {
+		throw new Error(
+			`getButtonPresetProperties: feed.presets['${BUTTON_BLOCK}'].properties is missing or empty. Check the Design_Tokens\\Admin\\Feed\\Localizer output for this screen.`
+		);
+	}
+
+	return properties;
+}
 
 /**
  * Convert a stored alias to its bare dot-path id. A value that is not brace-wrapped (a literal) is
@@ -158,7 +179,7 @@ export function presetInitialValues(payload, slug) {
 
 	return {
 		label: preset.label ?? slug,
-		tokens: BUTTON_PRESET_PROPERTIES.reduce((acc, property) => {
+		tokens: getButtonPresetProperties().reduce((acc, property) => {
 			acc[property] = aliasToId(tokens[property] ?? '');
 			return acc;
 		}, {}),

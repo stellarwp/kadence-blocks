@@ -7,6 +7,7 @@ import {
 	presetInitialValues,
 	presetSaveTokens,
 	nextPresetSlug,
+	getButtonPresetProperties,
 } from '../helpers/presets';
 
 describe('aliasToId', () => {
@@ -122,7 +123,19 @@ describe('presetRows', () => {
 });
 
 describe('presetInitialValues', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokens;
+	});
+
 	it('seeds all five bound properties as bare ids', () => {
+		window.kadenceDesignTokens = {
+			presets: {
+				'kadence/singlebtn': {
+					properties: ['button-bg', 'button-text', 'button-bg-hover', 'button-text-hover', 'button-radius'],
+				},
+			},
+		};
+
 		const payload = {
 			presets: {
 				primary: {
@@ -170,6 +183,42 @@ describe('presetSaveTokens', () => {
 
 	it('passes a literal value through unchanged', () => {
 		expect(presetSaveTokens({ 'button-bg': 'transparent' })).toEqual({ 'button-bg': 'transparent' });
+	});
+});
+
+describe('getButtonPresetProperties', () => {
+	afterEach(() => {
+		delete window.kadenceDesignTokens;
+	});
+
+	it('derives the property list from the feed when present', () => {
+		window.kadenceDesignTokens = {
+			presets: {
+				'kadence/singlebtn': {
+					properties: ['button-bg', 'button-text', 'button-radius'],
+				},
+			},
+		};
+
+		expect(getButtonPresetProperties()).toEqual(['button-bg', 'button-text', 'button-radius']);
+	});
+
+	it('throws when the feed is absent', () => {
+		delete window.kadenceDesignTokens;
+
+		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
+	});
+
+	it('throws when the button block is missing from the feed', () => {
+		window.kadenceDesignTokens = { presets: { 'kadence/other-block': { properties: ['x'] } } };
+
+		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
+	});
+
+	it('throws when the feed has an empty properties array', () => {
+		window.kadenceDesignTokens = { presets: { 'kadence/singlebtn': { properties: [] } } };
+
+		expect(() => getButtonPresetProperties()).toThrow(/properties is missing or empty/);
 	});
 });
 
