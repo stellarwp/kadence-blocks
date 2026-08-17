@@ -178,6 +178,14 @@ describe('presetInitialValues', () => {
 	});
 
 	it('seeds real values once the payload lands for a slug that first read null while loading', () => {
+		window.kadenceDesignTokens = {
+			presets: {
+				'kadence/singlebtn': {
+					properties: ['button-bg', 'button-text', 'button-bg-hover', 'button-text-hover', 'button-radius'],
+				},
+			},
+		};
+
 		const slug = 'secondary';
 		const loading = presetInitialValues(null, slug);
 		const loaded = presetInitialValues(
