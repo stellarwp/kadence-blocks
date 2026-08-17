@@ -216,7 +216,7 @@
 	text-decoration: underline;
 }
 .kt-button:not(.kb-btn-global-inherit) {
-	padding: 0.4em 1em;
+	padding: var(--kb-btn-padding, var(--kb-token--semantic--spacing--button-padding-top, 0.4em) var(--kb-token--semantic--spacing--button-padding-right, 1em) var(--kb-token--semantic--spacing--button-padding-bottom, 0.4em) var(--kb-token--semantic--spacing--button-padding-left, 1em));
 	cursor: pointer;
 	// Mirror of style.scss: the button follows the semantic.*.control typography tokens so the editor
 	// preview matches the front end. See the note there.
@@ -243,7 +243,7 @@
 .kt-button.kb-btn-global-outline {
 	border: 2px solid var(--global-palette-btn-bg, #3633e1);
 	background: transparent;
-	padding: calc(0.4em - 2px) calc(1em - 2px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 2px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 2px);
 	color: var(--global-palette-btn-bg, #3633e1);
 	&:hover {
 		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
@@ -292,12 +292,12 @@
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
 	border-width: 3px;
 	border-style: solid;
-	padding: calc(0.4em - 3px) calc(1em - 3px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 3px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 3px);
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
 	border-width: 1px;
 	border-style: solid;
-	padding: calc(0.4em - 1px) calc(1em - 1px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 1px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 1px);
 }
 // .wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {
 //     display: flex;
