@@ -12,7 +12,7 @@
 /**
  * WordPress dependencies
  */
-import { Button, Notice } from '@wordpress/components';
+import { Button, Notice, Spinner } from '@wordpress/components';
 import { plus } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { addFilter } from '@wordpress/hooks';
@@ -115,13 +115,19 @@ export function ButtonScreen({ label, route, navigate, library }) {
 					{presets.loadError.message}
 				</Notice>
 			)}
-			<RowList
-				items={items}
-				selectedId={route.item}
-				onSelect={selectPreset}
-				onReorder={() => {}}
-				empty={<EmptyState title={label} description={__('Add Button', 'kadence-blocks')} action={addAction} />}
-			/>
+			{presets.isLoading ? (
+				<Spinner />
+			) : (
+				<RowList
+					items={items}
+					selectedId={route.item}
+					onSelect={selectPreset}
+					onReorder={() => {}}
+					empty={
+						<EmptyState title={label} description={__('Add Button', 'kadence-blocks')} action={addAction} />
+					}
+				/>
+			)}
 		</div>
 	);
 }
