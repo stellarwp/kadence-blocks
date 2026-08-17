@@ -124,7 +124,7 @@ final class Core_Update_Notice {
 	}
 
 	/**
-	 * The nonced link that stores the shared dismissal flag.
+	 * The nonce-protected link that stores the shared dismissal flag.
 	 *
 	 * @since TBD
 	 *

@@ -17,6 +17,7 @@
     ],
     "words": [
         "ABSPATH",
+        "Adbar",
         "advancedbtn",
         "advancedgallery",
         "advancedheading",
@@ -125,6 +126,7 @@
         "woodardmc",
         "wpdb",
         "wpml",
+        "wpnonce",
         "wpunit",
         "writefunction"
     ]
