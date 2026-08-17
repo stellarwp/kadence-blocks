@@ -127,7 +127,7 @@ export function ButtonScreen({ label, route, navigate, library }) {
 					{screen.addError.message}
 				</Notice>
 			)}
-			{presets.isLoading ? (
+			{screen.isLoading ? (
 				<Spinner />
 			) : (
 				<RowList

@@ -9,15 +9,15 @@ import { createRoot } from 'react-dom/client';
  * Internal dependencies
  */
 import { ButtonScreen } from '../components/pages/ButtonScreen';
-import { useButtonPresets } from '../hooks/use-button-presets';
+import { useButtonScreen } from '../hooks/use-button-screen';
 import { useDraftChannel } from '../hooks/use-draft-channel';
 
-// A factory: `use-button-presets.js` pulls in `../api/client`, which imports `@wordpress/api-fetch`
-// (externalized to the `wp.apiFetch` global in production, not an installed npm dependency), so
-// automocking would fail to resolve it. The screen only reads the hook's return value, so a bare
-// jest.fn() stand-in is enough.
-jest.mock('../hooks/use-button-presets', () => ({
-	useButtonPresets: jest.fn(),
+// A factory: `use-button-screen.js` pulls in `helpers/preset-flows.js` -> `../api/client`, which
+// imports `@wordpress/api-fetch` (externalized to the `wp.apiFetch` global in production, not an
+// installed npm dependency), so automocking would fail to resolve it. The screen only reads the
+// hook's return value, so a bare jest.fn() stand-in is enough.
+jest.mock('../hooks/use-button-screen', () => ({
+	useButtonScreen: jest.fn(),
 }));
 
 // `jest.config.js` maps the `@wordpress/components` specifier to the copy nested under
@@ -45,9 +45,9 @@ let container;
 let root;
 
 /**
- * Render `ButtonScreen` with the given `useButtonPresets` stub and return the mounted container.
+ * Render `ButtonScreen` with the given `useButtonScreen` stub and return the mounted container.
  *
- * @param {Object}   presets    The `useButtonPresets` return value to stub.
+ * @param {Object}   screen     The `useButtonScreen` return value to stub.
  * @param {Object}   [options]  Overrides for the props the selection and overlay paths read.
  * @param {string}   [options.item]     The route's open `kb-item`.
  * @param {Function} [options.navigate] The navigate spy.
@@ -56,8 +56,8 @@ let root;
  *
  * @return {HTMLElement} The container the screen was rendered into.
  */
-function renderButtonScreen(presets, { item = '', navigate = () => {} } = {}) {
-	useButtonPresets.mockReturnValue(presets);
+function renderButtonScreen(screen, { item = '', navigate = () => {} } = {}) {
+	useButtonScreen.mockReturnValue(screen);
 
 	act(() => {
 		root.render(
@@ -78,7 +78,7 @@ beforeEach(() => {
 	container = document.createElement('div');
 	document.body.appendChild(container);
 	root = createRoot(container);
-	useButtonPresets.mockReset();
+	useButtonScreen.mockReset();
 	useDraftChannel.mockReset();
 	useDraftChannel.mockReturnValue(null);
 });
@@ -92,14 +92,24 @@ afterEach(() => {
 
 describe('ButtonScreen loading state', () => {
 	/**
-	 * While `useButtonPresets` is still fetching, the screen must show a busy indicator instead of
-	 * the empty state — `useButtonPresets` starts with `isLoading: true` and no rows, and rendering
+	 * While `useButtonScreen` is still fetching, the screen must show a busy indicator instead of
+	 * the empty state — `useButtonScreen` starts with `isLoading: true` and no rows, and rendering
 	 * the empty state at that point would flash "Add Button" before the presets arrive.
 	 *
 	 * @return {void}
 	 */
 	it('renders a spinner instead of the empty state while loading', () => {
-		renderButtonScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
+		renderButtonScreen({
+			payload: null,
+			isLoading: true,
+			loadError: null,
+			rows: [],
+			initialValuesFor: () => ({}),
+			isBusy: false,
+			addError: null,
+			clearAddError: () => {},
+			addPreset: () => Promise.resolve(),
+		});
 
 		expect(container.querySelector('.components-spinner')).not.toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
@@ -111,7 +121,17 @@ describe('ButtonScreen loading state', () => {
 	 * @return {void}
 	 */
 	it('renders the empty state once loading finishes with no rows', () => {
-		renderButtonScreen({ payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) });
+		renderButtonScreen({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows: [],
+			initialValuesFor: () => ({}),
+			isBusy: false,
+			addError: null,
+			clearAddError: () => {},
+			addPreset: () => Promise.resolve(),
+		});
 
 		expect(container.querySelector('.components-spinner')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).not.toBeNull();
@@ -131,7 +151,17 @@ describe('ButtonScreen loading state', () => {
 			},
 		];
 
-		renderButtonScreen({ payload: {}, isLoading: false, loadError: null, rows, initialValuesFor: () => ({}) });
+		renderButtonScreen({
+			payload: {},
+			isLoading: false,
+			loadError: null,
+			rows,
+			initialValuesFor: () => ({}),
+			isBusy: false,
+			addError: null,
+			clearAddError: () => {},
+			addPreset: () => Promise.resolve(),
+		});
 
 		expect(container.querySelector('.components-spinner')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
