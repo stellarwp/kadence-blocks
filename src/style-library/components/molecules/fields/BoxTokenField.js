@@ -227,9 +227,11 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 	const stored = unitInPlay(atBreakpoint, units[0]);
 
 	// A unit the user picked before typing a number has nowhere to persist — no slot carries it yet
-	// — so it is held here until a value exists to attach it to.
-	const [pendingUnit, setPendingUnit] = useState(null);
-	const unit = pendingUnit ?? stored;
+	// — so it is held here until a value exists to attach it to. Keyed per breakpoint for the same
+	// reason `unlinked` below is: a pending unit picked on one breakpoint must not leak into another
+	// that never chose it, which is what keeps the breakpoints independent.
+	const [pendingUnit, setPendingUnit] = useState({});
+	const unit = pendingUnit[breakpoint] ?? stored;
 	const bounds = boundsForUnit(unit, field);
 
 	// Which breakpoints the user has opened up into slots. Held here rather than inferred from the
@@ -272,7 +274,7 @@ export function BoxTokenField({ field, value, onChange, slots = 'sides' }) {
 			unit={unit}
 			units={units}
 			onUnit={(next) => {
-				setPendingUnit(next);
+				setPendingUnit((current) => ({ ...current, [breakpoint]: next }));
 
 				// Retype whatever is already set, so switching unit moves every literal slot at
 				// once rather than leaving a mix behind the single shared switcher.
