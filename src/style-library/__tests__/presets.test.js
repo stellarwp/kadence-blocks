@@ -426,6 +426,61 @@ describe('presetSaveTokens', () => {
 
 		expect(result).toEqual({ 'button-radius': '{semantic.dimension.radius-md}' });
 	});
+
+	/**
+	 * A never-set scalar property (e.g. `button-padding` on a fresh preset) seeds the draft as `''`
+	 * — see `presetInitialValues`'s `tokens[property] ?? ''`. Sending that empty string is what the
+	 * server rejects (SOFT-4083's #1289 regression); the property must be omitted instead.
+	 *
+	 * @return void
+	 */
+	it('omits a property whose draft value is an empty string rather than sending it', () => {
+		const result = presetSaveTokens({ 'button-bg': 'semantic.color.action-primary', 'button-padding': '' });
+
+		expect(result).toEqual({ 'button-bg': '{semantic.color.action-primary}' });
+		expect(result).not.toHaveProperty('button-padding');
+	});
+
+	/**
+	 * An unlinked box field (four independently-edited sides) clears to a slot list of four empty
+	 * strings rather than a bare `''`; the omission must recognize that shape too.
+	 *
+	 * @return void
+	 */
+	it('omits a property whose draft value is a slot list of only empty strings', () => {
+		const result = presetSaveTokens({ 'button-margin': ['', '', '', ''] });
+
+		expect(result).toEqual({});
+	});
+
+	/**
+	 * A property with at least one non-empty slot is a genuine partial edit, not an unset field, so
+	 * it is still written through untouched.
+	 *
+	 * @return void
+	 */
+	it('does not omit a slot list carrying at least one non-empty side', () => {
+		const result = presetSaveTokens({ 'button-margin': ['4px', '', '', ''] });
+
+		expect(result).toEqual({ 'button-margin': ['4px', '', '', ''] });
+	});
+
+	/**
+	 * Omitting a property that was previously stored is a request-shape decision, not a delete: the
+	 * write endpoint merges the sent token map onto the stored one property by property, so this
+	 * only documents that the helper does not try to fabricate a "clear" signal the server has no
+	 * shape for.
+	 *
+	 * @return void
+	 */
+	it('omits an already-stored property the draft cleared back to empty', () => {
+		const initialTokens = { 'button-padding': '0.4em' };
+		const storedTokens = { 'button-padding': '0.4em' };
+
+		const result = presetSaveTokens({ 'button-padding': '' }, initialTokens, storedTokens);
+
+		expect(result).not.toHaveProperty('button-padding');
+	});
 });
 
 describe('presetStoredTokens', () => {
@@ -618,6 +673,66 @@ describe('BUTTON_PRESET.schemaFor', () => {
 
 			expect(paths).not.toContain('label');
 		}
+	});
+
+	describe('padding/margin defaultValue', () => {
+		const originalFeed = window.kadenceDesignTokens;
+
+		afterEach(() => {
+			window.kadenceDesignTokens = originalFeed;
+		});
+
+		/**
+		 * Read a field's `defaultValue` off the Normal tab's spacing panel.
+		 *
+		 * @param {string} path The field's `path`, e.g. `'tokens.button-padding'`.
+		 *
+		 * @return {*} The field's `defaultValue`.
+		 */
+		function defaultValueFor(path) {
+			return BUTTON_PRESET.schemaFor('normal')
+				.panels.flatMap((panel) => panel.fields)
+				.find((field) => field.path === path).defaultValue;
+		}
+
+		it('resolves the padding default from the semantic.spacing.button-padding-* tokens', () => {
+			window.kadenceDesignTokens = {
+				values: {
+					'semantic.spacing.button-padding-top': '0.5em',
+					'semantic.spacing.button-padding-right': '1.25em',
+					'semantic.spacing.button-padding-bottom': '0.5em',
+					'semantic.spacing.button-padding-left': '1.25em',
+				},
+			};
+
+			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.5em', '1.25em', '0.5em', '1.25em']);
+		});
+
+		it('resolves the margin default from the semantic.spacing.button-margin-* tokens', () => {
+			window.kadenceDesignTokens = {
+				values: {
+					'semantic.spacing.button-margin-top': '4px',
+					'semantic.spacing.button-margin-right': '0',
+					'semantic.spacing.button-margin-bottom': '4px',
+					'semantic.spacing.button-margin-left': '0',
+				},
+			};
+
+			expect(defaultValueFor('tokens.button-margin')).toEqual(['4px', '0', '4px', '0']);
+		});
+
+		it('falls back to the button literal default when a token is missing from the feed', () => {
+			window.kadenceDesignTokens = { values: {} };
+
+			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
+			expect(defaultValueFor('tokens.button-margin')).toEqual(['0', '0', '0', '0']);
+		});
+
+		it('falls back to the literal default when the feed itself is absent', () => {
+			delete window.kadenceDesignTokens;
+
+			expect(defaultValueFor('tokens.button-padding')).toEqual(['0.4em', '1em', '0.4em', '1em']);
+		});
 	});
 });
 
