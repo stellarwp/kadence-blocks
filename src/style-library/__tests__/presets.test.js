@@ -223,11 +223,9 @@ describe('presetRows', () => {
 });
 
 describe('presetInitialValues', () => {
-	afterEach(() => {
-		delete window.kadenceDesignTokens;
-	});
-
-	it('seeds all five bound properties as bare ids', () => {
+	beforeEach(() => {
+		// `BUTTON_PRESET.properties` derives from the feed on every access (see `button-preset.js`),
+		// so every test in this block needs it stubbed, not just the one that inspects the result.
 		window.kadenceDesignTokens = {
 			presets: {
 				'kadence/singlebtn': {
@@ -235,7 +233,13 @@ describe('presetInitialValues', () => {
 				},
 			},
 		};
+	});
 
+	afterEach(() => {
+		delete window.kadenceDesignTokens;
+	});
+
+	it('seeds all five bound properties as bare ids', () => {
 		const payload = {
 			presets: {
 				primary: {

@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { resolveTokenValue } from '../helpers/presets';
+import { getButtonPresetProperties, resolveTokenValue } from '../helpers/presets';
 
 /**
  * The block name this preset screen edits — the single JS spelling, so the preset-screens filter
@@ -24,22 +24,6 @@ import { resolveTokenValue } from '../helpers/presets';
  * @since TBD
  */
 export const BUTTON_BLOCK = 'kadence/singlebtn';
-
-/**
- * The frozen bound surface a button preset defines, in the order the panel and previews read it.
- * The single JS spelling of the properties `declarations.php` binds for the button block — every
- * seed, save, and preview walk goes through this list, so this app can never write a property the
- * server's `guard_surface` would reject as unbound.
- *
- * @since TBD
- */
-export const BUTTON_PRESET_PROPERTIES = [
-	'button-bg',
-	'button-text',
-	'button-bg-hover',
-	'button-text-hover',
-	'button-radius',
-];
 
 /**
  * The panel's state tabs, in display order.
@@ -153,11 +137,19 @@ function schemaFor(tab) {
 /**
  * The Button preset screen's whole configuration, passed to the generic preset machinery.
  *
+ * `properties` is a getter rather than a snapshot: it re-reads `getButtonPresetProperties()` (and
+ * therefore the localized feed) on every access, the same live-window-global posture every other
+ * feed read in this app takes (see `getDesignTokensFeed()`). Snapshotting it at module-evaluation
+ * time would throw for any test that imports this module before stubbing the feed, even one that
+ * never touches `properties`.
+ *
  * @since TBD
  */
 export const BUTTON_PRESET = Object.freeze({
 	block: BUTTON_BLOCK,
-	properties: BUTTON_PRESET_PROPERTIES,
+	get properties() {
+		return getButtonPresetProperties();
+	},
 	slugBase: 'button',
 	addLabel: __('Add Button', 'kadence-blocks'),
 	tabs: TABS,
