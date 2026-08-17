@@ -6,7 +6,7 @@
  *
  * This is a bespoke screen, not a `ScaleScreen` config: a preset row carries a five-property map
  * with two states (Normal/Hover), not one scalar token value, so it composes the shared components
- * directly. No settings panel yet — the static lands once the panel exists.
+ * directly. Its settings panel is `ButtonSettings`, assigned below as `ButtonScreen.SettingsPanel`.
  */
 
 /**
