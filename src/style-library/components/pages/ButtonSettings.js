@@ -105,12 +105,15 @@ export function ButtonSettings({ route, navigate, library }) {
 	// panel instead of rendering broken fields — the `ScaleSettings.js` self-healing idiom. Waiting
 	// on `!presets.isLoading` matters here: while the fetch is in flight, an unknown-slug draft and a
 	// still-loading one look identical (both `null`), so healing eagerly would bounce a valid deep
-	// link straight into the page before its fetch lands.
+	// link straight into the page before its fetch lands. Waiting on `!presets.loadError` matters just
+	// as much: a rejected fetch also leaves `initialValuesFor` returning null, and a valid `kb-item`
+	// must not be mistaken for a stale one just because the request failed — that would rewrite the
+	// route and make the deep link unrecoverable even after a successful retry.
 	useEffect(() => {
-		if (id && !presets.isLoading && !hasInitialValues) {
+		if (id && !presets.isLoading && !presets.loadError && !hasInitialValues) {
 			navigate({ item: '' });
 		}
-	}, [id, presets.isLoading, hasInitialValues, navigate]);
+	}, [id, presets.isLoading, presets.loadError, hasInitialValues, navigate]);
 
 	if (!id || !hasInitialValues) {
 		return null;
