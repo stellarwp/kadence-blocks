@@ -14,7 +14,8 @@
 /**
  * WordPress dependencies
  */
-import { Button, Notice, Spinner } from '@wordpress/components';
+import { Button, Notice } from '@wordpress/components';
+import { __, sprintf } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
 
 /**
@@ -23,10 +24,53 @@ import { plus } from '@wordpress/icons';
 import { ScreenHeader } from '../organisms/ScreenHeader';
 import { RowList } from '../templates/RowList';
 import { EmptyState } from '../molecules/EmptyState';
+import { Skeleton } from '../atoms/Skeleton';
 import { usePresetScreen } from '../../hooks/use-preset-screen';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { overlayPresetRows } from '../../helpers/presets';
 import { useBreakpoint } from '../../../token-controls/context/breakpoint';
+
+// A fixed count, not derived from anything — there is no "expected row count" to read before the
+// real rows arrive, so this just needs to fill the screen plausibly.
+const SKELETON_ROW_IDS = [0, 1, 2, 3];
+
+/**
+ * The preset-list loading placeholder: a few row-shaped skeletons in the real `RowList` markup
+ * (`.row-list` / `.list-row` / `.list-row-main`), so the loading shape matches the rows it is about
+ * to be replaced by instead of collapsing the screen to a single centered spinner.
+ *
+ * @param {Object} props       The component props.
+ * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The row-shaped skeleton list.
+ */
+function PresetRowsSkeleton({ label }) {
+	return (
+		<ul
+			className="kadence-blocks-style-library__row-list"
+			role="status"
+			aria-live="polite"
+			aria-busy="true"
+			aria-label={sprintf(
+				// translators: %s: the preset screen's label (e.g. "Button").
+				__('Loading %s…', 'kadence-blocks'),
+				label
+			)}
+		>
+			{SKELETON_ROW_IDS.map((id) => (
+				<li key={id} className="kadence-blocks-style-library__list-row">
+					<div className="kadence-blocks-style-library__list-row-main">
+						<Skeleton className="kadence-blocks-style-library__list-row-label kadence-blocks-style-library__skeleton--bar" />
+						<Skeleton className="kadence-blocks-style-library__list-row-value kadence-blocks-style-library__skeleton--bar" />
+						<Skeleton className="kadence-blocks-style-library__list-row-preview" />
+					</div>
+				</li>
+			))}
+		</ul>
+	);
+}
 
 /**
  * Render a preset list screen for whichever block the config names.
@@ -112,7 +156,7 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 				</Notice>
 			)}
 			{screen.isLoading ? (
-				<Spinner />
+				<PresetRowsSkeleton label={label} />
 			) : (
 				<RowList
 					items={items}

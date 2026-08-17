@@ -24,9 +24,9 @@ jest.mock('../hooks/use-preset-screen', () => ({
 // `jest.config.js` maps the `@wordpress/components` specifier to the copy nested under
 // `@kadence/components/node_modules`, which resolves its own nested `react`/`react-dom` — a
 // different module instance than the top-level `react-dom/client` this test renders with. Mounting
-// a real `Button`/`Notice`/`Spinner` from that nested copy under the top-level renderer trips
-// React's "Invalid hook call" guard. Simple stand-ins sidestep the cross-copy mismatch; this test
-// only needs to tell the loading/empty/populated states apart, not exercise the real controls.
+// a real `Button`/`Notice` from that nested copy under the top-level renderer trips React's
+// "Invalid hook call" guard. Simple stand-ins sidestep the cross-copy mismatch; this test only
+// needs to tell the loading/empty/populated states apart, not exercise the real controls.
 // The screen reads its draft overlay and its selection guard off this hook. Stubbed per test so
 // the overlay branch (which needs a publication for the open item) and the guard branch are
 // reachable without standing up the real provider.
@@ -37,7 +37,6 @@ jest.mock('../hooks/use-draft-channel', () => ({
 jest.mock('@wordpress/components', () => ({
 	Button: ({ children, ...props }) => <button {...props}>{children}</button>,
 	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
-	Spinner: (props) => <div className="components-spinner" {...props} />,
 }));
 
 // `@wordpress/primitives` (which `@wordpress/icons`'s `Icon`/`SVG` build on) nests its own `react`
@@ -107,33 +106,33 @@ afterEach(() => {
 
 describe('PresetScreen loading state', () => {
 	/**
-	 * While `usePresetScreen` is still fetching, the screen must show a busy indicator instead of
-	 * the empty state — `usePresetScreen` starts with `isLoading: true` and no rows, and rendering
-	 * the empty state at that point would flash "Add Button" before the presets arrive.
+	 * While `usePresetScreen` is still fetching, the screen must show a row-shaped skeleton instead
+	 * of the empty state — `usePresetScreen` starts with `isLoading: true` and no rows, and
+	 * rendering the empty state at that point would flash "Add Button" before the presets arrive.
 	 *
 	 * @return {void}
 	 */
-	it('renders a spinner instead of the empty state while loading', () => {
+	it('renders a skeleton instead of the empty state while loading', () => {
 		renderPresetScreen({ payload: null, isLoading: true, loadError: null, rows: [], initialValuesFor: () => ({}) });
 
-		expect(container.querySelector('.components-spinner')).not.toBeNull();
+		expect(container.querySelectorAll('.kadence-blocks-style-library__skeleton').length).toBeGreaterThan(0);
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
 	});
 
 	/**
-	 * Once loading finishes with no rows, the empty state renders in place of the spinner.
+	 * Once loading finishes with no rows, the empty state renders in place of the skeleton.
 	 *
 	 * @return {void}
 	 */
 	it('renders the empty state once loading finishes with no rows', () => {
 		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows: [], initialValuesFor: () => ({}) });
 
-		expect(container.querySelector('.components-spinner')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__skeleton')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).not.toBeNull();
 	});
 
 	/**
-	 * Once loading finishes with rows present, neither the spinner nor the empty state renders.
+	 * Once loading finishes with rows present, neither the skeleton nor the empty state renders.
 	 *
 	 * @return {void}
 	 */
@@ -148,7 +147,7 @@ describe('PresetScreen loading state', () => {
 
 		renderPresetScreen({ payload: {}, isLoading: false, loadError: null, rows, initialValuesFor: () => ({}) });
 
-		expect(container.querySelector('.components-spinner')).toBeNull();
+		expect(container.querySelector('.kadence-blocks-style-library__skeleton')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__row-list')).not.toBeNull();
 	});
