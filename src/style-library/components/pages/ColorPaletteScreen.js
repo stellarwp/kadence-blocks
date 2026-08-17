@@ -10,7 +10,7 @@
  * WordPress dependencies
  */
 import { useMemo, useState } from '@wordpress/element';
-import { Button, DropdownMenu, MenuGroup, MenuItem, Notice, Spinner } from '@wordpress/components';
+import { Button, DropdownMenu, MenuGroup, MenuItem, Notice } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { moreVertical, plus } from '@wordpress/icons';
 
@@ -22,6 +22,7 @@ import { ScreenHeader } from '../organisms/ScreenHeader';
 import { SwatchGrid } from '../organisms/SwatchGrid';
 import { SelectDropdown } from '../molecules/SelectDropdown';
 import { EmptyState } from '../molecules/EmptyState';
+import { Skeleton } from '../atoms/Skeleton';
 import { ActivatePaletteButton } from '../organisms/ActivatePaletteButton';
 import { CreatePaletteModal } from '../organisms/CreatePaletteModal';
 import { RenamePaletteModal } from '../organisms/RenamePaletteModal';
@@ -38,6 +39,56 @@ import {
 } from '../../helpers/palettes';
 import { ColorPaletteSettings } from './ColorPaletteSettings';
 import './ColorPaletteScreen.scss';
+
+// A fixed count, not derived from anything — there is no "expected swatch count" to read before
+// the real palette arrives, so this just needs to fill a group row plausibly.
+const SKELETON_SWATCH_IDS = [0, 1, 2, 3, 4, 5];
+
+/**
+ * The palette loading placeholder: one group heading and a row of swatch-card-shaped skeletons in
+ * the real `SwatchGrid` markup (`.swatch-grid` / `.swatch-group` / `.swatch-card`), so the loading
+ * shape matches the grid it is about to be replaced by instead of collapsing the screen to a
+ * single centered spinner.
+ *
+ * @param {Object} props       The component props.
+ * @param {string} props.label The screen's nav label, used to build the busy-region's accessible name.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The swatch-grid-shaped skeleton.
+ */
+function SwatchGridSkeleton({ label }) {
+	return (
+		<div
+			className="kadence-blocks-style-library__swatch-grid"
+			role="status"
+			aria-live="polite"
+			aria-busy="true"
+			aria-label={sprintf(
+				// translators: %s: the palette screen's label (e.g. "Color Palette").
+				__('Loading %s…', 'kadence-blocks'),
+				label
+			)}
+		>
+			<div className="kadence-blocks-style-library__swatch-group">
+				{/* No real heading class carries a width of its own — `SectionHeading`'s width is
+				 * whatever its text measures — so this bar's width is a plain literal, not a reused
+				 * layout value. */}
+				<Skeleton className="kadence-blocks-style-library__skeleton--bar" style={{ width: '8rem' }} />
+				<div className="kadence-blocks-style-library__swatch-group-row">
+					{SKELETON_SWATCH_IDS.map((id) => (
+						<div key={id} className="kadence-blocks-style-library__swatch-card">
+							<div className="kadence-blocks-style-library__swatch-card-main">
+								<Skeleton className="kadence-blocks-style-library__swatch-card-preview" />
+								<Skeleton className="kadence-blocks-style-library__swatch-card-name kadence-blocks-style-library__skeleton--bar" />
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
 
 /**
  * The fill for a swatch's preview slot: the swatch's raw `$value`, or a neutral gray-100 fallback
@@ -188,7 +239,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				}
 			/>
 			{palettes.isLoading ? (
-				<Spinner />
+				<SwatchGridSkeleton label={label} />
 			) : palettes.palette ? (
 				<>
 					{/* Suppressed while the add-group, rename-group, or delete-group modal is open —
