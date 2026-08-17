@@ -86,6 +86,7 @@ import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
 import {
+	anyCornerInherited,
 	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
@@ -1307,7 +1308,9 @@ export default function KadenceButtonEdit(props) {
 															onDeviceChange={setPreviewDevice}
 															tokens={borderRadiusTokens}
 															defaultValue={inheritedBorderRadius.values}
-															inherited={!!inheritedBorderRadius.inherited}
+															inherited={anyCornerInherited(
+																inheritedBorderRadius.inherited
+															)}
 															state={tokenBinding.borderRadius}
 															onReset={() => resetToken('borderRadius')}
 															isLinked={borderRadiusIsLinked}

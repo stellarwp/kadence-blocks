@@ -215,6 +215,26 @@ export function inheritedMeasureSlots(device, values = {}, presetValue) {
 }
 
 /**
+ * Whether a measure control's single row-level "Inherited" label should show, given each corner's
+ * own inherited flag from `inheritedMeasureSlots()`.
+ *
+ * The control renders one label for all four corners, so "any corner inherited" is the safer read
+ * than "every corner inherited": a mixed row — one corner pulled from another breakpoint, the rest
+ * resolved straight to the preset — is no longer a plain preset default, and reporting "Default"
+ * would understate that. `inherited` is always a four-element array, so a bare truthiness check on
+ * the array itself is always `true`; this reduces it to the actual per-corner flags instead.
+ *
+ * @param {boolean[]} inherited Per-corner inherited flags, i.e. `inheritedMeasureSlots().inherited`.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether any corner inherits from another breakpoint rather than the preset.
+ */
+export function anyCornerInherited(inherited) {
+	return Array.isArray(inherited) && inherited.some(Boolean);
+}
+
+/**
  * The linked/individual mode a measure control should open in, derived from the corners the user would
  * actually see: each stored corner where one is set, otherwise the value that corner inherits from the
  * selected preset.
