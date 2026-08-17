@@ -549,7 +549,7 @@ describe('BUTTON_PRESET.schemaFor', () => {
 			.flatMap((panel) => panel.fields)
 			.find((field) => field.path === 'tokens.button-radius');
 
-		expect(radiusField).toMatchObject({ type: 'radius', tokenType: 'dimension', role: 'radius' });
+		expect(radiusField).toMatchObject({ type: 'token-select', tokenType: 'dimension', role: 'radius' });
 	});
 
 	it('lists the hover color fields, with no radius field, on the Hover tab', () => {
