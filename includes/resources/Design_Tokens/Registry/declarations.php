@@ -431,6 +431,68 @@ return [
 				'label' => __( 'Media Padding', 'kadence-blocks' ),
 				'group' => __( 'Media', 'kadence-blocks' ),
 			],
+			[
+				/**
+				 * Button padding, split one semantic token per side (a shorthand like "0.4em 1em" fails the
+				 * dimension literal's single-value shape). Registered so Css_Var emits
+				 * --kb-token--semantic--spacing--button-padding-top; the button's own default padding rule
+				 * references that variable directly (the button is never empty, so the low-specificity
+				 * block-default CSS mechanism can't reach it). Resolves to the button's long-standing 0.4em,
+				 * so an existing site that never set padding renders unchanged.
+				 */
+				'id'    => 'semantic.spacing.button-padding-top',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Top', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-right',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Right', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-bottom',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Bottom', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-left',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Left', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				/**
+				 * Button margin, split one semantic token per side, mirroring semantic.spacing.button-padding-*.
+				 * Registered so Css_Var emits --kb-token--semantic--spacing--button-margin-top; the button's own
+				 * default margin rule references that variable directly. Resolves to 0, so an existing site that
+				 * never set margin renders unchanged.
+				 */
+				'id'    => 'semantic.spacing.button-margin-top',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Top', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-right',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Right', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-bottom',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Bottom', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-left',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Left', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
 		],
 		$button_color_tokens,
 		$notice_color_tokens,

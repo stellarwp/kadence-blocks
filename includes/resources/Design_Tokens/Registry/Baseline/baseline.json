@@ -489,6 +489,38 @@
 			"heading-padding": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.spacing.none}"
+			},
+			"button-padding-top": {
+				"$type": "dimension",
+				"$value": "0.4em"
+			},
+			"button-padding-right": {
+				"$type": "dimension",
+				"$value": "1em"
+			},
+			"button-padding-bottom": {
+				"$type": "dimension",
+				"$value": "0.4em"
+			},
+			"button-padding-left": {
+				"$type": "dimension",
+				"$value": "1em"
+			},
+			"button-margin-top": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-right": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-bottom": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-left": {
+				"$type": "dimension",
+				"$value": "0"
 			}
 		},
 		"radius": {
