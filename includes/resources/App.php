@@ -11,6 +11,7 @@ use KadenceWP\KadenceBlocks\Database\Database_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Log\Log_Provider;
+use KadenceWP\KadenceBlocks\Notice\Notice_Provider;
 use KadenceWP\KadenceBlocks\Optimizer\Optimizer_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
@@ -45,6 +46,7 @@ final class App {
 		Asset_Provider::class,
 		Uplink_Provider::class,
 		Harbor_Provider::class,
+		Notice_Provider::class,
 		Health_Provider::class,
 		Admin_Provider::class,
 		Image_Downloader_Provider::class,
