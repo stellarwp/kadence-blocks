@@ -33,7 +33,5 @@
 	font-weight: var(--kb-sl-font-weight-medium);
 	line-height: var(--kb-sl-line-height-s);
 	white-space: nowrap;
-	// Only the three properties `ButtonScreen.js` sets inline from the preset (background, color,
-	// border-radius) ease between values, so a preset swap doesn't snap in abruptly.
 	transition: background-color 300ms ease, color 300ms ease, border-radius 300ms ease;
 }
