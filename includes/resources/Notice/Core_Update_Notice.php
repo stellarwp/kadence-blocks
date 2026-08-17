@@ -15,7 +15,7 @@ final class Core_Update_Notice {
 	 *
 	 * @since TBD
 	 */
-	public const DISMISSED_OPTION = 'nxs_wp_core_update_notice_dismissed';
+	public const DISMISSED_OPTION = 'nx_wp_core_update_notice_dismissed';
 
 	/**
 	 * The query argument and nonce action carried by the dismiss link.
