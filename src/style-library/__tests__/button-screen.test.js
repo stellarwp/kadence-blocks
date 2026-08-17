@@ -39,6 +39,16 @@ jest.mock('@wordpress/components', () => ({
 	Spinner: (props) => <div className="components-spinner" {...props} />,
 }));
 
+// `DragHandle` renders an `Icon` from `@wordpress/icons`, which pulls its `<SVG>` primitive from
+// `@wordpress/primitives` — a package with its own nested `react` copy (unlike `@wordpress/icons`
+// itself). Mounting it under this test's top-level `react-dom/client` renderer trips the same
+// cross-copy element-identity mismatch the `@wordpress/components` mock above sidesteps. The rows
+// this test renders always come back with `isDraggable: true`, so a bare stand-in keeps the row
+// list mountable without exercising the drag affordance.
+jest.mock('../components/atoms/DragHandle', () => ({
+	DragHandle: () => null,
+}));
+
 const LIBRARY = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
 
 let container;
