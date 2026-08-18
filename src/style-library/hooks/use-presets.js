@@ -34,7 +34,9 @@ import { presetInitialValues, presetRows } from '../helpers/presets';
  * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function}}
  */
 export function usePresets(library, preset) {
-	const { block, properties, preview } = preset;
+	// See `use-preset-screen.js`: `properties` is a throwing getter on the preset configs, so it is
+	// read where it is used rather than destructured at render scope.
+	const { block, preview } = preset;
 	const [payload, setPayload] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadError, setLoadError] = useState(null);
@@ -93,7 +95,7 @@ export function usePresets(library, preset) {
 
 	const rows = useMemo(() => presetRows(payload, library?.values, preview), [payload, library?.values, preview]);
 
-	const initialValuesFor = (presetSlug) => presetInitialValues(payload, presetSlug, properties);
+	const initialValuesFor = (presetSlug) => presetInitialValues(payload, presetSlug, preset.properties);
 
 	return { payload, isLoading, loadError, rows, initialValuesFor };
 }

@@ -36,6 +36,7 @@ describe('createPresetFlow', () => {
 			block: 'kadence/singlebtn',
 			existingSlugs: ['primary', 'secondary'],
 			defaultTokens,
+			newLabel: 'New Button',
 			slug: 'default',
 			refreshFeed,
 			onBusy,

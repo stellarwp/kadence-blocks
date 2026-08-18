@@ -15,15 +15,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getButtonPresetProperties, resolveTokenValue } from '../helpers/presets';
+import { BUTTON_BLOCK, getButtonPresetProperties, resolveTokenValue } from '../helpers/presets';
 
-/**
- * The block name this preset screen edits — the single JS spelling, so the preset-screens filter
- * registration and the fetch hook never risk a typo'd duplicate.
- *
- * @since TBD
- */
-export const BUTTON_BLOCK = 'kadence/singlebtn';
+export { BUTTON_BLOCK };
 
 /**
  * The panel's state tabs, in display order.
@@ -152,6 +146,7 @@ export const BUTTON_PRESET = Object.freeze({
 	},
 	slugBase: 'button',
 	addLabel: __('Add Button', 'kadence-blocks'),
+	newLabel: __('New Button', 'kadence-blocks'),
 	tabs: TABS,
 	className: 'kadence-blocks-style-library__button-screen',
 	preview,

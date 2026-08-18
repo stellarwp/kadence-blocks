@@ -28,14 +28,19 @@ import { usePresets } from './use-presets';
  * Bind a preset screen to its block's fetched preset collection and the four write flows.
  *
  * @param {Object} library The design-tokens feed hook's return value (`useDesignTokensFeed()`).
- * @param {string} block   The block name whose presets this screen edits.
+ * @param {Object} preset  The screen's preset config: `block` (the block name whose presets this
+ *                           screen edits), `properties` (its bound property surface, read lazily)
+ *                           and `slugBase` (the stem new preset slugs are minted from).
  *
  * @since TBD
  *
  * @return {{payload: ?object, isLoading: boolean, loadError: ?Error, rows: Array<Object>, initialValuesFor: Function, isBusy: boolean, addError: ?Object, saveError: ?Object, deleteError: ?Object, orderError: ?Object, clearAddError: Function, clearSaveError: Function, clearDeleteError: Function, clearOrderError: Function, addPreset: Function, savePreset: Function, deletePreset: Function, reorderPresets: Function, isDeletable: Function}}
  */
 export function usePresetScreen(library, preset) {
-	const { block, properties, slugBase } = preset;
+	// `properties` is deliberately not destructured here: on the preset configs it is a getter that
+	// throws when the feed carries no bound surface for the block, and reading it at render scope
+	// would fire on every render instead of only where the value is actually needed.
+	const { block, slugBase, newLabel } = preset;
 	const presets = usePresets(library, preset);
 
 	const [isBusy, setIsBusy] = useState(false);
@@ -57,7 +62,7 @@ export function usePresetScreen(library, preset) {
 
 	// Holds the version the last reorder write returned, until the preset payload catches up.
 	// Unlike `use-scale-screen.js`, whose version comes from the feed the awaited refresh replaces,
-	// this screen reads its version from a payload that `useButtonPresets` re-fetches in a later
+	// this screen reads its version from a payload that `usePresets` re-fetches in a later
 	// effect. A second drop queued behind the first would otherwise dereference the pre-write
 	// version and 409 against itself.
 	const writtenVersionRef = useRef(null);
@@ -110,7 +115,8 @@ export function usePresetScreen(library, preset) {
 		setAddError(null);
 
 		const existingSlugs = Object.keys(presets.payload?.presets ?? {});
-		const defaultTokens = presetInitialValues(presets.payload, presets.payload?.default, properties)?.tokens ?? {};
+		const defaultTokens =
+			presetInitialValues(presets.payload, presets.payload?.default, preset.properties)?.tokens ?? {};
 
 		return createPresetFlow({
 			namespace,
@@ -118,12 +124,13 @@ export function usePresetScreen(library, preset) {
 			slugBase,
 			existingSlugs,
 			defaultTokens,
+			newLabel,
 			slug,
 			refreshFeed,
 			onBusy: setIsBusy,
 			onError: setAddError,
 		});
-	}, [namespace, block, slugBase, properties, presets.payload, slug, refreshFeed]);
+	}, [namespace, block, slugBase, newLabel, preset, presets.payload, slug, refreshFeed]);
 
 	const savePreset = useCallback(
 		(id, draft, initialValues) => {

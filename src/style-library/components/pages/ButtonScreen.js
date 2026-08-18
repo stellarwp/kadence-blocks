@@ -28,7 +28,7 @@ import './ButtonScreen.scss';
  * @return {JSX.Element} The screen body.
  */
 export function ButtonScreen(props) {
-	return <PresetScreen preset={BUTTON_PRESET} {...props} />;
+	return <PresetScreen {...props} preset={BUTTON_PRESET} />;
 }
 
 ButtonScreen.SettingsPanel = ButtonSettings;

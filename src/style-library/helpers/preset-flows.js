@@ -49,6 +49,9 @@ function errorMessage(error) {
  * @param {string[]}               args.existingSlugs The preset slugs already taken.
  * @param {Record<string, string>} args.defaultTokens  The `$default` preset's seeded id map
  *                                                       (bare ids, as `presetInitialValues` returns).
+ * @param {string}                 args.newLabel      The label a freshly minted preset carries. Passed
+ *                                                       in rather than fixed here, since this flow mints
+ *                                                       presets for whichever block the caller names.
  * @param {string}                 args.slug          Token library slug.
  * @param {Function}               args.refreshFeed   Replaces the feed with a fresh REST read for a slug.
  * @param {Function}               args.onBusy        Called with a boolean as the request starts and settles.
@@ -65,6 +68,7 @@ export function createPresetFlow({
 	block,
 	existingSlugs,
 	defaultTokens,
+	newLabel,
 	slug,
 	refreshFeed,
 	onBusy,
@@ -74,12 +78,7 @@ export function createPresetFlow({
 
 	const preset = nextPresetSlug(existingSlugs, slugBase);
 
-	return saveBlockPreset(
-		namespace,
-		block,
-		{ preset, label: __('New Button', 'kadence-blocks'), tokens: presetSaveTokens(defaultTokens) },
-		slug
-	)
+	return saveBlockPreset(namespace, block, { preset, label: newLabel, tokens: presetSaveTokens(defaultTokens) }, slug)
 		.then(() => refreshFeed(slug))
 		.then(() => {
 			onBusy(false);
