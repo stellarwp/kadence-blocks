@@ -10,6 +10,7 @@
 import { get } from 'lodash';
 import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import './palette-picker.scss';
 
 /**
  * The whole palette catalog the editor localizer prints, or an empty shape when the token registry is

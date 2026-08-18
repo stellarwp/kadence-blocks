@@ -1,0 +1,9 @@
+/**
+ * Per-block Color Palette dropdown.
+ *
+ * Rendered as a bare InspectorControls fill at the top of the block inspector, in the same top region as
+ * the preset selector. The row padding matches the preset button row so the two controls line up.
+ */
+.kb-palette-picker__row {
+	padding: 0 16px 16px;
+}

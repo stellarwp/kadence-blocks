@@ -351,41 +351,34 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 
 		return (
 			<>
+				{/*
+				 * The per-block Color Palette dropdown surfaces at the top level of the inspector — a bare
+				 * InspectorControls fill, so it sits above the block's own panels in the same top region as the
+				 * Preset selector rather than buried in a lower panel. Rendered before BlockEdit so its fill
+				 * registers ahead of the block's own inspector fills.
+				 */}
+				{isSelected && showPalettes && (
+					<InspectorControls>
+						<div className="kb-palette-picker__row">
+							<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
+						</div>
+					</InspectorControls>
+				)}
 				<BlockEdit {...props} />
-				{isSelected && (
+				{isSelected && showPresets && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							{showPresets && (
-								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker
-										name={name}
-										library={library}
-										value={selected}
-										onChange={selectPreset}
-									/>
-									<PresetActions
-										blockName={name}
-										library={library}
-										selected={selected}
-										onSelect={selectPreset}
-										attributes={attributes}
-										setAttributes={setAttributes}
-									/>
-								</SubsectionWrap>
-							)}
-							{showPalettes && (
-								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
-									{/*
-									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
-									 * control. The design (see the B4 Figma) integrates the palette token picker
-									 * into the block's color controls — a "Style Library | Custom" popover with a
-									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
-									 * Color row — which requires @kadence/components changes to the color-control
-									 * popover and is deferred.
-									 */}
-									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
-								</SubsectionWrap>
-							)}
+							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
+								<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
+								<PresetActions
+									blockName={name}
+									library={library}
+									selected={selected}
+									onSelect={selectPreset}
+									attributes={attributes}
+									setAttributes={setAttributes}
+								/>
+							</SubsectionWrap>
 						</PanelBody>
 					</InspectorControls>
 				)}
