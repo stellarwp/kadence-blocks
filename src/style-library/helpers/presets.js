@@ -196,7 +196,14 @@ export function resolveTokenValue(values, value) {
 	}
 
 	if (isSlotList(value)) {
-		return value.map((slot) => resolveTokenValue(values, slot)).join(' ');
+		const slots = value.map((slot) => (typeof slot === 'string' ? resolveTokenValue(values, slot) : ''));
+
+		// All four slots or none: joining a partial resolution emits a valid-looking shorthand
+		// (`1rem  1rem 1rem`) that silently renders a different radius than the one stored, which is
+		// worse than the empty fallback every other unresolvable shape degrades to. Kept here rather
+		// than in `isSlotList`, which also decides whether the single-value picker may edit the
+		// entry — narrowing that would make a malformed slot list look editable.
+		return slots.some((slot) => slot === '') ? '' : slots.join(' ');
 	}
 
 	if (typeof value !== 'string') {

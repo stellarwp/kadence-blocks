@@ -94,6 +94,29 @@ describe('resolveTokenValue', () => {
 		expect(resolveTokenValue(dimensionValues, slots)).toBe('1rem 4px 1rem 4px');
 	});
 
+	it('resolves a slot list with a dangling alias to an empty string, not a partial shorthand', () => {
+		const dimensionValues = { 'radius.lg': '1rem' };
+		const slots = ['{radius.lg}', '{radius.does-not-exist}', '{radius.lg}', '{radius.lg}'];
+
+		// Joining the resolved slots would emit `1rem  1rem 1rem` — valid CSS, but a different
+		// radius than the one stored.
+		expect(resolveTokenValue(dimensionValues, slots)).toBe('');
+	});
+
+	it('resolves a slot list holding a non-string slot to an empty string', () => {
+		const dimensionValues = { 'radius.lg': '1rem' };
+
+		expect(resolveTokenValue(dimensionValues, ['{radius.lg}', 4, '{radius.lg}', '{radius.lg}'])).toBe('');
+		expect(resolveTokenValue(dimensionValues, [1, 2, 3, 4])).toBe('');
+	});
+
+	it('keeps a zero-valued slot, which resolves to a real value rather than nothing', () => {
+		const dimensionValues = { 'radius.none': '0' };
+		const slots = ['{radius.none}', '{radius.none}', '{radius.none}', '{radius.none}'];
+
+		expect(resolveTokenValue(dimensionValues, slots)).toBe('0 0 0 0');
+	});
+
 	it('unwraps an envelope whose base $value is a per-corner slot list', () => {
 		const dimensionValues = { 'radius.lg': '1rem' };
 		const envelope = {
