@@ -45,6 +45,8 @@ import { isSlotList, readSlot, toShorthand, toSlotList } from '../helpers/value-
  * @param {?Array}    [props.slotIcons]          Per-slot glyphs, in stored order.
  * @param {string}    [props.role]               'sides' or 'corners' — geometry, bound by the registry.
  * @param {?Object}   [props.status]             `{ bound, modified }`; omit for no indicator.
+ * @param {?JSX.Element} [props.indicator]      Rendered in the header in place of the built-in
+ *                                                indicator, for a host that supplies its own.
  * @param {?Function} [props.onReset]            Reset handler, paired with `status`.
  * @param {boolean}   [props.showReset]          Render the matching glyph and reset button.
  * @param {?Array}    [props.breakpoints]        Breakpoint keys; omit for a non-responsive control.
@@ -142,6 +144,7 @@ export function BoxControl({
 						// here rather than in every host. `onCustom` writes a bare number — the unit
 						// is the control's, shared across all four slots, exactly as the editor's
 						// measurement control treats it.
+						disabled={disabled}
 						onPick={(alias) => !disabled && onSlotChange(alias)}
 						onClear={() => !disabled && onSlotChange('')}
 						onCustom={(next) => !disabled && onSlotChange(next)}
