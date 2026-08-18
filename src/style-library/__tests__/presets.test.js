@@ -195,6 +195,38 @@ describe('presetRows', () => {
 		expect(rows[1].preview).toEqual({ background: 'transparent', color: '#3633e1', borderRadius: '0.25rem' });
 	});
 
+	it('resolves a responsive preview at the breakpoint being viewed', () => {
+		// The row and overlay paths both pass a breakpoint through to the preview callback. Ignoring
+		// it renders every step with the desktop value, so Tablet and Mobile silently preview wrong.
+		const responsiveValues = { ...values, 'semantic.color.action-secondary': '#00ff00' };
+		const payload = {
+			userCreated: [],
+			presets: {
+				primary: {
+					label: 'Primary',
+					tokens: {
+						'button-bg': {
+							$value: '{semantic.color.action-primary}',
+							$extensions: {
+								'com.kadence.designTokens': {
+									responsive: { tablet: '{semantic.color.action-secondary}' },
+								},
+							},
+						},
+						'button-text': '{semantic.color.on-primary}',
+						'button-radius': '0.5rem',
+					},
+				},
+			},
+		};
+
+		const desktop = presetRows(payload, responsiveValues, BUTTON_PRESET.preview, 'desktop');
+		const tablet = presetRows(payload, responsiveValues, BUTTON_PRESET.preview, 'tablet');
+
+		expect(desktop[0].preview.background).toBe('#3633e1');
+		expect(tablet[0].preview.background).toBe('#00ff00');
+	});
+
 	it('falls back to the slug for a label-less preset', () => {
 		const payload = { userCreated: [], presets: { outline: { tokens: {} } } };
 

@@ -199,6 +199,23 @@ describe('pickableTokensForType', () => {
 		expect(tokens[0]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
 	});
 
+	it('keeps the token the field is already bound to, even when it loses the primitive narrowing', () => {
+		// The bound value is passed through as `selected`. Without it the narrowing drops a semantic
+		// token from its own picker, so the field renders with its current value missing.
+		window[PICKABLE_TOKENS_GLOBAL].tokens.push({
+			id: 'semantic.dimension.radius-control',
+			label: 'Control Radius',
+			type: 'dimension',
+			role: 'radius',
+		});
+
+		const withoutSelected = pickableTokensForType('dimension', 'radius');
+		const withSelected = pickableTokensForType('dimension', 'radius', 'semantic.dimension.radius-control');
+
+		expect(withoutSelected.map((token) => token.id)).not.toContain('semantic.dimension.radius-control');
+		expect(withSelected.map((token) => token.id)).toContain('semantic.dimension.radius-control');
+	});
+
 	it('resolves the active-library value for a color type', () => {
 		const tokens = pickableTokensForType('color');
 

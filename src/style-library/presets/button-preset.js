@@ -36,18 +36,21 @@ const TABS = [
  * Another block's rows would preview something else entirely, which is why the generic row mapper
  * takes this as a function rather than reading fixed keys.
  *
- * @param {Record<string, *>}      tokens The preset's stored token map.
- * @param {Record<string, string>} values The feed's resolved value map.
+ * @param {Record<string, *>}      tokens     The preset's stored token map.
+ * @param {Record<string, string>} values     The feed's resolved value map.
+ * @param {string}                 breakpoint The breakpoint the row is previewing, so a responsive
+ *                                              value resolves to the step being viewed rather than
+ *                                              always to desktop.
  *
  * @since TBD
  *
  * @return {{background: string, color: string, borderRadius: string}} The preview.
  */
-function preview(tokens, values) {
+function preview(tokens, values, breakpoint) {
 	return {
-		background: resolveTokenValue(values, tokens['button-bg']),
-		color: resolveTokenValue(values, tokens['button-text']),
-		borderRadius: resolveTokenValue(values, tokens['button-radius']),
+		background: resolveTokenValue(values, tokens['button-bg'], breakpoint),
+		color: resolveTokenValue(values, tokens['button-text'], breakpoint),
+		borderRadius: resolveTokenValue(values, tokens['button-radius'], breakpoint),
 	};
 }
 

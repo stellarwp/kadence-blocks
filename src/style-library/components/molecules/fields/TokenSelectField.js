@@ -37,7 +37,9 @@ import './TokenSelectField.scss';
  * @return {JSX.Element} The field.
  */
 export function TokenSelectField({ field, value, onChange }) {
-	const tokens = pickableTokensForType(field.tokenType, field.role);
+	// `value` is passed as `selected` so the token this field is already bound to survives the
+	// primitive narrowing — without it a bound semantic token is filtered out of its own picker.
+	const tokens = pickableTokensForType(field.tokenType, field.role, value);
 	const options = tokens.map((token) => ({
 		value: token.id,
 		label: (
