@@ -14,43 +14,36 @@ use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provi
 final class Notice_Provider extends Provider {
 
 	/**
-	 * Screens owned by this plugin that are not post type screens.
-	 *
-	 * @since TBD
-	 */
-	private const ADMIN_SCREENS = [
-		'toplevel_page_kadence-blocks',
-		'kadence_page_kadence-blocks-home',
-	];
-
-	/**
-	 * Post types this plugin shows under its own admin menu. Covers the list tables and the add and
-	 * edit screens, whose screen IDs differ but whose post type does not. Excludes kadence_lottie
-	 * and kadence_vector, which are registered with show_in_menu false.
-	 *
-	 * @since TBD
-	 */
-	private const MENU_POST_TYPES = [
-		'kadence_form',
-		'kadence_navigation',
-		'kadence_header',
-	];
-
-	/**
 	 * @inheritDoc
 	 *
 	 * @since TBD
 	 */
 	public function register(): void {
-		// Before admin_init, which the package requires, and late enough for the copy to translate.
+		/*
+		 * Built on resolution rather than here, so the copy is translated. The provider registers
+		 * during plugins_loaded, before the text domain is available.
+		 */
+		$this->container->singleton(
+			CoreUpdateNotice::class,
+			static function (): CoreUpdateNotice {
+				return new CoreUpdateNotice(
+					[
+						'heading' => __( 'Keep your site protected. Update to the latest version of WordPress.', 'kadence-blocks' ),
+						'body'    => __( 'Your site is running on an outdated version of WordPress, which can leave it vulnerable to security issues. To decrease your risk of exposure, please update your WordPress install to the latest version.', 'kadence-blocks' ),
+						'dismiss' => __( 'Dismiss this notice.', 'kadence-blocks' ),
+					]
+				);
+			}
+		);
+
+		$this->container->singleton( Is_Plugin_Admin_Screen::class, Is_Plugin_Admin_Screen::class );
+
+		// The package requires registration before admin_init.
 		add_action( 'init', [ $this, 'register_core_update_notice' ] );
 	}
 
 	/**
 	 * Register the shared WordPress core update notice.
-	 *
-	 * The copy is passed in rather than left to the package's English defaults so it is extracted
-	 * into this plugin's text domain.
 	 *
 	 * @since TBD
 	 *
@@ -59,44 +52,12 @@ final class Notice_Provider extends Provider {
 	 * @return void
 	 */
 	public function register_core_update_notice(): void {
-		$notice = new CoreUpdateNotice(
-			[
-				'heading' => __( 'Keep your site protected. Update to the latest version of WordPress.', 'kadence-blocks' ),
-				'body'    => __( 'Your site is running on an outdated version of WordPress, which can leave it vulnerable to security issues. To decrease your risk of exposure, please update your WordPress install to the latest version.', 'kadence-blocks' ),
-				'dismiss' => __( 'Dismiss this notice.', 'kadence-blocks' ),
-			]
-		);
+		/** @var CoreUpdateNotice $notice */
+		$notice = $this->container->get( CoreUpdateNotice::class );
 
-		// Bind the registered instance so the rest of the plugin resolves the same one.
-		$this->container->singleton( CoreUpdateNotice::class, $notice );
+		/** @var Is_Plugin_Admin_Screen $is_plugin_admin_screen */
+		$is_plugin_admin_screen = $this->container->get( Is_Plugin_Admin_Screen::class );
 
-		Register::notice( $this->container->get( CoreUpdateNotice::class ), [ $this, 'is_plugin_admin_screen' ] );
-	}
-
-	/**
-	 * Whether the current screen belongs to this plugin.
-	 *
-	 * Runs during admin_notices, when get_current_screen() is available.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function is_plugin_admin_screen(): bool {
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			return false;
-		}
-
-		$screen = get_current_screen();
-
-		if ( ! $screen instanceof \WP_Screen ) {
-			return false;
-		}
-
-		if ( in_array( $screen->id, self::ADMIN_SCREENS, true ) ) {
-			return true;
-		}
-
-		return in_array( $screen->post_type, self::MENU_POST_TYPES, true );
+		Register::notice( $notice, $is_plugin_admin_screen );
 	}
 }
