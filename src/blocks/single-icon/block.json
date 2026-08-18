@@ -138,7 +138,8 @@
 		"ktdynamic": true,
 		"html": false,
 		"reusable": false,
-		"kbMetadata": true
+		"kbMetadata": true,
+		"kbPalette": true
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"]
 }
