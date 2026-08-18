@@ -19,6 +19,7 @@ import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
 import { registerComponentTokenFilters } from './extension/design-tokens/register-component-filters';
+import { registerTokenSwatchPalettePreview } from './extension/design-tokens/palette-swatch-preview';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
 // their `var(--kb-token--<id>)` reference through the library's filter seam.
@@ -31,6 +32,10 @@ registerColorControlFilters();
 // Inject the design-token picker UI into the token-agnostic @kadence/components control seams, so a
 // control that receives a `context` gets the chip/picker without the package knowing about tokens.
 registerComponentTokenFilters();
+
+// Mirror the selected block's per-block palette onto the top-document <html>, so the color-control swatches
+// preview that palette's colors through the projector's existing [data-kb-palette] switch layer.
+registerTokenSwatchPalettePreview();
 
 /**
  * Add animation attributes
