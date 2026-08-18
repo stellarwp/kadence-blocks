@@ -7,14 +7,15 @@ import {
 	getBorderColor,
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
-import { blockDefaultPreset, blockPresetValues } from '../../../../extension/preset-picker';
+import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
 
 /**
  * Whether the button's active preset resolves a padding and/or a margin.
  *
  * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree about
- * whether a preset carries spacing. A block with no explicit selection follows the block's default
- * preset, exactly as the server does.
+ * whether a preset carries spacing. A block with no explicit selection — or one naming a preset that no
+ * longer exists — follows the block's default preset, exactly as the server's `has_preset()` /
+ * `default_preset()` fallback does.
  *
  * @param {Object} attributes The block attributes.
  *
@@ -23,7 +24,7 @@ import { blockDefaultPreset, blockPresetValues } from '../../../../extension/pre
  * @return {{padding: boolean, margin: boolean}} Which spacing properties the preset defines.
  */
 function presetSpacingProperties(attributes) {
-	const preset = attributes?.kbPreset || blockDefaultPreset('kadence/singlebtn');
+	const preset = activePresetFor('kadence/singlebtn', attributes);
 	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
 
 	return {

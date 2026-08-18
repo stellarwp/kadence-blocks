@@ -134,6 +134,29 @@ export function blockDefaultPreset(name, library) {
 }
 
 /**
+ * The block's active preset slug for a set of attributes: the explicit `kbPreset` selection when it
+ * still names a preset the block declares, otherwise the library's default preset. Mirrors the PHP
+ * resolver's `has_preset()` / `default_preset()` fallback (`Preset_Resolver`), so a `kbPreset` left
+ * over from a deleted preset degrades here the same way it does server-side, instead of every caller
+ * trusting a non-empty string at face value.
+ *
+ * @param {string} name       The block name.
+ * @param {Object} attributes The block's current attributes.
+ * @param {string} [library]  The token library slug; defaults to the active library.
+ *
+ * @since TBD
+ *
+ * @return {string} The resolved preset slug, or '' when the block declares no default either.
+ */
+export function activePresetFor(name, attributes, library) {
+	const resolvedLibrary = library || activeLibrary();
+	const selected = get(attributes, 'kbPreset', '');
+	const exists = selected && blockPresets(name, resolvedLibrary).some((preset) => preset.slug === selected);
+
+	return exists ? selected : blockDefaultPreset(name, resolvedLibrary);
+}
+
+/**
  * Whether a preset slug is a user-created one for a block's library (editable and deletable). A baseline
  * preset, or one that only shadows a baseline preset, is not.
  *

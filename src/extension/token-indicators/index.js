@@ -15,7 +15,7 @@
 import { get } from 'lodash';
 import {
 	activeLibrary,
-	blockDefaultPreset,
+	activePresetFor,
 	blockProperties,
 	blockPresetValues,
 	blockPresetResponsive,
@@ -106,16 +106,15 @@ export function mappedAttrsFor(blockName, library) {
  */
 export function usePresetBinding(blockName, attributes, library, previewDevice) {
 	const resolvedLibrary = library || activeLibrary();
-	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);
 	const responsive = blockPresetResponsive(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
-	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
-	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
-	// neither resolves, no control is bound.
-	const activePreset = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	// default preset when none is chosen or the selection no longer exists (kbPreset is '' on every
+	// freshly inserted block, so this fallback runs constantly and must use the catalog's declared
+	// default, not JSON key order). When neither resolves, no control is bound.
+	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
 	const presetBreakpoints = get(responsive, activePreset, {});
 
