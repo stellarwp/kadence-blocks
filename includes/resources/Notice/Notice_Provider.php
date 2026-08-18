@@ -59,16 +59,18 @@ final class Notice_Provider extends Provider {
 	 * @return void
 	 */
 	public function register_core_update_notice(): void {
-		Register::notice(
-			new CoreUpdateNotice(
-				[
-					'heading' => __( 'Keep your site protected. Update to the latest version of WordPress.', 'kadence-blocks' ),
-					'body'    => __( 'Your site is running on an outdated version of WordPress, which can leave it vulnerable to security issues. To decrease your risk of exposure, please update your WordPress install to the latest version.', 'kadence-blocks' ),
-					'dismiss' => __( 'Dismiss this notice.', 'kadence-blocks' ),
-				]
-			),
-			[ $this, 'is_plugin_admin_screen' ]
+		$notice = new CoreUpdateNotice(
+			[
+				'heading' => __( 'Keep your site protected. Update to the latest version of WordPress.', 'kadence-blocks' ),
+				'body'    => __( 'Your site is running on an outdated version of WordPress, which can leave it vulnerable to security issues. To decrease your risk of exposure, please update your WordPress install to the latest version.', 'kadence-blocks' ),
+				'dismiss' => __( 'Dismiss this notice.', 'kadence-blocks' ),
+			]
 		);
+
+		// Bind the registered instance so the rest of the plugin resolves the same one.
+		$this->container->singleton( CoreUpdateNotice::class, $notice );
+
+		Register::notice( $notice, [ $this, 'is_plugin_admin_screen' ] );
 	}
 
 	/**
