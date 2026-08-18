@@ -87,3 +87,48 @@ describe('EditorBoxControl breakpoint switching', () => {
 		expect(onDeviceChange).toHaveBeenCalledWith('Mobile');
 	});
 });
+
+describe('EditorBoxControl device -> breakpoint (forward)', () => {
+	/**
+	 * The editor's `previewDevice` selects the breakpoint both the provider's value and the control
+	 * render at — the direction opposite the switcher callbacks above.
+	 *
+	 * @return {void}
+	 */
+	it.each([
+		['Desktop', 'desktop'],
+		['Tablet', 'tablet'],
+		['Mobile', 'mobile'],
+	])('renders breakpoint %s for previewDevice %s', (previewDevice, breakpoint) => {
+		const { provider, boxControl } = renderEditorBoxControl({ previewDevice });
+
+		expect(provider.props.value).toBe(breakpoint);
+		expect(boxControl.props.breakpoint).toBe(breakpoint);
+	});
+
+	/**
+	 * An unrecognized device (e.g. a future editor device this component does not know about yet)
+	 * degrades to desktop rather than rendering with no breakpoint at all.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to desktop for an unknown preview device', () => {
+		const { provider } = renderEditorBoxControl({ previewDevice: 'Widescreen' });
+
+		expect(provider.props.value).toBe('desktop');
+	});
+});
+
+describe('EditorBoxControl collapse', () => {
+	/**
+	 * The block attribute is always a four-element array, so `BoxControl` must never fold a uniform
+	 * value down to a scalar the block cannot read back.
+	 *
+	 * @return {void}
+	 */
+	it('never collapses a uniform value to a scalar', () => {
+		const { boxControl } = renderEditorBoxControl();
+
+		expect(boxControl.props.collapse).toBe(false);
+	});
+});

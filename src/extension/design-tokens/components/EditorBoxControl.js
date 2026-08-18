@@ -100,11 +100,15 @@ export function EditorBoxControl({
 	role = 'corners',
 }) {
 	const breakpoint = BREAKPOINT_FOR_DEVICE[previewDevice] ?? 'desktop';
+	// Named once and passed to both `BreakpointProvider` and `ControlShell`'s switcher below, so the
+	// two staying in agreement is structural rather than a convention two separate lambdas could drift
+	// out of.
+	const changeBreakpoint = (next) => onDeviceChange(deviceForBreakpoint(next));
 
 	// The provider is handed the editor's device rather than holding one of its own: the device
 	// preview is global here, so a switcher that tracked its own would disagree with the canvas.
 	return (
-		<BreakpointProvider value={breakpoint} onChange={(next) => onDeviceChange(deviceForBreakpoint(next))}>
+		<BreakpointProvider value={breakpoint} onChange={changeBreakpoint}>
 			<BoxControl
 				label={label}
 				value={value}
@@ -125,7 +129,7 @@ export function EditorBoxControl({
 				breakpoint={breakpoint}
 				// The switcher lives in `ControlShell`, driven by this prop directly — it does not read
 				// the `BreakpointProvider` context above, so both must map back to a device the same way.
-				onBreakpointChange={(next) => onDeviceChange(deviceForBreakpoint(next))}
+				onBreakpointChange={changeBreakpoint}
 				unit={unit}
 				units={units}
 				onUnit={onUnit}

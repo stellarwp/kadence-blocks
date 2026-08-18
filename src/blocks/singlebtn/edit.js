@@ -336,10 +336,12 @@ export default function KadenceButtonEdit(props) {
 			deriveMeasureMode(borderRadiusForDevice.value, borderRadiusPresetValue));
 
 	// What the corners inherit, and whether that inheritance is uniform. A per-corner inheritance is the
-	// case where linking is a real change rather than a no-op.
-	const inheritedCorners = Array.isArray(borderRadiusPresetValue)
-		? borderRadiusPresetValue
-		: inheritedBorderRadius.values;
+	// case where linking is a real change rather than a no-op. Always `inheritedBorderRadius.values`,
+	// never the raw preset value directly: `inheritedMeasureSlots()` already falls through to the
+	// preset's own per-corner slots (`presetSlotAt`) once the device's stored corners run out, so
+	// reading the preset array straight through here would drop any corner this device DOES store —
+	// silently discarding the desktop/tablet cascade for a preset that happens to be per-corner.
+	const inheritedCorners = inheritedBorderRadius.values;
 	const inheritedCornersDiffer =
 		Array.isArray(inheritedCorners) && inheritedCorners.some((corner) => corner !== inheritedCorners[0]);
 	// The preset surface carries resolved literals, not aliases (`blockPresetValues` flattens them so the
