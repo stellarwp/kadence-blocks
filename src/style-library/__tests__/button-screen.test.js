@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client';
  */
 import { ButtonScreen } from '../components/pages/ButtonScreen';
 import { useButtonPresets } from '../hooks/use-button-presets';
+import { useDraftChannel } from '../hooks/use-draft-channel';
 
 // A factory: `use-button-presets.js` pulls in `../api/client`, which imports `@wordpress/api-fetch`
 // (externalized to the `wp.apiFetch` global in production, not an installed npm dependency), so
@@ -25,9 +26,16 @@ jest.mock('../hooks/use-button-presets', () => ({
 // a real `Button`/`Notice`/`Spinner` from that nested copy under the top-level renderer trips
 // React's "Invalid hook call" guard. Simple stand-ins sidestep the cross-copy mismatch; this test
 // only needs to tell the loading/empty/populated states apart, not exercise the real controls.
+// The screen reads its draft overlay and its selection guard off this hook. Stubbed per test so
+// the overlay branch (which needs a publication for the open item) and the guard branch are
+// reachable without standing up the real provider.
+jest.mock('../hooks/use-draft-channel', () => ({
+	useDraftChannel: jest.fn(),
+}));
+
 jest.mock('@wordpress/components', () => ({
 	Button: ({ children, ...props }) => <button {...props}>{children}</button>,
-	Notice: ({ children, ...props }) => <div {...props}>{children}</div>,
+	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
 	Spinner: (props) => <div className="components-spinner" {...props} />,
 }));
 
@@ -39,21 +47,24 @@ let root;
 /**
  * Render `ButtonScreen` with the given `useButtonPresets` stub and return the mounted container.
  *
- * @param {Object} presets The `useButtonPresets` return value to stub.
+ * @param {Object}   presets    The `useButtonPresets` return value to stub.
+ * @param {Object}   [options]  Overrides for the props the selection and overlay paths read.
+ * @param {string}   [options.item]     The route's open `kb-item`.
+ * @param {Function} [options.navigate] The navigate spy.
  *
  * @since TBD
  *
  * @return {HTMLElement} The container the screen was rendered into.
  */
-function renderButtonScreen(presets) {
+function renderButtonScreen(presets, { item = '', navigate = () => {} } = {}) {
 	useButtonPresets.mockReturnValue(presets);
 
 	act(() => {
 		root.render(
 			createElement(ButtonScreen, {
 				label: 'Button',
-				route: { screen: 'blocks/kadence/singlebtn', item: '' },
-				navigate: () => {},
+				route: { screen: 'blocks/kadence/singlebtn', item },
+				navigate,
 				library: LIBRARY,
 			})
 		);
@@ -68,6 +79,8 @@ beforeEach(() => {
 	document.body.appendChild(container);
 	root = createRoot(container);
 	useButtonPresets.mockReset();
+	useDraftChannel.mockReset();
+	useDraftChannel.mockReturnValue(null);
 });
 
 afterEach(() => {
@@ -123,5 +136,146 @@ describe('ButtonScreen loading state', () => {
 		expect(container.querySelector('.components-spinner')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__empty-state')).toBeNull();
 		expect(container.querySelector('.kadence-blocks-style-library__row-list')).not.toBeNull();
+	});
+});
+
+describe('ButtonScreen load failure', () => {
+	/**
+	 * A failed preset fetch renders its message as a notice. The list still renders, so a retry
+	 * that succeeds needs no remount.
+	 *
+	 * @return {void}
+	 */
+	it('renders the load error message and still renders the list', () => {
+		renderButtonScreen({
+			payload: null,
+			isLoading: false,
+			loadError: new Error('Request failed'),
+			rows: [],
+			initialValuesFor: () => ({}),
+		});
+
+		expect(container.textContent).toContain('Request failed');
+		expect(container.querySelector('.components-spinner')).toBeNull();
+	});
+});
+
+describe('ButtonScreen draft overlay', () => {
+	const ROWS = [
+		{
+			id: 'primary',
+			label: 'Primary',
+			preview: { background: '#111111', color: '#ffffff', borderRadius: '4px' },
+		},
+		{
+			id: 'secondary',
+			label: 'Secondary',
+			preview: { background: '#222222', color: '#ffffff', borderRadius: '4px' },
+		},
+	];
+
+	/**
+	 * A publication for the open item overlays that row's label, so the list shows what Save would
+	 * write rather than the last fetched value.
+	 *
+	 * @return {void}
+	 */
+	it('overlays the open row label from the draft publication', () => {
+		useDraftChannel.mockReturnValue({
+			publication: { itemId: 'primary', draft: { label: 'Primary edited' } },
+			guard: (fn) => fn(),
+		});
+
+		renderButtonScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		expect(container.textContent).toContain('Primary edited');
+		expect(container.textContent).toContain('Secondary');
+	});
+
+	/**
+	 * A publication belonging to a different item must not leak onto this screen's rows, so the
+	 * fetched labels stay as they are.
+	 *
+	 * @return {void}
+	 */
+	it('ignores a publication whose itemId is not the open item', () => {
+		useDraftChannel.mockReturnValue({
+			publication: { itemId: 'secondary', draft: { label: 'Leaked' } },
+			guard: (fn) => fn(),
+		});
+
+		renderButtonScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary' }
+		);
+
+		expect(container.textContent).not.toContain('Leaked');
+		expect(container.textContent).toContain('Primary');
+	});
+});
+
+describe('ButtonScreen selection', () => {
+	const ROWS = [
+		{
+			id: 'primary',
+			label: 'Primary',
+			preview: { background: '#111111', color: '#ffffff', borderRadius: '4px' },
+		},
+		{
+			id: 'secondary',
+			label: 'Secondary',
+			preview: { background: '#222222', color: '#ffffff', borderRadius: '4px' },
+		},
+	];
+
+	/**
+	 * Selecting a different preset routes through the draft guard before navigating, so an unsaved
+	 * draft is never dropped silently.
+	 *
+	 * @return {void}
+	 */
+	it('routes a selection of another preset through the guard', () => {
+		const guard = jest.fn((fn) => fn());
+		const navigate = jest.fn();
+		useDraftChannel.mockReturnValue({ publication: null, guard });
+
+		renderButtonScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary', navigate }
+		);
+
+		act(() => {
+			container.querySelectorAll('.kadence-blocks-style-library__list-row-main')[1].click();
+		});
+
+		expect(guard).toHaveBeenCalled();
+		expect(navigate).toHaveBeenCalledWith({ item: 'secondary' });
+	});
+
+	/**
+	 * Selecting the preset that is already open is a no-op that bypasses the guard entirely, so an
+	 * in-progress draft survives a stray click on its own row.
+	 *
+	 * @return {void}
+	 */
+	it('does nothing when the already-open preset is selected', () => {
+		const guard = jest.fn((fn) => fn());
+		const navigate = jest.fn();
+		useDraftChannel.mockReturnValue({ publication: null, guard });
+
+		renderButtonScreen(
+			{ payload: {}, isLoading: false, loadError: null, rows: ROWS, initialValuesFor: () => ({}) },
+			{ item: 'primary', navigate }
+		);
+
+		act(() => {
+			container.querySelectorAll('.kadence-blocks-style-library__list-row-main')[0].click();
+		});
+
+		expect(guard).not.toHaveBeenCalled();
+		expect(navigate).not.toHaveBeenCalled();
 	});
 });
