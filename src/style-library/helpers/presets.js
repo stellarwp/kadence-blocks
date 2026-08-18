@@ -207,37 +207,23 @@ export function presetSaveTokens(draftTokens) {
 }
 
 /**
- * Mint the first free preset slug for a new button preset: the bare base first, then the base
- * with a numeric suffix. Delegates to `nextScaleSlug` — a preset slug has no dots, so the
- * terminal-segment extraction that helper performs is the identity, and the collision semantics
- * (sanitize_key's lowercase fixed point) are the same for both.
- *
- * @param {string[]} existingSlugs The preset slugs already taken.
- * @param {string}   base          The slug stem, e.g. `'button'`.
- *
- * @since TBD
- *
- * @return {string} The first free slug.
+ * Generates the first available slug for a button preset.
+ * @param {string[]} existingSlugs - The slugs already in use.
+ * @param {string} base - The base slug to extend when needed.
+ * @return {string} The first available slug.
  */
 export function nextPresetSlug(existingSlugs, base) {
 	return nextScaleSlug(existingSlugs, base);
 }
 
 /**
- * Overlay a live settings-panel draft onto the row it edits: the label and a preview re-resolved
- * from the draft's token map (bare ids), so the row chip always shows what Save would write instead
- * of waiting for it — the preset analog of `overlayDraft` (`helpers/scale.js`), same
- * reference-identity contract. Returns the exact same array reference for a `null`/absent draft or
- * an `itemId` matching no row; every non-matching row keeps its exact object identity either way.
+ * Applies a live preset draft to its matching row.
  *
- * @param {Array<{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}>} rows   The rows in payload order.
- * @param {string}                                                                                                   itemId The open route item id.
- * @param {?{label?: string, tokens?: Record<string, string>}}                                                      draft  The open panel's live draft, or null.
- * @param {Record<string, string>}                                                                                   values The feed's resolved value map.
- *
- * @since TBD
- *
- * @return {Array<Object>} The rows, with the matching row's label/preview overlaid.
+ * @param {Array<Object>} rows - Preset rows to update.
+ * @param {string} itemId - Identifier of the row being edited.
+ * @param {?Object} draft - Live draft containing an optional label and token values.
+ * @param {Record<string, string>} values - Resolved token value map.
+ * @return {Array<Object>} The rows with the matching row updated, or the original array when no update applies.
  */
 export function overlayPresetRows(rows, itemId, draft, values) {
 	if (!draft || !itemId) {

@@ -30,16 +30,10 @@ import { PRESET_SCREENS_FILTER } from '../../constants/screens';
 import './ButtonScreen.scss';
 
 /**
- * The Button preset row's live preview chip: a non-interactive span reading "Button", styled from
- * the row's resolved background/text/radius. Hover values are never previewed here — a static chip
- * cannot honestly show `:hover`, the panel's Hover tab is the editing surface for that — and an
- * unresolved value renders the property absent rather than an invented fallback.
+ * Render a static preview of a button preset.
  *
- * @param {{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}} row The row descriptor.
- *
- * @since TBD
- *
- * @return {JSX.Element} The preview element.
+ * @param {{id: string, label: string, preview: {background: string, color: string, borderRadius: string}}} row - The button preset row and its resolved preview styles.
+ * @return {JSX.Element} The button preview element.
  */
 function renderButtonPreview(row) {
 	return (

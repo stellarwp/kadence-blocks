@@ -53,17 +53,9 @@ const SCREEN_COMPONENTS = {
 };
 
 /**
- * Render the Style Library application: feed gate, route hook, sidebar navigation, and the screen
- * resolved for the active route. A screen that owns a settings panel exposes it as a static
- * `SettingsPanel` property on its page component (`MyScreen.SettingsPanel = MyScreenSettings`);
- * this is the one place that property is read and mounted into `AppShell`'s `settingsPanel` slot.
- * The app itself carries no per-screen knowledge — not the demo, not any real screen's panel
- * contents — so a screen and its panel are siblings that share state only through the server and
- * the route, never through this component.
+ * Render the style library interface for the active route.
  *
- * @since TBD
- *
- * @return {?JSX.Element} The app, or null while the route is being normalized to a known screen.
+ * @return {?JSX.Element} The style library application, or `null` while an invalid route is being normalized.
  */
 export function StyleLibraryApp() {
 	const feed = useDesignTokensFeed();
