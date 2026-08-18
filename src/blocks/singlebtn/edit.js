@@ -282,7 +282,7 @@ export default function KadenceButtonEdit(props) {
 
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
-	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
+	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
 	const borderRadiusPresetValue = presetValueForDevice(
