@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
+import { fetchBlockPresets } from '../api/client';
 import { presetInitialValues, presetRows } from '../helpers/presets';
 import { useBreakpoint } from '../../token-controls/context/breakpoint';
 
