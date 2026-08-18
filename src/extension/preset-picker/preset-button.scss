@@ -5,6 +5,11 @@
  * bordered box holding the current preset label with the preset icon 4px to its right, and a dropdown
  * that lists the presets and the design-system actions.
  */
+.kb-preset-button__control-label {
+	display: block;
+	padding: 0 16px 8px;
+}
+
 .kb-preset-button__row {
 	display: flex;
 	align-items: center;

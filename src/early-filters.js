@@ -315,9 +315,9 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * preset subsection needs `kbPreset` support and presets for the active library; the palette subsection needs
  * `kbPalette` support and at least two palettes in the set.
  *
- * A block whose `kbPreset` support requests `inlinePicker` renders the PRESET picker itself (e.g. a Kadence
- * block placing it under its own Style tab), so this generic sidebar panel skips only the preset subsection
- * for it — the palette override still surfaces here.
+ * A block whose `kbPreset` support requests `inlinePicker` renders the preset picker itself (via PresetButton),
+ * and that inline picker also renders the palette dropdown right below the Preset selector, so this generic
+ * sidebar panel skips both the preset and the palette subsection for that block.
  *
  * @since TBD
  */
@@ -339,7 +339,9 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 
 		const library = activeLibrary();
 		const showPresets = hasPreset && !inlinePicker && blockPresets(name, library).length > 0;
-		const showPalettes = hasPalette && selectablePalettes().length >= 2;
+		// Inline-picker blocks render the palette dropdown themselves (via PresetButton, just below the Preset
+		// selector), so this generic panel only surfaces it for blocks without an inline picker.
+		const showPalettes = hasPalette && !inlinePicker && selectablePalettes().length >= 2;
 
 		if (!showPresets && !showPalettes) {
 			return <BlockEdit {...props} />;
@@ -352,10 +354,11 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 		return (
 			<>
 				{/*
-				 * The per-block Color Palette dropdown surfaces at the top level of the inspector — a bare
-				 * InspectorControls fill, so it sits above the block's own panels in the same top region as the
-				 * Preset selector rather than buried in a lower panel. Rendered before BlockEdit so its fill
-				 * registers ahead of the block's own inspector fills.
+				 * For blocks without an inline preset picker, the per-block Color Palette dropdown surfaces at the
+				 * top level of the inspector — a bare InspectorControls fill, so it sits above the block's own
+				 * panels rather than buried in a lower panel. Rendered before BlockEdit so its fill registers ahead
+				 * of the block's own inspector fills. Inline-picker blocks render the palette via PresetButton, just
+				 * below the Preset selector, so the two controls stay adjacent.
 				 */}
 				{isSelected && showPalettes && (
 					<InspectorControls>

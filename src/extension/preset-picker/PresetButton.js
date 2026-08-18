@@ -10,13 +10,19 @@
  *
  * Shared across every preset-enabled block so the control stays identical wherever it surfaces: a block
  * renders it once, above its InspectorControlTabs, passing its name, attributes and setAttributes.
+ *
+ * A "Preset" label sits above the button, and the per-block Color Palette dropdown renders just below it so
+ * the two design-token controls stay adjacent at the top of the inspector (the generic sidebar panel skips
+ * the palette for inline-picker blocks precisely because it surfaces here instead).
  */
-import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
+import { BaseControl, Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { get } from 'lodash';
 import { activeLibrary, activePresetFor, blockPresets } from './index';
+import { PalettePicker, selectablePalettes } from '../palette-picker';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
 import { SavePresetModal } from './SavePresetModal';
@@ -45,7 +51,8 @@ function currentPresetLabel(name, library, slug) {
 }
 
 /**
- * The preset button and dropdown for a block. Renders nothing when the block offers no presets.
+ * The preset button and dropdown for a block, labeled "Preset", with the per-block Color Palette dropdown
+ * just below it. Renders nothing when the block offers no presets.
  *
  * @param {Object}   props               The component props.
  * @param {string}   props.blockName     The block name.
@@ -127,6 +134,9 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 
 	return (
 		<>
+			<BaseControl.VisualLabel className="kb-preset-button__control-label">
+				{__('Preset', 'kadence-blocks')}
+			</BaseControl.VisualLabel>
 			<div className="kb-preset-button__row">
 				<Dropdown
 					className="kb-preset-button__dropdown"
@@ -227,6 +237,14 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 					onClick={onResetAll}
 				/>
 			</div>
+			{selectablePalettes().length >= 2 && (
+				<div className="kb-palette-picker__row">
+					<PalettePicker
+						value={get(attributes, 'kbPalette', '')}
+						onChange={(value) => setAttributes({ kbPalette: value })}
+					/>
+				</div>
+			)}
 			{saving && (
 				<SavePresetModal
 					blockName={blockName}
