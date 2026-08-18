@@ -5,15 +5,12 @@
  * bordered box holding the current preset label with the preset icon 4px to its right, and a dropdown
  * that lists the presets and the design-system actions.
  */
-// The "Preset" label above the button. Shares its styling with the Color Palette label (see
-// palette-picker.scss) so the two token controls read as one set; the 16px indent lines it up with the button.
+// The "Preset" label above the button. Inherits the editor's default control-label typography (like the
+// block's other control labels — e.g. "Color", "Text Type" — which set none of their own); the 16px indent
+// lines it up with the button.
 .kb-preset-button__control-label {
 	display: block;
 	padding: 0 16px 8px;
-	color: #1e1e1e;
-	font-size: 11px;
-	font-weight: 500;
-	line-height: 1.4;
 }
 
 .kb-preset-button__row {
