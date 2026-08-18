@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
 
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
@@ -20,6 +21,7 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Att
 class Kadence_Blocks_Abstract_Block {
 
 	use Renders_Palette_Attribute;
+	use Renders_Preset_Classes;
 
 	/**
 	 * Block namespace.
@@ -294,6 +296,7 @@ class Kadence_Blocks_Abstract_Block {
 
 			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			$content = $this->render_palette_attribute( $attributes, $content );
+			$content = $this->render_preset_class( $attributes, $content );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
@@ -383,6 +386,47 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		$tags->set_attribute( 'data-kb-palette', $palette['data-kb-palette'] );
+
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Add a block's selected design-token preset class (`kb-preset--<slug>`) to its rendered root element, so
+	 * the Design Tokens projector's scoped preset CSS applies on the front end. Generic across every dynamic
+	 * block: a block opts in by registering the `kbPreset` attribute (via `kbPreset` block support) and needs
+	 * no per-block PHP. A no-op when no preset is selected, the content is empty, or it has no opening tag to
+	 * carry the class.
+	 *
+	 * Only the opening tag is touched: the tag processor stops at the first tag, so a block with many nested
+	 * children is not walked, and the whole method short-circuits before any parsing when nothing is selected.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attributes The block attributes.
+	 * @param mixed $content    The block's rendered HTML.
+	 *
+	 * @return mixed The HTML, with the kb-preset--<slug> class added to the root element when a preset is set.
+	 */
+	protected function render_preset_class( $attributes, $content ) {
+		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$classes = $this->preset_classes( $attributes['kbPreset'] ?? '' );
+
+		if ( $classes === [] ) {
+			return $content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $content );
+
+		if ( ! $tags->next_tag() ) {
+			return $content;
+		}
+
+		foreach ( $classes as $preset_class ) {
+			$tags->add_class( $preset_class );
+		}
 
 		return $tags->get_updated_html();
 	}
