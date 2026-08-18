@@ -57,6 +57,11 @@ import '../styles/token-controls.scss';
  * @param {Function} props.onPick     Writes a picked token's `alias` to the slot.
  * @param {Function} props.onClear    Clears the slot's override (the `Reset` choice).
  * @param {Function} props.onCustom   Writes a literal number to the slot (used when leaving a token).
+ * @param {boolean}  [props.disabled] Disable the trigger, which is the only control outside the
+ *                                      popover — with it inert the popover cannot open, so nothing
+ *                                      below it is reachable either. Callers that only guard their
+ *                                      write callbacks leave the field looking editable while
+ *                                      silently dropping the writes.
  *
  * @since TBD
  *
@@ -77,6 +82,7 @@ export function TokenSelector({
 	onPick,
 	onClear,
 	onCustom,
+	disabled = false,
 }) {
 	const summary = fieldSummary(value, tokens, unit, __('Custom', 'kadence-blocks'));
 	// The inherited default has to be resolved before it is compared or shown — a raw alias or a unitless
@@ -134,6 +140,7 @@ export function TokenSelector({
 					<Button
 						className="kadence-token-field__trigger"
 						onClick={onToggle}
+						disabled={disabled}
 						aria-expanded={isOpen}
 						label={triggerName}
 						showTooltip
