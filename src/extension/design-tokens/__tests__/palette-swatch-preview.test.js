@@ -5,10 +5,13 @@
  * A block pinned to a palette re-skins its own canvas subtree, but the inspector's color-control swatches
  * live in the top-document sidebar and keep resolving `var(--kb-token--*)` against the library `$current`.
  * The projector's `[data-kb-palette]` switch layer is already loaded in the top document, so the sync mirrors
- * the selected block's effective palette onto `document.documentElement` and the existing CSS does the rest.
+ * the selected block's effective palette onto `document.documentElement` (`<html>`) — where the swatches and the
+ * portaled pop color popover pick it up — while re-declaring the current palette on the canvas root
+ * (`.editor-styles-wrapper`) so an un-iframed canvas does not inherit the preview.
  *
  * These tests drive `effectivePalette` against a mocked block-editor store (own vs inherited vs none) and
- * assert `registerTokenSwatchPalettePreview` toggles `data-kb-palette` on `<html>` as the selection changes.
+ * assert `registerTokenSwatchPalettePreview` toggles `data-kb-palette` on `<html>` — and the canvas shield — as
+ * the selection changes.
  */
 import { effectivePalette, applyPalettePreview, registerTokenSwatchPalettePreview } from '../palette-swatch-preview';
 
@@ -50,10 +53,22 @@ function setSelection(selected, attrs = {}, parents = []) {
 }
 
 describe('palette-swatch-preview', () => {
+	let canvas;
+
 	beforeEach(() => {
 		jest.clearAllMocks();
 		mockSubscriber = undefined;
+		window.kadenceDesignTokensPalettes = { current: 'default' };
 		document.documentElement.removeAttribute('data-kb-palette');
+		canvas = document.createElement('div');
+		canvas.className = 'editor-styles-wrapper';
+		document.body.appendChild(canvas);
+	});
+
+	afterEach(() => {
+		canvas.remove();
+		document.documentElement.removeAttribute('data-kb-palette');
+		delete window.kadenceDesignTokensPalettes;
 	});
 
 	/**
@@ -101,16 +116,19 @@ describe('palette-swatch-preview', () => {
 	});
 
 	/**
-	 * applyPalettePreview sets the attribute for a palette id and removes it for the empty id.
+	 * applyPalettePreview reflects the palette id onto the document root and holds the canvas on the current
+	 * palette, then clears both for the empty id.
 	 *
 	 * @return {void}
 	 */
-	it('sets and clears the data-kb-palette attribute on the document root', () => {
+	it('previews on the document root and shields the canvas with the current palette', () => {
 		applyPalettePreview('dark');
 		expect(document.documentElement.getAttribute('data-kb-palette')).toBe('dark');
+		expect(canvas.getAttribute('data-kb-palette')).toBe('default');
 
 		applyPalettePreview('');
 		expect(document.documentElement.hasAttribute('data-kb-palette')).toBe(false);
+		expect(canvas.hasAttribute('data-kb-palette')).toBe(false);
 	});
 
 	/**
@@ -123,6 +141,7 @@ describe('palette-swatch-preview', () => {
 		setSelection('a', { a: { kbPalette: 'dark' } });
 		registerTokenSwatchPalettePreview();
 		expect(document.documentElement.getAttribute('data-kb-palette')).toBe('dark');
+		expect(canvas.getAttribute('data-kb-palette')).toBe('default');
 
 		setSelection('b', { b: { kbPalette: 'sunset' } });
 		mockSubscriber();
@@ -131,5 +150,6 @@ describe('palette-swatch-preview', () => {
 		setSelection(null);
 		mockSubscriber();
 		expect(document.documentElement.hasAttribute('data-kb-palette')).toBe(false);
+		expect(canvas.hasAttribute('data-kb-palette')).toBe(false);
 	});
 });
