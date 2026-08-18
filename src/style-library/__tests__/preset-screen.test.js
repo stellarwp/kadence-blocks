@@ -35,7 +35,8 @@ jest.mock('../hooks/use-draft-channel', () => ({
 }));
 
 jest.mock('@wordpress/components', () => ({
-	Button: ({ children, ...props }) => <button {...props}>{children}</button>,
+	// `isBusy` is a `Button` prop, not a DOM attribute — drop it so React does not warn about it.
+	Button: ({ children, isBusy, ...props }) => <button {...props}>{children}</button>,
 	Notice: ({ children, isDismissible, ...props }) => <div {...props}>{children}</div>,
 }));
 
