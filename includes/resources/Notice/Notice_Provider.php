@@ -70,7 +70,7 @@ final class Notice_Provider extends Provider {
 		// Bind the registered instance so the rest of the plugin resolves the same one.
 		$this->container->singleton( CoreUpdateNotice::class, $notice );
 
-		Register::notice( $notice, [ $this, 'is_plugin_admin_screen' ] );
+		Register::notice( $this->container->get( CoreUpdateNotice::class ), [ $this, 'is_plugin_admin_screen' ] );
 	}
 
 	/**
