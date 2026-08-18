@@ -172,31 +172,6 @@ export default function BackendStyles(props) {
 	);
 	const previewPaddingUnit = paddingUnit ? paddingUnit : 'px';
 
-	const previewRadiusTop = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[0] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
-	);
-	const previewRadiusRight = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[1] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
-	);
-	const previewRadiusBottom = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[2] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
-	);
-	const previewRadiusLeft = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[3] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
-	);
-
 	const previewFixedWidth = getPreviewSize(
 		previewDevice,
 		undefined !== width?.[0] ? width[0] : '',
@@ -846,30 +821,21 @@ export default function BackendStyles(props) {
 	if (previewBorderBottomStyle) {
 		css.add_property('border-bottom', previewBorderBottomStyle);
 	}
-	if ('' !== previewRadiusTop) {
-		css.add_property(
-			'border-top-left-radius',
-			css.render_size(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusRight) {
-		css.add_property(
-			'border-top-right-radius',
-			css.render_size(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusLeft) {
-		css.add_property(
-			'border-bottom-left-radius',
-			css.render_size(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusBottom) {
-		css.add_property(
-			'border-bottom-right-radius',
-			css.render_size(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
+	// `render_measure_output` rather than four manual `render_size` calls: a corner can now be a
+	// design-token alias (the box control's token-pick path), and `render_size` only knows how to
+	// concatenate a number with a unit — it would emit `{alias}px`, invalid CSS, for a picked corner.
+	// `render_measure_output` runs every side through the `kadence.helpers.dimensionValue` filter
+	// first, the same alias-to-`var(--kb-token--…)` resolution the real (PHP-rendered) frontend
+	// already uses via `render_measure_side`, so the editor preview stops disagreeing with the page
+	// it is previewing.
+	css.render_measure_output(
+		borderRadius,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnit ? borderRadiusUnit : 'px'
+	);
 	css.add_property(
 		'box-shadow',
 		undefined !== displayShadow &&
