@@ -93,6 +93,20 @@ function ButtonSettingsPanel({ navigate, route, screen, initialValues, presetLab
 		return () => clearPublication();
 	}, [publish, clearPublication, id, presetLabel, panel.draft, panel.isDirty]);
 
+	// `screen.saveError`/`screen.deleteError` live on the outer `useButtonScreen` instance, not on
+	// this per-preset panel, so a failed write's error otherwise survives past the preset it
+	// happened on. This component is remounted (the caller's `key={id}`) on every preset switch and
+	// on close (the parent returns null once `route.item` clears), so a cleanup that clears both
+	// errors fires exactly when this panel stops representing the preset the error belongs to.
+	const { clearSaveError, clearDeleteError } = screen;
+
+	useEffect(() => {
+		return () => {
+			clearSaveError();
+			clearDeleteError();
+		};
+	}, [clearSaveError, clearDeleteError]);
+
 	// Reassigned every render, never held in state (the `ScaleSettings.js` posture): these close
 	// over the current `panel.draft`, so storing them in state would either loop the publish effect
 	// above or hand the guard modal a stale draft. `save` is the raw promise, rejection intact — the
