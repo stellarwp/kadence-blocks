@@ -117,6 +117,18 @@ final class Preset_Order_IndexTest extends TestCase {
 		];
 	}
 
+	/**
+	 * A repeated slug in a stored order collapses to its first occurrence on read, so a document
+	 * written outside set_block() (which deduplicates on write) cannot surface a preset twice.
+	 *
+	 * @return void
+	 */
+	public function testForBlockDeduplicatesRepeatedSlugs(): void {
+		$doc = $this->doc_with_order( self::BUTTON, [ 'primary', 'primary', 'secondary' ] );
+
+		$this->assertSame( [ 'primary', 'secondary' ], $this->index->for_block( $doc, self::BUTTON ) );
+	}
+
 	// -------------------------------------------------------------------------
 	// set_block()
 	// -------------------------------------------------------------------------
@@ -215,6 +227,32 @@ final class Preset_Order_IndexTest extends TestCase {
 	}
 
 	/**
+	 * remove_block() clears a block whose stored value is null. The entry is malformed but still
+	 * present, so guarding with isset() would report it missing and strand it in storage.
+	 *
+	 * @return void
+	 */
+	public function testRemoveBlockClearsANullEntry(): void {
+		$doc = [
+			Extensions::get_extensions_key() => [
+				Extensions::get_namespace() => [
+					Extensions::get_section_preset_order() => [
+						self::BUTTON          => null,
+						'kadence/advancedbtn' => [ 'ghost' ],
+					],
+				],
+			],
+		];
+
+		$result = $this->index->remove_block( $doc, self::BUTTON );
+
+		$section = $result[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_preset_order() ];
+
+		$this->assertArrayNotHasKey( self::BUTTON, $section );
+		$this->assertSame( [ 'ghost' ], $this->index->for_block( $result, 'kadence/advancedbtn' ) );
+	}
+
+	/**
 	 * remove_block() prunes the whole presetOrder section once its last block entry is removed, so
 	 * a fully-cleared order leaves no residue in the stored document.
 	 *
@@ -309,6 +347,21 @@ final class Preset_Order_IndexTest extends TestCase {
 	// -------------------------------------------------------------------------
 	// helpers
 	// -------------------------------------------------------------------------
+
+	/**
+	 * A duplicated stored slug does not repeat the preset in the applied order, so apply() keeps
+	 * returning a permutation of the incoming names.
+	 *
+	 * @return void
+	 */
+	public function testApplyDoesNotRepeatADuplicatedStoredSlug(): void {
+		$doc = $this->doc_with_order( self::BUTTON, [ 'primary', 'primary' ] );
+
+		$this->assertSame(
+			[ 'primary', 'secondary' ],
+			$this->index->apply( $doc, self::BUTTON, [ 'secondary', 'primary' ] )
+		);
+	}
 
 	/**
 	 * Build a decoded document carrying one block's presetOrder entry.

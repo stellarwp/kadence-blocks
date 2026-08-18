@@ -23,8 +23,9 @@ final class Preset_Order_Index {
 	/**
 	 * The stored order for one block. Read-side fail-soft: a section that is not a sequential list
 	 * is dropped wholesale (degrades to declaration order), and non-string or empty entries inside
-	 * an otherwise-valid list are filtered out, so a hand-corrupted section degrades to "no order"
-	 * instead of a type error downstream.
+	 * an otherwise-valid list are filtered out, and repeated slugs collapse to their first
+	 * occurrence, so a hand-corrupted section degrades to "no order" instead of a type error or a
+	 * repeated preset downstream.
 	 *
 	 * @since TBD
 	 *
@@ -49,7 +50,9 @@ final class Preset_Order_Index {
 			return [];
 		}
 
-		return array_values( array_filter( $slugs, fn( $slug ) => is_string( $slug ) && $slug !== '' ) );
+		// Deduplicated here rather than only in `set_block`, because `apply` intersects this list
+		// and would otherwise repeat a preset for any document written outside that setter.
+		return array_values( array_unique( array_filter( $slugs, fn( $slug ) => is_string( $slug ) && $slug !== '' ) ) );
 	}
 
 	/**
@@ -82,7 +85,9 @@ final class Preset_Order_Index {
 	public function remove_block( array $document, string $block ): array {
 		$map = $this->read_map( $document );
 
-		if ( ! isset( $map[ $block ] ) ) {
+		// `array_key_exists`, not `isset`: a stored `null` is malformed but still present, and
+		// `isset` would report it missing and leave the residue in storage permanently.
+		if ( ! array_key_exists( $block, $map ) ) {
 			return $document;
 		}
 
