@@ -76,7 +76,15 @@ export function ButtonScreen({ label, route, navigate, library }) {
 
 	// Guarded exactly like the scale mint (`ScaleScreen.js`): a dirty draft in the open panel
 	// prompts before a new preset navigates it away.
-	const mintPreset = () => screen.addPreset().then((id) => navigate({ item: id }));
+	// `createPresetFlow` (`helpers/preset-flows.js`) records the failure via `screen.addError` (the
+	// Notice rendered below) and re-throws pessimistically for callers that need the rejection; this
+	// `.catch()` only stops that rethrow from surfacing as an unhandled promise rejection, it does
+	// not report the error a second time.
+	const mintPreset = () =>
+		screen
+			.addPreset()
+			.then((id) => navigate({ item: id }))
+			.catch(() => {});
 	const addAction = (
 		<Button
 			icon={plus}
