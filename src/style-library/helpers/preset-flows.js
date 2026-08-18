@@ -107,6 +107,9 @@ export function createPresetFlow({
  * @param {Function} args.refreshFeed Replaces the feed with a fresh REST read for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
+ * @param {Function} args.onVersion   Called with the version the write returned, before the feed
+ *                                      refresh, so a caller serializing drops can hand the next
+ *                                      one a current version without waiting for a re-read.
  *
  * @since TBD
  *
@@ -191,10 +194,28 @@ export function deletePresetFlow({ namespace, block, preset, slug, refreshFeed, 
  * @return {Promise<void>} Resolves once the write and the feed refresh complete; rejects on
  *                          failure, after `onError`/`onBusy` have already run.
  */
-export function reorderPresetsFlow({ namespace, block, orderedIds, feedVersion, slug, refreshFeed, onBusy, onError }) {
+export function reorderPresetsFlow({
+	namespace,
+	block,
+	orderedIds,
+	feedVersion,
+	slug,
+	refreshFeed,
+	onBusy,
+	onError,
+	onVersion,
+}) {
 	onBusy(true);
 
 	return setBlockPresetOrder(namespace, block, { order: orderedIds, version: feedVersion }, slug)
+		.then((response) => {
+			// Reported straight off the write. The feed refresh below only bumps the library
+			// version; the preset payload that carries this one arrives in a later re-read, which
+			// a queued second drop would otherwise overtake and 409 against itself.
+			if (response && response.version) {
+				onVersion(response.version);
+			}
+		})
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {

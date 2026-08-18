@@ -3,10 +3,10 @@
  * `useScaleScreen` role, applied to a fetched-not-localized payload): wraps `useButtonPresets`
  * and adds the four preset write flows. Create/save/delete carry no version parameter
  * (`helpers/preset-flows.js`'s module docblock), so only reorder needs the serialized-chain
- * machinery — copied from `use-scale-screen.js`'s `reorderTokens`, with `feedVersionRef` mirroring
- * the fetched preset payload's own `version` (not the localized feed's — this screen's data source
- * is `useButtonPresets`, not the feed in hand) so two rapid drags cannot race the re-fetch into a
- * spurious 409 against themselves.
+ * machinery — copied from `use-scale-screen.js`'s `reorderTokens`. This screen's data source is
+ * `useButtonPresets`, not the feed in hand, and that payload's `version` only refreshes on a later
+ * re-read, so the chain carries the version each write returns until the payload catches up. Two
+ * rapid drags therefore cannot race the re-read into a spurious 409 against themselves.
  */
 
 /**
@@ -47,11 +47,22 @@ export function useButtonScreen(library) {
 	const refreshFeed = library?.refreshFeed;
 	const payloadVersion = presets.payload?.version;
 
-	// Mirrors the fetched preset payload's version so the queued reorder continuation below always
-	// dereferences the live version at execution time, never a value captured when the drop was
-	// enqueued — see `use-scale-screen.js`'s identical comment for why.
+	// Holds the version the last reorder write returned, until the preset payload catches up to it.
+	// Unlike `use-scale-screen.js`, whose version comes from the feed the awaited refresh replaces,
+	// this screen reads its version from a payload that `useButtonPresets` re-fetches in a later
+	// effect. A second drop queued behind the first would otherwise dereference the pre-write
+	// version and 409 against itself.
+	const writtenVersionRef = useRef(null);
+
+	if (payloadVersion === writtenVersionRef.current) {
+		writtenVersionRef.current = null;
+	}
+
+	// Mirrors the version the queued reorder continuation below must send, so it always
+	// dereferences the live value at execution time, never one captured when the drop was enqueued
+	// — see `use-scale-screen.js`'s identical comment for why.
 	const feedVersionRef = useRef(payloadVersion);
-	feedVersionRef.current = payloadVersion;
+	feedVersionRef.current = writtenVersionRef.current ?? payloadVersion;
 
 	// One in-flight reorder promise, the `use-scale-screen.js` shape: each call chains onto the
 	// previous reorder's settled promise so a second drop's write waits for the first drop's flow
@@ -159,6 +170,12 @@ export function useButtonScreen(library) {
 					refreshFeed,
 					onBusy: setIsBusy,
 					onError: setOrderError,
+					// Assigned outside a render on purpose: the next queued link may run before React
+					// commits one, and it reads `feedVersionRef` directly.
+					onVersion: (version) => {
+						writtenVersionRef.current = version;
+						feedVersionRef.current = version;
+					},
 				})
 					.catch(() => {
 						// Caught here, not re-thrown — every link must settle so the chain is never left
