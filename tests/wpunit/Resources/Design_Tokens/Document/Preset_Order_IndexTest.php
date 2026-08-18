@@ -72,18 +72,20 @@ final class Preset_Order_IndexTest extends TestCase {
 	}
 
 	/**
-	 * A malformed presetOrder entry — a non-list ("map-shaped") value, or non-string/empty slugs
-	 * inside the list — is dropped (or filtered) on read rather than surfaced, so a hand-corrupted
-	 * entry degrades to declaration order instead of a type error downstream.
+	 * A malformed presetOrder entry — a value that is not an array at all, a non-list ("map-shaped")
+	 * value, or non-string/empty slugs inside the list — is dropped (or filtered) on read rather
+	 * than surfaced, so a hand-corrupted entry degrades to declaration order instead of a type error
+	 * downstream. $entry is deliberately untyped: a typed array would make the non-array branch
+	 * unreachable from this provider.
 	 *
 	 * @dataProvider malformedEntryProvider
 	 *
-	 * @param array<int|string, mixed> $entry    The raw decoded presetOrder entry for the block.
-	 * @param list<string>             $expected The expected result of for_block() against that entry.
+	 * @param mixed        $entry    The raw decoded presetOrder entry for the block.
+	 * @param list<string> $expected The expected result of for_block() against that entry.
 	 *
 	 * @return void
 	 */
-	public function testForBlockDropsOrFiltersMalformedEntries( array $entry, array $expected ): void {
+	public function testForBlockDropsOrFiltersMalformedEntries( $entry, array $expected ): void {
 		$doc = [
 			Extensions::get_extensions_key() => [
 				Extensions::get_namespace() => [
@@ -101,6 +103,16 @@ final class Preset_Order_IndexTest extends TestCase {
 	 * @return Generator
 	 */
 	public function malformedEntryProvider(): Generator {
+		yield 'null entry' => [
+			'entry'    => null,
+			'expected' => [],
+		];
+
+		yield 'scalar entry' => [
+			'entry'    => 'primary',
+			'expected' => [],
+		];
+
 		yield 'map-shaped (non-sequential) entry' => [
 			'entry'    => [ 'a' => 'primary' ],
 			'expected' => [],
