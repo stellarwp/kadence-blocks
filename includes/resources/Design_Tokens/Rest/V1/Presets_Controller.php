@@ -554,7 +554,24 @@ final class Presets_Controller extends Controller {
 
 		$slug       = $this->slug( $request );
 		$block_node = $this->normalize_block_node( $block_node, $slug );
-		$candidate  = $this->mutator->merge( $this->stored_document( $slug ), $this->partial( $block, $block_node ) );
+		$stored     = $this->stored_document( $slug );
+
+		// The token map replaces wholesale rather than merging property by property: the client
+		// (presetSaveTokens()) already carries every untouched property forward from what it read, so
+		// the submitted map is already the complete desired set. A property-level merge on top would
+		// let a stored property the client omitted — a value the user cleared — silently survive
+		// instead of being removed, since an absent key in a merge partial means "leave alone," not
+		// "delete." Gated on the RAW request param, not `$block_node`'s synthesized shape:
+		// `preset_definition()` always sets a `tokens` key (defaulting to `[]`) even when the request
+		// carries none, so checking the built node would wipe every stored token on a label-only rename.
+		if ( $request->has_param( self::TOKENS_PARAM ) ) {
+			$stored = $this->mutator->remove_by_keys(
+				$stored,
+				array_merge( $this->node_path( $block ), [ $preset, Extensions::get_tokens_key() ] )
+			);
+		}
+
+		$candidate = $this->mutator->merge( $stored, $this->partial( $block, $block_node ) );
 
 		$error = $this->guard_surface( $candidate, $block_node, $block );
 

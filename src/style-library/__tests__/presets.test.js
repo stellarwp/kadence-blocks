@@ -466,10 +466,10 @@ describe('presetSaveTokens', () => {
 	});
 
 	/**
-	 * Omitting a property that was previously stored is a request-shape decision, not a delete: the
-	 * write endpoint merges the sent token map onto the stored one property by property, so this
-	 * only documents that the helper does not try to fabricate a "clear" signal the server has no
-	 * shape for.
+	 * Omitting a property that was previously stored genuinely clears it: the write endpoint
+	 * (`Presets_Controller::create_item()`) replaces a preset's whole token map wholesale rather than
+	 * merging it property by property, so this function's output is the complete desired map and an
+	 * omitted property does not survive the write.
 	 *
 	 * @return void
 	 */

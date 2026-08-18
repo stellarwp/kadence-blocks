@@ -268,6 +268,44 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A second create against the same preset, whose submitted token map omits a property the first
+	 * write stored, removes that property rather than leaving it in place. The token map replaces
+	 * wholesale, matching what the client (`presetSaveTokens()`) already computed as the complete
+	 * desired set — a property-level merge would let an omitted (cleared) property silently survive.
+	 *
+	 * @return void
+	 */
+	public function testCreateRemovesATokenTheSecondWriteOmits(): void {
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens( [ 'button-padding' => '0.4em' ] ),
+				]
+			)
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$tokens = $response->get_data()['presets']['outline']['tokens'];
+
+		$this->assertArrayNotHasKey( 'button-padding', $tokens );
+	}
+
+	/**
 	 * A write carrying a known `library` slug lands in that library and reports it, while the default
 	 * library is left untouched — so a preset authored for a block on a non-default library does not leak
 	 * into the default library.

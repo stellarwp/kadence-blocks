@@ -382,9 +382,10 @@ function aliasToIdDeep(value) {
  * `''`: the server rejects an empty literal outright, and the property's block binding already falls
  * through to its semantic default when nothing is stored for it. This matters as soon as a property
  * is bound but most presets leave it alone — `button-padding` and `button-margin` are the first —
- * because every preset's draft then carries an empty entry for it. Omitting is not the same as
- * clearing: the write endpoint merges the sent map onto the stored one property by property, so an
- * omitted property keeps whatever the store already holds.
+ * because every preset's draft then carries an empty entry for it. Omitting still clears a
+ * previously-stored value: the write endpoint (`Presets_Controller::create_item()`) replaces a
+ * preset's whole token map wholesale rather than merging it property by property, so this function's
+ * output IS the complete desired map — a property this call omits does not survive the write.
  *
  * @param {Record<string, string>} draftTokens   The panel's draft token map (bare ids, or a raw
  *                                                 non-scalar entry the field never let the user
