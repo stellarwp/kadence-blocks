@@ -165,3 +165,57 @@ describe('resolvePresetBreakpoint', () => {
 		expect(resolvePresetBreakpoint('0.5rem', 'mobile')).toBe('0.5rem');
 	});
 });
+
+describe('writePresetBreakpoint data preservation on clear', () => {
+	const NS = 'com.kadence.designTokens';
+
+	it('keeps the clamp when a responsive override is cleared', () => {
+		// The clamp is dropped when a stepped override replaces it, because the schema makes the two
+		// mutually exclusive. A clear writes no override, so nothing conflicts with the clamp.
+		const clamped = {
+			$value: '1rem',
+			$extensions: { [NS]: { clamp: { min: '1rem', max: '2rem' }, responsive: { tablet: '2rem' } } },
+		};
+
+		expect(writePresetBreakpoint(clamped, 'tablet', '')).toEqual({
+			$value: '1rem',
+			$extensions: { [NS]: { clamp: { min: '1rem', max: '2rem' } } },
+		});
+	});
+
+	it('keeps root-level DTCG fields when the last override is cleared', () => {
+		const described = {
+			$value: '1rem',
+			$type: 'dimension',
+			$description: 'Card radius',
+			$extensions: { [NS]: { responsive: { tablet: '2rem' } } },
+		};
+
+		expect(writePresetBreakpoint(described, 'tablet', '')).toEqual({
+			$value: '1rem',
+			$type: 'dimension',
+			$description: 'Card radius',
+		});
+	});
+
+	it('collapses to a bare scalar only when $value was all the envelope carried', () => {
+		const bare = { $value: '1rem', $extensions: { [NS]: { responsive: { tablet: '2rem' } } } };
+
+		expect(writePresetBreakpoint(bare, 'tablet', '')).toBe('1rem');
+	});
+
+	it('is a true no-op when the cleared breakpoint has no override', () => {
+		const clamped = { $value: '1rem', $type: 'dimension', $extensions: { [NS]: { clamp: { min: '1rem' } } } };
+
+		expect(writePresetBreakpoint(clamped, 'tablet', '')).toBe(clamped);
+	});
+
+	it('still drops the clamp when a stepped override is written', () => {
+		const clamped = { $value: '1rem', $extensions: { [NS]: { clamp: { min: '1rem', max: '2rem' } } } };
+
+		expect(writePresetBreakpoint(clamped, 'tablet', '2rem')).toEqual({
+			$value: '1rem',
+			$extensions: { [NS]: { responsive: { tablet: '2rem' } } },
+		});
+	});
+});

@@ -105,3 +105,22 @@ describe('toShorthand', () => {
 		expect(toShorthand('')).toBe('');
 	});
 });
+
+describe('slot index validation', () => {
+	it.each([4, -1, 1.5, '2', null, undefined, NaN])('rejects %p as a write index', (index) => {
+		// Left unguarded these corrupt silently: 4 grows the list to five entries so `isSlotList`
+		// stops recognizing it, and the others write an array property that never appears in the value.
+		expect(() => writeSlot(['a', 'b', 'c', 'd'], index, 'x')).toThrow(/Slot index/);
+	});
+
+	it.each([4, -1, 1.5, '2', null, undefined, NaN])('rejects %p as a read index', (index) => {
+		expect(() => readSlot(['a', 'b', 'c', 'd'], index)).toThrow(/Slot index/);
+	});
+
+	it('accepts every valid slot index', () => {
+		[0, 1, 2, 3].forEach((index) => {
+			expect(() => readSlot(['a', 'b', 'c', 'd'], index)).not.toThrow();
+			expect(() => writeSlot(['a', 'b', 'c', 'd'], index, 'x')).not.toThrow();
+		});
+	});
+});

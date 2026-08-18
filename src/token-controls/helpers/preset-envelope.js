@@ -164,26 +164,43 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 	// not own — what is left decides whether the namespace survives a full clear.
 	const { clamp, responsive: previous, ...keep } = vendor;
 	const responsive = { ...(previous ?? {}) };
+	const clearing = isCleared(value);
 
 	// Clearing an override deletes its key instead of storing an empty one. An empty string is not a
 	// valid value for any responsive-capable DTCG type, so a leftover `{ tablet: '' }` makes the whole
 	// document fail server-side validation — the write is rejected and the override the user just
 	// cleared stays in place.
-	if (isCleared(value)) {
+	if (clearing) {
+		// Nothing stored for this breakpoint means there is nothing to clear. Returning `raw` keeps
+		// this a true no-op: falling through would rebuild the leaf and strip whatever else it holds.
+		if (!(breakpoint in responsive)) {
+			return raw;
+		}
+
 		delete responsive[breakpoint];
 	} else {
 		responsive[breakpoint] = value;
 	}
 
+	// `clamp` is dropped only when a stepped override replaces it, which is the mutual exclusivity
+	// the docblock describes. A clear writes no override, so nothing conflicts with the clamp and it
+	// has to survive.
+	const vendorKeep = clearing && clamp !== undefined ? { ...keep, clamp } : keep;
+
 	// With no overrides left there is nothing an envelope is for, so the leaf collapses back to the
 	// plain scalar it was before the first override — otherwise clearing them one by one would leave
 	// an empty `responsive` map behind.
 	if (Object.keys(responsive).length === 0) {
-		if (Object.keys(keep).length === 0) {
+		if (Object.keys(vendorKeep).length === 0) {
 			const { [KADENCE_TOKEN_NAMESPACE]: dropped, ...siblings } = envelope ? (raw.$extensions ?? {}) : {};
 
 			if (Object.keys(siblings).length === 0) {
-				return base;
+				// Collapsing to the bare scalar is only right when `$value` was all the envelope
+				// carried. A leaf that also holds `$type`, `$description` or any other DTCG field
+				// keeps them — dropping the extensions is not license to discard the rest of the leaf.
+				const { $extensions: unused, [ENVELOPE_VALUE_KEY]: unusedValue, ...rootFields } = envelope ? raw : {};
+
+				return Object.keys(rootFields).length === 0 ? base : { ...rootFields, [ENVELOPE_VALUE_KEY]: base };
 			}
 
 			return { ...raw, [ENVELOPE_VALUE_KEY]: base, $extensions: siblings };
@@ -194,7 +211,7 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 			[ENVELOPE_VALUE_KEY]: base,
 			$extensions: {
 				...(envelope ? (raw.$extensions ?? {}) : {}),
-				[KADENCE_TOKEN_NAMESPACE]: keep,
+				[KADENCE_TOKEN_NAMESPACE]: vendorKeep,
 			},
 		};
 	}
@@ -204,7 +221,7 @@ export function writePresetBreakpoint(raw, breakpoint, value) {
 		[ENVELOPE_VALUE_KEY]: base,
 		$extensions: {
 			...(envelope ? (raw.$extensions ?? {}) : {}),
-			[KADENCE_TOKEN_NAMESPACE]: { ...keep, responsive },
+			[KADENCE_TOKEN_NAMESPACE]: { ...vendorKeep, responsive },
 		},
 	};
 }

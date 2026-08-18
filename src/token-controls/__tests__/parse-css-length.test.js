@@ -28,3 +28,14 @@ describe('parseCssLength', () => {
 		expect(parseCssLength(input)).toBeNull();
 	});
 });
+
+describe('signed values', () => {
+	it('parses a leading plus, which the CSS number grammar allows', () => {
+		expect(parseCssLength('+2px')).toEqual({ size: 2, unit: 'px' });
+		expect(parseCssLength('+0.5rem')).toEqual({ size: 0.5, unit: 'rem' });
+	});
+
+	it('still parses a leading minus', () => {
+		expect(parseCssLength('-2px')).toEqual({ size: -2, unit: 'px' });
+	});
+});

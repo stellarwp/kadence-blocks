@@ -13,7 +13,7 @@
  * number (no unit, e.g. `'12'`) and `'0'` both match with an empty unit — CSS treats a unitless
  * zero as valid, and the caller decides whether to keep the current shared unit in that case.
  */
-const CSS_LENGTH_PATTERN = /^(-?\d*\.?\d+)(px|em|rem|%)?$/;
+const CSS_LENGTH_PATTERN = /^([+-]?\d*\.?\d+)(px|em|rem|%)?$/;
 
 /**
  * Parse a CSS length literal into its numeric size and unit.

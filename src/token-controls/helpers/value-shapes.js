@@ -63,6 +63,28 @@ export function toSlotList(value) {
 }
 
 /**
+ * Reject a slot index outside the four this shape has.
+ *
+ * Out of range is a caller bug, not a user input, and it corrupts silently rather than failing:
+ * index `4` grows the array to five entries, which `isSlotList` then rejects, and a negative or
+ * fractional index writes an array *property* that never shows up in the value. Throwing surfaces
+ * it where it happens.
+ *
+ * @param {number} index The slot index to check.
+ *
+ * @since TBD
+ *
+ * @throws {Error} When `index` is not an integer in `0`-`3`.
+ *
+ * @return {void}
+ */
+function guardSlotIndex(index) {
+	if (!Number.isInteger(index) || index < 0 || index >= SLOT_COUNT) {
+		throw new Error(`Slot index must be an integer between 0 and ${SLOT_COUNT - 1}; received ${index}.`);
+	}
+}
+
+/**
  * Read one slot, whichever shape the value is in. A scalar answers for every index, since a linked
  * value means "the same on all four".
  *
@@ -71,9 +93,13 @@ export function toSlotList(value) {
  *
  * @since TBD
  *
+ * @throws {Error} When `index` is not an integer in `0`-`3`.
+ *
  * @return {*} That slot's value.
  */
 export function readSlot(value, index) {
+	guardSlotIndex(index);
+
 	return isSlotList(value) ? value[index] : value;
 }
 
@@ -92,9 +118,13 @@ export function readSlot(value, index) {
  *
  * @since TBD
  *
+ * @throws {Error} When `index` is not an integer in `0`-`3`.
+ *
  * @return {*} The next value.
  */
 export function writeSlot(value, index, next, collapse = false) {
+	guardSlotIndex(index);
+
 	const slots = toSlotList(value);
 
 	slots[index] = next;
