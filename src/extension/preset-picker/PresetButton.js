@@ -15,7 +15,7 @@
  * the two design-token controls stay adjacent at the top of the inspector (the generic sidebar panel skips
  * the palette for inline-picker blocks precisely because it surfaces here instead).
  */
-import { BaseControl, Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
+import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
@@ -134,9 +134,7 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 
 	return (
 		<>
-			<BaseControl.VisualLabel className="kb-preset-button__control-label">
-				{__('Preset', 'kadence-blocks')}
-			</BaseControl.VisualLabel>
+			<span className="kb-preset-button__control-label">{__('Preset', 'kadence-blocks')}</span>
 			<div className="kb-preset-button__row">
 				<Dropdown
 					className="kb-preset-button__dropdown"
