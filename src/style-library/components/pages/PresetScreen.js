@@ -15,6 +15,7 @@
  * WordPress dependencies
  */
 import { Button, Notice } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
 
@@ -92,23 +93,36 @@ export function PresetScreen({ label, route, navigate, library, preset }) {
 	const screen = usePresetScreen(library, preset);
 	const channel = useDraftChannel();
 
+	const [isAdding, setIsAdding] = useState(false);
+
 	// `createPresetFlow` (`helpers/preset-flows.js`) records the failure via `screen.addError` (the
 	// Notice rendered below) and re-throws pessimistically for callers that need the rejection; this
 	// `.catch()` only stops that rethrow from surfacing as an unhandled promise rejection, it does
-	// not report the error a second time.
-	const mintPreset = () =>
-		screen
+	// not report the error a second time. Disabling the button is a UI guard, not a real one — a
+	// stale click (e.g. a keyboard Enter racing the disabled-attribute repaint) could otherwise
+	// still start a second create.
+	const mintPreset = () => {
+		if (screen.isBusy) {
+			return Promise.resolve();
+		}
+
+		setIsAdding(true);
+
+		return screen
 			.addPreset()
 			.then((id) => navigate({ item: id }))
-			.catch(() => {});
+			.catch(() => {})
+			.finally(() => setIsAdding(false));
+	};
 	const addAction = (
 		<Button
 			icon={plus}
 			variant="secondary"
+			isBusy={isAdding}
 			disabled={screen.isBusy}
 			onClick={() => (channel ? channel.guard(mintPreset) : mintPreset())}
 		>
-			{preset.addLabel}
+			{isAdding ? __('Adding…', 'kadence-blocks') : preset.addLabel}
 		</Button>
 	);
 
