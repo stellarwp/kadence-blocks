@@ -68,6 +68,11 @@ function ButtonSettingsPanel({ navigate, route, screen, initialValues, presetLab
 	const id = route.item;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
 	const [activeTab, setActiveTab] = useState(TABS[0].name);
+	// `screen.isBusy` covers all three write flows (add/save/delete) with a single flag, but the
+	// footer needs to show the busy animation on only the button the user actually clicked — a save
+	// must not make Delete look like it is deleting, and vice versa. Tracked locally rather than
+	// added to the hook because only this panel's footer needs the distinction.
+	const [pendingAction, setPendingAction] = useState(null);
 	const channel = useDraftChannel();
 
 	// Pulled out of `channel` rather than depending on `channel` itself — see `ScaleSettings.js`'s
@@ -99,15 +104,33 @@ function ButtonSettingsPanel({ navigate, route, screen, initialValues, presetLab
 		};
 	}
 
+	// Disabling the footer buttons is a UI guard, not a real one — the handlers refuse to start a
+	// second write while `screen.isBusy` is already true, since the flag covers add/save/delete
+	// together and a stale click (e.g. a keyboard Enter racing the disabled-attribute repaint) could
+	// otherwise still fire.
 	const handleSave = () => {
-		screen.savePreset(id, panel.draft, initialValues).catch(() => {});
+		if (screen.isBusy) {
+			return;
+		}
+
+		setPendingAction('save');
+		screen
+			.savePreset(id, panel.draft, initialValues)
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
 	};
 
 	const handleDelete = () => {
+		if (screen.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
 		screen
 			.deletePreset(id)
 			.then(() => navigate({ item: '' }))
-			.catch(() => {});
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
 	};
 
 	// Close becomes guarded now that the panel publishes a real draft — the `ScaleSettings.js`
@@ -124,6 +147,9 @@ function ButtonSettingsPanel({ navigate, route, screen, initialValues, presetLab
 			onDelete={screen.isDeletable(id) ? handleDelete : null}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
+			isBusy={screen.isBusy}
+			isSaving={pendingAction === 'save'}
+			isDeleting={pendingAction === 'delete'}
 		>
 			{screen.saveError && (
 				<Notice status="error" isDismissible onRemove={screen.clearSaveError}>
