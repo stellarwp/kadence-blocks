@@ -36,7 +36,7 @@ final class Notice_Provider extends Provider {
 			}
 		);
 
-		$this->container->singleton( Is_Plugin_Admin_Screen::class, Is_Plugin_Admin_Screen::class );
+		$this->container->singleton( Is_Plugin_Admin_Screen::class );
 
 		// The package requires registration before admin_init.
 		add_action( 'init', [ $this, 'register_core_update_notice' ] );
