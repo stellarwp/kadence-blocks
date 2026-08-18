@@ -122,6 +122,51 @@ final class ProjectorTest extends TestCase {
 	}
 
 	/**
+	 * Each slot-backed color re-declares its numbered --global-paletteN bridge to the palette's value, so content
+	 * (and the redirected WordPress preset color classes) that reads the numbered bridge swaps with the palette.
+	 *
+	 * @return void
+	 */
+	public function testTheSwitchSelectorBridgesTheNumberedGlobalPalette(): void {
+		$this->store->save_document( (string) wp_json_encode( $this->custom_palette_overrides() ) );
+
+		$css = $this->projector->css();
+
+		$start = strpos( $css, '[data-kb-palette="custom"]{' );
+		$this->assertNotFalse( $start );
+		$block = substr( $css, (int) $start, (int) strpos( $css, '}', (int) $start ) - (int) $start + 1 );
+
+		// brand.primary backs slot palette1, brand.secondary backs slot palette2 (see declarations.php).
+		$this->assertStringContainsString( '--global-palette1:#DD6B20;', $block );
+		$this->assertStringContainsString( '--global-palette2:#C05621;', $block );
+	}
+
+	/**
+	 * The projector emits scoped override rules pointing a Kadence block's WordPress preset color classes at the
+	 * numbered --global-paletteN bridge (so they follow a per-block palette), scoped to .wp-block-kadence-* so core
+	 * blocks reading WordPress's global preset vars are untouched. Covers the plugin's `palette-N` slug and the
+	 * Kadence theme's `theme-palette-N` slug, both mapping to the same bridge.
+	 *
+	 * @return void
+	 */
+	public function testItRedirectsKadencePresetColorClassesToTheGlobalBridge(): void {
+		$css = $this->projector->css();
+
+		$this->assertStringContainsString(
+			'[class*="wp-block-kadence-"].has-palette-1-color{color:var(--global-palette1) !important;}',
+			$css
+		);
+		$this->assertStringContainsString(
+			'[class*="wp-block-kadence-"].has-palette-2-background-color{background-color:var(--global-palette2) !important;}',
+			$css
+		);
+		$this->assertStringContainsString(
+			'[class*="wp-block-kadence-"].has-theme-palette-1-color{color:var(--global-palette1) !important;}',
+			$css
+		);
+	}
+
+	/**
 	 * A deactivated registry projects nothing, so a fail-closed registry leaves KB's behavior untouched.
 	 *
 	 * @return void

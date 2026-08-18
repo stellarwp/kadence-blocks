@@ -21,10 +21,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Value;
  * palette, respecting preset selection (a selected preset keeps its own binding, re-tinted).
  *
  * This is the narrow color-only replacement for the cross-library `[data-kb-token-set]` switch removed by the
- * single-active-library pivot: it stays within the single active library and swaps only colors. Accepted v1 limitation: the
- * numbered `--global-palette*` bridges resolve at `:root`, so a `[data-kb-palette]` subtree live-swaps content
- * that reads `--kb-token--*` color vars (directly or through a preset), but not blocks that read a numbered
- * `--global-paletteN` bridge directly.
+ * single-active-library pivot: it stays within the single active library and swaps only colors. A palette that
+ * re-tints a slot-backed color re-declares its numbered `--global-paletteN` bridge too (built in
+ * {@see Projector::palettes_for()}), so a `[data-kb-palette]` subtree live-swaps content that reads a numbered
+ * `--global-paletteN` bridge directly — including the WordPress preset color classes the Projector redirects to
+ * it — as well as content reading `--kb-token--*` color vars (directly or through a preset).
  *
  * Pure: no WordPress calls, no globals, no side effects. The WordPress wiring lives in Projector.
  *
