@@ -20,7 +20,8 @@ final class CoreUpdateNoticeTest extends TestCase {
 		require_once ABSPATH . 'wp-admin/includes/update.php';
 		require_once ABSPATH . 'wp-admin/includes/screen.php';
 
-		$this->provider = new Notice_Provider( $this->container );
+		// Resolved rather than constructed: Provider takes a Container and a Dot config.
+		$this->provider = $this->container->get( Notice_Provider::class );
 	}
 
 	protected function tearDown(): void {
