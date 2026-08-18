@@ -1,5 +1,5 @@
 significance: patch
 type: feature
-entry: Added a WordPress admin notice prompting site administrators to update
-  WordPress when their install is out of date.
+entry: Added an admin notice on the Kadence Blocks screens prompting site
+  administrators to update WordPress when their install is out of date.
 timestamp: 2026-08-17T22:20:17.000Z

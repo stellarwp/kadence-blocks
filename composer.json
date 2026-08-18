@@ -33,10 +33,6 @@
 		{
 			"type": "vcs",
 			"url": "git@github.com:stellarwp/prophecy-storage.git"
-		},
-		{
-			"type": "vcs",
-			"url": "git@github.com:stellarwp/core-update-notice.git"
 		}
 	],
 	"require": {
@@ -46,7 +42,7 @@
 		"lucatume/di52": "^4.0",
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.1",
-		"stellarwp/core-update-notice": "dev-main",
+		"stellarwp/core-update-notice": "^1.0",
 		"stellarwp/db": "^1.1",
 		"stellarwp/harbor": "^1.6",
 		"stellarwp/prophecy-image-downloader": "^3.0",
