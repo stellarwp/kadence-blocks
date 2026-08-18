@@ -89,30 +89,15 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Whether a block opts into the design-token per-block controls — either `kbPreset` support (block presets
- * plus the palette override) or `kbPalette` support (the palette override only). Accepts a block name or a
- * block type / settings object, mirroring hasBlockSupport, so the attribute, save, canvas, and inspector
- * filters can share one gate.
- *
- * @param {string|Object} nameOrType The block name, or the block type / settings object.
- *
- * @since TBD
- *
- * @return {boolean} True when the block supports kbPreset or kbPalette.
- */
-function supportsDesignTokenControls(nameOrType) {
-	return hasBlockSupport(nameOrType, 'kbPreset') || hasBlockSupport(nameOrType, 'kbPalette');
-}
-
-/**
- * Add the kbPreset and kbPalette attributes to any block that opts into the matching block support.
+ * Add the kbPreset and/or kbPalette attributes to a block, each gated on its own block support so the two
+ * controls stay independent.
  *
  * kbPreset (added for `kbPreset`-support blocks) is the selected preset slug (e.g. "ghost"); an empty value
- * means the block keeps its $default look (the block preset). kbPalette (added for `kbPreset`- OR
- * `kbPalette`-support blocks) holds the id of a per-block color-palette override (e.g. "dark"); empty means
- * the block follows the set's `$current` palette. A color-only block declares `kbPalette` support to get the
- * palette override without registering an unused `kbPreset` attribute. Both the scoped preset CSS and the
- * palette switch layer are emitted server-side by the Design Tokens projector.
+ * means the block keeps its $default look (the block preset). kbPalette (added for `kbPalette`-support blocks)
+ * holds the id of a per-block color-palette override (e.g. "dark"); empty means the block follows the set's
+ * `$current` palette. A palette only changes which colors the tokens resolve to, so it is orthogonal to
+ * presets — a block can support either, both, or neither. Both the scoped preset CSS and the palette switch
+ * layer are emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
@@ -121,10 +106,7 @@ function supportsDesignTokenControls(nameOrType) {
  * @return {Object} The block settings with the kbPreset and/or kbPalette attributes added.
  */
 export function blockPresetAttribute(settings) {
-	const hasPreset = hasBlockSupport(settings, 'kbPreset');
-	const hasPalette = hasBlockSupport(settings, 'kbPalette');
-
-	if (hasPreset) {
+	if (hasBlockSupport(settings, 'kbPreset')) {
 		settings.attributes = assign(settings.attributes, {
 			kbPreset: {
 				type: 'string',
@@ -133,7 +115,7 @@ export function blockPresetAttribute(settings) {
 		});
 	}
 
-	if (hasPreset || hasPalette) {
+	if (hasBlockSupport(settings, 'kbPalette')) {
 		settings.attributes = assign(settings.attributes, {
 			kbPalette: {
 				type: 'string',
@@ -254,7 +236,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-preset-save-class', bl
  * @return {Object} The props, with the data attribute appended when a palette is pinned.
  */
 export function blockPaletteSaveAttr(props, blockType, attributes) {
-	if (!supportsDesignTokenControls(blockType)) {
+	if (!hasBlockSupport(blockType, 'kbPalette')) {
 		return props;
 	}
 
@@ -306,7 +288,7 @@ const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
 		const { name, attributes } = props;
 
-		if (!supportsDesignTokenControls(name)) {
+		if (!hasBlockSupport(name, 'kbPalette')) {
 			return <BlockListBlock {...props} />;
 		}
 
@@ -329,8 +311,9 @@ addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAt
  * the kbPreset attribute, which the save/preview filters turn into the kb-preset--<slug> class the projector's
  * scoped CSS hooks; an empty preset selects the block's $default preset look. Selecting a palette writes the
  * kbPalette attribute, which the save/preview filters turn into the data-kb-palette switch the projector's
- * `[data-kb-palette]` layer re-skins. The preset subsection is skipped when the block has no presets for the
- * active library; the palette subsection is skipped when the set offers fewer than two palettes.
+ * `[data-kb-palette]` layer re-skins. The two controls gate independently on their own block support: the
+ * preset subsection needs `kbPreset` support and presets for the active library; the palette subsection needs
+ * `kbPalette` support and at least two palettes in the set.
  *
  * A block whose `kbPreset` support requests `inlinePicker` renders the PRESET picker itself (e.g. a Kadence
  * block placing it under its own Style tab), so this generic sidebar panel skips only the preset subsection
@@ -343,20 +326,20 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 		const { name, attributes, setAttributes, isSelected } = props;
 
 		const hasPreset = hasBlockSupport(name, 'kbPreset');
+		const hasPalette = hasBlockSupport(name, 'kbPalette');
 
-		if (!supportsDesignTokenControls(name)) {
+		if (!hasPreset && !hasPalette) {
 			return <BlockEdit {...props} />;
 		}
 
 		const support = hasPreset ? getBlockSupport(name, 'kbPreset') : null;
 		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker itself (e.g. a
-		// Kadence block under its own Style tab), so this generic panel skips only the preset subsection for
-		// it — the per-block Color Palette override still surfaces here for every kbPreset/kbPalette block.
+		// Kadence block under its own Style tab), so this generic panel skips only the preset subsection for it.
 		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
 
 		const library = activeLibrary();
 		const showPresets = hasPreset && !inlinePicker && blockPresets(name, library).length > 0;
-		const showPalettes = selectablePalettes().length >= 2;
+		const showPalettes = hasPalette && selectablePalettes().length >= 2;
 
 		if (!showPresets && !showPalettes) {
 			return <BlockEdit {...props} />;

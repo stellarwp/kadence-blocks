@@ -775,7 +775,8 @@
 		"kbContentLabel": "text",
 		"kbPreset": {
 			"inlinePicker": true
-		}
+		},
+		"kbPalette": true
 	},
 	"usesContext": [
 		"postId",
