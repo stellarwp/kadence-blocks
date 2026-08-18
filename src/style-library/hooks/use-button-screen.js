@@ -47,14 +47,26 @@ export function useButtonScreen(library) {
 	const refreshFeed = library?.refreshFeed;
 	const payloadVersion = presets.payload?.version;
 
-	// Holds the version the last reorder write returned, until the preset payload catches up to it.
+	// Read inside the queued continuations below, which are created once per `useCallback` identity
+	// and would otherwise close over the version from the render that made them.
+	const payloadVersionRef = useRef(payloadVersion);
+	payloadVersionRef.current = payloadVersion;
+
+	// Holds the version the last reorder write returned, until the preset payload catches up.
 	// Unlike `use-scale-screen.js`, whose version comes from the feed the awaited refresh replaces,
 	// this screen reads its version from a payload that `useButtonPresets` re-fetches in a later
 	// effect. A second drop queued behind the first would otherwise dereference the pre-write
 	// version and 409 against itself.
 	const writtenVersionRef = useRef(null);
 
-	if (payloadVersion === writtenVersionRef.current) {
+	// The payload version at the moment the override was recorded. The override is retired as soon
+	// as the payload moves off it at all, rather than only on an exact match with what the write
+	// returned: a re-read that carries a newer version — someone else's write, or a response this
+	// screen never saw — supersedes the override, and holding on to it would keep sending a version
+	// the server has already replaced.
+	const payloadAtWriteRef = useRef(payloadVersion);
+
+	if (writtenVersionRef.current !== null && payloadVersion !== payloadAtWriteRef.current) {
 		writtenVersionRef.current = null;
 	}
 
@@ -174,6 +186,7 @@ export function useButtonScreen(library) {
 					// commits one, and it reads `feedVersionRef` directly.
 					onVersion: (version) => {
 						writtenVersionRef.current = version;
+						payloadAtWriteRef.current = payloadVersionRef.current;
 						feedVersionRef.current = version;
 					},
 				})
@@ -181,6 +194,15 @@ export function useButtonScreen(library) {
 						// Caught here, not re-thrown — every link must settle so the chain is never left
 						// permanently rejected. Snap the optimistic order back to the last confirmed one.
 						setPendingOrder(null);
+
+						// A failed write returned no version, so the override is meaningless now, and a
+						// drop already queued behind this one would otherwise resend it and fail the same
+						// way. Fall back to the payload and re-read it, so the next link in the chain
+						// carries whatever the server actually holds.
+						writtenVersionRef.current = null;
+						feedVersionRef.current = payloadVersionRef.current;
+
+						return refreshFeed ? refreshFeed(slug).catch(() => {}) : undefined;
 					})
 					.then(() => {
 						reorderPendingCountRef.current -= 1;

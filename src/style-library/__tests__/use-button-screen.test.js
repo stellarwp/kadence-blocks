@@ -63,11 +63,14 @@ describe('useButtonScreen reorder version handling', () => {
 	});
 
 	/**
-	 * Render `useButtonScreen` and hand back its latest return value.
+	 * Mount `useButtonScreen` behind a single probe component type, so a re-render updates the
+	 * mounted hook rather than replacing it. A fresh component type per render would remount and
+	 * reset the version refs these tests are about.
 	 *
 	 * @since TBD
 	 *
-	 * @return {Function} Returns the hook's most recent return value when called.
+	 * @return {{rerender: Function, latest: Function}} Re-renders the mounted probe, and reads the
+	 *                                                    hook's most recent return value.
 	 */
 	function renderScreen() {
 		let latest = null;
@@ -78,9 +81,11 @@ describe('useButtonScreen reorder version handling', () => {
 			return null;
 		}
 
-		act(() => root.render(<Probe />));
+		const rerender = () => act(() => root.render(<Probe />));
 
-		return () => latest;
+		rerender();
+
+		return { rerender, latest: () => latest };
 	}
 
 	it('sends the version the previous write returned when a second drop follows the first', async () => {
@@ -98,8 +103,8 @@ describe('useButtonScreen reorder version handling', () => {
 		const screen = renderScreen();
 
 		await act(async () => {
-			screen().reorderPresets(['secondary', 'primary']);
-			await screen().reorderPresets(['primary', 'secondary']);
+			screen.latest().reorderPresets(['secondary', 'primary']);
+			await screen.latest().reorderPresets(['primary', 'secondary']);
 		});
 
 		expect(sentVersions).toEqual(['v1', 'v2']);
@@ -118,10 +123,10 @@ describe('useButtonScreen reorder version handling', () => {
 		const screen = renderScreen();
 
 		await act(async () => {
-			await screen().reorderPresets(['secondary', 'primary']);
+			await screen.latest().reorderPresets(['secondary', 'primary']);
 		});
 
-		// The re-read lands, carrying the same version the write reported.
+		// The re-read lands on the mounted hook, carrying the version the write reported.
 		useButtonPresets.mockReturnValue({
 			payload: { version: 'v2' },
 			isLoading: false,
@@ -129,12 +134,90 @@ describe('useButtonScreen reorder version handling', () => {
 			rows: [],
 			initialValuesFor: () => null,
 		});
-		renderScreen();
+		screen.rerender();
 
 		await act(async () => {
-			await screen().reorderPresets(['primary', 'secondary']);
+			await screen.latest().reorderPresets(['primary', 'secondary']);
 		});
 
 		expect(sentVersions).toEqual(['v1', 'v2']);
+	});
+
+	/**
+	 * A rejected write leaves no new version behind, so a drop already queued must fall back to the
+	 * payload rather than resend the previous write's override and fail the same way.
+	 *
+	 * @return {void}
+	 */
+	it('falls back to the payload version for the next drop after a failed write', async () => {
+		const sentVersions = [];
+		let call = 0;
+
+		reorderPresetsFlow.mockImplementation(({ feedVersion, onVersion }) => {
+			sentVersions.push(feedVersion);
+			call += 1;
+
+			if (call === 1) {
+				onVersion('v2');
+
+				return Promise.resolve();
+			}
+
+			// The second write conflicts: no version is reported.
+			return Promise.reject(new Error('Conflict'));
+		});
+
+		const screen = renderScreen();
+
+		await act(async () => {
+			await screen.latest().reorderPresets(['secondary', 'primary']);
+			await screen.latest().reorderPresets(['primary', 'secondary']);
+			await screen.latest().reorderPresets(['secondary', 'primary']);
+		});
+
+		// v1 from the payload, v2 from the first write's response, then back to the payload's v1
+		// because the failed write retired the override.
+		expect(sentVersions).toEqual(['v1', 'v2', 'v1']);
+		expect(LIBRARY.refreshFeed).toHaveBeenCalled();
+	});
+
+	/**
+	 * A re-read carrying a version this screen never wrote — another client's write — supersedes the
+	 * override, which must not keep being sent afterwards.
+	 *
+	 * @return {void}
+	 */
+	it('retires the write override when a later read supersedes it', async () => {
+		const sentVersions = [];
+
+		reorderPresetsFlow.mockImplementation(({ feedVersion, onVersion }) => {
+			sentVersions.push(feedVersion);
+			onVersion('v2');
+
+			return Promise.resolve();
+		});
+
+		const screen = renderScreen();
+
+		await act(async () => {
+			await screen.latest().reorderPresets(['secondary', 'primary']);
+		});
+
+		// Not 'v2': someone else wrote in between, so the payload moved somewhere the override
+		// cannot describe.
+		useButtonPresets.mockReturnValue({
+			payload: { version: 'v9' },
+			isLoading: false,
+			loadError: null,
+			rows: [],
+			initialValuesFor: () => null,
+		});
+		screen.rerender();
+
+		await act(async () => {
+			await screen.latest().reorderPresets(['primary', 'secondary']);
+		});
+
+		expect(sentVersions).toEqual(['v1', 'v9']);
 	});
 });
