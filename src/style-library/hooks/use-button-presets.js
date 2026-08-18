@@ -11,7 +11,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -41,6 +41,21 @@ export function useButtonPresets(library, block = BUTTON_BLOCK) {
 	const namespace = library?.rest?.namespace;
 	const slug = library?.slug;
 	const version = library?.version;
+
+	// Dropped the moment the library changes, not when its replacement arrives: the refetch below
+	// keeps the previous payload on purpose (a version bump after a write must not blank the list),
+	// but across libraries that same payload is another library's data. Callers key their panels on
+	// the preset id alone, so leaving it in place lets a panel opened on the old library keep
+	// editing its draft under the new one. Assigning during render rather than in an effect avoids
+	// a commit that would show the stale rows first.
+	const slugRef = useRef(slug);
+
+	if (slugRef.current !== slug) {
+		slugRef.current = slug;
+		setPayload(null);
+		setIsLoading(true);
+		setLoadError(null);
+	}
 
 	useEffect(() => {
 		if (!namespace || !slug) {
