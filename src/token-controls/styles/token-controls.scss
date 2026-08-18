@@ -320,10 +320,16 @@
 
 /*
  * Separates the mark from the affordances that follow it. Scoped to this header rather than set on
- * `.kb-token-indicator` itself: the same indicator is still used by the block editor's own control
- * rows, and those are laid out differently — widening the class would shift them too.
+ * the indicator classes themselves: the block editor's own `.kb-token-indicator` rows are laid out
+ * differently, so widening the class would shift them too.
+ *
+ * Both indicators are listed because the shell renders either one: `.kb-token-indicator` when the
+ * editor passes its own through the `indicator` prop, and this library's `BindingIndicator`
+ * otherwise, which renders `__indicator` when modified and `__indicator-linked` when not.
  */
-.kb-token-control__header > .kb-token-indicator {
+.kb-token-control__header > .kb-token-indicator,
+.kb-token-control__header > .kb-token-control__indicator,
+.kb-token-control__header > .kb-token-control__indicator-linked {
 	padding-right: 8px;
 }
 

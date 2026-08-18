@@ -108,10 +108,15 @@ export function ControlShell({
 	const responsive = Array.isArray(breakpoints) && breakpoints.length > 1;
 	const linkable = typeof onToggleLink === 'function';
 
+	// Whether `BindingIndicator` will actually render something. `status` being an object is not
+	// enough: `{ bound: false }` is truthy but renders null, as does a bound-and-unmodified status
+	// when `showReset` is off.
+	const hasIndicator = Boolean(indicator) || Boolean(status?.bound && (status.modified || showReset));
+
 	// A control that carries its own indicator inline needs no header at all — rendering an empty
 	// one leaves a gap above it. The wrapper then contributes only the highlight tint, which is how
 	// the block editor's rows with and without a header differ.
-	const hasHeader = Boolean(label) || linkable || responsive || Boolean(status) || Boolean(indicator);
+	const hasHeader = Boolean(label) || linkable || responsive || hasIndicator;
 
 	const className = [
 		'kb-token-control',
@@ -126,7 +131,9 @@ export function ControlShell({
 			{hasHeader && (
 				<div className="kb-token-control__header">
 					<span className="kb-token-control__label">{label}</span>
-					{indicator ?? <BindingIndicator status={status} onReset={onReset} showReset={showReset} />}
+					{indicator ?? (
+						<BindingIndicator status={status} onReset={onReset} showReset={showReset} disabled={disabled} />
+					)}
 
 					<div className="kb-token-control__affordances">
 						{responsive && (

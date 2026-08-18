@@ -30,6 +30,8 @@ import { __ } from '@wordpress/i18n';
  * @param {?Object}   [props.status]     `{ bound, modified }`, or null when the control is unbound
  *                                       or the host has no baseline to compare against.
  * @param {?Function} [props.onReset]    Called to clear the value back to its baseline.
+ * @param {boolean}   [props.disabled]   Disable the reset button alongside the control's other
+ *                                          affordances, so a disabled control cannot still be reset.
  * @param {boolean}   [props.showReset]  Render the matching glyph and the reset button. False
  *                                       leaves only the dot, for a control that resets elsewhere.
  *
@@ -37,7 +39,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @return {?JSX.Element} The indicator, or null when there is nothing to show.
  */
-export function BindingIndicator({ status = null, onReset = null, showReset = true }) {
+export function BindingIndicator({ status = null, onReset = null, showReset = true, disabled = false }) {
 	if (!status?.bound) {
 		return null;
 	}
@@ -73,7 +75,7 @@ export function BindingIndicator({ status = null, onReset = null, showReset = tr
 					icon={undo}
 					size="small"
 					onClick={onReset}
-					disabled={!onReset}
+					disabled={disabled || !onReset}
 					label={__('Reset to the design system value', 'kadence-blocks')}
 					showTooltip
 				/>
