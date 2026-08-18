@@ -2,24 +2,30 @@
 
 namespace Tests\wpunit\Resources\Notice;
 
-use KadenceWP\KadenceBlocks\Notice\Core_Update_Notice;
+use KadenceWP\KadenceBlocks\StellarWP\CoreUpdateNotice\CoreUpdateNotice;
 use Tests\Support\Classes\TestCase;
 
+/**
+ * Covers this plugin's integration with stellarwp/core-update-notice: that the shared dismissal
+ * flag is honoured, that the notice is gated on the update_core capability, and that the copy
+ * passed in from Notice_Provider reaches the output.
+ */
 final class CoreUpdateNoticeTest extends TestCase {
 
-	private Core_Update_Notice $notice;
+	private CoreUpdateNotice $notice;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		require_once ABSPATH . 'wp-admin/includes/update.php';
 
-		$this->notice = $this->container->get( Core_Update_Notice::class );
+		$this->notice = new CoreUpdateNotice();
 	}
 
 	protected function tearDown(): void {
-		delete_option( Core_Update_Notice::DISMISSED_OPTION );
+		delete_option( CoreUpdateNotice::DISMISSED_OPTION );
 		delete_site_transient( 'update_core' );
+		unset( $GLOBALS['nx_wp_core_update_notice_rendered'] );
 		wp_set_current_user( 0 );
 
 		parent::tearDown();
@@ -28,29 +34,29 @@ final class CoreUpdateNoticeTest extends TestCase {
 	public function test_it_displays_when_a_core_update_is_available(): void {
 		$this->set_core_update_response( 'upgrade' );
 
-		$this->assertTrue( $this->notice->should_display() );
+		$this->assertTrue( $this->notice->shouldDisplay() );
 	}
 
 	public function test_it_does_not_display_when_core_is_up_to_date(): void {
 		$this->set_core_update_response( 'latest' );
 
-		$this->assertFalse( $this->notice->should_display() );
+		$this->assertFalse( $this->notice->shouldDisplay() );
 	}
 
 	public function test_it_does_not_display_when_core_update_data_is_missing(): void {
-		$this->assertFalse( $this->notice->should_display() );
+		$this->assertFalse( $this->notice->shouldDisplay() );
 	}
 
 	/**
-	 * The dismissal flag is shared with the other StellarWP plugins, so a value written by any of
-	 * them suppresses the notice here as well.
+	 * The dismissal flag is shared with the other plugins carrying this notice, so a value written
+	 * by any of them suppresses it here as well.
 	 */
 	public function test_it_does_not_display_once_the_shared_dismissal_flag_is_set(): void {
 		$this->set_core_update_response( 'upgrade' );
 
-		update_option( Core_Update_Notice::DISMISSED_OPTION, true, false );
+		update_option( CoreUpdateNotice::DISMISSED_OPTION, true, false );
 
-		$this->assertFalse( $this->notice->should_display() );
+		$this->assertFalse( $this->notice->shouldDisplay() );
 	}
 
 	public function test_it_renders_the_copy_and_a_dismiss_link(): void {
@@ -58,15 +64,13 @@ final class CoreUpdateNoticeTest extends TestCase {
 
 		$this->set_core_update_response( 'upgrade' );
 
-		ob_start();
-		$this->notice->render();
-		$output = (string) ob_get_clean();
+		$output = $this->render();
 
 		$this->assertStringContainsString(
 			'Keep your site protected. Update to the latest version of WordPress.',
 			$output
 		);
-		$this->assertStringContainsString( Core_Update_Notice::DISMISS_ACTION, $output );
+		$this->assertStringContainsString( CoreUpdateNotice::DISMISS_ACTION, $output );
 		$this->assertStringContainsString( '_wpnonce', $output );
 	}
 
@@ -75,10 +79,30 @@ final class CoreUpdateNoticeTest extends TestCase {
 
 		$this->set_core_update_response( 'upgrade' );
 
+		$this->assertSame( '', $this->render() );
+	}
+
+	/**
+	 * Two plugins bundling the library must not print the notice twice.
+	 */
+	public function test_it_renders_only_once_per_request(): void {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		$this->set_core_update_response( 'upgrade' );
+
+		$this->assertNotSame( '', $this->render() );
+
+		ob_start();
+		( new CoreUpdateNotice() )->render();
+
+		$this->assertSame( '', (string) ob_get_clean() );
+	}
+
+	private function render(): string {
 		ob_start();
 		$this->notice->render();
 
-		$this->assertSame( '', (string) ob_get_clean() );
+		return (string) ob_get_clean();
 	}
 
 	/**

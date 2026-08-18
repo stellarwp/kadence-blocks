@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Notice;
 
+use KadenceWP\KadenceBlocks\StellarWP\CoreUpdateNotice\CoreUpdateNotice;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
 
 /**
@@ -17,14 +18,31 @@ final class Notice_Provider extends Provider {
 	 * @since TBD
 	 */
 	public function register(): void {
-		add_action(
-			'admin_init',
-			$this->container->callback( Core_Update_Notice::class, 'handle_dismissal' )
+		// Deferred to init so the copy below is translated; the notice hooks admin_init, which is later.
+		add_action( 'init', [ $this, 'register_core_update_notice' ] );
+	}
+
+	/**
+	 * Register the shared WordPress core update notice.
+	 *
+	 * The copy is passed in rather than left to the library's English defaults so it is extracted
+	 * into this plugin's text domain.
+	 *
+	 * @since TBD
+	 *
+	 * @hook init
+	 *
+	 * @return void
+	 */
+	public function register_core_update_notice(): void {
+		$notice = new CoreUpdateNotice(
+			[
+				'heading' => __( 'Keep your site protected. Update to the latest version of WordPress.', 'kadence-blocks' ),
+				'body'    => __( 'Your site is running on an outdated version of WordPress, which can leave it vulnerable to security issues. To decrease your risk of exposure, please update your WordPress install to the latest version.', 'kadence-blocks' ),
+				'dismiss' => __( 'Dismiss this notice.', 'kadence-blocks' ),
+			]
 		);
 
-		add_action(
-			'admin_notices',
-			$this->container->callback( Core_Update_Notice::class, 'render' )
-		);
+		$notice->register();
 	}
 }

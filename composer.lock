@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9dc31cbf2f71ab015a82f3cfd0a5215c",
+    "content-hash": "474bf7372feeb68bb945f44b62b73f2d",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -964,6 +964,46 @@
                 "source": "https://github.com/stellarwp/container-contract/tree/1.1.1"
             },
             "time": "2023-09-05T20:08:29+00:00"
+        },
+        {
+            "name": "stellarwp/core-update-notice",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:stellarwp/core-update-notice.git",
+                "reference": "84456e7e4e40a4ae5757f1939232c8f7185dad8c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/core-update-notice/zipball/84456e7e4e40a4ae5757f1939232c8f7185dad8c",
+                "reference": "84456e7e4e40a4ae5757f1939232c8f7185dad8c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\CoreUpdateNotice\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "StellarWP",
+                    "email": "dev@stellarwp.com"
+                }
+            ],
+            "description": "A WordPress admin notice prompting site administrators to update WordPress, with a dismissal flag shared across the plugins that display it.",
+            "support": {
+                "source": "https://github.com/stellarwp/core-update-notice/tree/main",
+                "issues": "https://github.com/stellarwp/core-update-notice/issues"
+            },
+            "time": "2026-08-17T23:53:31+00:00"
         },
         {
             "name": "stellarwp/db",
@@ -12984,6 +13024,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "stellarwp/core-update-notice": 20,
         "stellarwp/uplink": 20
     },
     "prefer-stable": false,
