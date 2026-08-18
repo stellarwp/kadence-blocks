@@ -362,9 +362,7 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 				 */}
 				{isSelected && showPalettes && (
 					<InspectorControls>
-						<div className="kb-palette-picker__row">
-							<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
-						</div>
+						<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
 					</InspectorControls>
 				)}
 				<BlockEdit {...props} />

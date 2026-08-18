@@ -6,9 +6,14 @@
  * renders against, independent of the set's `$current`. The selection lives in the block's `kbPalette`
  * string attribute; the Design Tokens projector emits a `[data-kb-palette="<id>"]` switch layer the block's
  * `data-kb-palette` wrapper hooks. An empty selection inherits the set `$current`.
+ *
+ * Presented as a pop-out that mirrors the design-token preset control (see PresetButton): an uppercase
+ * label, a bordered toggle button showing the selected palette with a trailing icon, and a dropdown menu of
+ * palettes with a check on the active one.
  */
 import { get } from 'lodash';
-import { SelectControl } from '@wordpress/components';
+import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
+import { Icon, check, brush } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import './palette-picker.scss';
 
@@ -49,9 +54,11 @@ export function currentPalette() {
 }
 
 /**
- * The per-block palette selector. Renders nothing when the set offers fewer than two palettes (there is
- * nothing to switch between). Selecting an option calls onChange with the chosen palette id (the caller
- * writes it into the block's kbPalette attribute); the empty option inherits the set `$current`.
+ * The per-block palette selector, rendered as a preset-style pop-out (a labeled toggle button that opens a
+ * menu of palettes with a check on the selection). Renders nothing when the set offers fewer than two
+ * palettes (there is nothing to switch between). Choosing an option calls onChange with the chosen palette
+ * id (the caller writes it into the block's kbPalette attribute); the first option inherits the set
+ * `$current`.
  *
  * @param {Object}   props          The component props.
  * @param {string}   props.value    The currently selected palette id ('' inherits the set current).
@@ -71,21 +78,57 @@ export function PalettePicker({ value, onChange, label }) {
 
 	const current = currentPalette();
 	const options = [
-		{
-			label: inheritLabel(current),
-			value: '',
-		},
-		...palettes.map((palette) => ({ label: palette.label, value: palette.id })),
+		{ id: '', label: inheritLabel(current) },
+		...palettes.map((palette) => ({ id: palette.id, label: palette.label })),
 	];
+	const selectedId = value || '';
+	const selectedOption = options.find((option) => option.id === selectedId) || options[0];
 
 	return (
-		<SelectControl
-			label={label || __('Color Palette', 'kadence-blocks')}
-			value={value || ''}
-			options={options}
-			onChange={onChange}
-			__nextHasNoMarginBottom
-		/>
+		<>
+			<span className="kb-palette-picker__control-label">{label || __('Color Palette', 'kadence-blocks')}</span>
+			<div className="kb-palette-picker__row">
+				<Dropdown
+					className="kb-palette-picker__dropdown"
+					contentClassName="kb-palette-picker__menu"
+					popoverProps={{ placement: 'left-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
+						<Button className="kb-palette-picker__button" aria-expanded={isOpen} onClick={onToggle}>
+							<span className="kb-palette-picker__label">{selectedOption.label}</span>
+							<span className="kb-palette-picker__icon">
+								<Icon icon={brush} size={16} />
+							</span>
+						</Button>
+					)}
+					renderContent={({ onClose }) => (
+						<MenuGroup label={__('Color Palettes', 'kadence-blocks')}>
+							{options.map((option) => {
+								const isCurrent = option.id === selectedId;
+
+								return (
+									<MenuItem
+										key={option.id || 'inherit'}
+										role="menuitemradio"
+										aria-checked={isCurrent}
+										suffix={
+											isCurrent ? (
+												<Icon className="kb-palette-picker__check" icon={check} />
+											) : null
+										}
+										onClick={() => {
+											onChange(option.id);
+											onClose();
+										}}
+									>
+										{option.label}
+									</MenuItem>
+								);
+							})}
+						</MenuGroup>
+					)}
+				/>
+			</div>
+		</>
 	);
 }
 

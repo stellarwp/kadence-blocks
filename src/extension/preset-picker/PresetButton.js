@@ -22,7 +22,7 @@ import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { activeLibrary, activePresetFor, blockPresets } from './index';
-import { PalettePicker, selectablePalettes } from '../palette-picker';
+import { PalettePicker } from '../palette-picker';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
 import { SavePresetModal } from './SavePresetModal';
@@ -235,14 +235,10 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 					onClick={onResetAll}
 				/>
 			</div>
-			{selectablePalettes().length >= 2 && (
-				<div className="kb-palette-picker__row">
-					<PalettePicker
-						value={get(attributes, 'kbPalette', '')}
-						onChange={(value) => setAttributes({ kbPalette: value })}
-					/>
-				</div>
-			)}
+			<PalettePicker
+				value={get(attributes, 'kbPalette', '')}
+				onChange={(value) => setAttributes({ kbPalette: value })}
+			/>
 			{saving && (
 				<SavePresetModal
 					blockName={blockName}
