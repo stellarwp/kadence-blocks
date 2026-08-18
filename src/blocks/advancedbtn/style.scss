@@ -72,7 +72,7 @@
 	border: 2px solid var(--global-palette-btn-bg, #3633e1);
 	background: transparent;
 	color: var(--global-palette-btn-bg, #3633e1);
-	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 2px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 2px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 2px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 2px) calc(var(--kb-token--semantic--spacing--button-padding-bottom, 0.4em) - 2px) calc(var(--kb-token--semantic--spacing--button-padding-left, 1em) - 2px);
 	&:hover {
 		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
 		background: transparent;
@@ -114,11 +114,11 @@
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-large {
 	border-width: 3px;
-	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 3px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 3px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 3px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 3px) calc(var(--kb-token--semantic--spacing--button-padding-bottom, 0.4em) - 3px) calc(var(--kb-token--semantic--spacing--button-padding-left, 1em) - 3px);
 }
 .kb-button.kb-btn-global-outline.kt-btn-size-small {
 	border-width: 1px;
-	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 1px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 1px);
+	padding: calc(var(--kb-token--semantic--spacing--button-padding-top, 0.4em) - 1px) calc(var(--kb-token--semantic--spacing--button-padding-right, 1em) - 1px) calc(var(--kb-token--semantic--spacing--button-padding-bottom, 0.4em) - 1px) calc(var(--kb-token--semantic--spacing--button-padding-left, 1em) - 1px);
 }
 .kb-button.kt-btn-has-svg-true {
 	gap: 0.5em;
