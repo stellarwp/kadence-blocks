@@ -302,6 +302,35 @@ describe('presetSaveTokens', () => {
 		});
 	});
 
+	it('omits a bound property the preset leaves unset, rather than sending an empty literal', () => {
+		// `button-padding` and `button-margin` are bound for every button preset, so a preset that
+		// sets neither seeds them as ''. Sending that empty literal fails the server's document
+		// validation and takes the whole save down with it, including a label-only edit.
+		expect(
+			presetSaveTokens({
+				'button-bg': '{semantic.color.action-primary}',
+				'button-padding': '',
+				'button-margin': '',
+			})
+		).toEqual({ 'button-bg': '{semantic.color.action-primary}' });
+	});
+
+	it('omits a per-corner property whose slots are all cleared', () => {
+		expect(presetSaveTokens({ 'button-radius': ['', '', '', ''] })).toEqual({});
+	});
+
+	it('keeps a per-corner property when any slot carries a value', () => {
+		// Asserts only that the property survives the unset guard: how the slots themselves are
+		// wrapped is the aliasing helper's business, and it changes in a later slice.
+		const result = presetSaveTokens({ 'button-radius': ['', 'primitive.dimension.radius.lg', '', ''] });
+
+		expect(Object.keys(result)).toEqual(['button-radius']);
+	});
+
+	it('keeps a zero literal, which is a real value rather than an unset one', () => {
+		expect(presetSaveTokens({ 'button-radius': '0' })).toEqual({ 'button-radius': '0' });
+	});
+
 	it('passes an already-wrapped alias through unchanged', () => {
 		expect(presetSaveTokens({ 'button-bg': '{semantic.color.action-primary}' })).toEqual({
 			'button-bg': '{semantic.color.action-primary}',

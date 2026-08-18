@@ -299,6 +299,32 @@ export function presetStoredTokens(payload, slug) {
 }
 
 /**
+ * Whether a preset property's draft value represents "unset" rather than a genuine value to save.
+ *
+ * A bound property the preset has no stored value for seeds as `''`, and a cleared per-corner field
+ * seeds as four `''` slots. Both shapes mean "nothing to write" — see `presetSaveTokens`, which
+ * omits such a property rather than sending the empty literal the server's extension-value
+ * validator rejects (`Dtcg_Validator::validate_extension_value()`).
+ *
+ * @param {*} value The draft property value.
+ *
+ * @since TBD
+ *
+ * @return {boolean} True when the value carries nothing to save.
+ */
+function isUnsetPresetValue(value) {
+	if (value === '' || value === null || value === undefined) {
+		return true;
+	}
+
+	if (Array.isArray(value)) {
+		return value.every((slot) => slot === '' || slot === null || slot === undefined);
+	}
+
+	return false;
+}
+
+/**
  * Build the write-side token map from a settings-panel draft: a property the draft actually
  * changed from its seed is written as a fresh alias-or-literal; every untouched property is
  * carried over from the preset's raw stored map, byte-for-byte, so a save that only edited the
@@ -306,6 +332,14 @@ export function presetStoredTokens(payload, slug) {
  * the block editor wrote into a bare scalar. A property with no corresponding stored entry (a new
  * preset with `storedTokens` `{}`, or a bound property the draft adds) always counts as touched,
  * since there is nothing to carry over.
+ *
+ * An unset property (see `isUnsetPresetValue`) is omitted from the map entirely rather than sent as
+ * `''`: the server rejects an empty literal outright, and the property's block binding already falls
+ * through to its semantic default when nothing is stored for it. This matters as soon as a property
+ * is bound but most presets leave it alone — `button-padding` and `button-margin` are the first —
+ * because every preset's draft then carries an empty entry for it. Omitting is not the same as
+ * clearing: the write endpoint merges the sent map onto the stored one property by property, so an
+ * omitted property keeps whatever the store already holds.
  *
  * @param {Record<string, string>} draftTokens   The panel's draft token map (bare ids, or a raw
  *                                                 non-scalar entry the field never let the user
@@ -324,6 +358,10 @@ export function presetStoredTokens(payload, slug) {
  */
 export function presetSaveTokens(draftTokens, initialTokens = {}, storedTokens = {}) {
 	return Object.entries(draftTokens ?? {}).reduce((acc, [property, value]) => {
+		if (isUnsetPresetValue(value)) {
+			return acc;
+		}
+
 		const touched = !isEqual(value, initialTokens[property]);
 
 		acc[property] = touched || !(property in storedTokens) ? idToAlias(value) : storedTokens[property];
