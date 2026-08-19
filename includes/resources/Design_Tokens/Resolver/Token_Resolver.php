@@ -209,9 +209,7 @@ final class Token_Resolver {
 			return $this->effective_memo[ $cache_key ];
 		}
 
-		$raw     = $this->store->get_document( $slug );
-		$decoded = $raw === '' ? [] : json_decode( $raw, true );
-		$over    = is_array( $decoded ) ? $decoded : [];
+		$over = $this->store->get_decoded_document( $slug );
 
 		$this->effective_memo[ $cache_key ] = $this->apply_palette_overlay(
 			$this->effective->build( $over ),
@@ -254,9 +252,7 @@ final class Token_Resolver {
 			return $cached;
 		}
 
-		$raw     = $this->store->get_document( $slug );
-		$decoded = $raw === '' ? [] : json_decode( $raw, true );
-		$over    = is_array( $decoded ) ? $decoded : [];
+		$over = $this->store->get_decoded_document( $slug );
 
 		$document = $this->apply_palette_overlay(
 			$this->effective->build( $over ),

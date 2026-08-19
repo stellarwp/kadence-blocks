@@ -102,15 +102,7 @@ final class Document_Write_Pipeline {
 	 * @return array<string, mixed>
 	 */
 	public function load_document( string $slug ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
+		return $this->store->get_decoded_document( $slug );
 	}
 
 	/**

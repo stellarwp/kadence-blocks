@@ -152,7 +152,7 @@ final class Feed_Assembler {
 			$resolved = false; // Corrupt stored document. Fail open: ship structure only.
 		}
 
-		$document = $this->read_document( $slug );
+		$document = $this->store->get_decoded_document( $slug );
 
 		return $this->builder->build(
 			$values,
@@ -203,28 +203,5 @@ final class Feed_Assembler {
 			'namespace' => Controller::namespace(),
 			'nonce'     => wp_create_nonce( 'wp_rest' ),
 		];
-	}
-
-	/**
-	 * Read and decode the stored overrides-only document for a library, empty when absent or
-	 * unreadable. Builder stays pure (no I/O, per its own docblock), so this owns the decode the
-	 * label overlay needs, alongside the store access this class already does for the version.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The token library slug.
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function read_document( string $slug ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
 	}
 }

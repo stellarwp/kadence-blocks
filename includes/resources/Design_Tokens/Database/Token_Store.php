@@ -146,6 +146,32 @@ final class Token_Store extends Query {
 	}
 
 	/**
+	 * Read the overrides-only DTCG document for a token library, decoded.
+	 *
+	 * The column holds JSON, so decoding it belongs to the gateway that owns the column rather than to
+	 * each of the callers that read it. Fail-soft the same way {@see self::get_document()} is: a library
+	 * with no row, and a row whose JSON is unreadable or does not decode to an array, both yield an empty
+	 * document, so a caller renders entirely from baseline instead of handling a decode failure itself.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
+	 */
+	public function get_decoded_document( string $slug = self::DEFAULT_SLUG ): array {
+		$raw = $this->get_document( $slug );
+
+		if ( $raw === '' ) {
+			return [];
+		}
+
+		$decoded = json_decode( $raw, true );
+
+		return is_array( $decoded ) ? $decoded : [];
+	}
+
+	/**
 	 * Read the cache-busting version hash for a token library.
 	 *
 	 * Consumed by downstream caches (e.g. the projected-CSS string is keyed on
