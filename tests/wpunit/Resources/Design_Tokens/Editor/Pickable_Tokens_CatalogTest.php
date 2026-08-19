@@ -59,6 +59,11 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 		$this->catalog  = $this->container->get( Pickable_Tokens_Catalog::class );
 		$this->store    = $this->container->get( Token_Store::class );
 		$this->registry = $this->container->get( Token_Registry::class );
+
+		// The registry lives in the shared container, so a user primitive an earlier test registered
+		// outlives the rollback that removed the document it came from. Syncing against the now-empty
+		// database drops those leftovers, so every test starts from the same pool.
+		$this->container->get( User_Primitive_Registrar::class )->sync();
 	}
 
 	/**
