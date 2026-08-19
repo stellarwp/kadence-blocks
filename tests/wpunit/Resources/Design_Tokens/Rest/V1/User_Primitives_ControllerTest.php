@@ -576,7 +576,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$this->store->save_document( '{}' );
 		$version = $this->store->get_version( $slug );
 
-		$request = $this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'border-radius' );
+		$request = $this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'radius' );
 		$result  = $this->controller->create_item( $request );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $result );
@@ -585,7 +585,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$doc = $result->get_data()['document'];
 		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
 
-		$this->assertSame( 'border-radius', $ext['primitive.dimension.custom.radius-md']['group'] );
+		$this->assertSame( 'radius', $ext['primitive.dimension.custom.radius-md']['group'] );
 	}
 
 	/**
@@ -1494,7 +1494,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$version = $this->store->get_version( $slug );
 
 		$create = $this->controller->create_item(
-			$this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'border-radius' )
+			$this->make_create_request( $slug, 'radius-md', 'dimension', '0.75rem', $version, 'Radius MD', 'radius' )
 		);
 		$this->assertInstanceOf( WP_REST_Response::class, $create );
 
@@ -1508,7 +1508,7 @@ final class User_Primitives_ControllerTest extends TestCase {
 		$doc = $result->get_data()['document'];
 		$ext = $doc[ Extensions::get_extensions_key() ][ Extensions::get_namespace() ][ Extensions::get_section_user_primitives() ];
 
-		$this->assertSame( 'border-radius', $ext['primitive.dimension.custom.radius-medium']['group'] );
+		$this->assertSame( 'radius', $ext['primitive.dimension.custom.radius-medium']['group'] );
 		$this->assertArrayNotHasKey( 'primitive.dimension.custom.radius-md', $ext );
 	}
 

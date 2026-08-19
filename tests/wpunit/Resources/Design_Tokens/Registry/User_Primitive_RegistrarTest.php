@@ -135,12 +135,12 @@ final class User_Primitive_RegistrarTest extends TestCase {
 				'type'      => 'dimension',
 				'label'     => 'SM',
 				'group'     => 'Border Radius',
-				'group_key' => 'border-radius',
+				'group_key' => 'radius',
 			]
 		);
 
 		$store->save_document(
-			$this->encode_document_with_group( 'primitive.dimension.custom.radius-md', 'dimension', 'Radius MD', 'border-radius' )
+			$this->encode_document_with_group( 'primitive.dimension.custom.radius-md', 'dimension', 'Radius MD', 'radius' )
 		);
 
 		$this->make_registrar( $registry, $logger )->sync();

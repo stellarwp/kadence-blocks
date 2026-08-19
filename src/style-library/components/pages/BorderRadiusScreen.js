@@ -44,7 +44,7 @@ export const BORDER_RADIUS_CONFIG = {
 	title: __('Corner Radius', 'kadence-blocks'),
 	addLabel: __('Add Border Radius', 'kadence-blocks'),
 	group: __('Border Radius', 'kadence-blocks'),
-	groupKey: 'border-radius',
+	groupKey: 'radius',
 	tokenType: 'dimension',
 	slugBase: 'radius',
 	newTokenLabel: __('New Radius', 'kadence-blocks'),

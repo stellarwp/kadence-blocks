@@ -558,7 +558,7 @@ final class Feed_ControllerTest extends TestCase {
 						'userPrimitives' => [
 							$id => [
 								'label' => 'New Icon Size',
-								'group' => 'icon-sizes',
+								'group' => 'icon-size',
 							],
 						],
 					],

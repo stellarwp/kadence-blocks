@@ -298,14 +298,14 @@ final class DocumentsControllerLabelsTest extends TestCase {
 		$slug = Token_Store::default_slug();
 		$id   = 'primitive.dimension.custom.radius-md';
 
-		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'border-radius' );
+		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'radius' );
 
 		$response = $this->controller->set_label( $this->label_request( 'PUT', $slug, $id, $this->store->get_version( $slug ), 'Custom Radius' ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 
 		$stored = json_decode( $this->store->get_document( $slug ), true );
-		$this->assertSame( 'border-radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
+		$this->assertSame( 'radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
 
 		$this->sync_registrar();
 
@@ -325,14 +325,14 @@ final class DocumentsControllerLabelsTest extends TestCase {
 		$slug = Token_Store::default_slug();
 		$id   = 'primitive.dimension.custom.radius-md';
 
-		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'border-radius' );
+		$this->seed_user_primitive( $slug, $id, 'Radius MD', 'radius' );
 
 		$response = $this->controller->delete_label( $this->label_request( 'DELETE', $slug, $id, $this->store->get_version( $slug ) ) );
 
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 
 		$stored = json_decode( $this->store->get_document( $slug ), true );
-		$this->assertSame( 'border-radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
+		$this->assertSame( 'radius', $this->user_primitive_index->all( $stored )[ $id ]['group'] );
 	}
 
 	/**

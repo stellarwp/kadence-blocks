@@ -163,11 +163,11 @@ final class User_Primitive_IndexTest extends TestCase {
 	 */
 	public function testAddWithNullGroupPreservesTheExistingStoredGroup(): void {
 		$id  = 'primitive.dimension.custom.radius-md';
-		$doc = $this->doc_with_entry( $id, 'Radius MD', 'border-radius' );
+		$doc = $this->doc_with_entry( $id, 'Radius MD', 'radius' );
 
 		$result = $this->index->add( $doc, $id, 'Renamed Radius' );
 
-		$this->assertSame( 'border-radius', $this->index->all( $result )[ $id ]['group'] );
+		$this->assertSame( 'radius', $this->index->all( $result )[ $id ]['group'] );
 	}
 
 	/**
@@ -179,9 +179,9 @@ final class User_Primitive_IndexTest extends TestCase {
 		$id  = 'primitive.dimension.custom.radius-md';
 		$doc = $this->doc_with_entry( $id, 'Radius MD', 'old-group' );
 
-		$result = $this->index->add( $doc, $id, 'Radius MD', 'border-radius' );
+		$result = $this->index->add( $doc, $id, 'Radius MD', 'radius' );
 
-		$this->assertSame( 'border-radius', $this->index->all( $result )[ $id ]['group'] );
+		$this->assertSame( 'radius', $this->index->all( $result )[ $id ]['group'] );
 	}
 
 	/**
@@ -193,7 +193,7 @@ final class User_Primitive_IndexTest extends TestCase {
 	 */
 	public function testAddWithAnEmptyStringGroupClearsItAndOmitsTheKey(): void {
 		$id  = 'primitive.dimension.custom.radius-md';
-		$doc = $this->doc_with_entry( $id, 'Radius MD', 'border-radius' );
+		$doc = $this->doc_with_entry( $id, 'Radius MD', 'radius' );
 
 		$result = $this->index->add( $doc, $id, 'Radius MD', '' );
 
@@ -285,11 +285,11 @@ final class User_Primitive_IndexTest extends TestCase {
 	public function testRenameCarriesTheOldStoredGroupToTheNewId(): void {
 		$old_id = 'primitive.dimension.custom.radius-md';
 		$new_id = 'primitive.dimension.custom.radius-medium';
-		$doc    = $this->doc_with_entry( $old_id, 'Radius MD', 'border-radius' );
+		$doc    = $this->doc_with_entry( $old_id, 'Radius MD', 'radius' );
 
 		$result = $this->index->rename( $doc, $old_id, $new_id, 'Radius Medium' );
 
-		$this->assertSame( 'border-radius', $this->index->all( $result )[ $new_id ]['group'] );
+		$this->assertSame( 'radius', $this->index->all( $result )[ $new_id ]['group'] );
 	}
 
 	/**

@@ -471,7 +471,7 @@ final class DocumentsControllerOrderTest extends TestCase {
 						'userPrimitives' => [
 							$id => [
 								'label' => 'Radius MD',
-								'group' => 'border-radius',
+								'group' => 'radius',
 							],
 						],
 					],

@@ -29,7 +29,7 @@ describe('addScaleTokenFlow', () => {
 		const onError = jest.fn();
 
 		const result = await addScaleTokenFlow({
-			groupKey: 'border-radius',
+			groupKey: 'radius',
 			tokenType: 'dimension',
 			slugBase: 'radius',
 			label: 'New Radius',
@@ -47,7 +47,7 @@ describe('addScaleTokenFlow', () => {
 			$type: 'dimension',
 			$value: '0.5rem',
 			label: 'New Radius',
-			group: 'border-radius',
+			group: 'radius',
 			version: 'v1',
 		});
 		expect(refreshFeed).toHaveBeenCalledWith('default');
@@ -65,7 +65,7 @@ describe('addScaleTokenFlow', () => {
 
 		await expect(
 			addScaleTokenFlow({
-				groupKey: 'border-radius',
+				groupKey: 'radius',
 				tokenType: 'dimension',
 				slugBase: 'radius',
 				label: 'New Radius',
