@@ -6,6 +6,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Preset;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Document\Mutator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Preset_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Preset\Projector;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Presets;
@@ -56,7 +57,7 @@ final class ProjectorTest extends TestCase {
 			$this->container->get( Mutator::class )
 		);
 
-		$this->resolver = new Preset_Resolver( $presets, $this->container->get( Token_Resolver::class ) );
+		$this->resolver = new Preset_Resolver( $presets, $this->container->get( Token_Resolver::class ), new Preset_Order_Index() );
 	}
 
 	public function testItMapsThePresetValuesOntoTheBoundBlockAttributes(): void {

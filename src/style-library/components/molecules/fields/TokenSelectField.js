@@ -25,6 +25,7 @@ import './TokenSelectField.scss';
  * @param {Object}                              props              The component props.
  * @param {Object}                              field              The field definition.
  * @param {string}                              field.tokenType    The DTCG `$type` to filter the pickable pool to.
+ * @param {?string}                              [field.role]       When given, also narrows the pool to this token role (e.g. `'radius'`).
  * @param {?string}                              [field.label]      The field's own `FieldLabel` text; omitted when the caller supplies its own.
  * @param {?import('@wordpress/icons').IconType} [field.leadingIcon] A glyph rendered before the selected value — schema data, not hardcoded.
  * @param {boolean}                              [field.readOnly]   Whether the control is non-interactive.
@@ -36,7 +37,9 @@ import './TokenSelectField.scss';
  * @return {JSX.Element} The field.
  */
 export function TokenSelectField({ field, value, onChange }) {
-	const tokens = pickableTokensForType(field.tokenType);
+	// `value` is passed as `selected` so the token this field is already bound to survives the
+	// primitive narrowing — without it a bound semantic token is filtered out of its own picker.
+	const tokens = pickableTokensForType(field.tokenType, field.role, value);
 	const options = tokens.map((token) => ({
 		value: token.id,
 		label: (

@@ -14,6 +14,8 @@ import {
 	feedPath,
 	tokenLabelPath,
 	groupOrderPath,
+	blockPresetsPath,
+	blockPresetPath,
 } from '../api/paths';
 
 describe('palette paths', () => {
@@ -140,6 +142,34 @@ describe('groupOrderPath', () => {
 	it('escapes the slug', () => {
 		expect(groupOrderPath('my set', 'Border Radius')).toBe(
 			'/kb-design-tokens/v1/documents/my%20set/order/Border%20Radius'
+		);
+	});
+});
+
+describe('blockPresetsPath', () => {
+	it('builds the collection path with the library query', () => {
+		expect(blockPresetsPath('kb-design-tokens/v1', 'kadence/singlebtn', 'default')).toBe(
+			'/kb-design-tokens/v1/presets/kadence/singlebtn?library=default'
+		);
+	});
+
+	it('encodes the vendor and block-name segments separately', () => {
+		expect(blockPresetsPath('kb-design-tokens/v1', 'kadence/singlebtn', 'my set')).toBe(
+			'/kb-design-tokens/v1/presets/kadence/singlebtn?library=my%20set'
+		);
+	});
+});
+
+describe('blockPresetPath', () => {
+	it('builds a single preset path with the library query', () => {
+		expect(blockPresetPath('kb-design-tokens/v1', 'kadence/singlebtn', 'primary', 'default')).toBe(
+			'/kb-design-tokens/v1/presets/kadence/singlebtn/primary?library=default'
+		);
+	});
+
+	it('escapes the preset slug and the library', () => {
+		expect(blockPresetPath('kb-design-tokens/v1', 'kadence/singlebtn', 'my preset', 'my set')).toBe(
+			'/kb-design-tokens/v1/presets/kadence/singlebtn/my%20preset?library=my%20set'
 		);
 	});
 });

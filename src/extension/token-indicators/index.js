@@ -15,18 +15,41 @@
 import { get } from 'lodash';
 import {
 	activeLibrary,
-	blockDefaultPreset,
+	activePresetFor,
 	blockProperties,
 	blockPresetValues,
 	blockPresetResponsive,
 } from '../preset-picker';
-import { isEmptyValue, matchesPreset } from './normalize';
+import { isEmptyValue, matchesPreset, presetValueForDevice } from './normalize';
 import './token-indicators.scss';
 
 export { TOKEN_INDICATORS_STORE } from './store';
 export { TokenIndicator } from './components/TokenIndicator';
 export { TokenLabel } from './components/TokenLabel';
 export { TokenControlRow } from './components/TokenControlRow';
+
+/**
+ * The device-specific attribute name for a dimension control, by the same `tablet${Capitalized}` /
+ * `mobile${Capitalized}` convention `resetAttrPatch` clears — the single spelling, so a reader that
+ * only checks the desktop attribute cannot silently disagree with the one that resets all three.
+ *
+ * @param {string} attr   The desktop attribute name.
+ * @param {string} device The active preview device ('Desktop' | 'Tablet' | 'Mobile'); defaults to
+ *                          desktop for a caller with no device context.
+ *
+ * @since TBD
+ *
+ * @return {string} The attribute the given device stores its value in.
+ */
+function deviceAttrFor(attr, device) {
+	if ('Tablet' !== device && 'Mobile' !== device) {
+		return attr;
+	}
+
+	const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
+
+	return `${device.toLowerCase()}${capitalized}`;
+}
 
 /**
  * The companion unit attribute for a dimension control, by convention `${attr}Unit` (e.g. `borderRadius`
@@ -64,27 +87,34 @@ export function mappedAttrsFor(blockName, library) {
 /**
  * The design-token binding state for a block's mapped controls, keyed by the control's attribute name.
  *
- * @param {string} blockName  The block name (e.g. 'kadence/singlebtn').
- * @param {Object} attributes The block's current attributes.
- * @param {string} [library]  The token library slug; defaults to the active library — pass the caller's
- *                            resolved library so the binding can't disagree with the rest of its UI.
+ * @param {string} blockName     The block name (e.g. 'kadence/singlebtn').
+ * @param {Object} attributes    The block's current attributes.
+ * @param {string} [library]     The token library slug; defaults to the active library — pass the
+ *                                caller's resolved library so the binding can't disagree with the
+ *                                rest of its UI.
+ * @param {string} [previewDevice] The active preview device ('Desktop' | 'Tablet' | 'Mobile'); a
+ *                                dimension control reads and reports `overridden` for THIS device's
+ *                                own attribute (`tabletBorderRadius`, not `borderRadius`, on Tablet) —
+ *                                omit it only for a caller with no device context, e.g. a block-wide
+ *                                "is anything overridden" summary that doesn't distinguish devices.
  *
  * @since TBD
  *
  * @return {Object} attrName => { property, token, kind, presetValue, responsive, bound, overridden }.
+ *                   Keyed by the DESKTOP attribute name even when `overridden` reflects another
+ *                   device, so a caller can still look a control up by its one stable key.
  */
-export function usePresetBinding(blockName, attributes, library) {
+export function usePresetBinding(blockName, attributes, library, previewDevice) {
 	const resolvedLibrary = library || activeLibrary();
-	const selected = get(attributes, 'kbPreset', '');
 	const properties = blockProperties(blockName, resolvedLibrary);
 	const values = blockPresetValues(blockName, resolvedLibrary);
 	const responsive = blockPresetResponsive(blockName, resolvedLibrary);
 
 	// The preset whose surface drives the indicators: the explicit selection, or the set's authoritative
-	// default preset when none is chosen (kbPreset is '' on every freshly inserted block, so this
-	// fallback runs constantly and must use the catalog's declared default, not JSON key order). When
-	// neither resolves, no control is bound.
-	const activePreset = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	// default preset when none is chosen or the selection no longer exists (kbPreset is '' on every
+	// freshly inserted block, so this fallback runs constantly and must use the catalog's declared
+	// default, not JSON key order). When neither resolves, no control is bound.
+	const activePreset = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(values, activePreset, {});
 	const presetBreakpoints = get(responsive, activePreset, {});
 
@@ -102,21 +132,31 @@ export function usePresetBinding(blockName, attributes, library) {
 
 		const kind = property.kind;
 		const presetValue = presetValues[property.key];
-		const value = get(attributes, attr, '');
+		const propertyBreakpoints = {
+			tablet: get(presetBreakpoints, ['tablet', property.key]),
+			mobile: get(presetBreakpoints, ['mobile', property.key]),
+		};
+
+		// `overridden` compares like against like: a dimension control reads its OWN device's stored
+		// attribute (`tabletBorderRadius` on Tablet), against the preset value in effect at that same
+		// device (its tablet override where the preset declares one, else the base). Comparing a
+		// Tablet-stored value to the desktop preset value — or reporting the desktop attribute's state
+		// while Tablet is open — would show the wrong mark for the device actually being edited.
+		const deviceAttr = kind === 'dimension' ? deviceAttrFor(attr, previewDevice) : attr;
+		const devicePresetValue =
+			kind === 'dimension' ? presetValueForDevice(presetValue, propertyBreakpoints, previewDevice) : presetValue;
+		const value = get(attributes, deviceAttr, '');
 		const unit = unitAttrFor(kind, attr) ? get(attributes, unitAttrFor(kind, attr), '') : '';
 
 		const empty = isEmptyValue(kind, value);
-		const overridden = !empty && !matchesPreset(kind, value, unit, presetValue);
+		const overridden = !empty && !matchesPreset(kind, value, unit, devicePresetValue);
 
 		state[attr] = {
 			property: property.key,
 			token: property.token,
 			kind,
 			presetValue,
-			responsive: {
-				tablet: get(presetBreakpoints, ['tablet', property.key]),
-				mobile: get(presetBreakpoints, ['mobile', property.key]),
-			},
+			responsive: propertyBreakpoints,
 			bound: true,
 			overridden,
 		};
@@ -150,14 +190,13 @@ export function resetAttrPatch(attr, kind) {
 		return { [attr]: '' };
 	}
 
-	const capitalized = attr.charAt(0).toUpperCase() + attr.slice(1);
 	const emptySides = ['', '', '', ''];
 
 	return {
 		[attr]: emptySides,
 		[`${attr}Unit`]: 'px',
-		[`tablet${capitalized}`]: emptySides,
-		[`mobile${capitalized}`]: emptySides,
+		[deviceAttrFor(attr, 'Tablet')]: emptySides,
+		[deviceAttrFor(attr, 'Mobile')]: emptySides,
 	};
 }
 

@@ -3,9 +3,11 @@ import {
 	buildTokenLeaf,
 	flattenSchemaTokens,
 	isResponsiveType,
+	pickableTokensForType,
 	refreshFeedFlow,
 	tokenTypeIdSegment,
 } from '../helpers/tokens';
+import { PICKABLE_TOKENS_GLOBAL } from '../constants';
 
 describe('tokenTypeIdSegment', () => {
 	it('maps every camelCase $type to its registered kebab id segment', () => {
@@ -157,6 +159,69 @@ describe('buildTokenLeaf', () => {
 		});
 
 		expect(leaf.$extensions).toBeUndefined();
+	});
+});
+
+describe('pickableTokensForType', () => {
+	const originalPool = window[PICKABLE_TOKENS_GLOBAL];
+	const originalFeed = window.kadenceDesignTokens;
+
+	beforeEach(() => {
+		window.kadenceDesignTokens = { slug: 'brand' };
+		window[PICKABLE_TOKENS_GLOBAL] = {
+			tokens: [
+				{ id: 'semantic.color.action-primary', label: 'Action Primary', type: 'color' },
+				{ id: 'primitive.dimension.radius.sm', label: 'Radius Small', type: 'dimension', role: 'radius' },
+				{ id: 'primitive.dimension.spacing.sm', label: 'Spacing Small', type: 'dimension', role: 'spacing' },
+			],
+			values: { brand: { 'semantic.color.action-primary': '#3633e1', 'primitive.dimension.radius.sm': '4px' } },
+		};
+	});
+
+	afterEach(() => {
+		window[PICKABLE_TOKENS_GLOBAL] = originalPool;
+		window.kadenceDesignTokens = originalFeed;
+	});
+
+	it('filters to a $type and behaves exactly as before when no role is given', () => {
+		const tokens = pickableTokensForType('dimension');
+
+		expect(tokens.map((token) => token.id)).toEqual([
+			'primitive.dimension.radius.sm',
+			'primitive.dimension.spacing.sm',
+		]);
+	});
+
+	it('narrows to matching entries when a role is given', () => {
+		const tokens = pickableTokensForType('dimension', 'radius');
+
+		expect(tokens).toHaveLength(1);
+		expect(tokens[0]).toMatchObject({ id: 'primitive.dimension.radius.sm', value: '4px', role: 'radius' });
+	});
+
+	it('keeps the token the field is already bound to, even when it loses the primitive narrowing', () => {
+		// The bound value is passed through as `selected`. Without it the narrowing drops a semantic
+		// token from its own picker, so the field renders with its current value missing.
+		window[PICKABLE_TOKENS_GLOBAL].tokens.push({
+			id: 'semantic.dimension.radius-control',
+			label: 'Control Radius',
+			type: 'dimension',
+			role: 'radius',
+		});
+
+		const withoutSelected = pickableTokensForType('dimension', 'radius');
+		const withSelected = pickableTokensForType('dimension', 'radius', 'semantic.dimension.radius-control');
+
+		expect(withoutSelected.map((token) => token.id)).not.toContain('semantic.dimension.radius-control');
+		expect(withSelected.map((token) => token.id)).toContain('semantic.dimension.radius-control');
+	});
+
+	it('resolves the active-library value for a color type', () => {
+		const tokens = pickableTokensForType('color');
+
+		expect(tokens).toEqual([
+			{ id: 'semantic.color.action-primary', label: 'Action Primary', value: '#3633e1', role: null },
+		]);
 	});
 });
 

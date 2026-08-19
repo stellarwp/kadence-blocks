@@ -63,6 +63,8 @@ $radius_labels = [
 	'md'   => __( 'Medium', 'kadence-blocks' ),
 	'lg'   => __( 'Large', 'kadence-blocks' ),
 	'xl'   => __( 'Extra Large', 'kadence-blocks' ),
+	'2xl'  => __( '2X Large', 'kadence-blocks' ),
+	'3xl'  => __( '3X Large', 'kadence-blocks' ),
 	'full' => __( 'Full', 'kadence-blocks' ),
 ];
 
@@ -429,6 +431,68 @@ return [
 				'label' => __( 'Media Padding', 'kadence-blocks' ),
 				'group' => __( 'Media', 'kadence-blocks' ),
 			],
+			[
+				/**
+				 * Button padding, split one semantic token per side (a shorthand like "0.4em 1em" fails the
+				 * dimension literal's single-value shape). Registered so Css_Var emits
+				 * --kb-token--semantic--spacing--button-padding-top; the button's own default padding rule
+				 * references that variable directly (the button is never empty, so the low-specificity
+				 * block-default CSS mechanism can't reach it). Resolves to the button's long-standing 0.4em,
+				 * so an existing site that never set padding renders unchanged.
+				 */
+				'id'    => 'semantic.spacing.button-padding-top',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Top', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-right',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Right', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-bottom',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Bottom', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-padding-left',
+				'type'  => 'dimension',
+				'label' => __( 'Button Padding Left', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				/**
+				 * Button margin, split one semantic token per side, mirroring semantic.spacing.button-padding-*.
+				 * Registered so Css_Var emits --kb-token--semantic--spacing--button-margin-top; the button's own
+				 * default margin rule references that variable directly. Resolves to 0, so an existing site that
+				 * never set margin renders unchanged.
+				 */
+				'id'    => 'semantic.spacing.button-margin-top',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Top', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-right',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Right', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-bottom',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Bottom', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
+			[
+				'id'    => 'semantic.spacing.button-margin-left',
+				'type'  => 'dimension',
+				'label' => __( 'Button Margin Left', 'kadence-blocks' ),
+				'group' => __( 'Brand', 'kadence-blocks' ),
+			],
 		],
 		$button_color_tokens,
 		$notice_color_tokens,
@@ -497,6 +561,27 @@ return [
 					'responsive_attrs' => [
 						'tablet' => 'tabletBorderRadius',
 						'mobile' => 'mobileBorderRadius',
+					],
+				],
+				// Padding and margin carry no preset value by default, and that omission is the point: a
+				// button's spacing comes from its size class today, so shipping a value here would restyle
+				// every existing button and take padding away from the Button Size control. The binding
+				// exists so a preset CAN set them; until one does, the property resolves to nothing and no
+				// declaration is emitted.
+				'button-padding'    => [
+					'css_var'          => 'kb-btn-padding',
+					'control_attr'     => 'padding',
+					'responsive_attrs' => [
+						'tablet' => 'tabletPadding',
+						'mobile' => 'mobilePadding',
+					],
+				],
+				'button-margin'     => [
+					'css_var'          => 'kb-btn-margin',
+					'control_attr'     => 'margin',
+					'responsive_attrs' => [
+						'tablet' => 'tabletMargin',
+						'mobile' => 'mobileMargin',
 					],
 				],
 			],

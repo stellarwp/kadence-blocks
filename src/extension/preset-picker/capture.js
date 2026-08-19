@@ -7,7 +7,8 @@
  * token stores.
  */
 import { get } from 'lodash';
-import { activeLibrary, blockProperties, blockPresetValues, blockDefaultPreset } from './index';
+import { KADENCE_TOKEN_NAMESPACE } from '../../token-controls/helpers/preset-envelope';
+import { activeLibrary, activePresetFor, blockProperties, blockPresetValues } from './index';
 import {
 	normalizeColor,
 	normalizeDimension,
@@ -25,7 +26,8 @@ import { tokenLiteral } from '../design-tokens/token-literals';
  *
  * @since TBD
  */
-const VENDOR_EXTENSION = 'com.kadence.designTokens';
+// The one definition lives with the envelope contract both hosts read and write.
+const VENDOR_EXTENSION = KADENCE_TOKEN_NAMESPACE;
 
 /**
  * The breakpoints a responsive property can override, narrowest last — the order the device cascade runs
@@ -221,8 +223,7 @@ export function capturedCatalogValues(tokens, library) {
  */
 export function capturedTokens(blockName, library, attributes) {
 	const resolvedLibrary = library || activeLibrary();
-	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
+	const currentSlug = activePresetFor(blockName, attributes, resolvedLibrary);
 	const presetValues = get(blockPresetValues(blockName, resolvedLibrary), currentSlug, {});
 
 	return blockProperties(blockName, resolvedLibrary).reduce((tokens, property) => {

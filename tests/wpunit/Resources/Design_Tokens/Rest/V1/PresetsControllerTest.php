@@ -4,6 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Presets_Controller;
 use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Alias;
 use ReflectionClass;
@@ -101,6 +102,19 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The item schema documents the `userCreated` property added to the GET item response.
+	 *
+	 * @return void
+	 */
+	public function testItemSchemaDescribesUserCreated(): void {
+		$schema = $this->controller->get_item_schema();
+
+		$this->assertArrayHasKey( 'userCreated', $schema['properties'] );
+		$this->assertSame( 'array', $schema['properties']['userCreated']['type'] );
+		$this->assertSame( 'string', $schema['properties']['userCreated']['items']['type'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testItListsTheRegisteredPresetBlocks(): void {
@@ -147,6 +161,18 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * A fresh library has no stored overrides, so every effective preset comes from the baseline and none is
+	 * reported as user-created.
+	 *
+	 * @return void
+	 */
+	public function testGetItemOnAFreshLibraryReportsNoUserCreatedPresets(): void {
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+
+		$this->assertSame( [], $data['userCreated'] );
+	}
+
+	/**
 	 * @return void
 	 */
 	public function testGetItemReturns404ForABlockThatAcceptsNoPresets(): void {
@@ -188,6 +214,95 @@ final class PresetsControllerTest extends TestCase {
 		$this->assertArrayHasKey( 'primary', $data['presets'] );
 		$this->assertArrayHasKey( 'secondary', $data['presets'] );
 		$this->assertSame( 'primary', $data['default'] );
+	}
+
+	/**
+	 * Creating a preset slug the baseline does not define adds it to the response's `userCreated` list, and a
+	 * subsequent read agrees.
+	 *
+	 * @return void
+	 */
+	public function testCreatingANewPresetSlugAddsItToUserCreated(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertContains( 'outline', $response->get_data()['userCreated'] );
+
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+		$this->assertContains( 'outline', $data['userCreated'] );
+	}
+
+	/**
+	 * A label-only merge onto a baseline slug (a "shadow") edits the baseline preset in place: it must not be
+	 * reported as user-created, and the preset's existing tokens must still resolve after the label-only write
+	 * — the merge must not have dropped them.
+	 *
+	 * @return void
+	 */
+	public function testALabelOnlyMergeOntoABaselineShadowLeavesUserCreatedEmpty(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'primary',
+					'label'  => 'Renamed Primary',
+				]
+			)
+		);
+
+		$data = $response->get_data();
+
+		$this->assertNotContains( 'primary', $data['userCreated'] );
+		$this->assertSame( 'Renamed Primary', $data['presets']['primary']['label'] );
+		$this->assertNotEmpty( $data['presets']['primary']['tokens'] );
+	}
+
+	/**
+	 * A second create against the same preset, whose submitted token map omits a property the first
+	 * write stored, removes that property rather than leaving it in place. The token map replaces
+	 * wholesale, matching what the client (`presetSaveTokens()`) already computed as the complete
+	 * desired set — a property-level merge would let an omitted (cleared) property silently survive.
+	 *
+	 * @return void
+	 */
+	public function testCreateRemovesATokenTheSecondWriteOmits(): void {
+		$this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens( [ 'button-padding' => '0.4em' ] ),
+				]
+			)
+		);
+
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'label'  => 'Outline',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$tokens = $response->get_data()['presets']['outline']['tokens'];
+
+		$this->assertArrayNotHasKey( 'button-padding', $tokens );
 	}
 
 	/**
@@ -861,6 +976,160 @@ final class PresetsControllerTest extends TestCase {
 		}
 	}
 
+	// -------------------------------------------------------------------------
+	// preset display order
+	// -------------------------------------------------------------------------
+
+	/**
+	 * The order sub-route is registered with PUT and DELETE, alongside the rest of the block routes.
+	 *
+	 * @return void
+	 */
+	public function testTheOrderRouteIsRegistered(): void {
+		$namespace   = $this->controller_namespace();
+		$base        = $this->controller_rest_base();
+		$block_route = $this->controller_constant( 'BLOCK_ROUTE' );
+		$order_route = $this->controller_constant( 'ORDER_ROUTE' );
+
+		$route = "/$namespace/$base/$block_route/$order_route";
+
+		$this->assertArrayHasKey( $route, $this->rest_server->get_routes() );
+		$this->assertContains( 'PUT', $this->route_methods( $route ) );
+		$this->assertContains( 'DELETE', $this->route_methods( $route ) );
+	}
+
+	/**
+	 * A PUT to the order sub-route persists a new order for two BASELINE preset slugs (primary and
+	 * secondary) — the case fact 5 of the plan overview proves impossible through a PUT-the-collection
+	 * "reorder", since `Effective_Presets` always reads baseline-defined slugs back in baseline order
+	 * regardless of the order overrides were written in.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderMovesBaselineSlugs(): void {
+		$response = $this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $response->get_data()['presets'] ) );
+
+		// The order survives a fresh read.
+		$data = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $data['presets'] ) );
+	}
+
+	/**
+	 * A slug the block does not effectively define is pruned from the submitted order silently, rather
+	 * than rejected — the order write is advisory, mirroring the documents controller's token-order route.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderSilentlyPrunesAnUnknownSlug(): void {
+		$response = $this->controller->set_order(
+			$this->order_request( self::BUTTON, [ 'secondary', 'does-not-exist', 'primary' ] )
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $response->get_data()['presets'] ) );
+	}
+
+	/**
+	 * A version that no longer matches the stored version is rejected with HTTP 409, so a client working
+	 * from a stale read cannot silently clobber a concurrent write.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderRejectsAStaleVersionWith409(): void {
+		$result = $this->controller->set_order(
+			$this->order_request( self::BUTTON, [ 'secondary', 'primary' ], 'a-stale-version' )
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_conflict', $result->get_error_code() );
+		$this->assertSame( WP_Http::CONFLICT, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * A block with no registered preset bindings is a 404, mirroring every other block sub-route.
+	 *
+	 * @return void
+	 */
+	public function testSetOrderReturns404ForABlockThatAcceptsNoPresets(): void {
+		$result = $this->controller->set_order( $this->order_request( 'kadence/spacer', [ 'anything' ] ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_not_found', $result->get_error_code() );
+	}
+
+	/**
+	 * DELETE on the order sub-route reverts a stored order to merge (baseline) order.
+	 *
+	 * @return void
+	 */
+	public function testDeleteOrderRevertsToMergeOrder(): void {
+		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+
+		$version  = $this->store->get_version( Token_Store::default_slug() );
+		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( [ 'primary', 'secondary' ], array_keys( $response->get_data()['presets'] ) );
+	}
+
+	/**
+	 * DELETE on the order sub-route is idempotent: a no-op, unchanged-version response when nothing is
+	 * stored for the block.
+	 *
+	 * @return void
+	 */
+	public function testDeleteOrderIsAnIdempotentNoOpWhenAbsent(): void {
+		$version_before = $this->store->get_version( Token_Store::default_slug() );
+
+		$response = $this->controller->delete_order( $this->order_request( self::BUTTON, [], $version_before ) );
+
+		$this->assertSame( WP_Http::OK, $response->get_status() );
+		$this->assertSame( $version_before, $this->store->get_version( Token_Store::default_slug() ) );
+	}
+
+	/**
+	 * Creating a preset named "order" is rejected: the slug is reserved for the block's order sub-route and
+	 * could never be reordered or deleted through the dedicated route.
+	 *
+	 * @return void
+	 */
+	public function testCreatingAPresetNamedOrderIsRejected(): void {
+		$result = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'order',
+					'tokens' => $this->button_tokens(),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_reserved_slug', $result->get_error_code() );
+		$this->assertSame( WP_Http::UNPROCESSABLE_ENTITY, $result->get_error_data()['status'] );
+	}
+
+	/**
+	 * After a PUT reorders a block's presets, the controller's own read (prepare_item()) and the resolver's
+	 * names() — the seam the admin feed and Preset_Nav consumers read through — agree on the new order, so
+	 * the Style Library and the editor can never disagree.
+	 *
+	 * @return void
+	 */
+	public function testOrderedNamesAgreeBetweenTheControllerAndThePresetResolver(): void {
+		$this->controller->set_order( $this->order_request( self::BUTTON, [ 'secondary', 'primary' ] ) );
+
+		$data     = $this->controller->get_item( $this->block_request( WP_REST_Server::READABLE, self::BUTTON ) )->get_data();
+		$resolver = $this->container->get( Preset_Resolver::class );
+
+		$this->assertSame( [ 'secondary', 'primary' ], array_keys( $data['presets'] ) );
+		$this->assertSame( [ 'secondary', 'primary' ], $resolver->names( self::BUTTON ) );
+	}
+
 	/**
 	 * Build a request for a single block route, splitting the block name into its two path segments and
 	 * carrying any extra body parameters.
@@ -948,6 +1217,30 @@ final class PresetsControllerTest extends TestCase {
 	 */
 	private function default_request( string $block, string $default_slug ): WP_REST_Request {
 		return $this->block_request( 'PUT', $block, [ 'default' => $default_slug ] );
+	}
+
+	/**
+	 * Build an order-route request: the block segments plus the ordered slug list and the version guard.
+	 * The version defaults to the library's current stored version, so a call site only needs to pass one
+	 * explicitly when deliberately exercising a mismatch.
+	 *
+	 * @param string   $block The block name.
+	 * @param string[] $order The desired preset slug order.
+	 * @param ?string  $version The version the client last read; defaults to the current stored version.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function order_request( string $block, array $order, ?string $version = null ): WP_REST_Request {
+		$version ??= $this->store->get_version( Token_Store::default_slug() );
+
+		return $this->block_request(
+			'PUT',
+			$block,
+			[
+				'order'   => $order,
+				'version' => $version,
+			] 
+		);
 	}
 
 	/**

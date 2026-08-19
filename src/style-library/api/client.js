@@ -25,6 +25,9 @@ import {
 	paletteSwatchPath,
 	paletteCurrentPath,
 	feedPath,
+	blockPresetsPath,
+	blockPresetPath,
+	blockPresetOrderPath,
 } from './paths';
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 
@@ -407,6 +410,81 @@ export function renameLibrary(slug, title) {
  */
 export function deleteLibrary(slug) {
 	return apiFetch({ path: documentPath(NAMESPACE, slug), method: 'DELETE' });
+}
+
+/**
+ * Fetch a block's effective (baseline-merged) preset collection.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} slug      Token library slug.
+ * @return {Promise<{block: string, slug: string, version: string, default: string, userCreated: string[], presets: Record<string, {label?: string, tokens: Record<string, string>}>}>} The block's preset collection.
+ */
+export function fetchBlockPresets(namespace, block, slug) {
+	return apiFetch({ path: blockPresetsPath(namespace, block, slug) });
+}
+
+/**
+ * Create a preset, or merge onto an existing one. The write is a deep merge into the stored preset:
+ * sibling presets and `$default` are left intact, and omitting `tokens` preserves the stored token
+ * map (a rename). There is deliberately no PUT wrapper — the PUT route replaces the block's whole
+ * preset collection and silently drops any preset the body omits, which would be a data-loss trap
+ * for a single-preset save.
+ *
+ * @since TBD
+ *
+ * @param {string}                                          namespace REST namespace.
+ * @param {string}                                          block     The block name, e.g. `kadence/singlebtn`.
+ * @param {{preset: string, label?: string, tokens?: Record<string, string>}} payload The preset slug, optional label, and optional token map.
+ * @param {string}                                          slug      Token library slug.
+ * @return {Promise<object>} The updated preset collection.
+ */
+export function saveBlockPreset(namespace, block, payload, slug) {
+	return apiFetch({
+		path: blockPresetsPath(namespace, block, slug),
+		method: 'POST',
+		data: payload,
+	});
+}
+
+/**
+ * Delete a preset. A preset that also exists in the baseline reverts to its baseline definition
+ * rather than disappearing.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} preset    The preset slug.
+ * @param {string} slug      Token library slug.
+ * @return {Promise<object>} The updated preset collection.
+ */
+export function deleteBlockPreset(namespace, block, preset, slug) {
+	return apiFetch({
+		path: blockPresetPath(namespace, block, preset, slug),
+		method: 'DELETE',
+	});
+}
+
+/**
+ * Persist a block's full preset display order.
+ *
+ * @since TBD
+ *
+ * @param {string}                                 namespace REST namespace.
+ * @param {string}                                 block     The block name, e.g. `kadence/singlebtn`.
+ * @param {{ order: string[], version: string }}    payload   Request body.
+ * @param {string}                                 slug      Token library slug.
+ * @return {Promise<object>} The updated preset collection.
+ */
+export function setBlockPresetOrder(namespace, block, payload, slug) {
+	return apiFetch({
+		path: blockPresetOrderPath(namespace, block, slug),
+		method: 'PUT',
+		data: payload,
+	});
 }
 
 /**

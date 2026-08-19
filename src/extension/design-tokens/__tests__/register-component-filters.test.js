@@ -29,7 +29,9 @@ jest.mock('../../token-picker', () => ({
 import { applyFilters } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../../token-picker';
 import { registerComponentTokenFilters } from '../register-component-filters';
-import { TokenChip, TokenPickerButton, TokenFieldControl } from '../component-token-ui';
+// Through the barrel, the same path the production file uses: importing the implementation files
+// directly would let this pass while a missing or renamed barrel export broke the real import.
+import { TokenChip, TokenPickerButton, TokenSelector as TokenFieldControl } from '../../../token-controls';
 
 const EDITOR_HOOK = 'kadence.components.control.editor';
 const ACTIONS_HOOK = 'kadence.components.control.actions';

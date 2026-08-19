@@ -4,7 +4,7 @@
  * The shared controls expose neutral `kadence.components.control.editor` / `.actions`
  * `@wordpress/hooks` seams and know nothing about design tokens. Here Kadence Blocks registers the
  * token behavior on both. For a control with per-slot fields (measure, measure-range, range, single
- * border) the editor seam replaces each slot's numeric input with a `TokenFieldControl`: a trigger
+ * border) the editor seam replaces each slot's numeric input with a `TokenSelector`: a trigger
  * that reads like the input and opens a Style Library/Custom popover, so the field itself is the token
  * entry point. The whole-value box-shadow control has no such field, so it keeps the actions-seam
  * chip-or-picker.
@@ -21,7 +21,7 @@
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { pickableTokensForControl } from '../token-picker';
-import { isTokenAlias, TokenChip, TokenPickerButton, TokenFieldControl } from './component-token-ui';
+import { TokenChip, TokenPickerButton, TokenSelector, isTokenAlias } from '../../token-controls';
 
 const NAMESPACE = 'kadence-blocks/component-token';
 const EDITOR_HOOK = 'kadence.components.control.editor';
@@ -123,7 +123,7 @@ function defaultValueForSlot(defaultValue, index) {
 }
 
 /**
- * Editor seam: replace a field control's numeric slot with a `TokenFieldControl` — the trigger + token
+ * Editor seam: replace a field control's numeric slot with a `TokenSelector` — the trigger + token
  * popover — whenever the control is token-mapped (a `context` resolves pickable tokens). Falls back to
  * the control's own editor for a control with no field adapter, no tokens, or no write handler.
  *
@@ -149,7 +149,7 @@ function editorFilter(defaultEditor, ctx) {
 	const leaf = adapter.leaf(ctx.value, ctx.index);
 
 	return (
-		<TokenFieldControl
+		<TokenSelector
 			value={leaf}
 			unit={ctx.context?.unit || ''}
 			units={ctx.context?.units}

@@ -1,0 +1,37 @@
+// The chip is content-sized (a button-shaped label, not a swatch), so this screen's rows relax
+// `ListRow`'s default framed 80px preview slot — the Spacing/Icon Sizes/Shadow slot-override
+// precedent — rather than squeezing the chip into a square frame it was never designed for.
+.kadence-blocks-style-library__button-screen .kadence-blocks-style-library__list-row-preview {
+	width: auto;
+	height: auto;
+	border: 0;
+	background: transparent;
+	overflow: visible;
+}
+
+// Preset names are full words ("Primary Outline"), not the short numeric labels the shared 4rem
+// column was sized for, so this screen widens its own label column instead of wrapping every name
+// onto two or three lines.
+.kadence-blocks-style-library__button-screen .kadence-blocks-style-library__list-row-label {
+	width: 15rem;
+}
+
+// The live Button chip. `border` stays transparent so a background-less preset (an unresolved or
+// dangling token) does not draw a stray line, while `outline` gives every chip a hairline edge from
+// a neutral token so a preset whose background matches the page (the board's Secondary preset)
+// still reads as a discrete shape. Pixel fidelity against the Figma is the polish phase's job — this
+// only guarantees the chip is never invisible.
+.kadence-blocks-style-library__button-preset-preview {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-20);
+	border: 1px solid transparent;
+	outline: 1px solid var(--kb-sl-color-gray-200);
+	outline-offset: -1px;
+	font-size: var(--kb-sl-font-size-small);
+	font-weight: var(--kb-sl-font-weight-medium);
+	line-height: var(--kb-sl-line-height-s);
+	white-space: nowrap;
+	transition: background-color 300ms ease, color 300ms ease, border-radius 300ms ease;
+}

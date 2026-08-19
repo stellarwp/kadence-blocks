@@ -105,6 +105,7 @@ export const DEMO_SETTINGS_SCHEMA = {
 			initialOpen: true,
 			fields: [
 				{ type: 'color', path: 'background', label: __('Background', 'kadence-blocks') },
+				{ type: 'token-color-select', path: 'tokenColor', label: __('Token Color', 'kadence-blocks') },
 				{
 					type: 'color-list',
 					path: 'stateColors',
@@ -127,6 +128,21 @@ export const DEMO_SETTINGS_SCHEMA = {
 					label: __('Radius', 'kadence-blocks'),
 					tokenType: 'dimension',
 					leadingIcon: cornerAll,
+				},
+				{
+					// The token-controls `BoxControl` in corner geometry — the replacement for the
+					// `box-sides` entry above, kept alongside it while both exist.
+					type: 'radius',
+					path: 'tokenRadius',
+					label: __('Radius (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
+				},
+				{
+					// The same control in side geometry, which is what padding and margin use.
+					type: 'spacing',
+					path: 'tokenSpacing',
+					label: __('Spacing (token control)', 'kadence-blocks'),
+					tokenType: 'dimension',
 				},
 				{
 					// Same shape as Radius, different leading glyph — proving the glyph is schema data.
@@ -169,8 +185,10 @@ export const DEMO_SETTINGS_VALUES = {
 	letterSpacing: 2,
 	letterSpacingUnit: '0.02em',
 	background: '#2271b1',
+	tokenColor: '',
 	stateColors: { text: '#1e1e1e', bg: '#2271b1' },
 	radius: '',
+	tokenSpacing: '',
 	borderWidth: '',
 	spacing: '',
 	enabled: true,

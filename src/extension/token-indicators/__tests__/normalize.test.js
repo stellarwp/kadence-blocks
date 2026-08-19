@@ -1,5 +1,6 @@
 /* eslint-env jest */
 import {
+	anyCornerInherited,
 	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
@@ -201,6 +202,47 @@ describe('inheritedMeasureSlots', () => {
 		const read = inheritedMeasureSlots('Desktop', { desktop: DESKTOP }, '3px');
 
 		expect(read.values).toEqual(['3px', '3px', '3px', '3px']);
+	});
+});
+
+describe('anyCornerInherited', () => {
+	/**
+	 * On Desktop every corner resolves straight to the preset, so the row-level label must read as
+	 * "Default" rather than "Inherited" — a bare `!!inherited` on the four-element array would report
+	 * `true` here regardless of its contents, which is the bug this guards against.
+	 *
+	 * @return {void}
+	 */
+	it('is false when no corner is inherited', () => {
+		expect(anyCornerInherited([false, false, false, false])).toBe(false);
+	});
+
+	/**
+	 * A mixed row — one corner pulled from another breakpoint, the rest resolved to the preset — still
+	 * counts as inherited, since the control shows only one label for all four corners.
+	 *
+	 * @return {void}
+	 */
+	it('is true when only some corners are inherited', () => {
+		expect(anyCornerInherited([true, false, true, false])).toBe(true);
+	});
+
+	/**
+	 * Every corner inheriting is also reported as inherited.
+	 *
+	 * @return {void}
+	 */
+	it('is true when every corner is inherited', () => {
+		expect(anyCornerInherited([true, true, true, true])).toBe(true);
+	});
+
+	/**
+	 * A missing or malformed array degrades to "not inherited" instead of throwing.
+	 *
+	 * @return {void}
+	 */
+	it('is false for a non-array input', () => {
+		expect(anyCornerInherited(undefined)).toBe(false);
 	});
 });
 

@@ -364,7 +364,7 @@ final class Preset_Bindings {
 	private static function classify( string $term ): string {
 		$term = strtolower( $term );
 
-		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'size', 'height', 'dimension' ] as $needle ) {
+		foreach ( [ 'radius', 'width', 'gap', 'spacing', 'space', 'padding', 'margin', 'size', 'height', 'dimension' ] as $needle ) {
 			if ( strpos( $term, $needle ) !== false ) {
 				return self::KIND_DIMENSION;
 			}

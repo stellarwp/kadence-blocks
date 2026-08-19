@@ -240,3 +240,62 @@ export function paletteSwatchPath(namespace, id, token, slug = DEFAULT_LIBRARY_S
 export function paletteCurrentPath(namespace, slug = DEFAULT_LIBRARY_SLUG) {
 	return `/${namespace}/palettes/current?library=${encodeURIComponent(slug)}`;
 }
+
+/**
+ * Build the shared `/presets/{vendor}/{name}` segment of a block's preset routes. The block name's
+ * two segments are encoded separately — the "/" between vendor and block is a real path separator
+ * on the route (`Presets_Controller::BLOCK_ROUTE`).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @return {string} REST path relative to wp-json root, with no trailing slash or query string.
+ */
+function blockPresetsBasePath(namespace, block) {
+	const [vendor, name] = block.split('/');
+	return `/${namespace}/presets/${encodeURIComponent(vendor)}/${encodeURIComponent(name)}`;
+}
+
+/**
+ * Build a REST path for a block's preset collection (read, create-or-merge).
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} slug      Token library slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function blockPresetsPath(namespace, block, slug = DEFAULT_LIBRARY_SLUG) {
+	return `${blockPresetsBasePath(namespace, block)}?library=${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for a single preset resource within a block's preset collection.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} preset    The preset slug.
+ * @param {string} slug      Token library slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function blockPresetPath(namespace, block, preset, slug = DEFAULT_LIBRARY_SLUG) {
+	return `${blockPresetsBasePath(namespace, block)}/${encodeURIComponent(preset)}?library=${encodeURIComponent(slug)}`;
+}
+
+/**
+ * Build a REST path for a block's preset display-order resource.
+ *
+ * @since TBD
+ *
+ * @param {string} namespace REST namespace (e.g. kb-design-tokens/v1).
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} slug      Token library slug.
+ * @return {string} REST path relative to wp-json root.
+ */
+export function blockPresetOrderPath(namespace, block, slug = DEFAULT_LIBRARY_SLUG) {
+	return `${blockPresetsBasePath(namespace, block)}/order?library=${encodeURIComponent(slug)}`;
+}

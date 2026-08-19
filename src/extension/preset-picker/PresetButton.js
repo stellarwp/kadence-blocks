@@ -16,8 +16,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
-import { get } from 'lodash';
-import { activeLibrary, blockPresets, blockDefaultPreset } from './index';
+import { activeLibrary, activePresetFor, blockPresets } from './index';
 import { presetIcon, resetIcon } from './icons';
 import { capturedTokens } from './capture';
 import { SavePresetModal } from './SavePresetModal';
@@ -28,19 +27,18 @@ import { mappedAttrsFor, resetAttrPatch, usePresetBinding } from '../token-indic
 import './preset-button.scss';
 
 /**
- * The label for the block's current preset: the selected preset's label, the library's default preset
- * label when none is selected, or a generic "Default" fallback.
+ * The label for a block's resolved preset slug, or a generic "Default" fallback when the slug names no
+ * preset (the default look, or a slug the block does not declare).
  *
- * @param {string} name     The block name.
- * @param {string} library  The token library slug.
- * @param {string} selected The selected preset slug ('' for the default look).
+ * @param {string} name The block name.
+ * @param {string} library The token library slug.
+ * @param {string} slug The resolved preset slug (see `activePresetFor()`), not a raw `kbPreset` value.
  *
  * @since TBD
  *
  * @return {string} The preset label.
  */
-function currentPresetLabel(name, library, selected) {
-	const slug = selected || blockDefaultPreset(name, library);
+function currentPresetLabel(name, library, slug) {
 	const preset = blockPresets(name, library).find((candidate) => candidate.slug === slug);
 
 	return preset?.label || __('Default', 'kadence-blocks');
@@ -82,9 +80,8 @@ export function PresetButton({ blockName, attributes, setAttributes, library }) 
 		return null;
 	}
 
-	const selected = get(attributes, 'kbPreset', '');
-	const currentSlug = selected || blockDefaultPreset(blockName, resolvedLibrary);
-	const label = currentPresetLabel(blockName, resolvedLibrary, selected);
+	const currentSlug = activePresetFor(blockName, attributes, resolvedLibrary);
+	const label = currentPresetLabel(blockName, resolvedLibrary, currentSlug);
 
 	/**
 	 * The setAttributes patch that clears every mapped override back to its preset value, so a control

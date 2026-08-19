@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
+use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 use KadenceWP\KadenceBlocks\Utils\Cast;
 
 /**
@@ -131,6 +134,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $attributes, 'typography' );
 		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', [ 'unit_key' => 'borderRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderStyle', true );
+		$this->render_preset_spacing( $css, $attributes );
 		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
 		if ( isset( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
@@ -494,6 +498,64 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', [ 'kadence-glightbox' ], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', [], KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
+	}
+
+	/**
+	 * Point padding and margin at their preset variables, but only for a property the active preset
+	 * actually resolves.
+	 *
+	 * The gate is the whole point. `padding: var(--kb-btn-padding)` is not inert when the variable is
+	 * undefined — it is invalid at computed-value time, which resets padding to `0` rather than letting
+	 * the button's size class supply it. Emitting only when the property resolves is what keeps a button
+	 * whose preset sets no spacing looking exactly as it does today.
+	 *
+	 * Emitted before the attribute output so an explicit per-block value, which lands later in the same
+	 * rule, still wins. Responsiveness needs nothing here: a per-breakpoint override redeclares the
+	 * canonical preset variable inside a media query, and this bridge follows it.
+	 *
+	 * @since TBD
+	 *
+	 * @param Kadence_Blocks_CSS   $css        The css object.
+	 * @param array<string, mixed> $attributes The block attributes.
+	 *
+	 * @return void
+	 */
+	private function render_preset_spacing( Kadence_Blocks_CSS $css, array $attributes ): void {
+		try {
+			$registry = kadence_blocks()->get( Token_Registry::class );
+			$library  = kadence_blocks()->get( Active_Token_Library_Store::class );
+			$resolver = kadence_blocks()->get( Preset_Resolver::class );
+
+			// The container is typed `mixed`, and this runs on every button render, so the services are
+			// checked rather than assumed — a misconfigured container degrades to today's spacing.
+			if (
+				! $registry instanceof Token_Registry
+				|| ! $library instanceof Active_Token_Library_Store
+				|| ! $resolver instanceof Preset_Resolver
+				|| ! $registry->is_active()
+			) {
+				return;
+			}
+
+			$slug     = $library->get();
+			$selected = Cast::to_string( $attributes['kbPreset'] ?? '' );
+			$preset   = $selected !== '' && $resolver->has_preset( 'kadence/singlebtn', $selected, $slug )
+				? $selected
+				: $resolver->default_preset( 'kadence/singlebtn', $slug );
+			$values   = $resolver->resolve( 'kadence/singlebtn', $preset, $slug );
+		} catch ( Throwable $e ) {
+			// This runs in the render path, so a broken token graph must not take the page down with it —
+			// the button simply keeps the spacing it has today.
+			return;
+		}
+
+		if ( isset( $values['button-padding'] ) ) {
+			$css->add_property( 'padding', 'var(--kb-btn-padding)' );
+		}
+
+		if ( isset( $values['button-margin'] ) ) {
+			$css->add_property( 'margin', 'var(--kb-btn-margin)' );
+		}
 	}
 
 	/**

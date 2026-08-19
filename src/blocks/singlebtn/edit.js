@@ -86,13 +86,15 @@ import BackendStyles from './components/backend-styles';
 import { PresetButton } from '../../extension/preset-picker/PresetButton';
 import { usePresetBinding, resetAttr } from '../../extension/token-indicators';
 import {
+	anyCornerInherited,
 	deriveMeasureMode,
 	inheritedMeasureSlots,
 	measureAttrsForDevice,
 	presetValueForDevice,
 } from '../../extension/token-indicators/normalize';
-import { TokenLabel } from '../../extension/token-indicators/components/TokenLabel';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
+import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { pickableTokensForControl } from '../../extension/token-picker';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -280,7 +282,7 @@ export default function KadenceButtonEdit(props) {
 
 	// Design-token indicators: the per-attribute bound/overridden state for the selected preset, plus a
 	// reset that clears the mapped attribute back to the preset value (served by the existing scoped CSS).
-	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes);
+	const tokenBinding = usePresetBinding('kadence/singlebtn', attributes, undefined, previewDevice);
 	const resetToken = (attr) => resetAttr(attr, setAttributes, tokenBinding[attr]?.kind);
 
 	const borderRadiusPresetValue = presetValueForDevice(
@@ -317,6 +319,87 @@ export default function KadenceButtonEdit(props) {
 	// Keyed by device: the responsive control keeps ONE mode but writes three attributes, so a choice
 	// made on Tablet must not flip Desktop's corners (and vice versa).
 	const [borderRadiusModeOverride, setBorderRadiusModeOverride] = useState({});
+
+	// Everything the new box control needs that the block already knows, gathered in one place rather
+	// than inlined into the JSX.
+	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
+	const borderRadiusTokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius') || [];
+	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+
+	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
+	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
+	// split an all-empty Tablet into four identical blank fields, showing a difference the user cannot
+	// see. Where the value comes from is surfaced by the field's popover, not by the link toggle.
+	const borderRadiusIsLinked =
+		'linked' ===
+		(borderRadiusModeOverride[previewDevice] ??
+			deriveMeasureMode(borderRadiusForDevice.value, borderRadiusPresetValue));
+
+	// What the corners inherit, and whether that inheritance is uniform. A per-corner inheritance is the
+	// case where linking is a real change rather than a no-op. Always `inheritedBorderRadius.values`,
+	// never the raw preset value directly: `inheritedMeasureSlots()` already falls through to the
+	// preset's own per-corner slots (`presetSlotAt`) once the device's stored corners run out, so
+	// reading the preset array straight through here would drop any corner this device DOES store —
+	// silently discarding the desktop/tablet cascade for a preset that happens to be per-corner.
+	const inheritedCorners = inheritedBorderRadius.values;
+	const inheritedCornersDiffer =
+		Array.isArray(inheritedCorners) && inheritedCorners.some((corner) => corner !== inheritedCorners[0]);
+	// The preset surface carries resolved literals, not aliases (`blockPresetValues` flattens them so the
+	// overridden-check can be a plain compare), so the literal is matched back to the token that produced
+	// it. Writing the alias keeps the collapsed corner bound to `None` rather than landing as a custom
+	// `0px` that merely happens to look the same.
+	const aliasForValue = (value) => borderRadiusTokens.find((token) => token.value === value)?.alias ?? value ?? '';
+	const inheritedFirstCorner = Array.isArray(inheritedCorners) ? aliasForValue(inheritedCorners[0]) : '';
+
+	const toggleBorderRadiusLink = () => {
+		if (!borderRadiusIsLinked) {
+			const corners = borderRadiusForDevice.value ?? [];
+			const corner = corners[0] ?? '';
+			const isEmpty = corners.every((value) => '' === value || undefined === value);
+
+			if (isEmpty) {
+				// Nothing stored on this device, so ordinarily there is nothing to collapse — the corners
+				// are empty because they inherit, and writing the inherited value would silently pin
+				// Tablet/Mobile to Desktop's current radius. Remember the choice instead.
+				//
+				// Unless what is inherited differs corner to corner: then "link" genuinely changes the
+				// result, and storing nothing would leave the control showing one value while the button
+				// still renders four, with the indicator insisting it matches the preset. Collapsing to
+				// the first corner is the write that makes the three agree.
+				if (!inheritedCornersDiffer) {
+					setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'linked' }));
+
+					return;
+				}
+
+				setAttributes({
+					[borderRadiusForDevice.attr]: [
+						inheritedFirstCorner,
+						inheritedFirstCorner,
+						inheritedFirstCorner,
+						inheritedFirstCorner,
+					],
+				});
+				setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: undefined }));
+
+				return;
+			}
+
+			// Every corner matches the top-left, blank included, and only on the ACTIVE device.
+			setAttributes({ [borderRadiusForDevice.attr]: [corner, corner, corner, corner] });
+			// Equal corners derive linked on their own — except blank ones under a per-corner preset.
+			setBorderRadiusModeOverride((current) => ({
+				...current,
+				[previewDevice]: '' === corner ? 'linked' : undefined,
+			}));
+
+			return;
+		}
+
+		// Unlinking equal corners leaves the values untouched, so remember the choice for this session
+		// AND this device; a differing corner would derive individual on its own.
+		setBorderRadiusModeOverride((current) => ({ ...current, [previewDevice]: 'individual' }));
+	};
 	// The override records a choice made about the PREVIOUS preset's corners, so selecting another preset
 	// drops it — otherwise an explicit "link" would stick and hide a new preset's per-corner radius.
 	useEffect(() => {
@@ -1217,145 +1300,32 @@ export default function KadenceButtonEdit(props) {
 																setAttributes({ mobileBorderStyle: value })
 															}
 														/>
-														<TokenControlRow
-															attr="borderRadius"
-															binding={tokenBinding}
-															stacked
-														>
-															<ResponsiveMeasurementControls
-																label={
-																	<TokenLabel
-																		text={__('Border Radius', 'kadence-blocks')}
-																		attr="borderRadius"
-																		binding={tokenBinding}
-																		onReset={resetToken}
-																		showReset
-																	/>
-																}
-																context={{
-																	blockName: 'kadence/singlebtn',
-																	attribute: 'borderRadius',
-																	defaultValue: inheritedBorderRadius.values,
-																	inheritedDefault: inheritedBorderRadius.inherited,
-																	unit: borderRadiusUnit,
-																	units: ['px', 'em', 'rem', '%'],
-																	onUnit: (value) =>
-																		setAttributes({ borderRadiusUnit: value }),
-																	min: 0,
-																	max:
-																		borderRadiusUnit === 'em' ||
-																		borderRadiusUnit === 'rem'
-																			? 24
-																			: 500,
-																	step:
-																		borderRadiusUnit === 'em' ||
-																		borderRadiusUnit === 'rem'
-																			? 0.1
-																			: 1,
-																}}
-																// The mode describes what THIS device stores, not what it
-																// inherits. A breakpoint that stores nothing has nothing
-																// that differs, so it reads as linked — deriving from the
-																// inherited corners instead would split an all-empty Tablet
-																// into four identical blank fields, showing a difference the
-																// user cannot see. Where the value comes from is surfaced by
-																// the field's popover, not by the link toggle.
-																control={
-																	borderRadiusModeOverride[previewDevice] ??
-																	deriveMeasureMode(
-																		borderRadiusForDevice.value,
-																		borderRadiusPresetValue
-																	)
-																}
-																onChangeControl={(mode) => {
-																	if ('linked' === mode) {
-																		const corners =
-																			borderRadiusForDevice.value ?? [];
-																		const corner = corners[0] ?? '';
-																		const isEmpty = corners.every(
-																			(value) =>
-																				'' === value || undefined === value
-																		);
-
-																		if (isEmpty) {
-																			// Nothing stored on this device, so there is
-																			// nothing to collapse — the corners are empty
-																			// because they inherit, and writing the
-																			// inherited value here would silently pin
-																			// Tablet/Mobile to Desktop's current radius.
-																			// Remember the choice instead, so the control
-																			// links without the corners leaving inherit.
-																			setBorderRadiusModeOverride((current) => ({
-																				...current,
-																				[previewDevice]: 'linked',
-																			}));
-
-																			return;
-																		}
-
-																		// Every corner matches the top-left, blank
-																		// included, and only on the ACTIVE device.
-																		setAttributes({
-																			[borderRadiusForDevice.attr]: [
-																				corner,
-																				corner,
-																				corner,
-																				corner,
-																			],
-																		});
-																		// Equal corners derive linked on their own —
-																		// except blank ones under a per-corner preset.
-																		setBorderRadiusModeOverride((current) => ({
-																			...current,
-																			[previewDevice]:
-																				'' === corner ? 'linked' : undefined,
-																		}));
-																	} else {
-																		// Unlinking equal corners leaves the values
-																		// untouched, so remember the choice for this
-																		// session AND this device; a differing corner
-																		// would derive individual on its own.
-																		setBorderRadiusModeOverride((current) => ({
-																			...current,
-																			[previewDevice]: 'individual',
-																		}));
-																	}
-																}}
-																reset={false}
-																value={borderRadius}
-																tabletValue={tabletBorderRadius}
-																mobileValue={mobileBorderRadius}
-																onChange={(value) =>
-																	setAttributes({ borderRadius: value })
-																}
-																onChangeTablet={(value) =>
-																	setAttributes({ tabletBorderRadius: value })
-																}
-																onChangeMobile={(value) =>
-																	setAttributes({ mobileBorderRadius: value })
-																}
-																unit={borderRadiusUnit}
-																units={['px', 'em', 'rem', '%']}
-																onUnit={(value) =>
-																	setAttributes({ borderRadiusUnit: value })
-																}
-																max={
-																	borderRadiusUnit === 'em' ||
-																	borderRadiusUnit === 'rem'
-																		? 24
-																		: 500
-																}
-																step={
-																	borderRadiusUnit === 'em' ||
-																	borderRadiusUnit === 'rem'
-																		? 0.1
-																		: 1
-																}
-																min={0}
-																isBorderRadius={true}
-																allowEmpty={true}
-															/>
-														</TokenControlRow>
+														<EditorBoxControl
+															label={__('Border Radius', 'kadence-blocks')}
+															value={borderRadiusForDevice.value}
+															onChange={(next) =>
+																setAttributes({ [borderRadiusForDevice.attr]: next })
+															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															tokens={borderRadiusTokens}
+															defaultValue={inheritedBorderRadius.values}
+															inherited={anyCornerInherited(
+																inheritedBorderRadius.inherited
+															)}
+															state={tokenBinding.borderRadius}
+															onReset={() => resetToken('borderRadius')}
+															isLinked={borderRadiusIsLinked}
+															onToggleLink={toggleBorderRadiusLink}
+															unit={borderRadiusUnit}
+															units={['px', 'em', 'rem', '%']}
+															onUnit={(value) =>
+																setAttributes({ borderRadiusUnit: value })
+															}
+															min={0}
+															max={borderRadiusIsRelative ? 24 : 500}
+															step={borderRadiusIsRelative ? 0.1 : 1}
+														/>
 														<BoxShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
 															enable={undefined !== displayShadow ? displayShadow : false}

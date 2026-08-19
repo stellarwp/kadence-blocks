@@ -7,6 +7,31 @@ import {
 	getBorderColor,
 	getSpacingOptionOutput,
 } from '@kadence/helpers';
+import { activePresetFor, blockPresetValues } from '../../../../extension/preset-picker';
+
+/**
+ * Whether the button's active preset resolves a padding and/or a margin.
+ *
+ * Reads the same preset surface the inspector does, so the canvas and the panel cannot disagree about
+ * whether a preset carries spacing. A block with no explicit selection — or one naming a preset that no
+ * longer exists — follows the block's default preset, exactly as the server's `has_preset()` /
+ * `default_preset()` fallback does.
+ *
+ * @param {Object} attributes The block attributes.
+ *
+ * @since TBD
+ *
+ * @return {{padding: boolean, margin: boolean}} Which spacing properties the preset defines.
+ */
+function presetSpacingProperties(attributes) {
+	const preset = activePresetFor('kadence/singlebtn', attributes);
+	const tokens = blockPresetValues('kadence/singlebtn')?.[preset] ?? {};
+
+	return {
+		padding: 'button-padding' in tokens,
+		margin: 'button-margin' in tokens,
+	};
+}
 
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, currentRef, context } = props;
@@ -171,31 +196,6 @@ export default function BackendStyles(props) {
 		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
 	);
 	const previewPaddingUnit = paddingUnit ? paddingUnit : 'px';
-
-	const previewRadiusTop = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[0] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
-	);
-	const previewRadiusRight = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[1] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
-	);
-	const previewRadiusBottom = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[2] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
-	);
-	const previewRadiusLeft = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[3] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
-	);
 
 	const previewFixedWidth = getPreviewSize(
 		previewDevice,
@@ -809,6 +809,26 @@ export default function BackendStyles(props) {
 	}
 	//standard styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+
+	/*
+	 * Mirrors the front end's gate (`render_preset_spacing` in the block's PHP): point spacing at the
+	 * preset variable, but only for a property the active preset actually resolves.
+	 *
+	 * The condition is load-bearing rather than defensive. `padding: var(--kb-btn-padding)` with the
+	 * variable undefined is invalid at computed-value time, which resets padding to 0 instead of letting
+	 * the button's size class supply it — so emitting unconditionally would flatten every button that has
+	 * no preset spacing. Written before the per-side output below, so an explicit attribute still wins.
+	 */
+	const presetSpacing = presetSpacingProperties(attributes);
+
+	if (presetSpacing.padding) {
+		css.add_property('padding', 'var(--kb-btn-padding)');
+	}
+
+	if (presetSpacing.margin) {
+		css.add_property('margin', 'var(--kb-btn-margin)');
+	}
+
 	if (previewPaddingTop) {
 		css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit));
 	}
@@ -846,30 +866,21 @@ export default function BackendStyles(props) {
 	if (previewBorderBottomStyle) {
 		css.add_property('border-bottom', previewBorderBottomStyle);
 	}
-	if ('' !== previewRadiusTop) {
-		css.add_property(
-			'border-top-left-radius',
-			css.render_size(previewRadiusTop, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusRight) {
-		css.add_property(
-			'border-top-right-radius',
-			css.render_size(previewRadiusRight, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusLeft) {
-		css.add_property(
-			'border-bottom-left-radius',
-			css.render_size(previewRadiusLeft, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
-	if ('' !== previewRadiusBottom) {
-		css.add_property(
-			'border-bottom-right-radius',
-			css.render_size(previewRadiusBottom, borderRadiusUnit ? borderRadiusUnit : 'px')
-		);
-	}
+	// `render_measure_output` rather than four manual `render_size` calls: a corner can now be a
+	// design-token alias (the box control's token-pick path), and `render_size` only knows how to
+	// concatenate a number with a unit — it would emit `{alias}px`, invalid CSS, for a picked corner.
+	// `render_measure_output` runs every side through the `kadence.helpers.dimensionValue` filter
+	// first, the same alias-to-`var(--kb-token--…)` resolution the real (PHP-rendered) frontend
+	// already uses via `render_measure_side`, so the editor preview stops disagreeing with the page
+	// it is previewing.
+	css.render_measure_output(
+		borderRadius,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnit ? borderRadiusUnit : 'px'
+	);
 	css.add_property(
 		'box-shadow',
 		undefined !== displayShadow &&

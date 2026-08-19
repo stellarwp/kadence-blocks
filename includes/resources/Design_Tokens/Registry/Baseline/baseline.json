@@ -245,7 +245,7 @@
 				},
 				"sm": {
 					"$type": "dimension",
-					"$value": "0.1875rem"
+					"$value": "0.25rem"
 				},
 				"md": {
 					"$type": "dimension",
@@ -257,7 +257,15 @@
 				},
 				"xl": {
 					"$type": "dimension",
+					"$value": "0.75rem"
+				},
+				"2xl": {
+					"$type": "dimension",
 					"$value": "1rem"
+				},
+				"3xl": {
+					"$type": "dimension",
+					"$value": "1.5rem"
 				},
 				"full": {
 					"$type": "dimension",
@@ -481,12 +489,44 @@
 			"heading-padding": {
 				"$type": "dimension",
 				"$value": "{primitive.dimension.spacing.none}"
+			},
+			"button-padding-top": {
+				"$type": "dimension",
+				"$value": "0.4em"
+			},
+			"button-padding-right": {
+				"$type": "dimension",
+				"$value": "1em"
+			},
+			"button-padding-bottom": {
+				"$type": "dimension",
+				"$value": "0.4em"
+			},
+			"button-padding-left": {
+				"$type": "dimension",
+				"$value": "1em"
+			},
+			"button-margin-top": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-right": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-bottom": {
+				"$type": "dimension",
+				"$value": "0"
+			},
+			"button-margin-left": {
+				"$type": "dimension",
+				"$value": "0"
 			}
 		},
 		"radius": {
 			"control": {
 				"$type": "dimension",
-				"$value": "{primitive.dimension.radius.sm}"
+				"$value": "0.1875rem"
 			},
 			"media": {
 				"$type": "dimension",
