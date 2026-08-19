@@ -304,8 +304,13 @@ final class Projector extends Abstract_Css_Projector {
 	 * Static CSS that redirects a Kadence block's WordPress preset color classes — `has-<slug>-color` and
 	 * `has-<slug>-background-color` — to the numbered `--global-paletteN` variable.
 	 *
-	 * The selector is scoped to `.wp-block-kadence-*`, so only our own blocks are affected: core and third-party
-	 * blocks keep reading WordPress's global `--wp--preset--color--*` variables, which we never touch.
+	 * The selector is scoped to Kadence's own classes (`[class*="kadence-"]`), so only our own blocks are affected
+	 * — core and third-party blocks keep reading WordPress's untouched global `--wp--preset--color--*` variables.
+	 * The broad `kadence-` match (not `wp-block-kadence-`) is deliberate: on the front end the preset class and the
+	 * block's `wp-block-kadence-*` class share one element, but in the editor the preset class lands on an inner
+	 * heading that carries a `kadence-*` class without the `wp-block-kadence-*` wrapper class. The `:root` prefix
+	 * adds specificity, enough to beat both the front-end preset rule and the editor's zero-specificity
+	 * `:where(.editor-styles-wrapper)`-scoped copy of it.
 	 *
 	 * The baseline is unchanged. At `:root`, `--global-paletteN` already equals the color WordPress provides for
 	 * that slot (Kadence feeds both from the same palette). Inside a `[data-kb-palette]` subtree the numbered
@@ -341,11 +346,12 @@ final class Projector extends Abstract_Css_Projector {
 				continue;
 			}
 
-			$var = 'var(--global-' . $slot->slug . ')';
+			$var   = 'var(--global-' . $slot->slug . ')';
+			$scope = ':root [class*="kadence-"]';
 
 			foreach ( [ $kebab, 'theme-' . $kebab ] as $class_slug ) {
-				$css .= '[class*="wp-block-kadence-"].has-' . $class_slug . '-color{color:' . $var . ' !important;}';
-				$css .= '[class*="wp-block-kadence-"].has-' . $class_slug . '-background-color{background-color:' . $var . ' !important;}';
+				$css .= $scope . '.has-' . $class_slug . '-color{color:' . $var . ' !important;}';
+				$css .= $scope . '.has-' . $class_slug . '-background-color{background-color:' . $var . ' !important;}';
 			}
 		}
 

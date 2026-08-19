@@ -153,15 +153,15 @@ final class ProjectorTest extends TestCase {
 		$css = $this->projector->css();
 
 		$this->assertStringContainsString(
-			'[class*="wp-block-kadence-"].has-palette-1-color{color:var(--global-palette1) !important;}',
+			':root [class*="kadence-"].has-palette-1-color{color:var(--global-palette1) !important;}',
 			$css
 		);
 		$this->assertStringContainsString(
-			'[class*="wp-block-kadence-"].has-palette-2-background-color{background-color:var(--global-palette2) !important;}',
+			':root [class*="kadence-"].has-palette-2-background-color{background-color:var(--global-palette2) !important;}',
 			$css
 		);
 		$this->assertStringContainsString(
-			'[class*="wp-block-kadence-"].has-theme-palette-1-color{color:var(--global-palette1) !important;}',
+			':root [class*="kadence-"].has-theme-palette-1-color{color:var(--global-palette1) !important;}',
 			$css
 		);
 	}
