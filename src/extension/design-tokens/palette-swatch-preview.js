@@ -114,8 +114,9 @@ function reflect(el, id) {
 /**
  * Reflect an effective palette id onto the top-document `<html>` (so the inspector swatches and the pop color
  * popover preview it), and hold the editor canvas on the library `$current` so an un-iframed canvas does not
- * inherit the preview. A no-op on `<html>` when the value is unchanged, so the shared subscription never thrashes
- * the attribute.
+ * inherit the preview. Per-element writes are skipped when the value is unchanged (see `reflect`), so the shared
+ * subscription never thrashes attributes; the canvas shield is reconciled on every call, so a re-mounted canvas
+ * is re-shielded even when `<html>` already carries the palette.
  *
  * @param {string} id The effective palette id ('' clears the override so swatches follow the set `$current`).
  *
@@ -129,10 +130,6 @@ export function applyPalettePreview(id) {
 	}
 
 	const root = document.documentElement;
-
-	if ((root.getAttribute(SWITCH_ATTR) || '') === id) {
-		return;
-	}
 
 	reflect(root, id);
 

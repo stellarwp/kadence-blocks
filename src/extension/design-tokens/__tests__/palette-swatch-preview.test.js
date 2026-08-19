@@ -132,6 +132,29 @@ describe('palette-swatch-preview', () => {
 	});
 
 	/**
+	 * The canvas shield is reapplied when the canvas element is replaced while the same palette stays active, so a
+	 * re-mounted non-iframed canvas does not inherit the inspector preview (the root already carrying the palette
+	 * must not short-circuit the shield).
+	 *
+	 * @return {void}
+	 */
+	it('reshields a replaced canvas when the same palette is reapplied', () => {
+		applyPalettePreview('dark');
+		expect(canvas.getAttribute('data-kb-palette')).toBe('default');
+
+		// Replace the canvas element (a re-mount); the fresh one starts with no shield.
+		canvas.remove();
+		canvas = document.createElement('div');
+		canvas.className = 'editor-styles-wrapper';
+		document.body.appendChild(canvas);
+		expect(canvas.hasAttribute('data-kb-palette')).toBe(false);
+
+		// Reapplying the SAME palette (root already 'dark') must still shield the new canvas.
+		applyPalettePreview('dark');
+		expect(canvas.getAttribute('data-kb-palette')).toBe('default');
+	});
+
+	/**
 	 * Registering applies the current selection immediately, then follows selection changes through the
 	 * store subscription, and clears the attribute on deselect.
 	 *
