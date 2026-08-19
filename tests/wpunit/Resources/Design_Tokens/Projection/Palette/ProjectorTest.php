@@ -143,9 +143,10 @@ final class ProjectorTest extends TestCase {
 
 	/**
 	 * The projector emits scoped override rules pointing a Kadence block's WordPress preset color classes at the
-	 * numbered --global-paletteN bridge (so they follow a per-block palette), scoped to .wp-block-kadence-* so core
-	 * blocks reading WordPress's global preset vars are untouched. Covers the plugin's `palette-N` slug and the
-	 * Kadence theme's `theme-palette-N` slug, both mapping to the same bridge.
+	 * numbered --global-paletteN bridge (so they follow a per-block palette), scoped to `:root [class*="kadence-"]`
+	 * — which matches both the front-end and editor DOM — so only our own blocks are affected while core blocks
+	 * reading WordPress's global preset vars stay untouched. Covers the plugin's `palette-N` slug and the Kadence
+	 * theme's `theme-palette-N` slug, both mapping to the same bridge.
 	 *
 	 * @return void
 	 */
