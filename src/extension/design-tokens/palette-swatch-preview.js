@@ -116,7 +116,7 @@ function reflect(el, id) {
  * popover preview it), and hold the editor canvas on the library `$current` so an un-iframed canvas does not
  * inherit the preview. Per-element writes are skipped when the value is unchanged (see `reflect`), so the shared
  * subscription never thrashes attributes; the canvas shield is reconciled on every call, so a re-mounted canvas
- * is re-shielded even when `<html>` already carries the palette.
+ * is shielded again even when `<html>` already carries the palette.
  *
  * @param {string} id The effective palette id ('' clears the override so swatches follow the set `$current`).
  *
