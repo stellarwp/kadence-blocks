@@ -332,13 +332,16 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 			return <BlockEdit {...props} />;
 		}
 
-		const support = hasPreset ? getBlockSupport(name, 'kbPreset') : null;
-		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker itself (e.g. a
-		// Kadence block under its own Style tab), so this generic panel skips only the preset subsection for it.
-		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
-
 		const library = activeLibrary();
-		const showPresets = hasPreset && !inlinePicker && blockPresets(name, library).length > 0;
+		const presetCount = blockPresets(name, library).length;
+		const support = hasPreset ? getBlockSupport(name, 'kbPreset') : null;
+		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker (and, beside it, the
+		// palette) itself. But PresetButton returns null when the block has no presets, so only treat it as an
+		// inline picker when it actually has presets to render — otherwise this generic panel must surface the
+		// palette for it, so a palette-only inline block still shows its Color Palette control.
+		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker) && presetCount > 0;
+
+		const showPresets = hasPreset && !inlinePicker && presetCount > 0;
 		// Inline-picker blocks render the palette dropdown themselves (via PresetButton, just below the Preset
 		// selector), so this generic panel only surfaces it for blocks without an inline picker.
 		const showPalettes = hasPalette && !inlinePicker && selectablePalettes().length >= 2;
