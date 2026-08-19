@@ -358,8 +358,9 @@ class Kadence_Blocks_Abstract_Block {
 	 * `kbPalette` attribute (via `kbPalette` block support) and needs no per-block PHP. A no-op when no palette
 	 * is pinned, the content is empty, or it has no opening tag to carry the attribute.
 	 *
-	 * Only the opening tag is touched: the tag processor stops at the first tag, so a block with many nested
-	 * children is not walked, and the whole method short-circuits before any parsing when nothing is pinned.
+	 * The attribute lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>`
+	 * class), not an outer wrapper such as an animation `data-aos` div, and the whole method short-circuits
+	 * before any parsing when nothing is pinned.
 	 *
 	 * @since TBD
 	 *
@@ -381,7 +382,7 @@ class Kadence_Blocks_Abstract_Block {
 
 		$tags = new WP_HTML_Tag_Processor( $content );
 
-		if ( ! $tags->next_tag() ) {
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
 			return $content;
 		}
 
@@ -397,8 +398,10 @@ class Kadence_Blocks_Abstract_Block {
 	 * no per-block PHP. A no-op when no preset is selected, the content is empty, or it has no opening tag to
 	 * carry the class.
 	 *
-	 * Only the opening tag is touched: the tag processor stops at the first tag, so a block with many nested
-	 * children is not walked, and the whole method short-circuits before any parsing when nothing is selected.
+	 * The class lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>` class),
+	 * not an outer wrapper such as an animation `data-aos` div — the scoped preset selector is compound on the
+	 * block class (`.wp-block-<name>.kb-preset--<slug>`), so a class on a wrapper never matches. The whole method
+	 * short-circuits before any parsing when nothing is selected.
 	 *
 	 * @since TBD
 	 *
@@ -420,7 +423,7 @@ class Kadence_Blocks_Abstract_Block {
 
 		$tags = new WP_HTML_Tag_Processor( $content );
 
-		if ( ! $tags->next_tag() ) {
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
 			return $content;
 		}
 
