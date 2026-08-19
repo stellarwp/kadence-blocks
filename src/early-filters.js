@@ -19,6 +19,7 @@ import { PalettePicker, selectablePalettes } from './extension/palette-picker';
 import { registerTokenAliasFilters } from './extension/design-tokens/register-filters';
 import { registerColorControlFilters } from './extension/design-tokens/register-color-control-filters';
 import { registerComponentTokenFilters } from './extension/design-tokens/register-component-filters';
+import { registerTokenSwatchPalettePreview } from './extension/design-tokens/palette-swatch-preview';
 
 // Make the @kadence/helpers output helpers design-token aware by resolving `{dot.alias}` values to
 // their `var(--kb-token--<id>)` reference through the library's filter seam.
@@ -31,6 +32,10 @@ registerColorControlFilters();
 // Inject the design-token picker UI into the token-agnostic @kadence/components control seams, so a
 // control that receives a `context` gets the chip/picker without the package knowing about tokens.
 registerComponentTokenFilters();
+
+// Mirror the selected block's per-block palette onto the top-document <html>, so the color-control swatches
+// preview that palette's colors through the projector's existing [data-kb-palette] switch layer.
+registerTokenSwatchPalettePreview();
 
 /**
  * Add animation attributes
@@ -89,18 +94,21 @@ function convertArrayTitleToString(arr) {
 addFilter('blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute);
 
 /**
- * Add the kbPreset and kbPalette attributes to any block that opts in via the `kbPreset` block support.
+ * Add the kbPreset and/or kbPalette attributes to a block, each gated on its own block support so the two
+ * controls stay independent.
  *
- * kbPreset is the selected preset slug (e.g. "ghost"); an empty value means the block keeps its $default
- * look (the block preset). kbPalette holds the id of a per-block color-palette override (e.g. "dark"); empty
- * means the block follows the set's `$current` palette. Both the scoped preset CSS and the palette switch
+ * kbPreset (added for `kbPreset`-support blocks) is the selected preset slug (e.g. "ghost"); an empty value
+ * means the block keeps its $default look (the block preset). kbPalette (added for `kbPalette`-support blocks)
+ * holds the id of a per-block color-palette override (e.g. "dark"); empty means the block follows the set's
+ * `$current` palette. A palette only changes which colors the tokens resolve to, so it is orthogonal to
+ * presets — a block can support either, both, or neither. Both the scoped preset CSS and the palette switch
  * layer are emitted server-side by the Design Tokens projector.
  *
  * @param {Object} settings The block settings.
  *
  * @since TBD
  *
- * @return {Object} The block settings with the kbPreset and kbPalette attributes added.
+ * @return {Object} The block settings with the kbPreset and/or kbPalette attributes added.
  */
 export function blockPresetAttribute(settings) {
 	if (hasBlockSupport(settings, 'kbPreset')) {
@@ -109,6 +117,11 @@ export function blockPresetAttribute(settings) {
 				type: 'string',
 				default: '',
 			},
+		});
+	}
+
+	if (hasBlockSupport(settings, 'kbPalette')) {
+		settings.attributes = assign(settings.attributes, {
 			kbPalette: {
 				type: 'string',
 				default: '',
@@ -228,7 +241,7 @@ addFilter('blocks.getSaveContent.extraProps', 'kadence/kb-preset-save-class', bl
  * @return {Object} The props, with the data attribute appended when a palette is pinned.
  */
 export function blockPaletteSaveAttr(props, blockType, attributes) {
-	if (!hasBlockSupport(blockType, 'kbPreset')) {
+	if (!hasBlockSupport(blockType, 'kbPalette')) {
 		return props;
 	}
 
@@ -280,7 +293,7 @@ const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
 	return (props) => {
 		const { name, attributes } = props;
 
-		if (!hasBlockSupport(name, 'kbPreset')) {
+		if (!hasBlockSupport(name, 'kbPalette')) {
 			return <BlockListBlock {...props} />;
 		}
 
@@ -298,14 +311,18 @@ const withBlockPaletteAttr = createHigherOrderComponent((BlockListBlock) => {
 addFilter('editor.BlockListBlock', 'kadence/kb-palette-attr', withBlockPaletteAttr);
 
 /**
- * Add the design-token preset picker to the inspector of any block that opts into kbPreset support, under
- * a "Design Tokens" panel with a "Design Presets" subsection. Selecting a preset writes the kbPreset
- * attribute, which the save/preview filters turn into the kb-preset--<slug> class the projector's scoped
- * CSS hooks. An empty preset selects the block's $default preset look. The panel is skipped when the block
- * has no presets for the active library.
+ * Add the design-token preset picker and the per-block Color Palette override to the inspector of any block
+ * that opts into `kbPreset` or `kbPalette` support, under a "Design Tokens" panel. Selecting a preset writes
+ * the kbPreset attribute, which the save/preview filters turn into the kb-preset--<slug> class the projector's
+ * scoped CSS hooks; an empty preset selects the block's $default preset look. Selecting a palette writes the
+ * kbPalette attribute, which the save/preview filters turn into the data-kb-palette switch the projector's
+ * `[data-kb-palette]` layer re-skins. The two controls gate independently on their own block support: the
+ * preset subsection needs `kbPreset` support and presets for the active library; the palette subsection needs
+ * `kbPalette` support and at least two palettes in the set.
  *
- * A block whose `kbPreset` support requests `inlinePicker` renders the picker itself (e.g. a Kadence
- * block placing it under its own Style tab), so this generic sidebar panel skips it to avoid a duplicate.
+ * A block whose `kbPreset` support requests `inlinePicker` renders the preset picker itself (via PresetButton),
+ * and that inline picker also renders the palette dropdown right below the Preset selector, so this generic
+ * sidebar panel skips both the preset and the palette subsection for that block.
  *
  * @since TBD
  */
@@ -313,19 +330,26 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
 		const { name, attributes, setAttributes, isSelected } = props;
 
-		if (!hasBlockSupport(name, 'kbPreset')) {
+		const hasPreset = hasBlockSupport(name, 'kbPreset');
+		const hasPalette = hasBlockSupport(name, 'kbPalette');
+
+		if (!hasPreset && !hasPalette) {
 			return <BlockEdit {...props} />;
 		}
 
-		const support = getBlockSupport(name, 'kbPreset');
-		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker itself (e.g. a
-		// Kadence block under its own Style tab), so this generic panel skips only the preset subsection for
-		// it — the per-block Color Palette override still surfaces here for every kbPreset block.
-		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker);
-
 		const library = activeLibrary();
-		const showPresets = !inlinePicker && blockPresets(name, library).length > 0;
-		const showPalettes = selectablePalettes().length >= 2;
+		const presetCount = blockPresets(name, library).length;
+		const support = hasPreset ? getBlockSupport(name, 'kbPreset') : null;
+		// A block whose kbPreset support requests `inlinePicker` renders the PRESET picker (and, beside it, the
+		// palette) itself. But PresetButton returns null when the block has no presets, so only treat it as an
+		// inline picker when it actually has presets to render — otherwise this generic panel must surface the
+		// palette for it, so a palette-only inline block still shows its Color Palette control.
+		const inlinePicker = Boolean(support && typeof support === 'object' && support.inlinePicker) && presetCount > 0;
+
+		const showPresets = hasPreset && !inlinePicker && presetCount > 0;
+		// Inline-picker blocks render the palette dropdown themselves (via PresetButton, just below the Preset
+		// selector), so this generic panel only surfaces it for blocks without an inline picker.
+		const showPalettes = hasPalette && !inlinePicker && selectablePalettes().length >= 2;
 
 		if (!showPresets && !showPalettes) {
 			return <BlockEdit {...props} />;
@@ -337,41 +361,33 @@ const withPresetPicker = createHigherOrderComponent((BlockEdit) => {
 
 		return (
 			<>
+				{/*
+				 * For blocks without an inline preset picker, the per-block Color Palette dropdown surfaces at the
+				 * top level of the inspector — a bare InspectorControls fill, so it sits above the block's own
+				 * panels rather than buried in a lower panel. Rendered before BlockEdit so its fill registers ahead
+				 * of the block's own inspector fills. Inline-picker blocks render the palette via PresetButton, just
+				 * below the Preset selector, so the two controls stay adjacent.
+				 */}
+				{isSelected && showPalettes && (
+					<InspectorControls>
+						<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
+					</InspectorControls>
+				)}
 				<BlockEdit {...props} />
-				{isSelected && (
+				{isSelected && showPresets && (
 					<InspectorControls group="styles">
 						<PanelBody title={__('Design Tokens', 'kadence-blocks')} initialOpen={false}>
-							{showPresets && (
-								<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
-									<PresetPicker
-										name={name}
-										library={library}
-										value={selected}
-										onChange={selectPreset}
-									/>
-									<PresetActions
-										blockName={name}
-										library={library}
-										selected={selected}
-										onSelect={selectPreset}
-										attributes={attributes}
-										setAttributes={setAttributes}
-									/>
-								</SubsectionWrap>
-							)}
-							{showPalettes && (
-								<SubsectionWrap label={__('Color Palette', 'kadence-blocks')}>
-									{/*
-									 * TODO (SOFT-3990): this dropdown is an interim per-block palette override
-									 * control. The design (see the B4 Figma) integrates the palette token picker
-									 * into the block's color controls — a "Style Library | Custom" popover with a
-									 * Main Palette dropdown and swatch groups, opened from a palette icon on each
-									 * Color row — which requires @kadence/components changes to the color-control
-									 * popover and is deferred.
-									 */}
-									<PalettePicker value={get(attributes, 'kbPalette', '')} onChange={selectPalette} />
-								</SubsectionWrap>
-							)}
+							<SubsectionWrap label={__('Design Presets', 'kadence-blocks')}>
+								<PresetPicker name={name} library={library} value={selected} onChange={selectPreset} />
+								<PresetActions
+									blockName={name}
+									library={library}
+									selected={selected}
+									onSelect={selectPreset}
+									attributes={attributes}
+									setAttributes={setAttributes}
+								/>
+							</SubsectionWrap>
 						</PanelBody>
 					</InspectorControls>
 				)}

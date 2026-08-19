@@ -12,9 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Traits\Sanitizes_Css_Identifier;
-use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
@@ -26,9 +23,6 @@ use KadenceWP\KadenceBlocks\Utils\Cast;
  * @category class
  */
 class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
-	use Renders_Palette_Attribute;
-	use Sanitizes_Css_Identifier;
-	use Renders_Preset_Classes;
 
 	/**
 	 * Instance of this class
@@ -374,10 +368,6 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$classes[] = ! empty( $attributes['text'] ) ? 'kt-btn-has-text-true' : 'kt-btn-has-text-false';
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		$classes[] = ! empty( $attributes['iconReveal'] ) && ! empty( $attributes['icon'] ) ? 'icon-reveal' : '';
-		// A selected design-token preset outputs a kb-preset--<slug> class the Design Tokens preset
-		// projector's scoped CSS hooks. This is a dynamic block, so the class is added here rather than by
-		// the editor save filter.
-		$classes = array_merge( $classes, $this->preset_classes( $attributes['kbPreset'] ?? '' ) );
 
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$classes[] = 'ktblocksvideopop';
@@ -385,13 +375,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['inheritStyles'] ) && ( 'inherit' === $attributes['inheritStyles'] || 'inherit-secondary' === $attributes['inheritStyles'] ) ) {
 			$classes[] = 'wp-block-button__link';
 		}
-		// A per-block color-palette override outputs a data-kb-palette="<id>" attribute the Design Tokens
-		// projector's [data-kb-palette] switch layer re-points the block's canonical color vars through. This is
-		// a dynamic block, so the attribute is added here rather than by the editor save filter.
-		$wrapper_args = array_merge(
-			[ 'class' => implode( ' ', $classes ) ],
-			$this->palette_attributes( $attributes['kbPalette'] ?? '' )
-		);
+		$wrapper_args = [ 'class' => implode( ' ', $classes ) ];
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = Cast::to_string( $attributes['anchor'] );
 		}

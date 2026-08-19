@@ -666,6 +666,7 @@
 		"ktanimatepreview": true,
 		"ktdynamic": true,
 		"kbMetadata": true,
-		"kbContentLabel": "content"
+		"kbContentLabel": "content",
+		"kbPalette": true
 	}
 }

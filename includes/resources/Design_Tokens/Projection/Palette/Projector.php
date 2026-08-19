@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Contracts\Abstract_Css_Projector;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Kadence_Palette_Slot;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Css_Builder as Preset_Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
@@ -201,7 +202,7 @@ final class Projector extends Abstract_Css_Projector {
 		$css = $this->css_builder->css(
 			$this->palettes_for( $active ),
 			$this->presets->canonical_declarations( $active )
-		);
+		) . $this->global_palette_overrides();
 
 		wp_cache_set( $cache_key, $css, self::CACHE_GROUP, DAY_IN_SECONDS );
 
@@ -217,6 +218,10 @@ final class Projector extends Abstract_Css_Projector {
 	 * `[data-kb-palette]` override completely replaces the subtree's colors — semantics and shadow composites
 	 * included — no matter which palette the library `$current` points at. A var no palette changes is identical
 	 * everywhere, so it is left to inherit and never re-declared.
+	 *
+	 * Each slot-backed color additionally re-declares its numbered `--global-paletteN` bridge to the same
+	 * per-palette value, so content that reads the numbered bridge (including the WordPress preset color classes
+	 * redirected to it by {@see global_palette_overrides()}) swaps alongside the `--kb-token--*` vars.
 	 *
 	 * @since TBD
 	 *
@@ -242,6 +247,7 @@ final class Projector extends Abstract_Css_Projector {
 			}
 		}
 
+		$slots    = $this->palette_slot_vars();
 		$palettes = [];
 
 		foreach ( $ids as $id ) {
@@ -250,6 +256,13 @@ final class Projector extends Abstract_Css_Projector {
 			foreach ( array_keys( $changed ) as $var ) {
 				if ( array_key_exists( $var, $resolved[ $id ] ) ) {
 					$declarations[ $var ] = $resolved[ $id ][ $var ];
+
+					// Also swap the numbered --global-paletteN bridge for a slot-backed color, so blocks (and the
+					// WordPress preset color classes redirected to it, see global_palette_overrides()) that read the
+					// numbered bridge follow the palette too — not only content reading --kb-token--* directly.
+					if ( isset( $slots[ $var ] ) ) {
+						$declarations[ '--global-' . $slots[ $var ] ] = $resolved[ $id ][ $var ];
+					}
 				}
 			}
 
@@ -259,5 +272,89 @@ final class Projector extends Abstract_Css_Projector {
 		}
 
 		return $palettes;
+	}
+
+	/**
+	 * The palette-slot tokens' css vars mapped to their slot slug (e.g.
+	 * `--kb-token--primitive--color--brand--secondary` => `palette2`), so palettes_for() can bridge each slot's
+	 * per-palette value onto the numbered `--global-paletteN` variable. Skips any non-palette `kadence_slot`
+	 * (e.g. a font-size slot).
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> css var => slot slug.
+	 */
+	private function palette_slot_vars(): array {
+		$slots = [];
+
+		foreach ( $this->registry->by_projection( Kadence_Palette_Slot::get_projection_key() ) as $token ) {
+			$slot = Kadence_Palette_Slot::from_token( $token );
+
+			if ( $slot === null ) {
+				continue;
+			}
+
+			$slots[ $token->css_var ] = $slot->slug;
+		}
+
+		return $slots;
+	}
+
+	/**
+	 * Static CSS that redirects a Kadence block's WordPress preset color classes — `has-<slug>-color` and
+	 * `has-<slug>-background-color` — to the numbered `--global-paletteN` variable.
+	 *
+	 * The selector is scoped to Kadence's own classes (`[class*="kadence-"]`), so only our own blocks are affected
+	 * — core and third-party blocks keep reading WordPress's untouched global `--wp--preset--color--*` variables.
+	 * The broad `kadence-` match (not `wp-block-kadence-`) is deliberate: on the front end the preset class and the
+	 * block's `wp-block-kadence-*` class share one element, but in the editor the preset class lands on an inner
+	 * heading that carries a `kadence-*` class without the `wp-block-kadence-*` wrapper class. The `:root` prefix
+	 * adds specificity, enough to beat both the front-end preset rule and the editor's zero-specificity
+	 * `:where(.editor-styles-wrapper)`-scoped copy of it.
+	 *
+	 * The baseline is unchanged. At `:root`, `--global-paletteN` already equals the color WordPress provides for
+	 * that slot (Kadence feeds both from the same palette). Inside a `[data-kb-palette]` subtree the numbered
+	 * bridge is re-declared (see palettes_for()), so the redirected color follows the per-block palette.
+	 *
+	 * Why that subtree re-declaration is needed depends on the theme. On a non-Kadence theme `--global-paletteN`
+	 * is itself a `var(--kb-token--*)` reference (set by the Css_Var Legacy_Filter_Bridge), so it already
+	 * re-resolves against a subtree's re-declared token on its own — the re-declaration there is a harmless
+	 * redundancy. Under the Kadence theme `--global-paletteN` is a fixed customizer literal with no token
+	 * reference (and Legacy_Filter_Bridge is a no-op), so re-declaring it in palettes_for() is what makes it swap.
+	 *
+	 * Both slug schemes map to the same bridge: the plugin's own `palette-N` and the Kadence theme's
+	 * `theme-palette-N`. The `theme-palette-N` selectors are simply inert on other themes.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function global_palette_overrides(): string {
+		$css = '';
+
+		foreach ( $this->registry->by_projection( Kadence_Palette_Slot::get_projection_key() ) as $token ) {
+			$slot = Kadence_Palette_Slot::from_token( $token );
+
+			if ( $slot === null ) {
+				continue;
+			}
+
+			// WordPress kebab-cases the stored slug ("palette2") for the class/var name ("palette-2").
+			$kebab = preg_replace( '/([a-z])(\d)/', '$1-$2', $slot->slug );
+
+			if ( ! is_string( $kebab ) ) {
+				continue;
+			}
+
+			$var   = 'var(--global-' . $slot->slug . ')';
+			$scope = ':root [class*="kadence-"]';
+
+			foreach ( [ $kebab, 'theme-' . $kebab ] as $class_slug ) {
+				$css .= $scope . '.has-' . $class_slug . '-color{color:' . $var . ' !important;}';
+				$css .= $scope . '.has-' . $class_slug . '-background-color{background-color:' . $var . ' !important;}';
+			}
+		}
+
+		return $css;
 	}
 }

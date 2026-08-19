@@ -10,12 +10,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Palette\Renders_Palette_Attribute;
+use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Preset\Renders_Preset_Classes;
+
 /**
  * Abstract class to register blocks, build CSS, and enqueue scripts.
  *
  * @category class
  */
 class Kadence_Blocks_Abstract_Block {
+
+	use Renders_Palette_Attribute;
+	use Renders_Preset_Classes;
 
 	/**
 	 * Block namespace.
@@ -289,6 +295,8 @@ class Kadence_Blocks_Abstract_Block {
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
 
 			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
+			$content = $this->render_palette_attribute( $attributes, $content );
+			$content = $this->render_preset_class( $attributes, $content );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
@@ -341,6 +349,89 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return $content;
+	}
+
+	/**
+	 * Reflect a block's per-block color-palette override onto its rendered root element as
+	 * data-kb-palette="<id>", so the Design Tokens projector's `[data-kb-palette]` switch layer re-skins the
+	 * block's colors on the front end. Generic across every dynamic block: a block opts in by registering the
+	 * `kbPalette` attribute (via `kbPalette` block support) and needs no per-block PHP. A no-op when no palette
+	 * is pinned, the content is empty, or it has no opening tag to carry the attribute.
+	 *
+	 * The attribute lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>`
+	 * class), not an outer wrapper such as an animation `data-aos` div, and the whole method short-circuits
+	 * before any parsing when nothing is pinned.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attributes The block attributes.
+	 * @param mixed $content    The block's rendered HTML.
+	 *
+	 * @return mixed The HTML, with data-kb-palette set on the root element when a palette is pinned.
+	 */
+	protected function render_palette_attribute( $attributes, $content ) {
+		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$palette = $this->palette_attributes( $attributes['kbPalette'] ?? '' );
+
+		if ( ! isset( $palette['data-kb-palette'] ) ) {
+			return $content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $content );
+
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
+			return $content;
+		}
+
+		$tags->set_attribute( 'data-kb-palette', $palette['data-kb-palette'] );
+
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Add a block's selected design-token preset class (`kb-preset--<slug>`) to its rendered root element, so
+	 * the Design Tokens projector's scoped preset CSS applies on the front end. Generic across every dynamic
+	 * block: a block opts in by registering the `kbPreset` attribute (via `kbPreset` block support) and needs
+	 * no per-block PHP. A no-op when no preset is selected, the content is empty, or it has no opening tag to
+	 * carry the class.
+	 *
+	 * The class lands on the block's own root element (the tag carrying its `wp-block-<namespace>-<name>` class),
+	 * not an outer wrapper such as an animation `data-aos` div — the scoped preset selector is compound on the
+	 * block class (`.wp-block-<name>.kb-preset--<slug>`), so a class on a wrapper never matches. The whole method
+	 * short-circuits before any parsing when nothing is selected.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $attributes The block attributes.
+	 * @param mixed $content    The block's rendered HTML.
+	 *
+	 * @return mixed The HTML, with the kb-preset--<slug> class added to the root element when a preset is set.
+	 */
+	protected function render_preset_class( $attributes, $content ) {
+		if ( ! is_array( $attributes ) || ! is_string( $content ) || $content === '' ) {
+			return $content;
+		}
+
+		$classes = $this->preset_classes( $attributes['kbPreset'] ?? '' );
+
+		if ( $classes === [] ) {
+			return $content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $content );
+
+		if ( ! $tags->next_tag( [ 'class_name' => 'wp-block-' . $this->namespace . '-' . $this->block_name ] ) ) {
+			return $content;
+		}
+
+		foreach ( $classes as $preset_class ) {
+			$tags->add_class( $preset_class );
+		}
+
+		return $tags->get_updated_html();
 	}
 
 	/**
