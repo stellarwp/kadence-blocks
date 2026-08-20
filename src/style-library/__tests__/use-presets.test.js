@@ -60,11 +60,25 @@ describe('usePresets', () => {
 	// `@wordpress/data`'s resolver dispatch runs off a `setTimeout(fn, 0)` inside the store (see
 	// `mapSelectorWithResolver` in `@wordpress/data`'s redux store), a real timer callback that a
 	// plain `await act(async () => render())` does not wait for — that promise settles as soon as the
-	// synchronous render returns. Flushing one real timer tick after each render/dispatch gives the
+	// synchronous render returns. Flushing a real timer tick after each render/dispatch gives the
 	// resolver's callback a turn to run before assertions read the store. See `use-libraries.test.js`
 	// for the same pattern.
-	function flushResolvers() {
-		return act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+	//
+	// Several ticks, not one: this helper is called from contexts that deliberately expect the
+	// resolution to still be pending (e.g. "switching to a not-yet-resolved library shows loading
+	// with no stale data" below), so it can't poll a "the resolution has finished" predicate the way
+	// `use-libraries.test.js`/`use-palettes.test.js` do — there is no single terminal state every
+	// caller is waiting for. A single `setTimeout(0)` assumes the resolver's callback fires within
+	// one real tick, which is true under `--runInBand` but not guaranteed under parallel jest workers
+	// with other processes contending for the CPU; chaining several real ticks gives the callback a
+	// much larger wall-clock window to actually run, without changing behavior for a deliberately
+	// still-pending mock (extra ticks with nothing to advance are a no-op).
+	function flushResolvers(ticks = 3) {
+		return act(async () => {
+			for (let tick = 0; tick < ticks; tick += 1) {
+				await new Promise((resolve) => setTimeout(resolve, 0));
+			}
+		});
 	}
 
 	function mountProbe() {
