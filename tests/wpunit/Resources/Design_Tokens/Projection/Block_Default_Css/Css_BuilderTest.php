@@ -3,6 +3,7 @@
 
 namespace Tests\wpunit\Resources\Design_Tokens\Projection\Block_Default_Css;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Projection\Block_Default_Css\Css_Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Css_Var;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
@@ -293,6 +294,77 @@ final class Css_BuilderTest extends TestCase {
 
 		$this->assertStringContainsString( '.wp-block-kadence-image img{border-radius:var(' . $var . ',0);}', $css );
 		$this->assertStringNotContainsString( '.wp-block-kadence-imageimg', $css ); // cspell:disable-line -- Checking for invalid selector.
+	}
+
+	/**
+	 * The shipped Button declarations bind border-width/border-style/border-color to the same brand-wide
+	 * tokens Advanced Text reuses, projected as one grouped, low-specificity rule on the block root — the
+	 * button's own kadence_slot/css_var properties (background, text, radius) declare no css_prop, so they
+	 * contribute nothing here. box-shadow is absent from the rule: the baseline `$default` for both button
+	 * presets omits `button-shadow` entirely, so the projector has no value to emit a declaration for.
+	 *
+	 * @return void
+	 */
+	public function testTheShippedDeclarationsEmitTheButtonBorderSurfaceRule(): void {
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		$this->assertStringContainsString(
+			'.wp-block-kadence-singlebtn{border-width:var(' . Css_Var::from_id( 'semantic.border-width.default' ) . ',1px);',
+			$css
+		);
+		$this->assertStringContainsString( 'border-style:var(' . Css_Var::from_id( 'semantic.border-style.default' ) . ',none);', $css );
+		// The closing brace directly after border-color (rather than a further box-shadow declaration)
+		// proves the rule carries no box-shadow — the shipped $default omits button-shadow entirely.
+		$this->assertStringContainsString( 'border-color:var(' . Css_Var::from_id( 'semantic.color.border' ) . ',#E2E8F0);}', $css );
+	}
+
+	/**
+	 * A `button-shadow` binding that DOES resolve a value (unlike the shipped baseline, which omits the
+	 * property) projects through the same token/css_prop mechanism as border, emitting a `box-shadow`
+	 * declaration whose var() fallback is the fully rendered shadow shorthand — proving the composite
+	 * `shadow` $type reaches this projector end to end via a real stored preset override. The shorthand's
+	 * own field order/inset handling is covered by
+	 * {@see \Tests\wpunit\Resources\Design_Tokens\Resolver\Css_RendererTest}, so this only checks that the
+	 * rule is emitted with the right property and var name.
+	 *
+	 * @return void
+	 */
+	public function testAButtonShadowBindingWithAResolvedValueEmitsABoxShadowRule(): void {
+		/** @var Token_Store $store */
+		$store = $this->container->get( Token_Store::class );
+
+		$document = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'presets' => [
+						'kadence/singlebtn' => [
+							'primary' => [
+								'tokens' => [
+									'button-shadow' => '{primitive.shadow.md}',
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$store->save_document( (string) wp_json_encode( $document ), Token_Store::default_slug() );
+
+		$registry = $this->container->get( Token_Registry::class );
+
+		$css = $this->builder( $registry )->css();
+
+		// Not anchored to the opening brace: the merged property order (border-width/style/color from the
+		// baseline default, plus this override's button-shadow) is an implementation detail of the merge,
+		// not something this test pins.
+		$this->assertStringContainsString(
+			'box-shadow:var(' . Css_Var::from_id( 'semantic.shadow.button' ) . ',0px 2px 8px 0px #1717171f);',
+			$css
+		);
+		$this->assertStringContainsString( '.wp-block-kadence-singlebtn{', $css );
 	}
 
 	/**

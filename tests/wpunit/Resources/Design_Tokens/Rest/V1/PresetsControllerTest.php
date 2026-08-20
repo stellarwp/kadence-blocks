@@ -761,6 +761,43 @@ final class PresetsControllerTest extends TestCase {
 	}
 
 	/**
+	 * The button's border and shadow properties are bound (declarations.php), so `guard_surface()` accepts
+	 * a preset that sets all four alongside the pre-existing surface — the same acceptance path
+	 * `testAnUnboundPropertyIsRejected` proves rejects a name the block does not bind.
+	 *
+	 * @return void
+	 */
+	public function testTheButtonBorderAndShadowPropertiesAreAccepted(): void {
+		$response = $this->controller->create_item(
+			$this->block_request(
+				WP_REST_Server::CREATABLE,
+				self::BUTTON,
+				[
+					'preset' => 'outline',
+					'tokens' => $this->button_tokens(
+						[
+							'button-border-width' => '2px',
+							'button-border-style' => 'solid',
+							'button-border-color' => '#000000',
+							'button-shadow'       => '{primitive.shadow.md}',
+						]
+					),
+				]
+			)
+		);
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertSame( WP_Http::CREATED, $response->get_status() );
+
+		$tokens = $response->get_data()['presets']['outline']['tokens'];
+
+		$this->assertSame( '2px', $tokens['button-border-width'] );
+		$this->assertSame( 'solid', $tokens['button-border-style'] );
+		$this->assertSame( '#000000', $tokens['button-border-color'] );
+		$this->assertSame( '{primitive.shadow.md}', $tokens['button-shadow'] );
+	}
+
+	/**
 	 * A preset may define a SUBSET of the block's bound surface: a preset that leaves a bound property
 	 * unset is accepted and stored with exactly the properties it defines. The property it omits is inherited
 	 * from the block $default through the cascade rather than being required here.
