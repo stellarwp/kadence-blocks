@@ -103,7 +103,9 @@ function renderControl(props = {}) {
 }
 
 const widthSelectors = () => container.querySelectorAll('.stub-token-selector');
-const styleSelects = () => container.querySelectorAll('select[aria-label="Border style"]');
+// Matches both the linked label ("Border style") and each unlinked, side-named label
+// ("Border style (top)", etc.) — the prefix is what every style select shares.
+const styleSelects = () => container.querySelectorAll('select[aria-label^="Border style"]');
 const linkToggle = () => container.querySelector('.kadence-control-toggle');
 
 /**
@@ -384,5 +386,64 @@ describe('BorderControl disabled', () => {
 		click(selector.querySelector('.stub-custom'));
 
 		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * `renderColor`'s `onChange` is a write path `BorderControl` doesn't render a disabled
+	 * attribute on (the caller owns that field), so it needs its own `disabled` guard — otherwise
+	 * a disabled control could still mutate color.
+	 *
+	 * @return {void}
+	 */
+	it('fires no onChange from renderColor while disabled', () => {
+		const onChange = jest.fn();
+		let received;
+		renderControl({
+			value: { width: '', style: 'none', color: 'semantic.color.border' },
+			onChange,
+			disabled: true,
+			renderColor: (props) => {
+				received = props;
+				return null;
+			},
+		});
+
+		received.onChange('semantic.color.accent');
+
+		expect(onChange).not.toHaveBeenCalled();
+	});
+});
+
+describe('BorderControl style select accessible labels', () => {
+	/**
+	 * Linked mode has one style field standing for every side, so the generic label is accurate.
+	 *
+	 * @return {void}
+	 */
+	it('uses the generic label when linked', () => {
+		renderControl();
+
+		expect(styleSelects()[0].getAttribute('aria-label')).toBe('Border style');
+	});
+
+	/**
+	 * Unlinked mode has four independent style fields; each needs its own side name so a screen
+	 * reader can tell them apart, matching the width field's per-slot icon.
+	 *
+	 * @return {void}
+	 */
+	it('names each side when unlinked', () => {
+		renderControl({
+			value: { width: ['', '', '', ''], style: ['none', 'none', 'none', 'none'], color: '' },
+		});
+
+		const labels = Array.from(styleSelects()).map((select) => select.getAttribute('aria-label'));
+
+		expect(labels).toEqual([
+			'Border style (top)',
+			'Border style (right)',
+			'Border style (bottom)',
+			'Border style (left)',
+		]);
 	});
 });

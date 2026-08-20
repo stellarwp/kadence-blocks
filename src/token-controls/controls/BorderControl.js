@@ -29,7 +29,7 @@
  * WordPress dependencies
  */
 import { SelectControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -165,10 +165,24 @@ export function BorderControl({
 				role="sides"
 				label={label}
 				collapse={false}
-				renderSlot={({ index }) => {
+				renderSlot={({ index, label: slotLabel }) => {
 					const slotIndex = index ?? 0;
 					const widthSlot = readSlot(width, slotIndex);
 					const styleSlot = readSlot(style, slotIndex) || 'none';
+					// Linked mode has one field standing for every side, so the generic label is
+					// accurate; unlinked mode names the side so screen readers can tell the four
+					// style selectors apart, matching what the width TokenSelector's icon already
+					// does visually via `slotIcons`.
+					const styleLabel =
+						index === null
+							? __('Border style', 'kadence-blocks')
+							: sprintf(
+									/* translators: %s: the side name, e.g. "top". */ __(
+										'Border style (%s)',
+										'kadence-blocks'
+									),
+									slotLabel
+								);
 
 					return (
 						<div className="kb-border-control__slot" key={index ?? 'linked'}>
@@ -182,7 +196,7 @@ export function BorderControl({
 								onCustom={(next) => !disabled && patch({ width: applyToAxis(width, index, next) })}
 							/>
 							<SelectControl
-								label={__('Border style', 'kadence-blocks')}
+								label={styleLabel}
 								hideLabelFromVision
 								value={styleSlot}
 								options={STYLES}
@@ -193,7 +207,7 @@ export function BorderControl({
 					);
 				}}
 			/>
-			{renderColor && renderColor({ value: color, onChange: (next) => patch({ color: next }) })}
+			{renderColor && renderColor({ value: color, onChange: (next) => !disabled && patch({ color: next }) })}
 		</ControlShell>
 	);
 }
