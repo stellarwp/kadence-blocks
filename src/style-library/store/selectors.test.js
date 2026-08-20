@@ -77,4 +77,21 @@ describe('selectors', () => {
 			userCreated: [],
 		});
 	});
+
+	it('getPaletteListing() returns the same object reference across calls until the rows array is replaced', () => {
+		const rows = [{ id: 'default', label: 'Default', is_default: true, is_current: true, user_created: false }];
+		const state = { libraries: [], presets: {}, paletteListings: { 'ns::default': rows } };
+
+		const first = getPaletteListing(state, 'ns', 'default');
+		const second = getPaletteListing(state, 'ns', 'default');
+
+		expect(second).toBe(first);
+
+		const nextRows = [{ id: 'default', label: 'Default', is_default: true, is_current: true, user_created: false }];
+		const nextState = { libraries: [], presets: {}, paletteListings: { 'ns::default': nextRows } };
+
+		const third = getPaletteListing(nextState, 'ns', 'default');
+
+		expect(third).not.toBe(first);
+	});
 });

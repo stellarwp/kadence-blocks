@@ -98,11 +98,12 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug]
 	);
 
-	// `isListingLoading` is gated on `!listing.palettes.length`, not raw `isResolving` alone — a
-	// write's wrapped `refreshFeed` re-resolves this same selector in the background, which raises
-	// `isResolving` for the duration of that re-fetch too. Once the listing has loaded once, the
-	// store keeps serving those rows while it revalidates, so there is data to keep rendering — a
-	// loading state should only ever show up before the first listing lands.
+	// `isListingLoading` is gated on `!listing.palettes.length`, not raw `isResolving` alone, so a
+	// re-render never shows a loading state once a listing has already loaded once. This matters
+	// most for a library switch: swapping `namespace`/`slug` starts a genuinely new resolution for
+	// that `(namespace, slug)` args tuple, raising `isResolving` again. Without the `.length` check
+	// this would flash a loading skeleton over the currently-displayed palettes on every switch,
+	// instead of only showing it the very first time this library's listing has never resolved.
 	const { isListingLoading, listingFailure } = useSelect(
 		(select) => ({
 			isListingLoading:
