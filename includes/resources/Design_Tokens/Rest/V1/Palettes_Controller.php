@@ -506,6 +506,20 @@ final class Palettes_Controller extends Controller {
 			}
 
 			$fields['value'] = $value;
+		} elseif ( is_string( $label ) ) {
+			// A label-only write has no new value to guard, so guard the token's CURRENT effective value
+			// instead — a token that is stale or no longer a registered color must still be rejected. A
+			// token this palette has never stored has no current value here; that genuinely-new-token case
+			// is left to the downstream DTCG schema validation, which already rejects it.
+			$current_value = $this->palettes->swatch_values( $id, $slug )[ $token ] ?? null;
+
+			if ( is_string( $current_value ) ) {
+				$guard = $this->guard_swatch_target( $id, $token, $current_value );
+
+				if ( $guard !== null ) {
+					return $guard;
+				}
+			}
 		}
 
 		if ( is_string( $label ) ) {

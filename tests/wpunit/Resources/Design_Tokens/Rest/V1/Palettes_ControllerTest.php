@@ -765,6 +765,57 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A label-only write against a stored swatch whose token is not a registered color is rejected —
+	 * the label-only path must run the same registry guard a value write runs, using the token's current
+	 * stored value, so a stale or non-color token cannot be renamed without ever being validated.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsALabelOnlyWriteForANonColorToken(): void {
+		// Seeded directly through the store, bypassing the normal write path's own guard, since no
+		// legitimate write can ever get a non-color token into a palette node in the first place.
+		$this->store->save_document(
+			wp_json_encode(
+				[
+					'$extensions' => [
+						'com.kadence.designTokens' => [
+							'colorPalettes' => [
+								'default' => [
+									'groups' => [
+										[
+											'id'       => 'swatch',
+											'label'    => 'swatch',
+											'swatches' => [
+												[
+													'token'  => 'primitive.dimension.spacing.md',
+													'label'  => 'Spacing Md',
+													'$value' => '8px',
+												],
+											],
+										],
+									],
+								],
+							],
+						],
+					],
+				]
+			),
+			'default'
+		);
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.dimension.spacing.md', null, 'Renamed' )
+				)
+			)
+		);
+
+		$this->assertSame( 'Spacing Md', $this->swatch_label( 'default', 'primitive.dimension.spacing.md' ), 'The label is left untouched.' );
+	}
+
+	/**
 	 * An empty-string label is rejected — a swatch's label is structural and shared library-wide, so an
 	 * empty write would silently wipe its display name for every palette that inherits it.
 	 *
