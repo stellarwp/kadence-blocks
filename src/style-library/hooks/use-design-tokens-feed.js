@@ -139,10 +139,10 @@ export function useDesignTokensFeed() {
 	const refreshFeed = useCallback(
 		(targetSlug) => {
 			const requestId = ++latestRequestRef.current;
-			const revision = bumpFeedRevision(targetSlug);
+			const revision = bumpFeedRevision(registry, targetSlug);
 
 			return fetchDesignTokensFeed(targetSlug).then((nextFeed) => {
-				if (isFeedRevisionCurrent(targetSlug, revision)) {
+				if (isFeedRevisionCurrent(registry, targetSlug, revision)) {
 					registry.dispatch(STORE_NAME).receiveDesignTokensFeed(targetSlug, nextFeed);
 					registry.dispatch(STORE_NAME).finishResolution('getDesignTokensFeed', [targetSlug]);
 				}

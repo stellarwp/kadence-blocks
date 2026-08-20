@@ -1,6 +1,7 @@
 /* eslint-env jest */
 import { getBlockPresets, getLibraries, getPaletteListing, getDesignTokensFeed } from './resolvers';
 import { fetchBlockPresets, fetchLibraries, fetchPalettes, fetchDesignTokensFeed } from '../api/client';
+import { createTestRegistry } from './test-utils';
 
 jest.mock('../api/client', () => ({
 	fetchLibraries: jest.fn(),
@@ -52,7 +53,7 @@ describe('resolvers', () => {
 		fetchDesignTokensFeed.mockResolvedValueOnce(feed);
 
 		const dispatch = { receiveDesignTokensFeed: jest.fn() };
-		await getDesignTokensFeed('brand')({ dispatch });
+		await getDesignTokensFeed('brand')({ dispatch, registry: createTestRegistry() });
 
 		expect(fetchDesignTokensFeed).toHaveBeenCalledWith('brand');
 		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledWith('brand', feed);
@@ -87,9 +88,12 @@ describe('resolvers', () => {
 			);
 
 		const dispatch = { receiveDesignTokensFeed: jest.fn() };
+		// The thunk context's `registry` object — both calls share it because they are the SAME
+		// registry racing against itself.
+		const registry = createTestRegistry();
 
-		const firstCall = getDesignTokensFeed('race-slug')({ dispatch });
-		const secondCall = getDesignTokensFeed('race-slug')({ dispatch });
+		const firstCall = getDesignTokensFeed('race-slug')({ dispatch, registry });
+		const secondCall = getDesignTokensFeed('race-slug')({ dispatch, registry });
 
 		// The second, later call resolves FIRST — its result must win.
 		resolveSecond({ slug: 'race-slug', version: 'newer' });
@@ -106,5 +110,65 @@ describe('resolvers', () => {
 		await firstCall;
 
 		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledTimes(1);
+	});
+
+	/**
+	 * Two INDEPENDENT registries (e.g. two isolated app instances, as `createTestRegistry()`
+	 * builds for tests) requesting the same slug concurrently have no ordering relationship to
+	 * each other. A fast response landing in one registry must never cause the other, unrelated
+	 * registry's own slower-resolving request to be discarded as "stale" — each registry's
+	 * revision tracking must stay scoped to that registry.
+	 *
+	 * @return {void}
+	 */
+	it('a slow getDesignTokensFeed() call in one registry is not discarded by a fast call in a different registry', async () => {
+		let resolveSlow;
+		let resolveFast;
+
+		fetchDesignTokensFeed
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveSlow = resolve;
+					})
+			)
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveFast = resolve;
+					})
+			);
+
+		const dispatchA = { receiveDesignTokensFeed: jest.fn() };
+		const dispatchB = { receiveDesignTokensFeed: jest.fn() };
+		// Two SEPARATE, real `@wordpress/data` registries — like two isolated app instances — used
+		// here as the stand-in for the thunk context's `registry` object, so the revision map is
+		// keyed on genuinely distinct registry identities, not look-alike plain objects.
+		const registryA = createTestRegistry();
+		const registryB = createTestRegistry();
+
+		const slowCall = getDesignTokensFeed('shared-slug')({ dispatch: dispatchA, registry: registryA });
+		const fastCall = getDesignTokensFeed('shared-slug')({ dispatch: dispatchB, registry: registryB });
+
+		// Registry B's request resolves first — it has no bearing on registry A's own request.
+		resolveFast({ slug: 'shared-slug', version: 'b' });
+		await fastCall;
+
+		expect(dispatchB.receiveDesignTokensFeed).toHaveBeenCalledTimes(1);
+		expect(dispatchB.receiveDesignTokensFeed).toHaveBeenCalledWith('shared-slug', {
+			slug: 'shared-slug',
+			version: 'b',
+		});
+
+		// Registry A's request resolves last, but it is the ONLY request registry A ever made, so
+		// it must still be dispatched — it is not "stale" relative to a different registry.
+		resolveSlow({ slug: 'shared-slug', version: 'a' });
+		await slowCall;
+
+		expect(dispatchA.receiveDesignTokensFeed).toHaveBeenCalledTimes(1);
+		expect(dispatchA.receiveDesignTokensFeed).toHaveBeenCalledWith('shared-slug', {
+			slug: 'shared-slug',
+			version: 'a',
+		});
 	});
 });

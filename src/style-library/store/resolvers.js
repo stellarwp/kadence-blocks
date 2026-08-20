@@ -61,45 +61,58 @@ export const getPaletteListing =
 	};
 
 /**
- * Tracks each slug's most recent in-flight design-tokens feed fetch, whether started by THIS
- * resolver or by `hooks/use-design-tokens-feed.js`'s `refreshFeed` (which bumps and checks this
- * same counter directly — see `bumpFeedRevision`/`isFeedRevisionCurrent` below — rather than
- * going through this resolver's own thunk; that hook's own docblock explains why). Every write
- * flow across the app (scale, typography, palettes, presets) ends in a same-slug refresh, and two
+ * Tracks each slug's most recent in-flight design-tokens feed fetch, scoped per registry and
+ * shared by THIS resolver and `hooks/use-design-tokens-feed.js`'s `refreshFeed` (which bumps and
+ * checks it directly via `bumpFeedRevision`/`isFeedRevisionCurrent` below, rather than going
+ * through this resolver's own thunk; that hook's own docblock explains why). Every write flow
+ * across the app (scale, typography, palettes, presets) ends in a same-slug refresh, and two
  * sibling instances writing close together (e.g. a screen and its settings panel) can each trigger
  * one — without a shared guard, a slower earlier fetch's response landing after a faster later one
  * would silently overwrite the newer feed with stale data. This is the store-data-level half of
  * that defense; `use-design-tokens-feed.js`'s `latestRequestRef` is the separate, unrelated guard
  * for a slug SWITCH (which slug the UI ends up pointing at), not an overlapping same-slug refresh.
  *
+ * This app can have multiple independent `@wordpress/data` registries alive at once (see
+ * `store/test-utils.js`'s `createTestRegistry()`, one per test). A plain module-global `Map` would
+ * let a request in one registry bump the shared revision counter and wrongly discard an unrelated
+ * request in a different registry as "stale", even though the two have no ordering relationship.
+ * Keying a `WeakMap` on the caller's `registry` object scopes the revision tracking to the
+ * registry it actually belongs to.
+ *
  * @since TBD
  */
-const feedRevisionBySlug = new Map();
+const feedRevisionByRegistry = new WeakMap();
 
 /**
- * Advance a slug's feed revision, marking any still-in-flight fetch for it stale. Call once, at
- * the moment a new fetch for that slug starts — every caller (this resolver, and `refreshFeed`)
- * shares this one counter, so whichever of two overlapping fetches for the same slug started LAST
- * is the only one `isFeedRevisionCurrent` will still say yes to once it lands.
+ * Advance a slug's feed revision within a registry, marking any still-in-flight fetch for it
+ * stale. Call once, at the moment a new fetch for that slug starts — every caller (this resolver,
+ * and `refreshFeed`) sharing a registry shares this one counter for it, so whichever of two
+ * overlapping fetches for the same slug started LAST is the only one `isFeedRevisionCurrent` will
+ * still say yes to once it lands.
  *
- * @param {string} slug Token library slug.
+ * @param {Object} registry The `@wordpress/data` registry this fetch belongs to.
+ * @param {string} slug     Token library slug.
  *
  * @since TBD
  *
  * @return {number} The new current revision for this slug — pass this to `isFeedRevisionCurrent`
  *         once the fetch this call started resolves.
  */
-export function bumpFeedRevision(slug) {
-	const revision = (feedRevisionBySlug.get(slug) ?? 0) + 1;
-	feedRevisionBySlug.set(slug, revision);
+export function bumpFeedRevision(registry, slug) {
+	const revisionBySlug = feedRevisionByRegistry.get(registry) ?? new Map();
+	feedRevisionByRegistry.set(registry, revisionBySlug);
+
+	const revision = (revisionBySlug.get(slug) ?? 0) + 1;
+	revisionBySlug.set(slug, revision);
 	return revision;
 }
 
 /**
- * Whether `revision` is still the current one for `slug` — false the moment a later call has
- * bumped past it, meaning the fetch this revision belongs to is stale and its response must not
- * be dispatched.
+ * Whether `revision` is still the current one for `slug` within `registry` — false the moment a
+ * later call has bumped past it, meaning the fetch this revision belongs to is stale and its
+ * response must not be dispatched.
  *
+ * @param {Object} registry The `@wordpress/data` registry this fetch belongs to.
  * @param {string} slug     Token library slug.
  * @param {number} revision The revision `bumpFeedRevision` returned when this fetch started.
  *
@@ -107,8 +120,8 @@ export function bumpFeedRevision(slug) {
  *
  * @return {boolean} Whether this revision's response may still be dispatched.
  */
-export function isFeedRevisionCurrent(slug, revision) {
-	return feedRevisionBySlug.get(slug) === revision;
+export function isFeedRevisionCurrent(registry, slug, revision) {
+	return feedRevisionByRegistry.get(registry)?.get(slug) === revision;
 }
 
 /**
@@ -122,13 +135,13 @@ export function isFeedRevisionCurrent(slug, revision) {
  */
 export const getDesignTokensFeed =
 	(slug) =>
-	async ({ dispatch }) => {
-		const revision = bumpFeedRevision(slug);
+	async ({ dispatch, registry }) => {
+		const revision = bumpFeedRevision(registry, slug);
 		const feed = await fetchDesignTokensFeed(slug);
 
-		// A newer fetch for this same slug started (and will dispatch its own response) after this
-		// one did — this response is stale and must not overwrite it.
-		if (!isFeedRevisionCurrent(slug, revision)) {
+		// A newer fetch for this same slug, in this same registry, started (and will dispatch its
+		// own response) after this one did — this response is stale and must not overwrite it.
+		if (!isFeedRevisionCurrent(registry, slug, revision)) {
 			return;
 		}
 
