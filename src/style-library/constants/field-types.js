@@ -1,7 +1,7 @@
 /**
  * The settings-field type vocabulary: the single source of truth mapping a schema field's `type`
  * string to the component that renders it. Every per-screen settings schema authors against these
- * sixteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
+ * seventeen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
  */
 
 /**
