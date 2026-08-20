@@ -161,6 +161,8 @@ export function CustomTab({ number, unit, units, onUnit, min, max, step, onNumbe
  * @param {boolean}  [props.inherited]      Whether that default came from another breakpoint.
  * @param {string}   props.initialTab       Which tab opens first.
  * @param {Object}   props.custom           Props forwarded to the `Custom` tab.
+ * @param {Function} [props.renderCustom]   Overrides the Custom tab body; called with `props.custom`.
+ *                                          Omit to render the default numeric `CustomTab`.
  * @param {Function} props.onPick           Writes a picked token's alias.
  * @param {Function} props.onClear          Clears the slot's override.
  * @param {Function} props.onClose          Closes the popover after a choice.
@@ -176,6 +178,7 @@ export function TokenPopover({
 	inherited,
 	initialTab,
 	custom,
+	renderCustom,
 	onPick,
 	onClear,
 	onClose,
@@ -216,6 +219,8 @@ export function TokenPopover({
 						onClear={onClear}
 						onClose={onClose}
 					/>
+				) : renderCustom ? (
+					renderCustom(custom)
 				) : (
 					<CustomTab {...custom} />
 				)
