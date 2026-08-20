@@ -57,4 +57,53 @@ describe('resolvers', () => {
 		expect(fetchDesignTokensFeed).toHaveBeenCalledWith('brand');
 		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledWith('brand', feed);
 	});
+
+	/**
+	 * Two sibling instances (e.g. a scale screen and its settings panel) can each write and call
+	 * `refreshFeed` for the SAME slug close together — `refreshFeed` always invalidates before
+	 * re-resolving, even for the slug already showing, so both trigger their own resolver run. If
+	 * the FIRST call's network response lands AFTER the second's, only the second's (newer) response
+	 * may reach the store; the first's must be discarded as stale.
+	 *
+	 * @return {void}
+	 */
+	it('a slower first getDesignTokensFeed() call never overwrites a faster, later call for the same slug', async () => {
+		let resolveFirst;
+		let resolveSecond;
+
+		fetchDesignTokensFeed
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveFirst = resolve;
+					})
+			)
+			.mockImplementationOnce(
+				() =>
+					new Promise((resolve) => {
+						resolveSecond = resolve;
+					})
+			);
+
+		const dispatch = { receiveDesignTokensFeed: jest.fn() };
+
+		const firstCall = getDesignTokensFeed('race-slug')({ dispatch });
+		const secondCall = getDesignTokensFeed('race-slug')({ dispatch });
+
+		// The second, later call resolves FIRST — its result must win.
+		resolveSecond({ slug: 'race-slug', version: 'newer' });
+		await secondCall;
+
+		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledTimes(1);
+		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledWith('race-slug', {
+			slug: 'race-slug',
+			version: 'newer',
+		});
+
+		// The first, earlier call resolves LAST — it must not be allowed to overwrite the newer feed.
+		resolveFirst({ slug: 'race-slug', version: 'older' });
+		await firstCall;
+
+		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledTimes(1);
+	});
 });
