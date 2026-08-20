@@ -46,6 +46,28 @@ describe('useLibraries', () => {
 		return act(() => new Promise((resolve) => setTimeout(resolve, 0)));
 	}
 
+	// A single fixed `flushResolvers()` call assumes the resolution lands within one real timer
+	// tick — true under `--runInBand`, but under parallel jest workers, CPU contention from the
+	// other worker processes can delay a `setTimeout(0)` callback by an amount a fixed count can't
+	// bound. Polling against a wall-clock deadline survives that contention; a genuine regression
+	// still fails, just after the deadline instead of after one tick.
+	//
+	// Flushes at least once before ever checking `predicate` — `isLoading` (the usual predicate
+	// here) is `isResolving && !rows.length`, which reads `false` both once resolution has genuinely
+	// finished AND before it has even started (nothing is resolving yet at the very first render,
+	// since the resolver's own dispatch is itself scheduled via a real timer). Checking first would
+	// exit on that pre-start `false` without ever giving the resolver a turn to run.
+	async function flushUntil(predicate, timeoutMs = 3000) {
+		const deadline = Date.now() + timeoutMs;
+		do {
+			await flushResolvers();
+			if (predicate()) {
+				return;
+			}
+		} while (Date.now() < deadline);
+		throw new Error('flushUntil: condition never became true');
+	}
+
 	function mountProbe() {
 		let latest = null;
 
@@ -63,7 +85,7 @@ describe('useLibraries', () => {
 						</RegistryProvider>
 					)
 				);
-				await flushResolvers();
+				await flushUntil(() => !latest.isLoading);
 			},
 			latest: () => latest,
 		};
@@ -106,7 +128,7 @@ describe('useLibraries', () => {
 				</RegistryProvider>
 			)
 		);
-		await flushResolvers();
+		await flushUntil(() => fetchLibraries.mock.calls.length >= 1);
 
 		expect(fetchLibraries).toHaveBeenCalledTimes(1);
 	});
@@ -136,9 +158,9 @@ describe('useLibraries', () => {
 		});
 		// `resolveSelect()` re-runs the same instrumented selector `select()` uses, which schedules its
 		// resolver fulfillment on a real `setTimeout(fn, 0)` (see the `flushResolvers()` comment above) —
-		// one real timer tick gets `fetchLibraries` actually called and `isResolving` flipped true before
-		// the fetch itself settles.
-		await flushResolvers();
+		// polling gets `fetchLibraries` actually called and `isResolving` flipped true before the fetch
+		// itself settles, regardless of how many real ticks that takes under load.
+		await flushUntil(() => fetchLibraries.mock.calls.length >= 2);
 
 		// The reload is genuinely in flight here (`isResolving` is true), but the list already has the
 		// one row from the first load, so the dropdown must keep rendering it, not a skeleton.
