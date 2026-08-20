@@ -79,6 +79,15 @@ describe('useLibraries', () => {
 		expect(probe.latest().libraries.map((row) => row.slug)).toEqual(expect.arrayContaining(['default', 'brand']));
 	});
 
+	it('surfaces a getLibraries resolution failure through openError, same as the old mount-effect .catch() did', async () => {
+		fetchLibraries.mockRejectedValueOnce(new Error('Something broke'));
+
+		const probe = mountProbe();
+		await probe.render({ slug: 'default' }, jest.fn());
+
+		expect(probe.latest().openError).toEqual({ message: 'Something broke' });
+	});
+
 	it('two mounted instances share one fetch — the resolver runs once per argument tuple', async () => {
 		fetchLibraries.mockResolvedValueOnce([ROW_A]);
 
