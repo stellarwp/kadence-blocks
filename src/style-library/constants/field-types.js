@@ -1,12 +1,14 @@
 /**
  * The settings-field type vocabulary: the single source of truth mapping a schema field's `type`
  * string to the component that renders it. Every per-screen settings schema authors against these
- * fourteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
+ * sixteen strings; `helpers/settings-schema.js`'s `fieldComponentFor` is the only reader.
  */
 
 /**
  * Internal dependencies
  */
+import { BorderField } from '../components/molecules/fields/BorderField';
+import { BoxShadowField } from '../components/molecules/fields/BoxShadowField';
 import { BoxSidesField } from '../components/molecules/fields/BoxSidesField';
 import { BoxTokenField } from '../components/molecules/fields/BoxTokenField';
 import { ColorField } from '../components/molecules/fields/ColorField';
@@ -51,6 +53,35 @@ const RadiusField = (props) => <BoxTokenField {...props} slots="corners" />;
 const SpacingField = (props) => <BoxTokenField {...props} slots="sides" />;
 
 /**
+ * The `border` field: `BorderControl`'s per-side width/style, color deferred to `renderColor`.
+ *
+ * Bound here for the same reason `radius`/`spacing` are: a schema names the property, this registry
+ * owns which control and geometry render it.
+ *
+ * @param {Object} props The field props from `SettingsForm`.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The field.
+ */
+const BorderTypeField = (props) => <BorderField {...props} />;
+
+/**
+ * The `box-shadow` field: `BoxShadowControl`'s single-value, token-aware shadow.
+ *
+ * A different key from `shadow` — that one is already bound to `ShadowField`, the raw composite
+ * editor the Shadow token-library screen's own settings panel uses (see `BoxShadowField.js`'s
+ * docblock for why the two cannot share a key).
+ *
+ * @param {Object} props The field props from `SettingsForm`.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The field.
+ */
+const BoxShadowTypeField = (props) => <BoxShadowField {...props} />;
+
+/**
  * The field-type registry: `type` string => field component. Frozen so a consumer can't mutate the
  * vocabulary at runtime.
  *
@@ -72,6 +103,8 @@ export const FIELD_TYPES = Object.freeze({
 	radius: RadiusField,
 	spacing: SpacingField,
 	shadow: ShadowField,
+	border: BorderTypeField,
+	'box-shadow': BoxShadowTypeField,
 });
 
 /**
@@ -85,6 +118,10 @@ export const FIELD_TYPES = Object.freeze({
  * their UI could read back; the rest are excluded because their DTCG types are never
  * responsive-capable.
  *
+ * `border` qualifies for the same reason `radius`/`spacing` do: its width is a `dimension` value,
+ * held in the same per-slot shape. `box-shadow` is excluded — the Button panel's shadow field has no
+ * breakpoint switcher (see `BoxShadowField.js`'s docblock).
+ *
  * @since TBD
  */
 export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze([
@@ -94,4 +131,5 @@ export const RESPONSIVE_CAPABLE_FIELD_TYPES = Object.freeze([
 	'range-number',
 	'stepper',
 	'unit',
+	'border',
 ]);
