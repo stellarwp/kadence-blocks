@@ -759,8 +759,30 @@ final class Palettes_ControllerTest extends TestCase {
 		);
 
 		$this->assertSame( $before, $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+		$this->assertSame( 'Brand One', $this->swatch_label( 'default', 'primitive.color.brand.primary' ) );
 
 		$this->assertEmbeddedListingShape( $response->get_data() );
+	}
+
+	/**
+	 * An empty-string label is rejected — a swatch's label is structural and shared library-wide, so an
+	 * empty write would silently wipe its display name for every palette that inherits it.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsAnEmptyLabel(): void {
+		$before = $this->swatch_label( 'default', 'primitive.color.brand.primary' );
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, '' )
+				)
+			)
+		);
+
+		$this->assertSame( $before, $this->swatch_label( 'default', 'primitive.color.brand.primary' ), 'The label is left untouched.' );
 	}
 
 	/**
@@ -1209,5 +1231,30 @@ final class Palettes_ControllerTest extends TestCase {
 		}
 
 		return $result->get_status();
+	}
+
+	/**
+	 * Read a swatch's current effective label back through `get_item()`, the same read path the frontend uses.
+	 *
+	 * @param string $id    The palette id.
+	 * @param string $token The swatch token dot-path.
+	 *
+	 * @return string|null
+	 */
+	private function swatch_label( string $id, string $token ): ?string {
+		$request = new WP_REST_Request( WP_REST_Server::READABLE );
+		$request->set_param( 'id', $id );
+
+		$groups = $this->controller->get_item( $request )->get_data()['groups'] ?? [];
+
+		foreach ( $groups as $group ) {
+			foreach ( $group['swatches'] ?? [] as $swatch ) {
+				if ( ( $swatch['token'] ?? null ) === $token ) {
+					return $swatch['label'] ?? null;
+				}
+			}
+		}
+
+		return null;
 	}
 }

@@ -486,6 +486,10 @@ final class Palettes_Controller extends Controller {
 			return $this->invalid( $id, __( 'A swatch value cannot be empty.', 'kadence-blocks' ) );
 		}
 
+		if ( is_string( $label ) && $label === '' ) {
+			return $this->invalid( $id, __( 'A swatch label cannot be empty.', 'kadence-blocks' ) );
+		}
+
 		$default_id = $this->palettes->default_palette( $slug );
 
 		if ( is_string( $label ) && $id !== $default_id ) {
