@@ -71,23 +71,25 @@ function commitShadow(shadow, patch) {
  * @param {Object}   props.shadow       The current composite shadow value (defaults filled).
  * @param {Function} props.onChange     Called with the next composite shadow value.
  * @param {Function} [props.renderColor] `({ value, onChange }) => Element` for the color sub-field.
+ * @param {boolean}  [props.disabled]   Whether every sub-field is read-only.
  *
  * @since TBD
  *
  * @return {JSX.Element} The Custom tab body.
  */
-function ShadowCustomTab({ shadow, onChange, renderColor }) {
+function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 	const setPart = (key, next) => onChange(commitShadow(shadow, { [key]: next }));
 
 	return (
 		<div className="kadence-token-field__custom kb-box-shadow-control__custom">
-			{renderColor && renderColor({ value: shadow.color, onChange: (next) => setPart('color', next) })}
+			{renderColor && renderColor({ value: shadow.color, onChange: (next) => setPart('color', next), disabled })}
 			<div className="kb-box-shadow-control__axes">
 				{AXES.map(({ key, label }) => (
 					<NumberControl
 						key={key}
 						label={label}
-						value={parseInt(shadow[key], 10) || 0}
+						value={Number.parseFloat(shadow[key]) || 0}
+						disabled={disabled}
 						onChange={(next) => setPart(key, `${Number(next) || 0}px`)}
 					/>
 				))}
@@ -95,6 +97,7 @@ function ShadowCustomTab({ shadow, onChange, renderColor }) {
 			<ToggleControl
 				label={__('Inset', 'kadence-blocks')}
 				checked={shadow.inset === true}
+				disabled={disabled}
 				onChange={(next) => setPart('inset', next)}
 			/>
 		</div>
@@ -144,11 +147,12 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 						tokens={tokens}
 						resolvedDefault=""
 						initialTab={aliased || !value ? 'style-library' : 'custom'}
-						custom={{ shadow, renderColor }}
+						custom={{ shadow, renderColor, disabled }}
 						renderCustom={(custom) => (
 							<ShadowCustomTab
 								shadow={custom.shadow}
 								renderColor={custom.renderColor}
+								disabled={custom.disabled}
 								onChange={(next) => !disabled && onChange(next)}
 							/>
 						)}

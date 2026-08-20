@@ -41,18 +41,25 @@ jest.mock('@wordpress/components', () => ({
 			</div>
 		);
 	},
-	__experimentalNumberControl: ({ label, value, onChange }) => (
+	__experimentalNumberControl: ({ label, value, onChange, disabled }) => (
 		<label>
 			{label}
-			<input aria-label={label} type="number" value={value} onChange={(event) => onChange(event.target.value)} />
+			<input
+				aria-label={label}
+				type="number"
+				value={value}
+				disabled={disabled}
+				onChange={(event) => onChange(event.target.value)}
+			/>
 		</label>
 	),
-	ToggleControl: ({ label, checked, onChange }) => (
+	ToggleControl: ({ label, checked, onChange, disabled }) => (
 		<label>
 			<input
 				aria-label={label}
 				type="checkbox"
 				checked={checked}
+				disabled={disabled}
 				onChange={(event) => onChange(event.target.checked)}
 			/>
 			{label}
@@ -259,6 +266,20 @@ describe('BoxShadowControl Custom tab', () => {
 	});
 
 	/**
+	 * A fractional stored value (e.g. a sub-pixel offset) must display intact rather than being
+	 * truncated to its integer part — `parseInt` would silently drop the `.25`.
+	 *
+	 * @return {void}
+	 */
+	it('displays a fractional axis value without truncating it', () => {
+		renderControl({
+			value: { color: '#111111', offsetX: '1.25px', offsetY: '0px', blur: '0px', spread: '0px' },
+		});
+
+		expect(numberInput('X').value).toBe('1.25');
+	});
+
+	/**
 	 * Turning Inset on writes the composite object with `inset: true`.
 	 *
 	 * @return {void}
@@ -387,5 +408,45 @@ describe('BoxShadowControl disabled state', () => {
 		click(insetCheckbox());
 
 		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * The write guard alone leaves the number inputs and Inset toggle interactively enabled, which
+	 * reads as editable even though a write does nothing — `disabled` must reach the underlying
+	 * fields too, not just gate `onChange`.
+	 *
+	 * @return {void}
+	 */
+	it('disables the number inputs and the Inset toggle in the Custom tab', () => {
+		renderControl({
+			value: { color: '#111111', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			disabled: true,
+		});
+
+		expect(numberInput('X').disabled).toBe(true);
+		expect(numberInput('Y').disabled).toBe(true);
+		expect(numberInput('Blur').disabled).toBe(true);
+		expect(numberInput('Spread').disabled).toBe(true);
+		expect(insetCheckbox().disabled).toBe(true);
+	});
+
+	/**
+	 * `renderColor` receives `disabled` as part of its contract so the caller's color field can
+	 * disable itself too, the same way the number inputs and Inset toggle do.
+	 *
+	 * @return {void}
+	 */
+	it('passes disabled to renderColor', () => {
+		let received;
+		renderControl({
+			value: { color: '#111111', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			disabled: true,
+			renderColor: (props) => {
+				received = props;
+				return null;
+			},
+		});
+
+		expect(received.disabled).toBe(true);
 	});
 });
