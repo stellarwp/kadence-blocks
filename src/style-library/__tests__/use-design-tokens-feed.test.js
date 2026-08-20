@@ -2,7 +2,7 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RegistryProvider } from '@wordpress/data';
-import { useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
+import { seedDesignTokensFeed, useDesignTokensFeed } from '../hooks/use-design-tokens-feed';
 import { fetchDesignTokensFeed, configureRestClient } from '../api/client';
 import { createTestRegistry } from '../store/test-utils';
 
@@ -25,6 +25,11 @@ describe('useDesignTokensFeed', () => {
 		registry = createTestRegistry();
 		global.IS_REACT_ACT_ENVIRONMENT = true;
 		window.kadenceDesignTokens = LOCALIZED_FEED;
+
+		// Mirrors `style-library.js`'s bootstrap: seeds the (isolated, test) registry BEFORE
+		// mounting, the same way production seeds the default registry before `createRoot(...).render()`.
+		seedDesignTokensFeed(registry.dispatch);
+
 		container = document.createElement('div');
 		document.body.appendChild(container);
 		root = createRoot(container);
@@ -57,6 +62,16 @@ describe('useDesignTokensFeed', () => {
 			latest: () => latest,
 		};
 	}
+
+	it('seedDesignTokensFeed() is a no-op when there is no localized feed', () => {
+		delete window.kadenceDesignTokens;
+
+		const dispatch = jest.fn(() => ({ receiveDesignTokensFeed: jest.fn(), finishResolution: jest.fn() }));
+
+		seedDesignTokensFeed(dispatch);
+
+		expect(dispatch).not.toHaveBeenCalled();
+	});
 
 	it('is ready on the very first render, with no fetch for the localized slug', async () => {
 		const probe = mountProbe();

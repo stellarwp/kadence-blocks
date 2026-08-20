@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
-import { useSelect, useRegistry } from '@wordpress/data';
+import { dispatch as defaultDispatch, useSelect, useRegistry } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -13,6 +13,39 @@ import { DEFAULT_LIBRARY_SLUG } from '../constants';
 import { STORE_NAME } from '../store';
 
 /**
+ * Seed the store with the localized design-token feed. Call this BEFORE React starts rendering —
+ * from the bootstrap entry point (`style-library.js`), ahead of `createRoot(...).render()` — so the
+ * very first render already has `isReady: true` for the active library, without a render-phase
+ * mutation of this external store: a component's render body must stay pure (React can replay or
+ * discard a render before it commits), and that purity requirement applies to an external store
+ * exactly the way it applies to component state — a null-guarded "run once" ref check is only a
+ * supported exception for LOCAL ref values, not for mutating shared state outside React entirely.
+ *
+ * Marks the resolution finished immediately alongside the raw write, so the store's resolver
+ * framework doesn't also auto-trigger `getDesignTokensFeed`'s REST fetch for a slug this already
+ * has fresh data for.
+ *
+ * @param {Function} dispatch A `@wordpress/data` registry's `dispatch` (defaults to the default
+ *                              registry's, for production; tests pass an isolated test registry's).
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function seedDesignTokensFeed(dispatch = defaultDispatch) {
+	const feed = readLocalizedFeed();
+
+	if (!feed) {
+		return;
+	}
+
+	const slug = feed.slug ?? DEFAULT_LIBRARY_SLUG;
+
+	dispatch(STORE_NAME).receiveDesignTokensFeed(slug, feed);
+	dispatch(STORE_NAME).finishResolution('getDesignTokensFeed', [slug]);
+}
+
+/**
  * Read and normalize the design-token feed from the store, with a way to refresh it in place.
  *
  * `slug` is the token library the feed's schema/values/version were actually resolved against — the
@@ -20,12 +53,10 @@ import { STORE_NAME } from '../store';
  * makes must target that same slug, or an edit lands in a document other than the one being shown.
  *
  * The first paint always reads the server-printed `window.kadenceDesignTokens` global rather than
- * fetching, exactly as before — that value is seeded into the store SYNCHRONOUSLY on first render
- * (not through the store's async resolver, which would otherwise leave `isReady` false for one
- * render) and its resolution is marked finished immediately, so a fetch is never issued for the
- * slug the page already loaded with. `refreshFeed` is the one path that always forces a fresh REST
- * read through the store, for after the active library changes, or after a write on the current
- * library, without a page reload.
+ * fetching, exactly as before — `seedDesignTokensFeed()` above puts that same value into the store
+ * before this hook ever renders, so a fetch is never issued for the slug the page already loaded
+ * with. `refreshFeed` is the one path that always forces a fresh REST read through the store, for
+ * after the active library changes, or after a write on the current library, without a page reload.
  *
  * @since TBD
  *
@@ -34,32 +65,10 @@ import { STORE_NAME } from '../store';
 export function useDesignTokensFeed() {
 	const registry = useRegistry();
 
-	const initialFeedRef = useRef();
-	if (initialFeedRef.current === undefined) {
-		initialFeedRef.current = readLocalizedFeed();
-	}
-	const initialFeed = initialFeedRef.current;
-	const initialSlug = initialFeed?.slug ?? DEFAULT_LIBRARY_SLUG;
-
-	const hydratedRef = useRef(false);
-	if (!hydratedRef.current) {
-		hydratedRef.current = true;
-
-		// Deliberate dispatch-during-render: seeds the store synchronously so the very first render
-		// already has `isReady: true` for the localized slug, rather than waiting one render for an
-		// async resolver to run. This is only safe here because nothing is subscribed to the store yet
-		// on this first render (the `useSelect` below hasn't mounted its subscription) — dispatching
-		// during render in any later render, once subscribers exist, would be the usual React pitfall.
-		// That invariant holds today because `StyleLibraryApp.js` is this hook's only call site and
-		// calls it before any other store-reading hook (`useLibraries`, etc.) mounts; a second call
-		// site, or moving this hook below another one that already subscribes, would break it silently.
-		if (initialFeed) {
-			registry.dispatch(STORE_NAME).receiveDesignTokensFeed(initialSlug, initialFeed);
-			registry.dispatch(STORE_NAME).finishResolution('getDesignTokensFeed', [initialSlug]);
-		}
-	}
-
-	const [slug, setSlug] = useState(initialSlug);
+	// The lazy-initializer form of `useState` — called once, on mount, to compute a value — is a
+	// supported exception to "no side effects during render" (unlike `seedDesignTokensFeed`'s own
+	// dispatch, this reads the same static global rather than mutating anything).
+	const [slug, setSlug] = useState(() => readLocalizedFeed()?.slug ?? DEFAULT_LIBRARY_SLUG);
 
 	// Identifies the most recently STARTED `refreshFeed` call, so an earlier call's slower read can't
 	// win a race against a later one and leave `slug` on stale data — see `refreshFeed` below.
