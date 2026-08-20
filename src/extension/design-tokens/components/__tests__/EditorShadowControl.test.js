@@ -1,0 +1,344 @@
+/* eslint-env jest */
+
+/**
+ * Internal dependencies
+ */
+import { EditorShadowControl, combineColorOpacity, splitColorOpacity } from '../EditorShadowControl';
+
+/**
+ * A representative native shadow value — every field a different, distinguishable number/string, so a
+ * round-trip that silently dropped or shuffled a field would be caught.
+ *
+ * @since TBD
+ *
+ * @type {Array}
+ */
+const NATIVE_VALUE = [
+	{
+		color: '#111111',
+		opacity: 0.4,
+		hOffset: 2,
+		vOffset: 3,
+		blur: 4,
+		spread: 5,
+		inset: false,
+	},
+];
+
+/**
+ * Call `EditorShadowControl` as a plain function and return the `BoxShadowControl`/`ToggleControl`
+ * elements it produced. The component holds no hooks of its own, so the returned element tree can be
+ * inspected directly instead of mounting it — matching `EditorBorderControl.test.js`'s own harness.
+ *
+ * @param {Object} overrides Props to override on top of the defaults.
+ *
+ * @since TBD
+ *
+ * @return {{root: Object, header: Object, toggle: Object, shadowControl: ?Object, onChange: Function,
+ *   onEnableChange: Function}} The root element, the header row, the enable toggle, the
+ *   `BoxShadowControl` element (or `null` when `enable` is false), and the setter spies passed in.
+ */
+function renderEditorShadowControl(overrides = {}) {
+	const onChange = jest.fn();
+	const onEnableChange = jest.fn();
+
+	const props = {
+		label: 'Box Shadow',
+		value: NATIVE_VALUE,
+		onChange,
+		enable: true,
+		onEnableChange,
+		tokens: [],
+		...overrides,
+	};
+
+	const root = EditorShadowControl(props);
+	const [header, shadowControl] = root.props.children;
+
+	return {
+		root,
+		header,
+		toggle: header.props.children[1],
+		shadowControl: shadowControl || null,
+		onChange,
+		onEnableChange,
+	};
+}
+
+describe('EditorShadowControl native <-> BoxShadowControl value bridging', () => {
+	/**
+	 * `fromNativeShadow` is exercised indirectly through the `value` handed to `BoxShadowControl`: field
+	 * names are translated (`hOffset`/`vOffset` to `offsetX`/`offsetY`), numbers become `"Npx"` strings,
+	 * and a partially-transparent color folds its `opacity` into an `rgba(...)` string.
+	 *
+	 * @return {void}
+	 */
+	it('converts the native shape to the composite BoxShadowControl expects, folding opacity into color', () => {
+		const { shadowControl } = renderEditorShadowControl();
+
+		expect(shadowControl.props.value).toEqual({
+			color: 'rgba(17, 17, 17, 0.4)',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+	});
+
+	/**
+	 * A fully opaque native color is passed through as a plain hex literal, never wrapped in
+	 * `rgba(...)`, matching what a plain `PopColorControl` without opacity would already produce.
+	 *
+	 * @return {void}
+	 */
+	it('keeps a fully-opaque color as a plain hex literal, unwrapped', () => {
+		const { shadowControl } = renderEditorShadowControl({
+			value: [{ color: '#222222', opacity: 1, hOffset: 0, vOffset: 0, blur: 0, spread: 0, inset: false }],
+		});
+
+		expect(shadowControl.props.value.color).toBe('#222222');
+	});
+
+	/**
+	 * A missing native value reads as the composite's default shape rather than crashing on
+	 * `undefined[0]`.
+	 *
+	 * @return {void}
+	 */
+	it('reads an unset native value as the composite default', () => {
+		const { shadowControl } = renderEditorShadowControl({ value: undefined });
+
+		expect(shadowControl.props.value).toEqual({
+			color: '#000000',
+			offsetX: '0px',
+			offsetY: '0px',
+			blur: '0px',
+			spread: '0px',
+			inset: false,
+		});
+	});
+
+	/**
+	 * Editing the composite writes the native shape back with every field translated to its native
+	 * name/type — the round-trip must be lossless for a representative value, including the
+	 * color/opacity fold-back.
+	 *
+	 * @return {void}
+	 */
+	it('round-trips a representative native value losslessly through a composite edit', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl();
+
+		shadowControl.props.onChange({
+			color: 'rgba(17, 17, 17, 0.4)',
+			offsetX: '9px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				color: '#111111',
+				opacity: 0.4,
+				hOffset: 9,
+				vOffset: 3,
+				blur: 4,
+				spread: 5,
+				inset: false,
+			},
+		]);
+	});
+
+	/**
+	 * Toggling `inset` on writes it through unchanged, alongside the rest of the value.
+	 *
+	 * @return {void}
+	 */
+	it('writes an inset edit through to the native attribute', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl();
+
+		shadowControl.props.onChange({
+			color: 'rgba(17, 17, 17, 0.4)',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: true,
+		});
+
+		const written = onChange.mock.calls[0][0][0];
+		expect(written.inset).toBe(true);
+	});
+
+	/**
+	 * Picking a token alias in the Style Library tab writes the alias id into the native item, keeping
+	 * the previous literal fields alongside it as a CSS fallback rather than dropping them.
+	 *
+	 * @return {void}
+	 */
+	it('stores a picked token alias alongside the previous literal fields, not in place of them', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl();
+		const alias = 'primitive.shadow.md';
+
+		shadowControl.props.onChange(alias);
+
+		expect(onChange).toHaveBeenCalledWith([
+			{
+				color: '#111111',
+				opacity: 0.4,
+				hOffset: 2,
+				vOffset: 3,
+				blur: 4,
+				spread: 5,
+				inset: false,
+				alias,
+			},
+		]);
+	});
+
+	/**
+	 * Reading a native item that carries an `alias` reports the alias string straight back to
+	 * `BoxShadowControl`, not the literal fallback fields kept alongside it.
+	 *
+	 * @return {void}
+	 */
+	it('reads a native item carrying an alias back as the alias string', () => {
+		const alias = 'primitive.shadow.md';
+		const { shadowControl } = renderEditorShadowControl({
+			value: [{ ...NATIVE_VALUE[0], alias }],
+		});
+
+		expect(shadowControl.props.value).toBe(alias);
+	});
+
+	/**
+	 * Picking a literal composite value again after an alias drops the `alias` key, returning the
+	 * native item to its plain shape.
+	 *
+	 * @return {void}
+	 */
+	it('drops the alias key when a literal composite value is written after an alias', () => {
+		const { shadowControl, onChange } = renderEditorShadowControl({
+			value: [{ ...NATIVE_VALUE[0], alias: 'primitive.shadow.md' }],
+		});
+
+		shadowControl.props.onChange({
+			color: '#111111',
+			offsetX: '2px',
+			offsetY: '3px',
+			blur: '4px',
+			spread: '5px',
+			inset: false,
+		});
+
+		const written = onChange.mock.calls[0][0][0];
+		expect(written).not.toHaveProperty('alias');
+	});
+});
+
+describe('EditorShadowControl enable toggle', () => {
+	/**
+	 * The enable toggle reads and writes the sibling boolean attribute independently of the shadow
+	 * value's shape — it stays functional whether the value is a token or a composite literal.
+	 *
+	 * @return {void}
+	 */
+	it('reflects the enable prop and writes through onEnableChange, independent of the value shape', () => {
+		const { toggle, onEnableChange } = renderEditorShadowControl({ enable: false });
+
+		expect(toggle.props.checked).toBe(false);
+
+		toggle.props.onChange(true);
+		expect(onEnableChange).toHaveBeenCalledWith(true);
+	});
+
+	/**
+	 * The toggle stays functional when the current value is an aliased token, not just a composite.
+	 *
+	 * @return {void}
+	 */
+	it('keeps the enable toggle independent when the value is a token alias', () => {
+		const { toggle, onEnableChange } = renderEditorShadowControl({
+			enable: true,
+			value: [{ ...NATIVE_VALUE[0], alias: 'primitive.shadow.md' }],
+		});
+
+		toggle.props.onChange(false);
+		expect(onEnableChange).toHaveBeenCalledWith(false);
+	});
+
+	/**
+	 * `BoxShadowControl` renders only while enabled, matching the native control's own layout — a
+	 * caller should not be able to edit a shadow value that is currently switched off.
+	 *
+	 * @return {void}
+	 */
+	it('hides BoxShadowControl while disabled', () => {
+		const { shadowControl } = renderEditorShadowControl({ enable: false });
+
+		expect(shadowControl).toBeNull();
+	});
+});
+
+describe('EditorShadowControl renderColor wiring', () => {
+	/**
+	 * `renderColor` is passed straight through to `BoxShadowControl` untouched — this component neither
+	 * builds nor intercepts it. `BoxShadowControl` calls it with the composite's `color` slot this
+	 * component derived from the native value, so the caller's `renderColor` sees the combined
+	 * color/opacity string, not the raw native pair.
+	 *
+	 * @return {void}
+	 */
+	it('passes renderColor straight through to BoxShadowControl, called with the derived color', () => {
+		const renderColor = jest.fn();
+		const { shadowControl } = renderEditorShadowControl({ renderColor });
+
+		expect(shadowControl.props.renderColor).toBe(renderColor);
+
+		shadowControl.props.renderColor({ value: shadowControl.props.value.color, onChange: jest.fn() });
+
+		expect(renderColor).toHaveBeenCalledWith({
+			value: 'rgba(17, 17, 17, 0.4)',
+			onChange: expect.any(Function),
+		});
+	});
+});
+
+describe('combineColorOpacity / splitColorOpacity', () => {
+	/**
+	 * A partially-transparent color combines into an `rgba(...)` string that `splitColorOpacity`
+	 * reads back apart into the exact same hex/opacity pair — the two directions must agree with each
+	 * other, not just with `EditorShadowControl`'s own internal use of them.
+	 *
+	 * @return {void}
+	 */
+	it('round-trips a partially-transparent color through combine and split', () => {
+		const combined = combineColorOpacity('#3182ce', 0.5);
+
+		expect(combined).toBe('rgba(49, 130, 206, 0.5)');
+		expect(splitColorOpacity(combined)).toEqual({ color: '#3182ce', opacity: 0.5 });
+	});
+
+	/**
+	 * A fully opaque color is never wrapped, and splitting a plain hex back reports full opacity.
+	 *
+	 * @return {void}
+	 */
+	it('leaves a fully-opaque color unwrapped and reports full opacity on split', () => {
+		expect(combineColorOpacity('#3182ce', 1)).toBe('#3182ce');
+		expect(splitColorOpacity('#3182ce')).toEqual({ color: '#3182ce', opacity: 1 });
+	});
+
+	/**
+	 * An empty color combines/splits to an empty color rather than throwing, so a not-yet-set shadow
+	 * value renders without a crash.
+	 *
+	 * @return {void}
+	 */
+	it('handles an empty color without throwing', () => {
+		expect(combineColorOpacity('', 0.5)).toBe('');
+		expect(splitColorOpacity('')).toEqual({ color: '', opacity: 1 });
+	});
+});
