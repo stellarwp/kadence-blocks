@@ -25,3 +25,24 @@ export const STORE_NAME = 'kadence-blocks/style-library';
 export function presetsKey(namespace, block, slug) {
 	return `${namespace}::${block}::${slug}`;
 }
+
+/**
+ * Build the state key for a library's palette listing.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {string} The state key.
+ */
+export function paletteListingKey(namespace, slug) {
+	return `${namespace}::${slug}`;
+}
+
+/**
+ * The shape `getPaletteListing` returns before its palette listing has resolved yet.
+ *
+ * @since TBD
+ */
+export const EMPTY_LISTING = { defaultId: '', currentId: '', palettes: [], userCreated: [] };

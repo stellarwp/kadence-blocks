@@ -8,8 +8,8 @@
 /**
  * Internal dependencies
  */
-import { fetchBlockPresets, fetchLibraries } from '../api/client';
-import { presetsKey } from './constants';
+import { fetchBlockPresets, fetchLibraries, fetchPalettes } from '../api/client';
+import { presetsKey, paletteListingKey } from './constants';
 
 /**
  * Resolve `selectors.getLibraries()`.
@@ -41,4 +41,21 @@ export const getBlockPresets =
 	async ({ dispatch }) => {
 		const payload = await fetchBlockPresets(namespace, block, slug);
 		dispatch.receiveBlockPresets(presetsKey(namespace, block, slug), payload);
+	};
+
+/**
+ * Resolve `selectors.getPaletteListing(namespace, slug)`.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Function} A `@wordpress/data` thunk.
+ */
+export const getPaletteListing =
+	(namespace, slug) =>
+	async ({ dispatch }) => {
+		const rows = await fetchPalettes(namespace, slug);
+		dispatch.receivePaletteListing(paletteListingKey(namespace, slug), rows);
 	};

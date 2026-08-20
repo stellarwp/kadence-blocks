@@ -15,9 +15,17 @@ function presets(state = {}, action) {
 	return { ...state, [action.key]: action.payload };
 }
 
+function paletteListings(state = {}, action) {
+	if (action.type !== 'RECEIVE_PALETTE_LISTING') {
+		return state;
+	}
+
+	return { ...state, [action.key]: action.rows };
+}
+
 /**
  * The Style Library store's root reducer.
  *
  * @since TBD
  */
-export const reducer = combineReducers({ libraries, presets });
+export const reducer = combineReducers({ libraries, presets, paletteListings });

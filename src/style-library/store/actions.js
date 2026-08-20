@@ -29,3 +29,17 @@ export function receiveLibraries(rows) {
 export function receiveBlockPresets(key, payload) {
 	return { type: 'RECEIVE_BLOCK_PRESETS', key, payload };
 }
+
+/**
+ * Store a library's palette listing.
+ *
+ * @param {string}        key  `paletteListingKey()`'s output for this library.
+ * @param {Array<Object>} rows The fetched palette listing rows.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function receivePaletteListing(key, rows) {
+	return { type: 'RECEIVE_PALETTE_LISTING', key, rows };
+}

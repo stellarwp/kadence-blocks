@@ -1,12 +1,12 @@
 /* eslint-env jest */
 import { reducer } from './reducer';
-import { receiveLibraries, receiveBlockPresets } from './actions';
+import { receiveLibraries, receiveBlockPresets, receivePaletteListing } from './actions';
 
 describe('reducer', () => {
 	it('starts with empty slices', () => {
 		const state = reducer(undefined, { type: '@@INIT' });
 
-		expect(state).toEqual({ libraries: [], presets: {} });
+		expect(state).toEqual({ libraries: [], presets: {}, paletteListings: {} });
 	});
 
 	it('stores the libraries list on RECEIVE_LIBRARIES', () => {
@@ -21,5 +21,15 @@ describe('reducer', () => {
 		state = reducer(state, receiveBlockPresets('b', { version: 'b1' }));
 
 		expect(state.presets).toEqual({ a: { version: 'a1' }, b: { version: 'b1' } });
+	});
+
+	it('stores a palette listing payload under its key, leaving other keys alone', () => {
+		const rowsA = [{ id: 'default', label: 'Default' }];
+		const rowsB = [{ id: 'custom-1', label: 'Custom' }];
+
+		let state = reducer(undefined, receivePaletteListing('a', rowsA));
+		state = reducer(state, receivePaletteListing('b', rowsB));
+
+		expect(state.paletteListings).toEqual({ a: rowsA, b: rowsB });
 	});
 });
