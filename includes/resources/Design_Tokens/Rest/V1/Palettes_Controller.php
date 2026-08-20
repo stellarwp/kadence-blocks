@@ -613,7 +613,7 @@ final class Palettes_Controller extends Controller {
 			return $saved;
 		}
 
-		return new WP_REST_Response( [ self::CURRENT_PARAM => $this->palettes->current( $slug ) ], $saved->get_status() );
+		return new WP_REST_Response( $this->prepare_items_embedded( $slug ), $saved->get_status() );
 	}
 
 	/**

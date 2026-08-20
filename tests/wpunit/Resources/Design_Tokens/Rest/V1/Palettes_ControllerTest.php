@@ -175,6 +175,27 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * Activating a palette returns the full embedded listing, not just the confirmed id — this is what
+	 * lets the frontend skip a follow-up fetch after activation.
+	 *
+	 * @return void
+	 */
+	public function testSetCurrentReturnsTheFullEmbeddedListing(): void {
+		$this->create_custom_palette();
+
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'current', 'custom' );
+
+		$data = $this->controller->set_current( $request )->get_data();
+
+		$custom_row = current( array_filter( $data, static fn( array $row ) => $row['id'] === 'custom' ) );
+
+		$this->assertNotFalse( $custom_row, 'The activated palette is present in the response.' );
+		$this->assertTrue( $custom_row['is_current'], 'The activated palette is flagged current in the same response.' );
+		$this->assertArrayHasKey( 'groups', $custom_row['_embedded']['self'][0], 'The response carries full palette detail, not just the pointer.' );
+	}
+
+	/**
 	 * Creating a well-formed palette persists it so a later read and the effective reader both see it, and
 	 * the write response body itself carries the fresh, fully-embedded listing — the same shape
 	 * `GET /palettes?_embed` produces — so the caller never needs a follow-up GET.
