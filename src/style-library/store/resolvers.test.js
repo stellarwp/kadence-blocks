@@ -1,12 +1,12 @@
 /* eslint-env jest */
-import { getBlockPresets, getLibraries, getPaletteListing } from './resolvers';
-import { fetchBlockPresets, fetchLibraries, fetchPalettes } from '../api/client';
+import { getBlockPresets, getLibraries, getPaletteListing, getDesignTokensFeed } from './resolvers';
+import { fetchBlockPresets, fetchLibraries, fetchPalettes, fetchDesignTokensFeed } from '../api/client';
 
 jest.mock('../api/client', () => ({
 	fetchLibraries: jest.fn(),
 	fetchBlockPresets: jest.fn(),
 	fetchPalettes: jest.fn(),
-	fetchPalette: jest.fn(),
+	fetchDesignTokensFeed: jest.fn(),
 }));
 
 describe('resolvers', () => {
@@ -45,5 +45,16 @@ describe('resolvers', () => {
 
 		expect(fetchPalettes).toHaveBeenCalledWith('kb-design-tokens/v1', 'default');
 		expect(dispatch.receivePaletteListing).toHaveBeenCalledWith('kb-design-tokens/v1::default', rows);
+	});
+
+	it('getDesignTokensFeed() fetches and dispatches receiveDesignTokensFeed under the slug', async () => {
+		const feed = { slug: 'brand', version: 'b1' };
+		fetchDesignTokensFeed.mockResolvedValueOnce(feed);
+
+		const dispatch = { receiveDesignTokensFeed: jest.fn() };
+		await getDesignTokensFeed('brand')({ dispatch });
+
+		expect(fetchDesignTokensFeed).toHaveBeenCalledWith('brand');
+		expect(dispatch.receiveDesignTokensFeed).toHaveBeenCalledWith('brand', feed);
 	});
 });

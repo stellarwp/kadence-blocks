@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { getBlockPresets, getLibraries, getPaletteListing } from './selectors';
+import { getBlockPresets, getLibraries, getPaletteListing, getDesignTokensFeed } from './selectors';
 
 describe('selectors', () => {
 	it('getLibraries() returns the libraries slice', () => {
@@ -93,5 +93,17 @@ describe('selectors', () => {
 		const third = getPaletteListing(nextState, 'ns', 'default');
 
 		expect(third).not.toBe(first);
+	});
+
+	it('getDesignTokensFeed() reads a slug’s feed, or null when unresolved', () => {
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: {},
+			feeds: { default: { version: 'v1' } },
+		};
+
+		expect(getDesignTokensFeed(state, 'default')).toEqual({ version: 'v1' });
+		expect(getDesignTokensFeed(state, 'brand')).toBeNull();
 	});
 });

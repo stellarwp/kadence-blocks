@@ -8,7 +8,7 @@
 /**
  * Internal dependencies
  */
-import { fetchBlockPresets, fetchLibraries, fetchPalettes } from '../api/client';
+import { fetchBlockPresets, fetchLibraries, fetchPalettes, fetchDesignTokensFeed } from '../api/client';
 import { presetsKey, paletteListingKey } from './constants';
 
 /**
@@ -58,4 +58,20 @@ export const getPaletteListing =
 	async ({ dispatch }) => {
 		const rows = await fetchPalettes(namespace, slug);
 		dispatch.receivePaletteListing(paletteListingKey(namespace, slug), rows);
+	};
+
+/**
+ * Resolve `selectors.getDesignTokensFeed(slug)`.
+ *
+ * @param {string} slug Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Function} A `@wordpress/data` thunk.
+ */
+export const getDesignTokensFeed =
+	(slug) =>
+	async ({ dispatch }) => {
+		const feed = await fetchDesignTokensFeed(slug);
+		dispatch.receiveDesignTokensFeed(slug, feed);
 	};

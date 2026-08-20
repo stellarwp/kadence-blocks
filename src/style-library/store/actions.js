@@ -43,3 +43,17 @@ export function receiveBlockPresets(key, payload) {
 export function receivePaletteListing(key, rows) {
 	return { type: 'RECEIVE_PALETTE_LISTING', key, rows };
 }
+
+/**
+ * Store a library's design-token feed.
+ *
+ * @param {string} slug The library slug the feed was resolved for.
+ * @param {Object} feed The feed payload.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function receiveDesignTokensFeed(slug, feed) {
+	return { type: 'RECEIVE_DESIGN_TOKENS_FEED', slug, feed };
+}

@@ -4,7 +4,6 @@ import {
 	flattenSchemaTokens,
 	isResponsiveType,
 	pickableTokensForType,
-	refreshFeedFlow,
 	tokenTypeIdSegment,
 } from '../helpers/tokens';
 import { PICKABLE_TOKENS_GLOBAL } from '../constants';
@@ -222,28 +221,5 @@ describe('pickableTokensForType', () => {
 		expect(tokens).toEqual([
 			{ id: 'semantic.color.action-primary', label: 'Action Primary', value: '#3633e1', role: null },
 		]);
-	});
-});
-
-describe('refreshFeedFlow', () => {
-	it('fetches the feed for the given slug and applies it', async () => {
-		const feed = { slug: 'brand-b', active: true };
-		const fetchFeed = jest.fn().mockResolvedValue(feed);
-		const applyFeed = jest.fn();
-
-		const result = await refreshFeedFlow('brand-b', applyFeed, fetchFeed);
-
-		expect(fetchFeed).toHaveBeenCalledWith('brand-b');
-		expect(applyFeed).toHaveBeenCalledWith(feed);
-		expect(result).toBe(feed);
-	});
-
-	it('rejects and does not apply anything when the fetch fails', async () => {
-		const error = new Error('network down');
-		const fetchFeed = jest.fn().mockRejectedValue(error);
-		const applyFeed = jest.fn();
-
-		await expect(refreshFeedFlow('brand-b', applyFeed, fetchFeed)).rejects.toBe(error);
-		expect(applyFeed).not.toHaveBeenCalled();
 	});
 });

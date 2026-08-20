@@ -76,3 +76,17 @@ export function getPaletteListing(state, namespace, slug) {
 
 	return reshapedListingCache.get(rows);
 }
+
+/**
+ * Read a library's design-token feed.
+ *
+ * @param {Object} state The store's state.
+ * @param {string} slug  Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {?Object} The feed, or `null` if not yet resolved.
+ */
+export function getDesignTokensFeed(state, slug) {
+	return state.feeds[slug] ?? null;
+}

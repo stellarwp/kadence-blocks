@@ -23,9 +23,17 @@ function paletteListings(state = {}, action) {
 	return { ...state, [action.key]: action.rows };
 }
 
+function feeds(state = {}, action) {
+	if (action.type !== 'RECEIVE_DESIGN_TOKENS_FEED') {
+		return state;
+	}
+
+	return { ...state, [action.slug]: action.feed };
+}
+
 /**
  * The Style Library store's root reducer.
  *
  * @since TBD
  */
-export const reducer = combineReducers({ libraries, presets, paletteListings });
+export const reducer = combineReducers({ libraries, presets, paletteListings, feeds });
