@@ -111,6 +111,50 @@ describe('useLibraries', () => {
 		expect(fetchLibraries).toHaveBeenCalledTimes(1);
 	});
 
+	it('keeps isLoading false during a write-triggered background reload once the list has loaded once', async () => {
+		fetchLibraries.mockResolvedValueOnce([ROW_A]);
+
+		const probe = mountProbe();
+		await probe.render({ slug: 'default' }, jest.fn());
+
+		expect(probe.latest().libraries).toHaveLength(1);
+		expect(probe.latest().isLoading).toBe(false);
+
+		let resolveReload;
+		fetchLibraries.mockImplementationOnce(
+			() =>
+				new Promise((resolve) => {
+					resolveReload = resolve;
+				})
+		);
+
+		const registryDispatch = registry.dispatch('kadence-blocks/style-library');
+		let reloadPromise;
+		await act(async () => {
+			registryDispatch.invalidateResolution('getLibraries', []);
+			reloadPromise = registry.resolveSelect('kadence-blocks/style-library').getLibraries();
+		});
+		// `resolveSelect()` re-runs the same instrumented selector `select()` uses, which schedules its
+		// resolver fulfillment on a real `setTimeout(fn, 0)` (see the `flushResolvers()` comment above) —
+		// one real timer tick gets `fetchLibraries` actually called and `isResolving` flipped true before
+		// the fetch itself settles.
+		await flushResolvers();
+
+		// The reload is genuinely in flight here (`isResolving` is true), but the list already has the
+		// one row from the first load, so the dropdown must keep rendering it, not a skeleton.
+		expect(fetchLibraries).toHaveBeenCalledTimes(2);
+		expect(probe.latest().libraries).toHaveLength(1);
+		expect(probe.latest().isLoading).toBe(false);
+
+		await act(async () => {
+			resolveReload([ROW_A, ROW_B]);
+			await reloadPromise;
+		});
+
+		expect(probe.latest().libraries).toHaveLength(2);
+		expect(probe.latest().isLoading).toBe(false);
+	});
+
 	it('a create flow that calls loadLibraries() sees the refreshed list', async () => {
 		fetchLibraries.mockResolvedValueOnce([ROW_A]).mockResolvedValueOnce([ROW_A, ROW_B]);
 

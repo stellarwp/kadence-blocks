@@ -74,14 +74,18 @@ export function useLibraries(feed, refreshFeed) {
 	const [activeSlug, setActiveSlug] = useState(editingSlug);
 
 	const registry = useRegistry();
-	const { libraryRows, isLoading, loadFailure } = useSelect(
-		(select) => ({
-			libraryRows: select(STORE_NAME).getLibraries(),
-			isLoading: select(STORE_NAME).isResolving('getLibraries', []),
+	// `isLoading` only reflects a cold load with nothing to show yet. `isResolving` alone would also
+	// flip true for every write-triggered background reload (`loadLibraries()`, below, invalidates and
+	// re-resolves after create/rename/delete) — the store keeps serving the previous rows while that
+	// re-fetch is in flight, so there is already data to render and no loading state to show for it.
+	const { libraryRows, isLoading, loadFailure } = useSelect((select) => {
+		const rows = select(STORE_NAME).getLibraries();
+		return {
+			libraryRows: rows,
+			isLoading: select(STORE_NAME).isResolving('getLibraries', []) && rows.length === 0,
 			loadFailure: select(STORE_NAME).getResolutionError('getLibraries', []),
-		}),
-		[]
-	);
+		};
+	}, []);
 	const libraries = useMemo(() => sortLibraries(libraryRows ?? []), [libraryRows]);
 
 	// The original hook's mount-effect `.catch()` wrote a failed list fetch into the SAME `openError`
