@@ -175,7 +175,9 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Creating a well-formed palette persists it so a later read and the effective reader both see it.
+	 * Creating a well-formed palette persists it so a later read and the effective reader both see it, and
+	 * the write response body itself carries the fresh, fully-embedded listing — the same shape
+	 * `GET /palettes?_embed` produces — so the caller never needs a follow-up GET.
 	 *
 	 * @return void
 	 */
@@ -187,6 +189,29 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->assertContains( 'ocean', $this->palettes->palette_ids() );
 		$this->assertSame( '#0000ff', $this->palettes->swatch_values( 'ocean' )['primitive.color.brand.primary'] );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+
+		$ids = array_column( $response->get_data(), 'id' );
+		$this->assertContains( 'ocean', $ids );
+	}
+
+	/**
+	 * Renaming a palette (an `update_item` write against its existing id with a new label) responds with the
+	 * fresh embedded listing, so the caller sees the renamed label without a follow-up GET.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemRenameResponseCarriesTheEmbeddedListing(): void {
+		$this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#0000ff' ) );
+
+		$response = $this->controller->update_item( $this->write_request( 'ocean', 'Sea', '#0000ff' ) );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+
+		$ids       = array_column( $response->get_data(), 'id' );
+		$ocean_row = $response->get_data()[ array_search( 'ocean', $ids, true ) ];
+		$this->assertSame( 'Sea', $ocean_row['label'] );
 	}
 
 	/**
@@ -497,7 +522,8 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * Deleting a user-created palette removes it from the listing, since the baseline has no definition to
+	 * Deleting a user-created palette removes it from the listing and responds with the fresh embedded
+	 * listing (the deleted palette no longer among its rows), since the baseline has no definition to
 	 * fall back to.
 	 *
 	 * @return void
@@ -508,9 +534,11 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$delete = new WP_REST_Request( 'DELETE' );
 		$delete->set_param( 'id', 'ocean' );
-		$this->controller->delete_item( $delete );
-
+		$response = $this->controller->delete_item( $delete );
 		$this->assertNotContains( 'ocean', $this->palettes->palette_ids() );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
+		$this->assertNotContains( 'ocean', array_column( $response->get_data(), 'id' ) );
 	}
 
 	/**
@@ -625,7 +653,8 @@ final class Palettes_ControllerTest extends TestCase {
 
 	/**
 	 * Setting one swatch through the sub-route stores just that token and leaves the palette's other swatches
-	 * intact — the caller never sends the full palette, and an untouched token is unaffected.
+	 * intact — the caller never sends the full palette, and an untouched token is unaffected. The write response
+	 * body carries the fresh embedded listing.
 	 *
 	 * @return void
 	 */
@@ -641,6 +670,8 @@ final class Palettes_ControllerTest extends TestCase {
 		$stored = $this->palettes->swatch_values( 'ocean' );
 		$this->assertSame( '#00ff00', $stored['primitive.color.brand.secondary'], 'The set swatch is stored.' );
 		$this->assertSame( '#0000ff', $stored['primitive.color.brand.primary'], 'The untouched swatch is intact.' );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
 	}
 
 	/**
@@ -694,19 +725,21 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A label-only write updates the swatch's structural label on the default palette, leaving its
-	 * value untouched.
+	 * A label-only write updates the swatch's structural label on the default palette, leaving its value
+	 * untouched, and the write response body carries the fresh embedded listing.
 	 *
 	 * @return void
 	 */
 	public function testUpdateSwatchAcceptsALabelOnlyWrite(): void {
 		$before = $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'];
 
-		$this->controller->update_swatch(
+		$response = $this->controller->update_swatch(
 			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, 'Brand One' )
 		);
 
 		$this->assertSame( $before, $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+
+		$this->assertEmbeddedListingShape( $response->get_data() );
 	}
 
 	/**
@@ -1116,6 +1149,30 @@ final class Palettes_ControllerTest extends TestCase {
 		}
 
 		return $request;
+	}
+
+	/**
+	 * Assert a write response body is the same fully-embedded shape `GET /palettes?_embed` produces: a flat
+	 * array of listing rows, each carrying its `is_default` / `is_current` / `user_created` flags and an
+	 * `_embedded.self` entry holding the row's full `effective_view()` (id, label, groups).
+	 *
+	 * @param array<int, array<string, mixed>> $data The write response body.
+	 *
+	 * @return void
+	 */
+	private function assertEmbeddedListingShape( array $data ): void {
+		$this->assertNotEmpty( $data, 'The embedded listing must carry at least one row.' );
+
+		foreach ( $data as $row ) {
+			$this->assertArrayHasKey( 'id', $row );
+			$this->assertArrayHasKey( 'label', $row );
+			$this->assertArrayHasKey( 'is_default', $row );
+			$this->assertArrayHasKey( 'is_current', $row );
+			$this->assertArrayHasKey( 'user_created', $row );
+			$this->assertArrayHasKey( '_embedded', $row );
+			$this->assertArrayHasKey( 'self', $row['_embedded'] );
+			$this->assertArrayHasKey( 'groups', $row['_embedded']['self'][0] );
+		}
 	}
 
 	/**

@@ -944,7 +944,7 @@ final class Palettes_Controller extends Controller {
 			);
 		}
 
-		return new WP_REST_Response( $this->prepare_items( $slug ), $status );
+		return new WP_REST_Response( $this->prepare_items_embedded( $slug ), $status );
 	}
 
 	/**
@@ -1367,6 +1367,30 @@ final class Palettes_Controller extends Controller {
 		$candidate = $this->mutator->merge( $document, $this->palette_partial( $id, $node ) );
 
 		return $this->validate_and_save( $candidate, $id, $slug );
+	}
+
+	/**
+	 * The same shape `GET /palettes?_embed` produces, built directly rather than through a request
+	 * object — every write response uses this unconditionally, so the client never needs a follow-up
+	 * GET to see the fresh state a write just produced.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug The token library slug.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function prepare_items_embedded( string $slug ): array {
+		return array_map(
+			function ( array $row ) use ( $slug ) {
+				$row['_embedded'] = [
+					'self' => [ $this->effective_view( Cast::to_string( $row[ self::ID_PARAM ] ), $slug ) ],
+				];
+
+				return $row;
+			},
+			$this->prepare_items( $slug )
+		);
 	}
 
 	/**
