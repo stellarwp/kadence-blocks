@@ -4,6 +4,7 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Rest\V1;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Effective_Palettes;
 use KadenceWP\KadenceBlocks\Design_Tokens\Rest\V1\Palettes_Controller;
 use Tests\Support\Classes\TestCase;
@@ -30,6 +31,11 @@ final class Palettes_ControllerTest extends TestCase {
 	private Palettes_Controller $controller;
 
 	/**
+	 * @var Token_Store
+	 */
+	private Token_Store $store;
+
+	/**
 	 * @return void
 	 */
 	protected function setUp(): void {
@@ -37,6 +43,7 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$this->palettes   = $this->container->get( Effective_Palettes::class );
 		$this->controller = $this->container->get( Palettes_Controller::class );
+		$this->store      = $this->container->get( Token_Store::class );
 
 		wp_set_current_user( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
 	}
@@ -99,6 +106,32 @@ final class Palettes_ControllerTest extends TestCase {
 
 		self::assertArrayHasKey( '_embedded', $resolved[0] );
 		self::assertArrayHasKey( 'groups', $resolved[0]['_embedded']['self'][0] );
+	}
+
+	/**
+	 * A listing requested for a library other than the active one carries that same library on each
+	 * row's `self` link, and `_embed` resolves against it — not the active library. Without the
+	 * `library` query arg on the link, `_embed`'s internal sub-request would silently fall back to the
+	 * active library and return the wrong palette's data.
+	 *
+	 * @return void
+	 */
+	public function testGetItemsSelfLinkTargetsTheRequestedLibraryNotTheActiveOne(): void {
+		$this->store->save_document( '{}', 'brand-b' );
+		$this->controller->update_item( $this->write_request( 'custom', 'Brand B Custom', '#00FF00', 'brand-b' ) );
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-design-tokens/v1/palettes' );
+		$request->set_param( 'library', 'brand-b' );
+		$request->set_param( '_embed', true );
+
+		$response = rest_get_server()->dispatch( $request );
+		$resolved = rest_get_server()->response_to_data( $response, true );
+
+		$ids        = array_column( $resolved, 'id' );
+		$custom_row = $resolved[ array_search( 'custom', $ids, true ) ];
+
+		$this->assertStringContainsString( 'library=brand-b', $custom_row['_links']['self'][0]['href'] );
+		$this->assertSame( 'Brand B Custom', $custom_row['_embedded']['self'][0]['label'] );
 	}
 
 	/**
@@ -994,13 +1027,14 @@ final class Palettes_ControllerTest extends TestCase {
 	/**
 	 * A palette write request with a single one-swatch Accent group.
 	 *
-	 * @param string $id    The palette id.
-	 * @param string $label The palette label.
-	 * @param string $value The single swatch's $value.
+	 * @param string      $id      The palette id.
+	 * @param string      $label   The palette label.
+	 * @param string      $value   The single swatch's $value.
+	 * @param string|null $library The library to target, when the write is not for the active library.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function write_request( string $id, string $label, string $value ): WP_REST_Request {
+	private function write_request( string $id, string $label, string $value, ?string $library = null ): WP_REST_Request {
 		$request = new WP_REST_Request( 'PUT' );
 		$request->set_param( 'id', $id );
 		$request->set_param( 'label', $label );
@@ -1020,6 +1054,10 @@ final class Palettes_ControllerTest extends TestCase {
 				],
 			]
 		);
+
+		if ( $library !== null ) {
+			$request->set_param( 'library', $library );
+		}
 
 		return $request;
 	}

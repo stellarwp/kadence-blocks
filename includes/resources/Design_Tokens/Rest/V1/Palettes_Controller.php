@@ -632,7 +632,11 @@ final class Palettes_Controller extends Controller {
 	 * through `get_item()` into the row's full `effective_view()`, and what the standard
 	 * `prepare_response_for_collection()` call in `get_items()` below merges into the row's own array
 	 * as `_links` (not a nested response object — see `Contracts\Controller` for why this repo's
-	 * controllers otherwise build plain arrays directly).
+	 * controllers otherwise build plain arrays directly). The `self` link is built against the
+	 * SAME library the listing itself resolved (via `slug()`), not the site's active library —
+	 * otherwise `_embed`'s internal sub-request would silently re-resolve against whatever library
+	 * happens to be active, returning the wrong palette's data for a listing requested against a
+	 * non-active library.
 	 *
 	 * @since TBD
 	 *
@@ -643,25 +647,31 @@ final class Palettes_Controller extends Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$response = new WP_REST_Response( $item );
-		$response->add_links( $this->prepare_links( $item ) );
+		$response->add_links( $this->prepare_links( $item, $this->slug( $request ) ) );
 
 		return $response;
 	}
 
 	/**
-	 * The `self` link for a listing row, targeting `GET /palettes/{id}` — the single-palette route
-	 * `_embed` resolves into the row's full group/swatch data.
+	 * The `self` link for a listing row, targeting `GET /palettes/{id}?library={slug}` — the
+	 * single-palette route `_embed` resolves into the row's full group/swatch data. The `library`
+	 * query arg pins the embedded sub-request to the library the listing was requested for; without
+	 * it, `_embed` falls back to the site's active library, which is wrong whenever the listing
+	 * targets a non-active one.
 	 *
 	 * @since TBD
 	 *
 	 * @param array<string, mixed> $item The listing row.
+	 * @param string               $slug The token library slug the listing was resolved for.
 	 *
 	 * @return array<string, array<string, mixed>>
 	 */
-	protected function prepare_links( $item ) {
+	protected function prepare_links( $item, string $slug ) {
+		$href = rest_url( sprintf( '%s/%s/%s', $this->namespace, $this->rest_base, Cast::to_string( $item[ self::ID_PARAM ] ) ) );
+
 		return [
 			'self' => [
-				'href'       => rest_url( sprintf( '%s/%s/%s', $this->namespace, $this->rest_base, Cast::to_string( $item[ self::ID_PARAM ] ) ) ),
+				'href'       => add_query_arg( self::LIBRARY_PARAM, $slug, $href ),
 				'embeddable' => true,
 			],
 		];
