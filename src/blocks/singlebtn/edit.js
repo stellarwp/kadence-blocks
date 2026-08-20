@@ -52,7 +52,7 @@ import metadata from './block.json';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
@@ -95,6 +95,50 @@ import { TokenControlRow } from '../../extension/token-indicators/components/Tok
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { pickableTokensForControl } from '../../extension/token-picker';
+import { isSlotList, readSlot, writeSlot } from '../../token-controls';
+
+const BORDER_COLOR_SIDE_LABELS = ['Top', 'Right', 'Bottom', 'Left'];
+
+/**
+ * `EditorBorderControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
+ * unchanged, one per side once width/style have been unlinked (color always tracks the same
+ * linked/unlinked shape `EditorBorderControl` gives width and style — see `fromNativeBorder`), or a
+ * single one while still linked. Color is out of this plan's scope entirely; this only wires the
+ * existing color-picking mechanism back in, the way `SingleBorderControl` in `@kadence/components`
+ * rendered it per side before this block moved to `EditorBorderControl`.
+ *
+ * @param {Object}   props          The render-prop's argument.
+ * @param {*}        props.value    The current color scalar or four-element slot list.
+ * @param {Function} props.onChange Called with the next color scalar or slot list.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The rendered color field(s).
+ */
+function renderBorderColor({ value, onChange }) {
+	if (!isSlotList(value)) {
+		return <PopColorControl value={value || ''} default={''} hideClear={true} onChange={onChange} />;
+	}
+
+	return (
+		<div className="kb-border-control__colors">
+			{BORDER_COLOR_SIDE_LABELS.map((sideLabel, index) => (
+				<PopColorControl
+					key={sideLabel}
+					swatchLabel={sprintf(
+						/* translators: %s: border side (Top, Right, Bottom, Left) */
+						__('%s Border Color', 'kadence-blocks'),
+						sideLabel
+					)}
+					value={readSlot(value, index) || ''}
+					default={''}
+					hideClear={true}
+					onChange={(next) => onChange(writeSlot(value, index, next, false))}
+				/>
+			))}
+		</div>
+	);
+}
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -1100,6 +1144,7 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderHoverWidthTokens}
+															renderColor={renderBorderColor}
 														/>
 														<ResponsiveMeasurementControls
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1315,6 +1360,7 @@ export default function KadenceButtonEdit(props) {
 															previewDevice={previewDevice}
 															onDeviceChange={setPreviewDevice}
 															widthTokens={borderWidthTokens}
+															renderColor={renderBorderColor}
 														/>
 														<EditorBoxControl
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1508,6 +1554,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderTransparentHoverWidthTokens}
+																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1707,6 +1754,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderTransparentWidthTokens}
+																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1918,6 +1966,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderStickyHoverWidthTokens}
+																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -2113,6 +2162,7 @@ export default function KadenceButtonEdit(props) {
 																previewDevice={previewDevice}
 																onDeviceChange={setPreviewDevice}
 																widthTokens={borderStickyWidthTokens}
+																renderColor={renderBorderColor}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}

@@ -179,15 +179,49 @@ describe('EditorBorderControl native <-> control value bridging', () => {
 
 	/**
 	 * `renderColor` is passed straight through to `BorderControl` untouched — this component neither
-	 * builds nor intercepts it.
+	 * builds nor intercepts it. `BorderControl` calls it once with the whole color slot list it read
+	 * out of `fromNativeBorder`'s output, so the caller's `renderColor` sees the same per-side colors
+	 * this component derived from the native value.
 	 *
 	 * @return {void}
 	 */
-	it('passes renderColor straight through to BorderControl', () => {
+	it('passes renderColor straight through to BorderControl, called with the derived color slots', () => {
 		const renderColor = jest.fn();
 		const { borderControl } = renderEditorBorderControl({ renderColor });
 
 		expect(borderControl.props.renderColor).toBe(renderColor);
+
+		// Reproduce what BorderControl itself does: call renderColor with the color slot list from
+		// the value this component built, not a value renderColor computed on its own.
+		borderControl.props.renderColor({ value: borderControl.props.value.color, onChange: jest.fn() });
+
+		expect(renderColor).toHaveBeenCalledWith({
+			value: ['#111111', '#222222', '#333333', '#444444'],
+			onChange: expect.any(Function),
+		});
+	});
+
+	/**
+	 * A genuine color edit — the write a real `renderColor` implementation performs through
+	 * `BorderControl`'s `patch()`, landing back at `BorderControl`'s own `onChange` with the whole
+	 * `{ width, style, color }` — reaches the native attribute, not just the pass-through value.
+	 * Complements the "preserves existing color" test above by covering the write direction: an
+	 * actual color change must not be discarded in favor of the stale `previousNative` color.
+	 *
+	 * @return {void}
+	 */
+	it('writes a genuine per-side color edit through to the native attribute', () => {
+		const { borderControl, onChange } = renderEditorBorderControl();
+
+		borderControl.props.onChange({
+			width: ['2px', '3px', '4px', '5px'],
+			style: ['solid', 'dashed', 'dotted', 'double'],
+			color: ['#ffffff', '#222222', '#333333', '#444444'], // top color changed.
+		});
+
+		const written = onChange.mock.calls[0][0][0];
+		expect(written.top).toEqual(['#ffffff', 'solid', 2]);
+		expect(written.right).toEqual(['#222222', 'dashed', 3]);
 	});
 });
 

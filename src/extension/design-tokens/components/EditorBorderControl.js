@@ -19,10 +19,11 @@
  *   way `BoxControl`'s radius keeps `borderRadiusUnit` — so, unlike `EditorBoxControl`, this
  *   component takes no separate `unit`/`units`/`onUnit` props at all.
  *
- * Color is untouched — passed straight through to whatever the caller's existing color field is
- * (via `renderColor`), matching `BorderControl`'s own scope boundary. This plan's color work is out
- * of scope entirely; see `toNativeBorder`'s docblock for why every write still has to read the
- * EXISTING color back out of the native value rather than dropping it.
+ * Color editing itself is untouched — this component neither builds nor redesigns a color field, it
+ * only wires the caller's EXISTING one back in via `renderColor` (matching `BorderControl`'s own
+ * scope boundary; this plan's color-field redesign work is out of scope entirely). `toNativeBorder`
+ * still has to fall back to the native value's stored color when `renderColor` writes nothing for a
+ * side — see its docblock for why.
  */
 
 /**
@@ -138,16 +139,19 @@ function toNativeSize(slot, unit) {
  * Convert `BorderControl`'s `{ width, style, color }` shape back to the native
  * `[{top,right,bottom,left,unit}]` attribute shape.
  *
- * **Color pass-through, not overwrite**: `BorderControl` never manages `value.color` itself (it's
- * rendered via `renderColor`, scoped out of this plan entirely per the global "no color work"
- * constraint), so this function must read each side's EXISTING color out of `previousNative` and
- * write it back unchanged — writing `''` here instead would silently erase every side's color on
- * the very next width/style edit. This is why `EditorBorderControl`'s `onChange` handler (below)
- * always has the previous native value on hand to pass through.
+ * **Color: use the caller's edit, fall back to the existing value, never blank it out.** `value.color`
+ * is whatever `BorderControl` currently holds for color — either untouched (in which case it is
+ * exactly what `fromNativeBorder` derived from `previousNative`, since a width/style-only edit merges
+ * `{ ...value, ...next }` and leaves `color` alone) or freshly written by the caller's `renderColor`
+ * (via `BorderControl`'s own `patch({ color: next })`). Reading `value.color` first means a genuine
+ * color edit reaches the native attribute; falling back to `previousNative`'s stored color only when
+ * a slot is blank/undefined guards the one case where `value.color` itself has nothing to say (e.g. a
+ * caller that renders no `renderColor` at all) — writing `''` unconditionally in that case would
+ * silently erase every side's color on the very next width/style edit.
  *
  * @param {Object} value          `{ width, style, color }` from `BorderControl`.
- * @param {?Array} previousNative The attribute's current `[{top,right,bottom,left,unit}]` value,
- *                                read for its per-side color only.
+ * @param {?Array} previousNative The attribute's current `[{top,right,bottom,left,unit}]` value, read
+ *                                as the per-side color fallback when `value.color` has nothing set.
  * @param {string} [unit]         The border's shared unit (defaults to `'px'`, matching the native
  *                                default in `ResponsiveBorderControl`'s `deskDefault`).
  *
@@ -160,8 +164,9 @@ function toNativeBorder(value, previousNative, unit = 'px') {
 
 	const sides = SIDES.reduce((acc, side, index) => {
 		const existingColor = previousSides[side]?.[0] || '';
+		const nextColor = readSlot(value.color, index);
 		acc[side] = [
-			existingColor,
+			nextColor || existingColor,
 			readSlot(value.style, index) || 'none',
 			toNativeSize(readSlot(value.width, index), unit),
 		];
