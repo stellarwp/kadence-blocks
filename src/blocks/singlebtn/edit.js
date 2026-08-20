@@ -35,7 +35,6 @@ import {
 	URLInputInline,
 	ResponsiveAlignControls,
 	GradientControl,
-	BoxShadowControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -94,6 +93,11 @@ import {
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
 import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
+import {
+	EditorShadowControl,
+	combineColorOpacity,
+	splitColorOpacity,
+} from '../../extension/design-tokens/components/EditorShadowControl';
 import { pickableTokensForControl } from '../../extension/token-picker';
 import { isSlotList, readSlot, writeSlot } from '../../token-controls';
 
@@ -137,6 +141,39 @@ function renderBorderColor({ value, onChange }) {
 				/>
 			))}
 		</div>
+	);
+}
+
+/**
+ * `EditorShadowControl`'s `renderColor` render-prop: reuses the block's existing `PopColorControl`
+ * unchanged, wired through its own two-channel `opacityValue`/`onArrayChange` props so the swatch's
+ * opacity slider keeps working exactly as it did on the native `@kadence/components` `BoxShadowControl`
+ * (see `node_modules/@kadence/components/src/box-shadow-control/index.js`). The composite's `color`
+ * slot arrives combined (`combineColorOpacity`); this is the one place that has to split it apart for
+ * `PopColorControl` and recombine on every write, using the exact same rules `EditorShadowControl`
+ * itself uses to read/write the native attribute, so both directions agree.
+ *
+ * @param {Object}   props          The render-prop's argument.
+ * @param {string}   props.value    The composite's combined color slot (a plain hex, or `rgba(...)`).
+ * @param {Function} props.onChange Called with the next combined color slot.
+ *
+ * @since TBD
+ *
+ * @return {JSX.Element} The rendered color field.
+ */
+function renderShadowColor({ value, onChange }) {
+	const { color, opacity } = splitColorOpacity(value);
+
+	return (
+		<PopColorControl
+			value={color || ''}
+			default={'#000000'}
+			hideClear={true}
+			opacityValue={opacity}
+			onChange={(next) => onChange(combineColorOpacity(next, opacity))}
+			onOpacityChange={(next) => onChange(combineColorOpacity(color, next))}
+			onArrayChange={(next, nextOpacity) => onChange(combineColorOpacity(next, nextOpacity))}
+		/>
 	);
 }
 
@@ -393,6 +430,14 @@ export default function KadenceButtonEdit(props) {
 		pickableTokensForControl('kadence/singlebtn', 'borderTransparentHoverStyle') || [];
 	const borderStickyWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyStyle') || [];
 	const borderStickyHoverWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyHoverStyle') || [];
+	// One pickable shadow-token list per shadow control, keyed the same way its own attribute is —
+	// mirrors the border width tokens above.
+	const shadowTokens = pickableTokensForControl('kadence/singlebtn', 'shadow') || [];
+	const shadowHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowHover') || [];
+	const shadowTransparentTokens = pickableTokensForControl('kadence/singlebtn', 'shadowTransparent') || [];
+	const shadowTransparentHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowTransparentHover') || [];
+	const shadowStickyTokens = pickableTokensForControl('kadence/singlebtn', 'shadowSticky') || [];
+	const shadowStickyHoverTokens = pickableTokensForControl('kadence/singlebtn', 'shadowStickyHover') || [];
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
 	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
@@ -518,73 +563,6 @@ export default function KadenceButtonEdit(props) {
 		});
 		setAttributes({
 			typography: newUpdate,
-		});
-	};
-	const saveShadow = (value) => {
-		const newUpdate = shadow.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadow: newUpdate,
-		});
-	};
-	const saveShadowHover = (value) => {
-		const newItems = shadowHover.map((item, thisIndex) => {
-			if (0 === thisIndex) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		});
-		setAttributes({
-			shadowHover: newItems,
-		});
-	};
-	const saveShadowTransparent = (value) => {
-		const newUpdate = shadowTransparent.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowTransparent: newUpdate,
-		});
-	};
-	const saveShadowTransparentHover = (value) => {
-		const newUpdate = shadowTransparentHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowTransparentHover: newUpdate,
-		});
-	};
-	const saveShadowSticky = (value) => {
-		const newUpdate = shadowSticky.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowSticky: newUpdate,
-		});
-	};
-	const saveShadowStickyHover = (value) => {
-		const newUpdate = shadowStickyHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowStickyHover: newUpdate,
 		});
 	};
 	const btnSizes = [
@@ -1196,92 +1174,20 @@ export default function KadenceButtonEdit(props) {
 															isBorderRadius={true}
 															allowEmpty={true}
 														/>
-														<BoxShadowControl
+														<EditorShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
+															value={shadowHover}
+															onChange={(value) => setAttributes({ shadowHover: value })}
 															enable={
 																undefined !== displayHoverShadow
 																	? displayHoverShadow
 																	: false
 															}
-															color={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].color
-																	? shadowHover[0].color
-																	: '#000000'
+															onEnableChange={(value) =>
+																setAttributes({ displayHoverShadow: value })
 															}
-															colorDefault={'#000000'}
-															onArrayChange={(color, opacity) => {
-																saveShadowHover({ color, opacity });
-															}}
-															opacity={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].opacity
-																	? shadowHover[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].hOffset
-																	? shadowHover[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].vOffset
-																	? shadowHover[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].blur
-																	? shadowHover[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].spread
-																	? shadowHover[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].inset
-																	? shadowHover[0].inset
-																	: false
-															}
-															onEnableChange={(value) => {
-																setAttributes({
-																	displayHoverShadow: value,
-																});
-															}}
-															onColorChange={(value) => {
-																saveShadowHover({ color: value });
-															}}
-															onOpacityChange={(value) => {
-																saveShadowHover({ opacity: value });
-															}}
-															onHOffsetChange={(value) => {
-																saveShadowHover({ hOffset: value });
-															}}
-															onVOffsetChange={(value) => {
-																saveShadowHover({ vOffset: value });
-															}}
-															onBlurChange={(value) => {
-																saveShadowHover({ blur: value });
-															}}
-															onSpreadChange={(value) => {
-																saveShadowHover({ spread: value });
-															}}
-															onInsetChange={(value) => {
-																saveShadowHover({ inset: value });
-															}}
+															tokens={shadowHoverTokens}
+															renderColor={renderShadowColor}
 														/>
 													</>
 												}
@@ -1404,88 +1310,16 @@ export default function KadenceButtonEdit(props) {
 															max={borderRadiusIsRelative ? 24 : 500}
 															step={borderRadiusIsRelative ? 0.1 : 1}
 														/>
-														<BoxShadowControl
+														<EditorShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
+															value={shadow}
+															onChange={(value) => setAttributes({ shadow: value })}
 															enable={undefined !== displayShadow ? displayShadow : false}
-															color={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].color
-																	? shadow[0].color
-																	: '#000000'
+															onEnableChange={(value) =>
+																setAttributes({ displayShadow: value })
 															}
-															colorDefault={'#000000'}
-															onArrayChange={(color, opacity) => {
-																saveShadow({ color, opacity });
-															}}
-															opacity={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].opacity
-																	? shadow[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].hOffset
-																	? shadow[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].vOffset
-																	? shadow[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].blur
-																	? shadow[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].spread
-																	? shadow[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].inset
-																	? shadow[0].inset
-																	: false
-															}
-															onEnableChange={(value) => {
-																setAttributes({
-																	displayShadow: value,
-																});
-															}}
-															onColorChange={(value) => {
-																saveShadow({ color: value });
-															}}
-															onOpacityChange={(value) => {
-																saveShadow({ opacity: value });
-															}}
-															onHOffsetChange={(value) => {
-																saveShadow({ hOffset: value });
-															}}
-															onVOffsetChange={(value) => {
-																saveShadow({ vOffset: value });
-															}}
-															onBlurChange={(value) => {
-																saveShadow({ blur: value });
-															}}
-															onSpreadChange={(value) => {
-																saveShadow({ spread: value });
-															}}
-															onInsetChange={(value) => {
-																saveShadow({ inset: value });
-															}}
+															tokens={shadowTokens}
+															renderColor={renderShadowColor}
 														/>
 													</>
 												}
@@ -1616,92 +1450,24 @@ export default function KadenceButtonEdit(props) {
 																isBorderRadius={true}
 																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
 																label={__('Box Shadow', 'kadence-blocks')}
+																value={shadowTransparentHover}
+																onChange={(value) =>
+																	setAttributes({ shadowTransparentHover: value })
+																}
 																enable={
 																	undefined !== displayHoverShadowTransparent
 																		? displayHoverShadowTransparent
 																		: false
 																}
-																color={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].color
-																		? shadowTransparentHover[0].color
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowTransparentHover({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].opacity
-																		? shadowTransparentHover[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].hOffset
-																		? shadowTransparentHover[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].vOffset
-																		? shadowTransparentHover[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].blur
-																		? shadowTransparentHover[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].spread
-																		? shadowTransparentHover[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowTransparentHover &&
-																	undefined !== shadowTransparentHover[0] &&
-																	undefined !== shadowTransparentHover[0].inset
-																		? shadowTransparentHover[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
+																onEnableChange={(value) =>
 																	setAttributes({
 																		displayHoverShadowTransparent: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowTransparentHover({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowTransparentHover({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowTransparentHover({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowTransparentHover({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowTransparentHover({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowTransparentHover({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowTransparentHover({ inset: value });
-																}}
+																	})
+																}
+																tokens={shadowTransparentHoverTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
@@ -1815,92 +1581,22 @@ export default function KadenceButtonEdit(props) {
 																isBorderRadius={true}
 																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
 																label={__('Box Shadow', 'kadence-blocks')}
+																value={shadowTransparent}
+																onChange={(value) =>
+																	setAttributes({ shadowTransparent: value })
+																}
 																enable={
 																	undefined !== displayShadowTransparent
 																		? displayShadowTransparent
 																		: false
 																}
-																color={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].color
-																		? shadowTransparent[0].color
-																		: '#000000'
+																onEnableChange={(value) =>
+																	setAttributes({ displayShadowTransparent: value })
 																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowTransparent({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].opacity
-																		? shadowTransparent[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].hOffset
-																		? shadowTransparent[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].vOffset
-																		? shadow[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].blur
-																		? shadowTransparent[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].spread
-																		? shadowTransparent[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowTransparent &&
-																	undefined !== shadowTransparent[0] &&
-																	undefined !== shadowTransparent[0].inset
-																		? shadowTransparent[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
-																	setAttributes({
-																		displayShadowTransparent: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowTransparent({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowTransparent({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowTransparent({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowTransparent({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowTransparent({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowTransparent({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowTransparent({ inset: value });
-																}}
+																tokens={shadowTransparentTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
@@ -2030,92 +1726,22 @@ export default function KadenceButtonEdit(props) {
 																isBorderRadius={true}
 																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
 																label={__('Box Shadow', 'kadence-blocks')}
+																value={shadowStickyHover}
+																onChange={(value) =>
+																	setAttributes({ shadowStickyHover: value })
+																}
 																enable={
 																	undefined !== displayHoverShadowSticky
 																		? displayHoverShadowSticky
 																		: false
 																}
-																color={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].color
-																		? shadowStickyHover[0].color
-																		: '#000000'
+																onEnableChange={(value) =>
+																	setAttributes({ displayHoverShadowSticky: value })
 																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowStickyHover({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].opacity
-																		? shadowStickyHover[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].hOffset
-																		? shadowStickyHover[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].vOffset
-																		? shadowStickyHover[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].blur
-																		? shadowStickyHover[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].spread
-																		? shadowStickyHover[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowStickyHover &&
-																	undefined !== shadowStickyHover[0] &&
-																	undefined !== shadowStickyHover[0].inset
-																		? shadowStickyHover[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
-																	setAttributes({
-																		displayHoverShadowSticky: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowStickyHover({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowStickyHover({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowStickyHover({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowStickyHover({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowStickyHover({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowStickyHover({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowStickyHover({ inset: value });
-																}}
+																tokens={shadowStickyHoverTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
@@ -2225,92 +1851,22 @@ export default function KadenceButtonEdit(props) {
 																isBorderRadius={true}
 																allowEmpty={true}
 															/>
-															<BoxShadowControl
+															<EditorShadowControl
 																label={__('Box Shadow', 'kadence-blocks')}
+																value={shadowSticky}
+																onChange={(value) =>
+																	setAttributes({ shadowSticky: value })
+																}
 																enable={
 																	undefined !== displayShadowSticky
 																		? displayShadowSticky
 																		: false
 																}
-																color={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].color
-																		? shadowSticky[0].color
-																		: '#000000'
+																onEnableChange={(value) =>
+																	setAttributes({ displayShadowSticky: value })
 																}
-																colorDefault={'#000000'}
-																onArrayChange={(color, opacity) => {
-																	saveShadowSticky({ color, opacity });
-																}}
-																opacity={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].opacity
-																		? shadowSticky[0].opacity
-																		: 0.2
-																}
-																hOffset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].hOffset
-																		? shadowSticky[0].hOffset
-																		: 0
-																}
-																vOffset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].vOffset
-																		? shadow[0].vOffset
-																		: 0
-																}
-																blur={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].blur
-																		? shadowSticky[0].blur
-																		: 14
-																}
-																spread={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].spread
-																		? shadowSticky[0].spread
-																		: 0
-																}
-																inset={
-																	undefined !== shadowSticky &&
-																	undefined !== shadowSticky[0] &&
-																	undefined !== shadowSticky[0].inset
-																		? shadowSticky[0].inset
-																		: false
-																}
-																onEnableChange={(value) => {
-																	setAttributes({
-																		displayShadowSticky: value,
-																	});
-																}}
-																onColorChange={(value) => {
-																	saveShadowSticky({ color: value });
-																}}
-																onOpacityChange={(value) => {
-																	saveShadowSticky({ opacity: value });
-																}}
-																onHOffsetChange={(value) => {
-																	saveShadowSticky({ hOffset: value });
-																}}
-																onVOffsetChange={(value) => {
-																	saveShadowSticky({ vOffset: value });
-																}}
-																onBlurChange={(value) => {
-																	saveShadowSticky({ blur: value });
-																}}
-																onSpreadChange={(value) => {
-																	saveShadowSticky({ spread: value });
-																}}
-																onInsetChange={(value) => {
-																	saveShadowSticky({ inset: value });
-																}}
+																tokens={shadowStickyTokens}
+																renderColor={renderShadowColor}
 															/>
 														</>
 													}
