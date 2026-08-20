@@ -187,7 +187,7 @@ export function saveSwatchEditsFlow({
 	}
 
 	if (recolored) {
-		chain = chain.then(() => saveSwatch(namespace, editingId, token, draft.value, slug));
+		chain = chain.then(() => saveSwatch(namespace, editingId, token, { value: draft.value }, slug));
 	}
 
 	return chain

@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -127,16 +128,17 @@ export function setGroupOrder(slug, group, payload) {
 }
 
 /**
- * Fetch the set's color palettes and its `$default` / `$current` pointers.
+ * Fetch the library's palettes: a flat row per palette carrying its id, label, and `is_default` /
+ * `is_current` / `user_created` flags, each embedded (via `_embed`) with its full group/swatch data.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token set slug.
- * @return {Promise<{ '$default': string, '$current': string, palettes: object[] }>} Palette listing.
+ * @return {Promise<object[]>} Flat, fully embedded palette listing.
  */
 export function fetchPalettes(namespace, slug) {
-	return apiFetch({ path: palettesPath(namespace, slug) });
+	return apiFetch({ path: addQueryArgs(palettesPath(namespace, slug), { _embed: true }) });
 }
 
 /**
@@ -191,23 +193,34 @@ export function savePalette(namespace, id, payload, slug) {
 }
 
 /**
- * Set a single palette swatch (the granular per-token write): only this token is sent, and the palette's
- * other swatches are untouched. A token the palette does not set falls back to the default palette.
+ * Set one or both fields of a single palette swatch (the granular per-token write): only the sent
+ * fields are changed, the palette's other swatches are untouched. `label` is only valid when `id`
+ * is the library's default palette — the server rejects it otherwise.
  *
  * @since TBD
  *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
  * @param {string} token     The swatch token dot-path.
- * @param {string} value     The color value (a literal color or a {dot.path} alias).
+ * @param {{value?: string, label?: string}} fields At least one of `value`/`label`.
  * @param {string} slug      Token set slug.
- * @return {Promise<object>} The updated palette listing.
+ * @return {Promise<object>} The fresh, fully embedded palette listing.
  */
-export function saveSwatch(namespace, id, token, value, slug) {
+export function saveSwatch(namespace, id, token, fields, slug) {
+	const data = {};
+
+	if (fields.value !== undefined) {
+		data.$value = fields.value;
+	}
+
+	if (fields.label !== undefined) {
+		data.label = fields.label;
+	}
+
 	return apiFetch({
 		path: paletteSwatchPath(namespace, id, token, slug),
 		method: 'PUT',
-		data: { $value: value },
+		data,
 	});
 }
 

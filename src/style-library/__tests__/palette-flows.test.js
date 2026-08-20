@@ -241,7 +241,7 @@ describe('saveSwatchEditsFlow', () => {
 			NAMESPACE,
 			'sunset',
 			'primitive.color.brand.primary',
-			'#abcdef',
+			{ value: '#abcdef' },
 			SLUG
 		);
 		expect(client.fetchPalette).not.toHaveBeenCalled();
