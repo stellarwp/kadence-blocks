@@ -36,6 +36,14 @@ describe('usePresets', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		// Fakes `setTimeout`/`setInterval`/`clearTimeout`, so `flushResolvers()` below can advance
+		// `@wordpress/data`'s resolver dispatch deterministically instead of racing a real OS timer
+		// tick against whatever else is contending for the CPU. `Date`/`performance` are excluded:
+		// React's own scheduler uses those to make time-slicing decisions, and freezing them (Jest's
+		// default) leaves it unable to ever decide enough time has passed to flush a commit, hanging
+		// real writes that depend on a state update actually landing. See `use-palettes.test.js` for
+		// the same setup and the investigation behind it.
+		jest.useFakeTimers({ doNotFake: ['Date', 'performance', 'queueMicrotask', 'nextTick'] });
 		registry = createTestRegistry();
 		global.IS_REACT_ACT_ENVIRONMENT = true;
 		window.kadenceDesignTokens = {
@@ -55,30 +63,24 @@ describe('usePresets', () => {
 		container.remove();
 		delete global.IS_REACT_ACT_ENVIRONMENT;
 		delete window.kadenceDesignTokens;
+		jest.useRealTimers();
 	});
 
 	// `@wordpress/data`'s resolver dispatch runs off a `setTimeout(fn, 0)` inside the store (see
 	// `mapSelectorWithResolver` in `@wordpress/data`'s redux store), a real timer callback that a
-	// plain `await act(async () => render())` does not wait for — that promise settles as soon as the
-	// synchronous render returns. Flushing a real timer tick after each render/dispatch gives the
-	// resolver's callback a turn to run before assertions read the store. See `use-libraries.test.js`
-	// for the same pattern.
-	//
-	// Several ticks, not one: this helper is called from contexts that deliberately expect the
-	// resolution to still be pending (e.g. "switching to a not-yet-resolved library shows loading
-	// with no stale data" below), so it can't poll a "the resolution has finished" predicate the way
-	// `use-libraries.test.js`/`use-palettes.test.js` do — there is no single terminal state every
-	// caller is waiting for. A single `setTimeout(0)` assumes the resolver's callback fires within
-	// one real tick, which is true under `--runInBand` but not guaranteed under parallel jest workers
-	// with other processes contending for the CPU; chaining several real ticks gives the callback a
-	// much larger wall-clock window to actually run, without changing behavior for a deliberately
-	// still-pending mock (extra ticks with nothing to advance are a no-op).
-	function flushResolvers(ticks = 3) {
-		return act(async () => {
-			for (let tick = 0; tick < ticks; tick += 1) {
-				await new Promise((resolve) => setTimeout(resolve, 0));
-			}
-		});
+	// plain `await act(async () => render())` does not wait for. `runOnlyPendingTimersAsync` fires
+	// whatever resolver dispatch is currently pending and lets the promise chain it kicks off (the
+	// mocked fetch resolving, its `.then()`, the store dispatch) drain via the real microtask queue
+	// before returning — deterministically, with no dependency on real wall-clock time. This helper
+	// is called from contexts that deliberately expect the resolution to still be pending (e.g.
+	// "switching to a not-yet-resolved library shows loading with no stale data" below, where the
+	// mock is a promise that never resolves) — calling it there is a safe no-op past the one pending
+	// timer it does find and fire. See `use-palettes.test.js`'s identical helper for why
+	// `advanceTimersByTimeAsync(0)` doesn't work here instead (a resolver's callback can itself
+	// schedule a second resolver's timer from deeper inside a promise chain, which that API doesn't
+	// reliably pick up within the same call).
+	function flushResolvers() {
+		return act(() => jest.runOnlyPendingTimersAsync());
 	}
 
 	function mountProbe() {
