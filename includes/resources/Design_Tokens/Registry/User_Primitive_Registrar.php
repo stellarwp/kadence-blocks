@@ -83,7 +83,7 @@ final class User_Primitive_Registrar {
 		}
 
 		foreach ( $this->slugs() as $slug ) {
-			$document = $this->load_document( $slug );
+			$document = $this->store->get_decoded_document( $slug );
 
 			if ( $document === [] ) {
 				continue;
@@ -201,24 +201,5 @@ final class User_Primitive_Registrar {
 		$type = $node[ Token_Type::get_type_key() ] ?? null;
 
 		return is_string( $type ) && $type !== '' ? $type : null;
-	}
-
-	/**
-	 * @since TBD
-	 *
-	 * @param string $slug The token library slug to load.
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function load_document( string $slug ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
 	}
 }

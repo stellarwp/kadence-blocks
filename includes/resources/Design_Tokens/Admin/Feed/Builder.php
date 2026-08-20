@@ -2,6 +2,7 @@
 
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed;
 
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Sorter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 
 /**
@@ -39,14 +40,25 @@ final class Builder {
 	private Preset_Nav $preset_nav;
 
 	/**
+	 * The shared stored-order permutation, applied one schema group at a time.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Sorter
+	 */
+	private Token_Sorter $sorter;
+
+	/**
 	 * @since TBD
 	 *
 	 * @param Token_Registry $registry   The token registry.
 	 * @param Preset_Nav     $preset_nav The nav-ready block-presets section builder.
+	 * @param Token_Sorter   $sorter     The shared stored-order permutation.
 	 */
-	public function __construct( Token_Registry $registry, Preset_Nav $preset_nav ) {
+	public function __construct( Token_Registry $registry, Preset_Nav $preset_nav, Token_Sorter $sorter ) {
 		$this->registry   = $registry;
 		$this->preset_nav = $preset_nav;
+		$this->sorter     = $sorter;
 	}
 
 	/**
@@ -121,16 +133,11 @@ final class Builder {
 	}
 
 	/**
-	 * Permute every schema group by the stored flat order. For each group independently: rows
-	 * whose id appears in the flat list come first, sorted by their position in that list; every
-	 * remaining row follows in declaration order — unmentioned ids append rather than sort last so
-	 * a token added after the order was saved (a later release, a newly created primitive) is
-	 * never silently pushed out of view. An id belonging to a different group simply never matches
-	 * one of this group's rows, so cross-group entries in the flat list are ignored naturally —
-	 * no explicit filtering by group is needed. The result of every branch is the same row set the
-	 * registry emitted — a reorder can never hide a token — and an empty stored order returns the
-	 * schema untouched (declaration order), so removing the stored order restores declaration
-	 * order with no other code path involved.
+	 * Permute every schema group by the stored flat order, one group at a time through the shared
+	 * {@see Token_Sorter} — the same permutation the editor's pickable-token pool applies, so the
+	 * picker and this screen can never disagree about where a token sits. Per its contract: listed
+	 * ids first by position, unmentioned ids appended in declaration order (never hidden), an empty
+	 * stored order returning the schema untouched.
 	 *
 	 * @since TBD
 	 *
@@ -144,23 +151,8 @@ final class Builder {
 			return $schema;
 		}
 
-		$positions = array_flip( $order );
-
 		foreach ( $schema['groups'] as $group => $rows ) {
-			$ordered   = [];
-			$unordered = [];
-
-			foreach ( $rows as $row ) {
-				if ( isset( $positions[ $row['id'] ] ) ) {
-					$ordered[] = $row;
-				} else {
-					$unordered[] = $row; // Not in the stored order — declaration order, appended after.
-				}
-			}
-
-			usort( $ordered, fn( array $a, array $b ): int => $positions[ $a['id'] ] <=> $positions[ $b['id'] ] );
-
-			$schema['groups'][ $group ] = array_merge( $ordered, $unordered );
+			$schema['groups'][ $group ] = $this->sorter->sort( $rows, $order );
 		}
 
 		return $schema;

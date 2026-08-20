@@ -5,6 +5,8 @@ namespace Tests\wpunit\Resources\Design_Tokens\Admin\Feed;
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Builder;
 use KadenceWP\KadenceBlocks\Design_Tokens\Admin\Feed\Preset_Nav;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Sorter;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use Tests\Support\Classes\TestCase;
 
@@ -44,7 +46,7 @@ final class BuilderTest extends TestCase {
 	 * @return Builder
 	 */
 	private function builder(): Builder {
-		return new Builder( $this->registry, new Preset_Nav( $this->registry ) );
+		return new Builder( $this->registry, new Preset_Nav( $this->registry ), new Token_Sorter( new Token_Order_Index() ) );
 	}
 
 	/**

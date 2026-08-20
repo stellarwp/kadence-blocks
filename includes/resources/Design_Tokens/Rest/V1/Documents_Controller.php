@@ -729,7 +729,7 @@ final class Documents_Controller extends Controller {
 			$slug = Token_Store::default_slug();
 		}
 
-		$candidate = $this->mutator->merge( $this->read_stored_document( $slug ), $this->read_document_param( $request ) );
+		$candidate = $this->mutator->merge( $this->store->get_decoded_document( $slug ), $this->read_document_param( $request ) );
 
 		return $this->validate_and_save( $candidate, $slug, Cast::to_string( $request->get_param( self::TITLE_PARAM ) ) );
 	}
@@ -753,7 +753,7 @@ final class Documents_Controller extends Controller {
 			return $error;
 		}
 
-		$candidate = $this->mutator->merge( $this->read_stored_document( $slug ), $partial );
+		$candidate = $this->mutator->merge( $this->store->get_decoded_document( $slug ), $partial );
 
 		return $this->validate_and_save( $candidate, $slug, Cast::to_string( $request->get_param( self::TITLE_PARAM ) ) );
 	}
@@ -773,7 +773,7 @@ final class Documents_Controller extends Controller {
 	 */
 	public function update_item( $request ) {
 		$slug   = Cast::to_string( $request->get_param( self::SLUG_PARAM ) );
-		$stored = $this->read_stored_document( $slug );
+		$stored = $this->store->get_decoded_document( $slug );
 
 		if ( ! empty( $this->user_primitive_index->all( $stored ) ) ) {
 			return new WP_Error(
@@ -964,7 +964,7 @@ final class Documents_Controller extends Controller {
 			$leaf = [];
 		}
 
-		$stored = $this->read_stored_document( $slug );
+		$stored = $this->store->get_decoded_document( $slug );
 
 		// Build the inspection view with disabled tokens kept (apply_disabled = false): authoring over a
 		// token that an override currently disables must still read its baseline $type and group shape,
@@ -1038,7 +1038,7 @@ final class Documents_Controller extends Controller {
 			);
 		}
 
-		$stored    = $this->read_stored_document( $slug );
+		$stored    = $this->store->get_decoded_document( $slug );
 		$candidate = $this->mutator->remove( $stored, $path );
 
 		if ( $candidate === $stored ) {
@@ -1084,7 +1084,7 @@ final class Documents_Controller extends Controller {
 			return $error;
 		}
 
-		$stored = $this->read_stored_document( $slug );
+		$stored = $this->store->get_decoded_document( $slug );
 
 		if ( $label === '' ) {
 			return $this->persist_label_clear( $stored, $slug, $id );
@@ -1129,7 +1129,7 @@ final class Documents_Controller extends Controller {
 			return $error;
 		}
 
-		return $this->persist_label_clear( $this->read_stored_document( $slug ), $slug, $id );
+		return $this->persist_label_clear( $this->store->get_decoded_document( $slug ), $slug, $id );
 	}
 
 	/**
@@ -1172,7 +1172,7 @@ final class Documents_Controller extends Controller {
 		$submitted = array_map( [ Cast::class, 'to_string' ], (array) $request->get_param( self::ORDER_PARAM ) );
 		$ids       = array_values( array_unique( array_intersect( $submitted, $group_ids ) ) );
 
-		$stored    = $this->read_stored_document( $slug );
+		$stored    = $this->store->get_decoded_document( $slug );
 		$candidate = $ids === []
 			? $this->order_index->remove_group( $stored, $group_ids )
 			: $this->order_index->set_group( $stored, $group_ids, $ids );
@@ -1212,7 +1212,7 @@ final class Documents_Controller extends Controller {
 		}
 
 		$group_ids = array_map( [ Cast::class, 'to_string' ], array_column( $registered, 'id' ) );
-		$stored    = $this->read_stored_document( $slug );
+		$stored    = $this->store->get_decoded_document( $slug );
 		$candidate = $this->order_index->remove_group( $stored, $group_ids );
 
 		if ( $candidate === $stored ) {
@@ -1806,27 +1806,6 @@ final class Documents_Controller extends Controller {
 	}
 
 	/**
-	 * Read and decode the stored overrides-only document for a library.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The token library slug.
-	 *
-	 * @return array<string, mixed> The decoded document, empty when absent or unreadable.
-	 */
-	private function read_stored_document( string $slug ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
-	}
-
-	/**
 	 * Read the document body parameter as an array, coercing any non-array to an empty document.
 	 *
 	 * @since TBD
@@ -2106,7 +2085,7 @@ final class Documents_Controller extends Controller {
 			'slug'     => $slug,
 			'title'    => $this->display_title( $slug, $stored ),
 			'version'  => $this->store->get_version( $slug ),
-			'document' => $this->read_stored_document( $slug ),
+			'document' => $this->store->get_decoded_document( $slug ),
 		];
 	}
 

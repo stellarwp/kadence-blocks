@@ -3,8 +3,11 @@
 namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 
 use Generator;
+use KadenceWP\KadenceBlocks\Design_Tokens\Database\Active_Token_Library_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Token_Order_Index;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Pickable_Tokens_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use Tests\Support\Classes\TestCase;
 
@@ -25,16 +28,57 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	private Token_Store $store;
 
 	/**
-	 * Resolves the catalog and the store from the container so each test exercises the real shipped
-	 * baseline and registered collaborators.
+	 * The token registry, for the UI groups the pool's order is applied within.
+	 *
+	 * @since TBD
+	 *
+	 * @var Token_Registry
+	 */
+	private Token_Registry $registry;
+
+	/**
+	 * Ids of the user primitives a test registered, deregistered on teardown. The registry lives in the
+	 * shared container rather than the database, so unlike stored rows it is not rolled back between
+	 * tests and a leaked registration would follow the suite into every later case.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	private array $registered = [];
+
+	/**
+	 * Resolves the catalog, the store and the registry from the container so each test exercises the
+	 * real shipped baseline and registered collaborators.
 	 *
 	 * @return void
 	 */
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->catalog = $this->container->get( Pickable_Tokens_Catalog::class );
-		$this->store   = $this->container->get( Token_Store::class );
+		$this->catalog  = $this->container->get( Pickable_Tokens_Catalog::class );
+		$this->store    = $this->container->get( Token_Store::class );
+		$this->registry = $this->container->get( Token_Registry::class );
+
+		// The registry lives in the shared container, so a user primitive an earlier test registered
+		// outlives the rollback that removed the document it came from. Syncing against the now-empty
+		// database drops those leftovers, so every test starts from the same pool.
+		$this->container->get( User_Primitive_Registrar::class )->sync();
+	}
+
+	/**
+	 * Drops every user primitive a test registered into the shared in-memory registry.
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		foreach ( $this->registered as $id ) {
+			$this->registry->deregister_user_primitive( $id );
+		}
+
+		$this->registered = [];
+
+		parent::tearDown();
 	}
 
 	/**
@@ -261,6 +305,124 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A library with no stored sort order leaves the pool in registry order, so the picker is unchanged
+	 * until someone actually reorders a scale on the Style Library screen.
+	 *
+	 * @return void
+	 */
+	public function testPoolIsRegistryOrderWithoutAStoredOrder(): void {
+		$this->assertSame(
+			array_keys( $this->registry->all() ),
+			array_column( $this->catalog->all()['tokens'], 'id' )
+		);
+	}
+
+	/**
+	 * A stored order permutes the entries of its own group and leaves every other position in the pool
+	 * holding the token it held before, so a reorder on one scale screen never disturbs another scale.
+	 *
+	 * @return void
+	 */
+	public function testAStoredOrderPermutesOnlyItsOwnGroup(): void {
+		$before = array_column( $this->catalog->all()['tokens'], 'id' );
+
+		[ $ids ] = $this->reorderable_group();
+
+		$slots    = array_map( static fn( string $id ): int => (int) array_search( $id, $before, true ), $ids );
+		$reversed = array_reverse( $ids );
+
+		$this->store_order( Token_Store::default_slug(), $ids, $reversed );
+
+		$after = array_column( $this->catalog->all()['tokens'], 'id' );
+
+		// The group's own slots now spell the stored sequence.
+		$this->assertSame( $reversed, array_map( static fn( int $slot ): string => $after[ $slot ], $slots ) );
+
+		// Every position outside the group is untouched.
+		foreach ( $before as $slot => $id ) {
+			if ( ! in_array( $slot, $slots, true ) ) {
+				$this->assertSame( $id, $after[ $slot ] );
+			}
+		}
+	}
+
+	/**
+	 * A user primitive is registered after the whole baseline, so it lands at the tail of the registry;
+	 * once the stored order places it mid-group it appears there in the pool too, matching the position
+	 * its scale screen shows rather than trailing every other token.
+	 *
+	 * @return void
+	 */
+	public function testAUserPrimitiveListedMidOrderAppearsMidGroup(): void {
+		[ $ids, $group, $type ] = $this->reorderable_group();
+
+		$custom = $this->fixture_id( $ids[0] );
+
+		// Second in its group: after the first built-in, before the one that followed it.
+		$order = array_merge( [ $ids[0], $custom ], array_slice( $ids, 1 ) );
+
+		$this->store_order( Token_Store::default_slug(), array_merge( $ids, [ $custom ] ), $order );
+
+		// After the write, never before: saving a document re-syncs the user primitives, which drops
+		// every user-created registration the document itself does not carry.
+		$this->register_user_primitive( $custom, $group, $type );
+
+		$pool = array_column( $this->catalog->all()['tokens'], 'id' );
+
+		$this->assertGreaterThan( array_search( $ids[0], $pool, true ), array_search( $custom, $pool, true ) );
+		$this->assertLessThan( array_search( $ids[1], $pool, true ), array_search( $custom, $pool, true ) );
+
+		// The symptom the ticket describes: registered last, so it trailed the whole pool.
+		$this->assertNotSame( $custom, end( $pool ) );
+	}
+
+	/**
+	 * The pool honors the ACTIVE library's stored order rather than the default library's, so the picker
+	 * and the Style Library screen — which reads the same pointer — never disagree.
+	 *
+	 * @return void
+	 */
+	public function testPoolFollowsTheActiveLibraryOrder(): void {
+		[ $ids ] = $this->reorderable_group();
+
+		$reversed = array_reverse( $ids );
+		$rotated  = array_merge( [ end( $ids ) ], array_slice( $ids, 0, -1 ) );
+
+		$this->store_order( Token_Store::default_slug(), $ids, $reversed );
+		$this->store_order( 'alternate', $ids, $rotated );
+
+		$this->container->get( Active_Token_Library_Store::class )->set( 'alternate' );
+
+		$pool  = array_column( $this->catalog->all()['tokens'], 'id' );
+		$slots = array_map( static fn( string $id ): int => (int) array_search( $id, $pool, true ), $rotated );
+
+		sort( $slots );
+
+		$this->assertSame( $rotated, array_map( static fn( int $slot ): string => $pool[ $slot ], $slots ) );
+	}
+
+	/**
+	 * A stored order naming an id no token carries — a since-deleted token, a token from a later release
+	 * — neither drops nor duplicates a pool entry, so a stale order can never shrink what the picker offers.
+	 *
+	 * @return void
+	 */
+	public function testAStaleIdInTheStoredOrderDropsNoToken(): void {
+		$before = array_column( $this->catalog->all()['tokens'], 'id' );
+
+		[ $ids ] = $this->reorderable_group();
+
+		$this->store_order( Token_Store::default_slug(), $ids, array_merge( [ 'primitive.gone.away' ], $ids ) );
+
+		$after = array_column( $this->catalog->all()['tokens'], 'id' );
+
+		sort( $before );
+		sort( $after );
+
+		$this->assertSame( $before, $after );
+	}
+
+	/**
 	 * @return Generator
 	 */
 	public function customDimensionRoleProvider(): Generator {
@@ -296,6 +458,72 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 			'prefix'   => 'primitive.',
 			'expected' => 'primitive',
 		];
+	}
+
+	/**
+	 * A UI group with enough tokens to be worth permuting, read from the same schema the Style Library
+	 * screen and its reorder endpoint address, so the fixture follows the baseline instead of hardcoding
+	 * a group label the declarations may rename.
+	 *
+	 * @return array{0: array<int, string>, 1: string, 2: string} The group's token ids in registry order,
+	 *                                                            the group label, and its tokens' DTCG type.
+	 */
+	private function reorderable_group(): array {
+		foreach ( $this->registry->to_ui_schema()['groups'] as $group => $rows ) {
+			if ( $group !== '' && count( $rows ) >= 3 ) {
+				return [ array_column( $rows, 'id' ), (string) $group, (string) $rows[0]['type'] ];
+			}
+		}
+
+		$this->fail( 'No UI group with at least three tokens in the registry.' );
+	}
+
+	/**
+	 * The id for a user-primitive fixture joining a token's group, derived from that sibling's id so it
+	 * carries the same layer and role as the group it joins.
+	 *
+	 * @param string $sibling The id of a token already in the target group.
+	 *
+	 * @return string The fixture id.
+	 */
+	private function fixture_id( string $sibling ): string {
+		return substr( $sibling, 0, (int) strrpos( $sibling, '.' ) ) . '.pool-order-fixture';
+	}
+
+	/**
+	 * Register a user primitive into the shared registry — appended at the tail, exactly where the
+	 * boot-time sync puts one — and remember it for teardown.
+	 *
+	 * @param string $id    The token id to register.
+	 * @param string $group The group label to register the primitive under.
+	 * @param string $type  The DTCG type to register the primitive as.
+	 *
+	 * @return void
+	 */
+	private function register_user_primitive( string $id, string $group, string $type ): void {
+		$this->registry->register_user_primitive( $id, $type, 'Pool Order Fixture', $group );
+
+		$this->registered[] = $id;
+	}
+
+	/**
+	 * Store one group's sort order on a library, creating the library's row when it has none — the same
+	 * write the Style Library's drag-reorder makes, minus the REST layer.
+	 *
+	 * @param string             $slug      The token library slug.
+	 * @param array<int, string> $group_ids Every token id belonging to the group being ordered.
+	 * @param array<int, string> $ids       The group's ids in their new order.
+	 *
+	 * @return void
+	 */
+	private function store_order( string $slug, array $group_ids, array $ids ): void {
+		$document = ( new Token_Order_Index() )->set_group(
+			$this->store->get_decoded_document( $slug ),
+			$group_ids,
+			$ids
+		);
+
+		$this->store->save_document( (string) wp_json_encode( $document ), $slug );
 	}
 
 	/**

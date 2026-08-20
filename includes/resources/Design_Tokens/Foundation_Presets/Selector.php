@@ -85,7 +85,9 @@ final class Selector {
 		// nothing.
 		$tokens = $this->catalog->tokens_for( $group, $choice );
 
-		$document = $this->current_overrides( $slug );
+		// Tolerates an absent/empty/malformed row as "no overrides yet", so a fresh site seeds onto a
+		// clean slate.
+		$document = $this->store->get_decoded_document( $slug );
 		$original = $document;
 
 		// Clear the group's whole footprint, then write the chosen preset — a clean swap, so a preset the
@@ -120,28 +122,6 @@ final class Selector {
 		}
 
 		$this->store->save_document( $json, $slug );
-	}
-
-	/**
-	 * Decode the library's current overrides document, tolerating an absent/empty/malformed row as "no
-	 * overrides yet" so a fresh site seeds onto a clean slate.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug The token library slug.
-	 *
-	 * @return array<string, mixed>
-	 */
-	private function current_overrides( string $slug ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
 	}
 
 	/**

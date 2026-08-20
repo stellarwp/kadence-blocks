@@ -177,15 +177,7 @@ final class Effective_Presets {
 	 * @return array<string, mixed>
 	 */
 	public function raw( string $slug = 'default' ): array {
-		$raw = $this->store->get_document( $slug );
-
-		if ( $raw === '' ) {
-			return [];
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		return is_array( $decoded ) ? $decoded : [];
+		return $this->store->get_decoded_document( $slug );
 	}
 
 	/**
