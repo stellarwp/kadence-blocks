@@ -12,6 +12,7 @@ import * as resolvers from './resolvers';
 import * as selectors from './selectors';
 
 export { STORE_NAME } from './constants';
+export { reshapePaletteRows } from './selectors';
 
 import { STORE_NAME } from './constants';
 
