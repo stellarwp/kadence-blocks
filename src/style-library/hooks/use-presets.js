@@ -45,9 +45,15 @@ export function usePresets(library, preset) {
 	const { payload, isLoading, loadError } = useSelect(
 		(select) => ({
 			payload: namespace && block && slug ? select(STORE_NAME).getBlockPresets(namespace, block, slug) : null,
+			// Gated on `!payload`, not raw `isResolving` alone: a write's wrapped `refreshFeed`
+			// (`use-preset-screen.js`) invalidates and re-resolves this same selector, which raises
+			// `isResolving` for the duration of that background re-fetch too. Once the presets list has
+			// loaded once, the store keeps serving that payload while it revalidates, so there is data to
+			// keep rendering — a loading state should only ever show up before the first payload lands.
 			isLoading:
 				Boolean(namespace && block && slug) &&
-				select(STORE_NAME).isResolving('getBlockPresets', [namespace, block, slug]),
+				select(STORE_NAME).isResolving('getBlockPresets', [namespace, block, slug]) &&
+				!select(STORE_NAME).getBlockPresets(namespace, block, slug),
 			loadError:
 				namespace && block && slug
 					? select(STORE_NAME).getResolutionError('getBlockPresets', [namespace, block, slug])

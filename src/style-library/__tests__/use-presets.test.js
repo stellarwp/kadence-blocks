@@ -158,6 +158,47 @@ describe('usePresets', () => {
 		expect(probe.latest().payload.version).toBe('a2');
 	});
 
+	it('stays out of loading during a write-triggered background re-resolve once data has loaded', async () => {
+		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
+
+		const probe = mountProbe();
+		await probe.render(LIBRARY_A);
+
+		expect(probe.latest().payload).toEqual(PAYLOAD_A);
+		expect(probe.latest().isLoading).toBe(false);
+
+		let resolveNext;
+		fetchBlockPresets.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveNext = resolve;
+			})
+		);
+
+		// Simulates what `usePresetScreen`'s wrapped `refreshFeed` does after a create/save/delete/
+		// reorder write.
+		act(() => {
+			registry
+				.dispatch(STORE_NAME)
+				.invalidateResolution('getBlockPresets', ['kb-design-tokens/v1', 'kadence/singlebtn', 'default']);
+			registry.resolveSelect(STORE_NAME).getBlockPresets('kb-design-tokens/v1', 'kadence/singlebtn', 'default');
+		});
+
+		// Flushed so the resolver's `setTimeout(fn, 0)` actually fires and `isResolving` genuinely
+		// flips `true` for the in-flight re-fetch — the exact window the regression is about. Without
+		// this flush the assertions below would trivially pass even against the buggy code, because
+		// resolution wouldn't have started yet.
+		await flushResolvers();
+
+		expect(fetchBlockPresets).toHaveBeenCalledTimes(2);
+		expect(probe.latest().payload).toEqual(PAYLOAD_A);
+		expect(probe.latest().isLoading).toBe(false);
+
+		await act(async () => resolveNext({ ...PAYLOAD_A, version: 'a2' }));
+
+		expect(probe.latest().payload.version).toBe('a2');
+		expect(probe.latest().isLoading).toBe(false);
+	});
+
 	it('two mounted instances (a screen and its settings panel) share one fetch', async () => {
 		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
 
