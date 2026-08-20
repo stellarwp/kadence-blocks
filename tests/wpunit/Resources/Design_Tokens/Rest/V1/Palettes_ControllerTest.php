@@ -51,8 +51,9 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * The listing returns the library's $default / $current pointers and each palette's id + label — the shipped
-	 * `default` plus a stored non-default palette.
+	 * The listing returns a flat row per palette carrying its id, label, and `is_default` / `is_current` /
+	 * `user_created` flags, each with an embeddable `self` link — the shipped `default` plus a stored
+	 * non-default palette.
 	 *
 	 * @return void
 	 */
@@ -61,12 +62,43 @@ final class Palettes_ControllerTest extends TestCase {
 
 		$data = $this->controller->get_items( new WP_REST_Request( WP_REST_Server::READABLE ) )->get_data();
 
-		$this->assertSame( 'default', $data['$default'] );
-		$this->assertSame( 'default', $data['$current'] );
-
-		$ids = array_column( $data['palettes'], 'id' );
+		$ids = array_column( $data, 'id' );
 		$this->assertContains( 'default', $ids );
 		$this->assertContains( 'custom', $ids );
+
+		$default_row = $data[ array_search( 'default', $ids, true ) ];
+		$custom_row  = $data[ array_search( 'custom', $ids, true ) ];
+
+		$this->assertTrue( $default_row['is_default'] );
+		$this->assertTrue( $default_row['is_current'] );
+		$this->assertFalse( $default_row['user_created'] );
+
+		$this->assertFalse( $custom_row['is_default'] );
+		$this->assertFalse( $custom_row['is_current'] );
+		$this->assertTrue( $custom_row['user_created'] );
+		$this->assertSame( 'Custom', $custom_row['label'] );
+
+		$this->assertArrayHasKey( 'self', $default_row['_links'] );
+		$this->assertTrue( $default_row['_links']['self'][0]['embeddable'] );
+	}
+
+	/**
+	 * `_embed` resolves each row's `self` link into its full `effective_view()` — the whole point of
+	 * flattening the listing in the first place.
+	 *
+	 * @return void
+	 */
+	public function testGetItemsEmbedsEffectiveViewPerRow(): void {
+		$this->create_custom_palette();
+
+		$request = new WP_REST_Request( WP_REST_Server::READABLE, '/kb-design-tokens/v1/palettes' );
+		$request->set_param( 'library', 'default' );
+
+		$response = rest_get_server()->dispatch( $request );
+		$resolved = rest_get_server()->response_to_data( $response, true );
+
+		self::assertArrayHasKey( '_embedded', $resolved[0] );
+		self::assertArrayHasKey( 'groups', $resolved[0]['_embedded']['self'][0] );
 	}
 
 	/**

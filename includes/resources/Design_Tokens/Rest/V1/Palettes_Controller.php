@@ -314,7 +314,9 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * List a library's palettes: the `$default` / `$current` pointers and each palette's id + label.
+	 * List a library's palettes: a flat row per palette carrying its id, label, and `is_default` /
+	 * `is_current` / `user_created` flags, each with an embeddable `self` link `_embed` resolves into
+	 * the palette's full `effective_view()`.
 	 *
 	 * @since TBD
 	 *
@@ -323,7 +325,13 @@ final class Palettes_Controller extends Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		return new WP_REST_Response( $this->prepare_items( $this->slug( $request ) ), WP_Http::OK );
+		$slug = $this->slug( $request );
+		$rows = array_map(
+			fn( array $row ) => $this->prepare_response_for_collection( $this->prepare_item_for_response( $row, $request ) ),
+			$this->prepare_items( $slug )
+		);
+
+		return new WP_REST_Response( $rows, WP_Http::OK );
 	}
 
 	/**
@@ -617,6 +625,46 @@ final class Palettes_Controller extends Controller {
 		];
 
 		return $this->add_additional_fields_schema( $this->item_schema );
+	}
+
+	/**
+	 * Wrap one listing row in a `WP_REST_Response` carrying its `self` link — what `_embed` resolves
+	 * through `get_item()` into the row's full `effective_view()`, and what the standard
+	 * `prepare_response_for_collection()` call in `get_items()` below merges into the row's own array
+	 * as `_links` (not a nested response object — see `Contracts\Controller` for why this repo's
+	 * controllers otherwise build plain arrays directly).
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $item    The listing row: `{id, label, is_default, is_current, user_created}`.
+	 * @param WP_REST_Request      $request Full details about the request.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function prepare_item_for_response( $item, $request ) {
+		$response = new WP_REST_Response( $item );
+		$response->add_links( $this->prepare_links( $item ) );
+
+		return $response;
+	}
+
+	/**
+	 * The `self` link for a listing row, targeting `GET /palettes/{id}` — the single-palette route
+	 * `_embed` resolves into the row's full group/swatch data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $item The listing row.
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	protected function prepare_links( $item ) {
+		return [
+			'self' => [
+				'href'       => rest_url( sprintf( '%s/%s/%s', $this->namespace, $this->rest_base, Cast::to_string( $item[ self::ID_PARAM ] ) ) ),
+				'embeddable' => true,
+			],
+		];
 	}
 
 	/**
@@ -1276,34 +1324,39 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The palette listing for a library: the `$default` / `$current` pointers, each palette's id + label, and
-	 * which ids are user-created (the only ones a delete removes rather than reverts to baseline).
+	 * The palette listing for a library: every palette as a flat row carrying its id, label, and which
+	 * of the three per-library facts it represents (`$default`, `$current`, user-created) — a flat
+	 * top-level array, not a wrapper object, because WP core's `_embed` resolution only walks
+	 * TOP-LEVEL collection items, never something nested inside a wrapper key. A row's `is_default`/
+	 * `is_current`/`user_created` flags carry what the old `{$default, $current, palettes,
+	 * userCreated}` wrapper used to convey at the collection level.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug The token library slug.
 	 *
-	 * @return array<string, mixed>
+	 * @return array<int, array<string, mixed>>
 	 */
 	private function prepare_items( string $slug ): array {
-		$section  = $this->palettes->section( $slug );
-		$palettes = [];
+		$section      = $this->palettes->section( $slug );
+		$default_id   = $this->palettes->default_palette( $slug );
+		$current_id   = $this->palettes->current( $slug );
+		$user_created = $this->palettes->user_created( $slug );
+		$rows         = [];
 
 		foreach ( $this->palettes->palette_ids( $slug ) as $palette_id ) {
 			$node = $section[ $palette_id ] ?? [];
 
-			$palettes[] = [
+			$rows[] = [
 				self::ID_PARAM    => $palette_id,
 				self::LABEL_PARAM => is_array( $node ) ? ( $node[ Extensions::get_label_key() ] ?? '' ) : '',
+				'is_default'      => $palette_id === $default_id,
+				'is_current'      => $palette_id === $current_id,
+				'user_created'    => in_array( $palette_id, $user_created, true ),
 			];
 		}
 
-		return [
-			Extensions::get_default_key() => $this->palettes->default_palette( $slug ),
-			Extensions::get_current_key() => $this->palettes->current( $slug ),
-			'palettes'                    => $palettes,
-			'userCreated'                 => $this->palettes->user_created( $slug ),
-		];
+		return $rows;
 	}
 
 	/**
