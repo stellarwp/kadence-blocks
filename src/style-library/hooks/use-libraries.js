@@ -1,12 +1,12 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
+import { useSelect, useRegistry } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { fetchLibraries } from '../api/client';
 import { DEFAULT_LIBRARY_SLUG } from '../constants';
 import { sortLibraries } from '../helpers/libraries';
 import {
@@ -17,6 +17,7 @@ import {
 	openLibraryFlow,
 	renameLibraryFlow,
 } from '../helpers/library-flows';
+import { STORE_NAME } from '../store';
 
 /**
  * The library management surface for the Style Library header: the list, the two slugs, and the
@@ -54,8 +55,6 @@ import {
  *                  the functions that clear them, and the five operations.
  */
 export function useLibraries(feed, refreshFeed) {
-	const [libraries, setLibraries] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
 	const [isBusy, setIsBusy] = useState(false);
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
@@ -74,16 +73,37 @@ export function useLibraries(feed, refreshFeed) {
 	// pointer goes through a flow that reports the server's resolved slug back here.
 	const [activeSlug, setActiveSlug] = useState(editingSlug);
 
-	const loadLibraries = useCallback(() => {
-		return fetchLibraries()
-			.then((rows) => setLibraries(sortLibraries(rows)))
-			.catch((err) => setOpenError({ message: errorMessage(err) }));
-	}, []);
+	const registry = useRegistry();
+	const { libraryRows, isLoading, loadFailure } = useSelect(
+		(select) => ({
+			libraryRows: select(STORE_NAME).getLibraries(),
+			isLoading: select(STORE_NAME).isResolving('getLibraries', []),
+			loadFailure: select(STORE_NAME).getResolutionError('getLibraries', []),
+		}),
+		[]
+	);
+	const libraries = useMemo(() => sortLibraries(libraryRows ?? []), [libraryRows]);
 
+	// The original hook's mount-effect `.catch()` wrote a failed list fetch into the SAME `openError`
+	// slot `openLibrary` (below) also writes to — `LibrarySelector.js` renders one `openError` prop for
+	// both cases. This effect preserves that: a resolution failure for `getLibraries` surfaces here the
+	// same way a failed `openLibrary` call already does via its own `onError: setOpenError`.
 	useEffect(() => {
-		setIsLoading(true);
-		loadLibraries().finally(() => setIsLoading(false));
-	}, [loadLibraries]);
+		if (loadFailure) {
+			setOpenError({ message: errorMessage(loadFailure) });
+		}
+	}, [loadFailure]);
+
+	// The flows in `helpers/library-flows.js` call this after create/rename/delete to refresh the list —
+	// unchanged from their point of view. Internally: `invalidateResolution` clears the "this selector
+	// call is already resolved" flag the framework tracks per argument tuple, and `resolveSelect` then
+	// re-runs the `getLibraries` resolver (rather than returning the now-invalidated cached result),
+	// resolving once the fresh rows land in the store — every mounted `useLibraries` instance re-renders
+	// from the same updated state automatically.
+	const loadLibraries = useCallback(() => {
+		registry.dispatch(STORE_NAME).invalidateResolution('getLibraries', []);
+		return registry.resolveSelect(STORE_NAME).getLibraries();
+	}, [registry]);
 
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
