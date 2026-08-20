@@ -46,10 +46,12 @@ export function getBlockPresets(state, namespace, block, slug) {
  * this reshapes those flags back into the pointer-based shape this app's own code was already built
  * around.
  *
- * Shared between `getPaletteListing` below (which reshapes STATE already in the store) and
- * `helpers/palette-flows.js` (which reshapes a raw write RESPONSE before it's ever dispatched) —
- * every palette write's own response is the same flat embedded-array shape a `GET /palettes?_embed`
- * returns, so reusing this one reshape avoids the same logic living in two places.
+ * Used internally by `getPaletteListing` below only — reshaping the raw wire-format rows, exactly
+ * as the reducer stores them, into the shape the frontend consumes. Nothing else should call this
+ * directly, and specifically not code that writes into the store: `helpers/palette-flows.js`
+ * dispatches every write's response RAW, via `onReceive`, with no reshaping before dispatch —
+ * reshaping a write's response before it reaches the store would double-reshape it on the next
+ * read, since `getPaletteListing` is the one canonical place reshaping happens.
  *
  * @param {Array<Object>} rows The flat embedded-array rows.
  *

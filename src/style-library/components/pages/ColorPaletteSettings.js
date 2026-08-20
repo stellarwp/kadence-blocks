@@ -97,10 +97,11 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// closure is the PRE-save values, so calling it would silently revert the panel to what the
 	// user just replaced (confirmed: the write itself lands correctly; only the UI would regress).
 	// Leaving the draft alone is enough: it already holds exactly what was saved, so the picker
-	// keeps showing it, and once `saveSwatchEdits`'s `reload()` refreshes `palettes.palette`, the
-	// next render's `initialValues` recomputes to the same values, `computeIsDirty` sees them as
-	// equal, and the Save button disables itself — no reset step required. On failure the draft
-	// (and the Save button) simply survive, which is what we want anyway.
+	// keeps showing it, and once `saveSwatchEdits`'s write dispatches its own response into the
+	// store (`onReceive`, no follow-up fetch), `palettes.palette` recomputes from the fresh
+	// listing, the next render's `initialValues` recomputes to the same values, `computeIsDirty`
+	// sees them as equal, and the Save button disables itself — no reset step required. On failure
+	// the draft (and the Save button) simply survive, which is what we want anyway.
 	const onSave = () => palettes.saveSwatchEdits(token, panel.draft, initialValues).catch(() => {});
 
 	return (

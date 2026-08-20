@@ -5,7 +5,6 @@ import {
 	addGroupFlow,
 	createPaletteFlow,
 	deletePaletteFlow,
-	openPaletteFlow,
 	removeGroupFlow,
 	removeSwatchFlow,
 	renameGroupFlow,
@@ -277,51 +276,6 @@ describe('saveSwatchEditsFlow', () => {
 
 		expect(flowArgs.onError).toHaveBeenCalledWith({ message: failure.message });
 		expect(flowArgs.onBusy).toHaveBeenLastCalledWith(false);
-	});
-});
-
-describe('openPaletteFlow', () => {
-	it('fetches the effective view and calls onOpened — no write of any kind', async () => {
-		const view = selectedView();
-		client.fetchPalette.mockResolvedValue(view);
-		const onOpened = jest.fn();
-		const onBusy = jest.fn();
-
-		await openPaletteFlow({
-			namespace: NAMESPACE,
-			slug: SLUG,
-			id: 'sunset',
-			onOpened,
-			onBusy,
-			onError: jest.fn(),
-		});
-
-		expect(client.fetchPalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		expect(onOpened).toHaveBeenCalledWith(view);
-		expect(client.setCurrentPalette).not.toHaveBeenCalled();
-		expect(client.savePalette).not.toHaveBeenCalled();
-		expect(onBusy.mock.calls).toEqual([[true], [false]]);
-	});
-
-	it('reports through onError and re-throws on failure', async () => {
-		const failure = new Error('That palette does not exist.');
-		client.fetchPalette.mockRejectedValue(failure);
-		const onBusy = jest.fn();
-		const onError = jest.fn();
-
-		await expect(
-			openPaletteFlow({
-				namespace: NAMESPACE,
-				slug: SLUG,
-				id: 'ghost',
-				onOpened: jest.fn(),
-				onBusy,
-				onError,
-			})
-		).rejects.toBe(failure);
-
-		expect(onError).toHaveBeenCalledWith({ message: failure.message });
-		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
 });
 

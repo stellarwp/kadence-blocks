@@ -123,15 +123,14 @@ export function isDefaultPalette(listing, id) {
 
 /**
  * Resolve which palette is being edited from the route's generic `scope` arg: `scope` itself when
- * it names a palette in the listing, otherwise the listing's `$current` palette. This is the one
- * fallback rule `hooks/use-palettes.js` needs in two places — once while re-deriving the id to
- * fetch a fresh view for inside `reload()`, and once for the value it hands back to its callers —
- * so it lives here as a single pure rule instead of two copies that could drift apart.
+ * it names a palette in the listing, otherwise the listing's `$current` palette. `hooks/use-palettes.js`
+ * derives `editingId` from this on every render, straight from the already-loaded listing — there is
+ * no separate fetch to re-derive an id for, so this lives here as the one pure rule instead of being
+ * duplicated inline.
  *
  * Also the self-heal for a stale or hand-edited `scope`: a palette id that no longer exists (e.g.
  * the one just deleted, or a copied-and-pasted deep link) falls back to `$current` rather than
- * resolving to nothing, mirroring the fallback `reload()` already applied to its own `editingId`
- * state before that state was replaced by this derivation.
+ * resolving to nothing.
  *
  * @param {string} scope   The route's `scope` value (a palette id, or '').
  * @param {Object} listing The palette listing (`{ currentId, palettes }`).

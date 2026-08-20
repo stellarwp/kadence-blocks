@@ -57,7 +57,6 @@ import {
 	removeGroupFromGroups,
 	removeSwatchFromGroups,
 	renameGroupInGroups,
-	renameSwatchInGroups,
 	reorderGroupSwatches,
 	slugifyPaletteLabel,
 	stripEffectiveFlags,
@@ -184,53 +183,6 @@ export function saveSwatchEditsFlow({
 }
 
 /**
- * Show a palette in the app: fetch its effective view, and nothing else.
- *
- * This never writes `$current`. Choosing a palette from the header dropdown is a navigation act,
- * not a publishing one — editing a palette other than the one the site renders with is the normal
- * case (e.g. building out a dark variant while the site still runs a light one), and the API
- * already supports that split with no new plumbing: `GET /palettes/{id}` returns any palette's
- * effective view without touching `$current`. The site keeps rendering whatever palette is active
- * until someone explicitly activates a different one through `activatePaletteFlow`. A future
- * reader who "fixes" this to also write `$current` would silently re-tint the live site every time
- * someone merely looks at a different palette — don't.
- *
- * Kept as its own flow, thin as it is, rather than a bare fetch inlined in the hook, only so
- * `createPaletteFlow` can chain off it the way `createLibraryFlow` chains off `openLibraryFlow` —
- * see that pair for the shape this mirrors.
- *
- * @param {Object}   args
- * @param {string}   args.namespace The REST namespace.
- * @param {string}   args.slug      The token library slug.
- * @param {string}   args.id        The palette id to open for editing.
- * @param {Function} args.onOpened  Called with the fetched effective view once the read completes.
- * @param {Function} args.onBusy    Called with a boolean as the request starts and settles.
- * @param {Function} args.onError   Called with `{ message }` on failure.
- *
- * @since TBD
- *
- * @return {Promise<void>} Resolves once `onOpened` has run; rejects on failure, after
- *                          `onError`/`onBusy` have already run.
- */
-export function openPaletteFlow({ namespace, slug, id, onOpened, onBusy, onError }) {
-	onBusy(true);
-
-	return fetchPalette(namespace, id, slug)
-		.then((view) => onOpened(view))
-		.then(() => onBusy(false))
-		.catch((err) => {
-			onError({ message: errorMessage(err) });
-			onBusy(false);
-
-			// Re-thrown so a caller chaining off an open (createPaletteFlow, below) can tell a
-			// failed open from a successful one instead of treating this as done. A caller that
-			// only fires a plain open (no chained action) must catch this itself — the error is
-			// already surfaced through `onError` regardless.
-			throw err;
-		});
-}
-
-/**
  * Point the library's `$current` palette pointer at `id` — the one palette-selection operation
  * that changes the live site. Reloads and refreshes the feed for the same reason
  * `writeDefaultPaletteFlow` does: `$current`'s swatch values are overlaid onto the color token
@@ -292,8 +244,9 @@ export function activatePaletteFlow({ namespace, slug, id, onReceive, refreshFee
  *                                    embedded-array wire rows) — run BEFORE `openPalette` so the
  *                                    fresh listing already carries the new row by the time
  *                                    `editingId` moves onto it (see the ordering note below).
- * @param {Function} args.openPalette Opens a palette for editing (typically `openPaletteFlow`
- *                                    bound to the new id).
+ * @param {Function} args.openPalette Opens a palette for editing (`hooks/use-palettes.js`'s
+ *                                    `openPalette`, a pure navigation that writes the new id into
+ *                                    the route's `scope`, bound to the new id).
  * @param {Function} args.refreshFeed Replaces the feed for a slug. Required even though a new
  *                                    palette changes no resolved value: the feed carries the
  *                                    version token every later write is checked against, so
@@ -490,48 +443,6 @@ export function renamePaletteFlow({ namespace, slug, id, label, listing, onRecei
 			onBusy(false);
 			throw err;
 		});
-}
-
-/**
- * Rename a swatch — a structure edit, written to the default palette node.
- *
- * @param {Object}   args
- * @param {string}   args.namespace   The REST namespace.
- * @param {string}   args.slug        The token library slug.
- * @param {string}   args.defaultId   The listing's `$default` palette id.
- * @param {string}   args.token       The swatch token dot-path to rename.
- * @param {string}   args.label       The new label.
- * @param {Function} args.onReceive   Called with the write's own raw response (the flat
- *                                    embedded-array wire rows), once the write succeeds.
- * @param {Function} args.refreshFeed Replaces the feed for a slug.
- * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
- * @param {Function} args.onError     Called with `{ message }` on failure.
- *
- * @since TBD
- *
- * @return {Promise<void>} See `writeDefaultPaletteFlow`.
- */
-export function renameSwatchFlow({
-	namespace,
-	slug,
-	defaultId,
-	token,
-	label,
-	onReceive,
-	refreshFeed,
-	onBusy,
-	onError,
-}) {
-	return writeDefaultPaletteFlow({
-		namespace,
-		slug,
-		defaultId,
-		edit: (groups) => renameSwatchInGroups(groups, token, label),
-		onReceive,
-		refreshFeed,
-		onBusy,
-		onError,
-	});
 }
 
 /**
