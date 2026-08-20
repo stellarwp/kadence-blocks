@@ -155,10 +155,10 @@ function renderPreview(row) {
 }
 
 /**
- * The per-tab settings schema: the Normal tab adds a Radius section and the Hover tab never does —
- * `button-radius` has no hover counterpart, so rendering one there would write a property
- * `guard_surface` rejects. The preset name is not here; it is tab-independent and comes from
- * `presetNameSchema()`.
+ * The per-tab settings schema: the Normal tab adds a Border and Shadow section and the Hover tab
+ * never does — `button-radius`/`button-border`/`button-shadow` have no hover counterpart, so
+ * rendering them there would write a property `guard_surface` rejects. The preset name is not here;
+ * it is tab-independent and comes from `presetNameSchema()`.
  *
  * @param {string} tab The active tab name (`'normal'` or `'hover'`).
  *
@@ -184,7 +184,7 @@ function schemaFor(tab) {
 		return { panels: [colorPanel] };
 	}
 
-	const radiusPanel = {
+	const borderAndShadowPanel = {
 		id: 'border-and-shadow',
 		title: __('Border and Shadow', 'kadence-blocks'),
 		fields: [
@@ -199,6 +199,17 @@ function schemaFor(tab) {
 				// same value `semantic.radius.control` holds. Shown muted when the preset sets nothing, so a
 				// reset field reports the radius the button really has rather than reading as empty.
 				defaultValue: ['0.1875rem', '0.1875rem', '0.1875rem', '0.1875rem'],
+			},
+			{
+				type: 'border',
+				responsive: true,
+				path: 'tokens.button-border',
+				label: __('Border', 'kadence-blocks'),
+			},
+			{
+				type: 'box-shadow',
+				path: 'tokens.button-shadow',
+				label: __('Shadow', 'kadence-blocks'),
 			},
 		],
 	};
@@ -237,7 +248,7 @@ function schemaFor(tab) {
 		],
 	};
 
-	return { panels: [colorPanel, radiusPanel, spacingPanel] };
+	return { panels: [colorPanel, borderAndShadowPanel, spacingPanel] };
 }
 
 /**
