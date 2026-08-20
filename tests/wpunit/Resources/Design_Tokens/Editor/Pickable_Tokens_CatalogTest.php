@@ -5,6 +5,7 @@ namespace Tests\wpunit\Resources\Design_Tokens\Editor;
 use Generator;
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
 use KadenceWP\KadenceBlocks\Design_Tokens\Editor\Pickable_Tokens_Catalog;
+use KadenceWP\KadenceBlocks\Design_Tokens\Registry\User_Primitive_Registrar;
 use Tests\Support\Classes\TestCase;
 
 /**
@@ -202,6 +203,87 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A custom dimension token reports the sub-kind of the group it was minted into, not the literal
+	 * `custom` its id segment carries, so it narrows into the same control as its declared siblings.
+	 *
+	 * @dataProvider customDimensionRoleProvider
+	 *
+	 * @param string $group    The group_key the custom token is minted into.
+	 * @param string $slug     The custom token's slug.
+	 * @param string $expected The role the pool must report for it.
+	 *
+	 * @return void
+	 */
+	public function testACustomDimensionTokenTakesItsRoleFromItsGroupKey( string $group, string $slug, string $expected ): void {
+		$id = 'primitive.dimension.custom.' . $slug;
+
+		$this->store->save_document( $this->encode_custom_primitive_document( $id, 'dimension', '0.75rem', $group ) );
+		$this->container->get( User_Primitive_Registrar::class )->sync();
+
+		$entry = $this->first_with_prefix( $this->catalog->all()['tokens'], $id );
+
+		$this->assertSame( $expected, $entry['role'] );
+	}
+
+	/**
+	 * A custom dimension token minted into no group falls back to its id-derived role (`custom`), so an
+	 * ungrouped token degrades gracefully rather than reporting an empty role.
+	 *
+	 * @return void
+	 */
+	public function testABlankedGroupKeyFallsBackToTheIdDerivedRole(): void {
+		$id = 'primitive.dimension.custom.orphan';
+
+		$this->store->save_document( $this->encode_custom_primitive_document( $id, 'dimension', '0.75rem' ) );
+		$this->container->get( User_Primitive_Registrar::class )->sync();
+
+		$entry = $this->first_with_prefix( $this->catalog->all()['tokens'], $id );
+
+		$this->assertSame( 'custom', $entry['role'] );
+	}
+
+	/**
+	 * A custom color token keeps role `color`: only a `primitive.dimension.custom.*` id derives role
+	 * `custom`, so the group_key remap never touches a color (whose grouping is a display label, not a
+	 * role), and a color control's narrowing still surfaces it.
+	 *
+	 * @return void
+	 */
+	public function testACustomColorTokenKeepsTheColorRole(): void {
+		$id = 'primitive.color.custom.brand-teal';
+
+		$this->store->save_document( $this->encode_custom_primitive_document( $id, 'color', '#0d9488' ) );
+		$this->container->get( User_Primitive_Registrar::class )->sync();
+
+		$entry = $this->first_with_prefix( $this->catalog->all()['tokens'], $id );
+
+		$this->assertSame( 'color', $entry['role'] );
+	}
+
+	/**
+	 * @return Generator
+	 */
+	public function customDimensionRoleProvider(): Generator {
+		yield 'radius' => [
+			'group'    => 'radius',
+			'slug'     => 'radius-md',
+			'expected' => 'radius',
+		];
+
+		yield 'icon size' => [
+			'group'    => 'icon-size',
+			'slug'     => 'icon-lg',
+			'expected' => 'icon-size',
+		];
+
+		yield 'spacing identity' => [
+			'group'    => 'spacing',
+			'slug'     => 'gap-2',
+			'expected' => 'spacing',
+		];
+	}
+
+	/**
 	 * @return Generator
 	 */
 	public function layerProvider(): Generator {
@@ -274,5 +356,48 @@ final class Pickable_Tokens_CatalogTest extends TestCase {
 		}
 
 		$this->fail( sprintf( 'No token of type "%s" with a matching resolved value in the pool.', $type ) );
+	}
+
+	/**
+	 * Encode a stored document with one user primitive: the tree leaf plus the userPrimitives envelope
+	 * entry the registrar reads, carrying a stable group key when one is given (omitted otherwise, so the
+	 * token registers ungrouped).
+	 *
+	 * @param string $id    The custom token's dot-path id.
+	 * @param string $type  The DTCG `$type`.
+	 * @param string $value The DTCG `$value`.
+	 * @param string $group The group_key stored in the envelope, or "" to register ungrouped.
+	 *
+	 * @return string The JSON-encoded document.
+	 */
+	private function encode_custom_primitive_document( string $id, string $type, string $value, string $group = '' ): string {
+		$segments = explode( '.', $id );
+
+		$tree = [
+			'$type'  => $type,
+			'$value' => $value,
+		];
+
+		for ( $i = count( $segments ) - 1; $i >= 0; $i-- ) {
+			$tree = [ $segments[ $i ] => $tree ];
+		}
+
+		$provenance = [ 'label' => 'Seeded ' . $id ];
+
+		if ( $group !== '' ) {
+			$provenance['group'] = $group;
+		}
+
+		$envelope = [
+			'$extensions' => [
+				'com.kadence.designTokens' => [
+					'userPrimitives' => [
+						$id => $provenance,
+					],
+				],
+			],
+		];
+
+		return (string) wp_json_encode( array_merge( $tree, $envelope ) );
 	}
 }

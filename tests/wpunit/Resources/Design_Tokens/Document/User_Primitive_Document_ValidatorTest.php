@@ -463,7 +463,7 @@ final class User_Primitive_Document_ValidatorTest extends TestCase {
 	public function testEntryWithAKebabCaseGroupReturnsNoErrors(): void {
 		$id  = 'primitive.color.custom.brand';
 		$doc = $this->doc_with_color_entry( $id, 'Brand', '#3182CE' );
-		$doc = $this->index->add( $doc, $id, 'Brand', 'border-radius' );
+		$doc = $this->index->add( $doc, $id, 'Brand', 'radius' );
 
 		$this->assertSame( [], $this->validator->validate( $doc ) );
 	}

@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Design_Tokens\Editor;
 
 use KadenceWP\KadenceBlocks\Design_Tokens\Database\Token_Store;
+use KadenceWP\KadenceBlocks\Design_Tokens\Document\Reserved_Namespace;
 use KadenceWP\KadenceBlocks\Design_Tokens\Registry\Token_Registry;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Alias_Cycle_Exception;
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Dangling_Alias_Exception;
@@ -111,7 +112,7 @@ final class Pickable_Tokens_Catalog {
 				'label' => $token->label,
 				'type'  => $token->type,
 				'layer' => $this->layer_of( $token->id ),
-				'role'  => $this->role_of( $token->id ),
+				'role'  => $this->role_of( $token->id, $token->group_key ),
 			];
 		}
 
@@ -127,17 +128,31 @@ final class Pickable_Tokens_Catalog {
 	 * (`primitive.dimension.<role>.<step>`), which is normalized away so a semantic and a primitive
 	 * token of the same sub-kind report the same role. An id with no role segment yields "".
 	 *
+	 * A user-minted scale token nests `custom` where the sub-kind would be
+	 * (`primitive.dimension.custom.<slug>`), so the id alone reports the literal `custom`. In that one
+	 * case the real sub-kind is taken from the token's `group_key` — the group the "+ Add …" flow minted
+	 * it into, whose vocabulary is the role vocabulary — falling back to the id-derived `custom` when the
+	 * token carries no group_key. Only `primitive.dimension.custom.*` derives role `custom`, so no other
+	 * token (colors included, which carry no machine group_key) is affected.
+	 *
 	 * @since TBD
 	 *
-	 * @param string $id The token id (a dot-path).
+	 * @param string $id        The token id (a dot-path).
+	 * @param string $group_key The token's group_key, used to recover a custom dimension token's sub-kind.
 	 *
 	 * @return string The role sub-kind, or "" when the id carries none.
 	 */
-	private function role_of( string $id ): string {
+	private function role_of( string $id, string $group_key ): string {
 		$segments = explode( '.', $id );
 
 		if ( ( $segments[0] ?? '' ) === Layers::get_primitive() && ( $segments[1] ?? '' ) === self::DIMENSION_GROUP ) {
-			return $segments[2] ?? '';
+			$role = $segments[2] ?? '';
+
+			if ( $role === Reserved_Namespace::get_segment() && $group_key !== '' ) {
+				return $group_key;
+			}
+
+			return $role;
 		}
 
 		return $segments[1] ?? '';

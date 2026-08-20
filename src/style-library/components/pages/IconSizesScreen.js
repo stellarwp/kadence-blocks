@@ -59,7 +59,7 @@ export const ICON_SIZES_CONFIG = {
 	title: __('Icon Sizes', 'kadence-blocks'),
 	addLabel: __('Add Icon Size', 'kadence-blocks'),
 	group: __('Icon Sizes', 'kadence-blocks'),
-	groupKey: 'icon-sizes',
+	groupKey: 'icon-size',
 	tokenType: 'dimension',
 	slugBase: 'icon-size',
 	newTokenLabel: __('New Icon Size', 'kadence-blocks'),

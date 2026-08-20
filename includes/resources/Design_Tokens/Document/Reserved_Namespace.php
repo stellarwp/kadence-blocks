@@ -78,6 +78,20 @@ final class Reserved_Namespace {
 	}
 
 	/**
+	 * The reserved namespace segment that marks a user-created primitive: the `custom` in
+	 * `primitive.<type>.custom.<slug>`. Exposed so a consumer keying off the segment (e.g. deriving a
+	 * custom token's real sub-kind from its group) references this single source of truth instead of
+	 * repeating the literal.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_segment(): string {
+		return self::SEGMENT;
+	}
+
+	/**
 	 * Whether a terminal slug (not a full id) is valid kebab-case.
 	 *
 	 * @since TBD

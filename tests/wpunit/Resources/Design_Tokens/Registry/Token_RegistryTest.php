@@ -311,11 +311,11 @@ final class Token_RegistryTest extends TestCase {
 				'type'      => 'dimension',
 				'label'     => 'SM',
 				'group'     => 'Border Radius',
-				'group_key' => 'border-radius',
+				'group_key' => 'radius',
 			]
 		);
 
-		$this->assertSame( 'Border Radius', $this->registry->group_label_for( 'border-radius' ) );
+		$this->assertSame( 'Border Radius', $this->registry->group_label_for( 'radius' ) );
 	}
 
 	/**

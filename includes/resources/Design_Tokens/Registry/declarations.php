@@ -76,7 +76,7 @@ foreach ( $radius_labels as $slug => $label ) {
 		'type'      => 'dimension',
 		'label'     => $label,
 		'group'     => __( 'Border Radius', 'kadence-blocks' ),
-		'group_key' => 'border-radius',
+		'group_key' => 'radius',
 	];
 }
 
@@ -115,7 +115,7 @@ $icon_size_tokens = array_map(
 			'type'      => 'dimension',
 			'label'     => strtoupper( $slug ),
 			'group'     => __( 'Icon Sizes', 'kadence-blocks' ),
-			'group_key' => 'icon-sizes',
+			'group_key' => 'icon-size',
 		];
 	},
 	$icon_size_slugs
