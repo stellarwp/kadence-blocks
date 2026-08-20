@@ -18,7 +18,7 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { useRegistry } from '@wordpress/data';
 
 /**
@@ -81,35 +81,40 @@ export function usePresetScreen(library, preset) {
 		[library, registry, namespace, block, slug]
 	);
 
-	// Mirrors `library.version` for reads inside the queued continuations below, which are created
-	// once per `useCallback` identity and would otherwise close over the version from the render
-	// that made them.
+	// `feedVersionSnapshotRef` mirrors `library.version` for reads inside the queued continuations
+	// below, which are created once per `useCallback` identity and would otherwise close over the
+	// version from the render that made them. `writtenVersionRef` holds the version the last reorder
+	// write returned, until the feed's own version — bumped by every write everywhere in the
+	// library, not just this screen's — catches up; a second drop queued behind the first would
+	// otherwise dereference the pre-write version and 409 against itself. `feedVersionAtWriteRef` is
+	// the feed version at the moment that override was recorded, so the retirement check below can
+	// tell whether the feed has moved since. `feedVersionRef` mirrors the version the queued reorder
+	// continuation below must send — see `use-scale-screen.js`'s identical comment for why, and the
+	// module docblock for why this is sourced from `library.version`, not the store's cached preset
+	// payload.
 	const feedVersionSnapshotRef = useRef(feedVersion);
-	feedVersionSnapshotRef.current = feedVersion;
-
-	// Holds the version the last reorder write returned, until the feed's own version — bumped by
-	// every write everywhere in the library, not just this screen's — catches up. A second drop
-	// queued behind the first would otherwise dereference the pre-write version and 409 against
-	// itself.
 	const writtenVersionRef = useRef(null);
-
-	// The feed version at the moment the override was recorded. The override is retired as soon as
-	// the feed version moves off it at all, rather than only on an exact match with what the write
-	// returned: a refresh that carries a newer version — someone else's write, or a response this
-	// screen never saw — supersedes the override, and holding on to it would keep sending a version
-	// the server has already replaced.
 	const feedVersionAtWriteRef = useRef(feedVersion);
-
-	if (writtenVersionRef.current !== null && feedVersion !== feedVersionAtWriteRef.current) {
-		writtenVersionRef.current = null;
-	}
-
-	// Mirrors the version the queued reorder continuation below must send, so it always
-	// dereferences the live value at execution time, never one captured when the drop was enqueued
-	// — see `use-scale-screen.js`'s identical comment for why. See the module docblock for why this
-	// is sourced from `library.version`, not the store's cached preset payload.
 	const feedVersionRef = useRef(feedVersion);
-	feedVersionRef.current = writtenVersionRef.current ?? feedVersion;
+
+	// Synchronized from a layout effect, not the render body: React can replay or discard a render
+	// before it commits, and a ref write inside the render body itself would leak a value from a
+	// render that never actually happened. A layout effect still runs before the browser paints and
+	// before any user-triggered event handler (e.g. a drop that calls `reorderPresets`), so nothing
+	// that reads these refs can ever observe a value from a discarded render.
+	useLayoutEffect(() => {
+		feedVersionSnapshotRef.current = feedVersion;
+
+		// The override is retired as soon as the feed version moves off it at all, rather than only
+		// on an exact match with what the write returned: a refresh that carries a newer version —
+		// someone else's write, or a response this screen never saw — supersedes the override, and
+		// holding on to it would keep sending a version the server has already replaced.
+		if (writtenVersionRef.current !== null && feedVersion !== feedVersionAtWriteRef.current) {
+			writtenVersionRef.current = null;
+		}
+
+		feedVersionRef.current = writtenVersionRef.current ?? feedVersion;
+	}, [feedVersion]);
 
 	// One in-flight reorder promise, the `use-scale-screen.js` shape: each call chains onto the
 	// previous reorder's settled promise so a second drop's write waits for the first drop's flow
