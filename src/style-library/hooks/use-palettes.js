@@ -1,12 +1,12 @@
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
+import { useRegistry, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { fetchPalette, fetchPalettes } from '../api/client';
 import { errorMessage } from '../helpers/library-flows';
 import { isCustomColorToken, reorderGroupSwatches, resolveEditingPaletteId } from '../helpers/palettes';
 import {
@@ -23,6 +23,8 @@ import {
 	saveSwatchEditsFlow,
 } from '../helpers/palette-flows';
 import { flattenSchemaTokens } from '../helpers/tokens';
+import { STORE_NAME } from '../store';
+import { EMPTY_LISTING, paletteListingKey } from '../store/constants';
 
 /**
  * Palette state for the Color Palette screen and its settings panel: the listing, the palette
@@ -36,24 +38,27 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  * editing a palette safe: nothing a visitor sees changes until someone explicitly activates one.
  *
  * `editingId` is DERIVED from `route.scope` (via `resolveEditingPaletteId`), not owned as this
- * hook's own state — mirroring the reasoning `hooks/use-libraries.js` already documents for why
- * `editingSlug` comes from the feed rather than a second local copy: "a second copy... could
- * drift." `use-libraries.js` can derive from the feed because opening a library refreshes it;
- * opening a palette deliberately does NOT (decision 5 — it is a pure read, so browsing a palette
- * never re-tints anything), so there is no feed signal to derive from, and the route is the
- * shared source instead. This is not a hypothetical: before this derivation existed, `editingId`
- * WAS a second local `useState` here, and it drifted for real — the screen and its settings panel
- * are separate mounts of this hook, so each held its own copy, and a freshly-mounted panel had no
- * way to learn which palette the screen had already opened; it silently defaulted to `$current`
- * instead, meaning a save from the panel could target the wrong palette. Deriving from the route
- * (shared browser state, not per-instance React state) is what makes it structurally impossible
- * for the two instances to disagree, rather than merely making it less likely.
+ * hook's own state — same reasoning `hooks/use-libraries.js` documents for `editingSlug`: a second
+ * copy of it here could drift, and the screen and its settings panel are separate mounts of this
+ * hook, so each holding its own copy previously meant a freshly-mounted panel had no way to learn
+ * which palette the screen had already opened.
+ *
+ * `palette` is derived directly from `listing.palettes` (the listing selector's own reshape
+ * already embeds each row's `groups` — see `store/selectors.js`'s `reshapePaletteRows`), not from
+ * a second resolver call. There is only one resolver here, `getPaletteListing`, so this hook does
+ * not need the two-hop "wait for the listing, then wait for the palette" loading logic a separate
+ * per-palette read would require.
+ *
+ * `activeId` reads `listing.currentId` directly, with no optimistic override layer: every write
+ * that can move `$current` (`activatePalette`, `removePalette`) dispatches the write's own
+ * response into the store via `onReceive` in the SAME round trip that confirms it, so there is no
+ * window where the UI would otherwise show stale data.
  *
  * Both the screen and its settings panel call this hook as sibling instances; they stay
- * consistent because the state that must agree between them is either server state (the hook
- * re-reads the listing and the edited view whenever the feed identity changes — every write flow
- * ends with `refreshFeed`, which bumps `feed.version` for every instance at once) or route state
- * (the URL's `scope`, read by every instance the same way).
+ * consistent because the state that must agree between them is either server state (both read the
+ * same `getPaletteListing(namespace, slug)` store entry, so a write from either instance updates
+ * both the moment its `onReceive` dispatches) or route state (the URL's `scope`, read by every
+ * instance the same way).
  *
  * @param {Object}   feed        The design-tokens admin feed (slug, version, rest descriptor).
  * @param {Function} refreshFeed Replaces the feed with a fresh REST read for a slug.
@@ -72,9 +77,6 @@ import { flattenSchemaTokens } from '../helpers/tokens';
  *                  renameGroup, removeGroup }`.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
-	const [listing, setListing] = useState({ defaultId: '', currentId: '', palettes: [], userCreated: [] });
-	const [palette, setPalette] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
 	const [isBusy, setIsBusy] = useState(false);
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
@@ -89,8 +91,61 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const scope = route?.scope;
 	const feedTokens = useMemo(() => flattenSchemaTokens(feed?.schema), [feed]);
 
+	const registry = useRegistry();
+
+	const listing = useSelect(
+		(select) => (namespace && slug ? select(STORE_NAME).getPaletteListing(namespace, slug) : EMPTY_LISTING),
+		[namespace, slug]
+	);
+
+	// `isListingLoading` is gated on `!listing.palettes.length`, not raw `isResolving` alone — a
+	// write's wrapped `refreshFeed` re-resolves this same selector in the background, which raises
+	// `isResolving` for the duration of that re-fetch too. Once the listing has loaded once, the
+	// store keeps serving those rows while it revalidates, so there is data to keep rendering — a
+	// loading state should only ever show up before the first listing lands.
+	const { isListingLoading, listingFailure } = useSelect(
+		(select) => ({
+			isListingLoading:
+				Boolean(namespace && slug) && select(STORE_NAME).isResolving('getPaletteListing', [namespace, slug]),
+			listingFailure:
+				namespace && slug
+					? select(STORE_NAME).getResolutionError('getPaletteListing', [namespace, slug])
+					: null,
+		}),
+		[namespace, slug]
+	);
+	const isLoading = isListingLoading && !listing.palettes.length;
+
+	// Mirrors `hooks/use-libraries.js`'s identical effect: a resolution failure for
+	// `getPaletteListing` surfaces here the same way a failed write already does via its own
+	// `onError: setOpenError`.
+	useEffect(() => {
+		if (listingFailure) {
+			setOpenError({ message: errorMessage(listingFailure) });
+		}
+	}, [listingFailure]);
+
 	// See this function's own docblock for why this is a derivation, not a second copy of state.
 	const editingId = resolveEditingPaletteId(scope, listing);
+
+	const palette = useMemo(
+		() => listing.palettes.find((row) => row.id === editingId) ?? null,
+		[listing.palettes, editingId]
+	);
+
+	// The local reorder override — see `reorderSwatches` below. Cleared once the real data catches
+	// up (the write's own `onReceive` lands and `palette.groups` changes), mirroring
+	// `hooks/use-scale-screen.js`'s identical `pendingOrder`-clearing effect.
+	const [pendingGroups, setPendingGroups] = useState(null);
+
+	useEffect(() => {
+		setPendingGroups(null);
+	}, [palette?.groups]);
+
+	const displayedPalette = useMemo(
+		() => (pendingGroups && palette ? { ...palette, groups: pendingGroups } : palette),
+		[palette, pendingGroups]
+	);
 
 	// Every mint flow (add color, add group) needs a slug that collides with neither a baseline
 	// nor an already-minted token, wherever that token currently lives — the feed's flattened list
@@ -104,62 +159,18 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		return [...feedTokens.map((token) => token.id), ...swatchTokens];
 	}, [feedTokens, palette]);
 
-	// Re-reads the listing, then the edited view — resolving `editingId` fresh from the LISTING
-	// THIS CALL JUST FETCHED (not the `editingId` derived above from the outer render's `listing`
-	// state), so a delete that removes the palette named by `scope` self-heals to `$current` on
-	// the very next read, the same way `resolveEditingPaletteId` always would once `listing` state
-	// catches up — this just avoids waiting an extra render for it.
-	const reload = useCallback(() => {
-		return fetchPalettes(namespace, slug).then((response) => {
-			const nextListing = {
-				defaultId: response.$default,
-				currentId: response.$current,
-				palettes: response.palettes ?? [],
-				userCreated: response.userCreated ?? [],
-			};
-
-			setListing(nextListing);
-
-			const nextEditingId = resolveEditingPaletteId(scope, nextListing);
-
-			return fetchPalette(namespace, nextEditingId, slug).then((view) => {
-				setPalette(view);
-				return nextListing;
-			});
-		});
-	}, [namespace, slug, scope]);
-
-	useEffect(() => {
-		setIsLoading(true);
-		reload()
-			.catch((err) => setOpenError({ message: errorMessage(err) }))
-			.finally(() => setIsLoading(false));
-	}, [reload]);
-
-	// The other half of the cross-instance sync the module docblock above describes: a write on a
-	// SIBLING `usePalettes` instance (e.g. the settings panel saving a swatch's color, or deleting
-	// one) never changes THIS instance's own `namespace`/`slug`, so `reload`'s identity — and
-	// therefore the mount effect above — never changes because of it either; without this, a
-	// sibling's write would persist correctly but this instance's `palette` (and whatever renders
-	// from it, e.g. the grid's swatch preview) would keep showing the pre-write value until this
-	// instance happened to reload for an unrelated reason. `refreshFeed` bumps `feed.version` for
-	// every instance at once specifically so this effect has something to react to. Silent — no
-	// `isLoading` toggle — because a write elsewhere is not "this instance is loading" from its own
-	// point of view; the mount effect above is the one spinner-bearing load. Skips the very first
-	// render (the mount effect already covers the cold load) via the ref below, and tolerates one
-	// harmless duplicate fetch on a genuine library switch (`reload`'s identity changing pulls this
-	// effect's deps forward too) rather than adding a second layer of bookkeeping to suppress it.
-	const feedVersion = feed?.version;
-	const hasSyncedOnceRef = useRef(false);
-
-	useEffect(() => {
-		if (!hasSyncedOnceRef.current) {
-			hasSyncedOnceRef.current = true;
-			return;
-		}
-
-		reload().catch((err) => setOpenError({ message: errorMessage(err) }));
-	}, [feedVersion, reload]);
+	// Dispatches a write's own raw response (the flat embedded-array wire rows) straight into the
+	// store under this library's listing key — reused by every write flow below instead of each
+	// one reshaping its own response, so the store only ever gets this shape from one place (see
+	// `store/selectors.js`'s `reshapePaletteRows` docblock).
+	const onReceive = useCallback(
+		(rows) => {
+			if (namespace && slug) {
+				registry.dispatch(STORE_NAME).receivePaletteListing(paletteListingKey(namespace, slug), rows);
+			}
+		},
+		[registry, namespace, slug]
+	);
 
 	const clearOpenError = useCallback(() => setOpenError(null), []);
 	const clearActivateError = useCallback(() => setActivateError(null), []);
@@ -169,23 +180,10 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const clearSaveError = useCallback(() => setSaveError(null), []);
 	const clearStructureError = useCallback(() => setStructureError(null), []);
 
-	// Opening a palette is now a pure navigation: write `id` into the route's `scope`, and let the
-	// mount effect above pick it up (its `reload` depends on `scope`, so a scope change gives it a
-	// new identity and the effect re-fires) — the same mechanism every sibling instance already
-	// uses to converge on the listing and feed, applied to the one remaining piece of state that
-	// used to be a per-instance copy (see this hook's own docblock). This is also what makes the
-	// derivation in `helpers/palettes.js` the actual fix for the two-instance divergence: there is
-	// no longer a second code path (a direct `setEditingId`) that could get out of step with it.
-	//
-	// `helpers/palette-flows.js`'s `openPaletteFlow` predates this and is intentionally unused here
-	// now — it fetched and reported success/failure itself, which only made sense when opening had
-	// to update this instance's own state directly. A stale `scope` (naming no known palette) no
-	// longer needs its own error path either: `resolveEditingPaletteId` already falls back instead
-	// of failing, and a genuine request failure surfaces through the reload effects' `openError`
-	// like every other reload does. `id` is always drawn from the already-loaded listing (the
-	// dropdown's own options, or a just-created palette's own id), so this realistically never
-	// needs to reject; kept as a resolved Promise so existing `.then()` callers (e.g.
-	// `createPaletteFlow`, which opens the palette it just created) keep working unchanged.
+	// Opening a palette is a pure navigation: write `id` into the route's `scope`. `editingId`
+	// above re-derives from the already-loaded listing the moment the route changes — there is no
+	// separate fetch, and therefore no failure path of its own; a stale `scope` (naming no known
+	// palette) falls back to `$current` via `resolveEditingPaletteId` rather than erroring.
 	//
 	// Clears `item` as well as setting `scope`. A swatch token is valid on every palette (structure
 	// lives on the default node), so the panel *could* stay open across a switch — but its values
@@ -210,14 +208,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				namespace,
 				slug,
 				id,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setActivateError,
-				onActivated: (activatedId) => setListing((prev) => ({ ...prev, currentId: activatedId })),
 			});
 		},
-		[namespace, slug, reload, refreshFeed]
+		[namespace, slug, onReceive, refreshFeed]
 	);
 
 	const addPalette = useCallback(
@@ -228,7 +225,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				slug,
 				label,
 				listing,
-				reload,
+				onReceive,
 				// Reuses `openPalette` directly rather than a create-specific variant — now that
 				// opening is a plain navigation with nothing left to fail (see `openPalette`'s own
 				// comment), there is no separate error/busy path left to route through `createError`
@@ -239,7 +236,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onError: setCreateError,
 			});
 		},
-		[namespace, slug, listing, reload, refreshFeed, openPalette]
+		[namespace, slug, listing, onReceive, refreshFeed, openPalette]
 	);
 
 	const renamePalette = useCallback(
@@ -251,13 +248,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				id,
 				label,
 				listing,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setRenameError,
 			});
 		},
-		[namespace, slug, listing, reload, refreshFeed]
+		[namespace, slug, listing, onReceive, refreshFeed]
 	);
 
 	const removePalette = useCallback(
@@ -269,14 +266,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				id,
 				currentId: listing.currentId,
 				successorId,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setDeleteError,
-				onActivated: (activatedId) => setListing((prev) => ({ ...prev, currentId: activatedId })),
 			});
 		},
-		[namespace, slug, listing.currentId, reload, refreshFeed]
+		[namespace, slug, listing.currentId, onReceive, refreshFeed]
 	);
 
 	const saveSwatchEdits = useCallback(
@@ -290,13 +286,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				token,
 				draft,
 				initial,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setSaveError,
 			});
 		},
-		[namespace, slug, listing, editingId, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, editingId, onReceive, refreshFeed]
 	);
 
 	const removeSwatch = useCallback(
@@ -315,13 +311,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				defaultId: listing.defaultId,
 				token,
 				isUserCreated,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setSaveError,
 			});
 		},
-		[namespace, slug, listing, feedTokens, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, feedTokens, onReceive, refreshFeed]
 	);
 
 	const addColor = useCallback(
@@ -335,13 +331,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				tokens: existingTokenIds,
 				palette,
 				feedVersion: feed?.version,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setStructureError,
 			});
 		},
-		[namespace, slug, listing, existingTokenIds, palette, feed?.version, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, existingTokenIds, palette, feed?.version, onReceive, refreshFeed]
 	);
 
 	const addGroup = useCallback(
@@ -355,26 +351,25 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				palette,
 				tokens: existingTokenIds,
 				feedVersion: feed?.version,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setStructureError,
 			});
 		},
-		[namespace, slug, listing, palette, existingTokenIds, feed?.version, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, palette, existingTokenIds, feed?.version, onReceive, refreshFeed]
 	);
 
 	const reorderSwatches = useCallback(
 		(groupId, orderedTokens) => {
 			setStructureError(null);
 
-			// Applied locally at drop time — a drop that snaps back behind a spinner is worse UX than
-			// a rare rollback. `reorderSwatchesFlow`'s `reload()` re-reads the effective view on both
-			// success (a no-op visually) and failure (restores server order), so this optimistic step
-			// never needs its own undo path.
-			setPalette((current) =>
-				current ? { ...current, groups: reorderGroupSwatches(current.groups, groupId, orderedTokens) } : current
-			);
+			if (palette) {
+				// Applied immediately (optimistic), at drop time — a drop that snaps back behind a
+				// spinner is worse UX than a rare rollback. Cleared automatically once `onReceive`'s
+				// dispatch lands and `palette.groups` catches up (see the effect above).
+				setPendingGroups(reorderGroupSwatches(palette.groups, groupId, orderedTokens));
+			}
 
 			return reorderSwatchesFlow({
 				namespace,
@@ -382,13 +377,19 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				defaultId: listing.defaultId,
 				groupId,
 				orderedTokens,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setStructureError,
+				onError: (err) => {
+					// A failed write must not leave the optimistic edit stuck: drop the local
+					// override so the display falls back to the last known-good `palette.groups`
+					// from the store.
+					setPendingGroups(null);
+					setStructureError(err);
+				},
 			});
 		},
-		[namespace, slug, listing, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, palette, onReceive, refreshFeed]
 	);
 
 	const renameGroup = useCallback(
@@ -400,13 +401,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				defaultId: listing.defaultId,
 				groupId,
 				label,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setStructureError,
 			});
 		},
-		[namespace, slug, listing, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, onReceive, refreshFeed]
 	);
 
 	const removeGroup = useCallback(
@@ -430,13 +431,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				defaultId: listing.defaultId,
 				groupId,
 				userCreatedTokens,
-				reload,
+				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setStructureError,
 			});
 		},
-		[namespace, slug, listing, palette, feedTokens, reload, refreshFeed]
+		[namespace, slug, listing.defaultId, palette, feedTokens, onReceive, refreshFeed]
 	);
 
 	return {
@@ -444,7 +445,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		activeId: listing.currentId,
 		editingId,
 		isEditingActive: editingId === listing.currentId,
-		palette,
+		palette: displayedPalette,
 		isLoading,
 		isBusy,
 		openError,

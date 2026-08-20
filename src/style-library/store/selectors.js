@@ -71,6 +71,18 @@ export function reshapePaletteRows(rows) {
 }
 
 /**
+ * Caches `reshapePaletteRows()`'s output per raw `rows` array reference, so `getPaletteListing`
+ * below returns the SAME object on every call until the reducer actually replaces those rows (a
+ * fresh dispatch). Without this, every call reshapes fresh — a new object every time even when
+ * nothing changed — which `useSelect` sees as "the selector's result changed," triggering a
+ * re-render loop and `@wordpress/data`'s "returns different values" dev warning on every render of
+ * any component reading this selector.
+ *
+ * @since TBD
+ */
+const reshapedListingCache = new WeakMap();
+
+/**
  * Read a library's palette listing, reshaped from the flat embedded-array wire response into the
  * shape every consumer already expects.
  *
@@ -85,5 +97,13 @@ export function reshapePaletteRows(rows) {
 export function getPaletteListing(state, namespace, slug) {
 	const rows = state.paletteListings[paletteListingKey(namespace, slug)];
 
-	return rows ? reshapePaletteRows(rows) : EMPTY_LISTING;
+	if (!rows) {
+		return EMPTY_LISTING;
+	}
+
+	if (!reshapedListingCache.has(rows)) {
+		reshapedListingCache.set(rows, reshapePaletteRows(rows));
+	}
+
+	return reshapedListingCache.get(rows);
 }
