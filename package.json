@@ -66,6 +66,7 @@
 	},
 	"devDependencies": {
 		"@babel/eslint-parser": "^7.25.1",
+		"@wordpress/data": "^10.53.0",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.26.0",
 		"@wordpress/eslint-plugin": "^22.12.0",
 		"@wordpress/i18n": "^5.26.0",
