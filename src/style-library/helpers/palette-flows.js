@@ -5,11 +5,14 @@
  * exercised directly in tests without rendering a component — a flow takes the REST calls it needs
  * (imported here, so a test mocks `api/client`) plus a small set of injected callbacks for the
  * state a caller reacts to (busy, a scoped error slot, and an `onReceive`/`refreshFeed` pair the
- * hook provides). Every write's own response is the same flat embedded-array listing shape a
- * `GET /palettes?_embed` would return, so a flow reshapes it (via `reshapePaletteRows`, shared with
- * `store/selectors.js`'s `getPaletteListing`) and hands it straight to `onReceive` — no follow-up
- * fetch is needed to learn the fresh state. Every flow settles pessimistically and re-throws on
- * failure so its caller (a modal, or the settings panel) can tell success from failure; none
+ * hook provides). Every write's own response is the same flat embedded-array wire shape a
+ * `GET /palettes?_embed` would return, so a flow hands it straight to `onReceive` RAW, with no
+ * reshaping and no follow-up fetch needed to learn the fresh state. Reshaping only ever happens in
+ * one place, `store/selectors.js`'s `getPaletteListing` (via its exported `reshapePaletteRows`), the
+ * same as for a resolver-driven GET; a flow reshaping its own response before dispatch would let a write's
+ * dispatched shape drift from a GET's, leaving the store holding two different shapes under the
+ * same key depending on which path last wrote it. Every flow settles pessimistically and re-throws
+ * on failure so its caller (a modal, or the settings panel) can tell success from failure; none
  * reloads the page.
  *
  * `writeDefaultPaletteFlow` is the single place the default-vs-edited write routing (a palette's
@@ -44,7 +47,6 @@ import {
 	setCurrentPalette,
 } from '../api/client';
 import { errorMessage } from './library-flows';
-import { reshapePaletteRows } from '../store';
 import {
 	addGroupToGroups,
 	addSwatchToGroups,
@@ -76,8 +78,8 @@ import {
  * @param {string}   args.slug         The token library slug.
  * @param {string}   args.defaultId    The listing's `$default` palette id.
  * @param {Function} args.edit         Pure `(groups) => groups` transform (from `./palettes`).
- * @param {Function} args.onReceive    Called with the write's own response, reshaped into the
- *                                     internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive    Called with the write's own raw response (the flat
+ *                                     embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed  Replaces the feed for a slug.
  * @param {Function} args.onBusy       Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError      Called with `{ message }` on failure.
@@ -96,7 +98,7 @@ export function writeDefaultPaletteFlow({ namespace, slug, defaultId, edit, onRe
 
 			return savePalette(namespace, defaultId, { label: view.label, groups }, slug);
 		})
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {
@@ -126,8 +128,8 @@ export function writeDefaultPaletteFlow({ namespace, slug, defaultId, edit, onRe
  * @param {string}   args.token       The swatch token dot-path being edited.
  * @param {Object}   args.draft       The panel's draft values, `{ label, value }`.
  * @param {Object}   args.initial     The values the panel opened with, `{ label, value }`.
- * @param {Function} args.onReceive   Called with the last dirty write's own response, reshaped into
- *                                    the internal listing shape, once every dirty write succeeds.
+ * @param {Function} args.onReceive   Called with the last dirty write's own raw response (the flat
+ *                                    embedded-array wire rows), once every dirty write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
@@ -171,7 +173,7 @@ export function saveSwatchEditsFlow({
 	}
 
 	return chain
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {
@@ -241,8 +243,8 @@ export function openPaletteFlow({ namespace, slug, id, onOpened, onBusy, onError
  * @param {string}   args.namespace   The REST namespace.
  * @param {string}   args.slug        The token library slug.
  * @param {string}   args.id          The palette id to make current.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape — carrying the activated palette
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows) — carrying the activated palette
  *                                    already flagged `is_current`, so no separate confirmation
  *                                    step is needed to learn which id the server resolved.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
@@ -258,7 +260,7 @@ export function activatePaletteFlow({ namespace, slug, id, onReceive, refreshFee
 	onBusy(true);
 
 	return setCurrentPalette(namespace, id, slug)
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {
@@ -286,10 +288,10 @@ export function activatePaletteFlow({ namespace, slug, id, onReceive, refreshFee
  * @param {string}   args.label       The typed palette label.
  * @param {Object}   args.listing     The current listing (`{ defaultId, palettes }`), for the
  *                                    duplicate-id check.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape — run BEFORE `openPalette` so the fresh
- *                                    listing already carries the new row by the time `editingId`
- *                                    moves onto it (see the ordering note below).
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows) — run BEFORE `openPalette` so the
+ *                                    fresh listing already carries the new row by the time
+ *                                    `editingId` moves onto it (see the ordering note below).
  * @param {Function} args.openPalette Opens a palette for editing (typically `openPaletteFlow`
  *                                    bound to the new id).
  * @param {Function} args.refreshFeed Replaces the feed for a slug. Required even though a new
@@ -344,7 +346,7 @@ export function createPaletteFlow({
 			// listing already populated, and the dropdown can resolve its label and render it as a real
 			// option instead of falling back to the raw id. Running it after `openPalette` instead would
 			// leave the dropdown showing the new, still-missing-from-the-list id for one render.
-			.then((rows) => refreshFeed(slug).then(() => onReceive(reshapePaletteRows(rows))))
+			.then((rows) => refreshFeed(slug).then(() => onReceive(rows)))
 			.then(() => openPalette(id))
 			.then(() => onBusy(false))
 			.catch((err) => {
@@ -371,10 +373,9 @@ export function createPaletteFlow({
  *                                    successor is required at all.
  * @param {string}   [args.successorId] The palette to make current first. Required only when
  *                                    deleting the current palette.
- * @param {Function} args.onReceive   Called with the FINAL write's own response (the delete's, not
- *                                    the successor activation's — the activation's response would
- *                                    already be stale by the time the delete completes), reshaped
- *                                    into the internal listing shape.
+ * @param {Function} args.onReceive   Called with the FINAL write's own raw response (the delete's,
+ *                                    not the successor activation's — the activation's response
+ *                                    would already be stale by the time the delete completes).
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
@@ -410,7 +411,7 @@ export function deletePaletteFlow({
 
 	return activation
 		.then(() => deletePalette(namespace, id, slug))
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then(() => onBusy(false))
 		.catch((err) => {
@@ -449,9 +450,9 @@ export function deletePaletteFlow({
  * @param {string}   args.id        The palette id to rename — unchanged by this flow.
  * @param {string}   args.label     The typed label.
  * @param {Object}   args.listing   The current listing (`{ palettes }`), for the duplicate-label check.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape, so the dropdown's label updates
- *                                    immediately.
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows), so the dropdown's label
+ *                                    updates immediately.
  * @param {Function} args.refreshFeed Replaces the feed for a slug, so its version token matches the
  *                                    document this write just bumped.
  * @param {Function} args.onBusy      Called with a boolean as the request starts and settles.
@@ -482,7 +483,7 @@ export function renamePaletteFlow({ namespace, slug, id, label, listing, onRecei
 
 	return fetchPalette(namespace, id, slug)
 		.then((view) => savePalette(namespace, id, { label: trimmed, groups: stripEffectiveFlags(view.groups) }, slug))
-		.then((rows) => refreshFeed(slug).then(() => onReceive(reshapePaletteRows(rows))))
+		.then((rows) => refreshFeed(slug).then(() => onReceive(rows)))
 		.then(() => onBusy(false))
 		.catch((err) => {
 			onError({ message: errorMessage(err) });
@@ -500,8 +501,8 @@ export function renamePaletteFlow({ namespace, slug, id, label, listing, onRecei
  * @param {string}   args.defaultId   The listing's `$default` palette id.
  * @param {string}   args.token       The swatch token dot-path to rename.
  * @param {string}   args.label       The new label.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
@@ -544,8 +545,8 @@ export function renameSwatchFlow({
  * @param {string}         args.defaultId     The listing's `$default` palette id.
  * @param {string}         args.groupId       The group being reordered.
  * @param {Array<string>}  args.orderedTokens The new swatch token order.
- * @param {Function}       args.onReceive     Called with the write's own response, reshaped into
- *                                            the internal listing shape, once the write succeeds.
+ * @param {Function}       args.onReceive     Called with the write's own raw response (the flat
+ *                                            embedded-array wire rows), once the write succeeds.
  * @param {Function}       args.refreshFeed   Replaces the feed for a slug.
  * @param {Function}       args.onBusy        Called with a boolean as the chain starts and settles.
  * @param {Function}       args.onError       Called with `{ message }` on failure.
@@ -599,8 +600,8 @@ export function reorderSwatchesFlow({
  * @param {string}   args.token         The swatch token dot-path to remove.
  * @param {boolean}  args.isUserCreated Whether `token` is a user-created custom color — gates
  *                                      ONLY the cleanup step, never the row removal.
- * @param {Function} args.onReceive     Called with the row-removal write's own response, reshaped
- *                                      into the internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive     Called with the row-removal write's own raw response (the
+ *                                      flat embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed   Replaces the feed for a slug; resolves with the fresh feed
  *                                      payload, whose `version` the cleanup step's delete call needs.
  * @param {Function} args.onBusy        Called with a boolean as the chain starts and settles.
@@ -631,7 +632,7 @@ export function removeSwatchFlow({
 
 			return savePalette(namespace, defaultId, { label: view.label, groups }, slug);
 		})
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then((freshFeed) => {
 			if (!isUserCreated) {
@@ -669,8 +670,8 @@ export function removeSwatchFlow({
  *                                    friendlier starting color (the group's last swatch's value).
  * @param {string}   args.feedVersion The feed's current version, sent as the primitive create's
  *                                    concurrency guard.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
@@ -737,8 +738,8 @@ export function addColorFlow({
  *                                    colliding with.
  * @param {string}   args.feedVersion The feed's current version, sent as the primitive create's
  *                                    concurrency guard.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure or invalid input.
@@ -827,8 +828,8 @@ export function addGroupFlow({
  * @param {string}   args.defaultId   The listing's `$default` palette id.
  * @param {string}   args.groupId     The group id to rename.
  * @param {string}   args.label       The new label.
- * @param {Function} args.onReceive   Called with the write's own response, reshaped into the
- *                                    internal listing shape, once the write succeeds.
+ * @param {Function} args.onReceive   Called with the write's own raw response (the flat
+ *                                    embedded-array wire rows), once the write succeeds.
  * @param {Function} args.refreshFeed Replaces the feed for a slug.
  * @param {Function} args.onBusy      Called with a boolean as the chain starts and settles.
  * @param {Function} args.onError     Called with `{ message }` on failure.
@@ -880,9 +881,9 @@ export function renameGroupFlow({
  * @param {string}        args.groupId           The group id to remove.
  * @param {Array<string>} args.userCreatedTokens The group's user-created swatch tokens — gates
  *                                               ONLY the cleanup steps, never the group removal.
- * @param {Function}      args.onReceive         Called with the group-removal write's own
- *                                               response, reshaped into the internal listing
- *                                               shape, once the write succeeds.
+ * @param {Function}      args.onReceive         Called with the group-removal write's own raw
+ *                                               response (the flat embedded-array wire rows),
+ *                                               once the write succeeds.
  * @param {Function}      args.refreshFeed       Replaces the feed for a slug; resolves with the
  *                                               fresh feed payload, whose `version` each cleanup
  *                                               delete needs.
@@ -915,7 +916,7 @@ export function removeGroupFlow({
 
 			return savePalette(namespace, defaultId, { label: view.label, groups }, slug);
 		})
-		.then((rows) => onReceive(reshapePaletteRows(rows)))
+		.then((rows) => onReceive(rows))
 		.then(() => refreshFeed(slug))
 		.then((freshFeed) => {
 			let chain = Promise.resolve(freshFeed);

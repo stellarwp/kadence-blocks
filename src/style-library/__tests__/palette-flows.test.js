@@ -66,8 +66,11 @@ const selectedView = () => ({
 });
 
 // The shape every write response now carries: a flat, fully embedded palette listing — the same
-// wire shape `store/selectors.js`'s `reshapePaletteRows` reshapes. Used as the resolved value for
-// every mocked write call in this file, standing in for what the REST endpoints actually return.
+// RAW wire shape `store/selectors.js`'s `reshapePaletteRows` reshapes on read. Used both as the
+// resolved value for every mocked write call in this file, standing in for what the REST endpoints
+// actually return, AND as the exact value `onReceive` is asserted to have been called with — a
+// flow no longer reshapes its own response before handing it to `onReceive`, it passes it straight
+// through, so the assertion below is byte-for-byte the mocked resolved value.
 const listingRows = (overrides = {}) => [
 	{
 		id: DEFAULT_ID,
@@ -86,16 +89,6 @@ const listingRows = (overrides = {}) => [
 		_embedded: { self: [selectedView()] },
 	},
 ];
-
-const reshapedListing = (overrides = {}) => ({
-	defaultId: DEFAULT_ID,
-	currentId: overrides.currentId ?? DEFAULT_ID,
-	palettes: [
-		{ id: DEFAULT_ID, label: 'Default', groups: defaultView().groups },
-		{ id: 'sunset', label: 'Sunset', groups: selectedView().groups },
-	],
-	userCreated: [],
-});
 
 beforeEach(() => {
 	jest.resetAllMocks();
@@ -133,7 +126,7 @@ describe('writeDefaultPaletteFlow', () => {
 		);
 		const [, , payload] = client.savePalette.mock.calls[0];
 		expect(payload.groups[0].swatches[0].$value).toBe('#111111');
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 		expect(onError).not.toHaveBeenCalled();
@@ -229,7 +222,7 @@ describe('saveSwatchEditsFlow', () => {
 			{ value: '#abcdef' },
 			SLUG
 		);
-		expect(flowArgs.onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
 		expect(flowArgs.refreshFeed).toHaveBeenCalledTimes(1);
 	});
 
@@ -350,7 +343,7 @@ describe('activatePaletteFlow', () => {
 		});
 
 		expect(client.setCurrentPalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing({ currentId: 'sunset' }));
+		expect(onReceive).toHaveBeenCalledWith(listingRows({ currentId: 'sunset' }));
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
@@ -565,7 +558,7 @@ describe('deletePaletteFlow', () => {
 		});
 
 		expect(client.deletePalette).toHaveBeenCalledWith(NAMESPACE, 'sunset', SLUG);
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 		expect(client.setCurrentPalette).not.toHaveBeenCalled();
@@ -628,15 +621,10 @@ describe('deletePaletteFlow', () => {
 
 		expect(order).toEqual(['activate', 'delete']);
 		expect(client.setCurrentPalette).toHaveBeenCalledWith(NAMESPACE, 'forest', SLUG);
-		// The intermediate activation response is discarded — only the FINAL write's (delete's)
+		// The intermediate activation response is discarded — only the FINAL write's (delete's) raw
 		// response is dispatched, since it is the truly fresh post-delete state.
 		expect(onReceive).toHaveBeenCalledTimes(1);
-		expect(onReceive).toHaveBeenCalledWith({
-			defaultId: DEFAULT_ID,
-			currentId: '',
-			palettes: [{ id: DEFAULT_ID, label: 'Default', groups: defaultView().groups }],
-			userCreated: [],
-		});
+		expect(onReceive).toHaveBeenCalledWith(deleteResponse);
 	});
 
 	it('surfaces the default-palette 400 message', async () => {
@@ -784,7 +772,7 @@ describe('renamePaletteFlow', () => {
 		expect(slugArg).toBe(SLUG);
 		expect(payload.label).toBe('Sunset Dusk');
 		expect(payload.groups).toEqual(stripEffectiveFlags(selectedView().groups));
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(onBusy.mock.calls).toEqual([[true], [false]]);
 	});
 
@@ -839,7 +827,7 @@ describe('removeSwatchFlow', () => {
 
 		expect(client.savePalette).toHaveBeenCalled();
 		expect(client.deleteUserPrimitive).toHaveBeenCalledWith(SLUG, 'primitive.color.custom.custom-1', 'v3');
-		expect(flowArgs.onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(flowArgs.onReceive).toHaveBeenCalledWith(listingRows());
 	});
 
 	it('never calls deleteUserPrimitive for a baseline token', async () => {
@@ -931,7 +919,7 @@ describe('addColorFlow', () => {
 		expect(payload.groups.find((group) => group.id === 'accent').swatches).toContainEqual(
 			expect.objectContaining({ token: 'primitive.color.custom.custom-1' })
 		);
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(token).toBe('primitive.color.custom.custom-1');
 	});
 
@@ -1078,7 +1066,7 @@ describe('renameGroupFlow', () => {
 		// The id-stability assertion: the saved group still carries its original id under the new
 		// label — the regression test for the `template_slot_for()` misfiling hazard.
 		expect(payload.groups.find((group) => group.label === 'Renamed Accent').id).toBe('accent');
-		expect(onReceive).toHaveBeenCalledWith(reshapedListing());
+		expect(onReceive).toHaveBeenCalledWith(listingRows());
 		expect(refreshFeed).toHaveBeenCalledWith(SLUG);
 	});
 
