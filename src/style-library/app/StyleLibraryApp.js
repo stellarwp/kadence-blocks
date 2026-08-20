@@ -173,6 +173,7 @@ export function StyleLibraryApp() {
 									editingSlug={libraries.editingSlug}
 									editingTitle={editingTitle}
 									isBusy={libraries.isBusy}
+									isLoading={libraries.isLoading}
 									isSwapping={libraries.isSwappingLibrary}
 									openError={libraries.openError}
 									createError={libraries.createError}

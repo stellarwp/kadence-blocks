@@ -181,6 +181,7 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							// someone merely looks at a different palette; see `openPaletteFlow`'s own docblock.
 							onChange={(id) => palettes.openPalette(id).catch(() => {})}
 							isBusy={palettes.isBusy}
+							isLoading={palettes.isLoading}
 							error={palettes.openError}
 							onClearError={palettes.clearOpenError}
 							trailingAction={{

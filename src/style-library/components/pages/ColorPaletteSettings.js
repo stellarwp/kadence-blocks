@@ -20,6 +20,7 @@ import { SettingsForm } from '../organisms/SettingsForm';
 import { usePalettes } from '../../hooks/use-palettes';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { findSwatch, swatchInitialValues } from '../../helpers/palettes';
+import { Skeleton } from '../atoms/Skeleton';
 
 /**
  * The swatch panel's schema: a NAME text field and a color-only picker. `colorOnly: true` keeps the
@@ -71,6 +72,15 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			navigate({ item: '' });
 		}
 	}, [palettes.isLoading, palettes.palette, swatch, navigate]);
+
+	if (token && palettes.isLoading) {
+		return (
+			<div className="kadence-blocks-style-library__settings-panel" role="status" aria-busy="true">
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+			</div>
+		);
+	}
 
 	if (!swatch) {
 		return null;

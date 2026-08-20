@@ -21,7 +21,12 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
+import { Skeleton } from '../atoms/Skeleton';
 import './SelectDropdown.scss';
+
+// A fixed placeholder-row count — there is no "expected row count" to read before the real options
+// arrive, so this is a plain visual approximation, not a value derived from real data.
+const SKELETON_ROW_IDS = [0, 1, 2];
 
 /**
  * Render the selector dropdown.
@@ -37,6 +42,11 @@ import './SelectDropdown.scss';
  *                                                                       badge means.
  * @param {Function}                              props.onChange        Called with a value when a different option is chosen.
  * @param {boolean}                               [props.isBusy]        Whether a change is in flight.
+ * @param {boolean}                               [props.isLoading]     Whether the option list itself is still
+ *                                                                       loading (as opposed to `isBusy`, which
+ *                                                                       covers a write in flight). While true and
+ *                                                                       the menu is open, skeleton rows render in
+ *                                                                       place of `options`.
  * @param {boolean}                               [props.showSpinner]   Whether the inline busy spinner is drawn. Defaults to true; a caller that
  *                                                                       already shows progress for the same wait elsewhere passes false to avoid a
  *                                                                       second indicator. Independent of `isBusy`, which still disables the control.
@@ -61,6 +71,7 @@ export function SelectDropdown({
 	options,
 	onChange,
 	isBusy,
+	isLoading = false,
 	showSpinner = true,
 	error,
 	onClearError,
@@ -107,63 +118,72 @@ export function SelectDropdown({
 				renderContent={({ onClose }) => (
 					<>
 						<MenuGroup>
-							{options.map((option) => {
-								const isCurrent = option.value === value;
+							{isLoading
+								? SKELETON_ROW_IDS.map((id) => (
+										<div
+											key={id}
+											className="kadence-blocks-style-library__select-dropdown-skeleton-row"
+										>
+											<Skeleton className="kadence-blocks-style-library__select-dropdown-skeleton-label" />
+										</div>
+									))
+								: options.map((option) => {
+										const isCurrent = option.value === value;
 
-								return (
-									<MenuItem
-										key={option.value}
-										role="menuitemradio"
-										aria-checked={isCurrent}
-										disabled={isBusy}
-										// Badges ride in the suffix rather than beside the label, so they and
-										// the check are siblings of the label's own box and the button's
-										// single `gap` spaces all three identically — no margins of their
-										// own to keep in step with it.
-										//
-										// The check slot is always rendered, empty on the rows without a
-										// check, so every row reserves the same trailing column. Without it
-										// the check's width exists on one row only, and everything to its
-										// left sits at a different right edge there than on its neighbors.
-										suffix={
-											<>
-												{option.badges?.length > 0 && (
-													<span className="kadence-blocks-style-library__select-dropdown-badges">
-														{option.badges.map((badge) => (
-															<span
-																key={badge.text}
-																className={classnames(
-																	'kadence-blocks-style-library__select-dropdown-badge',
-																	`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
-																)}
-															>
-																{badge.text}
+										return (
+											<MenuItem
+												key={option.value}
+												role="menuitemradio"
+												aria-checked={isCurrent}
+												disabled={isBusy}
+												// Badges ride in the suffix rather than beside the label, so they and
+												// the check are siblings of the label's own box and the button's
+												// single `gap` spaces all three identically — no margins of their
+												// own to keep in step with it.
+												//
+												// The check slot is always rendered, empty on the rows without a
+												// check, so every row reserves the same trailing column. Without it
+												// the check's width exists on one row only, and everything to its
+												// left sits at a different right edge there than on its neighbors.
+												suffix={
+													<>
+														{option.badges?.length > 0 && (
+															<span className="kadence-blocks-style-library__select-dropdown-badges">
+																{option.badges.map((badge) => (
+																	<span
+																		key={badge.text}
+																		className={classnames(
+																			'kadence-blocks-style-library__select-dropdown-badge',
+																			`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
+																		)}
+																	>
+																		{badge.text}
+																	</span>
+																))}
 															</span>
-														))}
-													</span>
-												)}
-												<span className="kadence-blocks-style-library__select-dropdown-check-slot">
-													{isCurrent && (
-														<Icon
-															className="kadence-blocks-style-library__select-dropdown-check"
-															icon={check}
-														/>
-													)}
-												</span>
-											</>
-										}
-										onClick={() => {
-											onClose();
+														)}
+														<span className="kadence-blocks-style-library__select-dropdown-check-slot">
+															{isCurrent && (
+																<Icon
+																	className="kadence-blocks-style-library__select-dropdown-check"
+																	icon={check}
+																/>
+															)}
+														</span>
+													</>
+												}
+												onClick={() => {
+													onClose();
 
-											if (!isCurrent) {
-												onChange(option.value);
-											}
-										}}
-									>
-										{option.label}
-									</MenuItem>
-								);
-							})}
+													if (!isCurrent) {
+														onChange(option.value);
+													}
+												}}
+											>
+												{option.label}
+											</MenuItem>
+										);
+									})}
 						</MenuGroup>
 						{trailingAction && (
 							<>

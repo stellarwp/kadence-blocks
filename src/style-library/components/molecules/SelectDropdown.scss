@@ -337,6 +337,20 @@
 	color: var(--kb-sl-color-text-muted);
 }
 
+// Matches `.components-menu-item__button`'s own padding/min-height above, so a skeleton row
+// occupies the exact same box a real `MenuItem` would.
+.kadence-blocks-style-library__select-dropdown-skeleton-row {
+	display: flex;
+	align-items: center;
+	padding: var(--kb-sl-space-10) var(--kb-sl-space-15);
+	min-height: var(--kb-sl-space-30);
+}
+
+.kadence-blocks-style-library__select-dropdown-skeleton-label {
+	width: 60%;
+	height: 1em;
+}
+
 .kadence-blocks-style-library__select-dropdown-error {
 	margin: 0;
 }

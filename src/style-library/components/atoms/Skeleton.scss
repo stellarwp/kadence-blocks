@@ -40,3 +40,13 @@
 .kadence-blocks-style-library__skeleton--bar {
 	height: var(--kb-sl-line-height-s);
 }
+
+// A settings-panel field placeholder (`PresetSidebar`/`ColorPaletteSettings`, before their real
+// `initialValues` land): sized as a text-input-shaped bar, reusing the same 40px height every real
+// input in this app already uses (`--kb-sl-space-50`, e.g. `SelectDropdown`'s toggle) and the
+// panel header's own horizontal/vertical padding rhythm, rather than inventing new dimensions.
+.kadence-blocks-style-library__settings-panel-field {
+	width: 100%;
+	height: var(--kb-sl-space-50);
+	margin: 0 0 var(--kb-sl-space-15);
+}

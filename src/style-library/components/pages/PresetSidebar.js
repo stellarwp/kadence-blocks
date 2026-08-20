@@ -27,6 +27,7 @@ import { SettingsForm } from '../organisms/SettingsForm';
 import { useSettingsPanel } from '../../hooks/use-settings-panel';
 import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { presetNameSchema } from '../../helpers/presets';
+import { Skeleton } from '../atoms/Skeleton';
 
 /**
  * The panel proper: mounted only once its preset's `initialValues` are known, so `useSettingsPanel`
@@ -203,6 +204,15 @@ export function PresetSidebar({ route, navigate, screen, preset }) {
 			navigate({ item: '' });
 		}
 	}, [id, screen.isLoading, screen.loadError, hasInitialValues, navigate]);
+
+	if (id && screen.isLoading) {
+		return (
+			<div className="kadence-blocks-style-library__settings-panel" role="status" aria-busy="true">
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+				<Skeleton className="kadence-blocks-style-library__settings-panel-field" />
+			</div>
+		);
+	}
 
 	if (!id || !hasInitialValues) {
 		return null;

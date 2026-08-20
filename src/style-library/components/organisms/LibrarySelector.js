@@ -35,6 +35,7 @@ import { CreateLibraryModal } from './CreateLibraryModal';
  * @param {string}        props.editingSlug        The slug the app is showing.
  * @param {string}        props.editingTitle       That library's display title, already resolved by the caller.
  * @param {boolean}       props.isBusy             Whether a library operation is in flight.
+ * @param {boolean}       [props.isLoading]        Whether the libraries list is still loading.
  * @param {boolean}       props.isSwapping         Whether the app is being repopulated for a different library.
  * @param {?{message: string}} props.openError     The current open error, if any.
  * @param {?{message: string}} props.createError   The current create error, if any.
@@ -53,6 +54,7 @@ export function LibrarySelector({
 	editingSlug,
 	editingTitle,
 	isBusy,
+	isLoading,
 	isSwapping,
 	openError,
 	createError,
@@ -104,6 +106,7 @@ export function LibrarySelector({
 				// silently correcting itself when the list request lands.
 				valueLabel={editingTitle}
 				isBusy={isBusy}
+				isLoading={isLoading}
 				// The app draws its own scrim while a library is being opened, so the dropdown's
 				// inline spinner would be a second progress indicator for the same wait — and one
 				// sitting underneath the scrim at that. The control still disables via `isBusy`.
