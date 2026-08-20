@@ -11,7 +11,7 @@ import * as actions from './actions';
 import * as resolvers from './resolvers';
 import * as selectors from './selectors';
 
-export { STORE_NAME, presetsKey, paletteListingKey, paletteKey } from './constants';
+export { STORE_NAME } from './constants';
 
 import { STORE_NAME } from './constants';
 
