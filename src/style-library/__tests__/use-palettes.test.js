@@ -180,6 +180,32 @@ describe('usePalettes', () => {
 		expect(probe.latest().palette.groups[0].swatches[0].$value).toBe('#111111');
 	});
 
+	it('isLoading is already true on the very first render, before the resolver dispatch has fired', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let latest = null;
+
+		function Probe({ feed, route, navigate }) {
+			latest = usePalettes(feed, jest.fn().mockResolvedValue(undefined), route, navigate);
+			return null;
+		}
+
+		// `@wordpress/data`'s resolver dispatch is scheduled via `setTimeout(fn, 0)`, so this render
+		// happens strictly before that dispatch fires — `isResolving` would still read `false` here,
+		// which is exactly the one-frame "not loading" flash `hasFinishedResolution` must avoid.
+		await act(() =>
+			root.render(
+				<RegistryProvider value={registry}>
+					<Probe feed={FEED} route={{ scope: '' }} navigate={jest.fn()} />
+				</RegistryProvider>
+			)
+		);
+
+		expect(latest.isLoading).toBe(true);
+
+		await flushUntil(() => !latest.isLoading);
+	});
+
 	it('surfaces a getPaletteListing resolution failure through openError', async () => {
 		client.fetchPalettes.mockRejectedValueOnce(new Error('Something broke'));
 

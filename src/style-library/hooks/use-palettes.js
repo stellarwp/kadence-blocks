@@ -98,16 +98,22 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug]
 	);
 
-	// `isListingLoading` is gated on `!listing.palettes.length`, not raw `isResolving` alone, so a
-	// re-render never shows a loading state once a listing has already loaded once. This matters
-	// most for a library switch: swapping `namespace`/`slug` starts a genuinely new resolution for
-	// that `(namespace, slug)` args tuple, raising `isResolving` again. Without the `.length` check
-	// this would flash a loading skeleton over the currently-displayed palettes on every switch,
-	// instead of only showing it the very first time this library's listing has never resolved.
-	const { isListingLoading, listingFailure } = useSelect(
+	// `hasFinishedListing` uses `hasFinishedResolution`, not `isResolving`: `@wordpress/data` schedules
+	// a resolver's dispatch via a `setTimeout(fn, 0)`, so on the very first render for a given
+	// `(namespace, slug)` tuple `isResolving` can still be `false` — the resolver hasn't been kicked
+	// off yet — even though nothing has loaded. `hasFinishedResolution` stays `false` for that same
+	// render, so `isLoading` below correctly starts `true` instead of flashing `false` for one frame.
+	// It is then gated on `!listing.palettes.length`, so a re-render never shows a loading state once
+	// a listing has already loaded once. This matters most for a library switch: swapping
+	// `namespace`/`slug` starts a genuinely new resolution for that `(namespace, slug)` args tuple,
+	// so `hasFinishedResolution` goes back to `false`. Without the `.length` check this would flash a
+	// loading skeleton over the currently-displayed palettes on every switch, instead of only showing
+	// it the very first time this library's listing has never resolved.
+	const { hasFinishedListing, listingFailure } = useSelect(
 		(select) => ({
-			isListingLoading:
-				Boolean(namespace && slug) && select(STORE_NAME).isResolving('getPaletteListing', [namespace, slug]),
+			hasFinishedListing:
+				!(namespace && slug) ||
+				select(STORE_NAME).hasFinishedResolution('getPaletteListing', [namespace, slug]),
 			listingFailure:
 				namespace && slug
 					? select(STORE_NAME).getResolutionError('getPaletteListing', [namespace, slug])
@@ -115,7 +121,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		}),
 		[namespace, slug]
 	);
-	const isLoading = isListingLoading && !listing.palettes.length;
+	const isLoading = !hasFinishedListing && !listing.palettes.length;
 
 	// Mirrors `hooks/use-libraries.js`'s identical effect: a resolution failure for
 	// `getPaletteListing` surfaces here the same way a failed write already does via its own
