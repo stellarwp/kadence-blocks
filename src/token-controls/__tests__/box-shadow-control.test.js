@@ -348,4 +348,44 @@ describe('BoxShadowControl disabled state', () => {
 
 		expect(trigger().disabled).toBe(true);
 	});
+
+	/**
+	 * `BoxShadowControl` guards each write path (`onPick`, `onClear`) separately rather than relying
+	 * on the trigger's `disabled` attribute alone — a real popover would still be reachable through
+	 * assistive tech or a stray click on an already-open panel, so the guards inside `TokenPopover`
+	 * are what actually stop a write while disabled. This exercises the Style Library tab's pick and
+	 * reset paths directly and confirms neither fires `onChange`, matching `BorderControl`'s sibling
+	 * "disables every field and fires no onChange from a disabled sub-field" coverage.
+	 *
+	 * @return {void}
+	 */
+	it('fires no onChange from a pick or reset in the Style Library tab while disabled', () => {
+		const onChange = jest.fn();
+		renderControl({ value: '{primitive.shadow.md}', onChange, disabled: true });
+
+		click(tokenItem('Large'));
+		click(resetButton());
+
+		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	/**
+	 * Same guard, exercised on the Custom tab's axis-edit and inset-toggle paths — the third of the
+	 * three `!disabled &&` guards this control relies on.
+	 *
+	 * @return {void}
+	 */
+	it('fires no onChange from an axis edit or the Inset toggle in the Custom tab while disabled', () => {
+		const onChange = jest.fn();
+		renderControl({
+			value: { color: '#111111', offsetX: '0px', offsetY: '0px', blur: '0px', spread: '0px' },
+			onChange,
+			disabled: true,
+		});
+
+		change(numberInput('Blur'), '12');
+		click(insetCheckbox());
+
+		expect(onChange).not.toHaveBeenCalled();
+	});
 });
