@@ -162,7 +162,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 				value: row.id,
 				label: paletteDisplayLabel(row),
 				// The Active badge tracks `$current` independently of which row is being edited —
-				// opening a palette never moves it (see `openPaletteFlow`).
+				// opening a palette never moves it (`usePalettes().openPalette` is a pure
+				// navigation that only writes the route's `scope`).
 				badges:
 					row.id === palettes.activeId ? [{ text: __('Active', 'kadence-blocks'), variant: 'state' }] : [],
 			})),
@@ -195,7 +196,8 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 							options={options}
 							// Opens the palette for viewing only — never writes `$current`. A future reader who
 							// "fixes" this to also activate would silently re-tint the live site every time
-							// someone merely looks at a different palette; see `openPaletteFlow`'s own docblock.
+							// someone merely looks at a different palette; see `usePalettes().openPalette`'s
+							// own comment in `hooks/use-palettes.js`.
 							onChange={(id) => palettes.openPalette(id).catch(() => {})}
 							isBusy={palettes.isBusy}
 							isLoading={palettes.isLoading}
@@ -273,7 +275,12 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						groups={gridGroups}
 						selectedId={route.item}
 						onSelect={(token) => navigate({ item: token })}
-						onReorder={(groupId, orderedTokens) => palettes.reorderSwatches(groupId, orderedTokens)}
+						onReorder={(groupId, orderedTokens) =>
+							palettes
+								.reorderSwatches(groupId, orderedTokens)
+								// Swallowed: a failure already lands in `structureError`, rendered above.
+								.catch(() => {})
+						}
 						onAdd={(groupId) =>
 							palettes
 								.addColor(groupId)

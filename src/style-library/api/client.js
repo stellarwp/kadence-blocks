@@ -131,10 +131,11 @@ export function setGroupOrder(slug, group, payload) {
  * Fetch the library's palettes: a flat row per palette carrying its id, label, and `is_default` /
  * `is_current` / `user_created` flags, each embedded (via `_embed`) with its full group/swatch data.
  *
- * @since TBD
- *
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token set slug.
+ *
+ * @since TBD
+ *
  * @return {Promise<object[]>} Flat, fully embedded palette listing.
  */
 export function fetchPalettes(namespace, slug) {
@@ -163,7 +164,7 @@ export function fetchPalette(namespace, id, slug) {
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id to make current.
  * @param {string} slug      Token set slug.
- * @return {Promise<{ current: string }>} The resolved current palette.
+ * @return {Promise<Array<{ id: string, label: string, is_default: boolean, is_current: boolean, user_created: boolean, _embedded: object }>>} The fresh, fully embedded palette listing.
  */
 export function setCurrentPalette(namespace, id, slug) {
 	return apiFetch({
@@ -197,13 +198,14 @@ export function savePalette(namespace, id, payload, slug) {
  * fields are changed, the palette's other swatches are untouched. `label` is only valid when `id`
  * is the library's default palette — the server rejects it otherwise.
  *
- * @since TBD
- *
  * @param {string} namespace REST namespace.
  * @param {string} id        The palette id.
  * @param {string} token     The swatch token dot-path.
  * @param {{value?: string, label?: string}} fields At least one of `value`/`label`.
  * @param {string} slug      Token set slug.
+ *
+ * @since TBD
+ *
  * @return {Promise<object>} The fresh, fully embedded palette listing.
  */
 export function saveSwatch(namespace, id, token, fields, slug) {
