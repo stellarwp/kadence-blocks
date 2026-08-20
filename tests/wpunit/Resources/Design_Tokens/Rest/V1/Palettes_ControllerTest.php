@@ -694,6 +694,56 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A label-only write updates the swatch's structural label on the default palette, leaving its
+	 * value untouched.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchAcceptsALabelOnlyWrite(): void {
+		$before = $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'];
+
+		$this->controller->update_swatch(
+			$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary', null, 'Brand One' )
+		);
+
+		$this->assertSame( $before, $this->palettes->swatch_values( 'default' )['primitive.color.brand.primary'] );
+	}
+
+	/**
+	 * A label write against a non-default palette id is rejected — labels are structural, not per-palette.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRejectsALabelOnANonDefaultPalette(): void {
+		$this->create_custom_palette();
+
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'custom', 'primitive.color.brand.primary', null, 'Brand One' )
+				)
+			)
+		);
+	}
+
+	/**
+	 * A request with neither value nor label is rejected.
+	 *
+	 * @return void
+	 */
+	public function testUpdateSwatchRequiresAtLeastOneField(): void {
+		$this->assertSame(
+			WP_Http::UNPROCESSABLE_ENTITY,
+			$this->status_of(
+				$this->controller->update_swatch(
+					$this->swatch_request( 'PUT', 'default', 'primitive.color.brand.primary' )
+				)
+			)
+		);
+	}
+
+	/**
 	 * Deleting a swatch through the sub-route drops the palette's own value for that token, reverting it to
 	 * inherited-from-default.
 	 *
@@ -1003,22 +1053,28 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
-	 * A single-swatch request for the sub-route: the palette id, the token dot-path, and (for a write) the value.
+	 * A single-swatch request for the sub-route: the palette id, the token dot-path, and (for a write) the value
+	 * and/or the structural label.
 	 *
 	 * @param string      $method The HTTP method.
 	 * @param string      $id     The palette id.
 	 * @param string      $token  The swatch token dot-path.
 	 * @param string|null $value  The swatch value, for a write.
+	 * @param string|null $label  The swatch's structural label, for a write.
 	 *
 	 * @return WP_REST_Request
 	 */
-	private function swatch_request( string $method, string $id, string $token, ?string $value = null ): WP_REST_Request {
+	private function swatch_request( string $method, string $id, string $token, ?string $value = null, ?string $label = null ): WP_REST_Request {
 		$request = new WP_REST_Request( $method );
 		$request->set_param( 'id', $id );
 		$request->set_param( 'token', $token );
 
 		if ( $value !== null ) {
 			$request->set_param( '$value', $value );
+		}
+
+		if ( $label !== null ) {
+			$request->set_param( 'label', $label );
 		}
 
 		return $request;

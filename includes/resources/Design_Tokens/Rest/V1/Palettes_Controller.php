@@ -450,11 +450,13 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Set a single palette swatch (POST or PUT /palettes/{id}/swatches/{token}): validate just this one token
-	 * and value, upsert it into the palette, and save. Only the sent swatch is guarded, so editing one color
-	 * never depends on the palette's other swatches being valid, and every token the palette does not set falls
-	 * back to the default palette. Setting a non-default palette's swatch to the default value reverts it to
-	 * inherited, the same as a DELETE. A request for a palette the library does not define is a 404.
+	 * Set a single palette swatch's value and/or structural label (POST or PUT /palettes/{id}/swatches/{token}):
+	 * validate just this one token, upsert the sent fields into the palette, and save. Only the sent swatch is
+	 * guarded, so editing one color never depends on the palette's other swatches being valid, and every token
+	 * the palette does not set falls back to the default palette. Setting a non-default palette's swatch value
+	 * to the default value reverts it to inherited, the same as a DELETE. A label is structural — defined once,
+	 * inherited by every palette — so it can only be set on the library's default palette; sending one against
+	 * any other palette id is rejected. A request for a palette the library does not define is a 404.
 	 *
 	 * @since TBD
 	 *
@@ -474,25 +476,50 @@ final class Palettes_Controller extends Controller {
 		}
 
 		$value = $request->get_param( Sentinels::get_value_key() );
+		$label = $request->get_param( self::LABEL_PARAM );
 
-		if ( ! is_string( $value ) || $value === '' ) {
-			return $this->invalid( $id, __( 'A swatch value is required.', 'kadence-blocks' ) );
+		if ( ! is_string( $value ) && ! is_string( $label ) ) {
+			return $this->invalid( $id, __( 'A swatch value or label is required.', 'kadence-blocks' ) );
 		}
 
-		$guard = $this->guard_swatch_target( $id, $token, $value );
-
-		if ( $guard !== null ) {
-			return $guard;
+		if ( is_string( $value ) && $value === '' ) {
+			return $this->invalid( $id, __( 'A swatch value cannot be empty.', 'kadence-blocks' ) );
 		}
 
 		$default_id = $this->palettes->default_palette( $slug );
-		$default    = $this->palettes->swatch_values( $default_id, $slug );
 
-		// A non-default swatch equal to the default value is inherited, not stored, so setting it back to the
-		// default reverts it — identical to a DELETE.
-		$node = ( $id !== $default_id && ( $default[ $token ] ?? null ) === $value )
-			? $this->remove_swatch_from_node( $node, $token )
-			: $this->set_swatch_in_node( $node, $token, $value, $slug );
+		if ( is_string( $label ) && $id !== $default_id ) {
+			return $this->invalid( $id, __( 'A swatch label is structural and can only be set on the library\'s default palette.', 'kadence-blocks' ) );
+		}
+
+		$fields = [];
+
+		if ( is_string( $value ) ) {
+			$guard = $this->guard_swatch_target( $id, $token, $value );
+
+			if ( $guard !== null ) {
+				return $guard;
+			}
+
+			$fields['value'] = $value;
+		}
+
+		if ( is_string( $label ) ) {
+			$fields['label'] = $label;
+		}
+
+		if ( isset( $fields['value'] ) ) {
+			$default = $this->palettes->swatch_values( $default_id, $slug );
+
+			// A non-default swatch equal to the default value is inherited, not stored, so setting it back to
+			// the default reverts it — identical to a DELETE. Only applies to a value write; a label-only
+			// write never reverts anything.
+			$node = ( $id !== $default_id && ( $default[ $token ] ?? null ) === $fields['value'] )
+				? $this->remove_swatch_from_node( $node, $token )
+				: $this->set_swatch_fields_in_node( $node, $token, $fields, $slug );
+		} else {
+			$node = $this->set_swatch_fields_in_node( $node, $token, $fields, $slug );
+		}
 
 		return $this->write_palette_node( $slug, $id, $node );
 	}
@@ -1157,24 +1184,25 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * Upsert a swatch into a palette node: update its value in place if the palette already carries the token,
-	 * otherwise add it to the group the default template places it in (creating that group if the palette does
-	 * not have it yet). Returns the updated node.
+	 * Upsert one or more fields of a swatch into a palette node: update the sent fields in place if the
+	 * palette already carries the token, otherwise add it to the group the default template places it
+	 * in (creating that group if the palette does not have it yet). Returns the updated node.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string, mixed> $node  The palette node.
-	 * @param string               $token The swatch token dot-path.
-	 * @param string               $value The swatch value.
-	 * @param string               $slug  The token library slug.
+	 * @param array<string, mixed>  $node   The palette node.
+	 * @param string                $token  The swatch token dot-path.
+	 * @param array<string, string> $fields The fields to set — `value` and/or `label`, at least one present.
+	 * @param string                $slug   The token library slug.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function set_swatch_in_node( array $node, string $token, string $value, string $slug ): array {
+	private function set_swatch_fields_in_node( array $node, string $token, array $fields, string $slug ): array {
 		$groups_key   = Extensions::get_groups_key();
 		$swatches_key = Extensions::get_swatches_key();
 		$token_key    = Extensions::get_swatch_token_key();
 		$value_key    = Sentinels::get_value_key();
+		$label_key    = Extensions::get_label_key();
 		$group_id_key = Extensions::get_group_id_key();
 
 		$groups = isset( $node[ $groups_key ] ) && is_array( $node[ $groups_key ] ) ? array_values( $node[ $groups_key ] ) : [];
@@ -1186,21 +1214,29 @@ final class Palettes_Controller extends Controller {
 
 			foreach ( array_values( $group[ $swatches_key ] ) as $si => $swatch ) {
 				if ( is_array( $swatch ) && ( $swatch[ $token_key ] ?? null ) === $token ) {
-					$groups[ $gi ][ $swatches_key ]                      = array_values( $group[ $swatches_key ] );
-					$groups[ $gi ][ $swatches_key ][ $si ][ $value_key ] = $value;
-					$node[ $groups_key ]                                 = $groups;
+					$groups[ $gi ][ $swatches_key ] = array_values( $group[ $swatches_key ] );
+
+					if ( array_key_exists( 'value', $fields ) ) {
+						$groups[ $gi ][ $swatches_key ][ $si ][ $value_key ] = $fields['value'];
+					}
+
+					if ( array_key_exists( 'label', $fields ) ) {
+						$groups[ $gi ][ $swatches_key ][ $si ][ $label_key ] = $fields['label'];
+					}
+
+					$node[ $groups_key ] = $groups;
 
 					return $node;
 				}
 			}
 		}
 
-		[ $group_id, $group_label, $swatch_label ] = $this->template_slot_for( $token, $slug );
+		[ $group_id, $group_label, $template_label ] = $this->template_slot_for( $token, $slug );
 
 		$swatch = [
-			$token_key                  => $token,
-			Extensions::get_label_key() => $swatch_label,
-			$value_key                  => $value,
+			$token_key => $token,
+			$label_key => $fields['label'] ?? $template_label,
+			$value_key => $fields['value'] ?? '',
 		];
 
 		foreach ( $groups as $gi => $group ) {
@@ -1216,9 +1252,9 @@ final class Palettes_Controller extends Controller {
 		}
 
 		$groups[] = [
-			$group_id_key               => $group_id,
-			Extensions::get_label_key() => $group_label,
-			$swatches_key               => [ $swatch ],
+			$group_id_key => $group_id,
+			$label_key    => $group_label,
+			$swatches_key => [ $swatch ],
 		];
 
 		$node[ $groups_key ] = $groups;
@@ -1612,7 +1648,8 @@ final class Palettes_Controller extends Controller {
 	}
 
 	/**
-	 * The arguments for the single-swatch write route: the swatch params plus the required `$value`.
+	 * The arguments for the swatch write route: the value and/or the structural label, each optional
+	 * individually — `update_swatch()` requires at least one to be present.
 	 *
 	 * @since TBD
 	 *
@@ -1625,7 +1662,10 @@ final class Palettes_Controller extends Controller {
 				Sentinels::get_value_key() => [
 					'description' => __( 'The swatch value: a literal color or a {dot.path} alias.', 'kadence-blocks' ),
 					'type'        => 'string',
-					'required'    => true,
+				],
+				self::LABEL_PARAM          => [
+					'description' => __( 'The swatch\'s structural label. Only valid when {id} is the library\'s default palette — labels are defined once, not per palette.', 'kadence-blocks' ),
+					'type'        => 'string',
 				],
 			]
 		);
