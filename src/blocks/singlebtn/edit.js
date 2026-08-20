@@ -26,7 +26,6 @@ import {
 	ResponsiveRangeControls,
 	IconRender,
 	HoverToggleControl,
-	ResponsiveBorderControl,
 	KadenceIconPicker,
 	KadencePanelBody,
 	URLInputControl,
@@ -94,6 +93,7 @@ import {
 } from '../../extension/token-indicators/normalize';
 import { TokenControlRow } from '../../extension/token-indicators/components/TokenControlRow';
 import { EditorBoxControl } from '../../extension/design-tokens/components/EditorBoxControl';
+import { EditorBorderControl } from '../../extension/design-tokens/components/EditorBorderControl';
 import { pickableTokensForControl } from '../../extension/token-picker';
 
 export default function KadenceButtonEdit(props) {
@@ -325,6 +325,16 @@ export default function KadenceButtonEdit(props) {
 	const { setPreviewDeviceType: setPreviewDevice } = useDispatch('kadenceblocks/data');
 	const borderRadiusTokens = pickableTokensForControl('kadence/singlebtn', 'borderRadius') || [];
 	const borderRadiusIsRelative = borderRadiusUnit === 'em' || borderRadiusUnit === 'rem';
+	// One pickable-width-token list per border control, keyed the same way its own attribute is —
+	// mirrors `borderRadiusTokens` above, one call per surface rather than one shared list, since a
+	// future per-surface `control_attr` mapping would need its own distinct entry anyway.
+	const borderWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStyle') || [];
+	const borderHoverWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderHoverStyle') || [];
+	const borderTransparentWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderTransparentStyle') || [];
+	const borderTransparentHoverWidthTokens =
+		pickableTokensForControl('kadence/singlebtn', 'borderTransparentHoverStyle') || [];
+	const borderStickyWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyStyle') || [];
+	const borderStickyHoverWidthTokens = pickableTokensForControl('kadence/singlebtn', 'borderStickyHoverStyle') || [];
 
 	// The mode describes what THIS device stores, not what it inherits. A breakpoint that stores nothing
 	// has nothing that differs, so it reads as linked — deriving from the inherited corners instead would
@@ -1073,7 +1083,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															</TokenControlRow>
 														)}
-														<ResponsiveBorderControl
+														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
 															value={borderHoverStyle}
 															tabletValue={tabletBorderHoverStyle}
@@ -1087,6 +1097,9 @@ export default function KadenceButtonEdit(props) {
 															onChangeMobile={(value) =>
 																setAttributes({ mobileBorderHoverStyle: value })
 															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															widthTokens={borderHoverWidthTokens}
 														/>
 														<ResponsiveMeasurementControls
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1287,7 +1300,7 @@ export default function KadenceButtonEdit(props) {
 																/>
 															</TokenControlRow>
 														)}
-														<ResponsiveBorderControl
+														<EditorBorderControl
 															label={__('Border', 'kadence-blocks')}
 															value={borderStyle}
 															tabletValue={tabletBorderStyle}
@@ -1299,6 +1312,9 @@ export default function KadenceButtonEdit(props) {
 															onChangeMobile={(value) =>
 																setAttributes({ mobileBorderStyle: value })
 															}
+															previewDevice={previewDevice}
+															onDeviceChange={setPreviewDevice}
+															widthTokens={borderWidthTokens}
 														/>
 														<EditorBoxControl
 															label={__('Border Radius', 'kadence-blocks')}
@@ -1469,7 +1485,7 @@ export default function KadenceButtonEdit(props) {
 																	}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderTransparentHoverStyle}
 																tabletValue={tabletBorderTransparentHoverStyle}
@@ -1489,6 +1505,9 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderTransparentHoverStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderTransparentHoverWidthTokens}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1667,7 +1686,7 @@ export default function KadenceButtonEdit(props) {
 																	}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderTransparentStyle}
 																tabletValue={tabletBorderTransparentStyle}
@@ -1685,6 +1704,9 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderTransparentStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderTransparentWidthTokens}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -1873,7 +1895,7 @@ export default function KadenceButtonEdit(props) {
 																	}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderStickyHoverStyle}
 																tabletValue={tabletBorderStickyHoverStyle}
@@ -1893,6 +1915,9 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderStickyHoverStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderStickyHoverWidthTokens}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
@@ -2067,7 +2092,7 @@ export default function KadenceButtonEdit(props) {
 																	}
 																/>
 															)}
-															<ResponsiveBorderControl
+															<EditorBorderControl
 																label={__('Border', 'kadence-blocks')}
 																value={borderStickyStyle}
 																tabletValue={tabletBorderStickyStyle}
@@ -2085,6 +2110,9 @@ export default function KadenceButtonEdit(props) {
 																		mobileBorderStickyStyle: value,
 																	})
 																}
+																previewDevice={previewDevice}
+																onDeviceChange={setPreviewDevice}
+																widthTokens={borderStickyWidthTokens}
 															/>
 															<ResponsiveMeasurementControls
 																label={__('Border Radius', 'kadence-blocks')}
