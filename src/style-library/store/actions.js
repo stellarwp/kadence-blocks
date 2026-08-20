@@ -15,3 +15,17 @@
 export function receiveLibraries(rows) {
 	return { type: 'RECEIVE_LIBRARIES', rows };
 }
+
+/**
+ * Store a block's preset collection.
+ *
+ * @param {string} key     `presetsKey()`'s output for this block/library.
+ * @param {Object} payload The fetched preset collection.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function receiveBlockPresets(key, payload) {
+	return { type: 'RECEIVE_BLOCK_PRESETS', key, payload };
+}
