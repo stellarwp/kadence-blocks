@@ -6,33 +6,38 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /**
+ * WordPress dependencies
+ */
+import { RegistryProvider } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import { usePresets } from '../hooks/use-presets';
 import { BUTTON_PRESET } from '../presets/button-preset';
 import { fetchBlockPresets } from '../api/client';
+import { createTestRegistry } from '../store/test-utils';
+import { STORE_NAME } from '../store';
 
-// A factory, not automock: `../api/client` imports `@wordpress/api-fetch`, which is externalized to
-// the `wp.apiFetch` global in production and therefore absent from `node_modules`.
 jest.mock('../api/client', () => ({
 	fetchBlockPresets: jest.fn(),
 }));
 
-const LIBRARY_A = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', version: 1, values: {} };
-const LIBRARY_B = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'brand', version: 1, values: {} };
+const LIBRARY_A = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'default', values: {} };
+const LIBRARY_B = { rest: { namespace: 'kb-design-tokens/v1' }, slug: 'brand', values: {} };
 
 const PAYLOAD_A = { version: 'a1', default: 'primary', presets: { primary: { label: 'Primary', tokens: {} } } };
 const PAYLOAD_B = { version: 'b1', default: 'primary', presets: { primary: { label: 'Brand Primary', tokens: {} } } };
 
-describe('usePresets library switching', () => {
+describe('usePresets', () => {
 	let container;
 	let root;
+	let registry;
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		registry = createTestRegistry();
 		global.IS_REACT_ACT_ENVIRONMENT = true;
-		// `initialValuesFor` walks the bound surface off the localized feed, which the Style Library
-		// page inline-scripts before the bundle runs.
 		window.kadenceDesignTokens = {
 			presets: {
 				'kadence/singlebtn': {
@@ -52,48 +57,55 @@ describe('usePresets library switching', () => {
 		delete window.kadenceDesignTokens;
 	});
 
-	/**
-	 * A single probe component type, so re-rendering with a different library updates the mounted
-	 * hook instead of remounting it — a remount would reset the state this test is about.
-	 *
-	 * @since TBD
-	 *
-	 * @return {{render: Function, latest: Function}} Renders with a library, and reads the hook's
-	 *                                                  most recent return value.
-	 */
+	// `@wordpress/data`'s resolver dispatch runs off a `setTimeout(fn, 0)` inside the store (see
+	// `mapSelectorWithResolver` in `@wordpress/data`'s redux store), a real timer callback that a
+	// plain `await act(async () => render())` does not wait for — that promise settles as soon as the
+	// synchronous render returns. Flushing one real timer tick after each render/dispatch gives the
+	// resolver's callback a turn to run before assertions read the store. See `use-libraries.test.js`
+	// for the same pattern.
+	function flushResolvers() {
+		return act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+	}
+
 	function mountProbe() {
 		let latest = null;
 
 		function Probe({ library }) {
 			latest = usePresets(library, BUTTON_PRESET);
-
 			return null;
 		}
 
 		return {
-			render: (library) => act(() => root.render(<Probe library={library} />)),
+			render: async (library) => {
+				await act(() =>
+					root.render(
+						<RegistryProvider value={registry}>
+							<Probe library={library} />
+						</RegistryProvider>
+					)
+				);
+				await flushResolvers();
+			},
 			latest: () => latest,
 		};
 	}
 
-	/**
-	 * Switching libraries with the same preset open must drop the previous library's payload right
-	 * away. Holding it would let a settings panel keyed on the preset id alone keep editing the old
-	 * library's draft under the new one.
-	 *
-	 * @return {void}
-	 */
-	it('drops the previous payload as soon as the library changes', async () => {
+	it('resolves a library’s presets and exposes them', async () => {
 		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
 
 		const probe = mountProbe();
-		await act(async () => probe.render(LIBRARY_A));
+		await probe.render(LIBRARY_A);
 
 		expect(probe.latest().payload).toEqual(PAYLOAD_A);
 		expect(probe.latest().initialValuesFor('primary')).not.toBeNull();
+	});
 
-		// The new library's fetch is left pending: this is the window the panel could otherwise
-		// keep the old draft in.
+	it('switching to a not-yet-resolved library shows loading with no stale data', async () => {
+		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
+
+		const probe = mountProbe();
+		await probe.render(LIBRARY_A);
+
 		let resolveB;
 		fetchBlockPresets.mockReturnValueOnce(
 			new Promise((resolve) => {
@@ -101,31 +113,23 @@ describe('usePresets library switching', () => {
 			})
 		);
 
-		probe.render(LIBRARY_B);
+		await probe.render(LIBRARY_B);
 
 		expect(probe.latest().payload).toBeNull();
 		expect(probe.latest().isLoading).toBe(true);
 		expect(probe.latest().initialValuesFor('primary')).toBeNull();
 
-		await act(async () => {
-			resolveB(PAYLOAD_B);
-		});
+		await act(async () => resolveB(PAYLOAD_B));
 
 		expect(probe.latest().payload).toEqual(PAYLOAD_B);
 		expect(probe.latest().isLoading).toBe(false);
 	});
 
-	/**
-	 * A version bump on the same library is a refresh after a write, not a library change, so the
-	 * rows must stay on screen while the re-read is in flight.
-	 *
-	 * @return {void}
-	 */
-	it('keeps the payload while the same library re-reads after a version bump', async () => {
+	it('keeps the payload on screen while an invalidation re-resolves the same library', async () => {
 		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
 
 		const probe = mountProbe();
-		await act(async () => probe.render(LIBRARY_A));
+		await probe.render(LIBRARY_A);
 
 		let resolveNext;
 		fetchBlockPresets.mockReturnValueOnce(
@@ -134,14 +138,46 @@ describe('usePresets library switching', () => {
 			})
 		);
 
-		probe.render({ ...LIBRARY_A, version: 2 });
-
-		expect(probe.latest().payload).toEqual(PAYLOAD_A);
-
-		await act(async () => {
-			resolveNext({ ...PAYLOAD_A, version: 'a2' });
+		// Simulates what `usePresetScreen`'s wrapped `refreshFeed` now does after a write.
+		act(() => {
+			registry
+				.dispatch(STORE_NAME)
+				.invalidateResolution('getBlockPresets', ['kb-design-tokens/v1', 'kadence/singlebtn', 'default']);
+			registry.resolveSelect(STORE_NAME).getBlockPresets('kb-design-tokens/v1', 'kadence/singlebtn', 'default');
 		});
 
+		expect(probe.latest().payload).toEqual(PAYLOAD_A);
+		expect(probe.latest().isLoading).toBe(false);
+
+		// The invalidated selector's re-fetch is itself scheduled on a `setTimeout(fn, 0)` (same
+		// mechanism as `flushResolvers()` above), so resolving the mock's promise first and then
+		// flushing lets `fetchBlockPresets` actually be called and its already-resolved result land.
+		resolveNext({ ...PAYLOAD_A, version: 'a2' });
+		await flushResolvers();
+
 		expect(probe.latest().payload.version).toBe('a2');
+	});
+
+	it('two mounted instances (a screen and its settings panel) share one fetch', async () => {
+		fetchBlockPresets.mockResolvedValueOnce(PAYLOAD_A);
+
+		function ProbeA() {
+			return usePresets(LIBRARY_A, BUTTON_PRESET) && null;
+		}
+		function ProbeB() {
+			return usePresets(LIBRARY_A, BUTTON_PRESET) && null;
+		}
+
+		await act(async () =>
+			root.render(
+				<RegistryProvider value={registry}>
+					<ProbeA />
+					<ProbeB />
+				</RegistryProvider>
+			)
+		);
+		await flushResolvers();
+
+		expect(fetchBlockPresets).toHaveBeenCalledTimes(1);
 	});
 });

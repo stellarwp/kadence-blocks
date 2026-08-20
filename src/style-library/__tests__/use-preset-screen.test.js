@@ -28,6 +28,16 @@ jest.mock('../hooks/use-presets', () => ({
 	usePresets: jest.fn(),
 }));
 
+// `usePresetScreen`'s wrapped `refreshFeed` reaches the store, whose resolvers import `../api/client`
+// directly — same `@wordpress/api-fetch` reason as above. `usePresets` above already stubs out the
+// hook's own read of the store, so this mock only needs to keep the store module loadable; the
+// wrapped `refreshFeed`'s own store round trip through this stub resolves to `undefined` and is
+// otherwise inert for these tests.
+jest.mock('../api/client', () => ({
+	fetchBlockPresets: jest.fn(),
+	fetchLibraries: jest.fn(),
+}));
+
 // Inline rather than the real `BUTTON_PRESET`, which reads its properties from the localized feed.
 // `usePresets` is mocked here, so the hook only needs the three keys it reads itself.
 const PRESET = { block: 'kadence/singlebtn', properties: ['color'], slugBase: 'preset' };

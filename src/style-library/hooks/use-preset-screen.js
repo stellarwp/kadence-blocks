@@ -15,6 +15,7 @@
  * WordPress dependencies
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useRegistry } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -23,6 +24,7 @@ import { applyRowOrder } from '../helpers/scale';
 import { createPresetFlow, deletePresetFlow, reorderPresetsFlow, savePresetFlow } from '../helpers/preset-flows';
 import { presetInitialValues, presetStoredTokens } from '../helpers/presets';
 import { usePresets } from './use-presets';
+import { STORE_NAME } from '../store';
 
 /**
  * Bind a preset screen to its block's fetched preset collection and the four write flows.
@@ -52,8 +54,27 @@ export function usePresetScreen(library, preset) {
 
 	const namespace = library?.rest?.namespace;
 	const slug = library?.slug;
-	const refreshFeed = library?.refreshFeed;
 	const payloadVersion = presets.payload?.version;
+
+	const registry = useRegistry();
+
+	// Every write flow below still calls `refreshFeed(slug)` — this wraps that same call so a preset
+	// write also re-resolves the store's `getBlockPresets` selector, instead of relying on a `version`
+	// bump (no longer part of `usePresets`'s own logic) to trigger a re-read.
+	const refreshFeed = useCallback(
+		(targetSlug) => {
+			const feedRefresh = library?.refreshFeed?.(targetSlug) ?? Promise.resolve();
+
+			let storeRefresh = Promise.resolve();
+			if (namespace && block && slug) {
+				registry.dispatch(STORE_NAME).invalidateResolution('getBlockPresets', [namespace, block, slug]);
+				storeRefresh = registry.resolveSelect(STORE_NAME).getBlockPresets(namespace, block, slug);
+			}
+
+			return Promise.all([feedRefresh, storeRefresh]);
+		},
+		[library, registry, namespace, block, slug]
+	);
 
 	// Read inside the queued continuations below, which are created once per `useCallback` identity
 	// and would otherwise close over the version from the render that made them.

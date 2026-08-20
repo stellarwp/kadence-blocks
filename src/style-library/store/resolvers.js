@@ -8,7 +8,8 @@
 /**
  * Internal dependencies
  */
-import { fetchLibraries } from '../api/client';
+import { fetchBlockPresets, fetchLibraries } from '../api/client';
+import { presetsKey } from './constants';
 
 /**
  * Resolve `selectors.getLibraries()`.
@@ -22,4 +23,22 @@ export const getLibraries =
 	async ({ dispatch }) => {
 		const rows = await fetchLibraries();
 		dispatch.receiveLibraries(rows);
+	};
+
+/**
+ * Resolve `selectors.getBlockPresets(namespace, block, slug)`.
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} block     The block name, e.g. `kadence/singlebtn`.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Function} A `@wordpress/data` thunk.
+ */
+export const getBlockPresets =
+	(namespace, block, slug) =>
+	async ({ dispatch }) => {
+		const payload = await fetchBlockPresets(namespace, block, slug);
+		dispatch.receiveBlockPresets(presetsKey(namespace, block, slug), payload);
 	};

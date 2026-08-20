@@ -1,6 +1,6 @@
 /* eslint-env jest */
-import { getLibraries } from './resolvers';
-import { fetchLibraries } from '../api/client';
+import { getBlockPresets, getLibraries } from './resolvers';
+import { fetchBlockPresets, fetchLibraries } from '../api/client';
 
 jest.mock('../api/client', () => ({
 	fetchLibraries: jest.fn(),
@@ -20,5 +20,19 @@ describe('resolvers', () => {
 		await getLibraries()({ dispatch });
 
 		expect(dispatch.receiveLibraries).toHaveBeenCalledWith(rows);
+	});
+
+	it('getBlockPresets() fetches and dispatches receiveBlockPresets under the composite key', async () => {
+		const payload = { version: 'a1', presets: {} };
+		fetchBlockPresets.mockResolvedValueOnce(payload);
+
+		const dispatch = { receiveBlockPresets: jest.fn() };
+		await getBlockPresets('kb-design-tokens/v1', 'kadence/singlebtn', 'default')({ dispatch });
+
+		expect(fetchBlockPresets).toHaveBeenCalledWith('kb-design-tokens/v1', 'kadence/singlebtn', 'default');
+		expect(dispatch.receiveBlockPresets).toHaveBeenCalledWith(
+			'kb-design-tokens/v1::kadence/singlebtn::default',
+			payload
+		);
 	});
 });
