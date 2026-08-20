@@ -23,11 +23,23 @@
  * Color is out of this plan's scope (see `BorderControl`'s own docblock): `renderColor` wraps the
  * same `TokenColorSelectField` the Button screen's Color panel already renders for text/background,
  * rather than building or importing anything new.
+ *
+ * Link state is owned here, controlled, exactly the way `BoxTokenField` owns it for radius/spacing
+ * — not derived from whether the stored value happens to be a scalar or a four-slot list.
+ * `BorderControl` left uncontrolled derives `linked` from the data's shape, and this adapter's own
+ * `toStoredValue` collapses a uniform four-slot write straight back to a scalar; wired together
+ * uncontrolled, unlinking would expand to four identical slots, get collapsed back to a scalar on
+ * the very next write, and re-derive as linked before the user could edit a single side — the
+ * toggle would visually snap back on every click. Tracking "the user chose the unlinked view" in
+ * its own state (per breakpoint, like `BoxTokenField`'s `unlinked`) and passing it down as
+ * `isLinked`/`onToggleLink` decouples that choice from what the data looks like, which is what
+ * lets an unlinked, still-uniform value stay unlinked until the user actually diverges a side.
  */
 
 /**
  * WordPress dependencies
  */
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -191,6 +203,24 @@ export function BorderField({ field, value, onChange }) {
 		alias: `{${token.id}}`,
 	}));
 
+	// Which breakpoints the user has opened up into per-side editing. Held here rather than inferred
+	// from the stored shape — see the module docblock — and per breakpoint for the same reason
+	// `BoxTokenField`'s `unlinked` is: a choice made on one breakpoint must not leak into another that
+	// never made it, keeping the breakpoints independent.
+	const [unlinked, setUnlinked] = useState({});
+	const storedIsList = isSlotList(atBreakpoint);
+	const linked = storedIsList ? false : !unlinked[breakpoint];
+
+	const toggleLink = () => {
+		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
+
+		// Relinking keeps the first side, matching `BoxTokenField`'s own relink rule; there is nothing
+		// to fold when the breakpoint never actually diverged into a list.
+		if (!linked && storedIsList) {
+			write(atBreakpoint[0]);
+		}
+	};
+
 	return (
 		<BorderControl
 			value={toControlValue(atBreakpoint)}
@@ -207,6 +237,8 @@ export function BorderField({ field, value, onChange }) {
 			breakpoints={responsive ? PRESET_BREAKPOINTS : null}
 			breakpoint={breakpoint}
 			onBreakpointChange={setBreakpoint}
+			isLinked={linked}
+			onToggleLink={toggleLink}
 			disabled={field.readOnly}
 		/>
 	);

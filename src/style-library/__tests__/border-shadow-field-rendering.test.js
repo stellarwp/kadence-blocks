@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { act, createElement } from 'react';
+import { act, createElement, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /**
@@ -137,6 +137,51 @@ describe('BorderField', () => {
 		const element = latestBorderControlProps.renderColor({ value: '', onChange: jest.fn() });
 
 		expect(element.type.name).toBe('TokenColorSelectField');
+	});
+
+	it('clicking unlink switches to per-side editing, survives a same-side edit, and leaves the other sides untouched', () => {
+		// A real, stateful host — not a fresh mock per assertion — because the bug this guards against
+		// only shows up across a render cycle: the field re-deriving `linked` from the just-written
+		// value, not from what `onToggleLink` was told.
+		function Harness({ field }) {
+			const [value, setValue] = useState('');
+
+			return createElement(BorderField, { field, value, onChange: setValue });
+		}
+
+		act(() => {
+			root.render(createElement(Harness, { field: { label: 'Border' } }));
+		});
+
+		// Starts linked: nothing stored yet, no unlink chosen.
+		expect(latestBorderControlProps.isLinked).toBe(true);
+
+		// Click unlink. The stored value is still '' (a scalar), so this must not write anything —
+		// this is exactly the step that used to bounce straight back to linked.
+		act(() => {
+			latestBorderControlProps.onToggleLink();
+		});
+
+		expect(latestBorderControlProps.isLinked).toBe(false);
+
+		// Edit one side only (top's width, via a picked alias), leaving style/color untouched — the
+		// shape a real unlinked `BorderControl` edit produces.
+		act(() => {
+			latestBorderControlProps.onChange({
+				width: ['{primitive.dimension.border-width.sm}', '', '', ''],
+				style: 'none',
+				color: '',
+			});
+		});
+
+		// Still unlinked after the write — the toggle does not snap back.
+		expect(latestBorderControlProps.isLinked).toBe(false);
+
+		// The stored value reflects only the edited side; the other three are untouched.
+		const controlValue = latestBorderControlProps.value;
+
+		expect(controlValue.width).toEqual(['{primitive.dimension.border-width.sm}', '', '', '']);
+		expect(controlValue.style).toEqual(['none', 'none', 'none', 'none']);
 	});
 });
 

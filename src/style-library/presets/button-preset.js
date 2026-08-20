@@ -205,11 +205,17 @@ function schemaFor(tab) {
 				responsive: true,
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
+				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't
+				// read one, because `BorderControl` accepts no `defaultValue`/inherited-value prop the way
+				// `BoxControl` does. Setting one would be a dead key. Add it once `BorderControl` grows that
+				// support, not before.
 			},
 			{
 				type: 'box-shadow',
 				path: 'tokens.button-shadow',
 				label: __('Shadow', 'kadence-blocks'),
+				// Same reason as `border` above: `BoxShadowControl` accepts no `defaultValue` prop, so a
+				// `defaultValue` key here would go unread.
 			},
 		],
 	};
