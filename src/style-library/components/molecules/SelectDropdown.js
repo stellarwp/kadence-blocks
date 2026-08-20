@@ -11,6 +11,7 @@
  * WordPress dependencies
  */
 import { Button, Dropdown, MenuGroup, MenuItem, Notice, Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import { Icon, check, chevronDown } from '@wordpress/icons';
 
 /**
@@ -118,72 +119,82 @@ export function SelectDropdown({
 				renderContent={({ onClose }) => (
 					<>
 						<MenuGroup>
-							{isLoading
-								? SKELETON_ROW_IDS.map((id) => (
+							{isLoading ? (
+								<div
+									className="kadence-blocks-style-library__select-dropdown-skeleton-group"
+									role="status"
+									aria-live="polite"
+									aria-busy="true"
+									aria-label={__('Loading options…', 'kadence-blocks')}
+								>
+									{SKELETON_ROW_IDS.map((id) => (
 										<div
 											key={id}
 											className="kadence-blocks-style-library__select-dropdown-skeleton-row"
 										>
 											<Skeleton className="kadence-blocks-style-library__select-dropdown-skeleton-label" />
 										</div>
-									))
-								: options.map((option) => {
-										const isCurrent = option.value === value;
+									))}
+								</div>
+							) : (
+								options.map((option) => {
+									const isCurrent = option.value === value;
 
-										return (
-											<MenuItem
-												key={option.value}
-												role="menuitemradio"
-												aria-checked={isCurrent}
-												disabled={isBusy}
-												// Badges ride in the suffix rather than beside the label, so they and
-												// the check are siblings of the label's own box and the button's
-												// single `gap` spaces all three identically — no margins of their
-												// own to keep in step with it.
-												//
-												// The check slot is always rendered, empty on the rows without a
-												// check, so every row reserves the same trailing column. Without it
-												// the check's width exists on one row only, and everything to its
-												// left sits at a different right edge there than on its neighbors.
-												suffix={
-													<>
-														{option.badges?.length > 0 && (
-															<span className="kadence-blocks-style-library__select-dropdown-badges">
-																{option.badges.map((badge) => (
-																	<span
-																		key={badge.text}
-																		className={classnames(
-																			'kadence-blocks-style-library__select-dropdown-badge',
-																			`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
-																		)}
-																	>
-																		{badge.text}
-																	</span>
-																))}
-															</span>
-														)}
-														<span className="kadence-blocks-style-library__select-dropdown-check-slot">
-															{isCurrent && (
-																<Icon
-																	className="kadence-blocks-style-library__select-dropdown-check"
-																	icon={check}
-																/>
-															)}
+									return (
+										<MenuItem
+											key={option.value}
+											role="menuitemradio"
+											aria-checked={isCurrent}
+											disabled={isBusy}
+											// Badges ride in the suffix rather than beside the label, so they and
+											// the check are siblings of the label's own box and the button's
+											// single `gap` spaces all three identically — no margins of their
+											// own to keep in step with it.
+											//
+											// The check slot is always rendered, empty on the rows without a
+											// check, so every row reserves the same trailing column. Without it
+											// the check's width exists on one row only, and everything to its
+											// left sits at a different right edge there than on its neighbors.
+											suffix={
+												<>
+													{option.badges?.length > 0 && (
+														<span className="kadence-blocks-style-library__select-dropdown-badges">
+															{option.badges.map((badge) => (
+																<span
+																	key={badge.text}
+																	className={classnames(
+																		'kadence-blocks-style-library__select-dropdown-badge',
+																		`kadence-blocks-style-library__select-dropdown-badge--${badge.variant ?? 'muted'}`
+																	)}
+																>
+																	{badge.text}
+																</span>
+															))}
 														</span>
-													</>
-												}
-												onClick={() => {
-													onClose();
+													)}
+													<span className="kadence-blocks-style-library__select-dropdown-check-slot">
+														{isCurrent && (
+															<Icon
+																className="kadence-blocks-style-library__select-dropdown-check"
+																icon={check}
+															/>
+														)}
+													</span>
+												</>
+											}
+											onClick={() => {
+												onClose();
 
-													if (!isCurrent) {
-														onChange(option.value);
-													}
-												}}
-											>
-												{option.label}
-											</MenuItem>
-										);
-									})}
+												if (!isCurrent) {
+													onChange(option.value);
+												}
+											}}
+										>
+											{option.label}
+										</MenuItem>
+									);
+								})
+							)}
 						</MenuGroup>
 						{trailingAction && (
 							<>

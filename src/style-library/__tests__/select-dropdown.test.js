@@ -35,6 +35,17 @@ describe('SelectDropdown loading state', () => {
 		const skeletonRows = document.querySelectorAll('.kadence-blocks-style-library__select-dropdown-skeleton-row');
 		expect(skeletonRows.length).toBeGreaterThan(0);
 		expect(document.querySelectorAll('[role="menuitemradio"]').length).toBe(0);
+
+		// A screen-reader user opening the menu while it loads must be told content is on the
+		// way — the skeleton rows sit inside a status region, not silently in place of the
+		// options.
+		const statusRegion = document.querySelector('.kadence-blocks-style-library__select-dropdown-skeleton-group');
+		expect(statusRegion).not.toBeNull();
+		expect(statusRegion.getAttribute('role')).toBe('status');
+		expect(statusRegion.getAttribute('aria-live')).toBe('polite');
+		expect(statusRegion.getAttribute('aria-busy')).toBe('true');
+		expect(statusRegion.getAttribute('aria-label')).toBe('Loading options…');
+		expect(statusRegion.contains(skeletonRows[0])).toBe(true);
 	});
 
 	it('shows real options once loaded, never skeleton rows', async () => {
