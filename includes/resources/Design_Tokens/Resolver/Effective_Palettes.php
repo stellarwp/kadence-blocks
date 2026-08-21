@@ -18,6 +18,11 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Schema\Vocabulary\Sentinels;
  * subtree, and delegates the merge. The sibling {@see Effective_Document} deliberately strips "$extensions",
  * so it cannot be reused here — palettes are read through this seam instead.
  *
+ * One thing is deliberately NOT merged: a palette's `groups`. A stored palette node owns its structure
+ * outright and REPLACES the baseline's list rather than being merged onto it, because the merge descends
+ * lists positionally and would otherwise leave the baseline's tail entries behind whenever a stored list is
+ * shorter. See {@see without_superseded_groups()} for the failure that guards against.
+ *
  * Beyond the raw section it exposes the two things the resolver and projection need: the library's `$current`
  * pointer (which palette is active at `:root`), and a palette flattened to a `{ token => $value }` overlay
  * (its groups' swatches collapsed) so the resolver can re-tint the color tokens before alias flattening.
@@ -103,7 +108,9 @@ final class Effective_Palettes {
 	 * @return array<string, mixed>
 	 */
 	public function for_overrides( array $overrides ): array {
-		return $this->mutator->merge( $this->palettes_of( $this->baseline->document() ), $this->palettes_of( $overrides ) );
+		$stored = $this->palettes_of( $overrides );
+
+		return $this->mutator->merge( $this->without_superseded_groups( $this->palettes_of( $this->baseline->document() ), $stored ), $stored );
 	}
 
 	/**
@@ -295,6 +302,78 @@ final class Effective_Palettes {
 	}
 
 	/**
+	 * The shipped baseline `$default` palette flattened to a `{ token => $value }` map — the colors the
+	 * plugin ships, independent of any stored library.
+	 *
+	 * This is the authoritative answer to "is this swatch part of the shipped palette?", which no other
+	 * seam can give: {@see Baseline_Document::has()} indexes only the primitive/semantic token layers and
+	 * deliberately skips "$extensions", so it never sees a palette swatch at all.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string> token dot-path => the shipped literal-or-alias value.
+	 */
+	public function baseline_swatch_values(): array {
+		$section = $this->palettes_of( $this->baseline->document() );
+
+		return $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
+	}
+
+	/**
+	 * Whether a token is a swatch the shipped baseline palette defines — the permanent set, whose rows a
+	 * palette write may never drop and whose values a delete reverts rather than removes.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The swatch token dot-path.
+	 *
+	 * @return bool
+	 */
+	public function is_baseline_swatch( string $token ): bool {
+		return array_key_exists( $token, $this->baseline_swatch_values() );
+	}
+
+	/**
+	 * Strip the `groups` list from every baseline palette node the overrides also define groups for, so the
+	 * stored list REPLACES the baseline's instead of being merged onto it.
+	 *
+	 * {@see Mutator::merge()} descends a `groups` / `swatches` list as a group, merging the two lists
+	 * POSITIONALLY — only an individual swatch is a leaf (it carries "$value") and replaces wholesale. The
+	 * default palette is in the baseline and stores every swatch, so any write that SHRINKS it (removing a
+	 * swatch, removing a group) leaves the baseline's tail entries un-overwritten: the removed swatch
+	 * reappears as a duplicate of its successor, and the duplicate then fails the palette write's own
+	 * no-repeated-token guard, wedging every later save.
+	 *
+	 * Dropping the baseline `groups` first makes the stored structure authoritative, which is what it
+	 * already is everywhere else — the palette write assembles a complete node and
+	 * {@see Palettes_Controller::write_palette_node()} removes-then-merges for exactly this reason one
+	 * layer down. Sibling keys (`label`) still merge normally, and a baseline palette the overrides only
+	 * relabel keeps its baseline groups.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $baseline The baseline colorPalettes section.
+	 * @param array<string, mixed> $stored   The stored overrides' colorPalettes section.
+	 *
+	 * @return array<string, mixed> The baseline section with superseded groups lists removed.
+	 */
+	private function without_superseded_groups( array $baseline, array $stored ): array {
+		$groups_key = Extensions::get_groups_key();
+
+		foreach ( $stored as $id => $node ) {
+			if ( ! is_array( $node ) || ! isset( $node[ $groups_key ] ) || ! is_array( $node[ $groups_key ] ) ) {
+				continue;
+			}
+
+			if ( isset( $baseline[ $id ] ) && is_array( $baseline[ $id ] ) ) {
+				unset( $baseline[ $id ][ $groups_key ] );
+			}
+		}
+
+		return $baseline;
+	}
+
+	/**
 	 * Reduce a `{ token => value }` map to the entries that differ from the baseline default palette.
 	 *
 	 * @since TBD
@@ -304,7 +383,7 @@ final class Effective_Palettes {
 	 * @return array<string, string>
 	 */
 	private function diff_against_baseline( array $values ): array {
-		$baseline = $this->baseline_default_swatch_values();
+		$baseline = $this->baseline_swatch_values();
 		$overlay  = [];
 
 		foreach ( $values as $token => $value ) {
@@ -316,20 +395,6 @@ final class Effective_Palettes {
 		}
 
 		return $overlay;
-	}
-
-	/**
-	 * The baseline `$default` palette flattened to a `{ token => $value }` map — the shipped baseline color
-	 * values, the reference the resolve-time overlay diffs against.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, string>
-	 */
-	private function baseline_default_swatch_values(): array {
-		$section = $this->palettes_of( $this->baseline->document() );
-
-		return $this->swatch_values_of( $section, $this->pointer_of( $section, Extensions::get_default_key() ) );
 	}
 
 	/**
