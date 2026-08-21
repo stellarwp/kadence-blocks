@@ -203,6 +203,45 @@
 	}
 }
 
+/*
+ * `BoxShadowControl`'s Custom tab: unlike the single-row layout above (one scalar plus its unit and
+ * slider), a shadow composite stacks three sections — the color row, the four axes, the Inset toggle
+ * — so this overrides the base rule's row direction rather than adding a second unrelated class.
+ * Reuses the base rule's own `8px`/`12px` spacing instead of introducing new values.
+ */
+.kadence-token-field__custom.kb-box-shadow-control__custom {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+/*
+ * The color row: a plain full-width wrapper around whatever `renderColor` renders (see the render
+ * function's own comment on why this does not rebuild that markup). Margin only, no border/padding
+ * of its own — the Style Library's `TokenColorSelectField` and the block editor's `PopColorControl`
+ * already draw their own bordered, clickable swatch-plus-label toggle, and adding a second border
+ * around it would double up the chrome the reference `ShadowField` only draws once.
+ */
+.kb-box-shadow-control__color-row {
+	width: 100%;
+	margin-bottom: 4px;
+}
+
+/*
+ * The four axis fields (X/Y/Blur/Spread), side by side rather than stacked — each field's own label
+ * already renders above its input via `NumberControl`'s built-in `label` prop (the same field-level
+ * markup `TokenSelector`'s Custom tab number input already uses elsewhere in this file), so this rule
+ * only has to arrange the four fields, not draw a second label.
+ */
+.kb-box-shadow-control__axes {
+	display: flex;
+	gap: 8px;
+
+	> * {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+}
+
 // A measure control's four corner fields are wider as a token field than as a bare number input, so
 // wrap them into a 2x2 grid (matching the design) instead of cramming four across one row. The linked
 // "all" control has a single field, which still grows to the full width.

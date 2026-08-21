@@ -6,10 +6,16 @@
  * The Custom tab reuses the exact composite shape `helpers/shadow.js` and `ShadowField` already
  * define for the Shadow token-library screen (`{ color, offsetX, offsetY, blur, spread, inset }`),
  * confirmed against the live screen rather than invented fresh — this control is a token-aware
- * wrapper around that same editing surface, not a new one.
+ * wrapper around that same editing surface, not a new one. Its visual layout mirrors that same
+ * `ShadowField` too — a color row, then the four axes side by side, then Inset — built as plain
+ * markup here rather than importing `ShadowField`/its SCSS, since `token-controls` cannot depend on
+ * `style-library` (this control also runs in the block editor canvas, which has none of the
+ * `--kb-sl-*` custom properties `style-library`'s own SCSS resolves against).
  *
  * Color is out of scope here (see `renderColor`) exactly as in `BorderControl` — this control does
- * not import or build a color picker.
+ * not import or build a color picker. The Custom tab's color row wraps whatever `renderColor`
+ * renders (the Style Library's swatch-plus-label toggle, the block editor's `PopColorControl`) in
+ * plain layout chrome; it does not touch what that render prop returns.
  *
  * The token rows also hide their resolved value (`TokenPopover`'s `showValue={false}`) — a shadow's
  * value is a long CSS shorthand that crowds the row the way a short dimension value does not. Other
@@ -78,24 +84,6 @@ function commitShadow(shadow, patch) {
 }
 
 /**
- * Render a composite shadow's `box-shadow` CSS shorthand for the trigger's value text, matching the
- * dimension order and literal `inset` keyword `Css_Renderer`/`shadowCss()` emit — the value span is
- * otherwise verbatim CSS (units, hex, rgba), so this stays untranslated rather than mixing in a UI
- * word.
- *
- * @param {Object} shadow The composite shadow value, defaults already filled.
- *
- * @since TBD
- *
- * @return {string} The shorthand string, `inset`-prefixed when the composite is inset.
- */
-function shadowShorthand(shadow) {
-	const shorthand = `${shadow.offsetX} ${shadow.offsetY} ${shadow.blur} ${shadow.spread} ${shadow.color}`;
-
-	return shadow.inset === true ? `inset ${shorthand}` : shorthand;
-}
-
-/**
  * The Custom tab body: the shadow composite editor, matching `ShadowField`'s layout — a color row,
  * four numeric axes, an inset toggle.
  *
@@ -114,7 +102,15 @@ function ShadowCustomTab({ shadow, onChange, renderColor, disabled = false }) {
 
 	return (
 		<div className="kadence-token-field__custom kb-box-shadow-control__custom">
-			{renderColor && renderColor({ value: shadow.color, onChange: (next) => setPart('color', next), disabled })}
+			{renderColor && (
+				// A plain wrapper, not a rebuilt picker: whatever the caller's `renderColor` already renders
+				// (the Style Library's `TokenColorSelectField` swatch-plus-"Color"-label toggle, the block
+				// editor's `PopColorControl`) keeps its own click-to-open mechanism and chrome untouched;
+				// this only gives it its own row above the axes instead of sitting inline with them.
+				<div className="kb-box-shadow-control__color-row">
+					{renderColor({ value: shadow.color, onChange: (next) => setPart('color', next), disabled })}
+				</div>
+			)}
 			<div className="kb-box-shadow-control__axes">
 				{AXES.map(({ key, label }) => (
 					<NumberControl
@@ -156,14 +152,14 @@ export function BoxShadowControl({ value, onChange, label, tokens = [], renderCo
 	const shadow = { ...DEFAULT_SHADOW, ...(aliased || !value ? {} : value) };
 	// Aliased reads the bound token's label/value split exactly as `TokenSelector`'s own trigger does;
 	// an unset slot reads as empty, matching `fieldSummary()`'s own unset branch and `TokenSelector`'s
-	// resulting empty trigger, rather than fabricating a value for a field that holds nothing; only a
-	// genuine composite reads "Custom" plus its own resolved shorthand, which `fieldSummary()`'s
-	// literal-plus-unit shape does not fit (it is built for scalars, not an object value).
+	// resulting empty trigger, rather than fabricating a value for a field that holds nothing; a
+	// genuine composite reads bare "Custom" with no value text — the Custom tab itself is one click
+	// away and already shows every sub-field, so the trigger does not also spell out a shorthand.
 	const summary = aliased
 		? fieldSummary(value, tokens, '', __('Custom', 'kadence-blocks'))
 		: !hasValue(value)
 			? { label: '', value: '' }
-			: { label: __('Custom', 'kadence-blocks'), value: shadowShorthand(shadow) };
+			: { label: __('Custom', 'kadence-blocks'), value: '' };
 	// The unset trigger renders no visible label/value (so the field reads as genuinely empty, not a
 	// fabricated custom shadow — see the summary derivation above), which would otherwise leave the
 	// Button with no accessible name at all: `ControlShell` renders `label` as a separate header span,

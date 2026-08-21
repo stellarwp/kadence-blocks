@@ -196,32 +196,16 @@ describe('BoxShadowControl trigger', () => {
 	});
 
 	/**
-	 * A composite value's trigger shows its own resolved shorthand as the value, not the alias'
-	 * literal display — so the field reads the same "label, then value" way for either value shape.
+	 * A composite value's trigger shows bare "Custom" with no value text — the Custom tab itself is
+	 * one click away and already shows every sub-field, so the trigger does not also spell out a CSS
+	 * shorthand alongside the label the way the aliased branch does.
 	 *
 	 * @return {void}
 	 */
-	it('shows the composite shadow resolved as CSS shorthand alongside "Custom"', () => {
+	it('shows no value text alongside "Custom" for a composite value', () => {
 		renderControl({ value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px' } });
 
-		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe('2px 2px 4px 0px #000000');
-	});
-
-	/**
-	 * An inset composite's value reads the literal lowercase `inset` CSS keyword, matching
-	 * `shadowCss()`'s own convention, rather than a translated UI word mixed into an otherwise
-	 * verbatim CSS string.
-	 *
-	 * @return {void}
-	 */
-	it('prefixes the shorthand with the literal "inset" keyword when the composite is inset', () => {
-		renderControl({
-			value: { color: '#000000', offsetX: '2px', offsetY: '2px', blur: '4px', spread: '0px', inset: true },
-		});
-
-		expect(trigger().querySelector('.kadence-token-field__value').textContent).toBe(
-			'inset 2px 2px 4px 0px #000000'
-		);
+		expect(trigger().querySelector('.kadence-token-field__value')).toBeNull();
 	});
 
 	/**
@@ -502,6 +486,55 @@ describe('BoxShadowControl Custom tab', () => {
 			blur: '8px',
 			spread: '0px',
 		});
+	});
+
+	/**
+	 * The Custom tab's color row sits in its own wrapper, above the axes — matching the Style
+	 * Library's `ShadowField` layout — rather than sitting inline with the axis fields the way it
+	 * did before this row anatomy existed. `renderColor`'s own rendered element (a bare
+	 * `data-testid="color-slot"` stand-in here, standing in for the real swatch-plus-label toggle) is
+	 * asserted as a child of that row, proving the wrapper does not alter or replace what the render
+	 * prop returns.
+	 *
+	 * @return {void}
+	 */
+	it('renders renderColor’s output inside its own color row, above the axes', () => {
+		const renderColor = () => <div data-testid="color-slot" />;
+
+		renderControl({
+			value: { color: '#111111', offsetX: '2px', offsetY: '4px', blur: '8px', spread: '0px' },
+			renderColor,
+		});
+
+		const colorRow = container.querySelector('.kb-box-shadow-control__color-row');
+
+		expect(colorRow).not.toBeNull();
+		expect(colorRow.querySelector('[data-testid="color-slot"]')).not.toBeNull();
+
+		// The color row renders above the axes: its section index in the Custom tab's own children
+		// comes before the axes row's.
+		const sections = Array.from(container.querySelector('.kb-box-shadow-control__custom').children);
+
+		expect(sections.indexOf(colorRow)).toBeLessThan(
+			sections.indexOf(container.querySelector('.kb-box-shadow-control__axes'))
+		);
+	});
+
+	/**
+	 * The four axis fields render together inside one `.kb-box-shadow-control__axes` row, in X, Y,
+	 * Blur, Spread order — the horizontal row anatomy `ShadowField` uses, not a stack.
+	 *
+	 * @return {void}
+	 */
+	it('renders the four axis fields together, in X/Y/Blur/Spread order', () => {
+		renderControl({
+			value: { color: '#111111', offsetX: '2px', offsetY: '4px', blur: '8px', spread: '1px' },
+		});
+
+		const axes = container.querySelector('.kb-box-shadow-control__axes');
+		const inputs = Array.from(axes.querySelectorAll('input[type="number"]'));
+
+		expect(inputs.map((input) => input.getAttribute('aria-label'))).toEqual(['X', 'Y', 'Blur', 'Spread']);
 	});
 });
 
