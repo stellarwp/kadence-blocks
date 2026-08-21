@@ -47,6 +47,9 @@ import './SwatchCard.scss';
  *                                              dragged — renders as an empty drop-target placeholder in
  *                                              place; the floating copy under the pointer/keyboard focus
  *                                              is a `SwatchGrid`-rendered `DragOverlay`, not this element.
+ * @param {boolean}      [props.isPendingDelete] Whether this card's swatch is optimistically
+ *                                               deleted but not yet confirmed — renders dimmed and
+ *                                               disabled instead of vanishing, until the write settles.
  * @param {Object}       [props.dragHandleProps] The dnd-kit listeners/attributes for the drag handle,
  *                                               supplied by the sortable wrapper; ignored when
  *                                               `isDraggable` is false.
@@ -69,6 +72,7 @@ export function SwatchCard({
 	onSelect,
 	isDraggable = false,
 	isDragging = false,
+	isPendingDelete = false,
 	dragHandleProps,
 	innerRef,
 	wrapperStyle,
@@ -80,12 +84,15 @@ export function SwatchCard({
 			className={classnames('kadence-blocks-style-library__swatch-card', {
 				'kadence-blocks-style-library__swatch-card--selected': isSelected,
 				'kadence-blocks-style-library__swatch-card--placeholder': isDragging,
+				'kadence-blocks-style-library__swatch-card--pending-delete': isPendingDelete,
 			})}
 		>
 			<button
 				type="button"
 				className="kadence-blocks-style-library__swatch-card-main"
 				onClick={() => onSelect(id)}
+				disabled={isPendingDelete}
+				aria-disabled={isPendingDelete}
 			>
 				<span className="kadence-blocks-style-library__swatch-card-preview" style={previewStyle}>
 					{preview}
@@ -94,7 +101,7 @@ export function SwatchCard({
 				{subLine && <span className="kadence-blocks-style-library__swatch-card-sub-line">{subLine}</span>}
 			</button>
 			<span className="kadence-blocks-style-library__swatch-card-handle-slot">
-				{isDraggable && <DragHandle handleProps={dragHandleProps} />}
+				{isDraggable && !isPendingDelete && <DragHandle handleProps={dragHandleProps} />}
 			</span>
 		</div>
 	);

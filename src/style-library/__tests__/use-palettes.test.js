@@ -401,6 +401,87 @@ describe('usePalettes', () => {
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
+	it('removeSwatch flags the target swatch pendingDelete immediately, before the write resolves', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveFetchPalette;
+		client.fetchPalette.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveFetchPalette = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().removeSwatch('primitive.color.brand.primary');
+		});
+
+		// Still present in `palette.groups`, only flagged — never an instant vanish.
+		const swatches = probe.latest().palette.groups[0].swatches;
+		expect(swatches).toHaveLength(2);
+		expect(swatches.find((swatch) => swatch.token === 'primitive.color.brand.primary')).toMatchObject({
+			pendingDelete: true,
+		});
+
+		const strippedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [
+					{
+						...defaultView().groups[0],
+						swatches: [defaultView().groups[0].swatches[1]],
+					},
+				],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(strippedRows);
+		resolveFetchPalette(defaultView());
+
+		await act(async () => writePromise);
+
+		expect(
+			probe.latest().palette.groups[0].swatches.some((swatch) => swatch.token === 'primitive.color.brand.primary')
+		).toBe(false);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Swatch deleted.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('removeSwatch clears pendingDelete and keeps the swatch when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.fetchPalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.removeSwatch('primitive.color.brand.primary')
+				.catch(() => {});
+		});
+
+		expect(
+			probe.latest().palette.groups[0].swatches.find((swatch) => swatch.token === 'primitive.color.brand.primary')
+		).toMatchObject({ pendingDelete: true });
+
+		await act(async () => writePromise);
+
+		const swatch = probe
+			.latest()
+			.palette.groups[0].swatches.find((swatch) => swatch.token === 'primitive.color.brand.primary');
+		// The overlay has nothing pending anymore, so `applyOptimisticOverlay` returns the original
+		// palette unchanged rather than a copy carrying an explicit `pendingDelete: false` — it never
+		// had a `pendingDelete` key to begin with.
+		expect(swatch.pendingDelete).toBeFalsy();
+		expect(swatch).toMatchObject({ label: 'Main 1', $value: '#111111' });
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
 	it('reorderSwatches applies the new order optimistically, then keeps it once the write resolves', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 		client.fetchPalette.mockResolvedValueOnce(defaultView());

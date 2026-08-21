@@ -75,10 +75,10 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '
  * @since TBD
  *
  * @return {Object} `{ listing, activeId, editingId, isEditingActive, palette, isLoading, isBusy,
- *                  openError, activateError, createError, renameError, deleteError, saveError,
+ *                  openError, activateError, createError, renameError, deleteError,
  *                  structureError,
  *                  clearOpenError, clearActivateError, clearCreateError, clearRenameError,
- *                  clearDeleteError, clearSaveError, clearStructureError,
+ *                  clearDeleteError, clearStructureError,
  *                  openPalette, activatePalette, createPalette, renamePalette, deletePalette,
  *                  saveSwatchEdits, removeSwatch, addColor, addGroup, reorderSwatches,
  *                  renameGroup, removeGroup }`.
@@ -90,7 +90,6 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const [createError, setCreateError] = useState(null);
 	const [renameError, setRenameError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
-	const [saveError, setSaveError] = useState(null);
 	const [structureError, setStructureError] = useState(null);
 
 	const namespace = feed?.rest?.namespace;
@@ -199,7 +198,6 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const clearCreateError = useCallback(() => setCreateError(null), []);
 	const clearRenameError = useCallback(() => setRenameError(null), []);
 	const clearDeleteError = useCallback(() => setDeleteError(null), []);
-	const clearSaveError = useCallback(() => setSaveError(null), []);
 	const clearStructureError = useCallback(() => setStructureError(null), []);
 
 	// Opening a palette is a pure navigation: write `id` into the route's `scope`. `editingId`
@@ -344,13 +342,20 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const removeSwatch = useCallback(
 		(token) => {
-			setSaveError(null);
-
 			// Trust the feed's own `userCreated` flag when the token has a feed entry (defense in
 			// depth against a token id that merely looks custom-prefixed); fall back to the prefix
 			// check for a token minted since the last feed refresh, which has no feed entry yet.
 			const feedEntry = feedTokens.find((entry) => entry.id === token);
 			const isUserCreated = feedEntry ? Boolean(feedEntry.userCreated) : isCustomColorToken(token);
+
+			// Delete is deliberately more conservative than save/add: the swatch stays visible,
+			// flagged `pendingDelete` (see `applyOptimisticOverlay`), dimmed and disabled by the
+			// grid, until the write confirms it — never an instant vanish.
+			if (namespace && slug) {
+				registry
+					.dispatch(STORE_NAME)
+					.setOptimisticDeletion(paletteListingKey(namespace, slug), 'swatch', token);
+			}
 
 			return removeSwatchFlow({
 				namespace,
@@ -361,10 +366,18 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setSaveError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then(() => notifySuccess(__('Swatch deleted.', 'kadence-blocks')))
+				.finally(() => {
+					if (namespace && slug) {
+						registry
+							.dispatch(STORE_NAME)
+							.clearOptimisticDeletion(paletteListingKey(namespace, slug), 'swatch', token);
+					}
+				});
 		},
-		[namespace, slug, listing.defaultId, feedTokens, onReceive, refreshFeed]
+		[namespace, slug, listing.defaultId, feedTokens, onReceive, refreshFeed, registry]
 	);
 
 	const addColor = useCallback(
@@ -500,14 +513,12 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		createError,
 		renameError,
 		deleteError,
-		saveError,
 		structureError,
 		clearOpenError,
 		clearActivateError,
 		clearCreateError,
 		clearRenameError,
 		clearDeleteError,
-		clearSaveError,
 		clearStructureError,
 		openPalette,
 		activatePalette,

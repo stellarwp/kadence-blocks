@@ -101,6 +101,7 @@ describe('mapPaletteToSwatchGroups', () => {
 			{
 				id: 'accent',
 				label: 'Accent',
+				pendingDelete: false,
 				items: [
 					{
 						id: 'primitive.color.brand.primary',
@@ -108,6 +109,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#112233',
 						value: '#112233',
 						overridden: false,
+						pendingDelete: false,
 					},
 					{
 						id: 'primitive.color.brand.secondary',
@@ -115,12 +117,14 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#445566',
 						value: '#445566',
 						overridden: true,
+						pendingDelete: false,
 					},
 				],
 			},
 			{
 				id: 'contrast',
 				label: 'Contrast',
+				pendingDelete: false,
 				items: [
 					{
 						id: 'primitive.color.neutral.100',
@@ -128,6 +132,7 @@ describe('mapPaletteToSwatchGroups', () => {
 						subLine: '#ffffff',
 						value: '#ffffff',
 						overridden: false,
+						pendingDelete: false,
 					},
 				],
 			},
@@ -139,6 +144,18 @@ describe('mapPaletteToSwatchGroups', () => {
 
 		expect(accent.items[0].id).toBe('primitive.color.brand.primary');
 		expect(accent.items[1].overridden).toBe(true);
+	});
+
+	it('threads pendingDelete through for both a group-level and a swatch-level flag', () => {
+		const palette = effectivePalette();
+		palette.groups[0].pendingDelete = true;
+		palette.groups[1].swatches[0].pendingDelete = true;
+
+		const groups = mapPaletteToSwatchGroups(palette);
+
+		expect(groups[0].pendingDelete).toBe(true);
+		expect(groups[1].pendingDelete).toBe(false);
+		expect(groups[1].items[0].pendingDelete).toBe(true);
 	});
 
 	it('returns [] for a null/empty palette', () => {

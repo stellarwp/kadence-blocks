@@ -72,6 +72,14 @@
 	visibility: hidden;
 }
 
+// A swatch mid-delete: still visible (product decision — delete is conservative, not an instant
+// vanish), just dimmed and inert. Same weight as the drag placeholder above, on the whole card
+// rather than only `.main`, since there is no drop-target box to preserve here.
+.kadence-blocks-style-library__swatch-card--pending-delete {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 // The card's resting background is opaque white, so the handle can safely take an opaque one too
 // and sit flush against it — a card-specific presentation of a context-agnostic atom, not
 // something `DragHandle` carries itself (a consumer with a translucent background, e.g. `ListRow`'s

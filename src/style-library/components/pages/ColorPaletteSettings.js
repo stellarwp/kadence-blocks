@@ -9,7 +9,6 @@
  * WordPress dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -130,7 +129,8 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 		palettes
 			.removeSwatch(token)
 			.then(() => navigate({ item: '' }))
-			// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
+			// Swallowed: a row-removal write failure already surfaces via `notifyError` inside
+			// `removeSwatch`, and the swatch itself reverts out of its pending-delete state.
 			.catch(() => {})
 			.finally(() => setPendingAction(null));
 	};
@@ -145,11 +145,6 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 			isSaving={pendingAction === 'save'}
 			isDeleting={pendingAction === 'delete'}
 		>
-			{palettes.saveError && (
-				<Notice status="error" onRemove={palettes.clearSaveError}>
-					{palettes.saveError.message}
-				</Notice>
-			)}
 			<SettingsForm schema={SWATCH_SETTINGS_SCHEMA} values={panel.draft} onChange={panel.setFieldValue} />
 		</SettingsPanel>
 	);

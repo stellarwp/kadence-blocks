@@ -178,8 +178,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					...item,
 					previewStyle: swatchPreviewStyle(item.value),
 					// The default-palette structure write this needed now exists (`reorderSwatchesFlow`),
-					// so the selected card's drag handle renders.
-					isDraggable: true,
+					// so the selected card's drag handle renders — except while the swatch is pending
+					// delete, where reordering something about to vanish is not meaningful.
+					isDraggable: !item.pendingDelete,
+					isPendingDelete: item.pendingDelete,
 				})),
 			})),
 		[palettes.palette]

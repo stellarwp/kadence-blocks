@@ -79,9 +79,9 @@ export function reshapePaletteRows(rows) {
  *
  * @since TBD
  *
- * @return {Array<Object>} `[{ id, label, items: [{ id, name, subLine, value, overridden }] }]` —
- *         `id` is the swatch token dot-path (stable, unique per palette, and what `?kb-item=`
- *         carries), `subLine` the raw `$value`.
+ * @return {Array<Object>} `[{ id, label, pendingDelete, items: [{ id, name, subLine, value,
+ *         overridden, pendingDelete }] }]` — `id` is the swatch token dot-path (stable, unique per
+ *         palette, and what `?kb-item=` carries), `subLine` the raw `$value`.
  */
 export function mapPaletteToSwatchGroups(palette) {
 	if (!palette || !Array.isArray(palette.groups)) {
@@ -91,12 +91,14 @@ export function mapPaletteToSwatchGroups(palette) {
 	return palette.groups.map((group) => ({
 		id: group.id,
 		label: group.label,
+		pendingDelete: Boolean(group.pendingDelete),
 		items: (Array.isArray(group.swatches) ? group.swatches : []).map((swatch) => ({
 			id: swatch.token,
 			name: swatch.label,
 			subLine: swatch.$value,
 			value: swatch.$value,
 			overridden: Boolean(swatch.overridden),
+			pendingDelete: Boolean(swatch.pendingDelete),
 		})),
 	}));
 }
