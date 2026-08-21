@@ -285,8 +285,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 						}
 						onAdd={(groupId) =>
 							palettes
-								.addColor(groupId)
-								.then((newToken) => navigate({ item: newToken }))
+								// Opens the new swatch's settings panel the moment it exists in the store as an
+								// optimistic addition, not after the write confirms — see `addColor`'s own
+								// `onOptimistic` docs.
+								.addColor(groupId, (newToken) => navigate({ item: newToken }))
 								// Swallowed: a failure already surfaces as a toast via `notifyError`.
 								.catch(() => {})
 						}
@@ -396,8 +398,10 @@ export function ColorPaletteScreen({ label, route, navigate, library }) {
 					}}
 					onAdd={(groupLabel) =>
 						palettes
-							.addGroup(groupLabel)
-							.then((newToken) => navigate({ item: newToken }))
+							// Opens the new group's settings panel the moment the optimistic group and its
+							// first swatch exist in the store, not after the write confirms — see `addGroup`'s
+							// own `onOptimistic` docs.
+							.addGroup(groupLabel, (newToken) => navigate({ item: newToken }))
 							// A validation rejection (empty/duplicate name) never reaches here —
 							// `AddColorGroupModal` disables its own Add button for both cases before `onAdd`
 							// can fire. A real write failure is already surfaced via Snackbar inside

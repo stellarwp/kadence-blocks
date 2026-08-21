@@ -819,6 +819,41 @@ describe('usePalettes', () => {
 		expect(notify.notifyError).not.toHaveBeenCalled();
 	});
 
+	it('addColor calls onOptimistic synchronously with the new token, while isBusy is already true, before the write settles', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveCreateUserPrimitive;
+		client.createUserPrimitive.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveCreateUserPrimitive = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const onOptimistic = jest.fn();
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addColor('accent', onOptimistic);
+		});
+
+		// Fired before the write starts settling — a caller can navigate to the new swatch's
+		// settings panel on this same tick, with `isBusy` already true so the panel opens showing
+		// its footer buttons disabled.
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+		expect(onOptimistic).toHaveBeenCalledWith('primitive.color.custom.custom-1');
+		expect(probe.latest().isBusy).toBe(true);
+
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+		client.savePalette.mockResolvedValueOnce(listingRows());
+		resolveCreateUserPrimitive({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+
+		await act(async () => writePromise);
+
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+	});
+
 	it('addColor removes the optimistic swatch and clears addingGroupIds when the write fails', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
@@ -966,6 +1001,53 @@ describe('usePalettes', () => {
 		expect(settledGroups.filter((group) => group.id === 'muted')).toHaveLength(1);
 		expect(notify.notifySuccess).toHaveBeenCalledWith('Color group added.');
 		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('addGroup calls onOptimistic synchronously with the new swatch token, while isBusy is already true, before the write settles', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveCreateUserPrimitive;
+		client.createUserPrimitive.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveCreateUserPrimitive = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const onOptimistic = jest.fn();
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addGroup('Muted', onOptimistic);
+		});
+
+		// Fired before the write starts settling — a caller can navigate to the new group's first
+		// swatch's settings panel on this same tick, with `isBusy` already true.
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+		expect(onOptimistic).toHaveBeenCalledWith('primitive.color.custom.custom-1');
+		expect(probe.latest().isBusy).toBe(true);
+
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+		client.savePalette.mockResolvedValueOnce(listingRows());
+		resolveCreateUserPrimitive({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+
+		await act(async () => writePromise);
+
+		expect(onOptimistic).toHaveBeenCalledTimes(1);
+	});
+
+	it('addGroup does not call onOptimistic when the label rejects synchronously', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const onOptimistic = jest.fn();
+
+		await expect(probe.latest().addGroup('', onOptimistic)).rejects.toThrow('Enter a color group name.');
+
+		expect(onOptimistic).not.toHaveBeenCalled();
 	});
 
 	it('addGroup removes the optimistic group when the write fails', async () => {

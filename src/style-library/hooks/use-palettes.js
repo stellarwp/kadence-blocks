@@ -465,7 +465,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	);
 
 	const addColor = useCallback(
-		(groupId) => {
+		(groupId, onOptimistic) => {
 			const colorSlug = nextCustomColorSlug(existingTokenIds);
 			const value = newSwatchValue(palette?.groups, groupId);
 			const label = __('New Color', 'kadence-blocks');
@@ -485,6 +485,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 						$value: value,
 					});
 			}
+
+			// Fired synchronously, once the optimistic swatch is already in the store — the token is
+			// known up front (client-generated, not server-assigned), so the caller can open the new
+			// swatch's settings panel immediately instead of waiting on the write. `palettes.isBusy`
+			// is already true for the whole write below, so the panel opens already showing its
+			// buttons disabled.
+			onOptimistic?.(token);
 
 			return addColorFlow({
 				namespace,
@@ -528,7 +535,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	);
 
 	const addGroup = useCallback(
-		(label) => {
+		(label, onOptimistic) => {
 			const { groupId, error } = validateNewGroupLabel(label, palette);
 
 			if (error) {
@@ -551,6 +558,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 						swatches: [{ token, label: swatchLabel, $value: value }],
 					});
 			}
+
+			// See `addColor`'s identical call for why this fires synchronously, before the write below.
+			onOptimistic?.(token);
 
 			return addGroupFlow({
 				namespace,
