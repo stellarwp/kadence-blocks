@@ -1154,4 +1154,103 @@ describe('usePalettes', () => {
 		expect(latestA.activeId).toBe(SUNSET_ID);
 		expect(latestB.activeId).toBe(SUNSET_ID);
 	});
+
+	it('a pending optimistic swatch patch for one palette does not leak onto a different palette after editingId switches before the write settles', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveSaveSwatch;
+		client.saveSwatch.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveSaveSwatch = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render({ route: { scope: SUNSET_ID } });
+
+		expect(probe.latest().editingId).toBe(SUNSET_ID);
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.saveSwatchEdits(
+					'primitive.color.brand.primary',
+					{ label: 'Main 1', value: '#abcabc' },
+					{ label: 'Main 1', value: '#999999' }
+				);
+		});
+
+		// Applied immediately to the palette being edited (Sunset) — the draft's value.
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#abcabc' });
+
+		// Simulate the browser's back/forward navigation changing `route.scope` — and therefore
+		// `editingId` — to a DIFFERENT palette while the Sunset write above is still pending. This is
+		// not gated by `isBusy` (see `use-style-library-route.js`'s `popstate` listener).
+		await probe.render({ route: { scope: DEFAULT_ID } });
+
+		expect(probe.latest().editingId).toBe(DEFAULT_ID);
+		// The default palette's own swatch value must show, NOT the still-pending Sunset patch — a
+		// pending edit for one palette must never bleed onto a sibling palette in the same library.
+		expect(probe.latest().palette.groups[0].swatches[0]).toMatchObject({ $value: '#111111' });
+
+		resolveSaveSwatch(listingRows({ currentId: DEFAULT_ID }));
+		await act(async () => writePromise);
+	});
+
+	it('starting a write in one sibling instance marks isBusy true in the other, and both clear once the write settles', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveSaveSwatch;
+		client.saveSwatch.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveSaveSwatch = resolve;
+			})
+		);
+
+		let latestA = null;
+		let latestB = null;
+		const refreshFeed = jest.fn().mockResolvedValue(undefined);
+
+		function ProbeA() {
+			latestA = usePalettes(FEED, refreshFeed, { scope: '' }, jest.fn());
+			return null;
+		}
+		function ProbeB() {
+			latestB = usePalettes(FEED, refreshFeed, { scope: '' }, jest.fn());
+			return null;
+		}
+
+		await act(async () =>
+			root.render(
+				<RegistryProvider value={registry}>
+					<ProbeA />
+					<ProbeB />
+				</RegistryProvider>
+			)
+		);
+		await flushUntil(() => !latestA.isLoading && !latestB.isLoading);
+
+		expect(latestA.isBusy).toBe(false);
+		expect(latestB.isBusy).toBe(false);
+
+		let writePromise;
+		act(() => {
+			writePromise = latestA.saveSwatchEdits(
+				'primitive.color.brand.primary',
+				{ label: 'Main 1', value: '#abcabc' },
+				{ label: 'Main 1', value: '#111111' }
+			);
+		});
+
+		// Instance B never called a write itself, but must see the busy state instance A's write set.
+		expect(latestA.isBusy).toBe(true);
+		expect(latestB.isBusy).toBe(true);
+
+		resolveSaveSwatch(listingRows());
+		await act(async () => writePromise);
+
+		expect(latestA.isBusy).toBe(false);
+		expect(latestB.isBusy).toBe(false);
+	});
 });

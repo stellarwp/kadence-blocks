@@ -108,6 +108,22 @@ function optimisticScaleEdits(state = {}, action) {
 	}
 }
 
+function paletteBusy(state = {}, action) {
+	if (action.type !== 'SET_PALETTE_BUSY') {
+		return state;
+	}
+
+	return { ...state, [action.key]: action.isBusy };
+}
+
+function scaleBusy(state = {}, action) {
+	if (action.type !== 'SET_SCALE_BUSY') {
+		return state;
+	}
+
+	return { ...state, [action.slug]: action.isBusy };
+}
+
 /**
  * The Style Library store's root reducer.
  *
@@ -120,4 +136,6 @@ export const reducer = combineReducers({
 	feeds,
 	optimisticSwatchEdits,
 	optimisticScaleEdits,
+	paletteBusy,
+	scaleBusy,
 });

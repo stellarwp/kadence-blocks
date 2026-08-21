@@ -48,13 +48,23 @@ import { STORE_NAME } from '../store';
  */
 export function useScaleScreen(config, library, route, navigate) {
 	const registry = useRegistry();
-	const [isBusy, setIsBusy] = useState(false);
 	const [addError, setAddError] = useState(null);
 	const [orderError, setOrderError] = useState(null);
 	const [pendingOrder, setPendingOrder] = useState(null);
 
 	const feed = library.feed;
 	const feedVersion = feed?.version;
+
+	// Shared across every sibling instance of this hook (the screen body and its settings panel),
+	// keyed by `slug` — mirroring `optimisticScaleEdits`'s own keying — so a write started in one
+	// instance disables controls in the other too, instead of two writes racing the same document.
+	// Kept under the local variable name `setIsBusy` so every existing `onBusy: setIsBusy` call site
+	// below keeps working unchanged.
+	const isBusy = useSelect((select) => select(STORE_NAME).getScaleBusy(library.slug), [library.slug]);
+	const setIsBusy = useCallback(
+		(value) => registry.dispatch(STORE_NAME).setScaleBusy(library.slug, value),
+		[registry, library.slug]
+	);
 
 	const overlay = useSelect((select) => select(STORE_NAME).getOptimisticScaleEdit(library.slug), [library.slug]);
 

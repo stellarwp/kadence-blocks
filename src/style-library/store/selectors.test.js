@@ -6,6 +6,8 @@ import {
 	getDesignTokensFeed,
 	getOptimisticSwatchEdit,
 	getOptimisticScaleEdit,
+	getPaletteBusy,
+	getScaleBusy,
 } from './selectors';
 import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
@@ -135,10 +137,10 @@ describe('selectors', () => {
 	it('getOptimisticSwatchEdit() returns EMPTY_OPTIMISTIC_SWATCH_EDIT for an unresolved key', () => {
 		const state = { libraries: [], presets: {}, paletteListings: {}, optimisticSwatchEdits: {} };
 
-		expect(getOptimisticSwatchEdit(state, 'ns', 'default')).toBe(EMPTY_OPTIMISTIC_SWATCH_EDIT);
+		expect(getOptimisticSwatchEdit(state, 'ns', 'default', 'palette-1')).toBe(EMPTY_OPTIMISTIC_SWATCH_EDIT);
 	});
 
-	it('getOptimisticSwatchEdit() returns the stored overlay object for a resolved key', () => {
+	it('getOptimisticSwatchEdit() returns the stored overlay object for a resolved key, scoped by palette id', () => {
 		const overlay = {
 			patches: { 'token.color': { label: 'Red' } },
 			deletedTokens: ['token.old'],
@@ -150,10 +152,28 @@ describe('selectors', () => {
 			libraries: [],
 			presets: {},
 			paletteListings: {},
-			optimisticSwatchEdits: { 'ns::default': overlay },
+			optimisticSwatchEdits: { 'ns::default::palette-1': overlay },
 		};
 
-		expect(getOptimisticSwatchEdit(state, 'ns', 'default')).toEqual(overlay);
+		expect(getOptimisticSwatchEdit(state, 'ns', 'default', 'palette-1')).toEqual(overlay);
+	});
+
+	it("getOptimisticSwatchEdit() does not return a different palette's overlay for the same library", () => {
+		const overlay = {
+			patches: { 'token.color': { label: 'Red' } },
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: {},
+			optimisticSwatchEdits: { 'ns::default::palette-1': overlay },
+		};
+
+		expect(getOptimisticSwatchEdit(state, 'ns', 'default', 'palette-2')).toBe(EMPTY_OPTIMISTIC_SWATCH_EDIT);
 	});
 
 	it('getOptimisticScaleEdit() returns EMPTY_OPTIMISTIC_SCALE_EDIT for an unresolved slug', () => {
@@ -176,5 +196,29 @@ describe('selectors', () => {
 		};
 
 		expect(getOptimisticScaleEdit(state, 'default')).toEqual(overlay);
+	});
+
+	it('getPaletteBusy() defaults to false for an unset library key', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, paletteBusy: {} };
+
+		expect(getPaletteBusy(state, 'ns', 'default')).toBe(false);
+	});
+
+	it('getPaletteBusy() reads the stored busy flag for a library key', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, paletteBusy: { 'ns::default': true } };
+
+		expect(getPaletteBusy(state, 'ns', 'default')).toBe(true);
+	});
+
+	it('getScaleBusy() defaults to false for an unset slug', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, scaleBusy: {} };
+
+		expect(getScaleBusy(state, 'default')).toBe(false);
+	});
+
+	it('getScaleBusy() reads the stored busy flag for a slug', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, scaleBusy: { default: true } };
+
+		expect(getScaleBusy(state, 'default')).toBe(true);
 	});
 });

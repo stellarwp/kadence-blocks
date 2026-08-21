@@ -10,6 +10,7 @@
 import {
 	presetsKey,
 	paletteListingKey,
+	paletteEditKey,
 	EMPTY_LISTING,
 	EMPTY_OPTIMISTIC_SWATCH_EDIT,
 	EMPTY_OPTIMISTIC_SCALE_EDIT,
@@ -98,19 +99,22 @@ export function getDesignTokensFeed(state, slug) {
 }
 
 /**
- * Read the pending optimistic overlay for a palette listing — patches, deletions, and additions not
- * yet confirmed by a write's response.
+ * Read the pending optimistic overlay for ONE palette within a library — patches, deletions, and
+ * additions not yet confirmed by a write's response. Scoped by `paletteId`, not just the library, so
+ * a pending edit for one palette is never visible to a sibling palette's overlay read — see
+ * `paletteEditKey`'s own docblock for why this matters.
  *
  * @param {Object} state     The store state.
  * @param {string} namespace REST namespace.
  * @param {string} slug      Token library slug.
+ * @param {string} paletteId The palette id being edited.
  *
  * @since TBD
  *
  * @return {Object} The overlay, or `EMPTY_OPTIMISTIC_SWATCH_EDIT` when nothing is pending.
  */
-export function getOptimisticSwatchEdit(state, namespace, slug) {
-	return state.optimisticSwatchEdits[paletteListingKey(namespace, slug)] ?? EMPTY_OPTIMISTIC_SWATCH_EDIT;
+export function getOptimisticSwatchEdit(state, namespace, slug, paletteId) {
+	return state.optimisticSwatchEdits[paletteEditKey(namespace, slug, paletteId)] ?? EMPTY_OPTIMISTIC_SWATCH_EDIT;
 }
 
 /**
@@ -125,4 +129,39 @@ export function getOptimisticSwatchEdit(state, namespace, slug) {
  */
 export function getOptimisticScaleEdit(state, slug) {
 	return state.optimisticScaleEdits[slug] ?? EMPTY_OPTIMISTIC_SCALE_EDIT;
+}
+
+/**
+ * Read whether a library has a write in flight — shared across every sibling `usePalettes` instance
+ * (a screen and its settings panel), so a write started in one instance disables controls in the
+ * other too. Keyed by the whole library, not a single palette: `feedVersion` conflicts happen at the
+ * whole-document level, so a write to any palette in a library must block a write to any other
+ * palette in that same library.
+ *
+ * @param {Object} state     The store state.
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the library has a write in flight.
+ */
+export function getPaletteBusy(state, namespace, slug) {
+	return state.paletteBusy[paletteListingKey(namespace, slug)] ?? false;
+}
+
+/**
+ * Read whether a scale-type library has a write in flight — shared across every sibling
+ * `useScaleScreen` instance (the screen body and its settings panel), so a write started in one
+ * instance disables controls in the other too.
+ *
+ * @param {Object} state The store state.
+ * @param {string} slug  Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the library has a write in flight.
+ */
+export function getScaleBusy(state, slug) {
+	return state.scaleBusy[slug] ?? false;
 }

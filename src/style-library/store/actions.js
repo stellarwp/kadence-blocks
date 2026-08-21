@@ -216,3 +216,34 @@ export function setOptimisticScaleDeletion(slug, tokenId) {
 export function clearOptimisticScaleDeletion(slug, tokenId) {
 	return { type: 'CLEAR_OPTIMISTIC_SCALE_DELETION', slug, tokenId };
 }
+
+/**
+ * Set whether a library has a write in flight — shared across every sibling `usePalettes` instance
+ * so a write started in one instance is visible (and disables controls) in the other.
+ *
+ * @param {string}  key     The palette listing key (`paletteListingKey(namespace, slug)`).
+ * @param {boolean} isBusy  Whether a write is currently in flight.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setPaletteBusy(key, isBusy) {
+	return { type: 'SET_PALETTE_BUSY', key, isBusy };
+}
+
+/**
+ * Set whether a scale-type library has a write in flight — shared across every sibling
+ * `useScaleScreen` instance so a write started in one instance is visible (and disables controls) in
+ * the other.
+ *
+ * @param {string}  slug   Token library slug.
+ * @param {boolean} isBusy Whether a write is currently in flight.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setScaleBusy(slug, isBusy) {
+	return { type: 'SET_SCALE_BUSY', slug, isBusy };
+}

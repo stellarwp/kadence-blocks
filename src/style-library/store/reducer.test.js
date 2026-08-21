@@ -15,6 +15,8 @@ import {
 	clearOptimisticScalePatch,
 	setOptimisticScaleDeletion,
 	clearOptimisticScaleDeletion,
+	setPaletteBusy,
+	setScaleBusy,
 } from './actions';
 import { EMPTY_OPTIMISTIC_SWATCH_EDIT, EMPTY_OPTIMISTIC_SCALE_EDIT } from './constants';
 
@@ -29,6 +31,8 @@ describe('reducer', () => {
 			feeds: {},
 			optimisticSwatchEdits: {},
 			optimisticScaleEdits: {},
+			paletteBusy: {},
+			scaleBusy: {},
 		});
 	});
 
@@ -198,5 +202,33 @@ describe('reducer', () => {
 				patches: { 'primitive.dimension.spacing.lg': { label: 'Large' } },
 			},
 		});
+	});
+
+	it('setPaletteBusy() stores a library key busy flag, leaving other keys alone', () => {
+		let state = reducer(undefined, setPaletteBusy('ns::default', true));
+		state = reducer(state, setPaletteBusy('ns::brand', false));
+
+		expect(state.paletteBusy).toEqual({ 'ns::default': true, 'ns::brand': false });
+	});
+
+	it('setPaletteBusy() overwrites a previously stored flag for the same key', () => {
+		let state = reducer(undefined, setPaletteBusy('ns::default', true));
+		state = reducer(state, setPaletteBusy('ns::default', false));
+
+		expect(state.paletteBusy).toEqual({ 'ns::default': false });
+	});
+
+	it('setScaleBusy() stores a slug busy flag, leaving other keys alone', () => {
+		let state = reducer(undefined, setScaleBusy('default', true));
+		state = reducer(state, setScaleBusy('brand', false));
+
+		expect(state.scaleBusy).toEqual({ default: true, brand: false });
+	});
+
+	it('setScaleBusy() overwrites a previously stored flag for the same slug', () => {
+		let state = reducer(undefined, setScaleBusy('default', true));
+		state = reducer(state, setScaleBusy('default', false));
+
+		expect(state.scaleBusy).toEqual({ default: false });
 	});
 });

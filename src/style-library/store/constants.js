@@ -41,6 +41,24 @@ export function paletteListingKey(namespace, slug) {
 }
 
 /**
+ * Build the state key for the optimistic-swatch-edit overlay of ONE palette within a library —
+ * scoped by palette id, not just the library, so a pending edit for one palette can never be
+ * misapplied to a sibling palette in the same library if `editingId` changes before the write
+ * settles (e.g. a browser back/forward navigation while a write is still in flight).
+ *
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token library slug.
+ * @param {string} paletteId The palette id being edited.
+ *
+ * @since TBD
+ *
+ * @return {string} The state key.
+ */
+export function paletteEditKey(namespace, slug, paletteId) {
+	return `${paletteListingKey(namespace, slug)}::${paletteId}`;
+}
+
+/**
  * The shape `getPaletteListing` returns before its palette listing has resolved yet.
  *
  * @since TBD

@@ -36,7 +36,7 @@ import {
 } from '../helpers/palette-flows';
 import { flattenSchemaTokens } from '../helpers/tokens';
 import { STORE_NAME } from '../store';
-import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '../store/constants';
+import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteEditKey, paletteListingKey } from '../store/constants';
 
 /**
  * Palette state for the Color Palette screen and its settings panel: the listing, the palette
@@ -94,7 +94,6 @@ import { EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT, paletteListingKey } from '
  *                  `Array<string>` of group ids with an add-color currently in flight.
  */
 export function usePalettes(feed, refreshFeed, route, navigate) {
-	const [isBusy, setIsBusy] = useState(false);
 	const [openError, setOpenError] = useState(null);
 	const [activateError, setActivateError] = useState(null);
 	const [createError, setCreateError] = useState(null);
@@ -109,6 +108,24 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const feedTokens = useMemo(() => flattenSchemaTokens(feed?.schema), [feed]);
 
 	const registry = useRegistry();
+
+	// Shared across every sibling instance of this hook (the screen and its settings panel), keyed
+	// by the whole library rather than a single palette — a `feedVersion` conflict happens at the
+	// whole-document level, so a write to any palette in this library must block a write to any
+	// other palette in the same library from a sibling instance. Kept under the local variable name
+	// `setIsBusy` so every existing `onBusy: setIsBusy` call site below keeps working unchanged.
+	const isBusy = useSelect(
+		(select) => (namespace && slug ? select(STORE_NAME).getPaletteBusy(namespace, slug) : false),
+		[namespace, slug]
+	);
+	const setIsBusy = useCallback(
+		(value) => {
+			if (namespace && slug) {
+				registry.dispatch(STORE_NAME).setPaletteBusy(paletteListingKey(namespace, slug), value);
+			}
+		},
+		[registry, namespace, slug]
+	);
 
 	const listing = useSelect(
 		(select) => (namespace && slug ? select(STORE_NAME).getPaletteListing(namespace, slug) : EMPTY_LISTING),
@@ -155,9 +172,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 	const overlay = useSelect(
 		(select) =>
 			namespace && slug
-				? select(STORE_NAME).getOptimisticSwatchEdit(namespace, slug)
+				? select(STORE_NAME).getOptimisticSwatchEdit(namespace, slug, editingId)
 				: EMPTY_OPTIMISTIC_SWATCH_EDIT,
-		[namespace, slug]
+		[namespace, slug, editingId]
 	);
 
 	const editingRow = useMemo(
@@ -341,7 +358,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				if (Object.keys(patch).length > 0) {
 					registry
 						.dispatch(STORE_NAME)
-						.setOptimisticSwatchPatch(paletteListingKey(namespace, slug), token, patch);
+						.setOptimisticSwatchPatch(paletteEditKey(namespace, slug, editingId), token, patch);
 				}
 			}
 
@@ -363,7 +380,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					if (namespace && slug) {
 						registry
 							.dispatch(STORE_NAME)
-							.clearOptimisticSwatchPatch(paletteListingKey(namespace, slug), token);
+							.clearOptimisticSwatchPatch(paletteEditKey(namespace, slug, editingId), token);
 					}
 				});
 		},
@@ -384,7 +401,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 			if (namespace && slug) {
 				registry
 					.dispatch(STORE_NAME)
-					.setOptimisticDeletion(paletteListingKey(namespace, slug), 'swatch', token);
+					.setOptimisticDeletion(paletteEditKey(namespace, slug, editingId), 'swatch', token);
 			}
 
 			return removeSwatchFlow({
@@ -403,11 +420,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					if (namespace && slug) {
 						registry
 							.dispatch(STORE_NAME)
-							.clearOptimisticDeletion(paletteListingKey(namespace, slug), 'swatch', token);
+							.clearOptimisticDeletion(paletteEditKey(namespace, slug, editingId), 'swatch', token);
 					}
 				});
 		},
-		[namespace, slug, listing.defaultId, feedTokens, onReceive, refreshFeed, registry]
+		[namespace, slug, listing.defaultId, editingId, feedTokens, onReceive, refreshFeed, registry]
 	);
 
 	// Same feed-entry-first, prefix-fallback check `removeSwatch`/`removeGroup` each run inline —
@@ -459,12 +476,14 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 			if (namespace && slug) {
 				// `$value`, not `value` — matches the field name every real swatch object carries; see
 				// `setOptimisticSwatchPatch`'s docblock (Task 1) for why this matters.
-				registry.dispatch(STORE_NAME).setOptimisticAddition(paletteListingKey(namespace, slug), 'swatch', {
-					groupId,
-					token,
-					label,
-					$value: value,
-				});
+				registry
+					.dispatch(STORE_NAME)
+					.setOptimisticAddition(paletteEditKey(namespace, slug, editingId), 'swatch', {
+						groupId,
+						token,
+						label,
+						$value: value,
+					});
 			}
 
 			return addColorFlow({
@@ -490,11 +509,22 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					if (namespace && slug) {
 						registry
 							.dispatch(STORE_NAME)
-							.clearOptimisticAddition(paletteListingKey(namespace, slug), 'swatch', token);
+							.clearOptimisticAddition(paletteEditKey(namespace, slug, editingId), 'swatch', token);
 					}
 				});
 		},
-		[namespace, slug, listing.defaultId, existingTokenIds, palette, feed?.version, onReceive, refreshFeed, registry]
+		[
+			namespace,
+			slug,
+			listing.defaultId,
+			editingId,
+			existingTokenIds,
+			palette,
+			feed?.version,
+			onReceive,
+			refreshFeed,
+			registry,
+		]
 	);
 
 	const addGroup = useCallback(
@@ -513,11 +543,13 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 			if (namespace && slug) {
 				// `$value`, not `value` — matches the field name every real swatch object carries; see
 				// `setOptimisticSwatchPatch`'s docblock (Task 1) for why this matters.
-				registry.dispatch(STORE_NAME).setOptimisticAddition(paletteListingKey(namespace, slug), 'group', {
-					id: groupId,
-					label,
-					swatches: [{ token, label: swatchLabel, $value: value }],
-				});
+				registry
+					.dispatch(STORE_NAME)
+					.setOptimisticAddition(paletteEditKey(namespace, slug, editingId), 'group', {
+						id: groupId,
+						label,
+						swatches: [{ token, label: swatchLabel, $value: value }],
+					});
 			}
 
 			return addGroupFlow({
@@ -543,11 +575,22 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					if (namespace && slug) {
 						registry
 							.dispatch(STORE_NAME)
-							.clearOptimisticAddition(paletteListingKey(namespace, slug), 'group', groupId);
+							.clearOptimisticAddition(paletteEditKey(namespace, slug, editingId), 'group', groupId);
 					}
 				});
 		},
-		[namespace, slug, listing.defaultId, palette, existingTokenIds, feed?.version, onReceive, refreshFeed, registry]
+		[
+			namespace,
+			slug,
+			listing.defaultId,
+			editingId,
+			palette,
+			existingTokenIds,
+			feed?.version,
+			onReceive,
+			refreshFeed,
+			registry,
+		]
 	);
 
 	const reorderSwatches = useCallback(
@@ -616,7 +659,7 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 			if (namespace && slug) {
 				registry
 					.dispatch(STORE_NAME)
-					.setOptimisticDeletion(paletteListingKey(namespace, slug), 'group', groupId);
+					.setOptimisticDeletion(paletteEditKey(namespace, slug, editingId), 'group', groupId);
 			}
 
 			return removeGroupFlow({
@@ -635,11 +678,11 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					if (namespace && slug) {
 						registry
 							.dispatch(STORE_NAME)
-							.clearOptimisticDeletion(paletteListingKey(namespace, slug), 'group', groupId);
+							.clearOptimisticDeletion(paletteEditKey(namespace, slug, editingId), 'group', groupId);
 					}
 				});
 		},
-		[namespace, slug, listing.defaultId, palette, feedTokens, onReceive, refreshFeed, registry]
+		[namespace, slug, listing.defaultId, editingId, palette, feedTokens, onReceive, refreshFeed, registry]
 	);
 
 	return {

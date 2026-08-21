@@ -322,4 +322,58 @@ describe('useScaleScreen optimistic save/delete', () => {
 		resolveDelete({ version: 'v3' });
 		await act(async () => Promise.all([deletePromise, reorderPromise]));
 	});
+
+	it('starting a write in one sibling instance marks isBusy true in the other, and both clear once the write settles', async () => {
+		let resolveSetTokenLabel;
+		client.setTokenLabel.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveSetTokenLabel = resolve;
+			})
+		);
+
+		let latestA = null;
+		let latestB = null;
+		const library = { slug: SLUG, feed: feed(), tokens: [], refreshFeed: jest.fn().mockResolvedValue(undefined) };
+		const route = { screen: 'border-radius', item: '' };
+
+		function ProbeA() {
+			latestA = useScaleScreen(CONFIG, library, route, jest.fn());
+			return null;
+		}
+		function ProbeB() {
+			latestB = useScaleScreen(CONFIG, library, route, jest.fn());
+			return null;
+		}
+
+		await act(async () =>
+			root.render(
+				<RegistryProvider value={registry}>
+					<ProbeA />
+					<ProbeB />
+				</RegistryProvider>
+			)
+		);
+
+		expect(latestA.isBusy).toBe(false);
+		expect(latestB.isBusy).toBe(false);
+
+		let writePromise;
+		act(() => {
+			writePromise = latestA.saveToken(
+				SM_ID,
+				{ label: 'Small Updated', value: '0.125rem' },
+				{ label: 'Small', value: '0.125rem' }
+			);
+		});
+
+		// Instance B never called a write itself, but must see the busy state instance A's write set.
+		expect(latestA.isBusy).toBe(true);
+		expect(latestB.isBusy).toBe(true);
+
+		resolveSetTokenLabel({ version: 'v2' });
+		await act(async () => writePromise);
+
+		expect(latestA.isBusy).toBe(false);
+		expect(latestB.isBusy).toBe(false);
+	});
 });
