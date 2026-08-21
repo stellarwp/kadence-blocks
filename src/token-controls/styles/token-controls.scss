@@ -451,146 +451,107 @@
 	gap: 4px;
 }
 
-/* The unlinked slot grid: two columns, in the display order the control's role decided. */
+/* The unlinked rows: one column, stacked, in the display order the control's role decided. */
 .kb-token-control__grid {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 /*
- * A slot in the unlinked grid: a titled cell, the title and the field reading as one box.
- *
- * Half the control's width has to carry a token name and its value, and inline they do not fit — at
- * the panel's width the name alone is about as wide as the whole slot, so side by side the name is
- * what gets truncated. Stacking gives the name the full width and keeps the value visible under it.
+ * One row: the glyph, then the control box (the field renderSlot() supplies). Shared by the single
+ * linked row and every unlinked row, so linked mode gets the same anatomy — glyph included — instead
+ * of a bare field.
  */
-.kb-token-control__slot {
-	/* Local to this library on purpose: shared CSS cannot reach for a host's own spacing scale. */
-	--kb-token-control-slot-padding-y: 0.25rem;
-	--kb-token-control-slot-padding-x: 0.5rem;
-	/* Clears the field's 1px border, so the mark reads as inside the box rather than drawn over it. */
-	--kb-token-control-mark-inset: 1px;
-	/* Floored at zero so a field flatter than the inset cannot ask for a negative radius. */
-	--kb-token-control-mark-radius: max(
-		0px,
-		calc(var(--kb-token-control-field-radius, 2px) - var(--kb-token-control-mark-inset))
-	);
+.kb-token-control__row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 
-	position: relative;
-
+	/*
+	 * The row's own control-box chrome. Unlinked rows previously centered/stacked the trigger's text
+	 * at a smaller size here; that override is gone; what is left is sizing the trigger as the row's
+	 * control box, not restyling its type — font-size/color stay the base trigger's.
+	 */
 	.kadence-token-field__trigger.components-button {
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0;
+		flex: 1 1 auto;
 		height: auto;
-		padding: var(--kb-token-control-slot-padding-y) var(--kb-token-control-slot-padding-x);
-		border-radius: var(--kb-token-control-field-radius, 2px);
-		font-size: 12px;
-		text-align: center;
+		padding: 7px 10px;
 	}
+}
 
-	.kadence-token-field__label {
-		max-width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+/*
+ * The row's leading glyph: a small standalone box marking which edge(s) the row names, rather than a
+ * `::before` overlay on the field's own border. Base state is a plain 1px square; the modifiers below
+ * thicken and re-color one or more of its own edges (and, for a corner, round it) to point at the
+ * position the row is for. Border color reuses the same `--kb-border-dark-color` custom property the
+ * previous `::before` mark used, so the highlighted edge keeps its established color.
+ */
+.kb-token-control__glyph {
+	box-sizing: border-box;
+	flex: none;
+	width: 15px;
+	height: 15px;
+	border: 1px solid #949494;
+	border-radius: 2px;
+}
 
-	/* Set explicitly on the base rule, so it has to be pulled back to the slot's own size here. */
-	.kadence-token-field__value {
-		font-size: inherit;
-	}
+.kb-token-control__glyph--top,
+.kb-token-control__glyph--top-left,
+.kb-token-control__glyph--top-right,
+.kb-token-control__glyph--all {
+	border-top-width: 2px;
+	border-top-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	/*
-	 * The position mark hangs off the field itself rather than the cell, so it can sit on the very
-	 * corner (or edge) it names. It is inset by its own border width so it reads as sitting just inside
-	 * the field rather than smudging the field's own border.
-	 */
-	.kadence-token-field {
-		position: relative;
-	}
+.kb-token-control__glyph--right,
+.kb-token-control__glyph--top-right,
+.kb-token-control__glyph--bottom-right,
+.kb-token-control__glyph--all {
+	border-right-width: 2px;
+	border-right-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	.kadence-token-field::before {
-		position: absolute;
-		z-index: 1;
-		box-sizing: border-box;
-		width: 1rem;
-		height: 1rem;
-		border: 0 solid var(--kb-border-dark-color, #6f8094);
-		content: "";
-		pointer-events: none;
-	}
+.kb-token-control__glyph--bottom,
+.kb-token-control__glyph--bottom-right,
+.kb-token-control__glyph--bottom-left,
+.kb-token-control__glyph--all {
+	border-bottom-width: 2px;
+	border-bottom-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	/*
-	 * One rule set for both geometries, because they are the same idea at different arity: a corner
-	 * sets two adjacent borders, a side sets one. Radius uses the corner classes; border, margin and
-	 * padding use the side ones. Each edge is addressed with its own offset, so a corner simply gets
-	 * two of them and needs no transform to reach the far side.
-	 */
-	&--top-left .kadence-token-field::before,
-	&--top-right .kadence-token-field::before,
-	&--top .kadence-token-field::before {
-		top: var(--kb-token-control-mark-inset);
-		border-top-width: 3px;
-	}
+.kb-token-control__glyph--left,
+.kb-token-control__glyph--top-left,
+.kb-token-control__glyph--bottom-left,
+.kb-token-control__glyph--all {
+	border-left-width: 2px;
+	border-left-color: var(--kb-border-dark-color, #6f8094);
+}
 
-	&--bottom-left .kadence-token-field::before,
-	&--bottom-right .kadence-token-field::before,
-	&--bottom .kadence-token-field::before {
-		bottom: var(--kb-token-control-mark-inset);
-		border-bottom-width: 3px;
-	}
+/*
+ * A corner glyph also rounds the one corner it names, matching the four-corner rounding the previous
+ * `::before` mark drew via `--kb-token-control-mark-radius`, reapplied here to a real element instead.
+ */
+.kb-token-control__glyph--top-left {
+	border-top-left-radius: 5px;
+}
 
-	&--top-left .kadence-token-field::before,
-	&--bottom-left .kadence-token-field::before,
-	&--left .kadence-token-field::before {
-		left: var(--kb-token-control-mark-inset);
-		border-left-width: 3px;
-	}
+.kb-token-control__glyph--top-right {
+	border-top-right-radius: 5px;
+}
 
-	&--top-right .kadence-token-field::before,
-	&--bottom-right .kadence-token-field::before,
-	&--right .kadence-token-field::before {
-		right: var(--kb-token-control-mark-inset);
-		border-right-width: 3px;
-	}
+.kb-token-control__glyph--bottom-right {
+	border-bottom-right-radius: 5px;
+}
 
-	/*
-	 * A corner mark traces the field's own corner, so it follows the same curve — left square, it would
-	 * cut across the rounded edge it is tracing. Inset by the mark's own offset, though: a curve sitting
-	 * 1px inside a 2px one is a 1px curve, so the radius is the field's less the inset rather than the
-	 * field's outright. A side mark is mid-edge and stays straight.
-	 */
-	&--top-left .kadence-token-field::before {
-		border-top-left-radius: var(--kb-token-control-mark-radius);
-	}
+.kb-token-control__glyph--bottom-left {
+	border-bottom-left-radius: 5px;
+}
 
-	&--top-right .kadence-token-field::before {
-		border-top-right-radius: var(--kb-token-control-mark-radius);
-	}
-
-	&--bottom-right .kadence-token-field::before {
-		border-bottom-right-radius: var(--kb-token-control-mark-radius);
-	}
-
-	&--bottom-left .kadence-token-field::before {
-		border-bottom-left-radius: var(--kb-token-control-mark-radius);
-	}
-
-	/* A side names one edge, so it is centered along that edge rather than pinned to a corner. */
-	&--top .kadence-token-field::before,
-	&--bottom .kadence-token-field::before {
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	&--left .kadence-token-field::before,
-	&--right .kadence-token-field::before {
-		top: 50%;
-		transform: translateY(-50%);
-	}
+/* Linked mode's "all corners" glyph rounds every corner, standing in for "every corner is this one
+   value" the way the unlinked grid otherwise shows one corner at a time. */
+.kb-token-control__glyph--corners.kb-token-control__glyph--all {
+	border-radius: 5px;
 }
 
 .kb-token-control__indicator {
