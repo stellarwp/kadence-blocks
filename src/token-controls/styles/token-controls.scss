@@ -470,11 +470,11 @@
 
 	/*
 	 * The row's own control-box chrome. Unlinked rows previously centered/stacked the trigger's text
-	 * at a smaller size here; that override is gone. Border-color and border-radius are box-model
-	 * properties, not typography, so they follow the reference's control-box values (reusing this
-	 * file's own `#dddddd` gray-300 divider color rather than the reference's literal `#d8dade`,
-	 * since it is already the established "light gray border" in this style sheet); font-size, weight
-	 * and color are left alone, inherited from the base trigger rule.
+	 * at a smaller size here; that override is gone. Border-color and border-radius are left as the
+	 * base trigger rule's own values (`#949494`, 2px) rather than the reference's control-box values
+	 * — the row's arrangement changes (glyph, stacked layout), but the trigger itself keeps its
+	 * established appearance; font-size, weight and color are also left alone, inherited from the
+	 * base trigger rule.
 	 *
 	 * `:where()` wraps the row scoping so this rule's specificity comes only from
 	 * `.kadence-token-field__trigger.components-button` itself (two classes) — level with that base
@@ -488,8 +488,6 @@
 		flex: 1 1 auto;
 		height: auto;
 		padding: 7px 10px;
-		border-color: #dddddd;
-		border-radius: 5px;
 	}
 }
 
