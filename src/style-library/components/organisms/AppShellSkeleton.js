@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Skeleton } from '../atoms/Skeleton';
+import './AppShellSkeleton.scss';
 
 // A fixed count, not derived from anything — there is no "expected nav item count" to read before
 // the real sidebar arrives, so this just needs to fill the column plausibly.

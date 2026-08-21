@@ -1,0 +1,23 @@
+// Unlike the real `AppShell`, this placeholder is never wrapped in
+// `.kadence-blocks-style-library__shell` (which supplies the flex-column layout and the viewport
+// height) — it renders standalone at cold start (`StyleLibraryApp.js`, before `feed.isReady`) and,
+// reused as-is, inside `AppShell.js`'s `isBlocked` overlay (`.kadence-blocks-style-library__blocker`,
+// a `display: flex; align-items: center; justify-content: center` box with no width of its own).
+// Without sizing of its own, the skeleton shrink-wraps to its content and renders as a small,
+// centered box instead of filling the frame the way the spinner it replaced did.
+.kadence-blocks-style-library__shell-skeleton {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	// Fills the blocker overlay, which already gives `height: 100%` a real ancestor to resolve
+	// against (`inset: 0` on a positioned parent). At cold start there is no such ancestor, so a
+	// percentage height resolves to `auto` and the `min-height` below — the same viewport-relative
+	// height `.kadence-blocks-style-library__loading` provided before this skeleton replaced it —
+	// is what actually sizes it.
+	height: 100%;
+	min-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+
+	@media (max-width: 782px) {
+		min-height: calc(100vh - 46px);
+	}
+}
