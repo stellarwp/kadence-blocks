@@ -472,11 +472,6 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 
 	const removeGroup = useCallback(
 		(groupId) => {
-			setStructureError(null);
-
-			// Same defense-in-depth as `removeSwatch`: trust the feed's own `userCreated` flag when
-			// the token has a feed entry, fall back to the prefix check for a token minted since the
-			// last feed refresh.
 			const group = (palette?.groups ?? []).find((row) => row.id === groupId);
 			const userCreatedTokens = (group?.swatches ?? [])
 				.map((swatch) => swatch.token)
@@ -484,6 +479,12 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 					const feedEntry = feedTokens.find((entry) => entry.id === token);
 					return feedEntry ? Boolean(feedEntry.userCreated) : isCustomColorToken(token);
 				});
+
+			if (namespace && slug) {
+				registry
+					.dispatch(STORE_NAME)
+					.setOptimisticDeletion(paletteListingKey(namespace, slug), 'group', groupId);
+			}
 
 			return removeGroupFlow({
 				namespace,
@@ -494,10 +495,18 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				onReceive,
 				refreshFeed,
 				onBusy: setIsBusy,
-				onError: setStructureError,
-			});
+				onError: (err) => notifyError(err.message),
+			})
+				.then(() => notifySuccess(__('Color group deleted.', 'kadence-blocks')))
+				.finally(() => {
+					if (namespace && slug) {
+						registry
+							.dispatch(STORE_NAME)
+							.clearOptimisticDeletion(paletteListingKey(namespace, slug), 'group', groupId);
+					}
+				});
 		},
-		[namespace, slug, listing.defaultId, palette, feedTokens, onReceive, refreshFeed]
+		[namespace, slug, listing.defaultId, palette, feedTokens, onReceive, refreshFeed, registry]
 	);
 
 	return {

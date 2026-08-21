@@ -482,6 +482,85 @@ describe('usePalettes', () => {
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
+	it('removeGroup flags every swatch in that group pendingDelete immediately, before the write resolves', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		let resolveFetchPalette;
+		client.fetchPalette.mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveFetchPalette = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().removeGroup('accent');
+		});
+
+		// Still present in `palette.groups`, only flagged — never an instant vanish.
+		const groups = probe.latest().palette.groups;
+		expect(groups).toHaveLength(1);
+		const accentGroup = groups.find((group) => group.id === 'accent');
+		expect(accentGroup).toBeDefined();
+		// Every swatch in the group should be flagged pendingDelete.
+		expect(accentGroup.swatches).toHaveLength(2);
+		expect(accentGroup.swatches[0]).toMatchObject({ pendingDelete: true });
+		expect(accentGroup.swatches[1]).toMatchObject({ pendingDelete: true });
+
+		const strippedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(strippedRows);
+		resolveFetchPalette(defaultView());
+
+		await act(async () => writePromise);
+
+		// Group is now gone entirely.
+		expect(probe.latest().palette.groups).toHaveLength(0);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Color group deleted.');
+		expect(notify.notifyError).not.toHaveBeenCalled();
+	});
+
+	it('removeGroup clears pendingDelete and keeps all swatches when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.fetchPalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe
+				.latest()
+				.removeGroup('accent')
+				.catch(() => {});
+		});
+
+		const accentGroup = probe.latest().palette.groups.find((group) => group.id === 'accent');
+		expect(accentGroup.swatches[0]).toMatchObject({ pendingDelete: true });
+		expect(accentGroup.swatches[1]).toMatchObject({ pendingDelete: true });
+
+		await act(async () => writePromise);
+
+		// Group still exists with swatches restored to normal.
+		const restoredGroup = probe.latest().palette.groups.find((group) => group.id === 'accent');
+		expect(restoredGroup).toBeDefined();
+		expect(restoredGroup.swatches).toHaveLength(2);
+		// pendingDelete flags should be cleared.
+		expect(restoredGroup.swatches[0].pendingDelete).toBeFalsy();
+		expect(restoredGroup.swatches[1].pendingDelete).toBeFalsy();
+		expect(restoredGroup.swatches[0]).toMatchObject({ label: 'Main 1', $value: '#111111' });
+		expect(restoredGroup.swatches[1]).toMatchObject({ label: 'Main 2', $value: '#222222' });
+		expect(notify.notifyError).toHaveBeenCalledWith('Conflict');
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
 	it('reorderSwatches applies the new order optimistically, then keeps it once the write resolves', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 		client.fetchPalette.mockResolvedValueOnce(defaultView());
