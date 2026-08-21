@@ -11,19 +11,26 @@ use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Exception\Unknown_Preset_Exce
 use KadenceWP\KadenceBlocks\Design_Tokens\Resolver\Preset_Resolver;
 
 /**
- * Builds the per-library preset catalog the block editor's preset picker and "save as new preset" form read.
+ * Builds the per-library preset catalog the block editor's preset picker, "save as new preset" form, and
+ * per-control token picker read.
  *
  * Keyed by token library so the picker can show the presets for the active library, then by block:
  * `{ active: <slug>, libraries: { <slug>: { <block>: {…} } } }`. Per block it carries the `$default` slug, the
  * named presets as { slug, label, userCreated }, the picker control label, the controllable surface as
  * { key, kind, token, control_attr } per bound property so the form can render one input per property, and
  * a per-preset resolved-value map ({ preset slug => { property => literal } }) so a control can compare
- * its current value against the selected preset's value. Only PICKER preset bindings appear (preset bindings
- * that declare a `label`); a block's preset / default-preset bindings (no label) have no picker and are
- * omitted. It carries no
- * resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle errors the
- * admin feed must guard; preset bindings registered but absent from a token library (Unknown_Preset_Exception) are
- * skipped, so one undefined block never empties the catalog.
+ * its current value against the selected preset's value.
+ *
+ * Every block with preset bindings appears, but only a PICKER set (one that declares a `label`) is given
+ * preset OPTIONS; a block's preset / default-preset bindings (no label) carry an empty `presets` list, which
+ * is what keeps the editor from rendering a picker where the declaration says there is none. The two are
+ * separate concerns: the options drive the preset dropdown, while `properties` drives the per-control token
+ * picker, and a block can want the second without the first — kadence/single-icon's Icon Size is exactly
+ * that case.
+ *
+ * It carries no resolved token values beyond those per-preset literals, so it cannot raise the alias-cycle
+ * errors the admin feed must guard; preset bindings registered but absent from a token library
+ * (Unknown_Preset_Exception) are skipped, so one undefined block never empties the catalog.
  *
  * @since TBD
  */
@@ -133,8 +140,7 @@ final class Preset_Catalog {
 		foreach ( $this->registry->preset_binding_blocks() as $block ) {
 			$bindings = $this->registry->for_block( $block );
 
-			// A block's preset / default-preset bindings (no label) show no picker, so they are not offered here.
-			if ( $bindings === null || $bindings->label === null ) {
+			if ( $bindings === null ) {
 				continue;
 			}
 
@@ -145,21 +151,12 @@ final class Preset_Catalog {
 				continue; // Set registered but not defined in this token library — skip, fail soft.
 			}
 
-			$user_created = $this->effective->user_created( $block, $slug );
-
-			$presets = [];
-
-			foreach ( $names as $name ) {
-				$presets[] = [
-					'slug'        => $name,
-					'label'       => $this->presets->label( $block, $name, $slug ) ?? $name,
-					'userCreated' => in_array( $name, $user_created, true ),
-				];
-			}
-
 			$out[ $block ] = [
 				'default'    => $default,
-				'presets'    => $presets,
+				// Only a picker-driven set offers preset OPTIONS. A block whose bindings declare no label
+				// gets an empty list, which is what keeps the editor from rendering a picker where the
+				// declaration says there is none.
+				'presets'    => $bindings->label === null ? [] : $this->preset_options( $block, $slug, $names ),
 				'properties' => $this->properties_for( $bindings ),
 				'values'     => $this->values_for( $block, $slug, $names ),
 				'responsive' => $this->responsive_for( $block, $slug, $names ),
@@ -168,6 +165,33 @@ final class Preset_Catalog {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * A block's preset options for the picker: { slug, label, userCreated } per named preset, in catalog
+	 * order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $block The block name.
+	 * @param string   $slug  The token library slug.
+	 * @param string[] $names The preset slugs, in catalog order.
+	 *
+	 * @return array<int, array{slug: string, label: string, userCreated: bool}> The picker's options.
+	 */
+	private function preset_options( string $block, string $slug, array $names ): array {
+		$user_created = $this->effective->user_created( $block, $slug );
+		$options      = [];
+
+		foreach ( $names as $name ) {
+			$options[] = [
+				'slug'        => $name,
+				'label'       => $this->presets->label( $block, $name, $slug ) ?? $name,
+				'userCreated' => in_array( $name, $user_created, true ),
+			];
+		}
+
+		return $options;
 	}
 
 	/**

@@ -163,6 +163,30 @@ final class Preset_CatalogTest extends TestCase {
 	}
 
 	/**
+	 * A block whose bindings declare no picker label is still surfaced — its controllable surface is what the
+	 * per-control token picker reads — but it is given no preset OPTIONS, so nothing can render a preset
+	 * dropdown for it. The two are separate concerns, and conflating them is what previously left every
+	 * non-picker block's controls unable to offer tokens at all.
+	 *
+	 * @return void
+	 */
+	public function testABlockWithoutAPickerLabelCarriesPropertiesButNoPresetOptions(): void {
+		$library = $this->catalog->all()['libraries'][ Token_Store::default_slug() ];
+
+		$this->assertArrayHasKey( self::ICON, $library );
+		$this->assertNull( $library[ self::ICON ]['label'] );
+		$this->assertSame( [], $library[ self::ICON ]['presets'] );
+
+		// The surface the token picker keys off is present regardless, as is the default the controls compare
+		// against.
+		$this->assertNotEmpty( $library[ self::ICON ]['properties'] );
+		$this->assertSame( 'default', $library[ self::ICON ]['default'] );
+
+		// The picker-driven Button is unaffected: it declares a label, so it still carries its options.
+		$this->assertNotEmpty( $library[ self::BUTTON ]['presets'] );
+	}
+
+	/**
 	 * The Single Icon catalog surfaces `size` as a dimension-kind control bound to the icon-size token, with
 	 * its per-device attribute names, so the editor's Icon Size control resolves a pickable token list. The
 	 * property carries no css_prop, so this surface is the only thing the binding contributes.
