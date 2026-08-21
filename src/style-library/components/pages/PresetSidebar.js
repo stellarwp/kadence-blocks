@@ -30,6 +30,7 @@ import { useDraftChannel } from '../../hooks/use-draft-channel';
 import { useLoadingAnnouncement } from '../../hooks/use-loading-announcement';
 import { presetNameSchema } from '../../helpers/presets';
 import { Skeleton } from '../atoms/Skeleton';
+import { notifySuccess } from '../../helpers/notify';
 
 /**
  * The panel proper: mounted only once its preset's `initialValues` are known, so `useSettingsPanel`
@@ -119,6 +120,7 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 		setPendingAction('save');
 		screen
 			.savePreset(id, panel.draft, initialValues)
+			.then(() => notifySuccess(__('Preset saved.', 'kadence-blocks')))
 			.catch(() => {})
 			.finally(() => setPendingAction(null));
 	};
@@ -131,7 +133,10 @@ function PresetSidebarBody({ navigate, route, screen, initialValues, presetLabel
 		setPendingAction('delete');
 		screen
 			.deletePreset(id)
-			.then(() => navigate({ item: '' }))
+			.then(() => {
+				notifySuccess(__('Preset deleted.', 'kadence-blocks'));
+				navigate({ item: '' });
+			})
 			.catch(() => {})
 			.finally(() => setPendingAction(null));
 	};

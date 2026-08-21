@@ -36,7 +36,14 @@ const NAMESPACE = 'kb-design-tokens/v1';
 const SLUG = 'default';
 const GROUP = 'Border Radius';
 
-const CONFIG = { group: GROUP, groupKey: 'border-radius', tokenType: 'dimension' };
+const CONFIG = {
+	group: GROUP,
+	groupKey: 'border-radius',
+	tokenType: 'dimension',
+	slugBase: 'custom',
+	newTokenLabel: 'New Token',
+	newTokenValue: '0.5rem',
+};
 
 const SM_ID = 'primitive.dimension.radius.sm';
 const MD_ID = 'primitive.dimension.radius.md';
@@ -231,6 +238,62 @@ describe('useScaleScreen optimistic save/delete', () => {
 		expect(client.setGroupOrder).toHaveBeenCalledWith(SLUG, GROUP, { order: [MD_ID, SM_ID], version: 'v1' });
 		expect(library.refreshFeed).toHaveBeenCalledWith(SLUG);
 		expect(probe.latest().orderError).toBeNull();
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Token order saved.');
+	});
+
+	it('reorderTokens does not notify success when the write fails', async () => {
+		client.setGroupOrder.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().reorderTokens([MD_ID, SM_ID]);
+		});
+
+		await act(async () => writePromise);
+
+		expect(probe.latest().orderError).toEqual({ message: 'Conflict' });
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('addToken creates the primitive, refreshes the feed, and notifies success', async () => {
+		client.createUserPrimitive.mockResolvedValueOnce({ version: 'v2' });
+
+		const probe = mountProbe();
+		const { library } = await probe.render();
+
+		await act(async () => probe.latest().addToken());
+
+		expect(client.createUserPrimitive).toHaveBeenCalledWith(
+			SLUG,
+			expect.objectContaining({
+				$type: 'dimension',
+				$value: '0.5rem',
+				label: 'New Token',
+				group: 'border-radius',
+			})
+		);
+		expect(library.refreshFeed).toHaveBeenCalledWith(SLUG);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Token created.');
+	});
+
+	it('addToken does not notify success when the write fails', async () => {
+		client.createUserPrimitive.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.addToken()
+				.catch(() => {})
+		);
+
+		expect(probe.latest().addError).toEqual({ message: 'Conflict' });
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
 	it('composes a pending optimistic delete with a pending reorder override', async () => {

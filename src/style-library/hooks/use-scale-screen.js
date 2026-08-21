@@ -118,6 +118,9 @@ export function useScaleScreen(config, library, route, navigate) {
 			refreshFeed: library.refreshFeed,
 			onBusy: setIsBusy,
 			onError: setAddError,
+		}).then((result) => {
+			notifySuccess(__('Token created.', 'kadence-blocks'));
+			return result;
 		});
 	}, [config, library, feedVersion]);
 
@@ -196,6 +199,9 @@ export function useScaleScreen(config, library, route, navigate) {
 					onBusy: setIsBusy,
 					onError: setOrderError,
 				})
+					.then(() => {
+						notifySuccess(__('Token order saved.', 'kadence-blocks'));
+					})
 					.catch(() => {
 						// Caught here, not re-thrown: every link in the chain must settle (resolve) so
 						// `reorderChainRef` is never left permanently rejected — an uncaught rejection would

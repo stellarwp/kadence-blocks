@@ -237,6 +237,24 @@ describe('usePalettes', () => {
 		// The route's scope is still '' in this test (navigate is mocked, not wired to a real route),
 		// so editingId keeps tracking $current — the same palette activatePalette just moved.
 		expect(probe.latest().palette).toMatchObject({ id: SUNSET_ID });
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Palette activated.');
+	});
+
+	it('activatePalette does not notify success when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.setCurrentPalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.activatePalette(SUNSET_ID)
+				.catch(() => {})
+		);
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
 	it('createPalette dispatches the new listing via onReceive before navigating to the new palette', async () => {
@@ -271,6 +289,23 @@ describe('usePalettes', () => {
 		expect(probe.latest().listing.palettes.map((row) => row.id)).toEqual(
 			expect.arrayContaining(['default', 'sunset', 'brand'])
 		);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Palette created.');
+	});
+
+	it('createPalette does not notify success on a duplicate label', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.createPalette('Sunset')
+				.catch(() => {})
+		);
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
 	it('removePalette dispatches the post-delete listing via onReceive, dropping the removed row', async () => {
@@ -286,6 +321,100 @@ describe('usePalettes', () => {
 
 		expect(client.deletePalette).toHaveBeenCalledWith(NAMESPACE, SUNSET_ID, SLUG);
 		expect(probe.latest().listing.palettes.map((row) => row.id)).toEqual([DEFAULT_ID]);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Palette deleted.');
+	});
+
+	it('removePalette does not notify success when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.deletePalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.deletePalette(SUNSET_ID)
+				.catch(() => {})
+		);
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('renamePalette dispatches the renamed listing via onReceive and notifies success', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.fetchPalette.mockResolvedValueOnce(selectedView());
+
+		const renamedRows = listingRows();
+		renamedRows[1] = { ...renamedRows[1], label: 'Dusk' };
+		client.savePalette.mockResolvedValueOnce(renamedRows);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () => probe.latest().renamePalette(SUNSET_ID, 'Dusk'));
+
+		expect(client.savePalette).toHaveBeenCalledWith(
+			NAMESPACE,
+			SUNSET_ID,
+			expect.objectContaining({ label: 'Dusk' }),
+			SLUG
+		);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Palette renamed.');
+	});
+
+	it('renamePalette does not notify success on an empty label', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.renamePalette(SUNSET_ID, '')
+				.catch(() => {})
+		);
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
+	});
+
+	it('renameGroup dispatches the renamed listing via onReceive and notifies success', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+
+		const renamedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [{ ...defaultView().groups[0], label: 'Accents' }],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(renamedRows);
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () => probe.latest().renameGroup('accent', 'Accents'));
+
+		expect(client.savePalette).toHaveBeenCalledWith(NAMESPACE, DEFAULT_ID, expect.any(Object), SLUG);
+		expect(notify.notifySuccess).toHaveBeenCalledWith('Color group renamed.');
+	});
+
+	it('renameGroup does not notify success when the write fails', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.fetchPalette.mockRejectedValueOnce(new Error('Conflict'));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		await act(async () =>
+			probe
+				.latest()
+				.renameGroup('accent', 'Accents')
+				.catch(() => {})
+		);
+
+		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
 	it('saveSwatchEdits dispatches the recolored view via onReceive, updating the edited palette', async () => {

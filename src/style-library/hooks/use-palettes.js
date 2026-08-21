@@ -243,6 +243,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setActivateError,
+			}).then((result) => {
+				notifySuccess(__('Palette activated.', 'kadence-blocks'));
+				return result;
 			});
 		},
 		[namespace, slug, onReceive, refreshFeed]
@@ -265,6 +268,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setCreateError,
+			}).then((result) => {
+				notifySuccess(__('Palette created.', 'kadence-blocks'));
+				return result;
 			});
 		},
 		[namespace, slug, listing, onReceive, refreshFeed, openPalette]
@@ -283,6 +289,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setRenameError,
+			}).then((result) => {
+				notifySuccess(__('Palette renamed.', 'kadence-blocks'));
+				return result;
 			});
 		},
 		[namespace, slug, listing, onReceive, refreshFeed]
@@ -301,6 +310,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setDeleteError,
+			}).then((result) => {
+				notifySuccess(__('Palette deleted.', 'kadence-blocks'));
+				return result;
 			});
 		},
 		[namespace, slug, listing.currentId, onReceive, refreshFeed]
@@ -576,6 +588,9 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 				refreshFeed,
 				onBusy: setIsBusy,
 				onError: setStructureError,
+			}).then((result) => {
+				notifySuccess(__('Color group renamed.', 'kadence-blocks'));
+				return result;
 			});
 		},
 		[namespace, slug, listing.defaultId, onReceive, refreshFeed]
