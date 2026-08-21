@@ -21,6 +21,7 @@ export { TokenSelector } from './organisms/TokenSelector';
 export { ControlShell } from './templates/ControlShell';
 export { SlotGrid } from './templates/SlotGrid';
 export { BoxControl } from './controls/BoxControl';
+export { ScalarControl } from './controls/ScalarControl';
 
 export { BreakpointProvider, useBreakpoint } from './context/breakpoint';
 
