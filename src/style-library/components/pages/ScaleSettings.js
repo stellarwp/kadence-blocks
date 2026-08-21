@@ -9,7 +9,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -44,6 +44,11 @@ export function ScaleSettings({ config, route, navigate, library }) {
 	const token = scale.tokenById(id);
 	const initialValues = scale.initialValuesFor(id);
 	const panel = useSettingsPanel({ route, navigate, initialValues });
+	// `scale.isBusy` covers all the write flows (add/save/delete) with a single flag, but the footer
+	// needs to show the busy animation on only the button the user actually clicked — the
+	// `PresetSidebar.js` idiom, tracked locally for the same reason: only this panel's footer needs
+	// the distinction.
+	const [pendingAction, setPendingAction] = useState(null);
 
 	// A `kb-item` naming a token outside this screen's group (a stale deep link, or another
 	// screen's/palette's id) resolves to no row here — close the panel instead of rendering broken
@@ -106,14 +111,28 @@ export function ScaleSettings({ config, route, navigate, library }) {
 	};
 
 	const handleSave = () => {
-		scale.saveToken(id, panel.draft, initialValues).catch(() => {});
+		if (scale.isBusy) {
+			return;
+		}
+
+		setPendingAction('save');
+		scale
+			.saveToken(id, panel.draft, initialValues)
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
 	};
 
 	const handleDelete = () => {
+		if (scale.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
 		scale
 			.deleteToken(id)
 			.then(() => navigate({ item: '' }))
-			.catch(() => {});
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
 	};
 
 	// Delete is deliberately never guarded: destroying the token makes its draft moot, so prompting
@@ -127,6 +146,9 @@ export function ScaleSettings({ config, route, navigate, library }) {
 			onDelete={isDeletable(token) ? handleDelete : null}
 			onSave={handleSave}
 			isDirty={panel.isDirty}
+			isBusy={scale.isBusy}
+			isSaving={pendingAction === 'save'}
+			isDeleting={pendingAction === 'delete'}
 		>
 			{scale.saveError && (
 				<Notice status="error" isDismissible onRemove={scale.clearSaveError}>

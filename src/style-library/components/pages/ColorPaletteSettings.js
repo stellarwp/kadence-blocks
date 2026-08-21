@@ -8,7 +8,7 @@
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -63,6 +63,10 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// seeding empty at mount and never re-seeding. See that hook's own docblock for the contract.
 	const initialValues = palettes.palette ? swatchInitialValues(palettes.palette, token) : null;
 	const panel = useSettingsPanel({ route, navigate, initialValues });
+	// `palettes.isBusy` covers all the write flows with a single flag, but the footer needs to show
+	// the busy animation on only the button the user actually clicked — the `PresetSidebar.js` idiom,
+	// tracked locally for the same reason: only this panel's footer needs the distinction.
+	const [pendingAction, setPendingAction] = useState(null);
 
 	// The skeleton below lives inside its own `role="status"` region, which only announces "Loading…"
 	// while it is actually mounted — the moment it is replaced by the real panel, that region is
@@ -102,23 +106,44 @@ export function ColorPaletteSettings({ route, navigate, library }) {
 	// listing, the next render's `initialValues` recomputes to the same values, `computeIsDirty`
 	// sees them as equal, and the Save button disables itself — no reset step required. On failure
 	// the draft (and the Save button) simply survive, which is what we want anyway.
-	const onSave = () => palettes.saveSwatchEdits(token, panel.draft, initialValues).catch(() => {});
+	const onSave = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('save');
+		palettes
+			.saveSwatchEdits(token, panel.draft, initialValues)
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
+
+	// Renders for every swatch: what Delete removes is a palette row (user-editable document data),
+	// not the token — `removeSwatch` decides internally whether the underlying token is user-created
+	// and only then best-effort cleans it up (settled decision 8).
+	const onDelete = () => {
+		if (palettes.isBusy) {
+			return;
+		}
+
+		setPendingAction('delete');
+		palettes
+			.removeSwatch(token)
+			.then(() => navigate({ item: '' }))
+			// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
+			.catch(() => {})
+			.finally(() => setPendingAction(null));
+	};
 
 	return (
 		<SettingsPanel
 			onClose={panel.close}
 			onSave={onSave}
-			// Renders for every swatch: what Delete removes is a palette row (user-editable document
-			// data), not the token — `removeSwatch` decides internally whether the underlying token
-			// is user-created and only then best-effort cleans it up (settled decision 8).
-			onDelete={() =>
-				palettes
-					.removeSwatch(token)
-					.then(() => navigate({ item: '' }))
-					// Swallowed: a row-removal write failure already lands in `saveError`, rendered above.
-					.catch(() => {})
-			}
+			onDelete={onDelete}
 			isDirty={panel.isDirty}
+			isBusy={palettes.isBusy}
+			isSaving={pendingAction === 'save'}
+			isDeleting={pendingAction === 'delete'}
 		>
 			{palettes.saveError && (
 				<Notice status="error" onRemove={palettes.clearSaveError}>
