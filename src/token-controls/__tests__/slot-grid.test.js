@@ -83,17 +83,18 @@ describe('SlotGrid glyph', () => {
 		expect(positions[3]).toContain('kb-token-control__glyph--left');
 	});
 
-	it('highlights the corner-named position for a corners slot, in visual (not stored) order', () => {
+	it('highlights the corner-named position for a corners slot, walking clockwise', () => {
 		renderSlotGrid({ role: 'corners' });
 
 		const glyphs = [...container.querySelectorAll('.kb-token-control__glyph')];
 		const positions = glyphs.map((glyph) => glyph.className);
 
-		// GRID_ORDER for corners is [0, 1, 3, 2]: top-left, top-right, bottom-left, bottom-right.
+		// SLOT_LABELS.corners is already clockwise, and the stacked-row grid renders that order
+		// directly: top-left, top-right, bottom-right, bottom-left.
 		expect(positions[0]).toContain('kb-token-control__glyph--top-left');
 		expect(positions[1]).toContain('kb-token-control__glyph--top-right');
-		expect(positions[2]).toContain('kb-token-control__glyph--bottom-left');
-		expect(positions[3]).toContain('kb-token-control__glyph--bottom-right');
+		expect(positions[2]).toContain('kb-token-control__glyph--bottom-right');
+		expect(positions[3]).toContain('kb-token-control__glyph--bottom-left');
 	});
 
 	it('tags every glyph with its role', () => {

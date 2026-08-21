@@ -13,15 +13,18 @@ import { SLOT_LABELS, readSlot, writeSlot } from '../helpers/value-shapes';
 /**
  * Display order for the unlinked grid, per role.
  *
- * Corners walk clockwise (top-left, top-right, bottom-right, bottom-left), which is not reading
- * order — so the grid renders slots 0, 1, 3, 2 to put each corner in its true visual position.
- * Sides keep identity order. The stored array order never changes either way.
+ * `SLOT_LABELS.corners` is already stored clockwise (top-left, top-right, bottom-right,
+ * bottom-left), so identity order *is* visual order for the single-column stacked rows this grid
+ * renders. (The old 2x2 spatial grid needed slots 0, 1, 3, 2 to put each corner in its true
+ * on-screen quadrant — row-major reading of a 2x2 square isn't clockwise — but a one-column list
+ * has no quadrants to match, so it reads the stored clockwise order directly.) Sides also keep
+ * identity order. The stored array order never changes either way.
  *
  * @since TBD
  */
 const GRID_ORDER = {
 	sides: [0, 1, 2, 3],
-	corners: [0, 1, 3, 2],
+	corners: [0, 1, 2, 3],
 };
 
 /**

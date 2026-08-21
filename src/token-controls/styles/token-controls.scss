@@ -455,7 +455,7 @@
 .kb-token-control__grid {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 8px;
 }
 
 /*
@@ -470,13 +470,26 @@
 
 	/*
 	 * The row's own control-box chrome. Unlinked rows previously centered/stacked the trigger's text
-	 * at a smaller size here; that override is gone; what is left is sizing the trigger as the row's
-	 * control box, not restyling its type — font-size/color stay the base trigger's.
+	 * at a smaller size here; that override is gone. Border-color and border-radius are box-model
+	 * properties, not typography, so they follow the reference's control-box values (reusing this
+	 * file's own `#dddddd` gray-300 divider color rather than the reference's literal `#d8dade`,
+	 * since it is already the established "light gray border" in this style sheet); font-size, weight
+	 * and color are left alone, inherited from the base trigger rule.
+	 *
+	 * `:where()` wraps the row scoping so this rule's specificity comes only from
+	 * `.kadence-token-field__trigger.components-button` itself (two classes) — level with that base
+	 * rule's own resting border-color, but still below its `:hover`/`[aria-expanded="true"]` states
+	 * (two classes plus a pseudo-class/attribute selector). Written as a plain descendant selector,
+	 * this override's extra class would tie those interactive states on specificity and — being
+	 * declared later in the file — win over them, so hovering or opening a row's popover would stop
+	 * changing its border color.
 	 */
-	.kadence-token-field__trigger.components-button {
+	:where(&) .kadence-token-field__trigger.components-button {
 		flex: 1 1 auto;
 		height: auto;
 		padding: 7px 10px;
+		border-color: #dddddd;
+		border-radius: 5px;
 	}
 }
 
