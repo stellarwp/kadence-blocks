@@ -1,6 +1,8 @@
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 import { IconRender, Tooltip } from '@kadence/components';
+import { isTokenAlias } from '../../extension/design-tokens/alias';
+import { tokenPx } from '../../extension/design-tokens/token-px';
 export function PreviewIcon({ attributes, previewDevice }) {
 	const ref = useRef();
 	const {
@@ -50,6 +52,13 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		undefined !== tabletSize || tabletSize === 0 ? tabletSize : undefined,
 		undefined !== mobileSize || mobileSize === 0 ? mobileSize : undefined
 	);
+	// The size attribute may hold a design-token alias, which `IconRender` would write verbatim into the
+	// SVG's `width`/`height` presentation attributes — geometry attributes take a number, not a `var()`.
+	// The front end has no such problem: it renders the same attribute as a `font-size` declaration and
+	// resolves the alias there. So resolve to px here, on the same 16px root assumption PHP uses. A plain
+	// number passes through untouched, and an alias that cannot be resolved falls through to `GenIcon`'s
+	// own default rather than a broken attribute.
+	const previewSizePx = isTokenAlias(previewSize) ? (tokenPx(previewSize) ?? undefined) : previewSize;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		margin && undefined !== margin[0] ? margin[0] : undefined,
@@ -114,7 +123,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 						<IconRender
 							className={`kt-svg-icon kt-svg-icon-${icon}`}
 							name={icon}
-							size={previewSize}
+							size={previewSizePx}
 							strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
 							title={title ? title : ''}
 							style={{

@@ -1,0 +1,13 @@
+{
+	"_comment": "One source of truth for the resolved-CSS-length -> raw pixel number conversion, shared so the JS and PHP implementations can assert against the same pairs and cannot drift. The JS side asserts tokenPx(length) === px; the PHP side (the Converts_Number_To_Px trait's to_px()) must produce the same number for each. Both assume a 16px root font size for rem/em -- the same assumption an unstyled rem makes in a browser -- and both must return null for every 'unconvertible' entry. Note what is deliberately unconvertible: a UNITLESS value (including a bare '0', which CSS accepts as a length) converts in neither language, because neither has a unit to convert from. Inputs are canonical and carry no surrounding whitespace.",
+	"lengths": [
+		{ "length": "24px", "px": 24 },
+		{ "length": "9999px", "px": 9999 },
+		{ "length": "1rem", "px": 16 },
+		{ "length": "1.5rem", "px": 24 },
+		{ "length": "2.25rem", "px": 36 },
+		{ "length": "0.5em", "px": 8 },
+		{ "length": "-1rem", "px": -16 }
+	],
+	"unconvertible": ["0", "50", "50%", "2vw", "auto", "inherit", "clamp(1rem, 2vw, 3rem)", "1rem 2rem", ""]
+}
