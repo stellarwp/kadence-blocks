@@ -533,6 +533,127 @@ final class Palettes_ControllerTest extends TestCase {
 	}
 
 	/**
+	 * A write against the default palette that drops a swatch the shipped baseline defines is refused: the
+	 * default palette is the structure template every other palette is projected from, so removing a row there
+	 * would take that color out of every palette at once.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemRejectsADefaultPaletteMissingABaselineSwatch(): void {
+		$result = $this->controller->update_item( $this->default_palette_request( 'primitive.color.brand.button' ) );
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+		$this->assertSame( 'rest_design_tokens_locked', $result->get_error_code() );
+		$this->assertSame( WP_Http::FORBIDDEN, $this->status_of( $result ) );
+		$this->assertSame( 'primitive.color.brand.button', $result->get_error_data()['token'] );
+
+		// The refusal is total: nothing about the palette was persisted.
+		$this->assertSame( '#3633e1', $this->palettes->swatch_values( 'default' )['primitive.color.brand.button'] );
+	}
+
+	/**
+	 * A default-palette write that keeps every baseline swatch is accepted, so an ordinary recolor still saves.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemAcceptsADefaultPaletteThatKeepsEveryBaselineSwatch(): void {
+		$request = $this->default_palette_request();
+		$groups  = $request->get_param( 'groups' );
+
+		$groups[0]['swatches'][3]['$value'] = '#abcdef';
+		$request->set_param( 'groups', $groups );
+
+		$result = $this->controller->update_item( $request );
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertSame( '#abcdef', $this->palettes->swatch_values( 'default' )['primitive.color.brand.button'] );
+	}
+
+	/**
+	 * The default palette may still drop a swatch the baseline does NOT define — a user-added color is deletable,
+	 * which is the whole point of scoping the lock to the shipped set.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemAllowsANonBaselineSwatchToBeDroppedFromTheDefaultPalette(): void {
+		// Built before anything is stored, so it carries the shipped structure without the extra group the next
+		// request adds — the helper reads the EFFECTIVE palette, which would otherwise include it by then.
+		$without = $this->default_palette_request();
+
+		// primitive.color.neutral.600 is a registered color the shipped palette lists no swatch for, so it stands
+		// in for a user-added color without needing a minted primitive.
+		$added  = $this->default_palette_request();
+		$groups = $added->get_param( 'groups' );
+
+		$groups[] = [
+			'id'       => 'extras',
+			'label'    => 'Extras',
+			'swatches' => [
+				[
+					'token'  => 'primitive.color.neutral.600',
+					'label'  => 'Neutral 600',
+					'$value' => '#4A5568',
+				],
+			],
+		];
+
+		$added->set_param( 'groups', $groups );
+
+		$this->assertNotInstanceOf( WP_Error::class, $this->controller->update_item( $added ) );
+		$this->assertArrayHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+
+		// Now save the palette back without it: the lock does not apply, so the row goes away for good.
+		$this->assertNotInstanceOf( WP_Error::class, $this->controller->update_item( $without ) );
+		$this->assertArrayNotHasKey( 'primitive.color.neutral.600', $this->palettes->swatch_values( 'default' ) );
+	}
+
+	/**
+	 * The lock is scoped to the default palette: a non-default palette is stored as deltas, so it omits nearly
+	 * every baseline swatch by design and must still save.
+	 *
+	 * @return void
+	 */
+	public function testUpdateItemAllowsANonDefaultPaletteToOmitBaselineSwatches(): void {
+		$result = $this->controller->update_item( $this->write_request( 'ocean', 'Ocean', '#DD6B20' ) );
+
+		$this->assertNotInstanceOf( WP_Error::class, $result );
+		$this->assertSame( [ 'primitive.color.brand.primary' => '#DD6B20' ], $this->palettes->swatch_values( 'ocean' ) );
+	}
+
+	/**
+	 * A write request carrying the default palette's full baseline structure, optionally with one swatch removed
+	 * — the shape the Style Library sends when it saves the palette it is editing.
+	 *
+	 * @param string|null $omit_token A swatch token dot-path to leave out, or null to send the structure intact.
+	 *
+	 * @return WP_REST_Request
+	 */
+	private function default_palette_request( ?string $omit_token = null ): WP_REST_Request {
+		$node   = $this->palettes->palette( 'default' ) ?? [];
+		$groups = [];
+
+		foreach ( $node['groups'] ?? [] as $group ) {
+			$swatches = [];
+
+			foreach ( $group['swatches'] ?? [] as $swatch ) {
+				if ( $swatch['token'] !== $omit_token ) {
+					$swatches[] = $swatch;
+				}
+			}
+
+			$group['swatches'] = $swatches;
+			$groups[]          = $group;
+		}
+
+		$request = new WP_REST_Request( 'PUT' );
+		$request->set_param( 'id', 'default' );
+		$request->set_param( 'label', $node['label'] ?? 'Default' );
+		$request->set_param( 'groups', $groups );
+
+		return $request;
+	}
+
+	/**
 	 * Create a non-default "custom" palette (a single brand-primary delta of #DD6B20, labelled "Custom") through
 	 * the controller's own write path, without pointing `$current` at it. The baseline no longer ships a
 	 * non-default palette, so the list / read / $current cases own the one they exercise — and creating it inactive

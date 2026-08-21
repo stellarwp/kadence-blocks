@@ -37,6 +37,10 @@ use WP_REST_Server;
  * and `label` must be a string. Because a palette's values live under `$extensions`, the resolver dry-run
  * never sees them, so alias targets are guarded here explicitly.
  *
+ * One further guard is specific to the DEFAULT palette: it is the structure template every other palette is
+ * projected from, so a write against it may not drop a swatch the shipped baseline defines
+ * ({@see guard_baseline_swatches()}). Those rows are permanent — reverted, never removed.
+ *
  * @since TBD
  */
 final class Palettes_Controller extends Controller {
@@ -345,6 +349,9 @@ final class Palettes_Controller extends Controller {
 	 * the shape and swatch guards, replace the palette node in the library's stored overrides, and validate-and-save.
 	 * A single palette node write is create-or-replace either way, so POST and PUT share this handler.
 	 *
+	 * A write against the default palette must additionally keep every baseline swatch: dropping one there
+	 * removes it from every palette, so it is a 403 rather than a structure edit.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -368,6 +375,11 @@ final class Palettes_Controller extends Controller {
 		$swatches = $this->guard_swatches( $node, $id );
 		if ( $swatches !== null ) {
 			return $swatches;
+		}
+
+		$locked = $this->guard_baseline_swatches( $node, $id, $slug );
+		if ( $locked !== null ) {
+			return $locked;
 		}
 
 		// The default palette stores every swatch (it is the base). A non-default palette stores only its
@@ -933,6 +945,87 @@ final class Palettes_Controller extends Controller {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Reject a DEFAULT-palette write that drops a swatch the shipped baseline defines. Those swatches are the
+	 * permanent set: the default palette is the structure template every other palette is projected from, so a
+	 * row removed there disappears from every palette at once and can never be recovered. A baseline swatch is
+	 * reverted (DELETE /palettes/{id}/swatches/{token}), never removed; only a user-added swatch is deletable.
+	 *
+	 * Scoped to the default palette on purpose: a non-default palette is stored as DELTAS, so it legitimately
+	 * omits most baseline tokens, and applying this guard there would reject every ordinary palette write.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The palette node being written.
+	 * @param string               $id   The palette id, for error context.
+	 * @param string               $slug The token library slug.
+	 *
+	 * @return WP_Error|null A WP_Error when a baseline swatch is missing, null otherwise.
+	 */
+	private function guard_baseline_swatches( array $node, string $id, string $slug ): ?WP_Error {
+		if ( $id !== $this->palettes->default_palette( $slug ) ) {
+			return null;
+		}
+
+		$present = array_flip( $this->swatch_tokens_of_node( $node ) );
+
+		foreach ( array_keys( $this->palettes->baseline_swatch_values() ) as $token ) {
+			if ( isset( $present[ $token ] ) ) {
+				continue;
+			}
+
+			return new WP_Error(
+				'rest_design_tokens_locked',
+				sprintf(
+					/* translators: %s: the token dot-path. */
+					__( 'Swatch "%s" is part of the shipped palette and cannot be removed.', 'kadence-blocks' ),
+					$token
+				),
+				[
+					'status'          => WP_Http::FORBIDDEN,
+					self::ID_PARAM    => $id,
+					self::TOKEN_PARAM => $token,
+				]
+			);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Every swatch token a palette node carries, across all of its groups, in order.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $node The palette node.
+	 *
+	 * @return string[] The swatch token dot-paths.
+	 */
+	private function swatch_tokens_of_node( array $node ): array {
+		$swatches_key = Extensions::get_swatches_key();
+		$token_key    = Extensions::get_swatch_token_key();
+		$groups       = $node[ Extensions::get_groups_key() ] ?? [];
+		$tokens       = [];
+
+		if ( ! is_array( $groups ) ) {
+			return $tokens;
+		}
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) || ! isset( $group[ $swatches_key ] ) || ! is_array( $group[ $swatches_key ] ) ) {
+				continue;
+			}
+
+			foreach ( $group[ $swatches_key ] as $swatch ) {
+				if ( is_array( $swatch ) && isset( $swatch[ $token_key ] ) && is_string( $swatch[ $token_key ] ) ) {
+					$tokens[] = $swatch[ $token_key ];
+				}
+			}
+		}
+
+		return $tokens;
 	}
 
 	/**
