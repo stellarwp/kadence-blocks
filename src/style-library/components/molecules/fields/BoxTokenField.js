@@ -157,7 +157,7 @@ function boundsForUnit(unit, field) {
  *
  * @return {Array<string>} The bound token ids, empty when nothing is bound.
  */
-function boundTokenIds(value) {
+export function boundTokenIds(value) {
 	const slots = isSlotList(value) ? value : [value];
 
 	return slots.filter(

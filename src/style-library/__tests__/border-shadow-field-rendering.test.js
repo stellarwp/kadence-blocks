@@ -52,6 +52,12 @@ describe('BorderField', () => {
 		window[PICKABLE_TOKENS_GLOBAL] = {
 			tokens: [
 				{ id: 'primitive.dimension.border-width.sm', label: 'Small', type: 'dimension', role: 'border-width' },
+				{
+					id: 'semantic.border-width.default',
+					label: 'Border Width',
+					type: 'dimension',
+					role: 'border-width',
+				},
 				{ id: 'primitive.dimension.radius.sm', label: 'Radius Small', type: 'dimension', role: 'radius' },
 			],
 			values: { brand: { 'primitive.dimension.border-width.sm': '1px' } },
@@ -78,6 +84,30 @@ describe('BorderField', () => {
 			'primitive.dimension.border-width.sm',
 		]);
 		expect(latestBorderControlProps.widthTokens[0].alias).toBe('{primitive.dimension.border-width.sm}');
+	});
+
+	it('exempts the bound width token from the primitive narrowing, so a bound semantic stays pickable', () => {
+		const field = { label: 'Border', path: 'tokens.button-border' };
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field,
+					values: { tokens: { 'button-border-width': 'semantic.border-width.default' } },
+					onValueChange: jest.fn(),
+				})
+			);
+		});
+
+		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual(
+			expect.arrayContaining(['semantic.border-width.default'])
+		);
+
+		const boundToken = latestBorderControlProps.widthTokens.find(
+			(token) => token.id === 'semantic.border-width.default'
+		);
+
+		expect(boundToken.label).toBe('Border Width');
 	});
 
 	it('threads breakpoints only when the field is responsive', () => {

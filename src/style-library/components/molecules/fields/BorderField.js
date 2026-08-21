@@ -60,6 +60,7 @@ import {
 	writePresetBreakpoint,
 } from '../../../../token-controls/helpers/preset-envelope';
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
+import { boundTokenIds } from './BoxTokenField';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
 import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
@@ -220,10 +221,18 @@ export function BorderField({ field, values, onValueChange }) {
 		onValueChange(stylePath, responsive ? writePresetBreakpoint(rawStyle, breakpoint, next) : next);
 	const writeColor = (next) => onValueChange(colorPath, next);
 
-	const widthTokens = pickableTokensForType('dimension', 'border-width').map((token) => ({
-		...token,
-		alias: `{${token.id}}`,
-	}));
+	// The bound width token(s) are exempt from the primitive narrowing, the same way `BoxTokenField`
+	// exempts a box control's bound corners: without this, the semantic `border-width` token this
+	// role's primitives coexist with is filtered out of the pool whenever it is the one actually
+	// bound, and the field — finding no matching entry — renders the raw id instead of the token's
+	// label. Width is per-slot (a scalar or a four-slot list), which is exactly the shape
+	// `boundTokenIds` already handles.
+	const widthTokens = pickableTokensForType('dimension', 'border-width', boundTokenIds(widthAtBreakpoint)).map(
+		(token) => ({
+			...token,
+			alias: `{${token.id}}`,
+		})
+	);
 
 	// Which breakpoints the user has opened up into per-side editing. Held here rather than inferred
 	// from the stored shape — see the module docblock — and per breakpoint for the same reason
