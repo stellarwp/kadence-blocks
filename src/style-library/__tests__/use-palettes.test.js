@@ -845,6 +845,72 @@ describe('usePalettes', () => {
 		expect(notify.notifySuccess).not.toHaveBeenCalled();
 	});
 
+	it('addColor renders the new swatch exactly once during the window between onReceive and the overlay clearing', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+		client.createUserPrimitive.mockResolvedValueOnce({ id: 'primitive.color.custom.custom-1', version: 'v2' });
+		client.fetchPalette.mockResolvedValueOnce(defaultView());
+
+		const addedRows = listingRows({
+			defaultView: () => ({
+				...defaultView(),
+				groups: [
+					{
+						...defaultView().groups[0],
+						swatches: [
+							...defaultView().groups[0].swatches,
+							{ token: 'primitive.color.custom.custom-1', label: 'New Color', $value: '#222222' },
+						],
+					},
+				],
+			}),
+		});
+		client.savePalette.mockResolvedValueOnce(addedRows);
+
+		// `refreshFeed` is held open, mirroring the write chain's real `savePalette → onReceive →
+		// refreshFeed` order: `onReceive` (which dispatches the confirmed listing into the store)
+		// runs BEFORE this promise resolves, so the window it opens up is observable.
+		let resolveRefreshFeed;
+		const refreshFeed = jest.fn().mockReturnValueOnce(
+			new Promise((resolve) => {
+				resolveRefreshFeed = resolve;
+			})
+		);
+
+		const probe = mountProbe();
+		await probe.render({ refreshFeed });
+
+		let writePromise;
+		act(() => {
+			writePromise = probe.latest().addColor('accent');
+		});
+
+		await flushUntil(
+			() =>
+				probe
+					.latest()
+					.palette.groups[0].swatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')
+					.length > 0
+		);
+
+		// The real listing already carries the confirmed row (onReceive has dispatched it), and the
+		// optimistic overlay has not been cleared yet (still inside refreshFeed) — the swatch must
+		// render exactly once, not twice.
+		expect(
+			probe
+				.latest()
+				.palette.groups[0].swatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')
+		).toHaveLength(1);
+
+		resolveRefreshFeed(undefined);
+		await act(async () => writePromise);
+
+		expect(
+			probe
+				.latest()
+				.palette.groups[0].swatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')
+		).toHaveLength(1);
+	});
+
 	it('addGroup shows the new group and its placeholder swatch immediately, before the write resolves', async () => {
 		client.fetchPalettes.mockResolvedValueOnce(listingRows());
 
@@ -1019,6 +1085,39 @@ describe('usePalettes', () => {
 
 		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(originalOrder);
 		expect(probe.latest().structureError).toEqual({ message: 'Conflict' });
+	});
+
+	it('composes a pending optimistic reorder with a different pending optimistic action without reverting the reorder', async () => {
+		client.fetchPalettes.mockResolvedValueOnce(listingRows());
+
+		// Neither write's own `fetchPalette`/`savePalette` call ever resolves in this test — the
+		// point is to observe the state WHILE both are still in flight, so nothing here needs a
+		// settled value.
+		client.fetchPalette.mockReturnValue(new Promise(() => {}));
+
+		const probe = mountProbe();
+		await probe.render();
+
+		const originalOrder = probe.latest().palette.groups[0].swatches.map((s) => s.token);
+		const newOrder = [...originalOrder].reverse();
+
+		act(() => {
+			// Fire-and-forget: this promise is never awaited to settle in this test.
+			probe.latest().reorderSwatches('accent', newOrder);
+		});
+
+		// The reorder's optimistic order is applied immediately.
+		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(newOrder);
+
+		act(() => {
+			// A DIFFERENT optimistic action, on a swatch the reorder does not touch, while the
+			// reorder's own write is still pending. This must not clear the reorder's local override.
+			probe.latest().removeSwatch('primitive.color.brand.secondary');
+		});
+
+		// The reorder's order is still visible — the unrelated delete's optimistic overlay must not
+		// have reset the pending reorder override.
+		expect(probe.latest().palette.groups[0].swatches.map((s) => s.token)).toEqual(newOrder);
 	});
 
 	it('two mounted instances (a screen and its settings panel) share one listing fetch and stay in sync', async () => {

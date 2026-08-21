@@ -160,19 +160,26 @@ export function usePalettes(feed, refreshFeed, route, navigate) {
 		[namespace, slug]
 	);
 
-	const palette = useMemo(() => {
-		const row = listing.palettes.find((row) => row.id === editingId) ?? null;
-		return applyOptimisticOverlay(row, overlay);
-	}, [listing.palettes, editingId, overlay]);
+	const editingRow = useMemo(
+		() => listing.palettes.find((row) => row.id === editingId) ?? null,
+		[listing.palettes, editingId]
+	);
+
+	const palette = useMemo(() => applyOptimisticOverlay(editingRow, overlay), [editingRow, overlay]);
 
 	// The local reorder override — see `reorderSwatches` below. Cleared once the real data catches
-	// up (the write's own `onReceive` lands and `palette.groups` changes), mirroring
-	// `hooks/use-scale-screen.js`'s identical `pendingOrder`-clearing effect.
+	// up (the write's own `onReceive` lands and the STORE's row for this palette changes) — keyed
+	// on `editingRow.groups`, the raw store data, not the overlay-applied `palette.groups`.
+	// `applyOptimisticOverlay` returns a fresh `groups` array reference on every render where ANY
+	// optimistic action is pending or was just cleared — a save, a delete, an add — not only a
+	// reorder. Keying this effect off `palette.groups` would clear an in-flight reorder override
+	// whenever an unrelated optimistic action starts or settles, snapping the drag back to its
+	// pre-drag order until the reorder's own write eventually resolves.
 	const [pendingGroups, setPendingGroups] = useState(null);
 
 	useEffect(() => {
 		setPendingGroups(null);
-	}, [palette?.groups]);
+	}, [editingRow?.groups]);
 
 	const displayedPalette = useMemo(
 		() => (pendingGroups && palette ? { ...palette, groups: pendingGroups } : palette),

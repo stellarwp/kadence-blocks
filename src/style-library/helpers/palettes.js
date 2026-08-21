@@ -554,6 +554,12 @@ export function applyOptimisticOverlay(palette, overlay) {
 		return palette;
 	}
 
+	// A swatch/group the real listing already carries (the write's `onReceive` landed) must not
+	// also be appended from the overlay — the overlay is only cleared in the caller's `.finally()`,
+	// well after `onReceive`, so without this de-dupe the row renders twice for that window.
+	const realSwatchTokens = new Set(palette.groups.flatMap((group) => group.swatches.map((swatch) => swatch.token)));
+	const realGroupIds = new Set(palette.groups.map((group) => group.id));
+
 	const groups = palette.groups.map((group) => {
 		const pendingGroupDelete = overlay.deletedGroups.includes(group.id);
 
@@ -564,17 +570,19 @@ export function applyOptimisticOverlay(palette, overlay) {
 		}));
 
 		const additions = overlay.addedSwatches
-			.filter((added) => added.groupId === group.id)
+			.filter((added) => added.groupId === group.id && !realSwatchTokens.has(added.token))
 			.map(({ groupId, ...swatch }) => ({ ...swatch, pendingDelete: false }));
 
 		return { ...group, pendingDelete: pendingGroupDelete, swatches: [...swatches, ...additions] };
 	});
 
-	const addedGroups = overlay.addedGroups.map((group) => ({
-		...group,
-		pendingDelete: false,
-		swatches: group.swatches.map((swatch) => ({ ...swatch, pendingDelete: false })),
-	}));
+	const addedGroups = overlay.addedGroups
+		.filter((group) => !realGroupIds.has(group.id))
+		.map((group) => ({
+			...group,
+			pendingDelete: false,
+			swatches: group.swatches.map((swatch) => ({ ...swatch, pendingDelete: false })),
+		}));
 
 	return { ...palette, groups: [...groups, ...addedGroups] };
 }

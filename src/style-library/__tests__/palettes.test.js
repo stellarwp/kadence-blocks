@@ -698,6 +698,74 @@ describe('applyOptimisticOverlay', () => {
 		expect(newGroup.pendingDelete).toBe(false);
 		expect(newGroup.swatches[0].pendingDelete).toBe(false);
 	});
+
+	it('does not duplicate an added swatch the real data already carries', () => {
+		// Simulates the window after `onReceive` has landed the write's confirmed row but before the
+		// caller's `.finally()` has cleared the overlay — the real group already has the swatch.
+		const palette = effectivePalette();
+		palette.groups[0].swatches.push({
+			token: 'primitive.color.custom.custom-1',
+			label: 'New Color',
+			$value: '#123456',
+			overridden: false,
+		});
+
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [
+				{
+					groupId: 'accent',
+					token: 'primitive.color.custom.custom-1',
+					label: 'New Color',
+					$value: '#123456',
+				},
+			],
+			addedGroups: [],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		const accentGroup = result.groups[0];
+		expect(
+			accentGroup.swatches.filter((swatch) => swatch.token === 'primitive.color.custom.custom-1')
+		).toHaveLength(1);
+	});
+
+	it('does not duplicate an added group the real data already carries', () => {
+		// Same window as above, for a group addition: `onReceive` already landed the confirmed group.
+		const palette = effectivePalette();
+		palette.groups.push({
+			id: 'background',
+			label: 'Background',
+			swatches: [{ token: 'primitive.color.custom.custom-1', label: 'BG Color', $value: '#999999' }],
+		});
+
+		const overlay = {
+			patches: {},
+			deletedTokens: [],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [
+				{
+					id: 'background',
+					label: 'Background',
+					swatches: [
+						{
+							token: 'primitive.color.custom.custom-1',
+							label: 'BG Color',
+							$value: '#999999',
+						},
+					],
+				},
+			],
+		};
+
+		const result = applyOptimisticOverlay(palette, overlay);
+
+		expect(result.groups.filter((group) => group.id === 'background')).toHaveLength(1);
+	});
 });
 
 describe('validateNewGroupLabel', () => {
