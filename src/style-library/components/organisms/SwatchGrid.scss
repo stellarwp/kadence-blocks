@@ -10,6 +10,15 @@
 	@include flex-column(var(--kb-sl-space-10));
 }
 
+// A group mid-delete: its heading, Rename/Delete menu, and Add-color tile read as inert while the
+// swatches inside it already dim through their own `--pending-delete` cascade (`SwatchCard.scss`).
+// Same weight as that per-swatch treatment, applied to the heading row instead of the whole group
+// so the swatch row's own per-swatch dimming and interactivity are untouched.
+.kadence-blocks-style-library__swatch-group-heading--pending-delete {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 // No `align-items` set here, deliberately not even an explicit `stretch` — the shared
 // `flex-row-wrap` mixin always sets one, which was stopping every card and the trailing `AddTile`
 // from sharing the wrapped line's tallest height; flex's own initial value is already `stretch`.

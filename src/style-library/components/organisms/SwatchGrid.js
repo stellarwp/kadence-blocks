@@ -23,7 +23,7 @@ import './SwatchGrid.scss';
  * The swatch-grid screen body: titled groups of cards, each group ending in an add tile.
  *
  * @param {Object}         props            The component props.
- * @param {Array<Object>}  props.groups     `[{ id, label, items: [SwatchCard props] }]`.
+ * @param {Array<Object>}  props.groups     `[{ id, label, pendingDelete, items: [SwatchCard props] }]`.
  * @param {string}         [props.selectedId] The selected card id, '' for none.
  * @param {Function}       props.onSelect   Card click handler.
  * @param {Function}       [props.onReorder] Called with `(groupId, orderedIds)` after a drop.
@@ -77,7 +77,7 @@ export function SwatchGrid({
  * this can't be inlined into the parent's `.map`).
  *
  * @param {Object}        props            The component props.
- * @param {Object}        props.group      `{ id, label, items: [SwatchCard props] }`.
+ * @param {Object}        props.group      `{ id, label, pendingDelete, items: [SwatchCard props] }`.
  * @param {string}        props.selectedId The selected card id, '' for none.
  * @param {Function}      props.onSelect   Card click handler.
  * @param {Function}      props.onReorder  Called with `(groupId, orderedIds)` after a drop.
@@ -99,10 +99,24 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 		onReorder: (orderedIds) => onReorder(group.id, orderedIds),
 	});
 	const activeItem = group.items.find((item) => item.id === activeId);
+	// Cascades from `applyOptimisticOverlay`'s group-deletion handling (see `helpers/palettes.js`'s
+	// `mapPaletteToSwatchGroups`): while the group itself is mid-delete, its heading (and the
+	// Rename/Delete menu and Add-color tile it hosts) must read as inert too, not just its swatches.
+	const isGroupPendingDelete = Boolean(group.pendingDelete);
 
 	return (
 		<div className="kadence-blocks-style-library__swatch-group">
-			<SectionHeading actions={groupActions ? groupActions(group) : null}>{group.label}</SectionHeading>
+			<div
+				className={
+					isGroupPendingDelete
+						? 'kadence-blocks-style-library__swatch-group-heading kadence-blocks-style-library__swatch-group-heading--pending-delete'
+						: 'kadence-blocks-style-library__swatch-group-heading'
+				}
+			>
+				<SectionHeading actions={!isGroupPendingDelete && groupActions ? groupActions(group) : null}>
+					{group.label}
+				</SectionHeading>
+			</div>
 			<DndContext {...contextProps}>
 				<SortableContext {...sortableContextProps} strategy={rectSortingStrategy}>
 					<div className="kadence-blocks-style-library__swatch-group-row">
@@ -115,7 +129,11 @@ function SwatchGridGroup({ group, selectedId, onSelect, onReorder, onAdd, addLab
 								useSortableItem={useSortableItem}
 							/>
 						))}
-						<AddTile label={addLabel} onClick={() => onAdd(group.id)} disabled={isAdding} />
+						<AddTile
+							label={addLabel}
+							onClick={() => onAdd(group.id)}
+							disabled={isAdding || isGroupPendingDelete}
+						/>
 					</div>
 				</SortableContext>
 				{/* The floating copy that actually follows the pointer/keyboard focus — see the matching
