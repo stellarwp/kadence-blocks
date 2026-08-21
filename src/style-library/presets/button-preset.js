@@ -203,6 +203,10 @@ function schemaFor(tab) {
 			{
 				type: 'border',
 				responsive: true,
+				// A base path, not a stored key: PHP declares `button-border-width`/`-style`/`-color` as
+				// three separate bound properties, so `BorderField` derives and reads/writes the three
+				// sibling keys `${path}-width` / `-style` / `-color` itself rather than one composite value
+				// living at this path.
 				path: 'tokens.button-border',
 				label: __('Border', 'kadence-blocks'),
 				// No `defaultValue` here, unlike the radius field above: `BorderField`'s adapter doesn't

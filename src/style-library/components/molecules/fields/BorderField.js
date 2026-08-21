@@ -3,17 +3,19 @@
  *
  * Mirrors `BoxTokenField.js` in spirit — bridges the preset's stored shape to the control's plain
  * value contract, owns the breakpoint switcher, and sources `tokens` via `pickableTokensForType` —
- * but the shape being bridged is different. `BorderControl`'s value is `{ width, style, color }`,
- * where `width` and `style` are each independently a scalar or a `[top, right, bottom, left]` slot
- * list, and `color` is always a single value — a border is never a different color per side.
+ * but the shape being bridged is different, and split across three sibling stored keys rather than
+ * one.
  *
- * The preset stores width and style as one composite per side instead of two parallel slot lists: a
- * scalar `{ width, style, color }` when every side matches, or a four-element list of `{ width,
- * style, color }` when they do not. `isUniformSlotList()` decides which on write — the composite
- * counterpart to the `===` collapse `writeSlot()` already does for a plain scalar slot, and the
- * reason that helper exists. `color` is carried in every slot purely so the composite shape is
- * self-contained; it is always identical across slots because `BorderControl` never varies it by
- * side.
+ * PHP declares `button-border-width`/`-style`/`-color` as three separate bound properties (see
+ * `declarations.php`), so the preset's `tokens` map stores three independent flat keys —
+ * `${field.path}-width` / `-style` / `-color` — not one composite value at `field.path` itself.
+ * `BorderControl`'s own value contract already treats width and style as independent axes (each a
+ * scalar or a `[top, right, bottom, left]` slot list) and color as always a single value, so this
+ * split is a closer fit for the control than a shared composite key ever was — width and style no
+ * longer have to share a shape just because they shared a stored key. Because `SettingsForm` only
+ * ever binds one `field.path` to one `value`/`onChange` pair, this adapter reads `values`/writes via
+ * `onValueChange(path, next)` directly — the two additional props `SettingsForm` hands every field
+ * for exactly this case (see its own docblock).
  *
  * Border width has no unit switcher on `BorderControl`'s `Custom` tab — the control passes no
  * `unit`/`units`/`onUnit` to the `TokenSelector` it renders for width, unlike radius/spacing's
@@ -22,18 +24,18 @@
  *
  * Color is out of this plan's scope (see `BorderControl`'s own docblock): `renderColor` wraps the
  * same `TokenColorSelectField` the Button screen's Color panel already renders for text/background,
- * rather than building or importing anything new.
+ * rather than building or importing anything new. Color's own path carries no breakpoint envelope —
+ * a border color has never varied by breakpoint here, so its path always stores the plain value.
  *
  * Link state is owned here, controlled, exactly the way `BoxTokenField` owns it for radius/spacing
  * — not derived from whether the stored value happens to be a scalar or a four-slot list.
  * `BorderControl` left uncontrolled derives `linked` from the data's shape, and this adapter's own
- * `toStoredValue` collapses a uniform four-slot write straight back to a scalar; wired together
- * uncontrolled, unlinking would expand to four identical slots, get collapsed back to a scalar on
- * the very next write, and re-derive as linked before the user could edit a single side — the
- * toggle would visually snap back on every click. Tracking "the user chose the unlinked view" in
- * its own state (per breakpoint, like `BoxTokenField`'s `unlinked`) and passing it down as
- * `isLinked`/`onToggleLink` decouples that choice from what the data looks like, which is what
- * lets an unlinked, still-uniform value stay unlinked until the user actually diverges a side.
+ * axis writes never collapse a four-slot write back to a scalar; wired together uncontrolled,
+ * unlinking would expand to four identical slots and re-derive as linked before the user could edit
+ * a single side — the toggle would visually snap back on every click. Tracking "the user chose the
+ * unlinked view" in its own state (per breakpoint, like `BoxTokenField`'s `unlinked`) and passing it
+ * down as `isLinked`/`onToggleLink` decouples that choice from what the data looks like, which is
+ * what lets an unlinked, still-uniform value stay unlinked until the user actually diverges a side.
  */
 
 /**
@@ -45,6 +47,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { getValueAtPath } from '../../../helpers/settings-schema';
 import { pickableTokensForType } from '../../../helpers/tokens';
 import {
 	PRESET_BREAKPOINTS,
@@ -54,7 +57,7 @@ import {
 import { BorderControl } from '../../../../token-controls/controls/BorderControl';
 import { useBreakpoint } from '../../../../token-controls/context/breakpoint';
 import { parseCssLength } from '../../../../token-controls/helpers/parse-css-length';
-import { isSlotList, isUniformSlotList, toSlotList } from '../../../../token-controls/helpers/value-shapes';
+import { isSlotList, readSlot } from '../../../../token-controls/helpers/value-shapes';
 import { TokenColorSelectField } from './TokenColorSelectField';
 
 /**
@@ -64,13 +67,6 @@ import { TokenColorSelectField } from './TokenColorSelectField';
  * @since TBD
  */
 const WIDTH_UNIT = 'px';
-
-/**
- * One side's default shape, used when nothing is stored yet.
- *
- * @since TBD
- */
-const DEFAULT_SIDE = { width: '', style: 'none', color: '' };
 
 /**
  * Convert one stored width into what the control expects: an alias, a bare number, or ''.
@@ -124,79 +120,100 @@ export function toStoredWidth(next) {
 }
 
 /**
- * Convert a stored border value — one side's composite, or four — into `BorderControl`'s value.
+ * Convert a stored width axis — a scalar side, or a four-slot list of them — into what the control
+ * expects.
  *
- * @param {*} stored The stored value: a `{width, style, color}` composite, or a four-slot list of
- *                    them.
+ * @param {*} stored The stored width axis.
  *
  * @since TBD
  *
- * @return {{width: *, style: *, color: string}} The control-shaped value.
+ * @return {*} The control-shaped width axis.
  */
-export function toControlValue(stored) {
-	if (isSlotList(stored)) {
-		return {
-			width: stored.map((side) => toControlWidth(side?.width ?? '')),
-			style: stored.map((side) => side?.style || 'none'),
-			// Identical in every slot by construction (see the module docblock); the first slot speaks
-			// for all of them.
-			color: stored[0]?.color ?? '',
-		};
-	}
-
-	const side = stored && typeof stored === 'object' ? stored : DEFAULT_SIDE;
-
-	return {
-		width: toControlWidth(side.width ?? ''),
-		style: side.style || 'none',
-		color: side.color ?? '',
-	};
+export function toControlWidthAxis(stored) {
+	return isSlotList(stored) ? stored.map(toControlWidth) : toControlWidth(stored);
 }
 
 /**
- * Convert `BorderControl`'s next value back into what a preset stores.
+ * Convert the control's width axis back into what the width path stores.
  *
- * @param {{width: *, style: *, color: string}} next The control-shaped value.
+ * @param {*} next The control-shaped width axis.
  *
  * @since TBD
  *
- * @return {*} The stored value: a `{width, style, color}` composite, collapsed to a scalar when
- *             every side ends up identical.
+ * @return {*} The stored width axis.
  */
-export function toStoredValue(next) {
-	const widths = toSlotList(next.width).map(toStoredWidth);
-	const styles = toSlotList(next.style).map((style) => style || 'none');
-	const color = next.color ?? '';
+export function toStoredWidthAxis(next) {
+	return isSlotList(next) ? next.map(toStoredWidth) : toStoredWidth(next);
+}
 
-	const slots = widths.map((width, index) => ({ width, style: styles[index], color }));
+/**
+ * Convert a stored style axis — a scalar side, or a four-slot list of them — into what the control
+ * expects. Style needs no other conversion: the stored keyword and the control's keyword are the
+ * same string, only the unset default (`'none'`) needs filling in.
+ *
+ * @param {*} stored The stored style axis.
+ *
+ * @since TBD
+ *
+ * @return {*} The control-shaped style axis.
+ */
+export function toControlStyleAxis(stored) {
+	return isSlotList(stored) ? stored.map((style) => style || 'none') : stored || 'none';
+}
 
-	return isUniformSlotList(slots) ? slots[0] : slots;
+/**
+ * Convert the control's style axis back into what the style path stores.
+ *
+ * @param {*} next The control-shaped style axis.
+ *
+ * @since TBD
+ *
+ * @return {*} The stored style axis.
+ */
+export function toStoredStyleAxis(next) {
+	return isSlotList(next) ? next.map((style) => style || 'none') : next || 'none';
 }
 
 /**
  * Render a border field from a settings schema entry.
  *
- * @param {Object}  props                    The component props.
- * @param {Object}  props.field              The field definition.
- * @param {?string} [props.field.label]      The control's label.
- * @param {boolean} [props.field.readOnly]   Whether the control is non-interactive.
- * @param {boolean} [props.field.responsive] Whether the field offers a breakpoint switcher.
- * @param {*}       props.value              The stored value: a composite, or a four-slot list of them.
- * @param {Function} props.onChange          Called with the next stored value.
+ * @param {Object}   props                    The component props.
+ * @param {Object}   props.field              The field definition.
+ * @param {string}   props.field.path         The base dot path; the width/style/color axes are
+ *                                             stored at `${path}-width` / `-style` / `-color`.
+ * @param {?string}  [props.field.label]      The control's label.
+ * @param {boolean}  [props.field.readOnly]   Whether the control is non-interactive.
+ * @param {boolean}  [props.field.responsive] Whether the field offers a breakpoint switcher.
+ * @param {Object}   props.values             The full draft values, read by dot path.
+ * @param {Function} props.onValueChange      Called with `(path, next)` for any of the three axes.
  *
  * @since TBD
  *
  * @return {JSX.Element} The field.
  */
-export function BorderField({ field, value, onChange }) {
+export function BorderField({ field, values, onValueChange }) {
 	const responsive = field.responsive === true;
 
 	// Shared, not local: switching to Tablet here switches every other responsive control in the panel
 	// with it, matching `BoxTokenField`.
 	const [breakpoint, setBreakpoint] = useBreakpoint(PRESET_BREAKPOINTS[0]);
 
-	const atBreakpoint = responsive ? readPresetBreakpoint(value, breakpoint) : value;
-	const write = (next) => onChange(responsive ? writePresetBreakpoint(value, breakpoint, next) : next);
+	const widthPath = `${field.path}-width`;
+	const stylePath = `${field.path}-style`;
+	const colorPath = `${field.path}-color`;
+
+	const rawWidth = getValueAtPath(values, widthPath);
+	const rawStyle = getValueAtPath(values, stylePath);
+	const rawColor = getValueAtPath(values, colorPath);
+
+	const widthAtBreakpoint = responsive ? readPresetBreakpoint(rawWidth, breakpoint) : rawWidth;
+	const styleAtBreakpoint = responsive ? readPresetBreakpoint(rawStyle, breakpoint) : rawStyle;
+
+	const writeWidth = (next) =>
+		onValueChange(widthPath, responsive ? writePresetBreakpoint(rawWidth, breakpoint, next) : next);
+	const writeStyle = (next) =>
+		onValueChange(stylePath, responsive ? writePresetBreakpoint(rawStyle, breakpoint, next) : next);
+	const writeColor = (next) => onValueChange(colorPath, next);
 
 	const widthTokens = pickableTokensForType('dimension', 'border-width').map((token) => ({
 		...token,
@@ -208,23 +225,36 @@ export function BorderField({ field, value, onChange }) {
 	// `BoxTokenField`'s `unlinked` is: a choice made on one breakpoint must not leak into another that
 	// never made it, keeping the breakpoints independent.
 	const [unlinked, setUnlinked] = useState({});
-	const storedIsList = isSlotList(atBreakpoint);
+	const storedIsList = isSlotList(widthAtBreakpoint) || isSlotList(styleAtBreakpoint);
 	const linked = storedIsList ? false : !unlinked[breakpoint];
 
 	const toggleLink = () => {
 		setUnlinked((current) => ({ ...current, [breakpoint]: linked }));
 
-		// Relinking keeps the first side, matching `BoxTokenField`'s own relink rule; there is nothing
-		// to fold when the breakpoint never actually diverged into a list.
+		// Relinking keeps each axis's first side, matching `BoxTokenField`'s own relink rule; there is
+		// nothing to fold when a breakpoint never actually diverged into a list.
 		if (!linked && storedIsList) {
-			write(atBreakpoint[0]);
+			writeWidth(readSlot(widthAtBreakpoint, 0));
+			writeStyle(readSlot(styleAtBreakpoint, 0));
 		}
 	};
 
 	return (
 		<BorderControl
-			value={toControlValue(atBreakpoint)}
-			onChange={(next) => !field.readOnly && write(toStoredValue(next))}
+			value={{
+				width: toControlWidthAxis(widthAtBreakpoint),
+				style: toControlStyleAxis(styleAtBreakpoint),
+				color: rawColor ?? '',
+			}}
+			onChange={(next) => {
+				if (field.readOnly) {
+					return;
+				}
+
+				writeWidth(toStoredWidthAxis(next.width));
+				writeStyle(toStoredStyleAxis(next.style));
+				writeColor(next.color ?? '');
+			}}
 			label={field.label}
 			widthTokens={widthTokens}
 			renderColor={({ value: color, onChange: onColorChange }) => (

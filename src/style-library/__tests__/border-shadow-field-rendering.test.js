@@ -68,10 +68,10 @@ describe('BorderField', () => {
 	});
 
 	it("sources widthTokens from the 'border-width' role only, excluding radius", () => {
-		const field = { label: 'Border', responsive: true };
+		const field = { label: 'Border', path: 'tokens.button-border', responsive: true };
 
 		act(() => {
-			root.render(createElement(BorderField, { field, value: '', onChange: jest.fn() }));
+			root.render(createElement(BorderField, { field, values: {}, onValueChange: jest.fn() }));
 		});
 
 		expect(latestBorderControlProps.widthTokens.map((token) => token.id)).toEqual([
@@ -84,40 +84,36 @@ describe('BorderField', () => {
 		act(() => {
 			root.render(
 				createElement(BorderField, {
-					field: { label: 'Border', responsive: true },
-					value: '',
-					onChange: jest.fn(),
+					field: { label: 'Border', path: 'tokens.button-border', responsive: true },
+					values: {},
+					onValueChange: jest.fn(),
 				})
 			);
 		});
 		expect(latestBorderControlProps.breakpoints).toEqual(['desktop', 'tablet', 'mobile']);
 
 		act(() => {
-			root.render(createElement(BorderField, { field: { label: 'Border' }, value: '', onChange: jest.fn() }));
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border' },
+					values: {},
+					onValueChange: jest.fn(),
+				})
+			);
 		});
 		expect(latestBorderControlProps.breakpoints).toBeNull();
 	});
 
-	it('writes through onChange with the stored (not control) shape', () => {
-		const onChange = jest.fn();
-
-		act(() => {
-			root.render(createElement(BorderField, { field: { label: 'Border' }, value: '', onChange }));
-		});
-
-		act(() => {
-			latestBorderControlProps.onChange({ width: 2, style: 'solid', color: '#000' });
-		});
-
-		expect(onChange).toHaveBeenCalledWith({ width: '2px', style: 'solid', color: '#000' });
-	});
-
-	it('never calls onChange when the field is read-only', () => {
-		const onChange = jest.fn();
+	it('writes each axis to its own sibling path, in the stored (not control) shape', () => {
+		const onValueChange = jest.fn();
 
 		act(() => {
 			root.render(
-				createElement(BorderField, { field: { label: 'Border', readOnly: true }, value: '', onChange })
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border' },
+					values: {},
+					onValueChange,
+				})
 			);
 		});
 
@@ -125,13 +121,41 @@ describe('BorderField', () => {
 			latestBorderControlProps.onChange({ width: 2, style: 'solid', color: '#000' });
 		});
 
-		expect(onChange).not.toHaveBeenCalled();
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-width', '2px');
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-style', 'solid');
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-color', '#000');
+	});
+
+	it('never calls onValueChange when the field is read-only', () => {
+		const onValueChange = jest.fn();
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border', readOnly: true },
+					values: {},
+					onValueChange,
+				})
+			);
+		});
+
+		act(() => {
+			latestBorderControlProps.onChange({ width: 2, style: 'solid', color: '#000' });
+		});
+
+		expect(onValueChange).not.toHaveBeenCalled();
 		expect(latestBorderControlProps.disabled).toBe(true);
 	});
 
 	it('renders the color sub-field through the existing TokenColorSelectField, not a new component', () => {
 		act(() => {
-			root.render(createElement(BorderField, { field: { label: 'Border' }, value: '', onChange: jest.fn() }));
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border' },
+					values: {},
+					onValueChange: jest.fn(),
+				})
+			);
 		});
 
 		const element = latestBorderControlProps.renderColor({ value: '', onChange: jest.fn() });
@@ -139,18 +163,48 @@ describe('BorderField', () => {
 		expect(element.type.name).toBe('TokenColorSelectField');
 	});
 
+	it('a width pick writes only the width path, a style change writes only the style path, color stays where it was', () => {
+		const onValueChange = jest.fn();
+
+		act(() => {
+			root.render(
+				createElement(BorderField, {
+					field: { label: 'Border', path: 'tokens.button-border' },
+					values: { tokens: { 'button-border-color': '#171717' } },
+					onValueChange,
+				})
+			);
+		});
+
+		act(() => {
+			latestBorderControlProps.onChange({
+				width: '{primitive.dimension.border-width.sm}',
+				style: 'none',
+				color: '#171717',
+			});
+		});
+
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-width', 'primitive.dimension.border-width.sm');
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-style', 'none');
+		expect(onValueChange).toHaveBeenCalledWith('tokens.button-border-color', '#171717');
+	});
+
 	it('clicking unlink switches to per-side editing, survives a same-side edit, and leaves the other sides untouched', () => {
 		// A real, stateful host — not a fresh mock per assertion — because the bug this guards against
 		// only shows up across a render cycle: the field re-deriving `linked` from the just-written
 		// value, not from what `onToggleLink` was told.
 		function Harness({ field }) {
-			const [value, setValue] = useState('');
+			const [values, setValues] = useState({});
 
-			return createElement(BorderField, { field, value, onChange: setValue });
+			const onValueChange = (path, next) => {
+				setValues((current) => ({ ...current, tokens: { ...current.tokens, [path.split('.')[1]]: next } }));
+			};
+
+			return createElement(BorderField, { field, values, onValueChange });
 		}
 
 		act(() => {
-			root.render(createElement(Harness, { field: { label: 'Border' } }));
+			root.render(createElement(Harness, { field: { label: 'Border', path: 'tokens.button-border' } }));
 		});
 
 		// Starts linked: nothing stored yet, no unlink chosen.
@@ -177,11 +231,14 @@ describe('BorderField', () => {
 		// Still unlinked after the write — the toggle does not snap back.
 		expect(latestBorderControlProps.isLinked).toBe(false);
 
-		// The stored value reflects only the edited side; the other three are untouched.
+		// The stored value reflects only the edited side; the other three are untouched. Width and style
+		// are independent axes now (each its own sibling path), so the style axis — never diverged in
+		// this edit — stays the scalar it was rather than being forced into a four-slot list just
+		// because width became one.
 		const controlValue = latestBorderControlProps.value;
 
 		expect(controlValue.width).toEqual(['{primitive.dimension.border-width.sm}', '', '', '']);
-		expect(controlValue.style).toEqual(['none', 'none', 'none', 'none']);
+		expect(controlValue.style).toBe('none');
 	});
 });
 

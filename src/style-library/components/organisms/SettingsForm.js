@@ -6,6 +6,12 @@
  * Responsive values are not this component's concern — a `responsive: true` field resolves and
  * writes its own breakpoint slot internally via `hooks/use-responsive-field-value.js`; this
  * component always hands it the plain dot-path `value`/`onChange`.
+ *
+ * A field bound to more than one stored property (`BorderField`'s width/style/color axes are three
+ * sibling `tokens.*` keys, not one composite — see its own docblock) cannot be served by the single
+ * dot-path `value`/`onChange` pair alone, so every field also receives the full draft `values` and
+ * the raw, path-taking `onValueChange(path, next)` this component itself was given — additive, and
+ * ignored by every field that only needs its own `field.path`.
  */
 
 /**
@@ -66,6 +72,8 @@ export function SettingsForm({ schema, values, onChange }) {
 									field={field}
 									value={getValueAtPath(values, field.path)}
 									onChange={(next) => onChange(field.path, next)}
+									values={values}
+									onValueChange={onChange}
 								/>
 							);
 						})}

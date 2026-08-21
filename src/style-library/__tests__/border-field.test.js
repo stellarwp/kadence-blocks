@@ -3,10 +3,12 @@
  * Internal dependencies
  */
 import {
-	toControlValue,
+	toControlStyleAxis,
 	toControlWidth,
-	toStoredValue,
+	toControlWidthAxis,
+	toStoredStyleAxis,
 	toStoredWidth,
+	toStoredWidthAxis,
 } from '../components/molecules/fields/BorderField';
 
 describe('toControlWidth', () => {
@@ -44,67 +46,59 @@ describe('toStoredWidth', () => {
 	});
 });
 
-describe('toControlValue', () => {
-	it('reads a linked (scalar composite) stored value into a scalar control value', () => {
-		expect(toControlValue({ width: '2px', style: 'solid', color: 'semantic.color.border-default' })).toEqual({
-			width: 2,
-			style: 'solid',
-			color: 'semantic.color.border-default',
-		});
+describe('toControlWidthAxis', () => {
+	it('converts a scalar width axis the same way toControlWidth does', () => {
+		expect(toControlWidthAxis('2px')).toBe(2);
+		expect(toControlWidthAxis('semantic.dimension.border-width-sm')).toBe('{semantic.dimension.border-width-sm}');
 	});
 
-	it('reads an unlinked (four-slot) stored value into four-slot width/style axes, sharing one color', () => {
-		const stored = [
-			{ width: '1px', style: 'solid', color: '#000' },
-			{ width: '2px', style: 'dashed', color: '#000' },
-			{ width: '1px', style: 'solid', color: '#000' },
-			{ width: '2px', style: 'dashed', color: '#000' },
-		];
-
-		expect(toControlValue(stored)).toEqual({
-			width: [1, 2, 1, 2],
-			style: ['solid', 'dashed', 'solid', 'dashed'],
-			color: '#000',
-		});
-	});
-
-	it('defaults an empty stored value to the unset side', () => {
-		expect(toControlValue('')).toEqual({ width: '', style: 'none', color: '' });
-		expect(toControlValue(undefined)).toEqual({ width: '', style: 'none', color: '' });
-	});
-});
-
-describe('toStoredValue', () => {
-	it('collapses a uniform control value back to a scalar composite', () => {
-		expect(toStoredValue({ width: 2, style: 'solid', color: '#000' })).toEqual({
-			width: '2px',
-			style: 'solid',
-			color: '#000',
-		});
-	});
-
-	it('keeps a non-uniform control value as a four-slot composite list', () => {
-		const next = { width: [1, 1, 1, 2], style: 'solid', color: '#000' };
-
-		expect(toStoredValue(next)).toEqual([
-			{ width: '1px', style: 'solid', color: '#000' },
-			{ width: '1px', style: 'solid', color: '#000' },
-			{ width: '1px', style: 'solid', color: '#000' },
-			{ width: '2px', style: 'solid', color: '#000' },
+	it('converts every slot of a four-slot width axis independently', () => {
+		expect(toControlWidthAxis(['1px', '2px', '{semantic.dimension.border-width-sm}', ''])).toEqual([
+			1,
+			2,
+			'{semantic.dimension.border-width-sm}',
+			'',
 		]);
 	});
+});
 
-	it('collapses a four-slot value back to a scalar once every slot matches again', () => {
-		const next = { width: [1, 1, 1, 1], style: ['solid', 'solid', 'solid', 'solid'], color: '#000' };
+describe('toStoredWidthAxis', () => {
+	it('converts a scalar control width the same way toStoredWidth does', () => {
+		expect(toStoredWidthAxis(2)).toBe('2px');
+		expect(toStoredWidthAxis(0)).toBe('0');
+	});
 
-		expect(toStoredValue(next)).toEqual({ width: '1px', style: 'solid', color: '#000' });
+	it('converts every slot of a four-slot control width independently', () => {
+		expect(toStoredWidthAxis([1, 2, '{semantic.dimension.border-width-sm}', ''])).toEqual([
+			'1px',
+			'2px',
+			'semantic.dimension.border-width-sm',
+			'',
+		]);
 	});
 });
 
-describe('the conversion pair', () => {
-	it('round-trips a linked border through toStoredValue(toControlValue(...))', () => {
-		const stored = { width: 'semantic.dimension.border-width-sm', style: 'dashed', color: '#171717' };
+describe('toControlStyleAxis', () => {
+	it('defaults an unset scalar style to none', () => {
+		expect(toControlStyleAxis('')).toBe('none');
+		expect(toControlStyleAxis(undefined)).toBe('none');
+	});
 
-		expect(toStoredValue(toControlValue(stored))).toEqual(stored);
+	it('passes a set scalar style through unchanged', () => {
+		expect(toControlStyleAxis('dashed')).toBe('dashed');
+	});
+
+	it('defaults every unset slot of a four-slot style axis to none', () => {
+		expect(toControlStyleAxis(['solid', '', 'dotted', undefined])).toEqual(['solid', 'none', 'dotted', 'none']);
+	});
+});
+
+describe('toStoredStyleAxis', () => {
+	it('defaults an unset scalar style to none', () => {
+		expect(toStoredStyleAxis('')).toBe('none');
+	});
+
+	it('defaults every unset slot of a four-slot style axis to none', () => {
+		expect(toStoredStyleAxis(['solid', '', 'dotted', undefined])).toEqual(['solid', 'none', 'dotted', 'none']);
 	});
 });
