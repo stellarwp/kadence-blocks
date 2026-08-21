@@ -57,3 +57,104 @@ export function receivePaletteListing(key, rows) {
 export function receiveDesignTokensFeed(slug, feed) {
 	return { type: 'RECEIVE_DESIGN_TOKENS_FEED', slug, feed };
 }
+
+/**
+ * Patch a swatch's label and/or value in the optimistic overlay, ahead of its write's response.
+ *
+ * @param {string} key   The palette listing key (`paletteListingKey(namespace, slug)`).
+ * @param {string} token The swatch token dot-path being edited.
+ * @param {Object} patch `{ label?, $value? }` — whichever field(s) changed. `$value`, not `value` —
+ *                       must match the DTCG field name every real swatch object already uses
+ *                       (`palette.groups[].swatches[].$value`), or `applyOptimisticOverlay`'s
+ *                       spread-merge silently adds a stray `value` key instead of overwriting the
+ *                       one `mapPaletteToSwatchGroups`/`SwatchCard` actually read.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticSwatchPatch(key, token, patch) {
+	return { type: 'SET_OPTIMISTIC_SWATCH_PATCH', key, token, patch };
+}
+
+/**
+ * Clear a swatch's pending optimistic patch — the write's real response has landed, or it failed.
+ *
+ * @param {string} key   The palette listing key.
+ * @param {string} token The swatch token dot-path.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticSwatchPatch(key, token) {
+	return { type: 'CLEAR_OPTIMISTIC_SWATCH_PATCH', key, token };
+}
+
+/**
+ * Mark a swatch or group as pending deletion in the optimistic overlay — stays visible but dimmed
+ * (`applyOptimisticOverlay` flags it `pendingDelete: true`, it is never filtered out) until the
+ * write settles, so the UI shows a "Deleting…" transitional state rather than an instant vanish.
+ *
+ * @param {string}            key  The palette listing key.
+ * @param {'swatch'|'group'}  kind Which id list to add to.
+ * @param {string}            id   The swatch token or group id.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticDeletion(key, kind, id) {
+	return { type: 'SET_OPTIMISTIC_DELETION', key, kind, id };
+}
+
+/**
+ * Clear a pending optimistic deletion — the write's real response has landed (the row is genuinely
+ * gone from the store now), or it failed and the swatch/group must return to normal.
+ *
+ * @param {string}            key  The palette listing key.
+ * @param {'swatch'|'group'}  kind Which id list to remove from.
+ * @param {string}            id   The swatch token or group id.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticDeletion(key, kind, id) {
+	return { type: 'CLEAR_OPTIMISTIC_DELETION', key, kind, id };
+}
+
+/**
+ * Add a not-yet-confirmed swatch or group to the optimistic overlay, so it renders immediately
+ * ahead of its write's response.
+ *
+ * @param {string}            key   The palette listing key.
+ * @param {'swatch'|'group'}  kind  Which list to append to.
+ * @param {Object}            entry A swatch (`{ groupId, token, label, $value }`) or a group
+ *                                  (`{ id, label, swatches: [{ token, label, $value }] }`),
+ *                                  matching `kind`. `$value`, not `value` — see
+ *                                  `setOptimisticSwatchPatch`'s docblock for why.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function setOptimisticAddition(key, kind, entry) {
+	return { type: 'SET_OPTIMISTIC_ADDITION', key, kind, entry };
+}
+
+/**
+ * Clear a pending optimistic addition — the write's real response has landed (the store's real
+ * listing now carries it), or it failed and the placeholder must be removed.
+ *
+ * @param {string}            key  The palette listing key.
+ * @param {'swatch'|'group'}  kind Which list to remove from.
+ * @param {string}            id   The swatch token or group id to remove.
+ *
+ * @since TBD
+ *
+ * @return {Object} The action.
+ */
+export function clearOptimisticAddition(key, kind, id) {
+	return { type: 'CLEAR_OPTIMISTIC_ADDITION', key, kind, id };
+}

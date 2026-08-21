@@ -1,9 +1,16 @@
 /* eslint-env jest */
-import { getBlockPresets, getLibraries, getPaletteListing, getDesignTokensFeed } from './selectors';
+import {
+	getBlockPresets,
+	getLibraries,
+	getPaletteListing,
+	getDesignTokensFeed,
+	getOptimisticSwatchEdit,
+} from './selectors';
+import { EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
 
 describe('selectors', () => {
 	it('getLibraries() returns the libraries slice', () => {
-		const state = { libraries: [{ slug: 'default' }], presets: {}, paletteListings: {} };
+		const state = { libraries: [{ slug: 'default' }], presets: {}, paletteListings: {}, optimisticSwatchEdits: {} };
 
 		expect(getLibraries(state)).toEqual([{ slug: 'default' }]);
 	});
@@ -13,6 +20,7 @@ describe('selectors', () => {
 			libraries: [],
 			presets: { 'ns::block::slug': { version: 'a1' } },
 			paletteListings: {},
+			optimisticSwatchEdits: {},
 		};
 
 		expect(getBlockPresets(state, 'ns', 'block', 'slug')).toEqual({ version: 'a1' });
@@ -20,7 +28,7 @@ describe('selectors', () => {
 	});
 
 	it('getPaletteListing() returns EMPTY_LISTING when nothing has resolved yet', () => {
-		const state = { libraries: [], presets: {}, paletteListings: {} };
+		const state = { libraries: [], presets: {}, paletteListings: {}, optimisticSwatchEdits: {} };
 
 		expect(getPaletteListing(state, 'ns', 'default')).toEqual({
 			defaultId: '',
@@ -53,7 +61,12 @@ describe('selectors', () => {
 				_embedded: { self: [{ id: 'custom-1', label: 'Custom', groups: [] }] },
 			},
 		];
-		const state = { libraries: [], presets: {}, paletteListings: { 'ns::default': rows } };
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: { 'ns::default': rows },
+			optimisticSwatchEdits: {},
+		};
 
 		expect(getPaletteListing(state, 'ns', 'default')).toEqual({
 			defaultId: 'default',
@@ -68,7 +81,12 @@ describe('selectors', () => {
 
 	it('getPaletteListing() degrades a row with no `_embedded` data to an empty groups array', () => {
 		const rows = [{ id: 'default', label: 'Default', is_default: true, is_current: true, user_created: false }];
-		const state = { libraries: [], presets: {}, paletteListings: { 'ns::default': rows } };
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: { 'ns::default': rows },
+			optimisticSwatchEdits: {},
+		};
 
 		expect(getPaletteListing(state, 'ns', 'default')).toEqual({
 			defaultId: 'default',
@@ -80,7 +98,12 @@ describe('selectors', () => {
 
 	it('getPaletteListing() returns the same object reference across calls until the rows array is replaced', () => {
 		const rows = [{ id: 'default', label: 'Default', is_default: true, is_current: true, user_created: false }];
-		const state = { libraries: [], presets: {}, paletteListings: { 'ns::default': rows } };
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: { 'ns::default': rows },
+			optimisticSwatchEdits: {},
+		};
 
 		const first = getPaletteListing(state, 'ns', 'default');
 		const second = getPaletteListing(state, 'ns', 'default');
@@ -95,15 +118,40 @@ describe('selectors', () => {
 		expect(third).not.toBe(first);
 	});
 
-	it('getDesignTokensFeed() reads a slug’s feed, or null when unresolved', () => {
+	it("getDesignTokensFeed() reads a slug's feed, or null when unresolved", () => {
 		const state = {
 			libraries: [],
 			presets: {},
 			paletteListings: {},
 			feeds: { default: { version: 'v1' } },
+			optimisticSwatchEdits: {},
 		};
 
 		expect(getDesignTokensFeed(state, 'default')).toEqual({ version: 'v1' });
 		expect(getDesignTokensFeed(state, 'brand')).toBeNull();
+	});
+
+	it('getOptimisticSwatchEdit() returns EMPTY_OPTIMISTIC_SWATCH_EDIT for an unresolved key', () => {
+		const state = { libraries: [], presets: {}, paletteListings: {}, optimisticSwatchEdits: {} };
+
+		expect(getOptimisticSwatchEdit(state, 'ns', 'default')).toBe(EMPTY_OPTIMISTIC_SWATCH_EDIT);
+	});
+
+	it('getOptimisticSwatchEdit() returns the stored overlay object for a resolved key', () => {
+		const overlay = {
+			patches: { 'token.color': { label: 'Red' } },
+			deletedTokens: ['token.old'],
+			deletedGroups: [],
+			addedSwatches: [],
+			addedGroups: [],
+		};
+		const state = {
+			libraries: [],
+			presets: {},
+			paletteListings: {},
+			optimisticSwatchEdits: { 'ns::default': overlay },
+		};
+
+		expect(getOptimisticSwatchEdit(state, 'ns', 'default')).toEqual(overlay);
 	});
 });

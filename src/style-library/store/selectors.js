@@ -7,7 +7,7 @@
 /**
  * Internal dependencies
  */
-import { presetsKey, paletteListingKey, EMPTY_LISTING } from './constants';
+import { presetsKey, paletteListingKey, EMPTY_LISTING, EMPTY_OPTIMISTIC_SWATCH_EDIT } from './constants';
 import { reshapePaletteRows } from '../helpers/palettes';
 
 /**
@@ -89,4 +89,20 @@ export function getPaletteListing(state, namespace, slug) {
  */
 export function getDesignTokensFeed(state, slug) {
 	return state.feeds[slug] ?? null;
+}
+
+/**
+ * Read the pending optimistic overlay for a palette listing — patches, deletions, and additions not
+ * yet confirmed by a write's response.
+ *
+ * @param {Object} state     The store state.
+ * @param {string} namespace REST namespace.
+ * @param {string} slug      Token library slug.
+ *
+ * @since TBD
+ *
+ * @return {Object} The overlay, or `EMPTY_OPTIMISTIC_SWATCH_EDIT` when nothing is pending.
+ */
+export function getOptimisticSwatchEdit(state, namespace, slug) {
+	return state.optimisticSwatchEdits[paletteListingKey(namespace, slug)] ?? EMPTY_OPTIMISTIC_SWATCH_EDIT;
 }

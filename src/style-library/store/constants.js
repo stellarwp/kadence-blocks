@@ -46,3 +46,18 @@ export function paletteListingKey(namespace, slug) {
  * @since TBD
  */
 export const EMPTY_LISTING = { defaultId: '', currentId: '', palettes: [], userCreated: [] };
+
+/**
+ * The empty optimistic-swatch-edit overlay for a palette listing — no pending patch, deletion, or
+ * addition. Returned by `getOptimisticSwatchEdit` for a listing key with nothing pending, so
+ * `applyOptimisticOverlay` never has to branch on `undefined`.
+ *
+ * @since TBD
+ */
+export const EMPTY_OPTIMISTIC_SWATCH_EDIT = {
+	patches: {},
+	deletedTokens: [],
+	deletedGroups: [],
+	addedSwatches: [],
+	addedGroups: [],
+};
