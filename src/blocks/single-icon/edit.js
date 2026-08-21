@@ -20,8 +20,10 @@ import {
 import { KadenceColorOutput, uniqueIdHelper, getInQueryBlock, getPreviewSize } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EditorScalarControl } from '../../extension/design-tokens/components/EditorScalarControl';
+import { tokenLiteral } from '../../extension/design-tokens/token-literals';
+import { activeLibrary } from '../../extension/preset-picker';
 import { measureAttrsForDevice } from '../../extension/token-indicators/normalize';
-import { pickableTokensForControl } from '../../extension/token-picker';
+import { boundTokenAliasForControl, pickableTokensForControl } from '../../extension/token-picker';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
 import { tooltip as tooltipIcon } from '@kadence/icons';
@@ -105,6 +107,19 @@ function KadenceSingleIcon(props) {
 	// Empty when the token registry is inactive, which is what keeps the plain range control below as the
 	// fallback rather than leaving the block with no size control at all.
 	const iconSizeTokens = pickableTokensForControl(name, 'size') || [];
+	// What the active device falls back to when it stores nothing: the breakpoints ABOVE it, in cascade
+	// order, and then the icon-size token the binding names. The device's own value is deliberately left
+	// out — this is what the field reports when it is unset, so including it would just echo the value
+	// already on screen. Tablet and Mobile inherit; Desktop has nothing above it and lands on the token,
+	// which is the value the front end's block-default rule resolves for a cleared size.
+	const inheritedSizeChain = {
+		Tablet: [size],
+		Mobile: [tabletSize, size],
+	};
+	const inheritedSize = (inheritedSizeChain[previewDevice] || []).find(
+		(value) => value !== undefined && value !== null && value !== ''
+	);
+	const iconSizeDefault = inheritedSize ?? tokenLiteral(boundTokenAliasForControl(name, 'size'), activeLibrary());
 
 	useEffect(() => {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
@@ -230,6 +245,11 @@ function KadenceSingleIcon(props) {
 									previewDevice={previewDevice}
 									onDeviceChange={(device) => setPreviewDeviceType(device)}
 									tokens={iconSizeTokens}
+									// So an unset field names the size actually in effect — "Inherited (50px)" on a
+									// breakpoint taking Desktop's value, "Default (MD)" once the cascade reaches the
+									// token — instead of reading blank after a Reset.
+									defaultValue={iconSizeDefault}
+									inherited={inheritedSize !== undefined}
 									// The size attributes store a bare number and the block declares no unit
 									// attribute of its own, so the front end always renders them as px. Pinning the
 									// Custom tab to px keeps a hand-typed value in the one unit the attribute can
