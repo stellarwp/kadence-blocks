@@ -20,9 +20,11 @@
  * on the very next render.
  *
  * Border style has no token library (`Style Library`'s Base Styles nav has no "Border Style"
- * screen — only one semantic default exists), so the style field is a plain closed-enum select,
- * not a `TokenSelector`/`TokenPopover` pair. Width reuses `TokenSelector` exactly as radius/spacing
- * do. Color is entirely out of this control's scope — the caller renders it via `renderColor`.
+ * screen — only one semantic default exists), so the style field is a closed enum, rendered by
+ * `BorderStyleSelect` — a small custom picker rather than a native `<select>`, since the reference
+ * wants each option to show its own line style, not just its name (a native `<select>` can only
+ * render plain-text `<option>`s). Width reuses `TokenSelector` exactly as radius/spacing do. Color is
+ * entirely out of this control's scope — the caller renders it via `renderColor`.
  *
  * Each row shares one control box — a 20px color swatch, a style-preview box, then the width
  * field's label/value — matching Padding/Margin/Radius's row anatomy except for the two pickers up
@@ -39,12 +41,12 @@
 /**
  * WordPress dependencies
  */
-import { SelectControl } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { BorderStyleSelect } from '../atoms/BorderStyleSelect';
 import { ControlShell } from '../templates/ControlShell';
 import { SlotGrid } from '../templates/SlotGrid';
 import { TokenSelector } from '../organisms/TokenSelector';
@@ -143,7 +145,12 @@ export function BorderControl({
 	const { width = '', style = 'none', color = '' } = value;
 
 	const controlled = typeof onToggleLink === 'function';
-	const linked = controlled ? Boolean(isLinked) : !isSlotList(width) && !isSlotList(style);
+	// `color` has to be checked alongside width/style: a caller's `renderColor` can widen it into a
+	// four-slot list on its own (via `applyToAxis`, in the per-row write below) without width or
+	// style ever leaving scalar. Deriving `linked` from width/style only would then render that
+	// value as linked and read just slot 0 of `color`, hiding the other three sides' colors
+	// entirely even though they're still stored.
+	const linked = controlled ? Boolean(isLinked) : !isSlotList(width) && !isSlotList(style) && !isSlotList(color);
 
 	const patch = (next) => onChange({ ...value, ...next });
 
@@ -225,21 +232,13 @@ export function BorderControl({
 									})}
 								</span>
 							)}
-							<span className="kb-border-control__style-preview">
-								<span
-									className={`kb-border-control__style-preview-rule kb-border-control__style-preview-rule--${styleSlot}`}
-									aria-hidden="true"
-								/>
-								<SelectControl
-									className="kb-border-control__style-select"
-									label={styleLabel}
-									hideLabelFromVision
-									value={styleSlot}
-									options={STYLES}
-									disabled={disabled}
-									onChange={(next) => !disabled && patch({ style: applyToAxis(style, index, next) })}
-								/>
-							</span>
+							<BorderStyleSelect
+								value={styleSlot}
+								options={STYLES}
+								label={styleLabel}
+								disabled={disabled}
+								onChange={(next) => !disabled && patch({ style: applyToAxis(style, index, next) })}
+							/>
 							<TokenSelector
 								value={widthSlot}
 								icon={slotIcons?.[slotIndex]}

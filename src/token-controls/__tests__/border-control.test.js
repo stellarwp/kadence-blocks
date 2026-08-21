@@ -13,30 +13,59 @@ import { BorderControl } from '../controls/BorderControl';
 // `jest.config.js` maps `@wordpress/components` to the copy nested under
 // `@kadence/components/node_modules`, which resolves its own `react` — a different module instance
 // than the top-level `react-dom/client` this test renders with, which trips React's "Invalid hook
-// call" guard. Stand-ins sidestep that; these tests only need the link toggle and a plain select.
-jest.mock('@wordpress/components', () => ({
-	Button: ({ children, icon, showTooltip, isSmall, isPressed, ...props }) => <button {...props}>{children}</button>,
-	ButtonGroup: ({ children, ...props }) => <div {...props}>{children}</div>,
-	Dashicon: (props) => <span {...props} />,
-	Tooltip: ({ children }) => children,
-	SelectControl: ({ label, hideLabelFromVision, options, value, onChange, disabled, ...props }) => (
-		<select
-			aria-label={label}
-			value={value}
-			disabled={disabled}
-			onChange={(event) => onChange(event.target.value)}
-			{...props}
-		>
-			{options.map((option) => (
-				<option key={option.value} value={option.value}>
-					{option.label}
-				</option>
-			))}
-		</select>
-	),
-}));
+// call" guard. Stand-ins sidestep that; these tests only need the link toggle and the style picker's
+// `Dropdown`/`MenuGroup`/`MenuItem`/`NavigableMenu` shells.
+//
+// `Dropdown` keeps real open/closed state (via its own `useState`, from this same file's already-safe
+// top-level `react` import) rather than always rendering its content like `box-shadow-control.test.js`'s
+// stand-in does, because `BorderControl`'s style picker specifically needs "closed until clicked" and
+// "closes after picking" to be real, observable behavior for the tests below — not something a
+// permanently-open mock could exercise. `NavigableMenu` only forwards `role="menu"` — the actual
+// arrow-key roving focus that role wires up in production comes from WordPress's own
+// `NavigableContainer` (see `BorderStyleSelect.js`'s docblock), which this mock necessarily bypasses
+// along with the rest of `@wordpress/components`; the tests below can only verify the structural wiring
+// (a real `role="menu"` container holding real, focusable `role="menuitemradio"` buttons), not simulate
+// the roving focus itself.
+jest.mock('@wordpress/components', () => {
+	const { useState } = require('react');
 
-jest.mock('@wordpress/icons', () => ({ undo: 'undo', link: 'link', linkOff: 'linkOff' }));
+	return {
+		Button: ({ children, icon, showTooltip, isSmall, isPressed, ...props }) => (
+			<button {...props}>{children}</button>
+		),
+		ButtonGroup: ({ children, ...props }) => <div {...props}>{children}</div>,
+		Dashicon: (props) => <span {...props} />,
+		Tooltip: ({ children }) => children,
+		Dropdown: ({ className, contentClassName, renderToggle, renderContent }) => {
+			const [isOpen, setIsOpen] = useState(false);
+
+			return (
+				<div className={className}>
+					{renderToggle({ isOpen, onToggle: () => setIsOpen((open) => !open) })}
+					{isOpen && (
+						<div className={contentClassName}>{renderContent({ onClose: () => setIsOpen(false) })}</div>
+					)}
+				</div>
+			);
+		},
+		MenuGroup: ({ children }) => <div role="group">{children}</div>,
+		NavigableMenu: ({ children, role }) => <div role={role}>{children}</div>,
+		MenuItem: ({ children, role, suffix, onClick, ...props }) => (
+			<button role={role} onClick={onClick} {...props}>
+				{children}
+				{suffix}
+			</button>
+		),
+	};
+});
+
+jest.mock('@wordpress/icons', () => ({
+	undo: 'undo',
+	link: 'link',
+	linkOff: 'linkOff',
+	check: 'check',
+	Icon: ({ icon, ...props }) => <span {...props}>{icon}</span>,
+}));
 
 // `TokenSelector` opens a real popover through `@wordpress/components`' `Dropdown`, which is out of
 // scope for these tests — they exercise `BorderControl`'s own width-axis wiring, not the picker
@@ -103,9 +132,9 @@ function renderControl(props = {}) {
 }
 
 const widthSelectors = () => container.querySelectorAll('.stub-token-selector');
-// Matches both the linked label ("Border style") and each unlinked, side-named label
-// ("Border style (top)", etc.) — the prefix is what every style select shares.
-const styleSelects = () => container.querySelectorAll('select[aria-label^="Border style"]');
+// One per row, whether linked (one, generically labeled "Border style") or unlinked (four, each
+// side-named — "Border style (top)", etc.).
+const styleTriggers = () => container.querySelectorAll('.kb-border-control__style-trigger');
 const linkToggle = () => container.querySelector('.kadence-control-toggle');
 
 /**
@@ -122,17 +151,42 @@ function click(element) {
 	act(() => element.click());
 }
 
+/**
+ * Open a row's style picker and pick the option matching `styleValue`, driving the mocked
+ * `Dropdown`/`MenuGroup`/`MenuItem` exactly as a user would: click the trigger to open the menu,
+ * then click the option whose rule carries that style's modifier class.
+ *
+ * @param {HTMLElement} trigger    The row's `.kb-border-control__style-trigger` button.
+ * @param {string}      styleValue The style keyword to pick — matches `STYLES`' `value` and the
+ *                                 option's `kb-border-control__style-preview-rule--{styleValue}`
+ *                                 modifier class.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function pickStyle(trigger, styleValue) {
+	click(trigger);
+
+	const option = trigger
+		.closest('.kb-border-control__style-preview')
+		.querySelector(`.kb-border-control__style-preview-rule--${styleValue}`)
+		.closest('[role="menuitemradio"]');
+
+	click(option);
+}
+
 describe('BorderControl slot rendering', () => {
 	/**
 	 * The default, all-scalar value is linked, so only one width/style pair renders.
 	 *
 	 * @return {void}
 	 */
-	it('renders one width TokenSelector and one style SelectControl when value is all-scalar', () => {
+	it('renders one width TokenSelector and one style trigger when value is all-scalar', () => {
 		renderControl();
 
 		expect(widthSelectors()).toHaveLength(1);
-		expect(styleSelects()).toHaveLength(1);
+		expect(styleTriggers()).toHaveLength(1);
 	});
 
 	/**
@@ -146,7 +200,7 @@ describe('BorderControl slot rendering', () => {
 		});
 
 		expect(widthSelectors()).toHaveLength(4);
-		expect(styleSelects()).toHaveLength(4);
+		expect(styleTriggers()).toHaveLength(4);
 	});
 
 	/**
@@ -164,7 +218,28 @@ describe('BorderControl slot rendering', () => {
 		});
 
 		expect(widthSelectors()).toHaveLength(4);
-		expect(styleSelects()).toHaveLength(4);
+		expect(styleTriggers()).toHaveLength(4);
+	});
+
+	/**
+	 * A 4-list on `color` alone — width and style both still scalar — also means the control is
+	 * unlinked. `color` can diverge on its own through a caller's `renderColor` writing per row
+	 * (via `applyToAxis`), so deriving `linked` from width/style only would render this value as
+	 * linked and read just slot 0 of `color`, hiding the other three sides' colors.
+	 *
+	 * @return {void}
+	 */
+	it('renders four of each when color is a 4-list, even with scalar width and style', () => {
+		renderControl({
+			value: {
+				width: 'primitive.dimension.border-width.md',
+				style: 'solid',
+				color: ['red', 'green', 'blue', 'yellow'],
+			},
+		});
+
+		expect(widthSelectors()).toHaveLength(4);
+		expect(styleTriggers()).toHaveLength(4);
 	});
 });
 
@@ -192,23 +267,19 @@ describe('BorderControl width and style writes', () => {
 	});
 
 	/**
-	 * Changing the style select while linked writes the scalar directly to `style` and leaves
+	 * Picking a style option while linked writes the scalar directly to `style` and leaves
 	 * `width`/`color` untouched.
 	 *
 	 * @return {void}
 	 */
-	it('calls onChange with only style changed when changing the style select', () => {
+	it('calls onChange with only style changed when picking a style option', () => {
 		const onChange = jest.fn();
 		renderControl({
 			value: { width: 'primitive.dimension.border-width.sm', style: 'none', color: 'semantic.color.border' },
 			onChange,
 		});
 
-		act(() => {
-			const select = styleSelects()[0];
-			select.value = 'dashed';
-			select.dispatchEvent(new Event('change', { bubbles: true }));
-		});
+		pickStyle(styleTriggers()[0], 'dashed');
 
 		expect(onChange).toHaveBeenCalledWith({
 			width: 'primitive.dimension.border-width.sm',
@@ -388,7 +459,7 @@ describe('BorderControl color', () => {
 
 describe('BorderControl disabled', () => {
 	/**
-	 * Every sub-field — the width stand-in's buttons and the style select — is disabled, and
+	 * Every sub-field — the width stand-in's buttons and the style trigger — is disabled, and
 	 * clicking/changing them fires no `onChange`.
 	 *
 	 * @return {void}
@@ -406,7 +477,7 @@ describe('BorderControl disabled', () => {
 		expect(selector.querySelector('.stub-pick').disabled).toBe(true);
 		expect(selector.querySelector('.stub-clear').disabled).toBe(true);
 		expect(selector.querySelector('.stub-custom').disabled).toBe(true);
-		expect(styleSelects()[0].disabled).toBe(true);
+		expect(styleTriggers()[0].disabled).toBe(true);
 
 		click(selector.querySelector('.stub-pick'));
 		click(selector.querySelector('.stub-clear'));
@@ -503,17 +574,17 @@ describe('BorderControl row anatomy', () => {
 
 	/**
 	 * The style preview's rule carries a modifier class naming the side's current style, and the
-	 * style picker's own select sits inside the preview box rather than as a separate field.
+	 * style picker's own trigger sits inside the preview box rather than as a separate field.
 	 *
 	 * @return {void}
 	 */
-	it('marks the style preview with the current style and keeps the picker select inside it', () => {
+	it('marks the style preview with the current style and keeps the picker trigger inside it', () => {
 		renderControl({ value: { width: '', style: 'dashed', color: '' } });
 
 		const preview = container.querySelector('.kb-border-control__style-preview');
 
 		expect(preview.querySelector('.kb-border-control__style-preview-rule--dashed')).not.toBeNull();
-		expect(preview.querySelector('select')).not.toBeNull();
+		expect(preview.querySelector('.kb-border-control__style-trigger')).not.toBeNull();
 	});
 
 	/**
@@ -594,7 +665,103 @@ describe('BorderControl row anatomy', () => {
 	});
 });
 
-describe('BorderControl style select accessible labels', () => {
+describe('BorderControl style picker', () => {
+	/**
+	 * The menu does not exist in the DOM until the trigger opens it — clicking anywhere on the
+	 * preview box before that has nothing to click into.
+	 *
+	 * @return {void}
+	 */
+	it('does not render the style menu until the trigger is clicked', () => {
+		renderControl();
+
+		expect(container.querySelector('.kb-border-control__style-menu')).toBeNull();
+
+		click(styleTriggers()[0]);
+
+		expect(container.querySelector('.kb-border-control__style-menu')).not.toBeNull();
+	});
+
+	/**
+	 * All five curated styles are listed, each as its own focusable option showing its own rule —
+	 * not plain text, which is the whole reason this isn't a native `<select>`.
+	 *
+	 * @return {void}
+	 */
+	it('lists all five style options, each with its own rule', () => {
+		renderControl();
+
+		click(styleTriggers()[0]);
+
+		const options = container.querySelectorAll('.kb-border-control__style-menu [role="menuitemradio"]');
+		expect(options).toHaveLength(5);
+
+		['none', 'solid', 'dashed', 'dotted', 'double'].forEach((styleValue) => {
+			expect(
+				container.querySelector(
+					`.kb-border-control__style-menu .kb-border-control__style-preview-rule--${styleValue}`
+				)
+			).not.toBeNull();
+		});
+	});
+
+	/**
+	 * The options sit inside a real `role="menu"` container — the integration point WordPress's own
+	 * `NavigableMenu`/`NavigableContainer` uses to wire up arrow-key roving focus between them in
+	 * production. This file mocks `NavigableMenu` down to a plain `<div role="menu">` (see the
+	 * `@wordpress/components` mock's docblock above) alongside the rest of `@wordpress/components`,
+	 * so the actual roving-focus keyboard behavior — implemented entirely inside WordPress's own
+	 * component, not this one — cannot be driven or re-verified from here; this asserts the
+	 * structural wiring `BorderStyleSelect` is responsible for instead.
+	 *
+	 * @return {void}
+	 */
+	it('wraps the options in a role="menu" container for arrow-key navigation', () => {
+		renderControl();
+
+		click(styleTriggers()[0]);
+
+		const menu = container.querySelector('.kb-border-control__style-menu [role="menu"]');
+		expect(menu).not.toBeNull();
+		expect(menu.querySelectorAll('[role="menuitemradio"]')).toHaveLength(5);
+	});
+
+	/**
+	 * Picking an option calls `onChange` with that option's value and closes the menu — clicking an
+	 * option is a complete pick-and-dismiss action, not just a write.
+	 *
+	 * @return {void}
+	 */
+	it('picking an option calls onChange and closes the menu', () => {
+		const onChange = jest.fn();
+		renderControl({ value: { width: '', style: 'solid', color: '' }, onChange });
+
+		pickStyle(styleTriggers()[0], 'dotted');
+
+		expect(onChange).toHaveBeenCalledWith({ width: '', style: 'dotted', color: '' });
+		expect(container.querySelector('.kb-border-control__style-menu')).toBeNull();
+	});
+
+	/**
+	 * The active option is marked `aria-checked`, matching the same `role="menuitemradio"` idiom
+	 * `TokenColorSelectField` already uses for its own token list.
+	 *
+	 * @return {void}
+	 */
+	it('marks the current style option as checked', () => {
+		renderControl({ value: { width: '', style: 'dotted', color: '' } });
+
+		click(styleTriggers()[0]);
+
+		const current = container
+			.querySelector('.kb-border-control__style-menu .kb-border-control__style-preview-rule--dotted')
+			.closest('[role="menuitemradio"]');
+
+		expect(current.getAttribute('aria-checked')).toBe('true');
+	});
+});
+
+describe('BorderControl style trigger accessible labels', () => {
 	/**
 	 * Linked mode has one style field standing for every side, so the generic label is accurate.
 	 *
@@ -603,7 +770,7 @@ describe('BorderControl style select accessible labels', () => {
 	it('uses the generic label when linked', () => {
 		renderControl();
 
-		expect(styleSelects()[0].getAttribute('aria-label')).toBe('Border style');
+		expect(styleTriggers()[0].getAttribute('aria-label')).toBe('Border style');
 	});
 
 	/**
@@ -617,7 +784,7 @@ describe('BorderControl style select accessible labels', () => {
 			value: { width: ['', '', '', ''], style: ['none', 'none', 'none', 'none'], color: '' },
 		});
 
-		const labels = Array.from(styleSelects()).map((select) => select.getAttribute('aria-label'));
+		const labels = Array.from(styleTriggers()).map((trigger) => trigger.getAttribute('aria-label'));
 
 		expect(labels).toEqual([
 			'Border style (top)',
